@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers;
 
+use App\Supplier;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
@@ -7,75 +8,58 @@ use Illuminate\Http\Request;
 
 class SupplierController extends Controller {
 
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
 	public function index()
 	{
-		//
+		$ret = array();
+		$suppliers = Supplier::get();
+
+		foreach ($suppliers as $supplier) {
+			$ret[] = (object) array(
+				'id' => $supplier->id,
+				'name' => $supplier->name
+			);
+		}
+
+		return response(json_encode($ret), 200)->header('Content-Type', 'application/json');
 	}
 
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
 	public function create()
 	{
 		//
 	}
 
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
 	public function store()
 	{
 		// Pippo 
 	}
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
 	public function show($id)
 	{
-		//
+		$supplier = Supplier::find($id);
+		if ($supplier->exists()) {
+			return response()->json([
+				'id' => $supplier->id,
+				'name' => $supplier->name,
+				'mail' => $supplier->mail,
+				'phone' => $supplier->phone,
+				'description' => $supplier->description
+			]);
+		}
+		else {
+			abort(404, 'Fornitore non trovato');
+		}
 	}
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
 	public function edit($id)
 	{
 		//
 	}
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
 	public function update($id)
 	{
 		//
 	}
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
 	public function destroy($id)
 	{
 		//

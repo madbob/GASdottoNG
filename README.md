@@ -19,4 +19,4 @@ Per riferimenti:
     // nel file .env vanno specificati i propri parametri di connessione al database
     nano .env
     // per inizializzare il database
-    php artisan migrate
+    php artisan migrate:refresh --seed
