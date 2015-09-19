@@ -2,7 +2,7 @@ var app = angular.module("suppliers", []);
 
 app.controller("suppliersController", function($scope, $http) {
 
-	$scope.controller = 'suppliersController';
+	alert('suppliers loaded');
 	
 	$http.get('/supplier').success(function(data) {
 		$scope.suppliersList = data;
@@ -11,7 +11,7 @@ app.controller("suppliersController", function($scope, $http) {
 	});
 
 	$scope.openSupplierDetail = function(id) {
-		$http.get('/supplier/' + id).success(function(data) {
+		$http.get('/supplier/2' + id).success(function(data) {
 			$scope.supplierDetail = data;
 		}).error(function(data, status) {
 			$scope.error = data.message || " Request failed " || status;

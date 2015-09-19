@@ -1,4 +1,6 @@
-@extends('app') @section('content')
+@extends('app') 
+
+@section('content')
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-3 sidebar">

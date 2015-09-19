@@ -4,16 +4,22 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Laravel</title>
+	<title>GASDottoNG</title>
 
 	<link href="{{ asset('/css/app.css') }}" rel="stylesheet">
-
+	<link href="{{ asset('/css/gasdotto.css') }}" rel="stylesheet">
+	
 	<!-- Fonts -->
 	<link href='//fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
-
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
-
+	
+	<script src="/js/general.js"></script>
+	
 	@if(isset($type))
 	<script src="{{ asset('/js/' . $type . '.js') }}"></script>
 	@endif
@@ -50,7 +56,14 @@
 			</div>
 		</div>
 	</nav>
-
+<!-- 	<span ng-app="general" ng-controller="generalController"> -->
+		<div ng-show="error != null" id="display-error" class="overlay">
+ 			<span class="fa fa-warning fa-2x"></span>
+ 			@{{error}}
+		</div>
+<!-- 	</span> -->
+	
 	@yield('content')
+
 </body>
 </html>
