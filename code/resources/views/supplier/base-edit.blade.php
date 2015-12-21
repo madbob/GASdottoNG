@@ -1,0 +1,5 @@
+@include('commons.textfield', ['obj' => $supplier, 'name' => 'name', 'label' => 'Nome', 'mandatory' => true])
+@include('commons.textarea', ['obj' => $supplier, 'name' => 'description', 'label' => 'Descrizione'])
+@include('commons.textfield', ['obj' => $supplier, 'name' => 'taxcode', 'label' => 'Codice Fiscale'])
+@include('commons.textfield', ['obj' => $supplier, 'name' => 'vat', 'label' => 'Partita IVA'])
+@include('commons.textfield', ['obj' => $supplier, 'name' => 'website', 'label' => 'Sito Web'])

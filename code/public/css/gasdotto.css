@@ -1,0 +1,16 @@
+.navbar {
+  margin-top: 10px; }
+  .navbar .panel-heading {
+    text-align: center; }
+  .navbar .nav {
+    font-size: 1.5em;
+    margin: 15px; }
+
+#main-contents {
+  margin-top: 10px; }
+
+.alert {
+  margin-bottom: 0; }
+
+.tab-pane {
+  padding-top: 10px; }
