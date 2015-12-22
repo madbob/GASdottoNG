@@ -31,6 +31,7 @@ class ProductsController extends Controller
 
 		$p = new Product();
 		$p->name = $request->input('name');
+		$p->id = $supplier->id . '::' . str_slug($p->name);
 		$p->description = $request->input('description');
 		$p->supplier_id = $supplier->id;
 		$p->save();

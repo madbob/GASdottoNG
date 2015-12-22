@@ -15,6 +15,7 @@ class User extends Model implements AuthenticatableContract,
 {
 	use Authenticatable, CanResetPassword, GASModel;
 
+	public $incrementing = false;
 	protected $table = 'users';
 	protected $fillable = ['name', 'email', 'password'];
 	protected $hidden = ['password', 'remember_token'];

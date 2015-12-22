@@ -11,7 +11,7 @@ class CreateNotificationsTable extends Migration
 			$table->increments('id');
 			$table->timestamps();
 
-			$table->integer('creator_id')->unsigned();
+			$table->string('creator_id');
 			$table->text('content');
 			$table->boolean('mailed');
 			$table->date('expiry');
@@ -21,7 +21,7 @@ class CreateNotificationsTable extends Migration
 
 		Schema::create('notification_user', function (Blueprint $table) {
 			$table->integer('notification_id')->unsigned();
-			$table->integer('user_id')->unsigned();
+			$table->string('user_id');
 
 			$table->foreign('notification_id')->references('id')->on('notifications')->onDelete('cascade');
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
@@ -31,7 +31,7 @@ class CreateNotificationsTable extends Migration
 
 	public function down()
 	{
-		Schema::drop('notifications');
 		Schema::drop('notification_user');
+		Schema::drop('notifications');
 	}
 }

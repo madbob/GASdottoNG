@@ -9,4 +9,6 @@ use App\GASModel;
 class Measure extends Model
 {
 	use GASModel;
+
+	public $incrementing = false;
 }

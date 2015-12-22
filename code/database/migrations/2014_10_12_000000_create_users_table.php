@@ -8,11 +8,11 @@ class CreateUsersTable extends Migration
 	public function up()
 	{
 		Schema::create('users', function (Blueprint $table) {
-			$table->increments('id');
+			$table->string('id')->primary();
 			$table->timestamps();
 			$table->softDeletes();
 
-			$table->integer('gas_id')->unsigned();
+			$table->string('gas_id');
 			$table->string('username')->unique();
 			$table->string('name');
 			$table->string('surname');
@@ -29,7 +29,7 @@ class CreateUsersTable extends Migration
 			$table->date('member_since');
 			$table->string('card_number');
 			$table->datetime('last_login');
-			$table->integer('preferred_delivery_id')->unsigned();
+			$table->string('preferred_delivery_id');
 
 			$table->float('current_balance', 5, 2);
 			$table->float('previous_balance', 5, 2);

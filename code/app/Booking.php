@@ -10,6 +10,8 @@ class Booking extends Model
 {
 	use GASModel;
 
+	public $incrementing = false;
+
 	public function user()
 	{
 		return $this->belongsTo('App\User');

@@ -11,6 +11,8 @@ class Product extends Model
 {
 	use Commentable, GASModel;
 
+	public $incrementing = false;
+
 	public function category()
 	{
 		return $this->belongsTo('App\Category');

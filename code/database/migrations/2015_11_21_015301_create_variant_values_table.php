@@ -8,10 +8,10 @@ class CreateVariantValuesTable extends Migration
 	public function up()
 	{
 		Schema::create('variant_values', function (Blueprint $table) {
-			$table->increments('id');
+			$table->string('id')->primary();
 			$table->timestamps();
 
-			$table->integer('variant_id')->unsigned();
+			$table->string('variant_id');
 			$table->string('value');
 
 			$table->foreign('variant_id')->references('id')->on('variants')->onDelete('cascade');

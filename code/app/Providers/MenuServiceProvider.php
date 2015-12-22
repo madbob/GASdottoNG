@@ -31,14 +31,11 @@ class MenuServiceProvider extends ServiceProvider
 				if ($gas->userCan('movements.view|movements.admin'))
 					$menu->add('movements', 'Contabilità');
 
-				if ($gas->userCan('gas.statistics'))
-					$menu->add('statistics', 'Statistiche');
+				if ($gas->userCan('gas.config'))
+					$menu->add('gas/' . $gas->id . '/edit', 'Configurazioni');
 
 				if ($gas->userCan('notifications.admin'))
 					$menu->add('notifications', 'Notifiche');
-
-				if ($gas->userCan('gas.config'))
-					$menu->add('gas/' . $gas->id . '/edit', 'Configurazioni');
 
 				$menu->addClass('nav nav-pills nav-stacked')->getItemsByContentType(Menu\Items\Contents\Link::class)->map(function($item) {
 					if ($item->isActive())  {

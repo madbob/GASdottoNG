@@ -36,6 +36,7 @@ class SuppliersController extends Controller
 
 		$s = new Supplier();
 		$s->name = $request->input('name');
+		$s->id = str_slug($s->name);
 		$s->taxcode = $request->input('taxcode');
 		$s->vat = $request->input('vat');
 		$s->description = $request->input('description');

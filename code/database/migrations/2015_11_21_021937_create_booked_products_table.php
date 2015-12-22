@@ -8,11 +8,11 @@ class CreateBookedProductsTable extends Migration
 	public function up()
 	{
 		Schema::create('booked_products', function (Blueprint $table) {
-			$table->increments('id');
+			$table->string('id')->primary();
 			$table->timestamps();
 
-			$table->integer('booking_id')->unsigned();
-			$table->integer('product_id')->unsigned();
+			$table->string('booking_id');
+			$table->string('product_id');
 			$table->decimal('quantity', 4, 2);
 			$table->decimal('delivered', 4, 2);
 

@@ -14,6 +14,8 @@ class Supplier extends Model
 {
 	use Commentable, AttachableTrait, AllowableTrait, GASModel;
 
+	public $incrementing = false;
+
 	public function products()
 	{
 		return $this->hasMany('App\Product')->whereNotIn('id', function($query) {

@@ -10,6 +10,8 @@ class Order extends Model
 {
 	use GASModel;
 
+	public $incrementing = false;
+
 	public function supplier()
 	{
 		return $this->belongsTo('App\Supplier');

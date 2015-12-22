@@ -10,6 +10,8 @@ class Movement extends Model
 {
 	use GASModel;
 
+	public $incrementing = false;
+
 	public function printableName()
 	{
 		return sprintf('%s | %f €', $this->printableDate('created_at'), $this->amount);

@@ -8,10 +8,10 @@ class CreateProductPricesTable extends Migration
 	public function up()
 	{
 		Schema::create('product_prices', function (Blueprint $table) {
-			$table->increments('id');
+			$table->string('id')->primary();
 			$table->timestamps();
 
-			$table->integer('product_id')->unsigned();
+			$table->string('product_id');
 			$table->integer('quantity');
 			$table->decimal('price', 5, 2);
 			$table->decimal('transport', 5, 2);

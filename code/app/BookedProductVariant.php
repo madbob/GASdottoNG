@@ -9,4 +9,6 @@ use App\GASModel;
 class BookedProductVariant extends Model
 {
 	use GASModel;
+
+	public $incrementing = false;
 }

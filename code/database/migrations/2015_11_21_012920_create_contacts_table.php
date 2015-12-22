@@ -8,7 +8,7 @@ class CreateContactsTable extends Migration
 	public function up()
 	{
 		Schema::create('contacts', function (Blueprint $table) {
-			$table->increments('id');
+			$table->string('id')->primary();
 			$table->timestamps();
 
 			$table->morphs('referrer');

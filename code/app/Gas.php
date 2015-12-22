@@ -12,4 +12,6 @@ use App\GASModel;
 class Gas extends Model
 {
 	use AttachableTrait, AllowableTrait, GASModel;
+
+	public $incrementing = false;
 }

@@ -40,6 +40,7 @@ class DatabaseSeeder extends Seeder
                 DB::table('filer_urls')->delete();
 
                 $gas = Gas::create([
+                        'id' => str_slug('Senza Nome'),
 			'name' => 'Senza Nome',
                         'current_balance' => 0,
                         'current_bank_balance' => 0,
@@ -55,6 +56,7 @@ class DatabaseSeeder extends Seeder
 		]);
 
                 $admin = User::create([
+                        'id' => str_slug('Amministratore Globale'),
                         'gas_id' => $gas->id,
                         'member_since' => date('Y-m-d', time()),
                         'username' => 'root',
@@ -79,6 +81,7 @@ class DatabaseSeeder extends Seeder
 
                 foreach ($categories as $cat) {
                         Category::create([
+                                'id' => str_slug($cat),
                                 'name' => $cat
         		]);
                 }
@@ -92,6 +95,7 @@ class DatabaseSeeder extends Seeder
 
                 foreach ($measures as $name => $symbol) {
                         Measure::create([
+                                'id' => str_slug($name),
                                 'name' => $name,
                                 'symbol' => $symbol
         		]);

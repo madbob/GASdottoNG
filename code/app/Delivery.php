@@ -9,4 +9,6 @@ use GASModel;
 class Delivery extends Model
 {
 	use GASModel;
+
+	public $incrementing = false;
 }

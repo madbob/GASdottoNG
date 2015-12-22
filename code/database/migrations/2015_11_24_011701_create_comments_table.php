@@ -22,7 +22,7 @@ class CreateCommentsTable extends Migration
 	    $table->integer('depth')->nullable();
 
 	    $table->morphs('commentable');
-	    $table->integer('user_id')->unsigned();
+	    $table->string('user_id');
 
 	    $table->index('user_id');
 	    $table->index('commentable_id');

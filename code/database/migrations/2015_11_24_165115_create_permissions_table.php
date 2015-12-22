@@ -11,7 +11,7 @@ class CreatePermissionsTable extends Migration
 			$table->increments('id');
 			$table->timestamps();
 
-			$table->integer('user_id')->unsigned();
+			$table->string('user_id');
 			$table->string('action');
 			$table->morphs('target');
 

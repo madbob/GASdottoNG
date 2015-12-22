@@ -40,6 +40,7 @@ class UsersController extends Controller
 			return $this->errorResponse('Non autorizzato');
 
 		$u = new User();
+		$u->id = $request->input('username');
 		$u->gas_id = $user->gas->id;
 		$u->member_since = date('Y-m-d', time());
 		$u->username = $request->input('username');

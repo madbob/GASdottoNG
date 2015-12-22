@@ -8,12 +8,12 @@ class CreateMovementsTable extends Migration
 	public function up()
 	{
 		Schema::create('movements', function (Blueprint $table) {
-			$table->increments('id');
+			$table->string('id')->primary();
 			$table->timestamps();
 
-			$table->integer('registerer_id')->unsigned();
+			$table->string('registerer_id');
 
-			$table->integer('user_id')->unsigned();
+			$table->string('user_id');
 			$table->morphs('target');
 
 			$table->decimal('amount', 5, 2);

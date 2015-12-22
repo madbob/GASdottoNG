@@ -9,7 +9,9 @@ use App\GASModel;
 class BookedProduct extends Model
 {
 	use GASModel;
-	
+
+	public $incrementing = false;
+
 	public function product()
 	{
 		return $this->belongsTo('App\Product');

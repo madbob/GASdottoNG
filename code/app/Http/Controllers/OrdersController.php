@@ -94,6 +94,7 @@ class OrdersController extends Controller
 		$a->save();
 		$o->aggregate_id = $a->id;
 
+		$o->id = $o->supplier_id . '::' . $o->start;
 		$o->save();
 
 		$o->products()->sync($supplier->products);

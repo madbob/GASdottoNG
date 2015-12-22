@@ -8,7 +8,7 @@ class CreateGasTable extends Migration
 	public function up()
 	{
 		Schema::create('gas', function (Blueprint $table) {
-			$table->increments('id');
+			$table->string('id')->primary();
 			$table->timestamps();
 
 			$table->string('name');
