@@ -78,9 +78,9 @@ $more_orders = ($aggregate->orders->count() > 1);
 <div class="row">
 	<div class="col-md-12">
 		<ul class="nav nav-tabs" role="tablist">
-			<li role="presentation" class="active"><a href="#myself" role="tab" data-toggle="tab">Il Mio Ordine</a></li>
+			<li role="presentation" class="active"><a href="#myself" role="tab" data-toggle="tab">La Mia Prenotazione</a></li>
 			@if($has_bookings)
-			<li role="presentation"><a href="#others" role="tab" data-toggle="tab">Ordini per Altri</a></li>
+			<li role="presentation"><a href="#others" role="tab" data-toggle="tab">Prenotazioni per Altri</a></li>
 			@endif
 			@if($has_shipping)
 			<li role="presentation"><a href="#shippings" role="tab" data-toggle="tab">Consegne</a></li>

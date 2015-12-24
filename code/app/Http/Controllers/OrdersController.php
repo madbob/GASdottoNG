@@ -75,7 +75,7 @@ class OrdersController extends Controller
 		$o = new Order();
 		$o->supplier_id = $request->input('supplier_id');
 
-		$now = time();
+		$now = date('Y-m-d');
 		$o->start = $this->decodeDate($request->input('start'));
 		$o->end = $this->decodeDate($request->input('end'));
 
@@ -85,7 +85,7 @@ class OrdersController extends Controller
 		else
 			$o->shipping = '';
 
-		if ($startdate > $now)
+		if ($o->start > $now)
 			$o->status = 'suspended';
 		else
 			$o->status = 'open';

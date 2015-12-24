@@ -10,7 +10,6 @@ class Aggregate extends Model
 {
 	use GASModel;
 
-	public $incrementing = false;
 	private $names_string = null;
 	private $dates_string = null;
 

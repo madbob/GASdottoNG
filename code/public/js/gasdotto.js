@@ -199,7 +199,7 @@ $(document).ready(function() {
 				if (test.length != 0) {
 					var listname = test.val();
 					var list = $('#' + listname);
-					list.append('<a href="' + data.url + '" class="loadable-item list-group-item">' + data.name + '</a>');
+					list.append('<a href="' + data.url + '" class="loadable-item list-group-item">' + data.header + '</a>');
 					sortList(list);
 					testListsEmptiness();
 				}

@@ -28,25 +28,16 @@ class Product extends Model
 		return $this->belongsTo('App\Supplier');
 	}
 
-	public function prices()
-	{
-		return $this->hasMany('App\ProductPrice')->orderBy('quantity', 'asc');
-	}
-
 	public function variants()
 	{
 		return $this->hasMany('App\Variant')->orderBy('name', 'asc');
 	}
 
-	public function printablePrice($order = null)
+	public function printablePrice()
 	{
-		$prices = $this->prices;
-		if ($prices->count() == 1) {
-			$p = $prices->first();
-			return sprintf('%.02f € + %.02f € trasporto', $p->price, $p->transport);
-		}
-		else {
-			return 'TODO';
-		}
+		if (!empty($this->transport) && $this->transport != 0)
+			return sprintf('%.02f € + %.02f € trasporto', $this->price, $this->transport);
+		else
+			return sprintf('%.02f €', $this->price);
 	}
 }

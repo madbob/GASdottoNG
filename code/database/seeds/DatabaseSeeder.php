@@ -87,17 +87,16 @@ class DatabaseSeeder extends Seeder
                 }
 
                 $measures = [
-                        'Non Specificato' => '?',
-                        'Chili' => 'kg',
-                        'Litri' => 'l',
-                        'Pezzi' => 'pezzi'
+                        'Non Specificato',
+                        'Chili',
+                        'Litri',
+                        'Pezzi'
                 ];
 
-                foreach ($measures as $name => $symbol) {
+                foreach ($measures as $name) {
                         Measure::create([
                                 'id' => str_slug($name),
-                                'name' => $name,
-                                'symbol' => $symbol
+                                'name' => $name
         		]);
                 }
 

@@ -10,9 +10,7 @@ class CreateMeasuresTable extends Migration
 		Schema::create('measures', function (Blueprint $table) {
 			$table->string('id')->primary();
 			$table->timestamps();
-
 			$table->string('name');
-			$table->string('symbol');
 			$table->index('id');
 		});
 	}

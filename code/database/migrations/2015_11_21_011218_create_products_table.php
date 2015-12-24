@@ -21,6 +21,9 @@ class CreateProductsTable extends Migration
 			$table->boolean('active');
 			$table->text('description');
 
+			$table->decimal('price', 5, 2);
+			$table->decimal('transport', 5, 2);
+
 			$table->boolean('variable');
 			$table->decimal('partitioning', 4, 2);
 			$table->decimal('package', 4, 2);

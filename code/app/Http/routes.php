@@ -4,6 +4,10 @@ Route::get('/', function () {
 	return Redirect::to('/dashboard');
 });
 
+Route::get('/home', function () {
+	return Redirect::to('/dashboard');
+});
+
 Route::resource('users', 'UsersController');
 Route::resource('suppliers', 'SuppliersController');
 Route::resource('products', 'ProductsController');

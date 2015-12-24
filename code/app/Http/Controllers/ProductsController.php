@@ -33,7 +33,11 @@ class ProductsController extends Controller
 		$p->name = $request->input('name');
 		$p->id = $supplier->id . '::' . str_slug($p->name);
 		$p->description = $request->input('description');
+		$p->price = $request->input('price');
+		$p->transport = $request->input('transport');
 		$p->supplier_id = $supplier->id;
+		$p->category_id = $request->input('category_id');
+		$p->measure_id = $request->input('measure_id');
 		$p->save();
 
 		return $this->successResponse([

@@ -23,7 +23,7 @@ $more_orders = ($aggregate->orders->count() > 1);
 							<input class="form-control" name="{{ $product->id }}" value="{{ $o->getBooked($product) }}" />
 						</div>
 						<label class="col-sm-3 control-label">{{ $product->measure->name }}</label>
-						<label class="col-sm-3 control-label">{{ $product->printablePrice($order) }}</label>
+						<label class="col-sm-3 control-label">{{ $product->printablePrice() }}</label>
 					</div>
 				</div>
 			</div>
