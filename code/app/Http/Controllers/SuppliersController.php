@@ -43,7 +43,7 @@ class SuppliersController extends Controller
 		$s->website = $request->input('website');
 		$s->save();
 
-		$s->userPermit('supplier.modify|supplier.orders|supplier.bookings|supplier.shippings', $user);
+		$s->userPermit('supplier.modify|supplier.orders|supplier.shippings', $user);
 
 		return $this->successResponse([
 			'id' => $s->id,

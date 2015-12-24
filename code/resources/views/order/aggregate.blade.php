@@ -1,11 +1,8 @@
 <?php
 
 $has_shipping = false;
-$has_bookings = false;
 
 foreach($aggregate->orders as $order) {
-	if ($order->supplier->userCan('supplier.bookings'))
-		$has_bookings = true;
 	if ($order->supplier->userCan('supplier.shippings'))
 		$has_shipping = true;
 }
@@ -79,10 +76,8 @@ $more_orders = ($aggregate->orders->count() > 1);
 	<div class="col-md-12">
 		<ul class="nav nav-tabs" role="tablist">
 			<li role="presentation" class="active"><a href="#myself" role="tab" data-toggle="tab">La Mia Prenotazione</a></li>
-			@if($has_bookings)
-			<li role="presentation"><a href="#others" role="tab" data-toggle="tab">Prenotazioni per Altri</a></li>
-			@endif
 			@if($has_shipping)
+			<li role="presentation"><a href="#others" role="tab" data-toggle="tab">Prenotazioni per Altri</a></li>
 			<li role="presentation"><a href="#shippings" role="tab" data-toggle="tab">Consegne</a></li>
 			@endif
 		</ul>
@@ -92,7 +87,7 @@ $more_orders = ($aggregate->orders->count() > 1);
 				@include('booking.edit', ['aggregate' => $aggregate, 'user' => $currentuser])
 			</div>
 
-			@if($has_bookings)
+			@if($has_shipping)
 			<div role="tabpanel" class="tab-pane" id="others">
 				<div class="row">
 					<div class="col-md-12">
@@ -100,9 +95,7 @@ $more_orders = ($aggregate->orders->count() > 1);
 					</div>
 				</div>
 			</div>
-			@endif
 
-			@if($has_shipping)
 			<div role="tabpanel" class="tab-pane" id="shippings">
 			</div>
 			@endif

@@ -39,7 +39,6 @@ class Permission extends Model
 			'Supplier' => [
 				'supplier.modify'	=> 'Modificare il fornitore',
 				'supplier.orders'	=> 'Aprire e modificare ordini',
-				'supplier.bookings'	=> 'Creare nuove prenotazioni arbitrarie',
 				'supplier.shippings'	=> 'Effettuare le consegne',
 			]
 		];
