@@ -1,11 +1,27 @@
-<?php $size = 12 / (count($columns) + 1) ?>
+<?php $column_size = floor(11 / count($columns)) ?>
 
 <div class="many-rows">
 	@if($contents->isEmpty())
 		<div class="row">
 			@foreach($columns as $column)
-			<div class="col-md-{{ $size }}">
-				@include('commons.' . $column['type'] . 'field', ['obj' => null, 'name' => $column['field'], 'label' => $column['label'], 'squeeze' => true])
+			<div class="col-md-{{ $column_size }}">
+				<?php
+
+				$attributes = [
+					'obj' => null,
+					'name' => $column['field'],
+					'label' => $column['label'],
+					'prefix' => $prefix,
+					'postfix' => '[]',
+					'squeeze' => true
+				];
+
+				if (isset($column['extra']))
+					$attributes = array_merge($attributes, $column['extra']);
+
+				?>
+
+				@include('commons.' . $column['type'] . 'field', $attributes)
 			</div>
 			@endforeach
 		</div>
@@ -13,8 +29,24 @@
 		@foreach($contents as $content)
 			<div class="row">
 				@foreach($columns as $column)
-				<div class="col-md-{{ $size }}">
-					@include('commons.' . $column['type'] . 'field', ['obj' => $content, 'name' => $column['field'], 'label' => $column['label'], 'squeeze' => true])
+				<div class="col-md-{{ $column_size }}">
+					<?php
+
+					$attributes = [
+						'obj' => $content,
+						'name' => $column['field'],
+						'label' => $column['label'],
+						'prefix' => $prefix,
+						'postfix' => '[]',
+						'squeeze' => true
+					];
+
+					if (isset($column['extra']))
+						$attributes = array_merge($attributes, $column['extra']);
+
+					?>
+
+					@include('commons.' . $column['type'] . 'field', $attributes)
 				</div>
 				@endforeach
 			</div>

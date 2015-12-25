@@ -4,16 +4,23 @@
 	@endif
 
 	<div class="col-sm-{{ $fieldsize }}">
-		<textarea
-			class="form-control"
+		<input
+			class="tagsinput"
 			name="{{ $prefix . $name . $postfix }}"
 
-			@if($squeeze == true)
-			placeholder="{{ $label }}"
-			@endif
-			
-			autocomplete="off">
-			<?php if($obj) echo $obj->$name ?>
-		</textarea>
+			value="<?php
+
+			if($obj) {
+				$tags = [];
+
+				foreach($obj->$name as $v)
+					$tags[] = $v->$tagfield;
+
+				echo join(',', $tags);
+			}
+
+			?>"
+
+			autocomplete="off" />
 	</div>
 </div>

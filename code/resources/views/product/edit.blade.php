@@ -1,4 +1,4 @@
-<form class="form-horizontal main-form" method="POST" action="{{ url('products/' . $product->id) }}">
+<form class="form-horizontal main-form" method="PUT" action="{{ url('products/' . $product->id) }}">
 	<div class="row">
 		<div class="col-md-6">
 			@include('product.base-edit', ['product' => $product])
@@ -32,11 +32,32 @@
 					</div>
 				</div>
 			</div>
-		</div>
-	</div>
 
-	<div class="row">
-		<div class="col-md-12">
+			<div class="well">
+				<div class="row">
+					<div class="col-md-12">
+						@include('commons.manyrows', [
+							'contents' => $product->variants,
+							'prefix' => 'variant',
+							'columns' => [
+								[
+									'label' => 'Nome Variante',
+									'field' => 'name',
+									'type' => 'text'
+								],
+								[
+									'label' => 'Valori',
+									'field' => 'values',
+									'type' => 'tags',
+									'extra' => [
+										'tagfield' => 'value'
+									]
+								]
+							]
+						])
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 

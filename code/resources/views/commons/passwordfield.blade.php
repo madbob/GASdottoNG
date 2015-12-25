@@ -1,6 +1,6 @@
 <div class="form-group">
-	<label for="{{ $name }}" class="col-sm-3 control-label">{{ $label }}</label>
-	<div class="col-sm-9">
+	<label for="{{ $prefix . $name }}" class="col-sm-3 control-label">{{ $label }}</label>
+	<div class="col-sm-{{ $fieldsize }}">
 		<input
 			type="password"
 			class="form-control"
@@ -13,6 +13,6 @@
 			placeholder="Lascia vuoto per non modificare la password"
 			@endif
 
-			name="{{ $name }}">
+			name="{{ $prefix . $name }}">
 	</div>
 </div>

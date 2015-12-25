@@ -1,24 +1,12 @@
-<?php
-
-if (!isset($squeeze))
-	$squeeze = false;
-
-if ($squeeze == true)
-	$size = 12;
-else
-	$size = 9;
-
-?>
-
 <div class="form-group">
 	@if($squeeze == false)
-	<label for="{{ $name }}" class="col-sm-3 control-label">{{ $label }}</label>
+	<label for="{{ $prefix . $name . $postfix }}" class="col-sm-3 control-label">{{ $label }}</label>
 	@endif
 
-	<div class="col-sm-{{ $size }}">
+	<div class="col-sm-{{ $fieldsize }}">
 		<input type="text"
 			class="form-control"
-			name="{{ $name }}"
+			name="{{ $prefix . $name . $postfix }}"
 			value="<?php if($obj) echo $obj->$name ?>"
 
 			@if(isset($mandatory) && $mandatory == true)

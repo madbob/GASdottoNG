@@ -6,6 +6,8 @@ function generalInit() {
 		clearBtn: true
 	});
 
+	$('.tagsinput').tagsinput();
+
 	$('.nav-tabs a').click(function (e) {
 		e.preventDefault();
 		$(this).tab('show');
@@ -16,21 +18,6 @@ function generalInit() {
 	});
 
 	testListsEmptiness();
-}
-
-/*
-	Preso da
-	http://stackoverflow.com/questions/11338774/serialize-form-data-to-json
-*/
-function getFormData($form) {
-	var unindexed_array = $form.serializeArray();
-	var indexed_array = {};
-
-	$.map(unindexed_array, function(n, i){
-		indexed_array[n['name']] = n['value'];
-	});
-
-	return indexed_array;
 }
 
 function voidForm(form) {
@@ -125,7 +112,7 @@ $(document).ready(function() {
 	$('body').on('submit', '.main-form', function(event) {
 		event.preventDefault();
 		var form = $(this);
-		var data = getFormData(form);
+		var data = form.serializeArray();
 
 		form.find('.main-form-buttons button').attr('disabled', 'disabled');
 
@@ -137,7 +124,7 @@ $(document).ready(function() {
 
 			success: function(data) {
 				var h = closeMainForm(form);
-				h.empty().append(data.header);
+				h.empty().append(data.header).attr('href', data.url);
 			}
 		});
 	});
@@ -180,7 +167,7 @@ $(document).ready(function() {
 
 		event.preventDefault();
 		var form = $(this);
-		var data = getFormData(form);
+		var data = form.serializeArray();
 
 		$.ajax({
 			method: form.attr('method'),
@@ -221,6 +208,15 @@ $(document).ready(function() {
 		var container = $(this).parents('.many-rows').first();
 		var row = container.find('.row').first().clone();
 		row.find('input').val('');
+
+		/*
+			Questo è per forzare l'aggiornamento di eventuali campi
+			tags all'interno del widget multiriga (cfr. varianti in
+			un prodotto)
+		*/
+		row.find('.bootstrap-tagsinput').remove();
+		row.find('.tagsinput').tagsinput();
+
 		container.find('.add-many-rows').before(row);
 		manyRowsAddDeleteButtons(container);
 		return false;

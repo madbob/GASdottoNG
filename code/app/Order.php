@@ -5,10 +5,11 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 use App\GASModel;
+use App\SluggableID;
 
 class Order extends Model
 {
-	use GASModel;
+	use GASModel, SluggableID;
 
 	public $incrementing = false;
 
@@ -29,6 +30,11 @@ class Order extends Model
 		});
 	}
 
+	public function getSlugID()
+	{
+		return sprintf('%s::%s', $this->supplier->id, str_slug(strftime('%d %B %G', strtotime($this->start))));
+	}
+
 	public function printableName()
 	{
 		return $this->supplier->name;
@@ -39,7 +45,7 @@ class Order extends Model
 		$start = strtotime($this->start);
 		$end = strtotime($this->end);
 		$string = sprintf('da %s a %s', strftime('%A %d %B %G', $start), strftime('%A %d %B %G', $end));
-		if ($this->shipping != null) {
+		if ($this->shipping != null && $this->shipping != '0000-00-00') {
 			$shipping = strtotime($this->shipping);
 			$string .= sprintf (', in consegna %s', strftime('%A %d %B %G', $shipping));
 		}

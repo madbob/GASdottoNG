@@ -20,6 +20,15 @@ class SuppliersController extends Controller
 		$this->middleware('auth');
 	}
 
+	private function basicReadFromRequest(&$obj, $request)
+	{
+		$obj->name = $request->input('name');
+		$obj->taxcode = $request->input('taxcode');
+		$obj->vat = $request->input('vat');
+		$obj->description = $request->input('description');
+		$obj->website = $request->input('website');
+	}
+
 	public function index()
 	{
 		$data['suppliers'] = Supplier::orderBy('name', 'asc')->get();
@@ -35,12 +44,7 @@ class SuppliersController extends Controller
 			return $this->errorResponse('Non autorizzato');
 
 		$s = new Supplier();
-		$s->name = $request->input('name');
-		$s->id = str_slug($s->name);
-		$s->taxcode = $request->input('taxcode');
-		$s->vat = $request->input('vat');
-		$s->description = $request->input('description');
-		$s->website = $request->input('website');
+		$this->basicReadFromRequest($s, $request);
 		$s->save();
 
 		$s->userPermit('supplier.modify|supplier.orders|supplier.shippings', $user);
@@ -72,13 +76,14 @@ class SuppliersController extends Controller
 		if ($s->userCan('supplier.modify') == false)
 			return $this->errorResponse('Non autorizzato');
 
-		$s->name = $request->input('name');
-		$s->taxcode = $request->input('taxcode');
-		$s->vat = $request->input('vat');
-		$s->description = $request->input('description');
+		$this->basicReadFromRequest($s, $request);
 		$s->save();
 
-		return $this->successResponse(['id' => $s->id, 'name' => $s->name]);
+		return $this->successResponse([
+			'id' => $s->id,
+			'header' => $s->printableHeader(),
+			'url' => url('suppliers/' . $s->id)
+		]);
 	}
 
 	public function destroy($id)

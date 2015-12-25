@@ -1,9 +1,12 @@
 <div class="form-group">
-	<label for="{{ $name }}" class="col-sm-3 control-label">{{ $label }}</label>
-	<div class="col-sm-9">
+	@if($squeeze == false)
+	<label for="{{ $prefix . $name }}" class="col-sm-3 control-label">{{ $label }}</label>
+	@endif
+
+	<div class="col-sm-{{ $fieldsize }}">
 		<input type="text"
 			class="date form-control"
-			name="{{ $name }}"
+			name="{{ $prefix . $name }}"
 
 			value="<?php
 			if ($obj) {
@@ -16,6 +19,10 @@
 
 			@if(isset($mandatory) && $mandatory == true)
 			required
+			@endif
+
+			@if($squeeze == true)
+			placeholder="{{ $label }}"
 			@endif
 
 			autocomplete="off">

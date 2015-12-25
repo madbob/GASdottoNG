@@ -4,11 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-use GASModel;
+use App\GASModel;
+use App\SluggableID;
 
 class Delivery extends Model
 {
-	use GASModel;
+	use GASModel, SluggableID;
 
 	public $incrementing = false;
 }

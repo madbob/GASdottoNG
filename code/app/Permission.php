@@ -8,8 +8,6 @@ use App\GASModel;
 
 class Permission extends Model
 {
-	use GASModel;
-
 	protected $fillable = ['action', 'user_id'];
 
 	public function user()

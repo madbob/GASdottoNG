@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-
+use Cviebrock\EloquentSluggable\SluggableInterface;
 use App\GASModel;
+use App\SluggableID;
 
-class User extends Model implements AuthenticatableContract,
-				    CanResetPasswordContract
+class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-	use Authenticatable, CanResetPassword, GASModel;
+	use Authenticatable, CanResetPassword, GASModel, SluggableID;
 
 	public $incrementing = false;
 	protected $table = 'users';
@@ -48,6 +48,11 @@ class User extends Model implements AuthenticatableContract,
 	public function fee()
 	{
 		return $this->movements->where('type', '=', 'annual_payment')->where('target', '=', $this->gas)->first();
+	}
+
+	public function getSlugID()
+	{
+		return str_slug($this->printableName());
 	}
 
 	public function printableName()

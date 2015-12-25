@@ -8,7 +8,7 @@ class CreateMovementsTable extends Migration
 	public function up()
 	{
 		Schema::create('movements', function (Blueprint $table) {
-			$table->string('id')->primary();
+			$table->increments('id');
 			$table->timestamps();
 
 			$table->string('registerer_id');

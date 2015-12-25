@@ -1,7 +1,7 @@
 <div class="form-group">
-	<label class="col-sm-3 control-label">{{ $label }}</label>
-	<div class="col-sm-9">
-		<select class="form-control" name="{{ $name }}">
+	<label for="{{ $prefix . $name }}" class="col-sm-3 control-label">{{ $label }}</label>
+	<div class="col-sm-{{ $fieldsize }}">
+		<select class="form-control" name="{{ $prefix . $name }}">
 			@foreach($values as $v)
 			<option value="{{ $v['value'] }}"<?php if($obj && $obj->$name == $v['value']) echo ' selected="selected"' ?>>{{ $v['label'] }}</option>
 			@endforeach
