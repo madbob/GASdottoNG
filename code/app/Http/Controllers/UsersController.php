@@ -31,6 +31,28 @@ class UsersController extends Controller
 		return Theme::view('pages.users', $data);
 	}
 
+	public function search(Request $request)
+	{
+		$s = $request->input('term');
+
+		$users = User::where('name', 'LIKE', "%$s%")->orWhere('surname', 'LIKE', "%$s%")->get();
+		$ret = array();
+
+		foreach($users as $user) {
+			$fullname = $user->surname . ' ' . $user->name;
+
+			$u = (object) array(
+				'id' => $user->id,
+				'label' => $fullname,
+				'value' => $fullname
+			);
+
+			$ret[] = $u;
+		}
+
+		return json_encode($ret);
+	}
+
 	public function store(Request $request)
 	{
 		DB::beginTransaction();

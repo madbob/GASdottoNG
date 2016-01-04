@@ -91,7 +91,12 @@ $more_orders = ($aggregate->orders->count() > 1);
 			<div role="tabpanel" class="tab-pane" id="others">
 				<div class="row">
 					<div class="col-md-12">
-						<input class="form-control" placeholder="Cerca Utente" />
+						<input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="Cerca Utente" />
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-12 other-booking">
 					</div>
 				</div>
 			</div>

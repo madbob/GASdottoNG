@@ -1,3 +1,14 @@
+var userBlood = new Bloodhound({
+	datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+	queryTokenizer: Bloodhound.tokenizers.whitespace,
+	remote: {
+		url: '/users/search?term=%QUERY',
+		wildcard: '%QUERY'
+	}
+});
+
+userBlood.initialize();
+
 function generalInit() {
 	$('input.date').datepicker({
 		format: 'DD dd MM yyyy',
@@ -15,6 +26,25 @@ function generalInit() {
 
 	$('.many-rows').each(function() {
 		manyRowsAddDeleteButtons($(this));
+	});
+
+	$('.bookingSearch').each(function() {
+		if($(this).hasClass('tt-hint') == true) {
+			return;
+		}
+
+		if($(this).hasClass('tt-input') == false) {
+			$(this).typeahead(null, {
+				name: 'users',
+				displayKey: 'value',
+				source: userBlood.ttAdapter()
+			}).on('typeahead:selected', function(obj, result, name) {
+				var aggregate_id = $(this).attr('data-aggregate');
+				$.get('/booking/' + aggregate_id + '/user/' + result.id, function(form) {
+					$('.other-booking').empty().append(form);
+				});
+			});
+		}
 	});
 
 	testListsEmptiness();
