@@ -34,75 +34,6 @@ class ProductsController extends Controller
 		$obj->measure_id = $request->input('measure_id');
 	}
 
-	private function handleSaveVariants($product, $request)
-	{
-		$new_variants = $request->input('variantname', []);
-		$all_new_values = $request->input('variantvalues', []);
-		$existing_variants = $product->variants;
-		$index = 0;
-		$matching_variants = [];
-
-		foreach($new_variants as $nv) {
-			$variant_found = false;
-			$new_values = explode(',', $all_new_values[$index]);
-
-			foreach($existing_variants as $ev) {
-				if ($ev->name == $nv) {
-					$variant_found = true;
-					$matching_variants[] = $ev->id;
-
-					$existing_values = $ev->values;
-					$matching_values = [];
-
-					foreach($new_values as $value) {
-						$value_found = false;
-
-						foreach($existing_values as $evalue) {
-							if ($value == $evalue->value) {
-								$value_found = true;
-								$matching_values[] = $evalue->id;
-							}
-						}
-
-						if ($value_found == false) {
-							$val = new VariantValue();
-							$val->value = $value;
-							$val->variant_id = $ev->id;
-							$val->save();
-							$matching_values[] = $val->id;
-						}
-					}
-
-					VariantValue::where('variant_id', '=', $ev->id)->whereNotIn('id', $matching_values)->delete();
-				}
-			}
-
-			if ($variant_found == false) {
-				$v = new Variant();
-				$v->name = $nv;
-				$v->product_id = $product->id;
-				$v->save();
-
-				foreach($new_values as $value) {
-					$val = new VariantValue();
-					$val->value = $value;
-					$val->variant_id = $v->id;
-					$val->save();
-				}
-
-				$matching_variants[] = $v->id;
-			}
-
-			$index++;
-		}
-
-		$remove_variants = Variant::where('product_id', '=', $product->id)->whereNotIn('id', $matching_variants)->get();
-		foreach($remove_variants as $rv) {
-			$rv->values()->delete();
-			$rv->delete();
-		}
-	}
-
 	public function store(Request $request)
 	{
 		DB::beginTransaction();
@@ -167,8 +98,6 @@ class ProductsController extends Controller
 		$p->minimum = $request->input('minimum');
 		$p->maximum = $request->input('maximum');
 		$p->save();
-
-		$this->handleSaveVariants($p, $request);
 
 		return $this->successResponse([
 			'id' => $p->id,

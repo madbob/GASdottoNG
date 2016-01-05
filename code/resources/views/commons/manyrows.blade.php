@@ -1,10 +1,20 @@
-<?php $column_size = floor(11 / count($columns)) ?>
+<?php
+
+if (isset($width))
+	$column_size = $width;
+else
+	$column_size = floor(11 / count($columns));
+
+if (isset($new_label) == false)
+	$new_label = 'Aggiungi Nuovo';
+
+?>
 
 <div class="many-rows">
-	@if($contents->isEmpty())
+	@if($contents == null || $contents->isEmpty())
 		<div class="row">
 			@foreach($columns as $column)
-			<div class="col-md-{{ $column_size }}">
+			<div class="col-md-{{ $column_size }} col-sm-{{ $column_size }}">
 				<?php
 
 				$attributes = [
@@ -29,7 +39,7 @@
 		@foreach($contents as $content)
 			<div class="row">
 				@foreach($columns as $column)
-				<div class="col-md-{{ $column_size }}">
+				<div class="col-md-{{ $column_size }} col-sm-{{ $column_size }}">
 					<?php
 
 					$attributes = [
@@ -53,5 +63,5 @@
 		@endforeach
 	@endif
 
-	<button class="btn btn-default add-many-rows">Aggiungi Nuovo</button>
+	<button class="btn btn-default add-many-rows">{{ $new_label }}</button>
 </div>

@@ -29,6 +29,9 @@ class BookingUserController extends Controller
 
         public function show(Request $request, $aggregate_id, $user_id)
         {
+                /*
+                        TODO    Verificare permessi
+                */
                 $aggregate = Aggregate::findOrFail($aggregate_id);
                 $user = User::findOrFail($user_id);
                 return view('booking.edit', ['aggregate' => $aggregate, 'user' => $user]);

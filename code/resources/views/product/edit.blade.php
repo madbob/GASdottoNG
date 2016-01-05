@@ -33,33 +33,58 @@
 				</div>
 			</div>
 
-			<div class="well">
-				<div class="row">
-					<div class="col-md-12">
-						@include('commons.manyrows', [
-							'contents' => $product->variants,
-							'prefix' => 'variant',
-							'columns' => [
-								[
-									'label' => 'Nome Variante',
-									'field' => 'name',
-									'type' => 'text'
-								],
-								[
-									'label' => 'Valori',
-									'field' => 'values',
-									'type' => 'tags',
-									'extra' => [
-										'tagfield' => 'value'
-									]
-								]
-							]
-						])
-					</div>
-				</div>
-			</div>
+			@include('product.variantseditor', ['product' => $product])
 		</div>
 	</div>
 
 	@include('commons.formbuttons')
 </form>
+
+<div class="modal fade create-variant" tabindex="-1" role="dialog" aria-labelledby="createVariant">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<form class="form-horizontal creating-variant-form" method="POST" action="{{ url('variants') }}" data-toggle="validator">
+				<input type="hidden" name="product_id" value="{{ $product->id }}">
+				<input type="hidden" name="variant_id" value="">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Crea/Modifica Variante</h4>
+				</div>
+				<div class="modal-body">
+					@include('commons.textfield', ['obj' => null, 'name' => 'name', 'label' => 'Nome', 'mandatory' => true])
+					@include('commons.boolfield', ['obj' => null, 'name' => 'has_offset', 'label' => 'Differenza Prezzo'])
+
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Valori</label>
+
+						<div class="col-sm-{{ $fieldsize }} values_table">
+							@include('commons.manyrows', [
+								'contents' => null,
+								'columns' => [
+									[
+										'label' => 'Valore',
+										'field' => 'value',
+										'type' => 'text'
+									],
+									[
+										'label' => 'Differenza Prezzo',
+										'field' => 'price_offset',
+										'type' => 'decimal',
+										'extra' => [
+											'postlabel' => '€'
+										]
+									]
+								]
+							])
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
+					<button type="submit" class="btn btn-success">Salva</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

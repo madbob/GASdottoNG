@@ -47,6 +47,7 @@ function generalInit() {
 		}
 	});
 
+	setupVariantsEditor();
 	testListsEmptiness();
 }
 
@@ -67,7 +68,7 @@ function sortList(mylist) {
 }
 
 function closeMainForm(form) {
-	var container = form.parents('.list-group-item').first();
+	var container = form.closest('.list-group-item');
 	var head = container.prev();
 	head.removeClass('active');
 	container.remove();
@@ -75,14 +76,15 @@ function closeMainForm(form) {
 }
 
 function manyRowsAddDeleteButtons(node) {
-	if (node.find('.delete-many-rows').length == 0) {
-		var fields = node.find('.row');
-		if (fields.length > 1) {
-			fields.each(function() {
-				var button = '<div class="btn btn-danger delete-many-rows"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>';
-				$(this).append(button);
-			});
-		}
+	var fields = node.find('.row');
+	if (fields.length > 1 && node.find('.delete-many-rows').length == 0) {
+		fields.each(function() {
+			var button = '<div class="btn btn-danger delete-many-rows"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>';
+			$(this).append(button);
+		});
+	}
+	else if (fields.length == 1) {
+		node.find('.delete-many-rows').remove();
 	}
 }
 
@@ -96,6 +98,97 @@ function testListsEmptiness() {
 			alert.show();
 		else
 			alert.hide();
+	});
+}
+
+function loadingPlaceholder() {
+	return $('<div class="progress"><div class="progress-bar progress-bar-striped active" style="width: 100%"></div></div>');
+}
+
+function setupVariantsEditor() {
+	$('.variants-editor').on('click', '.delete-variant', function() {
+		var editor = $(this).closest('.variants-editor');
+		var id = $(this).closest('.row').find('input:hidden[name=variant_id]').val();
+
+		$.ajax({
+			method: 'DELETE',
+			url: '/variants/' + id,
+			dataType: 'html',
+
+			success: function(data) {
+				editor.replaceWith(data);
+			}
+		});
+
+	}).on('click', '.edit-variant', function() {
+		var row = $(this).closest('.row');
+		var id = row.find('input:hidden[name=variant_id]').val();
+		var name = row.find('.variant_name').text().trim();
+		var offset = row.find('input:hidden[name=variant_offset]').val();
+		var values = row.find('.exploded_values').contents().clone();
+
+		var form = $(this).closest('.list-group').find('.creating-variant-form');
+		form.find('input:hidden[name=variant_id]').val(id);
+		form.find('input[name=name]').val(name);
+		form.find('.values_table').empty().append(values);
+
+		if (offset == 'true') {
+			form.find('input[name=has_offset]').attr('checked', 'checked');
+			form.find('input[name*=price_offset]').closest('.form-group').show();
+		}
+		else {
+			form.find('input[name=has_offset]').removeAttr('checked');
+			form.find('input[name*=price_offset]').val('0').closest('.form-group').hide();
+		}
+
+		form.closest('.modal').modal('show');
+
+	}).on('click', '.add-variant', function() {
+		var row = $(this).closest('.list-group');
+		var form = row.find('.creating-variant-form');
+		var modal = row.find('.create-variant');
+		form.find('input:text').val('');
+		form.find('input:hidden[name=variant_id]').val('');
+		form.find('input:checkbox').removeAttr('checked');
+
+		values = form.find('.many-rows');
+		values.find('.row:not(:first)').remove();
+		manyRowsAddDeleteButtons(values);
+
+		form.find('input[name*=price_offset]').val('0').closest('.form-group').hide();
+		modal.modal('show');
+	});
+
+	$('.creating-variant-form').on('change', 'input:checkbox[name=has_offset]', function() {
+		var has = $(this).is(':checked');
+		var form = $(this).closest('form');
+
+		if (has == true)
+			form.find('input[name*=price_offset]').closest('.form-group').show();
+		else
+			form.find('input[name*=price_offset]').val('0').closest('.form-group').hide();
+
+	}).submit(function(e) {
+		e.preventDefault();
+		var modal = $(this).closest('.modal');
+		var editor = $(this).closest('.list-group').find('.variants-editor');
+		var data = $(this).serializeArray();
+
+		editor.empty().append(loadingPlaceholder());
+
+		$.ajax({
+			method: 'POST',
+			url: '/variants',
+			data: data,
+			dataType: 'html',
+
+			success: function(data) {
+				editor.replaceWith(data);
+				modal.modal('hide');
+			}
+		});
+
+		return false;
 	});
 }
 
@@ -120,7 +213,7 @@ $(document).ready(function() {
 		}
 		else {
 			$(this).find('a').removeClass('active');
-			var node = $('<li>').addClass('list-group-item').append('<div class="progress"><div class="progress-bar progress-bar-striped active" style="width: 100%"></div></div>');
+			var node = $('<li>').addClass('list-group-item').append(loadingPlaceholder());
 			$(this).addClass('active').after(node);
 
 			$.ajax({
@@ -161,14 +254,14 @@ $(document).ready(function() {
 
 	$('body').on('click', '.main-form-buttons .close-button', function(event) {
 		event.preventDefault();
-		var form = $(this).parents('.main-form').first();
+		var form = $(this).closest('.main-form');
 		form.find('.main-form-buttons button').attr('disabled', 'disabled');
 		closeMainForm(form);
 	});
 
 	$('body').on('click', '.main-form-buttons .delete-button', function(event) {
 		event.preventDefault();
-		var form = $(this).parents('.main-form').first();
+		var form = $(this).closest('.main-form');
 
 		/*
 			TODO: visualizzare nome dell'elemento che si sta rimuovendo
@@ -224,25 +317,27 @@ $(document).ready(function() {
 		});
 	});
 
+	/*
+		Widget generico multiriga
+	*/
+
 	$('body').on('click', '.delete-many-rows', function(event) {
 		event.preventDefault();
-		var container = $(this).parents('.many-rows').first();
-		$(this).parents('.row').first().remove();
-		if (container.find('.row').length <= 1)
-			container.find('.delete-many-rows').remove();
+		var container = $(this).closest('.many-rows');
+		$(this).closest('.row').remove();
+		manyRowsAddDeleteButtons(container);
 		return false;
 	});
 
 	$('body').on('click', '.add-many-rows', function(event) {
 		event.preventDefault();
-		var container = $(this).parents('.many-rows').first();
+		var container = $(this).closest('.many-rows');
 		var row = container.find('.row').first().clone();
 		row.find('input').val('');
 
 		/*
 			Questo è per forzare l'aggiornamento di eventuali campi
-			tags all'interno del widget multiriga (cfr. varianti in
-			un prodotto)
+			tags all'interno del widget multiriga
 		*/
 		row.find('.bootstrap-tagsinput').remove();
 		row.find('.tagsinput').tagsinput();
