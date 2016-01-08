@@ -25,7 +25,7 @@ class BookedProduct extends Model
 
 	public function variants()
 	{
-		return $this->hasMany('App\BookedProductVariant');
+		return $this->hasMany('App\BookedProductVariant', 'product_id');
 	}
 
 	public function getSlugID()

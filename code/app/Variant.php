@@ -20,19 +20,15 @@ class Variant extends Model
 
 	public function values()
 	{
-		return $this->hasMany('App\VariantValue')->orderBy('value', 'asc');
+		return $this->hasMany('App\VariantValue')->orderBy('price_offset', 'asc')->orderBy('value', 'asc');
 	}
 
 	public function printableValues()
 	{
 		$vals = [];
 
-		foreach ($this->values as $value) {
-			$v = $value->value;
-			if ($this->has_offset == true)
-				$v .= sprintf(' (+%.02f€)', $value->price_offset);
-			$vals[] = $v;
-		}
+		foreach ($this->values as $value)
+			$vals[] = $value->printableFullValue();
 
 		return join(', ', $vals);
 	}

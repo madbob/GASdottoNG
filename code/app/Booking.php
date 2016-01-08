@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\GASModel;
 use App\SluggableID;
 
+use App\BookedProduct;
+
 class Booking extends Model
 {
 	use GASModel, SluggableID;
@@ -30,11 +32,24 @@ class Booking extends Model
 		});
 	}
 
-	public function getBooked($product)
+	public function getBooked($product, $fallback = false)
 	{
 		$p = $this->products()->whereHas('product', function($query) use ($product) {
 			$query->where('id', '=', $product->id);
 		})->first();
+
+		if ($p == null && $fallback == true) {
+			$p = new BookedProduct();
+			$p->booking_id = $this->id;
+			$p->product_id = $product->id;
+		}
+
+		return $p;
+	}
+
+	public function getBookedQuantity($product)
+	{
+		$p = $this->getBooked($product);
 
 		if ($p == null)
 			return 0;

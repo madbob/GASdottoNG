@@ -5,26 +5,30 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 use App\GASModel;
-use App\SluggableID;
 
 class BookedProductVariant extends Model
 {
-	use GASModel, SluggableID;
-
-	public $incrementing = false;
+	use GASModel;
 
 	public function product()
 	{
-		return $this->belongsTo('App\BookedProduct');
+		return $this->belongsTo('App\BookedProduct', 'product_id');
 	}
 
-	public function variant()
+	public function components()
 	{
-		return $this->belongsTo('App\Variant');
+		return $this->hasMany('App\BookedProductComponent', 'productvariant_id');
 	}
 
-	public function getSlugID()
+	public function hasCombination($variant, $value)
 	{
-		return sprintf('%s::%s', $this->product->id, $this->variant->id);
+		$components = $this->components;
+
+		foreach($components as $c) {
+			if ($c->variant_id == $variant->id && $c->value_id == $value->id)
+				return true;
+		}
+
+		return false;
 	}
 }

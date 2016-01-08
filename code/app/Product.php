@@ -53,8 +53,27 @@ class Product extends Model
 	public function printablePrice()
 	{
 		if (!empty($this->transport) && $this->transport != 0)
-			return sprintf('%.02f € + %.02f € trasporto', $this->price, $this->transport);
+			$str = sprintf('%.02f € + %.02f € trasporto', $this->price, $this->transport);
 		else
-			return sprintf('%.02f €', $this->price);
+			$str = sprintf('%.02f €', $this->price);
+
+		if ($this->variable)
+			$str .= '<small> (prodotto a prezzo variabile)</small>';
+
+		return $str;
+	}
+
+	public function printableDetails()
+	{
+		$details = [];
+
+		if ($this->minimum != 0)
+			$details[] = sprintf('Minimo: %s', $this->minimum);
+		if ($this->maximum != 0)
+			$details[] = sprintf('Massimo: %s', $this->maximum);
+		if ($this->multiple != 0)
+			$details[] = sprintf('Multiplo: %s', $this->multiple);
+
+		return join(', ', $details);
 	}
 }

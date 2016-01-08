@@ -51,6 +51,10 @@ function generalInit() {
 	testListsEmptiness();
 }
 
+function filteredSerialize(form) {
+	return $(':not(.skip-on-submit)', form).serializeArray();
+}
+
 function voidForm(form) {
 	form.find('input[type!=hidden]').val('');
 	form.find('textarea').val('');
@@ -284,6 +288,28 @@ $(document).ready(function() {
 		}
 	});
 
+	$('body').on('submit', '.inner-form', function(event) {
+		event.preventDefault();
+		var form = $(this);
+		var data = filteredSerialize(form);
+
+		form.find('button[type=submit]').text('Attendere').attr('disabled', 'disabled');;
+
+		$.ajax({
+			method: form.attr('method'),
+			url: form.attr('action'),
+			data: data,
+			dataType: 'json',
+
+			success: function(data) {
+				form.find('button[type=submit]').text('Salvato!');
+				setInterval(function() {
+					form.find('button[type=submit]').text('Salva').removeAttr('disabled');
+				}, 2000);
+			}
+		});
+	});
+
 	$('body').on('submit', '.creating-form', function(event) {
 		if (event.isDefaultPrevented())
 			return;
@@ -315,6 +341,44 @@ $(document).ready(function() {
 				}
 			}
 		});
+	});
+
+	/*
+		Interazioni dinamiche sul pannello prenotazioni
+	*/
+
+	$('body').on('keyup', '.booking-product-quantity input', function() {
+		var v = $(this).val();
+		var booked;
+
+		if (v == '')
+			booked = 0;
+		else
+			booked = parseInt(v);
+
+		var row = $(this).closest('.booking-product');
+		var variant_selector = row.find('.variant-selector');
+
+		if (variant_selector.length != 0) {
+			var variants = variant_selector.find('.row:not(.master-variant-selector)');
+			if (variants.length != booked) {
+				if (variants.length > booked) {
+					var diff = variants.length - booked;
+					for (var i = 0; i < diff; i++)
+						variant_selector.find('.row:last').remove();
+				}
+				else if (variants.length < booked) {
+					var diff = booked - variants.length;
+					var master = variant_selector.find('.master-variant-selector');
+					for (var i = 0; i < diff; i++)
+						variant_selector.append(master.clone().removeClass('master-variant-selector'));
+				}
+			}
+		}
+	}).on('blur', function() {
+		var v = $(this).val();
+		if (v == '')
+			$(this).val('0');
 	});
 
 	/*

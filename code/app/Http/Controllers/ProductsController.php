@@ -79,6 +79,8 @@ class ProductsController extends Controller
 			ordine, ne salvo una copia e lascio l'originale intonso
 			per conservare le informazioni storiche
 		*/
+		$cloned = null;
+
 		$master_order = Order::whereHas('products', function($query) use ($p) {
 			$query->where('id', $p->id);
 		})->first();
@@ -88,6 +90,7 @@ class ProductsController extends Controller
 			$new_p->id = $p->nextId();
 			$new_p->supplier_id = $p->supplier_id;
 			$new_p->previous_id = $p->id;
+			$cloned = $p;
 			$p = $new_p;
 		}
 
@@ -98,6 +101,28 @@ class ProductsController extends Controller
 		$p->minimum = $request->input('minimum');
 		$p->maximum = $request->input('maximum');
 		$p->save();
+
+		/*
+			In caso di prodotto copiato (vedi sopra) duplico anche
+			tutte le varianti
+		*/
+		if ($cloned !== null) {
+			foreach($cloned->variants as $variant) {
+				$new_var = new Variant();
+				$new_var->name = $variant->name;
+				$new_var->has_offset = $variant->has_offset;
+				$new_var->product_id = $p->id;
+				$new_var->save();
+
+				foreach($variant->values as $value) {
+					$new_val = new VariantValue();
+					$new_val->value = $value->value();
+					$new_val->price_offset = $value->price_offset;
+					$new_val->variant_id = $new_var->id;
+					$new_val->save();
+				}
+			}
+		}
 
 		return $this->successResponse([
 			'id' => $p->id,
