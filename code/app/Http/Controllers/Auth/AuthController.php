@@ -10,6 +10,8 @@ use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
 use Theme;
 
+use App\Gas;
+
 class AuthController extends Controller
 {
 	use AuthenticatesAndRegistersUsers, ThrottlesLogins;
@@ -23,6 +25,7 @@ class AuthController extends Controller
 
 	public function getLogin()
 	{
-		return Theme::view('auth.login');
+		$gas = Gas::first();
+		return Theme::view('auth.login', ['gas' => $gas]);
 	}
 }

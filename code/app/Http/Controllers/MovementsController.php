@@ -7,11 +7,13 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Theme;
+
 class MovementsController extends Controller
 {
         public function index()
         {
-        //
+                return Theme::view('pages.movements');
         }
 
         public function create()

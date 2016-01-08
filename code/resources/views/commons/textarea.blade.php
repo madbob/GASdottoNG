@@ -11,9 +11,7 @@
 			@if($squeeze == true)
 			placeholder="{{ $label }}"
 			@endif
-			
-			autocomplete="off">
-			<?php if($obj) echo $obj->$name ?>
-		</textarea>
+
+			autocomplete="off"><?php if($obj) echo $obj->$name ?></textarea>
 	</div>
 </div>

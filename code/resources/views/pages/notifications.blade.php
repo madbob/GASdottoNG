@@ -33,19 +33,6 @@
 			</div>
 			@endforeach
 		</div>
-		<div class="template">
-			<div class="col-md-4">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<h3 class="panel-title">
-							<span classe="title"></span> / <span classe="date"></span>
-						</h3>
-					</div>
-					<div class="panel-body content">
-					</div>
-				</div>
-			</div>
-		</div>
 	</div>
 </div>
 

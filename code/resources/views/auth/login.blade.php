@@ -3,6 +3,13 @@
 @section('content')
 
 <div class="col-md-7">
+	@if($gas->message != '')
+	<div class="alert alert-info">
+		{!! nl2br($gas->message) !!}
+	</div>
+	<hr/>
+	@endif
+
 	<form class="form-horizontal" method="POST" action="{{ url('/auth/login') }}">
 		<input type="hidden" name="_token" value="{{ csrf_token() }}">
 
