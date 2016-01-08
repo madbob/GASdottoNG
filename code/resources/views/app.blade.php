@@ -16,11 +16,26 @@
 		<meta name="csrf-token" content="{{ csrf_token() }}"/>
 	</head>
 	<body>
+		@if(Auth::check())
+		<nav class="navbar navbar-default topbar">
+			<div class="container-fluid">
+				<div class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li><a href="{{ url('/') }}">{{ $currentuser->printableName() }} @ {{ $currentgas->name }}</a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="{{ url('auth/logout') }}">Logout <span class="glyphicon glyphicon-off" aria-hidden="true"></span></a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		@endif
+
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-md-3">
+				<div class="col-md-2">
 					@if(isset($menu))
-					<nav class="navbar navbar-default" role="navigation">
+					<nav class="navbar navbar-default sidebar" role="navigation">
 						<div class="navbar-header">
 							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 								<span class="icon-bar"></span>
@@ -30,14 +45,13 @@
 						</div>
 
 						<div class="collapse navbar-collapse">
-							<div class="panel-heading">{{ $currentuser->printableName() }} @ {{ $currentgas->name }}</div>
 							{!! $menu !!}
 						</div>
 					</nav>
 					@endif
 				</div>
 
-				<div class="col-md-9" id="main-contents">
+				<div class="col-md-10" id="main-contents">
 					@include('commons.flashing')
 					@yield('content')
 				</div>

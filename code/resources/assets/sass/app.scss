@@ -1,4 +1,4 @@
-.navbar {
+.sidebar {
 	margin-top: 10px;
 
 	.panel-heading {
@@ -8,6 +8,12 @@
 	.nav {
 		font-size: 1.5em;
 		margin: 15px;
+	}
+}
+
+@media (max-width: 768px) {
+	.topbar {
+		display: none;
 	}
 }
 

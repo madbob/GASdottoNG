@@ -15,6 +15,9 @@
 					@include('supplier.base-edit', ['supplier' => $supplier])
 				</div>
 				<div class="col-md-6">
+					<div class="alert alert-info">
+						<p>TODO</p>
+					</div>
 				</div>
 			</div>
 
@@ -31,5 +34,8 @@
 	</div>
 
 	<div role="tabpanel" class="tab-pane fade" id="files-{{ $supplier->id }}">
+		<div class="alert alert-info">
+			<p>TODO</p>
+		</div>
 	</div>
 </div>
