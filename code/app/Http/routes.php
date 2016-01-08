@@ -10,6 +10,7 @@ Route::get('/home', function () {
 
 Route::get('users/search', 'UsersController@search');
 
+Route::resource('gas', 'GasController');
 Route::resource('users', 'UsersController');
 Route::resource('suppliers', 'SuppliersController');
 Route::resource('products', 'ProductsController');
@@ -18,6 +19,7 @@ Route::resource('orders', 'OrdersController');
 Route::resource('booking.user', 'BookingUserController');
 Route::resource('booking', 'BookingController');
 Route::resource('notifications', 'NotificationsController');
+Route::resource('movements', 'MovementsController');
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',
