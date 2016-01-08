@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="col-md-7">
+<div class="col-md-4 col-md-offset-3">
 	@if($gas->message != '')
 	<div class="alert alert-info">
 		{!! nl2br($gas->message) !!}

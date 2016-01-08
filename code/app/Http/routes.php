@@ -14,6 +14,8 @@ Route::resource('gas', 'GasController');
 Route::resource('users', 'UsersController');
 Route::resource('suppliers', 'SuppliersController');
 Route::resource('products', 'ProductsController');
+Route::resource('categories', 'CategoriesController');
+Route::resource('measures', 'MeasuresController');
 Route::resource('variants', 'VariantsController');
 Route::resource('orders', 'OrdersController');
 Route::resource('booking.user', 'BookingUserController');

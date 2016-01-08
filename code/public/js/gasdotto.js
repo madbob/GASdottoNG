@@ -236,6 +236,14 @@ $(document).ready(function() {
 		return false;
 	});
 
+	$('body').on('change', 'select.triggers-modal', function(event) {
+		var val = $(this).find('option:selected').val();
+		if (val == 'run_modal') {
+			var modal = $(this).attr('data-trigger-modal');
+			$('#' + modal).modal('show');
+		}
+	});
+
 	$('body').on('submit', '.main-form', function(event) {
 		event.preventDefault();
 		var form = $(this);
@@ -338,6 +346,19 @@ $(document).ready(function() {
 					list.append('<a href="' + data.url + '" class="loadable-item list-group-item">' + data.header + '</a>');
 					sortList(list);
 					testListsEmptiness();
+				}
+
+				var test = form.find('input[name=update-select]');
+				if (test.length != 0) {
+					var selectname = test.val();
+					$('select[name=' + selectname + ']').each(function() {
+						var o = $('<option value="' + data.id + '" selected="selected">' + data.name + '</option>');
+						var trigger = $(this).find('option[value=run_modal]');
+						if (trigger.length != 0)
+							trigger.before(o);
+						else
+							$(this).append(0);
+					});
 				}
 			}
 		});
