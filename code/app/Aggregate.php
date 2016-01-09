@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Auth;
+
 use App\GASModel;
 
 class Aggregate extends Model
@@ -57,6 +59,36 @@ class Aggregate extends Model
 
 	public function printableHeader()
 	{
-		return sprintf('%s<br/><small>%s</small>', $this->printableName(), $this->printableDates());
+		$ret = $this->printableName();
+		$icons = [];
+
+		if ($this->userCan('supplier.orders'))
+			$icons[] = 'th-list';
+		if ($this->userCan('supplier.shippings'))
+			$icons[] = 'arrow-down';
+
+		if (!empty($icons)) {
+			$ret .= '<div class="pull-right">';
+
+			foreach ($icons as $i)
+				$ret .= '<span class="glyphicon glyphicon-' . $i . '" aria-hidden="true"></span>&nbsp;';
+
+			$ret .= '</div>';
+		}
+
+		$ret .= sprintf('<br/><small>%s</small>', $this->printableDates());
+		return $ret;
+	}
+
+	public function userCan($action, $user = null)
+	{
+		if ($user == null)
+			$user = Auth::user();
+
+		foreach ($this->orders as $order)
+			if ($order->supplier->userCan($action, $user))
+				return true;
+
+		return false;
 	}
 }

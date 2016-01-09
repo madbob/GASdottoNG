@@ -33,4 +33,28 @@ class Supplier extends Model
 	{
 		return $this->morphMany('App\Contact', 'target');
 	}
+
+	public function printableHeader()
+	{
+		$ret = $this->printableName();
+		$icons = [];
+
+		if ($this->userCan('supplier.modify'))
+			$icons[] = 'pencil';
+		if ($this->userCan('supplier.orders'))
+			$icons[] = 'th-list';
+		if ($this->userCan('supplier.shippings'))
+			$icons[] = 'arrow-down';
+
+		if (!empty($icons)) {
+			$ret .= '<div class="pull-right">';
+
+			foreach ($icons as $i)
+				$ret .= '<span class="glyphicon glyphicon-' . $i . '" aria-hidden="true"></span>&nbsp;';
+
+			$ret .= '</div>';
+		}
+
+		return $ret;
+	}
 }
