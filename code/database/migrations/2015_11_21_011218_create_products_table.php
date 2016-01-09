@@ -28,8 +28,8 @@ class CreateProductsTable extends Migration
 			$table->decimal('partitioning', 4, 2);
 			$table->decimal('package', 4, 2);
 			$table->decimal('minimum', 4, 2);
-			$table->decimal('maximum', 4, 2);
 			$table->decimal('multiple', 4, 2);
+			$table->decimal('totalmax', 4, 2);
 
 			$table->index('id');
 			$table->index('previous_id');

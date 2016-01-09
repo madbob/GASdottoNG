@@ -99,10 +99,18 @@ trait AllowableTrait
 
 	public function userPermit($action, $user)
 	{
-		if ($user != null)
+		if ($user != null) {
+			if (is_object($user))
+				$id = $user->id;
+			else if (is_string($user))
+				$id = $user;
+			else
+				return;
+		}
+		else {
+			$user = Auth::user();
 			$id = $user->id;
-		else
-			$id = 0;
+		}
 
 		$actions = explode('|', $action);
 		foreach ($actions as $a)
@@ -111,10 +119,18 @@ trait AllowableTrait
 
 	public function userRevoke($action, $user)
 	{
-		if ($user != null)
+		if ($user != null) {
+			if (is_object($user))
+				$id = $user->id;
+			else if (is_string($user))
+				$id = $user;
+			else
+				return;
+		}
+		else {
+			$user = Auth::user();
 			$id = $user->id;
-		else
-			$id = 0;
+		}
 
 		$actions = explode('|', $action);
 		foreach ($actions as $a)

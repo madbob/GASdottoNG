@@ -99,7 +99,7 @@ class ProductsController extends Controller
 		$p->variable = $request->has('variable') ? true : false;
 		$p->multiple = $request->input('multiple');
 		$p->minimum = $request->input('minimum');
-		$p->maximum = $request->input('maximum');
+		$p->totalmax = $request->input('totalmax');
 		$p->save();
 
 		/*

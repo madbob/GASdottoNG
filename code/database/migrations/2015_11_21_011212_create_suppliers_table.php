@@ -20,6 +20,7 @@ class CreateSuppliersTable extends Migration
 			$table->string('address');
 			$table->string('phone');
 			$table->string('mail');
+			$table->string('fax');
 			$table->string('website');
 
 			$table->index('id');

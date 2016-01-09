@@ -42,17 +42,10 @@ class DatabaseSeeder extends Seeder
                 $gas = Gas::create([
                         'id' => str_slug('Senza Nome'),
 			'name' => 'Senza Nome',
-                        'current_balance' => 0,
                         'current_bank_balance' => 0,
                         'current_cash_balance' => 0,
                         'current_orders_balance' => 0,
-                        'current_deposit_balance' => 0,
-                        'last_balance_check' => new DateTime(),
-                        'previous_balance' => 0,
-                        'previous_bank_balance' => 0,
-                        'previous_cash_balance' => 0,
-                        'previous_orders_balance' => 0,
-                        'previous_deposit_balance' => 0
+                        'current_deposit_balance' => 0
 		]);
 
                 $admin = User::create([
