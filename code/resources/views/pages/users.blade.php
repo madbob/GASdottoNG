@@ -2,18 +2,22 @@
 
 @section('content')
 
-@if($currentgas->userCan('users.admin'))
+<div class="row">
+	<div class="col-md-12">
+		@if($currentgas->userCan('users.admin'))
 
-@include('commons.addingbutton', [
-	'template' => 'user.base-edit',
-	'typename' => 'user',
-	'typename_readable' => 'Utente',
-	'targeturl' => 'users'
-])
+		@include('commons.addingbutton', [
+			'template' => 'user.base-edit',
+			'typename' => 'user',
+			'typename_readable' => 'Utente',
+			'targeturl' => 'users'
+		])
 
-<hr/>
+		@endif
+	</div>
 
-@endif
+	<hr/>
+</div>
 
 <div class="row">
 	<div class="col-md-12">

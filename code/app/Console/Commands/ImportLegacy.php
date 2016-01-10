@@ -264,7 +264,7 @@ class ImportLegacy extends Command
                 }
 
                 $map['products'] = [];
-                $query = "SELECT * FROM Product WHERE id NOT IN (SELECT previous_description FROM Product)";
+                $query = "SELECT * FROM Product WHERE archived = false";
                 $result = $old->select($query);
 
                 foreach ($result as $row) {

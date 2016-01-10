@@ -9,7 +9,9 @@
 	'extra' => ['supplier_id' => $supplier->id]
 ])
 
-<hr/>
+<div class="clearfix"></div>
+<hr />
+
 @endif
 
 <div class="row">

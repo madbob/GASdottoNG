@@ -11,6 +11,7 @@
 		<link rel="stylesheet" type="text/css" href="{{ url('css/bootstrap-datepicker3.min.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ url('css/bootstrap-multiselect.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ url('css/bootstrap-tagsinput.css') }}">
+		<link rel="stylesheet" type="text/css" href="{{ url('css/jstree.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ url('css/gasdotto.css') }}">
 
 		<meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -64,6 +65,7 @@
 		<script type="application/javascript" src="{{ url('js/bootstrap-datepicker.it.min.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/bootstrap-multiselect.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/bootstrap-tagsinput.js') }}"></script>
+		<script type="application/javascript" src="{{ url('js/jstree.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/typeahead.bundle.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/validator.min.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/gasdotto.js') }}"></script>

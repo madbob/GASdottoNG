@@ -2,18 +2,35 @@
 
 @section('content')
 
-@if($currentgas->userCan('supplier.add'))
+<div class="row">
+	<div class="col-md-12">
+		@if($currentgas->userCan('supplier.add'))
 
-@include('commons.addingbutton', [
-	'template' => 'supplier.base-edit',
-	'typename' => 'supplier',
-	'typename_readable' => 'Fornitore',
-	'targeturl' => 'suppliers'
-])
+		@include('commons.addingbutton', [
+			'template' => 'supplier.base-edit',
+			'typename' => 'supplier',
+			'typename_readable' => 'Fornitore',
+			'targeturl' => 'suppliers'
+		])
 
-<hr/>
+		@endif
 
-@endif
+		@if($currentgas->userHas('supplier.modify'))
+
+		<button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleCategories">Amministra Categorie</button>
+
+		<div class="modal fade dynamic-contents" id="handleCategories" tabindex="-1" role="dialog" aria-labelledby="handleCategories" data-contents-url="{{ url('categories') }}">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+				</div>
+			</div>
+		</div>
+
+		@endif
+	</div>
+
+	<hr/>
+</div>
 
 <div class="row">
 	<div class="col-md-12">

@@ -47,6 +47,33 @@ function generalInit() {
 		}
 	});
 
+	$('.modal.dynamic-contents').on('show.bs.modal', function(e) {
+		if (typeof $.data(e.target, 'dynamic-inited') == 'undefined') {
+			$.data(e.target, 'dynamic-inited', {done: true});
+
+			var contents = $(this).find('.modal-content');
+			contents.empty();
+			var url = $(this).attr('data-contents-url');
+
+			$.get(url, function(data) {
+				contents.append(data);
+			});
+		}
+	});
+
+	$('.dynamic-tree').jstree({
+		'core': {
+			'check_callback': true
+		},
+		'plugins': ['dnd', 'unique', 'sort']
+	});
+
+	/*
+		jstree rimuove la classe esistente sulla ul di riferimento,
+		qui ce la rimetto. TODO: correggere jstree
+	*/
+	$('.dynamic-tree ul').addClass('list-group');
+
 	setupVariantsEditor();
 	testListsEmptiness();
 }
@@ -194,6 +221,23 @@ function setupVariantsEditor() {
 
 		return false;
 	});
+}
+
+function parseDynamicTree(unparsed_data) {
+	var data = [];
+
+	for (var i = 0; i < unparsed_data.length; i++) {
+		var unparsed_node = unparsed_data[i];
+		/*
+			Per avere il contenuto testuale del nodo devo rimuovere
+			l'HTML del pulsante di rimozione della riga
+		*/
+		var node = {id: unparsed_node.id, name: unparsed_node.text.replace(/<[^>]*>?/g, '')};
+		node.children = parseDynamicTree(unparsed_node.children);
+		data.push(node);
+	}
+
+	return data;
 }
 
 $(document).ready(function() {
@@ -429,6 +473,55 @@ $(document).ready(function() {
 
 		container.find('.add-many-rows').before(row);
 		manyRowsAddDeleteButtons(container);
+		return false;
+	});
+
+	/*
+		Widget albero gerarchico dinamico
+	*/
+
+	$('body').on('click', '.dynamic-tree .dynamic-tree-remove', function() {
+		$(this).closest('li').remove();
+	});
+
+	$(document).on('dnd_stop.vakata', function(e) {
+		$('.dynamic-tree').jstree().open_all();
+	});
+
+	$('body').on('click', '.dynamic-tree-box .dynamic-tree-add', function(e) {
+		e.preventDefault();
+		var box = $(this).closest('.dynamic-tree-box');
+		var input = box.find('input[name=new_category]');
+		var name = input.val();
+		var tree = box.find('.dynamic-tree');
+
+		tree.jstree().create_node(null, {
+			text: name + '<span class="badge pull-right"><span class="glyphicon glyphicon-remove dynamic-tree-remove" aria-hidden="true"></span></span>',
+			li_attr: {class: 'list-group-item jstree-open'}
+		});
+		input.val('');
+
+		return false;
+	});
+
+	$('body').on('submit', '.dynamic-tree-box', function(e) {
+		e.preventDefault();
+		var box = $(this);
+		var tree = box.find('.dynamic-tree');
+		var unparsed_data = tree.jstree().get_json();
+		var data = parseDynamicTree(unparsed_data);
+
+		$.ajax({
+			method: box.attr('method'),
+			url: box.attr('action'),
+			data: {serialized: data},
+			dataType: 'json',
+
+			success: function(data) {
+				box.closest('.modal').modal('hide');
+			}
+		});
+
 		return false;
 	});
 });

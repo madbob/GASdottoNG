@@ -2,18 +2,22 @@
 
 @section('content')
 
-@if($currentgas->userCan('notifications.admin'))
+<div class="row">
+	<div class="col-md-12">
+		@if($currentgas->userCan('notifications.admin'))
 
-@include('commons.addingbutton', [
-	'template' => 'notification.base-edit',
-	'typename' => 'notification',
-	'typename_readable' => 'Notifica',
-	'targeturl' => 'notifications'
-])
+		@include('commons.addingbutton', [
+			'template' => 'notification.base-edit',
+			'typename' => 'notification',
+			'typename_readable' => 'Notifica',
+			'targeturl' => 'notifications'
+		])
 
-<hr/>
+		@endif
+	</div>
 
-@endif
+	<hr/>
+</div>
 
 <div class="row">
 	<div class="loadmore-grid" data-url="{{ url('notifications') }}" data-offset="0">

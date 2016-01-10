@@ -1,6 +1,6 @@
 @include('commons.textfield', ['obj' => $product, 'name' => 'name', 'label' => 'Nome', 'mandatory' => true])
 @include('commons.decimalfield', ['obj' => $product, 'name' => 'price', 'label' => 'Prezzo Unitario', 'mandatory' => true])
 @include('commons.decimalfield', ['obj' => $product, 'name' => 'transport', 'label' => 'Prezzo Trasporto'])
-@include('commons.selectobjfield', ['obj' => $product, 'name' => 'category_id', 'objects' => App\Category::orderBy('name', 'asc')->get(), 'triggering_modal' => 'createCategory', 'label' => 'Categoria'])
+@include('commons.selectobjfield', ['obj' => $product, 'name' => 'category_id', 'objects' => App\Category::orderBy('name', 'asc')->where('parent_id', '=', null)->get(), 'triggering_modal' => 'createCategory', 'label' => 'Categoria'])
 @include('commons.selectobjfield', ['obj' => $product, 'name' => 'measure_id', 'objects' => App\Measure::orderBy('name', 'asc')->get(), 'triggering_modal' => 'createMeasure', 'label' => 'Unità di Misura'])
 @include('commons.textarea', ['obj' => $product, 'name' => 'description', 'label' => 'Descrizione'])

@@ -9,11 +9,22 @@ use App\Http\Controllers\Controller;
 
 use DB;
 use Auth;
+use Theme;
 
 use App\Category;
 
 class CategoriesController extends Controller
 {
+        public function index()
+        {
+                $user = Auth::user();
+                if ($user->gas->userHas('supplier.modify') == false)
+                        abort(503);
+
+                $categories = Category::where('parent_id', '=', null)->get();
+                return Theme::view('categories.edit', ['categories' => $categories]);
+        }
+
         public function store(Request $request)
         {
                 DB::beginTransaction();
@@ -30,5 +41,39 @@ class CategoriesController extends Controller
 			'id' => $category->id,
 			'name' => $category->name
 		]);
+        }
+
+        private function updateRecursive($data, $parent, &$accumulator)
+        {
+                foreach ($data as $category) {
+                        $c = Category::find($category['id']);
+                        if ($c == null)
+                                $c = new Category();
+
+                        $c->name = $category['name'];
+                        $c->parent_id = $parent;
+                        $c->save();
+                        $accumulator[] = $c->id;
+
+                        if (array_key_exists('children', $category))
+                                $this->updateRecursive($category['children'], $c->id, $accumulator);
+                }
+        }
+
+        public function update(Request $request, $id)
+        {
+                DB::beginTransaction();
+
+                $user = Auth::user();
+                if ($user->gas->userHas('supplier.modify') == false)
+                        return $this->errorResponse('Non autorizzato');
+
+                $data = $request->input('serialized');
+                $accumulator = [];
+
+                $this->updateRecursive($data, null, $accumulator);
+                Category::whereNotIn('id', $accumulator)->delete();
+
+                return $this->successResponse();
         }
 }

@@ -2,18 +2,22 @@
 
 @section('content')
 
-@if($currentgas->userHas('supplier.orders'))
+<div class="row">
+	<div class="col-md-12">
+		@if($currentgas->userHas('supplier.orders'))
 
-@include('commons.addingbutton', [
-	'template' => 'order.base-edit',
-	'typename' => 'order',
-	'typename_readable' => 'Ordine',
-	'targeturl' => 'orders'
-])
+		@include('commons.addingbutton', [
+			'template' => 'order.base-edit',
+			'typename' => 'order',
+			'typename_readable' => 'Ordine',
+			'targeturl' => 'orders'
+		])
 
-<hr/>
+		@endif
+	</div>
 
-@endif
+	<hr/>
+</div>
 
 <div class="row">
 	<div class="col-md-12">
