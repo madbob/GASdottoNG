@@ -49,6 +49,7 @@
 					<h4 class="modal-title">Crea Nuova Categoria</h4>
 				</div>
 				<div class="modal-body">
+					@include('commons.selectobjfield', ['obj' => null, 'name' => 'parent_id', 'objects' => App\Category::orderBy('name', 'asc')->where('parent_id', '=', null)->get(), 'none_selection' => 'Nessuna', 'label' => 'Categoria Padre'])
 					@include('commons.textfield', ['obj' => null, 'name' => 'name', 'label' => 'Nome', 'mandatory' => true])
 				</div>
 				<div class="modal-footer">

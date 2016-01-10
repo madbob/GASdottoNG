@@ -20,10 +20,10 @@ class CreateGasTable extends Migration
 			$table->json('rid_conf');
 			$table->json('fee_conf');
 
-			$table->float('current_bank_balance', 10, 2);
-			$table->float('current_cash_balance', 10, 2);
-			$table->float('current_orders_balance', 10, 2);
-			$table->float('current_deposit_balance', 10, 2);
+			$table->float('bank_balance', 8, 2);
+			$table->float('cash_balance', 8, 2);
+			$table->float('orders_balance', 8, 2);
+			$table->float('deposit_balance', 8, 2);
 
 			$table->index('id');
 		});

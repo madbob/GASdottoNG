@@ -25,6 +25,11 @@ class Booking extends Model
 		return $this->belongsTo('App\Order');
 	}
 
+	public function supplier()
+	{
+		return $this->order->supplier;
+	}
+
 	public function products()
 	{
 		return $this->hasMany('App\BookedProduct')->whereHas('product', function($query) {

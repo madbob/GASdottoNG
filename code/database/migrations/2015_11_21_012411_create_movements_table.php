@@ -11,17 +11,17 @@ class CreateMovementsTable extends Migration
 			$table->increments('id');
 			$table->timestamps();
 
+			$table->date('registration_date');
 			$table->string('registerer_id');
 
-			$table->string('user_id');
-			$table->morphs('target');
+			$table->string('target_type');
+			$table->string('target_id');
 
 			$table->decimal('amount', 5, 2);
-			$table->enum('method', ['cash', 'bank']);
-			$table->enum('type', ['deposit_payment', 'deposit_return', 'annual_payment', 'booking_payment', 'order_payment', 'user_credit', 'gas_expense', 'transfer', 'get', 'put', 'round']);
-			$table->string('cro');
+			$table->string('method_id');
+			$table->string('type_id');
+			$table->string('identifier');
 			$table->string('notes');
-			$table->boolean('obsolete');
 
 			$table->index('id');
 		});

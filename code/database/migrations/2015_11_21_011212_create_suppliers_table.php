@@ -15,13 +15,16 @@ class CreateSuppliersTable extends Migration
 			$table->string('name')->unique();
 			$table->string('description', 500);
 			$table->string('comment', 500);
-			$table->string('taxcode');
-			$table->string('vat');
+
 			$table->string('address');
 			$table->string('phone');
 			$table->string('mail');
 			$table->string('fax');
 			$table->string('website');
+
+			$table->string('taxcode');
+			$table->string('vat');
+			$table->float('balance', 10, 2);
 
 			$table->index('id');
 		});

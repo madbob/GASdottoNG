@@ -33,7 +33,8 @@ class GraphicInitServiceProvider extends ServiceProvider
 				'fieldsize' => 9,
 				'prefix' => false,
 				'postfix' => false,
-				'triggering_modal' => false
+				'triggering_modal' => false,
+				'none_selection' => ''
 			];
 
 			foreach($defaults as $name => $value) {

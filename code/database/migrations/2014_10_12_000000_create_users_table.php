@@ -31,8 +31,7 @@ class CreateUsersTable extends Migration
 			$table->datetime('last_login')->nullable();
 			$table->string('preferred_delivery_id');
 
-			$table->float('current_balance', 5, 2);
-			$table->float('previous_balance', 5, 2);
+			$table->float('balance', 5, 2);
 			$table->string('iban')->nullable();
 			$table->date('sepa_subscribe')->nullable();
 			$table->date('sepa_first')->nullable();

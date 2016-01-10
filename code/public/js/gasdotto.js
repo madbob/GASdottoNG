@@ -397,11 +397,28 @@ $(document).ready(function() {
 					var selectname = test.val();
 					$('select[name=' + selectname + ']').each(function() {
 						var o = $('<option value="' + data.id + '" selected="selected">' + data.name + '</option>');
-						var trigger = $(this).find('option[value=run_modal]');
-						if (trigger.length != 0)
-							trigger.before(o);
-						else
-							$(this).append(0);
+						if (data.hasOwnProperty('parent') && data.parent != null) {
+							var parent = $(this).find('option[value=' + data.parent + ']').first();
+							var pname = parent.text().replace(/&nbsp;/g, ' ');
+							var indent = '&nbsp;&nbsp;';
+
+							for (var i = 0; i < pname.length; i++) {
+								if (pname[i] == ' ')
+									indent += '&nbsp;';
+								else
+									break;
+							}
+
+							o.prepend(indent);
+							parent.after(o);
+						}
+						else {
+							var trigger = $(this).find('option[value=run_modal]');
+							if (trigger.length != 0)
+								trigger.before(o);
+							else
+								$(this).append(0);
+						}
 					});
 				}
 			}

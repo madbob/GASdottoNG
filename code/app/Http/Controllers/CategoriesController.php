@@ -35,10 +35,18 @@ class CategoriesController extends Controller
 
                 $category = new Category();
                 $category->name = $request->input('name');
+
+                $parent = $request->input('parent_id');
+                if ($parent != 'null')
+                        $category->parent_id = $parent;
+                else
+                        $category->parent_id = null;
+
                 $category->save();
 
                 return $this->successResponse([
 			'id' => $category->id,
+                        'parent' => $category->parent_id,
 			'name' => $category->name
 		]);
         }

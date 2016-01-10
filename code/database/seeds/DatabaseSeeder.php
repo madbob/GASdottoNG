@@ -64,14 +64,7 @@ class DatabaseSeeder extends Seeder
                         $gas->permissions()->save($perm);
                 }
 
-                $categories = [
-                        'Non Specificato',
-                        'Frutta',
-                        'Verdura',
-                        'Cosmesi',
-                        'Bevande'
-                ];
-
+                $categories = ['Non Specificato', 'Frutta', 'Verdura', 'Cosmesi', 'Bevande'];
                 foreach ($categories as $cat) {
                         Category::create([
                                 'id' => str_slug($cat),
@@ -79,13 +72,7 @@ class DatabaseSeeder extends Seeder
         		]);
                 }
 
-                $measures = [
-                        'Non Specificato',
-                        'Chili',
-                        'Litri',
-                        'Pezzi'
-                ];
-
+                $measures = ['Non Specificato', 'Chili', 'Litri', 'Pezzi'];
                 foreach ($measures as $name) {
                         Measure::create([
                                 'id' => str_slug($name),

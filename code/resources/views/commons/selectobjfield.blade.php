@@ -20,6 +20,10 @@ if (function_exists('recursiveOptionsSelectObj') == false) {
 	<label for="{{ $prefix . $name }}" class="col-sm-3 control-label">{{ $label }}</label>
 	<div class="col-sm-{{ $fieldsize }}">
 		<select class="form-control<?php if($triggering_modal !== false) echo ' triggers-modal" data-trigger-modal="' . $triggering_modal ?>" name="{{ $prefix . $name }}">
+			@if(!empty($none_selection))
+			<option value="null"<?php if($obj == null) echo ' selected="selected"' ?>>{{ $none_selection }}</option>
+			@endif
+
 			<?php recursiveOptionsSelectObj($obj, $objects, 0) ?>
 
 			@if($triggering_modal !== false)

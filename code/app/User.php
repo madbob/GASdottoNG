@@ -8,12 +8,13 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Cviebrock\EloquentSluggable\SluggableInterface;
+use App\HasBalance;
 use App\GASModel;
 use App\SluggableID;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-	use Authenticatable, CanResetPassword, GASModel, SluggableID;
+	use Authenticatable, CanResetPassword, HasBalance, GASModel, SluggableID;
 
 	public $incrementing = false;
 	protected $table = 'users';
