@@ -16,27 +16,13 @@
 		@endif
 	</div>
 
+	<div class="clearfix"></div>
 	<hr/>
 </div>
 
 <div class="row">
-	<div class="loadmore-grid" data-url="{{ url('notifications') }}" data-offset="0">
-		<div class="contents">
-			@foreach($notifications as $notify)
-			<div class="col-md-4">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<h3 class="panel-title">
-							<span classe="title">{{ $notify->printableName() }}</span> / <span classe="date">{{ $notify->printableDate('created_at') }}</span>
-						</h3>
-					</div>
-					<div class="panel-body">
-						{{ $notify->content }}
-					</div>
-				</div>
-			</div>
-			@endforeach
-		</div>
+	<div class="col-md-12">
+		@include('commons.loadablelist', ['identifier' => 'notification-list', 'items' => $notifications, 'url' => url('notifications/')])
 	</div>
 </div>
 

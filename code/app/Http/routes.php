@@ -9,6 +9,7 @@ Route::get('/home', function () {
 });
 
 Route::get('users/search', 'UsersController@search');
+Route::post('notifications/markread/{id}', 'NotificationsController@markread');
 
 Route::resource('gas', 'GasController');
 Route::resource('users', 'UsersController');

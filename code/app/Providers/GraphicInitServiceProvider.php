@@ -31,10 +31,12 @@ class GraphicInitServiceProvider extends ServiceProvider
 			$defaults = [
 				'squeeze' => false,
 				'fieldsize' => 9,
+				'help_text' => '',
 				'prefix' => false,
 				'postfix' => false,
 				'triggering_modal' => false,
-				'none_selection' => ''
+				'extra_selection' => [],
+				'multiple_select' => false
 			];
 
 			foreach($defaults as $name => $value) {

@@ -2,10 +2,12 @@
 	<label class="col-sm-3 control-label">{{ $label }}</label>
 	<div class="col-sm-{{ $fieldsize }}">
 		<label class="text-muted">
-			@if($obj != null && $obj->$name() != null)
-			{{ $obj->$name()->printableName() }}
-			@else
-			Nessuno
+			@if($obj)
+				<?php $final = [] ?>
+				@foreach($obj->$name as $n)
+				<?php $final[] = $n->printableName() ?>
+				@endforeach
+				{{ join(', ', $final) }}
 			@endif
 		</label>
 	</div>

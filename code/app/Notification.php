@@ -15,6 +15,15 @@ class Notification extends Model
 		return $this->belongsToMany('App\User');
 	}
 
+	public function hasUser($user)
+	{
+		foreach ($this->users as $u)
+			if ($u->id == $user->id)
+				return true;
+
+		return false;
+	}
+
 	public function printableName()
 	{
 		$users = $this->users;
@@ -24,5 +33,10 @@ class Notification extends Model
 			return $users->first()->printableName();
 		else
 			return sprintf('%d utenti', $c);
+	}
+
+	public function printableHeader()
+	{
+		return $this->printableDate('start_date') . ' / ' . $this->printableName();
 	}
 }

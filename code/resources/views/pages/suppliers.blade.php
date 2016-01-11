@@ -15,7 +15,7 @@
 
 		@endif
 
-		@if($currentgas->userHas('supplier.modify'))
+		@if($currentgas->userHas('supplier.add|supplier.modify'))
 
 		<button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleCategories">Amministra Categorie</button>
 
@@ -29,6 +29,7 @@
 		@endif
 	</div>
 
+	<div class="clearfix"></div>
 	<hr/>
 </div>
 
@@ -49,7 +50,14 @@
 					<h4 class="modal-title">Crea Nuova Categoria</h4>
 				</div>
 				<div class="modal-body">
-					@include('commons.selectobjfield', ['obj' => null, 'name' => 'parent_id', 'objects' => App\Category::orderBy('name', 'asc')->where('parent_id', '=', null)->get(), 'none_selection' => 'Nessuna', 'label' => 'Categoria Padre'])
+					@include('commons.selectobjfield', [
+						'obj' => null,
+						'name' => 'parent_id',
+						'objects' => App\Category::orderBy('name', 'asc')->where('parent_id', '=', null)->get(),
+						'extra_selection' => ['null' => 'Nessuna'],
+						'label' => 'Categoria Padre'
+					])
+
 					@include('commons.textfield', ['obj' => null, 'name' => 'name', 'label' => 'Nome', 'mandatory' => true])
 				</div>
 				<div class="modal-footer">

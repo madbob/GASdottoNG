@@ -111,11 +111,6 @@ class OrdersController extends Controller
 		return Theme::view('order.aggregate', ['aggregate' => $a]);
 	}
 
-	public function edit($id)
-	{
-	//
-	}
-
 	public function update(Request $request, $id)
 	{
 	//
@@ -123,6 +118,15 @@ class OrdersController extends Controller
 
 	public function destroy($id)
 	{
-	//
+		DB::beginTransaction();
+
+		$order = Order::findOrFail($id);
+
+		if ($order->supplier->userCan('supplier.orders') == false)
+			return $this->errorResponse('Non autorizzato');
+
+		$order->delete();
+
+		return $this->successResponse();
 	}
 }

@@ -25,9 +25,7 @@ class Order extends Model
 
 	public function bookings()
 	{
-		return $this->hasMany('App\Booking')->with('user', function($query) {
-			$query->orderBy('surname', 'asc');
-		});
+		return $this->hasMany('App\Booking');
 	}
 
 	public function getSlugID()

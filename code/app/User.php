@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Cviebrock\EloquentSluggable\SluggableInterface;
+
+use DB;
+
 use App\HasBalance;
 use App\GASModel;
 use App\SluggableID;
@@ -28,7 +30,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 	public function notifications()
 	{
-		return $this->belongsToMany('App\Notification');
+		return $this->belongsToMany('App\Notification')->withPivot('done')->where('notification_user.done', '=', false)->orderBy('start_date', 'desc');
+	}
+
+	public function allnotifications()
+	{
+		return $this->belongsToMany('App\Notification')->orderBy('start_date', 'desc');
 	}
 
 	public function contacts()

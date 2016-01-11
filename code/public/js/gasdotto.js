@@ -253,6 +253,14 @@ $(document).ready(function() {
 
 	generalInit();
 
+	$('#home-notifications .alert').on('closed.bs.alert', function() {
+		var id = $(this).find('input:hidden[name=notification_id]').val();
+		$.post('notifications/markread/' + id);
+
+		if ($('#home-notifications .alert').length == 0)
+			$('#home-notifications').hide('fadeout');
+	});
+
 	$('body').on('click', '.loadablelist a.loadable-item', function(event) {
 		event.preventDefault();
 

@@ -16,6 +16,7 @@
 		@endif
 	</div>
 
+	<div class="clearfix"></div>
 	<hr/>
 </div>
 

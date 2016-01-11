@@ -42,10 +42,10 @@ class DatabaseSeeder extends Seeder
                 $gas = Gas::create([
                         'id' => str_slug('Senza Nome'),
 			'name' => 'Senza Nome',
-                        'current_bank_balance' => 0,
-                        'current_cash_balance' => 0,
-                        'current_orders_balance' => 0,
-                        'current_deposit_balance' => 0
+                        'bank_balance' => 0,
+                        'cash_balance' => 0,
+                        'orders_balance' => 0,
+                        'deposit_balance' => 0
 		]);
 
                 $admin = User::create([
@@ -83,10 +83,12 @@ class DatabaseSeeder extends Seeder
                 $notification = Notification::create([
                         'creator_id' => $admin->id,
                         'content' => 'Benvenuto in GASdotto!',
-                        'mailed' => false
+                        'mailed' => false,
+                        'start_date' => date('Y-m-d'),
+                        'end_date' => date('Y-m-d', strtotime('+1 day')),
                 ]);
 
-                $notification->users()->attach($admin->id);
+                $notification->users()->attach($admin->id, ['done' => false]);
 
                 Model::reguard();
         }
