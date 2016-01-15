@@ -37,7 +37,7 @@ class MenuServiceProvider extends ServiceProvider
 				if ($gas->userCan('notifications.admin'))
 					$menu->add('notifications', '<span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> Notifiche');
 
-				$menu->addClass('nav nav-pills nav-stacked')->getItemsByContentType(Menu\Items\Contents\Link::class)->map(function($item) {
+				$menu->addClass('nav navbar-nav')->getItemsByContentType(Menu\Items\Contents\Link::class)->map(function($item) {
 					if ($item->isActive())  {
 						$item->addClass('active');
 					}
