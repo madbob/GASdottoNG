@@ -97,6 +97,7 @@ class ProductsController extends Controller
 		}
 
 		$this->basicReadFromRequest($p, $request);
+		$p->active = $request->has('active');
 		$p->partitioning = $request->input('partitioning');
 		$p->variable = $request->has('variable') ? true : false;
 		$p->multiple = $request->input('multiple');

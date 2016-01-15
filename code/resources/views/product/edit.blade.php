@@ -2,6 +2,7 @@
 	<div class="row">
 		<div class="col-md-6">
 			@include('product.base-edit', ['product' => $product])
+			@include('commons.boolfield', ['obj' => $product, 'name' => 'active', 'label' => 'Ordinabile'])
 		</div>
 		<div class="col-md-6">
 			<div class="well">
