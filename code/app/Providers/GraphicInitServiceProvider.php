@@ -32,6 +32,7 @@ class GraphicInitServiceProvider extends ServiceProvider
 				'squeeze' => false,
 				'fieldsize' => 9,
 				'help_text' => '',
+				'extras' => [],
 				'prefix' => false,
 				'postfix' => false,
 				'triggering_modal' => false,

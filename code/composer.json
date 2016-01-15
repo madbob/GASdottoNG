@@ -10,7 +10,8 @@
         "lanz/laravel-commentable": "~2.0",
         "teamteatime/laravel-filer": "dev-master",
         "caffeinated/themes": "~2.0",
-        "vespakoen/menu": "3.*"
+        "vespakoen/menu": "3.*",
+        "wilgucki/csv": "^0.5.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

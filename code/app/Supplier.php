@@ -20,7 +20,7 @@ class Supplier extends Model
 
 	public function products()
 	{
-		return $this->hasMany('App\Product')->whereNotIn('id', function($query) {
+		return $this->hasMany('App\Product')->where('active', '=', true)->whereNotIn('id', function($query) {
 			$query->select('previous_id')->from('products');
 		})->orderBy('name');
 	}
@@ -57,5 +57,15 @@ class Supplier extends Model
 		}
 
 		return $ret;
+	}
+
+	public function filesPath()
+	{
+		$path = sprintf('%s/%s', storage_path(), $this->name);
+		if (file_exists($path) == false)
+			if (mkdir($path) == false)
+				return null;
+
+		return $path;
 	}
 }

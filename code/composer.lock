@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "342e8eae1b6eb9e1381e693c3165733c",
-    "content-hash": "9a2930f2132d4b8f7a3f2de5c5590f71",
+    "hash": "f957e88fca99a6ad9f2e64bbd2c9ff24",
+    "content-hash": "afe86753131871a84f85c69cd0679fe3",
     "packages": [
         {
             "name": "anahkiasen/html-object",
@@ -2274,6 +2274,49 @@
                 "environment"
             ],
             "time": "2015-05-30 15:59:26"
+        },
+        {
+            "name": "wilgucki/csv",
+            "version": "v0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wilgucki/csv.git",
+                "reference": "5e12433d1088daad9140f94de4b8f1114bc3c429"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wilgucki/csv/zipball/5e12433d1088daad9140f94de4b8f1114bc3c429",
+                "reference": "5e12433d1088daad9140f94de4b8f1114bc3c429",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "^1.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Wilgucki\\Csv\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Maciej Wilgucki",
+                    "email": "mwilgucki@gmail.com"
+                }
+            ],
+            "description": "Laravel 5 package for writing and reading CSV files",
+            "keywords": [
+                "csv",
+                "laravel"
+            ],
+            "time": "2015-12-23 15:17:15"
         }
     ],
     "packages-dev": [

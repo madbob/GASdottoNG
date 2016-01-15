@@ -24,6 +24,17 @@ function generalInit() {
 		$(this).tab('show');
 	});
 
+	$('input:file').each(function() {
+		var i = $(this);
+		i.fileupload({
+			done: function(e, data) {
+				var callback = $(e.target).attr('data-run-callback');
+				if (callback != null)
+					window[callback]($(e.target), data.result);
+			}
+		});
+	});
+
 	$('.many-rows').each(function() {
 		manyRowsAddDeleteButtons($(this));
 	});
@@ -75,6 +86,7 @@ function generalInit() {
 	$('.dynamic-tree ul').addClass('list-group');
 
 	setupVariantsEditor();
+	setupImportCsvEditor();
 	testListsEmptiness();
 }
 
@@ -106,6 +118,15 @@ function closeMainForm(form) {
 	return head;
 }
 
+function wizardLoadPage(node, contents) {
+	var page = node.closest('.wizard_page');
+	var parent = page.parent();
+	var next = $(contents);
+	parent.append(next);
+	page.hide();
+	next.show();
+}
+
 function manyRowsAddDeleteButtons(node) {
 	var fields = node.find('.row');
 	if (fields.length > 1 && node.find('.delete-many-rows').length == 0) {
@@ -134,6 +155,23 @@ function testListsEmptiness() {
 
 function loadingPlaceholder() {
 	return $('<div class="progress"><div class="progress-bar progress-bar-striped active" style="width: 100%"></div></div>');
+}
+
+function setupImportCsvEditor() {
+	$('#import_csv_sorter .im_draggable').each(function() {
+		$(this).draggable({
+			helper: 'clone',
+			revert: 'invalid'
+		});
+	});
+
+	$('#import_csv_sorter .im_droppable').droppable({
+		drop: function(event, ui) {
+			var node = ui.draggable.clone();
+			node.find('input:hidden').attr('name', 'column[]');
+			$(this).find('.column_content').empty().append(node.contents());
+		}
+	});
 }
 
 function setupVariantsEditor() {
@@ -286,6 +324,24 @@ $(document).ready(function() {
 		}
 
 		return false;
+	});
+
+	$('body').on('click', '.reloader', function(event) {
+		var listid = $(this).attr('data-reload-target');
+		var list = $(listid);
+
+		/*
+			Per qualche motivo, se .reloader è anche il tasto di
+			chiusura di un modale, il modale viene nascosto ma non
+			definitivamente chiuso. Introducendo questo delay sembra
+			funzionare, ma non so perché
+		*/
+		setTimeout (function() {
+			var activated = list.find('a.loadable-item.active');
+			activated.each(function() {
+				$(this).click().click();
+			});
+		}, 200);
 	});
 
 	$('body').on('change', 'select.triggers-modal', function(event) {
@@ -544,6 +600,34 @@ $(document).ready(function() {
 
 			success: function(data) {
 				box.closest('.modal').modal('hide');
+			}
+		});
+
+		return false;
+	});
+
+	/*
+		Widget generico wizard
+	*/
+
+	$('body').on('show.bs.modal', '.modal.wizard', function(e) {
+		$(this).find('.wizard_page:not(:first)').hide();
+	});
+
+	$('body').on('submit', '.wizard_page form', function(e) {
+		e.preventDefault();
+
+		var form = $(this);
+		var data = form.serializeArray();
+
+		$.ajax({
+			method: form.attr('method'),
+			url: form.attr('action'),
+			data: data,
+			dataType: 'html',
+
+			success: function(data) {
+				wizardLoadPage(form, data);
 			}
 		});
 

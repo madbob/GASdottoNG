@@ -149,6 +149,7 @@ return [
         TeamTeaTime\Filer\FilerServiceProvider::class,
         Caffeinated\Themes\ThemesServiceProvider::class,
         Menu\MenuServiceProvider::class,
+        Wilgucki\Csv\CsvServiceProvider::class,
 
         App\Providers\GraphicInitServiceProvider::class,
         App\Providers\MenuServiceProvider::class,
@@ -204,6 +205,8 @@ return [
         'Menu'      => Menu\Menu::class,
         'Theme'     => Caffeinated\Themes\Facades\Theme::class,
         'Component' => Caffeinated\Themes\Facades\Component::class,
+        'CsvReader' => Wilgucki\Csv\Facades\Reader::class,
+        'CsvWriter' => Wilgucki\Csv\Facades\Writer::class,
 
     ],
 

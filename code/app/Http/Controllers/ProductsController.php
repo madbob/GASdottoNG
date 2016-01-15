@@ -44,6 +44,7 @@ class ProductsController extends Controller
 
 		$p = new Product();
 		$p->supplier_id = $supplier->id;
+		$p->active = true;
 		$this->basicReadFromRequest($p, $request);
 		$p->save();
 
@@ -89,6 +90,7 @@ class ProductsController extends Controller
 			$new_p = new Product();
 			$new_p->id = $p->nextId();
 			$new_p->supplier_id = $p->supplier_id;
+			$new_p->active = $p->active;
 			$new_p->previous_id = $p->id;
 			$cloned = $p;
 			$p = $new_p;

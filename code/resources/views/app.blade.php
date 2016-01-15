@@ -60,6 +60,7 @@
 		</div>
 
 		<script type="application/javascript" src="{{ url('js/jquery-2.1.1.min.js') }}"></script>
+		<script type="application/javascript" src="{{ url('js/jquery-ui.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/bootstrap.min.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/bootstrap-datepicker.min.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/bootstrap-datepicker.it.min.js') }}"></script>
@@ -68,6 +69,7 @@
 		<script type="application/javascript" src="{{ url('js/jstree.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/typeahead.bundle.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/validator.min.js') }}"></script>
+		<script type="application/javascript" src="{{ url('js/jquery.fileupload.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/gasdotto.js') }}"></script>
 	</body>
 </html>

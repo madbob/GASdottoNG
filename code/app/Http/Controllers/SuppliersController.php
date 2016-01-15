@@ -72,7 +72,6 @@ class SuppliersController extends Controller
 		DB::beginTransaction();
 
 		$s = Supplier::findOrFail($id);
-
 		if ($s->userCan('supplier.modify') == false)
 			return $this->errorResponse('Non autorizzato');
 
@@ -91,7 +90,6 @@ class SuppliersController extends Controller
 		DB::beginTransaction();
 
 		$s = Supplier::findOrFail($id);
-
 		if ($s->userCan('supplier.modify') == false)
 			return $this->errorResponse('Non autorizzato');
 

@@ -27,5 +27,6 @@ Route::resource('movements', 'MovementsController');
 Route::controllers([
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',
-	'dashboard' => 'CommonsController'
+	'dashboard' => 'CommonsController',
+	'import' => 'ImportController'
 ]);

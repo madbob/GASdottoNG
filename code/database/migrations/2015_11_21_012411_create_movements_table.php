@@ -14,6 +14,7 @@ class CreateMovementsTable extends Migration
 			$table->date('registration_date');
 			$table->string('registerer_id');
 
+			$table->string('user_id');
 			$table->string('target_type');
 			$table->string('target_id');
 
