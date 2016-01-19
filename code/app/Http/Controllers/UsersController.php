@@ -27,8 +27,8 @@ class UsersController extends Controller
 		if ($user->gas->userCan('users.admin|users.view') == false)
 			abort(503);
 
-		$data['users'] = User::orderBy('name', 'asc')->get();
-		return Theme::view('pages.users', $data);
+		$users = User::orderBy('name', 'asc')->get();
+		return Theme::view('pages.users', ['users' => $users]);
 	}
 
 	public function search(Request $request)

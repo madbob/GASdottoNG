@@ -1,20 +1,5 @@
-.sidebar {
-	margin-top: 10px;
-
-	.panel-heading {
-		text-align: center;
-	}
-
-	.nav {
-		font-size: 1.5em;
-		margin: 15px;
-	}
-}
-
-@media (max-width: 768px) {
-	.topbar {
-		display: none;
-	}
+body {
+	padding-top: 70px;
 }
 
 #main-contents {

@@ -12,10 +12,16 @@ class CreatePermissionsTable extends Migration
 			$table->timestamps();
 
 			$table->string('user_id');
+			$table->string('target_type');
+			$table->string('target_id');
 			$table->string('action');
-			$table->morphs('target');
 
-			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+			/*
+				Attenzione: user_id non deve essere referenza di
+				users.id, in quanto è una stringa che può anche
+				assumere il valore speciale '*'
+			*/
+
 			$table->index('id');
 			$table->index('user_id');
 		});

@@ -19,6 +19,8 @@ function generalInit() {
 
 	$('.tagsinput').tagsinput();
 
+	$('.addicted-table').bootstrapTable();
+
 	$('.nav-tabs a').click(function (e) {
 		e.preventDefault();
 		$(this).tab('show');
@@ -116,6 +118,18 @@ function closeMainForm(form) {
 	head.removeClass('active');
 	container.remove();
 	return head;
+}
+
+function checkboxSorter(a, b) {
+	var ah = $(a).is(':checked');
+	var bh = $(b).is(':checked');
+
+	if (ah == bh)
+		return 0;
+	if (ah == true)
+		return -1;
+	else
+		return 1;
 }
 
 function wizardLoadPage(node, contents) {
@@ -261,6 +275,139 @@ function setupVariantsEditor() {
 	});
 }
 
+function getPermissionsEditor(node) {
+	var ret = {valid: true};
+	ret.editor = node.closest('.permissions-editor');
+	ret.users = ret.editor.find('select[name=user]');
+
+	var subject = ret.editor.find('select[name=subject] option:selected');
+	ret.subject = subject.val();
+	if (subject.length != 1)
+		ret.valid = false;
+
+	var rule = ret.editor.find('select[name=rule]:not(.hidden) option:selected');
+	ret.rule = rule.val();
+	if (rule.length != 1)
+		ret.valid = false;
+
+	ret.behaviour = ret.editor.find('input:radio[name=behaviour]:checked').val();
+
+	return ret;
+}
+
+function setupPermissionsEditor() {
+	$('.permissions-editor').on('change', 'select[name=subject]', function() {
+		var sel = $(this).find('option:selected');
+		var c = sel.attr('data-permissions-class');
+		if (sel.length != 1)
+			c = 'none';
+
+		$('.permissions-editor').find('select[name=rule]').each(function() {
+			var cl = $(this).attr('data-permissions-class');
+			if (cl == c)
+				$(this).removeClass('hidden').find('option:selected').click();
+			else
+				$(this).addClass('hidden');
+		});
+	}).on('click', 'select[name=rule] option', function() {
+		/*
+			Questa funzione viene attivata su option.click e non su
+			select.change perché quest'ultimo evento non viene
+			lanciato se ho ri-selezionato una option già selezionata
+			(come nel caso in cui cambio soggetto nell'elenco dei
+			soggetti, nella funzione sopra)
+		*/
+
+		var editor = getPermissionsEditor($(this));
+
+		if (editor.valid == false) {
+			editor.users.empty().append('<option disabled>Seleziona una regola</option>');
+		}
+		else {
+			editor.users.empty().append('<option disabled>Caricamento...</option>');
+
+			$.ajax('/permissions/read', {
+				method: 'GET',
+				data: {
+					subject_id: editor.subject,
+					rule_id: editor.rule
+				},
+				dataType: 'json',
+
+				success: function(data) {
+					var u;
+					editor.users.empty();
+
+					for(var i = 0; i < data.users.length; i++) {
+						u = data.users[i];
+						editor.users.append('<option value="' + u.id + '">' + u.name + '</option>');
+					}
+
+					editor.editor.find('input:radio[name=behaviour][value=' + data.behaviour + ']').prop('checked', true);
+				}
+			});
+		}
+	}).on('click', '.remove-auth', function() {
+		var editor = getPermissionsEditor($(this));
+
+		if (editor.valid == true) {
+			editor.users.find('option:selected').each(function() {
+				var user = $(this).val();
+
+				$.ajax('/permissions/remove', {
+					method: 'POST',
+					data: {
+						user_id: user,
+						subject_id: editor.subject,
+						rule_id: editor.rule,
+						behaviour: editor.behaviour
+					}
+				});
+
+				$(this).remove();
+			});
+		}
+	}).on('change', 'input:radio[name=behaviour]', function() {
+		var editor = getPermissionsEditor($(this));
+
+		if (editor.valid == true) {
+			$.ajax('/permissions/change', {
+				method: 'POST',
+				data: {
+					subject_id: editor.subject,
+					rule_id: editor.rule,
+					behaviour: $(this).val()
+				}
+			});
+		}
+	});
+
+	$('.permissions-editor input:text[name=adduser]').typeahead(null, {
+		name: 'users',
+		displayKey: 'value',
+		source: userBlood.ttAdapter()
+	}).on('typeahead:selected', function(obj, result, name) {
+		var editor = getPermissionsEditor($(this));
+		$(this).val('');
+
+		if (editor.valid == true) {
+			$.ajax('/permissions/add', {
+				method: 'POST',
+				data: {
+					user_id: result.id,
+					subject_id: editor.subject,
+					rule_id: editor.rule,
+					behaviour: editor.behaviour
+				},
+				success: function() {
+					editor.users.find('option:disabled').remove();
+					editor.users.append('<option value="' + result.id + '">' + result.label + '</option>');
+				}
+			});
+		}
+	});
+}
+
 function parseDynamicTree(unparsed_data) {
 	var data = [];
 
@@ -342,6 +489,20 @@ $(document).ready(function() {
 				$(this).click().click();
 			});
 		}, 200);
+	});
+
+	$('body').on('change', '.select-fetcher', function(event) {
+		var url = $(this).find('option:selected').val();
+		var targetid = $(this).attr('data-fetcher-target');
+		var target = $(this).parent().find('.' + targetid);
+		target.empty();
+
+		if (url != 'none') {
+			target.append(loadingPlaceholder());
+			$.get(url, function(data) {
+				target.empty().append(data);
+			});
+		}
 	});
 
 	$('body').on('change', 'select.triggers-modal', function(event) {
@@ -633,4 +794,9 @@ $(document).ready(function() {
 
 		return false;
 	});
+
+	/*
+		Varie ed eventuali
+	*/
+	setupPermissionsEditor();
 });

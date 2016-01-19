@@ -28,5 +28,6 @@ Route::controllers([
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',
 	'dashboard' => 'CommonsController',
-	'import' => 'ImportController'
+	'import' => 'ImportController',
+	'permissions' => 'PermissionsController',
 ]);

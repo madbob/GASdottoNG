@@ -12,12 +12,13 @@
 		<link rel="stylesheet" type="text/css" href="{{ url('css/bootstrap-multiselect.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ url('css/bootstrap-tagsinput.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ url('css/jstree.css') }}">
+		<link rel="stylesheet" type="text/css" href="{{ url('css/bootstrap-table.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ url('css/gasdotto.css') }}">
 
 		<meta name="csrf-token" content="{{ csrf_token() }}"/>
 	</head>
 	<body>
-		<nav class="navbar navbar-default">
+		<nav class="navbar navbar-default navbar-fixed-top">
 			<div class="container-fluid">
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -63,6 +64,8 @@
 		<script type="application/javascript" src="{{ url('js/typeahead.bundle.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/validator.min.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/jquery.fileupload.js') }}"></script>
+		<script type="application/javascript" src="{{ url('js/bootstrap-table.js') }}"></script>
+		<script type="application/javascript" src="{{ url('js/bootstrap-table-it-IT.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/gasdotto.js') }}"></script>
 	</body>
 </html>

@@ -105,10 +105,10 @@ class ImportLegacy extends Command
                         $obj->name = $row->name;
                         $obj->email = $row->mail;
                         $obj->description = $row->description;
-                        $obj->current_bank_balance = $row->current_bank_balance;
-                        $obj->current_cash_balance = $row->current_cash_balance;
-                        $obj->current_orders_balance = $row->current_orders_balance;
-                        $obj->current_deposit_balance = $row->current_deposit_balance;
+                        $obj->bank_balance = $row->current_bank_balance;
+                        $obj->cash_balance = $row->current_cash_balance;
+                        $obj->orders_balance = $row->current_orders_balance;
+                        $obj->deposit_balance = $row->current_deposit_balance;
                         $obj->save();
                         $map['gas'][$row->id] = $obj->id;
 
@@ -197,6 +197,7 @@ class ImportLegacy extends Command
                                 $obj->website = $row->website;
                                 $obj->save();
                                 $map['suppliers'][$row->id] = $obj->id;
+                                $obj->userPermit('supplier.book', '*');
                         }
                         catch (\Exception $e) {
                                 echo sprintf("Errore nell'importazione del fornitore %s: %s\n", $row->name, $e->getMessage());

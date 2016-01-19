@@ -15,7 +15,7 @@
 
 		@endif
 
-		@if($currentgas->userHas('supplier.add|supplier.modify'))
+		@if($currentgas->userCan('categories.admin'))
 
 		<button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleCategories">Amministra Categorie</button>
 
@@ -39,6 +39,7 @@
 	</div>
 </div>
 
+@if($currentgas->userCan('categories.admin'))
 <div class="modal fade" id="createCategory" tabindex="-1" role="dialog" aria-labelledby="createCategory">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -68,6 +69,7 @@
 		</div>
 	</div>
 </div>
+@endif
 
 <div class="modal fade" id="createMeasure" tabindex="-1" role="dialog" aria-labelledby="createMeasure">
 	<div class="modal-dialog" role="document">

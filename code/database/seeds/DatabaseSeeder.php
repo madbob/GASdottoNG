@@ -59,7 +59,7 @@ class DatabaseSeeder extends Seeder
 		]);
 
                 $permissions = Permission::allPermissions();
-                foreach($permissions['Gas'] as $action => $desc) {
+                foreach($permissions['App\Gas'] as $action => $desc) {
                         $perm = new Permission(['user_id' => $admin->id, 'action' => $action]);
                         $gas->permissions()->save($perm);
                 }

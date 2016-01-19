@@ -6,6 +6,12 @@ use Auth;
 
 use App\Permission;
 
+/*
+	Tutte le funzioni qui incluse assumono che l'autorizzazione a modificare
+	i permessi sia concessa all'utente attuale.
+	E' altamente consigliato invocarle solo all'interno di una transazione
+	sul DB.
+*/
 trait AllowableTrait
 {
 	public function permissions()
@@ -17,10 +23,28 @@ trait AllowableTrait
 	{
 		if ($perm == null)
 			return 0;
-		else if ($perm->user_id == 0)
+		else if ($perm->user_id == '*')
 			return 2;
 		else
 			return 1;
+	}
+
+	private function normalizeUserId($user)
+	{
+		if ($user != null) {
+			if (is_object($user))
+				$id = $user->id;
+			else if (is_string($user))
+				$id = $user;
+			else
+				return;
+		}
+		else {
+			$user = Auth::user();
+			$id = $user->id;
+		}
+
+		return $id;
 	}
 
 	/*
@@ -34,16 +58,13 @@ trait AllowableTrait
 	*/
 	public function userCan($action, $user = null)
 	{
-		if ($user == null)
-			$user = Auth::user();
-
-		$user_id = $user->id;
+		$user_id = $this->normalizeUserId($user);
 		$perm = null;
 
 		$actions = explode('|', $action);
 		foreach ($actions as $a) {
 			$perm = $this->permissions()->where('action', '=', $a)->where(function($query) use ($user_id) {
-				$query->where('user_id', '=', $user_id)->orWhere('user_id', '=', 0);
+				$query->where('user_id', '=', $user_id)->orWhere('user_id', '=', '*');
 			})->first();
 
 			if ($perm != null)
@@ -60,16 +81,13 @@ trait AllowableTrait
 	*/
 	public function userHas($action, $user = null)
 	{
-		if ($user == null)
-			$user = Auth::user();
-
-		$user_id = $user->id;
+		$user_id = $this->normalizeUserId($user);
 		$perm = null;
 
 		$actions = explode('|', $action);
 		foreach ($actions as $a) {
 			$perm = Permission::where('action', '=', $a)->where(function($query) use ($user_id) {
-				$query->where('user_id', '=', $user_id)->orWhere('user_id', '=', 0);
+				$query->where('user_id', '=', $user_id)->orWhere('user_id', '=', '*');
 			})->first();
 
 			if ($perm != null)
@@ -77,6 +95,27 @@ trait AllowableTrait
 		}
 
 		return $this->permissionType($perm);
+	}
+
+	/*
+		Ritorna un array con tutti gli ID degli utenti che hanno
+		l'autorizzazione del tipo richiesto sull'oggetto corrente.
+		Nota bene: il valore speciale "*" (tutti gli utenti) non viene
+		trasformato in un array con gli ID di tutti gli utenti ma viene
+		lasciato tale
+	*/
+	public function whoCan($action)
+	{
+		$ret = [];
+
+		$actions = explode('|', $action);
+		foreach ($actions as $a) {
+			$perm = $this->permissions()->where('action', '=', $a)->get();
+			foreach($perm as $p)
+				$ret[$p->user_id] = $p->user_id;
+		}
+
+		return $ret;
 	}
 
 	/*
@@ -99,42 +138,49 @@ trait AllowableTrait
 
 	public function userPermit($action, $user)
 	{
-		if ($user != null) {
-			if (is_object($user))
-				$id = $user->id;
-			else if (is_string($user))
-				$id = $user;
-			else
-				return;
-		}
-		else {
-			$user = Auth::user();
-			$id = $user->id;
-		}
+		$id = $this->normalizeUserId($user);
 
 		$actions = explode('|', $action);
-		foreach ($actions as $a)
+		foreach ($actions as $a) {
+			/*
+				Se abilito una azione per tutti gli utenti,
+				prima elimino eventuali regole individuali
+			*/
+			if ($id == '*') {
+				$current = $this->whoCan($a);
+				if (count($current) > 1 || array_key_exists('*', $current) == false) {
+					foreach($current as $excluded)
+						$this->userRevoke($a, $excluded);
+				}
+			}
+
 			$t = $this->permissions()->firstOrCreate(['action' => $a, 'user_id' => $id]);
+		}
 	}
 
 	public function userRevoke($action, $user)
 	{
-		if ($user != null) {
-			if (is_object($user))
-				$id = $user->id;
-			else if (is_string($user))
-				$id = $user;
-			else
-				return;
-		}
-		else {
-			$user = Auth::user();
-			$id = $user->id;
-		}
+		$id = $this->normalizeUserId($user);
 
 		$actions = explode('|', $action);
-		foreach ($actions as $a)
-			$this->permissions()->where('action', '=', $a)->where('user_id', '=', $id)->delete();
+		foreach ($actions as $a) {
+			/*
+				Se l'autorizzazione è attualmente concessa a
+				tutti, la revoco e la ri-concedo solo agli altri
+				utenti
+			*/
+			$current = $this->whoCan($a);
+			if (array_key_exists('*', $current) == true) {
+				$this->permissions()->where('action', '=', $a)->where('user_id', '=', '*')->delete();
+
+				$current = User::where('id', '!=', $id)->get();
+				foreach($current as $included)
+					$this->userPermit($a, $included);
+			}
+			else {
+				$this->permissions()->where('action', '=', $a)->where('user_id', '=', $id)->delete();
+			}
+		}
 	}
 
 	public function deletePermissions()
