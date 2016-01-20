@@ -11,7 +11,8 @@
         "teamteatime/laravel-filer": "dev-master",
         "caffeinated/themes": "~2.0",
         "vespakoen/menu": "3.*",
-        "wilgucki/csv": "^0.5.0"
+        "wilgucki/csv": "^0.5.0",
+        "barryvdh/laravel-debugbar": "^2.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

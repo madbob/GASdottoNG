@@ -150,6 +150,7 @@ return [
         Caffeinated\Themes\ThemesServiceProvider::class,
         Menu\MenuServiceProvider::class,
         Wilgucki\Csv\CsvServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
 
         App\Providers\GraphicInitServiceProvider::class,
         App\Providers\MenuServiceProvider::class,
