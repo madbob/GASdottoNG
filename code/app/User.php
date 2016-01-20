@@ -48,16 +48,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return $this->hasMany('App\Movement')->orderBy('created_at', 'desc');
 	}
 
-	public function deposit()
-	{
-		return $this->movements->where('type', '=', 'deposit_payment')->where('target', '=', $this->gas)->first();
-	}
-
-	public function fee()
-	{
-		return $this->movements->where('type', '=', 'annual_payment')->where('target', '=', $this->gas)->first();
-	}
-
 	public function getSlugID()
 	{
 		return str_slug($this->printableName());

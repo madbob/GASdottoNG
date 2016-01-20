@@ -18,6 +18,11 @@ class Order extends Model
 		return $this->belongsTo('App\Supplier');
 	}
 
+	public function aggregate()
+	{
+		return $this->belongsTo('App\Aggregate');
+	}
+
 	public function products()
 	{
 		return $this->belongsToMany('App\Product');

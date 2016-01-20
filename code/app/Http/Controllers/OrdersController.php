@@ -46,6 +46,7 @@ class OrdersController extends Controller
 		$aggregates = Aggregate::with('orders')->get();
 		foreach($aggregates as $aggregate) {
 			$ok = false;
+
 			foreach($aggregate->orders as $order) {
 				if ($order->status == 'open') {
 					$ok = true;
@@ -78,17 +79,13 @@ class OrdersController extends Controller
 		$now = date('Y-m-d');
 		$o->start = $this->decodeDate($request->input('start'));
 		$o->end = $this->decodeDate($request->input('end'));
+		$o->status = $request->input('status');
 
 		$s = $request->input('shipping');
 		if ($s != '')
 			$o->shipping = $this->decodeDate($s);
 		else
 			$o->shipping = '';
-
-		if ($o->start > $now)
-			$o->status = 'suspended';
-		else
-			$o->status = 'open';
 
 		$a = new Aggregate();
 		$a->save();
@@ -113,7 +110,29 @@ class OrdersController extends Controller
 
 	public function update(Request $request, $id)
 	{
-	//
+		DB::beginTransaction();
+
+		$order = Order::findOrFail($id);
+		if ($order->supplier->userCan('supplier.orders') == false)
+			return $this->errorResponse('Non autorizzato');
+
+		$order->start = $this->decodeDate($request->input('start'));
+		$order->end = $this->decodeDate($request->input('end'));
+		$order->status = $request->input('status');
+
+		$s = $request->input('shipping');
+		if ($s != '')
+			$order->shipping = $this->decodeDate($s);
+		else
+			$order->shipping = '';
+
+		$order->save();
+
+		return $this->successResponse([
+			'id' => $order->aggregate->id,
+			'header' => $order->aggregate->printableHeader(),
+			'url' => url('orders/' . $order->aggregate->id)
+		]);
 	}
 
 	public function destroy($id)

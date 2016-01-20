@@ -25,44 +25,59 @@ $more_orders = ($aggregate->orders->count() > 1);
 			@foreach($aggregate->orders as $order)
 			<div role="tabpanel" class="tab-pane active" id="order-{{ $order->id }}">
 				@if($order->supplier->userCan('supplier.orders'))
-				<form class="form-horizontal main-form" method="POST" action="{{ url('orders/' . $order->id) }}">
+				<form class="form-horizontal main-form" method="PUT" action="{{ url('orders/' . $order->id) }}">
 					<input type="hidden" name="id" value="{{ $order->id }}" />
 
 					<div class="row">
 						<div class="col-md-6">
 							@include('order.base-edit', ['order' => $order])
 						</div>
-						<div class="col-md-6">
-							@include('commons.selectenumfield', [
-								'obj' => $order,
-								'name' => 'status',
-								'label' => 'Stato',
-								'values' => [
-									[
-										'label' => 'Aperto',
-										'value' => 'open',
-									],
-									[
-										'label' => 'Chiuso',
-										'value' => 'closed',
-									],
-									[
-										'label' => 'Sospeso',
-										'value' => 'suspended',
-									],
-									[
-										'label' => 'Consegnato',
-										'value' => 'shipped',
-									]
-								]
-							])
-						</div>
 					</div>
 
 					@include('commons.formbuttons')
 				</form>
 				@else
-				<p>TODO: caso in cui l'utente non può editare l'ordine</p>
+				<form class="form-horizontal main-form">
+					<div class="col-md-6">
+						@include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => 'Fornitore'])
+						@include('commons.staticdatefield', ['obj' => $order, 'name' => 'start', 'label' => 'Data Apertura', 'mandatory' => true])
+						@include('commons.staticdatefield', ['obj' => $order, 'name' => 'end', 'label' => 'Data Chiusura', 'mandatory' => true])
+						@include('commons.staticdatefield', ['obj' => $order, 'name' => 'shipping', 'label' => 'Data Consegna'])
+
+						@include('commons.staticenumfield', [
+							'obj' => $order,
+							'name' => 'status',
+							'label' => 'Stato',
+							'values' => [
+								[
+									'label' => 'Aperto',
+									'value' => 'open',
+								],
+								[
+									'label' => 'Sospeso',
+									'value' => 'suspended',
+								],
+								[
+									'label' => 'Non Prenotabile',
+									'value' => 'private',
+								],
+								[
+									'label' => 'In Consegna',
+									'value' => 'shipping',
+								],
+								[
+									'label' => 'Consegnato',
+									'value' => 'shipped',
+								],
+								[
+									'label' => 'Chiuso',
+									'value' => 'closed',
+								]
+							]
+						])
+
+					</div>
+				</form>
 				@endif
 			</div>
 			@endforeach

@@ -11,8 +11,6 @@
 
 			@if($currentgas->oneCan('movements.view|movements.admin'))
 				@include('commons.textfield', ['obj' => $user, 'name' => 'card_number', 'label' => 'Numero Tessera'])
-				@include('commons.staticobjfield', ['obj' => $user, 'name' => 'deposit', 'label' => 'Cauzione'])
-				@include('commons.staticobjfield', ['obj' => $user, 'name' => 'fee', 'label' => 'Ultima Quota Pagata'])
 			@endif
 
 			@include('commons.staticdatefield', ['obj' => $user, 'name' => 'last_login', 'label' => 'Ultimo Login'])

@@ -1,11 +1,11 @@
 <div class="form-group">
 	<label class="col-sm-3 control-label">{{ $label }}</label>
 	<div class="col-sm-{{ $fieldsize }}">
-		<label class="control-label">
+		<label class="static-label text-muted">
 			<?php
 
 			if ($obj) {
-				if (strstr($obj->$name, '0000-00-00') != -1) {
+				if (strstr($obj->$name, '0000-00-00') !== false) {
 					echo 'Mai';
 				}
 				else {

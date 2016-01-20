@@ -7,6 +7,7 @@
 		<textarea
 			class="form-control"
 			name="{{ $prefix . $name . $postfix }}"
+			rows="5"
 
 			@if($squeeze == true)
 			placeholder="{{ $label }}"
