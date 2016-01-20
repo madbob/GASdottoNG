@@ -75,4 +75,42 @@ class Order extends Model
 			return $ret;
 		}
 	}
+
+	public function calculateSummary()
+	{
+		$summary = (object) [
+			'price' => 0,
+			'products' => []
+		];
+
+		$order = $this;
+		$products = $order->products;
+		$total_price = 0;
+		$total_transport = 0;
+
+		foreach($products as $product) {
+			$q = BookedProduct::where('product_id', '=', $product->id)->whereHas('booking', function($query) use ($order) {
+				$query->where('order_id', '=', $order->id);
+			});
+
+			$quantity = $q->sum('quantity');
+			$delivered = $q->sum('delivered');
+
+			$price = $quantity * $product->price;
+			$summary->products[$product->id]['price'] = $price;
+			$total_price += $price;
+
+			$transport = $quantity * $product->transport;
+			$summary->products[$product->id]['transport'] = $transport;
+			$total_transport += $transport;
+
+			$summary->products[$product->id]['quantity'] = $quantity;
+			$summary->products[$product->id]['delivered'] = $delivered;
+			$summary->products[$product->id]['notes'] = '';
+		}
+
+		$summary->price = $total_price;
+		$summary->transport = $total_transport;
+		return $summary;
+	}
 }

@@ -12,36 +12,51 @@ $more_orders = ($aggregate->orders->count() > 1);
 
 		<?php $o = $order->userBooking($user->id) ?>
 
-		@foreach($order->products as $product)
-			<div class="row booking-product">
-				<div class="col-md-12">
-					<div class="form-group">
-						<label class="col-sm-2 control-label">{{ $product->name }}</label>
-						<div class="col-md-3">
-							<div class="input-group booking-product-quantity">
-								<input class="form-control" name="{{ $product->id }}" value="{{ $o->getBookedQuantity($product) }}" />
-								<div class="input-group-addon">{{ $product->measure->name }}</div>
-							</div>
+		<table class="table">
+			<thead>
+				<th width="30%"></th>
+				<th width="25%"></th>
+				<th width="35%"></th>
+				<th width="10%"></th>
+			</thead>
+			<tbody>
+				@foreach($order->products as $product)
+				<tr class="booking-product">
+					<td>
+						<label class="static-label">{{ $product->name }}</label>
+					</td>
 
-							@if($product->variants->isEmpty() == false)
-							<div class="variant-selector">
-								@include('booking.variantselectrow', ['product' => $product, 'master' => true, 'saved' => null])
+					<td>
+						<div class="input-group booking-product-quantity">
+							<input class="form-control" name="{{ $product->id }}" value="{{ $o->getBookedQuantity($product) }}" />
+							<div class="input-group-addon">{{ $product->measure->name }}</div>
+						</div>
 
-								<?php $booked = $o->getBooked($product) ?>
-								@if($booked != null)
-									@foreach($booked->variants as $var)
-										@include('booking.variantselectrow', ['product' => $product, 'master' => false, 'saved' => $var])
-									@endforeach
-								@endif
-							</div>
+						@if($product->variants->isEmpty() == false)
+						<div class="variant-selector">
+							@include('booking.variantselectrow', ['product' => $product, 'master' => true, 'saved' => null])
+
+							<?php $booked = $o->getBooked($product) ?>
+							@if($booked != null)
+								@foreach($booked->variants as $var)
+									@include('booking.variantselectrow', ['product' => $product, 'master' => false, 'saved' => $var])
+								@endforeach
 							@endif
 						</div>
-						<label class="col-sm-5">{{ $product->printableDetails() }}</label>
-						<label class="col-sm-2 control-label">{{ $product->printablePrice() }}</label>
-					</div>
-				</div>
-			</div>
-		@endforeach
+						@endif
+					</td>
+
+					<td>
+						<label class="static-label">{{ $product->printableDetails() }}</label>
+					</td>
+
+					<td>
+						<label class="static-label">{{ $product->printablePrice() }}</label>
+					</td>
+				</tr>
+				@endforeach
+			</tbody>
+		</table>
 	@endforeach
 
 	<div class="row">

@@ -12,6 +12,7 @@ use Auth;
 use Theme;
 
 use App\Supplier;
+use App\Product;
 use App\Order;
 use App\Aggregate;
 
@@ -127,6 +128,29 @@ class OrdersController extends Controller
 			$order->shipping = '';
 
 		$order->save();
+
+		$products_changed = false;
+		$new_products = [];
+		$products = $request->input('productid');
+		$product_prices = $request->input('productprice');
+		$product_transports = $request->input('producttransport');
+
+		for($i = 0; $i < count($products); $i++) {
+			$p = Product::findOrFail($products[$i]);
+			if ($p->price != $product_prices[$i] || $p->transport != $product_transports[$i]) {
+				$p = $p->nextChain();
+				$p->price = $product_prices[$i];
+				$p->transport = $product_transports[$i];
+				$p->save();
+
+				$products_changed = true;
+			}
+
+			$new_products[] = $p->id;
+		}
+
+		if ($products_changed == true)
+			$order->products()->sync($new_products);
 
 		return $this->successResponse([
 			'id' => $order->aggregate->id,

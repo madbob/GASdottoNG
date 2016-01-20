@@ -34,6 +34,9 @@ $more_orders = ($aggregate->orders->count() > 1);
 						</div>
 					</div>
 
+					<hr/>
+
+					@include('order.summary', ['order' => $order])
 					@include('commons.formbuttons')
 				</form>
 				@else

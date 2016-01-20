@@ -44,10 +44,65 @@ class Product extends Model
 		return sprintf('%s::%s::0', $this->supplier_id, str_slug($this->name));
 	}
 
+	/*
+		Se il prodotto è incluso all'interno di almeno un ordine
+		(eventualmente != $order, se definito), esso viene duplicato e
+		la copia viene ritornata.
+		Da invocare quando un prodotto sta per essere modificato, per
+		preservare la copia precedentemente assegnata ad un ordine
+	*/
+	public function nextChain($order = null)
+	{
+		$p = $this;
+
+		$query = Order::whereHas('products', function($query) use ($p) {
+			$query->where('id', $p->id);
+		});
+
+		if ($order != null)
+			$query->where('id', '!=', $order->id);
+
+		$master_order = $query->first();
+
+		if ($master_order != null) {
+			$new_p = $p->replicate();
+			$new_p->id = $p->nextId();
+			$new_p->previous_id = $p->id;
+			$new_p->save();
+
+			foreach($p->variants as $variant) {
+				$new_var = new Variant();
+				$new_var->name = $variant->name;
+				$new_var->has_offset = $variant->has_offset;
+				$new_var->product_id = $new_p->id;
+				$new_var->save();
+
+				foreach($variant->values as $value) {
+					$new_val = new VariantValue();
+					$new_val->value = $value->value();
+					$new_val->price_offset = $value->price_offset;
+					$new_val->variant_id = $new_var->id;
+					$new_val->save();
+				}
+			}
+
+			return $new_p;
+		}
+
+		return $this;
+	}
+
 	public function nextId()
 	{
 		list($supplier, $name, $index) = explode('::', $this->id);
-		return sprintf('%s::%s::%s', $supplier, $name, $index + 1);
+
+		do {
+			$index += 1;
+			$ret = sprintf('%s::%s::%s', $supplier, $name, $index);
+			$test = Product::find($ret);
+		} while($test != null);
+
+		return $ret;
 	}
 
 	public function printablePrice()
