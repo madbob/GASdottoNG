@@ -101,7 +101,7 @@ function parseFloatC(value) {
 }
 
 function priceRound(price) {
-	return Math.round(price * 100) / 100;
+	return (Math.round(price * 100) / 100).toFixed(2);
 }
 
 function voidForm(form) {
@@ -674,22 +674,24 @@ $(document).ready(function() {
 
 		var row = $(this).closest('.booking-product');
 
-		var multiple = parseFloatC(row.find('input:hidden[name=product-multiple]').val());
-		if (multiple != 0 && booked % multiple != 0) {
-			row.addClass('has-error');
-			booked = 0;
-			wrong = true;
-		}
+		if (booked != 0) {
+			var multiple = parseFloatC(row.find('input:hidden[name=product-multiple]').val());
+			if (multiple != 0 && booked % multiple != 0) {
+				row.addClass('has-error');
+				booked = 0;
+				wrong = true;
+			}
 
-		var minimum = parseFloatC(row.find('input:hidden[name=product-minimum]').val());
-		if (minimum != 0 && booked < minimum) {
-			row.addClass('has-error');
-			booked = 0;
-			wrong = true;
-		}
+			var minimum = parseFloatC(row.find('input:hidden[name=product-minimum]').val());
+			if (minimum != 0 && booked < minimum) {
+				row.addClass('has-error');
+				booked = 0;
+				wrong = true;
+			}
 
-		if (wrong == false)
-			row.removeClass('has-error');
+			if (wrong == false)
+				row.removeClass('has-error');
+		}
 
 		var variant_selector = row.find('.variant-selector');
 
@@ -704,8 +706,11 @@ $(document).ready(function() {
 				else if (variants.length < booked) {
 					var diff = booked - variants.length;
 					var master = variant_selector.find('.master-variant-selector');
-					for (var i = 0; i < diff; i++)
-						variant_selector.append(master.clone().removeClass('master-variant-selector'));
+					for (var i = 0; i < diff; i++) {
+						var demaster = master.clone().removeClass('master-variant-selector');
+						demaster.find('select').removeClass('skip-on-submit');
+						variant_selector.append(demaster);
+					}
 				}
 			}
 		}
@@ -721,6 +726,11 @@ $(document).ready(function() {
 				quantity = 0;
 			else
 				quantity = parseFloatC(quantity);
+
+			var partitioning = $(this).find('input:hidden[name=product-partitioning]').val();
+			partitioning = parseFloatC(partitioning);
+			if (partitioning != 0)
+				quantity = quantity * partitioning;
 
 			total_price += price * quantity;
 		});

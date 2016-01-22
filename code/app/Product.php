@@ -108,14 +108,22 @@ class Product extends Model
 	public function printablePrice()
 	{
 		if (!empty($this->transport) && $this->transport != 0)
-			$str = sprintf('%.02f € + %.02f € trasporto', $this->price, $this->transport);
+			$str = sprintf('%.02f € / %s + %.02f € trasporto', $this->price, $this->measure->name, $this->transport);
 		else
-			$str = sprintf('%.02f €', $this->price);
+			$str = sprintf('%.02f € / %s', $this->price, $this->measure->name);
 
 		if ($this->variable)
 			$str .= '<small> (prodotto a prezzo variabile)</small>';
 
 		return $str;
+	}
+
+	public function printableMeasure()
+	{
+		if ($this->partitioning != 0)
+			return sprintf('%.02f %s', $this->partitioning, $this->measure->name);
+		else
+			return $this->measure->name;
 	}
 
 	public function printableDetails()

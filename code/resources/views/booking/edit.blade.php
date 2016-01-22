@@ -12,7 +12,7 @@ $more_orders = ($aggregate->orders->count() > 1);
 
 		<?php $o = $order->userBooking($user->id) ?>
 
-		<table class="table booking-editor">
+		<table class="table table-striped booking-editor">
 			<thead>
 				<th width="25%"></th>
 				<th width="25%"></th>
@@ -23,9 +23,10 @@ $more_orders = ($aggregate->orders->count() > 1);
 				@foreach($order->products as $product)
 				<tr class="booking-product">
 					<td>
-						<input type="hidden" name="product-minimum" value="{{ $product->minimum }}" />
-						<input type="hidden" name="product-multiple" value="{{ $product->multiple }}" />
-						<input type="hidden" name="product-price" value="{{ $product->price + $product->transport }}" />
+						<input type="hidden" name="product-minimum" value="{{ $product->minimum }}" class="skip-on-submit" />
+						<input type="hidden" name="product-multiple" value="{{ $product->multiple }}" class="skip-on-submit" />
+						<input type="hidden" name="product-partitioning" value="{{ $product->partitioning }}" class="skip-on-submit" />
+						<input type="hidden" name="product-price" value="{{ $product->price + $product->transport }}" class="skip-on-submit" />
 
 						<label class="static-label">{{ $product->name }}</label>
 					</td>
@@ -33,7 +34,7 @@ $more_orders = ($aggregate->orders->count() > 1);
 					<td>
 						<div class="input-group booking-product-quantity">
 							<input type="number" class="form-control" name="{{ $product->id }}" value="{{ $o->getBookedQuantity($product) }}" />
-							<div class="input-group-addon">{{ $product->measure->name }}</div>
+							<div class="input-group-addon">{{ $product->printableMeasure() }}</div>
 						</div>
 
 						@if($product->variants->isEmpty() == false)
@@ -55,7 +56,7 @@ $more_orders = ($aggregate->orders->count() > 1);
 					</td>
 
 					<td class="text-right">
-						<label class="static-label">{{ $product->printablePrice() }}</label>
+						<label class="static-label">{!! $product->printablePrice() !!}</label>
 					</td>
 				</tr>
 				@endforeach

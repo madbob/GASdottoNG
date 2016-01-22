@@ -32,4 +32,15 @@ class BookedProduct extends Model
 	{
 		return sprintf('%s::%s', $this->booking->id, $this->product->id);
 	}
+
+	public function getValueAttribute()
+	{
+		$product = $this->product;
+
+		$quantity = $this->quantity;
+		if ($product->partitioning != 0)
+			$quantity = $this->quantity * $product->partitioning;
+
+		return $product->price * $quantity;
+	}
 }

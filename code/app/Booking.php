@@ -67,7 +67,7 @@ class Booking extends Model
 		$sum = 0;
 
 		foreach($this->products as $booked)
-			$sum += $booked->product->price * $booked->quantity;
+			$sum += $booked->value;
 
 		return $sum;
 	}
