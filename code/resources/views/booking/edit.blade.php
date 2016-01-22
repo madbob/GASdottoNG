@@ -12,23 +12,27 @@ $more_orders = ($aggregate->orders->count() > 1);
 
 		<?php $o = $order->userBooking($user->id) ?>
 
-		<table class="table">
+		<table class="table booking-editor">
 			<thead>
-				<th width="30%"></th>
+				<th width="25%"></th>
 				<th width="25%"></th>
 				<th width="35%"></th>
-				<th width="10%"></th>
+				<th width="15%"></th>
 			</thead>
 			<tbody>
 				@foreach($order->products as $product)
 				<tr class="booking-product">
 					<td>
+						<input type="hidden" name="product-minimum" value="{{ $product->minimum }}" />
+						<input type="hidden" name="product-multiple" value="{{ $product->multiple }}" />
+						<input type="hidden" name="product-price" value="{{ $product->price + $product->transport }}" />
+
 						<label class="static-label">{{ $product->name }}</label>
 					</td>
 
 					<td>
 						<div class="input-group booking-product-quantity">
-							<input class="form-control" name="{{ $product->id }}" value="{{ $o->getBookedQuantity($product) }}" />
+							<input type="number" class="form-control" name="{{ $product->id }}" value="{{ $o->getBookedQuantity($product) }}" />
 							<div class="input-group-addon">{{ $product->measure->name }}</div>
 						</div>
 
@@ -50,12 +54,20 @@ $more_orders = ($aggregate->orders->count() > 1);
 						<label class="static-label">{{ $product->printableDetails() }}</label>
 					</td>
 
-					<td>
+					<td class="text-right">
 						<label class="static-label">{{ $product->printablePrice() }}</label>
 					</td>
 				</tr>
 				@endforeach
 			</tbody>
+			<tfoot>
+				<tr>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th class="text-right">Totale: <span class="booking-total">{{ $o->value }}</span> €</th>
+				</tr>
+			</tfoot>
 		</table>
 	@endforeach
 

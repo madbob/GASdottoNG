@@ -96,6 +96,14 @@ function filteredSerialize(form) {
 	return $(':not(.skip-on-submit)', form).serializeArray();
 }
 
+function parseFloatC(value) {
+	return parseFloat(value.replace(/,/, '.'));
+}
+
+function priceRound(price) {
+	return Math.round(price * 100) / 100;
+}
+
 function voidForm(form) {
 	form.find('input[type!=hidden]').val('');
 	form.find('textarea').val('');
@@ -657,13 +665,32 @@ $(document).ready(function() {
 	$('body').on('keyup', '.booking-product-quantity input', function() {
 		var v = $(this).val();
 		var booked;
+		var wrong = false;
 
 		if (v == '')
 			booked = 0;
 		else
-			booked = parseInt(v);
+			booked = parseFloatC(v);
 
 		var row = $(this).closest('.booking-product');
+
+		var multiple = parseFloatC(row.find('input:hidden[name=product-multiple]').val());
+		if (multiple != 0 && booked % multiple != 0) {
+			row.addClass('has-error');
+			booked = 0;
+			wrong = true;
+		}
+
+		var minimum = parseFloatC(row.find('input:hidden[name=product-minimum]').val());
+		if (minimum != 0 && booked < minimum) {
+			row.addClass('has-error');
+			booked = 0;
+			wrong = true;
+		}
+
+		if (wrong == false)
+			row.removeClass('has-error');
+
 		var variant_selector = row.find('.variant-selector');
 
 		if (variant_selector.length != 0) {
@@ -682,10 +709,33 @@ $(document).ready(function() {
 				}
 			}
 		}
-	}).on('blur', function() {
+
+		var total_price = 0;
+		var editor = row.closest('.booking-editor');
+		editor.find('.booking-product').each(function() {
+			var price = $(this).find('input:hidden[name=product-price]').val();
+			price = parseFloatC(price);
+
+			var quantity = $(this).find('.booking-product-quantity input').val();
+			if (quantity == '')
+				quantity = 0;
+			else
+				quantity = parseFloatC(quantity);
+
+			total_price += price * quantity;
+		});
+
+		var total_label = editor.find('.booking-total');
+		total_label.text(priceRound(total_price));
+
+	}).on('blur', '.booking-product-quantity input', function() {
 		var v = $(this).val();
-		if (v == '')
+		var row = $(this).closest('.booking-product');
+		if (v == '' || row.hasClass('has-error'))
 			$(this).val('0');
+
+	}).on('focus', '.booking-product-quantity input', function() {
+		$(this).closest('.booking-product').removeClass('.has-error');
 	});
 
 	/*
