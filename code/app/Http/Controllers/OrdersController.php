@@ -15,15 +15,18 @@ use App\Supplier;
 use App\Product;
 use App\Order;
 use App\Aggregate;
+use App\BookedProduct;
 
 /*
-	Attenzione, quando si maneggia in questo file bisogna ricordare la distinzione tra Ordine
-	e Aggregato.
-	Un Ordine fa riferimento ad un fornitore (per il quale l'utente può avere o no permessi
-	di modifica) e contiene dei prodotti. Un Aggregato è un insieme di Ordini.
-	Per comodità, qui si assume che tutti gli Ordini siano sempre parte di un Aggregato,
-	anche se contiene solo l'Ordine stesso. In alcuni casi gli ID passati come parametro alle
-	funzioni fanno riferimento ad un Ordine, in altri casi ad un Aggregato.
+	Attenzione, quando si maneggia in questo file bisogna ricordare la
+	distinzione tra Ordine e Aggregato.
+	Un Ordine fa riferimento ad un fornitore (per il quale l'utente può
+	avere o no permessi di modifica) e contiene dei prodotti. Un Aggregato è
+	un insieme di Ordini.
+	Per comodità, qui si assume che tutti gli Ordini siano sempre parte di
+	un Aggregato, anche se contiene solo l'Ordine stesso. In alcuni casi gli
+	ID passati come parametro alle funzioni fanno riferimento ad un Ordine,
+	in altri casi ad un Aggregato.
 */
 
 class OrdersController extends Controller
@@ -36,10 +39,11 @@ class OrdersController extends Controller
 	public function index()
 	{
 		/*
-			La selezione degli ordini da visualizzare si può forse fare con una query
-			complessa, premesso che bisogna prendere in considerazione i permessi che
-			l'utente corrente ha nei confronti dei fornitori degli ordini inclusi
-			negli aggregati
+			La selezione degli ordini da visualizzare si può forse
+			fare con una query complessa, premesso che bisogna
+			prendere in considerazione i permessi che l'utente
+			corrente ha nei confronti dei fornitori degli ordini
+			inclusi negli aggregati
 		*/
 
 		$orders = [];
@@ -129,6 +133,15 @@ class OrdersController extends Controller
 
 		$order->save();
 
+		/*
+			Se vengono aggiornati i valori di un prodotto, e questo
+			prodotto è già contemplato da altri ordini, devo
+			duplicarlo per preservare i vecchi valori storici.
+			Nel caso, devo accertarmi anche di ricollegare le
+			prenotazioni effettuate all'interno di questo ordine con
+			la nuova copia del prodotto
+		*/
+
 		$products_changed = false;
 		$new_products = [];
 		$products = $request->input('productid');
@@ -138,12 +151,20 @@ class OrdersController extends Controller
 		for($i = 0; $i < count($products); $i++) {
 			$p = Product::findOrFail($products[$i]);
 			if ($p->price != $product_prices[$i] || $p->transport != $product_transports[$i]) {
+				$old_id = $p->id;
+
 				$p = $p->nextChain();
 				$p->price = $product_prices[$i];
 				$p->transport = $product_transports[$i];
 				$p->save();
 
-				$products_changed = true;
+				if ($old_id != $p->id) {
+					$products_changed = true;
+
+					BookedProduct::whereHas('booking', function($query) use ($order) {
+						$query->where('order_id', '=', $order->id);
+					})->where('product_id', '=', $old_id)->update(['product_id' => $p->id]);
+				}
 			}
 
 			$new_products[] = $p->id;
