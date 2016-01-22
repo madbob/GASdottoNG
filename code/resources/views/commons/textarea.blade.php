@@ -1,6 +1,6 @@
 <div class="form-group">
 	@if($squeeze == false)
-	<label for="{{ $prefix . $name . $postfix }}" class="col-sm-3 control-label">{{ $label }}</label>
+	<label for="{{ $prefix . $name . $postfix }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
 	@endif
 
 	<div class="col-sm-{{ $fieldsize }}">

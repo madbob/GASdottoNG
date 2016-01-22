@@ -30,7 +30,8 @@ class GraphicInitServiceProvider extends ServiceProvider
 
 			$defaults = [
 				'squeeze' => false,
-				'fieldsize' => 9,
+				'labelsize' => 4,
+				'fieldsize' => 8,
 				'help_text' => '',
 				'extras' => [],
 				'prefix' => false,

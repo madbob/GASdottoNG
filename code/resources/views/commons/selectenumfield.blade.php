@@ -1,5 +1,5 @@
 <div class="form-group">
-	<label for="{{ $prefix . $name }}" class="col-sm-3 control-label">{{ $label }}</label>
+	<label for="{{ $prefix . $name }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
 	<div class="col-sm-{{ $fieldsize }}">
 		<select class="form-control" name="{{ $prefix . $name }}">
 			@foreach($values as $v)
