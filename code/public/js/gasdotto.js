@@ -1,3 +1,7 @@
+/*******************************************************************************
+	Varie ed eventuali
+*/
+
 var userBlood = new Bloodhound({
 	datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
 	queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -196,6 +200,27 @@ function setupImportCsvEditor() {
 	});
 }
 
+function parseDynamicTree(unparsed_data) {
+	var data = [];
+
+	for (var i = 0; i < unparsed_data.length; i++) {
+		var unparsed_node = unparsed_data[i];
+		/*
+			Per avere il contenuto testuale del nodo devo rimuovere
+			l'HTML del pulsante di rimozione della riga
+		*/
+		var node = {id: unparsed_node.id, name: unparsed_node.text.replace(/<[^>]*>?/g, '')};
+		node.children = parseDynamicTree(unparsed_node.children);
+		data.push(node);
+	}
+
+	return data;
+}
+
+/*******************************************************************************
+	Varianti
+*/
+
 function setupVariantsEditor() {
 	$('.variants-editor').on('click', '.delete-variant', function() {
 		var editor = $(this).closest('.variants-editor');
@@ -283,17 +308,27 @@ function setupVariantsEditor() {
 	});
 }
 
+/*******************************************************************************
+	Permessi
+*/
+
 function getPermissionsEditor(node) {
 	var ret = {valid: true};
 	ret.editor = node.closest('.permissions-editor');
 	ret.users = ret.editor.find('select[name=user]');
 
 	var subject = ret.editor.find('select[name=subject] option:selected');
+	if (subject.length != 1)
+		subject = ret.editor.find('input:hidden[name=subject]');
+
 	ret.subject = subject.val();
 	if (subject.length != 1)
 		ret.valid = false;
 
 	var rule = ret.editor.find('select[name=rule]:not(.hidden) option:selected');
+	if (rule.length != 1)
+		rule = ret.editor.find('input:hidden[name=rule]');
+
 	ret.rule = rule.val();
 	if (rule.length != 1)
 		ret.valid = false;
@@ -301,6 +336,36 @@ function getPermissionsEditor(node) {
 	ret.behaviour = ret.editor.find('input:radio[name=behaviour]:checked').val();
 
 	return ret;
+}
+
+function loadPermissions(editor) {
+	if (editor.valid == false) {
+		editor.users.empty().append('<option disabled>Seleziona una regola</option>');
+	}
+	else {
+		editor.users.empty().append('<option disabled>Caricamento...</option>');
+
+		$.ajax('/permissions/read', {
+			method: 'GET',
+			data: {
+				subject_id: editor.subject,
+				rule_id: editor.rule
+			},
+			dataType: 'json',
+
+			success: function(data) {
+				var u;
+				editor.users.empty();
+
+				for(var i = 0; i < data.users.length; i++) {
+					u = data.users[i];
+					editor.users.append('<option value="' + u.id + '">' + u.name + '</option>');
+				}
+
+				editor.editor.find('input:radio[name=behaviour][value=' + data.behaviour + ']').prop('checked', true);
+			}
+		});
+	}
 }
 
 function setupPermissionsEditor() {
@@ -327,34 +392,8 @@ function setupPermissionsEditor() {
 		*/
 
 		var editor = getPermissionsEditor($(this));
+		loadPermissions(editor);
 
-		if (editor.valid == false) {
-			editor.users.empty().append('<option disabled>Seleziona una regola</option>');
-		}
-		else {
-			editor.users.empty().append('<option disabled>Caricamento...</option>');
-
-			$.ajax('/permissions/read', {
-				method: 'GET',
-				data: {
-					subject_id: editor.subject,
-					rule_id: editor.rule
-				},
-				dataType: 'json',
-
-				success: function(data) {
-					var u;
-					editor.users.empty();
-
-					for(var i = 0; i < data.users.length; i++) {
-						u = data.users[i];
-						editor.users.append('<option value="' + u.id + '">' + u.name + '</option>');
-					}
-
-					editor.editor.find('input:radio[name=behaviour][value=' + data.behaviour + ']').prop('checked', true);
-				}
-			});
-		}
 	}).on('click', '.remove-auth', function() {
 		var editor = getPermissionsEditor($(this));
 
@@ -414,7 +453,24 @@ function setupPermissionsEditor() {
 			});
 		}
 	});
+
+	$('#editPermissions').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget);
+		var subject = button.data('subject');
+		var rule = button.data('rule');
+		var modal = $(this);
+
+		modal.find('.modal-body input:hidden[name=subject]').val(subject);
+		modal.find('.modal-body input:hidden[name=rule]').val(rule);
+
+		var editor = getPermissionsEditor(modal.find('.permissions-editor'));
+		loadPermissions(editor);
+	});
 }
+
+/*******************************************************************************
+	Help
+*/
 
 function helpFillNode(nodes, text) {
 	if (nodes != null) {
@@ -476,23 +532,6 @@ function setupHelp() {
 		$(this).toggleClass('active');
 		return false;
 	});
-}
-
-function parseDynamicTree(unparsed_data) {
-	var data = [];
-
-	for (var i = 0; i < unparsed_data.length; i++) {
-		var unparsed_node = unparsed_data[i];
-		/*
-			Per avere il contenuto testuale del nodo devo rimuovere
-			l'HTML del pulsante di rimozione della riga
-		*/
-		var node = {id: unparsed_node.id, name: unparsed_node.text.replace(/<[^>]*>?/g, '')};
-		node.children = parseDynamicTree(unparsed_node.children);
-		data.push(node);
-	}
-
-	return data;
 }
 
 $(document).ready(function() {
@@ -917,9 +956,6 @@ $(document).ready(function() {
 		return false;
 	});
 
-	/*
-		Varie ed eventuali
-	*/
 	setupHelp();
 	setupPermissionsEditor();
 });

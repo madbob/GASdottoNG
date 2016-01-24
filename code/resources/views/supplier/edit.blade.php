@@ -15,9 +15,7 @@
 					@include('supplier.base-edit', ['supplier' => $supplier])
 				</div>
 				<div class="col-md-6">
-					<div class="alert alert-info">
-						<p>TODO</p>
-					</div>
+					@include('commons.permissionseditor', ['object' => $supplier, 'master_permission' => 'supplier.modify'])
 				</div>
 			</div>
 

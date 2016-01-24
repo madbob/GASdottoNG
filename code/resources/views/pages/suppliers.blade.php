@@ -71,6 +71,7 @@
 </div>
 @endif
 
+@if($currentgas->userCan('measures.admin'))
 <div class="modal fade" id="createMeasure" tabindex="-1" role="dialog" aria-labelledby="createMeasure">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -92,5 +93,61 @@
 		</div>
 	</div>
 </div>
+@endif
+
+@if($currentgas->userHas('supplier.modify'))
+<div class="modal fade" id="editPermissions" tabindex="-1" role="dialog" aria-labelledby="editPermissions">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Modifica Permessi</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row permissions-editor">
+					<input type="hidden" name="subject" value="">
+					<input type="hidden" name="rule" value="">
+
+					<div class="col-md-6">
+						<select multiple name="user" class="form-control" size="20">
+							<option disabled="disabled">Seleziona una regola</option>
+						</select>
+					</div>
+
+					<div class="col-md-6">
+						<div class="form-group">
+							<button class="btn btn-danger remove-auth">Rimuovi Utente Selezionato</button>
+						</div>
+						<div class="form-group">
+							<input name="adduser" class="form-control" placeholder="Digita il nome di un utente da aggiungere all'elenco" />
+						</div>
+						<div class="radio">
+							<label>
+								<input type="radio" name="behaviour" value="selected">
+								Autorizza solo gli utenti nell'elenco
+							</label>
+						</div>
+						<div class="radio">
+							<label>
+								<input type="radio" name="behaviour" value="except">
+								Autorizza tutti, tranne gli utenti nell'elenco
+							</label>
+						</div>
+						<div class="radio">
+							<label>
+								<input type="radio" name="behaviour" value="all">
+								Autorizza tutti gli utenti (indipendentemente dall'elenco)
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default reloader" data-dismiss="modal" data-reload-target="#supplier-list">Chiudi</button>
+			</div>
+		</div>
+	</div>
+</div>
+@endif
 
 @endsection

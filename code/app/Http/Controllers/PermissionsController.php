@@ -20,10 +20,6 @@ class PermissionsController extends Controller
         {
                 DB::beginTransaction();
 
-                $user = Auth::user();
-		if ($user->gas->userCan('gas.permissions') == false)
-			return $this->errorResponse('Non autorizzato');
-
                 $subject_id = $request->input('subject_id');
                 $rule_id = $request->input('rule_id');
 
@@ -32,51 +28,16 @@ class PermissionsController extends Controller
                         return $this->errorResponse('Regola non trovata');
 
                 $subject = $class::findOrFail($subject_id);
-                $users = $subject->whoCan($rule_id);
+                if ($subject->permissionsCanBeModified() == false)
+			return $this->errorResponse('Non autorizzato');
 
-                $current_users = User::count();
-                $ret_users = [];
-                $behaviour = '';
-
-                if (array_key_exists('*', $users)) {
-                        $behaviour = 'all';
-                }
-                else if (count($users) > ($current_users / 2)) {
-                        $excluded_users = User::whereNotIn('id', $users)->orderBy('name', 'asc')->get();
-                        foreach($excluded_users as $eu) {
-                                $ret_users[] = (object) [
-                                        'id' => $eu->id,
-                                        'name' => $eu->printableName(),
-                                ];
-                        }
-
-                        $behaviour = 'except';
-                }
-                else {
-                        $included_users = User::whereIn('id', $users)->orderBy('name', 'asc')->get();
-                        foreach($included_users as $iu) {
-                                $ret_users[] = (object) [
-                                        'id' => $iu->id,
-                                        'name' => $iu->printableName(),
-                                ];
-                        }
-
-                        $behaviour = 'selected';
-                }
-
-                return $this->successResponse([
-			'behaviour' => $behaviour,
-			'users' => $ret_users
-		]);
+                $ret = $subject->whoCanComplex($rule_id);
+                return $this->successResponse($ret);
         }
 
         public function postAdd(Request $request)
         {
                 DB::beginTransaction();
-
-                $user = Auth::user();
-		if ($user->gas->userCan('gas.permissions') == false)
-			return $this->errorResponse('Non autorizzato');
 
                 $user_id = $request->input('user_id');
                 $subject_id = $request->input('subject_id');
@@ -88,6 +49,8 @@ class PermissionsController extends Controller
                         return $this->errorResponse('Regola non trovata');
 
                 $subject = $class::findOrFail($subject_id);
+		if ($subject->permissionsCanBeModified() == false)
+			return $this->errorResponse('Non autorizzato');
 
                 switch($behaviour) {
                         case 'all':
@@ -118,10 +81,6 @@ class PermissionsController extends Controller
         {
                 DB::beginTransaction();
 
-                $user = Auth::user();
-		if ($user->gas->userCan('gas.permissions') == false)
-			return $this->errorResponse('Non autorizzato');
-
                 $user_id = $request->input('user_id');
                 $subject_id = $request->input('subject_id');
                 $rule_id = $request->input('rule_id');
@@ -132,6 +91,8 @@ class PermissionsController extends Controller
                         return $this->errorResponse('Regola non trovata');
 
                 $subject = $class::findOrFail($subject_id);
+                if ($subject->permissionsCanBeModified() == false)
+			return $this->errorResponse('Non autorizzato');
 
                 switch($behaviour) {
                         case 'all':
@@ -174,10 +135,6 @@ class PermissionsController extends Controller
         {
                 DB::beginTransaction();
 
-                $user = Auth::user();
-		if ($user->gas->userCan('gas.permissions') == false)
-			return $this->errorResponse('Non autorizzato');
-
                 $subject_id = $request->input('subject_id');
                 $rule_id = $request->input('rule_id');
                 $behaviour = $request->input('behaviour');
@@ -187,6 +144,8 @@ class PermissionsController extends Controller
                         return $this->errorResponse('Regola non trovata');
 
                 $subject = $class::findOrFail($subject_id);
+                if ($subject->permissionsCanBeModified() == false)
+			return $this->errorResponse('Non autorizzato');
 
                 switch($behaviour) {
                         case 'all':

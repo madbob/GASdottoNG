@@ -4,6 +4,7 @@ namespace App;
 
 use Auth;
 
+use App\User;
 use App\Permission;
 
 /*
@@ -17,6 +18,12 @@ trait AllowableTrait
 	public function permissions()
 	{
 		return $this->morphMany('App\Permission', 'target');
+	}
+
+	public function permissionsCanBeModified()
+	{
+		$user = Auth::user();
+		return ($user->gas->userCan('gas.permissions') || $this->userCan('supplier.modify', $user));
 	}
 
 	private function permissionType($perm)
@@ -119,6 +126,50 @@ trait AllowableTrait
 	}
 
 	/*
+		Simile a whoCan(), ma ritorna un risultato utile per costruire
+		una interfaccia più comoda per l'utente
+	*/
+	public function whoCanComplex($action)
+	{
+		$users = $this->whoCan($action);
+
+                $current_users = User::count();
+                $ret_users = [];
+                $behaviour = '';
+
+                if (array_key_exists('*', $users)) {
+                        $behaviour = 'all';
+                }
+                else if (count($users) > ($current_users / 2)) {
+                        $excluded_users = User::whereNotIn('id', $users)->orderBy('surname', 'asc')->get();
+                        foreach($excluded_users as $eu) {
+                                $ret_users[] = (object) [
+                                        'id' => $eu->id,
+                                        'name' => $eu->printableName(),
+                                ];
+                        }
+
+                        $behaviour = 'except';
+                }
+                else {
+                        $included_users = User::whereIn('id', $users)->orderBy('surname', 'asc')->get();
+                        foreach($included_users as $iu) {
+                                $ret_users[] = (object) [
+                                        'id' => $iu->id,
+                                        'name' => $iu->printableName(),
+                                ];
+                        }
+
+                        $behaviour = 'selected';
+                }
+
+                return [
+			'behaviour' => $behaviour,
+			'users' => $ret_users
+		];
+	}
+
+	/*
 		Verifica che almeno un utente abbia il permesso richiesto / uno
 		dei permessi richiesti sull'oggetto corrente
 	*/
@@ -181,6 +232,18 @@ trait AllowableTrait
 				$this->permissions()->where('action', '=', $a)->where('user_id', '=', $id)->delete();
 			}
 		}
+	}
+
+	public function getPermissions()
+	{
+		$c = get_class($this);
+
+		$all_permissions = Permission::allPermissions();
+		foreach($all_permissions as $class => $rules)
+                        if ($class == $c)
+                                return $rules;
+
+		return [];
 	}
 
 	public function deletePermissions()
