@@ -16,7 +16,7 @@ foreach($orders as $order)
 @include('commons.selectobjfield', [
 	'obj' => $notification,
 	'name' => 'users',
-	'objects' => App\User::orderBy('name', 'asc')->get(),
+	'objects' => App\User::orderBy('surname', 'asc')->get(),
 	'extra_selection' => $extras,
 	'multiple_select' => true,
 	'label' => 'Destinatari',

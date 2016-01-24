@@ -37,6 +37,7 @@
 
 					@if(Auth::check())
 					<ul class="nav navbar-nav navbar-right">
+						<li id="help-trigger"><a href="#">Aiuto <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a></li>
 						<li><a href="{{ url('auth/logout') }}">Logout <span class="glyphicon glyphicon-off" aria-hidden="true"></span></a></li>
 					</ul>
 					@endif
@@ -66,6 +67,7 @@
 		<script type="application/javascript" src="{{ url('js/jquery.fileupload.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/bootstrap-table.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/bootstrap-table-it-IT.js') }}"></script>
+		<script type="application/javascript" src="{{ url('js/marked.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/gasdotto.js') }}"></script>
 	</body>
 </html>

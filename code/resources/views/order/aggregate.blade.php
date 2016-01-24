@@ -25,7 +25,7 @@ $more_orders = ($aggregate->orders->count() > 1);
 			@foreach($aggregate->orders as $order)
 			<div role="tabpanel" class="tab-pane active" id="order-{{ $order->id }}">
 				@if($order->supplier->userCan('supplier.orders'))
-				<form class="form-horizontal main-form" method="PUT" action="{{ url('orders/' . $order->id) }}">
+				<form class="form-horizontal main-form order-editor" method="PUT" action="{{ url('orders/' . $order->id) }}">
 					<input type="hidden" name="id" value="{{ $order->id }}" />
 
 					<div class="row">

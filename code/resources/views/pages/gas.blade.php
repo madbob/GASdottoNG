@@ -9,18 +9,26 @@
 	<h3>Configurazioni Generali</h3>
 </div>
 
-<div class="row">
-	<div class="col-md-12">
-		<form class="form-horizontal inner-form" method="PUT" action="{{ url('gas/' . $gas->id) }}">
+<form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ url('gas/' . $gas->id) }}">
+	<div class="row">
+		<div class="col-md-6">
 			@include('commons.textfield', ['obj' => $gas, 'name' => 'name', 'label' => 'Nome', 'mandatory' => true])
 			@include('commons.textfield', ['obj' => $gas, 'name' => 'email', 'label' => 'E-Mail', 'mandatory' => true])
 			@include('commons.textarea', ['obj' => $gas, 'name' => 'description', 'label' => 'Descrizione'])
 			@include('commons.textarea', ['obj' => $gas, 'name' => 'message', 'label' => 'Messaggio Homepage'])
-
-			@include('commons.formbuttons')
-		</form>
+		</div>
+		<div class="col-md-6">
+		</div>
 	</div>
-</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="btn-group pull-right main-form-buttons" role="group" aria-label="Opzioni">
+				<button type="submit" class="btn btn-success">Salva</button>
+			</div>
+		</div>
+	</div>
+</form>
 
 <div class="page-header">
 	<h3>Permessi</h3>

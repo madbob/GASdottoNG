@@ -38,7 +38,7 @@ if ($multiple_select)
 <div class="form-group">
 	<label for="{{ $prefix . $name . $postfix }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
 	<div class="col-sm-{{ $fieldsize }}">
-		<select class="form-control<?php if($triggering_modal !== false) echo ' triggers-modal" data-trigger-modal="' . $triggering_modal ?>" name="{{ $prefix . $name . $postfix }}"<?php if($multiple_select) echo ' multiple' ?>>
+		<select class="form-control<?php if($triggering_modal !== false) echo ' triggers-modal" data-trigger-modal="' . $triggering_modal ?>" name="{{ $prefix . $name . $postfix }}"<?php if($multiple_select) echo ' multiple size="10"' ?>>
 			@if(!empty($extra_selection))
 				@foreach($extra_selection as $value => $label)
 				<option value="{{ $value }}">{{ $label }}</option>

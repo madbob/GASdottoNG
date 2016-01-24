@@ -1,4 +1,4 @@
-<form class="form-horizontal main-form" method="PUT" action="{{ url('products/' . $product->id) }}">
+<form class="form-horizontal main-form product-editor" method="PUT" action="{{ url('products/' . $product->id) }}">
 	<div class="row">
 		<div class="col-md-6">
 			@include('product.base-edit', ['product' => $product])

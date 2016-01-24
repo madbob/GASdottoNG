@@ -1,4 +1,4 @@
-<form class="form-horizontal main-form" method="PUT" action="{{ url('users/' . $user->id) }}">
+<form class="form-horizontal main-form user-editor" method="PUT" action="{{ url('users/' . $user->id) }}">
 	<div class="row">
 		<div class="col-md-6">
 			@include('user.base-edit', ['user' => $user])

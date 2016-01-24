@@ -7,7 +7,7 @@
 
 <div class="tab-content">
 	<div role="tabpanel" class="tab-pane active" id="details-{{ $supplier->id }}">
-		<form class="form-horizontal main-form" method="PUT" action="{{ url('suppliers/' . $supplier->id) }}">
+		<form class="form-horizontal main-form supplier-editor" method="PUT" action="{{ url('suppliers/' . $supplier->id) }}">
 			<input type="hidden" name="id" value="{{ $supplier->id }}" />
 
 			<div class="row">
