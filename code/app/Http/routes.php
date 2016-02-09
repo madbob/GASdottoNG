@@ -20,6 +20,7 @@ Route::resource('measures', 'MeasuresController');
 Route::resource('variants', 'VariantsController');
 Route::resource('orders', 'OrdersController');
 Route::resource('booking.user', 'BookingUserController');
+Route::resource('delivery.user', 'DeliveryUserController');
 Route::resource('booking', 'BookingController');
 Route::resource('notifications', 'NotificationsController');
 Route::resource('movements', 'MovementsController');

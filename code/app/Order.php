@@ -30,7 +30,7 @@ class Order extends Model
 
 	public function bookings()
 	{
-		return $this->hasMany('App\Booking');
+		return $this->hasMany('App\Booking')->with('user');
 	}
 
 	public function getSlugID()
@@ -69,6 +69,7 @@ class Order extends Model
 			$b = new Booking;
 			$b->user_id = $userid;
 			$b->order_id = $this->id;
+			$b->status = 'pending';
 			return $b;
 		}
 		else {

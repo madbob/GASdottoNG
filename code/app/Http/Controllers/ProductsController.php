@@ -56,14 +56,23 @@ class ProductsController extends Controller
 		]);
 	}
 
-	public function show($id)
+	public function show(Request $request, $id)
 	{
+		$format = $request->input('format', 'html');
 		$p = Product::findOrFail($id);
 
-		if ($p->supplier->userCan('supplier.modify'))
-			return Theme::view('product.edit', ['product' => $p]);
-		else
-			return Theme::view('product.show', ['product' => $p]);
+		if ($format == 'html') {
+			if ($p->supplier->userCan('supplier.modify'))
+				return Theme::view('product.edit', ['product' => $p]);
+			else
+				return Theme::view('product.show', ['product' => $p]);
+		}
+		else if ($format == 'json') {
+			$ret = $p->toJson();
+			$ret = json_decode($ret);
+			$ret->printableMeasure = $p->printableMeasure();
+			return json_encode($ret);
+		}
 	}
 
 	public function update(Request $request, $id)

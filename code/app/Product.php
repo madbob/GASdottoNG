@@ -120,10 +120,16 @@ class Product extends Model
 
 	public function printableMeasure()
 	{
-		if ($this->partitioning != 0)
+		if ($this->partitioning != 0) {
 			return sprintf('%.02f %s', $this->partitioning, $this->measure->name);
-		else
-			return $this->measure->name;
+		}
+		else {
+			$m = $this->measure;
+			if ($m == null)
+				return '';
+			else
+				return $m->name;
+		}
 	}
 
 	public function printableDetails()

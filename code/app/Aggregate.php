@@ -91,4 +91,19 @@ class Aggregate extends Model
 
 		return false;
 	}
+
+	public function getBookingsAttribute()
+	{
+		$ret = [];
+
+		foreach ($this->orders as $order) {
+			foreach ($order->bookings as $booking) {
+				$user_id = $booking->user->id;
+				if (!isset($ret[$user_id]))
+					$ret[$user_id] = $booking->user;
+			}
+		}
+
+		return $ret;
+	}
 }

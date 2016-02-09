@@ -90,23 +90,25 @@ $more_orders = ($aggregate->orders->count() > 1);
 
 <hr/>
 
-<div class="row">
+<div class="row aggregate-bookings">
+	<input type="hidden" name="aggregate_id" value="{{ $aggregate->id }}" />
+
 	<div class="col-md-12">
 		<ul class="nav nav-tabs" role="tablist">
-			<li role="presentation" class="active"><a href="#myself" role="tab" data-toggle="tab">La Mia Prenotazione</a></li>
+			<li role="presentation" class="active"><a href="#myself-{{ $aggregate->id }}" role="tab" data-toggle="tab">La Mia Prenotazione</a></li>
 			@if($has_shipping)
-			<li role="presentation"><a href="#others" role="tab" data-toggle="tab">Prenotazioni per Altri</a></li>
-			<li role="presentation"><a href="#shippings" role="tab" data-toggle="tab">Consegne</a></li>
+			<li role="presentation"><a href="#others-{{ $aggregate->id }}" role="tab" data-toggle="tab">Prenotazioni per Altri</a></li>
+			<li role="presentation"><a href="#shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab">Consegne</a></li>
 			@endif
 		</ul>
 
 		<div class="tab-content">
-			<div role="tabpanel" class="tab-pane active" id="myself">
+			<div role="tabpanel" class="tab-pane active" id="myself-{{ $aggregate->id }}">
 				@include('booking.edit', ['aggregate' => $aggregate, 'user' => $currentuser])
 			</div>
 
 			@if($has_shipping)
-			<div role="tabpanel" class="tab-pane" id="others">
+			<div role="tabpanel" class="tab-pane" id="others-{{ $aggregate->id }}">
 				<div class="row">
 					<div class="col-md-12">
 						<input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="Cerca Utente" />
@@ -119,7 +121,8 @@ $more_orders = ($aggregate->orders->count() > 1);
 				</div>
 			</div>
 
-			<div role="tabpanel" class="tab-pane" id="shippings">
+			<div role="tabpanel" class="tab-pane shippable-bookings" id="shippings-{{ $aggregate->id }}">
+				@include('booking.list', ['aggregate' => $aggregate])
 			</div>
 			@endif
 		</div>

@@ -33,14 +33,24 @@ class BookedProduct extends Model
 		return sprintf('%s::%s', $this->booking->id, $this->product->id);
 	}
 
-	public function getValueAttribute()
+	private function fixQuantity($attribute)
 	{
 		$product = $this->product;
 
-		$quantity = $this->quantity;
+		$quantity = $this->$attribute;
 		if ($product->partitioning != 0)
-			$quantity = $this->quantity * $product->partitioning;
+			$quantity = $this->$attribute * $product->partitioning;
 
-		return $product->price * $quantity;
+		return ($product->price + $product->transport) * $quantity;
+	}
+
+	public function quantityValue()
+	{
+		return $this->fixQuantity('quantity');
+	}
+
+	public function deliveredValue()
+	{
+		return $this->fixQuantity('delivered');
 	}
 }

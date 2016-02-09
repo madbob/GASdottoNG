@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use DB;
+use Auth;
 
 use App\User;
 use App\Aggregate;
@@ -16,44 +17,33 @@ use App\BookedProductComponent;
 
 class BookingUserController extends Controller
 {
-        public function index()
+        public function index(Request $request, $aggregate_id)
         {
+                $aggregate = Aggregate::findOrFail($aggregate_id);
+                if ($aggregate->userCan('supplier.shippings') == false)
+                        abort(503);
 
-        }
-
-        public function create()
-        {
-        //
-        }
-
-        public function store(Request $request)
-        {
-        //
+                return view('booking.list', ['aggregate' => $aggregate]);
         }
 
         public function show(Request $request, $aggregate_id, $user_id)
         {
-                /*
-                        TODO    Verificare permessi
-                */
                 $aggregate = Aggregate::findOrFail($aggregate_id);
+                if (Auth::user()->id != $user_id && $aggregate->userCan('supplier.shippings') == false)
+                        abort(503);
+
                 $user = User::findOrFail($user_id);
                 return view('booking.edit', ['aggregate' => $aggregate, 'user' => $user]);
-        }
-
-        public function edit($id)
-        {
-        //
         }
 
         public function update(Request $request, $aggregate_id, $user_id)
         {
                 DB::beginTransaction();
 
-                /*
-                        TODO    Verificare permessi
-                */
                 $aggregate = Aggregate::findOrFail($aggregate_id);
+                if (Auth::user()->id != $user_id && $aggregate->userCan('supplier.shippings') == false)
+                        abort(503);
+
                 $user = User::findOrFail($user_id);
 
                 foreach ($aggregate->orders as $order) {

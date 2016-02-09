@@ -27,6 +27,16 @@ table {
 	}
 }
 
+.loadablelist {
+	.loadablelist {
+		.list-group-item.active {
+			color: #31708F;
+			background-color: #D9EDF7;
+			border-color: #BCE8F1;
+		}
+	}
+}
+
 .help-sensitive {
 	color: #31708F;
 }
@@ -52,4 +62,11 @@ table {
 	.master-variant-selector {
 		display: none;
 	}
+}
+
+#bottom-stop {
+	position: absolute;
+	clear: both;
+	height: 1px;
+	width: 100%;
 }

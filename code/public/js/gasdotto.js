@@ -218,8 +218,36 @@ function parseDynamicTree(unparsed_data) {
 }
 
 /*******************************************************************************
-	Varianti
+	Prenotazioni / Consegne
 */
+
+function bookingTotal(editor) {
+	var total_price = 0;
+
+	editor.find('.booking-product').each(function() {
+		if ($(this).hasClass('hidden'))
+			return true;
+
+		var price = $(this).find('input:hidden[name=product-price]').val();
+		price = parseFloatC(price);
+
+		var quantity = $(this).find('.booking-product-quantity input').val();
+		if (quantity == '')
+			quantity = 0;
+		else
+			quantity = parseFloatC(quantity);
+
+		var partitioning = $(this).find('input:hidden[name=product-partitioning]').val();
+		partitioning = parseFloatC(partitioning);
+		if (partitioning != 0)
+			quantity = quantity * partitioning;
+
+		total_price += price * quantity;
+	});
+
+	var total_label = editor.find('.booking-total');
+	total_label.text(priceRound(total_price));
+}
 
 function setupVariantsEditor() {
 	$('.variants-editor').on('click', '.delete-variant', function() {
@@ -545,6 +573,16 @@ $(document).ready(function() {
 		generalInit();
 	});
 
+	$('#bottom-stop').offset({left: 0, top: $(document).height() - 1});
+	$(document).scroll(function() {
+		var h = $(document).height();
+		var b = $('#bottom-stop').offset();
+		if (h < b.top)
+			$(document).height(b.top);
+		else
+			$('#bottom-stop').offset({left: 0, top: $(document).height() - 1});
+	});
+
 	generalInit();
 
 	$('#home-notifications .alert').on('closed.bs.alert', function() {
@@ -763,6 +801,26 @@ $(document).ready(function() {
 		Interazioni dinamiche sul pannello prenotazioni
 	*/
 
+	$('body').on('shown.bs.tab', '.aggregate-bookings a[data-toggle="tab"]', function(e) {
+		var t = e.target.hash;
+		var tab = $(t);
+
+		if (tab.hasClass('shippable-bookings')) {
+			var id = tab.closest('.aggregate-bookings').find('input:hidden[name=aggregate_id]').val();
+			tab.empty().append(loadingPlaceholder());
+
+			$.ajax({
+				method: 'GET',
+				url: '/booking/' + id + '/user',
+				dataType: 'html',
+
+				success: function(data) {
+					tab.empty().append(data);
+				}
+			});
+		}
+	});
+
 	$('body').on('keyup', '.booking-product-quantity input', function() {
 		var v = $(this).val();
 		var booked;
@@ -776,18 +834,24 @@ $(document).ready(function() {
 		var row = $(this).closest('.booking-product');
 
 		if (booked != 0) {
-			var multiple = parseFloatC(row.find('input:hidden[name=product-multiple]').val());
-			if (multiple != 0 && booked % multiple != 0) {
-				row.addClass('has-error');
-				booked = 0;
-				wrong = true;
+			var m = row.find('input:hidden[name=product-multiple]');
+			if (m.length != 0) {
+				var multiple = parseFloatC(m.val());
+				if (multiple != 0 && booked % multiple != 0) {
+					row.addClass('has-error');
+					booked = 0;
+					wrong = true;
+				}
 			}
 
-			var minimum = parseFloatC(row.find('input:hidden[name=product-minimum]').val());
-			if (minimum != 0 && booked < minimum) {
-				row.addClass('has-error');
-				booked = 0;
-				wrong = true;
+			var m = row.find('input:hidden[name=product-minimum]');
+			if (m.length != 0) {
+				var minimum = parseFloatC(m.val());
+				if (minimum != 0 && booked < minimum) {
+					row.addClass('has-error');
+					booked = 0;
+					wrong = true;
+				}
 			}
 
 			if (wrong == false)
@@ -816,28 +880,8 @@ $(document).ready(function() {
 			}
 		}
 
-		var total_price = 0;
 		var editor = row.closest('.booking-editor');
-		editor.find('.booking-product').each(function() {
-			var price = $(this).find('input:hidden[name=product-price]').val();
-			price = parseFloatC(price);
-
-			var quantity = $(this).find('.booking-product-quantity input').val();
-			if (quantity == '')
-				quantity = 0;
-			else
-				quantity = parseFloatC(quantity);
-
-			var partitioning = $(this).find('input:hidden[name=product-partitioning]').val();
-			partitioning = parseFloatC(partitioning);
-			if (partitioning != 0)
-				quantity = quantity * partitioning;
-
-			total_price += price * quantity;
-		});
-
-		var total_label = editor.find('.booking-total');
-		total_label.text(priceRound(total_price));
+		bookingTotal(editor);
 
 	}).on('blur', '.booking-product-quantity input', function() {
 		var v = $(this).val();
@@ -847,6 +891,57 @@ $(document).ready(function() {
 
 	}).on('focus', '.booking-product-quantity input', function() {
 		$(this).closest('.booking-product').removeClass('.has-error');
+	});
+
+	$('body').on('click', '.add-booking-product', function(e) {
+		e.preventDefault();
+		var table = $(this).closest('table');
+		$(this).closest('table').find('.fit-add-product').first().clone().removeClass('hidden').appendTo(table.find('tbody'));
+		return false;
+	});
+
+	$('body').on('change', '.fit-add-product select', function(e) {
+		var id = $(this).find('option:selected').val();
+		var row = $(this).closest('tr');
+		var editor = row.closest('.booking-editor');
+
+		if (id == -1) {
+			row.find('.booking-product-quantity input').val('0').attr('name', '');
+			row.find('.booking-product-quantity .input-group-addon').text('?');
+			bookingTotal(editor);
+		}
+		else {
+			$.ajax({
+				method: 'GET',
+				url: '/products/' + id,
+				data: {format: 'json'},
+				dataType: 'json',
+
+				success: function(data) {
+					row.find('input:hidden[name=product-partitioning]').val(data.partitioning);
+					row.find('input:hidden[name=product-price]').val(data.price);
+					row.find('.booking-product-quantity input').attr('name', data.id);
+					row.find('.booking-product-quantity .input-group-addon').text(data.printableMeasure);
+					bookingTotal(editor);
+				}
+			});
+		}
+	});
+
+	$('body').on('click', '.preload-quantities', function(e) {
+		e.preventDefault();
+		var editor = $(this).closest('form').find('.booking-editor');
+
+		editor.find('tbody .booking-product').each(function() {
+			var booked = $(this).find('.booking-product-booked');
+			if (booked.length != 0) {
+				var input = $(this).find('.booking-product-quantity input');
+				input.val(booked.text());
+			}
+		});
+
+		bookingTotal(editor);
+		return false;
 	});
 
 	/*

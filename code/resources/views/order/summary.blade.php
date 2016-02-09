@@ -23,21 +23,21 @@
 			</td>
 			<td>
 				<div class="input-group">
-					<input class="form-control" name="productprice[]" value="{{ $product->price }}" />
+					<input class="form-control" name="productprice[]" value="{{ printablePrice($product->price) }}" />
 					<div class="input-group-addon">€</div>
 				</div>
 			</td>
 			<td>
 				<div class="input-group">
-					<input class="form-control" name="producttransport[]" value="{{ $product->transport }}" />
+					<input class="form-control" name="producttransport[]" value="{{ printablePrice($product->transport) }}" />
 					<div class="input-group-addon">€</div>
 				</div>
 			</td>
 			<td><label>{{ $product->measure->printableName() }}</label></td>
 
 			<td><label>{{ $summary->products[$product->id]['quantity'] }}</label></td>
-			<td><label>{{ $summary->products[$product->id]['price'] }} €</label></td>
-			<td><label>{{ $summary->products[$product->id]['transport'] }} €</label></td>
+			<td><label>{{ printablePrice($summary->products[$product->id]['price']) }} €</label></td>
+			<td><label>{{ printablePrice($summary->products[$product->id]['transport']) }} €</label></td>
 			<td><label>{{ $summary->products[$product->id]['delivered'] }}</label></td>
 			<td><label>{{ $summary->products[$product->id]['notes'] }}</label></td>
 		</tr>
@@ -50,8 +50,8 @@
 			<th></th>
 			<th></th>
 			<th></th>
-			<th>{{ $summary->price }} €</th>
-			<th>{{ $summary->transport }} €</th>
+			<th>{{ printablePrice($summary->price) }} €</th>
+			<th>{{ printablePrice($summary->transport) }} €</th>
 			<th></th>
 			<th></th>
 		</tr>
