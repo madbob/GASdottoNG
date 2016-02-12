@@ -48,15 +48,13 @@ table {
 	background-image: none;
 }
 
-.variants-editor {
+.booking-product {
 	.row {
-		margin-bottom: 10px;
+		margin-left: 0;
 	}
-}
 
-.variant-selector {
-	.row {
-		margin-top: 5px;
+	.input-group {
+		float: left;
 	}
 
 	.master-variant-selector {

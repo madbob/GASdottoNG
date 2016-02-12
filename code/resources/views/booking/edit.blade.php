@@ -15,8 +15,8 @@ $more_orders = ($aggregate->orders->count() > 1);
 		<table class="table table-striped booking-editor">
 			<thead>
 				<th width="25%"></th>
-				<th width="25%"></th>
 				<th width="35%"></th>
+				<th width="25%"></th>
 				<th width="15%"></th>
 			</thead>
 			<tbody>
@@ -32,22 +32,26 @@ $more_orders = ($aggregate->orders->count() > 1);
 					</td>
 
 					<td>
-						<div class="input-group booking-product-quantity">
-							<input type="number" class="form-control" name="{{ $product->id }}" value="{{ $o->getBookedQuantity($product) }}" />
-							<div class="input-group-addon">{{ $product->printableMeasure() }}</div>
-						</div>
-
 						@if($product->variants->isEmpty() == false)
-						<div class="variant-selector">
-							@include('booking.variantselectrow', ['product' => $product, 'master' => true, 'saved' => null])
+							<input type="hidden" name="{{ $product->id }}" value="1" />
 
-							<?php $booked = $o->getBooked($product) ?>
-							@if($booked != null)
-								@foreach($booked->variants as $var)
-									@include('booking.variantselectrow', ['product' => $product, 'master' => false, 'saved' => $var])
-								@endforeach
-							@endif
-						</div>
+							<div class="variants-selector">
+								@include('booking.variantselectrow', ['product' => $product, 'master' => true, 'saved' => null])
+
+								<?php $booked = $o->getBooked($product) ?>
+								@if($booked != null)
+									@foreach($booked->variants as $var)
+										@include('booking.variantselectrow', ['product' => $product, 'master' => false, 'saved' => $var])
+									@endforeach
+								@else
+									@include('booking.variantselectrow', ['product' => $product, 'master' => false, 'saved' => null])
+								@endif
+							</div>
+						@else
+							<div class="input-group booking-product-quantity">
+								<input type="number" class="form-control" name="{{ $product->id }}" value="{{ $o->getBookedQuantity($product) }}" />
+								<div class="input-group-addon">{{ $product->printableMeasure() }}</div>
+							</div>
 						@endif
 					</td>
 

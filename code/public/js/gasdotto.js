@@ -231,16 +231,24 @@ function bookingTotal(editor) {
 		var price = $(this).find('input:hidden[name=product-price]').val();
 		price = parseFloatC(price);
 
-		var quantity = $(this).find('.booking-product-quantity input').val();
-		if (quantity == '')
-			quantity = 0;
-		else
-			quantity = parseFloatC(quantity);
-
 		var partitioning = $(this).find('input:hidden[name=product-partitioning]').val();
 		partitioning = parseFloatC(partitioning);
-		if (partitioning != 0)
-			quantity = quantity * partitioning;
+
+		var quantity = 0;
+
+		$(this).find('.booking-product-quantity input').each(function() {
+			var q = $(this).val();
+
+			if (q == '')
+				q = 0;
+			else
+				q = parseFloatC(q);
+
+			if (partitioning != 0)
+				q = q * partitioning;
+
+			quantity += q;
+		});
 
 		total_price += price * quantity;
 	});
@@ -858,28 +866,6 @@ $(document).ready(function() {
 				row.removeClass('has-error');
 		}
 
-		var variant_selector = row.find('.variant-selector');
-
-		if (variant_selector.length != 0) {
-			var variants = variant_selector.find('.row:not(.master-variant-selector)');
-			if (variants.length != booked) {
-				if (variants.length > booked) {
-					var diff = variants.length - booked;
-					for (var i = 0; i < diff; i++)
-						variant_selector.find('.row:last').remove();
-				}
-				else if (variants.length < booked) {
-					var diff = booked - variants.length;
-					var master = variant_selector.find('.master-variant-selector');
-					for (var i = 0; i < diff; i++) {
-						var demaster = master.clone().removeClass('master-variant-selector');
-						demaster.find('select').removeClass('skip-on-submit');
-						variant_selector.append(demaster);
-					}
-				}
-			}
-		}
-
 		var editor = row.closest('.booking-editor');
 		bookingTotal(editor);
 
@@ -891,6 +877,14 @@ $(document).ready(function() {
 
 	}).on('focus', '.booking-product-quantity input', function() {
 		$(this).closest('.booking-product').removeClass('.has-error');
+
+	}).on('click', '.booking-product .add-variant', function(e) {
+		e.preventDefault();
+		var variant_selector = $(this).closest('.variants-selector');
+		var master = variant_selector.find('.master-variant-selector').clone().removeClass('master-variant-selector');
+		master.find('.skip-on-submit').removeClass('skip-on-submit');
+		variant_selector.append(master);
+		return false;
 	});
 
 	$('body').on('click', '.add-booking-product', function(e) {
