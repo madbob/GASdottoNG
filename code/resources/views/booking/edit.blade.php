@@ -79,6 +79,7 @@ $more_orders = ($aggregate->orders->count() > 1);
 	<div class="row">
 		<div class="col-md-12">
 			<div class="btn-group pull-right main-form-buttons" role="group" aria-label="Opzioni">
+				<button type="button" class="btn btn-danger delete-booking">Annulla Prenotazione</button>
 				<button type="submit" class="btn btn-success">Salva</button>
 			</div>
 		</div>

@@ -938,6 +938,36 @@ $(document).ready(function() {
 		return false;
 	});
 
+	$('body').on('click', '.delete-booking', function(e) {
+		e.preventDefault();
+
+		var form = $(this).closest('.inner-form');
+
+		if (confirm('Sei sicuro di voler annullare questa prenotazione?')) {
+			form.find('.main-form-buttons button').attr('disabled', 'disabled');
+
+			$.ajax({
+				method: 'DELETE',
+				url: form.attr('action'),
+				dataType: 'json',
+
+				success: function(data) {
+					form.find('.main-form-buttons button').removeAttr('disabled');
+					form.find('.booking-product-quantity input').val('0');
+					form.find('.variants-selector').each(function() {
+						while($(this).find('.row:not(.master-variant-selector)').length != 1) {
+							$(this).find('.row:not(.master-variant-selector):last').remove();
+						}
+					});
+
+					bookingTotal(form.find('.booking-editor'));
+				}
+			});
+		}
+
+		return false;
+	});
+
 	/*
 		Widget generico multiriga
 	*/

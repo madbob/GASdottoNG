@@ -44,8 +44,6 @@ class BookingUserController extends Controller
                 if (Auth::user()->id != $user_id && $aggregate->userCan('supplier.shippings') == false)
                         abort(503);
 
-                $user = User::findOrFail($user_id);
-
                 foreach ($aggregate->orders as $order) {
                         $booking = $order->userBooking($user_id);
                         $booking->save();
@@ -128,8 +126,19 @@ class BookingUserController extends Controller
                 return $this->successResponse();
         }
 
-        public function destroy($id)
+        public function destroy($aggregate_id, $user_id)
         {
-        //
+                DB::beginTransaction();
+
+                $aggregate = Aggregate::findOrFail($aggregate_id);
+                if (Auth::user()->id != $user_id && $aggregate->userCan('supplier.shippings') == false)
+                        abort(503);
+
+                foreach ($aggregate->orders as $order) {
+                        $booking = $order->userBooking($user_id);
+                        $booking->delete();
+                }
+
+                return $this->successResponse();
         }
 }
