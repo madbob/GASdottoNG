@@ -84,6 +84,7 @@ class BookingUserController extends Controller
                                                         $bpv = new BookedProductVariant();
                                                         $bpv->product_id = $booked->id;
                                                         $bpv->quantity = $quantities[$i];
+                                                        $bpv->delivered = 0;
                                                         $bpv->save();
 
                                                         foreach ($values as $variant_id => $vals) {

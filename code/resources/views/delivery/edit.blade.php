@@ -20,25 +20,53 @@ $more_orders = ($aggregate->orders->count() > 1);
 			</thead>
 			<tbody>
 				@foreach($o->products as $product)
-					<tr class="booking-product">
-						<td>
-							<input type="hidden" name="product-partitioning" value="{{ $product->product->partitioning }}" class="skip-on-submit" />
-							<input type="hidden" name="product-price" value="{{ $product->product->price + $product->product->transport }}" class="skip-on-submit" />
+					@if($product->variants->isEmpty() == true)
 
-							<label class="static-label">{{ $product->product->name }}</label>
-						</td>
+						<tr class="booking-product">
+							<td>
+								<input type="hidden" name="product-partitioning" value="{{ $product->product->partitioning }}" class="skip-on-submit" />
+								<input type="hidden" name="product-price" value="{{ $product->product->price + $product->product->transport }}" class="skip-on-submit" />
 
-						<td>
-							<label class="static-label booking-product-booked">{{ $product->quantity }}</label>
-						</td>
+								<label class="static-label">{{ $product->product->name }}</label>
+							</td>
 
-						<td>
-							<div class="input-group booking-product-quantity">
-								<input type="number" class="form-control" name="{{ $product->product->id }}" value="{{ $product->delivered }}" />
-								<div class="input-group-addon">{{ $product->product->printableMeasure() }}</div>
-							</div>
-						</td>
-					</tr>
+							<td>
+								<label class="static-label booking-product-booked">{{ $product->quantity }}</label>
+							</td>
+
+							<td>
+								<div class="input-group booking-product-quantity">
+									<input type="number" step="any" min="0" class="form-control" name="{{ $product->product->id }}" value="{{ $product->delivered }}" />
+									<div class="input-group-addon">{{ $product->product->printableMeasure() }}</div>
+								</div>
+							</td>
+						</tr>
+
+					@else
+
+						@foreach($product->variants as $var)
+							<tr class="booking-product">
+								<td>
+									<input type="hidden" name="product-partitioning" value="{{ $product->product->partitioning }}" class="skip-on-submit" />
+									<input type="hidden" name="product-price" value="{{ $product->product->price + $product->product->transport }}" class="skip-on-submit" />
+
+									<label class="static-label">{{ $product->product->name }}: {{ $var->printableName() }}</label>
+								</td>
+
+								<td>
+									<label class="static-label booking-product-booked">{{ $var->quantity }}</label>
+								</td>
+
+								<td>
+									<div class="input-group booking-product-quantity">
+										<input type="number" step="any" min="0" class="form-control" name="{{ $var->id }}" value="{{ $var->delivered }}" />
+										<div class="input-group-addon">{{ $product->product->printableMeasure() }}</div>
+									</div>
+								</td>
+							</tr>
+						@endforeach
+
+					@endif
 				@endforeach
 
 				<tr class="hidden booking-product fit-add-product">

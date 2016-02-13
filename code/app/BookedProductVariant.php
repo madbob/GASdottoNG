@@ -31,4 +31,15 @@ class BookedProductVariant extends Model
 
 		return false;
 	}
+
+	public function printableName()
+	{
+		$ret = [];
+		$components = $this->components;
+
+		foreach($components as $c)
+			$ret[] = $c->value->value;
+
+		return join(', ', $ret);
+	}
 }

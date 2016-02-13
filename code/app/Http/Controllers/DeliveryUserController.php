@@ -45,62 +45,26 @@ class DeliveryUserController extends Controller
                                 fase di consegna
                         */
                         foreach ($order->products as $product) {
-                                $delivered = $request->input($product->id, 0);
                                 $booked = $booking->getBooked($product, true);
+
+                                if ($product->variants->isEmpty() == false) {
+                                        foreach ($booked->variants as $variant) {
+                                                $delivered_variant = $request->input($variant->id);
+                                                $variant->delivered = $delivered_variant;
+                                                $variant->save();
+
+                                                $delivered += $delivered_variant;
+                                        }
+                                }
+                                else {
+                                        $delivered = $request->input($product->id, 0);
+                                }
 
                                 if ($delivered == 0 && $booked->delivered == 0)
                                         continue;
 
                                 $booked->delivered = $delivered;
                                 $booked->save();
-
-                                /*
-                                if ($product->variants->isEmpty() == false) {
-                                        $values = [];
-
-                                        foreach ($product->variants as $variant)
-                                                $values[$variant->id] = $request->input($variant->id);
-
-                                        $saved_variants = [];
-
-                                        for ($i = 0; $i < $quantity; $i++) {
-                                                $query = BookedProductVariant::where('product_id', '=', $booked->id);
-
-                                                foreach ($values as $variant_id => $vals) {
-                                                        $value_id = $vals[$i];
-
-                                                        $query->whereHas('components', function($q) use($variant_id, $value_id) {
-                                                                $q->where('variant_id', '=', $variant_id)->where('value_id', '=', $value_id);
-                                                        });
-                                                }
-
-                                                $query->whereNotIn('id', $saved_variants);
-                                                $existing = $query->first();
-
-                                                if ($existing == null) {
-                                                        $bpv = new BookedProductVariant();
-                                                        $bpv->product_id = $booked->id;
-                                                        $bpv->save();
-
-                                                        foreach ($values as $variant_id => $vals) {
-                                                                $value_id = $vals[$i];
-                                                                $bpc = new BookedProductComponent();
-                                                                $bpc->productvariant_id = $bpv->id;
-                                                                $bpc->variant_id = $variant_id;
-                                                                $bpc->value_id = $value_id;
-                                                                $bpc->save();
-                                                        }
-
-                                                        $saved_variants[] = $bpv->id;
-                                                }
-                                                else {
-                                                        $saved_variants[] = $existing->id;
-                                                }
-                                        }
-
-                                        BookedProductVariant::where('product_id', '=', $booked->id)->whereNotIn('id', $saved_variants)->delete();
-                                }
-                                */
                         }
                 }
 
