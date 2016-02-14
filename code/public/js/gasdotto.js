@@ -609,7 +609,7 @@ $(document).ready(function() {
 		}
 		else {
 			$(this).find('a').removeClass('active');
-			var node = $('<li>').addClass('list-group-item').append(loadingPlaceholder());
+			var node = $('<li>').addClass('list-group-item').addClass('loadable-contents').append(loadingPlaceholder());
 			$(this).addClass('active').after(node);
 
 			$.ajax({

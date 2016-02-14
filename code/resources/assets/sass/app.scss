@@ -35,6 +35,14 @@ table {
 			border-color: #BCE8F1;
 		}
 	}
+
+	.list-group-item.active {
+		border: 2px solid #000;
+	}
+
+	.loadable-contents {
+		border: 2px solid #000;
+	}
 }
 
 .help-sensitive {
