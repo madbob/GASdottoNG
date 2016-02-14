@@ -25,7 +25,7 @@ class NotificationsController extends Controller
 	public function index()
 	{
 		$user = Auth::user();
-		if ($user->gas->userCan('notifications.admin') == false)
+		if ($user->gas->userCan('notifications.admin') == true)
 			$data['notifications'] = Notification::orderBy('start_date', 'desc')->take(20)->get();
 		else
 			$data['notifications'] = $user->allnotifications;

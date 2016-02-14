@@ -26,7 +26,7 @@ class Gas extends Model
 				'host' => '',
 				'port' => '',
 				'address' => '',
-				'encryption' => '',
+				'encryption' => ''
 			];
 		}
 		else {
@@ -62,5 +62,34 @@ class Gas extends Model
 	public function getMailsslAttribute()
 	{
 		return ($this->mailConfig()->encryption != '');
+	}
+
+	private function ridConfig()
+	{
+		if ($this->rid_conf == '') {
+			return (object)[
+				'name' => '',
+				'iban' => '',
+				'code' => ''
+			];
+		}
+		else {
+			return json_decode($this->rid_conf);
+		}
+	}
+
+	public function getRidnameAttribute()
+	{
+		return $this->ridConfig()->name;
+	}
+
+	public function getRidibanAttribute()
+	{
+		return $this->ridConfig()->iban;
+	}
+
+	public function getRidcodeAttribute()
+	{
+		return $this->ridConfig()->code;
 	}
 }

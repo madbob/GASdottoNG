@@ -68,6 +68,14 @@ class GasController extends Controller
 
                 $gas->mail_conf = json_encode($mail);
 
+                $rid = (object) [
+                        'name' => $request->input('ridname'),
+                        'iban' => $request->input('ridiban'),
+                        'code' => $request->input('ridcode')
+                ];
+
+                $gas->rid_conf = json_encode($rid);
+
                 $gas->save();
 
                 return $this->successResponse();

@@ -44,6 +44,24 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="well">
+				<div class="row">
+					<div class="col-md-12">
+						@include('commons.textfield', ['obj' => $gas, 'name' => 'ridname', 'label' => 'Denominazione'])
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						@include('commons.textfield', ['obj' => $gas, 'name' => 'ridiban', 'label' => 'IBAN'])
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						@include('commons.textfield', ['obj' => $gas, 'name' => 'ridcode', 'label' => 'Codice Azienda'])
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
