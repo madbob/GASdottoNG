@@ -25,51 +25,15 @@ del popup relativo.
 
 # Login
 
-.
-
-# Nome
-
-.
-
-# Cognome
-
-.
-
-# Telefono
-
-.
+Username col quale l'utente si può autenticare. Deve essere univoco.
 
 # E-Mail
 
-.
+Indirizzo mail dell'utente. Qui verranno spediti eventuali messaggi generati dal sistema.
 
 # Password
 
-.
-
-# Data di Nascita
-
-.
-
-# Codice Fiscale
-
-.
-
-# Persone in Famiglia
-
-.
-
-# Membro da
-
-.
-
-# Numero Tessera
-
-.
-
-# Ultimo Login
-
-.
+Password di accesso dell'utente. Lasciando in bianco questo campo, la password attuale non sarà modificata.
 
 ## .supplier-editor
 
@@ -185,16 +149,52 @@ Se diverso da 0, questa è la quantità massima di prodotto che complessivamente
 
 # Nome
 
-.
+Nome del GAS.
 
 # E-Mail
 
-.
+Indirizzo mail di riferimento del GAS. Attenzione: viene specificato a titolo informativo, le configurazioni per la spedizione di email generate dal sistema sono nel riquadro accanto.
 
 # Descrizione
 
 .
 
 # Messaggio Homepage
+
+Eventuale messaggio da visualizzare sulla pagina di autenticazione di GASdotto, utile per comunicazioni speciali verso i membri del GAS.
+
+# Username
+
+Username da utilizzare per connettersi al server SMTP (specificato sotto)
+
+# Password
+
+Password da utilizzare per connettersi al server SMTP (specificato sotto)
+
+# Server SMTP
+
+Server SMTP da utilizzare per l'invio delle mail di sistema. Se non viene specificato, questo o gli altri parametri all'interno di questo riquadro, nessuna mail potrà essere generata.
+
+# Porta
+
+Porta TCP da usare per connettersi al server SMTP. Consultare la documentazione del proprio fornitore di posta elettronica per questi dettagli.
+
+# Indirizzo
+
+Indirizzo mail autorizzato ad inviare mail usando le configurazioni sopra specificate. Attenzione: non necessariamente coincide con l'indirizzo mail generico del GAS indicato nel campo "E-Mail".
+
+# Abilita SSL
+
+Spuntare questa casella per abilitare la connessione TLS col server SMTP. Consultare la documentazione del proprio fornitore di posta elettronica per questi dettagli.
+
+# Denominazione
+
+.
+
+# IBAN
+
+.
+
+# Codice Azienda
 
 .
