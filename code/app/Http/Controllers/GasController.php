@@ -48,6 +48,26 @@ class GasController extends Controller
                 $gas->email = $request->input('email');
                 $gas->description = $request->input('description');
                 $gas->message = $request->input('message');
+
+                if ($gas->mail_conf == '') {
+                        $old_password = '';
+                }
+                else {
+                        $mail = json_decode($gas->mail_conf);
+                        $old_password = $mail->password;
+                }
+
+                $mail = (object) [
+                        'username' => $request->input('mailusername'),
+                        'password' => $request->input('mailpassword') == '' ? $old_password : $request->input('mailpassword'),
+                        'host' => $request->input('mailserver'),
+                        'port' => $request->input('mailport'),
+                        'address' => $request->input('mailaddress'),
+                        'encryption' => $request->has('mailssl') ? 'tls' : ''
+                ];
+
+                $gas->mail_conf = json_encode($mail);
+
                 $gas->save();
 
                 return $this->successResponse();

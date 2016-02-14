@@ -18,6 +18,32 @@
 			@include('commons.textarea', ['obj' => $gas, 'name' => 'message', 'label' => 'Messaggio Homepage'])
 		</div>
 		<div class="col-md-6">
+			<div class="well">
+				<div class="row">
+					<div class="col-md-6">
+						@include('commons.textfield', ['obj' => $gas, 'name' => 'mailusername', 'label' => 'Username'])
+					</div>
+					<div class="col-md-6">
+						@include('commons.passwordfield', ['obj' => $gas, 'name' => 'mailpassword', 'label' => 'Password'])
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						@include('commons.textfield', ['obj' => $gas, 'name' => 'mailserver', 'label' => 'Server SMTP'])
+					</div>
+					<div class="col-md-6">
+						@include('commons.numberfield', ['obj' => $gas, 'name' => 'mailport', 'label' => 'Porta'])
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						@include('commons.textfield', ['obj' => $gas, 'name' => 'mailaddress', 'label' => 'Indirizzo'])
+					</div>
+					<div class="col-md-6">
+						@include('commons.boolfield', ['obj' => $gas, 'name' => 'mailssl', 'label' => 'Abilita SSL'])
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 

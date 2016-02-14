@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Mail;
+
 use App\GASModel;
 
 class Notification extends Model
@@ -15,6 +17,11 @@ class Notification extends Model
 		return $this->belongsToMany('App\User');
 	}
 
+	public function creator()
+	{
+		return $this->belongsTo('App\User', 'creator_id');
+	}
+
 	public function hasUser($user)
 	{
 		foreach ($this->users as $u)
@@ -22,6 +29,25 @@ class Notification extends Model
 				return true;
 
 		return false;
+	}
+
+	public function sendMail()
+	{
+		if ($this->mailed == false)
+			return;
+
+		foreach($this->users as $user) {
+			Mail::send(['text' => 'emails.notification'], ['notification' => $this], function ($m) use ($user) {
+				$m->to($user->email, $user->name)->subject('nuova notifica');
+			});
+
+			/*
+				Onde evitare di farsi bloccare dal server SMTP,
+				qui attendiamo mezzo secondo tra una mail e
+				l'altra
+			*/
+			usleep(500000);
+		}
 	}
 
 	public function printableName()
