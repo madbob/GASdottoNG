@@ -8,9 +8,10 @@ class CreateMeasuresTable extends Migration
 	public function up()
 	{
 		Schema::create('measures', function (Blueprint $table) {
-			$table->string('id')->primary();
+			$table->string('id',20)->primary();
 			$table->timestamps();
-			$table->string('name');
+			$table->text('description');
+			$table->boolean('discrete_quantity'); /* allow decimal quantities and variable price */
 			$table->index('id');
 		});
 	}
