@@ -8,18 +8,21 @@ class CreateMovementTypesTable extends Migration
         public function up()
         {
                 Schema::create('movement_types', function (Blueprint $table) {
-                        $table->string('id')->primary();
+                        $table->string('id',20)->primary();
                         $table->timestamps();
 
-                        $table->string('name');
-                        $table->boolean('method_required');
-                        $table->decimal('default_amount', 5, 2);
+                /*      $table->string('name'); */
+                        $table->string('method')->nullable();
+                        $table->boolean('negative_allowed');
+                        $table->decimal('default_amount', 6, 2);
                         $table->enum('gas_bank_op', ['void', 'up', 'down']);
                         $table->enum('gas_cash_op', ['void', 'up', 'down']);
-                        $table->enum('gas_orders_op', ['void', 'up', 'down']);
+                        $table->enum('gas_suppliers_op', ['void', 'up', 'down']);
                         $table->enum('gas_deposits_op', ['void', 'up', 'down']);
                         $table->enum('supplier_op', ['void', 'up', 'down']);
                         $table->enum('user_op', ['void', 'up', 'down']);
+                        $table->boolean('update_deposit');
+                        $table->boolean('update_annual_fee');
                 });
         }
 
