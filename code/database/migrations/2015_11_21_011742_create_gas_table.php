@@ -8,23 +8,35 @@ class CreateGasTable extends Migration
 	public function up()
 	{
 		Schema::create('gas', function (Blueprint $table) {
-			$table->string('id')->primary();
+			$table->string('id',2)->primary();
 			$table->timestamps();
 
-			$table->string('name');
-			$table->string('email');
+			$table->string('name',20)->unique();
+			$table->string('email',100);
 			$table->text('description');
-			$table->text('message');
+			$table->string('logo',100);
+			$table->text('message'); /* cosa contiene? */
 
+			$table->boolean('mail_activation');
+			$table->string('mail_list');
 			$table->json('mail_conf');
+		
+			$table->boolean('rid_activation');
 			$table->json('rid_conf');
-			$table->json('fee_conf');
+			$table->json('fee_conf'); /* cosa contiene? */
 
-			$table->float('bank_balance', 8, 2);
-			$table->float('cash_balance', 8, 2);
-			$table->float('orders_balance', 8, 2);
-			$table->float('deposit_balance', 8, 2);
+			$table->boolean('acct_activation');
+			$table->date('social_year_start_date');
+			$table->foreign('deposit_movement_type')->references('id')->on('acct_movements_types');
+			$table->foreign('annual_fee_movement_type')->references('id')->on('acct_movements_types');
+			$table->decimal('bank_balance',6,2);
+			$table->decimal('cash_balance',6,2);
+			$table->decimal('suppliers_balance',6,2);
+			$table->decimal('deposit_balance',6,2);
 
+			$table->boolean('delivery_locations');
+			$table->boolean('protected_user_data'); /* forse non serve se usiamo i ruoli */
+			
 			$table->index('id');
 		});
 	}
