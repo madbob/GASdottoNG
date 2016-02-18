@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableLocalFiles extends Migration
+class CreateLocalFiles extends Migration
 {
 
     /**
