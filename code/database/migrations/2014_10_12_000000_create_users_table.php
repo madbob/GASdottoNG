@@ -8,31 +8,33 @@ class CreateUsersTable extends Migration
 	public function up()
 	{
 		Schema::create('users', function (Blueprint $table) {
-			$table->string('id')->primary();
+			$table->string('id',20)->primary(); /* username */
 			$table->timestamps();
 			$table->softDeletes();
 
-			$table->string('gas_id');
-			$table->string('username')->unique();
-			$table->string('name');
-			$table->string('surname');
-			$table->string('email');
-			$table->string('password');
-
+			$table->foreign('gas_id')->references('id')->on('gas');
+		/*	$table->string('username')->unique(); */
+			$table->string('first_name',30);
+			$table->string('last_name',30);
+			$table->string('email_1',45);
+			$table->string('email_2',45);
+			$table->string('password',100);
 			$table->date('birthday')->nullable();
-			$table->string('phone')->nullable();
-			$table->string('address')->nullable();
-			$table->integer('family_members');
-			$table->string('photo')->nullable();
-			$table->string('taxcode')->nullable();
-
-			$table->date('member_since')->nullable();
-			$table->string('card_number')->nullable();
+			$table->string('phone',15)->nullable();
+			$table->string('address_street_1',45)->nullable();
+			$table->string('address_street_2',45)->nullable();
+			$table->string('address_city',45)->nullable();
+			$table->string('address_zip_code',5)->nullable();
+			$table->integer('family_members')->unsigned();
+			$table->string('picture',100)->nullable();
+			$table->string('fiscal_code',16)->nullable()->unique();
+			$table->date('member_since');
+			$table->date('leaving_date');
+			$table->string('card_number',3)->unique();
 			$table->datetime('last_login')->nullable();
-			$table->string('preferred_delivery_id');
-
-			$table->float('balance', 5, 2);
-			$table->string('iban')->nullable();
+		/*	$table->string('preferred_delivery_id'); */
+			$table->decimal('balance', 6, 2);
+			$table->string('iban',27)->nullable();
 			$table->date('sepa_subscribe')->nullable();
 			$table->date('sepa_first')->nullable();
 
