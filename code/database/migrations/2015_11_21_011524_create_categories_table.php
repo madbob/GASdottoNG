@@ -8,10 +8,10 @@ class CreateCategoriesTable extends Migration
 	public function up()
 	{
 		Schema::create('categories', function (Blueprint $table) {
-			$table->string('id')->primary();
+			$table->string('id',20)->primary();
+			$table->string('sub_category',20)->primary(); /* parliamo di cone gestire il doppio livello */
 			$table->timestamps();
-			$table->string('parent_id')->nullable();
-			$table->string('name');
+			$table->text('description');
 
 			$table->index('id');
 		});
