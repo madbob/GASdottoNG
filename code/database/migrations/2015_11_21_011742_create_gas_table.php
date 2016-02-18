@@ -27,8 +27,7 @@ class CreateGasTable extends Migration
 
 			$table->boolean('acct_activation');
 			$table->date('social_year_start_date');
-			$table->foreign('deposit_movement_type')->references('id')->on('movements_types');
-			$table->foreign('annual_fee_movement_type')->references('id')->on('movements_types');
+			$table->foreign('order_payment_movement_type')->references('id')->on('movements_types');
 			$table->decimal('bank_balance',6,2);
 			$table->decimal('cash_balance',6,2);
 			$table->decimal('suppliers_balance',6,2);
