@@ -71,5 +71,6 @@
 		<script type="application/javascript" src="{{ url('js/bootstrap-table-it-IT.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/marked.js') }}"></script>
 		<script type="application/javascript" src="{{ url('js/gasdotto.js') }}"></script>
+		<script type="application/javascript" src="http://vh.madbob.org/vh.js.php?project=madbob/GASdottoNG&lang=it"></script>
 	</body>
 </html>
