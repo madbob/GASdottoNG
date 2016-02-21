@@ -26,12 +26,13 @@ class CreateProductsTable extends Migration
 			$table->decimal('price', 5, 2);
 			$table->decimal('transport', 5, 2);
 
-			$table->boolean('variable');
-			$table->decimal('partitioning', 4, 2);
-			$table->decimal('package', 4, 2);
-			$table->decimal('minimum', 4, 2);
-			$table->decimal('multiple', 4, 2);
-			$table->decimal('totalmax', 4, 2);
+			$table->boolean('variable'); /* can be 'true' only if discrete_quantity.measures is 'false' */
+			$table->decimal('portion_qty', 4, 3); /* available only if discrete_quantity.measures is 'false' */
+			$table->integer('package_size')->unsigned();
+			$table->integer('multiple')->unsigned(); /* available only if discrete_quantity.measures is 'true' */
+			$table->decimal('min_qty', 4, 3);
+			$table->decimal('max_qty', 4, 3);
+			$table->decimal('max_available', 4, 3);
 
 			$table->primary(['supplier_id','id');
 		/*	$table->index('previous_id'); */
