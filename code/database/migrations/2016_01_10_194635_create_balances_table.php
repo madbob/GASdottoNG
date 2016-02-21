@@ -11,7 +11,7 @@ class CreateBalancesTable extends Migration
                         $table->increments('id');
                         $table->timestamps();
 
-                        $table->string('target_type',1); /* G = GAS, U = User, S = Supplier */
+                        $table->enum('target_type',['G','U','S']); /* G = GAS, U = User, S = Supplier */
                         $table->string('target_id',20);
                         $table->datetime('date');
                         $table->decimal('balance', 6, 2)->default(0);
