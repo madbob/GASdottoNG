@@ -8,10 +8,10 @@ class CreateMovementTypesTable extends Migration
         public function up()
         {
                 Schema::create('movement_types', function (Blueprint $table) {
-                        $table->string('id',20)->primary();
+                        $table->string('id')->primary();
                         $table->timestamps();
 
-                /*      $table->string('name'); */
+                        $table->string('name');
                         $table->string('method')->nullable();
                         $table->boolean('negative_allowed');
                         $table->decimal('default_amount', 6, 2);
@@ -23,6 +23,8 @@ class CreateMovementTypesTable extends Migration
                         $table->enum('user_op', ['void', 'up', 'down']);
                         $table->boolean('update_deposit');
                         $table->boolean('update_annual_fee');
+
+                        $table->index('id');
                 });
         }
 

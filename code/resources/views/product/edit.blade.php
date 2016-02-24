@@ -2,13 +2,14 @@
 	<div class="row">
 		<div class="col-md-6">
 			@include('product.base-edit', ['product' => $product])
+			@include('commons.textfield', ['obj' => $product, 'name' => 'supplier_code', 'label' => 'Codice Fornitore'])
 			@include('commons.boolfield', ['obj' => $product, 'name' => 'active', 'label' => 'Ordinabile'])
 		</div>
 		<div class="col-md-6">
 			<div class="well">
 				<div class="row">
 					<div class="col-md-6">
-						@include('commons.decimalfield', ['obj' => $product, 'name' => 'partitioning', 'label' => 'Pezzatura'])
+						@include('commons.decimalfield', ['obj' => $product, 'name' => 'portion_quantity', 'label' => 'Pezzatura'])
 					</div>
 					<div class="col-md-6">
 						@include('commons.boolfield', ['obj' => $product, 'name' => 'variable', 'label' => 'Variabile'])
@@ -17,7 +18,7 @@
 
 				<div class="row">
 					<div class="col-md-6">
-						@include('commons.decimalfield', ['obj' => $product, 'name' => 'package', 'label' => 'Confezione'])
+						@include('commons.decimalfield', ['obj' => $product, 'name' => 'package_size', 'label' => 'Confezione'])
 					</div>
 					<div class="col-md-6">
 						@include('commons.decimalfield', ['obj' => $product, 'name' => 'multiple', 'label' => 'Multiplo'])
@@ -26,10 +27,16 @@
 
 				<div class="row">
 					<div class="col-md-6">
-						@include('commons.decimalfield', ['obj' => $product, 'name' => 'minimum', 'label' => 'Minimo'])
+						@include('commons.decimalfield', ['obj' => $product, 'name' => 'min_quantity', 'label' => 'Minimo'])
 					</div>
 					<div class="col-md-6">
-						@include('commons.decimalfield', ['obj' => $product, 'name' => 'totalmax', 'label' => 'Massimo'])
+						@include('commons.decimalfield', ['obj' => $product, 'name' => 'max_quantity', 'label' => 'Massimo'])
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						@include('commons.decimalfield', ['obj' => $product, 'name' => 'max_available', 'label' => 'Disponibile'])
 					</div>
 				</div>
 			</div>

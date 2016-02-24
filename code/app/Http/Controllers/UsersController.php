@@ -27,7 +27,7 @@ class UsersController extends Controller
 		if ($user->gas->userCan('users.admin|users.view') == false)
 			abort(503);
 
-		$users = User::orderBy('name', 'asc')->get();
+		$users = User::orderBy('lastname', 'asc')->get();
 		return Theme::view('pages.users', ['users' => $users]);
 	}
 
@@ -35,11 +35,11 @@ class UsersController extends Controller
 	{
 		$s = $request->input('term');
 
-		$users = User::where('name', 'LIKE', "%$s%")->orWhere('surname', 'LIKE', "%$s%")->get();
+		$users = User::where('firstname', 'LIKE', "%$s%")->orWhere('lastname', 'LIKE', "%$s%")->get();
 		$ret = array();
 
 		foreach($users as $user) {
-			$fullname = $user->surname . ' ' . $user->name;
+			$fullname = $user->printableName();
 
 			$u = (object) array(
 				'id' => $user->id,
@@ -66,8 +66,8 @@ class UsersController extends Controller
 		$u->gas_id = $user->gas->id;
 		$u->member_since = date('Y-m-d', time());
 		$u->username = $request->input('username');
-		$u->name = $request->input('name');
-		$u->surname = $request->input('surname');
+		$u->firstname = $request->input('firstname');
+		$u->lastname = $request->input('lastname');
 		$u->email = $request->input('email');
 		$u->password = Hash::make($request->input('password'));
 		$u->current_balance = 0;
@@ -104,8 +104,8 @@ class UsersController extends Controller
 
 		$u = User::findOrFail($id);
 		$u->username = $request->input('username');
-		$u->name = $request->input('name');
-		$u->surname = $request->input('surname');
+		$u->firstname = $request->input('firstname');
+		$u->lastname = $request->input('lastname');
 		$u->email = $request->input('email');
 		$u->phone = $request->input('phone');
 		$u->birthday = $this->decodeDate($request->input('birthday'));

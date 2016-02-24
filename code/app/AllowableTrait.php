@@ -141,7 +141,7 @@ trait AllowableTrait
                         $behaviour = 'all';
                 }
                 else if (count($users) > ($current_users / 2)) {
-                        $excluded_users = User::whereNotIn('id', $users)->orderBy('surname', 'asc')->get();
+                        $excluded_users = User::whereNotIn('id', $users)->orderBy('lastname', 'asc')->get();
                         foreach($excluded_users as $eu) {
                                 $ret_users[] = (object) [
                                         'id' => $eu->id,
@@ -152,7 +152,7 @@ trait AllowableTrait
                         $behaviour = 'except';
                 }
                 else {
-                        $included_users = User::whereIn('id', $users)->orderBy('surname', 'asc')->get();
+                        $included_users = User::whereIn('id', $users)->orderBy('lastname', 'asc')->get();
                         foreach($included_users as $iu) {
                                 $ret_users[] = (object) [
                                         'id' => $iu->id,

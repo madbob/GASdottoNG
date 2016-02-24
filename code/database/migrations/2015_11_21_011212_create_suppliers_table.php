@@ -16,7 +16,7 @@ class CreateSuppliersTable extends Migration
 			$table->string('description', 500);
 			$table->string('comment', 500);
 
-			$table->string('address');
+			$table->json('address')->nullable();
 			$table->string('phone');
 			$table->string('mail');
 			$table->string('fax');

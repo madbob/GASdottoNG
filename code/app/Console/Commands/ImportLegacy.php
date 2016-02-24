@@ -29,6 +29,18 @@ class ImportLegacy extends Command
                 parent::__construct();
         }
 
+        private function addressTranslate($old)
+        {
+                list($street, $cap, $city) = explode(';', $old);
+                $new = (object) [
+                        'street' => $street,
+                        'city' => $city,
+                        'cap' => $cap
+                ];
+
+                return json_encode($new);
+        }
+
         public function handle()
         {
                 $factory = App::make('db.factory');
@@ -107,7 +119,7 @@ class ImportLegacy extends Command
                         $obj->description = $row->description;
                         $obj->bank_balance = $row->current_bank_balance;
                         $obj->cash_balance = $row->current_cash_balance;
-                        $obj->orders_balance = $row->current_orders_balance;
+                        $obj->suppliers_balance = $row->current_orders_balance;
                         $obj->deposit_balance = $row->current_deposit_balance;
                         $obj->save();
                         $map['gas'][$row->id] = $obj->id;
@@ -124,7 +136,7 @@ class ImportLegacy extends Command
                         try {
                                 $obj = new Delivery();
                                 $obj->name = $row->name;
-                                $obj->address = $row->address;
+                                $obj->address = $this->addressTranslate($row->address);
                                 $obj->default = $row->is_default;
                                 $obj->save();
                                 $map['deliveries'][$row->id] = $obj->id;
@@ -146,13 +158,14 @@ class ImportLegacy extends Command
                                 $obj = new User();
                                 $obj->gas_id = $master_gas->id;
                                 $obj->username = $row->login;
-                                $obj->name = $row->firstname;
-                                $obj->surname = $row->surname;
-                                $obj->email = $row->mail;
+                                $obj->firstname = $row->firstname;
+                                $obj->lastname = $row->surname;
+                                $obj->email_1 = $row->mail;
+                                $obj->email_2 = $row->mail2;
                                 $obj->password = Hash::make($row->login);
                                 $obj->birthday = $row->birthday;
                                 $obj->phone = $row->phone;
-                                $obj->address = $row->address;
+                                $obj->address = $this->addressTranslate($row->address);
                                 $obj->family_members = $row->family;
                                 $obj->taxcode = $row->codfisc;
                                 $obj->member_since = $row->join_date;
@@ -274,7 +287,7 @@ class ImportLegacy extends Command
                                 $obj->name = $row->name;
                                 $obj->previous_id = 0;
                                 $obj->supplier_id = $map['suppliers'][$row->supplier];
-                                $obj->code = $row->code;
+                                $obj->supplier_code = $row->code;
                                 $obj->category_id = $map['categories'][$row->category];
                                 $obj->measure_id = $map['measures'][$row->measure];
                                 $obj->active = $row->available;
@@ -282,11 +295,11 @@ class ImportLegacy extends Command
                                 $obj->price = $row->unit_price;
                                 $obj->transport = $row->shipping_price;
                                 $obj->variable = $row->mutable_price;
-                                $obj->partitioning = $row->unit_size;
-                                $obj->package = $row->stock_size;
-                                $obj->minimum = $row->minimum_order;
+                                $obj->portion_quantity = $row->unit_size;
+                                $obj->package_size = $row->stock_size;
+                                $obj->min_quantity = $row->minimum_order;
                                 $obj->multiple = $row->multiple_order;
-                                $obj->totalmax = $row->total_max_order;
+                                $obj->max_available = $row->total_max_order;
                                 $obj->save();
                                 $map['products'][$row->id] = $obj->id;
                         }

@@ -24,7 +24,7 @@ $more_orders = ($aggregate->orders->count() > 1);
 
 						<tr class="booking-product">
 							<td>
-								<input type="hidden" name="product-partitioning" value="{{ $product->product->partitioning }}" class="skip-on-submit" />
+								<input type="hidden" name="product-partitioning" value="{{ $product->product->portion_quantity }}" class="skip-on-submit" />
 								<input type="hidden" name="product-price" value="{{ $product->product->price + $product->product->transport }}" class="skip-on-submit" />
 
 								<label class="static-label">{{ $product->product->name }}</label>
@@ -47,7 +47,7 @@ $more_orders = ($aggregate->orders->count() > 1);
 						@foreach($product->variants as $var)
 							<tr class="booking-product">
 								<td>
-									<input type="hidden" name="product-partitioning" value="{{ $product->product->partitioning }}" class="skip-on-submit" />
+									<input type="hidden" name="product-partitioning" value="{{ $product->product->portion_quantity }}" class="skip-on-submit" />
 									<input type="hidden" name="product-price" value="{{ $product->product->price + $product->product->transport }}" class="skip-on-submit" />
 
 									<label class="static-label">{{ $product->product->name }}: {{ $var->printableName() }}</label>

@@ -38,8 +38,8 @@ class BookedProduct extends Model
 		$product = $this->product;
 
 		$quantity = $this->$attribute;
-		if ($product->partitioning != 0)
-			$quantity = $this->$attribute * $product->partitioning;
+		if ($product->portion_quantity != 0)
+			$quantity = $this->$attribute * $product->portion_quantity;
 
 		return ($product->price + $product->transport) * $quantity;
 	}

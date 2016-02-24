@@ -20,7 +20,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 	public $incrementing = false;
 	protected $table = 'users';
-	protected $fillable = ['name', 'email', 'password'];
+	protected $fillable = ['firstname', 'email', 'password'];
 	protected $hidden = ['password', 'remember_token'];
 
 	public function gas()
@@ -55,6 +55,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 	public function printableName()
 	{
-		return $this->surname . ' ' . $this->name;
+		return $this->lastname . ' ' . $this->firstname;
 	}
 }

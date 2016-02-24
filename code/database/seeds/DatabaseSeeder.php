@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
 			'name' => 'Senza Nome',
                         'bank_balance' => 0,
                         'cash_balance' => 0,
-                        'orders_balance' => 0,
+                        'suppliers_balance' => 0,
                         'deposit_balance' => 0
 		]);
 
@@ -53,8 +53,8 @@ class DatabaseSeeder extends Seeder
                         'gas_id' => $gas->id,
                         'member_since' => date('Y-m-d', time()),
                         'username' => 'root',
-			'name' => 'Amministratore',
-                        'surname' => 'Globale',
+			'firstname' => 'Amministratore',
+                        'lastname' => 'Globale',
 			'password' => Hash::make('root')
 		]);
 

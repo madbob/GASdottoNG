@@ -37,8 +37,8 @@
 						<li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="transport" />Prezzo Trasporto</li>
 						<li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="category" />Categoria</li>
 						<li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="measure" />Unità di Misura</li>
-						<li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="package" />Dimensione Confezione</li>
-						<li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="minimum" />Ordine Minimo</li>
+						<li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="package_size" />Dimensione Confezione</li>
+						<li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="min_quantity" />Ordine Minimo</li>
 						<li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="multiple" />Ordinabile per Multipli</li>
 					</ul>
 				</div>

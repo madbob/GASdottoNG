@@ -120,8 +120,8 @@ class Product extends Model
 
 	public function printableMeasure()
 	{
-		if ($this->partitioning != 0) {
-			return sprintf('%.02f %s', $this->partitioning, $this->measure->name);
+		if ($this->portion_quantity != 0) {
+			return sprintf('%.02f %s', $this->portion_quantity, $this->measure->name);
 		}
 		else {
 			$m = $this->measure;
@@ -136,10 +136,12 @@ class Product extends Model
 	{
 		$details = [];
 
-		if ($this->minimum != 0)
-			$details[] = sprintf('Minimo: %s', $this->minimum);
-		if ($this->maximum != 0)
-			$details[] = sprintf('Massimo: %s', $this->maximum);
+		if ($this->min_quantity != 0)
+			$details[] = sprintf('Minimo: %s', $this->min_quantity);
+		if ($this->max_quantity != 0)
+			$details[] = sprintf('Massimo: %s', $this->max_quantity);
+		if ($this->max_available != 0)
+			$details[] = sprintf('Disponibile: %s', $this->max_available);
 		if ($this->multiple != 0)
 			$details[] = sprintf('Multiplo: %s', $this->multiple);
 

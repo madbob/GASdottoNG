@@ -7,8 +7,6 @@ class CreateTableAttachments extends Migration
 {
 
     /**
-     * What is the content of this table?
-     * 
      * Run the migrations.
      *
      * @return void

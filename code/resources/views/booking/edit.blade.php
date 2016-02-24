@@ -23,9 +23,9 @@ $more_orders = ($aggregate->orders->count() > 1);
 				@foreach($order->products as $product)
 				<tr class="booking-product">
 					<td>
-						<input type="hidden" name="product-minimum" value="{{ $product->minimum }}" class="skip-on-submit" />
+						<input type="hidden" name="product-minimum" value="{{ $product->min_quantity }}" class="skip-on-submit" />
 						<input type="hidden" name="product-multiple" value="{{ $product->multiple }}" class="skip-on-submit" />
-						<input type="hidden" name="product-partitioning" value="{{ $product->partitioning }}" class="skip-on-submit" />
+						<input type="hidden" name="product-partitioning" value="{{ $product->portion_quantity }}" class="skip-on-submit" />
 						<input type="hidden" name="product-price" value="{{ $product->price + $product->transport }}" class="skip-on-submit" />
 
 						<label class="static-label">{{ $product->name }}</label>
