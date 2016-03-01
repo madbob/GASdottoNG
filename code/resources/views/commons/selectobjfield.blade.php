@@ -1,7 +1,7 @@
 <?php
 
 if (function_exists('recursiveOptionsSelectObj') == false) {
-	function recursiveOptionsSelectObj($obj, $options, $indent, $name, $multiple) {
+	function recursiveOptionsSelectObj($obj, $options, $indent, $name, $multiple, $datafields) {
 		$option_prefix = str_repeat('&nbsp;&nbsp;', $indent);
 		foreach ($options as $o) {
 			if ($multiple) {
@@ -21,11 +21,19 @@ if (function_exists('recursiveOptionsSelectObj') == false) {
 			}
 
 			?>
-			<option value="{{ $o->id }}"<?php if($selected) echo ' selected="selected"' ?>>{{ $option_prefix . $o->printableName() }}</option>
+
+			<option value="{{ $o->id }}"<?php if($selected) echo ' selected="selected"' ?>
+				@foreach($datafields as $d)
+					data-{{ $d }}="{{ $o->$d }}"
+				@endforeach
+			>
+				{{ $option_prefix . $o->printableName() }}
+			</option>
+
 			<?php
 
 			if (is_a($o, 'App\Hierarchic'))
-				recursiveOptionsSelectObj($obj, $o->children, $indent + 1, $name, $multiple);
+				recursiveOptionsSelectObj($obj, $o->children, $indent + 1, $name, $multiple, $datafields);
 		}
 	}
 }
@@ -33,19 +41,38 @@ if (function_exists('recursiveOptionsSelectObj') == false) {
 if ($multiple_select)
 	$postfix = '[]';
 
+if (!isset($datafields))
+	$datafields = [];
+
+$select_class = 'form-control';
+if ($extra_class)
+	$select_class .= ' ' . $extra_class;
+if($triggering_modal !== false)
+	$select_class .= ' triggers-modal';
+
 ?>
 
 <div class="form-group">
 	<label for="{{ $prefix . $name . $postfix }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
 	<div class="col-sm-{{ $fieldsize }}">
-		<select class="form-control<?php if($triggering_modal !== false) echo ' triggers-modal" data-trigger-modal="' . $triggering_modal ?>" name="{{ $prefix . $name . $postfix }}"<?php if($multiple_select) echo ' multiple size="10"' ?>>
+		<select class="{{ $select_class }}"
+			@if($triggering_modal !== false)
+				data-trigger-modal="{{ $triggering_modal }}"
+			@endif
+
+			@if($multiple_select)
+				multiple size="10"
+			@endif
+
+			name="{{ $prefix . $name . $postfix }}">
+
 			@if(!empty($extra_selection))
 				@foreach($extra_selection as $value => $label)
 				<option value="{{ $value }}">{{ $label }}</option>
 				@endforeach
 			@endif
 
-			<?php recursiveOptionsSelectObj($obj, $objects, 0, $name, $multiple_select) ?>
+			<?php recursiveOptionsSelectObj($obj, $objects, 0, $name, $multiple_select, $datafields) ?>
 
 			@if($triggering_modal !== false)
 			<option value="run_modal">Crea Nuovo</option>

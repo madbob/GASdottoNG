@@ -27,6 +27,19 @@
 		</div>
 
 		@endif
+
+		@if($currentgas->userCan('measures.admin'))
+
+		<button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleMeasures">Amministra Unità di Misura</button>
+
+		<div class="modal fade dynamic-contents" id="handleMeasures" tabindex="-1" role="dialog" aria-labelledby="handleMeasures" data-contents-url="{{ url('measures') }}">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+				</div>
+			</div>
+		</div>
+
+		@endif
 	</div>
 
 	<div class="clearfix"></div>
@@ -84,6 +97,7 @@
 				</div>
 				<div class="modal-body">
 					@include('commons.textfield', ['obj' => null, 'name' => 'name', 'label' => 'Nome', 'mandatory' => true])
+					@include('commons.boolfield', ['obj' => null, 'name' => 'discrete', 'label' => 'Unità Discreta'])
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>

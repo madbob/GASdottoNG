@@ -37,6 +37,7 @@ class GraphicInitServiceProvider extends ServiceProvider
 				'prefix' => false,
 				'postfix' => false,
 				'triggering_modal' => false,
+				'extra_class' => false,
 				'extra_selection' => [],
 				'multiple_select' => false
 			];

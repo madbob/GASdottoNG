@@ -87,13 +87,21 @@ class ProductsController extends Controller
 		$this->basicReadFromRequest($p, $request);
 		$p->active = $request->has('active');
 		$p->supplier_code = $request->has('supplier_code');
-		$p->portion_quantity = $request->input('portion_quantity');
 		$p->package_size = $request->input('package_size');
-		$p->variable = $request->has('variable') ? true : false;
 		$p->multiple = $request->input('multiple');
 		$p->min_quantity = $request->input('min_quantity');
 		$p->max_quantity = $request->input('max_quantity');
 		$p->max_available = $request->input('max_available');
+
+		if ($p->measure->discrete) {
+			$p->portion_quantity = 0;
+			$p->variable = false;
+		}
+		else {
+			$p->portion_quantity = $request->input('portion_quantity');
+			$p->variable = $request->has('variable') ? true : false;
+		}
+
 		$p->save();
 
 		return $this->successResponse([

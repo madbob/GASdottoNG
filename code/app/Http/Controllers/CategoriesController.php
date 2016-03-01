@@ -18,7 +18,7 @@ class CategoriesController extends Controller
         public function index()
         {
                 $user = Auth::user();
-                if ($user->gas->userHas('supplier.modify') == false)
+                if ($user->gas->userHas('categories.admin') == false)
                         abort(503);
 
                 $categories = Category::where('parent_id', '=', null)->get();
@@ -30,7 +30,7 @@ class CategoriesController extends Controller
                 DB::beginTransaction();
 
                 $user = Auth::user();
-                if ($user->gas->userHas('supplier.modify') == false)
+                if ($user->gas->userHas('categories.admin') == false)
                         return $this->errorResponse('Non autorizzato');
 
                 $category = new Category();
@@ -73,7 +73,7 @@ class CategoriesController extends Controller
                 DB::beginTransaction();
 
                 $user = Auth::user();
-                if ($user->gas->userHas('supplier.modify') == false)
+                if ($user->gas->userHas('categories.admin') == false)
                         return $this->errorResponse('Non autorizzato');
 
                 $data = $request->input('serialized');

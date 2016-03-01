@@ -91,6 +91,10 @@ function generalInit() {
 	*/
 	$('.dynamic-tree ul').addClass('list-group');
 
+	$('.measure-selector').each(function() {
+		enforceMeasureDiscrete($(this));
+	});
+
 	setupVariantsEditor();
 	setupImportCsvEditor();
 	testListsEmptiness();
@@ -154,7 +158,7 @@ function wizardLoadPage(node, contents) {
 }
 
 function manyRowsAddDeleteButtons(node) {
-	var fields = node.find('.row');
+	var fields = node.find('.row:not(.many-rows-header)');
 	if (fields.length > 1 && node.find('.delete-many-rows').length == 0) {
 		fields.each(function() {
 			var button = '<div class="btn btn-danger delete-many-rows"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>';
@@ -215,6 +219,18 @@ function parseDynamicTree(unparsed_data) {
 	}
 
 	return data;
+}
+
+/*******************************************************************************
+	Prodotti
+*/
+
+function enforceMeasureDiscrete(node) {
+	var form = node.closest('form');
+	var discrete = node.find('option:selected').attr('data-discrete');
+	var disabled = (discrete == '1');
+	form.find('input[name=portion_quantity]').prop('disabled', disabled);
+	form.find('input[name=variable]').prop('disabled', disabled);
 }
 
 /*******************************************************************************
@@ -793,6 +809,11 @@ $(document).ready(function() {
 							parent.after(o);
 						}
 						else {
+							var reserved = ['id', 'name', 'status'];
+							for (var property in data)
+								if (data.hasOwnProperty(property) && reserved.indexOf(property) < 0)
+									o.attr('data-' + property, data[property]);
+
 							var trigger = $(this).find('option[value=run_modal]');
 							if (trigger.length != 0)
 								trigger.before(o);
@@ -803,6 +824,29 @@ $(document).ready(function() {
 				}
 			}
 		});
+	});
+
+	$('body').on('submit', '.modal form', function(event) {
+		if (event.isDefaultPrevented())
+			return;
+
+		event.preventDefault();
+		var form = $(this);
+		var data = form.serializeArray();
+
+		$.ajax({
+			method: form.attr('method'),
+			url: form.attr('action'),
+			data: data,
+
+			success: function(data) {
+				form.closest('.modal').modal('hide');
+			}
+		});
+	});
+
+	$('body').on('change', '.measure-selector', function(event) {
+		enforceMeasureDiscrete($(this));
 	});
 
 	/*
@@ -983,7 +1027,7 @@ $(document).ready(function() {
 	$('body').on('click', '.add-many-rows', function(event) {
 		event.preventDefault();
 		var container = $(this).closest('.many-rows');
-		var row = container.find('.row').first().clone();
+		var row = container.find('.row:not(.many-rows-header)').first().clone();
 		row.find('input').val('');
 
 		/*
