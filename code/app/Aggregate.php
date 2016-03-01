@@ -20,6 +20,20 @@ class Aggregate extends Model
 		return $this->hasMany('App\Order')->orderBy('end', 'desc');
 	}
 
+	public function getStatusAttribute()
+	{
+		$priority = ['suspended', 'open', 'closed', 'shipped', 'archived'];
+		$index = 10;
+
+		foreach ($this->orders as $order) {
+			$a = array_search($order->status, $priority);
+			if ($a < $index)
+				$index = $a;
+		}
+
+		return $priority[$index];
+	}
+
 	public static function getByStatus($status)
 	{
 		return Aggregate::whereHas('orders', function($query) use ($status) {
@@ -66,6 +80,24 @@ class Aggregate extends Model
 			$icons[] = 'th-list';
 		if ($this->userCan('supplier.shippings'))
 			$icons[] = 'arrow-down';
+
+		switch($this->status) {
+			case 'open':
+				$icons[] = 'play';
+				break;
+			case 'suspended':
+				$icons[] = 'pause';
+				break;
+			case 'closed':
+				$icons[] = 'stop';
+				break;
+			case 'shipped':
+				$icons[] = 'step-forward';
+				break;
+			case 'archived':
+				$icons[] = 'eject';
+				break;
+		}
 
 		if (!empty($icons)) {
 			$ret .= '<div class="pull-right">';

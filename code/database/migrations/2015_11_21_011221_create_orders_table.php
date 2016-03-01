@@ -16,14 +16,13 @@ class CreateOrdersTable extends Migration
 			$table->date('start');
 			$table->date('end');
 			$table->date('shipping');
-			$table->enum('status', ['Sospeso', 'Prenotabile', 'Non prenotabile', 'Consegnato', 'Archiviato']);
-			/* si potrebbe usare solo l'iniziale: S, P, N, C, A; buono anche per l'ordinamento */
+			$table->enum('status', ['suspended', 'open', 'closed', 'shipped', 'archived']);
 			$table->string('payment_id');
 
 			$table->index('id');
 		});
 
-		Schema::create('order_product', function (Blueprint $table) { /* come mai è qui? */
+		Schema::create('order_product', function (Blueprint $table) {
 			$table->string('order_id');
 			$table->string('product_id');
 

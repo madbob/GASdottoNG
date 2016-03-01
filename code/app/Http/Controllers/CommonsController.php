@@ -26,7 +26,7 @@ class CommonsController extends Controller
 		$user = Auth::user();
 		$data['notifications'] = $user->notifications;
 		$data['opened'] = Aggregate::getByStatus('open');
-		$data['shipping'] = Aggregate::getByStatus('shipping');
+		$data['shipping'] = Aggregate::getByStatus('closed');
 
 		return Theme::view('pages.dashboard', $data);
 	}
