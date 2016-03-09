@@ -5,8 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 use Lanz\Commentable\Commentable;
-use TeamTeaTime\Filer\AttachableTrait;
 
+use App\AttachableTrait;
 use App\AllowableTrait;
 use App\HasBalance;
 use App\GASModel;
@@ -59,13 +59,8 @@ class Supplier extends Model
 		return $ret;
 	}
 
-	public function filesPath()
+	protected function requiredAttachmentPermission()
 	{
-		$path = sprintf('%s/%s', storage_path(), $this->name);
-		if (file_exists($path) == false)
-			if (mkdir($path) == false)
-				return null;
-
-		return $path;
+		return 'supplier.modify';
 	}
 }

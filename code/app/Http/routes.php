@@ -10,6 +10,7 @@ Route::get('/home', function () {
 
 Route::get('users/search', 'UsersController@search');
 Route::post('notifications/markread/{id}', 'NotificationsController@markread');
+Route::get('attachments/download/{id}', 'AttachmentsController@download');
 
 Route::resource('gas', 'GasController');
 Route::resource('users', 'UsersController');
@@ -19,6 +20,7 @@ Route::resource('categories', 'CategoriesController');
 Route::resource('measures', 'MeasuresController');
 Route::resource('variants', 'VariantsController');
 Route::resource('orders', 'OrdersController');
+Route::resource('attachments', 'AttachmentsController');
 Route::resource('booking.user', 'BookingUserController');
 Route::resource('delivery.user', 'DeliveryUserController');
 Route::resource('booking', 'BookingController');

@@ -4,8 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-use TeamTeaTime\Filer\AttachableTrait;
-
+use App\AttachableTrait;
 use App\AllowableTrait;
 use App\HasBalance;
 use App\GASModel;
@@ -91,5 +90,10 @@ class Gas extends Model
 	public function getRidcodeAttribute()
 	{
 		return $this->ridConfig()->code;
+	}
+
+	protected function requiredAttachmentPermission()
+	{
+		return 'gas.config';
 	}
 }

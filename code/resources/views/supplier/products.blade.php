@@ -36,6 +36,7 @@
 									'name' => 'file',
 									'label' => 'File da Caricare',
 									'mandatory' => true,
+									'extra_class' => 'immediate-run',
 									'extras' => [
 										'data-url' => 'import/csv?step=guess',
 										'data-form-data' => '{"supplier_id": "' . $supplier->id . '"}',

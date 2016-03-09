@@ -146,7 +146,6 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Lanz\Commentable\CommentableServiceProvider::class,
-        TeamTeaTime\Filer\FilerServiceProvider::class,
         Caffeinated\Themes\ThemesServiceProvider::class,
         Menu\MenuServiceProvider::class,
         Wilgucki\Csv\CsvServiceProvider::class,

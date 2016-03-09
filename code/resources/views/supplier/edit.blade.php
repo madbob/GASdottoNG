@@ -32,8 +32,6 @@
 	</div>
 
 	<div role="tabpanel" class="tab-pane fade" id="files-{{ $supplier->id }}">
-		<div class="alert alert-info">
-			<p>TODO</p>
-		</div>
+		@include('supplier.files', ['supplier' => $supplier])
 	</div>
 </div>

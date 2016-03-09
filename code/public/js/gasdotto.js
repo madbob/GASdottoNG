@@ -30,7 +30,7 @@ function generalInit() {
 		$(this).tab('show');
 	});
 
-	$('input:file').each(function() {
+	$('input:file.immediate-run').each(function() {
 		var i = $(this);
 		i.fileupload({
 			done: function(e, data) {
@@ -219,6 +219,60 @@ function parseDynamicTree(unparsed_data) {
 	}
 
 	return data;
+}
+
+function creatingFormCallback(form, data) {
+	if (data.status == 'success') {
+		voidForm(form);
+
+		var modal = form.parents('.modal');
+		if(modal.length != 0)
+			modal.modal('hide');
+
+		var test = form.find('input[name=update-list]');
+		if (test.length != 0) {
+			var listname = test.val();
+			var list = $('#' + listname);
+			list.append('<a href="' + data.url + '" class="loadable-item list-group-item">' + data.header + '</a>');
+			sortList(list);
+			testListsEmptiness();
+		}
+
+		var test = form.find('input[name=update-select]');
+		if (test.length != 0) {
+			var selectname = test.val();
+			$('select[name=' + selectname + ']').each(function() {
+				var o = $('<option value="' + data.id + '" selected="selected">' + data.name + '</option>');
+				if (data.hasOwnProperty('parent') && data.parent != null) {
+					var parent = $(this).find('option[value=' + data.parent + ']').first();
+					var pname = parent.text().replace(/&nbsp;/g, ' ');
+					var indent = '&nbsp;&nbsp;';
+
+					for (var i = 0; i < pname.length; i++) {
+						if (pname[i] == ' ')
+							indent += '&nbsp;';
+						else
+							break;
+					}
+
+					o.prepend(indent);
+					parent.after(o);
+				}
+				else {
+					var reserved = ['id', 'name', 'status'];
+					for (var property in data)
+						if (data.hasOwnProperty(property) && reserved.indexOf(property) < 0)
+							o.attr('data-' + property, data[property]);
+
+					var trigger = $(this).find('option[value=run_modal]');
+					if (trigger.length != 0)
+						trigger.before(o);
+					else
+						$(this).append(0);
+				}
+			});
+		}
+	}
 }
 
 /*******************************************************************************
@@ -593,7 +647,7 @@ $(document).ready(function() {
 		}
 	});
 
-	$(document).ajaxComplete(function() {
+	$(document).ajaxComplete(function(event) {
 		generalInit();
 	});
 
@@ -769,59 +823,12 @@ $(document).ready(function() {
 		$.ajax({
 			method: form.attr('method'),
 			url: form.attr('action'),
-			data: data,
+			data: new FormData(this),
 			dataType: 'json',
-
+			processData: false,
+			contentType: false,
 			success: function(data) {
-				voidForm(form);
-
-				var modal = form.parents('.modal');
-				if(modal.length != 0)
-					modal.modal('hide');
-
-				var test = form.find('input[name=update-list]');
-				if (test.length != 0) {
-					var listname = test.val();
-					var list = $('#' + listname);
-					list.append('<a href="' + data.url + '" class="loadable-item list-group-item">' + data.header + '</a>');
-					sortList(list);
-					testListsEmptiness();
-				}
-
-				var test = form.find('input[name=update-select]');
-				if (test.length != 0) {
-					var selectname = test.val();
-					$('select[name=' + selectname + ']').each(function() {
-						var o = $('<option value="' + data.id + '" selected="selected">' + data.name + '</option>');
-						if (data.hasOwnProperty('parent') && data.parent != null) {
-							var parent = $(this).find('option[value=' + data.parent + ']').first();
-							var pname = parent.text().replace(/&nbsp;/g, ' ');
-							var indent = '&nbsp;&nbsp;';
-
-							for (var i = 0; i < pname.length; i++) {
-								if (pname[i] == ' ')
-									indent += '&nbsp;';
-								else
-									break;
-							}
-
-							o.prepend(indent);
-							parent.after(o);
-						}
-						else {
-							var reserved = ['id', 'name', 'status'];
-							for (var property in data)
-								if (data.hasOwnProperty(property) && reserved.indexOf(property) < 0)
-									o.attr('data-' + property, data[property]);
-
-							var trigger = $(this).find('option[value=run_modal]');
-							if (trigger.length != 0)
-								trigger.before(o);
-							else
-								$(this).append(0);
-						}
-					});
-				}
+				creatingFormCallback(form, data);
 			}
 		});
 	});
