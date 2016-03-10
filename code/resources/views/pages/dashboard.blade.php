@@ -39,9 +39,9 @@
 				@else
 				<ul class="list-group">
 					@foreach($opened as $open)
-					<li class="list-group-item">
+					<a href="{{ $open->getDisplayURL() }}" class="list-group-item">
 						{!! $open->printableHeader() !!}
-					</li>
+					</a>
 					@endforeach
 				</ul>
 				@endif
@@ -64,9 +64,9 @@
 				@else
 				<ul class="list-group">
 					@foreach($shipping as $ship)
-					<li class="list-group-item">
+					<a href="{{ $ship->getDisplayURL() }}" class="list-group-item">
 						{{ $ship->printableHeader() }}
-					</li>
+					</a>
 					@endforeach
 				</ul>
 				@endif

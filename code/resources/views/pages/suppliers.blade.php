@@ -48,7 +48,7 @@
 
 <div class="row">
 	<div class="col-md-12">
-		@include('commons.loadablelist', ['identifier' => 'supplier-list', 'items' => $suppliers, 'url' => url('suppliers/')])
+		@include('commons.loadablelist', ['identifier' => 'supplier-list', 'items' => $suppliers])
 	</div>
 </div>
 

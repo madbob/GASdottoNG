@@ -64,6 +64,6 @@
 
 <div class="row">
 	<div class="col-md-12">
-		@include('commons.loadablelist', ['identifier' => 'product-list-' . $supplier->id, 'items' => $supplier->products, 'url' => url('products/')])
+		@include('commons.loadablelist', ['identifier' => 'product-list-' . $supplier->id, 'items' => $supplier->products])
 	</div>
 </div>

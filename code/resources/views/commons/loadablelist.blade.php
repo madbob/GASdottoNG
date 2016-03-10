@@ -4,6 +4,12 @@
 
 <div class="list-group loadablelist" id="{{ $identifier }}">
 	@foreach($items as $item)
-	<a href="{{ url($url . '/' . $item->id) }}" class="loadable-item list-group-item">{!! $item->printableHeader() !!}</a>
+		@if(isset($url))
+			<?php $u = url($url . '/' . $item->id) ?>
+		@else
+			<?php $u = $item->getShowURL() ?>
+		@endif
+
+		<a data-element-id="{{ $item->id }}" href="{{ $u }}" class="loadable-item list-group-item">{!! $item->printableHeader() !!}</a>
 	@endforeach
 </div>

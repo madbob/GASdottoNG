@@ -22,7 +22,7 @@
 
 <div class="row">
 	<div class="col-md-12">
-		@include('commons.loadablelist', ['identifier' => 'order-list', 'items' => $orders, 'url' => url('orders/')])
+		@include('commons.loadablelist', ['identifier' => 'order-list', 'items' => $orders])
 	</div>
 </div>
 

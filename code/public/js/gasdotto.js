@@ -651,6 +651,15 @@ $(document).ready(function() {
 		generalInit();
 	});
 
+	if (location.hash != '') {
+		setTimeout(function() {
+			var id = location.hash;
+			if (id.charAt(0) === '#')
+				id = id.substr(1);
+			$('.loadablelist').find('a[data-element-id=' + id + ']').click();
+		}, 100);
+	}
+
 	$('#bottom-stop').offset({left: 0, top: $(document).height() - 1});
 	$(document).scroll(function() {
 		var h = $(document).height();

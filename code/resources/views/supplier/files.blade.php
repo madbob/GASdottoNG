@@ -25,6 +25,6 @@
 
 <div class="row">
 	<div class="col-md-12">
-		@include('commons.loadablelist', ['identifier' => 'attachment-list-' . $supplier->id, 'items' => $supplier->attachments, 'url' => url('attachments/')])
+		@include('commons.loadablelist', ['identifier' => 'attachment-list-' . $supplier->id, 'items' => $supplier->attachments])
 	</div>
 </div>

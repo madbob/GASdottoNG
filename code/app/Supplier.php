@@ -63,4 +63,9 @@ class Supplier extends Model
 	{
 		return 'supplier.modify';
 	}
+
+	public function getDisplayURL()
+	{
+		return Illuminate\Routing\UrlGenerator::action('SuppliersController@show');
+	}
 }
