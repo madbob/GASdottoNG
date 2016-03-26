@@ -84,7 +84,6 @@
 			@foreach($permissions_subjects as $subject)
 			<option value="{{ $subject->id }}" data-permissions-class="{{ get_class($subject) }}">{{ $subject->printableName() }}</option>
 			@endforeach
-			<option value="all" data-permissions-class="all">[[ TUTTI ]]</option>
 		</select>
 	</div>
 

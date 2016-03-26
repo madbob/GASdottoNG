@@ -3,6 +3,7 @@
 namespace App;
 
 use Auth;
+use App;
 
 use App\User;
 use App\Permission;
@@ -44,7 +45,7 @@ trait AllowableTrait
 			else if (is_string($user))
 				$id = $user;
 			else
-				return;
+				return 'none';
 		}
 		else {
 			$user = Auth::user();
@@ -65,20 +66,17 @@ trait AllowableTrait
 	*/
 	public function userCan($action, $user = null)
 	{
+		$cache = App::make('PermissionsCache');
 		$user_id = $this->normalizeUserId($user);
-		$perm = null;
-
 		$actions = explode('|', $action);
-		foreach ($actions as $a) {
-			$perm = $this->permissions()->where('action', '=', $a)->where(function($query) use ($user_id) {
-				$query->where('user_id', '=', $user_id)->orWhere('user_id', '=', '*');
-			})->first();
 
-			if ($perm != null)
-				break;
+		foreach ($actions as $a) {
+			$perm = $cache->get($user_id, $a, get_class($this), $this->id);
+			if ($perm != 0)
+				return $perm;
 		}
 
-		return $this->permissionType($perm);
+		return 0;
 	}
 
 	/*
