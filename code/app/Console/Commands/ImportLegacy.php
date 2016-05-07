@@ -92,9 +92,6 @@ class ImportLegacy extends Command
                 DB::table('movements')->delete();
                 DB::table('contacts')->delete();
                 DB::table('comments')->delete();
-                DB::table('filer_local_files')->delete();
-                DB::table('filer_attachments')->delete();
-                DB::table('filer_urls')->delete();
 
                 $map = [];
 

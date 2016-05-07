@@ -35,7 +35,7 @@ class OverwriteMail
                 else
                         $gas = Gas::first();
 
-                if ($gas->mail_conf != '') {
+                if ($gas != null && $gas->mail_conf != '') {
                         $conf = json_decode($gas->mail_conf);
                         $conf->driver = 'smtp';
                         $conf->from = array('address' => $conf->address, 'name' => $gas->name);

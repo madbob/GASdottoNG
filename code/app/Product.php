@@ -36,7 +36,7 @@ class Product extends Model
 
 	public function variants()
 	{
-		return $this->hasMany('App\Variant')->orderBy('name', 'asc');
+		return $this->hasMany('App\Variant')->with('values')->orderBy('name', 'asc');
 	}
 
 	public function getSlugID()

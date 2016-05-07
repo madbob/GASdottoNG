@@ -1,6 +1,6 @@
 <div class="row<?php if($master == true) echo ' master-variant-selector' ?>">
 	<div class="input-group booking-product-quantity col-md-{{ 12 - ($product->variants->count() * 3) - 2 }}">
-		<input type="number" step="any" min="0" class="form-control<?php if($master == true) echo ' skip-on-submit' ?>" name="variant_quantity[]" value="<?php if($saved != null) echo $saved->quantity ?>" />
+		<input type="number" step="any" min="0" class="form-control<?php if($master == true) echo ' skip-on-submit' ?>" name="variant_quantity_{{ $product->id }}[]" value="{{ ($saved != null) ? $saved->quantity : '0' }}" />
 		<div class="input-group-addon">{{ $product->printableMeasure() }}</div>
 	</div>
 

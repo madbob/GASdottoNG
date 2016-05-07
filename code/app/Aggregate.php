@@ -17,7 +17,7 @@ class Aggregate extends Model
 
 	public function orders()
 	{
-		return $this->hasMany('App\Order')->orderBy('end', 'desc');
+		return $this->hasMany('App\Order')->with('products')->orderBy('end', 'desc');
 	}
 
 	public function getStatusAttribute()

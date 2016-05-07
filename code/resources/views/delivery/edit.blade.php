@@ -26,7 +26,6 @@ $more_orders = ($aggregate->orders->count() > 1);
 							<td>
 								<input type="hidden" name="product-partitioning" value="{{ $product->product->portion_quantity }}" class="skip-on-submit" />
 								<input type="hidden" name="product-price" value="{{ $product->product->price + $product->product->transport }}" class="skip-on-submit" />
-
 								<label class="static-label">{{ $product->product->name }}</label>
 							</td>
 
@@ -51,6 +50,11 @@ $more_orders = ($aggregate->orders->count() > 1);
 									<input type="hidden" name="product-price" value="{{ $product->product->price + $product->product->transport }}" class="skip-on-submit" />
 
 									<label class="static-label">{{ $product->product->name }}: {{ $var->printableName() }}</label>
+
+									<input type="hidden" name="{{ $product->product->id }}" value="1" />
+									@foreach($var->components as $comp)
+									<input type="hidden" name="variant_selection_{{ $comp->variant->id }}[]" value="{{ $comp->value->id }}" />
+									@endforeach
 								</td>
 
 								<td>
@@ -59,7 +63,7 @@ $more_orders = ($aggregate->orders->count() > 1);
 
 								<td>
 									<div class="input-group booking-product-quantity">
-										<input type="number" step="any" min="0" class="form-control" name="{{ $var->id }}" value="{{ $var->delivered }}" />
+										<input type="number" step="any" min="0" class="form-control" name="variant_quantity_{{ $product->product->id }}[]" value="{{ $var->delivered }}" />
 										<div class="input-group-addon">{{ $product->product->printableMeasure() }}</div>
 									</div>
 								</td>
@@ -71,10 +75,7 @@ $more_orders = ($aggregate->orders->count() > 1);
 
 				<tr class="hidden booking-product fit-add-product">
 					<td>
-						<input type="hidden" name="product-partitioning" value="" class="skip-on-submit" />
-						<input type="hidden" name="product-price" value="" class="skip-on-submit" />
-
-						<select class="form-control">
+						<select class="fit-add-product-select form-control">
 							<option value="-1">Seleziona un Prodotto</option>
 							@foreach($order->products as $product)
 							<option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -82,14 +83,8 @@ $more_orders = ($aggregate->orders->count() > 1);
 						</select>
 					</td>
 
-					<td></td>
-
-					<td>
-						<div class="input-group booking-product-quantity">
-							<input type="number" class="form-control" name="" value="0" />
-							<div class="input-group-addon">?</div>
-						</div>
-					</td>
+					<td>&nbsp;</td>
+					<td class="bookable-target">&nbsp;</td>
 				</tr>
 			</tbody>
 			<tfoot>

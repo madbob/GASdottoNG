@@ -59,7 +59,7 @@ class ProductsController extends Controller
 	public function show(Request $request, $id)
 	{
 		$format = $request->input('format', 'html');
-		$p = Product::findOrFail($id);
+		$p = Product::with('variants')->with('variants.values')->findOrFail($id);
 
 		if ($format == 'html') {
 			if ($p->supplier->userCan('supplier.modify'))
@@ -72,6 +72,9 @@ class ProductsController extends Controller
 			$ret = json_decode($ret);
 			$ret->printableMeasure = $p->printableMeasure();
 			return json_encode($ret);
+		}
+		else if ($format == 'bookable') {
+			return Theme::view('booking.quantityselectrow', ['product' => $p, 'populate' => false]);
 		}
 	}
 

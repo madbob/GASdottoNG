@@ -53,4 +53,16 @@ class BookedProduct extends Model
 	{
 		return $this->fixQuantity('delivered');
 	}
+
+	public function getBookedVariant($variant, $fallback = false)
+	{
+		$v = $this->variants()->where('id', '=', $variant->id)->first();
+
+		if ($v == null && $fallback == true) {
+			$v = new BookedProductVariant();
+			$v->product_id = $this->id;
+		}
+
+		return $v;
+	}
 }

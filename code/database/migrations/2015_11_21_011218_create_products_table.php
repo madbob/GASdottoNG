@@ -14,14 +14,14 @@ class CreateProductsTable extends Migration
 			$table->string('previous_id');
 
 			$table->string('supplier_id');
-			$table->string('name', 20);
-			$table->string('supplier_code', 45)->nullable();
-			$table->string('barcode', 12)->nullable();
+			$table->string('name');
+			$table->string('supplier_code')->nullable();
+			$table->string('barcode')->nullable();
 			$table->string('category_id');
 			$table->string('measure_id');
 			$table->boolean('active');
 			$table->text('description');
-			$table->string('picture', 100)->nullable();
+			$table->string('picture')->nullable();
 
 			$table->decimal('price', 5, 2);
 			$table->decimal('transport', 5, 2);

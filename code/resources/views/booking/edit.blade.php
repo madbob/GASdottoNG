@@ -23,36 +23,11 @@ $more_orders = ($aggregate->orders->count() > 1);
 				@foreach($order->products as $product)
 				<tr class="booking-product">
 					<td>
-						<input type="hidden" name="product-minimum" value="{{ $product->min_quantity }}" class="skip-on-submit" />
-						<input type="hidden" name="product-multiple" value="{{ $product->multiple }}" class="skip-on-submit" />
-						<input type="hidden" name="product-partitioning" value="{{ $product->portion_quantity }}" class="skip-on-submit" />
-						<input type="hidden" name="product-price" value="{{ $product->price + $product->transport }}" class="skip-on-submit" />
-
 						<label class="static-label">{{ $product->name }}</label>
 					</td>
 
 					<td>
-						@if($product->variants->isEmpty() == false)
-							<input type="hidden" name="{{ $product->id }}" value="1" />
-
-							<div class="variants-selector">
-								@include('booking.variantselectrow', ['product' => $product, 'master' => true, 'saved' => null])
-
-								<?php $booked = $o->getBooked($product) ?>
-								@if($booked != null)
-									@foreach($booked->variants as $var)
-										@include('booking.variantselectrow', ['product' => $product, 'master' => false, 'saved' => $var])
-									@endforeach
-								@else
-									@include('booking.variantselectrow', ['product' => $product, 'master' => false, 'saved' => null])
-								@endif
-							</div>
-						@else
-							<div class="input-group booking-product-quantity">
-								<input type="number" class="form-control" name="{{ $product->id }}" value="{{ $o->getBookedQuantity($product) }}" />
-								<div class="input-group-addon">{{ $product->printableMeasure() }}</div>
-							</div>
-						@endif
+						@include('booking.quantityselectrow', ['product' => $product, 'populate' => true])
 					</td>
 
 					<td>

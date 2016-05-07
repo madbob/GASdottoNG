@@ -117,17 +117,6 @@ function voidForm(form) {
 	form.find('textarea').val('');
 }
 
-function sortList(mylist) {
-	var listitems = mylist.children('a').get();
-	listitems.sort(function(a, b) {
-		return $(a).text().toUpperCase().localeCompare($(b).text().toUpperCase());
-	});
-
-	$.each(listitems, function(idx, itm) {
-		mylist.append(itm);
-	});
-}
-
 function closeMainForm(form) {
 	var container = form.closest('.list-group-item');
 	var head = container.prev();
@@ -234,7 +223,6 @@ function creatingFormCallback(form, data) {
 			var listname = test.val();
 			var list = $('#' + listname);
 			list.append('<a href="' + data.url + '" class="loadable-item list-group-item">' + data.header + '</a>');
-			sortList(list);
 			testListsEmptiness();
 		}
 
@@ -954,28 +942,24 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$('body').on('change', '.fit-add-product select', function(e) {
+	$('body').on('change', '.fit-add-product .fit-add-product-select', function(e) {
 		var id = $(this).find('option:selected').val();
 		var row = $(this).closest('tr');
 		var editor = row.closest('.booking-editor');
 
 		if (id == -1) {
-			row.find('.booking-product-quantity input').val('0').attr('name', '');
-			row.find('.booking-product-quantity .input-group-addon').text('?');
+			row.find('.bookable-target').empty();
 			bookingTotal(editor);
 		}
 		else {
 			$.ajax({
 				method: 'GET',
 				url: '/products/' + id,
-				data: {format: 'json'},
-				dataType: 'json',
+				data: {format: 'bookable'},
+				dataType: 'HTML',
 
 				success: function(data) {
-					row.find('input:hidden[name=product-partitioning]').val(data.partitioning);
-					row.find('input:hidden[name=product-price]').val(data.price);
-					row.find('.booking-product-quantity input').attr('name', data.id);
-					row.find('.booking-product-quantity .input-group-addon').text(data.printableMeasure);
+					row.find('.bookable-target').empty().append(data);
 					bookingTotal(editor);
 				}
 			});
