@@ -87,6 +87,7 @@ class Order extends Model
 		$order = $this;
 		$products = $order->products;
 		$total_price = 0;
+		$total_price_delivered = 0;
 		$total_transport = 0;
 
 		foreach($products as $product) {
@@ -98,8 +99,10 @@ class Order extends Model
 			$delivered = $q->sum('delivered');
 
 			$price = $quantity * $product->price;
+			$price_delivered = $delivered * $product->price;
 			$summary->products[$product->id]['price'] = $price;
 			$total_price += $price;
+			$total_price_delivered += $price_delivered;
 
 			$transport = $quantity * $product->transport;
 			$summary->products[$product->id]['transport'] = $transport;
@@ -107,10 +110,12 @@ class Order extends Model
 
 			$summary->products[$product->id]['quantity'] = $quantity;
 			$summary->products[$product->id]['delivered'] = $delivered;
+			$summary->products[$product->id]['price_delivered'] = $price_delivered;
 			$summary->products[$product->id]['notes'] = '';
 		}
 
 		$summary->price = $total_price;
+		$summary->price_delivered = $total_price_delivered;
 		$summary->transport = $total_transport;
 		return $summary;
 	}
