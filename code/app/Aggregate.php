@@ -34,10 +34,14 @@ class Aggregate extends Model
 		return $priority[$index];
 	}
 
-	public static function getByStatus($status)
+	public static function getByStatus($status, $inverse = false)
 	{
-		return Aggregate::whereHas('orders', function($query) use ($status) {
-			$query->where('status', '=', $status);
+		$operator = '=';
+		if ($inverse)
+			$operator = '!=';
+
+		return Aggregate::whereHas('orders', function($query) use ($status, $operator) {
+			$query->where('status', $operator, $status);
 		})->get();
 	}
 

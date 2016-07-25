@@ -155,8 +155,8 @@ class Movement extends Model
 				],
 				'callbacks' => [
 					'post' => function(Movement $movement) {
-						$movement->sender->deposit_id = null;
-						$movement->sender->save();
+						$movement->target->deposit_id = null;
+						$movement->target->save();
 					}
 				]
 			],

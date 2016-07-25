@@ -12,6 +12,7 @@ use DB;
 use Theme;
 
 use App\Movement;
+use App\Aggregate;
 
 class MovementsController extends Controller
 {
@@ -73,6 +74,46 @@ class MovementsController extends Controller
                         return Theme::view('pages.movements', $data);
                 else
                         return Theme::view('movement.list', $data);
+        }
+
+        public function create(Request $request)
+        {
+                $type = $request->input('type');
+                if ($type == 'none')
+                        return '';
+
+                $metadata = Movement::types($type);
+                $data = [];
+
+                $payments = [];
+                $all_payments = Movement::payments();
+                foreach($metadata->methods as $identifier => $info)
+                        $payments[$identifier] = $all_payments[$identifier];
+
+                $data['payments'] = $payments;
+                $data['fixed'] = $metadata->fixed_value;
+
+                $data['sender_type'] = $metadata->sender_type;
+                if ($metadata->sender_type != null)
+                        $data['senders'] = $metadata->sender_type::all();
+                else
+                        $data['senders'] = [];
+
+                $data['target_type'] = $metadata->target_type;
+                if ($metadata->target_type != null) {
+                        if ($type == 'booking-payment') {
+                                $data['targets'] = Aggregate::getByStatus('archived', true);
+                                $data['target_type'] = 'App\Aggregate';
+                        }
+                        else {
+                                $data['targets'] = $metadata->target_type::all();
+                        }
+                }
+                else {
+                        $data['targets'] = [];
+                }
+
+                return Theme::view('movement.selectors', $data);
         }
 
         public function store(Request $request)

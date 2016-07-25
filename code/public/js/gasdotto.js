@@ -918,6 +918,25 @@ $(document).ready(function() {
 		enforceMeasureDiscrete($(this));
 	});
 
+	$('body').on('change', '.movement-type-selector', function(event) {
+		var type = $(this).find('option:selected').val();
+		var selectors = $(this).closest('form').find('.selectors');
+		selectors.empty().append(loadingPlaceholder());
+
+		$.ajax({
+			method: 'GET',
+			url: '/movements/create',
+			dataType: 'html',
+			data: {
+				type: type
+			},
+
+			success: function(data) {
+				selectors.empty().append(data);
+			}
+		});
+	});
+
 	$('body').on('submit', '.form-filler', function(event) {
 		event.preventDefault();
 		var form = $(this);
