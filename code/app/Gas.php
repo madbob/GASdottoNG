@@ -6,15 +6,32 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\AttachableTrait;
 use App\AllowableTrait;
-use App\HasBalance;
 use App\GASModel;
 use App\SluggableID;
 
 class Gas extends Model
 {
-	use AttachableTrait, AllowableTrait, HasBalance, GASModel, SluggableID;
+	use AttachableTrait, AllowableTrait, GASModel, SluggableID;
 
 	public $incrementing = false;
+
+	public function balances()
+	{
+		return $this->hasMany('App\Balance')->orderBy('date', 'desc');
+	}
+
+	public function alterBalance($type, $amount)
+	{
+		if (is_string($type))
+			$type = [$type];
+
+		$balance = $this->balances()->first();
+		foreach($type as $t)
+			$balance->$t += $amount;
+
+		$balance->total += $amount;
+		$balance->save();
+	}
 
 	private function mailConfig()
 	{

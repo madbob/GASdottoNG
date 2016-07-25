@@ -1,3 +1,20 @@
+<?php
+
+if (isset($fixed_value) && $fixed_value != false) {
+	$value = $fixed_value;
+	$disabled = true;
+}
+else {
+	if ($obj)
+		$value = $obj->$name;
+	else
+		$value = '';
+
+	$disabled = isset($disabled) ? $disabled : false;
+}
+
+?>
+
 <div class="form-group">
 	@if($squeeze == false)
 	<label for="{{ $prefix . $name . $postfix }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
@@ -13,10 +30,14 @@
 			name="{{ $prefix . $name . $postfix }}"
 			step="0.01"
 			min="0"
-			value="<?php if($obj) echo $obj->$name ?>"
+			value="{{ $value }}"
 
 			@if(isset($mandatory) && $mandatory == true)
 			required
+			@endif
+
+			@if(isset($disabled) && $disabled == true)
+			disabled
 			@endif
 
 			@if($squeeze == true)

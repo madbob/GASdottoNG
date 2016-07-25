@@ -10,13 +10,12 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 use DB;
 
-use App\HasBalance;
 use App\GASModel;
 use App\SluggableID;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-	use Authenticatable, CanResetPassword, HasBalance, GASModel, SluggableID;
+	use Authenticatable, CanResetPassword, GASModel, SluggableID;
 
 	public $incrementing = false;
 	protected $table = 'users';
@@ -43,9 +42,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return $this->morphMany('App\Contact', 'target');
 	}
 
-	public function movements()
+	public function deposit()
 	{
-		return $this->hasMany('App\Movement')->orderBy('created_at', 'desc');
+		return $this->belongsTo('App\Movement');
+	}
+
+	public function fee()
+	{
+		return $this->belongsTo('App\Movement');
 	}
 
 	public function getSlugID()

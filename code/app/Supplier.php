@@ -8,13 +8,12 @@ use Lanz\Commentable\Commentable;
 
 use App\AttachableTrait;
 use App\AllowableTrait;
-use App\HasBalance;
 use App\GASModel;
 use App\SluggableID;
 
 class Supplier extends Model
 {
-	use Commentable, AttachableTrait, AllowableTrait, HasBalance, GASModel, SluggableID;
+	use Commentable, AttachableTrait, AllowableTrait, GASModel, SluggableID;
 
 	public $incrementing = false;
 

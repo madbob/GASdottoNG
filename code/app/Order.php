@@ -33,6 +33,11 @@ class Order extends Model
 		return $this->hasMany('App\Booking')->with('user');
 	}
 
+	public function payment()
+	{
+		return $this->belongsTo('App\Movement');
+	}
+
 	public function getSlugID()
 	{
 		return sprintf('%s::%s', $this->supplier->id, str_slug(strftime('%d %B %G', strtotime($this->start))));

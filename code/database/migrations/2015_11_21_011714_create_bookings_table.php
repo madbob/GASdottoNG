@@ -18,7 +18,7 @@ class CreateBookingsTable extends Migration
 
 			$table->string('deliverer_id');
 			$table->date('delivery');
-			$table->string('payment_id');
+			$table->integer('payment_id');
 
 			$table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
 			$table->index('id');

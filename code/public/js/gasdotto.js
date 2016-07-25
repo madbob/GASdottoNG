@@ -95,6 +95,8 @@ function generalInit() {
 		enforceMeasureDiscrete($(this));
 	});
 
+	$('.postponed').appendTo('#postponed').removeClass('postponed');
+
 	setupVariantsEditor();
 	setupImportCsvEditor();
 	testListsEmptiness();
@@ -260,6 +262,30 @@ function creatingFormCallback(form, data) {
 				}
 			});
 		}
+
+		var test = form.find('input[name=update-field]');
+		if (test.length != 0) {
+			test.each(function() {
+				var identifier_holder = $(this).val();
+				var node = $('[data-updatable-name=' + identifier_holder + ']');
+				var field = node.attr('data-updatable-field');
+				var value = data[field];
+
+				if (node.is('input:hidden'))
+					node.val(value);
+				else
+					node.text(value);
+			});
+		}
+
+		var test = form.find('input[name=post-saved-function]');
+		if (test.length != 0) {
+			test.each(function() {
+				var fn = window[$(this).val()];
+				if (typeof fn === 'function')
+					fn(form);
+			});
+		}
 	}
 }
 
@@ -286,7 +312,11 @@ function bookingTotal(editor) {
 		if ($(this).hasClass('hidden'))
 			return true;
 
-		var price = $(this).find('input:hidden[name=product-price]').val();
+		var product_price = $(this).find('input:hidden[name=product-price]');
+		if (product_price.length == 0)
+			return true;
+
+		var price = product_price.val();
 		price = parseFloatC(price);
 
 		var partitioning = $(this).find('input:hidden[name=product-partitioning]').val();
@@ -311,8 +341,31 @@ function bookingTotal(editor) {
 		total_price += price * quantity;
 	});
 
+	total_price = priceRound(total_price);
+
 	var total_label = editor.find('.booking-total');
-	total_label.text(priceRound(total_price));
+	total_label.text(total_price);
+
+	/*
+		Qui aggiorno il valore totale della prenotazione nel (eventuale)
+		modale per il pagamento
+	*/
+	var form = editor.closest('form');
+	var payment_modal_id = form.attr('data-reference-modal');
+	var payment_modal = $('#' + payment_modal_id);
+	if (payment_modal.length != 0) {
+		var grand_total = 0;
+		var status = {};
+
+		form.find('.booking-editor').each(function() {
+			var t = parseFloatC($('.booking-total', this).text());
+			grand_total += t;
+			status[$(this).attr('data-booking-id')] = t;
+		});
+
+		payment_modal.find('input[name=amount]').val(grand_total);
+		payment_modal.find('input[name=delivering-status]').val(JSON.stringify(status));
+	}
 }
 
 function setupVariantsEditor() {
@@ -400,6 +453,11 @@ function setupVariantsEditor() {
 
 		return false;
 	});
+}
+
+function submitDeliveryForm(form) {
+	var id = form.closest('.modal').attr('id');
+	$('form[data-reference-modal=' + id + ']').submit();
 }
 
 /*******************************************************************************
@@ -628,6 +686,10 @@ function setupHelp() {
 	});
 }
 
+/*******************************************************************************
+	Core
+*/
+
 $(document).ready(function() {
 	$.ajaxSetup({
 		headers: {
@@ -791,8 +853,9 @@ $(document).ready(function() {
 		event.preventDefault();
 		var form = $(this);
 		var data = filteredSerialize(form);
+		var save_button = form.find('.saving-button');
 
-		form.find('button[type=submit]').text('Attendere').attr('disabled', 'disabled');;
+		save_button.text('Attendere').attr('disabled', 'disabled');
 
 		$.ajax({
 			method: form.attr('method'),
@@ -801,9 +864,9 @@ $(document).ready(function() {
 			dataType: 'json',
 
 			success: function(data) {
-				form.find('button[type=submit]').text('Salvato!');
+				save_button.text('Salvato!');
 				setInterval(function() {
-					form.find('button[type=submit]').text('Salva').removeAttr('disabled');
+					save_button.text('Salva').removeAttr('disabled');
 				}, 2000);
 			}
 		});
@@ -815,7 +878,7 @@ $(document).ready(function() {
 
 		event.preventDefault();
 		var form = $(this);
-		var data = form.serializeArray();
+		var disabled = form.find(':disabled').removeAttr('disabled');
 
 		$.ajax({
 			method: form.attr('method'),
@@ -828,6 +891,8 @@ $(document).ready(function() {
 				creatingFormCallback(form, data);
 			}
 		});
+
+		disabled.attr('disabled', 'disabled');
 	});
 
 	$('body').on('submit', '.modal form', function(event) {
@@ -851,6 +916,24 @@ $(document).ready(function() {
 
 	$('body').on('change', '.measure-selector', function(event) {
 		enforceMeasureDiscrete($(this));
+	});
+
+	$('body').on('submit', '.form-filler', function(event) {
+		event.preventDefault();
+		var form = $(this);
+		var data = form.serializeArray();
+		var target = $(form.attr('data-fill-target'));
+
+		$.ajax({
+			method: 'GET',
+			url: form.attr('action'),
+			data: data,
+			dataType: 'json',
+
+			success: function(data) {
+				target.empty().append(data);
+			}
+		});
 	});
 
 	/*

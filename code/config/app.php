@@ -154,6 +154,7 @@ return [
         App\Providers\GraphicInitServiceProvider::class,
         App\Providers\MenuServiceProvider::class,
         App\Providers\PermissionsCacheProvider::class,
+        App\Providers\MovementsKeeper::class,
     ],
 
     /*

@@ -23,6 +23,7 @@ $more_orders = ($aggregate->orders->count() > 1);
 
 		<div class="tab-content">
 			@foreach($aggregate->orders as $order)
+			<?php $summary = $order->calculateSummary() ?>
 			<div role="tabpanel" class="tab-pane active" id="order-{{ $order->id }}">
 				@if($order->supplier->userCan('supplier.orders'))
 
@@ -35,14 +36,19 @@ $more_orders = ($aggregate->orders->count() > 1);
 							@include('commons.datefield', ['obj' => $order, 'name' => 'start', 'label' => 'Data Apertura', 'mandatory' => true])
 							@include('commons.datefield', ['obj' => $order, 'name' => 'end', 'label' => 'Data Chiusura', 'mandatory' => true])
 							@include('commons.datefield', ['obj' => $order, 'name' => 'shipping', 'label' => 'Data Consegna'])
+						</div>
+						<div class="col-md-6">
 							@include('commons.orderstatus', ['order' => $order])
 
+							@if($currentgas->userCan('movements.view|movements.admin'))
+								@include('commons.movementfield', ['obj' => $order->payment, 'name' => 'payment_id', 'label' => 'Pagamento', 'default' => \App\Movement::generate('order-payment', $currentgas, $order->supplier, $summary->price_delivered)])
+							@endif
 						</div>
 					</div>
 
 					<hr/>
 
-					@include('order.summary', ['order' => $order])
+					@include('order.summary', ['order' => $order, 'summary' => $summary])
 					@include('commons.formbuttons')
 				</form>
 
@@ -104,3 +110,5 @@ $more_orders = ($aggregate->orders->count() > 1);
 		</div>
 	</div>
 </div>
+
+@stack('postponed')

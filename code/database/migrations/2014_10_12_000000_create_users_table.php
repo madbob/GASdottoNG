@@ -13,26 +13,28 @@ class CreateUsersTable extends Migration
 			$table->softDeletes();
 
 			$table->string('gas_id');
-			$table->string('username', 20)->unique();
-			$table->string('firstname', 30);
-			$table->string('lastname', 30);
-			$table->string('email_1', 45);
-			$table->string('email_2', 45);
-			$table->string('password', 100);
+			$table->string('username')->unique();
+			$table->string('firstname');
+			$table->string('lastname');
+			$table->string('email');
+			$table->string('password');
 			$table->date('birthday')->nullable();
-			$table->string('phone', 15)->nullable();
+			$table->string('phone')->nullable();
 			$table->json('address')->nullable();
 			$table->integer('family_members')->unsigned();
-			$table->string('picture', 100)->nullable();
-			$table->string('taxcode', 16)->nullable();
+			$table->string('picture')->nullable();
+			$table->string('taxcode')->nullable();
 			$table->date('member_since');
 			$table->date('leaving_date');
-			$table->string('card_number', 10)->nullable();
+			$table->string('card_number')->nullable();
 			$table->datetime('last_login')->nullable();
-			// $table->string('preferred_delivery_id');
+			$table->string('preferred_delivery_id');
 
 			$table->decimal('balance', 6, 2);
-			$table->string('iban', 27)->nullable();
+			$table->integer('fee_id')->nullable();
+			$table->integer('deposit_id')->nullable();
+
+			$table->string('iban')->nullable();
 			$table->date('sepa_subscribe')->nullable();
 			$table->date('sepa_first')->nullable();
 

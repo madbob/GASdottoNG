@@ -14,8 +14,6 @@
 		</tr>
 	</thead>
 	<tbody>
-		<?php $summary = $order->calculateSummary() ?>
-
 		@foreach($order->products as $product)
 		<tr>
 			<td>

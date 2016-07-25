@@ -31,6 +31,6 @@ class DeliveryUserController extends BookingHandler
 
         public function destroy($id)
         {
-        //
+                //
         }
 }

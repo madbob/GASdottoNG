@@ -17,7 +17,7 @@ class CreateOrdersTable extends Migration
 			$table->date('end');
 			$table->date('shipping');
 			$table->enum('status', ['suspended', 'open', 'closed', 'shipped', 'archived']);
-			$table->string('payment_id');
+			$table->integer('payment_id');
 
 			$table->index('id');
 		});

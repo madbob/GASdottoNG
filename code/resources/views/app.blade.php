@@ -54,6 +54,7 @@
 			</div>
 		</div>
 
+		<div id="postponed"></div>
 		<div id="bottom-stop"></div>
 
 		<script type="application/javascript" src="{{ url('js/jquery-2.1.1.min.js') }}"></script>

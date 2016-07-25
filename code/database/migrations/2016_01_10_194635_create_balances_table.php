@@ -11,18 +11,15 @@ class CreateBalancesTable extends Migration
                         $table->increments('id');
                         $table->timestamps();
 
-                        $table->string('target_type');
-                        $table->string('target_id');
+                        $table->string('gas_id');
                         $table->datetime('date');
-                        $table->decimal('balance', 6, 2)->default(0);
-                        $table->decimal('bank_balance', 6, 2)->default(0);
-			$table->decimal('cash_balance', 6, 2)->default(0);
-			$table->decimal('suppliers_balance', 6, 2)->default(0);
-			$table->decimal('deposit_balance', 6, 2)->default(0);
+                        $table->decimal('total', 6, 2)->default(0);
+                        $table->decimal('bank', 6, 2)->default(0);
+			$table->decimal('cash', 6, 2)->default(0);
+			$table->decimal('suppliers', 6, 2)->default(0);
+			$table->decimal('deposits', 6, 2)->default(0);
 
                         $table->index('id');
-                        $table->index('target_type');
-                        $table->index('target_id');
                 });
         }
 

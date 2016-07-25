@@ -37,6 +37,16 @@ class Booking extends Model
 		});
 	}
 
+	public function deliverer()
+	{
+		return $this->belongsTo('App\User', 'deliverer_id');
+	}
+
+	public function payment()
+	{
+		return $this->belongsTo('App\Movement');
+	}
+
 	public function getBooked($product, $fallback = false)
 	{
 		$p = $this->products()->whereHas('product', function($query) use ($product) {
@@ -85,5 +95,10 @@ class Booking extends Model
 	public function getSlugID()
 	{
 		return sprintf('%s::%s', $this->order->id, $this->user->id);
+	}
+
+	public function printableName()
+	{
+		return $this->order->printableName();
 	}
 }

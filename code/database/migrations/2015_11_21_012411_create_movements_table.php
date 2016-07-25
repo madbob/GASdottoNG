@@ -14,15 +14,16 @@ class CreateMovementsTable extends Migration
 			$table->date('registration_date');
 			$table->string('registerer_id');
 
-			$table->string('user_id');
+			$table->string('sender_type');
+			$table->string('sender_id');
 			$table->string('target_type');
 			$table->string('target_id');
 
 			$table->decimal('amount', 5, 2);
-			$table->string('method_id');
-			$table->string('type_id');
+			$table->string('method');
+			$table->string('type');
 			$table->string('identifier');
-			$table->string('notes');
+			$table->text('notes');
 
 			$table->index('id');
 		});

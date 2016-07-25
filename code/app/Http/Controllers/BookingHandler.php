@@ -37,6 +37,12 @@ class BookingHandler extends Controller
 
                 foreach ($aggregate->orders as $order) {
                         $booking = $order->userBooking($user_id);
+
+			if ($delivering == true) {
+				$booking->deliverer_id = Auth::user()->id;
+				$booking->delivery = date('Y-m-d');
+			}
+
                         $booking->save();
 
                         foreach ($order->products as $product) {
