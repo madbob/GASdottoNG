@@ -76,8 +76,8 @@ class ImportLegacy extends Command
                 DB::table('users')->delete();
                 DB::table('password_resets')->delete();
                 DB::table('gas')->delete();
-                DB::table('suppliers')->delete();
                 DB::table('products')->delete();
+                DB::table('suppliers')->delete();
                 DB::table('orders')->delete();
                 DB::table('aggregates')->delete();
                 DB::table('variants')->delete();
@@ -157,8 +157,7 @@ class ImportLegacy extends Command
                                 $obj->username = $row->login;
                                 $obj->firstname = $row->firstname;
                                 $obj->lastname = $row->surname;
-                                $obj->email_1 = $row->mail;
-                                $obj->email_2 = $row->mail2;
+                                $obj->email = $row->mail;
                                 $obj->password = Hash::make($row->login);
                                 $obj->birthday = $row->birthday;
                                 $obj->phone = $row->phone;
@@ -254,7 +253,11 @@ class ImportLegacy extends Command
                                 $map['categories'][$row->id] = $obj->id;
                         }
                         catch (\Exception $e) {
-                                echo sprintf("Errore nell'importazione della categoria %s: %s\n", $row->name, $e->getMessage());
+                                $obj = Category::where('name', '=', $row->name)->first();
+                                if ($obj != null)
+                                        $map['categories'][$row->id] = $obj->id;
+                                else
+                                        echo sprintf("Errore nell'importazione della categoria %s: %s\n", $row->name, $e->getMessage());
                         }
                 }
 
@@ -270,7 +273,11 @@ class ImportLegacy extends Command
                                 $map['measures'][$row->id] = $obj->id;
                         }
                         catch (\Exception $e) {
-                                echo sprintf("Errore nell'importazione della misura %s: %s\n", $row->name, $e->getMessage());
+                                $obj = Measure::where('name', '=', $row->name)->first();
+                                if ($obj != null)
+                                        $map['measures'][$row->id] = $obj->id;
+                                else
+                                        echo sprintf("Errore nell'importazione della misura %s: %s\n", $row->name, $e->getMessage());
                         }
                 }
 
