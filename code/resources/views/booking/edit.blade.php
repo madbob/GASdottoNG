@@ -23,7 +23,15 @@ $more_orders = ($aggregate->orders->count() > 1);
 				@foreach($order->products as $product)
 				<tr class="booking-product">
 					<td>
-						<label class="static-label">{{ $product->name }}</label>
+						<label class="static-label">
+							{{ $product->name }}
+
+							@if(!empty($product->description))
+								<button type="button" class="btn btn-xs btn-default" data-container="body" data-toggle="popover" data-placement="right" data-trigger="hover" data-content="{{ str_replace('"', '\"', $product->description) }}">
+									<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+								</button>
+							@endif
+						</label>
 					</td>
 
 					<td>

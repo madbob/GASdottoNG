@@ -15,6 +15,11 @@ use App\Aggregate;
 
 class BookingUserController extends BookingHandler
 {
+        public function __construct()
+	{
+		$this->middleware('auth');
+	}
+
         public function index(Request $request, $aggregate_id)
         {
                 $aggregate = Aggregate::findOrFail($aggregate_id);

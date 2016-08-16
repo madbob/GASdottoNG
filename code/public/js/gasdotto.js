@@ -22,8 +22,8 @@ function generalInit() {
 	});
 
 	$('.tagsinput').tagsinput();
-
 	$('.addicted-table').bootstrapTable();
+	$('[data-toggle="popover"]').popover();
 
 	$('.nav-tabs a').click(function (e) {
 		e.preventDefault();
