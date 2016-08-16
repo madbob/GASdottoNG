@@ -8,6 +8,7 @@ foreach($aggregate->orders as $order) {
 }
 
 $more_orders = ($aggregate->orders->count() > 1);
+$panel_rand_wrap = rand();
 
 ?>
 
@@ -15,17 +16,18 @@ $more_orders = ($aggregate->orders->count() > 1);
 	<div class="col-md-12">
 		@if($more_orders)
 		<ul class="nav nav-tabs" role="tablist">
-			@foreach($aggregate->orders as $order)
-			<li role="presentation"><a href="#order-{{ $order->id }}" role="tab" data-toggle="tab">{{ $order->printableName() }}</a></li>
+			@foreach($aggregate->orders as $index => $order)
+			<li role="presentation" class="{{ $index == 0 ? 'active' : '' }}"><a href="#order-{{ $panel_rand_wrap }}-{{ $index }}" role="tab" data-toggle="tab">{{ $order->printableName() }}</a></li>
 			@endforeach
 		</ul>
 		@endif
 
 		<div class="tab-content">
-			@foreach($aggregate->orders as $order)
-			<?php $summary = $order->calculateSummary() ?>
-			<div role="tabpanel" class="tab-pane active" id="order-{{ $order->id }}">
+			@foreach($aggregate->orders as $index => $order)
+			<div role="tabpanel" class="tab-pane {{ $index == 0 ? 'active' : '' }}" id="order-{{ $panel_rand_wrap }}-{{ $index }}">
 				@if($order->supplier->userCan('supplier.orders'))
+
+				<?php $summary = $order->calculateSummary() ?>
 
 				<form class="form-horizontal main-form order-editor" method="PUT" action="{{ url('orders/' . $order->id) }}">
 					<input type="hidden" name="id" value="{{ $order->id }}" />
