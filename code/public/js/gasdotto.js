@@ -1073,6 +1073,26 @@ $(document).ready(function() {
 				}
 			}
 
+			var m = row.find('input:hidden[name=product-maximum]');
+			if (m.length != 0) {
+				var maximum = parseFloatC(m.val());
+				if (maximum != 0 && booked > maximum) {
+					row.addClass('has-error');
+					booked = 0;
+					wrong = true;
+				}
+			}
+
+			var m = row.find('input:hidden[name=product-available]');
+			if (m.length != 0) {
+				var maximum = parseFloatC(m.val());
+				if (maximum != 0 && booked > maximum) {
+					row.addClass('has-error');
+					booked = 0;
+					wrong = true;
+				}
+			}
+
 			if (wrong == false)
 				row.removeClass('has-error');
 		}

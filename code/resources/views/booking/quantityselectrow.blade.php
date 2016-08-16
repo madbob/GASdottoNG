@@ -1,6 +1,8 @@
 <input type="hidden" name="product-minimum" value="{{ $product->min_quantity }}" class="skip-on-submit" />
+<input type="hidden" name="product-maximum" value="{{ $product->max_quantity }}" class="skip-on-submit" />
 <input type="hidden" name="product-multiple" value="{{ $product->multiple }}" class="skip-on-submit" />
 <input type="hidden" name="product-partitioning" value="{{ $product->portion_quantity }}" class="skip-on-submit" />
+<input type="hidden" name="product-available" value="{{ $product->stillAvailable($order) }}" class="skip-on-submit" />
 <input type="hidden" name="product-price" value="{{ $product->price + $product->transport }}" class="skip-on-submit" />
 
 @if($product->variants->isEmpty() == false)

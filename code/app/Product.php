@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lanz\Commentable\Commentable;
 use App\GASModel;
 use App\SluggableID;
+use App\BookedProduct;
 
 class Product extends Model
 {
@@ -105,6 +106,18 @@ class Product extends Model
 		return $ret;
 	}
 
+	public function stillAvailable($order)
+	{
+		if ($this->max_available == 0)
+			return 0;
+
+		$quantity = BookedProduct::where('product_id', '=', $this->id)->whereHas('booking', function($query) use ($order) {
+			$query->where('order_id', '=', $order->id);
+		})->sum('quantity');
+
+		return $this->max_available - $quantity;
+	}
+
 	public function printablePrice()
 	{
 		if (!empty($this->transport) && $this->transport != 0)
@@ -132,18 +145,18 @@ class Product extends Model
 		}
 	}
 
-	public function printableDetails()
+	public function printableDetails($order)
 	{
 		$details = [];
 
 		if ($this->min_quantity != 0)
-			$details[] = sprintf('Minimo: %s', $this->min_quantity);
+			$details[] = sprintf('Minimo: %.02f', $this->min_quantity);
 		if ($this->max_quantity != 0)
-			$details[] = sprintf('Massimo: %s', $this->max_quantity);
+			$details[] = sprintf('Massimo: %.02f', $this->max_quantity);
 		if ($this->max_available != 0)
-			$details[] = sprintf('Disponibile: %s', $this->max_available);
+			$details[] = sprintf('Disponibile: %.02f (%.02f totale)', $this->stillAvailable($order), $this->max_available);
 		if ($this->multiple != 0)
-			$details[] = sprintf('Multiplo: %s', $this->multiple);
+			$details[] = sprintf('Multiplo: %.02f', $this->multiple);
 
 		return join(', ', $details);
 	}

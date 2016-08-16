@@ -27,11 +27,11 @@ $more_orders = ($aggregate->orders->count() > 1);
 					</td>
 
 					<td>
-						@include('booking.quantityselectrow', ['product' => $product, 'populate' => true])
+						@include('booking.quantityselectrow', ['product' => $product, 'order' => $order, 'populate' => true])
 					</td>
 
 					<td>
-						<label class="static-label">{{ $product->printableDetails() }}</label>
+						<label class="static-label">{{ $product->printableDetails($order) }}</label>
 					</td>
 
 					<td class="text-right">

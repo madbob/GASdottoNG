@@ -27,12 +27,12 @@ class CreateProductsTable extends Migration
 			$table->decimal('transport', 5, 2);
 
 			$table->boolean('variable');
-			$table->decimal('portion_quantity', 4, 3);
+			$table->decimal('portion_quantity', 7, 3);
 			$table->integer('package_size')->unsigned();
 			$table->integer('multiple')->unsigned();
-			$table->decimal('min_quantity', 4, 3);
-			$table->decimal('max_quantity', 4, 3);
-			$table->decimal('max_available', 4, 3);
+			$table->decimal('min_quantity', 7, 3);
+			$table->decimal('max_quantity', 7, 3);
+			$table->decimal('max_available', 7, 3);
 
 			$table->foreign('category_id')->references('id')->on('categories');
 			$table->foreign('measure_id')->references('id')->on('measures');
