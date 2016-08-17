@@ -11,6 +11,7 @@ Route::get('/home', function () {
 Route::get('users/search', 'UsersController@search');
 Route::post('notifications/markread/{id}', 'NotificationsController@markread');
 Route::get('attachments/download/{id}', 'AttachmentsController@download');
+Route::post('orders/fixes/{id}', 'OrdersController@fixes');
 
 Route::resource('gas', 'GasController');
 Route::resource('users', 'UsersController');

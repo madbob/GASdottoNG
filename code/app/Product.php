@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lanz\Commentable\Commentable;
 use App\GASModel;
 use App\SluggableID;
+use App\Booking;
 use App\BookedProduct;
 
 class Product extends Model
@@ -116,6 +117,15 @@ class Product extends Model
 		})->sum('quantity');
 
 		return $this->max_available - $quantity;
+	}
+
+	public function bookingsInOrder($order)
+	{
+		$id = $this->id;
+
+		return Booking::where('order_id', '=', $order->id)->whereHas('products', function($query) use ($id) {
+			$query->where('product_id', '=', $id);
+		})->get();
 	}
 
 	public function printablePrice()

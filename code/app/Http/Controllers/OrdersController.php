@@ -15,6 +15,7 @@ use App\Supplier;
 use App\Product;
 use App\Order;
 use App\Aggregate;
+use App\Booking;
 use App\BookedProduct;
 
 /*
@@ -190,6 +191,42 @@ class OrdersController extends Controller
 			return $this->errorResponse('Non autorizzato');
 
 		$order->delete();
+
+		return $this->successResponse();
+	}
+
+	/*
+		Questa funzione è usata per aggiornare manualmente le quantità
+		di un certo prodotto all'interno di un ordine
+	*/
+	public function fixes(Request $request, $id)
+	{
+		DB::beginTransaction();
+
+		$order = Order::findOrFail($id);
+		if ($order->supplier->userCan('supplier.orders') == false)
+			return $this->errorResponse('Non autorizzato');
+
+		$product_id = $request->input('product', []);
+		$bookings = $request->input('booking', []);
+		$quantities = $request->input('quantity', []);
+
+		for($i = 0; $i < count($bookings); $i++) {
+			$booking_id = $bookings[$i];
+
+			$booking = Booking::find($booking_id);
+			if ($booking == null)
+				continue;
+			if ($booking->order->id != $id)
+				return $this->errorResponse('Non autorizzato');
+
+			$product = BookedProduct::where('product_id', '=', $product_id)->where('booking_id', '=', $booking_id)->first();
+			if ($product == null)
+				continue;
+
+			$product->quantity = $quantities[$i];
+			$product->save();
+		}
 
 		return $this->successResponse();
 	}

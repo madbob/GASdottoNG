@@ -116,7 +116,18 @@ class Order extends Model
 			$summary->products[$product->id]['quantity'] = $quantity;
 			$summary->products[$product->id]['delivered'] = $delivered;
 			$summary->products[$product->id]['price_delivered'] = $price_delivered;
-			$summary->products[$product->id]['notes'] = '';
+
+			$summary->products[$product->id]['notes'] = false;
+			if ($product->package_size != 0 && $quantity != 0) {
+				if ($product->portion_quantity <= 0)
+					$test = $product->package_size;
+				else
+					$test = round($product->portion_quantity * $product->package_size, 2);
+
+				$test = round($quantity % $test);
+				if ($test != 0)
+					$summary->products[$product->id]['notes'] = true;
+			}
 		}
 
 		$summary->price = $total_price;

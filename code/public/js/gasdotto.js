@@ -796,7 +796,7 @@ $(document).ready(function() {
 			activated.each(function() {
 				$(this).click().click();
 			});
-		}, 200);
+		}, 500);
 	});
 
 	$('body').on('change', '.select-fetcher', function(event) {
