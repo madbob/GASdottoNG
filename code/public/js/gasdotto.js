@@ -348,9 +348,10 @@ function bookingTotal(editor) {
 
 		var quantity = 0;
 
-		$(this).find('.booking-product-quantity input').each(function() {
-			var q = $(this).val();
+		$(this).find('.booking-product-quantity').each(function() {
+			var input = $(this).find('input');
 
+			var q = input.val();
 			if (q == '')
 				q = 0;
 			else
@@ -359,10 +360,16 @@ function bookingTotal(editor) {
 			if (partitioning != 0)
 				q = q * partitioning;
 
-			quantity += q;
-		});
+			if ($(this).hasClass('booking-variant-quantity')) {
+				var offset = $(this).closest('.inline-variant-selector').find('select option:selected').attr('data-variant-price');
+				current_price = price + parseFloatC(offset);
+			}
+			else {
+				current_price = price;
+			}
 
-		total_price += price * quantity;
+			total_price += current_price * q;
+		});
 	});
 
 	total_price = priceRound(total_price);
@@ -1100,6 +1107,10 @@ $(document).ready(function() {
 		var editor = row.closest('.booking-editor');
 		bookingTotal(editor);
 
+	}).on('change', '.variants-selector select', function() {
+		var editor = $(this).closest('.booking-editor');
+		bookingTotal(editor);
+
 	}).on('blur', '.booking-product-quantity input', function() {
 		var v = $(this).val();
 		var row = $(this).closest('.booking-product');
@@ -1138,7 +1149,10 @@ $(document).ready(function() {
 			$.ajax({
 				method: 'GET',
 				url: '/products/' + id,
-				data: {format: 'bookable'},
+				data: {
+					format: 'bookable',
+					order_id: editor.attr('data-order-id')
+				},
 				dataType: 'HTML',
 
 				success: function(data) {

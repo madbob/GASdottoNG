@@ -37,11 +37,29 @@ class BookedProduct extends Model
 	{
 		$product = $this->product;
 
-		$quantity = $this->$attribute;
-		if ($product->portion_quantity != 0)
-			$quantity = $this->$attribute * $product->portion_quantity;
+		$variants = $this->variants;
+		if ($variants->isEmpty() == false) {
+			$base_price = $product->price + $product->transport;
+			$total = 0;
 
-		return ($product->price + $product->transport) * $quantity;
+			foreach($variants as $v) {
+				$price = $base_price;
+
+				foreach($v->components as $c)
+					$price += $c->value->price_offset;
+
+				$total += $price * $v->$attribute;
+			}
+
+			return $total;
+		}
+		else {
+			$quantity = $this->$attribute;
+			if ($product->portion_quantity != 0)
+				$quantity = $this->$attribute * $product->portion_quantity;
+
+			return ($product->price + $product->transport) * $quantity;
+		}
 	}
 
 	public function quantityValue()

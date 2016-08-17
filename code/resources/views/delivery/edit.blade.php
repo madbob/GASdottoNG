@@ -35,7 +35,7 @@ $rand = rand();
 
 		<div class="row">
 			<div class="col-md-12">
-				<table class="table table-striped booking-editor" data-booking-id="{{ $o->id }}">
+				<table class="table table-striped booking-editor" data-booking-id="{{ $o->id }}" data-order-id="{{ $order->id }}">
 					<thead>
 						<th width="33%"></th>
 						<th width="33%"></th>
@@ -67,10 +67,18 @@ $rand = rand();
 							@else
 
 								@foreach($product->variants as $var)
+									<?php
+
+									$price = $product->product->price + $product->product->transport;
+									foreach($var->components as $comp)
+										$price += $comp->value->price_offset;
+
+									?>
+
 									<tr class="booking-product">
 										<td>
 											<input type="hidden" name="product-partitioning" value="{{ $product->product->portion_quantity }}" class="skip-on-submit" />
-											<input type="hidden" name="product-price" value="{{ $product->product->price + $product->product->transport }}" class="skip-on-submit" />
+											<input type="hidden" name="product-price" value="{{ $price }}" class="skip-on-submit" />
 
 											<label class="static-label">{{ $product->product->name }}: {{ $var->printableName() }}</label>
 

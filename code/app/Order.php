@@ -102,20 +102,37 @@ class Order extends Model
 
 			$quantity = $q->sum('quantity');
 			$delivered = $q->sum('delivered');
-
-			$price = $quantity * $product->price;
-			$price_delivered = $delivered * $product->price;
-			$summary->products[$product->id]['price'] = $price;
-			$total_price += $price;
-			$total_price_delivered += $price_delivered;
-
 			$transport = $quantity * $product->transport;
-			$summary->products[$product->id]['transport'] = $transport;
-			$total_transport += $transport;
+
+			/*
+				In presenza di varianti, devo calcolare la somma
+				pezzo per pezzo essendoci di mezzo eventuali
+				differenze di prezzo da valutare
+			*/
+			if ($product->variants->isEmpty()) {
+				$price = $quantity * $product->price;
+				$price_delivered = $delivered * $product->price;
+			}
+			else {
+				$booked = $q->get();
+				$price = 0;
+				$price_delivered = 0;
+
+				foreach($booked as $b) {
+					$price += $b->quantityValue();
+					$price_delivered += $b->deliveredValue();
+				}
+			}
 
 			$summary->products[$product->id]['quantity'] = $quantity;
+			$summary->products[$product->id]['price'] = $price;
+			$summary->products[$product->id]['transport'] = $transport;
 			$summary->products[$product->id]['delivered'] = $delivered;
 			$summary->products[$product->id]['price_delivered'] = $price_delivered;
+
+			$total_price += $price;
+			$total_price_delivered += $price_delivered;
+			$total_transport += $transport;
 
 			$summary->products[$product->id]['notes'] = false;
 			if ($product->package_size != 0 && $quantity != 0) {
