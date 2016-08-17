@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
 
                 DB::table('users')->delete();
                 DB::table('password_resets')->delete();
+                DB::table('configs')->delete();
                 DB::table('gas')->delete();
                 DB::table('suppliers')->delete();
                 DB::table('products')->delete();

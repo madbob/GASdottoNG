@@ -20,6 +20,37 @@ class Gas extends Model
 		return $this->hasMany('App\Balance')->orderBy('date', 'desc');
 	}
 
+	public function configs()
+	{
+		return $this->hasMany('App\Config');
+	}
+
+	public function getConfig($name)
+	{
+		foreach($this->configs as $conf)
+			if ($conf->name == $name)
+				return $conf->value;
+
+		return '';
+	}
+
+	public function setConfig($name, $value)
+	{
+		foreach($this->configs as $conf) {
+			if ($conf->name == $name) {
+				$conf->value = $value;
+				$conf->save();
+				return;
+			}
+		}
+
+		$conf = new Config();
+		$conf->name = $name;
+		$conf->value = $value;
+		$conf->gas_id = $this->id;
+		$conf->save();
+	}
+
 	public function alterBalance($type, $amount)
 	{
 		if (is_string($type))
@@ -35,7 +66,8 @@ class Gas extends Model
 
 	private function mailConfig()
 	{
-		if ($this->mail_conf == '') {
+		$conf = $this->getConfig('mail_conf');
+		if ($conf == '') {
 			return (object)[
 				'username' => '',
 				'password' => '',
@@ -46,7 +78,7 @@ class Gas extends Model
 			];
 		}
 		else {
-			return json_decode($this->mail_conf);
+			return json_decode($conf);
 		}
 	}
 
@@ -82,7 +114,8 @@ class Gas extends Model
 
 	private function ridConfig()
 	{
-		if ($this->rid_conf == '') {
+		$conf = $this->getConfig('rid_conf');
+		if ($conf == '') {
 			return (object)[
 				'name' => '',
 				'iban' => '',
@@ -90,7 +123,7 @@ class Gas extends Model
 			];
 		}
 		else {
-			return json_decode($this->rid_conf);
+			return json_decode($conf);
 		}
 	}
 

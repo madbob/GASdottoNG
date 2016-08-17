@@ -49,11 +49,12 @@ class GasController extends Controller
                 $gas->description = $request->input('description');
                 $gas->message = $request->input('message');
 
-                if ($gas->mail_conf == '') {
+                $mailconf = $gas->getConfig('mail_conf');
+                if ($mailconf == '') {
                         $old_password = '';
                 }
                 else {
-                        $mail = json_decode($gas->mail_conf);
+                        $mail = json_decode($mailconf);
                         $old_password = $mail->password;
                 }
 
@@ -66,7 +67,7 @@ class GasController extends Controller
                         'encryption' => $request->has('mailssl') ? 'tls' : ''
                 ];
 
-                $gas->mail_conf = json_encode($mail);
+                $gas->setConfig('mail_conf', json_encode($mail));
 
                 $rid = (object) [
                         'name' => $request->input('ridname'),
@@ -74,7 +75,7 @@ class GasController extends Controller
                         'code' => $request->input('ridcode')
                 ];
 
-                $gas->rid_conf = json_encode($rid);
+                $gas->setConfig('rid_conf', json_encode($rid));
 
                 $gas->save();
 
