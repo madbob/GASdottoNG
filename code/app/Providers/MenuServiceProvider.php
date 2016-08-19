@@ -31,6 +31,9 @@ class MenuServiceProvider extends ServiceProvider
 				if ($gas->userCan('movements.view|movements.admin'))
 					$menu->add('movements', '<span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> Contabilità');
 
+				if ($gas->userCan('gas.statistics'))
+					$menu->add('stats', '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Statistiche');
+
 				if ($gas->userCan('gas.config'))
 					$menu->add('gas/' . $gas->id . '/edit', '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Configurazioni');
 

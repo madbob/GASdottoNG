@@ -28,6 +28,7 @@ Route::resource('delivery.user', 'DeliveryUserController');
 Route::resource('booking', 'BookingController');
 Route::resource('notifications', 'NotificationsController');
 Route::resource('movements', 'MovementsController');
+Route::resource('stats', 'StatisticsController');
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',

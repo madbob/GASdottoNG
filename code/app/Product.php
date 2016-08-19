@@ -96,6 +96,11 @@ class Product extends Model
 
 	public function nextId()
 	{
+		/*
+			TODO: riscrivere questo in modo che non si scassi se nel
+			nome del prodotto appare '::'
+		*/
+
 		list($supplier, $name, $index) = explode('::', $this->id);
 
 		do {
@@ -105,6 +110,12 @@ class Product extends Model
 		} while($test != null);
 
 		return $ret;
+	}
+
+	public function getIDSuffix()
+	{
+		$id = $this->id;
+		return substr($id, 0, strrpos($id, ':') - 1);
 	}
 
 	public function stillAvailable($order)
