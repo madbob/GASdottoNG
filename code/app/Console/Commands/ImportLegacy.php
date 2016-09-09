@@ -181,7 +181,7 @@ class ImportLegacy extends Command
                                         $master_gas->userPermit('users.view', $obj);
 
                                 if ($row->privileges == 2)
-                                        $master_gas->userPermit('gas.permissions|gas.config|supplier.add|gas.statistics|users.admin|categories.admin|measures.admin|movements.view|movements.admin|notifications.admin', $obj);
+                                        $master_gas->userPermit('gas.super', $obj);
                         }
                         catch (\Exception $e) {
                                 echo sprintf("Errore nell'importazione dell'utente %s: %s\n", $row->login, $e->getMessage());

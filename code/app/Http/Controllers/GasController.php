@@ -48,6 +48,7 @@ class GasController extends Controller
                 $gas->email = $request->input('email');
                 $gas->description = $request->input('description');
                 $gas->message = $request->input('message');
+                $gas->setConfig('restricted', $request->has('restricted') ? '1' : '0');
 
                 $mailconf = $gas->getConfig('mail_conf');
                 if ($mailconf == '') {

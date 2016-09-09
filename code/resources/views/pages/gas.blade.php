@@ -16,6 +16,10 @@
 			@include('commons.textfield', ['obj' => $gas, 'name' => 'email', 'label' => 'E-Mail', 'mandatory' => true])
 			@include('commons.textarea', ['obj' => $gas, 'name' => 'description', 'label' => 'Descrizione'])
 			@include('commons.textarea', ['obj' => $gas, 'name' => 'message', 'label' => 'Messaggio Homepage'])
+
+			@if($gas->oneCan('gas.super'))
+			@include('commons.boolfield', ['obj' => $gas, 'name' => 'restricted', 'label' => 'Modalità Manutenzione'])
+			@endif
 		</div>
 		<div class="col-md-6">
 			<div class="well">

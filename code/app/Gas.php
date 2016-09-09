@@ -142,6 +142,11 @@ class Gas extends Model
 		return $this->ridConfig()->code;
 	}
 
+	public function getRestrictedAttribute()
+	{
+		return ($this->getConfig('restricted') == '1');
+	}
+
 	protected function requiredAttachmentPermission()
 	{
 		return 'gas.config';

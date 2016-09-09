@@ -10,6 +10,13 @@
 	<hr/>
 	@endif
 
+	@if($gas->restricted == '1')
+	<div class="alert alert-warning">
+		Modalità Manutenzione: Accesso Temporaneamente Ristretto ai soli Amministratori
+	</div>
+	<hr/>
+	@endif
+
 	<form class="form-horizontal" method="POST" action="{{ url('/auth/login') }}">
 		<input type="hidden" name="_token" value="{{ csrf_token() }}">
 

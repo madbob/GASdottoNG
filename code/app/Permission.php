@@ -31,6 +31,7 @@ class Permission extends Model
 	{
 		return [
 			'App\Gas' => [
+				'gas.super'		=> 'Amministrazione totale (tutti i permessi)',
 				'gas.permissions'	=> 'Modificare tutti i permessi',
 				'gas.config'		=> 'Modificare le configurazioni del GAS',
 				'supplier.add'		=> 'Creare nuovi fornitori',

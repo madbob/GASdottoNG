@@ -37,6 +37,28 @@ trait AllowableTrait
 			return 1;
 	}
 
+	private function superUserTest($user, $cache = null)
+	{
+		if ($cache == null)
+			$cache = App::make('PermissionsCache');
+
+		$u = null;
+
+		if ($user != null) {
+			if (is_object($user))
+				$u = $user;
+			else if (is_string($user))
+				$u = User::find($user);
+			else
+				return 0;
+		}
+		else {
+			$u = Auth::user();
+		}
+
+		return $cache->get($u->id, 'gas.super', 'App\Gas', $u->gas->id);
+	}
+
 	private function normalizeUserId($user)
 	{
 		if ($user != null) {
@@ -67,6 +89,11 @@ trait AllowableTrait
 	public function userCan($action, $user = null)
 	{
 		$cache = App::make('PermissionsCache');
+
+		$super = $this->superUserTest($user, $cache);
+		if ($super != 0)
+			return $super;
+
 		$user_id = $this->normalizeUserId($user);
 		$actions = explode('|', $action);
 
@@ -86,6 +113,10 @@ trait AllowableTrait
 	*/
 	public function userHas($action, $user = null)
 	{
+		$super = $this->superUserTest($user);
+		if ($super != 0)
+			return $super;
+
 		$user_id = $this->normalizeUserId($user);
 		$perm = null;
 
@@ -176,6 +207,8 @@ trait AllowableTrait
 		$perm = null;
 
 		$actions = explode('|', $action);
+		array_unshift($actions, 'gas.super');
+
 		foreach ($actions as $a) {
 			$perm = $this->permissions()->where('action', '=', $a)->where('target_id', '=', $this->id)->first();
 			if ($perm != null)
