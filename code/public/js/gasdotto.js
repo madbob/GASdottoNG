@@ -180,9 +180,9 @@ function testListsEmptiness() {
 		var alert = $('#empty-' + id);
 
 		if (c == 0)
-			alert.show();
+			alert.removeClass('hidden');
 		else
-			alert.hide();
+			alert.addClass('hidden');
 	});
 }
 

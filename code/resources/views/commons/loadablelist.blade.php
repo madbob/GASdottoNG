@@ -1,4 +1,4 @@
-<div class="alert alert-info" role="alert" id="empty-{{ $identifier }}">
+<div class="alert alert-info {{ count($items) != 0 ? 'hidden' : '' }}" role="alert" id="empty-{{ $identifier }}">
 	Non ci sono elementi da visualizzare.
 </div>
 
