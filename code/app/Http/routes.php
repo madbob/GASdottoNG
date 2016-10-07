@@ -11,7 +11,15 @@ Route::get('/home', function () {
 Route::get('users/search', 'UsersController@search');
 Route::post('notifications/markread/{id}', 'NotificationsController@markread');
 Route::get('attachments/download/{id}', 'AttachmentsController@download');
-Route::post('orders/fixes/{id}', 'OrdersController@fixes');
+
+Route::controllers([
+	'auth' => 'Auth\AuthController',
+	'password' => 'Auth\PasswordController',
+	'dashboard' => 'CommonsController',
+	'import' => 'ImportController',
+	'permissions' => 'PermissionsController',
+	'orders' => 'OrdersController',
+]);
 
 Route::resource('gas', 'GasController');
 Route::resource('users', 'UsersController');
@@ -29,11 +37,3 @@ Route::resource('booking', 'BookingController');
 Route::resource('notifications', 'NotificationsController');
 Route::resource('movements', 'MovementsController');
 Route::resource('stats', 'StatisticsController');
-
-Route::controllers([
-	'auth' => 'Auth\AuthController',
-	'password' => 'Auth\PasswordController',
-	'dashboard' => 'CommonsController',
-	'import' => 'ImportController',
-	'permissions' => 'PermissionsController',
-]);

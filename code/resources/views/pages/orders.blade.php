@@ -15,6 +15,7 @@
 				]
 			])
 
+			<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#orderSearch">Ricerca</button>
 			<button type="button" class="btn btn-default" data-toggle="modal" data-target="#orderAggregator">Aggrega Ordini</button>
 
 			<div class="modal fade" id="orderAggregator" tabindex="-1" role="dialog" aria-labelledby="orderAggregator">
@@ -46,6 +47,26 @@
 								<button type="submit" class="btn btn-success">Salva</button>
 							</div>
 						</form>
+					</div>
+				</div>
+			</div>
+
+			<div class="collapse list-filter" id="orderSearch" data-list-target="#wrapper-order-list">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="well">
+							<form class="form-horizontal" data-toggle="validator" method="GET" action="{{ url('orders/search') }}">
+								@include('commons.selectobjfield', [
+									'obj' => null,
+									'name' => 'supplier_id',
+									'label' => 'Fornitore',
+									'mandatory' => true,
+									'objects' => App\Supplier::orderBy('name', 'asc')->get()
+								])
+
+								@include('commons.genericdaterange')
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>

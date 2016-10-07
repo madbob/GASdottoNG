@@ -843,6 +843,52 @@ $(document).ready(function() {
 		return false;
 	});
 
+	$('.list-filter').on('submit', 'form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var data = form.serializeArray();
+
+		var targetid = $(this).closest('.list-filter').attr('data-list-target');
+		var target = $(targetid);
+		target.empty().append(loadingPlaceholder());
+
+		$.ajax({
+			method: form.attr('method'),
+			url: form.attr('action'),
+			data: data,
+			dataType: 'html',
+
+			success: function(data) {
+				target.replaceWith(data);
+			}
+		});
+
+	}).on('change', 'input, select', function() {
+		$(this).closest('form').submit();
+
+	}).on('show.bs.collapse', function() {
+		$(this).find('form').submit();
+
+	}).on('hide.bs.collapse', function() {
+		var form = $(this).find('form');
+		var data = form.serializeArray();
+
+		var targetid = $(this).attr('data-list-target');
+		var target = $(targetid);
+		target.empty().append(loadingPlaceholder());
+
+		$.ajax({
+			method: form.attr('method'),
+			url: form.attr('action'),
+			data: {},
+			dataType: 'html',
+
+			success: function(data) {
+				target.replaceWith(data);
+			}
+		});
+	});
+
 	$('body').on('click', '.reloader', function(event) {
 		var listid = $(this).attr('data-reload-target');
 		var list = $(listid);
@@ -1274,9 +1320,8 @@ $(document).ready(function() {
 		$(this).closest('.row').remove();
 		manyRowsAddDeleteButtons(container);
 		return false;
-	});
 
-	$('body').on('click', '.add-many-rows', function(event) {
+	}).on('click', '.add-many-rows', function(event) {
 		event.preventDefault();
 		var container = $(this).closest('.many-rows');
 		var row = container.find('.row:not(.many-rows-header)').first().clone();
@@ -1298,15 +1343,14 @@ $(document).ready(function() {
 		Widget albero gerarchico dinamico
 	*/
 
-	$('body').on('click', '.dynamic-tree .dynamic-tree-remove', function() {
-		$(this).closest('li').remove();
-	});
-
 	$(document).on('dnd_stop.vakata', function(e) {
 		$('.dynamic-tree').jstree().open_all();
 	});
 
-	$('body').on('click', '.dynamic-tree-box .dynamic-tree-add', function(e) {
+	$('body').on('click', '.dynamic-tree .dynamic-tree-remove', function() {
+		$(this).closest('li').remove();
+
+	}).on('click', '.dynamic-tree-box .dynamic-tree-add', function(e) {
 		e.preventDefault();
 		var box = $(this).closest('.dynamic-tree-box');
 		var input = box.find('input[name=new_category]');
@@ -1320,9 +1364,8 @@ $(document).ready(function() {
 		input.val('');
 
 		return false;
-	});
 
-	$('body').on('submit', '.dynamic-tree-box', function(e) {
+	}).on('submit', '.dynamic-tree-box', function(e) {
 		e.preventDefault();
 		var box = $(this);
 		var tree = box.find('.dynamic-tree');
@@ -1349,9 +1392,8 @@ $(document).ready(function() {
 
 	$('body').on('show.bs.modal', '.modal.wizard', function(e) {
 		$(this).find('.wizard_page:not(:first)').hide();
-	});
 
-	$('body').on('submit', '.wizard_page form', function(e) {
+	}).on('submit', '.wizard_page form', function(e) {
 		e.preventDefault();
 
 		var form = $(this);

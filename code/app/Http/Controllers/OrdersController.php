@@ -37,7 +37,7 @@ class OrdersController extends Controller
 		$this->middleware('auth');
 	}
 
-	public function index()
+	private function defaultOrders()
 	{
 		/*
 			La selezione degli ordini da visualizzare si può forse
@@ -68,6 +68,12 @@ class OrdersController extends Controller
 				$orders[] = $aggregate;
 		}
 
+		return $orders;
+	}
+
+	public function index()
+	{
+		$orders = $this->defaultOrders();
 		return Theme::view('pages.orders', ['orders' => $orders]);
 	}
 
@@ -199,7 +205,7 @@ class OrdersController extends Controller
 		Questa funzione è usata per aggiornare manualmente le quantità
 		di un certo prodotto all'interno di un ordine
 	*/
-	public function fixes(Request $request, $id)
+	public function postFixes(Request $request, $id)
 	{
 		DB::beginTransaction();
 
@@ -229,5 +235,29 @@ class OrdersController extends Controller
 		}
 
 		return $this->successResponse();
+	}
+
+	public function getSearch(Request $request)
+	{
+		$supplier_id = $request->input('supplier_id');
+
+		if (empty($supplier_id)) {
+			$orders = $this->defaultOrders();
+		}
+		else {
+			$startdate = $this->decodeDate($request->input('startdate'));
+			$enddate = $this->decodeDate($request->input('enddate'));
+
+			$supplier = Supplier::find($supplier_id);
+			$everything = $supplier->userCan('supplier.orders|supplier.shippings');
+
+			$orders = Aggregate::whereHas('orders', function($query) use ($supplier_id, $startdate, $enddate, $everything) {
+				$query->where('supplier_id', '=', $supplier_id)->where('start', '>=', $startdate)->where('end', '<=', $enddate);
+				if ($everything == false)
+					$query->whereIn('status', ['open', 'shipped', 'archived']);
+			})->get();
+		}
+
+		return Theme::view('commons.loadablelist', ['identifier' => 'order-list', 'items' => $orders]);
 	}
 }
