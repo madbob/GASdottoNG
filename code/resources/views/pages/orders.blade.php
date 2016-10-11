@@ -72,10 +72,12 @@
 			</div>
 		@endif
 	</div>
-
-	<div class="clearfix"></div>
-	<hr/>
 </div>
+
+<div class="clearfix"></div>
+<hr/>
+
+@include('commons.iconslegend', ['class' => 'Aggregate'])
 
 <div class="row">
 	<div class="col-md-12">

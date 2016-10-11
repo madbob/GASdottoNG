@@ -78,30 +78,7 @@ class Aggregate extends Model
 	public function printableHeader()
 	{
 		$ret = $this->printableName();
-		$icons = [];
-
-		if ($this->userCan('supplier.orders'))
-			$icons[] = 'th-list';
-		if ($this->userCan('supplier.shippings'))
-			$icons[] = 'arrow-down';
-
-		switch($this->status) {
-			case 'open':
-				$icons[] = 'play';
-				break;
-			case 'suspended':
-				$icons[] = 'pause';
-				break;
-			case 'closed':
-				$icons[] = 'stop';
-				break;
-			case 'shipped':
-				$icons[] = 'step-forward';
-				break;
-			case 'archived':
-				$icons[] = 'eject';
-				break;
-		}
+		$icons = $this->icons();
 
 		if (!empty($icons)) {
 			$ret .= '<div class="pull-right">';

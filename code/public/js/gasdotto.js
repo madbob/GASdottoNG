@@ -981,6 +981,37 @@ $(document).ready(function() {
 		}
 	});
 
+	$('body').on('click', '.icons-legend button', function() {
+		if ($(this).hasClass('active')) {
+			$(this).removeClass('active');
+
+			$('.loadablelist a').each(function() {
+				$(this).show();
+			});
+		}
+		else {
+			$(this).closest('.icons-legend').find('button').removeClass('active');
+			$(this).addClass('active');
+			var c = $(this).find('span.glyphicon').attr('class');
+
+			$('.loadablelist a').each(function() {
+				var show = false;
+
+				$(this).find('span.glyphicon').each(function() {
+					var icons = $(this).attr('class');
+					show = (icons == c);
+					if (show)
+						return false;
+				});
+
+				if (show)
+					$(this).show();
+				else
+					$(this).hide();
+			});
+		}
+	});
+
 	$('body').on('submit', '.inner-form', function(event) {
 		event.preventDefault();
 		var form = $(this);

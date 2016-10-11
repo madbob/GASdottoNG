@@ -37,14 +37,7 @@ class Supplier extends Model
 	public function printableHeader()
 	{
 		$ret = $this->printableName();
-		$icons = [];
-
-		if ($this->userCan('supplier.modify'))
-			$icons[] = 'pencil';
-		if ($this->userCan('supplier.orders'))
-			$icons[] = 'th-list';
-		if ($this->userCan('supplier.shippings'))
-			$icons[] = 'arrow-down';
+		$icons = $this->icons();
 
 		if (!empty($icons)) {
 			$ret .= '<div class="pull-right">';

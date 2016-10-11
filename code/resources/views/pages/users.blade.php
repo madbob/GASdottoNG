@@ -15,10 +15,12 @@
 
 		@endif
 	</div>
-
-	<div class="clearfix"></div>
-	<hr/>
 </div>
+
+<div class="clearfix"></div>
+<hr/>
+
+@include('commons.iconslegend', ['class' => 'User'])
 
 <div class="row">
 	<div class="col-md-12">
