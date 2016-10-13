@@ -732,38 +732,43 @@ function setupHelp() {
 			$('.help-sensitive').removeClass('help-sensitive').popover('destroy');
 		}
 		else {
-			$.get('/help/data.md', function(data) {
-				var renderer = new marked.Renderer();
-				var container = null;
-				var nodes = null;
-				var inner_text = '';
+			$.ajax({
+				url: '/help/data.md',
+				method: 'GET',
 
-				/*
-					Qui abuso del renderer Markdown per
-					filtrare i contenuti del file ed
-					assegnarli ai vari elementi sulla pagina
-				*/
+				success: function(data) {
+					var renderer = new marked.Renderer();
+					var container = null;
+					var nodes = null;
+					var inner_text = '';
 
-				renderer.heading = function (text, level) {
-					inner_text = helpFillNode(nodes, inner_text);
+					/*
+						Qui abuso del renderer Markdown per
+						filtrare i contenuti del file ed
+						assegnarli ai vari elementi sulla pagina
+					*/
 
-					if (level == 2)
-						container = $(text);
-					else if (level == 1)
-						nodes = container.find(':contains(' + text + ')').last();
-				};
-				renderer.paragraph = function (text, level) {
-					if (inner_text != '')
-						inner_text += '<br/>';
-					inner_text += text;
-				};
-				renderer.list = function (text, level) {
-					inner_text += '<ul>' + text + '</ul>';
-				};
+					renderer.heading = function (text, level) {
+						inner_text = helpFillNode(nodes, inner_text);
 
-				marked(data, {renderer: renderer}, function() {
-					inner_text = helpFillNode(nodes, inner_text);
-				});
+						if (level == 2)
+							container = $(text);
+						else if (level == 1)
+							nodes = container.find(':contains(' + text + ')').last();
+					};
+					renderer.paragraph = function (text, level) {
+						if (inner_text != '')
+							inner_text += '<br/>';
+						inner_text += text;
+					};
+					renderer.list = function (text, level) {
+						inner_text += '<ul>' + text + '</ul>';
+					};
+
+					marked(data, {renderer: renderer}, function() {
+						inner_text = helpFillNode(nodes, inner_text);
+					});
+				}
 			});
 		}
 
@@ -778,6 +783,7 @@ function setupHelp() {
 
 $(document).ready(function() {
 	$.ajaxSetup({
+		cache: false,
 		headers: {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 		}
@@ -1124,6 +1130,15 @@ $(document).ready(function() {
 
 	$('body').on('change', '.order-summary tr .enabling-toggle', function() {
 		$(this).closest('tr').toggleClass('product-disabled');
+	});
+
+	$('body').on('change', '.order-summary tr .discount-toggle', function() {
+		var p = $(this).closest('tr').find('.product-price');
+		p.find('.full-price, .product-discount-price').toggleClass('hidden');
+
+		/*
+			TODO: aggiornare i prezzi totali nella tabella dell'ordine
+		*/
 	});
 
 	/*

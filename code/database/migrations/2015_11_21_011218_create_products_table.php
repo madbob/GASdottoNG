@@ -23,6 +23,7 @@ class CreateProductsTable extends Migration
 
 			$table->decimal('price', 5, 2);
 			$table->decimal('transport', 5, 2);
+			$table->string('discount')->default('');
 
 			$table->boolean('variable');
 			$table->decimal('portion_quantity', 7, 3);

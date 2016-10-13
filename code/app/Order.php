@@ -25,7 +25,7 @@ class Order extends Model
 
 	public function products()
 	{
-		return $this->belongsToMany('App\Product')->with('measure')->with('category')->with('variants');
+		return $this->belongsToMany('App\Product')->with('measure')->with('category')->with('variants')->withPivot('discount_enabled');
 	}
 
 	public function bookings()
@@ -82,11 +82,19 @@ class Order extends Model
 		}
 	}
 
-	public function hasProduct($product)
+	/*
+		Se il prodotto è contenuto nell'ordine la funzione ritorna TRUE
+		e la referenza a $product viene sostituita con quella interna
+		all'ordine stesso, per poter accedere ai valori nella tabella
+		pivot
+	*/
+	public function hasProduct(&$product)
 	{
 		foreach ($this->products as $p) {
-			if ($p->id == $product->id)
+			if ($p->id == $product->id) {
+				$product = $p;
 				return true;
+			}
 		}
 
 		return false;
@@ -112,26 +120,16 @@ class Order extends Model
 
 			$quantity = $q->sum('quantity');
 			$delivered = $q->sum('delivered');
+			$base_price = $product->contextualPrice($order);
 			$transport = $quantity * $product->transport;
 
-			/*
-				In presenza di varianti, devo calcolare la somma
-				pezzo per pezzo essendoci di mezzo eventuali
-				differenze di prezzo da valutare
-			*/
-			if ($product->variants->isEmpty()) {
-				$price = $quantity * $product->price;
-				$price_delivered = $delivered * $product->price;
-			}
-			else {
-				$booked = $q->get();
-				$price = 0;
-				$price_delivered = 0;
+			$booked = $q->get();
+			$price = 0;
+			$price_delivered = 0;
 
-				foreach($booked as $b) {
-					$price += $b->quantityValue();
-					$price_delivered += $b->deliveredValue();
-				}
+			foreach($booked as $b) {
+				$price += $b->quantityValue();
+				$price_delivered += $b->deliveredValue();
 			}
 
 			$summary->products[$product->id]['quantity'] = $quantity;

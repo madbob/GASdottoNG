@@ -41,6 +41,7 @@ $panel_rand_wrap = rand();
 						</div>
 						<div class="col-md-6">
 							@include('commons.orderstatus', ['order' => $order])
+							@include('commons.textfield', ['obj' => $order, 'name' => 'discount', 'label' => 'Sconto Globale', 'postlabel' => '€ / %'])
 
 							@if($currentgas->userCan('movements.view|movements.admin'))
 								@include('commons.movementfield', ['obj' => $order->payment, 'name' => 'payment_id', 'label' => 'Pagamento', 'default' => \App\Movement::generate('order-payment', $currentgas, $order->supplier, $summary->price_delivered)])

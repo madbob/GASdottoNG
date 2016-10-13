@@ -71,6 +71,10 @@ Prezzo unitario per unità di misura. Può assumere un significato particolare q
 
 Prezzo di trasporto per singola unità.
 
+# Sconto
+
+Sconto applicabile occasionalmente sul prezzo del prodotto. Se espresso con un numero decimale (e.g. 2,10) viene considerato come valore assoluto, altrimenti se termina con un simbolo di percentuale (e.g. 20%) viene considerato come percentuale sul Prezzo Unitario. Lo sconto può essere attivato o disattivato su ogni ordine che include il prodotto.
+
 # Categoria
 
 .
@@ -142,6 +146,14 @@ Se diverso da 0, questa è la quantità massima di prodotto che complessivamente
 .
 
 # Stato
+
+.
+
+# Sconto Globale
+
+Sconto applicato su tutti i prodotti nell'ordine. Può eventualmente essere sommato allo sconto individualmente applicabile sui singoli prodotti, che va configurato nell'apposito pannello. Se espresso con un numero decimale (e.g. 2,10) viene considerato come valore assoluto, altrimenti se termina con un simbolo di percentuale (e.g. 20%) viene considerato come percentuale sul Prezzo Unitario.
+
+# Pagamento
 
 .
 

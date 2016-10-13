@@ -48,7 +48,7 @@ $rand = rand();
 								<tr class="booking-product">
 									<td>
 										<input type="hidden" name="product-partitioning" value="{{ $product->product->portion_quantity }}" class="skip-on-submit" />
-										<input type="hidden" name="product-price" value="{{ $product->product->price + $product->product->transport }}" class="skip-on-submit" />
+										<input type="hidden" name="product-price" value="{{ $product->product->contextualPrice($order) + $product->product->transport }}" class="skip-on-submit" />
 										<label class="static-label">{{ $product->product->name }}</label>
 									</td>
 
@@ -65,11 +65,12 @@ $rand = rand();
 								</tr>
 
 							@else
+								<?php $base_price = $product->product->contextualPrice($order) + $product->product->transport ?>
 
 								@foreach($product->variants as $var)
 									<?php
 
-									$price = $product->product->price + $product->product->transport;
+									$price = $base_price;
 									foreach($var->components as $comp)
 										$price += $comp->value->price_offset;
 

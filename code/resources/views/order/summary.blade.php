@@ -1,17 +1,25 @@
 <table class="table order-summary">
 	<thead>
 		<tr>
-			<th width="2%"></th>
-			<th width="15%">Prodotto</th>
-			<th width="9%">Prezzo</th>
-			<th width="9%">Trasporto</th>
-			<th width="12%">Unità di Misura</th>
-			<th width="9%">Quantità Ordinata</th>
-			<th width="9%">Totale Prezzo</th>
-			<th width="9%">Totale Trasporto</th>
-			<th width="9%">Quantità Consegnata</th>
-			<th width="9%">Totale Consegnato</th>
-			<th width="10%">Note</th>
+			@if($order->status != 'archived')
+				<th width="2%"></th>
+				<th width="15%">Prodotto</th>
+				<th width="7%">Prezzo</th>
+				<th width="7%">Trasporto</th>
+				<th width="5%">Sconto Prodotto</th>
+				<th width="12%">Unità di Misura</th>
+				<th width="9%">Quantità Ordinata</th>
+				<th width="9%">Totale Prezzo</th>
+				<th width="9%">Totale Trasporto</th>
+				<th width="9%">Quantità Consegnata</th>
+				<th width="9%">Totale Consegnato</th>
+				<th width="9%">Note</th>
+			@else
+				<th width="25%">Prodotto</th>
+				<th width="25%">Unità di Misura</th>
+				<th width="25%">Quantità Consegnata</th>
+				<th width="25%">Totale Consegnato</th>
+			@endif
 		</tr>
 	</thead>
 	<tbody>
@@ -23,21 +31,56 @@
 			@else
 			<tr>
 			@endif
+				@if($order->status != 'archived')
 				<td>
-					<input class="form-control enabling-toggle" type="checkbox" name="enabled[]" value="{{ $product->id }}" <?php if($enabled) echo 'checked' ?> />
+					<input class="enabling-toggle" type="checkbox" name="enabled[]" value="{{ $product->id }}" <?php if($enabled) echo 'checked' ?> />
+				</td>
+				@endif
+
+				<td>
 					<input type="hidden" name="productid[]" value="{{ $product->id }}" />
+					<label>{{ $product->printableName() }}</label>
 				</td>
 
-				<td><label>{{ $product->printableName() }}</label></td>
-				<td><label>{{ printablePrice($product->price) }} €</label></td>
-				<td><label>{{ printablePrice($product->transport) }} €</label></td>
-				<td><label>{{ $product->measure->printableName() }}</label></td>
-				<td><label>{{ $summary->products[$product->id]['quantity'] }}</label></td>
-				<td><label>{{ printablePrice($summary->products[$product->id]['price']) }} €</label></td>
-				<td><label>{{ printablePrice($summary->products[$product->id]['transport']) }} €</label></td>
-				<td><label>{{ $summary->products[$product->id]['delivered'] }}</label></td>
-				<td><label>{{ printablePrice($summary->products[$product->id]['price_delivered']) }} €</label></td>
+				@if($order->status != 'archived')
+				<td class="product-price">
+					<label class="full-price <?php if(!empty($product->discount) && $enabled && $product->pivot->discount_enabled) echo 'hidden' ?>">{{ printablePrice(applyPercentage($product->price, $order->discount)) }} €</label>
+					<label class="product-discount-price <?php if(empty($product->discount) || !$enabled || ($enabled && !$product->pivot->discount_enabled)) echo 'hidden' ?>">{{ printablePrice(applyPercentage($product->discount_price, $order->discount)) }} €</label>
+				</td>
+				<td>
+					<label>{{ printablePrice($product->transport) }} €</label>
+				</td>
+				<td>
+					@if(!empty($product->discount))
+						<input class="discount-toggle" type="checkbox" name="discounted[]" value="{{ $product->id }}" <?php if($enabled && $product->pivot->discount_enabled) echo 'checked' ?> />
+					@endif
+				</td>
+				@endif
 
+				<td>
+					<label>{{ $product->measure->printableName() }}</label>
+				</td>
+
+				@if($order->status != 'archived')
+				<td>
+					<label>{{ $summary->products[$product->id]['quantity'] }}</label>
+				</td>
+				<td>
+					<label>{{ printablePrice($summary->products[$product->id]['price']) }} €</label>
+				</td>
+				<td>
+					<label>{{ printablePrice($summary->products[$product->id]['transport']) }} €</label>
+				</td>
+				@endif
+
+				<td>
+					<label>{{ $summary->products[$product->id]['delivered'] }}</label>
+				</td>
+				<td>
+					<label>{{ printablePrice($summary->products[$product->id]['price_delivered']) }} €</label>
+				</td>
+
+				@if($order->status != 'archived')
 				<td>
 					@if($summary->products[$product->id]['notes'])
 						<?php $random_identifier = rand(); ?>
@@ -93,22 +136,31 @@
 						@endpush
 					@endif
 				</td>
+				@endif
 			</tr>
 		@endforeach
 	</tbody>
 	<thead>
 		<tr>
-			<th></th>
-			<th></th>
-			<th></th>
-			<th></th>
-			<th></th>
-			<th></th>
-			<th>{{ printablePrice($summary->price) }} €</th>
-			<th>{{ printablePrice($summary->transport) }} €</th>
-			<th></th>
-			<th>{{ printablePrice($summary->price_delivered) }} €</th>
-			<th></th>
+			@if($order->status != 'archived')
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th>{{ printablePrice($summary->price) }} €</th>
+				<th>{{ printablePrice($summary->transport) }} €</th>
+				<th></th>
+				<th>{{ printablePrice($summary->price_delivered) }} €</th>
+				<th></th>
+			@else
+				<th></th>
+				<th></th>
+				<th></th>
+				<th>{{ printablePrice($summary->price_delivered) }} €</th>
+			@endif
 		</tr>
 	</thead>
 </table>

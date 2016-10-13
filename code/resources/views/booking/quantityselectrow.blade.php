@@ -3,7 +3,7 @@
 <input type="hidden" name="product-multiple" value="{{ $product->multiple }}" class="skip-on-submit" />
 <input type="hidden" name="product-partitioning" value="{{ $product->portion_quantity }}" class="skip-on-submit" />
 <input type="hidden" name="product-available" value="{{ $product->stillAvailable($order) }}" class="skip-on-submit" />
-<input type="hidden" name="product-price" value="{{ $product->price + $product->transport }}" class="skip-on-submit" />
+<input type="hidden" name="product-price" value="{{ $product->contextualPrice($order) + $product->transport }}" class="skip-on-submit" />
 
 @if($product->variants->isEmpty() == false)
 	<input type="hidden" name="{{ $product->id }}" value="1" />

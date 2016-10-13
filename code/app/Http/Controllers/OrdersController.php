@@ -105,7 +105,7 @@ class OrdersController extends Controller
 		$o->aggregate_id = $a->id;
 		$o->save();
 
-		$o->products()->sync($supplier->products);
+		$o->products()->sync($supplier->products()->where('active', '=', true)->get());
 
 		return $this->successResponse([
 			'id' => $a->id,
@@ -131,6 +131,7 @@ class OrdersController extends Controller
 		$order->start = $this->decodeDate($request->input('start'));
 		$order->end = $this->decodeDate($request->input('end'));
 		$order->status = $request->input('status');
+		$order->discount = $request->input('discount');
 
 		$s = $request->input('shipping');
 		if ($s != '')
@@ -141,7 +142,7 @@ class OrdersController extends Controller
 		$order->save();
 
 		$new_products = [];
-		$enabled = $request->input('enabled');
+		$enabled = $request->input('enabled', []);
 		$products = $request->input('productid');
 
 		for($i = 0; $i < count($products); $i++) {
@@ -149,13 +150,28 @@ class OrdersController extends Controller
 
 			foreach($enabled as $en) {
 				if ($en == $id) {
-					$new_products[] = $p->id;
+					$new_products[] = $id;
 					break;
 				}
 			}
 		}
 
 		$order->products()->sync($new_products);
+
+		$discounted = $request->input('discounted', []);
+		foreach($order->products as $product) {
+			$dis = false;
+
+			foreach($discounted as $en) {
+				if ($en == $product->id) {
+					$dis = true;
+					break;
+				}
+			}
+
+			if ($product->pivot->discount_enabled != $dis)
+				$order->products()->updateExistingPivot($product->id, ['discount_enabled' => $dis]);
+		}
 
 		return $this->successResponse([
 			'id' => $order->aggregate->id,

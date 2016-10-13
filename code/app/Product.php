@@ -67,17 +67,54 @@ class Product extends Model
 		})->get();
 	}
 
-	public function printablePrice()
+	public function printablePrice($order)
 	{
+		$price = $this->contextualPrice($order);
+
 		if (!empty($this->transport) && $this->transport != 0)
-			$str = sprintf('%.02f € / %s + %.02f € trasporto', $this->price, $this->measure->name, $this->transport);
+			$str = sprintf('%.02f € / %s + %.02f € trasporto', $price, $this->measure->name, $this->transport);
 		else
-			$str = sprintf('%.02f € / %s', $this->price, $this->measure->name);
+			$str = sprintf('%.02f € / %s', $price, $this->measure->name);
 
 		if ($this->variable)
 			$str .= '<small> (prodotto a prezzo variabile)</small>';
 
 		return $str;
+	}
+
+	/*
+		Attenzione: questo non tiene conto dell'eventuale sconto
+		applicato sull'ordine in cui il prodotto si trova
+	*/
+	public function getDiscountPriceAttribute()
+	{
+		if (empty($this->discount))
+			return $this->price;
+		else
+			return applyPercentage($this->price, $this->discount);
+	}
+
+	/*
+		Questo è per determinare il prezzo del prodotto in un dato
+		contesto, ovvero in un ordine. I casi possibili sono:
+		- se lo sconto del singolo prodotto è stato abilitato per
+		  l'ordine, viene applicato. Altrimenti resta il prezzo di
+		  riferimento
+		- se l'ordine ha uno sconto, viene a sua volta applicato
+	*/
+	public function contextualPrice($order)
+	{
+		$product = $this;
+		$enabled = $order->hasProduct($product);
+
+		if ($enabled && $product->pivot->discount_enabled)
+			$price = applyPercentage($product->price, $this->discount);
+		else
+			$price = $product->price;
+
+		$price = applyPercentage($price, $order->discount);
+
+		return $price;
 	}
 
 	public function printableMeasure()

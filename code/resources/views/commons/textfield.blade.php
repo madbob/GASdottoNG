@@ -4,6 +4,10 @@
 	@endif
 
 	<div class="col-sm-{{ $fieldsize }}">
+		@if(isset($postlabel))
+		<div class="input-group">
+		@endif
+
 		<input type="text"
 			class="form-control"
 			name="{{ $prefix . $name . $postfix }}"
@@ -18,5 +22,10 @@
 			@endif
 
 			autocomplete="off">
+
+		@if(isset($postlabel))
+		<div class="input-group-addon">{{ $postlabel }}</div>
+		</div>
+		@endif
 	</div>
 </div>

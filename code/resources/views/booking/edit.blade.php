@@ -43,7 +43,7 @@ $more_orders = ($aggregate->orders->count() > 1);
 					</td>
 
 					<td class="text-right">
-						<label class="static-label">{!! $product->printablePrice() !!}</label>
+						<label class="static-label">{!! $product->printablePrice($order) !!}</label>
 					</td>
 				</tr>
 				@endforeach
