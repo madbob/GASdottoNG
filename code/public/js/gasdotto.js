@@ -986,7 +986,7 @@ $(document).ready(function() {
 			$(this).removeClass('active');
 
 			$('.loadablelist a').each(function() {
-				$(this).show();
+				$(this).show().next('li').show();
 			});
 		}
 		else {
@@ -1005,9 +1005,9 @@ $(document).ready(function() {
 				});
 
 				if (show)
-					$(this).show();
+					$(this).show().next('li').show();
 				else
-					$(this).hide();
+					$(this).hide().next('li').hide();
 			});
 		}
 	});
