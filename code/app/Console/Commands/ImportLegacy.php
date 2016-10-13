@@ -289,7 +289,6 @@ class ImportLegacy extends Command
                         try {
                                 $obj = new Product();
                                 $obj->name = $row->name;
-                                $obj->previous_id = 0;
                                 $obj->supplier_id = $map['suppliers'][$row->supplier];
                                 $obj->supplier_code = $row->code;
                                 $obj->category_id = $map['categories'][$row->category];

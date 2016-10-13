@@ -18,7 +18,6 @@ Route::controllers([
 	'dashboard' => 'CommonsController',
 	'import' => 'ImportController',
 	'permissions' => 'PermissionsController',
-	'orders' => 'OrdersController',
 ]);
 
 Route::resource('gas', 'GasController');

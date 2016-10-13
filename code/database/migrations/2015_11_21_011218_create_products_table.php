@@ -11,8 +11,6 @@ class CreateProductsTable extends Migration
 			$table->string('id')->primary();
 			$table->timestamps();
 
-			$table->string('previous_id');
-
 			$table->string('supplier_id');
 			$table->string('name');
 			$table->string('supplier_code')->nullable();
@@ -39,7 +37,6 @@ class CreateProductsTable extends Migration
 			$table->foreign('supplier_id')->references('id')->on('suppliers');
 
 			$table->index('id');
-			$table->index('previous_id');
 		});
 	}
 

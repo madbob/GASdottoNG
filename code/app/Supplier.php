@@ -19,9 +19,7 @@ class Supplier extends Model
 
 	public function products()
 	{
-		return $this->hasMany('App\Product')->where('active', '=', true)->whereNotIn('id', function($query) {
-			$query->select('previous_id')->from('products');
-		})->orderBy('name');
+		return $this->hasMany('App\Product')->orderBy('name');
 	}
 
 	public function orders()

@@ -90,6 +90,18 @@ class ImportController extends Controller
 				$path = $request->input('path');
 				$columns = $request->input('column');
 
+                                $name_index = -1;
+
+                                foreach($columns as $index => $field) {
+                                        if ($field == 'name') {
+                                                $name_index = $index;
+                                                break;
+                                        }
+                                }
+
+                                if ($name_index == -1)
+                                        return $this->errorResponse('Colonna obbligatoria non specificata');
+
 				$target_separator = $this->guessCsvFileSeparator($path);
 				if ($target_separator == null)
 					return $this->errorResponse('Impossibile interpretare il file');
@@ -100,8 +112,14 @@ class ImportController extends Controller
 				$reader = CsvReader::open($path, $target_separator);
 				while (($line = $reader->readLine()) !== false) {
                                         try {
-                                                $p = new Product();
-        					$p->supplier_id = $s->id;
+                                                $name = $line[$name_index];
+                                                $p = $s->products()->where('name', '=', $name)->orderBy('id', 'desc')->first();
+                                                if ($p == null) {
+                                                        $p = new Product();
+                                                        $p->name = $name;
+                                                        $p->supplier_id = $s->id;
+                                                }
+
                                                 $p->active = true;
 
         					foreach($columns as $index => $field) {
@@ -138,14 +156,6 @@ class ImportController extends Controller
         						else {
         							$value = $line[$index];
         						}
-
-                                                        if ($field == 'name') {
-                                                                $existing_p = $s->products()->where('name', '=', $value)->orderBy('id', 'desc')->first();
-                                                                if ($existing_p != null) {
-                                                                        $p->id = $existing_p->nextId();
-                                                                        $p->previous_id = $existing_p->id;
-                                                                }
-                                                        }
 
         						$p->$field = $value;
         					}

@@ -1119,6 +1119,14 @@ $(document).ready(function() {
 	});
 
 	/*
+		Gestione ordini
+	*/
+
+	$('body').on('change', '.order-summary tr .enabling-toggle', function() {
+		$(this).closest('tr').toggleClass('product-disabled');
+	});
+
+	/*
 		Aggregazione ordini
 	*/
 

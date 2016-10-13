@@ -140,45 +140,22 @@ class OrdersController extends Controller
 
 		$order->save();
 
-		/*
-			Se vengono aggiornati i valori di un prodotto, e questo
-			prodotto è già contemplato da altri ordini, devo
-			duplicarlo per preservare i vecchi valori storici.
-			Nel caso, devo accertarmi anche di ricollegare le
-			prenotazioni effettuate all'interno di questo ordine con
-			la nuova copia del prodotto
-		*/
-
-		$products_changed = false;
 		$new_products = [];
+		$enabled = $request->input('enabled');
 		$products = $request->input('productid');
-		$product_prices = $request->input('productprice');
-		$product_transports = $request->input('producttransport');
 
 		for($i = 0; $i < count($products); $i++) {
-			$p = Product::findOrFail($products[$i]);
-			if ($p->price != $product_prices[$i] || $p->transport != $product_transports[$i]) {
-				$old_id = $p->id;
+			$id = $products[$i];
 
-				$p = $p->nextChain();
-				$p->price = $product_prices[$i];
-				$p->transport = $product_transports[$i];
-				$p->save();
-
-				if ($old_id != $p->id) {
-					$products_changed = true;
-
-					BookedProduct::whereHas('booking', function($query) use ($order) {
-						$query->where('order_id', '=', $order->id);
-					})->where('product_id', '=', $old_id)->update(['product_id' => $p->id]);
+			foreach($enabled as $en) {
+				if ($en == $id) {
+					$new_products[] = $p->id;
+					break;
 				}
 			}
-
-			$new_products[] = $p->id;
 		}
 
-		if ($products_changed == true)
-			$order->products()->sync($new_products);
+		$order->products()->sync($new_products);
 
 		return $this->successResponse([
 			'id' => $order->aggregate->id,

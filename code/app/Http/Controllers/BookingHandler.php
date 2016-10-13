@@ -122,6 +122,10 @@ class BookingHandler extends Controller
                                 else {
 					if ($booked->$param != $quantity) {
                                         	$booked->$param = $quantity;
+
+						if ($param == 'delivered')
+							$booked->final_price = $booked->quantityValue();
+
                                                 $booked->save();
                                         }
                                 }

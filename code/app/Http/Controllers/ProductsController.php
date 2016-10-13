@@ -87,7 +87,6 @@ class ProductsController extends Controller
 		if ($p->supplier->userCan('supplier.modify') == false)
 			return $this->errorResponse('Non autorizzato');
 
-		$p = $p->nextChain();
 		$this->basicReadFromRequest($p, $request);
 		$p->active = $request->has('active');
 		$p->supplier_code = $request->has('supplier_code');

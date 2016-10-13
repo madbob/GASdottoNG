@@ -82,6 +82,16 @@ class Order extends Model
 		}
 	}
 
+	public function hasProduct($product)
+	{
+		foreach ($this->products as $p) {
+			if ($p->id == $product->id)
+				return true;
+		}
+
+		return false;
+	}
+
 	public function calculateSummary()
 	{
 		$summary = (object) [
@@ -90,7 +100,7 @@ class Order extends Model
 		];
 
 		$order = $this;
-		$products = $order->products;
+		$products = $order->supplier->products;
 		$total_price = 0;
 		$total_price_delivered = 0;
 		$total_transport = 0;

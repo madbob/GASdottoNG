@@ -76,7 +76,7 @@ class StatisticsController extends Controller
 
                                 foreach ($bookings as $booking) {
                                         foreach ($booking->products as $product) {
-                                                $name = $product->product->getIDSuffix();
+                                                $name = $product->product->id;
 
                                                 if (isset($data[$name]) == false) {
                                                         $data[$name] = (object) [
