@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Auth;
 
 use App\GASModel;
+use App\AggregateBooking;
 
 class Aggregate extends Model
 {
@@ -105,6 +106,16 @@ class Aggregate extends Model
 		return false;
 	}
 
+	public function isActive()
+	{
+		foreach($this->orders as $order) {
+			if ($order->isActive())
+				return true;
+		}
+
+		return false;
+	}
+
 	public function getBookingsAttribute()
 	{
 		$ret = [];
@@ -112,8 +123,11 @@ class Aggregate extends Model
 		foreach ($this->orders as $order) {
 			foreach ($order->bookings as $booking) {
 				$user_id = $booking->user->id;
+
 				if (!isset($ret[$user_id]))
-					$ret[$user_id] = $booking->user;
+					$ret[$user_id] = new AggregateBooking($user_id);
+
+				$ret[$user_id]->add($booking);
 			}
 		}
 

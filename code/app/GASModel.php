@@ -117,6 +117,20 @@ trait GASModel
 					},
 					'text' => 'Ordine archiviato'
 				],
+			],
+			'AggregateBooking' => [
+				'time' => (object)[
+					'test' => function($obj) {
+						return ($obj->status != 'shipped');
+					},
+					'text' => 'Da consegnare'
+				],
+				'ok' => (object)[
+					'test' => function($obj) {
+						return ($obj->status == 'shipped');
+					},
+					'text' => 'Consegnato'
+				],
 			]
 		];
 	}

@@ -82,8 +82,10 @@ $panel_rand_wrap = rand();
 		<ul class="nav nav-tabs" role="tablist">
 			<li role="presentation" class="active"><a href="#myself-{{ $aggregate->id }}" role="tab" data-toggle="tab">La Mia Prenotazione</a></li>
 			@if($has_shipping)
-			<li role="presentation"><a href="#others-{{ $aggregate->id }}" role="tab" data-toggle="tab">Prenotazioni per Altri</a></li>
-			<li role="presentation"><a href="#shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab">Consegne</a></li>
+				@if($aggregate->isActive())
+					<li role="presentation"><a href="#others-{{ $aggregate->id }}" role="tab" data-toggle="tab">Prenotazioni per Altri</a></li>
+				@endif
+				<li role="presentation"><a href="#shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab">Consegne</a></li>
 			@endif
 		</ul>
 

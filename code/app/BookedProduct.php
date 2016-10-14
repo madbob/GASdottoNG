@@ -64,7 +64,10 @@ class BookedProduct extends Model
 
 	public function quantityValue()
 	{
-		return $this->fixQuantity('quantity');
+		if (empty($this->final_price))
+			return $this->fixQuantity('quantity');
+		else
+			return $this->final_price;
 	}
 
 	public function deliveredValue()

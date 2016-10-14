@@ -100,6 +100,11 @@ class Order extends Model
 		return false;
 	}
 
+	public function isActive()
+	{
+		return ($this->status != 'shipped' && $this->status != 'archived');
+	}
+
 	public function calculateSummary()
 	{
 		$summary = (object) [

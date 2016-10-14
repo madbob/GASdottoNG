@@ -1,7 +1,7 @@
 <table class="table order-summary">
 	<thead>
 		<tr>
-			@if($order->status != 'archived')
+			@if($order->isActive())
 				<th width="2%"></th>
 				<th width="15%">Prodotto</th>
 				<th width="7%">Prezzo</th>
@@ -24,14 +24,20 @@
 	</thead>
 	<tbody>
 		@foreach($order->supplier->products as $product)
-			<?php $enabled = $order->hasProduct($product) ?>
+			<?php
+
+			$enabled = $order->hasProduct($product);
+			if ($order->isActive() == false & $enabled == false)
+				continue;
+
+			?>
 
 			@if($enabled == false)
 			<tr class="product-disabled hidden-sm hidden-xs">
 			@else
 			<tr>
 			@endif
-				@if($order->status != 'archived')
+				@if($order->isActive())
 				<td>
 					<input class="enabling-toggle" type="checkbox" name="enabled[]" value="{{ $product->id }}" <?php if($enabled) echo 'checked' ?> />
 				</td>
@@ -42,7 +48,7 @@
 					<label>{{ $product->printableName() }}</label>
 				</td>
 
-				@if($order->status != 'archived')
+				@if($order->isActive())
 				<td class="product-price">
 					<label class="full-price <?php if(!empty($product->discount) && $enabled && $product->pivot->discount_enabled) echo 'hidden' ?>">{{ printablePrice(applyPercentage($product->price, $order->discount)) }} €</label>
 					<label class="product-discount-price <?php if(empty($product->discount) || !$enabled || ($enabled && !$product->pivot->discount_enabled)) echo 'hidden' ?>">{{ printablePrice(applyPercentage($product->discount_price, $order->discount)) }} €</label>
@@ -61,7 +67,7 @@
 					<label>{{ $product->measure->printableName() }}</label>
 				</td>
 
-				@if($order->status != 'archived')
+				@if($order->isActive())
 				<td>
 					<label>{{ $summary->products[$product->id]['quantity'] }}</label>
 				</td>
@@ -80,7 +86,7 @@
 					<label>{{ printablePrice($summary->products[$product->id]['price_delivered']) }} €</label>
 				</td>
 
-				@if($order->status != 'archived')
+				@if($order->isActive())
 				<td>
 					@if($summary->products[$product->id]['notes'])
 						<?php $random_identifier = rand(); ?>
@@ -142,7 +148,7 @@
 	</tbody>
 	<thead>
 		<tr>
-			@if($order->status != 'archived')
+			@if($order->isActive())
 				<th></th>
 				<th></th>
 				<th></th>

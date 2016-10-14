@@ -77,7 +77,7 @@
 <div class="clearfix"></div>
 <hr/>
 
-@include('commons.iconslegend', ['class' => 'Aggregate'])
+@include('commons.iconslegend', ['class' => 'Aggregate', 'target' => '#order-list'])
 
 <div class="row">
 	<div class="col-md-12">

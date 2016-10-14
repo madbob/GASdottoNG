@@ -58,7 +58,7 @@ $rand = rand();
 
 									<td>
 										<div class="input-group booking-product-quantity">
-											<input type="number" step="any" min="0" class="form-control" name="{{ $product->product->id }}" value="{{ $product->delivered }}" />
+											<input type="number" step="any" min="0" class="form-control" name="{{ $product->product->id }}" value="{{ $product->delivered }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
 											<div class="input-group-addon">{{ $product->product->printableMeasure() }}</div>
 										</div>
 									</td>
@@ -95,7 +95,7 @@ $rand = rand();
 
 										<td>
 											<div class="input-group booking-product-quantity">
-												<input type="number" step="any" min="0" class="form-control" name="variant_quantity_{{ $product->product->id }}[]" value="{{ $var->delivered }}" />
+												<input type="number" step="any" min="0" class="form-control" name="variant_quantity_{{ $product->product->id }}[]" value="{{ $var->delivered }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
 												<div class="input-group-addon">{{ $product->product->printableMeasure() }}</div>
 											</div>
 										</td>
@@ -105,6 +105,7 @@ $rand = rand();
 							@endif
 						@endforeach
 
+						@if($order->isActive())
 						<tr class="hidden booking-product fit-add-product">
 							<td>
 								<select class="fit-add-product-select form-control">
@@ -118,7 +119,10 @@ $rand = rand();
 							<td>&nbsp;</td>
 							<td class="bookable-target">&nbsp;</td>
 						</tr>
+						@endif
 					</tbody>
+
+					@if($order->isActive())
 					<tfoot>
 						<tr>
 							<th><button class="btn btn-default add-booking-product">Aggiungi Prodotto</button></th>
@@ -126,11 +130,13 @@ $rand = rand();
 							<th class="text-right">Totale: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> €</th>
 						</tr>
 					</tfoot>
+					@endif
 				</table>
 			</div>
 		</div>
 	@endforeach
 
+	@if($order->isActive())
 	<div class="row">
 		<div class="col-md-12">
 			<div class="btn-group pull-right main-form-buttons" role="group" aria-label="Opzioni">
@@ -144,6 +150,7 @@ $rand = rand();
 			</div>
 		</div>
 	</div>
+	@endif
 </form>
 
 @if($handling_movements)

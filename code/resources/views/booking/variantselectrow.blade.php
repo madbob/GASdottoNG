@@ -6,7 +6,7 @@
 
 	@foreach($product->variants as $variant)
 	<div class="col-md-3">
-		<select class="form-control {{ $master ? 'skip-on-submit' : '' }}" name="variant_selection_{{ $variant->id }}[]">
+		<select class="form-control {{ $master ? 'skip-on-submit' : '' }}" name="variant_selection_{{ $variant->id }}[]" {{ $order->isActive() == false ? 'disabled' : '' }}>
 			@foreach($variant->values as $value)
 			<option data-variant-price="{{ $value->price_offset }}" value="{{ $value->id }}" {{ ($saved != null && $saved->hasCombination($variant, $value)) ? 'selected="selected"' : '' }}>{{ $value->printableFullValue() }}</option>
 			@endforeach
@@ -14,7 +14,9 @@
 	</div>
 	@endforeach
 
+	@if($order->isActive())
 	<div class="col-md-2">
 		<button class="btn btn-default pull-right add-variant"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
 	</div>
+	@endif
 </div>

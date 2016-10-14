@@ -20,7 +20,7 @@
 <div class="clearfix"></div>
 <hr/>
 
-@include('commons.iconslegend', ['class' => 'User'])
+@include('commons.iconslegend', ['class' => 'User', 'target' => '#user-list'])
 
 <div class="row">
 	<div class="col-md-12">

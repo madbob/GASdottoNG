@@ -46,7 +46,7 @@
 <div class="clearfix"></div>
 <hr/>
 
-@include('commons.iconslegend', ['class' => 'Supplier'])
+@include('commons.iconslegend', ['class' => 'Supplier', 'target' => '#supplier-list'])
 
 <div class="row">
 	<div class="col-md-12">

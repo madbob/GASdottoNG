@@ -53,7 +53,7 @@ $more_orders = ($aggregate->orders->count() > 1);
 					<th></th>
 					<th></th>
 					<th></th>
-					<th class="text-right">Totale: <span class="booking-total">{{ $o->value }}</span> €</th>
+					<th class="text-right">Totale: <span class="booking-total">{{ printablePrice($o->value) }}</span> €</th>
 				</tr>
 			</tfoot>
 		</table>

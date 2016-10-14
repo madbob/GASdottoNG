@@ -4,25 +4,17 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
+use Artisan;
+
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-	//
-    }
+        public function boot()
+        {
+                Artisan::call('migrate');
+        }
 
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-	//
-    }
+        public function register()
+        {
+                //
+        }
 }

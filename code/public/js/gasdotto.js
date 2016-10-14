@@ -988,19 +988,22 @@ $(document).ready(function() {
 	});
 
 	$('body').on('click', '.icons-legend button', function() {
+		var legend = $(this).closest('.icons-legend');
+		var target = legend.attr('data-list-target');
+
 		if ($(this).hasClass('active')) {
 			$(this).removeClass('active');
 
-			$('.loadablelist a').each(function() {
+			$('.loadablelist' + target + ' a').each(function() {
 				$(this).show().next('li').show();
 			});
 		}
 		else {
-			$(this).closest('.icons-legend').find('button').removeClass('active');
+			legend.find('button').removeClass('active');
 			$(this).addClass('active');
 			var c = $(this).find('span.glyphicon').attr('class');
 
-			$('.loadablelist a').each(function() {
+			$('.loadablelist' + target + ' a').each(function() {
 				var show = false;
 
 				$(this).find('span.glyphicon').each(function() {
