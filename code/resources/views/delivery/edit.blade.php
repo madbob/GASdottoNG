@@ -122,19 +122,35 @@ $rand = rand();
 						@endif
 					</tbody>
 
-					@if($order->isActive())
 					<tfoot>
 						<tr>
-							<th><button class="btn btn-default add-booking-product">Aggiungi Prodotto</button></th>
+							<th>
+								@if($order->isActive())
+								<button class="btn btn-default add-booking-product">Aggiungi Prodotto</button>
+								@endif
+							</th>
 							<th></th>
 							<th class="text-right">Totale: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> €</th>
 						</tr>
 					</tfoot>
-					@endif
 				</table>
 			</div>
 		</div>
 	@endforeach
+
+	@if($more_orders)
+		<table class="table">
+			<tfoot>
+				<tr>
+					<th>
+						<div class="pull-right">
+							<strong>Totale Complessivo: <span class="all-bookings-total">{{ printablePrice($tot_amount) }}</span> €</strong>
+						</div>
+					</th>
+				</tr>
+			</tfoot>
+		</table>
+	@endif
 
 	@if($order->isActive())
 	<div class="row">

@@ -377,23 +377,26 @@ function bookingTotal(editor) {
 	var total_label = editor.find('.booking-total');
 	total_label.text(total_price);
 
+	var form = editor.closest('form');
+	var grand_total = 0;
+	var status = {};
+
+	form.find('.booking-editor').each(function() {
+		var t = parseFloatC($('.booking-total', this).text());
+		grand_total += t;
+		status[$(this).attr('data-booking-id')] = t;
+	});
+
+	form.find('.all-bookings-total').text(grand_total);
+
 	/*
 		Qui aggiorno il valore totale della prenotazione nel (eventuale)
 		modale per il pagamento
 	*/
-	var form = editor.closest('form');
 	var payment_modal_id = form.attr('data-reference-modal');
 	var payment_modal = $('#' + payment_modal_id);
+
 	if (payment_modal.length != 0) {
-		var grand_total = 0;
-		var status = {};
-
-		form.find('.booking-editor').each(function() {
-			var t = parseFloatC($('.booking-total', this).text());
-			grand_total += t;
-			status[$(this).attr('data-booking-id')] = t;
-		});
-
 		payment_modal.find('input[name=amount]').val(grand_total);
 		payment_modal.find('input[name=delivering-status]').val(JSON.stringify(status));
 	}
@@ -1323,17 +1326,19 @@ $(document).ready(function() {
 
 	$('body').on('click', '.preload-quantities', function(e) {
 		e.preventDefault();
-		var editor = $(this).closest('form').find('.booking-editor');
 
-		editor.find('tbody .booking-product').each(function() {
-			var booked = $(this).find('.booking-product-booked');
-			if (booked.length != 0) {
-				var input = $(this).find('.booking-product-quantity input');
-				input.val(booked.text());
-			}
+		var editor = $(this).closest('form').find('.booking-editor').each(function() {
+			$(this).find('tbody .booking-product').each(function() {
+				var booked = $(this).find('.booking-product-booked');
+				if (booked.length != 0) {
+					var input = $(this).find('.booking-product-quantity input');
+					input.val(booked.text());
+				}
+			});
+
+			bookingTotal($(this));
 		});
 
-		bookingTotal(editor);
 		return false;
 	});
 

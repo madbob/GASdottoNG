@@ -198,7 +198,7 @@ class OrdersController extends Controller
 		Questa funzione è usata per aggiornare manualmente le quantità
 		di un certo prodotto all'interno di un ordine
 	*/
-	public function postFixes(Request $request, $id)
+	public function fixes(Request $request, $id)
 	{
 		DB::beginTransaction();
 
@@ -230,7 +230,7 @@ class OrdersController extends Controller
 		return $this->successResponse();
 	}
 
-	public function getSearch(Request $request)
+	public function search(Request $request)
 	{
 		$supplier_id = $request->input('supplier_id');
 

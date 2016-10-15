@@ -11,6 +11,8 @@ Route::get('/home', function () {
 Route::get('users/search', 'UsersController@search');
 Route::post('notifications/markread/{id}', 'NotificationsController@markread');
 Route::get('attachments/download/{id}', 'AttachmentsController@download');
+Route::get('orders/search', 'OrdersController@search');
+Route::post('orders/fixes/{id}', 'OrdersController@fixes');
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',

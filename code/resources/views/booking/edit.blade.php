@@ -1,6 +1,7 @@
 <?php
 
 $more_orders = ($aggregate->orders->count() > 1);
+$grand_total = 0;
 
 ?>
 
@@ -57,7 +58,23 @@ $more_orders = ($aggregate->orders->count() > 1);
 				</tr>
 			</tfoot>
 		</table>
+
+		<?php $grand_total += $o->value ?>
 	@endforeach
+
+	@if($more_orders)
+		<table class="table">
+			<tfoot>
+				<tr>
+					<th>
+						<div class="pull-right">
+							<strong>Totale Complessivo: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> €</strong>
+						</div>
+					</th>
+				</tr>
+			</tfoot>
+		</table>
+	@endif
 
 	<div class="row">
 		<div class="col-md-12">
