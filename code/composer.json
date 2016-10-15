@@ -11,6 +11,7 @@
         "caffeinated/themes": "~2.0",
         "vespakoen/menu": "3.*",
         "wilgucki/csv": "^0.5.0",
+        "elibyy/tcpdf-laravel": "5.1.*",
         "barryvdh/laravel-debugbar": "^2.1"
     },
     "require-dev": {

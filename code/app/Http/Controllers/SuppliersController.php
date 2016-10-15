@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use DB;
 use Auth;
 use Theme;
+use PDF;
 
 use App\Supplier;
 
@@ -96,5 +97,28 @@ class SuppliersController extends Controller
 		$s->deletePermissions();
 		$s->delete();
 		return $this->successResponse();
+	}
+
+	public function catalogue(Request $request, $id, $format)
+	{
+		$s = Supplier::findOrFail($id);
+
+		if($format == 'pdf') {
+			$html = Theme::view('documents.cataloguepdf', ['supplier' => $s])->render();
+			$filename = sprintf('Listino %s.pdf', $s->name);
+			PDF::SetTitle(sprintf('Listino %s del %s', $s->name, date('d/m/Y')));
+			PDF::AddPage();
+			PDF::writeHTML($html, true, false, true, false, '');
+			PDF::Output($filename, 'D');
+		}
+		else if($format == 'csv') {
+			$filename = sprintf('Listino %s.csv', $s->name);
+			header('Content-Type: text/csv');
+			header('Content-Disposition: attachment; filename=' . $filename);
+			header('Cache-Control: no-cache, no-store, must-revalidate');
+			header('Pragma: no-cache');
+			header('Expires: 0');
+			return Theme::view('documents.cataloguecsv', ['supplier' => $s]);
+		}
 	}
 }

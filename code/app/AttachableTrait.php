@@ -8,7 +8,18 @@ trait AttachableTrait
 {
 	public function attachments()
 	{
-		return $this->morphMany('App\Attachment', 'target');
+		$relation = $this->morphMany('App\Attachment', 'target');
+		$attachments = $relation->get();
+
+		if ($attachments->isEmpty()) {
+			$extra = $this->defaultAttachments();
+			foreach($extra as $e) {
+				$e->save();
+				$relation->save($e);
+			}
+		}
+
+		return $relation;
 	}
 
 	public function attachByRequest($request)
@@ -38,9 +49,24 @@ trait AttachableTrait
 		return $attachment;
 	}
 
+	/*
+		Questa funzione può essere sovrascritta dalla classe che usa
+		questo trait per esplicitare i permessi utente necessari per
+		allegare un file ad un oggetto della classe stessa
+	*/
 	protected function requiredAttachmentPermission()
 	{
 		return null;
+	}
+
+	/*
+		Questa funzione viene chiamata quando l'oggetto non ha nessun
+		allegato, la classe di riferimento può sovrascriverla per
+		popolare degli allegati di default
+	*/
+	protected function defaultAttachments()
+	{
+		return [];
 	}
 
 	public function filesPath()

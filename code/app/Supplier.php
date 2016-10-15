@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lanz\Commentable\Commentable;
 
 use App\AttachableTrait;
+use App\Attachment;
 use App\AllowableTrait;
 use App\GASModel;
 use App\SluggableID;
@@ -52,6 +53,21 @@ class Supplier extends Model
 	protected function requiredAttachmentPermission()
 	{
 		return 'supplier.modify';
+	}
+
+	protected function defaultAttachments()
+	{
+		$cataloguepdf = new Attachment();
+		$cataloguepdf->name = 'Listino PDF (autogenerato)';
+		$cataloguepdf->url = url('suppliers/catalogue/' . $this->id . '/pdf');
+		$cataloguepdf->internal = true;
+
+		$cataloguecsv = new Attachment();
+		$cataloguecsv->name = 'Listino CSV (autogenerato)';
+		$cataloguecsv->url = url('suppliers/catalogue/' . $this->id . '/csv');
+		$cataloguecsv->internal = true;
+
+		return [$cataloguepdf, $cataloguecsv];
 	}
 
 	public function getDisplayURL()

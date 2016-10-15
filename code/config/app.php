@@ -149,6 +149,7 @@ return [
         Caffeinated\Themes\ThemesServiceProvider::class,
         Menu\MenuServiceProvider::class,
         Wilgucki\Csv\CsvServiceProvider::class,
+        Elibyy\TCPDF\ServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
 
         App\Providers\GraphicInitServiceProvider::class,
@@ -209,6 +210,7 @@ return [
         'Component' => Caffeinated\Themes\Facades\Component::class,
         'CsvReader' => Wilgucki\Csv\Facades\Reader::class,
         'CsvWriter' => Wilgucki\Csv\Facades\Writer::class,
+        'PDF'       => Elibyy\TCPDF\Facades\TCPDF::class,
 
     ],
 

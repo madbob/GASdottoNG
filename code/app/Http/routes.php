@@ -13,6 +13,7 @@ Route::post('notifications/markread/{id}', 'NotificationsController@markread');
 Route::get('attachments/download/{id}', 'AttachmentsController@download');
 Route::get('orders/search', 'OrdersController@search');
 Route::post('orders/fixes/{id}', 'OrdersController@fixes');
+Route::get('suppliers/catalogue/{id}/{format}', 'SuppliersController@catalogue');
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',

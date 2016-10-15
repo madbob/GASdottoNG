@@ -19,4 +19,12 @@ class Attachment extends Model
         {
                 return sprintf('%s/%s', $this->attached->filesPath(), $this->filename);
         }
+
+        public function getDownloadUrlAttribute()
+        {
+                if (!empty($this->url))
+                        return $this->url;
+                else
+                        return url('attachments/download/' . $this->id);
+        }
 }

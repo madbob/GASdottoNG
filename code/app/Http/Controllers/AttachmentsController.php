@@ -54,7 +54,10 @@ class AttachmentsController extends Controller
         public function download($id)
         {
                 $a = Attachment::findOrFail($id);
-                return response()->download($a->path);
+                if (!empty($a->url))
+                        return redirect($a->url);
+                else
+                        return response()->download($a->path);
         }
 
         public function destroy($id)
