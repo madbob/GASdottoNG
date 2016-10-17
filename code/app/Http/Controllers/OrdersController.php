@@ -117,8 +117,8 @@ class OrdersController extends Controller
 
 	public function show($id)
 	{
-		$a = Aggregate::findOrFail($id);
-		return Theme::view('order.aggregate', ['aggregate' => $a]);
+		$order = Order::findOrFail($id);
+		return Theme::view('order.summary', ['order' => $order, 'summary' => $order->calculateSummary()]);
 	}
 
 	public function update(Request $request, $id)

@@ -62,6 +62,8 @@
 
 @endif
 
+@include('commons.iconslegend', ['class' => 'Product', 'target' => '#product-list-' . $supplier->id])
+
 <div class="row">
 	<div class="col-md-12">
 		@include('commons.loadablelist', ['identifier' => 'product-list-' . $supplier->id, 'items' => $supplier->products])

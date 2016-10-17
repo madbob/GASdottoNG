@@ -33,23 +33,6 @@ class Supplier extends Model
 		return $this->morphMany('App\Contact', 'target');
 	}
 
-	public function printableHeader()
-	{
-		$ret = $this->printableName();
-		$icons = $this->icons();
-
-		if (!empty($icons)) {
-			$ret .= '<div class="pull-right">';
-
-			foreach ($icons as $i)
-				$ret .= '<span class="glyphicon glyphicon-' . $i . '" aria-hidden="true"></span>&nbsp;';
-
-			$ret .= '</div>';
-		}
-
-		return $ret;
-	}
-
 	protected function requiredAttachmentPermission()
 	{
 		return 'supplier.modify';

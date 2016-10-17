@@ -663,12 +663,19 @@ function runSummaryStats() {
 	var end = $('#stats-summary-form input[name=enddate]').val();
 
 	$.getJSON('/stats/summary', {start: start, end: end}, function(data) {
-		new Chartist.Pie('#stats-generic-expenses', data.expenses, {});
+		new Chartist.Pie('#stats-generic-expenses', data.expenses, {
+			labelDirection: 'explode',
+			labelOffset: 40,
+			chartPadding: 20,
+		});
 		new Chartist.Bar('#stats-generic-users', data.users, {
 			horizontalBars: true,
 			axisX: {
 				onlyInteger: true
-			}
+			},
+			axisY: {
+				offset: 220
+			},
 		});
 	});
 }
@@ -679,12 +686,19 @@ function runSupplierStats() {
 	var end = $('#stats-supplier-form input[name=enddate]').val();
 
 	$.getJSON('/stats/supplier', {start: start, end: end, supplier: supplier}, function(data) {
-		new Chartist.Pie('#stats-products-expenses', data.expenses, {});
+		new Chartist.Pie('#stats-products-expenses', data.expenses, {
+			labelDirection: 'explode',
+			labelOffset: 40,
+			chartPadding: 20,
+		});
 		new Chartist.Bar('#stats-products-users', data.users, {
 			horizontalBars: true,
 			axisX: {
 				onlyInteger: true
-			}
+			},
+			axisY: {
+				offset: 220
+			},
 		});
 	});
 }

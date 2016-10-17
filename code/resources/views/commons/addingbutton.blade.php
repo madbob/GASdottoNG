@@ -5,7 +5,7 @@ if (isset($target_update) == false)
 
 ?>
 
-<button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#create{{ ucfirst($typename) }}">Crea Nuovo {{ $typename_readable }}</button>
+<button type="button" class="btn btn-warning pull-right" data-toggle="modal" data-target="#create{{ ucfirst($typename) }}">Crea Nuovo {{ $typename_readable }}</button>
 
 <div class="modal fade" id="create{{ ucfirst($typename) }}" tabindex="-1" role="dialog" aria-labelledby="create{{ ucfirst($typename) }}">
 	<div class="modal-dialog modal-lg" role="document">

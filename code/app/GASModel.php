@@ -13,7 +13,19 @@ trait GASModel
 
 	public function printableHeader()
 	{
-		return $this->printableName();
+		$ret = $this->printableName();
+		$icons = $this->icons();
+
+		if (!empty($icons)) {
+			$ret .= '<div class="pull-right">';
+
+			foreach ($icons as $i)
+				$ret .= '<span class="glyphicon glyphicon-' . $i . '" aria-hidden="true"></span>&nbsp;';
+
+			$ret .= '</div>';
+		}
+
+		return $ret;
 	}
 
 	public function printableDate($name)
@@ -74,6 +86,20 @@ trait GASModel
 					'text' => 'Gestisci le consegne per il fornitore'
 				],
 			],
+			'Product' => [
+				'star' => (object)[
+					'test' => function($obj) {
+						return (!empty($obj->discount) && $obj->discount != 0);
+					},
+					'text' => 'Scontato'
+				],
+				'off' => (object)[
+					'test' => function($obj) {
+						return ($obj->active == false);
+					},
+					'text' => 'Disabilitato'
+				],
+			],
 			'Aggregate' => [
 				'th-list' => (object)[
 					'test' => function($obj) {
@@ -84,6 +110,50 @@ trait GASModel
 				'arrow-down' => (object)[
 					'test' => function($obj) {
 						return $obj->userCan('supplier.shippings');
+					},
+					'text' => 'Gestisci le consegne per l\'ordine'
+				],
+				'play' => (object)[
+					'test' => function($obj) {
+						return ($obj->status == 'open');
+					},
+					'text' => 'Ordine aperto'
+				],
+				'pause' => (object)[
+					'test' => function($obj) {
+						return ($obj->status == 'suspended');
+					},
+					'text' => 'Ordine sospeso'
+				],
+				'stop' => (object)[
+					'test' => function($obj) {
+						return ($obj->status == 'closed');
+					},
+					'text' => 'Ordine chiuso'
+				],
+				'step-forward' => (object)[
+					'test' => function($obj) {
+						return ($obj->status == 'shipped');
+					},
+					'text' => 'Ordine consegnato'
+				],
+				'eject' => (object)[
+					'test' => function($obj) {
+						return ($obj->status == 'archived');
+					},
+					'text' => 'Ordine archiviato'
+				],
+			],
+			'Order' => [
+				'th-list' => (object)[
+					'test' => function($obj) {
+						return $obj->supplier->userCan('supplier.orders');
+					},
+					'text' => 'Puoi modificare l\'ordine'
+				],
+				'arrow-down' => (object)[
+					'test' => function($obj) {
+						return $obj->supplier->userCan('supplier.shippings');
 					},
 					'text' => 'Gestisci le consegne per l\'ordine'
 				],

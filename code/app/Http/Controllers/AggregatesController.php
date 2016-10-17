@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Theme;
 use DB;
 
 use App\Aggregate;
@@ -51,5 +52,11 @@ class AggregatesController extends OrdersController
 		}
 
 		return $this->successResponse();
+	}
+
+	public function show($id)
+	{
+		$a = Aggregate::findOrFail($id);
+		return Theme::view('order.aggregate', ['aggregate' => $a]);
 	}
 }

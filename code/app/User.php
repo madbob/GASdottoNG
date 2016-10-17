@@ -61,21 +61,4 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	{
 		return $this->lastname . ' ' . $this->firstname;
 	}
-
-	public function printableHeader()
-	{
-		$ret = $this->printableName();
-		$icons = $this->icons();
-
-		if (!empty($icons)) {
-			$ret .= '<div class="pull-right">';
-
-			foreach ($icons as $i)
-				$ret .= '<span class="glyphicon glyphicon-' . $i . '" aria-hidden="true"></span>&nbsp;';
-
-			$ret .= '</div>';
-		}
-
-		return $ret;
-	}
 }

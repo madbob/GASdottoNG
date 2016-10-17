@@ -3,9 +3,9 @@
 		<tr>
 			@if($order->isActive())
 				<th width="2%"></th>
-				<th width="15%">Prodotto</th>
-				<th width="7%">Prezzo</th>
-				<th width="7%">Trasporto</th>
+				<th width="21%">Prodotto</th>
+				<th width="5%">Prezzo</th>
+				<th width="5%">Trasporto</th>
 				<th width="5%">Sconto Prodotto</th>
 				<th width="12%">Unità di Misura</th>
 				<th width="9%">Quantità Ordinata</th>
@@ -13,7 +13,7 @@
 				<th width="9%">Totale Trasporto</th>
 				<th width="9%">Quantità Consegnata</th>
 				<th width="9%">Totale Consegnato</th>
-				<th width="9%">Note</th>
+				<th width="7%">Note</th>
 			@else
 				<th width="25%">Prodotto</th>
 				<th width="25%">Unità di Misura</th>
