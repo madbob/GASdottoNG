@@ -26,57 +26,71 @@ $panel_rand_wrap = rand();
 			@foreach($aggregate->orders as $index => $order)
 			<div role="tabpanel" class="tab-pane {{ $index == 0 ? 'active' : '' }}" id="order-{{ $panel_rand_wrap }}-{{ $index }}">
 				@if($order->supplier->userCan('supplier.orders'))
+					<?php $summary = $order->calculateSummary() ?>
 
-				<?php $summary = $order->calculateSummary() ?>
+					<form class="form-horizontal main-form order-editor" method="PUT" action="{{ url('orders/' . $order->id) }}">
+						<input type="hidden" name="id" value="{{ $order->id }}" />
 
-				<form class="form-horizontal main-form order-editor" method="PUT" action="{{ url('orders/' . $order->id) }}">
-					<input type="hidden" name="id" value="{{ $order->id }}" />
+						<div class="row">
+							<div class="col-md-4">
+								@include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => 'Fornitore'])
+								@include('commons.datefield', ['obj' => $order, 'name' => 'start', 'label' => 'Data Apertura', 'mandatory' => true])
+								@include('commons.datefield', ['obj' => $order, 'name' => 'end', 'label' => 'Data Chiusura', 'mandatory' => true])
+								@include('commons.datefield', ['obj' => $order, 'name' => 'shipping', 'label' => 'Data Consegna'])
+								@include('commons.orderstatus', ['order' => $order])
+							</div>
+							<div class="col-md-4">
+								@include('commons.textfield', ['obj' => $order, 'name' => 'discount', 'label' => 'Sconto Globale', 'postlabel' => '€ / %'])
 
-					<div class="row">
-						<div class="col-md-4">
-							@include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => 'Fornitore'])
-							@include('commons.datefield', ['obj' => $order, 'name' => 'start', 'label' => 'Data Apertura', 'mandatory' => true])
-							@include('commons.datefield', ['obj' => $order, 'name' => 'end', 'label' => 'Data Chiusura', 'mandatory' => true])
-							@include('commons.datefield', ['obj' => $order, 'name' => 'shipping', 'label' => 'Data Consegna'])
-							@include('commons.orderstatus', ['order' => $order])
-						</div>
-						<div class="col-md-4">
-							@include('commons.textfield', ['obj' => $order, 'name' => 'discount', 'label' => 'Sconto Globale', 'postlabel' => '€ / %'])
+								@if($currentgas->userCan('movements.view|movements.admin'))
+									@include('commons.movementfield', ['obj' => $order->payment, 'name' => 'payment_id', 'label' => 'Pagamento', 'default' => \App\Movement::generate('order-payment', $currentgas, $order->supplier, $summary->price_delivered)])
+								@endif
+							</div>
+							<div class="col-md-4">
+								<div class="well">
+									<h4>Files</h4>
 
-							@if($currentgas->userCan('movements.view|movements.admin'))
-								@include('commons.movementfield', ['obj' => $order->payment, 'name' => 'payment_id', 'label' => 'Pagamento', 'default' => \App\Movement::generate('order-payment', $currentgas, $order->supplier, $summary->price_delivered)])
-							@endif
-						</div>
-						<div class="col-md-4">
-							<div class="well">
-								<h4>Files</h4>
-
-								<div class="list-group">
-									@foreach($order->attachments as $attachment)
-									<a href="{{ $attachment->download_url }}" class="list-group-item">{{ $attachment->name }}</a>
-									@endforeach
+									<div class="list-group">
+										@foreach($order->attachments as $attachment)
+										<a href="{{ $attachment->download_url }}" class="list-group-item">{{ $attachment->name }}</a>
+										@endforeach
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
 
-					<hr/>
+						<hr/>
 
-					@include('order.summary', ['order' => $order, 'summary' => $summary])
-					@include('commons.formbuttons')
-				</form>
-
+						@include('order.summary', ['order' => $order, 'summary' => $summary])
+						@include('commons.formbuttons')
+					</form>
 				@else
+					<form class="form-horizontal main-form">
+						<div class="col-md-4">
+							@include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => 'Fornitore'])
+							@include('commons.staticdatefield', ['obj' => $order, 'name' => 'start', 'label' => 'Data Apertura', 'mandatory' => true])
+							@include('commons.staticdatefield', ['obj' => $order, 'name' => 'end', 'label' => 'Data Chiusura', 'mandatory' => true])
+							@include('commons.staticdatefield', ['obj' => $order, 'name' => 'shipping', 'label' => 'Data Consegna'])
+							@include('commons.orderstatus', ['order' => $order, 'editable' => false])
+						</div>
 
-				<form class="form-horizontal main-form">
-					<div class="col-md-6">
-						@include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => 'Fornitore'])
-						@include('commons.staticdatefield', ['obj' => $order, 'name' => 'start', 'label' => 'Data Apertura', 'mandatory' => true])
-						@include('commons.staticdatefield', ['obj' => $order, 'name' => 'end', 'label' => 'Data Chiusura', 'mandatory' => true])
-						@include('commons.staticdatefield', ['obj' => $order, 'name' => 'shipping', 'label' => 'Data Consegna'])
-						@include('commons.orderstatus', ['order' => $order])
-					</div>
-				</form>
+						<div class="col-md-4">
+						</div>
+
+						@if($order->supplier->userCan('supplier.shippings'))
+							<div class="col-md-4">
+								<div class="well">
+									<h4>Files</h4>
+
+									<div class="list-group">
+										@foreach($order->attachments as $attachment)
+										<a href="{{ $attachment->download_url }}" class="list-group-item">{{ $attachment->name }}</a>
+										@endforeach
+									</div>
+								</div>
+							</div>
+						@endif
+					</form>
 				@endif
 			</div>
 			@endforeach
