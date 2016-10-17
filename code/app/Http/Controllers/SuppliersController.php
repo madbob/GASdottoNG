@@ -114,7 +114,7 @@ class SuppliersController extends Controller
 		else if($format == 'csv') {
 			$filename = sprintf('Listino %s.csv', $s->name);
 			header('Content-Type: text/csv');
-			header('Content-Disposition: attachment; filename=' . $filename);
+			header("Content-Disposition: attachment; filename=\"" . $filename . "\"");
 			header('Cache-Control: no-cache, no-store, must-revalidate');
 			header('Pragma: no-cache');
 			header('Expires: 0');

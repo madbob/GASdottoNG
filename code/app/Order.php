@@ -9,7 +9,7 @@ use App\SluggableID;
 
 class Order extends Model
 {
-	use GASModel, SluggableID;
+	use AttachableTrait, GASModel, SluggableID;
 
 	public $incrementing = false;
 
@@ -164,5 +164,37 @@ class Order extends Model
 		$summary->price_delivered = $total_price_delivered;
 		$summary->transport = $total_transport;
 		return $summary;
+	}
+
+	protected function defaultAttachments()
+	{
+		/*
+			Documento con i prodotti e le relative quantità totali.
+			Solitamente destinato al fornitore, come riassunto
+			dell'ordine complessivo
+		*/
+		$summary = new Attachment();
+		$summary->name = 'Riassunto Prodotti';
+		$summary->url = url('orders/document/' . $this->id . '/summary');
+		$summary->internal = true;
+
+		/*
+			Rappresentazione strutturata delle prenotazioni
+			effettuate, da usare in fase di consegna
+		*/
+		$shipping = new Attachment();
+		$shipping->name = 'Dettaglio Consegne';
+		$shipping->url = url('orders/document/' . $this->id . '/shipping');
+		$shipping->internal = true;
+
+		/*
+			CVS completo dei prodotti, degli utenti e delle quantità
+		*/
+		$table = new Attachment();
+		$table->name = 'Tabella Complessiva';
+		$table->url = url('orders/document/' . $this->id . '/table');
+		$table->internal = true;
+
+		return [$shipping, $summary, $table];
 	}
 }

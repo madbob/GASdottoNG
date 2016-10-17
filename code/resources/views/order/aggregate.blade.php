@@ -33,19 +33,30 @@ $panel_rand_wrap = rand();
 					<input type="hidden" name="id" value="{{ $order->id }}" />
 
 					<div class="row">
-						<div class="col-md-6">
+						<div class="col-md-4">
 							@include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => 'Fornitore'])
 							@include('commons.datefield', ['obj' => $order, 'name' => 'start', 'label' => 'Data Apertura', 'mandatory' => true])
 							@include('commons.datefield', ['obj' => $order, 'name' => 'end', 'label' => 'Data Chiusura', 'mandatory' => true])
 							@include('commons.datefield', ['obj' => $order, 'name' => 'shipping', 'label' => 'Data Consegna'])
-						</div>
-						<div class="col-md-6">
 							@include('commons.orderstatus', ['order' => $order])
+						</div>
+						<div class="col-md-4">
 							@include('commons.textfield', ['obj' => $order, 'name' => 'discount', 'label' => 'Sconto Globale', 'postlabel' => '€ / %'])
 
 							@if($currentgas->userCan('movements.view|movements.admin'))
 								@include('commons.movementfield', ['obj' => $order->payment, 'name' => 'payment_id', 'label' => 'Pagamento', 'default' => \App\Movement::generate('order-payment', $currentgas, $order->supplier, $summary->price_delivered)])
 							@endif
+						</div>
+						<div class="col-md-4">
+							<div class="well">
+								<h4>Files</h4>
+
+								<div class="list-group">
+									@foreach($order->attachments as $attachment)
+									<a href="{{ $attachment->download_url }}" class="list-group-item">{{ $attachment->name }}</a>
+									@endforeach
+								</div>
+							</div>
 						</div>
 					</div>
 

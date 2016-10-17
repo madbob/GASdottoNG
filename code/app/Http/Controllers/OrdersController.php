@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use DB;
 use Auth;
 use Theme;
+use PDF;
 
 use App\Supplier;
 use App\Product;
@@ -252,5 +253,38 @@ class OrdersController extends Controller
 		}
 
 		return Theme::view('commons.loadablelist', ['identifier' => 'order-list', 'items' => $orders]);
+	}
+
+	public function document(Request $request, $id, $type)
+	{
+		$order = Order::findOrFail($id);
+
+		switch($type) {
+			case 'shipping':
+				$html = Theme::view('documents.order_shipping', ['order' => $order])->render();
+				$filename = sprintf('Dettaglio Consegne %s.pdf', $order->supplier->name);
+				PDF::SetTitle(sprintf('Dettaglio Consegne %s del %s', $order->supplier->name, date('d/m/Y')));
+				PDF::AddPage();
+				PDF::writeHTML($html, true, false, true, false, '');
+				PDF::Output($filename, 'D');
+				break;
+			case 'summary':
+				$html = Theme::view('documents.order_summary', ['order' => $order])->render();
+				$filename = sprintf('Prodotti ordinati %s.pdf', $order->supplier->name);
+				PDF::SetTitle(sprintf('Prodotti ordinati %s del %s', $order->supplier->name, date('d/m/Y')));
+				PDF::AddPage();
+				PDF::writeHTML($html, true, false, true, false, '');
+				PDF::Output($filename, 'D');
+				break;
+			case 'table':
+				$filename = sprintf('Tabella Ordine %s.csv', $order->supplier->name);
+				header('Content-Type: text/csv');
+				header("Content-Disposition: attachment; filename=\"" . $filename . "\"");
+				header('Cache-Control: no-cache, no-store, must-revalidate');
+				header('Pragma: no-cache');
+				header('Expires: 0');
+				return Theme::view('documents.order_table', ['order' => $order]);
+				break;
+		}
 	}
 }
