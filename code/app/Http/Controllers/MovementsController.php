@@ -127,9 +127,14 @@ class MovementsController extends Controller
                 $m = $this->basicReadFromRequest($request);
 		$m->save();
 
-		return $this->successResponse([
-			'id' => $m->id,
-                        'registration_date' => $m->printableDate('registration_date')
-		]);
+                if ($m->id == null) {
+                        return $this->errorResponse('Salvataggio fallito');
+                }
+                else {
+        		return $this->successResponse([
+        			'id' => $m->id,
+                                'registration_date' => $m->printableDate('registration_date')
+        		]);
+                }
 	}
 }
