@@ -4,8 +4,6 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-use Lanz\Commentable\Commentable;
-
 use App\AttachableTrait;
 use App\Attachment;
 use App\AllowableTrait;
@@ -14,7 +12,7 @@ use App\SluggableID;
 
 class Supplier extends Model
 {
-	use Commentable, AttachableTrait, AllowableTrait, GASModel, SluggableID;
+	use AttachableTrait, AllowableTrait, GASModel, SluggableID;
 
 	public $incrementing = false;
 

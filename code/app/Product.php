@@ -4,7 +4,6 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-use Lanz\Commentable\Commentable;
 use App\GASModel;
 use App\SluggableID;
 use App\Booking;
@@ -12,7 +11,7 @@ use App\BookedProduct;
 
 class Product extends Model
 {
-	use Commentable, GASModel, SluggableID;
+	use GASModel, SluggableID;
 
 	public $incrementing = false;
 

@@ -145,7 +145,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        Lanz\Commentable\CommentableServiceProvider::class,
         Caffeinated\Themes\ThemesServiceProvider::class,
         Menu\MenuServiceProvider::class,
         Wilgucki\Csv\CsvServiceProvider::class,
