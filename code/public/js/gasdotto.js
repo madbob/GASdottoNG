@@ -236,7 +236,7 @@ function creatingFormCallback(form, data) {
 		if (test.length != 0) {
 			var listname = test.val();
 			var list = $('#' + listname);
-			list.append('<a href="' + data.url + '" class="loadable-item list-group-item">' + data.header + '</a>');
+			list.append('<a data-element-id="' + data.id + '" href="' + data.url + '" class="loadable-item list-group-item">' + data.header + '</a>');
 			testListsEmptiness();
 		}
 

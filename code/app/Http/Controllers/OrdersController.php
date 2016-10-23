@@ -111,7 +111,7 @@ class OrdersController extends Controller
 		return $this->successResponse([
 			'id' => $a->id,
 			'header' => $a->printableHeader(),
-			'url' => url('orders/' . $a->id)
+			'url' => url('aggregates/' . $a->id)
 		]);
 	}
 
@@ -177,7 +177,7 @@ class OrdersController extends Controller
 		return $this->successResponse([
 			'id' => $order->aggregate->id,
 			'header' => $order->aggregate->printableHeader(),
-			'url' => url('orders/' . $order->aggregate->id)
+			'url' => url('aggregates/' . $order->aggregate->id)
 		]);
 	}
 
