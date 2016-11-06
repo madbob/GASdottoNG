@@ -12,10 +12,10 @@ class CreateGasTable extends Migration
 			$table->timestamps();
 
 			$table->string('name', 20)->unique();
-			$table->string('email', 100);
-			$table->text('description');
-			$table->string('logo', 100);
-			$table->text('message');
+			$table->string('email', 100)->nullable();
+			$table->text('description')->nullable();
+			$table->string('logo', 100)->nullable();
+			$table->text('message')->nullable();
 
 			$table->decimal('bank_balance', 6, 2);
 			$table->decimal('cash_balance', 6, 2);

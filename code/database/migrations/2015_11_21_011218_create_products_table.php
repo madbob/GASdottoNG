@@ -18,20 +18,20 @@ class CreateProductsTable extends Migration
 			$table->string('category_id');
 			$table->string('measure_id');
 			$table->boolean('active');
-			$table->text('description');
+			$table->text('description')->nullable();
 			$table->string('picture')->nullable();
 
 			$table->decimal('price', 5, 2);
-			$table->decimal('transport', 5, 2);
+			$table->decimal('transport', 5, 2)->default(0);
 			$table->string('discount')->default('');
 
-			$table->boolean('variable');
-			$table->decimal('portion_quantity', 7, 3);
-			$table->integer('package_size')->unsigned();
-			$table->integer('multiple')->unsigned();
-			$table->decimal('min_quantity', 7, 3);
-			$table->decimal('max_quantity', 7, 3);
-			$table->decimal('max_available', 7, 3);
+			$table->boolean('variable')->default(false);
+			$table->decimal('portion_quantity', 7, 3)->default(0);
+			$table->integer('package_size')->unsigned()->default(0);
+			$table->integer('multiple')->unsigned()->default(1);
+			$table->decimal('min_quantity', 7, 3)->default(0);
+			$table->decimal('max_quantity', 7, 3)->default(0);
+			$table->decimal('max_available', 7, 3)->default(0);
 
 			$table->foreign('category_id')->references('id')->on('categories');
 			$table->foreign('measure_id')->references('id')->on('measures');
