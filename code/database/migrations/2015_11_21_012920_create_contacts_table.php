@@ -14,7 +14,7 @@ class CreateContactsTable extends Migration
 			$table->morphs('referrer');
 			$table->string('name');
 			$table->string('phone');
-			$table->string('mail');
+			$table->string('email');
 
 			$table->index('id');
 		});

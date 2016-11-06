@@ -11,7 +11,7 @@ class CreateMeasuresTable extends Migration
 			$table->string('id')->primary();
 			$table->timestamps();
 			$table->text('name');
-			$table->boolean('discrete');
+			$table->boolean('discrete')->default(false);
 			$table->index('id');
 		});
 	}

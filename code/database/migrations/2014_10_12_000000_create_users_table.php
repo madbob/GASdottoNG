@@ -21,16 +21,16 @@ class CreateUsersTable extends Migration
 			$table->date('birthday')->nullable();
 			$table->string('phone')->nullable();
 			$table->json('address')->nullable();
-			$table->integer('family_members')->unsigned();
+			$table->integer('family_members')->unsigned()->nullable();
 			$table->string('picture')->nullable();
 			$table->string('taxcode')->nullable();
 			$table->date('member_since');
-			$table->date('leaving_date');
+			$table->date('leaving_date')->nullable();
 			$table->string('card_number')->nullable();
 			$table->datetime('last_login')->nullable();
-			$table->string('preferred_delivery_id');
+			$table->string('preferred_delivery_id')->nullable();
 
-			$table->decimal('balance', 6, 2);
+			$table->decimal('balance', 6, 2)->default(0);
 			$table->integer('fee_id')->nullable();
 			$table->integer('deposit_id')->nullable();
 

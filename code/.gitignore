@@ -5,3 +5,6 @@ Homestead.json
 .env
 /storage/debugbar
 /storage/[A-Z]*
+.docker_bundle/cache
+.docker_bundle/.htaccess
+.editorconfig

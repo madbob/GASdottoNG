@@ -13,18 +13,18 @@ class CreateSuppliersTable extends Migration
 			$table->softDeletes();
 
 			$table->string('name')->unique();
-			$table->string('description', 500);
-			$table->string('comment', 500);
+			$table->string('description', 500)->nullable();
+			$table->string('comment', 500)->nullable();
 
 			$table->json('address')->nullable();
-			$table->string('phone');
-			$table->string('mail');
-			$table->string('fax');
-			$table->string('website');
+			$table->string('phone')->nullable();
+			$table->string('email');
+			$table->string('fax')->nullable();
+			$table->string('website')->nullable();
 
-			$table->string('taxcode');
-			$table->string('vat');
-			$table->float('balance', 10, 2);
+			$table->string('taxcode')->nullable();
+			$table->string('vat')->nullable();
+			$table->float('balance', 10, 2)->default(0);
 
 			$table->index('id');
 		});
