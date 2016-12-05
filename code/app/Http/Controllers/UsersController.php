@@ -12,23 +12,28 @@ use Auth;
 use Theme;
 use Hash;
 
+use App\UsersService;
 use App\User;
 
 class UsersController extends Controller
 {
-	public function __construct()
+
+	protected $usersService;
+
+	public function __construct(UsersService $usersService)
 	{
 		$this->middleware('auth');
+		$this->usersService = $usersService;
 	}
 
 	public function index()
 	{
-		$user = Auth::user();
-		if ($user->gas->userCan('users.admin|users.view') == false)
-			abort(503);
-
-		$users = User::orderBy('lastname', 'asc')->get();
-		return Theme::view('pages.users', ['users' => $users]);
+		try {
+			$users = $this->usersService->list();
+			return Theme::view('pages.users', ['users' => $users]);
+		} catch (AuthException $e) {
+			abort($e->status());
+		}
 	}
 
 	public function search(Request $request)
