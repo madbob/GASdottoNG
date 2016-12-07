@@ -1,5 +1,9 @@
 <?php
 
+Route::group(array('prefix' => 'api/1'), function(){
+	Route::resource('users', 'REST\UsersController');
+});
+		
 Route::get('/', function () {
 	return Redirect::to('/dashboard');
 });
