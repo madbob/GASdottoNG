@@ -27,7 +27,7 @@ class UsersController extends Controller
 	public function index()
 	{
 		try {
-			$users = $this->usersService->list();
+			$users = $this->usersService->listUsers();
 			return response()->json(['users' => $users], 200);
 		} catch (AuthException $e) {
 			return response(null, $e->status());
