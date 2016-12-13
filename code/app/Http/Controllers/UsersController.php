@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-
 use DB;
 use Auth;
 use Theme;
@@ -14,6 +11,7 @@ use Hash;
 
 use App\UsersService;
 use App\User;
+use App\Exceptions\AuthException;
 
 class UsersController extends Controller
 {
@@ -38,24 +36,15 @@ class UsersController extends Controller
 
     public function search(Request $request)
     {
-        $s = $request->input('term');
+        $term = $request->input('term');
 
-        $users = User::where('firstname', 'LIKE', "%$s%")->orWhere('lastname', 'LIKE', "%$s%")->get();
-        $ret = array();
+        try {
+            $users = $this->usersService->search($term);
 
-        foreach ($users as $user) {
-            $fullname = $user->printableName();
-
-            $u = (object)array(
-                'id' => $user->id,
-                'label' => $fullname,
-                'value' => $fullname
-            );
-
-            $ret[] = $u;
+            return json_encode($users);
+        } catch (AuthException $e) {
+            abort($e->status());
         }
-
-        return json_encode($ret);
     }
 
     public function store(Request $request)
