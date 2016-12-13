@@ -15,11 +15,12 @@ use App\Exceptions\AuthException;
 
 class UsersController extends Controller
 {
-	
+
 	protected $usersService;
-	
+
 	public function __construct(UsersService $usersService)
 	{
+		$this->middleware('nodebugbar');
 		$this->usersService = $usersService;
 	}
 
@@ -29,7 +30,7 @@ class UsersController extends Controller
 			$users = $this->usersService->list();
 			return response()->json(['users' => $users], 200);
 		} catch (AuthException $e) {
-			return response()->json(null, $e->status());
+			return response(null, $e->status());
 		}
 	}
 
