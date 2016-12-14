@@ -1,15 +1,16 @@
 <?php
 
-Route::group(array('prefix' => 'api/1'), function(){
-	Route::resource('users', 'REST\UsersController');
+Route::group(array('prefix' => 'api/1'), function () {
+    Route::get('users/search', 'REST\UsersController@search');
+    Route::resource('users', 'REST\UsersController');
 });
-		
+
 Route::get('/', function () {
-	return Redirect::to('/dashboard');
+    return Redirect::to('/dashboard');
 });
 
 Route::get('/home', function () {
-	return Redirect::to('/dashboard');
+    return Redirect::to('/dashboard');
 });
 
 Route::get('users/search', 'UsersController@search');
@@ -21,11 +22,11 @@ Route::get('orders/document/{id}/{type}', 'OrdersController@document');
 Route::get('suppliers/catalogue/{id}/{format}', 'SuppliersController@catalogue');
 
 Route::controllers([
-	'auth' => 'Auth\AuthController',
-	'password' => 'Auth\PasswordController',
-	'dashboard' => 'CommonsController',
-	'import' => 'ImportController',
-	'permissions' => 'PermissionsController',
+    'auth' => 'Auth\AuthController',
+    'password' => 'Auth\PasswordController',
+    'dashboard' => 'CommonsController',
+    'import' => 'ImportController',
+    'permissions' => 'PermissionsController',
 ]);
 
 Route::resource('gas', 'GasController');

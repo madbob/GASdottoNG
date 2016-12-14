@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-
 use DB;
 use Auth;
 use Theme;
@@ -14,135 +11,127 @@ use Hash;
 
 use App\UsersService;
 use App\User;
+use App\Exceptions\AuthException;
 
 class UsersController extends Controller
 {
 
-	protected $usersService;
+    protected $usersService;
 
-	public function __construct(UsersService $usersService)
-	{
-		$this->middleware('auth');
-		$this->usersService = $usersService;
-	}
+    public function __construct(UsersService $usersService)
+    {
+        $this->middleware('auth');
+        $this->usersService = $usersService;
+    }
 
-	public function index()
-	{
-		try {
-			$users = $this->usersService->list();
-			return Theme::view('pages.users', ['users' => $users]);
-		} catch (AuthException $e) {
-			abort($e->status());
-		}
-	}
+    public function index()
+    {
+        try {
+            $users = $this->usersService->listUsers();
+            return Theme::view('pages.users', ['users' => $users]);
+        } catch (AuthException $e) {
+            abort($e->status());
+        }
+    }
 
-	public function search(Request $request)
-	{
-		$s = $request->input('term');
+    public function search(Request $request)
+    {
+        $term = $request->input('term');
 
-		$users = User::where('firstname', 'LIKE', "%$s%")->orWhere('lastname', 'LIKE', "%$s%")->get();
-		$ret = array();
+        try {
+            $users = $this->usersService->search($term);
 
-		foreach($users as $user) {
-			$fullname = $user->printableName();
+            return json_encode($users);
+        } catch (AuthException $e) {
+            abort($e->status());
+        }
+    }
 
-			$u = (object) array(
-				'id' => $user->id,
-				'label' => $fullname,
-				'value' => $fullname
-			);
+    public function store(Request $request)
+    {
+        DB::beginTransaction();
 
-			$ret[] = $u;
-		}
+        $user = Auth::user();
+        if ($user->gas->userCan('users.admin') == false)
+            return $this->errorResponse('Non autorizzato');
 
-		return json_encode($ret);
-	}
+        $u = new User();
+        $u->id = $request->input('username');
+        $u->gas_id = $user->gas->id;
+        $u->member_since = date('Y-m-d', time());
+        $u->username = $request->input('username');
+        $u->firstname = $request->input('firstname');
+        $u->lastname = $request->input('lastname');
+        $u->email = $request->input('email');
+        $u->password = Hash::make($request->input('password'));
+        $u->current_balance = 0;
+        $u->previous_balance = 0;
+        $u->save();
 
-	public function store(Request $request)
-	{
-		DB::beginTransaction();
+        return $this->successResponse([
+            'id' => $u->id,
+            'name' => $u->printableName(),
+            'header' => $u->printableHeader(),
+            'url' => url('users/' . $u->id)
+        ]);
+    }
 
-		$user = Auth::user();
-		if ($user->gas->userCan('users.admin') == false)
-			return $this->errorResponse('Non autorizzato');
+    public function show($id)
+    {
+        $u = User::findOrFail($id);
 
-		$u = new User();
-		$u->id = $request->input('username');
-		$u->gas_id = $user->gas->id;
-		$u->member_since = date('Y-m-d', time());
-		$u->username = $request->input('username');
-		$u->firstname = $request->input('firstname');
-		$u->lastname = $request->input('lastname');
-		$u->email = $request->input('email');
-		$u->password = Hash::make($request->input('password'));
-		$u->current_balance = 0;
-		$u->previous_balance = 0;
-		$u->save();
+        if ($u->gas->userCan('users.admin'))
+            return Theme::view('user.edit', ['user' => $u]);
+        else if ($u->gas->userCan('users.view'))
+            return Theme::view('user.show', ['user' => $u]);
+        else
+            abort(503);
+    }
 
-		return $this->successResponse([
-			'id' => $u->id,
-			'name' => $u->printableName(),
-			'header' => $u->printableHeader(),
-			'url' => url('users/' . $u->id)
-		]);
-	}
+    public function update(Request $request, $id)
+    {
+        DB::beginTransaction();
 
-	public function show($id)
-	{
-		$u = User::findOrFail($id);
+        $user = Auth::user();
+        if ($user->gas->userCan('users.admin') == false)
+            return $this->errorResponse('Non autorizzato');
 
-		if ($u->gas->userCan('users.admin'))
-			return Theme::view('user.edit', ['user' => $u]);
-		else if ($u->gas->userCan('users.view'))
-			return Theme::view('user.show', ['user' => $u]);
-		else
-			abort(503);
-	}
+        $u = User::findOrFail($id);
+        $u->username = $request->input('username');
+        $u->firstname = $request->input('firstname');
+        $u->lastname = $request->input('lastname');
+        $u->email = $request->input('email');
+        $u->phone = $request->input('phone');
+        $u->birthday = $this->decodeDate($request->input('birthday'));
+        $u->member_since = $this->decodeDate($request->input('member_since'));
+        $u->taxcode = $request->input('taxcode');
+        $u->family_members = $request->input('family_members');
+        $u->card_number = $request->input('card_number');
 
-	public function update(Request $request, $id)
-	{
-		DB::beginTransaction();
+        $password = $request->input('password');
+        if ($password != '')
+            $u->password = Hash::make($password);
 
-		$user = Auth::user();
-		if ($user->gas->userCan('users.admin') == false)
-			return $this->errorResponse('Non autorizzato');
+        $u->save();
 
-		$u = User::findOrFail($id);
-		$u->username = $request->input('username');
-		$u->firstname = $request->input('firstname');
-		$u->lastname = $request->input('lastname');
-		$u->email = $request->input('email');
-		$u->phone = $request->input('phone');
-		$u->birthday = $this->decodeDate($request->input('birthday'));
-		$u->member_since = $this->decodeDate($request->input('member_since'));
-		$u->taxcode = $request->input('taxcode');
-		$u->family_members = $request->input('family_members');
-		$u->card_number = $request->input('card_number');
+        return $this->successResponse([
+            'id' => $u->id,
+            'name' => $u->printableName(),
+            'header' => $u->printableHeader(),
+            'url' => url('users/' . $u->id)
+        ]);
+    }
 
-		$password = $request->input('password');
-		if ($password != '')
-			$u->password = Hash::make($password);
+    public function destroy($id)
+    {
+        DB::beginTransaction();
 
-		$u->save();
+        $u = User::findOrFail($id);
 
-		return $this->successResponse([
-			'id' => $u->id,
-			'name' => $u->printableName(),
-			'header' => $u->printableHeader(),
-			'url' => url('users/' . $u->id)
-		]);
-	}
+        if ($u->gas->userCan('users.admin') == false)
+            return $this->errorResponse('Non autorizzato');
 
-	public function destroy($id)
-	{
-		DB::beginTransaction();
-
-		$u = User::findOrFail($id);
-
-		if ($u->gas->userCan('users.admin') == false)
-			return $this->errorResponse('Non autorizzato');
-
-		$u->delete();
-		return $this->successResponse();
-	}
+        $u->delete();
+        return $this->successResponse();
+    }
 }
