@@ -48,9 +48,13 @@ class UsersController extends Controller
 
     public function store(Request $request)
     {
-        $user = $this->usersService->store($request);
+        try {
+            $user = $this->usersService->store($request);
 
-        return $this->userSuccessResponse($user);
+            return $this->userSuccessResponse($user);
+        } catch (AuthException $e) {
+            abort($e->status());
+        }
     }
 
     public function show($id)
@@ -70,16 +74,24 @@ class UsersController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = $this->usersService->update($request, $id);
+        try {
+            $user = $this->usersService->update($request, $id);
 
-        return $this->userSuccessResponse($user);
+            return $this->userSuccessResponse($user);
+        } catch (AuthException $e) {
+            abort($e->status());
+        }
     }
 
     public function destroy($id)
     {
-        $this->usersService->destroy($id);
+        try {
+            $this->usersService->destroy($id);
 
-        return $this->successResponse();
+            return $this->successResponse();
+        } catch (AuthException $e) {
+            abort($e->status());
+        }
     }
 
     private function userSuccessResponse($user)
