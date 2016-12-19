@@ -51,4 +51,43 @@ class UsersController extends Controller
         }
     }
 
+    public function show($id)
+    {
+        try {
+            $user = $this->usersService->show($id);
+            return response()->json(['user' => $user], 200);
+        } catch (AuthException $e) {
+            return response(null, $e->status());
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $this->usersService->destroy($id);
+            return response(null, 200);
+        } catch (AuthException $e) {
+            return response(null, $e->status());
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $user = $this->usersService->update($request, $id);
+            return response()->json(['user' => $user], 200);
+        } catch (AuthException $e) {
+            return response(null, $e->status());
+        }
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            $user = $this->usersService->store($request);
+            return response()->json(['user' => $user], 200);
+        } catch (AuthException $e) {
+            return response(null, $e->status());
+        }
+    }
 }
