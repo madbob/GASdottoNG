@@ -78,14 +78,17 @@ class UsersController extends Controller
 
     public function show($id)
     {
-        $u = User::findOrFail($id);
+        try {
+            $user = $this->usersService->show($id);
 
-        if ($u->gas->userCan('users.admin'))
-            return Theme::view('user.edit', ['user' => $u]);
-        else if ($u->gas->userCan('users.view'))
-            return Theme::view('user.show', ['user' => $u]);
-        else
-            abort(503);
+            if ($user->gas->userCan('users.admin')) {
+                return Theme::view('user.edit', ['user' => $user]);
+            }
+
+            return Theme::view('user.show', ['user' => $user]);
+        } catch (AuthException $e) {
+            abort($e->status());
+        }
     }
 
     public function update(Request $request, $id)
@@ -124,14 +127,8 @@ class UsersController extends Controller
 
     public function destroy($id)
     {
-        DB::beginTransaction();
+        $this->usersService->destroy($id);
 
-        $u = User::findOrFail($id);
-
-        if ($u->gas->userCan('users.admin') == false)
-            return $this->errorResponse('Non autorizzato');
-
-        $u->delete();
         return $this->successResponse();
     }
 }

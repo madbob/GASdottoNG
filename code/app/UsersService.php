@@ -10,19 +10,40 @@ class UsersService
 
     private function ensureAuth()
     {
-        if (!Auth::check()) {
-            throw new AuthException(401);
+        if (Auth::check()) {
+            return;
         }
 
+        throw new AuthException(401);
+    }
+
+    private function ensureAuthAdminOrView()
+    {
+        $this->ensureAuth();
+
         $user = Auth::user();
-        if ($user->gas->userCan('users.admin|users.view') == false) {
-            throw new AuthException(403);
+        if ($user->gas->userCan('users.admin|users.view')) {
+            return;
         }
+
+        throw new AuthException(403);
+    }
+
+    private function ensureAuthAdmin()
+    {
+        $this->ensureAuth();
+
+        $user = Auth::user();
+        if ($user->gas->userCan('users.admin')) {
+            return;
+        }
+
+        throw new AuthException(403);
     }
 
     public function listUsers()
     {
-        $this->ensureAuth();
+        $this->ensureAuthAdminOrView();
 
         $users = User::orderBy('lastname', 'asc')->get();
 
@@ -31,7 +52,7 @@ class UsersService
 
     public function search($term)
     {
-        $this->ensureAuth();
+        $this->ensureAuthAdminOrView();
 
         $users = User::where('firstname', 'LIKE', "%$term%")->orWhere('lastname', 'LIKE', "%$term%")->get();
         $ret = array();
@@ -51,4 +72,23 @@ class UsersService
         return $ret;
     }
 
+    public function show($id)
+    {
+        $this->ensureAuthAdminOrView();
+
+        return User::findOrFail($id);
+    }
+
+    public function destroy($id)
+    {
+        $this->ensureAuthAdmin();
+
+        DB::beginTransaction();
+
+        $user = $this->show($id);
+
+        $user->delete();
+
+        DB::commit();
+    }
 }

@@ -51,4 +51,23 @@ class UsersController extends Controller
         }
     }
 
+    public function show($id)
+    {
+        try {
+            $user = $this->usersService->show($id);
+            return response()->json(['user' => $user], 200);
+        } catch (AuthException $e) {
+            return response(null, $e->status());
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $this->usersService->destroy($id);
+            return response(null, 200);
+        } catch (AuthException $e) {
+            return response(null, $e->status());
+        }
+    }
 }
