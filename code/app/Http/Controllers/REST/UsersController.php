@@ -70,4 +70,24 @@ class UsersController extends Controller
             return response(null, $e->status());
         }
     }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $user = $this->usersService->update($request, $id);
+            return response()->json(['user' => $user], 200);
+        } catch (AuthException $e) {
+            return response(null, $e->status());
+        }
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            $user = $this->usersService->store($request);
+            return response()->json(['user' => $user], 200);
+        } catch (AuthException $e) {
+            return response(null, $e->status());
+        }
+    }
 }

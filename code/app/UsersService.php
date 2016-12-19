@@ -2,8 +2,10 @@
 
 namespace App;
 
-use Auth;
 use App\Exceptions\AuthException;
+use Auth;
+use Hash;
+use Illuminate\Http\Request;
 
 class UsersService
 {
@@ -90,5 +92,63 @@ class UsersService
         $user->delete();
 
         DB::commit();
+    }
+
+    public function update(Request $request, $id)
+    {
+        $this->ensureAuthAdmin();
+
+        DB::beginTransaction();
+
+        $user = $this->show($id);
+
+        $user->username = $request->input('username');
+        $user->firstname = $request->input('firstname');
+        $user->lastname = $request->input('lastname');
+        $user->email = $request->input('email');
+        $user->phone = $request->input('phone');
+        $user->birthday = $this->decodeDate($request->input('birthday'));
+        $user->member_since = $this->decodeDate($request->input('member_since'));
+        $user->taxcode = $request->input('taxcode');
+        $user->family_members = $request->input('family_members');
+        $user->card_number = $request->input('card_number');
+
+        $password = $request->input('password');
+        if ($password != '') {
+            $user->password = Hash::make($password);
+        }
+
+        $user->save();
+
+        DB::commit();
+
+        return $user;
+    }
+
+    public function store(Request $request)
+    {
+        $this->ensureAuthAdmin();
+
+        $creator = Auth::user();
+
+        $user = new User();
+        $user->id = $request->input('username');
+        $user->gas_id = $creator->gas->id;
+        $user->member_since = date('Y-m-d', time());
+        $user->username = $request->input('username');
+        $user->firstname = $request->input('firstname');
+        $user->lastname = $request->input('lastname');
+        $user->email = $request->input('email');
+        $user->password = Hash::make($request->input('password'));
+        $user->current_balance = 0;
+        $user->previous_balance = 0;
+
+        DB::beginTransaction();
+
+        $user->save();
+
+        DB::commit();
+
+        return $user;
     }
 }

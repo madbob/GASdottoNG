@@ -10,7 +10,6 @@ use Theme;
 use Hash;
 
 use App\UsersService;
-use App\User;
 use App\Exceptions\AuthException;
 
 class UsersController extends Controller
@@ -49,31 +48,9 @@ class UsersController extends Controller
 
     public function store(Request $request)
     {
-        DB::beginTransaction();
+        $user = $this->usersService->store($request);
 
-        $user = Auth::user();
-        if ($user->gas->userCan('users.admin') == false)
-            return $this->errorResponse('Non autorizzato');
-
-        $u = new User();
-        $u->id = $request->input('username');
-        $u->gas_id = $user->gas->id;
-        $u->member_since = date('Y-m-d', time());
-        $u->username = $request->input('username');
-        $u->firstname = $request->input('firstname');
-        $u->lastname = $request->input('lastname');
-        $u->email = $request->input('email');
-        $u->password = Hash::make($request->input('password'));
-        $u->current_balance = 0;
-        $u->previous_balance = 0;
-        $u->save();
-
-        return $this->successResponse([
-            'id' => $u->id,
-            'name' => $u->printableName(),
-            'header' => $u->printableHeader(),
-            'url' => url('users/' . $u->id)
-        ]);
+        return $this->userSuccessResponse($user);
     }
 
     public function show($id)
@@ -93,36 +70,9 @@ class UsersController extends Controller
 
     public function update(Request $request, $id)
     {
-        DB::beginTransaction();
+        $user = $this->usersService->update($request, $id);
 
-        $user = Auth::user();
-        if ($user->gas->userCan('users.admin') == false)
-            return $this->errorResponse('Non autorizzato');
-
-        $u = User::findOrFail($id);
-        $u->username = $request->input('username');
-        $u->firstname = $request->input('firstname');
-        $u->lastname = $request->input('lastname');
-        $u->email = $request->input('email');
-        $u->phone = $request->input('phone');
-        $u->birthday = $this->decodeDate($request->input('birthday'));
-        $u->member_since = $this->decodeDate($request->input('member_since'));
-        $u->taxcode = $request->input('taxcode');
-        $u->family_members = $request->input('family_members');
-        $u->card_number = $request->input('card_number');
-
-        $password = $request->input('password');
-        if ($password != '')
-            $u->password = Hash::make($password);
-
-        $u->save();
-
-        return $this->successResponse([
-            'id' => $u->id,
-            'name' => $u->printableName(),
-            'header' => $u->printableHeader(),
-            'url' => url('users/' . $u->id)
-        ]);
+        return $this->userSuccessResponse($user);
     }
 
     public function destroy($id)
@@ -130,5 +80,15 @@ class UsersController extends Controller
         $this->usersService->destroy($id);
 
         return $this->successResponse();
+    }
+
+    private function userSuccessResponse($user)
+    {
+        return $this->successResponse([
+            'id' => $user->id,
+            'name' => $user->printableName(),
+            'header' => $user->printableHeader(),
+            'url' => url('users/' . $user->id)
+        ]);
     }
 }
