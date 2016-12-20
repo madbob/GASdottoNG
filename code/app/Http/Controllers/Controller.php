@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use app\Utils\Utils;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -14,7 +15,7 @@ abstract class Controller extends BaseController
 
     protected function errorResponse($message)
     {
-        $ret = (object) [
+        $ret = (object)[
             'status' => 'error',
             'message' => $message,
         ];
@@ -29,33 +30,11 @@ abstract class Controller extends BaseController
         $data['status'] = 'success';
         DB::commit();
 
-        return json_encode((object) $data);
+        return json_encode((object)$data);
     }
 
     protected function decodeDate($date)
     {
-        if ($date == '') {
-            return '';
-        }
-
-        $months = [
-            'gennaio' => 'january',
-            'febbraio' => 'february',
-            'marzo' => 'march',
-            'aprile' => 'april',
-            'maggio' => 'may',
-            'giugno' => 'june',
-            'luglio' => 'july',
-            'agosto' => 'august',
-            'settembre' => 'september',
-            'ottobre' => 'october',
-            'novembre' => 'november',
-            'dicembre' => 'december',
-        ];
-
-        list($weekday, $day, $month, $year) = explode(' ', $date);
-        $en_date = sprintf('%s %s %s', $day, $months[strtolower($month)], $year);
-
-        return date('Y-m-d', strtotime($en_date));
+        return Utils::decodeDate($date);
     }
 }
