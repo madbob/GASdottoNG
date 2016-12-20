@@ -3,9 +3,11 @@
 namespace App;
 
 use App\Exceptions\AuthException;
+use App\Utils\Utils;
 use Auth;
 use Hash;
 use Illuminate\Http\Request;
+use DB;
 
 class UsersService
 {
@@ -106,8 +108,8 @@ class UsersService
         $user->lastname = $request->input('lastname');
         $user->email = $request->input('email');
         $user->phone = $request->input('phone');
-        $user->birthday = $this->decodeDate($request->input('birthday'));
-        $user->member_since = $this->decodeDate($request->input('member_since'));
+        $user->birthday = Utils::decodeDate($request->input('birthday'));
+        $user->member_since = Utils::decodeDate($request->input('member_since'));
         $user->taxcode = $request->input('taxcode');
         $user->family_members = $request->input('family_members');
         $user->card_number = $request->input('card_number');
