@@ -1,9 +1,8 @@
 <?php
 
-namespace app\Http\Controllers;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\OrdersController;
 use Theme;
 use DB;
 use App\Aggregate;

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Http\Controllers\REST;
+namespace App\Http\Controllers\REST;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
