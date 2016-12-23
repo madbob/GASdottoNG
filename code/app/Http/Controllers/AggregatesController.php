@@ -3,6 +3,7 @@
 namespace app\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\OrdersController;
 use Theme;
 use DB;
 use App\Aggregate;
