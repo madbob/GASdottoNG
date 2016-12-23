@@ -1,40 +1,40 @@
 <?php
 
-namespace App;
+namespace app;
 
 use Illuminate\Database\Eloquent\Model;
-
 use App\GASModel;
 use App\SluggableID;
 
 class Variant extends Model
 {
-	use GASModel, SluggableID;
+    use GASModel, SluggableID;
 
-	public $incrementing = false;
+    public $incrementing = false;
 
-	public function product()
-	{
-		return $this->belongsTo('App\Product');
-	}
+    public function product()
+    {
+        return $this->belongsTo('App\Product');
+    }
 
-	public function values()
-	{
-		return $this->hasMany('App\VariantValue')->orderBy('price_offset', 'asc')->orderBy('value', 'asc');
-	}
+    public function values()
+    {
+        return $this->hasMany('App\VariantValue')->orderBy('price_offset', 'asc')->orderBy('value', 'asc');
+    }
 
-	public function printableValues()
-	{
-		$vals = [];
+    public function printableValues()
+    {
+        $vals = [];
 
-		foreach ($this->values as $value)
-			$vals[] = $value->printableFullValue();
+        foreach ($this->values as $value) {
+            $vals[] = $value->printableFullValue();
+        }
 
-		return join(', ', $vals);
-	}
+        return implode(', ', $vals);
+    }
 
-	public function getSlugID()
-	{
-		return sprintf('%s::%s', $this->product_id, str_slug($this->name));
-	}
+    public function getSlugID()
+    {
+        return sprintf('%s::%s', $this->product_id, str_slug($this->name));
+    }
 }

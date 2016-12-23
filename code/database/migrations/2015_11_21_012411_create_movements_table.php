@@ -5,32 +5,32 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateMovementsTable extends Migration
 {
-	public function up()
-	{
-		Schema::create('movements', function (Blueprint $table) {
-			$table->increments('id');
-			$table->timestamps();
+    public function up()
+    {
+        Schema::create('movements', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
 
-			$table->date('registration_date');
-			$table->string('registerer_id');
+            $table->date('registration_date');
+            $table->string('registerer_id');
 
-			$table->string('sender_type');
-			$table->string('sender_id');
-			$table->string('target_type');
-			$table->string('target_id');
+            $table->string('sender_type');
+            $table->string('sender_id');
+            $table->string('target_type');
+            $table->string('target_id');
 
-			$table->decimal('amount', 5, 2);
-			$table->string('method');
-			$table->string('type');
-			$table->string('identifier');
-			$table->text('notes');
+            $table->decimal('amount', 5, 2);
+            $table->string('method');
+            $table->string('type');
+            $table->string('identifier');
+            $table->text('notes');
 
-			$table->index('id');
-		});
-	}
+            $table->index('id');
+        });
+    }
 
-	public function down()
-	{
-		Schema::drop('movements');
-	}
+    public function down()
+    {
+        Schema::drop('movements');
+    }
 }

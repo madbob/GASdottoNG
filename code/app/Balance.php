@@ -1,10 +1,9 @@
 <?php
 
-namespace App;
+namespace app;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Balance extends Model
 {
-        //
 }

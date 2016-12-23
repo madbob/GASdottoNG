@@ -1,36 +1,37 @@
 <div class="form-group">
-	@if($squeeze == false)
-	<label for="{{ $prefix . $name }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
-	@endif
+    @if($squeeze == false)
+        <label for="{{ $prefix . $name }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
+    @endif
 
-	<div class="col-sm-{{ $fieldsize }}">
-		<div class="input-group">
-			<input type="text"
-				class="date form-control"
-				name="{{ $prefix . $name }}"
+    <div class="col-sm-{{ $fieldsize }}">
+        <div class="input-group">
+            <input type="text"
+                class="date form-control"
+                name="{{ $prefix . $name }}"
 
-				value="<?php
-				if ($obj) {
-					if ($obj->$name == '0000-00-00')
-						echo '';
-					else
-						echo $obj->printableDate($name);
-				}
-				?>"
+                value="<?php
+                    if ($obj) {
+                        if ($obj->$name == '0000-00-00') {
+                            echo '';
+                        } else {
+                            echo $obj->printableDate($name);
+                        }
+                    }
+                ?>"
 
-				@if(isset($mandatory) && $mandatory == true)
-				required
-				@endif
+                @if(isset($mandatory) && $mandatory == true)
+                    required
+                @endif
 
-				@if($squeeze == true)
-				placeholder="{{ $label }}"
-				@endif
+                @if($squeeze == true)
+                    placeholder="{{ $label }}"
+                @endif
 
-				autocomplete="off">
+                autocomplete="off">
 
-			<div class="input-group-addon">
-				<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-			</div>
-		</div>
-	</div>
+            <div class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+            </div>
+        </div>
+    </div>
 </div>

@@ -1,22 +1,22 @@
 <div class="form-group">
-	@if($squeeze == false)
-	<label for="{{ $prefix . $name }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
-	@endif
+    @if($squeeze == false)
+        <label for="{{ $prefix . $name }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
+    @endif
 
-	<div class="col-sm-{{ $fieldsize }}">
-		<input type="number"
-			class="form-control"
-			name="{{ $prefix . $name }}"
-			value="<?php if($obj) echo $obj->$name ?>"
+    <div class="col-sm-{{ $fieldsize }}">
+        <input type="number"
+            class="form-control"
+            name="{{ $prefix . $name }}"
+            value="{{ $obj ? $obj->$name : '' }}"
 
-			@if(isset($mandatory) && $mandatory == true)
-			required
-			@endif
+            @if(isset($mandatory) && $mandatory == true)
+                required
+            @endif
 
-			@if($squeeze == true)
-			placeholder="{{ $label }}"
-			@endif
+            @if($squeeze == true)
+                placeholder="{{ $label }}"
+            @endif
 
-			autocomplete="off">
-	</div>
+            autocomplete="off">
+    </div>
 </div>

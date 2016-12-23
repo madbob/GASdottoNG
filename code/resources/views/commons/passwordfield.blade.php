@@ -1,18 +1,18 @@
 <div class="form-group">
-	<label for="{{ $prefix . $name }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
-	<div class="col-sm-{{ $fieldsize }}">
-		<input
-			type="password"
-			class="form-control"
+    <label for="{{ $prefix . $name }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
+    <div class="col-sm-{{ $fieldsize }}">
+        <input
+            type="password"
+            class="form-control"
 
-			@if($obj == null && isset($mandatory) && $mandatory == true)
-			required
-			@endif
+            @if($obj == null && isset($mandatory) && $mandatory == true)
+                required
+            @endif
 
-			@if($obj != null)
-			placeholder="Lascia vuoto per non modificare la password"
-			@endif
+            @if($obj != null)
+                placeholder="Lascia vuoto per non modificare la password"
+            @endif
 
-			name="{{ $prefix . $name }}">
-	</div>
+            name="{{ $prefix . $name }}">
+    </div>
 </div>

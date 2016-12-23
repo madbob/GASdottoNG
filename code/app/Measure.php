@@ -1,15 +1,14 @@
 <?php
 
-namespace App;
+namespace app;
 
 use Illuminate\Database\Eloquent\Model;
-
 use App\GASModel;
 use App\SluggableID;
 
 class Measure extends Model
 {
-	use GASModel, SluggableID;
+    use GASModel, SluggableID;
 
-	public $incrementing = false;
+    public $incrementing = false;
 }

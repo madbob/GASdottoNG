@@ -1,31 +1,31 @@
 <div class="wizard_page">
-	<div class="modal-body">
-		<p>
-			Prodotti importati:
-		</p>
+    <div class="modal-body">
+        <p>
+            Prodotti importati:
+        </p>
 
-		<ul class="list-group">
-			@foreach($products as $p)
-			<li class="list-group-item">{{ $p->name }}</li>
-			@endforeach
-		</ul>
+        <ul class="list-group">
+            @foreach($products as $p)
+                <li class="list-group-item">{{ $p->name }}</li>
+            @endforeach
+        </ul>
 
-		@if(!empty($errors))
-		<hr/>
+        @if(!empty($errors))
+            <hr/>
 
-		<p>
-			Errori:
-		</p>
+            <p>
+                Errori:
+            </p>
 
-		<ul class="list-group">
-			@foreach($errors as $e)
-			<li class="list-group-item">{!! $e !!}</li>
-			@endforeach
-		</ul>
-		@endif
-	</div>
+            <ul class="list-group">
+                @foreach($errors as $e)
+                    <li class="list-group-item">{!! $e !!}</li>
+                @endforeach
+            </ul>
+        @endif
+    </div>
 
-	<div class="modal-footer">
-		<button type="button" class="btn btn-default reloader" data-dismiss="modal" data-reload-target="#supplier-list">Chiudi</button>
-	</div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default reloader" data-dismiss="modal" data-reload-target="#supplier-list">Chiudi</button>
+    </div>
 </div>

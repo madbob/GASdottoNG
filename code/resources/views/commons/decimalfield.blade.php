@@ -1,54 +1,54 @@
 <?php
 
 if (isset($fixed_value) && $fixed_value != false) {
-	$value = $fixed_value;
-	$disabled = true;
-}
-else {
-	if ($obj)
-		$value = $obj->$name;
-	else
-		$value = '';
+    $value = $fixed_value;
+    $disabled = true;
+} else {
+    if ($obj) {
+        $value = $obj->$name;
+    } else {
+        $value = '';
+    }
 
-	$disabled = isset($disabled) ? $disabled : false;
+    $disabled = isset($disabled) ? $disabled : false;
 }
 
 ?>
 
 <div class="form-group">
-	@if($squeeze == false)
-	<label for="{{ $prefix . $name . $postfix }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
-	@endif
+    @if($squeeze == false)
+        <label for="{{ $prefix . $name . $postfix }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
+    @endif
 
-	<div class="col-sm-{{ $fieldsize }}">
-		@if(isset($postlabel))
-		<div class="input-group">
-		@endif
+    <div class="col-sm-{{ $fieldsize }}">
+        @if(isset($postlabel))
+            <div class="input-group">
+        @endif
 
-		<input type="number"
-			class="form-control"
-			name="{{ $prefix . $name . $postfix }}"
-			step="0.01"
-			min="0"
-			value="{{ $value }}"
+        <input type="number"
+            class="form-control"
+            name="{{ $prefix . $name . $postfix }}"
+            step="0.01"
+            min="0"
+            value="{{ $value }}"
 
-			@if(isset($mandatory) && $mandatory == true)
-			required
-			@endif
+            @if(isset($mandatory) && $mandatory == true)
+                required
+            @endif
 
-			@if(isset($disabled) && $disabled == true)
-			disabled
-			@endif
+            @if(isset($disabled) && $disabled == true)
+                disabled
+            @endif
 
-			@if($squeeze == true)
-			placeholder="{{ $label }}"
-			@endif
+            @if($squeeze == true)
+                placeholder="{{ $label }}"
+            @endif
 
-			autocomplete="off">
+            autocomplete="off">
 
-		@if(isset($postlabel))
-		<div class="input-group-addon">{{ $postlabel }}</div>
-		</div>
-		@endif
-	</div>
+        @if(isset($postlabel))
+            <div class="input-group-addon">{{ $postlabel }}</div>
+            </div>
+        @endif
+    </div>
 </div>

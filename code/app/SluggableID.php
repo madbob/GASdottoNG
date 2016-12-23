@@ -1,11 +1,11 @@
 <?php
 
-namespace App;
+namespace app;
 
 trait SluggableID
 {
-	public function getSlugID()
-	{
-		return str_slug($this->name);
-	}
+    public function getSlugID()
+    {
+        return str_slug($this->name);
+    }
 }

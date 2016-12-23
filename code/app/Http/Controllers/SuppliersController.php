@@ -1,124 +1,126 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace app\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
 use DB;
 use Auth;
 use Theme;
 use PDF;
-
 use App\Supplier;
 
 class SuppliersController extends Controller
 {
-	public function __construct()
-	{
-		$this->middleware('auth');
-	}
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
-	private function basicReadFromRequest(&$obj, $request)
-	{
-		$obj->name = $request->input('name');
-		$obj->taxcode = $request->input('taxcode');
-		$obj->vat = $request->input('vat');
-		$obj->description = $request->input('description');
-		$obj->website = $request->input('website');
-	}
+    private function basicReadFromRequest(&$obj, $request)
+    {
+        $obj->name = $request->input('name');
+        $obj->taxcode = $request->input('taxcode');
+        $obj->vat = $request->input('vat');
+        $obj->description = $request->input('description');
+        $obj->website = $request->input('website');
+    }
 
-	public function index()
-	{
-		$data['suppliers'] = Supplier::orderBy('name', 'asc')->get();
-		return Theme::view('pages.suppliers', $data);
-	}
+    public function index()
+    {
+        $data['suppliers'] = Supplier::orderBy('name', 'asc')->get();
 
-	public function store(Request $request)
-	{
-		DB::beginTransaction();
+        return Theme::view('pages.suppliers', $data);
+    }
 
-		$user = Auth::user();
-		if ($user->gas->userCan('supplier.add') == false)
-			return $this->errorResponse('Non autorizzato');
+    public function store(Request $request)
+    {
+        DB::beginTransaction();
 
-		$s = new Supplier();
-		$this->basicReadFromRequest($s, $request);
-		$s->save();
+        $user = Auth::user();
+        if ($user->gas->userCan('supplier.add') == false) {
+            return $this->errorResponse('Non autorizzato');
+        }
 
-		$s->userPermit('supplier.modify|supplier.orders|supplier.shippings', $user);
+        $s = new Supplier();
+        $this->basicReadFromRequest($s, $request);
+        $s->save();
 
-		return $this->successResponse([
-			'id' => $s->id,
-			'name' => $s->name,
-			'header' => $s->printableHeader(),
-			'url' => url('suppliers/' . $s->id)
-		]);
-	}
+        $s->userPermit('supplier.modify|supplier.orders|supplier.shippings', $user);
 
-	public function show($id)
-	{
-		$s = Supplier::findOrFail($id);
+        return $this->successResponse([
+            'id' => $s->id,
+            'name' => $s->name,
+            'header' => $s->printableHeader(),
+            'url' => url('suppliers/'.$s->id),
+        ]);
+    }
 
-		if ($s->userCan('supplier.modify'))
-			return Theme::view('supplier.edit', ['supplier' => $s]);
-		else
-			return Theme::view('supplier.show', ['supplier' => $s]);
-	}
+    public function show($id)
+    {
+        $s = Supplier::findOrFail($id);
 
-	public function update(Request $request, $id)
-	{
-		DB::beginTransaction();
+        if ($s->userCan('supplier.modify')) {
+            return Theme::view('supplier.edit', ['supplier' => $s]);
+        } else {
+            return Theme::view('supplier.show', ['supplier' => $s]);
+        }
+    }
 
-		$s = Supplier::findOrFail($id);
-		if ($s->userCan('supplier.modify') == false)
-			return $this->errorResponse('Non autorizzato');
+    public function update(Request $request, $id)
+    {
+        DB::beginTransaction();
 
-		$this->basicReadFromRequest($s, $request);
-		$s->save();
+        $s = Supplier::findOrFail($id);
+        if ($s->userCan('supplier.modify') == false) {
+            return $this->errorResponse('Non autorizzato');
+        }
 
-		return $this->successResponse([
-			'id' => $s->id,
-			'header' => $s->printableHeader(),
-			'url' => url('suppliers/' . $s->id)
-		]);
-	}
+        $this->basicReadFromRequest($s, $request);
+        $s->save();
 
-	public function destroy($id)
-	{
-		DB::beginTransaction();
+        return $this->successResponse([
+            'id' => $s->id,
+            'header' => $s->printableHeader(),
+            'url' => url('suppliers/'.$s->id),
+        ]);
+    }
 
-		$s = Supplier::findOrFail($id);
-		if ($s->userCan('supplier.modify') == false)
-			return $this->errorResponse('Non autorizzato');
+    public function destroy($id)
+    {
+        DB::beginTransaction();
 
-		$s->deletePermissions();
-		$s->delete();
-		return $this->successResponse();
-	}
+        $s = Supplier::findOrFail($id);
+        if ($s->userCan('supplier.modify') == false) {
+            return $this->errorResponse('Non autorizzato');
+        }
 
-	public function catalogue(Request $request, $id, $format)
-	{
-		$s = Supplier::findOrFail($id);
+        $s->deletePermissions();
+        $s->delete();
 
-		if($format == 'pdf') {
-			$html = Theme::view('documents.cataloguepdf', ['supplier' => $s])->render();
-			$filename = sprintf('Listino %s.pdf', $s->name);
-			PDF::SetTitle(sprintf('Listino %s del %s', $s->name, date('d/m/Y')));
-			PDF::AddPage();
-			PDF::writeHTML($html, true, false, true, false, '');
-			PDF::Output($filename, 'D');
-		}
-		else if($format == 'csv') {
-			$filename = sprintf('Listino %s.csv', $s->name);
-			header('Content-Type: text/csv');
-			header("Content-Disposition: attachment; filename=\"" . $filename . "\"");
-			header('Cache-Control: no-cache, no-store, must-revalidate');
-			header('Pragma: no-cache');
-			header('Expires: 0');
-			return Theme::view('documents.cataloguecsv', ['supplier' => $s]);
-		}
-	}
+        return $this->successResponse();
+    }
+
+    public function catalogue(Request $request, $id, $format)
+    {
+        $s = Supplier::findOrFail($id);
+
+        if ($format == 'pdf') {
+            $html = Theme::view('documents.cataloguepdf', ['supplier' => $s])->render();
+            $filename = sprintf('Listino %s.pdf', $s->name);
+            PDF::SetTitle(sprintf('Listino %s del %s', $s->name, date('d/m/Y')));
+            PDF::AddPage();
+            PDF::writeHTML($html, true, false, true, false, '');
+            PDF::Output($filename, 'D');
+        } elseif ($format == 'csv') {
+            $filename = sprintf('Listino %s.csv', $s->name);
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="'.$filename.'"');
+            header('Cache-Control: no-cache, no-store, must-revalidate');
+            header('Pragma: no-cache');
+            header('Expires: 0');
+
+            return Theme::view('documents.cataloguecsv', ['supplier' => $s]);
+        }
+    }
 }

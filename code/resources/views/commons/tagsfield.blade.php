@@ -1,26 +1,27 @@
 <div class="form-group">
-	@if($squeeze == false)
-	<label for="{{ $prefix . $name . $postfix }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
-	@endif
+    @if($squeeze == false)
+        <label for="{{ $prefix . $name . $postfix }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
+    @endif
 
-	<div class="col-sm-{{ $fieldsize }}">
-		<input
-			class="tagsinput"
-			name="{{ $prefix . $name . $postfix }}"
+    <div class="col-sm-{{ $fieldsize }}">
+        <input
+            class="tagsinput"
+            name="{{ $prefix . $name . $postfix }}"
 
-			value="<?php
+            value="<?php
 
-			if($obj) {
-				$tags = [];
+            if ($obj) {
+                $tags = [];
 
-				foreach($obj->$name as $v)
-					$tags[] = $v->$tagfield;
+                foreach ($obj->$name as $v) {
+                    $tags[] = $v->$tagfield;
+                }
 
-				echo join(',', $tags);
-			}
+                echo implode(',', $tags);
+            }
 
-			?>"
+            ?>"
 
-			autocomplete="off" />
-	</div>
+            autocomplete="off" />
+    </div>
 </div>

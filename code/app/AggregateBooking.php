@@ -1,9 +1,8 @@
 <?php
 
-namespace App;
+namespace app;
 
 use Illuminate\Database\Eloquent\Model;
-
 use App\GASModel;
 use App\User;
 
@@ -15,48 +14,50 @@ use App\User;
 
 class AggregateBooking extends Model
 {
-        use GASModel;
+    use GASModel;
 
-        public $id;
+    public $id;
 
-        private $user;
-        private $bookings = [];
+    private $user;
+    private $bookings = [];
 
-        public function __construct($user_id)
-        {
-                $this->id = $user_id;
-                $this->user = User::find($user_id);
+    public function __construct($user_id)
+    {
+        $this->id = $user_id;
+        $this->user = User::find($user_id);
+    }
+
+    public function add($booking)
+    {
+        $this->bookings[] = $booking;
+    }
+
+    public function getStatusAttribute()
+    {
+        foreach ($this->bookings as $booking) {
+            if ($booking->status != 'shipped') {
+                return $booking->status;
+            }
         }
 
-        public function add($booking)
-        {
-                $this->bookings[] = $booking;
+        return 'shipped';
+    }
+
+    public function printableHeader()
+    {
+        $ret = $this->user->printableName();
+        $icons = $this->icons();
+
+        if (!empty($icons)) {
+            $ret .= '<div class="pull-right">';
+
+            foreach ($icons as $i) {
+                $ret .= '<span class="glyphicon glyphicon-'.$i.'" aria-hidden="true"></span>&nbsp;';
+            }
+
+            $ret .= '</div>';
         }
 
-        public function getStatusAttribute()
-        {
-                foreach($this->bookings as $booking) {
-                        if ($booking->status != 'shipped')
-                                return $booking->status;
-                }
-
-                return 'shipped';
-        }
-
-        public function printableHeader()
-	{
-		$ret = $this->user->printableName();
-		$icons = $this->icons();
-
-		if (!empty($icons)) {
-			$ret .= '<div class="pull-right">';
-
-			foreach ($icons as $i)
-				$ret .= '<span class="glyphicon glyphicon-' . $i . '" aria-hidden="true"></span>&nbsp;';
-
-			$ret .= '</div>';
-		}
-
-		return $ret;
-	}
+        return $ret;
+    }
 }

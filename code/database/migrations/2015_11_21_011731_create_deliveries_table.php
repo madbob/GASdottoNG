@@ -5,22 +5,22 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateDeliveriesTable extends Migration
 {
-	public function up()
-	{
-		Schema::create('deliveries', function (Blueprint $table) {
-			$table->string('id')->primary();
-			$table->timestamps();
+    public function up()
+    {
+        Schema::create('deliveries', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->timestamps();
 
-			$table->string('name');
-			$table->string('address');
-			$table->boolean('default');
+            $table->string('name');
+            $table->string('address');
+            $table->boolean('default');
 
-			$table->index('id');
-		});
-	}
+            $table->index('id');
+        });
+    }
 
-	public function down()
-	{
-		Schema::drop('deliveries');
-	}
+    public function down()
+    {
+        Schema::drop('deliveries');
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions;
+namespace app\Exceptions;
 
 class IllegalArgumentException extends \Exception
 {
@@ -13,5 +13,4 @@ class IllegalArgumentException extends \Exception
     {
         return 500;
     }
-
 }

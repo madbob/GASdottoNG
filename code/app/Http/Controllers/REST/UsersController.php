@@ -1,21 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\REST;
+namespace app\Http\Controllers\REST;
 
 use Illuminate\Http\Request;
-
 use App\Http\Controllers\Controller;
-
-use Auth;
 use Response;
-
 use App\UsersService;
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
 
 class UsersController extends Controller
 {
-
     protected $usersService;
 
     public function __construct(UsersService $usersService)
@@ -28,6 +23,7 @@ class UsersController extends Controller
     {
         try {
             $users = $this->usersService->listUsers();
+
             return response()->json(['users' => $users], 200);
         } catch (AuthException $e) {
             return response(null, $e->status());
@@ -39,7 +35,7 @@ class UsersController extends Controller
         $term = trim($request->input('term'));
 
         if (empty($term)) {
-            throw new IllegalArgumentException("Search term is empty");
+            throw new IllegalArgumentException('Search term is empty');
         }
 
         try {
@@ -55,6 +51,7 @@ class UsersController extends Controller
     {
         try {
             $user = $this->usersService->show($id);
+
             return response()->json(['user' => $user], 200);
         } catch (AuthException $e) {
             return response(null, $e->status());
@@ -65,6 +62,7 @@ class UsersController extends Controller
     {
         try {
             $this->usersService->destroy($id);
+
             return response(null, 200);
         } catch (AuthException $e) {
             return response(null, $e->status());
@@ -75,6 +73,7 @@ class UsersController extends Controller
     {
         try {
             $user = $this->usersService->update($request, $id);
+
             return response()->json(['user' => $user], 200);
         } catch (AuthException $e) {
             return response(null, $e->status());
@@ -85,6 +84,7 @@ class UsersController extends Controller
     {
         try {
             $user = $this->usersService->store($request);
+
             return response()->json(['user' => $user], 200);
         } catch (AuthException $e) {
             return response(null, $e->status());

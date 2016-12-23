@@ -1,7 +1,8 @@
 <?php
 
-namespace App;
+namespace app;
 
-interface Hierarchic {
-	public function children();
+interface Hierarchic
+{
+    public function children();
 }

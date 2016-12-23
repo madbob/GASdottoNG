@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Exceptions;
+namespace app\Exceptions;
 
-class AuthException extends \Exception {
-	
-	private $status;
-	
-	public function __construct(int $status)
-	{
-		$this->status = $status;
-	}
+class AuthException extends \Exception
+{
+    private $status;
 
-	public function status() {
-		return $this->status;
-	}
-	
+    public function __construct(int $status)
+    {
+        $this->status = $status;
+    }
+
+    public function status()
+    {
+        return $this->status;
+    }
 }

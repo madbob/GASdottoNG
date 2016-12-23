@@ -5,23 +5,23 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateBookedProductVariantsTable extends Migration
 {
-	public function up()
-	{
-		Schema::create('booked_product_variants', function (Blueprint $table) {
-			$table->increments('id');
-			$table->timestamps();
+    public function up()
+    {
+        Schema::create('booked_product_variants', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
 
-			$table->string('product_id');
-			$table->decimal('quantity', 4, 2);
-			$table->decimal('delivered', 4, 2);
+            $table->string('product_id');
+            $table->decimal('quantity', 4, 2);
+            $table->decimal('delivered', 4, 2);
 
-			$table->foreign('product_id')->references('id')->on('booked_products')->onDelete('cascade');
-			$table->index('id');
-		});
-	}
+            $table->foreign('product_id')->references('id')->on('booked_products')->onDelete('cascade');
+            $table->index('id');
+        });
+    }
 
-	public function down()
-	{
-		Schema::drop('booked_product_variants');
-	}
+    public function down()
+    {
+        Schema::drop('booked_product_variants');
+    }
 }

@@ -1,92 +1,94 @@
 <?php
 
-namespace App;
+namespace app;
 
 use Illuminate\Database\Eloquent\Model;
-
 use App\GASModel;
 use App\SluggableID;
 
 class BookedProduct extends Model
 {
-	use GASModel, SluggableID;
+    use GASModel, SluggableID;
 
-	public $incrementing = false;
+    public $incrementing = false;
 
-	public function product()
-	{
-		return $this->belongsTo('App\Product');
-	}
+    public function product()
+    {
+        return $this->belongsTo('App\Product');
+    }
 
-	public function booking()
-	{
-		return $this->belongsTo('App\Booking');
-	}
+    public function booking()
+    {
+        return $this->belongsTo('App\Booking');
+    }
 
-	public function variants()
-	{
-		return $this->hasMany('App\BookedProductVariant', 'product_id');
-	}
+    public function variants()
+    {
+        return $this->hasMany('App\BookedProductVariant', 'product_id');
+    }
 
-	public function getSlugID()
-	{
-		return sprintf('%s::%s', $this->booking->id, $this->product->id);
-	}
+    public function getSlugID()
+    {
+        return sprintf('%s::%s', $this->booking->id, $this->product->id);
+    }
 
-	private function fixQuantity($attribute)
-	{
-		$product = $this->product;
-		$base_price = $product->contextualPrice($this->booking->order) + $product->transport;
+    private function fixQuantity($attribute)
+    {
+        $product = $this->product;
+        $base_price = $product->contextualPrice($this->booking->order) + $product->transport;
 
-		$variants = $this->variants;
-		if ($variants->isEmpty() == false) {
-			$total = 0;
+        $variants = $this->variants;
+        if ($variants->isEmpty() == false) {
+            $total = 0;
 
-			foreach($variants as $v) {
-				$price = $base_price;
+            foreach ($variants as $v) {
+                $price = $base_price;
 
-				foreach($v->components as $c)
-					$price += $c->value->price_offset;
+                foreach ($v->components as $c) {
+                    $price += $c->value->price_offset;
+                }
 
-				$total += $price * $v->$attribute;
-			}
+                $total += $price * $v->$attribute;
+            }
 
-			return $total;
-		}
-		else {
-			$quantity = $this->$attribute;
-			if ($product->portion_quantity != 0)
-				$quantity = $this->$attribute * $product->portion_quantity;
+            return $total;
+        } else {
+            $quantity = $this->$attribute;
+            if ($product->portion_quantity != 0) {
+                $quantity = $this->$attribute * $product->portion_quantity;
+            }
 
-			return ($base_price + $product->transport) * $quantity;
-		}
-	}
+            return ($base_price + $product->transport) * $quantity;
+        }
+    }
 
-	public function quantityValue()
-	{
-		if ($this->final_price == 0)
-			return $this->fixQuantity('quantity');
-		else
-			return $this->final_price;
-	}
+    public function quantityValue()
+    {
+        if ($this->final_price == 0) {
+            return $this->fixQuantity('quantity');
+        } else {
+            return $this->final_price;
+        }
+    }
 
-	public function deliveredValue()
-	{
-		if ($this->final_price == 0)
-			return $this->fixQuantity('delivered');
-		else
-			return $this->final_price;
-	}
+    public function deliveredValue()
+    {
+        if ($this->final_price == 0) {
+            return $this->fixQuantity('delivered');
+        } else {
+            return $this->final_price;
+        }
+    }
 
-	public function getBookedVariant($variant, $fallback = false)
-	{
-		$v = $this->variants()->where('id', '=', $variant->id)->first();
+    public function getBookedVariant($variant, $fallback = false)
+    {
+        $v = $this->variants()->where('id', '=', $variant->id)->first();
 
-		if ($v == null && $fallback == true) {
-			$v = new BookedProductVariant();
-			$v->product_id = $this->id;
-		}
+        if ($v == null && $fallback == true) {
+            $v = new BookedProductVariant();
+            $v->product_id = $this->id;
+        }
 
-		return $v;
-	}
+        return $v;
+    }
 }

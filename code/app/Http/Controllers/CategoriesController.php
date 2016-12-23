@@ -1,87 +1,90 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace app\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
 use DB;
 use Auth;
 use Theme;
-
 use App\Category;
 
 class CategoriesController extends Controller
 {
-        public function index()
-        {
-                $user = Auth::user();
-                if ($user->gas->userHas('categories.admin') == false)
-                        abort(503);
-
-                $categories = Category::where('parent_id', '=', null)->get();
-                return Theme::view('categories.edit', ['categories' => $categories]);
+    public function index()
+    {
+        $user = Auth::user();
+        if ($user->gas->userHas('categories.admin') == false) {
+            abort(503);
         }
 
-        public function store(Request $request)
-        {
-                DB::beginTransaction();
+        $categories = Category::where('parent_id', '=', null)->get();
 
-                $user = Auth::user();
-                if ($user->gas->userHas('categories.admin') == false)
-                        return $this->errorResponse('Non autorizzato');
+        return Theme::view('categories.edit', ['categories' => $categories]);
+    }
 
-                $category = new Category();
-                $category->name = $request->input('name');
+    public function store(Request $request)
+    {
+        DB::beginTransaction();
 
-                $parent = $request->input('parent_id');
-                if ($parent != 'null')
-                        $category->parent_id = $parent;
-                else
-                        $category->parent_id = null;
+        $user = Auth::user();
+        if ($user->gas->userHas('categories.admin') == false) {
+            return $this->errorResponse('Non autorizzato');
+        }
 
-                $category->save();
+        $category = new Category();
+        $category->name = $request->input('name');
 
-                return $this->successResponse([
-			'id' => $category->id,
+        $parent = $request->input('parent_id');
+        if ($parent != 'null') {
+            $category->parent_id = $parent;
+        } else {
+            $category->parent_id = null;
+        }
+
+        $category->save();
+
+        return $this->successResponse([
+            'id' => $category->id,
                         'parent' => $category->parent_id,
-			'name' => $category->name
-		]);
+            'name' => $category->name,
+        ]);
+    }
+
+    private function updateRecursive($data, $parent, &$accumulator)
+    {
+        foreach ($data as $category) {
+            $c = Category::find($category['id']);
+            if ($c == null) {
+                $c = new Category();
+            }
+
+            $c->name = $category['name'];
+            $c->parent_id = $parent;
+            $c->save();
+            $accumulator[] = $c->id;
+
+            if (array_key_exists('children', $category)) {
+                $this->updateRecursive($category['children'], $c->id, $accumulator);
+            }
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        $user = Auth::user();
+        if ($user->gas->userHas('categories.admin') == false) {
+            return $this->errorResponse('Non autorizzato');
         }
 
-        private function updateRecursive($data, $parent, &$accumulator)
-        {
-                foreach ($data as $category) {
-                        $c = Category::find($category['id']);
-                        if ($c == null)
-                                $c = new Category();
+        $data = $request->input('serialized');
+        $accumulator = [];
 
-                        $c->name = $category['name'];
-                        $c->parent_id = $parent;
-                        $c->save();
-                        $accumulator[] = $c->id;
+        $this->updateRecursive($data, null, $accumulator);
+        Category::whereNotIn('id', $accumulator)->delete();
 
-                        if (array_key_exists('children', $category))
-                                $this->updateRecursive($category['children'], $c->id, $accumulator);
-                }
-        }
-
-        public function update(Request $request, $id)
-        {
-                DB::beginTransaction();
-
-                $user = Auth::user();
-                if ($user->gas->userHas('categories.admin') == false)
-                        return $this->errorResponse('Non autorizzato');
-
-                $data = $request->input('serialized');
-                $accumulator = [];
-
-                $this->updateRecursive($data, null, $accumulator);
-                Category::whereNotIn('id', $accumulator)->delete();
-
-                return $this->successResponse();
-        }
+        return $this->successResponse();
+    }
 }

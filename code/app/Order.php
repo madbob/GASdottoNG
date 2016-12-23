@@ -1,218 +1,224 @@
 <?php
 
-namespace App;
+namespace app;
 
 use Illuminate\Database\Eloquent\Model;
-
 use App\GASModel;
 use App\SluggableID;
 
 class Order extends Model
 {
-	use AttachableTrait, GASModel, SluggableID;
+    use AttachableTrait, GASModel, SluggableID;
 
-	public $incrementing = false;
+    public $incrementing = false;
 
-	public function supplier()
-	{
-		return $this->belongsTo('App\Supplier');
-	}
+    public function supplier()
+    {
+        return $this->belongsTo('App\Supplier');
+    }
 
-	public function aggregate()
-	{
-		return $this->belongsTo('App\Aggregate');
-	}
+    public function aggregate()
+    {
+        return $this->belongsTo('App\Aggregate');
+    }
 
-	public function products()
-	{
-		return $this->belongsToMany('App\Product')->with('measure')->with('category')->with('variants')->withPivot('discount_enabled');
-	}
+    public function products()
+    {
+        return $this->belongsToMany('App\Product')->with('measure')->with('category')->with('variants')->withPivot('discount_enabled');
+    }
 
-	public function bookings()
-	{
-		return $this->hasMany('App\Booking')->with('user');
-	}
+    public function bookings()
+    {
+        return $this->hasMany('App\Booking')->with('user');
+    }
 
-	public function payment()
-	{
-		return $this->belongsTo('App\Movement');
-	}
+    public function payment()
+    {
+        return $this->belongsTo('App\Movement');
+    }
 
-	public function getSlugID()
-	{
-		return sprintf('%s::%s', $this->supplier->id, str_slug(strftime('%d %B %G', strtotime($this->start))));
-	}
+    public function getSlugID()
+    {
+        return sprintf('%s::%s', $this->supplier->id, str_slug(strftime('%d %B %G', strtotime($this->start))));
+    }
 
-	public function printableName()
-	{
-		return $this->supplier->name;
-	}
+    public function printableName()
+    {
+        return $this->supplier->name;
+    }
 
-	public function printableHeader()
-	{
-		$ret = $this->printableName();
-		$icons = $this->icons();
+    public function printableHeader()
+    {
+        $ret = $this->printableName();
+        $icons = $this->icons();
 
-		if (!empty($icons)) {
-			$ret .= '<div class="pull-right">';
+        if (!empty($icons)) {
+            $ret .= '<div class="pull-right">';
 
-			foreach ($icons as $i)
-				$ret .= '<span class="glyphicon glyphicon-' . $i . '" aria-hidden="true"></span>&nbsp;';
+            foreach ($icons as $i) {
+                $ret .= '<span class="glyphicon glyphicon-'.$i.'" aria-hidden="true"></span>&nbsp;';
+            }
 
-			$ret .= '</div>';
-		}
+            $ret .= '</div>';
+        }
 
-		$ret .= sprintf('<br/><small>%s</small>', $this->printableDates());
-		return $ret;
-	}
+        $ret .= sprintf('<br/><small>%s</small>', $this->printableDates());
 
-	public function printableDates()
-	{
-		$start = strtotime($this->start);
-		$end = strtotime($this->end);
-		$string = sprintf('da %s a %s', strftime('%A %d %B %G', $start), strftime('%A %d %B %G', $end));
-		if ($this->shipping != null && $this->shipping != '0000-00-00') {
-			$shipping = strtotime($this->shipping);
-			$string .= sprintf (', in consegna %s', strftime('%A %d %B %G', $shipping));
-		}
+        return $ret;
+    }
 
-		return $string;
-	}
+    public function printableDates()
+    {
+        $start = strtotime($this->start);
+        $end = strtotime($this->end);
+        $string = sprintf('da %s a %s', strftime('%A %d %B %G', $start), strftime('%A %d %B %G', $end));
+        if ($this->shipping != null && $this->shipping != '0000-00-00') {
+            $shipping = strtotime($this->shipping);
+            $string .= sprintf(', in consegna %s', strftime('%A %d %B %G', $shipping));
+        }
 
-	public function userBooking($userid = null)
-	{
-		if ($userid == null)
-			$userid = Auth::user()->id;
+        return $string;
+    }
 
-		$ret = $this->hasMany('App\Booking')->whereHas('user', function($query) use ($userid) {
-			$query->where('id', '=', $userid);
-		})->first();
+    public function userBooking($userid = null)
+    {
+        if ($userid == null) {
+            $userid = Auth::user()->id;
+        }
 
-		if ($ret == null) {
-			$b = new Booking;
-			$b->user_id = $userid;
-			$b->order_id = $this->id;
-			$b->status = 'pending';
-			return $b;
-		}
-		else {
-			return $ret;
-		}
-	}
+        $ret = $this->hasMany('App\Booking')->whereHas('user', function ($query) use ($userid) {
+            $query->where('id', '=', $userid);
+        })->first();
 
-	/*
-		Se il prodotto è contenuto nell'ordine la funzione ritorna TRUE
-		e la referenza a $product viene sostituita con quella interna
-		all'ordine stesso, per poter accedere ai valori nella tabella
-		pivot
-	*/
-	public function hasProduct(&$product)
-	{
-		foreach ($this->products as $p) {
-			if ($p->id == $product->id) {
-				$product = $p;
-				return true;
-			}
-		}
+        if ($ret == null) {
+            $b = new Booking();
+            $b->user_id = $userid;
+            $b->order_id = $this->id;
+            $b->status = 'pending';
 
-		return false;
-	}
+            return $b;
+        } else {
+            return $ret;
+        }
+    }
 
-	public function isActive()
-	{
-		return ($this->status != 'shipped' && $this->status != 'archived');
-	}
+    /*
+        Se il prodotto è contenuto nell'ordine la funzione ritorna TRUE
+        e la referenza a $product viene sostituita con quella interna
+        all'ordine stesso, per poter accedere ai valori nella tabella
+        pivot
+    */
+    public function hasProduct(&$product)
+    {
+        foreach ($this->products as $p) {
+            if ($p->id == $product->id) {
+                $product = $p;
 
-	public function calculateSummary()
-	{
-		$summary = (object) [
-			'price' => 0,
-			'products' => []
-		];
+                return true;
+            }
+        }
 
-		$order = $this;
-		$products = $order->supplier->products;
-		$total_price = 0;
-		$total_price_delivered = 0;
-		$total_transport = 0;
+        return false;
+    }
 
-		foreach($products as $product) {
-			$q = BookedProduct::where('product_id', '=', $product->id)->whereHas('booking', function($query) use ($order) {
-				$query->where('order_id', '=', $order->id);
-			});
+    public function isActive()
+    {
+        return $this->status != 'shipped' && $this->status != 'archived';
+    }
 
-			$quantity = $q->sum('quantity');
-			$delivered = $q->sum('delivered');
-			$base_price = $product->contextualPrice($order);
-			$transport = $quantity * $product->transport;
+    public function calculateSummary()
+    {
+        $summary = (object) [
+            'price' => 0,
+            'products' => [],
+        ];
 
-			$booked = $q->get();
-			$price = 0;
-			$price_delivered = 0;
+        $order = $this;
+        $products = $order->supplier->products;
+        $total_price = 0;
+        $total_price_delivered = 0;
+        $total_transport = 0;
 
-			foreach($booked as $b) {
-				$price += $b->quantityValue();
-				$price_delivered += $b->deliveredValue();
-			}
+        foreach ($products as $product) {
+            $q = BookedProduct::where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order) {
+                $query->where('order_id', '=', $order->id);
+            });
 
-			$summary->products[$product->id]['quantity'] = $quantity;
-			$summary->products[$product->id]['price'] = $price;
-			$summary->products[$product->id]['transport'] = $transport;
-			$summary->products[$product->id]['delivered'] = $delivered;
-			$summary->products[$product->id]['price_delivered'] = $price_delivered;
+            $quantity = $q->sum('quantity');
+            $delivered = $q->sum('delivered');
+            $base_price = $product->contextualPrice($order);
+            $transport = $quantity * $product->transport;
 
-			$total_price += $price;
-			$total_price_delivered += $price_delivered;
-			$total_transport += $transport;
+            $booked = $q->get();
+            $price = 0;
+            $price_delivered = 0;
 
-			$summary->products[$product->id]['notes'] = false;
-			if ($product->package_size != 0 && $quantity != 0) {
-				if ($product->portion_quantity <= 0)
-					$test = $product->package_size;
-				else
-					$test = round($product->portion_quantity * $product->package_size, 2);
+            foreach ($booked as $b) {
+                $price += $b->quantityValue();
+                $price_delivered += $b->deliveredValue();
+            }
 
-				$test = round($quantity % $test);
-				if ($test != 0)
-					$summary->products[$product->id]['notes'] = true;
-			}
-		}
+            $summary->products[$product->id]['quantity'] = $quantity;
+            $summary->products[$product->id]['price'] = $price;
+            $summary->products[$product->id]['transport'] = $transport;
+            $summary->products[$product->id]['delivered'] = $delivered;
+            $summary->products[$product->id]['price_delivered'] = $price_delivered;
 
-		$summary->price = $total_price;
-		$summary->price_delivered = $total_price_delivered;
-		$summary->transport = $total_transport;
-		return $summary;
-	}
+            $total_price += $price;
+            $total_price_delivered += $price_delivered;
+            $total_transport += $transport;
 
-	protected function defaultAttachments()
-	{
-		/*
-			Documento con i prodotti e le relative quantità totali.
-			Solitamente destinato al fornitore, come riassunto
-			dell'ordine complessivo
-		*/
-		$summary = new Attachment();
-		$summary->name = 'Riassunto Prodotti';
-		$summary->url = url('orders/document/' . $this->id . '/summary');
-		$summary->internal = true;
+            $summary->products[$product->id]['notes'] = false;
+            if ($product->package_size != 0 && $quantity != 0) {
+                if ($product->portion_quantity <= 0) {
+                    $test = $product->package_size;
+                } else {
+                    $test = round($product->portion_quantity * $product->package_size, 2);
+                }
 
-		/*
-			Rappresentazione strutturata delle prenotazioni
-			effettuate, da usare in fase di consegna
-		*/
-		$shipping = new Attachment();
-		$shipping->name = 'Dettaglio Consegne';
-		$shipping->url = url('orders/document/' . $this->id . '/shipping');
-		$shipping->internal = true;
+                $test = round($quantity % $test);
+                if ($test != 0) {
+                    $summary->products[$product->id]['notes'] = true;
+                }
+            }
+        }
 
-		/*
-			CVS completo dei prodotti, degli utenti e delle quantità
-		*/
-		$table = new Attachment();
-		$table->name = 'Tabella Complessiva';
-		$table->url = url('orders/document/' . $this->id . '/table');
-		$table->internal = true;
+        $summary->price = $total_price;
+        $summary->price_delivered = $total_price_delivered;
+        $summary->transport = $total_transport;
 
-		return [$shipping, $summary, $table];
-	}
+        return $summary;
+    }
+
+    protected function defaultAttachments()
+    {
+        /*
+            Documento con i prodotti e le relative quantità totali.
+            Solitamente destinato al fornitore, come riassunto
+            dell'ordine complessivo
+        */
+        $summary = new Attachment();
+        $summary->name = 'Riassunto Prodotti';
+        $summary->url = url('orders/document/'.$this->id.'/summary');
+        $summary->internal = true;
+
+        /*
+            Rappresentazione strutturata delle prenotazioni
+            effettuate, da usare in fase di consegna
+        */
+        $shipping = new Attachment();
+        $shipping->name = 'Dettaglio Consegne';
+        $shipping->url = url('orders/document/'.$this->id.'/shipping');
+        $shipping->internal = true;
+
+        /*
+            CVS completo dei prodotti, degli utenti e delle quantità
+        */
+        $table = new Attachment();
+        $table->name = 'Tabella Complessiva';
+        $table->url = url('orders/document/'.$this->id.'/table');
+        $table->internal = true;
+
+        return [$shipping, $summary, $table];
+    }
 }

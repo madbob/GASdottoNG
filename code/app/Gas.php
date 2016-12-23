@@ -1,9 +1,8 @@
 <?php
 
-namespace App;
+namespace app;
 
 use Illuminate\Database\Eloquent\Model;
-
 use App\AttachableTrait;
 use App\AllowableTrait;
 use App\GASModel;
@@ -11,144 +10,147 @@ use App\SluggableID;
 
 class Gas extends Model
 {
-	use AttachableTrait, AllowableTrait, GASModel, SluggableID;
+    use AttachableTrait, AllowableTrait, GASModel, SluggableID;
 
-	public $incrementing = false;
+    public $incrementing = false;
 
-	public function balances()
-	{
-		return $this->hasMany('App\Balance')->orderBy('date', 'desc');
-	}
+    public function balances()
+    {
+        return $this->hasMany('App\Balance')->orderBy('date', 'desc');
+    }
 
-	public function configs()
-	{
-		return $this->hasMany('App\Config');
-	}
+    public function configs()
+    {
+        return $this->hasMany('App\Config');
+    }
 
-	public function getConfig($name)
-	{
-		foreach($this->configs as $conf)
-			if ($conf->name == $name)
-				return $conf->value;
+    public function getConfig($name)
+    {
+        foreach ($this->configs as $conf) {
+            if ($conf->name == $name) {
+                return $conf->value;
+            }
+        }
 
-		return '';
-	}
+        return '';
+    }
 
-	public function setConfig($name, $value)
-	{
-		foreach($this->configs as $conf) {
-			if ($conf->name == $name) {
-				$conf->value = $value;
-				$conf->save();
-				return;
-			}
-		}
+    public function setConfig($name, $value)
+    {
+        foreach ($this->configs as $conf) {
+            if ($conf->name == $name) {
+                $conf->value = $value;
+                $conf->save();
 
-		$conf = new Config();
-		$conf->name = $name;
-		$conf->value = $value;
-		$conf->gas_id = $this->id;
-		$conf->save();
-	}
+                return;
+            }
+        }
 
-	public function alterBalance($type, $amount)
-	{
-		if (is_string($type))
-			$type = [$type];
+        $conf = new Config();
+        $conf->name = $name;
+        $conf->value = $value;
+        $conf->gas_id = $this->id;
+        $conf->save();
+    }
 
-		$balance = $this->balances()->first();
-		foreach($type as $t)
-			$balance->$t += $amount;
+    public function alterBalance($type, $amount)
+    {
+        if (is_string($type)) {
+            $type = [$type];
+        }
 
-		$balance->total += $amount;
-		$balance->save();
-	}
+        $balance = $this->balances()->first();
+        foreach ($type as $t) {
+            $balance->$t += $amount;
+        }
 
-	private function mailConfig()
-	{
-		$conf = $this->getConfig('mail_conf');
-		if ($conf == '') {
-			return (object)[
-				'username' => '',
-				'password' => '',
-				'host' => '',
-				'port' => '',
-				'address' => '',
-				'encryption' => ''
-			];
-		}
-		else {
-			return json_decode($conf);
-		}
-	}
+        $balance->total += $amount;
+        $balance->save();
+    }
 
-	public function getMailusernameAttribute()
-	{
-		return $this->mailConfig()->username;
-	}
+    private function mailConfig()
+    {
+        $conf = $this->getConfig('mail_conf');
+        if ($conf == '') {
+            return (object) [
+                'username' => '',
+                'password' => '',
+                'host' => '',
+                'port' => '',
+                'address' => '',
+                'encryption' => '',
+            ];
+        } else {
+            return json_decode($conf);
+        }
+    }
 
-	public function getMailpasswordAttribute()
-	{
-		return $this->mailConfig()->password;
-	}
+    public function getMailusernameAttribute()
+    {
+        return $this->mailConfig()->username;
+    }
 
-	public function getMailserverAttribute()
-	{
-		return $this->mailConfig()->host;
-	}
+    public function getMailpasswordAttribute()
+    {
+        return $this->mailConfig()->password;
+    }
 
-	public function getMailportAttribute()
-	{
-		return $this->mailConfig()->port;
-	}
+    public function getMailserverAttribute()
+    {
+        return $this->mailConfig()->host;
+    }
 
-	public function getMailaddressAttribute()
-	{
-		return $this->mailConfig()->address;
-	}
+    public function getMailportAttribute()
+    {
+        return $this->mailConfig()->port;
+    }
 
-	public function getMailsslAttribute()
-	{
-		return ($this->mailConfig()->encryption != '');
-	}
+    public function getMailaddressAttribute()
+    {
+        return $this->mailConfig()->address;
+    }
 
-	private function ridConfig()
-	{
-		$conf = $this->getConfig('rid_conf');
-		if ($conf == '') {
-			return (object)[
-				'name' => '',
-				'iban' => '',
-				'code' => ''
-			];
-		}
-		else {
-			return json_decode($conf);
-		}
-	}
+    public function getMailsslAttribute()
+    {
+        return $this->mailConfig()->encryption != '';
+    }
 
-	public function getRidnameAttribute()
-	{
-		return $this->ridConfig()->name;
-	}
+    private function ridConfig()
+    {
+        $conf = $this->getConfig('rid_conf');
+        if ($conf == '') {
+            return (object) [
+                'name' => '',
+                'iban' => '',
+                'code' => '',
+            ];
+        } else {
+            return json_decode($conf);
+        }
+    }
 
-	public function getRidibanAttribute()
-	{
-		return $this->ridConfig()->iban;
-	}
+    public function getRidnameAttribute()
+    {
+        return $this->ridConfig()->name;
+    }
 
-	public function getRidcodeAttribute()
-	{
-		return $this->ridConfig()->code;
-	}
+    public function getRidibanAttribute()
+    {
+        return $this->ridConfig()->iban;
+    }
 
-	public function getRestrictedAttribute()
-	{
-		return ($this->getConfig('restricted') == '1');
-	}
+    public function getRidcodeAttribute()
+    {
+        return $this->ridConfig()->code;
+    }
 
-	protected function requiredAttachmentPermission()
-	{
-		return 'gas.config';
-	}
+    public function getRestrictedAttribute()
+    {
+        return $this->getConfig('restricted') == '1';
+    }
+
+    protected function requiredAttachmentPermission()
+    {
+        return 'gas.config';
+    }
 }

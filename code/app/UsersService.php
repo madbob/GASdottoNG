@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace app;
 
 use App\Exceptions\AuthException;
 use Auth;
@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class UsersService
 {
-
     private function ensureAuth()
     {
         if (Auth::check()) {
@@ -62,10 +61,10 @@ class UsersService
         foreach ($users as $user) {
             $fullname = $user->printableName();
 
-            $u = (object)array(
+            $u = (object) array(
                 'id' => $user->id,
                 'label' => $fullname,
-                'value' => $fullname
+                'value' => $fullname,
             );
 
             $ret[] = $u;

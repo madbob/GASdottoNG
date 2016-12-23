@@ -1,20 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace app\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use DB;
 use Auth;
 use Theme;
-use Hash;
-
 use App\UsersService;
 use App\Exceptions\AuthException;
 
 class UsersController extends Controller
 {
-
     protected $usersService;
 
     public function __construct(UsersService $usersService)
@@ -27,6 +22,7 @@ class UsersController extends Controller
     {
         try {
             $users = $this->usersService->listUsers();
+
             return Theme::view('pages.users', ['users' => $users]);
         } catch (AuthException $e) {
             abort($e->status());
@@ -100,7 +96,7 @@ class UsersController extends Controller
             'id' => $user->id,
             'name' => $user->printableName(),
             'header' => $user->printableHeader(),
-            'url' => url('users/' . $user->id)
+            'url' => url('users/'.$user->id),
         ]);
     }
 }

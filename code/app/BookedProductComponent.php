@@ -1,22 +1,21 @@
 <?php
 
-namespace App;
+namespace app;
 
 use Illuminate\Database\Eloquent\Model;
-
 use App\GASModel;
 
 class BookedProductComponent extends Model
 {
-	use GASModel;
+    use GASModel;
 
-	public function variant()
-	{
-		return $this->belongsTo('App\Variant');
-	}
+    public function variant()
+    {
+        return $this->belongsTo('App\Variant');
+    }
 
-        public function value()
-	{
-		return $this->belongsTo('App\VariantValue');
-	}
+    public function value()
+    {
+        return $this->belongsTo('App\VariantValue');
+    }
 }

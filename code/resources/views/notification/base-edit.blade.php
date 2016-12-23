@@ -8,17 +8,18 @@
 $extras['special::referrers'] = 'Tutti i Referenti';
 
 $orders = App\Order::where('status', '!=', 'closed')->get();
-foreach($orders as $order)
-	$extras['special::order::' . $order->id] = 'Tutti i Partecipanti all\'ordine per ' . $order->supplier->name;
+foreach ($orders as $order) {
+    $extras['special::order::'.$order->id] = 'Tutti i Partecipanti all\'ordine per '.$order->supplier->name;
+}
 
 ?>
 
 @include('commons.selectobjfield', [
-	'obj' => $notification,
-	'name' => 'users',
-	'objects' => App\User::orderBy('lastname', 'asc')->get(),
-	'extra_selection' => $extras,
-	'multiple_select' => true,
-	'label' => 'Destinatari',
-	'help_text' => 'Tenere premuto Ctrl per selezionare più utenti. Se nessun utente viene selezionato, la notifica sarà destinata a tutti.'
+    'obj' => $notification,
+    'name' => 'users',
+    'objects' => App\User::orderBy('lastname', 'asc')->get(),
+    'extra_selection' => $extras,
+    'multiple_select' => true,
+    'label' => 'Destinatari',
+    'help_text' => 'Tenere premuto Ctrl per selezionare più utenti. Se nessun utente viene selezionato, la notifica sarà destinata a tutti.'
 ])
