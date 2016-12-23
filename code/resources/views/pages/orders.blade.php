@@ -30,10 +30,10 @@
                             </div>
                             <div class="modal-body">
                                 <p>
-                                    Clicca e trascina gli ordini nella stessa cella per aggregarli.
+                                    Clicca e trascina gli ordini nella stessa cella per aggregarli, o nella cella vuota per disaggregarli.
                                 </p>
                                 <p>
-                                    Una volta aggregati gli ordini verranno visualizzati come uno solo pur mantenendo ciascuno i suoi attributi. Questa funzione è consigliata per facilitare l'amministrazione di ordini che, ad esempio, vengono consegnati nella stessa data.
+                                    Una volta aggregati, gli ordini verranno visualizzati come uno solo pur mantenendo ciascuno i suoi attributi. Questa funzione è consigliata per facilitare l'amministrazione di ordini che, ad esempio, vengono consegnati nella stessa data.
                                 </p>
 
                                 <hr/>

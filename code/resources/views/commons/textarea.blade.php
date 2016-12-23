@@ -13,6 +13,6 @@
                 placeholder="{{ $label }}"
             @endif
 
-            autocomplete="off">{{ $obj ? $obj->$name : '' }}></textarea>
+            autocomplete="off">{{ $obj ? $obj->$name : '' }}</textarea>
     </div>
 </div>

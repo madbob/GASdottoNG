@@ -25,6 +25,10 @@ function generalInit() {
 	$('.addicted-table').bootstrapTable();
 	$('[data-toggle="popover"]').popover();
 
+    $('.trim-2-ddigits').blur(function() {
+        $(this).val(parseFloatC($(this).val()).toFixed(2));
+    });
+
 	$('.nav-tabs a').click(function (e) {
 		e.preventDefault();
 		$(this).tab('show');

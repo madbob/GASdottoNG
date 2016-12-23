@@ -60,7 +60,7 @@ $rand = rand();
 
                                     <td>
                                         <div class="input-group booking-product-quantity">
-                                            <input type="number" step="any" min="0" class="form-control" name="{{ $product->product->id }}" value="{{ $product->delivered }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
+                                            <input type="number" step="any" min="0" class="form-control trim-2-ddigits" name="{{ $product->product->id }}" value="{{ $product->delivered }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
                                             <div class="input-group-addon">{{ $product->product->printableMeasure() }}</div>
                                         </div>
                                     </td>
