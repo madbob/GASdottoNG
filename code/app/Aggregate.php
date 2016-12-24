@@ -124,6 +124,17 @@ class Aggregate extends Model
         return false;
     }
 
+    public function isRunning()
+    {
+        foreach ($this->orders as $order) {
+            if ($order->isRunning()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getBookingsAttribute()
     {
         $ret = [];

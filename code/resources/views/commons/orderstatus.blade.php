@@ -5,15 +5,11 @@
         'label' => 'Stato',
         'values' => [
             [
-                'label' => 'Aperto',
+                'label' => 'Prenotazioni Aperte',
                 'value' => 'open',
             ],
             [
-                'label' => 'Sospeso',
-                'value' => 'suspended',
-            ],
-            [
-                'label' => 'Non Prenotabile',
+                'label' => 'Prenotazioni Chiuse',
                 'value' => 'closed',
             ],
             [
@@ -23,7 +19,11 @@
             [
                 'label' => 'Archiviato',
                 'value' => 'archived',
-            ]
+            ],
+            [
+                'label' => 'In Sospeso',
+                'value' => 'suspended',
+            ],
         ]
     ])
 @else
@@ -33,15 +33,11 @@
         'label' => 'Stato',
         'values' => [
             [
-                'label' => 'Aperto',
+                'label' => 'Prenotazioni Aperte',
                 'value' => 'open',
             ],
             [
-                'label' => 'Sospeso',
-                'value' => 'suspended',
-            ],
-            [
-                'label' => 'Non Prenotabile',
+                'label' => 'Prenotazioni Chiuse',
                 'value' => 'closed',
             ],
             [
@@ -51,7 +47,11 @@
             [
                 'label' => 'Archiviato',
                 'value' => 'archived',
-            ]
+            ],
+            [
+                'label' => 'In Sospeso',
+                'value' => 'suspended',
+            ],
         ]
     ])
 @endif

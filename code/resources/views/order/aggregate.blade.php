@@ -99,47 +99,55 @@ $panel_rand_wrap = rand();
     </div>
 </div>
 
-<hr/>
+@if($has_shipping || $aggregate->isRunning())
+    <hr/>
 
-<div class="row aggregate-bookings">
-    <input type="hidden" name="aggregate_id" value="{{ $aggregate->id }}" />
+    <div class="row aggregate-bookings">
+        <input type="hidden" name="aggregate_id" value="{{ $aggregate->id }}" />
 
-    <div class="col-md-12">
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#myself-{{ $aggregate->id }}" role="tab" data-toggle="tab">La Mia Prenotazione</a></li>
-            @if($has_shipping)
-                @if($aggregate->isActive())
-                    <li role="presentation"><a href="#others-{{ $aggregate->id }}" role="tab" data-toggle="tab">Prenotazioni per Altri</a></li>
+        <div class="col-md-12">
+            <ul class="nav nav-tabs" role="tablist">
+                @if($aggregate->isRunning())
+                    <li role="presentation"><a href="#myself-{{ $aggregate->id }}" role="tab" data-toggle="tab">La Mia Prenotazione</a></li>
                 @endif
-                <li role="presentation"><a href="#shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab">Consegne</a></li>
-            @endif
-        </ul>
 
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="myself-{{ $aggregate->id }}">
-                @include('booking.edit', ['aggregate' => $aggregate, 'user' => $currentuser])
+                @if($has_shipping)
+                    @if($aggregate->isActive())
+                        <li role="presentation"><a href="#others-{{ $aggregate->id }}" role="tab" data-toggle="tab">Prenotazioni per Altri</a></li>
+                    @endif
+
+                    <li role="presentation"><a href="#shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab">Consegne</a></li>
+                @endif
+            </ul>
+
+            <div class="tab-content">
+                @if($aggregate->isRunning())
+                    <div role="tabpanel" class="tab-pane" id="myself-{{ $aggregate->id }}">
+                        @include('booking.edit', ['aggregate' => $aggregate, 'user' => $currentuser])
+                    </div>
+                @endif
+
+                @if($has_shipping)
+                    <div role="tabpanel" class="tab-pane" id="others-{{ $aggregate->id }}">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="Cerca Utente" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 other-booking">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane shippable-bookings" id="shippings-{{ $aggregate->id }}">
+                        @include('booking.list', ['aggregate' => $aggregate])
+                    </div>
+                @endif
             </div>
-
-            @if($has_shipping)
-                <div role="tabpanel" class="tab-pane" id="others-{{ $aggregate->id }}">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="Cerca Utente" />
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12 other-booking">
-                        </div>
-                    </div>
-                </div>
-
-                <div role="tabpanel" class="tab-pane shippable-bookings" id="shippings-{{ $aggregate->id }}">
-                    @include('booking.list', ['aggregate' => $aggregate])
-                </div>
-            @endif
         </div>
     </div>
-</div>
+@endif
 
 @stack('postponed')

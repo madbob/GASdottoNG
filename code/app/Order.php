@@ -127,6 +127,11 @@ class Order extends Model
         return $this->status != 'shipped' && $this->status != 'archived';
     }
 
+    public function isRunning()
+    {
+        return $this->status == 'open';
+    }
+
     public function calculateSummary()
     {
         $summary = (object) [

@@ -115,6 +115,12 @@ function generalInit() {
 
 	$('.postponed').appendTo('#postponed').removeClass('postponed');
 
+    $('ul[role=tablist]').each(function() {
+        if ($(this).find('li.active').length == 0) {
+            $(this).find('li a').first().tab('show');
+        }
+    });
+
 	setupVariantsEditor();
 	setupImportCsvEditor();
 	testListsEmptiness();
