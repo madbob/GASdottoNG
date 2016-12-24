@@ -31,10 +31,10 @@ class ImportLegacy extends Command
     {
         list($street, $cap, $city) = explode(';', $old);
         $new = (object) [
-                        'street' => $street,
-                        'city' => $city,
-                        'cap' => $cap,
-                ];
+            'street' => $street,
+            'city' => $city,
+            'cap' => $cap,
+        ];
 
         return json_encode($new);
     }
@@ -123,6 +123,10 @@ class ImportLegacy extends Command
             $users_access_users = $row->use_fullusers;
         }
 
+        if ($users_access_users) {
+            $master_gas->userPermit('users.view', '*');
+        }
+
         $map['deliveries'] = [];
         $query = 'SELECT * FROM Shippingplace';
         $result = $old->select($query);
@@ -176,10 +180,6 @@ class ImportLegacy extends Command
                 $obj->save();
                 $map['users'][$row->id] = $obj->id;
 
-                if ($users_access_users) {
-                    $master_gas->userPermit('users.view', $obj);
-                }
-
                 if ($row->privileges == 2) {
                     $master_gas->userPermit('gas.super', $obj);
                 }
@@ -201,7 +201,7 @@ class ImportLegacy extends Command
                 $obj->vat = $row->vat_number;
                 $obj->address = $row->address;
                 $obj->phone = $row->phone;
-                $obj->mail = $row->mail;
+                $obj->email = $row->mail;
                 $obj->fax = $row->fax;
                 $obj->website = $row->website;
                 $obj->save();
