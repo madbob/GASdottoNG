@@ -111,6 +111,26 @@ trait AllowableTrait
     }
 
     /*
+        Come userCan(), ma non prende in considerazione i permessi combinati
+    */
+    public function userReallyCan($action, $user = null)
+    {
+        $cache = App::make('PermissionsCache');
+
+        $user_id = $this->normalizeUserId($user);
+        $actions = explode('|', $action);
+
+        foreach ($actions as $a) {
+            $perm = $cache->get($user_id, $a, get_class($this), $this->id);
+            if ($perm == 1) {
+                return $perm;
+            }
+        }
+
+        return 0;
+    }
+
+    /*
         Verifica che l'utente abbia almeno una autorizzazione del tipo
         richiesto, senza specificare un target specifico.
         Può essere invocata su qualsiasi oggetto che usa AllowableTrait

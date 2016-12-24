@@ -51,6 +51,21 @@ class Permission extends Model
         ];
     }
 
+    public static function allTargets()
+    {
+        $targets = [];
+
+        $permissions = Permission::allPermissions();
+        foreach ($permissions as $class => $types) {
+            $all = $class::all();
+            foreach ($all as $subject) {
+                $targets[] = $subject;
+            }
+        }
+
+        return $targets;
+    }
+
     public static function classByRule($rule_id)
     {
         $all_permissions = self::allPermissions();

@@ -56,11 +56,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('root'),
         ]);
 
-        $permissions = Permission::allPermissions();
-        foreach ($permissions['App\Gas'] as $action => $desc) {
-            $perm = new Permission(['user_id' => $admin->id, 'action' => $action]);
-            $gas->permissions()->save($perm);
-        }
+        $gas->userPermit('gas.super', $admin);
 
         $categories = ['Non Specificato', 'Frutta', 'Verdura', 'Cosmesi', 'Bevande'];
         foreach ($categories as $cat) {

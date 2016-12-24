@@ -13,6 +13,8 @@
         <link rel="stylesheet" type="text/css" href="{{ url('css/bootstrap-tagsinput.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ url('css/jstree.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ url('css/bootstrap-table.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url('css/bootstrap-toggle.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url('css/bootstrap.vertical-tabs.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ url('css/chartist.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ url('css/gasdotto.css') }}">
 
@@ -71,6 +73,7 @@
         <script type="application/javascript" src="{{ url('js/jquery.fileupload.js') }}"></script>
         <script type="application/javascript" src="{{ url('js/bootstrap-table.js') }}"></script>
         <script type="application/javascript" src="{{ url('js/bootstrap-table-it-IT.js') }}"></script>
+        <script type="application/javascript" src="{{ url('js/bootstrap-toggle.js') }}"></script>
         <script type="application/javascript" src="{{ url('js/marked.js') }}"></script>
         <script type="application/javascript" src="{{ url('js/chartist.js') }}"></script>
         <script type="application/javascript" src="{{ url('js/gasdotto.js') }}"></script>

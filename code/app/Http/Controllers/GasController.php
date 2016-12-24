@@ -24,14 +24,7 @@ class GasController extends Controller
         }
 
         $permissions = Permission::allPermissions();
-        foreach ($permissions as $class => $types) {
-            $all = $class::all();
-            foreach ($all as $subject) {
-                $permissions_subjects[] = $subject;
-            }
-        }
-
-        return Theme::view('pages.gas', ['gas' => $gas, 'permissions_subjects' => $permissions_subjects, 'permissions_rules' => $permissions]);
+        return Theme::view('pages.gas', ['gas' => $gas, 'permissions_rules' => $permissions]);
     }
 
     public function update(Request $request, $id)

@@ -19,10 +19,15 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-12">
+    @if($currentgas->userCan('gas.permissions'))
+        <hr/>
+
+        <div class="row">
+            <div class="col-md-6">
+                @include('commons.permissionswidget', ['user' => $user])
+            </div>
         </div>
-    </div>
+    @endif
 
     @include('commons.formbuttons')
 </form>

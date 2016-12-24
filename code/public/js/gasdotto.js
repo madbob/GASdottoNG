@@ -29,6 +29,8 @@ function generalInit() {
         $(this).val(parseFloatC($(this).val()).toFixed(2));
     });
 
+    $('input:checkbox[data-toggle=toggle]').bootstrapToggle();
+
 	$('.nav-tabs a').click(function (e) {
 		e.preventDefault();
 		$(this).tab('show');
