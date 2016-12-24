@@ -30,6 +30,11 @@ if (isset($show_columns) == false) {
                 @if($column['type'] != 'hidden')
                     <div class="col-md-{{ $column_size }} col-sm-{{ $column_size }}">
                         <label>{{ $column['label'] }}</label>
+                        @if(isset($column['help']))
+                            <button type="button" class="btn btn-xs btn-default" data-container="body" data-toggle="popover" data-placement="right" data-trigger="hover" data-content="{{ $column['help'] }}">
+                                <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                            </button>
+                        @endif
                     </div>
                 @endif
             @endforeach

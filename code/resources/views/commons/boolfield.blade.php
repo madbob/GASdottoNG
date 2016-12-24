@@ -14,6 +14,7 @@ if (isset($valuefrom) == false) {
         <input type="checkbox"
             name="{{ $prefix . $name . $postfix }}"
             class="checkbox"
+            data-toggle="toggle"
 
             @if ($obj && $obj->$name == true)
                 checked="checked"

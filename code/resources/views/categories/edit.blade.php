@@ -25,6 +25,13 @@ function descent($category)
     <div class="modal-body">
         <div class="row">
             <div class="col-md-12">
+                <p>
+                    Clicca e trascina le categorie nell'elenco per ordinarle gerarchicamente.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
                 <div id="categories-editor" class="dynamic-tree">
                     <ul class="list-group">
                         @foreach($categories as $cat)

@@ -24,7 +24,13 @@
                                 <input type="hidden" name="supplier_id" value="{{ $supplier->id }}" />
                                 <div class="modal-body">
                                     <p>
-                                        Sono ammessi solo files in formato CSV.
+                                        Sono ammessi solo files in formato CSV. Si raccomanda di formattare la propria tabella in modo omogeneo, senza usare celle unite, celle vuote, intestazioni: ogni riga deve contenere tutte le informazioni relative al prodotto. I prezzi vanno espressi senza includere il simbolo dell'euro.
+                                    </p>
+                                    <p>
+                                        Una volta caricato il file sarà possibile specificare quale attributo rappresenta ogni colonna trovata nel documento.
+                                    </p>
+                                    <p class="text-center">
+                                        <img src="{{ url('images/csv_explain.png') }}">
                                     </p>
 
                                     <hr/>
