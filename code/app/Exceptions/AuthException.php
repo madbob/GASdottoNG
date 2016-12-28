@@ -4,15 +4,15 @@ namespace App\Exceptions;
 
 class AuthException extends \Exception
 {
-    private $status;
 
-    public function __construct(int $status)
+    public function __construct($status)
     {
-        $this->status = $status;
+        parent::__construct("Not authorized", $status);
     }
 
     public function status()
     {
-        return $this->status;
+        return $this->getCode();
     }
+
 }
