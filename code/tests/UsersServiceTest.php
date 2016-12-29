@@ -17,9 +17,7 @@ class UsersServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->gas = factory(App\Gas::class)->create([
-            'id' => 1
-        ]);
+        $this->gas = factory(App\Gas::class)->create();
 
         $this->userWithViewPerm = factory(App\User::class)->create([
             'gas_id' => $this->gas['id']
@@ -49,6 +47,11 @@ class UsersServiceTest extends TestCase
             'gas_id' => $this->gas['id']
         ]);
 
+        $otherGas = factory(App\Gas::class)->create();
+        factory(App\User::class, 3)->create([
+            'gas_id' => $otherGas['id']
+        ]);
+
         $this->usersService = new \App\UsersService();
     }
 
@@ -66,6 +69,10 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithViewPerm);
 
-        $this->usersService->listUsers();
+        $users = $this->usersService->listUsers();
+        $this->assertCount(6, $users);
+        foreach ($users as $user) {
+            $this->assertEquals($this->gas['id'], $user['gas_id']);
+        }
     }
 }

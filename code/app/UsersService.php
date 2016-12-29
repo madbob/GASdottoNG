@@ -48,7 +48,9 @@ class UsersService
     {
         $this->ensureAuthAdminOrView();
 
-        $users = User::orderBy('lastname', 'asc')->get();
+        $gasID = Auth::user()->gas['id'];
+
+        $users = User::where('gas_id', '=', $gasID)->orderBy('lastname', 'asc')->get();
 
         return $users;
     }
