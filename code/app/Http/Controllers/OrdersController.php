@@ -89,13 +89,13 @@ class OrdersController extends Controller
         $o->supplier_id = $request->input('supplier_id');
 
         $now = date('Y-m-d');
-        $o->start = $this->decodeDate($request->input('start'));
-        $o->end = $this->decodeDate($request->input('end'));
+        $o->start = decodeDate($request->input('start'));
+        $o->end = decodeDate($request->input('end'));
         $o->status = $request->input('status');
 
         $s = $request->input('shipping');
         if ($s != '') {
-            $o->shipping = $this->decodeDate($s);
+            $o->shipping = decodeDate($s);
         } else {
             $o->shipping = '';
         }
@@ -131,14 +131,14 @@ class OrdersController extends Controller
             return $this->errorResponse('Non autorizzato');
         }
 
-        $order->start = $this->decodeDate($request->input('start'));
-        $order->end = $this->decodeDate($request->input('end'));
+        $order->start = decodeDate($request->input('start'));
+        $order->end = decodeDate($request->input('end'));
         $order->status = $request->input('status');
         $order->discount = $request->input('discount');
 
         $s = $request->input('shipping');
         if ($s != '') {
-            $order->shipping = $this->decodeDate($s);
+            $order->shipping = decodeDate($s);
         } else {
             $order->shipping = '';
         }
@@ -247,8 +247,8 @@ class OrdersController extends Controller
         if (empty($supplier_id)) {
             $orders = $this->defaultOrders();
         } else {
-            $startdate = $this->decodeDate($request->input('startdate'));
-            $enddate = $this->decodeDate($request->input('enddate'));
+            $startdate = decodeDate($request->input('startdate'));
+            $enddate = decodeDate($request->input('enddate'));
 
             $supplier = Supplier::find($supplier_id);
             $everything = $supplier->userCan('supplier.orders|supplier.shippings');

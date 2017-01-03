@@ -22,8 +22,8 @@ class StatisticsController extends Controller
 
     public function show(Request $request, $id)
     {
-        $start = $this->decodeDate($request->input('start'));
-        $end = $this->decodeDate($request->input('end'));
+        $start = decodeDate($request->input('start'));
+        $end = decodeDate($request->input('end'));
         $data = [];
 
         switch ($id) {
