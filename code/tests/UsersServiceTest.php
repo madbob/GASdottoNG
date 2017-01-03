@@ -20,36 +20,36 @@ class UsersServiceTest extends TestCase
         $this->gas = factory(App\Gas::class)->create();
 
         $this->userWithViewPerm = factory(App\User::class)->create([
-            'gas_id' => $this->gas['id']
+            'gas_id' => $this->gas->id
         ]);
 
         factory(App\Permission::class)->create([
-            'user_id' => $this->userWithViewPerm['id'],
-            'target_id' => $this->gas['id'],
+            'user_id' => $this->userWithViewPerm->id,
+            'target_id' => $this->gas->id,
             'action' => 'users.view'
         ]);
 
         $this->userWithAdminPerm = factory(App\User::class)->create([
-            'gas_id' => $this->gas['id']
+            'gas_id' => $this->gas->id
         ]);
 
         factory(App\Permission::class)->create([
-            'user_id' => $this->userWithAdminPerm['id'],
-            'target_id' => $this->gas['id'],
+            'user_id' => $this->userWithAdminPerm->id,
+            'target_id' => $this->gas->id,
             'action' => 'users.admin'
         ]);
 
         $this->userWithNoPerms = factory(App\User::class)->create([
-            'gas_id' => $this->gas['id']
+            'gas_id' => $this->gas->id
         ]);
 
         factory(App\User::class, 3)->create([
-            'gas_id' => $this->gas['id']
+            'gas_id' => $this->gas->id
         ]);
 
         $otherGas = factory(App\Gas::class)->create();
         factory(App\User::class, 3)->create([
-            'gas_id' => $otherGas['id']
+            'gas_id' => $otherGas->id
         ]);
 
         $this->usersService = new \App\UsersService();
@@ -72,7 +72,34 @@ class UsersServiceTest extends TestCase
         $users = $this->usersService->listUsers();
         $this->assertCount(6, $users);
         foreach ($users as $user) {
-            $this->assertEquals($this->gas['id'], $user['gas_id']);
+            $this->assertEquals($this->gas->id, $user->gas_id);
         }
+    }
+
+    /**
+     * @expectedException \App\Exceptions\AuthException
+     */
+    public function testFailsToStore()
+    {
+        $this->actingAs($this->userWithViewPerm);
+
+        $this->usersService->store(array());
+    }
+
+    public function testStore()
+    {
+        $this->actingAs($this->userWithAdminPerm);
+
+        $newUser = $this->usersService->store(array(
+            'username' => 'test user',
+            'firstname' => 'mario',
+            'lastname' => 'rossi',
+            'email' => 'mr@example.com',
+            'password' => 'password'
+        ));
+
+        $this->assertEquals('test user', $newUser->username);
+        $this->assertEquals(0, $newUser->balance);
+        $this->assertTrue(Hash::check('password', $newUser->password));
     }
 }

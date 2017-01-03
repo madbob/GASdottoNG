@@ -3,11 +3,9 @@
 namespace App;
 
 use App\Exceptions\AuthException;
-use App\Utils\Utils;
 use Auth;
-use Hash;
-use Illuminate\Http\Request;
 use DB;
+use Hash;
 
 class UsersService
 {
@@ -65,7 +63,7 @@ class UsersService
         foreach ($users as $user) {
             $fullname = $user->printableName();
 
-            $u = (object) array(
+            $u = (object)array(
                 'id' => $user->id,
                 'label' => $fullname,
                 'value' => $fullname,
@@ -97,7 +95,7 @@ class UsersService
         DB::commit();
     }
 
-    public function update(Request $request, $id)
+    public function update(array $request, $id)
     {
         $this->ensureAuthAdmin();
 
@@ -105,18 +103,18 @@ class UsersService
 
         $user = $this->show($id);
 
-        $user->username = $request->input('username');
-        $user->firstname = $request->input('firstname');
-        $user->lastname = $request->input('lastname');
-        $user->email = $request->input('email');
-        $user->phone = $request->input('phone');
-        $user->birthday = Utils::decodeDate($request->input('birthday'));
-        $user->member_since = Utils::decodeDate($request->input('member_since'));
-        $user->taxcode = $request->input('taxcode');
-        $user->family_members = $request->input('family_members');
-        $user->card_number = $request->input('card_number');
+        $user->username = $request['username'];
+        $user->firstname = $request['firstname'];
+        $user->lastname = $request['lastname'];
+        $user->email = $request['email'];
+        $user->phone = $request['phone'];
+        $user->birthday = decodeDate($request['birthday']);
+        $user->member_since = decodeDate($request['member_since']);
+        $user->taxcode = $request['taxcode'];
+        $user->family_members = $request['family_members'];
+        $user->card_number = $request['card_number'];
 
-        $password = $request->input('password');
+        $password = $request['password'];
         if ($password != '') {
             $user->password = Hash::make($password);
         }
@@ -128,23 +126,22 @@ class UsersService
         return $user;
     }
 
-    public function store(Request $request)
+    public function store(array $request)
     {
         $this->ensureAuthAdmin();
 
         $creator = Auth::user();
 
         $user = new User();
-        $user->id = $request->input('username');
+        $user->id = $request['username'];
         $user->gas_id = $creator->gas->id;
         $user->member_since = date('Y-m-d', time());
-        $user->username = $request->input('username');
-        $user->firstname = $request->input('firstname');
-        $user->lastname = $request->input('lastname');
-        $user->email = $request->input('email');
-        $user->password = Hash::make($request->input('password'));
-        $user->current_balance = 0;
-        $user->previous_balance = 0;
+        $user->username = $request['username'];
+        $user->firstname = $request['firstname'];
+        $user->lastname = $request['lastname'];
+        $user->email = $request['email'];
+        $user->password = Hash::make($request['password']);
+        $user->balance = 0;
 
         DB::beginTransaction();
 
