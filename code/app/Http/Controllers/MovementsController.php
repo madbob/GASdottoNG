@@ -56,13 +56,13 @@ class MovementsController extends Controller
         }
 
         if ($request->has('start')) {
-            $start = $this->decodeDate($request->input('start'));
+            $start = decodeDate($request->input('start'));
         } else {
             $start = date('Y-m-d', strtotime('-1 months'));
         }
 
         if ($request->has('end')) {
-            $end = $this->decodeDate($request->input('end'));
+            $end = decodeDate($request->input('end'));
         } else {
             $end = date('Y-m-d');
         }

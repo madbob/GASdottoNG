@@ -49,8 +49,8 @@ class NotificationsController extends Controller
         $n->creator_id = $user->id;
         $n->content = $request->input('content');
         $n->mailed = $request->has('mailed');
-        $n->start_date = $this->decodeDate($request->input('start_date'));
-        $n->end_date = $this->decodeDate($request->input('end_date'));
+        $n->start_date = decodeDate($request->input('start_date'));
+        $n->end_date = decodeDate($request->input('end_date'));
         $n->save();
 
         $users = $request->input('users', []);
