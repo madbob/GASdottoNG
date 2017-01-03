@@ -72,7 +72,7 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $user = $this->usersService->update($request, $id);
+            $user = $this->usersService->update($id, $request);
 
             return response()->json(['user' => $user], 200);
         } catch (AuthException $e) {

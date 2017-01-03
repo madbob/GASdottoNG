@@ -71,7 +71,7 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $user = $this->usersService->update($request, $id);
+            $user = $this->usersService->update($id, $request);
 
             return $this->userSuccessResponse($user);
         } catch (AuthException $e) {
