@@ -103,27 +103,43 @@ class UsersService
 
         $user = $this->show($id);
 
-        $user->username = $request['username'];
-        $user->firstname = $request['firstname'];
-        $user->lastname = $request['lastname'];
-        $user->email = $request['email'];
-        $user->phone = $request['phone'];
-        $user->birthday = decodeDate($request['birthday']);
-        $user->member_since = decodeDate($request['member_since']);
-        $user->taxcode = $request['taxcode'];
-        $user->family_members = $request['family_members'];
-        $user->card_number = $request['card_number'];
+        $this->setIfSet($user, $request, 'username');
+        $this->setIfSet($user, $request, 'firstname');
+        $this->setIfSet($user, $request, 'lastname');
+        $this->setIfSet($user, $request, 'email');
+        $this->setIfSet($user, $request, 'phone');
+        $this->transformAndSetIfSet($user, $request, 'birthday', "decodeDate");
+        $this->transformAndSetIfSet($user, $request, 'member_since', "decodeDate");
+        $this->setIfSet($user, $request, 'taxcode');
+        $this->setIfSet($user, $request, 'family_members');
+        $this->setIfSet($user, $request, 'card_number');
 
-        $password = $request['password'];
-        if ($password != '') {
-            $user->password = Hash::make($password);
-        }
+        $this->transformAndSetIfSet($user, $request, 'password', function ($password) {
+            if ($password == '') {
+                return $password;
+            }
+            return Hash::make($password);
+        });
 
         $user->save();
 
         DB::commit();
 
         return $user;
+    }
+
+    private function setIfSet($target, array $source, $key)
+    {
+        if (isset($source[$key])) {
+            $target->$key = $source[$key];
+        }
+    }
+
+    private function transformAndSetIfSet($target, array $source, $key, $transformerFunction)
+    {
+        if (isset($source[$key])) {
+            $target->$key = $transformerFunction($source[$key]);
+        }
     }
 
     public function store(array $request)

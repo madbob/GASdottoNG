@@ -58,7 +58,7 @@ class UsersServiceTest extends TestCase
     /**
      * @expectedException \App\Exceptions\AuthException
      */
-    public function testFailsToListUsersBecauseNonAuthorized()
+    public function testFailsToListUsers()
     {
         $this->actingAs($this->userWithNoPerms);
 
@@ -101,5 +101,43 @@ class UsersServiceTest extends TestCase
         $this->assertEquals('test user', $newUser->username);
         $this->assertEquals(0, $newUser->balance);
         $this->assertTrue(Hash::check('password', $newUser->password));
+    }
+
+    /**
+     * @expectedException \App\Exceptions\AuthException
+     */
+    public function testFailsToUpdate()
+    {
+        $this->actingAs($this->userWithViewPerm);
+
+        $this->usersService->update('id', array());
+    }
+
+    /**
+     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function testFailsToUpdateBecauseNoUserWithID()
+    {
+        $this->actingAs($this->userWithAdminPerm);
+
+        $this->usersService->update('id', array());
+    }
+
+    public function testUpdate()
+    {
+        $this->actingAs($this->userWithAdminPerm);
+
+        $user = factory(App\User::class)->create([
+            'gas_id' => $this->gas->id
+        ]);
+
+        $updatedUser = $this->usersService->update($user->id, array(
+            'password' => 'new password',
+            'email' => 'mr@example.com',
+            'birthday' => 'Thursday 01 December 2016',
+        ));
+
+        $this->assertNotEquals($user->email, $updatedUser->email);
+        $this->assertNotEquals($user->birthday, $updatedUser->birthday);
     }
 }
