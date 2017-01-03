@@ -95,7 +95,7 @@ class UsersService
         DB::commit();
     }
 
-    public function update(array $request, $id)
+    public function update($id, array $request)
     {
         $this->ensureAuthAdmin();
 
