@@ -7,6 +7,10 @@ $grand_total = 0;
 
 <form class="form-horizontal inner-form booking-form" method="PUT" action="{{ url('booking/' . $aggregate->id . '/user/' . $user->id) }}">
     @foreach($aggregate->orders as $order)
+        @if($order->status != 'open')
+            <?php continue ?>
+        @endif
+
         @if($more_orders)
             <h3>{{ $order->printableName() }}</h3>
         @endif
