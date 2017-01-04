@@ -1,13 +1,17 @@
 <div class="wizard_page">
     <div class="modal-body">
         <p>
-            Prodotti importati:
+            Utenti importati:
         </p>
 
         <ul class="list-group">
-            @foreach($products as $p)
-                <li class="list-group-item">{{ $p->name }}</li>
-            @endforeach
+            @if(empty($users))
+                <li>Nessuno!</li>
+            @else
+                @foreach($users as $u)
+                    <li class="list-group-item">{{ $u->printableName() }}</li>
+                @endforeach
+            @endif
         </ul>
 
         @if(!empty($errors))
@@ -26,6 +30,6 @@
     </div>
 
     <div class="modal-footer">
-        <button type="button" class="btn btn-default reloader" data-dismiss="modal" data-reload-target="#supplier-list">Chiudi</button>
+        <button type="button" class="btn btn-default reloader" data-dismiss="modal" data-reload-target="#user-list">Chiudi</button>
     </div>
 </div>

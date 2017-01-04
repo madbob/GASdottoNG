@@ -1110,7 +1110,7 @@ $(document).ready(function() {
 			data: data,
 
 			success: function(data) {
-				form.closest('.modal').modal('hide');
+				/* dummy */
 			}
 		});
 	});
@@ -1482,7 +1482,7 @@ $(document).ready(function() {
 		$(this).find('.wizard_page:not(:first)').hide();
 
 	}).on('submit', '.wizard_page form', function(e) {
-		e.preventDefault();
+		e.stopPropagation();
 
 		var form = $(this);
 		var data = form.serializeArray();

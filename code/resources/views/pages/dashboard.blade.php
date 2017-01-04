@@ -65,7 +65,7 @@
                     <ul class="list-group">
                         @foreach($shipping as $ship)
                             <a href="{{ $ship->getDisplayURL() }}" class="list-group-item">
-                                {{ $ship->printableHeader() }}
+                                {!! $ship->printableHeader() !!}
                             </a>
                         @endforeach
                     </ul>

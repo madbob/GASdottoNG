@@ -20,7 +20,7 @@
                             <h4 class="modal-title">Importa CSV</h4>
                         </div>
                         <div class="wizard_page">
-                            <form class="form-horizontal" method="POST" action="{{ url('import/csv?step=guess') }}" data-toggle="validator" enctype="multipart/form-data">
+                            <form class="form-horizontal" method="POST" action="{{ url('import/csv?type=products&step=guess') }}" data-toggle="validator" enctype="multipart/form-data">
                                 <input type="hidden" name="supplier_id" value="{{ $supplier->id }}" />
                                 <div class="modal-body">
                                     <p>
@@ -42,7 +42,7 @@
                                         'mandatory' => true,
                                         'extra_class' => 'immediate-run',
                                         'extras' => [
-                                            'data-url' => 'import/csv?step=guess',
+                                            'data-url' => 'import/csv?type=products&step=guess',
                                             'data-form-data' => '{"supplier_id": "' . $supplier->id . '"}',
                                             'data-run-callback' => 'wizardLoadPage'
                                         ]

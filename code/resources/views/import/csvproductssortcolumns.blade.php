@@ -1,5 +1,5 @@
 <div class="wizard_page">
-    <form class="form-horizontal" method="POST" action="{{ url('import/csv?step=run') }}" data-toggle="validator">
+    <form class="form-horizontal" method="POST" action="{{ url('import/csv?type=products&step=run') }}" data-toggle="validator">
         <input type="hidden" class="wizard_field" name="path" value="{{ $path }}" />
         <input type="hidden" class="wizard_field" name="supplier_id" value="{{ $supplier->id }}" />
 
