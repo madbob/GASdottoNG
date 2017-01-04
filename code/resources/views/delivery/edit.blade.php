@@ -168,6 +168,8 @@ $rand = rand();
             </div>
         </div>
     @endif
+
+    <input type="hidden" name="post-saved-function" value="updateOrderSummary">
 </form>
 
 @if($handling_movements)

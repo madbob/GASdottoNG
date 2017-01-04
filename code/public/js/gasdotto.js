@@ -138,6 +138,13 @@ function priceRound(price) {
 	return (Math.round(price * 100) / 100).toFixed(2);
 }
 
+function setCellValue(cell, value) {
+    string = value;
+    if (cell.text().indexOf('€') != -1)
+        string = priceRound(value) + ' €';
+    cell.text(string);
+}
+
 function voidForm(form) {
 	form.find('input[type!=hidden]').val('');
 	form.find('textarea').val('');
@@ -236,6 +243,87 @@ function parseDynamicTree(unparsed_data) {
 	return data;
 }
 
+function miscInnerCallbacks(form, data) {
+    var test = form.find('input[name=update-list]');
+    if (test.length != 0) {
+        var listname = test.val();
+        var list = $('#' + listname);
+        list.append('<a data-element-id="' + data.id + '" href="' + data.url + '" class="loadable-item list-group-item">' + data.header + '</a>');
+        testListsEmptiness();
+    }
+
+    var test = form.find('input[name=update-select]');
+    if (test.length != 0) {
+        var selectname = test.val();
+        $('select[name=' + selectname + ']').each(function() {
+            var o = $('<option value="' + data.id + '" selected="selected">' + data.name + '</option>');
+            if (data.hasOwnProperty('parent') && data.parent != null) {
+                var parent = $(this).find('option[value=' + data.parent + ']').first();
+                var pname = parent.text().replace(/&nbsp;/g, ' ');
+                var indent = '&nbsp;&nbsp;';
+
+                for (var i = 0; i < pname.length; i++) {
+                    if (pname[i] == ' ')
+                        indent += '&nbsp;';
+                    else
+                        break;
+                }
+
+                o.prepend(indent);
+                parent.after(o);
+            }
+            else {
+                var reserved = ['id', 'name', 'status'];
+                for (var property in data)
+                    if (data.hasOwnProperty(property) && reserved.indexOf(property) < 0)
+                        o.attr('data-' + property, data[property]);
+
+                var trigger = $(this).find('option[value=run_modal]');
+                if (trigger.length != 0)
+                    trigger.before(o);
+                else
+                    $(this).append(0);
+            }
+        });
+    }
+
+    var test = form.find('input[name=update-field]');
+    if (test.length != 0) {
+        test.each(function() {
+            var identifier_holder = $(this).val();
+            var node = $('[data-updatable-name=' + identifier_holder + ']');
+            var field = node.attr('data-updatable-field');
+            var value = data[field];
+
+            if (node.is('input:hidden'))
+                node.val(value);
+            else
+                node.text(value);
+        });
+    }
+
+    var test = form.find('input[name=post-saved-refetch]');
+    if (test.length != 0) {
+        test.each(function() {
+            var target = $(this).val();
+            var box = $(target);
+            var url = box.attr('data-fetch-url');
+            $.get(url, function(data) {
+                box.empty().append(data);
+            });
+        });
+    }
+
+    var test = form.find('input[name=post-saved-function]');
+    if (test.length != 0) {
+        test.each(function() {
+            var fn = window[$(this).val()];
+            if (typeof fn === 'function')
+                fn(form);
+        });
+    }
+}
+
 function creatingFormCallback(form, data) {
 	if (data.status == 'success') {
 		voidForm(form);
@@ -244,84 +332,7 @@ function creatingFormCallback(form, data) {
 		if(modal.length != 0)
 			modal.modal('hide');
 
-		var test = form.find('input[name=update-list]');
-		if (test.length != 0) {
-			var listname = test.val();
-			var list = $('#' + listname);
-			list.append('<a data-element-id="' + data.id + '" href="' + data.url + '" class="loadable-item list-group-item">' + data.header + '</a>');
-			testListsEmptiness();
-		}
-
-		var test = form.find('input[name=update-select]');
-		if (test.length != 0) {
-			var selectname = test.val();
-			$('select[name=' + selectname + ']').each(function() {
-				var o = $('<option value="' + data.id + '" selected="selected">' + data.name + '</option>');
-				if (data.hasOwnProperty('parent') && data.parent != null) {
-					var parent = $(this).find('option[value=' + data.parent + ']').first();
-					var pname = parent.text().replace(/&nbsp;/g, ' ');
-					var indent = '&nbsp;&nbsp;';
-
-					for (var i = 0; i < pname.length; i++) {
-						if (pname[i] == ' ')
-							indent += '&nbsp;';
-						else
-							break;
-					}
-
-					o.prepend(indent);
-					parent.after(o);
-				}
-				else {
-					var reserved = ['id', 'name', 'status'];
-					for (var property in data)
-						if (data.hasOwnProperty(property) && reserved.indexOf(property) < 0)
-							o.attr('data-' + property, data[property]);
-
-					var trigger = $(this).find('option[value=run_modal]');
-					if (trigger.length != 0)
-						trigger.before(o);
-					else
-						$(this).append(0);
-				}
-			});
-		}
-
-		var test = form.find('input[name=update-field]');
-		if (test.length != 0) {
-			test.each(function() {
-				var identifier_holder = $(this).val();
-				var node = $('[data-updatable-name=' + identifier_holder + ']');
-				var field = node.attr('data-updatable-field');
-				var value = data[field];
-
-				if (node.is('input:hidden'))
-					node.val(value);
-				else
-					node.text(value);
-			});
-		}
-
-		var test = form.find('input[name=post-saved-refetch]');
-		if (test.length != 0) {
-			test.each(function() {
-				var target = $(this).val();
-				var box = $(target);
-				var url = box.attr('data-fetch-url');
-				$.get(url, function(data) {
-					box.empty().append(data);
-				});
-			});
-		}
-
-		var test = form.find('input[name=post-saved-function]');
-		if (test.length != 0) {
-			test.each(function() {
-				var fn = window[$(this).val()];
-				if (typeof fn === 'function')
-					fn(form);
-			});
-		}
+		miscInnerCallbacks(form, data);
 	}
 }
 
@@ -504,6 +515,49 @@ function setupVariantsEditor() {
 function submitDeliveryForm(form) {
 	var id = form.closest('.modal').attr('id');
 	$('form[data-reference-modal=' + id + ']').submit();
+}
+
+function updateOrderSummary(form) {
+    var main_form = form.parents('.loadable-contents').last();
+    main_form.find('.order-editor input[name=id]').each(function() {
+        var order_id = $(this).val();
+        $.ajax({
+            method: 'GET',
+            url: '/orders/' + order_id,
+            dataType: 'json',
+
+            success: function(data) {
+                var summary = main_form.find('.order-editor input[name=id][value="' + data.order + '"]').closest('.order-editor').find('.order-summary');
+
+                for (var info in data) {
+                    if (data.hasOwnProperty(info)) {
+                        if (info == 'products') {
+                            for (var pid in data.products) {
+                                if (data.products.hasOwnProperty(pid)) {
+                                    var row = summary.find('tr[data-product-id="' + pid + '"]');
+                                    if (row != null) {
+                                        var p = data.products[pid];
+                                        for (var attr in p) {
+                                            if (p.hasOwnProperty(attr)) {
+                                                var cell = row.find('.order-summary-product-' + attr);
+                                                if (cell != null)
+                                                    setCellValue(cell, p[attr]);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            var cell = summary.find('.order-summary-order-' + info);
+                            if (cell != null)
+                                setCellValue(cell, data[info]);
+                        }
+                    }
+                }
+            }
+        });
+    });
 }
 
 /*******************************************************************************
@@ -1069,6 +1123,8 @@ $(document).ready(function() {
 				setInterval(function() {
 					save_button.text('Salva').removeAttr('disabled');
 				}, 2000);
+
+                miscInnerCallbacks(form, data);
 			}
 		});
 	});

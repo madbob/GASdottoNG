@@ -129,7 +129,7 @@ class MovementsController extends Controller
         $m = $this->basicReadFromRequest($request);
         $m->save();
 
-        if ($m->id == null) {
+        if ($m->saved == false) {
             return $this->errorResponse('Salvataggio fallito');
         } else {
             return $this->successResponse([

@@ -13,9 +13,24 @@ class MovementsKeeper extends ServiceProvider
         Movement::saving(function ($movement) {
             $metadata = $movement->type_metadata;
 
+            /*
+                La pre-callback può tornare:
+
+                0 se il salvataggio viene negato
+                1 se il salvataggio viene concesso
+                2 se la callback stessa ha già provveduto a fare quanto
+                  necessario. In tal caso blocchiamo il salvataggio e settiamo
+                  artificiosamente l'attributo "saved" a true.
+                  Per maggiori informazioni, cfr. Movement::saved
+            */
             if (isset($metadata->callbacks['pre'])) {
                 $pre = $metadata->callbacks['pre']($movement);
-                if ($pre == false) {
+                if ($pre == 0) {
+                    Log::error('Movimento: salvataggio negato da pre-callback');
+                    return false;
+                }
+                else if ($pre == 2) {
+                    $movement->saved = true;
                     return false;
                 }
             }
@@ -50,6 +65,8 @@ class MovementsKeeper extends ServiceProvider
             if (isset($metadata->methods[$movement->method_id])) {
                 $metadata->methods[$movement->method_id]->handler($movement);
             }
+
+            $movement->saved = true;
         });
     }
 

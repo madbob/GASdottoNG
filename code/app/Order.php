@@ -135,6 +135,7 @@ class Order extends Model
     public function calculateSummary()
     {
         $summary = (object) [
+            'order' => $this->id,
             'price' => 0,
             'products' => [],
         ];
@@ -164,10 +165,10 @@ class Order extends Model
                 $price_delivered += $b->deliveredValue();
             }
 
-            $summary->products[$product->id]['quantity'] = $quantity;
+            $summary->products[$product->id]['quantity'] = $quantity ? $quantity : 0;
             $summary->products[$product->id]['price'] = $price;
             $summary->products[$product->id]['transport'] = $transport;
-            $summary->products[$product->id]['delivered'] = $delivered;
+            $summary->products[$product->id]['delivered'] = $delivered ? $delivered : 0;
             $summary->products[$product->id]['price_delivered'] = $price_delivered;
 
             $total_price += $price;

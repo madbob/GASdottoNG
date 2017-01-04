@@ -115,11 +115,11 @@ class OrdersController extends Controller
         ]);
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $order = Order::findOrFail($id);
-
-        return Theme::view('order.summary', ['order' => $order, 'summary' => $order->calculateSummary()]);
+        $summary = $order->calculateSummary();
+        return response()->json($summary);
     }
 
     public function update(Request $request, $id)

@@ -10,6 +10,20 @@ class Movement extends Model
 {
     use GASModel;
 
+    /*
+        Per verificare il corretto salvataggio di un movimento, non consultare
+        l'ID dell'oggetto ma il valore di questo attributo dopo aver invocato
+        la funzione save()
+        Ci sono casi particolari (cfr. il salvataggio del pagamento dei una
+        prenotazione per un ordine aggregato) in cui il singolo movimento non
+        viene realmente salvato ma elaborato (in questo caso: scomposto in più
+        movimenti), dunque l'oggetto in sé non viene riportato sul database
+        anche se l'operazione, nel suo complesso, è andata a buon fine.
+        Vedasi MovementsKeeper::saving(), MovementsController::store(), o le
+        pre-callbacks definite in Movement::types()
+    */
+    public $saved = false;
+
     public function sender()
     {
         return $this->morphTo();
@@ -278,10 +292,10 @@ class Movement extends Model
                                 $m->save();
                             }
 
-                            return false;
+                            return 2;
                         }
 
-                        return true;
+                        return 1;
                     },
                     'post' => function (Movement $movement) {
                         $movement->target->payment_id = $movement->id;

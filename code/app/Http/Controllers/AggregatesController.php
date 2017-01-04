@@ -52,7 +52,7 @@ class AggregatesController extends OrdersController
         return $this->successResponse();
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $a = Aggregate::findOrFail($id);
 

@@ -34,9 +34,9 @@
             ?>
 
             @if($enabled == false)
-                <tr class="product-disabled hidden-sm hidden-xs">
+                <tr class="product-disabled hidden-sm hidden-xs" data-product-id="{{ $product->id }}">
             @else
-                <tr>
+                <tr data-product-id="{{ $product->id }}">
             @endif
 
                 @if($order->isActive())
@@ -71,21 +71,21 @@
 
                 @if($order->isActive())
                     <td>
-                        <label>{{ $summary->products[$product->id]['quantity'] }}</label>
+                        <label class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity'] }}</label>
                     </td>
                     <td>
-                        <label>{{ printablePrice($summary->products[$product->id]['price']) }} €</label>
+                        <label class="order-summary-product-price">{{ printablePrice($summary->products[$product->id]['price']) }} €</label>
                     </td>
                     <td>
-                        <label>{{ printablePrice($summary->products[$product->id]['transport']) }} €</label>
+                        <label class="order-summary-product-transport">{{ printablePrice($summary->products[$product->id]['transport']) }} €</label>
                     </td>
                 @endif
 
                 <td>
-                    <label>{{ $summary->products[$product->id]['delivered'] }}</label>
+                    <label class="order-summary-product-delivered">{{ $summary->products[$product->id]['delivered'] }}</label>
                 </td>
                 <td>
-                    <label>{{ printablePrice($summary->products[$product->id]['price_delivered']) }} €</label>
+                    <label class="order-summary-product-price_delivered">{{ printablePrice($summary->products[$product->id]['price_delivered']) }} €</label>
                 </td>
 
                 @if($order->isActive())
@@ -159,16 +159,16 @@
                 <th></th>
                 <th></th>
                 <th></th>
-                <th>{{ printablePrice($summary->price) }} €</th>
-                <th>{{ printablePrice($summary->transport) }} €</th>
+                <th class="order-summary-order-price">{{ printablePrice($summary->price) }} €</th>
+                <th class="order-summary-order-transport">{{ printablePrice($summary->transport) }} €</th>
                 <th></th>
-                <th>{{ printablePrice($summary->price_delivered) }} €</th>
+                <th class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} €</th>
                 <th></th>
             @else
                 <th></th>
                 <th></th>
                 <th></th>
-                <th>{{ printablePrice($summary->price_delivered) }} €</th>
+                <th class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} €</th>
             @endif
         </tr>
     </thead>
