@@ -176,4 +176,59 @@ class UsersServiceTest extends TestCase
         $this->assertNotEquals($user->birthday, $updatedUser->birthday);
     }
 
+    /**
+     * @expectedException \App\Exceptions\AuthException
+     */
+    public function testFailsToShow()
+    {
+        $this->usersService->show($this->userWithViewPerm->id);
+    }
+
+    /**
+     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function testFailsToShowInexistent()
+    {
+        $this->actingAs($this->userWithViewPerm);
+
+        $this->usersService->show('random');
+    }
+
+    public function testShow()
+    {
+        $this->actingAs($this->userWithViewPerm);
+
+        $user = $this->usersService->show($this->userWithViewPerm->id);
+
+        $this->assertEquals($this->userWithViewPerm->id, $user->id);
+        $this->assertEquals($this->userWithViewPerm->email, $user->email);
+        $this->assertEquals($this->userWithViewPerm->firstname, $user->firstname);
+        $this->assertEquals($this->userWithViewPerm->lastname, $user->lastname);
+    }
+
+    /**
+     * @expectedException \App\Exceptions\AuthException
+     */
+    public function testFailsToDestroy()
+    {
+        $this->actingAs($this->userWithViewPerm);
+
+        $this->usersService->destroy($this->userWithNoPerms->id);
+    }
+
+    public function testDestroy()
+    {
+        $this->actingAs($this->userWithAdminPerm);
+
+        $user = $this->usersService->destroy($this->userWithNoPerms->id);
+
+        $this->assertEquals($this->userWithNoPerms->id, $user->id);
+
+        try {
+            $this->usersService->show($this->userWithNoPerms->id);
+            $this->fail('should never run');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            //good boy
+        }
+    }
 }

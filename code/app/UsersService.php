@@ -79,6 +79,8 @@ class UsersService
         $user->delete();
 
         DB::commit();
+
+        return $user;
     }
 
     public function update($id, array $request)
