@@ -39,7 +39,7 @@ class UsersController extends Controller
         }
 
         try {
-            $users = $this->usersService->search($term);
+            $users = $this->usersService->listUsers($term);
 
             return response()->json(['users' => $users], 200);
         } catch (AuthException $e) {

@@ -76,6 +76,41 @@ class UsersServiceTest extends TestCase
         }
     }
 
+    public function testListWithSearchParam()
+    {
+        $this->actingAs($this->userWithViewPerm);
+
+        $user1 = factory(App\User::class)->create([
+            'gas_id' => $this->gas->id,
+            'firstname' => 'supermario'
+        ]);
+
+        $user2 = factory(App\User::class)->create([
+            'gas_id' => $this->gas->id,
+            'lastname' => 'mariobros'
+        ]);
+
+        factory(App\User::class)->create([
+            'gas_id' => $this->gas->id,
+            'firstname' => 'luigi'
+        ]);
+
+        $users = $this->usersService->listUsers('mario');
+        $this->assertCount(2, $users);
+        foreach ($users as $user) {
+            $this->assertEquals($this->gas->id, $user->gas_id);
+        }
+
+        $findByID = function ($id) {
+            return function ($user) use ($id) {
+                return strcmp($user['id'], $id) == 0;
+            };
+        };
+
+        $this->assertCount(1, array_filter($users->toArray(), $findByID($user1->id)));
+        $this->assertCount(1, array_filter($users->toArray(), $findByID($user2->id)));
+    }
+
     /**
      * @expectedException \App\Exceptions\AuthException
      */
@@ -140,4 +175,5 @@ class UsersServiceTest extends TestCase
         $this->assertNotEquals($user->email, $updatedUser->email);
         $this->assertNotEquals($user->birthday, $updatedUser->birthday);
     }
+
 }
