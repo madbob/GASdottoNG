@@ -18,7 +18,7 @@ function generalInit() {
 		format: 'DD dd MM yyyy',
 		autoclose: true,
 		language: 'it',
-		clearBtn: true
+		clearBtn: true,
 	});
 
 	$('.tagsinput').tagsinput();
@@ -958,13 +958,16 @@ $(document).ready(function() {
 	}).on('show.bs.collapse', function() {
 		$(this).find('form').submit();
 
-	}).on('hide.bs.collapse', function() {
-		var form = $(this).find('form');
-		var data = form.serializeArray();
+	}).on('click', '.btn-danger', function(e) {
+        e.preventDefault();
+        var panel = $(this).closest('.list-filter');
+		var form = panel.find('form');
 
-		var targetid = $(this).attr('data-list-target');
+		var targetid = panel.attr('data-list-target');
 		var target = $(targetid);
 		target.empty().append(loadingPlaceholder());
+
+		panel.collapse('hide');
 
 		$.ajax({
 			method: form.attr('method'),
@@ -1447,6 +1450,7 @@ $(document).ready(function() {
 					});
 
 					bookingTotal(form.find('.booking-editor'));
+                    updateOrderSummary(form);
 				}
 			});
 		}

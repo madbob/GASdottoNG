@@ -113,14 +113,14 @@ class BookingHandler extends Controller
                     BookedProductVariant::where('product_id', '=', $booked->id)->whereNotIn('id', $saved_variants)->delete();
                 }
 
-                if ($quantity == 0) {
+                if ($delivering == false && $quantity == 0) {
                     $booked->delete();
                 } else {
                     if ($booked->$param != $quantity) {
                         $booked->$param = $quantity;
 
                         if ($delivering) {
-                            $booked->final_price = $booked->quantityValue();
+                            $booked->final_price = $booked->deliveredValue();
                         }
 
                         $booked->save();

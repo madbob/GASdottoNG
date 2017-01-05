@@ -66,6 +66,9 @@
 
                                 @include('commons.genericdaterange')
                             </form>
+
+                            <button class="btn btn-danger pull-right">Chiudi</button>
+                            <div class="clearfix"></div>
                         </div>
                     </div>
                 </div>

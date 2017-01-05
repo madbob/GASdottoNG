@@ -99,7 +99,7 @@ $panel_rand_wrap = rand();
     </div>
 </div>
 
-@if($has_shipping || $aggregate->isRunning())
+@if(($has_shipping && $aggregate->isActive()) || $aggregate->isRunning())
     <hr/>
 
     <div class="row aggregate-bookings">
@@ -116,7 +116,9 @@ $panel_rand_wrap = rand();
                         <li role="presentation"><a href="#others-{{ $aggregate->id }}" role="tab" data-toggle="tab">Prenotazioni per Altri</a></li>
                     @endif
 
-                    <li role="presentation"><a href="#shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab">Consegne</a></li>
+                    @if($aggregate->isRunning() == false)
+                        <li role="presentation"><a href="#shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab">Consegne</a></li>
+                    @endif
                 @endif
             </ul>
 
@@ -128,22 +130,26 @@ $panel_rand_wrap = rand();
                 @endif
 
                 @if($has_shipping)
-                    <div role="tabpanel" class="tab-pane" id="others-{{ $aggregate->id }}">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="Cerca Utente" />
+                    @if($aggregate->isActive())
+                        <div role="tabpanel" class="tab-pane" id="others-{{ $aggregate->id }}">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="Cerca Utente" />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 other-booking">
+                                </div>
                             </div>
                         </div>
+                    @endif
 
-                        <div class="row">
-                            <div class="col-md-12 other-booking">
-                            </div>
+                    @if($aggregate->isRunning() == false)
+                        <div role="tabpanel" class="tab-pane shippable-bookings" id="shippings-{{ $aggregate->id }}">
+                            @include('booking.list', ['aggregate' => $aggregate])
                         </div>
-                    </div>
-
-                    <div role="tabpanel" class="tab-pane shippable-bookings" id="shippings-{{ $aggregate->id }}">
-                        @include('booking.list', ['aggregate' => $aggregate])
-                    </div>
+                    @endif
                 @endif
             </div>
         </div>

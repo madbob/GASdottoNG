@@ -64,20 +64,12 @@ class BookedProduct extends Model
 
     public function quantityValue()
     {
-        if ($this->final_price == 0) {
-            return $this->fixQuantity('quantity');
-        } else {
-            return $this->final_price;
-        }
+        return $this->fixQuantity('quantity');
     }
 
     public function deliveredValue()
     {
-        if ($this->final_price == 0) {
-            return $this->fixQuantity('delivered');
-        } else {
-            return $this->final_price;
-        }
+        return $this->fixQuantity('delivered');
     }
 
     public function getBookedVariant($variant, $fallback = false)

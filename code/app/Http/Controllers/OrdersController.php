@@ -55,7 +55,7 @@ class OrdersController extends Controller
                     $ok = true;
                     break;
                 }
-                if ($order->supplier->userCan('supplier.orders|supplier.shippings')) {
+                if ($order->status != 'archived' && $order->supplier->userCan('supplier.orders|supplier.shippings')) {
                     $ok = true;
                     break;
                 }
