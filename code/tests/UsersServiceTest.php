@@ -76,6 +76,41 @@ class UsersServiceTest extends TestCase
         }
     }
 
+    public function testListWithSearchParam()
+    {
+        $this->actingAs($this->userWithViewPerm);
+
+        $user1 = factory(App\User::class)->create([
+            'gas_id' => $this->gas->id,
+            'firstname' => 'supermario'
+        ]);
+
+        $user2 = factory(App\User::class)->create([
+            'gas_id' => $this->gas->id,
+            'lastname' => 'mariobros'
+        ]);
+
+        factory(App\User::class)->create([
+            'gas_id' => $this->gas->id,
+            'firstname' => 'luigi'
+        ]);
+
+        $users = $this->usersService->listUsers('mario');
+        $this->assertCount(2, $users);
+        foreach ($users as $user) {
+            $this->assertEquals($this->gas->id, $user->gas_id);
+        }
+
+        $findByID = function ($id) {
+            return function ($user) use ($id) {
+                return strcmp($user['id'], $id) == 0;
+            };
+        };
+
+        $this->assertCount(1, array_filter($users->toArray(), $findByID($user1->id)));
+        $this->assertCount(1, array_filter($users->toArray(), $findByID($user2->id)));
+    }
+
     /**
      * @expectedException \App\Exceptions\AuthException
      */
@@ -139,5 +174,61 @@ class UsersServiceTest extends TestCase
 
         $this->assertNotEquals($user->email, $updatedUser->email);
         $this->assertNotEquals($user->birthday, $updatedUser->birthday);
+    }
+
+    /**
+     * @expectedException \App\Exceptions\AuthException
+     */
+    public function testFailsToShow()
+    {
+        $this->usersService->show($this->userWithViewPerm->id);
+    }
+
+    /**
+     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function testFailsToShowInexistent()
+    {
+        $this->actingAs($this->userWithViewPerm);
+
+        $this->usersService->show('random');
+    }
+
+    public function testShow()
+    {
+        $this->actingAs($this->userWithViewPerm);
+
+        $user = $this->usersService->show($this->userWithViewPerm->id);
+
+        $this->assertEquals($this->userWithViewPerm->id, $user->id);
+        $this->assertEquals($this->userWithViewPerm->email, $user->email);
+        $this->assertEquals($this->userWithViewPerm->firstname, $user->firstname);
+        $this->assertEquals($this->userWithViewPerm->lastname, $user->lastname);
+    }
+
+    /**
+     * @expectedException \App\Exceptions\AuthException
+     */
+    public function testFailsToDestroy()
+    {
+        $this->actingAs($this->userWithViewPerm);
+
+        $this->usersService->destroy($this->userWithNoPerms->id);
+    }
+
+    public function testDestroy()
+    {
+        $this->actingAs($this->userWithAdminPerm);
+
+        $user = $this->usersService->destroy($this->userWithNoPerms->id);
+
+        $this->assertEquals($this->userWithNoPerms->id, $user->id);
+
+        try {
+            $this->usersService->show($this->userWithNoPerms->id);
+            $this->fail('should never run');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            //good boy
+        }
     }
 }

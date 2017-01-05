@@ -42,37 +42,23 @@ class UsersService
         throw new AuthException(403);
     }
 
-    public function listUsers()
+    public function listUsers($term = '')
     {
         $this->ensureAuthAdminOrView();
 
         $gasID = Auth::user()->gas['id'];
 
-        $users = User::where('gas_id', '=', $gasID)->orderBy('lastname', 'asc')->get();
+        $query = User::where('gas_id', '=', $gasID);
 
-        return $users;
-    }
-
-    public function search($term)
-    {
-        $this->ensureAuthAdminOrView();
-
-        $users = User::where('firstname', 'LIKE', "%$term%")->orWhere('lastname', 'LIKE', "%$term%")->get();
-        $ret = array();
-
-        foreach ($users as $user) {
-            $fullname = $user->printableName();
-
-            $u = (object)array(
-                'id' => $user->id,
-                'label' => $fullname,
-                'value' => $fullname,
-            );
-
-            $ret[] = $u;
+        if (!empty($term)) {
+            $query->where(function ($query) use ($term) {
+                $query->where('firstname', 'LIKE', "%$term%")->orWhere('lastname', 'LIKE', "%$term%");
+            });
         }
 
-        return $ret;
+        $users = $query->orderBy('lastname', 'asc')->get();
+
+        return $users;
     }
 
     public function show($id)
@@ -93,6 +79,8 @@ class UsersService
         $user->delete();
 
         DB::commit();
+
+        return $user;
     }
 
     public function update($id, array $request)
