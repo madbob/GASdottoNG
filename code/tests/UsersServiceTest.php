@@ -52,7 +52,7 @@ class UsersServiceTest extends TestCase
             'gas_id' => $otherGas->id
         ]);
 
-        $this->usersService = new \App\UsersService();
+        $this->usersService = new \App\Services\UsersService();
     }
 
     /**

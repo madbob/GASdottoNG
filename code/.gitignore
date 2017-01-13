@@ -8,3 +8,4 @@ Homestead.json
 .docker_bundle/cache
 .docker_bundle/.htaccess
 .editorconfig
+composer.lock

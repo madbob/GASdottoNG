@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Auth;
 use Theme;
-use App\UsersService;
+use App\Services\UsersService;
 use App\Exceptions\AuthException;
 
 class UsersController extends Controller
