@@ -7,6 +7,8 @@ Per riferimenti:
 * http://gasdotto.net/
 * https://github.com/madbob/GASdotto
 
+### Build status: [![Build Status](https://travis-ci.org/madbob/GASdottoNG.svg?branch=master)](https://travis-ci.org/madbob/GASdottoNG)
+
 ### Inizializzazione
 
     // per installare Composer, package manager PHP
