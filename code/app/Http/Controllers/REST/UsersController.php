@@ -5,7 +5,7 @@ namespace App\Http\Controllers\REST;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Response;
-use App\UsersService;
+use App\Services\UsersService;
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
 
