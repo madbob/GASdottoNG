@@ -25,10 +25,6 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 $factory->define(App\Gas::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
-        'bank_balance' => $faker->numberBetween(0, 10),
-        'cash_balance' => $faker->numberBetween(0, 10),
-        'suppliers_balance' => $faker->numberBetween(0, 10),
-        'deposit_balance' => $faker->numberBetween(0, 10),
     ];
 });
 
