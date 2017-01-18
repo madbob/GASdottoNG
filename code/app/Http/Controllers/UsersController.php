@@ -36,7 +36,20 @@ class UsersController extends Controller
         try {
             $users = $this->usersService->listUsers($term);
 
-            return json_encode($users);
+            /*
+                Qui l'output deve essere conferme a quello atteso
+                dall'autocompletition di jQueryUI
+            */
+            foreach($users as $user) {
+                $fullname = $user->lastname . ' ' . $user->firstname;
+                $u = (object) array(
+                    'id' => $user->id,
+                    'label' => $fullname,
+                    'value' => $fullname
+                );
+                $ret[] = $u;
+            }
+            return json_encode($ret);
         } catch (AuthException $e) {
             abort($e->status());
         }
