@@ -8,6 +8,7 @@ use DB;
 use App;
 use Hash;
 use App\Gas;
+use App\Balance;
 use App\Delivery;
 use App\User;
 use App\Supplier;
@@ -112,15 +113,20 @@ class ImportLegacy extends Command
             $obj->name = $row->name;
             $obj->email = $row->mail;
             $obj->description = $row->description;
-            $obj->bank_balance = $row->current_bank_balance;
-            $obj->cash_balance = $row->current_cash_balance;
-            $obj->suppliers_balance = $row->current_orders_balance;
-            $obj->deposit_balance = $row->current_deposit_balance;
             $obj->save();
             $map['gas'][$row->id] = $obj->id;
 
             $master_gas = $obj;
             $users_access_users = $row->use_fullusers;
+
+            $balance = new Balance();
+            $balance->gas_id = $obj->id;
+            $balance->date = date('Y-m-d G:i:s');
+            $balance->bank = $row->current_bank_balance;
+            $balance->cash = $row->current_cash_balance;
+            $balance->suppliers = $row->current_orders_balance;
+            $balance->deposits = $row->current_deposit_balance;
+            $balance->save();
         }
 
         if ($users_access_users) {

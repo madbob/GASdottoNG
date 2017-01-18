@@ -64,7 +64,6 @@ class Gas extends Model
             $balance->$t += $amount;
         }
 
-        $balance->total += $amount;
         $balance->save();
     }
 

@@ -21,7 +21,7 @@ class MovementsController extends Controller
     {
         $user = Auth::user();
 
-        $id = $request->input('id');
+        $id = $request->input('id', '');
         if (empty($id)) {
             $obj = new Movement();
         } else {

@@ -195,6 +195,10 @@ class OrdersController extends Controller
             return $this->errorResponse('Non autorizzato');
         }
 
+        foreach($order->bookings as $booking)
+            $booking->deleteMovements();
+        $order->deleteMovements();
+
         $order->delete();
 
         return $this->successResponse();

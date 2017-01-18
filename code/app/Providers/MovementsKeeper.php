@@ -8,6 +8,33 @@ use App\Movement;
 
 class MovementsKeeper extends ServiceProvider
 {
+    private function verifyConsistency($movement)
+    {
+        $metadata = $movement->type_metadata;
+
+        if ($metadata->sender_type != $movement->sender_type) {
+            Log::error('Movimento: sender_type non coerente ('.$metadata->sender_type.' != '.$movement->sender_type.')');
+            return false;
+        }
+
+        if ($metadata->target_type != $movement->target_type) {
+            Log::error('Movimento: target_type non coerente ('.$metadata->target_type.' != '.$movement->target_type.')');
+            return false;
+        }
+
+        if (isset($metadata->methods[$movement->method]) == false) {
+            Log::error('Movimento: metodo non permesso');
+            return false;
+        }
+
+        if ($metadata->allow_negative == false && $movement->amount < 0) {
+            Log::error('Movimento: ammontare negativo non permesso');
+            return false;
+        }
+
+        return true;
+    }
+
     public function boot()
     {
         Movement::saving(function ($movement) {
@@ -35,25 +62,7 @@ class MovementsKeeper extends ServiceProvider
                 }
             }
 
-            if ($metadata->sender_type != $movement->sender_type) {
-                Log::error('Movimento: sender_type non coerente ('.$metadata->sender_type.' != '.$movement->sender_type.')');
-
-                return false;
-            }
-
-            if ($metadata->target_type != $movement->target_type) {
-                Log::error('Movimento: target_type non coerente ('.$metadata->target_type.' != '.$movement->target_type.')');
-
-                return false;
-            }
-
-            if ($metadata->allow_negative == false && $movement->amount < 0) {
-                Log::error('Movimento: ammontare negativo non permesso');
-
-                return false;
-            }
-
-            return true;
+            return $this->verifyConsistency($movement);
         });
 
         Movement::saved(function ($movement) {
@@ -62,11 +71,47 @@ class MovementsKeeper extends ServiceProvider
             if (isset($metadata->callbacks['post'])) {
                 $metadata->callbacks['post']($movement);
             }
-            if (isset($metadata->methods[$movement->method_id])) {
-                $metadata->methods[$movement->method_id]->handler($movement);
+            if (isset($metadata->methods[$movement->method])) {
+                $handler = $metadata->methods[$movement->method]->handler;
+                $handler($movement);
             }
 
             $movement->saved = true;
+        });
+
+        /*
+            Questo è per invertire l'effetto del movimento contabile modificato
+            sui bilanci, in modo che possa poi essere riapplicato coi nuovi
+            valori
+        */
+        Movement::updating(function ($movement) {
+            /*
+                Reminder: per invalidare il movimento devo sottoporre un
+                ammontare negativo (pari al negativo dell'ammontare
+                precedentemente salvato), il quale potrebbe non essere accettato
+                dal tipo di movimento stesso
+            */
+            if ($this->verifyConsistency($movement) == false)
+                return false;
+
+            $original = Movement::find($movement->id);
+            $metadata = $original->type_metadata;
+            $original->amount = $original->amount * -1;
+            $handler = $metadata->methods[$original->method]->handler;
+            $handler($original);
+
+            return true;
+        });
+
+        /*
+            Questo è per invertire l'effetto del movimento contabile cancellato
+            sui bilanci
+        */
+        Movement::deleting(function ($movement) {
+            $metadata = $movement->type_metadata;
+            $movement->amount = $movement->amount * -1;
+            $handler = $metadata->methods[$movement->method]->handler;
+            $handler($movement);
         });
     }
 

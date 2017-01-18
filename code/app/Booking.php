@@ -9,7 +9,7 @@ use App\BookedProduct;
 
 class Booking extends Model
 {
-    use GASModel, SluggableID;
+    use GASModel, SluggableID, PayableTrait;
 
     public $incrementing = false;
 

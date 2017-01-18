@@ -17,11 +17,6 @@ class CreateGasTable extends Migration
             $table->string('logo', 100)->nullable();
             $table->text('message')->nullable();
 
-            $table->decimal('bank_balance', 6, 2);
-            $table->decimal('cash_balance', 6, 2);
-            $table->decimal('suppliers_balance', 6, 2);
-            $table->decimal('deposit_balance', 6, 2);
-
             $table->index('id');
         });
     }

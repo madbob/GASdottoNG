@@ -9,7 +9,7 @@ use App\BookedProduct;
 
 class Order extends Model
 {
-    use AttachableTrait, GASModel, SluggableID;
+    use AttachableTrait, GASModel, SluggableID, PayableTrait;
 
     public $incrementing = false;
 
