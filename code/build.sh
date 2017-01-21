@@ -15,6 +15,8 @@ set -e
 
 composer update --no-scripts
 
+touch /app/database/database.sqlite
+
 php artisan migrate --seed
 php artisan db:seed --class=DemoSeeder
 
