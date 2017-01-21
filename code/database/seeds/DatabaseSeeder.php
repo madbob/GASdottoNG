@@ -1,13 +1,13 @@
 <?php
 
-use Illuminate\Database\Seeder;
-use Illuminate\Database\Eloquent\Model;
-use App\Gas;
-use App\User;
-use App\Permission;
+use App\Balance;
 use App\Category;
+use App\Gas;
 use App\Measure;
 use App\Notification;
+use App\User;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -47,6 +47,7 @@ class DatabaseSeeder extends Seeder
             'cash' => 0,
             'suppliers' => 0,
             'deposits' => 0,
+            'date' => date('Y-m-d', time())
         ]);
 
         $admin = User::create([
