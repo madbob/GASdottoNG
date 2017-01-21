@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $balance = Balance::create([
-            'gas_id' = $gas->id,
+            'gas_id' => $gas->id,
             'bank' => 0,
             'cash' => 0,
             'suppliers' => 0,
