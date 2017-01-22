@@ -33,8 +33,23 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
         Artisan::call('migrate');
     }
 
+    public function enabledQueryDump()
+    {
+        \DB::listen(function ($sql, $bindings) {
+            var_dump($sql);
+            var_dump($bindings);
+        });
+    }
+
+    public function disableQueryDump()
+    {
+        \DB::getEventDispatcher()->forget('illuminate.query');
+    }
+
     public function tearDown()
     {
+        $this->disableQueryDump();
+
         Artisan::call('migrate:reset');
         parent::tearDown();
     }

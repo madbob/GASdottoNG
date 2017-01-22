@@ -2,34 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use DB;
+use App\Exceptions\AuthException;
 use App\Permission;
+use app\Services\PermissionsService;
 use App\User;
+use DB;
+use Illuminate\Http\Request;
 
 class PermissionsController extends Controller
 {
+
+    protected $permissionsService;
+
+    public function __construct(PermissionsService $permissionsService)
+    {
+        $this->permissionsService = $permissionsService;
+    }
+
     public function getRead(Request $request)
     {
-        DB::beginTransaction();
+        try {
+            $subject_id = $request->input('subject_id');
+            $rule_id = $request->input('rule_id');
 
-        $subject_id = $request->input('subject_id');
-        $rule_id = $request->input('rule_id');
+            $permissions = $this->permissionsService->showForSubject($subject_id, $rule_id);
 
-        $class = Permission::classByRule($rule_id);
-        if ($class == null) {
-            return $this->errorResponse('Regola non trovata');
+            return $this->successResponse($permissions);
+        } catch (AuthException $e) {
+            abort($e->status());
         }
-
-        $subject = $class::findOrFail($subject_id);
-        if ($subject->permissionsCanBeModified() == false) {
-            return $this->errorResponse('Non autorizzato');
-        }
-
-        $ret = $subject->whoCanComplex($rule_id);
-
-        return $this->successResponse($ret);
     }
 
     public function postAdd(Request $request)

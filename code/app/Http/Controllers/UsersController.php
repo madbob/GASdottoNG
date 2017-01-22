@@ -36,20 +36,9 @@ class UsersController extends Controller
         try {
             $users = $this->usersService->listUsers($term);
 
-            /*
-                Qui l'output deve essere conferme a quello atteso
-                dall'autocompletition di jQueryUI
-            */
-            foreach($users as $user) {
-                $fullname = $user->lastname . ' ' . $user->firstname;
-                $u = (object) array(
-                    'id' => $user->id,
-                    'label' => $fullname,
-                    'value' => $fullname
-                );
-                $ret[] = $u;
-            }
-            return json_encode($ret);
+            $users = $this->toJQueryAutocompletionFormat($users);
+
+            return json_encode($users);
         } catch (AuthException $e) {
             abort($e->status());
         }
@@ -109,7 +98,22 @@ class UsersController extends Controller
             'id' => $user->id,
             'name' => $user->printableName(),
             'header' => $user->printableHeader(),
-            'url' => url('users/'.$user->id),
+            'url' => url('users/' . $user->id),
         ]);
+    }
+
+    private function toJQueryAutocompletionFormat($users)
+    {
+        $ret = [];
+        foreach ($users as $user) {
+            $fullname = $user->lastname . ' ' . $user->firstname;
+            $u = (object)array(
+                'id' => $user->id,
+                'label' => $fullname,
+                'value' => $fullname
+            );
+            $ret[] = $u;
+        }
+        return $ret;
     }
 }

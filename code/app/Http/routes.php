@@ -3,6 +3,7 @@
 Route::group(array('prefix' => 'api/1'), function () {
     Route::get('users/search', 'REST\UsersController@search');
     Route::resource('users', 'REST\UsersController');
+    Route::get('permissions/showForSubject/{subject_id}/{rule_id}', 'REST\PermissionsController@showForSubject');
 });
 
 Route::get('/', function () {

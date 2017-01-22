@@ -24,6 +24,10 @@ trait AllowableTrait
     {
         $user = Auth::user();
 
+        if ($user == null) {
+            return false;
+        }
+
         return $user->gas->userCan('gas.permissions') || $this->userCan('supplier.modify', $user);
     }
 
