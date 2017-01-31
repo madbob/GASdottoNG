@@ -35,46 +35,20 @@ class PermissionsController extends Controller
 
     public function postAdd(Request $request)
     {
-        DB::beginTransaction();
+        try {
+            $user_id = $request->input('user_id');
+            $subject_id = $request->input('subject_id');
+            $rule_id = $request->input('rule_id');
+            $behaviour = $request->input('behaviour');
 
-        $user_id = $request->input('user_id');
-        $subject_id = $request->input('subject_id');
-        $rule_id = $request->input('rule_id');
-        $behaviour = $request->input('behaviour');
+            $this->permissionsService->add($user_id, $subject_id, $rule_id, $behaviour);
 
-        $class = Permission::classByRule($rule_id);
-        if ($class == null) {
-            return $this->errorResponse('Regola non trovata');
+            return $this->successResponse();
+        } catch (AuthException $e) {
+            abort($e->status());
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage());
         }
-
-        $subject = $class::findOrFail($subject_id);
-        if ($subject->permissionsCanBeModified() == false) {
-            return $this->errorResponse('Non autorizzato');
-        }
-
-        switch ($behaviour) {
-            case 'all':
-                /*
-                    Se tutti gli utenti sono autorizzati per
-                    la regola, non può esistere il caso in
-                    cui si intervenga su uno solo.
-                    Cfr. postChange()
-                */
-                break;
-
-            case 'selected':
-                $subject->userPermit($rule_id, $user_id);
-                break;
-
-            case 'except':
-                $subject->userRevoke($rule_id, $user_id);
-                break;
-
-            default:
-                return $this->errorResponse('Comportamento non ammesso');
-        }
-
-        return $this->successResponse();
     }
 
     public function postRemove(Request $request)
