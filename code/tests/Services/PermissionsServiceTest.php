@@ -80,7 +80,7 @@ class PermissionsServiceTest extends TestCase
         $this->assertEquals($this->userWithViewPerm->id, $result['users'][0]->id);
     }
 
-    //TODO testAdd* quality is very poor. API needs a review towards readability
+    //TODO testAdd* and testRemove* quality is very poor. API needs a review towards readability
     /**
      * @expectedException \App\Exceptions\AuthException
      */
@@ -124,6 +124,58 @@ class PermissionsServiceTest extends TestCase
         $this->assertEquals(2, DB::table("permissions")->where("user_id", $this->userWithViewPerm->id)->count());
 
         $this->permissionsService->add($this->userWithViewPerm->id, $this->gas->id, 'users.admin', 'all');
+
+        $this->assertEquals(2, DB::table("permissions")->where("user_id", $this->userWithViewPerm->id)->count());
+    }
+
+    /**
+     * @expectedException \App\Exceptions\AuthException
+     */
+    public function testRemoveNoAuth()
+    {
+        $this->permissionsService->remove($this->userWithViewPerm->id, $this->gas->id, 'users.view', 'selected');
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testRemoveUnknownBehaviour()
+    {
+        $this->permissionsService->remove($this->userWithViewPerm->id, $this->gas->id, 'users.view', 'whatever');
+    }
+
+    public function testRemoveNoChanges()
+    {
+        $this->actingAs($this->userWithGasPermissionPerm);
+
+        $this->assertEquals(1, DB::table("permissions")->where("user_id", $this->userWithViewPerm->id)->count());
+
+        $this->permissionsService->remove($this->userWithViewPerm->id, $this->gas->id, 'users.view', 'except');
+
+        $this->assertEquals(1, DB::table("permissions")->where("user_id", $this->userWithViewPerm->id)->count());
+    }
+
+    public function testRemove()
+    {
+        $this->actingAs($this->userWithGasPermissionPerm);
+
+        $this->assertEquals(1, DB::table("permissions")->where("user_id", $this->userWithViewPerm->id)->count());
+
+        $this->permissionsService->add($this->userWithViewPerm->id, $this->gas->id, 'users.admin', 'selected');
+        $this->permissionsService->add($this->userWithViewPerm->id, $this->gas->id, 'supplier.add', 'selected');
+
+        $this->assertEquals(3, DB::table("permissions")->where("user_id", $this->userWithViewPerm->id)->count());
+
+        $this->permissionsService->remove($this->userWithViewPerm->id, $this->gas->id, 'users.admin', 'selected');
+        $this->permissionsService->remove($this->userWithViewPerm->id, $this->gas->id, 'supplier.add', 'selected');
+
+        $this->assertEquals(1, DB::table("permissions")->where("user_id", $this->userWithViewPerm->id)->count());
+
+        $this->permissionsService->remove($this->userWithViewPerm->id, $this->gas->id, 'users.admin', 'except');
+
+        $this->assertEquals(2, DB::table("permissions")->where("user_id", $this->userWithViewPerm->id)->count());
+
+        $this->permissionsService->remove($this->userWithViewPerm->id, $this->gas->id, 'users.admin', 'all');
 
         $this->assertEquals(2, DB::table("permissions")->where("user_id", $this->userWithViewPerm->id)->count());
     }

@@ -60,4 +60,33 @@ class PermissionsService
             }
         });
     }
+
+    public function remove($user_id, $subject_id, $rule_id, $behaviour)
+    {
+        DB::transaction(function () use ($user_id, $subject_id, $rule_id, $behaviour) {
+            $subject = $this->findSubject($subject_id, $rule_id);
+
+            switch ($behaviour) {
+                case 'all':
+                    /*
+                        Se tutti gli utenti sono autorizzati per
+                        la regola, non può esistere il caso in
+                        cui si intervenga su uno solo.
+                        Cfr. postChange()
+                    */
+                    break;
+
+                case 'selected':
+                    $subject->userRevoke($rule_id, $user_id);
+                    break;
+
+                case 'except':
+                    $subject->userPermit($rule_id, $user_id);
+                    break;
+
+                default:
+                    throw new \Exception("Unknown behaviour");
+            }
+        });
+    }
 }

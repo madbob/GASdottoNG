@@ -6,6 +6,7 @@ Route::group(array('prefix' => 'api/1'), function () {
 
     Route::get('permissions/showForSubject/{subject_id}/{rule_id}', 'REST\PermissionsController@showForSubject');
     Route::post('permissions/add/{user_id}/{subject_id}/{rule_id}/{behaviour}', 'REST\PermissionsController@add');
+    Route::delete('permissions/remove/{user_id}/{subject_id}/{rule_id}/{behaviour}', 'REST\PermissionsController@remove');
 });
 
 Route::get('/', function () {
