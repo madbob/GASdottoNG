@@ -73,13 +73,13 @@ class UsersService
     {
         $this->ensureAuthAdmin();
 
-        DB::beginTransaction();
+        $user = DB::transaction(function () use ($id) {
+            $user = $this->show($id);
 
-        $user = $this->show($id);
+            $user->delete();
 
-        $user->delete();
-
-        DB::commit();
+            return $user;
+        });
 
         return $user;
     }
@@ -88,31 +88,31 @@ class UsersService
     {
         $this->ensureAuthAdmin();
 
-        DB::beginTransaction();
+        $user = DB::transaction(function () use ($id, $request) {
+            $user = $this->show($id);
 
-        $user = $this->show($id);
+            $this->setIfSet($user, $request, 'username');
+            $this->setIfSet($user, $request, 'firstname');
+            $this->setIfSet($user, $request, 'lastname');
+            $this->setIfSet($user, $request, 'email');
+            $this->setIfSet($user, $request, 'phone');
+            $this->transformAndSetIfSet($user, $request, 'birthday', "decodeDate");
+            $this->transformAndSetIfSet($user, $request, 'member_since', "decodeDate");
+            $this->setIfSet($user, $request, 'taxcode');
+            $this->setIfSet($user, $request, 'family_members');
+            $this->setIfSet($user, $request, 'card_number');
 
-        $this->setIfSet($user, $request, 'username');
-        $this->setIfSet($user, $request, 'firstname');
-        $this->setIfSet($user, $request, 'lastname');
-        $this->setIfSet($user, $request, 'email');
-        $this->setIfSet($user, $request, 'phone');
-        $this->transformAndSetIfSet($user, $request, 'birthday', "decodeDate");
-        $this->transformAndSetIfSet($user, $request, 'member_since', "decodeDate");
-        $this->setIfSet($user, $request, 'taxcode');
-        $this->setIfSet($user, $request, 'family_members');
-        $this->setIfSet($user, $request, 'card_number');
+            $this->transformAndSetIfSet($user, $request, 'password', function ($password) {
+                if ($password == '') {
+                    return $password;
+                }
+                return Hash::make($password);
+            });
 
-        $this->transformAndSetIfSet($user, $request, 'password', function ($password) {
-            if ($password == '') {
-                return $password;
-            }
-            return Hash::make($password);
+            $user->save();
+
+            return $user;
         });
-
-        $user->save();
-
-        DB::commit();
 
         return $user;
     }
@@ -148,11 +148,9 @@ class UsersService
         $user->password = Hash::make($request['password']);
         $user->balance = 0;
 
-        DB::beginTransaction();
-
-        $user->save();
-
-        DB::commit();
+        DB::transaction(function () use ($user) {
+            $user->save();
+        });
 
         return $user;
     }

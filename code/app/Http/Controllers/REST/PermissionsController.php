@@ -24,8 +24,35 @@ class PermissionsController extends Controller
             return response()->json(['permissions' => $permissions], 200);
         } catch (AuthException $e) {
             return response(null, $e->status());
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
+    public function add($user_id, $subject_id, $rule_id, $behaviour)
+    {
+        try {
+            $this->permissionsService->add($user_id, $subject_id, $rule_id, $behaviour);
+
+            return response(null, 200);
+        } catch (AuthException $e) {
+            return response(null, $e->status());
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function remove($user_id, $subject_id, $rule_id, $behaviour)
+    {
+        try {
+            $this->permissionsService->remove($user_id, $subject_id, $rule_id, $behaviour);
+
+            return response(null, 200);
+        } catch (AuthException $e) {
+            return response(null, $e->status());
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
 }
