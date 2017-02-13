@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\AuthException;
-use app\Services\PermissionsService;
+use App\Services\PermissionsService;
 use DB;
 use Illuminate\Http\Request;
 
