@@ -123,4 +123,15 @@ class SuppliersController extends Controller
             return Theme::view('documents.cataloguecsv', ['supplier' => $s]);
         }
     }
+
+    public function plainBalance(Request $request, $id)
+    {
+        $user = Auth::user();
+        if ($user->gas->userCan('movements.view|movements.admin') == false) {
+            return $this->errorResponse('Non autorizzato');
+        }
+
+        $s = Supplier::findOrFail($id);
+        return $s->balance;
+    }
 }

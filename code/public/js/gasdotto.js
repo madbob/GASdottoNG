@@ -147,6 +147,15 @@ function setCellValue(cell, value) {
     cell.text(string);
 }
 
+/*
+    Il selector jQuery si lamenta quando trova un ':' ad esempio come valore di
+    un attributo, questa funzione serve ad applicare l'escape necessario
+*/
+function sanitizeId(identifier)
+{
+    return identifier.replace(/:/, '\\:');
+}
+
 function voidForm(form) {
     form.find('input[type!=hidden]').val('');
     form.find('textarea').val('');
@@ -247,6 +256,11 @@ function parseDynamicTree(unparsed_data) {
     return data;
 }
 
+/*
+    I form possono includere una serie di campi <input type="hidden"> che, in
+    funzione dell'attributo "name", possono attivare delle funzioni speciali
+    dopo il submit usando il valore ritornato
+*/
 function miscInnerCallbacks(form, data) {
     var test = form.find('input[name=update-list]');
     if (test.length != 0) {
@@ -293,7 +307,7 @@ function miscInnerCallbacks(form, data) {
     var test = form.find('input[name=update-field]');
     if (test.length != 0) {
         test.each(function() {
-            var identifier_holder = $(this).val();
+            var identifier_holder = sanitizeId($(this).val());
             var node = $('[data-updatable-name=' + identifier_holder + ']');
             var field = node.attr('data-updatable-field');
             var value = data[field];
@@ -301,14 +315,14 @@ function miscInnerCallbacks(form, data) {
             if (node.is('input:hidden'))
                 node.val(value);
             else
-                node.text(value);
+                node.html(value);
         });
     }
 
     var test = form.find('input[name=post-saved-refetch]');
     if (test.length != 0) {
         test.each(function() {
-            var target = $(this).val();
+            var target = sanitizeId($(this).val());
             var box = $(target);
             var url = box.attr('data-fetch-url');
             $.get(url, function(data) {

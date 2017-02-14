@@ -25,6 +25,7 @@ Route::get('orders/search', 'OrdersController@search');
 Route::post('orders/fixes/{id}', 'OrdersController@fixes');
 Route::get('orders/document/{id}/{type}', 'OrdersController@document');
 Route::get('suppliers/catalogue/{id}/{format}', 'SuppliersController@catalogue');
+Route::get('suppliers/{id}/plain_balance', 'SuppliersController@plainBalance');
 
 Route::controllers([
     'auth' => 'Auth\AuthController',

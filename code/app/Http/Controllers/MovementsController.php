@@ -70,6 +70,7 @@ class MovementsController extends Controller
         $data['movements'] = Movement::where('registration_date', '<=', $end)->where('registration_date', '>=', $start)->orderBy('registration_date', 'desc')->get();
 
         if ($filtered == false) {
+            $data['balance'] = Auth::user()->gas->balances()->first();
             return Theme::view('pages.movements', $data);
         } else {
             return Theme::view('movement.list', $data);
@@ -132,9 +133,11 @@ class MovementsController extends Controller
         if ($m->saved == false) {
             return $this->errorResponse('Salvataggio fallito');
         } else {
+            $printable_date = $m->printableDate('registration_date');
             return $this->successResponse([
                 'id' => $m->id,
-                'registration_date' => $m->printableDate('registration_date'),
+                'registration_date' => $printable_date,
+                'printable_text' => $printable_date . ' <span class="glyphicon ' . $m->payment_icon . '" aria-hidden="true"></span>'
             ]);
         }
     }

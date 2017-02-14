@@ -83,6 +83,9 @@ class MovementsKeeper extends ServiceProvider
             Questo è per invertire l'effetto del movimento contabile modificato
             sui bilanci, in modo che possa poi essere riapplicato coi nuovi
             valori
+
+            TODO: impedire aggiornamento di movimenti precedenti alla chiusura
+            dell'ultimo bilancio
         */
         Movement::updating(function ($movement) {
             /*
