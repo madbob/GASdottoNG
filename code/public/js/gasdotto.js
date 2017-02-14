@@ -735,6 +735,24 @@ function setupPermissionsEditor() {
     });
 }
 
+function setupPermissionsWidget() {
+    $('body').on('change', '.permissions-widget input:checkbox', function() {
+        var user = $(this).closest('.permissions-widget').attr('data-user');
+        var subject = $(this).attr('data-subject');
+        var rule = $(this).attr('data-rule');
+
+        var method = '';
+        if ($(this).prop('checked'))
+            method = 'POST';
+        else
+            method = 'DELETE';
+
+        $.ajax('/api/1/permissions/' + user + '/' + subject + '/' + rule + '/selected', {
+            method: method
+        });
+    });
+}
+
 /*******************************************************************************
 	Statistiche
 */
@@ -1593,5 +1611,6 @@ $(document).ready(function() {
 
     setupHelp();
     setupStatisticsForm();
+    setupPermissionsWidget();
     setupPermissionsEditor();
 });
