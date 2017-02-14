@@ -55,4 +55,17 @@ class PermissionsController extends Controller
         }
     }
 
+    public function change($user_id, $subject_id, $rule_id, $behaviour)
+    {
+        try {
+            $this->permissionsService->change($user_id, $subject_id, $rule_id, $behaviour);
+
+            return response(null, 200);
+        } catch (AuthException $e) {
+            return response(null, $e->status());
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
 }

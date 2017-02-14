@@ -180,4 +180,45 @@ class PermissionsServiceTest extends TestCase
         $this->assertEquals(2, DB::table("permissions")->where("user_id", $this->userWithViewPerm->id)->count());
     }
 
+    /**
+     * @expectedException \App\Exceptions\AuthException
+     */
+    public function testChangeNoAuth()
+    {
+        $this->permissionsService->change($this->userWithViewPerm->id, $this->gas->id, 'users.view', 'selected');
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testChangeUnknownBehaviour()
+    {
+        $this->permissionsService->change($this->userWithViewPerm->id, $this->gas->id, 'users.view', 'whatever');
+    }
+
+    public function testChange()
+    {
+        $this->actingAs($this->userWithGasPermissionPerm);
+
+        $this->assertCount(1, $this->gas->whoCan("gas.permissions"));
+        $this->assertEquals($this->userWithGasPermissionPerm->id, array_values($this->gas->whoCan("gas.permissions"))[0]);
+
+        $this->permissionsService->change($this->userWithViewPerm->id, $this->gas->id, 'gas.permissions', 'all');
+
+        $this->assertCount(1, $this->gas->whoCan("gas.permissions"));
+        $this->assertEquals("*", array_values($this->gas->whoCan("gas.permissions"))[0]);
+
+        $this->permissionsService->change($this->userWithViewPerm->id, $this->gas->id, 'gas.permissions', 'selected');
+
+        $this->assertCount(3, $this->gas->whoCan("gas.permissions"));
+
+        $expected = array($this->userWithViewPerm->id, $this->userWithSupplierModifyPerm->id, $this->userWithGasPermissionPerm->id);
+        $actual = array_values($this->gas->whoCan("gas.permissions"));
+        $this->assertEquals(asort($expected), asort($actual));
+
+        $this->permissionsService->change($this->userWithViewPerm->id, $this->gas->id, 'gas.permissions', 'except');
+
+        $this->assertCount(0, $this->gas->whoCan("gas.permissions"));
+    }
+
 }
