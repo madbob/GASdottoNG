@@ -160,6 +160,17 @@ class OrdersController extends Controller
             }
         }
 
+        /*
+            Se vengono rimossi dei prodotti dall'ordine, ne elimino tutte le
+            relative prenotazioni sinora avvenute
+        */
+        $removed_products = $order->products()->whereNotIn('id', $new_products)->lists('id')->toArray();
+        foreach($order->bookings as $booking) {
+            $booking->products()->whereIn('product_id', $removed_products)->delete();
+            if ($booking->products->isEmpty())
+                $booking->delete();
+        }
+
         $order->products()->sync($new_products);
 
         $discounted = $request->input('discounted', []);
