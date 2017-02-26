@@ -3,3 +3,5 @@
 @include('commons.textfield', ['obj' => $supplier, 'name' => 'taxcode', 'label' => 'Codice Fiscale'])
 @include('commons.textfield', ['obj' => $supplier, 'name' => 'vat', 'label' => 'Partita IVA'])
 @include('commons.textfield', ['obj' => $supplier, 'name' => 'website', 'label' => 'Sito Web'])
+@include('commons.textarea', ['obj' => $supplier, 'name' => 'payment_method', 'label' => 'Modalità Pagamento'])
+@include('commons.textarea', ['obj' => $supplier, 'name' => 'order_method', 'label' => 'Modalià Avanzamento Ordini'])

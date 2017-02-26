@@ -22,6 +22,9 @@ class CreateSuppliersTable extends Migration
             $table->string('fax')->nullable();
             $table->string('website')->nullable();
 
+            $table->text('order_method');
+            $table->text('payment_method');
+
             $table->string('taxcode')->nullable();
             $table->string('vat')->nullable();
             $table->float('balance', 10, 2)->default(0);
