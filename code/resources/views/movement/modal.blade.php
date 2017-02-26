@@ -39,6 +39,20 @@ if ($obj == null) {
                         'fixed_value' => $obj->amount
                     ])
 
+                    <div class="col-sm-{{ $fieldsize }} col-sm-offset-{{ $labelsize }}">
+                        @if(array_search('App\CreditableTrait', class_uses($obj->sender)) !== false)
+                            <p>
+                                {{ $obj->sender->printableName() }}: {{ $obj->sender->balance }} €
+                            </p>
+                        @endif
+
+                        @if(array_search('App\CreditableTrait', class_uses($obj->target)) !== false)
+                            <p>
+                                {{ $obj->target->printableName() }}: {{ $obj->target->balance }} €
+                            </p>
+                        @endif
+                    </div>
+
                     <div class="form-group">
                         <label for="method" class="col-sm-{{ $labelsize }} control-label">Metodo</label>
                         <div class="col-sm-{{ $fieldsize }}">

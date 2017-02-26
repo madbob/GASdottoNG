@@ -11,7 +11,7 @@ use App\SluggableID;
 
 class Supplier extends Model
 {
-    use AttachableTrait, AllowableTrait, GASModel, SluggableID;
+    use AttachableTrait, AllowableTrait, CreditableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
 

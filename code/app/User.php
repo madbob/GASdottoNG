@@ -12,7 +12,7 @@ use App\SluggableID;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-    use Authenticatable, CanResetPassword, GASModel, SluggableID;
+    use Authenticatable, CanResetPassword, CreditableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
     protected $table = 'users';
