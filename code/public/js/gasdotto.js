@@ -956,7 +956,11 @@ $(document).ready(function() {
         event.preventDefault();
 
         if ($(this).hasClass('active')) {
-            $(this).removeClass('active').next().remove();
+            var item = $(this);
+            item.next().slideUp('normal', function() {
+                $(this).remove();
+                item.removeClass('active');
+            });
         } else {
             $(this).find('a').removeClass('active');
             var node = $('<li>').addClass('list-group-item').addClass('loadable-contents').append(loadingPlaceholder());
@@ -1129,7 +1133,14 @@ $(document).ready(function() {
             $('.loadablelist' + target + ' a').each(function() {
                 $(this).show().next('li').show();
             });
-        } else {
+        }
+        else {
+            /*
+                Qui devo considerare la somma di tutti i filtri che sono stati
+                attivati: se un elemento risulterebbe nascosto a fronte del
+                click su un attributo, potrebbero essercene altri che lo
+                mantengono visibile
+            */
             legend.find('button').removeClass('active');
             $(this).addClass('active');
             var c = $(this).find('span.glyphicon').attr('class');
@@ -1150,6 +1161,16 @@ $(document).ready(function() {
                     $(this).hide().next('li').hide();
             });
         }
+    });
+
+    $('body').on('click', '.list-filters button', function() {
+        var filter = $(this).closest('.list-filters');
+        var target = filter.attr('data-list-target');
+        var attribute = $(this).attr('data-filter-attribute');
+
+        $('.loadablelist' + target + ' a[data-filtered-' + attribute + '=true]').each(function() {
+            $(this).toggleClass('hidden').next('li').toggleClass('hidden');
+        });
     });
 
     $('body').on('submit', '.inner-form', function(event) {

@@ -41,6 +41,7 @@ class ProductsController extends Controller
         $p = new Product();
         $p->supplier_id = $supplier->id;
         $p->active = true;
+        $p->archived = false;
         $this->basicReadFromRequest($p, $request);
         $p->save();
 
@@ -87,6 +88,7 @@ class ProductsController extends Controller
 
         $this->basicReadFromRequest($p, $request);
         $p->active = $request->has('active');
+        $p->archived = $request->has('archived');
         $p->supplier_code = $request->has('supplier_code');
         $p->package_size = $request->input('package_size');
         $p->multiple = $request->input('multiple');

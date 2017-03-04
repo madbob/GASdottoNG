@@ -122,31 +122,31 @@ trait GASModel
                     'test' => function ($obj) {
                         return $obj->status == 'open';
                     },
-                    'text' => 'Ordine aperto',
+                    'text' => 'Prenotazioni Aperte',
                 ],
                 'pause' => (object) [
                     'test' => function ($obj) {
                         return $obj->status == 'suspended';
                     },
-                    'text' => 'Ordine sospeso',
+                    'text' => 'In Sospeso',
                 ],
                 'stop' => (object) [
                     'test' => function ($obj) {
                         return $obj->status == 'closed';
                     },
-                    'text' => 'Ordine chiuso',
+                    'text' => 'Prenotazioni Chiuse',
                 ],
                 'step-forward' => (object) [
                     'test' => function ($obj) {
                         return $obj->status == 'shipped';
                     },
-                    'text' => 'Ordine consegnato',
+                    'text' => 'Consegnato',
                 ],
                 'eject' => (object) [
                     'test' => function ($obj) {
                         return $obj->status == 'archived';
                     },
-                    'text' => 'Ordine archiviato',
+                    'text' => 'Archiviato',
                 ],
             ],
             'Order' => [
@@ -166,31 +166,31 @@ trait GASModel
                     'test' => function ($obj) {
                         return $obj->status == 'open';
                     },
-                    'text' => 'Ordine aperto',
+                    'text' => 'Prenotazioni Aperte',
                 ],
                 'pause' => (object) [
                     'test' => function ($obj) {
                         return $obj->status == 'suspended';
                     },
-                    'text' => 'Ordine sospeso',
+                    'text' => 'In Sospeso',
                 ],
                 'stop' => (object) [
                     'test' => function ($obj) {
                         return $obj->status == 'closed';
                     },
-                    'text' => 'Ordine chiuso',
+                    'text' => 'Prenotazioni Chiuse',
                 ],
                 'step-forward' => (object) [
                     'test' => function ($obj) {
                         return $obj->status == 'shipped';
                     },
-                    'text' => 'Ordine consegnato',
+                    'text' => 'Consegnato',
                 ],
                 'eject' => (object) [
                     'test' => function ($obj) {
                         return $obj->status == 'archived';
                     },
-                    'text' => 'Ordine archiviato',
+                    'text' => 'Archiviato',
                 ],
             ],
             'AggregateBooking' => [

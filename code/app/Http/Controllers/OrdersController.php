@@ -106,7 +106,7 @@ class OrdersController extends Controller
         $o->aggregate_id = $a->id;
         $o->save();
 
-        $o->products()->sync($supplier->products()->where('active', '=', true)->get());
+        $o->products()->sync($supplier->products()->where('active', '=', true)->where('archived', '=', false)->get());
 
         return $this->successResponse([
             'id' => $a->id,

@@ -65,10 +65,21 @@
     <hr />
 @endif
 
-@include('commons.iconslegend', ['class' => 'Product', 'target' => '#product-list-' . $supplier->id])
-
 <div class="row">
     <div class="col-md-12">
-        @include('commons.loadablelist', ['identifier' => 'product-list-' . $supplier->id, 'items' => $supplier->products])
+        @include('commons.loadablelist', [
+            'identifier' => 'product-list-' . $supplier->id,
+            'items' => $supplier->all_products,
+            'legend' => (object)[
+                'class' => 'Product'
+            ],
+            'filters' => [
+                'archived' => (object)[
+                    'icon' => 'inbox',
+                    'label' => 'Archiviati',
+                    'value' => true
+                ]
+            ]
+        ])
     </div>
 </div>

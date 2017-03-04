@@ -17,7 +17,8 @@ class CreateProductsTable extends Migration
             $table->string('barcode')->nullable();
             $table->string('category_id');
             $table->string('measure_id');
-            $table->boolean('active');
+            $table->boolean('active')->default(true);
+            $table->boolean('archived')->default(false);
             $table->text('description')->nullable();
             $table->string('picture')->nullable();
 
