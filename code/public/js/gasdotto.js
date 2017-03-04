@@ -1396,8 +1396,7 @@ $(document).ready(function() {
             if (m.length != 0) {
                 var maximum = parseFloatC(m.val());
                 if (maximum != 0 && booked > maximum) {
-                    row.addClass('has-error');
-                    booked = 0;
+                    row.addClass('has-warning');
                     wrong = true;
                 }
             }
@@ -1413,7 +1412,7 @@ $(document).ready(function() {
             }
 
             if (wrong == false)
-                row.removeClass('has-error');
+                row.removeClass('has-error').removeClass('has-warning');
         }
 
         var editor = row.closest('.booking-editor');
@@ -1430,7 +1429,7 @@ $(document).ready(function() {
             $(this).val('0');
 
     }).on('focus', '.booking-product-quantity input', function() {
-        $(this).closest('.booking-product').removeClass('.has-error');
+        $(this).closest('.booking-product').removeClass('.has-error').removeClass('has-warning');
 
     }).on('click', '.booking-product .add-variant', function(e) {
         e.preventDefault();

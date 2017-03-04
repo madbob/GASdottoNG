@@ -143,7 +143,7 @@ class Product extends Model
             $details[] = sprintf('Minimo: %.02f', $this->min_quantity);
         }
         if ($this->max_quantity != 0) {
-            $details[] = sprintf('Massimo: %.02f', $this->max_quantity);
+            $details[] = sprintf('Massimo Consigliato: %.02f', $this->max_quantity);
         }
         if ($this->max_available != 0) {
             $details[] = sprintf('Disponibile: %.02f (%.02f totale)', $this->stillAvailable($order), $this->max_available);

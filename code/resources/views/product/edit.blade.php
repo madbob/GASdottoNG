@@ -31,7 +31,7 @@
                         @include('commons.decimalfield', ['obj' => $product, 'name' => 'min_quantity', 'label' => 'Minimo'])
                     </div>
                     <div class="col-md-6">
-                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'max_quantity', 'label' => 'Massimo'])
+                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'max_quantity', 'label' => 'Massimo Consigliato'])
                     </div>
                 </div>
 
