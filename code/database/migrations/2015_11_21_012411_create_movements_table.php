@@ -3,6 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
+use DB;
+
 class CreateMovementsTable extends Migration
 {
     public function up()
@@ -11,7 +13,8 @@ class CreateMovementsTable extends Migration
             $table->increments('id');
             $table->timestamps();
 
-            $table->date('registration_date');
+            $table->date('date')->default(DB::raw('NOW()'));
+            $table->date('registration_date')->default(DB::raw('NOW()'));
             $table->string('registerer_id');
 
             $table->string('sender_type');

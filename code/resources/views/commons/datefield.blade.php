@@ -1,3 +1,10 @@
+<?php
+
+if (isset($defaults_now) == false)
+    $defaults_now = false;
+
+?>
+
 <div class="form-group">
     @if($squeeze == false)
         <label for="{{ $prefix . $name }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
@@ -10,13 +17,15 @@
                 name="{{ $prefix . $name }}"
 
                 value="<?php
-                    if ($obj) {
-                        if ($obj->$name == '0000-00-00') {
-                            echo '';
-                        } else {
-                            echo $obj->printableDate($name);
-                        }
-                    }
+                    $current_value = '';
+
+                    if ($obj && $obj->$name != '0000-00-00')
+                        $current_value = $obj->printableDate($name);
+
+                    if (empty($current_value) && $defaults_now)
+                        $current_value = ucwords(strftime('%A %d %B %G', time()));
+
+                    echo $current_value;
                 ?>"
 
                 @if(isset($mandatory) && $mandatory == true)

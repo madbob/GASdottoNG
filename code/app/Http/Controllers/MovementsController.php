@@ -31,6 +31,7 @@ class MovementsController extends Controller
             }
         }
 
+        $obj->date = decodeDate($request->input('date'));
         $obj->registration_date = date('Y-m-d G:i:s');
         $obj->registerer_id = $user->id;
         $obj->sender_type = $request->input('sender_type');

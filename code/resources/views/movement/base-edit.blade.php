@@ -27,6 +27,13 @@ foreach (App\Movement::types() as $method_id => $info) {
 <div class="selectors">
 </div>
 
+@include('commons.datefield', [
+    'obj' => null,
+    'name' => 'date',
+    'label' => 'Data',
+    'defaults_now' => true
+])
+
 @include('commons.textfield', [
     'obj' => null,
     'name' => 'identifier',

@@ -66,6 +66,13 @@ if ($obj == null) {
                         </div>
                     </div>
 
+                    @include('commons.datefield', [
+                        'obj' => $obj,
+                        'name' => 'date',
+                        'label' => 'Data',
+                        'defaults_now' => true
+                    ])
+
                     @include('commons.textfield', [
                         'obj' => $obj,
                         'name' => 'identifier',
