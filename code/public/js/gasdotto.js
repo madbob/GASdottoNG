@@ -1049,6 +1049,13 @@ $(document).ready(function() {
         }, 500);
     });
 
+    $('body').on('focus', '.date[data-enforce-after]', function() {
+        var select = $(this).attr('data-enforce-after');
+        var target = $(this).closest('form').find(select);
+        console.log(target.val());
+        $(this).datepicker('setStartDate', target.val());
+    });
+
     $('body').on('change', '.select-fetcher', function(event) {
         var url = $(this).find('option:selected').val();
         var targetid = $(this).attr('data-fetcher-target');

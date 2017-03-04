@@ -22,8 +22,30 @@ if ($user->gas->userCan('gas.super')) {
     'objects' => $suppliers
 ])
 
-@include('commons.datefield', ['obj' => $order, 'name' => 'start', 'label' => 'Data Apertura', 'mandatory' => true])
-@include('commons.datefield', ['obj' => $order, 'name' => 'end', 'label' => 'Data Chiusura', 'mandatory' => true])
-@include('commons.datefield', ['obj' => $order, 'name' => 'shipping', 'label' => 'Data Consegna'])
+@include('commons.datefield', [
+    'obj' => $order,
+    'name' => 'start',
+    'label' => 'Data Apertura',
+    'mandatory' => true
+])
+
+@include('commons.datefield', [
+    'obj' => $order,
+    'name' => 'end',
+    'label' => 'Data Chiusura',
+    'mandatory' => true,
+    'extras' => [
+        'data-enforce-after' => '.date[name=start]'
+    ]
+])
+
+@include('commons.datefield', [
+    'obj' => $order,
+    'name' => 'shipping',
+    'label' => 'Data Consegna',
+    'extras' => [
+        'data-enforce-after' => '.date[name=end]'
+    ]
+])
 
 @include('commons.orderstatus', ['order' => $order])

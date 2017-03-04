@@ -36,6 +36,12 @@ if (isset($defaults_now) == false)
                     placeholder="{{ $label }}"
                 @endif
 
+                @if(!empty($extras))
+                    @foreach ($extras as $extra_key => $extra_value)
+                        {{ $extra_key }}='{{ $extra_value }}'
+                    @endforeach
+                @endif
+
                 autocomplete="off">
 
             <div class="input-group-addon">
