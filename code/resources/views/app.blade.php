@@ -21,6 +21,10 @@
         <meta name="csrf-token" content="{{ csrf_token() }}"/>
     </head>
     <body>
+        <div id="preloader">
+            <img src="{{ asset('images/loading.svg') }}">
+        </div>
+
         <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">

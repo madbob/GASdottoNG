@@ -1,6 +1,20 @@
 body {
   padding-top: 70px; }
 
+#preloader {
+  position: absolute;
+  background: white;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100; }
+  #preloader img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); }
+
 #main-contents {
   margin-top: 10px; }
 

@@ -906,6 +906,8 @@ function setupHelp() {
 */
 
 $(document).ready(function() {
+    $('#preloader').remove();
+
     $.ajaxSetup({
         cache: false,
         headers: {
@@ -1052,7 +1054,6 @@ $(document).ready(function() {
     $('body').on('focus', '.date[data-enforce-after]', function() {
         var select = $(this).attr('data-enforce-after');
         var target = $(this).closest('form').find(select);
-        console.log(target.val());
         $(this).datepicker('setStartDate', target.val());
     });
 
