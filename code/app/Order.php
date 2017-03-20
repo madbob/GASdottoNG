@@ -45,7 +45,12 @@ class Order extends Model
 
     public function printableName()
     {
-        return $this->supplier->name;
+        $ret = $this->supplier->name;
+
+        if (!empty($this->comment))
+            $ret .= ' - ' . $this->comment;
+
+        return $ret;
     }
 
     public function printableHeader()

@@ -89,6 +89,7 @@ class OrdersController extends Controller
         $o->supplier_id = $request->input('supplier_id');
 
         $now = date('Y-m-d');
+        $o->comment = $request->input('comment');
         $o->start = decodeDate($request->input('start'));
         $o->end = decodeDate($request->input('end'));
         $o->status = $request->input('status');
@@ -131,6 +132,7 @@ class OrdersController extends Controller
             return $this->errorResponse('Non autorizzato');
         }
 
+        $order->comment = $request->input('comment');
         $order->start = decodeDate($request->input('start'));
         $order->end = decodeDate($request->input('end'));
         $order->status = $request->input('status');

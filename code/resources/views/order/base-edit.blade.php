@@ -22,6 +22,12 @@ if ($user->gas->userCan('gas.super')) {
     'objects' => $suppliers
 ])
 
+@include('commons.textfield', [
+    'obj' => $order,
+    'name' => 'comment',
+    'label' => 'Commento'
+])
+
 @include('commons.datefield', [
     'obj' => $order,
     'name' => 'start',

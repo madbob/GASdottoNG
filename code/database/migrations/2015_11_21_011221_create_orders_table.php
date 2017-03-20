@@ -13,9 +13,10 @@ class CreateOrdersTable extends Migration
 
             $table->string('supplier_id');
             $table->integer('aggregate_id')->unsigned();
+            $table->string('comment')->default('');
             $table->date('start');
             $table->date('end');
-            $table->date('shipping');
+            $table->date('shipping')->nullable();
             $table->enum('status', ['suspended', 'open', 'closed', 'shipped', 'archived']);
             $table->string('discount')->default('');
             $table->integer('payment_id')->nullable();

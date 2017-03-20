@@ -39,29 +39,37 @@ Password di accesso dell'utente. Lasciando in bianco questo campo, la password a
 
 # Nome
 
-.
+Nome del fornitore.
 
 # Descrizione
 
-.
+Breve descrizione leggibile da tutti gli utenti.
 
 # Codice Fiscale
 
-.
+Codice fiscale del fornitore.
 
 # Partita IVA
 
-.
+Partita IVA del fornitore.
 
 # Sito Web
 
-.
+Indirizzo del sito web.
+
+# Modalità Pagamento
+
+Eventuale nota sulle modalità di pagamento al fornitore. Visibile solo ai referenti.
+
+# Modalià Avanzamento Ordini
+
+Eventuale nota sulle modalità per sottoporre gli ordini al fornitore. Visibile solo ai referenti.
 
 ## .product-editor
 
 # Nome
 
-.
+Nome del prodotto.
 
 # Prezzo Unitario
 
@@ -77,19 +85,27 @@ Sconto applicabile occasionalmente sul prezzo del prodotto. Se espresso con un n
 
 # Categoria
 
-.
+Categoria assegnata al prodotto.
 
 # Unità di Misura
 
-.
+Unità di misura assegnata al prodotto. Attenzione: può influenzare l'abilitazione di alcune variabili.
 
 # Descrizione
 
-.
+Breve descrizione del prodotto.
+
+# Codice Fornitore
+
+Eventuale codice di riferimento del prodotto per il fornitore, viene incluso nei documenti esportati.
 
 # Ordinabile
 
-.
+Indica se il prodotto potrà essere ordinabile o meno all'interno dei nuovi ordini per il fornitore. Lo stato dei singoli prodotti potrà comunque essere cambiato da parte dei referenti anche all'interno di un ordine aperto.
+
+# Archiviato
+
+Un prodotto archiviato viene nascosto nell'elenco dei prodotti del fornitore, e non rientra (neppure come non ordinabile) all'interno dei nuovi ordini. Da usare per prodotti fuori listino, per mantenerne un riferimento storico.
 
 # Pezzatura
 
@@ -105,7 +121,9 @@ Utile per gestire prodotti distribuiti in pezzi, prenotabili dagli utenti in num
 
 # Variabile
 
-.
+Un prodotto "variabile" viene ordinato in pezzi la cui dimensione definitiva non è esattamente nota al momento della prenotazione. I prodotti così identificati attiveranno un ulteriore pannello in fase di consegna, per calcolarne il prezzo in funzione della pezzatura (vedi informazioni specifiche).
+
+Da usare per prodotti consegnati in pezzi non sempre uniformi, come il formaggio o la carne, che sono pesati al momento della consegna.
 
 # Confezione
 
@@ -119,7 +137,11 @@ Se diverso da 0, il prodotto è prenotabile solo per multipli di questo valore. 
 
 Se diverso da 0, il prodotto è prenotabile solo per una quantità superiore a quella indicata.
 
-# Massimo
+# Massimo Consigliato
+
+Se diverso da 0, se viene prenotata una quantità superiore di quella indicata viene mostrato un warning.
+
+# Disponibile
 
 Se diverso da 0, questa è la quantità massima di prodotto che complessivamente può essere prenotata in un ordine. In fase di prenotazione gli utenti vedranno quanto è già stato sinora prenotato in tutto.
 

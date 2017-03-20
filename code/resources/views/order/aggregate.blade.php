@@ -35,6 +35,7 @@ $panel_rand_wrap = rand();
                             <div class="row">
                                 <div class="col-md-4">
                                     @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => 'Fornitore'])
+                                    @include('commons.textfield', ['obj' => $order, 'name' => 'comment', 'label' => 'Commento'])
                                     @include('commons.datefield', ['obj' => $order, 'name' => 'start', 'label' => 'Data Apertura', 'mandatory' => true])
 
                                     @include('commons.datefield', [
