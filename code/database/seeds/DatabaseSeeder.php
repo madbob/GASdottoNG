@@ -13,8 +13,6 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        Model::unguard();
-
         DB::table('users')->delete();
         DB::table('password_resets')->delete();
         DB::table('configs')->delete();
@@ -88,7 +86,5 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $notification->users()->attach($admin->id, ['done' => false]);
-
-        Model::reguard();
     }
 }

@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration
             $table->integer('family_members')->unsigned()->nullable();
             $table->string('picture')->nullable();
             $table->string('taxcode')->nullable();
-            $table->date('member_since');
+            $table->date('member_since')->useCurrent();
             $table->date('leaving_date')->nullable();
             $table->string('card_number')->nullable();
             $table->datetime('last_login')->nullable();

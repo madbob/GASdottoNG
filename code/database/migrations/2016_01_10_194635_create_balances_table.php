@@ -12,7 +12,7 @@ class CreateBalancesTable extends Migration
             $table->timestamps();
 
             $table->string('gas_id');
-            $table->datetime('date');
+            $table->datetime('date')->useCurrent();
             $table->decimal('bank', 6, 2)->default(0);
             $table->decimal('cash', 6, 2)->default(0);
             $table->decimal('suppliers', 6, 2)->default(0);

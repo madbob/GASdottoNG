@@ -11,8 +11,8 @@ class CreateMovementsTable extends Migration
             $table->increments('id');
             $table->timestamps();
 
-            $table->date('date');
-            $table->date('registration_date');
+            $table->date('date')->useCurrent();
+            $table->date('registration_date')->useCurrent();
             $table->string('registerer_id');
 
             $table->string('sender_type');

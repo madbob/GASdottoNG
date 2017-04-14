@@ -13,8 +13,6 @@ class DemoSeeder extends Seeder
 {
     public function run()
     {
-        Model::unguard();
-
         $gas = Gas::where('name', '!=', '')->first();
 
         $gas->name = 'GAS Demo';
@@ -67,7 +65,5 @@ class DemoSeeder extends Seeder
                 ]);
             }
         }
-
-        Model::reguard();
     }
 }

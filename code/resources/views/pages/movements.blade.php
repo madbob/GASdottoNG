@@ -52,12 +52,12 @@
         </ul>
 
         <div class="pull-right">
-            <form class="form-inline iblock inner-form password-protected" method="POST" action="{{ url() }}">
+            <form class="form-inline iblock inner-form password-protected" method="POST" action="{{ url('') }}">
                 <div class="form-group">
                     <button type="submit" class="btn btn-danger">Ricalcola Saldi</button>
                 </div>
             </form>
-            <form class="form-inline iblock inner-form password-protected" method="POST" action="{{ url() }}">
+            <form class="form-inline iblock inner-form password-protected" method="POST" action="{{ url('') }}">
                 <div class="form-group">
                     <button type="submit" class="btn btn-danger">Chiudi Bilancio</button>
                 </div>

@@ -14,7 +14,7 @@ class CreateNotificationsTable extends Migration
             $table->string('creator_id');
             $table->text('content');
             $table->boolean('mailed');
-            $table->date('start_date');
+            $table->date('start_date')->useCurrent();
             $table->date('end_date')->nullable();
 
             $table->index('id');

@@ -9,7 +9,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        Artisan::call('migrate');
+        // Artisan::call('migrate');
     }
 
     public function register()
