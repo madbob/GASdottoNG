@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Database\Eloquent\Model;
 
 class UsersServiceTest extends TestCase
 {
@@ -16,28 +17,31 @@ class UsersServiceTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+        Model::unguard();
 
         $this->gas = factory(App\Gas::class)->create();
+
+        $view_role = App\Role::create([
+            'name' => 'Viewer',
+            'actions' => 'users.view'
+        ]);
 
         $this->userWithViewPerm = factory(App\User::class)->create([
             'gas_id' => $this->gas->id
         ]);
 
-        factory(App\Permission::class)->create([
-            'user_id' => $this->userWithViewPerm->id,
-            'target_id' => $this->gas->id,
-            'action' => 'users.view'
+        $this->userWithViewPerm->addRole($view_role, $this->gas);
+
+        $admin_role = App\Role::create([
+            'name' => 'Admin',
+            'actions' => 'users.admin'
         ]);
 
         $this->userWithAdminPerm = factory(App\User::class)->create([
             'gas_id' => $this->gas->id
         ]);
 
-        factory(App\Permission::class)->create([
-            'user_id' => $this->userWithAdminPerm->id,
-            'target_id' => $this->gas->id,
-            'action' => 'users.admin'
-        ]);
+        $this->userWithAdminPerm->addRole($admin_role, $this->gas);
 
         $this->userWithNoPerms = factory(App\User::class)->create([
             'gas_id' => $this->gas->id
@@ -51,6 +55,8 @@ class UsersServiceTest extends TestCase
         factory(App\User::class, 3)->create([
             'gas_id' => $otherGas->id
         ]);
+
+        Model::reguard();
 
         $this->usersService = new \App\Services\UsersService();
     }
