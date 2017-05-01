@@ -29,7 +29,14 @@ function generalInit() {
         $(this).val(parseFloatC($(this).val()).toFixed(2));
     });
 
-    $('input:checkbox[data-toggle=toggle]').bootstrapToggle().removeAttr('data-toggle');
+    function setupCheckboxes() {
+        var checkboxes = $('input:checkbox[data-toggle=toggle]').slice(0, 200);
+        if (checkboxes.length != 0) {
+            checkboxes.bootstrapToggle().removeAttr('data-toggle');
+            setTimeout(setupCheckboxes, 100);
+        }
+    }
+    setupCheckboxes();
 
     $('.nav-tabs a').click(function(e) {
         e.preventDefault();
