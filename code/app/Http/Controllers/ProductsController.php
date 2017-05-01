@@ -29,6 +29,20 @@ class ProductsController extends Controller
         $obj->measure_id = $request->input('measure_id');
     }
 
+    private function enforceMeasure($product, $request)
+    {
+        if ($product->measure->discrete) {
+            $product->portion_quantity = 0;
+            $product->variable = false;
+        }
+        else {
+            $product->portion_quantity = $request->input('portion_quantity', 0);
+            $product->variable = $request->has('variable') ? true : false;
+        }
+
+        return $product;
+    }
+
     public function store(Request $request)
     {
         DB::beginTransaction();
@@ -101,14 +115,7 @@ class ProductsController extends Controller
         $p->min_quantity = $request->input('min_quantity');
         $p->max_quantity = $request->input('max_quantity');
         $p->max_available = $request->input('max_available');
-
-        if ($p->measure->discrete) {
-            $p->portion_quantity = 0;
-            $p->variable = false;
-        } else {
-            $p->portion_quantity = $request->input('portion_quantity');
-            $p->variable = $request->has('variable') ? true : false;
-        }
+        $p = $this->enforceMeasure($p, $request);
 
         $p->save();
 
@@ -117,6 +124,29 @@ class ProductsController extends Controller
             'header' => $p->printableHeader(),
             'url' => url('products/'.$p->id),
         ]);
+    }
+
+    public function massiveUpdate(Request $request)
+    {
+        DB::beginTransaction();
+
+        $user = Auth::user();
+
+        $product_ids = $request->input('id', []);
+        foreach($product_ids as $id) {
+            $product = Product::with('supplier')->findOrFail($id);
+            if ($user->can('supplier.modify', $product->supplier) == false)
+                continue;
+
+            $product->name = $request->input($id . '-name', $product->name);
+            $product->price = $request->input($id . '-price', $product->price);
+            $product->transport = $request->input($id . '-transport', $product->transport);
+            $product->measure_id = $request->input($id . '-measure_id', $product->measure_id);
+            $product = $this->enforceMeasure($product, $request);
+            $product->save();
+        }
+
+        return $this->successResponse();
     }
 
     public function destroy($id)

@@ -58,7 +58,10 @@ if ($triggering_modal !== false) {
 ?>
 
 <div class="form-group">
-    <label for="{{ $prefix . $name . $postfix }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
+    @if($squeeze == false)
+        <label for="{{ $prefix . $name . $postfix }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
+    @endif
+
     <div class="col-sm-{{ $fieldsize }}">
         <select class="{{ $select_class }}"
             @if($triggering_modal !== false)

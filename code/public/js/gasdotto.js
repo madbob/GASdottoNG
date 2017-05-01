@@ -36,6 +36,12 @@ function generalInit() {
         $(this).tab('show');
     });
 
+    $('.middle-tabs').on('click', '.btn', function() {
+        var target = $(this).attr('data-target');
+        $(this).addClass('active').siblings().removeClass('active');
+        $(target).addClass('active').siblings().removeClass('active');
+    });
+
     $('input:file.immediate-run').each(function() {
         var i = $(this);
         i.fileupload({
@@ -391,6 +397,17 @@ function currentLoadableUniqueSelector(target)
 function currentLoadableLoaded(target)
 {
     return $(target).closest('li.list-group-item').prev('a').attr('data-element-id');
+}
+
+function reloadCurrentLoadable(target)
+{
+    listid = currentLoadableUniqueSelector(target);
+    var current = $(listid);
+    var toggle = current.prev('.loadable-item');
+    current.slideUp(500, function() {
+        $(this).remove();
+        toggle.removeClass('active').click();
+    });
 }
 
 /*******************************************************************************
@@ -938,11 +955,12 @@ $(document).ready(function() {
 
         if ($(this).hasClass('active')) {
             var item = $(this);
-            item.next().slideUp('normal', function() {
+            item.next().slideUp(500, function() {
                 $(this).remove();
                 item.removeClass('active');
             });
-        } else {
+        }
+        else {
             $(this).find('a').removeClass('active');
             var node = $('<li>').addClass('list-group-item').addClass('loadable-contents').attr('data-random-identifier', randomString(10)).append(loadingPlaceholder());
             $(this).addClass('active').after(node);
@@ -1025,7 +1043,7 @@ $(document).ready(function() {
         setTimeout(function() {
             var activated = list.find('a.loadable-item.active');
             activated.each(function() {
-                $(this).click().click();
+                $(this).click().delay(600).click();
             });
         }, 500);
     });
