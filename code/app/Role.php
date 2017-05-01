@@ -14,6 +14,8 @@ class Role extends Model
 {
     use GASModel;
 
+    private $targets = null;
+
     public function users()
     {
         return $this->belongsToMany('App\User')->orderBy('lastname', 'asc')->with('roles');
@@ -21,27 +23,29 @@ class Role extends Model
 
     public function getTargetsAttribute()
     {
-        $targets = new Collection();
+        if ($this->targets == null) {
+            $this->targets = new Collection();
 
-        $permissions = self::allPermissions();
+            $permissions = self::allPermissions();
 
-        foreach ($permissions as $class => $types) {
-            $found = false;
+            foreach ($permissions as $class => $types) {
+                $found = false;
 
-            foreach($types as $t => $label) {
-                if ($this->enabledAction($t)) {
-                    $found = true;
-                    break;
+                foreach($types as $t => $label) {
+                    if ($this->enabledAction($t)) {
+                        $found = true;
+                        break;
+                    }
                 }
-            }
 
-            if ($found == true) {
-                $all = $class::orderBy('name', 'asc')->get();
-                $targets = $targets->merge($all);
+                if ($found == true) {
+                    $all = $class::orderBy('name', 'asc')->get();
+                    $this->targets = $this->targets->merge($all);
+                }
             }
         }
 
-        return $targets;
+        return $this->targets;
     }
 
     /*
