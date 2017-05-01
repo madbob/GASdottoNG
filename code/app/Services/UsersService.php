@@ -102,6 +102,11 @@ class UsersService
             $this->setIfSet($user, $request, 'family_members');
             $this->setIfSet($user, $request, 'card_number');
 
+            /*
+                TODO Questo sarà da sistemare quando verrà debitamente gestito l'indirizzo
+            */
+            $this->address = '';
+
             $this->transformAndSetIfSet($user, $request, 'password', function ($password) {
                 if ($password == '') {
                     return $password;
@@ -147,6 +152,11 @@ class UsersService
         $user->email = $request['email'];
         $user->password = Hash::make($request['password']);
         $user->balance = 0;
+
+        /*
+            TODO Questo sarà da sistemare quando verrà debitamente gestito l'indirizzo
+        */
+        $user->address = '';
 
         DB::transaction(function () use ($user) {
             $user->save();

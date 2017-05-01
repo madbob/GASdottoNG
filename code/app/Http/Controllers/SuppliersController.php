@@ -25,6 +25,11 @@ class SuppliersController extends Controller
         $obj->vat = $request->input('vat');
         $obj->description = $request->input('description');
         $obj->website = $request->input('website');
+
+        /*
+            TODO Questo sarà da sistemare quando verrà debitamente gestito l'indirizzo
+        */
+        $obj->address = '';
     }
 
     public function index()
