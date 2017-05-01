@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->date('birthday')->nullable();
             $table->string('phone')->nullable();
-            $table->json('address')->nullable();
+            $table->text('address');
             $table->integer('family_members')->unsigned()->nullable();
             $table->string('picture')->nullable();
             $table->string('taxcode')->nullable();
