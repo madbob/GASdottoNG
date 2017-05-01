@@ -37,6 +37,7 @@ Route::resource('users', 'UsersController');
 Route::resource('roles', 'RolesController');
 Route::resource('suppliers', 'SuppliersController');
 Route::resource('products', 'ProductsController');
+Route::resource('deliveries', 'DeliveriesController');
 Route::resource('categories', 'CategoriesController');
 Route::resource('measures', 'MeasuresController');
 Route::resource('variants', 'VariantsController');

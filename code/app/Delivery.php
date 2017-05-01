@@ -15,4 +15,9 @@ class Delivery extends Model
     use GASModel, SluggableID;
 
     public $incrementing = false;
+
+    public function users()
+    {
+        return $this->hasMany('App\User', 'preferred_delivery_id');
+    }
 }

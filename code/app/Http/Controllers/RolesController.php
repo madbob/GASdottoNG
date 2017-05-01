@@ -84,6 +84,10 @@ class RolesController extends Controller
         }
 
         $r = Role::findOrFail($id);
+
+        foreach($r->users as $u)
+            $u->removeRole($r);
+        
         $r->delete();
 
         return $this->successResponse();

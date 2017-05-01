@@ -13,6 +13,17 @@
             @endif
 
             @include('commons.staticdatefield', ['obj' => $user, 'name' => 'last_login', 'label' => 'Ultimo Accesso'])
+
+            @include('commons.selectobjfield', [
+                'obj' => $user,
+                'name' => 'preferred_delivery_id',
+                'objects' => App\Delivery::orderBy('name', 'asc')->get(),
+                'label' => 'Luogo di Consegna',
+                'extra_selection' => [
+                    '0' => 'Nessuno'
+                ]
+            ])
+
             <hr/>
             @include('commons.permissionsviewer', ['object' => $user])
         </div>

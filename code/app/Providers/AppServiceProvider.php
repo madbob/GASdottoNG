@@ -7,6 +7,7 @@ use Artisan;
 
 use App\User;
 use App\Role;
+use App\Delivery;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,6 +19,12 @@ class AppServiceProvider extends ServiceProvider
             $default_roles = Role::where('always', true)->get();
             foreach($default_roles as $dr) {
                 $user->addRole($dr, $user->gas);
+            }
+
+            $fallback_delivery = Delivery::where('default', true)->first();
+            if ($fallback_delivery != null) {
+                $user->preferred_delivery_id = $fallback_delivery->id;
+                $user->save();
             }
         });
     }

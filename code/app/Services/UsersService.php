@@ -101,6 +101,7 @@ class UsersService
             $this->setIfSet($user, $request, 'taxcode');
             $this->setIfSet($user, $request, 'family_members');
             $this->setIfSet($user, $request, 'card_number');
+            $this->setIfSet($user, $request, 'preferred_delivery_id');
 
             /*
                 TODO Questo sarà da sistemare quando verrà debitamente gestito l'indirizzo

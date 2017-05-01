@@ -11,7 +11,7 @@ if (isset($target_update) == false) {
 <div class="modal fade" id="create{{ ucfirst($typename) }}" tabindex="-1" role="dialog" aria-labelledby="create{{ ucfirst($typename) }}">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <form class="form-horizontal creating-form" method="POST" action="{{ $targeturl }}" data-toggle="validator">
+            <form class="form-horizontal creating-form" method="POST" action="/{{ $targeturl }}" data-toggle="validator">
                 <input type="hidden" name="update-list" value="{{ $target_update }}">
                 @if(isset($extra))
                     @foreach($extra as $key => $value)
