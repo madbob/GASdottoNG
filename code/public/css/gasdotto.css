@@ -1,3 +1,4 @@
+@charset "UTF-8";
 body {
   padding-top: 70px; }
 
@@ -93,5 +94,50 @@ table label {
 
 .icons-legend {
   margin-bottom: 10px; }
+
+/*
+    Questo è per creare degli alias al glyphicon king, e poter assegnare ad ogni
+    ruolo una diversa icona (o, almeno, una diversa classe) senza sapere a
+    priori quanti sono. Cfr. GASModel::iconsMap()
+*/
+.glyphicon-king0:before {
+  content: "\e211"; }
+
+.glyphicon-king1:before {
+  content: "\e211"; }
+
+.glyphicon-king2:before {
+  content: "\e211"; }
+
+.glyphicon-king3:before {
+  content: "\e211"; }
+
+.glyphicon-king4:before {
+  content: "\e211"; }
+
+.glyphicon-king5:before {
+  content: "\e211"; }
+
+.glyphicon-king6:before {
+  content: "\e211"; }
+
+.glyphicon-king7:before {
+  content: "\e211"; }
+
+.glyphicon-king8:before {
+  content: "\e211"; }
+
+.glyphicon-king9:before {
+  content: "\e211"; }
+
+.dense-list ul {
+  height: 710px;
+  overflow-x: hidden; }
+.dense-list .nav > li > a {
+  padding-top: 5px;
+  padding-bottom: 5px; }
+.dense-list .list-group-item {
+  padding-top: 5px;
+  padding-bottom: 5px; }
 
 /*# sourceMappingURL=gasdotto.css.map */

@@ -1,7 +1,7 @@
 <?php
 
 $more_orders = ($aggregate->orders->count() > 1);
-$handling_movements = $currentgas->userHas('movements.admin');
+$handling_movements = App\Role::someone('movements.admin', $currentgas);
 $tot_amount = 0;
 $tot_delivered = [];
 $rand = rand();

@@ -24,7 +24,7 @@ class UsersService
         $this->ensureAuth();
 
         $user = Auth::user();
-        if ($user->gas->userCan('users.admin|users.view')) {
+        if ($user->can('users.admin', $user->gas) || $user->can('users.view', $user->gas)) {
             return;
         }
 
@@ -36,7 +36,7 @@ class UsersService
         $this->ensureAuth();
 
         $user = Auth::user();
-        if ($user->gas->userCan('users.admin')) {
+        if ($user->can('users.admin', $user->gas)) {
             return;
         }
 

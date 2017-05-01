@@ -4,14 +4,14 @@
 
 <div class="row">
     <div class="col-md-12">
-        @if($currentgas->userCan('notifications.admin'))
+        @can('notifications.admin', $currentgas)
             @include('commons.addingbutton', [
                 'template' => 'notification.base-edit',
                 'typename' => 'notification',
                 'typename_readable' => 'Notifica',
                 'targeturl' => 'notifications'
             ])
-        @endif
+        @endcan
     </div>
 
     <div class="clearfix"></div>

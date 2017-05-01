@@ -10,6 +10,7 @@ use Theme;
 use App\Notification;
 use App\User;
 use App\Order;
+use App\Role;
 
 class NotificationsController extends Controller
 {
@@ -21,7 +22,7 @@ class NotificationsController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if ($user->gas->userCan('notifications.admin') == true) {
+        if ($user->can('notifications.admin', $user->gas) == true) {
             $data['notifications'] = Notification::orderBy('start_date', 'desc')->take(20)->get();
         } else {
             $data['notifications'] = $user->allnotifications;
@@ -35,7 +36,7 @@ class NotificationsController extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
-        if ($user->gas->userCan('notifications.admin') == false) {
+        if ($user->can('notifications.admin', $user->gas) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
@@ -67,7 +68,7 @@ class NotificationsController extends Controller
                     if ($u == 'special::referrers') {
                         $us = User::get();
                         foreach ($us as $u) {
-                            if ($user->gas->userHas('supplier.add|supplier.modify')) {
+                            if ($us->can('supplier.add', $us->gas) || $us->can('supplier.modify')) {
                                 $map[] = $u->id;
                             }
                         }
@@ -102,7 +103,7 @@ class NotificationsController extends Controller
         $n = Notification::findOrFail($id);
 
         $user = Auth::user();
-        if ($user->gas->userCan('notifications.admin') == false && $n->hasUser($user) == false) {
+        if ($user->can('notifications.admin', $user->can) == false && $n->hasUser($user) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 

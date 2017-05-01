@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -12,7 +13,7 @@ use App\SluggableID;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-    use Authenticatable, CanResetPassword, CreditableTrait, GASModel, SluggableID;
+    use Authenticatable, Authorizable, CanResetPassword, CreditableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
     protected $table = 'users';
@@ -22,6 +23,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function gas()
     {
         return $this->belongsTo('App\Gas');
+    }
+
+    public function roles($target = null)
+    {
+        return $this->belongsToMany('App\Role')->orderBy('name', 'asc')->withPivot('id');
     }
 
     public function notifications()
@@ -57,5 +63,29 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function printableName()
     {
         return $this->lastname.' '.$this->firstname;
+    }
+
+    public function addRole($role, $assigned)
+    {
+        $test = $this->roles()->where('roles.id', $role->id)->first();
+        if ($test == null) {
+            $this->roles()->attach($role->id);
+            $test = $this->roles()->where('roles.id', $role->id)->first();
+        }
+
+        if ($assigned)
+            $test->attachApplication($assigned);
+    }
+
+    public function removeRole($role, $assigned)
+    {
+        $test = $this->roles()->where('roles.id', $role->id)->first();
+        if ($test == null)
+            return;
+
+        if ($assigned)
+            $test->detachApplication($assigned);
+        else
+            $this->roles()->detach($role->id);
     }
 }

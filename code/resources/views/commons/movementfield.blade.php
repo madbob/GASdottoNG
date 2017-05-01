@@ -22,7 +22,7 @@ $rand = rand();
             </label>
         </div>
 
-        @if($currentgas->userCan('movements.admin'))
+        @can('movements.admin', $currentgas)
             <div class="col-sm-2">
                 <input type="hidden" name="{{ $name }}" value="{{ $obj->id }}" data-updatable-name="movement-id-{{ $rand }}" data-updatable-field="id">
                 <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editMovement-{{ $rand }}">
@@ -33,6 +33,6 @@ $rand = rand();
             @push('postponed')
                 @include('movement.modal', ['dom_id' => $rand])
             @endpush
-        @endif
+        @endcan
     </div>
 </div>

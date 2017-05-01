@@ -9,6 +9,7 @@ use Auth;
 use Theme;
 use PDF;
 use App\Supplier;
+use App\Role;
 
 class SuppliersController extends Controller
 {
@@ -38,7 +39,7 @@ class SuppliersController extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
-        if ($user->gas->userCan('supplier.add') == false) {
+        if ($user->can('supplier.add', $user->gas) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
@@ -46,7 +47,10 @@ class SuppliersController extends Controller
         $this->basicReadFromRequest($s, $request);
         $s->save();
 
-        $s->userPermit('supplier.modify|supplier.orders|supplier.shippings', $user);
+        $roles = Role::havingAction('supplier.modify');
+        foreach($roles as $r) {
+            $user->addRole($r, $s);
+        }
 
         return $this->successResponse([
             'id' => $s->id,
@@ -58,9 +62,10 @@ class SuppliersController extends Controller
 
     public function show($id)
     {
+        $user = Auth::user();
         $s = Supplier::findOrFail($id);
 
-        if ($s->userCan('supplier.modify')) {
+        if ($user->can('supplier.modify', $s)) {
             return Theme::view('supplier.edit', ['supplier' => $s]);
         } else {
             return Theme::view('supplier.show', ['supplier' => $s]);
@@ -71,8 +76,10 @@ class SuppliersController extends Controller
     {
         DB::beginTransaction();
 
+        $user = Auth::user();
         $s = Supplier::findOrFail($id);
-        if ($s->userCan('supplier.modify') == false) {
+
+        if ($user->can('supplier.modify', $s) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
@@ -90,12 +97,13 @@ class SuppliersController extends Controller
     {
         DB::beginTransaction();
 
+        $user = Auth::user();
         $s = Supplier::findOrFail($id);
-        if ($s->userCan('supplier.modify') == false) {
+
+        if ($user->can('supplier.modify', $s) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
-        $s->deletePermissions();
         $s->delete();
 
         return $this->successResponse();
@@ -127,7 +135,7 @@ class SuppliersController extends Controller
     public function plainBalance(Request $request, $id)
     {
         $user = Auth::user();
-        if ($user->gas->userCan('movements.view|movements.admin') == false) {
+        if ($user->can('movements.view', $user->gas) == false || $user->can('movements.admin', $user->gas) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 

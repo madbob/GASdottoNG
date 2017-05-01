@@ -5,13 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\AttachableTrait;
 use App\Attachment;
-use App\AllowableTrait;
 use App\GASModel;
 use App\SluggableID;
 
 class Supplier extends Model
 {
-    use AttachableTrait, AllowableTrait, CreditableTrait, GASModel, SluggableID;
+    use AttachableTrait, CreditableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
 

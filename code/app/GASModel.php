@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Auth;
 use URL;
 
 trait GASModel
@@ -62,152 +63,164 @@ trait GASModel
 
     public static function iconsMap()
     {
-        return [
-            'User' => [
-                'king' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->gas->userHas('gas.super', $obj);
-                    },
-                    'text' => 'Utente amministratore',
+        static $icons = null;
+
+        if ($icons == null) {
+            $user = Auth::user();
+
+            $icons = [
+                'Supplier' => [
+                    'pencil' => (object) [
+                        'test' => function ($obj) use ($user) {
+                            return $user->can('supplier.modify', $obj);
+                        },
+                        'text' => 'Puoi modificare il fornitore',
+                    ],
+                    'th-list' => (object) [
+                        'test' => function ($obj) use ($user) {
+                            return $user->can('supplier.orders', $obj);
+                        },
+                        'text' => 'Puoi aprire nuovi ordini per il fornitore',
+                    ],
+                    'arrow-down' => (object) [
+                        'test' => function ($obj) use ($user) {
+                            return $user->can('supplier.shippings', $obj);
+                        },
+                        'text' => 'Gestisci le consegne per il fornitore',
+                    ],
                 ],
-            ],
-            'Supplier' => [
-                'pencil' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->userCan('supplier.modify');
-                    },
-                    'text' => 'Puoi modificare il fornitore',
+                'Product' => [
+                    'star' => (object) [
+                        'test' => function ($obj) {
+                            return !empty($obj->discount) && $obj->discount != 0;
+                        },
+                        'text' => 'Scontato',
+                    ],
+                    'off' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->active == false;
+                        },
+                        'text' => 'Disabilitato',
+                    ],
                 ],
-                'th-list' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->userCan('supplier.orders');
-                    },
-                    'text' => 'Puoi aprire nuovi ordini per il fornitore',
+                'Aggregate' => [
+                    'th-list' => (object) [
+                        'test' => function ($obj) use ($user) {
+                            return $user->can('supplier.orders', $obj);
+                        },
+                        'text' => 'Puoi modificare l\'ordine',
+                    ],
+                    'arrow-down' => (object) [
+                        'test' => function ($obj) use ($user) {
+                            return $user->can('supplier.shippings', $obj);
+                        },
+                        'text' => 'Gestisci le consegne per l\'ordine',
+                    ],
+                    'play' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'open';
+                        },
+                        'text' => 'Prenotazioni Aperte',
+                    ],
+                    'pause' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'suspended';
+                        },
+                        'text' => 'In Sospeso',
+                    ],
+                    'stop' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'closed';
+                        },
+                        'text' => 'Prenotazioni Chiuse',
+                    ],
+                    'step-forward' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'shipped';
+                        },
+                        'text' => 'Consegnato',
+                    ],
+                    'eject' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'archived';
+                        },
+                        'text' => 'Archiviato',
+                    ],
                 ],
-                'arrow-down' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->userCan('supplier.shippings');
-                    },
-                    'text' => 'Gestisci le consegne per il fornitore',
+                'Order' => [
+                    'th-list' => (object) [
+                        'test' => function ($obj) use ($user) {
+                            return $user->can('supplier.orders', $obj);
+                        },
+                        'text' => 'Puoi modificare l\'ordine',
+                    ],
+                    'arrow-down' => (object) [
+                        'test' => function ($obj) use ($user) {
+                            return $user->can('supplier.shippings', $obj);
+                        },
+                        'text' => 'Gestisci le consegne per l\'ordine',
+                    ],
+                    'play' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'open';
+                        },
+                        'text' => 'Prenotazioni Aperte',
+                    ],
+                    'pause' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'suspended';
+                        },
+                        'text' => 'In Sospeso',
+                    ],
+                    'stop' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'closed';
+                        },
+                        'text' => 'Prenotazioni Chiuse',
+                    ],
+                    'step-forward' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'shipped';
+                        },
+                        'text' => 'Consegnato',
+                    ],
+                    'eject' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'archived';
+                        },
+                        'text' => 'Archiviato',
+                    ],
                 ],
-            ],
-            'Product' => [
-                'star' => (object) [
-                    'test' => function ($obj) {
-                        return !empty($obj->discount) && $obj->discount != 0;
-                    },
-                    'text' => 'Scontato',
+                'AggregateBooking' => [
+                    'time' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status != 'shipped';
+                        },
+                        'text' => 'Da consegnare',
+                    ],
+                    'ok' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'shipped';
+                        },
+                        'text' => 'Consegnato',
+                    ],
                 ],
-                'off' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->active == false;
+            ];
+
+            $roles = Role::where('always', false)->get();
+            $icons['User'] = [];
+
+            foreach($roles as $index => $role) {
+                $icons['User']['king' . $index] = (object) [
+                    'test' => function($obj) use ($role) {
+                        return $obj->roles()->where('roles.id', $role->id)->count() != 0;
                     },
-                    'text' => 'Disabilitato',
-                ],
-            ],
-            'Aggregate' => [
-                'th-list' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->userCan('supplier.orders');
-                    },
-                    'text' => 'Puoi modificare l\'ordine',
-                ],
-                'arrow-down' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->userCan('supplier.shippings');
-                    },
-                    'text' => 'Gestisci le consegne per l\'ordine',
-                ],
-                'play' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->status == 'open';
-                    },
-                    'text' => 'Prenotazioni Aperte',
-                ],
-                'pause' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->status == 'suspended';
-                    },
-                    'text' => 'In Sospeso',
-                ],
-                'stop' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->status == 'closed';
-                    },
-                    'text' => 'Prenotazioni Chiuse',
-                ],
-                'step-forward' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->status == 'shipped';
-                    },
-                    'text' => 'Consegnato',
-                ],
-                'eject' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->status == 'archived';
-                    },
-                    'text' => 'Archiviato',
-                ],
-            ],
-            'Order' => [
-                'th-list' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->supplier->userCan('supplier.orders');
-                    },
-                    'text' => 'Puoi modificare l\'ordine',
-                ],
-                'arrow-down' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->supplier->userCan('supplier.shippings');
-                    },
-                    'text' => 'Gestisci le consegne per l\'ordine',
-                ],
-                'play' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->status == 'open';
-                    },
-                    'text' => 'Prenotazioni Aperte',
-                ],
-                'pause' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->status == 'suspended';
-                    },
-                    'text' => 'In Sospeso',
-                ],
-                'stop' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->status == 'closed';
-                    },
-                    'text' => 'Prenotazioni Chiuse',
-                ],
-                'step-forward' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->status == 'shipped';
-                    },
-                    'text' => 'Consegnato',
-                ],
-                'eject' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->status == 'archived';
-                    },
-                    'text' => 'Archiviato',
-                ],
-            ],
-            'AggregateBooking' => [
-                'time' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->status != 'shipped';
-                    },
-                    'text' => 'Da consegnare',
-                ],
-                'ok' => (object) [
-                    'test' => function ($obj) {
-                        return $obj->status == 'shipped';
-                    },
-                    'text' => 'Consegnato',
-                ],
-            ],
-        ];
+                    'text' => $role->name
+                ];
+            }
+        }
+
+        return $icons;
     }
 
     public function icons()

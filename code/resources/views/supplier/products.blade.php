@@ -1,4 +1,4 @@
-@if($supplier->userCan('supplier.modify'))
+@can('supplier.modify', $supplier)
     <div class="row">
         <div class="col-md-12">
             @include('commons.addingbutton', [
@@ -63,7 +63,7 @@
 
     <div class="clearfix"></div>
     <hr />
-@endif
+@endcan
 
 <div class="row">
     <div class="col-md-12">

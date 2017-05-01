@@ -22,8 +22,10 @@ class BookingHandler extends Controller
     {
         DB::beginTransaction();
 
+        $user = Auth::user();
         $aggregate = Aggregate::findOrFail($aggregate_id);
-        if (Auth::user()->id != $user_id && $aggregate->userCan('supplier.shippings') == false) {
+
+        if ($user->id != $user_id && $user->can('supplier.shippings', $aggregate) == false) {
             abort(503);
         }
 

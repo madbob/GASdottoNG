@@ -33,8 +33,10 @@ class ProductsController extends Controller
     {
         DB::beginTransaction();
 
+        $user = Auth::user();
         $supplier = Supplier::findOrFail($request->input('supplier_id'));
-        if ($supplier->userCan('supplier.modify') == false) {
+
+        if ($user->can('supplier.modify', $supplier) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
@@ -55,11 +57,13 @@ class ProductsController extends Controller
 
     public function show(Request $request, $id)
     {
+        $user = Auth::user();
+
         $format = $request->input('format', 'html');
         $p = Product::with('variants')->with('variants.values')->findOrFail($id);
 
         if ($format == 'html') {
-            if ($p->supplier->userCan('supplier.modify')) {
+            if ($user->can('supplier.modify', $p->supplier)) {
                 return Theme::view('product.edit', ['product' => $p]);
             } else {
                 return Theme::view('product.show', ['product' => $p]);
@@ -81,8 +85,10 @@ class ProductsController extends Controller
     {
         DB::beginTransaction();
 
+        $user = Auth::user();
         $p = Product::findOrFail($id);
-        if ($p->supplier->userCan('supplier.modify') == false) {
+
+        if ($user->can('supplier.modify', $p->supplier) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
@@ -117,9 +123,10 @@ class ProductsController extends Controller
     {
         DB::beginTransaction();
 
+        $user = Auth::user();
         $p = Product::findOrFail($id);
 
-        if ($p->supplier->userCan('supplier.modify') == false) {
+        if ($user->can('supplier.modify', $p->supplier) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 

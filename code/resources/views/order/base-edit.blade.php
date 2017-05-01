@@ -1,15 +1,13 @@
 <?php
 
 $user = Auth::user();
+$suppliers = [];
 
-if ($user->gas->userCan('gas.super')) {
-    $suppliers = App\Supplier::orderBy('name', 'asc')->get();
-} else {
-    $suppliers = App\Supplier::whereHas('permissions', function ($query) {
-        $query->where('action', '=', 'supplier.orders')->where(function ($query) {
-            $query->where('user_id', '=', Auth::user()->id)->orWhere('user_id', '=', '*');
-        });
-    })->orderBy('name', 'asc')->get();
+foreach ($user->roles as $role) {
+    if ($role->enabledAction('supplier.orders'))
+        foreach($role->applications() as $app)
+            if (get_class($app) == 'App\Supplier')
+                $suppliers[$app->id] = $app;
 }
 
 ?>

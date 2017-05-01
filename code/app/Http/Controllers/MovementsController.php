@@ -126,7 +126,7 @@ class MovementsController extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
-        if ($user->gas->userCan('movements.admin') == false) {
+        if ($user->can('movements.admin', $user->gas) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 

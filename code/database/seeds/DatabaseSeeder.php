@@ -6,6 +6,7 @@ use App\Gas;
 use App\Measure;
 use App\Notification;
 use App\User;
+use App\Role;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
@@ -48,6 +49,21 @@ class DatabaseSeeder extends Seeder
             'date' => date('Y-m-d', time())
         ]);
 
+        $user_role = Role::create([
+            'name' => 'Utente',
+            'actions' => 'users.view,supplier.book'
+        ]);
+
+        $admin_role = Role::create([
+            'name' => 'Amministratore',
+            'actions' => 'gas.access,gas.permissions,gas.config,supplier.add,users.admin,movements.admin,categories.admin,measures.admin,gas.statistics,notifications.admin'
+        ]);
+
+        $referrer_role = Role::create([
+            'name' => 'Referente',
+            'actions' => 'supplier.modify,supplier.orders,supplier.shippings'
+        ]);
+
         $admin = User::create([
             'id' => str_slug('Amministratore Globale'),
             'gas_id' => $gas->id,
@@ -59,7 +75,8 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('root'),
         ]);
 
-        $gas->userPermit('gas.super', $admin);
+        $admin->addRole($user_role, $gas);
+        $admin->addRole($admin_role, $gas);
 
         $categories = ['Non Specificato', 'Frutta', 'Verdura', 'Cosmesi', 'Bevande'];
         foreach ($categories as $cat) {

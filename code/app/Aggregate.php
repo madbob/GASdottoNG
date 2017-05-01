@@ -98,21 +98,6 @@ class Aggregate extends Model
         return $ret;
     }
 
-    public function userCan($action, $user = null)
-    {
-        if ($user == null) {
-            $user = Auth::user();
-        }
-
-        foreach ($this->orders as $order) {
-            if ($order->supplier->userCan($action, $user)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public function isActive()
     {
         foreach ($this->orders as $order) {

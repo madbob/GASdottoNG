@@ -3,7 +3,7 @@
     <li role="presentation"><a href="#orders-{{ $supplier->id }}" aria-controls="orders-{{ $supplier->id }}" role="tab" data-toggle="tab">Ordini</a></li>
     <li role="presentation"><a href="#products-{{ $supplier->id }}" aria-controls="products-{{ $supplier->id }}" role="tab" data-toggle="tab">Prodotti</a></li>
     <li role="presentation"><a href="#files-{{ $supplier->id }}" aria-controls="files-{{ $supplier->id }}" role="tab" data-toggle="tab">Files</a></li>
-    @if($currentgas->userCan('movements.view|movements.admin'))
+    @if(Gate::check('movements.view', $currentgas) || Gate::check('movements.admin', $currentgas))
         <li role="presentation"><a href="#accounting-{{ $supplier->id }}" aria-controls="accounting-{{ $supplier->id }}" role="tab" data-toggle="tab">Contabilità</a></li>
     @endif
 </ul>

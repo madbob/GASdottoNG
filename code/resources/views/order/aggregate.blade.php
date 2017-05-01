@@ -3,7 +3,7 @@
 $has_shipping = false;
 
 foreach ($aggregate->orders as $order) {
-    if ($order->supplier->userCan('supplier.shippings')) {
+    if ($currentuser->can('supplier.shippings', $order->supplier)) {
         $has_shipping = true;
     }
 }
@@ -26,7 +26,7 @@ $panel_rand_wrap = rand();
         <div class="tab-content">
             @foreach($aggregate->orders as $index => $order)
                 <div role="tabpanel" class="tab-pane {{ $index == 0 ? 'active' : '' }}" id="order-{{ $panel_rand_wrap }}-{{ $index }}">
-                    @if($order->supplier->userCan('supplier.orders'))
+                    @can('supplier.orders', $order->supplier)
                         <?php $summary = $order->calculateSummary() ?>
 
                         <form class="form-horizontal main-form order-editor" method="PUT" action="{{ url('orders/' . $order->id) }}">
@@ -62,7 +62,7 @@ $panel_rand_wrap = rand();
                                 <div class="col-md-4">
                                     @include('commons.textfield', ['obj' => $order, 'name' => 'discount', 'label' => 'Sconto Globale', 'postlabel' => '€ / %'])
 
-                                    @if($currentgas->userCan('movements.view|movements.admin'))
+                                    @if(Gate::check('movements.view', $currentgas) || Gate::check('movements.admin', $currentgas))
                                         @include('commons.movementfield', ['obj' => $order->payment, 'name' => 'payment_id', 'label' => 'Pagamento', 'default' => \App\Movement::generate('order-payment', $currentgas, $order, $summary->price_delivered)])
                                     @endif
                                 </div>
@@ -97,7 +97,7 @@ $panel_rand_wrap = rand();
                             <div class="col-md-4">
                             </div>
 
-                            @if($order->supplier->userCan('supplier.shippings'))
+                            @can('supplier.shippings', $order->supplier)
                                 <div class="col-md-4">
                                     <div class="well">
                                         <h4>Files</h4>
@@ -109,9 +109,9 @@ $panel_rand_wrap = rand();
                                         </div>
                                     </div>
                                 </div>
-                            @endif
+                            @endcan
                         </form>
-                    @endif
+                    @endcan
                 </div>
             @endforeach
         </div>

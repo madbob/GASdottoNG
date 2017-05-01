@@ -4,7 +4,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        @if($currentgas->userHas('supplier.orders'))
+        @can('supplier.orders')
             @include('commons.addingbutton', [
                 'template' => 'order.base-edit',
                 'typename' => 'order',
@@ -73,7 +73,7 @@
                     </div>
                 </div>
             </div>
-        @endif
+        @endcan
     </div>
 </div>
 

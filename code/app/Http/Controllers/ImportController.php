@@ -80,7 +80,7 @@ class ImportController extends Controller
         if ($type == 'products') {
             $supplier_id = $request->input('supplier_id');
             $s = Supplier::findOrFail($supplier_id);
-            if ($s->userCan('supplier.modify') == false) {
+            if ($request->user()->can('supplier.modify', $s) == false) {
                 return $this->errorResponse('Non autorizzato');
             }
 

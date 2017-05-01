@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Auth;
 use DB;
 use Theme;
-use App\Permission;
+use App\Role;
 use App\Gas;
 
 class GasController extends Controller
@@ -16,23 +17,30 @@ class GasController extends Controller
         $this->middleware('auth');
     }
 
+    public function index()
+    {
+        $user = Auth::user();
+        return redirect(url('gas/' . $user->gas->id . '/edit'));
+    }
+
     public function edit($id)
     {
+        $user = Auth::user();
         $gas = Gas::findOrFail($id);
-        if ($gas->userCan('gas.config') == false) {
+        if ($user->can('gas.config', $gas) == false) {
             abort(503);
         }
 
-        $permissions = Permission::allPermissions();
-        return Theme::view('pages.gas', ['gas' => $gas, 'permissions_rules' => $permissions]);
+        return Theme::view('pages.gas', ['gas' => $gas]);
     }
 
     public function update(Request $request, $id)
     {
         DB::beginTransaction();
 
+        $user = Auth::user();
         $gas = Gas::findOrFail($id);
-        if ($gas->userCan('gas.config') == false) {
+        if ($user->can('gas.config', $gas) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
@@ -72,9 +80,5 @@ class GasController extends Controller
         $gas->save();
 
         return $this->successResponse();
-    }
-
-    public function destroy($id)
-    {
     }
 }

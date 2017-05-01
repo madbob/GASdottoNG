@@ -35,7 +35,7 @@ class AuthController extends Controller
         if ($gas->restricted == '1') {
             $username = $request->input('username');
             $user = User::where('username', $username)->first();
-            if ($user == null || $gas->userCan('gas.super', $user) == false) {
+            if ($user == null || $user->can('gas.access', $gas) == false) {
                 return redirect(url('auth/login'));
             }
         }

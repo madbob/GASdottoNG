@@ -21,26 +21,26 @@ class MenuServiceProvider extends ServiceProvider
 
                 $menu->add('dashboard', '<span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home');
 
-                if ($gas->userCan('users.admin|users.view')) {
+                if ($user->can('users.admin', $gas) || $user->can('users.view', $gas)) {
                     $menu->add('users', '<span class="glyphicon glyphicon-user" aria-hidden="true"></span> Utenti');
                 }
 
                 $menu->add('suppliers', '<span class="glyphicon glyphicon-tags" aria-hidden="true"></span> Fornitori');
                 $menu->add('orders', '<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Ordini');
 
-                if ($gas->userCan('movements.view|movements.admin')) {
+                if ($user->can('movements.view', $gas) || $user->can('movements.admin', $gas)) {
                     $menu->add('movements', '<span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> Contabilità');
                 }
 
-                if ($gas->userCan('gas.statistics')) {
+                if ($user->can('gas.statistics', $gas)) {
                     $menu->add('stats', '<span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Statistiche');
                 }
 
-                if ($gas->userCan('gas.config')) {
+                if ($user->can('gas.config', $gas)) {
                     $menu->add('gas/'.$gas->id.'/edit', '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Configurazioni');
                 }
 
-                if ($gas->userCan('notifications.admin')) {
+                if ($user->can('notifications.admin', $gas)) {
                     $menu->add('notifications', '<span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> Notifiche');
                 }
 

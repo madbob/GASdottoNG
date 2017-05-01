@@ -21,7 +21,8 @@ class VariantsController extends Controller
 
         $product_id = $request->input('product_id');
         $product = Product::findOrFail($product_id);
-        if ($product->supplier->userCan('supplier.modify') == false) {
+
+        if ($request->user()->can('supplier.modify', $product->supplier) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
@@ -104,14 +105,14 @@ class VariantsController extends Controller
         return view('product.variantseditor', ['product' => $product]);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         DB::beginTransaction();
 
         $variant = Variant::findOrFail($id);
 
         $product = $variant->product;
-        if ($product->supplier->userCan('supplier.modify') == false) {
+        if ($request->user()->can('supplier.modify', $product->supplier) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 

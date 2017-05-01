@@ -55,12 +55,12 @@ class UsersController extends Controller
         }
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
         try {
             $user = $this->usersService->show($id);
 
-            if ($user->gas->userCan('users.admin')) {
+            if ($request->user()->can('users.admin', $user->gas)) {
                 return Theme::view('user.edit', ['user' => $user]);
             }
 

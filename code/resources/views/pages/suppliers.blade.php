@@ -4,16 +4,16 @@
 
 <div class="row">
     <div class="col-md-12">
-        @if($currentgas->userCan('supplier.add'))
+        @can('supplier.add', $currentgas)
             @include('commons.addingbutton', [
                 'template' => 'supplier.base-edit',
                 'typename' => 'supplier',
                 'typename_readable' => 'Fornitore',
                 'targeturl' => 'suppliers'
             ])
-        @endif
+        @endcan
 
-        @if($currentgas->userCan('categories.admin'))
+        @can('categories.admin', $currentgas)
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleCategories">Amministra Categorie</button>
 
             <div class="modal fade dynamic-contents" id="handleCategories" tabindex="-1" role="dialog" aria-labelledby="handleCategories" data-contents-url="{{ url('categories') }}">
@@ -22,9 +22,9 @@
                     </div>
                 </div>
             </div>
-        @endif
+        @endcan
 
-        @if($currentgas->userCan('measures.admin'))
+        @can('measures.admin', $currentgas)
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleMeasures">Amministra Unità di Misura</button>
 
             <div class="modal fade dynamic-contents" id="handleMeasures" tabindex="-1" role="dialog" aria-labelledby="handleMeasures" data-contents-url="{{ url('measures') }}">
@@ -33,7 +33,7 @@
                     </div>
                 </div>
             </div>
-        @endif
+        @endcan
     </div>
 </div>
 
@@ -48,7 +48,7 @@
     </div>
 </div>
 
-@if($currentgas->userCan('categories.admin'))
+@can('categories.admin', $currentgas)
     <div class="modal fade" id="createCategory" tabindex="-1" role="dialog" aria-labelledby="createCategory">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -78,9 +78,9 @@
             </div>
         </div>
     </div>
-@endif
+@endcan
 
-@if($currentgas->userCan('measures.admin'))
+@can('measures.admin', $currentgas)
     <div class="modal fade" id="createMeasure" tabindex="-1" role="dialog" aria-labelledby="createMeasure">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -103,61 +103,6 @@
             </div>
         </div>
     </div>
-@endif
-
-@if($currentgas->userHas('supplier.modify'))
-    <div class="modal fade" id="editPermissions" tabindex="-1" role="dialog" aria-labelledby="editPermissions">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Modifica Permessi</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row permissions-editor">
-                        <input type="hidden" name="subject" value="">
-                        <input type="hidden" name="rule" value="">
-
-                        <div class="col-md-6">
-                            <select multiple name="user" class="form-control" size="20">
-                                <option disabled="disabled">Seleziona una regola</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <button class="btn btn-danger remove-auth">Rimuovi Utente Selezionato</button>
-                            </div>
-                            <div class="form-group">
-                                <input name="adduser" class="form-control" placeholder="Digita il nome di un utente da aggiungere all'elenco" />
-                            </div>
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="behaviour" value="selected">
-                                    Autorizza solo gli utenti nell'elenco
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="behaviour" value="except">
-                                    Autorizza tutti, tranne gli utenti nell'elenco
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="behaviour" value="all">
-                                    Autorizza tutti gli utenti (indipendentemente dall'elenco)
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default reloader" data-dismiss="modal" data-reload-target="#supplier-list">Chiudi</button>
-                </div>
-            </div>
-        </div>
-    </div>
-@endif
+@endcan
 
 @endsection

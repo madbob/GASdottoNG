@@ -64,7 +64,7 @@
         <div id="postponed"></div>
         <div id="bottom-stop"></div>
 
-        <script type="application/javascript" src="{{ url('js/jquery-2.1.1.min.js') }}"></script>
+        <script type="application/javascript" src="{{ url('js/jquery-2.1.1.js') }}"></script>
         <script type="application/javascript" src="{{ url('js/jquery-ui.js') }}"></script>
         <script type="application/javascript" src="{{ url('js/bootstrap.min.js') }}"></script>
         <script type="application/javascript" src="{{ url('js/bootstrap-datepicker.min.js') }}"></script>

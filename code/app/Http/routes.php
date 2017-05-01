@@ -3,11 +3,6 @@
 Route::group(array('prefix' => 'api/1'), function () {
     Route::get('users/search', 'REST\UsersController@search');
     Route::resource('users', 'REST\UsersController');
-
-    Route::get('permissions/{subject_id}/{rule_id}', 'REST\PermissionsController@showForSubject');
-    Route::post('permissions/{user_id}/{subject_id}/{rule_id}/{behaviour}', 'REST\PermissionsController@add');
-    Route::delete('permissions/{user_id}/{subject_id}/{rule_id}/{behaviour}', 'REST\PermissionsController@remove');
-    Route::put('permissions/{user_id}/{subject_id}/{rule_id}/{behaviour}', 'REST\PermissionsController@change');
 });
 
 Route::get('/', function () {
@@ -19,6 +14,8 @@ Route::get('/home', function () {
 });
 
 Route::get('users/search', 'UsersController@search');
+Route::post('roles/attach', 'RolesController@attach');
+Route::post('roles/detach', 'RolesController@detach');
 Route::post('notifications/markread/{id}', 'NotificationsController@markread');
 Route::get('attachments/download/{id}', 'AttachmentsController@download');
 Route::get('orders/search', 'OrdersController@search');
@@ -32,11 +29,11 @@ Route::controllers([
     'password' => 'Auth\PasswordController',
     'dashboard' => 'CommonsController',
     'import' => 'ImportController',
-    'permissions' => 'PermissionsController',
 ]);
 
 Route::resource('gas', 'GasController');
 Route::resource('users', 'UsersController');
+Route::resource('roles', 'RolesController');
 Route::resource('suppliers', 'SuppliersController');
 Route::resource('products', 'ProductsController');
 Route::resource('categories', 'CategoriesController');

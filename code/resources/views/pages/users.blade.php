@@ -4,7 +4,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        @if($currentgas->userCan('users.admin'))
+        @can('users.admin', $currentgas)
             @include('commons.addingbutton', [
                 'template' => 'user.base-edit',
                 'typename' => 'user',
@@ -58,7 +58,7 @@
                     </div>
                 </div>
             </div>
-        @endif
+        @endcan
     </div>
 </div>
 

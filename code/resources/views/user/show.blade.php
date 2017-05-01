@@ -9,6 +9,8 @@
         </div>
         <div class="col-md-6">
             @include('commons.staticdatefield', ['obj' => $user, 'name' => 'member_since', 'label' => 'Membro da'])
+            <hr/>
+            @include('commons.permissionsviewer', ['object' => $user])
         </div>
     </div>
 </form>

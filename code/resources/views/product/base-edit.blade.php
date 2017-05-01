@@ -7,7 +7,7 @@
     'obj' => $product,
     'name' => 'category_id',
     'objects' => App\Category::orderBy('name', 'asc')->where('parent_id', '=', null)->get(),
-    'triggering_modal' => $currentgas->userCan('categories.admin') ? 'createCategory' : false,
+    'triggering_modal' => $currentuser->can('categories.admin', $currentgas) ? 'createCategory' : false,
     'label' => 'Categoria'
 ])
 
@@ -15,7 +15,7 @@
     'obj' => $product,
     'name' => 'measure_id',
     'objects' => App\Measure::orderBy('name', 'asc')->get(),
-    'triggering_modal' => $currentgas->userCan('measures.admin') ? 'createMeasure' : false,
+    'triggering_modal' => $currentuser->can('measures.admin', $currentgas) ? 'createMeasure' : false,
     'extra_class' => 'measure-selector',
     'label' => 'Unità di Misura',
     'datafields' => ['discrete']

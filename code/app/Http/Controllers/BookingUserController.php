@@ -18,7 +18,7 @@ class BookingUserController extends BookingHandler
     public function index(Request $request, $aggregate_id)
     {
         $aggregate = Aggregate::findOrFail($aggregate_id);
-        if ($aggregate->userCan('supplier.shippings') == false) {
+        if ($request->user()->can('supplier.shippings', $aggregate) == false) {
             abort(503);
         }
 
@@ -28,7 +28,7 @@ class BookingUserController extends BookingHandler
     public function show(Request $request, $aggregate_id, $user_id)
     {
         $aggregate = Aggregate::findOrFail($aggregate_id);
-        if (Auth::user()->id != $user_id && $aggregate->userCan('supplier.shippings') == false) {
+        if (Auth::user()->id != $user_id && $request->user()->can('supplier.shippings', $aggregate) == false) {
             abort(503);
         }
 
@@ -42,12 +42,14 @@ class BookingUserController extends BookingHandler
         return $this->bookingUpdate($request, $aggregate_id, $user_id, false);
     }
 
-    public function destroy($aggregate_id, $user_id)
+    public function destroy(Request $request, $aggregate_id, $user_id)
     {
         DB::beginTransaction();
 
+        $user = $request->user();
         $aggregate = Aggregate::findOrFail($aggregate_id);
-        if (Auth::user()->id != $user_id && $aggregate->userCan('supplier.shippings') == false) {
+
+        if ($user->id != $user_id && $user->can('supplier.shippings', $aggregate) == false) {
             abort(503);
         }
 

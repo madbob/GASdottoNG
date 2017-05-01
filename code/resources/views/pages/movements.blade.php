@@ -4,14 +4,14 @@
 
 <div class="row">
     <div class="col-md-12">
-        @if($currentgas->userCan('movements.admin'))
+        @can('movements.admin', $currentgas)
             @include('commons.addingbutton', [
                 'template' => 'movement.base-edit',
                 'typename' => 'movement',
                 'typename_readable' => 'Movimento',
                 'targeturl' => 'movements'
             ])
-        @endif
+        @endcan
     </div>
 
     <div class="clearfix"></div>

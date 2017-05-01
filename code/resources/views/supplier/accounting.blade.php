@@ -1,4 +1,4 @@
-@if($currentgas->userCan('movements.view|movements.admin'))
+@if(Gate::check('movements.admin', $currentgas) || Gate::check('movements.view', $currentgas))
     <div class="row">
         <div class="col-md-12">
             <p class="lead">Saldo Corrente: <span id="balance-supplier-{{ $supplier->id }}" data-fetch-url="{{ url('suppliers/' . $supplier->id . '/plain_balance') }}">{{ $supplier->balance }}</span> €</p>
@@ -52,7 +52,7 @@
                                         @endif
                                     </label>
 
-                                    @if($order->status != 'open' && $currentgas->userCan('movements.admin'))
+                                    @if($order->status != 'open' && Gate::check('movements.admin', $currentgas))
                                         <input type="hidden" name="payment_id" value="{{ $obj ? $obj->id : '' }}" data-updatable-name="movement-id-{{ $rand }}" data-updatable-field="id">
                                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editMovement-{{ $rand }}">
                                             <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>

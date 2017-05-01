@@ -3,14 +3,17 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Capsule\Manager as Capsule;
+
 use DB;
 use App;
 use Hash;
+use App\User;
 use App\Gas;
+use App\Role;
 use App\Balance;
 use App\Delivery;
-use App\User;
 use App\Supplier;
 use App\Category;
 use App\Measure;
@@ -42,6 +45,8 @@ class ImportLegacy extends Command
 
     public function handle()
     {
+        Model::unguard();
+
         $factory = App::make('db.factory');
 
         $old_config = [
@@ -94,6 +99,22 @@ class ImportLegacy extends Command
 
         $map = [];
 
+        $user_role = Role::create([
+            'name' => 'Utente',
+            'always' => true,
+            'actions' => 'users.view,supplier.book'
+        ]);
+
+        $admin_role = Role::create([
+            'name' => 'Amministratore',
+            'actions' => 'gas.access,gas.permissions,gas.config,supplier.add,users.admin,movements.admin,categories.admin,measures.admin,gas.statistics,notifications.admin'
+        ]);
+
+        $referrer_role = Role::create([
+            'name' => 'Referente',
+            'actions' => 'supplier.modify,supplier.orders,supplier.shippings'
+        ]);
+
         /*
             Al momento ignoro il caso di importazione di una
             installazione multi-GAS, mai realmente utilizzata,
@@ -102,7 +123,6 @@ class ImportLegacy extends Command
             correggere questa assunzione
         */
         $master_gas = null;
-        $users_access_users = false;
 
         $map['gas'] = [];
         $query = 'SELECT * FROM GAS';
@@ -117,7 +137,6 @@ class ImportLegacy extends Command
             $map['gas'][$row->id] = $obj->id;
 
             $master_gas = $obj;
-            $users_access_users = $row->use_fullusers;
 
             $balance = new Balance();
             $balance->gas_id = $obj->id;
@@ -127,10 +146,6 @@ class ImportLegacy extends Command
             $balance->suppliers = $row->current_orders_balance;
             $balance->deposits = $row->current_deposit_balance;
             $balance->save();
-        }
-
-        if ($users_access_users) {
-            $master_gas->userPermit('users.view', '*');
         }
 
         $map['deliveries'] = [];
@@ -145,7 +160,8 @@ class ImportLegacy extends Command
                 $obj->default = $row->is_default;
                 $obj->save();
                 $map['deliveries'][$row->id] = $obj->id;
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e) {
                 echo sprintf("Errore nell'importazione del luogo di consegna %s: %s\n", $row->name, $e->getMessage());
             }
         }
@@ -187,9 +203,10 @@ class ImportLegacy extends Command
                 $map['users'][$row->id] = $obj->id;
 
                 if ($row->privileges == 2) {
-                    $master_gas->userPermit('gas.super', $obj);
+                    $obj->addRole($admin_role, $master_gas);
                 }
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e) {
                 echo sprintf("Errore nell'importazione dell'utente %s: %s\n", $row->login, $e->getMessage());
             }
         }
@@ -205,15 +222,15 @@ class ImportLegacy extends Command
                 $obj->description = $row->description;
                 $obj->taxcode = $row->tax_code;
                 $obj->vat = $row->vat_number;
-                $obj->address = $row->address;
+                $obj->address = '{}';
                 $obj->phone = $row->phone;
                 $obj->email = $row->mail;
                 $obj->fax = $row->fax;
                 $obj->website = $row->website;
                 $obj->save();
                 $map['suppliers'][$row->id] = $obj->id;
-                $obj->userPermit('supplier.book', '*');
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e) {
                 echo sprintf("Errore nell'importazione del fornitore %s: %s\n", $row->name, $e->getMessage());
             }
         }
@@ -224,22 +241,10 @@ class ImportLegacy extends Command
         foreach ($result as $row) {
             try {
                 $parent = Supplier::findOrFail($map['suppliers'][$row->parent]);
-                $target = $map['users'][$row->target];
-                $parent->userPermit('supplier.modify|supplier.orders|supplier.shippings', $target);
-            } catch (\Exception $e) {
-                echo sprintf("Errore nell'assegnazione di privilegi: %s\n", $e->getMessage());
+                $target = User::findOrFail($map['users'][$row->target]);
+                $target->addRole($referrer_role, $parent);
             }
-        }
-
-        $query = 'SELECT * FROM Supplier_carriers';
-        $result = $old->select($query);
-
-        foreach ($result as $row) {
-            try {
-                $parent = Supplier::findOrFail($map['suppliers'][$row->parent]);
-                $target = $map['users'][$row->target];
-                $parent->userPermit('supplier.shippings', $target);
-            } catch (\Exception $e) {
+            catch (\Exception $e) {
                 echo sprintf("Errore nell'assegnazione di privilegi: %s\n", $e->getMessage());
             }
         }
@@ -254,7 +259,8 @@ class ImportLegacy extends Command
                 $obj->name = $row->name;
                 $obj->save();
                 $map['categories'][$row->id] = $obj->id;
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e) {
                 $obj = Category::where('name', '=', $row->name)->first();
                 if ($obj != null) {
                     $map['categories'][$row->id] = $obj->id;
@@ -274,7 +280,8 @@ class ImportLegacy extends Command
                 $obj->name = $row->name;
                 $obj->save();
                 $map['measures'][$row->id] = $obj->id;
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e) {
                 $obj = Measure::where('name', '=', $row->name)->first();
                 if ($obj != null) {
                     $map['measures'][$row->id] = $obj->id;
@@ -308,7 +315,8 @@ class ImportLegacy extends Command
                 $obj->max_available = $row->total_max_order;
                 $obj->save();
                 $map['products'][$row->id] = $obj->id;
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e) {
                 echo sprintf("Errore nell'importazione del prodotto %s: %s\n", $row->name, $e->getMessage());
             }
         }
@@ -338,14 +346,18 @@ class ImportLegacy extends Command
                             $value_obj->variant_id = $obj->id;
                             $value_obj->value = $original_value[0]->name;
                             $value_obj->save();
-                        } catch (\Exception $e) {
+                        }
+                        catch (\Exception $e) {
                             echo sprintf("Errore nell'importazione valore variante %s: %s\n", $original_variant[0]->name, $e->getMessage());
                         }
                     }
-                } catch (\Exception $e) {
+                }
+                catch (\Exception $e) {
                     echo sprintf("Errore nell'importazione variante %s: %s\n", $original_variant[0]->name, $e->getMessage());
                 }
             }
         }
+
+        Model::reguard();
     }
 }

@@ -14,7 +14,7 @@ class CategoriesController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if ($user->gas->userHas('categories.admin') == false) {
+        if ($user->can('categories.admin', $user->gas) == false) {
             abort(503);
         }
 
@@ -28,7 +28,7 @@ class CategoriesController extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
-        if ($user->gas->userHas('categories.admin') == false) {
+        if ($user->can('categories.admin', $user->gas) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
@@ -75,7 +75,7 @@ class CategoriesController extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
-        if ($user->gas->userHas('categories.admin') == false) {
+        if ($user->can('categories.admin', $user->gas) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 

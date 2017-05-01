@@ -46,7 +46,9 @@ class OrdersController extends Controller
 
         $orders = [];
 
+        $user = Auth::user();
         $aggregates = Aggregate::with('orders')->get();
+
         foreach ($aggregates as $aggregate) {
             $ok = false;
 
@@ -55,7 +57,8 @@ class OrdersController extends Controller
                     $ok = true;
                     break;
                 }
-                if ($order->status != 'archived' && $order->supplier->userCan('supplier.orders|supplier.shippings')) {
+
+                if ($order->status != 'archived' && ($user->can('supplier.orders', $order->supplier) || $user->can('supplier.shippings', $order->supplier))) {
                     $ok = true;
                     break;
                 }
@@ -81,7 +84,7 @@ class OrdersController extends Controller
         DB::beginTransaction();
 
         $supplier = Supplier::findOrFail($request->input('supplier_id', -1));
-        if ($supplier->userCan('supplier.orders') == false) {
+        if ($request->user()->can('supplier.orders', $supplier) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
@@ -128,7 +131,7 @@ class OrdersController extends Controller
         DB::beginTransaction();
 
         $order = Order::findOrFail($id);
-        if ($order->supplier->userCan('supplier.orders') == false) {
+        if ($request->user()->can('supplier.orders', $order->supplier) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
@@ -198,13 +201,13 @@ class OrdersController extends Controller
         ]);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         DB::beginTransaction();
 
         $order = Order::findOrFail($id);
 
-        if ($order->supplier->userCan('supplier.orders') == false) {
+        if ($request->user()->can('supplier.orders', $order->supplier) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
@@ -226,7 +229,7 @@ class OrdersController extends Controller
         DB::beginTransaction();
 
         $order = Order::findOrFail($id);
-        if ($order->supplier->userCan('supplier.orders') == false) {
+        if ($request->user()->can('supplier.orders', $order->supplier) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
@@ -268,7 +271,7 @@ class OrdersController extends Controller
             $enddate = decodeDate($request->input('enddate'));
 
             $supplier = Supplier::find($supplier_id);
-            $everything = $supplier->userCan('supplier.orders|supplier.shippings');
+            $everything = ($request->user()->can('supplier.orders', $supplier) || $request->user()->can('supplier.shippings', $supplier));
 
             $orders = Aggregate::whereHas('orders', function ($query) use ($supplier_id, $startdate, $enddate, $everything) {
                 $query->where('supplier_id', '=', $supplier_id)->where('start', '>=', $startdate)->where('end', '<=', $enddate);

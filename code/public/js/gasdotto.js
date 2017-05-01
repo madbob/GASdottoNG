@@ -29,7 +29,7 @@ function generalInit() {
         $(this).val(parseFloatC($(this).val()).toFixed(2));
     });
 
-    $('input:checkbox[data-toggle=toggle]').bootstrapToggle();
+    $('input:checkbox[data-toggle=toggle]').bootstrapToggle().removeAttr('data-toggle');
 
     $('.nav-tabs a').click(function(e) {
         e.preventDefault();
@@ -125,11 +125,24 @@ function generalInit() {
 
     setupVariantsEditor();
     setupImportCsvEditor();
+    setupPermissionsWidget();
+    setupPermissionsEditor();
     testListsEmptiness();
 }
 
 function filteredSerialize(form) {
     return $(':not(.skip-on-submit)', form).serializeArray();
+}
+
+function randomString(total)
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i = 0; i < total; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
 }
 
 function parseFloatC(value) {
@@ -256,6 +269,22 @@ function parseDynamicTree(unparsed_data) {
     return data;
 }
 
+function addPanelToTabs(group, panel, label) {
+    var identifier = $(panel).attr('id');
+    $(group + '.tab-content').append(panel);
+
+    var list = $(group + '[role=tablist]');
+    var tab = $('<li class="presentation"><a href="#' + identifier + '" aria-controls="#' + identifier + '" role="tab" data-toggle="tab">' + label + '</a></li>');
+
+    var last = list.find('.last-tab');
+    if (last.length != 0)
+        last.before(tab);
+    else
+        list.append(tab);
+
+    tab.find('a').click();
+}
+
 /*
     I form possono includere una serie di campi <input type="hidden"> che, in
     funzione dell'attributo "name", possono attivare delle funzioni speciali
@@ -351,6 +380,17 @@ function creatingFormCallback(form, data) {
 
         miscInnerCallbacks(form, data);
     }
+}
+
+function currentLoadableUniqueSelector(target)
+{
+    var identifier = $(target).closest('li.list-group-item').attr('data-random-identifier');
+    return 'li.list-group-item[data-random-identifier=' + identifier + ']';
+}
+
+function currentLoadableLoaded(target)
+{
+    return $(target).closest('li.list-group-item').prev('a').attr('data-element-id');
 }
 
 /*******************************************************************************
@@ -578,178 +618,116 @@ function updateOrderSummary(form) {
 	Permessi
 */
 
-function getPermissionsEditor(node) {
-    var ret = {
-        valid: true
-    };
-    ret.editor = node.closest('.permissions-editor');
-    ret.users = ret.editor.find('select[name=user]');
+function setupPermissionsWidget() {
 
-    var subject = ret.editor.find('select[name=subject] option:selected');
-    if (subject.length != 1)
-        subject = ret.editor.find('input:hidden[name=subject]');
-
-    ret.subject = subject.val();
-    if (subject.length != 1)
-        ret.valid = false;
-
-    var rule = ret.editor.find('select[name=rule]:not(.hidden) option:selected');
-    if (rule.length != 1)
-        rule = ret.editor.find('input:hidden[name=rule]');
-
-    ret.rule = rule.val();
-    if (rule.length != 1)
-        ret.valid = false;
-
-    ret.behaviour = ret.editor.find('input:radio[name=behaviour]:checked').val();
-
-    return ret;
-}
-
-function loadPermissions(editor) {
-    if (editor.valid == false) {
-        editor.users.empty().append('<option disabled>Seleziona una regola</option>');
-    } else {
-        editor.users.empty().append('<option disabled>Caricamento...</option>');
-
-        $.ajax('/permissions/read', {
-            method: 'GET',
-            data: {
-                subject_id: editor.subject,
-                rule_id: editor.rule
-            },
-            dataType: 'json',
-
-            success: function(data) {
-                var u;
-                editor.users.empty();
-
-                for (var i = 0; i < data.users.length; i++) {
-                    u = data.users[i];
-                    editor.users.append('<option value="' + u.id + '">' + u.name + '</option>');
-                }
-
-                editor.editor.find('input:radio[name=behaviour][value=' + data.behaviour + ']').prop('checked', true);
-            }
-        });
-    }
 }
 
 function setupPermissionsEditor() {
-    $('.permissions-editor').on('change', 'select[name=subject]', function() {
-        var sel = $(this).find('option:selected');
-        var c = sel.attr('data-permissions-class');
-        if (sel.length != 1)
-            c = 'none';
+    if ($('.role-editor:not(.general-inited)').length == 0)
+        return;
 
-        $('.permissions-editor').find('select[name=rule]').each(function() {
-            var cl = $(this).attr('data-permissions-class');
-            if (cl == c)
-                $(this).removeClass('hidden').find('option:selected').click();
-            else
-                $(this).addClass('hidden');
-        });
-    }).on('click', 'select[name=rule] option', function() {
-        /*
-        	Questa funzione viene attivata su option.click e non su
-        	select.change perché quest'ultimo evento non viene
-        	lanciato se ho ri-selezionato una option già selezionata
-        	(come nel caso in cui cambio soggetto nell'elenco dei
-        	soggetti, nella funzione sopra)
-        */
+    $('.role-editor:not(.general-inited)').each(function() {
+        $(this).addClass('general-inited');
+    });
 
-        var editor = getPermissionsEditor($(this));
-        loadPermissions(editor);
+    $('.roleAssign').each(function() {
+        if ($(this).hasClass('tt-hint') == true) {
+            return;
+        }
 
-    }).on('click', '.remove-auth', function() {
-        var editor = getPermissionsEditor($(this));
+        if ($(this).hasClass('tt-input') == false) {
+            $(this).typeahead(null, {
+                name: 'users',
+                displayKey: 'value',
+                source: userBlood.ttAdapter()
+            }).on('typeahead:selected', function(obj, result, name) {
+                var text = $(this);
+                var role_id = currentLoadableLoaded(this);
+                var selector = currentLoadableUniqueSelector(this);
 
-        if (editor.valid == true) {
-            editor.users.find('option:selected').each(function() {
-                var user = $(this).val();
-
-                $.ajax('/permissions/remove', {
+                var label = result.label;
+                $.ajax({
                     method: 'POST',
+                    url: '/roles/attach',
+                    dataType: 'HTML',
                     data: {
-                        user_id: user,
-                        subject_id: editor.subject,
-                        rule_id: editor.rule,
-                        behaviour: editor.behaviour
+                        role: role_id,
+                        user: result.id,
+                    },
+                    success: function(data) {
+                        addPanelToTabs(selector + ' .role-users', $(data), label);
+                        text.val('');
                     }
                 });
-
-                $(this).remove();
-            });
-        }
-    }).on('change', 'input:radio[name=behaviour]', function() {
-        var editor = getPermissionsEditor($(this));
-
-        if (editor.valid == true) {
-            $.ajax('/permissions/change', {
-                method: 'POST',
-                data: {
-                    subject_id: editor.subject,
-                    rule_id: editor.rule,
-                    behaviour: $(this).val()
-                }
             });
         }
     });
 
-    $('.permissions-editor input:text[name=adduser]').typeahead(null, {
-        name: 'users',
-        displayKey: 'value',
-        source: userBlood.ttAdapter()
-    }).on('typeahead:selected', function(obj, result, name) {
-        var editor = getPermissionsEditor($(this));
-        $(this).val('');
+    $('.role-editor').on('submit', '#permissions-none form', function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var data = form.serializeArray();
 
-        if (editor.valid == true) {
-            $.ajax('/permissions/add', {
-                method: 'POST',
-                data: {
-                    user_id: result.id,
-                    subject_id: editor.subject,
-                    rule_id: editor.rule,
-                    behaviour: editor.behaviour
-                },
-                success: function() {
-                    editor.users.find('option:disabled').remove();
-                    editor.users.append('<option value="' + result.id + '">' + result.label + '</option>');
-                }
-            });
-        }
-    });
+        var name = form.find('input[name=name]');
+        var role_name = name.val();
+        name.val('');
 
-    $('#editPermissions').on('show.bs.modal', function(event) {
-        var button = $(event.relatedTarget);
-        var subject = button.data('subject');
-        var rule = button.data('rule');
-        var modal = $(this);
+        $.ajax({
+            method: form.attr('method'),
+            url: form.attr('action'),
+            data: data,
+            dataType: 'html',
 
-        modal.find('.modal-body input:hidden[name=subject]').val(subject);
-        modal.find('.modal-body input:hidden[name=rule]').val(rule);
-
-        var editor = getPermissionsEditor(modal.find('.permissions-editor'));
-        loadPermissions(editor);
-    });
-}
-
-function setupPermissionsWidget() {
-    $('body').on('change', '.permissions-widget input:checkbox', function() {
-        var user = $(this).closest('.permissions-widget').attr('data-user');
-        var subject = $(this).attr('data-subject');
-        var rule = $(this).attr('data-rule');
-
-        var method = '';
-        if ($(this).prop('checked'))
-            method = 'POST';
-        else
-            method = 'DELETE';
-
-        $.ajax('/api/1/permissions/' + user + '/' + subject + '/' + rule + '/selected', {
-            method: method
+            success: function(data) {
+                var panel = $(data);
+                addPanelToTabs('.roles-list', panel, role_name);
+            }
         });
+
+    }).on('change', 'input:checkbox', function(e) {
+        var check = $(this);
+
+        var url = '';
+        if (check.is(':checked') == true)
+            url = '/roles/attach';
+        else
+            url = '/roles/detach';
+
+        var data = {};
+        data.role = check.attr('data-role');
+        data.action = check.attr('data-action');
+        data.user = check.attr('data-user');
+        data.target_id = check.attr('data-target-id');
+        data.target_class = check.attr('data-target-class');
+
+        $.ajax({
+            method: 'POST',
+            url: url,
+            data: data
+        });
+
+    }).on('click', '.remove-role', function(e) {
+        e.preventDefault();
+
+        if(confirm('Sei sicuro di voler revocare questo ruolo?')) {
+            var button = $(this);
+
+            var data = {
+                role: button.attr('data-role'),
+                user: button.attr('data-user')
+            };
+
+            var userid = data.user;
+
+            $.ajax({
+                method: 'POST',
+                url: '/roles/detach',
+                data: data,
+                success() {
+                    button.closest('.loadable-contents').find('.role-users').find('[data-user=' + userid + ']').remove();
+                }
+            });
+        }
     });
 }
 
@@ -932,6 +910,7 @@ $(document).ready(function() {
         left: 0,
         top: $(document).height() - 1
     });
+
     $(document).scroll(function() {
         var h = $(document).height();
         var b = $('#bottom-stop').offset();
@@ -965,7 +944,7 @@ $(document).ready(function() {
             });
         } else {
             $(this).find('a').removeClass('active');
-            var node = $('<li>').addClass('list-group-item').addClass('loadable-contents').append(loadingPlaceholder());
+            var node = $('<li>').addClass('list-group-item').addClass('loadable-contents').attr('data-random-identifier', randomString(10)).append(loadingPlaceholder());
             $(this).addClass('active').after(node);
 
             $.ajax({
@@ -1639,6 +1618,4 @@ $(document).ready(function() {
 
     setupHelp();
     setupStatisticsForm();
-    setupPermissionsWidget();
-    setupPermissionsEditor();
 });
