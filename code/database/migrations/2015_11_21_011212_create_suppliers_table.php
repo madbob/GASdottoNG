@@ -28,8 +28,6 @@ class CreateSuppliersTable extends Migration
             $table->string('taxcode')->nullable();
             $table->string('vat')->nullable();
             $table->float('balance', 10, 2)->default(0);
-
-            $table->index('id');
         });
     }
 

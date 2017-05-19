@@ -26,7 +26,7 @@
 @endif
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h2 class="panel-title">Ordini Aperti</h2>
@@ -47,11 +47,7 @@
                 @endif
             </div>
         </div>
-    </div>
-</div>
 
-<div class="row">
-    <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h2 class="panel-title">Ordini in Consegna</h2>
@@ -71,6 +67,13 @@
                     </ul>
                 @endif
             </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="text-right">
+            <p class="lead">Credito Corrente: {{ printablePrice($currentuser->balance) }} €</p>
+            <p class="lead">Da Pagare: {{ printablePrice($currentuser->pending_balance) }} €</p>
         </div>
     </div>
 </div>

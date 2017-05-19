@@ -61,6 +61,14 @@ trait GASModel
         return URL::action($action, $this->id);
     }
 
+    /*
+        Questa va all'occorrenza sovrascritta
+    */
+    public function getPermissionsProxies()
+    {
+        return null;
+    }
+
     public static function iconsMap()
     {
         static $icons = null;

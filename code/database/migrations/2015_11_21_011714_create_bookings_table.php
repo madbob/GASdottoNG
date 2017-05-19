@@ -21,7 +21,6 @@ class CreateBookingsTable extends Migration
             $table->integer('payment_id');
 
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
-            $table->index('id');
         });
     }
 

@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
+
 use Auth;
 use App\GASModel;
 use App\AggregateBooking;
@@ -137,5 +139,15 @@ class Aggregate extends Model
         }
 
         return $ret;
+    }
+
+    public function getPermissionsProxies()
+    {
+        $suppliers = [];
+
+        foreach($this->orders as $order)
+            $suppliers[] = $order->supplier;
+
+        return $suppliers;
     }
 }

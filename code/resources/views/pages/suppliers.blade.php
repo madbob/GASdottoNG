@@ -40,11 +40,15 @@
 <div class="clearfix"></div>
 <hr/>
 
-@include('commons.iconslegend', ['class' => 'Supplier', 'target' => '#supplier-list'])
-
 <div class="row">
     <div class="col-md-12">
-        @include('commons.loadablelist', ['identifier' => 'supplier-list', 'items' => $suppliers])
+        @include('commons.loadablelist', [
+            'identifier' => 'supplier-list',
+            'items' => $suppliers,
+            'legend' => (object)[
+                'class' => 'Supplier'
+            ],
+        ])
     </div>
 </div>
 

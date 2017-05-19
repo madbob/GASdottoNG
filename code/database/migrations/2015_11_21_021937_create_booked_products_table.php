@@ -19,8 +19,6 @@ class CreateBookedProductsTable extends Migration
 
             $table->foreign('booking_id')->references('id')->on('bookings')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-
-            $table->index('id');
         });
     }
 

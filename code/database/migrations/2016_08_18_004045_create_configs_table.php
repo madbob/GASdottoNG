@@ -15,7 +15,7 @@ class CreateConfigsTable extends Migration
             $table->string('name');
             $table->text('value');
 
-            $table->index('id');
+            $table->foreign('gas_id')->references('id')->on('gas')->onDelete('cascade');
         });
     }
 

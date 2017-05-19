@@ -20,8 +20,6 @@ class CreateOrdersTable extends Migration
             $table->enum('status', ['suspended', 'open', 'closed', 'shipped', 'archived']);
             $table->string('discount')->default('');
             $table->integer('payment_id')->nullable();
-
-            $table->index('id');
         });
 
         Schema::create('order_product', function (Blueprint $table) {

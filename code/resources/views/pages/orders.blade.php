@@ -80,11 +80,15 @@
 <div class="clearfix"></div>
 <hr/>
 
-@include('commons.iconslegend', ['class' => 'Aggregate', 'target' => '#order-list'])
-
 <div class="row">
     <div class="col-md-12">
-        @include('commons.loadablelist', ['identifier' => 'order-list', 'items' => $orders])
+        @include('commons.loadablelist', [
+            'identifier' => 'order-list',
+            'items' => $orders,
+            'legend' => (object)[
+                'class' => 'Aggregate'
+            ],
+        ])
     </div>
 </div>
 

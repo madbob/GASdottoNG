@@ -10,7 +10,6 @@ class CreateAggregatesTable extends Migration
         Schema::create('aggregates', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->index('id');
         });
     }
 

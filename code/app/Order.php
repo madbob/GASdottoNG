@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
+
 use App\GASModel;
 use App\SluggableID;
 use App\BookedProduct;
@@ -232,5 +234,10 @@ class Order extends Model
         $table->internal = true;
 
         return [$shipping, $summary, $table];
+    }
+
+    public function getPermissionsProxies()
+    {
+        return [$this->supplier];
     }
 }

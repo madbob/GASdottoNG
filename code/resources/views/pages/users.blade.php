@@ -65,11 +65,15 @@
 <div class="clearfix"></div>
 <hr/>
 
-@include('commons.iconslegend', ['class' => 'User', 'target' => '#user-list'])
-
 <div class="row">
     <div class="col-md-12">
-        @include('commons.loadablelist', ['identifier' => 'user-list', 'items' => $users])
+        @include('commons.loadablelist', [
+            'identifier' => 'user-list',
+            'items' => $users,
+            'legend' => (object)[
+                'class' => 'User'
+            ],
+        ])
     </div>
 </div>
 

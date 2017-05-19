@@ -69,7 +69,21 @@ class Role extends Model
         }
 
         $class = get_class($obj);
-        return (isset($this->applies_cache[$class]) && array_search($obj->id, $this->applies_cache[$class]) !== false);
+        if (!isset($this->applies_cache[$class])) {
+            $proxies = $obj->getPermissionsProxies();
+            if ($proxies != null) {
+                foreach($proxies as $proxy) {
+                    $test = $this->applies($proxy);
+                    if ($test)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+        else {
+            return (isset($this->applies_cache[$class]) && array_search($obj->id, $this->applies_cache[$class]) !== false);
+        }
     }
 
     /*

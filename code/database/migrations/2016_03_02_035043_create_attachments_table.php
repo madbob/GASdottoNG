@@ -17,8 +17,6 @@ class CreateAttachmentsTable extends Migration
             $table->string('filename');
             $table->string('url');
             $table->boolean('internal');
-
-            $table->index('id');
         });
     }
 

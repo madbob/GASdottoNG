@@ -55,6 +55,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->belongsTo('App\Movement');
     }
 
+    public function bookings()
+    {
+        return $this->hasMany('App\Booking')->orderBy('created_at', 'desc');
+    }
+
     public function getSlugID()
     {
         return str_slug($this->printableName());
@@ -87,5 +92,16 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             $test->detachApplication($assigned);
         else
             $this->roles()->detach($role->id);
+    }
+
+    public function getPendingBalanceAttribute()
+    {
+        $bookings = $this->bookings()->where('status', 'pending')->get();
+        $value = 0;
+
+        foreach($bookings as $b)
+            $value += $b->value;
+
+        return $value;
     }
 }

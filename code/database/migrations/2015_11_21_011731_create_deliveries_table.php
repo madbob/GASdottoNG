@@ -14,8 +14,6 @@ class CreateDeliveriesTable extends Migration
             $table->string('name');
             $table->string('address');
             $table->boolean('default');
-
-            $table->index('id');
         });
     }
 

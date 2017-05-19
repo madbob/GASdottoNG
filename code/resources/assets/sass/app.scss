@@ -49,6 +49,17 @@ body {
 	margin-bottom: 0;
 }
 
+.flowbox {
+    flex-direction: row;
+    display: flex;
+    justify-content: space-between;
+
+    .mainflow {
+        flex: 1;
+        padding-right: 10px;
+    }
+}
+
 table {
 	label {
 		padding-top: 7px;

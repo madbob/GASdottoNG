@@ -37,8 +37,6 @@ class CreateProductsTable extends Migration
             $table->foreign('category_id')->references('id')->on('categories');
             $table->foreign('measure_id')->references('id')->on('measures');
             $table->foreign('supplier_id')->references('id')->on('suppliers');
-
-            $table->index('id');
         });
     }
 

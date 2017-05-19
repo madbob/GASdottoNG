@@ -12,7 +12,6 @@ class CreateMeasuresTable extends Migration
             $table->timestamps();
             $table->text('name');
             $table->boolean('discrete')->default(false);
-            $table->index('id');
         });
     }
 

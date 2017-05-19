@@ -1185,6 +1185,23 @@ $(document).ready(function() {
         });
     });
 
+    $('body').on('keyup', '.list-text-filter', function() {
+        var text = $(this).val().toLowerCase();
+        var target = $(this).attr('data-list-target');
+
+        if (text == '') {
+            $('.loadablelist' + target + ' .loadable-item').show();
+        }
+        else {
+            $('.loadablelist' + target + ' .loadable-item').each(function() {
+                if ($(this).text().toLowerCase().indexOf(text) == -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        }
+    });
+
     $('body').on('submit', '.inner-form', function(event) {
         event.preventDefault();
         var form = $(this);

@@ -9,18 +9,23 @@ if(isset($filters) == false)
 
 @if(!empty($filters) || !is_null($legend))
     <div class="row">
-        <div class="col-md-12">
-            @if(!empty($filters))
-                <div class="btn-group hidden-xs hidden-sm list-filters" role="group" aria-label="Filtri" data-list-target="#{{ $identifier }}">
-                    @foreach($filters as $attribute => $info)
-                        <button type="button" class="btn btn-default" data-filter-attribute="{{ $attribute }}"><span class="glyphicon glyphicon-{{ $info->icon }}" aria-hidden="true"></span>&nbsp;{{ $info->label }}</button>
-                    @endforeach
-                </div>
-            @endif
+        <div class="col-md-12 flowbox">
+            <div class="form-group mainflow">
+                <input type="text" class="form-control list-text-filter" data-list-target="#{{ $identifier }}">
+            </div>
+            <div>
+                @if(!empty($filters))
+                    <div class="btn-group hidden-xs hidden-sm list-filters" role="group" aria-label="Filtri" data-list-target="#{{ $identifier }}">
+                        @foreach($filters as $attribute => $info)
+                            <button type="button" class="btn btn-default" data-filter-attribute="{{ $attribute }}"><span class="glyphicon glyphicon-{{ $info->icon }}" aria-hidden="true"></span>&nbsp;{{ $info->label }}</button>
+                        @endforeach
+                    </div>
+                @endif
 
-            @if(!is_null($legend))
-                @include('commons.iconslegend', ['class' => $legend->class, 'target' => '#' . $identifier])
-            @endif
+                @if(!is_null($legend))
+                    @include('commons.iconslegend', ['class' => $legend->class, 'target' => '#' . $identifier])
+                @endif
+            </div>
         </div>
     </div>
 @endif

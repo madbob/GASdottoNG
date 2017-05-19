@@ -18,7 +18,6 @@ class CreateBookedProductComponentsTable extends Migration
             $table->foreign('productvariant_id')->references('id')->on('booked_product_variants')->onDelete('cascade');
             $table->foreign('variant_id')->references('id')->on('variants')->onDelete('cascade');
             $table->foreign('value_id')->references('id')->on('variant_values')->onDelete('cascade');
-            $table->index('id');
         });
     }
 

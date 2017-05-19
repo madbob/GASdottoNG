@@ -41,8 +41,6 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
 
             $table->foreign('gas_id')->references('id')->on('gas');
-
-            $table->index('id');
         });
     }
 

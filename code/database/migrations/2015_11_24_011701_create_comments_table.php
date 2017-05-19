@@ -24,7 +24,6 @@ class CreateCommentsTable extends Migration
             $table->morphs('commentable');
             $table->string('user_id');
 
-            $table->index('user_id');
             $table->index('commentable_id');
             $table->index('commentable_type');
 

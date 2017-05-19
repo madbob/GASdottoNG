@@ -16,8 +16,6 @@ class CreateNotificationsTable extends Migration
             $table->boolean('mailed');
             $table->date('start_date')->useCurrent();
             $table->date('end_date')->nullable();
-
-            $table->index('id');
         });
 
         Schema::create('notification_user', function (Blueprint $table) {

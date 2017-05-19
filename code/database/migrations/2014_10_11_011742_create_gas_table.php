@@ -16,8 +16,6 @@ class CreateGasTable extends Migration
             $table->text('description')->nullable();
             $table->string('logo', 100)->nullable();
             $table->text('message')->nullable();
-
-            $table->index('id');
         });
     }
 

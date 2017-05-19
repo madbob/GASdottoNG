@@ -18,7 +18,7 @@ class CreateBalancesTable extends Migration
             $table->decimal('suppliers', 6, 2)->default(0);
             $table->decimal('deposits', 6, 2)->default(0);
 
-            $table->index('id');
+            $table->foreign('gas_id')->references('id')->on('gas')->onDelete('cascade');
         });
     }
 
