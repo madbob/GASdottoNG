@@ -244,6 +244,7 @@ class OrdersController extends Controller
             if ($booking == null) {
                 continue;
             }
+
             if ($booking->order->id != $id) {
                 return $this->errorResponse('Non autorizzato');
             }
