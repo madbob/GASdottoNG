@@ -1,8 +1,8 @@
 <form class="form-horizontal main-form" method="PUT" action="{{ url('products/' . $product->id) }}">
     <div class="row">
         <div class="col-md-6">
-            @include('commons.staticstringfield', ['obj' => $product, 'name' => 'price', 'label' => 'Prezzo Unitario', 'mandatory' => true])
-            @include('commons.staticstringfield', ['obj' => $product, 'name' => 'transport', 'label' => 'Prezzo Trasporto'])
+            @include('commons.staticpricefield', ['obj' => $product, 'name' => 'price', 'label' => 'Prezzo Unitario', 'mandatory' => true])
+            @include('commons.staticpricefield', ['obj' => $product, 'name' => 'transport', 'label' => 'Prezzo Trasporto'])
             @include('commons.staticobjfield', ['obj' => $product, 'name' => 'category', 'label' => 'Categoria'])
             @include('commons.staticobjfield', ['obj' => $product, 'name' => 'measure', 'label' => 'Unità di Misura'])
             @include('commons.staticstringfield', ['obj' => $product, 'name' => 'description', 'label' => 'Descrizione'])

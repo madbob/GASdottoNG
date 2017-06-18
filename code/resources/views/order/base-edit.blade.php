@@ -29,14 +29,15 @@ foreach ($user->roles as $role) {
 @include('commons.datefield', [
     'obj' => $order,
     'name' => 'start',
-    'label' => 'Data Apertura',
+    'label' => 'Data Apertura Prenotazioni',
+    'defaults_now' => true,
     'mandatory' => true
 ])
 
 @include('commons.datefield', [
     'obj' => $order,
     'name' => 'end',
-    'label' => 'Data Chiusura',
+    'label' => 'Data Chiusura Prenotazioni',
     'mandatory' => true,
     'extras' => [
         'data-enforce-after' => '.date[name=start]'
