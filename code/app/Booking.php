@@ -71,6 +71,9 @@ class Booking extends Model
         }
     }
 
+    /*
+        Valore complessivo di quanto ordinato
+    */
     public function getValueAttribute()
     {
         $sum = 0;
@@ -82,6 +85,9 @@ class Booking extends Model
         return $sum;
     }
 
+    /*
+        Valore complessivo di quanto consegnato
+    */
     public function getDeliveredAttribute()
     {
         $sum = 0;
@@ -91,6 +97,30 @@ class Booking extends Model
         }
 
         return $sum;
+    }
+
+    public function getTransportAttribute()
+    {
+        if($this->order->transport)
+            return ($this->order->transport / $this->order->bookings()->count());
+        else
+            return 0;
+    }
+
+    /*
+        Valore complessivo di quanto ordinato + spedizione globale
+    */
+    public function getTotalValueAttribute()
+    {
+        return $this->value + $this->transport;
+    }
+
+    /*
+        Valore complessivo di quanto consegnato + spedizione globale
+    */
+    public function getTotalDeliveredAttribute()
+    {
+        return $this->delivered + $this->transport;
     }
 
     public function getSlugID()

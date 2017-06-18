@@ -17,7 +17,7 @@ $rand = rand();
         <?php
 
             $o = $order->userBooking($user->id);
-            $now_delivered = $o->delivered;
+            $now_delivered = $o->total_delivered;
             $tot_delivered[$o->id] = $now_delivered;
             $tot_amount += $now_delivered;
 
@@ -119,6 +119,20 @@ $rand = rand();
 
                                 <td>&nbsp;</td>
                                 <td class="bookable-target">&nbsp;</td>
+                            </tr>
+                        @endif
+
+                        @if($o->transport != 0)
+                            <tr class="booking-transport">
+                                <td>
+                                    <label class="static-label">Trasporto</label>
+                                </td>
+                                <td>
+                                    &nbsp;
+                                </td>
+                                <td>
+                                    <span>{{ printablePrice($o->transport) }}</span> €
+                                </td>
                             </tr>
                         @endif
                     </tbody>

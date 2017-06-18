@@ -140,6 +140,7 @@ class OrdersController extends Controller
         $order->end = decodeDate($request->input('end'));
         $order->status = $request->input('status');
         $order->discount = $request->input('discount');
+        $order->transport = $request->input('transport');
 
         $s = $request->input('shipping');
         if ($s != '') {

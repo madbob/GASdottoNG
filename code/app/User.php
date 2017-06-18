@@ -100,7 +100,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         $value = 0;
 
         foreach($bookings as $b)
-            $value += $b->value;
+            $value += $b->total_value;
 
         return $value;
     }
