@@ -32,6 +32,28 @@ class BookedProductVariant extends Model
         return false;
     }
 
+    private function fixQuantity($attribute)
+    {
+        $base_price = $this->product->basePrice();
+        $price = $base_price;
+
+        foreach ($this->components as $c) {
+            $price += $c->value->price_offset;
+        }
+
+        return $price * $this->$attribute;
+    }
+
+    public function quantityValue()
+    {
+        return $this->fixQuantity('quantity');
+    }
+
+    public function deliveredValue()
+    {
+        return $this->fixQuantity('delivered');
+    }
+
     public function printableName()
     {
         $ret = [];

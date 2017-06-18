@@ -145,6 +145,7 @@ class Order extends Model
             'order' => $this->id,
             'price' => 0,
             'products' => [],
+            'by_variant' => [],
         ];
 
         $order = $this;
@@ -154,12 +155,18 @@ class Order extends Model
         $total_transport = 0;
 
         foreach ($products as $product) {
-            $q = BookedProduct::where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order) {
+            $q = BookedProduct::with('variants')->where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order) {
                 $query->where('order_id', '=', $order->id);
             });
 
             $quantity = $q->sum('quantity');
+            if(!$quantity)
+                $quantity = 0;
+
             $delivered = $q->sum('delivered');
+            if(!$delivered)
+                $delivered = 0;
+
             $base_price = $product->contextualPrice($order);
             $transport = $quantity * $product->transport;
 
@@ -170,12 +177,31 @@ class Order extends Model
             foreach ($booked as $b) {
                 $price += $b->quantityValue();
                 $price_delivered += $b->deliveredValue();
+
+                if($b->variants->isEmpty() == false) {
+                    $variants = [];
+
+                    foreach($b->variants as $v) {
+                        $name = $v->printableName();
+                        if(isset($variants[$name]) == false) {
+                            $variants[$name] = [
+                                'quantity' => 0,
+                                'price' => 0
+                            ];
+                        }
+
+                        $variants[$name]['quantity'] += $v->quantity;
+                        $variants[$name]['price'] += $v->quantityValue();
+                    }
+
+                    $summary->by_variant[$product->id] = $variants;
+                }
             }
 
-            $summary->products[$product->id]['quantity'] = $quantity ? $quantity : 0;
+            $summary->products[$product->id]['quantity'] = $quantity;
             $summary->products[$product->id]['price'] = $price;
             $summary->products[$product->id]['transport'] = $transport;
-            $summary->products[$product->id]['delivered'] = $delivered ? $delivered : 0;
+            $summary->products[$product->id]['delivered'] = $delivered;
             $summary->products[$product->id]['price_delivered'] = $price_delivered;
 
             $total_price += $price;

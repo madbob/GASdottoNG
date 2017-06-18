@@ -34,8 +34,7 @@ class BookedProduct extends Model
 
     private function fixQuantity($attribute)
     {
-        $product = $this->product;
-        $base_price = $product->contextualPrice($this->booking->order) + $product->transport;
+        $base_price = $this->basePrice();
 
         $variants = $this->variants;
         if ($variants->isEmpty() == false) {
@@ -52,7 +51,8 @@ class BookedProduct extends Model
             }
 
             return $total;
-        } else {
+        }
+        else {
             $quantity = $this->$attribute;
             if ($product->portion_quantity != 0) {
                 $quantity = $this->$attribute * $product->portion_quantity;
@@ -60,6 +60,12 @@ class BookedProduct extends Model
 
             return ($base_price + $product->transport) * $quantity;
         }
+    }
+
+    public function basePrice()
+    {
+        $product = $this->product;
+        return $product->contextualPrice($this->booking->order) + $product->transport;
     }
 
     public function quantityValue()

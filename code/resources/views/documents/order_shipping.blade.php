@@ -13,11 +13,21 @@
                 </thead>
                 <tbody>
                     @foreach($booking->products as $product)
-                        <tr>
-                            <td width="40%">{{ $product->product->printableName() }}</td>
-                            <td width="40%">{{ $product->quantity }} {{ $product->product->printableMeasure() }}</td>
-                            <td width="20%">{{ printablePrice($product->quantityValue()) }} €</td>
-                        </tr>
+                        @if($product->variants->isEmpty() == false)
+                            @foreach($product->variants as $variant)
+                                <tr>
+                                    <td width="40%">{{ $product->product->printableName() }}</td>
+                                    <td width="40%">{{ $variant->quantity }} {{ $product->product->printableMeasure() }} {{ $variant->printableName() }}</td>
+                                    <td width="20%">{{ printablePrice($variant->quantityValue()) }} €</td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td width="40%">{{ $product->product->printableName() }}</td>
+                                <td width="40%">{{ $product->quantity }} {{ $product->product->printableMeasure() }}</td>
+                                <td width="20%">{{ printablePrice($product->quantityValue()) }} €</td>
+                            </tr>
+                        @endif
                     @endforeach
                 </tbody>
                 <tfoot>
