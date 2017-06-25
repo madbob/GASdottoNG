@@ -92,7 +92,8 @@ table label {
   display: none; }
 
 .product-disabled {
-  opacity: 0.2; }
+  opacity: 0.2;
+  display: none; }
 
 #bottom-stop {
   position: absolute;

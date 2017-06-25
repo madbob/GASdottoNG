@@ -1318,11 +1318,13 @@ $(document).ready(function() {
     	Gestione ordini
     */
 
-    $('body').on('change', '.order-summary tr .enabling-toggle', function() {
+    $('body').on('click', '.order-summary .toggle-product-abilitation', function() {
+        $('.order-summary tr.product-disabled').toggle();
+    })
+    .on('change', '.order-summary tr .enabling-toggle', function() {
         $(this).closest('tr').toggleClass('product-disabled');
-    });
-
-    $('body').on('change', '.order-summary tr .discount-toggle', function() {
+    })
+    .on('change', '.order-summary tr .discount-toggle', function() {
         var p = $(this).closest('tr').find('.product-price');
         p.find('.full-price, .product-discount-price').toggleClass('hidden');
 
