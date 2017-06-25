@@ -1,4 +1,8 @@
-<form class="form-horizontal main-form user-editor" method="PUT" action="{{ url('users/' . $user->id) }}">
+@extends($theme_layout)
+
+@section('content')
+
+<form class="form-horizontal inner-form" method="PUT" action="{{ url('users/' . $user->id) }}">
     <div class="row">
         <div class="col-md-6">
             @include('user.base-edit', ['user' => $user])
@@ -15,6 +19,9 @@
             @if(Gate::check('movements.admin', $currentgas) || Gate::check('movements.view', $currentgas))
                 @include('commons.movementfield', ['obj' => $user->fee, 'name' => 'fee_id', 'label' => 'Quota Associativa', 'default' => \App\Movement::generate('annual-fee', $user, $user->gas, 0)])
                 @include('commons.movementfield', ['obj' => $user->deposit, 'name' => 'deposit_id', 'label' => 'Deposito', 'default' => \App\Movement::generate('deposit-pay', $user, $user->gas, 0)])
+            @else
+                @include('commons.staticmovementfield', ['obj' => $user->fee, 'name' => 'fee_id', 'label' => 'Quota Associativa', 'default' => \App\Movement::generate('annual-fee', $user, $user->gas, 0)])
+                @include('commons.staticmovementfield', ['obj' => $user->deposit, 'name' => 'deposit_id', 'label' => 'Deposito', 'default' => \App\Movement::generate('deposit-pay', $user, $user->gas, 0)])
             @endif
 
             @include('commons.staticdatefield', ['obj' => $user, 'name' => 'last_login', 'label' => 'Ultimo Accesso'])
@@ -34,7 +41,15 @@
         </div>
     </div>
 
-    @include('commons.formbuttons')
+    <div class="row">
+        <div class="col-md-12">
+            <div class="btn-group pull-right main-form-buttons" role="group" aria-label="Opzioni">
+                <button type="submit" class="btn btn-success saving-button">Salva</button>
+            </div>
+        </div>
+    </div>
 </form>
 
 @stack('postponed')
+
+@endsection

@@ -14,6 +14,7 @@ Route::get('/home', function () {
 });
 
 Route::get('users/search', 'UsersController@search');
+Route::get('users/profile', 'UsersController@profile');
 Route::post('roles/attach', 'RolesController@attach');
 Route::post('roles/detach', 'RolesController@detach');
 Route::post('notifications/markread/{id}', 'NotificationsController@markread');

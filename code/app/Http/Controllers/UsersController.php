@@ -44,6 +44,18 @@ class UsersController extends Controller
         }
     }
 
+    public function profile(Request $request)
+    {
+        try {
+            $id = Auth::user()->id;
+            $user = $this->usersService->show($id);
+            return Theme::view('pages.profile', ['user' => $user]);
+        }
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+    }
+
     public function store(Request $request)
     {
         try {
@@ -74,9 +86,9 @@ class UsersController extends Controller
     {
         try {
             $user = $this->usersService->update($id, $request->all());
-
             return $this->userSuccessResponse($user);
-        } catch (AuthException $e) {
+        }
+        catch (AuthException $e) {
             abort($e->status());
         }
     }

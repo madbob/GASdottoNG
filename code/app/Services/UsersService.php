@@ -31,6 +31,26 @@ class UsersService
         throw new AuthException(403);
     }
 
+    /*
+        Ritorna:
+        - 1 se l'utente ha permessi di amministrazione
+        - 2 se l'utente richiesto è l'utente corrente
+    */
+    private function ensureAuthAdminOrOwner($id)
+    {
+        $this->ensureAuth();
+
+        $user = Auth::user();
+
+        if ($user->can('users.admin', $user->gas))
+            return 1;
+        else if ($user->id == $id)
+            return 2;
+
+        throw new AuthException(403);
+        return 0;
+    }
+
     private function ensureAuthAdmin()
     {
         $this->ensureAuth();
@@ -86,9 +106,9 @@ class UsersService
 
     public function update($id, array $request)
     {
-        $this->ensureAuthAdmin();
+        $type = $this->ensureAuthAdminOrOwner($id);
 
-        $user = DB::transaction(function () use ($id, $request) {
+        $user = DB::transaction(function () use ($id, $request, $type) {
             $user = $this->show($id);
 
             $this->setIfSet($user, $request, 'username');
@@ -97,11 +117,14 @@ class UsersService
             $this->setIfSet($user, $request, 'email');
             $this->setIfSet($user, $request, 'phone');
             $this->transformAndSetIfSet($user, $request, 'birthday', "decodeDate");
-            $this->transformAndSetIfSet($user, $request, 'member_since', "decodeDate");
             $this->setIfSet($user, $request, 'taxcode');
             $this->setIfSet($user, $request, 'family_members');
-            $this->setIfSet($user, $request, 'card_number');
             $this->setIfSet($user, $request, 'preferred_delivery_id');
+
+            if ($type == 1) {
+                $this->transformAndSetIfSet($user, $request, 'member_since', "decodeDate");
+                $this->setIfSet($user, $request, 'card_number');
+            }
 
             /*
                 TODO Questo sarà da sistemare quando verrà debitamente gestito l'indirizzo
