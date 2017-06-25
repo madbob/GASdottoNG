@@ -7,6 +7,7 @@ use App\AttachableTrait;
 use App\Attachment;
 use App\GASModel;
 use App\SluggableID;
+use App\Aggregate;
 
 class Supplier extends Model
 {
@@ -27,6 +28,15 @@ class Supplier extends Model
     public function orders()
     {
         return $this->hasMany('App\Order')->orderBy('end', 'desc');
+    }
+
+    public function getAggregatesAttribute()
+    {
+        $supplier = $this;
+
+        return Aggregate::whereHas('orders', function ($query) use ($supplier) {
+            $query->whereIn('id', $supplier->orders->pluck('id'))->orderBy('end', 'desc');
+        });
     }
 
     public function contacts()
