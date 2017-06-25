@@ -1306,7 +1306,7 @@ $(document).ready(function() {
             method: 'GET',
             url: form.attr('action'),
             data: data,
-            dataType: 'json',
+            dataType: 'html',
 
             success: function(data) {
                 target.empty().append(data);

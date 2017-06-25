@@ -22,6 +22,9 @@
     <div class="col-md-6">
         <form class="form-horizontal form-filler" action="{{ url('movements') }}" data-toggle="validator" data-fill-target="#movements-in-range">
             @include('commons.genericdaterange')
+            @include('commons.selectmovementtypefield')
+            @include('commons.decimalfield', ['obj' => null, 'name' => 'amountstart', 'label' => 'Importo Minimo', 'postlabel' => '€'])
+            @include('commons.decimalfield', ['obj' => null, 'name' => 'amountend', 'label' => 'Importo Massimo', 'postlabel' => '€'])
 
             <div class="form-group">
                 <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">

@@ -50,30 +50,47 @@ class MovementsController extends Controller
 
     public function index(Request $request)
     {
-        if ($request->has('start')) {
+        $query = Movement::orderBy('registration_date', 'desc');
+
+        if ($request->has('startdate')) {
+            $start = decodeDate($request->input('startdate'));
             $filtered = true;
-        } else {
+        }
+        else {
+            $start = date('Y-m-d', strtotime('-1 months'));
             $filtered = false;
         }
 
-        if ($request->has('start')) {
-            $start = decodeDate($request->input('start'));
-        } else {
-            $start = date('Y-m-d', strtotime('-1 months'));
-        }
+        $query->where('registration_date', '>=', $start);
 
-        if ($request->has('end')) {
-            $end = decodeDate($request->input('end'));
-        } else {
+        if ($request->has('enddate')) {
+            $end = decodeDate($request->input('enddate'));
+        }
+        else {
             $end = date('Y-m-d');
         }
 
-        $data['movements'] = Movement::where('registration_date', '<=', $end)->where('registration_date', '>=', $start)->orderBy('registration_date', 'desc')->get();
+        $query->where('registration_date', '<=', $end);
+
+        if ($request->input('type', 'none') != 'none') {
+            $query->where('type', $request->input('type'));
+        }
+
+        if ($request->input('amountstart', '') != '') {
+            $query->where('amount', '>=', $request->input('amountstart'));
+        }
+
+        if ($request->input('amountend', '') != '') {
+            $query->where('amount', '<=', $request->input('amountend'));
+        }
+
+        $data['movements'] = $query->get();
 
         if ($filtered == false) {
             $data['balance'] = Auth::user()->gas->balances()->first();
             return Theme::view('pages.movements', $data);
-        } else {
+        }
+        else {
             return Theme::view('movement.list', $data);
         }
     }
