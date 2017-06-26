@@ -8,9 +8,12 @@ if ($extra_class) {
 ?>
 
 <div class="form-group">
-    <label for="{{ $prefix . $name }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
+    @if($squeeze == false)
+        <label for="{{ $prefix . $name . $postfix }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
+    @endif
+
     <div class="col-sm-{{ $fieldsize }}">
-        <select class="{{ $select_class }}" name="{{ $prefix . $name }}" autocomplete="off">
+        <select class="{{ $select_class }}" name="{{ $prefix . $name . $postfix }}" autocomplete="off">
             @foreach($values as $v)
                 <option value="{{ $v['value'] }}"
                 @if ($obj && $obj->$name == $v['value'])

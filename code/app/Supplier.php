@@ -8,10 +8,11 @@ use App\Attachment;
 use App\GASModel;
 use App\SluggableID;
 use App\Aggregate;
+use App\ContactableTrait;
 
 class Supplier extends Model
 {
-    use AttachableTrait, CreditableTrait, GASModel, SluggableID;
+    use AttachableTrait, ContactableTrait, CreditableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
 
@@ -37,11 +38,6 @@ class Supplier extends Model
         return Aggregate::whereHas('orders', function ($query) use ($supplier) {
             $query->whereIn('id', $supplier->orders->pluck('id'))->orderBy('end', 'desc');
         });
-    }
-
-    public function contacts()
-    {
-        return $this->morphMany('App\Contact', 'target');
     }
 
     protected function requiredAttachmentPermission()

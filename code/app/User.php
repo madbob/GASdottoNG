@@ -10,14 +10,14 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use App\GASModel;
 use App\SluggableID;
+use App\ContactableTrait;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, CanResetPassword, CreditableTrait, GASModel, SluggableID;
+    use Authenticatable, Authorizable, CanResetPassword, ContactableTrait, CreditableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
     protected $table = 'users';
-    protected $fillable = ['firstname', 'email', 'password'];
     protected $hidden = ['password', 'remember_token'];
 
     public function gas()
@@ -38,11 +38,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function allnotifications()
     {
         return $this->belongsToMany('App\Notification')->orderBy('start_date', 'desc');
-    }
-
-    public function contacts()
-    {
-        return $this->morphMany('App\Contact', 'target');
     }
 
     public function deposit()

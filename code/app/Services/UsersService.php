@@ -114,8 +114,6 @@ class UsersService
             $this->setIfSet($user, $request, 'username');
             $this->setIfSet($user, $request, 'firstname');
             $this->setIfSet($user, $request, 'lastname');
-            $this->setIfSet($user, $request, 'email');
-            $this->setIfSet($user, $request, 'phone');
             $this->transformAndSetIfSet($user, $request, 'birthday', "decodeDate");
             $this->setIfSet($user, $request, 'taxcode');
             $this->setIfSet($user, $request, 'family_members');
@@ -126,11 +124,6 @@ class UsersService
                 $this->setIfSet($user, $request, 'card_number');
             }
 
-            /*
-                TODO Questo sarà da sistemare quando verrà debitamente gestito l'indirizzo
-            */
-            $this->address = '';
-
             $this->transformAndSetIfSet($user, $request, 'password', function ($password) {
                 if ($password == '') {
                     return $password;
@@ -139,6 +132,8 @@ class UsersService
             });
 
             $user->save();
+
+            $user->updateContacts($request);
 
             return $user;
         });

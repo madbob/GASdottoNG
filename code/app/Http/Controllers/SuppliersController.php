@@ -24,7 +24,6 @@ class SuppliersController extends Controller
         $obj->taxcode = $request->input('taxcode');
         $obj->vat = $request->input('vat');
         $obj->description = $request->input('description');
-        $obj->website = $request->input('website');
 
         /*
             TODO Questo sarà da sistemare quando verrà debitamente gestito l'indirizzo
@@ -90,6 +89,8 @@ class SuppliersController extends Controller
 
         $this->basicReadFromRequest($s, $request);
         $s->save();
+
+        $s->updateContacts($request);
 
         return $this->successResponse([
             'id' => $s->id,

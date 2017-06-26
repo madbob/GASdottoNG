@@ -15,7 +15,7 @@
                     @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'description', 'label' => 'Descrizione'])
                     @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'taxcode', 'label' => 'Codice Fiscale'])
                     @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'vat', 'label' => 'Partita IVA'])
-                    @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'website', 'label' => 'Sito Web'])
+                    @include('commons.staticcontactswidget', ['obj' => $supplier])
                 </div>
                 <div class="col-md-6">
                     @include('commons.permissionseditor', ['object' => $supplier, 'master_permission' => 'supplier.modify'])

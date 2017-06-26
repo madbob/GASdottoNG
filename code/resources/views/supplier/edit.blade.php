@@ -16,6 +16,7 @@
             <div class="row">
                 <div class="col-md-6">
                     @include('supplier.base-edit', ['supplier' => $supplier])
+                    @include('commons.contactswidget', ['obj' => $supplier])
                 </div>
                 <div class="col-md-6">
                     @include('commons.permissionseditor', ['object' => $supplier, 'master_permission' => 'supplier.modify'])

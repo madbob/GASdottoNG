@@ -15,6 +15,7 @@ use App\Role;
 use App\Balance;
 use App\Delivery;
 use App\Supplier;
+use App\Contact;
 use App\Category;
 use App\Measure;
 use App\Product;
@@ -34,13 +35,29 @@ class ImportLegacy extends Command
     private function addressTranslate($old)
     {
         list($street, $cap, $city) = explode(';', $old);
-        $new = (object) [
-            'street' => $street,
-            'city' => $city,
-            'cap' => $cap,
-        ];
+        list($prefix, $street) = explode(':', $street);
+        list($prefix, $cap) = explode(':', $cap);
+        list($prefix, $city) = explode(':', $city);
+        return sprintf('%s, %s, %s', $street, $cap, $city);
+    }
 
-        return json_encode($new);
+    private function handleContact($type, $external_name, $source, $obj)
+    {
+        if (empty($source->$external_name))
+            return;
+
+        $c = new Contact();
+        $c->type = $type;
+
+        if ($type == 'address')
+            $c->value = $this->addressTranslate($source->$external_name);
+        else
+            $c->value = $source->$external_name;
+
+        $c->target_id = $obj->id;
+        $c->target_type = get_class($obj);
+
+        $c->save();
     }
 
     public function handle()
@@ -181,11 +198,8 @@ class ImportLegacy extends Command
                 $obj->username = $row->login;
                 $obj->firstname = $row->firstname;
                 $obj->lastname = $row->surname;
-                $obj->email = $row->mail;
                 $obj->password = Hash::make($row->login);
                 $obj->birthday = $row->birthday;
-                $obj->phone = $row->phone;
-                $obj->address = $this->addressTranslate($row->address);
                 $obj->family_members = $row->family;
                 $obj->taxcode = $row->codfisc;
                 $obj->member_since = $row->join_date;
@@ -200,6 +214,12 @@ class ImportLegacy extends Command
                 }
 
                 $obj->save();
+
+                $this->handleContact('phone', 'phone', $row, $obj);
+                $this->handleContact('email', 'mail', $row, $obj);
+                $this->handleContact('email', 'mail2', $row, $obj);
+                $this->handleContact('address', 'address', $row, $obj);
+
                 $map['users'][$row->id] = $obj->id;
 
                 if ($row->privileges == 2) {
@@ -222,12 +242,14 @@ class ImportLegacy extends Command
                 $obj->description = $row->description;
                 $obj->taxcode = $row->tax_code;
                 $obj->vat = $row->vat_number;
-                $obj->address = '{}';
-                $obj->phone = $row->phone;
-                $obj->email = $row->mail;
-                $obj->fax = $row->fax;
-                $obj->website = $row->website;
                 $obj->save();
+
+                $this->handleContact('address', 'address', $row, $obj);
+                $this->handleContact('phone', 'phone', $row, $obj);
+                $this->handleContact('email', 'mail', $row, $obj);
+                $this->handleContact('fax', 'fax', $row, $obj);
+                $this->handleContact('website', 'website', $row, $obj);
+
                 $map['suppliers'][$row->id] = $obj->id;
             }
             catch (\Exception $e) {

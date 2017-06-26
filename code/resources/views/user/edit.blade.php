@@ -2,6 +2,7 @@
     <div class="row">
         <div class="col-md-6">
             @include('user.base-edit', ['user' => $user])
+            @include('commons.contactswidget', ['obj' => $user])
         </div>
         <div class="col-md-6">
             @if(Gate::check('users.admin', $currentgas))

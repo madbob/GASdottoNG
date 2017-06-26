@@ -16,12 +16,6 @@ class CreateSuppliersTable extends Migration
             $table->string('description', 500)->nullable();
             $table->string('comment', 500)->nullable();
 
-            $table->text('address');
-            $table->string('phone')->nullable();
-            $table->string('email');
-            $table->string('fax')->nullable();
-            $table->string('website')->nullable();
-
             $table->text('order_method');
             $table->text('payment_method');
 

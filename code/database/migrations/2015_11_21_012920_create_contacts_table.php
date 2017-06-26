@@ -11,10 +11,10 @@ class CreateContactsTable extends Migration
             $table->string('id')->primary();
             $table->timestamps();
 
-            $table->morphs('referrer');
-            $table->string('name');
-            $table->string('phone');
-            $table->string('email');
+            $table->string('target_type');
+            $table->string('target_id');
+            $table->string('type');
+            $table->string('value');
         });
     }
 
