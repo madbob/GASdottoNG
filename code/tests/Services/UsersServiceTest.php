@@ -135,7 +135,6 @@ class UsersServiceTest extends TestCase
             'username' => 'test user',
             'firstname' => 'mario',
             'lastname' => 'rossi',
-            'email' => 'mr@example.com',
             'password' => 'password'
         ));
 
@@ -174,11 +173,9 @@ class UsersServiceTest extends TestCase
 
         $updatedUser = $this->usersService->update($user->id, array(
             'password' => 'new password',
-            'email' => 'mr@example.com',
             'birthday' => 'Thursday 01 December 2016',
         ));
 
-        $this->assertNotEquals($user->email, $updatedUser->email);
         $this->assertNotEquals($user->birthday, $updatedUser->birthday);
     }
 
@@ -207,7 +204,6 @@ class UsersServiceTest extends TestCase
         $user = $this->usersService->show($this->userWithViewPerm->id);
 
         $this->assertEquals($this->userWithViewPerm->id, $user->id);
-        $this->assertEquals($this->userWithViewPerm->email, $user->email);
         $this->assertEquals($this->userWithViewPerm->firstname, $user->firstname);
         $this->assertEquals($this->userWithViewPerm->lastname, $user->lastname);
     }
