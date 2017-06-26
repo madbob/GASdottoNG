@@ -13,10 +13,16 @@ trait ContactableTrait
 
     public function updateContacts($request)
     {
+        $ids = [];
+        $types = [];
+        $values = [];
+
         if (is_array($request)) {
-            $ids = $request['contact_id'];
-            $types = $request['contact_type'];
-            $values = $request['contact_value'];
+            if (isset($request['contact_id'])) {
+                $ids = $request['contact_id'];
+                $types = $request['contact_type'];
+                $values = $request['contact_value'];
+            }
         }
         else {
             $ids = $request->input('contact_id', []);

@@ -168,14 +168,8 @@ class UsersService
         $user->username = $request['username'];
         $user->firstname = $request['firstname'];
         $user->lastname = $request['lastname'];
-        $user->email = $request['email'];
         $user->password = Hash::make($request['password']);
         $user->balance = 0;
-
-        /*
-            TODO Questo sarà da sistemare quando verrà debitamente gestito l'indirizzo
-        */
-        $user->address = '';
 
         DB::transaction(function () use ($user) {
             $user->save();
