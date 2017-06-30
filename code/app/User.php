@@ -67,7 +67,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function getSlugID()
     {
-        return str_slug($this->printableName());
+        return $this->username;
     }
 
     public function printableName()
