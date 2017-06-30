@@ -13,6 +13,7 @@ class CreateSuppliersTable extends Migration
             $table->softDeletes();
 
             $table->string('name')->unique();
+            $table->string('business_name')->nullable();
             $table->string('description', 500)->nullable();
             $table->string('comment', 500)->nullable();
 

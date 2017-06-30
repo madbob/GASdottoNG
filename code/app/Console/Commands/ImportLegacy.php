@@ -239,6 +239,7 @@ class ImportLegacy extends Command
             try {
                 $obj = new Supplier();
                 $obj->name = $row->name;
+                $obj->business_name = $row->name;
                 $obj->description = $row->description;
                 $obj->taxcode = $row->tax_code;
                 $obj->vat = $row->vat_number;

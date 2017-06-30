@@ -21,6 +21,7 @@ class SuppliersController extends Controller
     private function basicReadFromRequest(&$obj, $request)
     {
         $obj->name = $request->input('name');
+        $obj->business_name = $request->input('business_name');
         $obj->taxcode = $request->input('taxcode');
         $obj->vat = $request->input('vat');
         $obj->description = $request->input('description');
