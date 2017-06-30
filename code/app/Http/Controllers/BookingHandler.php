@@ -47,12 +47,10 @@ class BookingHandler extends Controller
 
             foreach ($order->products as $product) {
                 $quantity = $request->input($product->id, 0);
+                $booked = $booking->getBooked($product, true);
+
                 if ($quantity != 0) {
-                    $booked = $booking->getBooked($product, true);
-
                     if ($product->variants->isEmpty() == false) {
-                        $booked->save();
-
                         $quantity = 0;
                         $quantities = $request->input('variant_quantity_'.$product->id);
                         $values = [];
@@ -64,6 +62,11 @@ class BookingHandler extends Controller
                         $saved_variants = [];
 
                         for ($i = 0; $i < count($quantities); ++$i) {
+                            $q = (float) $quantities[$i];
+                            if ($q == 0)
+                                continue;
+
+                            $booked->save();
                             $query = BookedProductVariant::where('product_id', '=', $booked->id);
 
                             foreach ($values as $variant_id => $vals) {
@@ -82,11 +85,11 @@ class BookingHandler extends Controller
                                 $bpv->product_id = $booked->id;
 
                                 if ($delivering == false) {
-                                    $bpv->quantity = $quantities[$i];
+                                    $bpv->quantity = $q;
                                     $bpv->delivered = 0;
                                 } else {
                                     $bpv->quantity = 0;
-                                    $bpv->delivered = $quantities[$i];
+                                    $bpv->delivered = $q;
                                 }
 
                                 $bpv->save();
@@ -102,15 +105,15 @@ class BookingHandler extends Controller
 
                                 $saved_variants[] = $bpv->id;
                             } else {
-                                if ($existing->$param != $quantities[$i]) {
-                                    $existing->$param = $quantities[$i];
+                                if ($existing->$param != $q) {
+                                    $existing->$param = $q;
                                     $existing->save();
                                 }
 
                                 $saved_variants[] = $existing->id;
                             }
 
-                            $quantity += $quantities[$i];
+                            $quantity += $q;
                         }
 
                         BookedProductVariant::where('product_id', '=', $booked->id)->whereNotIn('id', $saved_variants)->delete();
