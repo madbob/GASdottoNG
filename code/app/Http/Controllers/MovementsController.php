@@ -76,6 +76,28 @@ class MovementsController extends Controller
             $query->where('type', $request->input('type'));
         }
 
+        if ($request->input('user_id', '0') != '0') {
+            $user_id = $request->input('user_id');
+            $query->where(function($query) use ($user_id) {
+                $query->where(function($query) use ($user_id) {
+                    $query->where('sender_type', 'App\User')->where('sender_id', $user_id);
+                })->orWhere(function($query) use ($user_id) {
+                    $query->where('target_type', 'App\User')->where('target_id', $user_id);
+                });
+            });
+        }
+
+        if ($request->input('supplier_id', '0') != '0') {
+            $supplier_id = $request->input('supplier_id');
+            $query->where(function($query) use ($supplier_id) {
+                $query->where(function($query) use ($supplier_id) {
+                    $query->where('sender_type', 'App\Supplier')->where('sender_id', $supplier_id);
+                })->orWhere(function($query) use ($supplier_id) {
+                    $query->where('target_type', 'App\Supplier')->where('target_id', $supplier_id);
+                });
+            });
+        }
+
         if ($request->input('amountstart', '') != '') {
             $query->where('amount', '>=', $request->input('amountstart'));
         }

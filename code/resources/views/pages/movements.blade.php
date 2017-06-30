@@ -23,6 +23,24 @@
         <form class="form-horizontal form-filler" action="{{ url('movements') }}" data-toggle="validator" data-fill-target="#movements-in-range">
             @include('commons.genericdaterange')
             @include('commons.selectmovementtypefield')
+            @include('commons.selectobjfield', [
+                'obj' => null,
+                'name' => 'user_id',
+                'label' => 'Utente',
+                'objects' => App\User::orderBy('lastname', 'asc')->get(),
+                'extra_selection' => [
+                    '0' => 'Nessuno'
+                ]
+            ])
+            @include('commons.selectobjfield', [
+                'obj' => null,
+                'name' => 'supplier_id',
+                'label' => 'Fornitore',
+                'objects' => App\Supplier::orderBy('name', 'asc')->get(),
+                'extra_selection' => [
+                    '0' => 'Nessuno'
+                ]
+            ])
             @include('commons.decimalfield', ['obj' => null, 'name' => 'amountstart', 'label' => 'Importo Minimo', 'postlabel' => '€'])
             @include('commons.decimalfield', ['obj' => null, 'name' => 'amountend', 'label' => 'Importo Massimo', 'postlabel' => '€'])
 

@@ -40,6 +40,16 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->belongsToMany('App\Notification')->orderBy('start_date', 'desc');
     }
 
+    public function movements_in()
+    {
+        return $this->morphMany('App\Movement', 'target');
+    }
+
+    public function movements_out()
+    {
+        return $this->morphMany('App\Movement', 'sender');
+    }
+
     public function deposit()
     {
         return $this->belongsTo('App\Movement');

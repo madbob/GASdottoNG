@@ -24,8 +24,8 @@
                 <td>{{ $mov->printableDate('registration_date') }}</td>
                 <td>{{ $mov->printableType() }}</td>
                 <td><span class="glyphicon {{ $mov->payment_icon }}" aria-hidden="true"></span></td>
-                <td>{{ $mov->sender->printableName() }}</td>
-                <td>{{ $mov->target->printableName() }}</td>
+                <td>{{ $mov->sender ? $mov->sender->printableName() : '' }}</td>
+                <td>{{ $mov->target ? $mov->target->printableName() : '' }}</td>
                 <td>{{ printablePrice($mov->amount) }} €</td>
             </tr>
         @endforeach

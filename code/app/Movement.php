@@ -361,25 +361,25 @@ class Movement extends Model
 
             'user-credit' => (object) [
                 'name' => 'Deposito di credito da parte di un socio',
-                'sender_type' => 'App\User',
-                'target_type' => 'App\Gas',
+                'sender_type' => null,
+                'target_type' => 'App\User',
                 'allow_negative' => false,
                 'fixed_value' => false,
                 'methods' => [
                     'cash' => (object) [
                         'handler' => function (Movement $movement) {
-                            $sender = $movement->sender;
-                            $sender->balance += $movement->amount;
-                            $sender->save();
-                            $movement->target->alterBalance('cash', $movement->amount);
+                            $target = $movement->target;
+                            $target->balance += $movement->amount;
+                            $target->save();
+                            $target->gas->alterBalance('cash', $movement->amount);
                         },
                     ],
                     'bank' => (object) [
                         'handler' => function (Movement $movement) {
-                            $sender = $movement->sender;
-                            $sender->balance += $movement->amount;
-                            $sender->save();
-                            $movement->target->alterBalance('bank', $movement->amount);
+                            $target = $movement->target;
+                            $target->balance += $movement->amount;
+                            $target->save();
+                            $target->gas->alterBalance('bank', $movement->amount);
                         },
                     ],
                 ],

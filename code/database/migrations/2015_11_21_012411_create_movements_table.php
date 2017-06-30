@@ -15,10 +15,10 @@ class CreateMovementsTable extends Migration
             $table->date('registration_date')->useCurrent();
             $table->string('registerer_id');
 
-            $table->string('sender_type');
-            $table->string('sender_id');
-            $table->string('target_type');
-            $table->string('target_id');
+            $table->string('sender_type')->nullable();
+            $table->string('sender_id')->nullable();
+            $table->string('target_type')->nullable();
+            $table->string('target_id')->nullable();
 
             $table->decimal('amount', 5, 2);
             $table->string('method');

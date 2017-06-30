@@ -12,14 +12,26 @@ class MovementsKeeper extends ServiceProvider
     {
         $metadata = $movement->type_metadata;
 
-        if ($metadata->sender_type != $movement->sender_type) {
-            Log::error('Movimento: sender_type non coerente ('.$metadata->sender_type.' != '.$movement->sender_type.')');
-            return false;
+        if ($metadata->sender_type == null) {
+            $movement->sender_type = null;
+            $movement->sender_id = null;
+        }
+        else {
+            if ($metadata->sender_type != $movement->sender_type) {
+                Log::error('Movimento: sender_type non coerente ('.$metadata->sender_type.' != '.$movement->sender_type.')');
+                return false;
+            }
         }
 
-        if ($metadata->target_type != $movement->target_type) {
-            Log::error('Movimento: target_type non coerente ('.$metadata->target_type.' != '.$movement->target_type.')');
-            return false;
+        if ($metadata->target_type == null) {
+            $movement->target_type = null;
+            $movement->target_id = null;
+        }
+        else {
+            if ($metadata->target_type != $movement->target_type) {
+                Log::error('Movimento: target_type non coerente ('.$metadata->target_type.' != '.$movement->target_type.')');
+                return false;
+            }
         }
 
         if (isset($metadata->methods[$movement->method]) == false) {
