@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
+use Auth;
+
 use App\GASModel;
 use App\SluggableID;
 use App\BookedProduct;

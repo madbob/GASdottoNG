@@ -37,13 +37,7 @@
                         Non ci sono ordini aperti.
                     </div>
                 @else
-                <ul class="list-group">
-                    @foreach($opened as $open)
-                        <a href="{{ $open->getDisplayURL() }}" class="list-group-item">
-                            {!! $open->printableHeader() !!}
-                        </a>
-                    @endforeach
-                    </ul>
+                    @include('order.homelist', ['orders' => $opened])
                 @endif
             </div>
         </div>
@@ -58,13 +52,7 @@
                         Non ci sono ordini in consegna.
                     </div>
                 @else
-                    <ul class="list-group">
-                        @foreach($shipping as $ship)
-                            <a href="{{ $ship->getDisplayURL() }}" class="list-group-item">
-                                {!! $ship->printableHeader() !!}
-                            </a>
-                        @endforeach
-                    </ul>
+                    @include('order.homelist', ['orders' => $shipping])
                 @endif
             </div>
         </div>
