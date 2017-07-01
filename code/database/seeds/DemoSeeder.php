@@ -8,6 +8,7 @@ use App\Supplier;
 use App\Product;
 use App\Measure;
 use App\Category;
+use App\VatRate;
 
 class DemoSeeder extends Seeder
 {
@@ -45,6 +46,7 @@ class DemoSeeder extends Seeder
 
         $measure = Measure::where('name', '=', 'Chili')->first();
         $category = Category::where('name', '=', 'Frutta')->first();
+        $vat_rate = VatRate::where('name', '=', '22%')->first();
 
         foreach ($data as $s_name => $products) {
             $s = Supplier::create([
@@ -62,6 +64,7 @@ class DemoSeeder extends Seeder
                     'price' => rand(200, 500) / 100,
                     'measure_id' => $measure->id,
                     'category_id' => $category->id,
+                    'vat_rate_id' => $vat_rate->id
                 ]);
             }
         }

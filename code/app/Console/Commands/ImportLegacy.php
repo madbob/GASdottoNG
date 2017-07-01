@@ -19,6 +19,7 @@ use App\Contact;
 use App\Category;
 use App\Measure;
 use App\Product;
+use App\VatRate;
 use App\Variant;
 use App\VariantValue;
 
@@ -380,6 +381,21 @@ class ImportLegacy extends Command
                 }
             }
         }
+
+        VatRate::create([
+            'name' => '4%',
+            'percentage' => 4,
+        ]);
+
+        VatRate::create([
+            'name' => '10%',
+            'percentage' => 10,
+        ]);
+
+        VatRate::create([
+            'name' => '22%',
+            'percentage' => 22,
+        ]);
 
         Model::reguard();
     }

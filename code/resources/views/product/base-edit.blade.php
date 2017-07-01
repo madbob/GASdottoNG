@@ -22,3 +22,13 @@
 ])
 
 @include('commons.textarea', ['obj' => $product, 'name' => 'description', 'label' => 'Descrizione'])
+
+@include('commons.selectobjfield', [
+    'obj' => $product,
+    'name' => 'vat_rate_id',
+    'objects' => App\VatRate::orderBy('name', 'asc')->get(),
+    'label' => 'Aliquota IVA',
+    'extra_selection' => [
+        '0' => 'Nessuna'
+    ]
+])

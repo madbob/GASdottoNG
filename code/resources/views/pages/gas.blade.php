@@ -93,6 +93,32 @@
             </div>
         </div>
     </div>
+
+    <div class="col-md-6">
+        <div class="page-header">
+            <h3>Aliquote IVA</h3>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                @include('commons.addingbutton', [
+                    'template' => 'vatrates.base-edit',
+                    'typename' => 'vatrate',
+                    'typename_readable' => 'Aliquota IVA',
+                    'targeturl' => 'vatrates'
+                ])
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+        <br/>
+
+        <div class="row">
+            <div class="col-md-12">
+                @include('commons.loadablelist', ['identifier' => 'vatrate-list', 'items' => App\VatRate::orderBy('name', 'asc')->get()])
+            </div>
+        </div>
+    </div>
 </div>
 
 @can('gas.permissions', $gas)

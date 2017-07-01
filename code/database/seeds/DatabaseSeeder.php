@@ -7,6 +7,7 @@ use App\Measure;
 use App\Notification;
 use App\User;
 use App\Role;
+use App\VatRate;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
@@ -93,6 +94,21 @@ class DatabaseSeeder extends Seeder
                 'name' => $name,
             ]);
         }
+
+        VatRate::create([
+            'name' => '4%',
+            'percentage' => 4,
+        ]);
+
+        VatRate::create([
+            'name' => '10%',
+            'percentage' => 10,
+        ]);
+
+        VatRate::create([
+            'name' => '22%',
+            'percentage' => 22,
+        ]);
 
         $notification = Notification::create([
             'creator_id' => $admin->id,

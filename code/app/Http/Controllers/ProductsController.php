@@ -27,6 +27,12 @@ class ProductsController extends Controller
         $obj->discount = normalizePercentage($request->input('discount'));
         $obj->category_id = $request->input('category_id');
         $obj->measure_id = $request->input('measure_id');
+
+        $vat_rate = $request->input('vat_rate_id');
+        if ($vat_rate != 0)
+            $obj->vat_rate_id = $vat_rate;
+        else
+            $obj->vat_rate_id = null;
     }
 
     private function enforceMeasure($product, $request)
