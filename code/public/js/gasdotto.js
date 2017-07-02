@@ -166,13 +166,6 @@ function priceRound(price) {
     return (Math.round(price * 100) / 100).toFixed(2);
 }
 
-function setCellValue(cell, value) {
-    string = value;
-    if (cell.text().indexOf('€') != -1)
-        string = priceRound(value) + ' €';
-    cell.text(string);
-}
-
 /*
     Il selector jQuery si lamenta quando trova un ':' ad esempio come valore di
     un attributo, questa funzione serve ad applicare l'escape necessario
@@ -598,48 +591,6 @@ function setupVariantsEditor() {
 function submitDeliveryForm(form) {
     var id = form.closest('.modal').attr('id');
     $('form[data-reference-modal=' + id + ']').submit();
-}
-
-function updateOrderSummary(form) {
-    var main_form = form.parents('.loadable-contents').last();
-    main_form.find('.order-editor input[name=id]').each(function() {
-        var order_id = $(this).val();
-        $.ajax({
-            method: 'GET',
-            url: '/orders/' + order_id,
-            dataType: 'json',
-
-            success: function(data) {
-                var summary = main_form.find('.order-editor input[name=id][value="' + data.order + '"]').closest('.order-editor').find('.order-summary');
-
-                for (var info in data) {
-                    if (data.hasOwnProperty(info)) {
-                        if (info == 'products') {
-                            for (var pid in data.products) {
-                                if (data.products.hasOwnProperty(pid)) {
-                                    var row = summary.find('tr[data-product-id="' + pid + '"]');
-                                    if (row != null) {
-                                        var p = data.products[pid];
-                                        for (var attr in p) {
-                                            if (p.hasOwnProperty(attr)) {
-                                                var cell = row.find('.order-summary-product-' + attr);
-                                                if (cell != null)
-                                                    setCellValue(cell, p[attr]);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            var cell = summary.find('.order-summary-order-' + info);
-                            if (cell != null)
-                                setCellValue(cell, data[info]);
-                        }
-                    }
-                }
-            }
-        });
-    });
 }
 
 /*******************************************************************************
@@ -1549,7 +1500,6 @@ $(document).ready(function() {
                     });
 
                     bookingTotal(form.find('.booking-editor'));
-                    updateOrderSummary(form);
                 }
             });
         }

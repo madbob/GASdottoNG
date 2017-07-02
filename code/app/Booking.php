@@ -3,6 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+
+use URL;
+
 use App\GASModel;
 use App\SluggableID;
 use App\BookedProduct;
@@ -131,5 +134,10 @@ class Booking extends Model
     public function printableName()
     {
         return $this->order->printableName();
+    }
+
+    public function getShowURL()
+    {
+        return URL::action('BookingUserController@show', $this->order->aggregate_id, $this->user_id);
     }
 }

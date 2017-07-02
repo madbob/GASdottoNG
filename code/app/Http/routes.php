@@ -46,6 +46,7 @@ Route::resource('variants', 'VariantsController');
 Route::resource('orders', 'OrdersController');
 Route::resource('aggregates', 'AggregatesController');
 Route::resource('attachments', 'AttachmentsController');
+Route::resource('bookings', 'BookingController');
 Route::resource('booking.user', 'BookingUserController');
 Route::resource('delivery.user', 'DeliveryUserController');
 Route::resource('booking', 'BookingController');

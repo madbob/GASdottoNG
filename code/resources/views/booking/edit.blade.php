@@ -90,6 +90,4 @@ $grand_total = 0;
             </div>
         </div>
     </div>
-
-    <input type="hidden" name="post-saved-function" value="updateOrderSummary">
 </form>
