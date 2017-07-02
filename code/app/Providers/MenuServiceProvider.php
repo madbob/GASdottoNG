@@ -27,7 +27,11 @@ class MenuServiceProvider extends ServiceProvider
                 }
 
                 $menu->add('suppliers', '<span class="glyphicon glyphicon-tags" aria-hidden="true"></span> Fornitori');
-                $menu->add('orders', '<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Ordini');
+
+                if ($user->can('supplier.orders', null) || $user->can('supplier.shippings', null)) {
+                    $menu->add('orders', '<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Ordini');
+                }
+
                 $menu->add('bookings', '<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Prenotazioni');
 
                 if ($user->can('movements.view', $gas) || $user->can('movements.admin', $gas)) {
