@@ -1,3 +1,5 @@
+<hr/>
+
 <div class="row">
     <div class="col-md-12">
         <div class="btn-group pull-right main-form-buttons" role="group" aria-label="Opzioni">
