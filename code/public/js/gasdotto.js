@@ -1013,7 +1013,20 @@ $(document).ready(function() {
     $('body').on('focus', '.date[data-enforce-after]', function() {
         var select = $(this).attr('data-enforce-after');
         var target = $(this).closest('form').find(select);
-        $(this).datepicker('setStartDate', target.val());
+
+        /*
+            Problema: cercando di navigare tra i mesi all'interno del datepicker
+            viene lanciato nuovamente l'evento di focus, che fa rientrare in
+            questa funzione, e se setStartDate() viene incondazionatamente
+            eseguita modifica a sua volta la data annullando l'operazione.
+            Dunque qui la eseguo solo se non l'ho già fatto (se la data di
+            inizio forzato non corrisponde a quel che dovrebbe essere), badando
+            però a fare i confronti sui giusti formati
+        */
+        var current_start = $(this).datepicker('getStartDate');
+        var current_ref = target.datepicker('getUTCDate');
+        if (current_start.toString() != current_ref.toString())
+            $(this).datepicker('setStartDate', current_ref);
     });
 
     $('body').on('change', '.select-fetcher', function(event) {
