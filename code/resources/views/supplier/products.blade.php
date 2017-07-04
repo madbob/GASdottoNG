@@ -114,6 +114,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <?php $measures = App\Measure::orderBy('name', 'asc')->get() ?>
                                 @foreach($supplier->products as $product)
                                     <tr>
                                         <td>
@@ -137,7 +138,7 @@
                                                 'obj' => $product,
                                                 'prefix' => $product->id . '-',
                                                 'name' => 'measure_id',
-                                                'objects' => App\Measure::orderBy('name', 'asc')->get(),
+                                                'objects' => $measures,
                                                 'label' => 'Unità di Misura',
                                                 'squeeze' => true
                                             ])

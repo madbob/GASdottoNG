@@ -177,7 +177,6 @@ class Order extends Model
             if(!$delivered)
                 $delivered = 0;
 
-            $base_price = $product->contextualPrice($order);
             $transport = $quantity * $product->transport;
 
             $booked = $q->get();

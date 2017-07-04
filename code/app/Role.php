@@ -9,6 +9,7 @@ use DB;
 use URL;
 
 use App\GASModel;
+use App\User;
 
 class Role extends Model
 {
@@ -19,6 +20,21 @@ class Role extends Model
     public function users()
     {
         return $this->belongsToMany('App\User')->orderBy('lastname', 'asc')->with('roles');
+    }
+
+    public function usersByTarget($target)
+    {
+        $role = $this;
+
+        $user_ids = DB::table('users')->join('role_user', function($join) use ($role) {
+            $join->on('user_id', '=', 'users.id');
+            $join->where('role_id', '=', $role->id);
+        })->join('attached_role_user', function($join) use ($target) {
+            $join->on('role_user_id', '=', 'role_user.id');
+            $join->where('target_type', '=', get_class($target))->where('target_id', '=', $target->id);
+        })->pluck('users.id');
+
+        return User::whereIn('id', $user_ids)->get();
     }
 
     public function getTargetsAttribute()
@@ -181,12 +197,9 @@ class Role extends Model
             if ($subject == null && $users->isEmpty() == false)
                 return true;
 
-            foreach($users as $u) {
-                foreach($u->roles as $role) {
-                    if ($role->applies($subject))
-                        return true;
-                }
-            }
+            $users = $br->usersByTarget($subject);
+            if ($users->isEmpty() == false)
+                return true;
         }
 
         return false;

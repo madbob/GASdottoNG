@@ -7,11 +7,10 @@
                 <?php
 
                 $final = [];
+                $users = $role->usersByTarget($supplier);
 
-                foreach($role->users as $user) {
-                    if($user->roles()->where('roles.id', $role->id)->first()->applies($supplier))
-                        $final[] = $user->printableName();
-                }
+                foreach($users as $user)
+                    $final[] = $user->printableName();
 
                 ?>
 

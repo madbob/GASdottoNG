@@ -69,7 +69,7 @@ class UsersService
 
         $gasID = Auth::user()->gas['id'];
 
-        $query = User::where('gas_id', '=', $gasID);
+        $query = User::with('roles')->where('gas_id', '=', $gasID);
 
         if (!empty($term)) {
             $query->where(function ($query) use ($term) {

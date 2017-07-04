@@ -221,7 +221,10 @@ trait GASModel
             foreach($roles as $index => $role) {
                 $icons['User']['king' . $index] = (object) [
                     'test' => function($obj) use ($role) {
-                        return $obj->roles()->where('roles.id', $role->id)->count() != 0;
+                        foreach($obj->roles as $r)
+                            if ($r->id == $role->id)
+                                return true;
+                        return false;
                     },
                     'text' => $role->name
                 ];
