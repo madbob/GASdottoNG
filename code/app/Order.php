@@ -141,7 +141,7 @@ class Order extends Model
         return $this->status == 'open';
     }
 
-    public function calculateSummary()
+    public function calculateSummary($products = null)
     {
         $summary = (object) [
             'order' => $this->id,
@@ -151,13 +151,21 @@ class Order extends Model
         ];
 
         $order = $this;
-        $products = $order->supplier->products;
+
+        if ($products == null) {
+            $products = $order->supplier->products;
+            $external_products = false;
+        }
+        else {
+            $external_products = true;
+        }
+
         $total_price = 0;
         $total_price_delivered = 0;
         $total_transport = 0;
 
         foreach ($products as $product) {
-            $q = BookedProduct::with('variants')->where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order) {
+            $q = BookedProduct::with('variants')->with('product')->where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order) {
                 $query->where('order_id', '=', $order->id);
             });
 
@@ -177,6 +185,9 @@ class Order extends Model
             $price_delivered = 0;
 
             foreach ($booked as $b) {
+                if ($external_products)
+                    $b->setRelation('product', $product);
+
                 $price += $b->quantityValue();
                 $price_delivered += $b->deliveredValue();
 

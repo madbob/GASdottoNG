@@ -20,6 +20,7 @@ Route::post('roles/detach', 'RolesController@detach');
 Route::post('notifications/markread/{id}', 'NotificationsController@markread');
 Route::get('attachments/download/{id}', 'AttachmentsController@download');
 Route::get('orders/search', 'OrdersController@search');
+Route::get('orders/recalculate/{id}', 'OrdersController@recalculate');
 Route::post('orders/fixes/{id}', 'OrdersController@fixes');
 Route::get('orders/document/{id}/{type}', 'OrdersController@document');
 Route::post('products/massiveupdate', 'ProductsController@massiveUpdate');

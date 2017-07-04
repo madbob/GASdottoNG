@@ -107,13 +107,23 @@ class Product extends Model
     */
     public function contextualPrice($order)
     {
-        $product = $this;
+        /*
+            Attenzione: hasProduct() altera il riferimento a $product,
+            popolandolo con i dati pescati dal database in relazione all'ordine
+            desiderato.
+            Ma $this potrebbe non essere una copia genuina del prodotto, in
+            quanto i suoi parametri possono essere temporaneamente sovrascritti
+            (cfr. OrderController::recalculate), e non si vuole che essi siano
+            riletti dal database.
+            Sicché, a hasProduct passo una copia e preservo l'originale
+        */
+        $product = $this->replicate();
         $enabled = $order->hasProduct($product);
 
         if ($enabled && $product->pivot->discount_enabled) {
-            $price = applyPercentage($product->price, $this->discount);
+            $price = applyPercentage($this->price, $this->discount);
         } else {
-            $price = $product->price;
+            $price = $this->price;
         }
 
         $price = applyPercentage($price, $order->discount);

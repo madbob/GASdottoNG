@@ -423,6 +423,76 @@ function enforceMeasureDiscrete(node) {
 }
 
 /*******************************************************************************
+	Ordini
+*/
+
+function setCellValue(cell, value) {
+    string = value;
+    if (cell.text().indexOf('€') != -1)
+        string = priceRound(value) + ' €';
+    cell.text(string);
+}
+
+function updateOrderSummary(form) {
+    /*
+        Ricalcolare l'intero valore dell'ordine client-side sarebbe complesso,
+        data la quantità di fattori da considerare, sicché ad ogni modifica
+        chiedo al server di rifare i calcoli (utilizzando di fatto gli algoritmi
+        già esistenti) passandogli i valori temporanei dei prezzi dei prodotti
+    */
+    var main_form = form.parents('.loadable-contents').last();
+    main_form.find('.order-editor').each(function() {
+        var identifier = $(this).find('input[name=id]');
+        if (identifier.length == 0)
+            return;
+
+        var order_id = identifier.val();
+        var data = $(this).serializeArray();
+
+        $.ajax({
+            method: 'GET',
+            url: '/orders/recalculate/' + order_id,
+            data: data,
+            dataType: 'json',
+
+            success: function(data) {
+                var summary = main_form.find('.order-editor input[name=id][value="' + data.order + '"]').closest('.order-editor').find('.order-summary');
+
+                for (var info in data) {
+                    if (data.hasOwnProperty(info)) {
+                        if (info == 'products') {
+                            for (var pid in data.products) {
+                                if (data.products.hasOwnProperty(pid)) {
+                                    var row = summary.find('tr[data-product-id="' + pid + '"]');
+                                    if (row != null) {
+                                        var p = data.products[pid];
+                                        for (var attr in p) {
+                                            if (p.hasOwnProperty(attr)) {
+                                                var cell = row.find('.order-summary-product-' + attr);
+                                                if (cell != null)
+                                                    setCellValue(cell, p[attr]);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            var cell = summary.find('.order-summary-order-' + info);
+                            if (cell != null)
+                                setCellValue(cell, data[info]);
+                        }
+                    }
+                }
+            }
+        });
+    });
+}
+
+$('body').on('keyup', '.order-summary input', function() {
+    updateOrderSummary($(this));
+});
+
+/*******************************************************************************
 	Prenotazioni / Consegne
 */
 
@@ -943,7 +1013,7 @@ $(document).ready(function() {
         return false;
     });
 
-    $('.list-filter').on('submit', 'form', function(e) {
+    $('body').on('submit', '.list-filter form', function(e) {
         e.preventDefault();
         var form = $(this);
         var data = form.serializeArray();
@@ -963,13 +1033,13 @@ $(document).ready(function() {
             }
         });
 
-    }).on('change', 'input, select', function() {
+    }).on('change', '.list-filter input, .list-filter select', function() {
         $(this).closest('form').submit();
 
-    }).on('show.bs.collapse', function() {
+    }).on('show.bs.collapse', '.list-filter', function() {
         $(this).find('form').submit();
 
-    }).on('click', '.btn-danger', function(e) {
+    }).on('click', '.list-filter .btn-danger', function(e) {
         e.preventDefault();
         var panel = $(this).closest('.list-filter');
         var form = panel.find('form');
@@ -980,10 +1050,15 @@ $(document).ready(function() {
 
         panel.collapse('hide');
 
+        var data = {};
+        form.find('.enforce_filter').each(function() {
+            data[$(this).attr('name')] = $(this).val();
+        });
+
         $.ajax({
             method: form.attr('method'),
             url: form.attr('action'),
-            data: {},
+            data: data,
             dataType: 'html',
 
             success: function(data) {

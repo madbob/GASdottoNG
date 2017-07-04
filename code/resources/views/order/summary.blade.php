@@ -4,13 +4,13 @@
             @if($order->isActive())
                 <th width="5%"><button class="btn btn-default toggle-product-abilitation" data-toggle="button" aria-pressed="false" autocomplete="off">Abilita /<br/>Disabilita</button></th>
                 <th width="21%">Prodotto</th>
-                <th width="5%">Prezzo</th>
-                <th width="5%">Trasporto</th>
+                <th width="9%">Prezzo</th>
+                <th width="9%">Trasporto</th>
                 <th width="5%">Sconto Prodotto</th>
                 <th width="9%">Unità di Misura</th>
                 <th width="9%">Quantità Ordinata</th>
-                <th width="9%">Totale Prezzo</th>
-                <th width="9%">Totale Trasporto</th>
+                <th width="5%">Totale Prezzo</th>
+                <th width="5%">Totale Trasporto</th>
                 <th width="9%">Quantità Consegnata</th>
                 <th width="9%">Totale Consegnato</th>
                 <th width="7%">Note</th>
@@ -51,12 +51,36 @@
                 </td>
 
                 @if($order->isActive())
-                    <td class="product-price">
-                        <label class="full-price <?php if(!empty($product->discount) && $enabled && $product->pivot->discount_enabled) echo 'hidden' ?>">{{ printablePrice(applyPercentage($product->price, $order->discount)) }} €</label>
-                        <label class="product-discount-price <?php if(empty($product->discount) || !$enabled || ($enabled && !$product->pivot->discount_enabled)) echo 'hidden' ?>">{{ printablePrice(applyPercentage($product->discount_price, $order->discount)) }} €</label>
+                    <td>
+                        @if($order->isActive())
+                            @include('commons.decimalfield', [
+                                'obj' => $product,
+                                'label' => '',
+                                'prefix' => 'product_',
+                                'name' => 'price',
+                                'postfix' => '[]',
+                                'squeeze' => true,
+                                'postlabel' => '€'
+                            ])
+                        @else
+                            <label>{{ printablePrice($product->price) }} €</label>
+                        @endif
                     </td>
                     <td>
-                        <label>{{ printablePrice($product->transport) }} €</label>
+                        @if($order->isActive())
+                            {{-- Nota bene: "transport" è anche un parametro dell'ordine, qui metto un prefisso per evitare la collisione --}}
+                            @include('commons.decimalfield', [
+                                'obj' => $product,
+                                'label' => '',
+                                'prefix' => 'product_',
+                                'name' => 'transport',
+                                'postfix' => '[]',
+                                'squeeze' => true,
+                                'postlabel' => '€'
+                            ])
+                        @else
+                            <label>{{ printablePrice($product->transport) }} €</label>
+                        @endif
                     </td>
                     <td>
                         @if(!empty($product->discount))

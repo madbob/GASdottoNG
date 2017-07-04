@@ -126,6 +126,34 @@ class OrdersController extends Controller
         return response()->json($summary);
     }
 
+    public function recalculate(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+
+        $final_products = [];
+        $enabled = $request->input('enabled', []);
+        $prices = $request->input('product_price', []);
+        $transports = $request->input('product_transport', []);
+        $products = $request->input('productid');
+
+        for ($i = 0; $i < count($products); ++$i) {
+            $id = $products[$i];
+
+            foreach ($enabled as $en) {
+                if ($en == $id) {
+                    $prod = Product::find($id);
+                    $prod->price = $prices[$i];
+                    $prod->transport = $transports[$i];
+                    $final_products[] = $prod;
+                    break;
+                }
+            }
+        }
+
+        $summary = $order->calculateSummary($final_products);
+        return response()->json($summary);
+    }
+
     public function update(Request $request, $id)
     {
         DB::beginTransaction();
@@ -153,6 +181,8 @@ class OrdersController extends Controller
 
         $new_products = [];
         $enabled = $request->input('enabled', []);
+        $prices = $request->input('product_price', []);
+        $transports = $request->input('product_transport', []);
         $products = $request->input('productid');
 
         for ($i = 0; $i < count($products); ++$i) {
@@ -163,6 +193,13 @@ class OrdersController extends Controller
                     $new_products[] = $id;
                     break;
                 }
+            }
+
+            $prod = Product::find($id);
+            if ($prod->price != $prices[$i] || $prod->transport != $transports[$i]) {
+                $prod->price = $prices[$i];
+                $prod->transport = $transports[$i];
+                $prod->save();
             }
         }
 
@@ -268,22 +305,30 @@ class OrdersController extends Controller
 
         if (empty($supplier_id)) {
             $orders = $this->defaultOrders();
-        } else {
-            $startdate = decodeDate($request->input('startdate'));
-            $enddate = decodeDate($request->input('enddate'));
+        }
+        else {
+            if ($request->has('startdate') && $request->has('enddate')) {
+                $startdate = decodeDate($request->input('startdate'));
+                $enddate = decodeDate($request->input('enddate'));
 
-            $supplier = Supplier::find($supplier_id);
-            $everything = ($request->user()->can('supplier.orders', $supplier) || $request->user()->can('supplier.shippings', $supplier));
+                $supplier = Supplier::find($supplier_id);
+                $everything = ($request->user()->can('supplier.orders', $supplier) || $request->user()->can('supplier.shippings', $supplier));
 
-            $orders = Aggregate::whereHas('orders', function ($query) use ($supplier_id, $startdate, $enddate, $everything) {
-                $query->where('supplier_id', '=', $supplier_id)->where('start', '>=', $startdate)->where('end', '<=', $enddate);
-                if ($everything == false) {
-                    $query->whereIn('status', ['open', 'shipped', 'archived']);
-                }
-            })->get();
+                $orders = Aggregate::whereHas('orders', function ($query) use ($supplier_id, $startdate, $enddate, $everything) {
+                    $query->where('supplier_id', '=', $supplier_id)->where('start', '>=', $startdate)->where('end', '<=', $enddate);
+                    if ($everything == false) {
+                        $query->whereIn('status', ['open', 'shipped', 'archived']);
+                    }
+                })->get();
+            }
+            else {
+                $supplier = Supplier::find($supplier_id);
+                $orders = $supplier->aggregates->take(10)->get();
+            }
         }
 
-        return Theme::view('commons.loadablelist', ['identifier' => 'order-list', 'items' => $orders]);
+        $list_identifier = $request->input('list_identifier', 'order-list');
+        return Theme::view('commons.loadablelist', ['identifier' => $list_identifier, 'items' => $orders]);
     }
 
     public function document(Request $request, $id, $type)
