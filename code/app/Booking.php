@@ -48,16 +48,20 @@ class Booking extends Model
         return $this->belongsTo('App\Movement');
     }
 
-    public function getBooked($product, $fallback = false)
+    public function getBooked($product_id, $fallback = false)
     {
-        $p = $this->products()->whereHas('product', function ($query) use ($product) {
-            $query->where('id', '=', $product->id);
+        if (is_object($product_id)) {
+            $product_id = $product_id->id;
+        }
+
+        $p = $this->products()->whereHas('product', function ($query) use ($product_id) {
+            $query->where('id', '=', $product_id);
         })->first();
 
         if ($p == null && $fallback == true) {
             $p = new BookedProduct();
             $p->booking_id = $this->id;
-            $p->product_id = $product->id;
+            $p->product_id = $product_id;
         }
 
         return $p;

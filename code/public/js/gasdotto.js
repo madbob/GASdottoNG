@@ -1072,17 +1072,18 @@ $(document).ready(function() {
         var list = $(listid);
 
         /*
-        	Per qualche motivo, se .reloader è anche il tasto di
-        	chiusura di un modale, il modale viene nascosto ma non
-        	definitivamente chiuso. Introducendo questo delay sembra
-        	funzionare, ma non so perché
+            Nel caso in cui il tasto sia dentro ad un modale, qui ne forzo la
+            chiusura (che non e' implicita, se questo non viene fatto resta
+            l'overlay grigio in sovraimpressione)
         */
-        setTimeout(function() {
-            var activated = list.find('a.loadable-item.active');
-            activated.each(function() {
-                $(this).click().delay(600).click();
-            });
-        }, 500);
+        var modal = $(this).closest('.modal').first();
+        if (modal != null)
+            modal.modal('hide');
+
+        var activated = list.find('a.loadable-item.active');
+        activated.each(function() {
+            $(this).click().delay(600).click();
+        });
     });
 
     $('body').on('focus', '.date[data-enforce-after]', function() {

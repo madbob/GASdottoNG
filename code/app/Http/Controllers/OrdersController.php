@@ -287,11 +287,7 @@ class OrdersController extends Controller
                 return $this->errorResponse('Non autorizzato');
             }
 
-            $product = BookedProduct::where('product_id', '=', $product_id)->where('booking_id', '=', $booking_id)->first();
-            if ($product == null) {
-                continue;
-            }
-
+            $product = $booking->getBooked($product_id, true);
             $product->quantity = $quantities[$i];
             $product->save();
         }
