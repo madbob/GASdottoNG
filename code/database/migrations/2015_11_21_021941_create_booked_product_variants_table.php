@@ -12,8 +12,8 @@ class CreateBookedProductVariantsTable extends Migration
             $table->timestamps();
 
             $table->string('product_id');
-            $table->decimal('quantity', 4, 2);
-            $table->decimal('delivered', 4, 2);
+            $table->decimal('quantity', 6, 2);
+            $table->decimal('delivered', 6, 2);
 
             $table->foreign('product_id')->references('id')->on('booked_products')->onDelete('cascade');
         });

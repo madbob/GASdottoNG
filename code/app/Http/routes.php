@@ -26,6 +26,8 @@ Route::get('orders/document/{id}/{type}', 'OrdersController@document');
 Route::post('products/massiveupdate', 'ProductsController@massiveUpdate');
 Route::get('suppliers/catalogue/{id}/{format}', 'SuppliersController@catalogue');
 Route::get('suppliers/{id}/plain_balance', 'SuppliersController@plainBalance');
+Route::post('movements/recalculate', 'MovementsController@recalculate');
+Route::post('movements/close', 'MovementsController@closeBalance');
 
 Route::controllers([
     'auth' => 'Auth\AuthController',

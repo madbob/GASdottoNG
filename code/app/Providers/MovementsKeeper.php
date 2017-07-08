@@ -3,7 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+
 use Log;
+use Session;
+
 use App\Movement;
 
 class MovementsKeeper extends ServiceProvider
@@ -106,8 +109,20 @@ class MovementsKeeper extends ServiceProvider
                 precedentemente salvato), il quale potrebbe non essere accettato
                 dal tipo di movimento stesso
             */
+
             if ($this->verifyConsistency($movement) == false)
                 return false;
+
+            /*
+                Se mi trovo in fase di ricalcolo dei saldi, non inverto
+                l'effetto del movimento: in tal caso il saldo attuale è già
+                stato riportato alla situazione di partenza, e rieseguo tutti i
+                movimenti come se fosse la prima volta.
+                Il parametro 'movements-recalculating' viene aggiunto in
+                sessione da MovementsController::recalculate()
+            */
+            if(Session::get('movements-recalculating') == true)
+                return true;
 
             $original = Movement::find($movement->id);
             $metadata = $original->type_metadata;

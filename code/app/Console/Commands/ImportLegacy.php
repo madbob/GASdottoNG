@@ -164,6 +164,12 @@ class ImportLegacy extends Command
             $balance->suppliers = $row->current_orders_balance;
             $balance->deposits = $row->current_deposit_balance;
             $balance->save();
+
+            sleep(1);
+
+            $balance = $balance->replicate();
+            $balance->date = date('Y-m-d G:i:s');
+            $balance->save();
         }
 
         $map['deliveries'] = [];

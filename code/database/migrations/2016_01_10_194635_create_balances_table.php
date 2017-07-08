@@ -13,10 +13,10 @@ class CreateBalancesTable extends Migration
 
             $table->string('gas_id');
             $table->datetime('date')->useCurrent();
-            $table->decimal('bank', 6, 2)->default(0);
-            $table->decimal('cash', 6, 2)->default(0);
-            $table->decimal('suppliers', 6, 2)->default(0);
-            $table->decimal('deposits', 6, 2)->default(0);
+            $table->decimal('bank', 7, 2)->default(0);
+            $table->decimal('cash', 7, 2)->default(0);
+            $table->decimal('suppliers', 7, 2)->default(0);
+            $table->decimal('deposits', 7, 2)->default(0);
 
             $table->foreign('gas_id')->references('id')->on('gas')->onDelete('cascade');
         });

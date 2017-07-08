@@ -20,7 +20,7 @@ class CreateMovementsTable extends Migration
             $table->string('target_type')->nullable();
             $table->string('target_id')->nullable();
 
-            $table->decimal('amount', 5, 2);
+            $table->decimal('amount', 6, 2);
             $table->string('method');
             $table->string('type');
             $table->string('identifier');

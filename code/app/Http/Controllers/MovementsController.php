@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
 use Auth;
 use DB;
 use Theme;
+use Log;
+use Session;
+
 use App\Movement;
+use App\Balance;
 use App\Aggregate;
 
 class MovementsController extends Controller
@@ -182,5 +187,66 @@ class MovementsController extends Controller
                 'printable_text' => $printable_date . ' <span class="glyphicon ' . $m->payment_icon . '" aria-hidden="true"></span>'
             ]);
         }
+    }
+
+    private function resetBalance($gas)
+    {
+        $latest = $gas->balances()->first();
+        $new = $latest->replicate();
+
+        $latest->date = date('Y-m-d G:i:s');
+        $latest->save();
+
+        $new->save();
+    }
+
+    public function recalculate(Request $request)
+    {
+        $user = Auth::user();
+        if ($user->can('movements.admin', $user->gas) == false) {
+            return $this->errorResponse('Non autorizzato');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            Session::put('movements-recalculating', true);
+
+            $gas = $user->gas;
+            $gas->balances()->first()->delete();
+            $latest = $gas->balances()->first();
+            $this->resetBalance($gas);
+
+            $current_date = date('Y-m-d G:i:s');
+            $movements = Movement::where('created_at', '>=', $latest->date)->get();
+
+            foreach($movements as $m) {
+                $m->updated_at = $current_date;
+                $m->save();
+            }
+        }
+        catch(\Exception $e) {
+            Log::error('Errore nel ricalcolo saldi: ' . $e->getMessage());
+        }
+
+        Session::forget('movements-recalculating');
+        DB::commit();
+        return redirect(url('/movements'));
+    }
+
+    public function closeBalance(Request $request)
+    {
+        $user = Auth::user();
+        if ($user->can('movements.admin', $user->gas) == false) {
+            return $this->errorResponse('Non autorizzato');
+        }
+
+        DB::beginTransaction();
+
+        $gas = $user->gas;
+        $this->resetBalance($gas);
+
+        DB::commit();
+        return redirect(url('/movements'));
     }
 }

@@ -94,7 +94,7 @@ class RolesController extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
-        if ($user->can('gas.permissions', $user->gas) == false) {
+        if ($user->can('gas.permissions', $user->gas) == false && $user->can('users.admin', $user->gas) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
@@ -132,7 +132,7 @@ class RolesController extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
-        if ($user->can('gas.permissions', $user->gas) == false) {
+        if ($user->can('gas.permissions', $user->gas) == false && $user->can('users.admin', $user->gas) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 

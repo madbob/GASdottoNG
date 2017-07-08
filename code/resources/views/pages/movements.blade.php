@@ -73,13 +73,58 @@
         </ul>
 
         <div class="pull-right">
-            <form class="form-inline iblock inner-form password-protected" method="POST" action="{{ url('') }}">
+            <div class="form-inline iblock inner-form">
                 <div class="form-group">
+                    <button class="btn btn-default" data-toggle="modal" data-target="#movements-history">Consulta Storico</button>
+
+                    <div class="modal fade" id="movements-history" tabindex="-1" role="dialog">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">Storico Saldi</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Data</th>
+                                                <th>Conto Corrente</th>
+                                                <th>Contanti</th>
+                                                <th>Fornitori</th>
+                                                <th>Depositi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($currentgas->balances as $bal)
+                                                <tr>
+                                                    <td>{{ ucwords(strftime('%d %B %G', strtotime($bal->date))) }}</td>
+                                                    <td>{{ $bal->bank }} €</td>
+                                                    <td>{{ $bal->cash }} €</td>
+                                                    <td>{{ $bal->suppliers }} €</td>
+                                                    <td>{{ $bal->deposits }} €</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form class="form-inline iblock password-protected" method="POST" action="{{ url('/movements/recalculate') }}">
+                <div class="form-group">
+                    {!! csrf_field() !!}
                     <button type="submit" class="btn btn-danger">Ricalcola Saldi</button>
                 </div>
             </form>
-            <form class="form-inline iblock inner-form password-protected" method="POST" action="{{ url('') }}">
+            <form class="form-inline iblock password-protected" method="POST" action="{{ url('/movements/close') }}">
                 <div class="form-group">
+                    {!! csrf_field() !!}
                     <button type="submit" class="btn btn-danger">Chiudi Bilancio</button>
                 </div>
             </form>

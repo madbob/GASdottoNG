@@ -13,9 +13,9 @@ class CreateBookedProductsTable extends Migration
 
             $table->string('booking_id');
             $table->string('product_id');
-            $table->decimal('quantity', 4, 2);
-            $table->decimal('delivered', 4, 2)->default(0);
-            $table->decimal('final_price', 5, 2)->default(0);
+            $table->decimal('quantity', 6, 2);
+            $table->decimal('delivered', 6, 2)->default(0);
+            $table->decimal('final_price', 6, 2)->default(0);
 
             $table->foreign('booking_id')->references('id')->on('bookings')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');

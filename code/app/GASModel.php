@@ -33,7 +33,6 @@ trait GASModel
     public function printableDate($name)
     {
         $t = strtotime($this->$name);
-
         return ucwords(strftime('%A %d %B %G', $t));
     }
 
