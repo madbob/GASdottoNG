@@ -1,5 +1,7 @@
 # GASdottoNG
 
+## WORK IN PROGRESS!!!
+
 GASdottoNG intende essere l'evoluzione del progetto GASdotto, gestionale web-based per gruppi di acquisto.
 
 Per riferimenti:
@@ -9,7 +11,7 @@ Per riferimenti:
 
 ### Build status: [![Build Status](https://travis-ci.org/madbob/GASdottoNG.svg?branch=master)](https://travis-ci.org/madbob/GASdottoNG)
 
-### Inizializzazione manuale
+### Installazione
 
 ```bash
 # per installare Composer, package manager PHP
@@ -19,23 +21,38 @@ mv composer.phar /usr/local/bin/composer
 git clone https://github.com/madbob/GASdottoNG.git
 cd GASdottoNG/code
 # per installare le dipendenze PHP
-composer update --no-scripts
+composer install
 # nel file .env vanno specificati i propri parametri di connessione al database
 cp .env.example .env
 nano .env
 # per inizializzare il database
+php artisan key:generate
 php artisan migrate --seed
 php artisan db:seed --class=DemoSeeder
 ```
 
-### Inizializzazione con docker
+Viene creato un utente amministratore di default con username `root` e password `root`.
+
+### Inizializzazione
+
+È possibile importare i contenuti da una istanza GASdotto Legacy esistente con il comando:
+
+```
+php artisan import:legacy {old_driver} {old_host} {old_username} {old_password} {old_database} {new_driver} {new_host} {new_username} {new_password} {new_database}
+```
+
+ad esempio
+
+```
+php artisan import:legacy pgsql localhost gasdotto pippo gasdotto mysql localhost gasdotto pippo gasdottong
+```
+
+### Docker
 
 ```bash
 cd code
 ./build.sh
 ```
-    
-### Sviluppo con docker
 
 ```bash
 cd code
@@ -43,3 +60,8 @@ cd code
 ./test.sh #per eseguire i test automatici
 ./test.sh PATTERN_NOME_TEST #per eseguire i test il cui nome matcha il pattern
 ```
+
+### Troubleshooting
+
+ * l'applicazione utilizza di default la localizzazione italiana del sistema (in particolare per formattare le date). Per installarla, qualora mancante, eseguire `dpkg-reconfigure locales` sul proprio server
+
