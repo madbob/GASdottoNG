@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use Auth;
 use Theme;
+
 use App\Services\UsersService;
 use App\Exceptions\AuthException;
 
@@ -16,6 +18,10 @@ class UsersController extends Controller
     {
         $this->middleware('auth');
         $this->usersService = $usersService;
+
+        $this->commonInit([
+            'reference_class' => 'App\\User'
+        ]);
     }
 
     public function index()

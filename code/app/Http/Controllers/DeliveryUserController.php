@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use Auth;
+use URL;
+
 use App\User;
 use App\Aggregate;
 
@@ -28,7 +31,15 @@ class DeliveryUserController extends BookingHandler
         return $this->bookingUpdate($request, $aggregate_id, $user_id, true);
     }
 
-    public function destroy($id)
+    public function objhead2(Request $request, $aggregate_id, $user_id)
     {
+        $aggregate = Aggregate::findOrFail($aggregate_id);
+        $subject = $aggregate->bookingBy($user_id);
+
+        return response()->json([
+            'id' => $subject->id,
+            'header' => $subject->printableHeader(),
+            'url' => URL::action('DeliveryUserController@show', ['delivery' => $aggregate_id, 'user' => $user_id])
+        ]);
     }
 }

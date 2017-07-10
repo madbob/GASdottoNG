@@ -93,10 +93,15 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         if ($test == null)
             return;
 
-        if ($assigned)
+        if ($assigned) {
             $test->detachApplication($assigned);
-        else
+            if (empty($test->applications())) {
+                $this->roles()->detach($role->id);
+            }
+        }
+        else {
             $this->roles()->detach($role->id);
+        }
     }
 
     public function getPendingBalanceAttribute()

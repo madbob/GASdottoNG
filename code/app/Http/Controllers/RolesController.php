@@ -17,6 +17,10 @@ class RolesController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+        $this->commonInit([
+            'reference_class' => 'App\\Role'
+        ]);
     }
 
     public function store(Request $request)
@@ -25,7 +29,7 @@ class RolesController extends Controller
 
         $user = Auth::user();
         if ($user->can('gas.permissions', $user->gas) == false) {
-            abort(503);
+            return $this->errorResponse('Non autorizzato');
         }
 
         $r = new Role();
@@ -59,7 +63,7 @@ class RolesController extends Controller
 
         $user = Auth::user();
         if ($user->can('gas.permissions', $user->gas) == false) {
-            abort(503);
+            return $this->errorResponse('Non autorizzato');
         }
 
         $r = Role::findOrFail($id);
@@ -87,6 +91,28 @@ class RolesController extends Controller
         $r->delete();
 
         return $this->successResponse();
+    }
+
+    public function formByUser(Request $request, $user_id)
+    {
+        $user = Auth::user();
+        if ($user->can('gas.permissions', $user->gas) == false && $user->can('users.admin', $user->gas) == false) {
+            abort(503);
+        }
+
+        $user = User::find($user_id);
+        return Theme::view('permissions.user-edit', ['user' => $user]);
+    }
+
+    public function formBySupplier(Request $request, $supplier_id)
+    {
+        $user = Auth::user();
+        if ($user->can('gas.permissions', $user->gas) == false && $user->can('users.admin', $user->gas) == false) {
+            abort(503);
+        }
+
+        $supplier = Supplier::find($supplier_id);
+        return Theme::view('permissions.supplier-edit', ['supplier' => $supplier]);
     }
 
     public function attach(Request $request)

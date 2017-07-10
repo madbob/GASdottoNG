@@ -987,7 +987,20 @@ $(document).ready(function() {
 
         if ($(this).hasClass('active')) {
             var item = $(this);
-            item.next().slideUp(500, function() {
+            var content = item.next();
+
+            var form = content.find('.main-form').first();
+            $.ajax({
+                method: 'GET',
+                url: $(this).attr('href') + '/header',
+                dataType: 'json',
+
+                success: function(data) {
+                    item.empty().append(data.header).attr('href', data.url);
+                }
+            });
+
+            content.slideUp(500, function() {
                 $(this).remove();
                 item.removeClass('active');
             });
@@ -1309,6 +1322,23 @@ $(document).ready(function() {
 
             success: function(data) {
                 /* dummy */
+            }
+        });
+    });
+
+    $('body').on('click', '.async-modal', function(e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: $(this).attr('data-target-url'),
+            method: 'GET',
+            dataType: 'html',
+            success: function(data) {
+                $(data).modal().on('shown.bs.modal', function() {
+                    generalInit();
+                }).on('hidden.bs.modal', function() {
+                    $(this).remove();
+                });
             }
         });
     });

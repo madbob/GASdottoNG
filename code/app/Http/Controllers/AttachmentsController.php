@@ -13,6 +13,10 @@ class AttachmentsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+        $this->commonInit([
+            'reference_class' => 'App\\Attachment'
+        ]);
     }
 
     public function store(Request $request)

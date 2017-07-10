@@ -17,6 +17,10 @@ class NotificationsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+        $this->commonInit([
+            'reference_class' => 'App\\Notification'
+        ]);
     }
 
     public function index()

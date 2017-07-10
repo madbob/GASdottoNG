@@ -11,6 +11,13 @@ use App\Category;
 
 class CategoriesController extends Controller
 {
+    public function __construct()
+    {
+        $this->commonInit([
+            'reference_class' => 'App\\Category'
+        ]);
+    }
+
     public function index()
     {
         $user = Auth::user();

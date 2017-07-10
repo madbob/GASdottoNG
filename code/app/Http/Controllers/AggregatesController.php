@@ -10,10 +10,18 @@ use App\Order;
 
 class AggregatesController extends OrdersController
 {
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->commonInit([
+            'reference_class' => 'App\\Aggregate'
+        ]);
+    }
+
     public function create(Request $request)
     {
         $orders = Aggregate::orderBy('id', 'desc')->get();
-
         return view('order.aggregable', ['orders' => $orders]);
     }
 

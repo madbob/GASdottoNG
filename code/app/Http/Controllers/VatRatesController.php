@@ -17,6 +17,10 @@ class VatratesController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+        $this->commonInit([
+            'reference_class' => 'App\\VatRate'
+        ]);
     }
 
     public function store(Request $request)

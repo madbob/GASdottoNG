@@ -21,3 +21,7 @@
         </div>
     </div>
 @endforeach
+
+@if(Gate::check('users.admin', $currentgas) || Gate::check('gas.permissions', $currentgas))
+    <button class="btn btn-default pull-right async-modal" data-target-url="{{ url('/roles/user/' . $object->id) }}">Edita Ruoli</button>
+@endif

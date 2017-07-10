@@ -16,6 +16,10 @@ class SuppliersController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+        $this->commonInit([
+            'reference_class' => 'App\\Supplier'
+        ]);
     }
 
     private function basicReadFromRequest(&$obj, $request)

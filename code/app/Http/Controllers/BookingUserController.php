@@ -61,4 +61,16 @@ class BookingUserController extends BookingHandler
 
         return $this->successResponse();
     }
+
+    public function objhead2(Request $request, $booking_id, $user_id)
+    {
+        $aggregate = Aggregate::findOrFail($booking_id);
+        $subject = $aggregate->bookingBy($user_id);
+
+        return response()->json([
+            'id' => $subject->id,
+            'header' => $subject->printableHeader(),
+            'url' => URL::action('BookingUserController@show', ['booking' => $booking_id, 'user' => $user_id])
+        ]);
+    }
 }

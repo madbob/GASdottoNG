@@ -20,6 +20,10 @@ class MovementsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+        $this->commonInit([
+            'reference_class' => 'App\\Movement'
+        ]);
     }
 
     private function basicReadFromRequest($request)

@@ -11,8 +11,11 @@ use App\VariantValue;
 
 class VariantsController extends Controller
 {
-    public function index()
+    public function __construct()
     {
+        $this->commonInit([
+            'reference_class' => 'App\\Variant'
+        ]);
     }
 
     public function store(Request $request)

@@ -141,6 +141,18 @@ class Aggregate extends Model
         return $ret;
     }
 
+    public function bookingBy($user_id)
+    {
+        $ret = new AggregateBooking($user_id);
+
+        foreach ($this->orders as $order) {
+            $booking = $order->userBooking($user_id);
+            $ret->add($booking);
+        }
+
+        return $ret;
+    }
+
     public function getPermissionsProxies()
     {
         $suppliers = [];

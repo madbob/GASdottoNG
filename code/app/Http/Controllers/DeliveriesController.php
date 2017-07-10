@@ -18,6 +18,10 @@ class DeliveriesController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+        $this->commonInit([
+            'reference_class' => 'App\\Delivery'
+        ]);
     }
 
     public function store(Request $request)

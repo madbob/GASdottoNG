@@ -12,6 +12,13 @@ use App\Measure;
 
 class MeasuresController extends Controller
 {
+    public function __construct()
+    {
+        $this->commonInit([
+            'reference_class' => 'App\\Measure'
+        ]);
+    }
+
     public function index()
     {
         $user = Auth::user();
