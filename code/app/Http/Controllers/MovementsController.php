@@ -193,6 +193,32 @@ class MovementsController extends Controller
         }
     }
 
+    public function show(Request $request, $id)
+    {
+        $user = Auth::user();
+        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
+            abort(503);
+        }
+
+        $movement = Movement::findOrFail($id);
+        return Theme::view('movement.modal', ['obj' => $movement, 'editable' => true]);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        $user = Auth::user();
+        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
+            return $this->errorResponse('Non autorizzato');
+        }
+
+        $movement = Movement::findOrFail($id);
+        $movement->delete();
+
+        return $this->successResponse();
+    }
+
     private function resetBalance($gas)
     {
         $latest = $gas->balances()->first();

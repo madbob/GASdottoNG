@@ -6,6 +6,7 @@
     <div class="row">
         <div class="col-md-6">
             @include('user.base-edit', ['user' => $user])
+            @include('commons.contactswidget', ['obj' => $user])
         </div>
         <div class="col-md-6">
             @if(Gate::check('users.admin', $currentgas))
@@ -38,6 +39,27 @@
 
             <hr/>
             @include('commons.permissionsviewer', ['object' => $user])
+        </div>
+    </div>
+
+    <hr/>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="page-header">
+                <h3>Addebiti</h3>
+            </div>
+
+            <?php $movements = App\Movement::where('sender_type', 'App\User')->where('sender_id', $user->id)->orderBy('created_at', 'desc')->take(10)->get(); ?>
+            @include('movement.list', ['movements' => $movements, 'exclude_sender' => true])
+        </div>
+        <div class="col-md-6">
+            <div class="page-header">
+                <h3>Accrediti</h3>
+            </div>
+
+            <?php $movements = App\Movement::where('target_type', 'App\User')->where('target_id', $user->id)->orderBy('created_at', 'desc')->take(10)->get(); ?>
+            @include('movement.list', ['movements' => $movements, 'exclude_target' => true])
         </div>
     </div>
 

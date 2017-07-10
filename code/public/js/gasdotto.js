@@ -238,6 +238,10 @@ function loadingPlaceholder() {
     return $('<div class="progress"><div class="progress-bar progress-bar-striped active" style="width: 100%"></div></div>');
 }
 
+function refreshFilter() {
+    $('.form-filler').submit();
+}
+
 function setupImportCsvEditor() {
     $('#import_csv_sorter .im_draggable').each(function() {
         $(this).draggable({
@@ -373,6 +377,13 @@ function miscInnerCallbacks(form, data) {
             if (typeof fn === 'function')
                 fn(form);
         });
+    }
+
+    var test = form.find('input[name=close-modal]');
+    if (test.length != 0) {
+        var modal = form.parents('.modal');
+        if (modal.length != 0)
+            modal.modal('hide');
     }
 }
 
@@ -1326,8 +1337,24 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('click', '.async-modal', function(e) {
-        e.preventDefault();
+    $('body').on('click', '.spare-delete-button', function(event) {
+        event.preventDefault();
+
+        if (confirm('Sei sicuro?')) {
+            var form = $(this).closest('form');
+
+            $.ajax({
+                url: $(this).attr('data-delete-url'),
+                method: 'DELETE',
+                success: function(data) {
+                    miscInnerCallbacks(form, data);
+                }
+            });
+        }
+    });
+
+    $('body').on('click', '.async-modal', function(event) {
+        event.preventDefault();
 
         $.ajax({
             url: $(this).attr('data-target-url'),

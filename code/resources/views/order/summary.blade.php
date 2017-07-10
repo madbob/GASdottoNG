@@ -2,7 +2,7 @@
     <thead>
         <tr>
             @if($order->isActive())
-                <th width="5%"><button class="btn btn-default toggle-product-abilitation" data-toggle="button" aria-pressed="false" autocomplete="off">Abilita /<br/>Disabilita</button></th>
+                <th width="5%"><button class="btn btn-default toggle-product-abilitation" data-toggle="button" aria-pressed="false" autocomplete="off">Visualizza<br/>tutti</button></th>
                 <th width="21%">Prodotto</th>
                 <th width="9%">Prezzo</th>
                 <th width="9%">Trasporto</th>

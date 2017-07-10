@@ -1,8 +1,13 @@
 <?php
 
-if ($obj == null) {
+if ($obj == null)
     $obj = $default;
-}
+
+if (!isset($dom_id))
+    $dom_id = rand();
+
+if (!isset($editable))
+    $editable = false;
 
 ?>
 
@@ -12,6 +17,8 @@ if ($obj == null) {
             <form class="form-horizontal creating-form" method="POST" action="{{ url('movements') }}" data-toggle="validator">
                 <input type="hidden" name="update-field" value="movement-id-{{ $dom_id }}">
                 <input type="hidden" name="update-field" value="movement-date-{{ $dom_id }}">
+                <input type="hidden" name="close-modal" value="">
+                <input type="hidden" name="post-saved-function" value="refreshFilter">
 
                 @if(isset($extra))
                     @foreach($extra as $key => $value)
@@ -36,17 +43,17 @@ if ($obj == null) {
                         'name' => 'amount',
                         'label' => 'Valore',
                         'postlabel' => '€',
-                        'fixed_value' => $obj->amount
+                        'fixed_value' => $editable ? false : $obj->amount
                     ])
 
                     <div class="col-sm-{{ $fieldsize }} col-sm-offset-{{ $labelsize }}">
-                        @if(array_search('App\CreditableTrait', class_uses($obj->sender)) !== false)
+                        @if($obj->sender && array_search('App\CreditableTrait', class_uses($obj->sender)) !== false)
                             <p>
                                 {{ $obj->sender->printableName() }}: {{ $obj->sender->balance }} €
                             </p>
                         @endif
 
-                        @if(array_search('App\CreditableTrait', class_uses($obj->target)) !== false)
+                        @if($obj->target && array_search('App\CreditableTrait', class_uses($obj->target)) !== false)
                             <p>
                                 {{ $obj->target->printableName() }}: {{ $obj->target->balance }} €
                             </p>
@@ -68,7 +75,7 @@ if ($obj == null) {
 
                     @include('commons.datefield', [
                         'obj' => $obj,
-                        'name' => 'date',
+                        'name' => 'registration_date',
                         'label' => 'Data',
                         'defaults_now' => true
                     ])
@@ -85,7 +92,12 @@ if ($obj == null) {
                         'label' => 'Note'
                     ])
                 </div>
+
                 <div class="modal-footer">
+                    @if($editable)
+                        <button type="button" class="btn btn-danger spare-delete-button" data-delete-url="{{ url('movements/' . $obj->id) }}">Elimina</button>
+                    @endif
+
                     <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
                     <button type="submit" class="btn btn-success">Salva</button>
                 </div>

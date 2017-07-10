@@ -20,7 +20,7 @@ class MenuServiceProvider extends ServiceProvider
                 $menu = Menu::handler('main');
 
                 $menu->add('dashboard', '<span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home');
-                $menu->add('users/profile', '<span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Profilo');
+                $menu->add('users/profile', '<span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Il Mio Profilo');
 
                 if ($user->can('users.admin', $gas) || $user->can('users.view', $gas)) {
                     $menu->add('users', '<span class="glyphicon glyphicon-user" aria-hidden="true"></span> Utenti');

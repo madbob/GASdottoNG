@@ -6,6 +6,8 @@ $grand_total = 0;
 ?>
 
 <form class="form-horizontal inner-form booking-form" method="PUT" action="{{ url('booking/' . $aggregate->id . '/user/' . $user->id) }}">
+    <input type="hidden" name="post-saved-function" value="closeMainForm">
+
     @foreach($aggregate->orders as $order)
         @if($order->status != 'open')
             <?php continue ?>
