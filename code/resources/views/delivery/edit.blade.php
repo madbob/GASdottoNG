@@ -38,9 +38,10 @@ $rand = rand();
                 <table class="table table-striped booking-editor" data-booking-id="{{ $o->id }}" data-order-id="{{ $order->id }}">
                     <thead>
                         <tr>
-                            <th width="33%"></th>
-                            <th width="33%"></th>
-                            <th width="33%"></th>
+                            <th width="25%"></th>
+                            <th width="25%"></th>
+                            <th width="25%"></th>
+                            <th width="25%"></th>
                         </tr>
                     </thead>
 
@@ -63,6 +64,10 @@ $rand = rand();
                                             <input type="number" step="any" min="0" class="form-control trim-2-ddigits" name="{{ $product->product->id }}" value="{{ $product->delivered }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
                                             <div class="input-group-addon">{{ $product->product->printableMeasure() }}</div>
                                         </div>
+                                    </td>
+
+                                    <td>
+                                        <label class="static-label booking-product-price pull-right">{{ printablePrice($product->deliveredValue()) }} €</label>
                                     </td>
                                 </tr>
                             @else
@@ -101,6 +106,10 @@ $rand = rand();
                                                 <div class="input-group-addon">{{ $product->product->printableMeasure() }}</div>
                                             </div>
                                         </td>
+
+                                        <td>
+                                            <label class="static-label booking-product-price pull-right">{{ printablePrice($var->deliveredValue()) }} €</label>
+                                        </td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -116,7 +125,7 @@ $rand = rand();
                                         @endforeach
                                     </select>
                                 </td>
-
+                                <td>&nbsp;</td>
                                 <td>&nbsp;</td>
                                 <td class="bookable-target">&nbsp;</td>
                             </tr>
@@ -127,9 +136,8 @@ $rand = rand();
                                 <td>
                                     <label class="static-label">Trasporto</label>
                                 </td>
-                                <td>
-                                    &nbsp;
-                                </td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
                                 <td>
                                     <span>{{ printablePrice($o->transport) }}</span> €
                                 </td>
@@ -144,6 +152,7 @@ $rand = rand();
                                     <button class="btn btn-default add-booking-product">Aggiungi Prodotto</button>
                                 @endif
                             </th>
+                            <th></th>
                             <th></th>
                             <th class="text-right">Totale: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> €</th>
                         </tr>

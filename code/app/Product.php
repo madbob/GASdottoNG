@@ -69,7 +69,7 @@ class Product extends Model
 
     public function printablePrice($order)
     {
-        $price = $this->contextualPrice($order);
+        $price = $this->contextualPrice($order, false);
 
         if (!empty($this->transport) && $this->transport != 0) {
             $str = sprintf('%.02f € / %s + %.02f € trasporto', $price, $this->measure->name, $this->transport);
@@ -105,7 +105,7 @@ class Product extends Model
           riferimento
         - se l'ordine ha uno sconto, viene a sua volta applicato
     */
-    public function contextualPrice($order)
+    public function contextualPrice($order, $rectify = true)
     {
         /*
             Attenzione: hasProduct() altera il riferimento a $product,
@@ -127,6 +127,9 @@ class Product extends Model
         }
 
         $price = applyPercentage($price, $order->discount);
+
+        if ($rectify && $product->portion_quantity != 0)
+            $price = $price * $product->portion_quantity;
 
         return $price;
     }

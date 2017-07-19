@@ -521,9 +521,6 @@ function bookingTotal(editor) {
         var price = product_price.val();
         price = parseFloatC(price);
 
-        var partitioning = $(this).find('input:hidden[name=product-partitioning]').val();
-        partitioning = parseFloatC(partitioning);
-
         var quantity = 0;
 
         $(this).find('.booking-product-quantity').each(function() {
@@ -535,9 +532,6 @@ function bookingTotal(editor) {
             else
                 q = parseFloatC(q);
 
-            if (partitioning != 0)
-                q = q * partitioning;
-
             if ($(this).hasClass('booking-variant-quantity')) {
                 var offset = $(this).closest('.inline-variant-selector').find('select option:selected').attr('data-variant-price');
                 current_price = price + parseFloatC(offset);
@@ -545,7 +539,10 @@ function bookingTotal(editor) {
                 current_price = price;
             }
 
-            total_price += current_price * q;
+            var row_p = current_price * q;
+            total_price += row_p;
+
+            $(this).closest('tr').find('.booking-product-price').text(priceRound(row_p) + ' €');
         });
     });
 
