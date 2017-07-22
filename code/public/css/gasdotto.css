@@ -90,6 +90,8 @@ table label {
   float: left; }
 .booking-product .master-variant-selector {
   display: none; }
+.booking-product .inline-calculator-trigger {
+  cursor: pointer; }
 
 .product-disabled {
   opacity: 0.2;

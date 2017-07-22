@@ -1620,6 +1620,27 @@ $(document).ready(function() {
         return false;
     });
 
+    $('body').on('click', '.inline-calculator button[type=submit]', function(e) {
+        e.preventDefault();
+        var modal = $(this).closest('.modal');
+        var quantity = 0;
+
+        modal.find('input[type=number]').each(function() {
+            var v = $(this).val();
+            if (v != '')
+                quantity += parseFloatC(v);
+
+            $(this).val('0');
+        });
+
+        /*
+            Il trigger keyup() alla fine serve a forzare il ricalcolo del totale
+            della consegna quando il modale viene chiuso
+        */
+        modal.closest('.booking-product-quantity').find('input[type=number]').first().val(quantity).keyup();
+        modal.modal('hide');
+    });
+
     $('body').on('click', '.delete-booking', function(e) {
         e.preventDefault();
 

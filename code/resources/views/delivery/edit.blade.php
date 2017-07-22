@@ -63,6 +63,9 @@ $rand = rand();
                                         <div class="input-group booking-product-quantity">
                                             <input type="number" step="any" min="0" class="form-control trim-2-ddigits" name="{{ $product->product->id }}" value="{{ $product->delivered }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
                                             <div class="input-group-addon">{{ $product->product->printableMeasure() }}</div>
+                                            @if($product->product->portion_quantity != 0)
+                                                @include('delivery.calculator', ['pieces' => $product->quantity, 'measure' => $product->product->measure->name])
+                                            @endif
                                         </div>
                                     </td>
 
@@ -104,6 +107,9 @@ $rand = rand();
                                             <div class="input-group booking-product-quantity">
                                                 <input type="number" step="any" min="0" class="form-control" name="variant_quantity_{{ $product->product->id }}[]" value="{{ $var->delivered }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
                                                 <div class="input-group-addon">{{ $product->product->printableMeasure() }}</div>
+                                                @if($product->product->portion_quantity != 0)
+                                                    @include('delivery.calculator', ['pieces' => $var->quantity, 'measure' => $product->product->measure->name])
+                                                @endif
                                             </div>
                                         </td>
 
