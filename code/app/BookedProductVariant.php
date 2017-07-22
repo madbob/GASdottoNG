@@ -65,4 +65,23 @@ class BookedProductVariant extends Model
 
         return implode(', ', $ret);
     }
+
+    private function normalizeQuantity($attribute)
+    {
+        $product = $this->product;
+        if ($product->portion_quantity != 0)
+            return $this->$attribute * $product->portion_quantity;
+        else
+            return $this->$attribute;
+    }
+
+    public function getTrueQuantityAttribute()
+    {
+        return $this->normalizeQuantity('quantity');
+    }
+
+    public function getTrueDeliveredAttribute()
+    {
+        return $this->normalizeQuantity('delivered');
+    }
 }

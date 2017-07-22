@@ -67,14 +67,18 @@ class Booking extends Model
         return $p;
     }
 
-    public function getBookedQuantity($product)
+    public function getBookedQuantity($product, $real = false)
     {
         $p = $this->getBooked($product);
 
         if ($p == null) {
             return 0;
-        } else {
-            return $p->quantity;
+        }
+        else {
+            if ($real)
+                return $p->true_quantity;
+            else
+                return $p->quantity;
         }
     }
 

@@ -34,7 +34,13 @@ class BookedProduct extends Model
 
     private function fixQuantity($attribute)
     {
+        /*
+            Per i prodotti con pezzatura, basePrice() già fornisce il prezzo per
+            singola unità. Non è dunque qui necessario effettuare altri
+            controlli o aggiustamenti
+        */
         $base_price = $this->basePrice();
+        $product = $this->product;
 
         $variants = $this->variants;
         if ($variants->isEmpty() == false) {
@@ -47,18 +53,13 @@ class BookedProduct extends Model
                     $price += $c->value->price_offset;
                 }
 
-                $total += $price * $v->$attribute;
+                $total += ($price + $product->transport) * $v->$attribute;
             }
 
             return $total;
         }
         else {
-            $quantity = $this->$attribute;
-            if ($this->portion_quantity != 0) {
-                $quantity = $this->$attribute * $product->portion_quantity;
-            }
-
-            return ($base_price + $this->transport) * $quantity;
+            return ($base_price + $product->transport) * $this->$attribute;
         }
     }
 
@@ -88,5 +89,24 @@ class BookedProduct extends Model
         }
 
         return $v;
+    }
+
+    private function normalizeQuantity($attribute)
+    {
+        $product = $this->product;
+        if ($product->portion_quantity != 0)
+            return $this->$attribute * $product->portion_quantity;
+        else
+            return $this->$attribute;
+    }
+
+    public function getTrueQuantityAttribute()
+    {
+        return $this->normalizeQuantity('quantity');
+    }
+
+    public function getTrueDeliveredAttribute()
+    {
+        return $this->normalizeQuantity('delivered');
     }
 }

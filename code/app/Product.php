@@ -98,12 +98,14 @@ class Product extends Model
     }
 
     /*
-        Questo è per determinare il prezzo del prodotto in un dato
-        contesto, ovvero in un ordine. I casi possibili sono:
-        - se lo sconto del singolo prodotto è stato abilitato per
-          l'ordine, viene applicato. Altrimenti resta il prezzo di
-          riferimento
+        Questo è per determinare il prezzo del prodotto in un dato contesto,
+        ovvero in un ordine. I casi possibili sono:
+        - se lo sconto del singolo prodotto è stato abilitato per l'ordine,
+          viene applicato. Altrimenti resta il prezzo di riferimento
         - se l'ordine ha uno sconto, viene a sua volta applicato
+
+        Per i prodotti con pezzatura, ritorna già il prezzo per singola unità
+        e non è dunque necessario normalizzare ulteriormente
     */
     public function contextualPrice($order, $rectify = true)
     {

@@ -210,6 +210,11 @@ class Order extends Model
                 }
             }
 
+            if ($product->portion_quantity > 0) {
+                $quantity = $quantity * $product->portion_quantity;
+                $delivered = $delivered * $product->portion_quantity;
+            }
+
             $summary->products[$product->id]['quantity'] = $quantity;
             $summary->products[$product->id]['price'] = $price;
             $summary->products[$product->id]['transport'] = $transport;

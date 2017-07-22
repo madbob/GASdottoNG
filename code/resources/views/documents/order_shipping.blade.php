@@ -17,14 +17,14 @@
                             @foreach($product->variants as $variant)
                                 <tr>
                                     <td width="40%">{{ $product->product->printableName() }}</td>
-                                    <td width="40%">{{ $variant->quantity }} {{ $product->product->printableMeasure() }} {{ $variant->printableName() }}</td>
+                                    <td width="40%">{{ $variant->true_quantity }} {{ $product->product->measure->name }} {{ $variant->printableName() }}</td>
                                     <td width="20%">{{ printablePrice($variant->quantityValue()) }} €</td>
                                 </tr>
                             @endforeach
                         @else
                             <tr>
                                 <td width="40%">{{ $product->product->printableName() }}</td>
-                                <td width="40%">{{ $product->quantity }} {{ $product->product->printableMeasure() }}</td>
+                                <td width="40%">{{ $product->true_quantity }} {{ $product->product->measure->name }}</td>
                                 <td width="20%">{{ printablePrice($product->quantityValue()) }} €</td>
                             </tr>
                         @endif
