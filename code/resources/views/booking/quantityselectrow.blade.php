@@ -22,7 +22,7 @@
     </div>
 @else
     <div class="input-group booking-product-quantity">
-        <input type="number" class="form-control" name="{{ $product->id }}" value="{{ $populate ? $o->getBookedQuantity($product) : '' }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
+        <input step="any" min="0" type="number" class="form-control" name="{{ $product->id }}" value="{{ $populate ? $o->getBookedQuantity($product) : '' }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
         <div class="input-group-addon">{{ $product->printableMeasure() }}</div>
     </div>
 @endif

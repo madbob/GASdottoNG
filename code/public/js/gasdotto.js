@@ -522,6 +522,7 @@ function bookingTotal(editor) {
         price = parseFloatC(price);
 
         var quantity = 0;
+        var row_p = 0;
 
         $(this).find('.booking-product-quantity').each(function() {
             var input = $(this).find('input');
@@ -539,11 +540,11 @@ function bookingTotal(editor) {
                 current_price = price;
             }
 
-            var row_p = current_price * q;
+            row_p += current_price * q;
             total_price += row_p;
-
-            $(this).closest('tr').find('.booking-product-price').text(priceRound(row_p) + ' €');
         });
+
+        $(this).closest('tr').find('.booking-product-price').text(priceRound(row_p) + ' €');
     });
 
     var transport = editor.find('.booking-transport');
@@ -1489,16 +1490,15 @@ $(document).ready(function() {
     });
 
     $('body').on('keyup', '.booking-product-quantity input', function() {
-        var v = $(this).val();
-        var booked;
+        var booked = 0;
         var wrong = false;
 
-        if (v == '')
-            booked = 0;
-        else
-            booked = parseFloatC(v);
-
         var row = $(this).closest('.booking-product');
+        row.find('.booking-product-quantity input').each(function() {
+            var v = $(this).val();
+            if (v != '')
+                booked += parseFloatC(v);
+        });
 
         if (booked != 0) {
             var m = row.find('input:hidden[name=product-multiple]');

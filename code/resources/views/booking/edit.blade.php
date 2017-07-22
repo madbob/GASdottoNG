@@ -23,13 +23,16 @@ $grand_total = 0;
             <thead>
                 <tr>
                     <th width="25%"></th>
-                    <th width="35%"></th>
+                    <th width="30%"></th>
                     <th width="25%"></th>
                     <th width="15%"></th>
+                    <th width="5%"></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($order->products as $product)
+                    <?php $p = $o->getBooked($product->id) ?>
+
                     <tr class="booking-product">
                         <td>
                             <label class="static-label">
@@ -53,6 +56,10 @@ $grand_total = 0;
 
                         <td class="text-right">
                             <label class="static-label">{!! $product->printablePrice($order) !!}</label>
+                        </td>
+
+                        <td>
+                            <label class="static-label booking-product-price pull-right">{{ $p ? printablePrice($p->quantityValue()) : '0.00' }} €</label>
                         </td>
                     </tr>
                 @endforeach
