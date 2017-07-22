@@ -3,16 +3,17 @@
         <tr>
             @if($order->isActive())
                 <th width="5%"><button class="btn btn-default toggle-product-abilitation" data-toggle="button" aria-pressed="false" autocomplete="off">Visualizza<br/>tutti</button></th>
-                <th width="21%">Prodotto</th>
-                <th width="9%">Prezzo</th>
-                <th width="9%">Trasporto</th>
+                <th width="17%">Prodotto</th>
+                <th width="8%">Prezzo</th>
+                <th width="8%">Trasporto</th>
+                <th width="8%">Disponibile</th>
                 <th width="5%">Sconto Prodotto</th>
                 <th width="9%">Unità di Misura</th>
                 <th width="9%">Quantità Ordinata</th>
                 <th width="5%">Totale Prezzo</th>
                 <th width="5%">Totale Trasporto</th>
-                <th width="9%">Quantità Consegnata</th>
-                <th width="9%">Totale Consegnato</th>
+                <th width="8%">Quantità Consegnata</th>
+                <th width="8%">Totale Consegnato</th>
                 <th width="7%">Note</th>
             @else
                 <th width="25%">Prodotto</th>
@@ -40,48 +41,59 @@
             @endif
 
                 @if($order->isActive())
+                    <!-- Visualizza tutti -->
                     <td>
                         <input class="enabling-toggle" type="checkbox" name="enabled[]" value="{{ $product->id }}" <?php if($enabled) echo 'checked' ?> />
                     </td>
                 @endif
 
+                <!-- Prodotto -->
                 <td>
                     <input type="hidden" name="productid[]" value="{{ $product->id }}" />
                     <label>{{ $product->printableName() }}</label>
                 </td>
 
                 @if($order->isActive())
+                    <!-- Prezzo -->
                     <td>
-                        @if($order->isActive())
-                            @include('commons.decimalfield', [
-                                'obj' => $product,
-                                'label' => '',
-                                'prefix' => 'product_',
-                                'name' => 'price',
-                                'postfix' => '[]',
-                                'squeeze' => true,
-                                'postlabel' => '€'
-                            ])
-                        @else
-                            <label>{{ printablePrice($product->price) }} €</label>
-                        @endif
+                        @include('commons.decimalfield', [
+                            'obj' => $product,
+                            'label' => '',
+                            'prefix' => 'product_',
+                            'name' => 'price',
+                            'postfix' => '[]',
+                            'squeeze' => true,
+                            'postlabel' => '€'
+                        ])
                     </td>
+
+                    <!-- Trasporto -->
                     <td>
-                        @if($order->isActive())
-                            {{-- Nota bene: "transport" è anche un parametro dell'ordine, qui metto un prefisso per evitare la collisione --}}
-                            @include('commons.decimalfield', [
-                                'obj' => $product,
-                                'label' => '',
-                                'prefix' => 'product_',
-                                'name' => 'transport',
-                                'postfix' => '[]',
-                                'squeeze' => true,
-                                'postlabel' => '€'
-                            ])
-                        @else
-                            <label>{{ printablePrice($product->transport) }} €</label>
-                        @endif
+                        {{-- Nota bene: "transport" è anche un parametro dell'ordine, qui metto un prefisso per evitare la collisione --}}
+                        @include('commons.decimalfield', [
+                            'obj' => $product,
+                            'label' => '',
+                            'prefix' => 'product_',
+                            'name' => 'transport',
+                            'postfix' => '[]',
+                            'squeeze' => true,
+                            'postlabel' => '€'
+                        ])
                     </td>
+
+                    <!-- Disponibile -->
+                    <td>
+                        @include('commons.decimalfield', [
+                            'obj' => $product,
+                            'label' => '',
+                            'prefix' => 'product_',
+                            'name' => 'max_available',
+                            'postfix' => '[]',
+                            'squeeze' => true,
+                        ])
+                    </td>
+
+                    <!-- Sconto Prodotto -->
                     <td>
                         @if(!empty($product->discount))
                             <input class="discount-toggle" type="checkbox" name="discounted[]" value="{{ $product->id }}" <?php if($enabled && $product->pivot->discount_enabled) echo 'checked' ?> />
@@ -89,30 +101,40 @@
                     </td>
                 @endif
 
+                <!-- Unità di Misura -->
                 <td>
                     <label>{{ $product->measure->printableName() }}</label>
                 </td>
 
                 @if($order->isActive())
+                    <!-- Quantità Ordinata -->
                     <td>
                         <label class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity'] }}</label>
                     </td>
+
+                    <!-- Totale Prezzo -->
                     <td>
                         <label class="order-summary-product-price">{{ printablePrice($summary->products[$product->id]['price']) }} €</label>
                     </td>
+
+                    <!-- Totale Trasporto -->
                     <td>
                         <label class="order-summary-product-transport">{{ printablePrice($summary->products[$product->id]['transport']) }} €</label>
                     </td>
                 @endif
 
+                <!-- Quantità Consegnata -->
                 <td>
                     <label class="order-summary-product-delivered">{{ $summary->products[$product->id]['delivered'] }}</label>
                 </td>
+
+                <!-- Totale Consegnato -->
                 <td>
                     <label class="order-summary-product-price_delivered">{{ printablePrice($summary->products[$product->id]['price_delivered']) }} €</label>
                 </td>
 
                 @if($order->isActive())
+                    <!-- Note -->
                     <td>
                         <?php $random_identifier = rand(); ?>
 

@@ -138,6 +138,7 @@ class OrdersController extends Controller
         $enabled = $request->input('enabled', []);
         $prices = $request->input('product_price', []);
         $transports = $request->input('product_transport', []);
+        $availables = $request->input('product_max_available', []);
         $products = $request->input('productid');
 
         for ($i = 0; $i < count($products); ++$i) {
@@ -148,6 +149,7 @@ class OrdersController extends Controller
                     $prod = Product::find($id);
                     $prod->price = $prices[$i];
                     $prod->transport = $transports[$i];
+                    $prod->max_available = $availables[$i];
                     $final_products[] = $prod;
                     break;
                 }
@@ -187,6 +189,7 @@ class OrdersController extends Controller
         $enabled = $request->input('enabled', []);
         $prices = $request->input('product_price', []);
         $transports = $request->input('product_transport', []);
+        $availables = $request->input('product_max_available', []);
         $products = $request->input('productid');
 
         for ($i = 0; $i < count($products); ++$i) {
@@ -200,9 +203,10 @@ class OrdersController extends Controller
             }
 
             $prod = Product::find($id);
-            if ($prod->price != $prices[$i] || $prod->transport != $transports[$i]) {
+            if ($prod->price != $prices[$i] || $prod->transport != $transports[$i] || $product->max_available != $availables[$i]) {
                 $prod->price = $prices[$i];
                 $prod->transport = $transports[$i];
+                $prod->max_available = $availables[$i];
                 $prod->save();
             }
         }
