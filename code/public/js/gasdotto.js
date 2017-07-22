@@ -668,8 +668,15 @@ function setupVariantsEditor() {
 }
 
 function submitDeliveryForm(form) {
-    var id = form.closest('.modal').attr('id');
-    $('form[data-reference-modal=' + id + ']').submit();
+    var modal = form.closest('.modal');
+    var id = modal.attr('id');
+    var mainform = $('form[data-reference-modal=' + id + ']');
+    mainform.submit();
+
+    modal.on('hidden.bs.modal', function() {
+        closeMainForm(mainform);
+    });
+    modal.modal('hide');
 }
 
 /*******************************************************************************

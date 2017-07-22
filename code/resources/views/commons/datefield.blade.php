@@ -19,7 +19,7 @@ if (isset($defaults_now) == false)
                 value="<?php
                     $current_value = '';
 
-                    if ($obj && $obj->$name != '0000-00-00')
+                    if ($obj && $obj->$name != null && $obj->$name != '0000-00-00')
                         $current_value = $obj->printableDate($name);
 
                     if (empty($current_value) && $defaults_now)
