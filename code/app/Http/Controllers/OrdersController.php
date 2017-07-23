@@ -335,7 +335,7 @@ class OrdersController extends Controller
         return Theme::view('commons.loadablelist', ['identifier' => $list_identifier, 'items' => $orders]);
     }
 
-    public function document(Request $request, $id, $type)
+    public function document(Request $request, $id, $type, $subtype = 'none')
     {
         $order = Order::findOrFail($id);
 
@@ -348,23 +348,30 @@ class OrdersController extends Controller
                 PDF::writeHTML($html, true, false, true, false, '');
                 PDF::Output($filename, 'D');
                 break;
+
             case 'summary':
-                $html = Theme::view('documents.order_summary', ['order' => $order])->render();
-                $filename = sprintf('Prodotti ordinati %s.pdf', $order->supplier->name);
-                PDF::SetTitle(sprintf('Prodotti ordinati %s del %s', $order->supplier->name, date('d/m/Y')));
-                PDF::AddPage();
-                PDF::writeHTML($html, true, false, true, false, '');
-                PDF::Output($filename, 'D');
+                if ($subtype == 'pdf') {
+                    $html = Theme::view('documents.order_summary_pdf', ['order' => $order])->render();
+                    $filename = sprintf('Prodotti ordinati %s.pdf', $order->supplier->name);
+                    PDF::SetTitle(sprintf('Prodotti ordinati %s del %s', $order->supplier->name, date('d/m/Y')));
+                    PDF::AddPage();
+                    PDF::writeHTML($html, true, false, true, false, '');
+                    PDF::Output($filename, 'D');
+                }
+                else if ($subtype == 'csv') {
+                    $filename = sprintf('Prodotti ordinati %s.csv', $order->supplier->name);
+                    http_csv_headers($filename);
+                    return Theme::view('documents.order_summary_csv', ['order' => $order]);
+                }
                 break;
+
             case 'table':
                 $filename = sprintf('Tabella Ordine %s.csv', $order->supplier->name);
-                header('Content-Type: text/csv');
-                header('Content-Disposition: attachment; filename="'.$filename.'"');
-                header('Cache-Control: no-cache, no-store, must-revalidate');
-                header('Pragma: no-cache');
-                header('Expires: 0');
-
-                return Theme::view('documents.order_table', ['order' => $order]);
+                http_csv_headers($filename);
+                if ($subtype == 'booked')
+                    return Theme::view('documents.order_table_booked', ['order' => $order]);
+                else if ($subtype == 'delivered')
+                    return Theme::view('documents.order_table_delivered', ['order' => $order]);
                 break;
         }
     }

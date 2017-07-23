@@ -24,7 +24,7 @@ Route::get('attachments/download/{id}', 'AttachmentsController@download');
 Route::get('orders/search', 'OrdersController@search');
 Route::get('orders/recalculate/{id}', 'OrdersController@recalculate');
 Route::post('orders/fixes/{id}', 'OrdersController@fixes');
-Route::get('orders/document/{id}/{type}', 'OrdersController@document');
+Route::get('orders/document/{id}/{type}/{subtype?}', 'OrdersController@document');
 Route::post('products/massiveupdate', 'ProductsController@massiveUpdate');
 Route::get('suppliers/catalogue/{id}/{format}', 'SuppliersController@catalogue');
 Route::get('suppliers/{id}/plain_balance', 'SuppliersController@plainBalance');

@@ -249,15 +249,24 @@ class Order extends Model
 
     protected function defaultAttachments()
     {
+        $ret = [];
+
         /*
             Documento con i prodotti e le relative quantità totali.
-            Solitamente destinato al fornitore, come riassunto
-            dell'ordine complessivo
+            Solitamente destinato al fornitore, come riassunto dell'ordine
+            complessivo
         */
         $summary = new Attachment();
-        $summary->name = 'Riassunto Prodotti';
-        $summary->url = url('orders/document/'.$this->id.'/summary');
+        $summary->name = 'Riassunto Prodotti (CSV)';
+        $summary->url = url('orders/document/'.$this->id.'/summary/csv');
         $summary->internal = true;
+        $ret[] = $summary;
+
+        $summary = new Attachment();
+        $summary->name = 'Riassunto Prodotti (PDF)';
+        $summary->url = url('orders/document/'.$this->id.'/summary/pdf');
+        $summary->internal = true;
+        $ret[] = $summary;
 
         /*
             Rappresentazione strutturata delle prenotazioni
@@ -267,16 +276,25 @@ class Order extends Model
         $shipping->name = 'Dettaglio Consegne';
         $shipping->url = url('orders/document/'.$this->id.'/shipping');
         $shipping->internal = true;
+        $ret[] = $shipping;
 
         /*
-            CVS completo dei prodotti, degli utenti e delle quantità
+            CVS completo dei prodotti, degli utenti e delle quantità (ordinate e
+            consegnate)
         */
         $table = new Attachment();
-        $table->name = 'Tabella Complessiva';
-        $table->url = url('orders/document/'.$this->id.'/table');
+        $table->name = 'Tabella Complessiva Prodotti Ordinati';
+        $table->url = url('orders/document/'.$this->id.'/table/booked');
         $table->internal = true;
+        $ret[] = $table;
 
-        return [$shipping, $summary, $table];
+        $table = new Attachment();
+        $table->name = 'Tabella Complessiva Prodotti Consegnati';
+        $table->url = url('orders/document/'.$this->id.'/table/shipped');
+        $table->internal = true;
+        $ret[] = $table;
+
+        return $ret;
     }
 
     public function getPermissionsProxies()

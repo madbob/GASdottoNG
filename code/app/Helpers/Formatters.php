@@ -54,3 +54,12 @@ function decodeDate($date)
     $en_date = sprintf('%s %s %s', $day, $month, $year);
     return date('Y-m-d', strtotime($en_date));
 }
+
+function http_csv_headers($filename)
+{
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Cache-Control: no-cache, no-store, must-revalidate');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+}

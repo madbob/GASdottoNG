@@ -82,6 +82,21 @@ class Booking extends Model
         }
     }
 
+    public function getDeliveredQuantity($product, $real = false)
+    {
+        $p = $this->getBooked($product);
+
+        if ($p == null) {
+            return 0;
+        }
+        else {
+            if ($real)
+                return $p->true_delivered;
+            else
+                return $p->delivered;
+        }
+    }
+
     /*
         Valore complessivo di quanto ordinato
     */
