@@ -26,4 +26,10 @@
             @endif
         </div>
     </div>
+
+    <hr/>
+    <div class="page-header">
+        <h3>Movimenti Contabili</h3>
+    </div>
+    @include('movement.targetlist', ['target' => $supplier])
 @endif

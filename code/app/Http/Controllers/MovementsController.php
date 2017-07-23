@@ -13,6 +13,8 @@ use Session;
 
 use App\Movement;
 use App\Balance;
+use App\User;
+use App\Supplier;
 use App\Aggregate;
 
 class MovementsController extends Controller
@@ -87,39 +89,22 @@ class MovementsController extends Controller
 
         if ($request->input('user_id', '0') != '0') {
             $user_id = $request->input('user_id');
-            $query->where(function($query) use ($user_id) {
-                $query->where(function($query) use ($user_id) {
-                    $query->where('sender_type', 'App\User')->where('sender_id', $user_id);
-                })->orWhere(function($query) use ($user_id) {
-                    $query->where('target_type', 'App\User')->where('target_id', $user_id);
-                });
-            });
+            $generic_target = User::find($user_id);
+            $query = $generic_target->queryMovements($query);
         }
 
         if ($request->input('supplier_id', '0') != '0') {
             $supplier_id = $request->input('supplier_id');
-            $query->where(function($query) use ($supplier_id) {
-                $query->where(function($query) use ($supplier_id) {
-                    $query->where('sender_type', 'App\Supplier')->where('sender_id', $supplier_id);
-                })->orWhere(function($query) use ($supplier_id) {
-                    $query->where('target_type', 'App\Supplier')->where('target_id', $supplier_id);
-                });
-            });
+            $generic_target = Supplier::find($supplier_id);
+            $query = $generic_target->queryMovements($query);
         }
 
         if ($request->input('generic_target_id', '0') != '0') {
             $target_id = $request->input('generic_target_id');
             $target_type = $request->input('generic_target_type');
-
-            $query->where(function($query) use ($target_id, $target_type) {
-                $query->where(function($query) use ($target_id, $target_type) {
-                    $query->where('sender_type', $target_type)->where('sender_id', $target_id);
-                })->orWhere(function($query) use ($target_id, $target_type) {
-                    $query->where('target_type', $target_type)->where('target_id', $target_id);
-                });
-            });
-
-            $data['main_target'] = $target_type::find($target_id);
+            $generic_target = $target_type::find($target_id);
+            $query = $generic_target->queryMovements($query);
+            $data['main_target'] = $generic_target;
         }
 
         if ($request->input('amountstart', '') != '') {

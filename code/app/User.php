@@ -11,10 +11,11 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use App\GASModel;
 use App\SluggableID;
 use App\ContactableTrait;
+use App\PayableTrait;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, CanResetPassword, ContactableTrait, CreditableTrait, GASModel, SluggableID;
+    use Authenticatable, Authorizable, CanResetPassword, ContactableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
     protected $table = 'users';
@@ -38,16 +39,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function allnotifications()
     {
         return $this->belongsToMany('App\Notification')->orderBy('start_date', 'desc');
-    }
-
-    public function movements_in()
-    {
-        return $this->morphMany('App\Movement', 'target');
-    }
-
-    public function movements_out()
-    {
-        return $this->morphMany('App\Movement', 'sender');
     }
 
     public function deposit()

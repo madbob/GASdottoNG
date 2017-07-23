@@ -42,12 +42,7 @@ $domid = str_random(10);
 
         $startdate = date('Y-m-d', strtotime('-1 months'));
         $enddate = date('Y-m-d');
-
-        $movements = App\Movement::where(function($query) use ($target) {
-            $query->where('target_type', get_class($target))->where('target_id', $target->id);
-        })->orWhere(function($query) use ($target) {
-            $query->where('sender_type', get_class($target))->where('sender_id', $target->id);
-        })->where('registration_date', '>=', $startdate)->where('registration_date', '<=', $enddate)->orderBy('created_at', 'desc')->get()
+        $movements = $target->queryMovements(null)->where('registration_date', '>=', $startdate)->where('registration_date', '<=', $enddate)->get()
 
         ?>
         @include('movement.list', ['movements' => $movements, 'main_target' => $target])
