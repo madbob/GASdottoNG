@@ -211,6 +211,7 @@
                 <th></th>
                 <th></th>
                 <th></th>
+                <th></th>
                 <th class="order-summary-order-price">{{ printablePrice($summary->price) }} €</th>
                 <th class="order-summary-order-transport">{{ printablePrice($summary->transport) }} €</th>
                 <th></th>

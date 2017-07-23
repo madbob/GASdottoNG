@@ -239,7 +239,7 @@ function loadingPlaceholder() {
 }
 
 function refreshFilter() {
-    $('.form-filler').submit();
+    $('.form-filler').find('button[type=submit]').click();
 }
 
 function setupImportCsvEditor() {
@@ -1275,6 +1275,27 @@ $(document).ready(function() {
         }
     });
 
+    $('body').on('change', '.table-filters input:radio', function() {
+        var filter = $(this).closest('.table-filters');
+        var target = filter.attr('data-table-target');
+        var attribute = $(this).attr('name');
+        var value = $(this).val();
+        var table = $(target + ' table');
+
+        if (value == 'all') {
+            table.find('tr').removeClass('hidden');
+        }
+        else {
+            table.find('tr[data-filtered-' + attribute + ']').each(function() {
+                var attr = $(this).attr('data-filtered-' + attribute);
+                if (attr == value)
+                    $(this).removeClass('hidden');
+                else
+                    $(this).addClass('hidden');
+            });
+        }
+    });
+
     $('body').on('submit', '.inner-form', function(event) {
         event.preventDefault();
         var form = $(this);
@@ -1398,15 +1419,15 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('submit', '.form-filler', function(event) {
+    $('body').on('click', '.form-filler button[type=submit]', function(event) {
         event.preventDefault();
-        var form = $(this);
-        var data = form.serializeArray();
+        form = $(this).closest('.form-filler');
+        var data = form.find('input, select').serialize();
         var target = $(form.attr('data-fill-target'));
 
         $.ajax({
             method: 'GET',
-            url: form.attr('action'),
+            url: form.attr('data-action'),
             data: data,
             dataType: 'html',
 

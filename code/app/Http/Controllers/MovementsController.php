@@ -107,6 +107,21 @@ class MovementsController extends Controller
             });
         }
 
+        if ($request->input('generic_target_id', '0') != '0') {
+            $target_id = $request->input('generic_target_id');
+            $target_type = $request->input('generic_target_type');
+
+            $query->where(function($query) use ($target_id, $target_type) {
+                $query->where(function($query) use ($target_id, $target_type) {
+                    $query->where('sender_type', $target_type)->where('sender_id', $target_id);
+                })->orWhere(function($query) use ($target_id, $target_type) {
+                    $query->where('target_type', $target_type)->where('target_id', $target_id);
+                });
+            });
+
+            $data['main_target'] = $target_type::find($target_id);
+        }
+
         if ($request->input('amountstart', '') != '') {
             $query->where('amount', '>=', $request->input('amountstart'));
         }

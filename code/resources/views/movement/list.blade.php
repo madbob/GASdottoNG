@@ -6,6 +6,16 @@ if(isset($exclude_sender) == false)
 if(isset($exclude_target) == false)
     $exclude_target = false;
 
+if(isset($main_target) == false) {
+    $main_target_id = null;
+    $main_target_class = null;
+}
+else {
+    $main_target_id = $main_target->id;
+    $main_target_class = get_class($main_target);
+}
+
+
 ?>
 
 @if($movements->count() == 0)
@@ -34,7 +44,23 @@ if(isset($exclude_target) == false)
 
         <tbody>
             @foreach($movements as $mov)
-                <tr>
+                <?php
+
+                $filtered_type = 'all';
+                if ($main_target_id != null) {
+                    $sender = $mov->sender;
+                    if ($sender && $sender->id == $main_target_id && get_class($sender) == $main_target_class)
+                        $filtered_type = 'debt';
+
+                    if ($filtered_type == 'all') {
+                        $target = $mov->target;
+                        if ($target && $target->id == $main_target_id && get_class($target) == $main_target_class)
+                            $filtered_type = 'credit';
+                    }
+                }
+
+                ?>
+                <tr data-filtered-movements-filter="{{ $filtered_type }}">
                     <td>{{ $mov->printableDate('registration_date') }}</td>
                     <td>{{ $mov->printableType() }}</td>
                     <td><span class="glyphicon {{ $mov->payment_icon }}" aria-hidden="true"></span></td>

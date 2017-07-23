@@ -20,7 +20,7 @@
 
 <div class="row">
     <div class="col-md-6">
-        <form class="form-horizontal form-filler" action="{{ url('movements') }}" data-toggle="validator" data-fill-target="#movements-in-range">
+        <div class="form-horizontal form-filler" data-action="{{ url('movements') }}" data-toggle="validator" data-fill-target="#movements-in-range">
             @include('commons.genericdaterange')
             @include('commons.selectmovementtypefield')
             @include('commons.selectobjfield', [
@@ -49,7 +49,7 @@
                     <button type="submit" class="btn btn-success">Ricerca</button>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 
     <div class="col-md-3 col-md-offset-3">
