@@ -6,6 +6,7 @@
     <div class="row">
         <div class="col-md-4">
             @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => 'Fornitore'])
+            @include('commons.staticstringfield', ['obj' => $order, 'name' => 'internal_number', 'label' => 'Numero'])
             @include('commons.textfield', ['obj' => $order, 'name' => 'comment', 'label' => 'Commento'])
             @include('commons.datefield', ['obj' => $order, 'name' => 'start', 'label' => 'Data Apertura', 'mandatory' => true])
 

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
 use Auth;
+use DB;
 
 use App\GASModel;
 use App\SluggableID;
@@ -110,6 +111,12 @@ class Order extends Model
         } else {
             return $ret;
         }
+    }
+
+    public function getInternalNumberAttribute()
+    {
+        $year = date('Y', strtotime($this->start));
+        return (Order::where('supplier_id', $this->supplier_id)->where(DB::raw('YEAR(start)'), $year)->where('start', '<', $this->start)->count() + 1) . '/' . $year;
     }
 
     /*
