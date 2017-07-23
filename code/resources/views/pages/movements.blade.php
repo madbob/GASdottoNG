@@ -116,18 +116,20 @@
                     </div>
                 </div>
             </div>
-            <form class="form-inline iblock password-protected" method="POST" action="{{ url('/movements/recalculate') }}">
+            <form class="form-inline iblock password-protected" id="recalculate-account" method="POST" action="{{ url('/movements/recalculate') }}">
                 <div class="form-group">
                     {!! csrf_field() !!}
                     <button type="submit" class="btn btn-danger">Ricalcola Saldi</button>
                 </div>
             </form>
-            <form class="form-inline iblock password-protected" method="POST" action="{{ url('/movements/close') }}">
+            <form class="form-inline iblock password-protected" id="close-balance" method="POST" action="{{ url('/movements/close') }}">
                 <div class="form-group">
                     {!! csrf_field() !!}
                     <button type="submit" class="btn btn-danger">Chiudi Bilancio</button>
                 </div>
             </form>
+
+            @include('commons.passwordmodal')
         </div>
     </div>
 </div>

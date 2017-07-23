@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use DB;
 use Auth;
+use Hash;
 use Theme;
+
 use App\Aggregate;
 
 class CommonsController extends Controller
@@ -25,5 +30,16 @@ class CommonsController extends Controller
         $data['shipping'] = Aggregate::getByStatus('closed');
 
         return Theme::view('pages.dashboard', $data);
+    }
+
+    public function postVerify(Request $request)
+    {
+        $password = $request->input('password');
+        $user = $request->user();
+        $test = Auth::attempt(['username' => $user->username, 'password' => $password]);
+        if ($test)
+            return 'ok';
+        else
+            return 'ko';
     }
 }

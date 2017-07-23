@@ -1437,6 +1437,35 @@ $(document).ready(function() {
         });
     });
 
+    $('body').on('submit', '.password-protected', function(event) {
+        if ($(this).attr('data-password-protected-verified') != '1') {
+            event.preventDefault();
+            var id = $(this).attr('id');
+            $('#password-protection-dialog').attr('data-form-target', '#' + id).modal('show');
+        }
+    })
+    .on('submit', '#password-protection-dialog form', function(event) {
+        event.preventDefault();
+        var modal = $(this).closest('.modal');
+
+        $.ajax({
+            method: 'POST',
+            url: $(this).attr('action'),
+            data: {
+                password: $(this).find('input[type=password]').val()
+            },
+            success: function(data) {
+                if (data == 'ok') {
+                    var target = modal.attr('data-form-target');
+                    modal.modal('hide');
+                    var form = $(target);
+                    form.attr('data-password-protected-verified', '1');
+                    form.submit();
+                }
+            }
+        });
+    });
+
     /*
     	Gestione ordini
     */
