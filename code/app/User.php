@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
@@ -15,11 +16,12 @@ use App\PayableTrait;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, CanResetPassword, ContactableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID;
+    use Authenticatable, Authorizable, CanResetPassword, SoftDeletes, ContactableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
     protected $table = 'users';
     protected $hidden = ['password', 'remember_token'];
+    protected $dates = ['deleted_at'];
 
     public function gas()
     {
@@ -59,6 +61,16 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function getSlugID()
     {
         return $this->username;
+    }
+
+    public function scopeEnabled($query)
+    {
+        return $query->whereNull('leaving_date');
+    }
+
+    public function scopeSorted($query)
+    {
+        return $query->orderBy('lastname', 'asc')->orderBy('firstname', 'asc');
     }
 
     public function printableName()

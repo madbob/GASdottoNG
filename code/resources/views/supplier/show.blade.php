@@ -12,6 +12,7 @@
 
             <div class="row">
                 <div class="col-md-6">
+                    @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'name', 'label' => 'Nome'])
                     @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'business_name', 'label' => 'Ragione Sociale'])
                     @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'description', 'label' => 'Descrizione'])
                     @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'taxcode', 'label' => 'Codice Fiscale'])

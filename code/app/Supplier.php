@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 use App\AttachableTrait;
 use App\Attachment;
 use App\GASModel;
@@ -13,9 +15,10 @@ use App\PayableTrait;
 
 class Supplier extends Model
 {
-    use AttachableTrait, ContactableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID;
+    use SoftDeletes, AttachableTrait, ContactableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
+    protected $dates = ['deleted_at'];
 
     public function products()
     {
@@ -46,6 +49,13 @@ class Supplier extends Model
         });
     }
 
+    public function getDisplayURL()
+    {
+        return Illuminate\Routing\UrlGenerator::action('SuppliersController@show');
+    }
+
+    /******************************************************** AttachableTrait */
+
     protected function requiredAttachmentPermission()
     {
         return 'supplier.modify';
@@ -66,10 +76,7 @@ class Supplier extends Model
         return [$cataloguepdf, $cataloguecsv];
     }
 
-    public function getDisplayURL()
-    {
-        return Illuminate\Routing\UrlGenerator::action('SuppliersController@show');
-    }
+    /*********************************************************** PayableTrait */
 
     public function queryMovements($query = null, $type = 'all')
     {

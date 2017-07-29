@@ -68,6 +68,19 @@ trait GASModel
         return null;
     }
 
+    /*
+        Questa va all'occorrenza sovrascritta
+    */
+    public function scopeEnabled($query)
+    {
+        return $query->whereNotNull('id');
+    }
+
+    public function scopeSorted($query)
+    {
+        return $query->orderBy('name', 'asc');
+    }
+
     public static function iconsMap()
     {
         static $icons = null;

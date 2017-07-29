@@ -114,7 +114,11 @@ class Role extends Model
         $attached_objects = DB::table('attached_role_user')->where('role_user_id', $this->pivot->id)->get();
         foreach($attached_objects as $ao) {
             $class = $ao->target_type;
-            $obj = $class::findOrFail($ao->target_id);
+
+            $obj = $class::find($ao->target_id);
+            if ($obj == null)
+                continue;
+
             $ret[] = $obj;
         }
 

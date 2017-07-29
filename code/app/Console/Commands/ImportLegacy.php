@@ -259,6 +259,9 @@ class ImportLegacy extends Command
                 $this->handleContact('website', 'website', $row, $obj);
 
                 $map['suppliers'][$row->id] = $obj->id;
+
+                if ($row->hidden)
+                    $obj->delete();
             }
             catch (\Exception $e) {
                 echo sprintf("Errore nell'importazione del fornitore %s: %s\n", $row->name, $e->getMessage());
@@ -270,7 +273,7 @@ class ImportLegacy extends Command
 
         foreach ($result as $row) {
             try {
-                $parent = Supplier::findOrFail($map['suppliers'][$row->parent]);
+                $parent = Supplier::withTrashed()->findOrFail($map['suppliers'][$row->parent]);
                 $target = User::findOrFail($map['users'][$row->target]);
                 $target->addRole($referrer_role, $parent);
             }

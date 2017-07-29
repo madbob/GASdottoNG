@@ -148,7 +148,7 @@ class MovementsController extends Controller
         $data['sender_type'] = $metadata->sender_type;
         if ($metadata->sender_type != null) {
             $st = $metadata->sender_type;
-            $data['senders'] = $st::all();
+            $data['senders'] = $st::sorted()->get();
         } else {
             $data['senders'] = [];
         }
@@ -160,7 +160,7 @@ class MovementsController extends Controller
                 $data['target_type'] = 'App\Aggregate';
             } else {
                 $tt = $metadata->target_type;
-                $data['targets'] = $tt::all();
+                $data['targets'] = $tt::sorted()->get();
             }
         } else {
             $data['targets'] = [];
