@@ -150,7 +150,6 @@ class ImportLegacy extends Command
             $obj = new Gas();
             $obj->name = $row->name;
             $obj->email = $row->mail;
-            $obj->description = $row->description;
             $obj->save();
             $map['gas'][$row->id] = $obj->id;
 

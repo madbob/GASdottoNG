@@ -13,7 +13,6 @@ class CreateGasTable extends Migration
 
             $table->string('name', 20)->unique();
             $table->string('email', 100)->nullable();
-            $table->text('description')->nullable();
             $table->string('logo', 100)->nullable();
             $table->text('message')->nullable();
         });

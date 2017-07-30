@@ -50,7 +50,6 @@ class GasController extends Controller
 
         $gas->name = $request->input('name');
         $gas->email = $request->input('email');
-        $gas->description = $request->input('description');
         $gas->message = $request->input('message');
         $gas->setConfig('restricted', $request->has('restricted') ? '1' : '0');
 
