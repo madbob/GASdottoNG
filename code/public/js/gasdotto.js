@@ -174,8 +174,7 @@ function priceRound(price) {
     Il selector jQuery si lamenta quando trova un ':' ad esempio come valore di
     un attributo, questa funzione serve ad applicare l'escape necessario
 */
-function sanitizeId(identifier)
-{
+function sanitizeId(identifier) {
     return identifier.replace(/:/, '\\:');
 }
 
@@ -189,6 +188,11 @@ function closeMainForm(form) {
     var head = container.prev();
     head.removeClass('active');
     container.remove();
+
+    $('html, body').animate({
+        scrollTop: head.offset().top - 60
+    }, 300);
+
     return head;
 }
 
@@ -374,7 +378,7 @@ function miscInnerCallbacks(form, data) {
         });
     }
 
-    var test = form.find('input[name=post-saved-function]');
+    var test = form.find('input[name^=post-saved-function]');
     if (test.length != 0) {
         test.each(function() {
             var fn = window[$(this).val()];
@@ -801,6 +805,24 @@ function setupPermissionsEditor() {
                     button.closest('.loadable-contents').find('.role-users').find('[data-user=' + userid + ']').remove();
                 }
             });
+        }
+    });
+}
+
+/*******************************************************************************
+	Contabilità
+*/
+
+function refreshBalanceView() {
+    $.ajax({
+        method: 'GET',
+        url: '/movements/balance',
+        dataType: 'JSON',
+        success: function(data) {
+            var panel = $('#current-balance');
+            for (var property in data)
+                if (data.hasOwnProperty(property))
+                    panel.find('.' + property + ' span').text(data[property]);
         }
     });
 }

@@ -28,6 +28,7 @@ Route::get('orders/document/{id}/{type}/{subtype?}', 'OrdersController@document'
 Route::post('products/massiveupdate', 'ProductsController@massiveUpdate');
 Route::get('suppliers/catalogue/{id}/{format}', 'SuppliersController@catalogue');
 Route::get('suppliers/{id}/plain_balance', 'SuppliersController@plainBalance');
+Route::get('movements/balance', 'MovementsController@getBalance');
 Route::post('movements/recalculate', 'MovementsController@recalculate');
 Route::post('movements/close', 'MovementsController@closeBalance');
 

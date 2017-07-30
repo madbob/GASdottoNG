@@ -3,8 +3,7 @@
         <div class="modal-content">
             <form class="form-horizontal {{ $password_protected ? 'password-protected' : '' }}" method="POST" action="" id="form-delete-confirm-modal">
                 <input type="hidden" name="_method" value="delete">
-                <input type="hidden" name="close-all-modal" value="1">
-                <input type="hidden" name="post-saved-function" value="refreshFilter">
+                @include('commons.extrafields')
 
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>

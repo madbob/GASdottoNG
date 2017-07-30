@@ -19,12 +19,7 @@ if (!isset($editable))
                 <input type="hidden" name="update-field" value="movement-date-{{ $dom_id }}">
                 <input type="hidden" name="close-modal" value="">
                 <input type="hidden" name="post-saved-function" value="refreshFilter">
-
-                @if(isset($extra))
-                    @foreach($extra as $key => $value)
-                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                    @endforeach
-                @endif
+                @include('commons.extrafields')
 
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>

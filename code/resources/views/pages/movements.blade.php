@@ -11,7 +11,7 @@
                 'typename_readable' => 'Movimento',
                 'targeturl' => 'movements',
                 'extra' => [
-                    'post-saved-function' => 'refreshFilter'
+                    'post-saved-function' => ['refreshFilter', 'refreshBalanceView']
                 ]
             ])
         @endcan
@@ -55,23 +55,23 @@
         </div>
     </div>
 
-    <div class="col-md-3 col-md-offset-3">
+    <div id="current-balance" class="col-md-3 col-md-offset-3">
         <ul class="list-group">
             <li class="list-group-item">
                 Saldo Conto Corrente
-                <span class="badge">{{ $balance->bank }} €</span>
+                <span class="badge bank"><span>{{ $balance->bank }}</span> €</span>
             </li>
             <li class="list-group-item">
                 Saldo Contanti
-                <span class="badge">{{ $balance->cash }} €</span>
+                <span class="badge cash"><span>{{ $balance->cash }}</span> €</span>
             </li>
             <li class="list-group-item">
                 Fornitori
-                <span class="badge">{{ $balance->suppliers }} €</span>
+                <span class="badge suppliers"><span>{{ $balance->suppliers }}</span> €</span>
             </li>
             <li class="list-group-item">
                 Depositi
-                <span class="badge">{{ $balance->deposits }} €</span>
+                <span class="badge deposits"><span>{{ $balance->deposits }}</span> €</span>
             </li>
         </ul>
 
@@ -143,7 +143,15 @@
     </div>
 </div>
 
-@include('commons.deleteconfirm', ['url' => 'movements', 'password_protected' => true])
+@include('commons.deleteconfirm', [
+    'url' => 'movements',
+    'password_protected' => true,
+    'extra' => [
+        'close-all-modal' => '1',
+        'post-saved-function' => ['refreshFilter', 'refreshBalanceView']
+    ]
+])
+
 @include('commons.passwordmodal')
 
 @endsection

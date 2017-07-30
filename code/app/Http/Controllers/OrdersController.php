@@ -203,7 +203,7 @@ class OrdersController extends Controller
             }
 
             $prod = Product::find($id);
-            if ($prod->price != $prices[$i] || $prod->transport != $transports[$i] || $product->max_available != $availables[$i]) {
+            if ($prod->price != $prices[$i] || $prod->transport != $transports[$i] || $prod->max_available != $availables[$i]) {
                 $prod->price = $prices[$i];
                 $prod->transport = $transports[$i];
                 $prod->max_available = $availables[$i];

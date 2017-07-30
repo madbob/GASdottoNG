@@ -13,11 +13,7 @@ if (isset($target_update) == false) {
         <div class="modal-content">
             <form class="form-horizontal creating-form" method="POST" action="/{{ $targeturl }}" data-toggle="validator">
                 <input type="hidden" name="update-list" value="{{ $target_update }}">
-                @if(isset($extra))
-                    @foreach($extra as $key => $value)
-                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                    @endforeach
-                @endif
+                @include('commons.extrafields')
 
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>

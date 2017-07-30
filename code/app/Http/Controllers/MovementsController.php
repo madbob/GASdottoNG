@@ -219,6 +219,23 @@ class MovementsController extends Controller
         return $this->successResponse();
     }
 
+    public function getBalance()
+    {
+        $user = Auth::user();
+        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
+            return $this->errorResponse('Non autorizzato');
+        }
+
+        $balance = $user->gas->balances()->first();
+        $obj = (object)[
+            'bank' => $balance->bank,
+            'cash' => $balance->cash,
+            'suppliers' => $balance->suppliers,
+            'deposits' => $balance->deposits
+        ];
+        return response()->json($obj, 200);
+    }
+
     private function resetBalance($gas)
     {
         $latest = $gas->balances()->first();
