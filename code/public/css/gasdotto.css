@@ -112,6 +112,12 @@ table label {
 .icons-legend {
   margin-bottom: 10px; }
 
+#delete-confirm-modal {
+  z-index: 1500; }
+
+#password-protection-dialog {
+  z-index: 2000; }
+
 /*
     Questo è per creare degli alias al glyphicon king, e poter assegnare ad ogni
     ruolo una diversa icona (o, almeno, una diversa classe) senza sapere a

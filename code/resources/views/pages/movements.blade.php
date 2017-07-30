@@ -9,7 +9,10 @@
                 'template' => 'movement.base-edit',
                 'typename' => 'movement',
                 'typename_readable' => 'Movimento',
-                'targeturl' => 'movements'
+                'targeturl' => 'movements',
+                'extra' => [
+                    'post-saved-function' => 'refreshFilter'
+                ]
             ])
         @endcan
     </div>
@@ -128,8 +131,6 @@
                     <button type="submit" class="btn btn-danger">Chiudi Bilancio</button>
                 </div>
             </form>
-
-            @include('commons.passwordmodal')
         </div>
     </div>
 </div>
@@ -141,5 +142,8 @@
         @include('movement.list', ['movements' => $movements])
     </div>
 </div>
+
+@include('commons.deleteconfirm', ['url' => 'movements', 'password_protected' => true])
+@include('commons.passwordmodal')
 
 @endsection

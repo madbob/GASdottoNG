@@ -389,6 +389,11 @@ function miscInnerCallbacks(form, data) {
         if (modal.length != 0)
             modal.modal('hide');
     }
+
+    var test = form.find('input[name=close-all-modal]');
+    if (test.length != 0) {
+        $('.modal.fade.in').modal('hide');
+    }
 }
 
 function creatingFormCallback(form, data) {
@@ -1357,25 +1362,6 @@ $(document).ready(function() {
         disabled.attr('disabled', 'disabled');
     });
 
-    $('body').on('submit', '.modal form', function(event) {
-        if (event.isDefaultPrevented())
-            return;
-
-        event.preventDefault();
-        var form = $(this);
-        var data = form.serializeArray();
-
-        $.ajax({
-            method: form.attr('method'),
-            url: form.attr('action'),
-            data: data,
-
-            success: function(data) {
-                /* dummy */
-            }
-        });
-    });
-
     $('body').on('click', '.spare-delete-button', function(event) {
         event.preventDefault();
 
@@ -1390,6 +1376,13 @@ $(document).ready(function() {
                 }
             });
         }
+    });
+
+    $('body').on('click', '.spare-modal-delete-button', function(event) {
+        event.preventDefault();
+        var modal = $('#delete-confirm-modal');
+        modal.find('form').attr('action', $(this).attr('data-delete-url'));
+        modal.modal('show');
     });
 
     $('body').on('click', '.async-modal', function(event) {
@@ -1454,8 +1447,14 @@ $(document).ready(function() {
         if ($(this).attr('data-password-protected-verified') != '1') {
             event.preventDefault();
             var id = $(this).attr('id');
-            $('#password-protection-dialog').attr('data-form-target', '#' + id).modal('show');
+            var modal = $('#password-protection-dialog');
+            modal.attr('data-form-target', '#' + id);
+            modal.find('input:password').val();
+            modal.modal('show');
+            return false;
         }
+
+        return true;
     })
     .on('submit', '#password-protection-dialog form', function(event) {
         event.preventDefault();
@@ -1473,8 +1472,33 @@ $(document).ready(function() {
                     modal.modal('hide');
                     var form = $(target);
                     form.attr('data-password-protected-verified', '1');
+
                     form.submit();
+
+                    setTimeout(function() {
+                        miscInnerCallbacks(form, data);
+                        form.attr('data-password-protected-verified', '0');
+                    }, 300);
                 }
+            }
+        });
+    });
+
+    $('body').on('submit', '.modal form', function(event) {
+        if (event.isDefaultPrevented())
+            return;
+
+        event.preventDefault();
+        var form = $(this);
+        var data = form.serializeArray();
+
+        $.ajax({
+            method: form.attr('method'),
+            url: form.attr('action'),
+            data: data,
+
+            success: function(data) {
+                /* dummy */
             }
         });
     });
