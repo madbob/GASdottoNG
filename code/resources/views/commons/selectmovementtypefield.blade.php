@@ -21,5 +21,6 @@ foreach (App\Movement::types() as $method_id => $info) {
     'name' => 'type',
     'label' => 'Tipo',
     'values' => $types,
+    'enforced_default' => 'none',
     'extra_class' => 'movement-type-selector'
 ])

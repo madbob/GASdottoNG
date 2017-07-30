@@ -1,6 +1,6 @@
 @include('commons.selectmovementtypefield')
 
-<div class="selectors">
+<div class="selectors" data-empty-on-modal="true">
 </div>
 
 @include('commons.datefield', [
@@ -13,11 +13,13 @@
 @include('commons.textfield', [
     'obj' => null,
     'name' => 'identifier',
-    'label' => 'Identificativo'
+    'label' => 'Identificativo',
+    'enforced_default' => ''
 ])
 
 @include('commons.textarea', [
     'obj' => null,
     'name' => 'notes',
-    'label' => 'Note'
+    'label' => 'Note',
+    'enforced_default' => ''
 ])

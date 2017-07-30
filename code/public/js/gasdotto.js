@@ -2,6 +2,10 @@
 	Varie ed eventuali
 */
 
+$.fn.tagName = function() {
+    return this.prop("tagName").toLowerCase();
+};
+
 var userBlood = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -1113,6 +1117,15 @@ $(document).ready(function() {
         activated.each(function() {
             $(this).click().delay(600).click();
         });
+    });
+
+    $('body').on('shown.bs.modal', '.modal', function() {
+        $(this).find('[data-default-value]').each(function() {
+            var value = $(this).attr('data-default-value');
+            $(this).val(value);
+        });
+
+        $(this).find('[data-empty-on-modal=true]').empty();
     });
 
     $('body').on('focus', '.date[data-enforce-after]', function() {

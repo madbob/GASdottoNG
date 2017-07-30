@@ -13,6 +13,10 @@
                 placeholder="{{ $label }}"
             @endif
 
+            @if(isset($enforced_default))
+                data-default-value="{{ $enforced_default }}"
+            @endif
+
             autocomplete="off">{{ $obj ? $obj->$name : '' }}</textarea>
     </div>
 </div>

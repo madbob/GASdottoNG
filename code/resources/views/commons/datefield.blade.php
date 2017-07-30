@@ -1,7 +1,11 @@
 <?php
 
-if (isset($defaults_now) == false)
+if (isset($defaults_now) == false) {
     $defaults_now = false;
+}
+else {
+    $enforced_default = ucwords(strftime('%A %d %B %G', time()));
+}
 
 ?>
 
@@ -27,6 +31,10 @@ if (isset($defaults_now) == false)
 
                     echo $current_value;
                 ?>"
+
+                @if(isset($enforced_default))
+                    data-default-value="{{ $enforced_default }}"
+                @endif
 
                 @if(isset($mandatory) && $mandatory == true)
                     required

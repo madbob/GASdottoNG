@@ -95,7 +95,7 @@ if (!isset($editable))
 
                 <div class="modal-footer">
                     @if($editable)
-                        <button type="button" class="btn btn-danger spare-delete-button" data-delete-url="{{ url('movements/' . $obj->id) }}">Elimina</button>
+                        <button type="button" class="btn btn-danger spare-delete-button password-protected" data-delete-url="{{ url('movements/' . $obj->id) }}">Elimina</button>
                     @endif
 
                     <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
