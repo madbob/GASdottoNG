@@ -88,7 +88,11 @@
 
         <div class="row">
             <div class="col-md-12">
-                @include('commons.loadablelist', ['identifier' => 'delivery-list', 'items' => App\Delivery::orderBy('name', 'asc')->get()])
+                @include('commons.loadablelist', [
+                    'identifier' => 'delivery-list',
+                    'items' => App\Delivery::orderBy('name', 'asc')->get(),
+                    'empty_message' => 'Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi, verrà attivata la possibilità per ogni utente di selezionare il proprio luogo di consegna preferito.'
+                ])
             </div>
         </div>
     </div>

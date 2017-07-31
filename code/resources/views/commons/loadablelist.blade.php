@@ -4,6 +4,8 @@ if(isset($legend) == false)
     $legend = null;
 if(isset($filters) == false)
     $filters = [];
+if(isset($empty_message) == false)
+    $empty_message = 'Non ci sono elementi da visualizzare.';
 
 ?>
 
@@ -32,7 +34,7 @@ if(isset($filters) == false)
 
 <div id="wrapper-{{ $identifier }}">
     <div class="alert alert-info {{ count($items) != 0 ? 'hidden' : '' }}" role="alert" id="empty-{{ $identifier }}">
-        Non ci sono elementi da visualizzare.
+        {!! $empty_message !!}
     </div>
 
     <div class="list-group loadablelist" id="{{ $identifier }}">

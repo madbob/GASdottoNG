@@ -20,15 +20,18 @@
 
             @include('commons.staticdatefield', ['obj' => $user, 'name' => 'last_login', 'label' => 'Ultimo Accesso'])
 
-            @include('commons.selectobjfield', [
-                'obj' => $user,
-                'name' => 'preferred_delivery_id',
-                'objects' => App\Delivery::orderBy('name', 'asc')->get(),
-                'label' => 'Luogo di Consegna',
-                'extra_selection' => [
-                    '0' => 'Nessuno'
-                ]
-            ])
+            <?php $places = App\Delivery::orderBy('name', 'asc')->get() ?>
+            @if($places->isEmpty() == false)
+                @include('commons.selectobjfield', [
+                    'obj' => $user,
+                    'name' => 'preferred_delivery_id',
+                    'objects' => $places,
+                    'label' => 'Luogo di Consegna',
+                    'extra_selection' => [
+                        '0' => 'Nessuno'
+                    ]
+                ])
+            @endif
 
             <hr/>
             @include('commons.permissionsviewer', ['object' => $user])

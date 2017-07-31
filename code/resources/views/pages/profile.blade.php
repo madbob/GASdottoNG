@@ -27,41 +27,34 @@
 
             @include('commons.staticdatefield', ['obj' => $user, 'name' => 'last_login', 'label' => 'Ultimo Accesso'])
 
-            @include('commons.selectobjfield', [
-                'obj' => $user,
-                'name' => 'preferred_delivery_id',
-                'objects' => App\Delivery::orderBy('name', 'asc')->get(),
-                'label' => 'Luogo di Consegna',
-                'extra_selection' => [
-                    '0' => 'Nessuno'
-                ]
-            ])
+            <?php $places = App\Delivery::orderBy('name', 'asc')->get() ?>
+            @if($places->isEmpty() == false)
+                @include('commons.selectobjfield', [
+                    'obj' => $user,
+                    'name' => 'preferred_delivery_id',
+                    'objects' => $places,
+                    'label' => 'Luogo di Consegna',
+                    'extra_selection' => [
+                        '0' => 'Nessuno'
+                    ]
+                ])
+            @endif
 
             <hr/>
             @include('commons.permissionsviewer', ['object' => $user])
         </div>
     </div>
 
+    @if(App\Role::someone('movements.admin', $user->gas))
+        <hr/>
+
+        <div class="page-header">
+            <h3>Movimenti Contabili</h3>
+        </div>
+        @include('movement.targetlist', ['target' => $user])
+    @endif
+
     <hr/>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="page-header">
-                <h3>Addebiti</h3>
-            </div>
-
-            <?php $movements = App\Movement::where('sender_type', 'App\User')->where('sender_id', $user->id)->orderBy('created_at', 'desc')->take(10)->get(); ?>
-            @include('movement.list', ['movements' => $movements, 'exclude_sender' => true])
-        </div>
-        <div class="col-md-6">
-            <div class="page-header">
-                <h3>Accrediti</h3>
-            </div>
-
-            <?php $movements = App\Movement::where('target_type', 'App\User')->where('target_id', $user->id)->orderBy('created_at', 'desc')->take(10)->get(); ?>
-            @include('movement.list', ['movements' => $movements, 'exclude_target' => true])
-        </div>
-    </div>
 
     <div class="row">
         <div class="col-md-12">
