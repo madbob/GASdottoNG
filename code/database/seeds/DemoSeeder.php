@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use App\Gas;
 use App\User;
+use App\Role;
 use App\Supplier;
 use App\Product;
 use App\Measure;
@@ -27,9 +28,11 @@ class DemoSeeder extends Seeder
             'username' => 'user',
             'firstname' => 'Mario',
             'lastname' => 'Rossi',
-            'email' => 'user@example.com',
             'password' => Hash::make('user'),
         ]);
+
+        $referrer_role = Role::where('name', 'Referente')->first();
+        $administrator = User::where('username', 'root')->first();
 
         $data = [
             'Fornitore delle Mele' => [
@@ -52,7 +55,6 @@ class DemoSeeder extends Seeder
             $s = Supplier::create([
                 'id' => str_slug($s_name),
                 'name' => $s_name,
-                'email' => $s_name.'@example.com',
             ]);
 
             foreach ($products as $p_name) {
@@ -67,6 +69,8 @@ class DemoSeeder extends Seeder
                     'vat_rate_id' => $vat_rate->id
                 ]);
             }
+
+            $administrator->addRole($referrer_role, $s);
         }
     }
 }

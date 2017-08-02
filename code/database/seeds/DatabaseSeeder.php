@@ -42,7 +42,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $balance = Balance::create([
-            'gas_id' => $gas->id,
+            'target_id' => $gas->id,
+            'target_type' => get_class($gas),
             'bank' => 0,
             'cash' => 0,
             'suppliers' => 0,
@@ -72,7 +73,6 @@ class DatabaseSeeder extends Seeder
             'username' => 'root',
             'firstname' => 'Amministratore',
             'lastname' => 'Globale',
-            'email' => 'admin@example.com',
             'password' => Hash::make('root'),
         ]);
 
