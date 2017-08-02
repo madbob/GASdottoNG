@@ -29,11 +29,6 @@ class SuppliersController extends Controller
         $obj->taxcode = $request->input('taxcode');
         $obj->vat = $request->input('vat');
         $obj->description = $request->input('description');
-
-        /*
-            TODO Questo sarà da sistemare quando verrà debitamente gestito l'indirizzo
-        */
-        $obj->address = '';
     }
 
     public function index()
