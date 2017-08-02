@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
 use Auth;
+use URL;
 use App\GASModel;
 use App\AggregateBooking;
 
@@ -98,6 +99,11 @@ class Aggregate extends Model
         $ret .= sprintf('<br/><small>%s</small>', $this->printableDates());
 
         return $ret;
+    }
+
+    public function getBookingURL()
+    {
+        return URL::action('BookingController@index').'#' . $this->id;
     }
 
     public function isActive()

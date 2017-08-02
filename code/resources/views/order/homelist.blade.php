@@ -1,6 +1,6 @@
 <ul class="list-group">
     @foreach($orders as $order)
-        <a href="{{ $order->getDisplayURL() }}" class="list-group-item">
+        <a href="{{ $order->getBookingURL() }}" class="list-group-item">
             {!! $order->printableHeader() !!}
 
             <?php

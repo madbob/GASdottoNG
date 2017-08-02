@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 use Auth;
 use DB;
+use URL;
 
 use App\GASModel;
 use App\SluggableID;
@@ -89,6 +90,11 @@ class Order extends Model
         }
 
         return $string;
+    }
+
+    public function getBookingURL()
+    {
+        return URL::action('BookingController@index').'#' . $this->aggregate->id;
     }
 
     public function userBooking($userid = null)
