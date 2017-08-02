@@ -47,9 +47,13 @@
 
     @if(App\Role::someone('movements.admin', $user->gas))
         <hr/>
-
         <div class="page-header">
-            <h3>Movimenti Contabili</h3>
+            <h3>Contabilità</h3>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <p class="lead">Saldo Corrente: <span>{{ $user->current_balance_amount }}</span> €</p>
+            </div>
         </div>
         @include('movement.targetlist', ['target' => $user])
     @endif
