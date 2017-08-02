@@ -88,6 +88,12 @@ trait GASModel
         if ($icons == null) {
             $user = Auth::user();
 
+            /*
+                La chiave di ogni array interno è il nome dell'icona FontAwesome
+                da usare per la relativa icona. Usare un nome non esistente per
+                avere il filtro ma non l'icona (lasciare un punto '.' davanti
+                per indicare che è una azione deliberata)
+            */
             $icons = [
                 'Supplier' => [
                     'pencil' => (object) [
@@ -121,6 +127,12 @@ trait GASModel
                             return $obj->active == false;
                         },
                         'text' => 'Disabilitato',
+                    ],
+                    '.on' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->active == true;
+                        },
+                        'text' => 'Attivo',
                     ],
                 ],
                 'Aggregate' => [
