@@ -27,7 +27,6 @@ class CreateUsersTable extends Migration
             $table->datetime('last_login')->nullable();
             $table->string('preferred_delivery_id')->nullable();
 
-            $table->decimal('balance', 7, 2)->default(0);
             $table->integer('fee_id')->nullable();
             $table->integer('deposit_id')->nullable();
 

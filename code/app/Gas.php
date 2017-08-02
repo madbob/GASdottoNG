@@ -9,14 +9,9 @@ use App\SluggableID;
 
 class Gas extends Model
 {
-    use AttachableTrait, GASModel, SluggableID;
+    use AttachableTrait, CreditableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
-
-    public function balances()
-    {
-        return $this->hasMany('App\Balance')->orderBy('date', 'desc');
-    }
 
     public function configs()
     {
@@ -50,20 +45,6 @@ class Gas extends Model
         $conf->value = $value;
         $conf->gas_id = $this->id;
         $conf->save();
-    }
-
-    public function alterBalance($type, $amount)
-    {
-        if (is_string($type)) {
-            $type = [$type];
-        }
-
-        $balance = $this->balances()->first();
-        foreach ($type as $t) {
-            $balance->$t += $amount;
-        }
-
-        $balance->save();
     }
 
     private function mailConfig()

@@ -61,6 +61,32 @@ class ImportLegacy extends Command
         $c->save();
     }
 
+    private function appendBalance($obj, $row, $full)
+    {
+        $t = time();
+
+        $balance = new Balance();
+        $balance->target_id = $obj->id;
+        $balance->target_type = get_class($obj);
+        $balance->date = date('Y-m-d G:i:s', $t);
+
+        if ($full) {
+            $balance->bank = $row->current_bank_balance;
+            $balance->cash = $row->current_cash_balance;
+            $balance->suppliers = $row->current_orders_balance;
+            $balance->deposits = $row->current_deposit_balance;
+        }
+        else {
+            $balance->bank = $row->current_balance;
+        }
+
+        $balance->save();
+
+        $balance = $balance->replicate();
+        $balance->date = date('Y-m-d G:i:s', $t + 1);
+        $balance->save();
+    }
+
     public function handle()
     {
         Model::unguard();
@@ -154,21 +180,7 @@ class ImportLegacy extends Command
             $map['gas'][$row->id] = $obj->id;
 
             $master_gas = $obj;
-
-            $balance = new Balance();
-            $balance->gas_id = $obj->id;
-            $balance->date = date('Y-m-d G:i:s');
-            $balance->bank = $row->current_bank_balance;
-            $balance->cash = $row->current_cash_balance;
-            $balance->suppliers = $row->current_orders_balance;
-            $balance->deposits = $row->current_deposit_balance;
-            $balance->save();
-
-            sleep(1);
-
-            $balance = $balance->replicate();
-            $balance->date = date('Y-m-d G:i:s');
-            $balance->save();
+            $this->appendBalance($obj, $row, true);
         }
 
         $map['deliveries'] = [];
@@ -226,6 +238,8 @@ class ImportLegacy extends Command
                 $this->handleContact('email', 'mail2', $row, $obj);
                 $this->handleContact('address', 'address', $row, $obj);
 
+                $this->appendBalance($obj, $row, false);
+
                 $map['users'][$row->id] = $obj->id;
 
                 if ($row->privileges == 2) {
@@ -256,6 +270,8 @@ class ImportLegacy extends Command
                 $this->handleContact('email', 'mail', $row, $obj);
                 $this->handleContact('fax', 'fax', $row, $obj);
                 $this->handleContact('website', 'website', $row, $obj);
+
+                $this->appendBalance($obj, $row, false);
 
                 $map['suppliers'][$row->id] = $obj->id;
 

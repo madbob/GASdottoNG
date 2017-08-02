@@ -140,12 +140,12 @@ class Movement extends Model
                 'methods' => [
                     'cash' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->target->alterBalance(['cash', 'deposits'], $movement->amount);
+                            $movement->target->alterBalance($movement->amount, ['cash', 'deposits']);
                         },
                     ],
                     'bank' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->target->alterBalance(['bank', 'deposits'], $movement->amount);
+                            $movement->target->alterBalance($movement->amount, ['bank', 'deposits']);
                         },
                     ],
                 ],
@@ -167,12 +167,12 @@ class Movement extends Model
                 'methods' => [
                     'cash' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->target->alterBalance(['cash', 'deposits'], $movement->amount * -1);
+                            $movement->target->alterBalance($movement->amount * -1, ['cash', 'deposits']);
                         },
                     ],
                     'bank' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->target->alterBalance(['bank', 'deposits'], $movement->amount * -1);
+                            $movement->target->alterBalance($movement->amount * -1, ['bank', 'deposits']);
                         },
                     ],
                 ],
@@ -194,19 +194,17 @@ class Movement extends Model
                 'methods' => [
                     'cash' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->target->alterBalance('cash', $movement->amount);
+                            $movement->target->alterBalance($movement->amount, 'cash');
                         },
                     ],
                     'credit' => (object) [
                         'handler' => function (Movement $movement) {
-                            $sender = $movement->sender;
-                            $sender->balance -= $movement->amount;
-                            $sender->save();
+                            $movement->sender->alterBalance($movement->amount * -1);
                         },
                     ],
                     'bank' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->target->alterBalance('bank', $movement->amount);
+                            $movement->target->alterBalance($movement->amount, 'bank');
                         },
                     ],
                 ],
@@ -228,21 +226,15 @@ class Movement extends Model
                 'methods' => [
                     'cash' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->sender->gas->alterBalance(['cash', 'suppliers'], $movement->amount);
-                            $supplier = $movement->target->order->supplier;
-                            $supplier->balance += $movement->amount;
-                            $supplier->save();
+                            $movement->sender->gas->alterBalance($movement->amount, ['cash', 'suppliers']);
+                            $movement->target->order->supplier->alterBalance($movement->amount);
                         },
                     ],
                     'credit' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->sender->gas->alterBalance('suppliers', $movement->amount);
-                            $sender = $movement->sender;
-                            $sender->balance -= $movement->amount;
-                            $sender->save();
-                            $supplier = $movement->target->order->supplier;
-                            $supplier->balance += $movement->amount;
-                            $supplier->save();
+                            $movement->sender->gas->alterBalance($movement->amount, 'suppliers');
+                            $movement->sender->alterBalance($movement->amount * -1);
+                            $movement->target->order->supplier->alterBalance($movement->amount);
                         },
                     ],
                 ],
@@ -335,18 +327,14 @@ class Movement extends Model
                 'methods' => [
                     'cash' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->sender->alterBalance(['cash', 'suppliers'], $movement->amount * -1);
-                            $supplier = $movement->target->supplier;
-                            $supplier->balance -= $movement->amount;
-                            $supplier->save();
+                            $movement->sender->alterBalance($movement->amount * -1, ['cash', 'suppliers']);
+                            $movement->target->supplier->alterBalance($movement->amount * -1);
                         },
                     ],
                     'bank' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->sender->alterBalance(['bank', 'suppliers'], $movement->amount * -1);
-                            $supplier = $movement->target->supplier;
-                            $supplier->balance -= $movement->amount;
-                            $supplier->save();
+                            $movement->sender->alterBalance($movement->amount * -1, ['bank', 'suppliers']);
+                            $movement->target->supplier->alterBalance($movement->amount * -1);
                         },
                     ],
                 ],
@@ -368,18 +356,14 @@ class Movement extends Model
                 'methods' => [
                     'cash' => (object) [
                         'handler' => function (Movement $movement) {
-                            $target = $movement->target;
-                            $target->balance += $movement->amount;
-                            $target->save();
-                            $target->gas->alterBalance('cash', $movement->amount);
+                            $movement->target->alterBalance($movement->amount);
+                            $movement->target->gas->alterBalance($movement->amount, 'cash');
                         },
                     ],
                     'bank' => (object) [
                         'handler' => function (Movement $movement) {
-                            $target = $movement->target;
-                            $target->balance += $movement->amount;
-                            $target->save();
-                            $target->gas->alterBalance('bank', $movement->amount);
+                            $movement->target->alterBalance($movement->amount);
+                            $movement->target->gas->alterBalance($movement->amount, 'bank');
                         },
                     ],
                 ],
@@ -396,14 +380,14 @@ class Movement extends Model
                 'methods' => [
                     'cash' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->sender->alterBalance('cash', $movement->amount * -1);
-                            $movement->target->alterBalance('bank', $movement->amount);
+                            $movement->sender->alterBalance($movement->amount * -1, 'cash');
+                            $movement->target->alterBalance($movement->amount, 'bank');
                         },
                     ],
                     'bank' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->sender->alterBalance('bank', $movement->amount * -1);
-                            $movement->target->alterBalance('cash', $movement->amount);
+                            $movement->sender->alterBalance($movement->amount * -1, 'bank');
+                            $movement->target->alterBalance($movement->amount, 'cash');
                         },
                     ],
                 ],
@@ -420,12 +404,12 @@ class Movement extends Model
                 'methods' => [
                     'cash' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->sender->alterBalance('cash', $movement->amount * -1);
+                            $movement->sender->alterBalance($movement->amount * -1, 'cash');
                         },
                     ],
                     'bank' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->sender->alterBalance('bank', $movement->amount * -1);
+                            $movement->sender->alterBalance($movement->amount * -1, 'bank');
                         },
                     ],
                 ],
@@ -442,12 +426,12 @@ class Movement extends Model
                 'methods' => [
                     'cash' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->sender->alterBalance('cash', $movement->amount);
+                            $movement->sender->alterBalance($movement->amount, 'cash');
                         },
                     ],
                     'bank' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->sender->alterBalance('bank', $movement->amount);
+                            $movement->sender->alterBalance($movement->amount, 'bank');
                         },
                     ],
                 ],
@@ -464,18 +448,14 @@ class Movement extends Model
                 'methods' => [
                     'cash' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->sender->alterBalance('cash', $movement->amount * -1);
-                            $target = $movement->target;
-                            $target->balance += $movement->amount;
-                            $target->save();
+                            $movement->sender->alterBalance($movement->amount * -1, 'cash');
+                            $movement->target->alterBalance($movement->amount);
                         },
                     ],
                     'bank' => (object) [
                         'handler' => function (Movement $movement) {
-                            $movement->sender->alterBalance('bank', $movement->amount * -1);
-                            $target = $movement->target;
-                            $target->balance += $movement->amount;
-                            $target->save();
+                            $movement->sender->alterBalance($movement->amount * -1, 'bank');
+                            $movement->target->alterBalance($movement->amount);
                         },
                     ],
                 ],

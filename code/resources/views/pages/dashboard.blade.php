@@ -60,7 +60,7 @@
 
     <div class="col-md-6">
         <div class="text-right">
-            <p class="lead">Credito Corrente: {{ printablePrice($currentuser->balance) }} €</p>
+            <p class="lead">Credito Corrente: {{ printablePrice($currentuser->current_balance_amount) }} €</p>
             <p class="lead">Da Pagare: {{ printablePrice($currentuser->pending_balance) }} €</p>
         </div>
     </div>

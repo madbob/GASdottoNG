@@ -169,7 +169,6 @@ class UsersService
         $user->firstname = $request['firstname'];
         $user->lastname = $request['lastname'];
         $user->password = Hash::make($request['password']);
-        $user->balance = 0;
 
         DB::transaction(function () use ($user) {
             $user->save();

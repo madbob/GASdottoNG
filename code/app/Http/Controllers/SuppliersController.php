@@ -151,6 +151,6 @@ class SuppliersController extends Controller
         }
 
         $s = Supplier::findOrFail($id);
-        return $s->balance;
+        return $s->current_balance_amount;
     }
 }

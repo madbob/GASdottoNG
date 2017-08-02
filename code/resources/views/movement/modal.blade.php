@@ -44,13 +44,13 @@ if (!isset($editable))
                     <div class="col-sm-{{ $fieldsize }} col-sm-offset-{{ $labelsize }}">
                         @if($obj->sender && array_search('App\CreditableTrait', class_uses($obj->sender)) !== false)
                             <p>
-                                {{ $obj->sender->printableName() }}: {{ $obj->sender->balance }} €
+                                {{ $obj->sender->printableName() }}: {{ $obj->sender->current_balance_amount }} €
                             </p>
                         @endif
 
                         @if($obj->target && array_search('App\CreditableTrait', class_uses($obj->target)) !== false)
                             <p>
-                                {{ $obj->target->printableName() }}: {{ $obj->target->balance }} €
+                                {{ $obj->target->printableName() }}: {{ $obj->target->current_balance_amount }} €
                             </p>
                         @endif
                     </div>
