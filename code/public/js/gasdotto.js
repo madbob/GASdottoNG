@@ -1649,10 +1649,22 @@ $(document).ready(function() {
             var m = row.find('input:hidden[name=product-available]');
             if (m.length != 0) {
                 var maximum = parseFloatC(m.val());
-                if (maximum != 0 && booked > maximum) {
-                    row.addClass('has-error');
-                    booked = 0;
-                    wrong = true;
+
+                if (maximum != 0) {
+                    var in_booked = booked;
+
+                    var m = row.find('input:hidden[name=product-partitioning]');
+                    if (m.length != 0) {
+                        var portion = parseFloatC(m.val());
+                        if (portion != 0)
+                            in_booked = in_booked * portion;
+                    }
+
+                    if (in_booked > maximum) {
+                        row.addClass('has-error');
+                        booked = 0;
+                        wrong = true;
+                    }
                 }
             }
 
