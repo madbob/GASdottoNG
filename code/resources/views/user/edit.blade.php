@@ -33,6 +33,17 @@
                 ])
             @endif
 
+            @if(!empty($currentgas->rid_name))
+                <div class="form-group">
+                    <label class="col-sm-{{ $labelsize }} control-label">Configurazione RID</label>
+
+                    <div class="col-sm-{{ $fieldsize }}">
+                        @include('commons.textfield', ['obj' => $user, 'name' => 'iban', 'label' => 'IBAN', 'squeeze' => true])
+                        @include('commons.datefield', ['obj' => $user, 'name' => 'sepa_subscribe', 'label' => 'Sottoscrizione SEPA', 'squeeze' => true])
+                    </div>
+                </div>
+            @endif
+
             <hr/>
             @include('commons.permissionsviewer', ['object' => $user])
         </div>

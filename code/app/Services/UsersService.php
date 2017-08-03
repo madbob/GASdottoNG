@@ -131,6 +131,14 @@ class UsersService
                 return Hash::make($password);
             });
 
+            if(!empty($user->gas->rid_name)) {
+                $this->transformAndSetIfSet($user, $request, 'iban', function ($iban) {
+                    return strtoupper(str_replace(' ', '', $iban));
+                });
+
+                $this->transformAndSetIfSet($user, $request, 'sepa_subscribe', "decodeDate");
+            }
+
             $user->save();
 
             $user->updateContacts($request);

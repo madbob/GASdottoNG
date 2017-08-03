@@ -63,3 +63,36 @@ function http_csv_headers($filename)
     header('Pragma: no-cache');
     header('Expires: 0');
 }
+
+function iban_split($iban, $field)
+{
+    switch($field) {
+        case 'country':
+            $start = 0;
+            $length = 2;
+            break;
+        case 'check':
+            $start = 2;
+            $length = 2;
+            break;
+        case 'cin':
+            $start = 4;
+            $length = 1;
+            break;
+        case 'abi':
+            $start = 5;
+            $length = 5;
+            break;
+        case 'cab':
+            $start = 10;
+            $length = 5;
+            break;
+        case 'account':
+            $start = 15;
+            $length = 12;
+            break;
+    }
+
+    $iban = str_replace(' ', '', strtoupper($iban));
+    return substr($iban, $start, $length);
+}

@@ -1,7 +1,14 @@
 <?php
 
 $more_orders = ($aggregate->orders->count() > 1);
-$handling_movements = App\Role::someone('movements.admin', $currentgas);
+
+/*
+    Se il GAS ha abilitato il pagamento RID, ed esiste la configurazione per
+    l'utente, non viene chiesto il pagamento della consegna (assumendo che
+    avverrà appunto via RID)
+*/
+$handling_movements = App\Role::someone('movements.admin', $currentgas) && (empty($currentgas->rid_name) || empty($user->iban));
+
 $tot_amount = 0;
 $tot_delivered = [];
 $rand = rand();

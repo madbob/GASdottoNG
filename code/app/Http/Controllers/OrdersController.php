@@ -373,6 +373,16 @@ class OrdersController extends Controller
                 else if ($subtype == 'delivered')
                     return Theme::view('documents.order_table_delivered', ['order' => $order]);
                 break;
+
+            case 'rid':
+                $filename = sprintf('RID Ordine %s.txt', $order->supplier->name);
+                header('Content-Type: plain/text');
+                header('Content-Disposition: attachment; filename="' . $filename . '"');
+                header('Cache-Control: no-cache, no-store, must-revalidate');
+                header('Pragma: no-cache');
+                header('Expires: 0');
+                return Theme::view('documents.order_rid', ['order' => $order]);
+                break;
         }
     }
 }
