@@ -47,7 +47,7 @@
         <div class="col-md-6">
             <div class="well">
                 <div class="page-header">
-                    <h3>RID Bancari</h3>
+                    <h3>RID/SEPA Bancari</h3>
                 </div>
 
                 @include('commons.textfield', ['obj' => $gas, 'name' => 'ridname', 'label' => 'Denominazione'])

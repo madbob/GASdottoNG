@@ -35,7 +35,7 @@
 
             @if(!empty($currentgas->rid_name))
                 <div class="form-group">
-                    <label class="col-sm-{{ $labelsize }} control-label">Configurazione RID</label>
+                    <label class="col-sm-{{ $labelsize }} control-label">Configurazione RID/SEPA</label>
 
                     <div class="col-sm-{{ $fieldsize }}">
                         @include('commons.textfield', ['obj' => $user, 'name' => 'iban', 'label' => 'IBAN', 'squeeze' => true])
