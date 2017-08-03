@@ -18,5 +18,5 @@
         </div>
     </div>
 
-    @include('commons.formbuttons')
+    @include('commons.formbuttons', ['no_delete' => $attachment->internal, 'no_save' => $attachment->internal])
 </form>
