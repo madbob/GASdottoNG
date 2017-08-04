@@ -2,21 +2,29 @@
 <input type="hidden" name="target_type" value="{{ $target_type }}" />
 
 @if(!empty($senders))
-    @include('commons.selectobjfield', [
-        'obj' => null,
-        'name' => 'sender_id',
-        'objects' => $senders,
-        'label' => 'Pagante'
-    ])
+    @if($senders->count() == 1)
+        <input type="hidden" name="target_id" value="{{ $senders->first()->id }}">
+    @else
+        @include('commons.selectobjfield', [
+            'obj' => null,
+            'name' => 'sender_id',
+            'objects' => $senders,
+            'label' => $sender_type::commonClassName()
+        ])
+    @endif
 @endif
 
 @if(!empty($targets))
-    @include('commons.selectobjfield', [
-        'obj' => null,
-        'name' => 'target_id',
-        'objects' => $targets,
-        'label' => 'Pagato'
-    ])
+    @if($targets->count() == 1)
+        <input type="hidden" name="target_id" value="{{ $targets->first()->id }}">
+    @else
+        @include('commons.selectobjfield', [
+            'obj' => null,
+            'name' => 'target_id',
+            'objects' => $targets,
+            'label' => $target_type::commonClassName()
+        ])
+    @endif
 @endif
 
 @include('commons.decimalfield', [

@@ -23,6 +23,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     protected $hidden = ['password', 'remember_token'];
     protected $dates = ['deleted_at'];
 
+    public static function commonClassName()
+    {
+        return 'Utente';
+    }
+
     public function gas()
     {
         return $this->belongsTo('App\Gas');

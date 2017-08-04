@@ -13,6 +13,11 @@ class Gas extends Model
 
     public $incrementing = false;
 
+    public static function commonClassName()
+    {
+        return 'GAS';
+    }
+
     public function configs()
     {
         return $this->hasMany('App\Config');

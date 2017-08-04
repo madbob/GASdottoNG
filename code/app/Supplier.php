@@ -20,6 +20,11 @@ class Supplier extends Model
     public $incrementing = false;
     protected $dates = ['deleted_at'];
 
+    public static function commonClassName()
+    {
+        return 'Fornitore';
+    }
+
     public function products()
     {
         return $this->hasMany('App\Product')->with('measure')->where('archived', false)->orderBy('name');

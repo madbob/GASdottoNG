@@ -7,6 +7,11 @@ use URL;
 
 trait GASModel
 {
+    public static function commonClassName()
+    {
+        return 'Oggetto';
+    }
+
     public function printableName()
     {
         return $this->name;
