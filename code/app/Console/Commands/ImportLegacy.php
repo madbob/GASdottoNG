@@ -85,22 +85,24 @@ class ImportLegacy extends Command
 
         $balance->save();
 
-        $balance = new Balance();
-        $balance->target_id = $obj->id;
-        $balance->target_type = get_class($obj);
-        $balance->date = date('Y-m-d G:i:s', time());
+        for($i = 0; $i < 2; $i++) {
+            $balance = new Balance();
+            $balance->target_id = $obj->id;
+            $balance->target_type = get_class($obj);
+            $balance->date = date('Y-m-d G:i:s', time() + 1);
 
-        if ($full) {
-            $balance->bank = $row->current_bank_balance;
-            $balance->cash = $row->current_cash_balance;
-            $balance->suppliers = $row->current_orders_balance;
-            $balance->deposits = $row->current_deposit_balance;
-        }
-        else {
-            $balance->bank = $row->current_balance;
-        }
+            if ($full) {
+                $balance->bank = $row->current_bank_balance;
+                $balance->cash = $row->current_cash_balance;
+                $balance->suppliers = $row->current_orders_balance;
+                $balance->deposits = $row->current_deposit_balance;
+            }
+            else {
+                $balance->bank = $row->current_balance;
+            }
 
-        $balance->save();
+            $balance->save();
+        }
     }
 
     public function handle()
@@ -197,6 +199,8 @@ class ImportLegacy extends Command
 
             $master_gas = $obj;
             $this->appendBalance($obj, $row, true);
+
+            $obj->setConfig('year_closing', $row->payment_date);
         }
 
         $map['deliveries'] = [];

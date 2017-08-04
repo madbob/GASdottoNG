@@ -99,9 +99,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($currentgas->balances as $bal)
+                                            @foreach($currentgas->balances as $index => $bal)
                                                 <tr>
-                                                    <td>{{ ucwords(strftime('%d %B %G', strtotime($bal->date))) }}</td>
+                                                    <td>{{ $index == 0 ? 'Saldo Corrente' : ucwords(strftime('%d %B %G', strtotime($bal->date))) }}</td>
                                                     <td>{{ $bal->bank }} €</td>
                                                     <td>{{ $bal->cash }} €</td>
                                                     <td>{{ $bal->suppliers }} €</td>
@@ -125,12 +125,35 @@
                     <button type="submit" class="btn btn-danger">Ricalcola Saldi</button>
                 </div>
             </form>
-            <form class="form-inline iblock password-protected" id="close-balance" method="POST" action="{{ url('/movements/close') }}">
+            <div class="iblock">
                 <div class="form-group">
-                    {!! csrf_field() !!}
-                    <button type="submit" class="btn btn-danger">Chiudi Bilancio</button>
+                    <button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#close-balance-modal">Chiudi Bilancio</button>
                 </div>
-            </form>
+
+                <div class="modal fade" id="close-balance-modal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <form class="form-horizontal password-protected" id="close-balance" method="POST" action="{{ url('/movements/close') }}">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">Conferma Operazione</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" name="reload-whole-page" value="1">
+                                    {!! csrf_field() !!}
+
+                                    @include('commons.datefield', ['obj' => null, 'name' => 'date', 'label' => 'Data Chiusura'])
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
+                                    <button type="submit" class="btn btn-success">Salva</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

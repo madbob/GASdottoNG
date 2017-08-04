@@ -25,6 +25,14 @@ function generalInit() {
         clearBtn: true,
     });
 
+    $('input.date-to-month').datepicker({
+        format: 'dd MM',
+        autoclose: true,
+        language: 'it',
+        clearBtn: false,
+        maxViewMode: 'months'
+    });
+
     $('.tagsinput').tagsinput();
     $('.addicted-table').bootstrapTable();
     $('[data-toggle="popover"]').popover();
@@ -458,6 +466,11 @@ function miscInnerCallbacks(form, data) {
     var test = form.find('input[name=close-all-modal]');
     if (test.length != 0) {
         $('.modal.fade.in').modal('hide');
+    }
+
+    var test = form.find('input[name=reload-whole-page]');
+    if (test.length != 0) {
+        location.reload();
     }
 }
 

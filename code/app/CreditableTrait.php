@@ -2,6 +2,8 @@
 
 namespace App;
 
+use DB;
+
 trait CreditableTrait
 {
     public function balances()
@@ -21,6 +23,51 @@ trait CreditableTrait
         $balance->date = date('Y-m-d');
         $balance->save();
         return $balance;
+    }
+
+    public function resetCurrentBalance()
+    {
+        $this->balances()->first()->delete();
+
+        if ($this->balances()->count() == 0) {
+            $this->fixFirstBalance();
+        }
+        else {
+            $latest = $this->balances()->first();
+            $new = $latest->replicate();
+
+            $latest->date = date('Y-m-d G:i:s');
+            $latest->save();
+
+            $new->save();
+        }
+    }
+
+    public static function resetAllCurrentBalances()
+    {
+        $classes = DB::table('balances')->select('target_type')->distinct()->get();
+        foreach($classes as $c) {
+            $class = $c->target_type;
+            $objects = $class::all();
+            foreach($objects as $obj)
+                $obj->resetCurrentBalance();
+        }
+    }
+
+    public static function duplicateAllCurrentBalances($latest_date)
+    {
+        $classes = DB::table('balances')->select('target_type')->distinct()->get();
+        foreach($classes as $c) {
+            $class = $c->target_type;
+            $objects = $class::all();
+            foreach($objects as $obj) {
+                $latest = $obj->balances()->first();
+                $new = $latest->replicate();
+                $latest->date = $latest_date;
+                $latest->save();
+                $new->save();
+            }
+        }
     }
 
     public function getCurrentBalanceAmountAttribute()

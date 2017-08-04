@@ -52,6 +52,7 @@ class GasController extends Controller
         $gas->email = $request->input('email');
         $gas->message = $request->input('message');
         $gas->setConfig('restricted', $request->has('restricted') ? '1' : '0');
+        $gas->setConfig('year_closing', decodeDateMonth($request->input('year_closing')));
 
         $mailconf = $gas->getConfig('mail_conf');
         if ($mailconf == '') {

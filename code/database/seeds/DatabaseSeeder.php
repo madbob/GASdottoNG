@@ -51,6 +51,8 @@ class DatabaseSeeder extends Seeder
             'date' => date('Y-m-d', time())
         ]);
 
+        $gas->setConfig('year_closing', date('Y') . '-09-01');
+
         $user_role = Role::create([
             'name' => 'Utente',
             'actions' => 'users.view,supplier.book'

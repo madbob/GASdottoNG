@@ -16,6 +16,7 @@ use App\Balance;
 use App\User;
 use App\Supplier;
 use App\Aggregate;
+use App\CreditableTrait;
 
 class MovementsController extends Controller
 {
@@ -236,15 +237,14 @@ class MovementsController extends Controller
         return response()->json($obj, 200);
     }
 
-    private function resetBalance($gas)
+    public function recalculateCurrentBalance()
     {
-        $latest = $gas->balances()->first();
-        $new = $latest->replicate();
-
-        $latest->date = date('Y-m-d G:i:s');
-        $latest->save();
-
-        $new->save();
+        $current_date = date('Y-m-d');
+        $movements = Movement::where('archived', false)->get();
+        foreach($movements as $m) {
+            $m->updated_at = $current_date;
+            $m->save();
+        }
     }
 
     public function recalculate(Request $request)
@@ -258,19 +258,8 @@ class MovementsController extends Controller
 
         try {
             Session::put('movements-recalculating', true);
-
-            $gas = $user->gas;
-            $gas->balances()->first()->delete();
-            $latest = $gas->balances()->first();
-            $this->resetBalance($gas);
-
-            $current_date = date('Y-m-d G:i:s');
-            $movements = Movement::where('created_at', '>=', $latest->date)->get();
-
-            foreach($movements as $m) {
-                $m->updated_at = $current_date;
-                $m->save();
-            }
+            CreditableTrait::resetAllCurrentBalances();
+            $this->recalculateCurrentBalance();
         }
         catch(\Exception $e) {
             Log::error('Errore nel ricalcolo saldi: ' . $e->getMessage());
@@ -288,12 +277,42 @@ class MovementsController extends Controller
             return $this->errorResponse('Non autorizzato');
         }
 
-        DB::beginTransaction();
+        try {
+            Session::put('movements-recalculating', true);
+            $date = decodeDate($request->input('date'));
 
-        $gas = $user->gas;
-        $this->resetBalance($gas);
+            /*
+                Azzero tutti i saldi
+            */
+            CreditableTrait::resetAllCurrentBalances();
 
-        DB::commit();
+            /*
+                Ricalcolo i movimenti fino alla data desiderata
+            */
+            $current_date = date('Y-m-d');
+            $movements = Movement::where('date', '<', $date)->where('archived', false)->get();
+            foreach($movements as $m) {
+                $m->updated_at = $current_date;
+                $m->archived = true;
+                $m->save();
+            }
+
+            /*
+                Duplico i saldi appena calcolati, e alle copie precedenti
+                assegno la data della chiusura del bilancio
+            */
+            CreditableTrait::duplicateAllCurrentBalances($date);
+
+            /*
+                Ricalcolo i saldi correnti, che a questo punto saranno dalla
+                data di chiusura alla data corrente
+            */
+            $this->recalculateCurrentBalance();
+        }
+        catch(\Exception $e) {
+            Log::error('Errore nel ricalcolo saldi: ' . $e->getMessage());
+        }
+
         return redirect(url('/movements'));
     }
 }
