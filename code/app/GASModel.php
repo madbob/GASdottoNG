@@ -12,6 +12,11 @@ trait GASModel
         return $this->name;
     }
 
+    public function getPrintableNameAttribute()
+    {
+        return $this->printableName();
+    }
+
     public function printableHeader()
     {
         $ret = $this->printableName();

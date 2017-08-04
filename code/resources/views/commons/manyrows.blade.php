@@ -21,9 +21,13 @@ if (isset($show_columns) == false) {
     $show_columns = false;
 }
 
+if (isset($init_function) == false) {
+    $init_function = null;
+}
+
 ?>
 
-<div class="many-rows">
+<div class="many-rows" {!! $init_function ? 'data-init-function="' . $init_function . '"' : '' !!}>
     @if($show_columns == true)
         <div class="row many-rows-header">
             @foreach($columns as $column)

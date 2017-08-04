@@ -10,6 +10,7 @@ use DB;
 use Theme;
 
 use App\User;
+use App\Supplier;
 use App\Role;
 
 class RolesController extends Controller
@@ -107,11 +108,12 @@ class RolesController extends Controller
     public function formBySupplier(Request $request, $supplier_id)
     {
         $user = Auth::user();
-        if ($user->can('gas.permissions', $user->gas) == false && $user->can('users.admin', $user->gas) == false) {
+        $supplier = Supplier::find($supplier_id);
+
+        if ($user->can('gas.permissions', $user->gas) == false && $user->can('supplier.modify', $supplier) == false) {
             abort(503);
         }
 
-        $supplier = Supplier::find($supplier_id);
         return Theme::view('permissions.supplier-edit', ['supplier' => $supplier]);
     }
 
@@ -147,9 +149,14 @@ class RolesController extends Controller
             }
         }
         else {
-            $action = $request->input('action');
-            $r->enableAction($action);
-            return $this->successResponse();
+            $action = $request->input('action', null);
+            if ($action != null) {
+                $r->enableAction($action);
+                return $this->successResponse();
+            }
+            else {
+                return $this->errorResponse('Parametri mancanti');
+            }
         }
     }
 

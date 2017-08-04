@@ -65,7 +65,11 @@ function generalInit() {
     });
 
     $('.many-rows').each(function() {
-        manyRowsAddDeleteButtons($(this));
+        manyRowsInit($(this));
+    });
+
+    $('.completion-rows').each(function() {
+        completionRowsInit($(this));
     });
 
     $('.bookingSearch').each(function() {
@@ -142,7 +146,6 @@ function generalInit() {
 
     setupVariantsEditor();
     setupImportCsvEditor();
-    setupPermissionsWidget();
     setupPermissionsEditor();
     testListsEmptiness();
 }
@@ -217,6 +220,43 @@ function wizardLoadPage(node, contents) {
     next.show();
 }
 
+function completionRowsInit(node) {
+    $(node).find('input:text').each(function() {
+        if ($(this).hasClass('tt-hint') == true) {
+            return;
+        }
+
+        if ($(this).hasClass('tt-input') == false) {
+            var source = $(this).closest('.completion-rows').attr('data-completion-source');
+
+            $(this).typeahead(null, {
+                name: 'users',
+                displayKey: 'value',
+                source: window[source].ttAdapter()
+            }).on('typeahead:selected', function(obj, result, name) {
+                var row = $(this).closest('li');
+                row.before('<li class="list-group-item" data-object-id="' + result.id + '">' + result.label + '<div class="btn btn-xs btn-danger pull-right"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div></li>');
+
+                var container = row.closest('.completion-rows');
+                var fn = window[container.attr('data-callback-add')];
+                if (typeof fn === 'function')
+                    fn(container, result.id);
+            });
+        }
+    });
+
+    $(node).on('click', '.btn-danger', function() {
+        var row = $(this).closest('li');
+
+        var container = row.closest('.completion-rows');
+        var fn = window[container.attr('data-callback-remove')];
+        if (typeof fn === 'function')
+            fn(container, row.attr('data-object-id'));
+
+        row.remove();
+    });
+}
+
 function manyRowsAddDeleteButtons(node) {
     var fields = node.find('.row:not(.many-rows-header)');
     if (fields.length > 1 && node.find('.delete-many-rows').length == 0) {
@@ -227,6 +267,27 @@ function manyRowsAddDeleteButtons(node) {
     } else if (fields.length == 1) {
         node.find('.delete-many-rows').remove();
     }
+}
+
+function manyRowsInitRow(row, fresh) {
+    if (fresh) {
+        row.find('input').val('');
+    }
+
+    /*
+        Questo è per forzare l'aggiornamento di eventuali campi
+        tags all'interno del widget multiriga
+    */
+    row.find('.bootstrap-tagsinput').remove();
+    row.find('.tagsinput').tagsinput();
+}
+
+function manyRowsInit(node) {
+    manyRowsAddDeleteButtons(node);
+
+    node.find('.row').each(function() {
+        manyRowsInitRow($(this), false);
+    });
 }
 
 function testListsEmptiness() {
@@ -696,8 +757,38 @@ function submitDeliveryForm(form) {
 	Permessi
 */
 
-function setupPermissionsWidget() {
+function attachUserRole(role_id, user_id, target_id, target_class, callback) {
+    $.ajax({
+        method: 'POST',
+        url: '/roles/attach',
+        data: {
+            role: role_id,
+            user: user_id,
+            target_id: target_id,
+            target_class: target_class
+        },
+        success: function(data) {
+            if (callback != null)
+                window[callback](data);
+        }
+    });
+}
 
+function detachUserRole(role_id, user_id, target_id, target_class, callback) {
+    $.ajax({
+        method: 'POST',
+        url: '/roles/detach',
+        data: {
+            role: role_id,
+            user: user_id,
+            target_id: target_id,
+            target_class: target_class
+        },
+        success: function(data) {
+            if (callback != null)
+                window[callback](data);
+        }
+    });
 }
 
 function setupPermissionsEditor() {
@@ -807,6 +898,18 @@ function setupPermissionsEditor() {
             });
         }
     });
+}
+
+function supplierAttachUser(list, user_id) {
+    var supplier_id = list.attr('data-supplier-id');
+    var role_id = list.attr('data-role-id');
+    attachUserRole(role_id, user_id, supplier_id, 'App\\Supplier', null);
+}
+
+function supplierDetachUser(list, user_id) {
+    var supplier_id = list.attr('data-supplier-id');
+    var role_id = list.attr('data-role-id');
+    detachUserRole(role_id, user_id, supplier_id, 'App\\Supplier', null);
 }
 
 /*******************************************************************************
@@ -1142,7 +1245,11 @@ $(document).ready(function() {
 
         var activated = list.find('a.loadable-item.active');
         activated.each(function() {
-            $(this).click().delay(600).click();
+            var r = $(this);
+            r.click();
+            setTimeout(function() {
+                r.click();
+            }, 600);
         });
     });
 
@@ -1814,16 +1921,8 @@ $(document).ready(function() {
         event.preventDefault();
         var container = $(this).closest('.many-rows');
         var row = container.find('.row:not(.many-rows-header)').first().clone();
-        row.find('input').val('');
-
-        /*
-        	Questo è per forzare l'aggiornamento di eventuali campi
-        	tags all'interno del widget multiriga
-        */
-        row.find('.bootstrap-tagsinput').remove();
-        row.find('.tagsinput').tagsinput();
-
         container.find('.add-many-rows').before(row);
+        manyRowsInitRow(row, true);
         manyRowsAddDeleteButtons(container);
         return false;
     });
