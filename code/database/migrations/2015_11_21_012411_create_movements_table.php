@@ -25,6 +25,8 @@ class CreateMovementsTable extends Migration
             $table->string('type');
             $table->string('identifier');
             $table->text('notes');
+
+            $table->boolean('archived')->default(false);
         });
     }
 

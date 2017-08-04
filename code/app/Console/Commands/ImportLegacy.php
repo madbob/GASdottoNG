@@ -28,6 +28,8 @@ class ImportLegacy extends Command
     protected $signature = 'import:legacy {old_driver} {old_host} {old_username} {old_password} {old_database} {new_driver} {new_host} {new_username} {new_password} {new_database}';
     protected $description = 'Importa dati da una istanza di GASdotto Legacy';
 
+    private $last_balance_date = null;
+
     public function __construct()
     {
         parent::__construct();
@@ -63,12 +65,30 @@ class ImportLegacy extends Command
 
     private function appendBalance($obj, $row, $full)
     {
-        $t = time();
+        if ($this->last_balance_date == null)
+            $this->last_balance_date = $row->last_balance_date;
 
         $balance = new Balance();
         $balance->target_id = $obj->id;
         $balance->target_type = get_class($obj);
-        $balance->date = date('Y-m-d G:i:s', $t);
+        $balance->date = $this->last_balance_date;
+
+        if ($full) {
+            $balance->bank = $row->last_bank_balance;
+            $balance->cash = $row->last_cash_balance;
+            $balance->suppliers = $row->last_orders_balance;
+            $balance->deposits = $row->last_deposit_balance;
+        }
+        else {
+            $balance->bank = $row->last_balance;
+        }
+
+        $balance->save();
+
+        $balance = new Balance();
+        $balance->target_id = $obj->id;
+        $balance->target_type = get_class($obj);
+        $balance->date = date('Y-m-d G:i:s', time());
 
         if ($full) {
             $balance->bank = $row->current_bank_balance;
@@ -80,10 +100,6 @@ class ImportLegacy extends Command
             $balance->bank = $row->current_balance;
         }
 
-        $balance->save();
-
-        $balance = $balance->replicate();
-        $balance->date = date('Y-m-d G:i:s', $t + 1);
         $balance->save();
     }
 
@@ -263,6 +279,8 @@ class ImportLegacy extends Command
                 $obj->description = $row->description;
                 $obj->taxcode = $row->tax_code;
                 $obj->vat = $row->vat_number;
+                $obj->order_method = $row->order_mode;
+                $obj->payment_method = $row->paying_mode;
                 $obj->save();
 
                 $this->handleContact('address', 'address', $row, $obj);
