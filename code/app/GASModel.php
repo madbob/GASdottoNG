@@ -242,11 +242,17 @@ trait GASModel
                         'text' => 'Consegnato',
                     ],
                 ],
+                'User' => [
+                    'euro' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->fee == null;
+                        },
+                        'text' => 'Quota non Pagata',
+                    ],
+                ],
             ];
 
             $roles = Role::where('always', false)->get();
-            $icons['User'] = [];
-
             foreach($roles as $index => $role) {
                 $icons['User']['king' . $index] = (object) [
                     'test' => function($obj) use ($role) {

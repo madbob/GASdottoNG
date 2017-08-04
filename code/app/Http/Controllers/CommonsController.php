@@ -9,7 +9,9 @@ use DB;
 use Auth;
 use Hash;
 use Theme;
+use Artisan;
 
+use App\User;
 use App\Aggregate;
 
 class CommonsController extends Controller
@@ -28,6 +30,11 @@ class CommonsController extends Controller
         $data['notifications'] = $user->notifications;
         $data['opened'] = Aggregate::getByStatus('open');
         $data['shipping'] = Aggregate::getByStatus('closed');
+
+        /*
+            In mancanza d'altro, eseguo qui lo scheduling delle operazioni
+        */
+        Artisan::call('schedule:run');
 
         return Theme::view('pages.dashboard', $data);
     }
