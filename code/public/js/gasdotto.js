@@ -35,7 +35,49 @@ function generalInit() {
 
     $('.tagsinput').tagsinput();
     $('.addicted-table').bootstrapTable();
-    $('[data-toggle="popover"]').popover();
+
+    // $('[data-toggle="popover"]').popover();
+
+    $('[data-toggle="popover"]').popover({
+        trigger: "manual",
+        html: true,
+        animation:false
+    })
+    .on("mouseenter", function () {
+        var _this = this;
+        $(this).popover("show");
+        $(".popover").on("mouseleave", function () {
+            $(_this).popover('hide');
+        });
+    }).on("mouseleave", function () {
+        var _this = this;
+        setTimeout(function () {
+            if (!$(".popover:hover").length) {
+                $(_this).popover("hide");
+            }
+        }, 300);
+    });
+
+    $('.async-popover').on('show.bs.popover', function(e) {
+        if (typeof $.data(e.target, 'dynamic-inited') == 'undefined') {
+            $.data(e.target, 'dynamic-inited', {
+                done: true
+            });
+
+            var pop = $(this);
+            var url = pop.attr('data-contents-url');
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'HTML',
+
+                success: function(data) {
+                    pop.attr('data-content', data);
+                    pop.popover('show');
+                }
+            });
+        }
+    });
 
     $('.trim-2-ddigits').blur(function() {
         $(this).val(parseFloatC($(this).val()).toFixed(2));
@@ -280,6 +322,7 @@ function manyRowsAddDeleteButtons(node) {
 function manyRowsInitRow(row, fresh) {
     if (fresh) {
         row.find('input').val('');
+        row.find('.customized-cell').empty();
     }
 
     /*

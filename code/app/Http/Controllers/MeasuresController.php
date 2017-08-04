@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
 use DB;
 use Auth;
 use Theme;
+
 use App\Product;
 use App\Measure;
 
@@ -90,5 +92,11 @@ class MeasuresController extends Controller
         }
 
         return $this->successResponse();
+    }
+
+    public function listProducts(Request $request, $id)
+    {
+        $measure = Measure::findOrFail($id);
+        return Theme::view('measures.products-list', ['products' => $measure->products]);
     }
 }

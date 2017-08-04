@@ -31,6 +31,12 @@
                             'extra' => [
                                 'valuefrom' => 'id'
                             ]
+                        ],
+                        [
+                            'label' => 'Prodotti',
+                            'field' => 'id',
+                            'type' => 'custom',
+                            'contents' => '<button type="button" class="btn btn-default async-popover" data-contents-url="' . url('measures/list/%s') . '" data-container="body" data-toggle="popover" data-placement="right" data-content="placeholder" data-html="true" data-trigger="hover"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></button>'
                         ]
                     ]
                 ])

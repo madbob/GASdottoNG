@@ -27,7 +27,14 @@
         @can('measures.admin', $currentgas)
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleMeasures">Amministra Unità di Misura</button>
 
-            <div class="modal fade dynamic-contents" id="handleMeasures" tabindex="-1" role="dialog" aria-labelledby="handleMeasures" data-contents-url="{{ url('measures') }}">
+            <div class="modal fade dynamic-contents" id="handleMeasures" tabindex="-1" role="dialog" data-contents-url="{{ url('measures') }}">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade dynamic-contents upper-modal" id="showMeasureProducts" tabindex="-1" role="dialog" data-contents-url="">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                     </div>

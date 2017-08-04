@@ -52,40 +52,11 @@ if (isset($init_function) == false) {
     @if($contents == null || $contents->isEmpty())
         <div class="row">
             @foreach($columns as $column)
-                <?php
-
-                    $attributes = [
-                        'obj' => null,
-                        'name' => $column['field'],
-                        'label' => $column['label'],
-                        'prefix' => $prefix,
-                        'postfix' => '[]',
-                        'squeeze' => true,
-                    ];
-
-                    if (isset($column['extra'])) {
-                        $attributes = array_merge($attributes, $column['extra']);
-                    }
-
-                ?>
-
-                @if($column['type'] != 'hidden')
-                    <div class="col-md-{{ $column_size }} col-sm-{{ $column_size }}">
-                        @include('commons.' . $column['type'] . 'field', $attributes)
-                    </div>
-                @else
-                    @include('commons.' . $column['type'] . 'field', $attributes)
-                @endif
-            @endforeach
-        </div>
-    @else
-        @foreach($contents as $content)
-            <div class="row">
-                @foreach($columns as $column)
+                @if($column['type'] != 'custom')
                     <?php
 
                         $attributes = [
-                            'obj' => $content,
+                            'obj' => null,
                             'name' => $column['field'],
                             'label' => $column['label'],
                             'prefix' => $prefix,
@@ -105,6 +76,52 @@ if (isset($init_function) == false) {
                         </div>
                     @else
                         @include('commons.' . $column['type'] . 'field', $attributes)
+                    @endif
+                @endif
+            @endforeach
+        </div>
+    @else
+        @foreach($contents as $content)
+            <div class="row">
+                @foreach($columns as $column)
+                    @if($column['type'] == 'custom')
+                        <?php
+
+                        $names = explode(',', $column['field']);
+                        $values = [];
+                        foreach($names as $n)
+                            $values[] = $content->$n;
+
+                        ?>
+
+                        <div class="col-md-{{ $column_size }} col-sm-{{ $column_size }} customized-cell">
+                            {!! vsprintf($column['contents'], $values) !!}
+                        </div>
+                    @else
+                        <?php
+
+                            $attributes = [
+                                'obj' => $content,
+                                'name' => $column['field'],
+                                'label' => $column['label'],
+                                'prefix' => $prefix,
+                                'postfix' => '[]',
+                                'squeeze' => true,
+                            ];
+
+                            if (isset($column['extra'])) {
+                                $attributes = array_merge($attributes, $column['extra']);
+                            }
+
+                        ?>
+
+                        @if($column['type'] != 'hidden')
+                            <div class="col-md-{{ $column_size }} col-sm-{{ $column_size }}">
+                                @include('commons.' . $column['type'] . 'field', $attributes)
+                            </div>
+                        @else
+                            @include('commons.' . $column['type'] . 'field', $attributes)
+                        @endif
                     @endif
                 @endforeach
             </div>

@@ -348,6 +348,7 @@ class ImportLegacy extends Command
             try {
                 $obj = new Measure();
                 $obj->name = $row->name;
+                $obj->discrete = true;
                 $obj->save();
                 $map['measures'][$row->id] = $obj->id;
             }

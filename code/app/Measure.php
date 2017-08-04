@@ -11,4 +11,9 @@ class Measure extends Model
     use GASModel, SluggableID;
 
     public $incrementing = false;
+
+    public function products()
+    {
+        return $this->hasMany('App\Product')->orderBy('name', 'asc');
+    }
 }

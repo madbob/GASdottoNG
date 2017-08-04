@@ -21,6 +21,7 @@ Route::post('roles/attach', 'RolesController@attach');
 Route::post('roles/detach', 'RolesController@detach');
 Route::post('notifications/markread/{id}', 'NotificationsController@markread');
 Route::get('attachments/download/{id}', 'AttachmentsController@download');
+Route::get('measures/list/{id}', 'MeasuresController@listProducts');
 Route::get('orders/search', 'OrdersController@search');
 Route::get('orders/recalculate/{id}', 'OrdersController@recalculate');
 Route::post('orders/fixes/{id}', 'OrdersController@fixes');
