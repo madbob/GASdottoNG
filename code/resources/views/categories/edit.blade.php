@@ -3,7 +3,7 @@
 function descent($category)
 {
     ?>
-    <li class="list-group-item jstree-open" id="{{ $category->id }}">{{ $category->name }}<span class="badge pull-right"><span class="glyphicon glyphicon-remove dynamic-tree-remove" aria-hidden="true"></span></span>
+    <li class="list-group-item jstree-open" id="{{ $category->id }}"><span class="badge pull-right"><span class="glyphicon glyphicon-remove dynamic-tree-remove" aria-hidden="true"></span></span>{{ $category->name }}
         <ul class="list-group">
             @foreach($category->children as $c)
                 <?php descent($c) ?>

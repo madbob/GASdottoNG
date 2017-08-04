@@ -1949,7 +1949,11 @@ $(document).ready(function() {
     });
 
     $('body').on('click', '.dynamic-tree .dynamic-tree-remove', function() {
-        $(this).closest('li').remove();
+        var item = $(this).closest('li');
+        var list = item.closest('ul');
+        item.remove();
+        if (list.find('li').length == 0)
+            list.remove();
 
     }).on('click', '.dynamic-tree-box .dynamic-tree-add', function(e) {
         e.preventDefault();
@@ -1959,7 +1963,7 @@ $(document).ready(function() {
         var tree = box.find('.dynamic-tree');
 
         tree.jstree().create_node(null, {
-            text: name + '<span class="badge pull-right"><span class="glyphicon glyphicon-remove dynamic-tree-remove" aria-hidden="true"></span></span>',
+            text: '<span class="badge pull-right"><span class="glyphicon glyphicon-remove dynamic-tree-remove" aria-hidden="true"></span></span>' + name,
             li_attr: {
                 class: 'list-group-item jstree-open'
             }
