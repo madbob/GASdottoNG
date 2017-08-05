@@ -87,6 +87,20 @@ if (isset($init_function) == false) {
                     @if($column['type'] == 'custom')
                         <?php
 
+                        /*
+                            Il tipo "custom" permette di generare un contenuto
+                            arbitrario a partire da un frammento di HTML.
+                            In "contents" si aspetta una stringa formattabile in
+                            stile sprintf, con gli opportuni marcatori piazzati
+                            in giro; in "fields" si trova un elenco, separato da
+                            virgole, dei campi dell'oggetto che vogliono essere
+                            messi nella stringa di riferimento.
+
+                            E.g.
+                            $fields = 'name,id'
+                            $contents = 'oggetto %s ha id = %s'
+                        */
+
                         $names = explode(',', $column['field']);
                         $values = [];
                         foreach($names as $n)

@@ -36,8 +36,9 @@ function generalInit() {
     $('.tagsinput').tagsinput();
     $('.addicted-table').bootstrapTable();
 
-    // $('[data-toggle="popover"]').popover();
-
+    /*
+        https://stackoverflow.com/questions/15989591/how-can-i-keep-bootstrap-popover-alive-while-the-popover-is-being-hovered
+    */
     $('[data-toggle="popover"]').popover({
         trigger: "manual",
         html: true,
@@ -56,27 +57,6 @@ function generalInit() {
                 $(_this).popover("hide");
             }
         }, 300);
-    });
-
-    $('.async-popover').on('show.bs.popover', function(e) {
-        if (typeof $.data(e.target, 'dynamic-inited') == 'undefined') {
-            $.data(e.target, 'dynamic-inited', {
-                done: true
-            });
-
-            var pop = $(this);
-            var url = pop.attr('data-contents-url');
-            $.ajax({
-                url: url,
-                method: 'GET',
-                dataType: 'HTML',
-
-                success: function(data) {
-                    pop.attr('data-content', data);
-                    pop.popover('show');
-                }
-            });
-        }
     });
 
     $('.trim-2-ddigits').blur(function() {
@@ -1284,6 +1264,27 @@ $(document).ready(function() {
                 target.replaceWith(data);
             }
         });
+    });
+
+    $('body').on('show.bs.popover', '.async-popover', function(e) {
+        if (typeof $.data(e.target, 'dynamic-inited') == 'undefined') {
+            $.data(e.target, 'dynamic-inited', {
+                done: true
+            });
+
+            var pop = $(this);
+            var url = pop.attr('data-contents-url');
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'HTML',
+
+                success: function(data) {
+                    pop.attr('data-content', data);
+                    pop.popover('show');
+                }
+            });
+        }
     });
 
     $('body').on('click', '.reloader', function(event) {

@@ -70,7 +70,10 @@ class AttachmentsController extends Controller
 
         $a = Attachment::findOrFail($id);
 
-        if ($a->attached->attachmentPermissionGranted() == false) {
+        /*
+            I files autogenerati non possono essere eliminati. Mai
+        */
+        if ($a->internal || $a->attached->attachmentPermissionGranted() == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
