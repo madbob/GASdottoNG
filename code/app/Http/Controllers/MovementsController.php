@@ -107,6 +107,10 @@ class MovementsController extends Controller
             $generic_target = $target_type::find($target_id);
             $query = $generic_target->queryMovements($query);
             $data['main_target'] = $generic_target;
+            $bilist = true;
+        }
+        else {
+            $bilist = false;
         }
 
         if ($request->input('amountstart', '') != '') {
@@ -120,11 +124,28 @@ class MovementsController extends Controller
         $data['movements'] = $query->get();
 
         if ($filtered == false) {
+            /*
+                Qui si finisce quando si accede alla pagina principale della
+                contabilità
+            */
             $data['balance'] = Auth::user()->gas->balances()->first();
             return Theme::view('pages.movements', $data);
         }
         else {
-            return Theme::view('movement.list', $data);
+            if ($bilist) {
+                /*
+                    Qui si finisce quando si aggiorna l'elenco di movimenti
+                    facenti riferimento ad un soggetto specifico
+                */
+                return Theme::view('movement.bilist', $data);
+            }
+            else {
+                /*
+                    Qui si finisce quando si aggiorna l'elenco di movimenti
+                    nella pagina principale della contabilità
+                */
+                return Theme::view('movement.list', $data);
+            }
         }
     }
 

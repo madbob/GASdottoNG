@@ -18,20 +18,6 @@ $domid = str_random(10);
             </div>
         </div>
     </div>
-
-    <div class="col-md-6">
-        <div class="btn-group pull-right table-filters" data-toggle="buttons" data-table-target="#movements-in-range-{{ $domid }}">
-            <label class="btn btn-info active">
-                <input type="radio" name="movements-filter" value="all" autocomplete="off" checked> Tutti
-            </label>
-            <label class="btn btn-info">
-                <input type="radio" name="movements-filter" value="credit" autocomplete="off"> Accrediti
-            </label>
-            <label class="btn btn-info">
-                <input type="radio" name="movements-filter" value="debt" autocomplete="off"> Addebiti
-            </label>
-        </div>
-    </div>
 </div>
 
 <hr/>
@@ -45,6 +31,7 @@ $domid = str_random(10);
         $movements = $target->queryMovements(null)->where('registration_date', '>=', $startdate)->where('registration_date', '<=', $enddate)->get()
 
         ?>
-        @include('movement.list', ['movements' => $movements, 'main_target' => $target])
+
+        @include('movement.bilist', ['movements' => $movements, 'main_target' => $target])
     </div>
 </div>
