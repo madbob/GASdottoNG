@@ -305,7 +305,7 @@ class Order extends Model
 
         $table = new Attachment();
         $table->name = 'Tabella Complessiva Prodotti Consegnati';
-        $table->url = url('orders/document/'.$this->id.'/table/shipped');
+        $table->url = url('orders/document/'.$this->id.'/table/delivered');
         $table->internal = true;
         $ret[] = $table;
 

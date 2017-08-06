@@ -17,22 +17,22 @@ class CreateUsersTable extends Migration
             $table->string('firstname');
             $table->string('lastname');
             $table->string('password');
-            $table->date('birthday')->nullable();
+            $table->date('birthday')->default('');
             $table->integer('family_members')->unsigned()->nullable();
-            $table->string('picture')->nullable();
-            $table->string('taxcode')->nullable();
+            $table->string('picture')->default('');
+            $table->string('taxcode')->default('');
             $table->date('member_since')->useCurrent();
             $table->date('leaving_date')->nullable();
-            $table->string('card_number')->nullable();
+            $table->string('card_number')->default('');
             $table->datetime('last_login')->nullable();
-            $table->string('preferred_delivery_id')->nullable();
+            $table->string('preferred_delivery_id')->default('');
 
-            $table->integer('fee_id')->nullable();
-            $table->integer('deposit_id')->nullable();
+            $table->integer('fee_id')->default(0);
+            $table->integer('deposit_id')->default(0);
 
-            $table->string('iban')->nullable();
-            $table->date('sepa_subscribe')->nullable();
-            $table->date('sepa_first')->nullable();
+            $table->string('iban')->default('');
+            $table->date('sepa_subscribe')->default('');
+            $table->date('sepa_first')->default('');
 
             $table->rememberToken();
 

@@ -262,7 +262,7 @@ trait GASModel
             if (Auth::user()->gas->getConfig('annual_fee_amount') != 0) {
                 $icons['User']['euro'] = (object) [
                     'test' => function ($obj) {
-                        return $obj->fee == null;
+                        return $obj->fee_id == 0;
                     },
                     'text' => 'Quota non Pagata',
                 ];
