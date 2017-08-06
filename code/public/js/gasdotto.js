@@ -33,7 +33,6 @@ function generalInit() {
         maxViewMode: 'months'
     });
 
-    $('.tagsinput').tagsinput();
     $('.addicted-table').bootstrapTable();
 
     /*
@@ -320,13 +319,6 @@ function manyRowsInitRow(row, fresh) {
         row.find('input').val('');
         row.find('.customized-cell').empty();
     }
-
-    /*
-        Questo è per forzare l'aggiornamento di eventuali campi
-        tags all'interno del widget multiriga
-    */
-    row.find('.bootstrap-tagsinput').remove();
-    row.find('.tagsinput').tagsinput();
 }
 
 function manyRowsInit(node) {

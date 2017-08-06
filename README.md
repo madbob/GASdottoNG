@@ -29,6 +29,7 @@ nano .env
 php artisan key:generate
 php artisan migrate --seed
 php artisan db:seed --class=DemoSeeder
+php artisan db:seed --class=MovementTypesSeeder
 ```
 
 Viene creato un utente amministratore di default con username `root` e password `root`.
