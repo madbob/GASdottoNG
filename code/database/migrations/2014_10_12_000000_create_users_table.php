@@ -31,8 +31,8 @@ class CreateUsersTable extends Migration
             $table->integer('deposit_id')->default(0);
 
             $table->string('iban')->default('');
-            $table->date('sepa_subscribe')->default('');
-            $table->date('sepa_first')->default('');
+            $table->date('sepa_subscribe')->nullable();
+            $table->date('sepa_first')->nullable();
 
             $table->rememberToken();
 
