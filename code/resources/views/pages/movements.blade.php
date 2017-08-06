@@ -71,6 +71,10 @@
                 <span class="badge cash"><span>{{ $balance->cash }}</span> €</span>
             </li>
             <li class="list-group-item">
+                GAS
+                <span class="badge gas"><span>{{ $balance->gas }}</span> €</span>
+            </li>
+            <li class="list-group-item">
                 Fornitori
                 <span class="badge suppliers"><span>{{ $balance->suppliers }}</span> €</span>
             </li>

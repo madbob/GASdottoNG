@@ -229,6 +229,7 @@ class MovementsController extends Controller
         $obj = (object)[
             'bank' => $balance->bank,
             'cash' => $balance->cash,
+            'gas' => $balance->gas,
             'suppliers' => $balance->suppliers,
             'deposits' => $balance->deposits
         ];
