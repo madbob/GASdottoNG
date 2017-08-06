@@ -19,7 +19,7 @@ foreach($classes as $class => $name) {
 
 @include('commons.textfield', ['obj' => $movementtype, 'name' => 'name', 'label' => 'Nome', 'mandatory' => true])
 @include('commons.boolfield', ['obj' => $movementtype, 'name' => 'allow_negative', 'label' => 'Accetta Valori Negativi'])
-@include('commons.decimalfield', ['obj' => $movementtype, 'name' => 'fixed_value', 'label' => 'Valore Default', 'postlabel' => '€'])
+@include('commons.decimalfield', ['obj' => $movementtype, 'name' => 'fixed_value', 'label' => 'Valore Fisso', 'is_price' => true])
 
 @include('commons.selectenumfield', [
     'obj' => $movementtype,

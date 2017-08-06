@@ -31,7 +31,7 @@
     'obj' => null,
     'name' => 'amount',
     'label' => 'Valore',
-    'postlabel' => '€',
+    'is_price' => true,
     'fixed_value' => $fixed
 ])
 

@@ -104,8 +104,8 @@
                     '0' => 'Nessuno'
                 ]
             ])
-            @include('commons.decimalfield', ['obj' => null, 'name' => 'amountstart', 'label' => 'Importo Minimo', 'postlabel' => '€'])
-            @include('commons.decimalfield', ['obj' => null, 'name' => 'amountend', 'label' => 'Importo Massimo', 'postlabel' => '€'])
+            @include('commons.decimalfield', ['obj' => null, 'name' => 'amountstart', 'label' => 'Importo Minimo', 'is_price' => true])
+            @include('commons.decimalfield', ['obj' => null, 'name' => 'amountend', 'label' => 'Importo Massimo', 'is_price' => true])
 
             <div class="form-group">
                 <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">

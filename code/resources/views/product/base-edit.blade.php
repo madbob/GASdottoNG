@@ -1,6 +1,6 @@
 @include('commons.textfield', ['obj' => $product, 'name' => 'name', 'label' => 'Nome', 'mandatory' => true])
-@include('commons.decimalfield', ['obj' => $product, 'name' => 'price', 'label' => 'Prezzo Unitario', 'postlabel' => '€', 'mandatory' => true])
-@include('commons.decimalfield', ['obj' => $product, 'name' => 'transport', 'label' => 'Prezzo Trasporto', 'postlabel' => '€'])
+@include('commons.decimalfield', ['obj' => $product, 'name' => 'price', 'label' => 'Prezzo Unitario', 'is_price' => true, 'mandatory' => true])
+@include('commons.decimalfield', ['obj' => $product, 'name' => 'transport', 'label' => 'Prezzo Trasporto', 'is_price' => true])
 @include('commons.textfield', ['obj' => $product, 'name' => 'discount', 'label' => 'Sconto', 'postlabel' => '€ / %'])
 
 @include('commons.selectobjfield', [

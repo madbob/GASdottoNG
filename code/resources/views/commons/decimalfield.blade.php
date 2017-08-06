@@ -7,10 +7,15 @@ if (isset($fixed_value) && $fixed_value != false) {
     if ($obj) {
         $value = $obj->$name;
     } else {
-        $value = '';
+        $value = '0';
     }
 
     $disabled = isset($disabled) ? $disabled : false;
+}
+
+if(isset($is_price)) {
+    $value = printablePrice($value);
+    $postlabel = '€';
 }
 
 ?>

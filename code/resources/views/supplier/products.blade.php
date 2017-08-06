@@ -150,7 +150,7 @@
                                                 'name' => 'price',
                                                 'label' => 'Prezzo Unitario',
                                                 'squeeze' => true,
-                                                'postlabel' => '€',
+                                                'is_price' => true,
                                                 'mandatory' => true
                                             ])
                                         </td>
@@ -161,7 +161,7 @@
                                                 'name' => 'transport',
                                                 'label' => 'Prezzo Trasporto',
                                                 'squeeze' => true,
-                                                'postlabel' => '€'
+                                                'is_price' => true
                                             ])
                                         </td>
                                         <td>

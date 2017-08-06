@@ -33,7 +33,7 @@
         </div>
         <div class="col-md-4">
             @include('commons.textfield', ['obj' => $order, 'name' => 'discount', 'label' => 'Sconto Globale', 'postlabel' => '€ / %'])
-            @include('commons.decimalfield', ['obj' => $order, 'name' => 'transport', 'label' => 'Spese Trasporto', 'postlabel' => '€'])
+            @include('commons.decimalfield', ['obj' => $order, 'name' => 'transport', 'label' => 'Spese Trasporto', 'is_price' => true])
 
             @if(Gate::check('movements.view', $currentgas) || Gate::check('movements.admin', $currentgas))
                 @include('commons.movementfield', ['obj' => $order->payment, 'name' => 'payment_id', 'label' => 'Pagamento', 'default' => \App\Movement::generate('order-payment', $currentgas, $order, $summary->price_delivered)])

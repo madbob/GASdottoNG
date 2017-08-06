@@ -23,7 +23,7 @@ foreach($classes as $class => $name) {
             @if($type->system)
                 @include('commons.staticstringfield', ['obj' => $type, 'name' => 'name', 'label' => 'Nome', 'mandatory' => true])
                 @include('commons.staticboolfield', ['obj' => $type, 'name' => 'allow_negative', 'label' => 'Accetta Valori Negativi'])
-                @include('commons.staticpricefield', ['obj' => $type, 'name' => 'fixed_value', 'label' => 'Valore Default'])
+                @include('commons.staticpricefield', ['obj' => $type, 'name' => 'fixed_value', 'label' => 'Valore Fisso'])
 
                 @include('commons.staticenumfield', [
                     'obj' => $type,

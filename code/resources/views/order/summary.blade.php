@@ -63,7 +63,7 @@
                             'name' => 'price',
                             'postfix' => '[]',
                             'squeeze' => true,
-                            'postlabel' => '€'
+                            'is_price' => true
                         ])
                     </td>
 
@@ -77,7 +77,7 @@
                             'name' => 'transport',
                             'postfix' => '[]',
                             'squeeze' => true,
-                            'postlabel' => '€'
+                            'is_price' => true
                         ])
                     </td>
 

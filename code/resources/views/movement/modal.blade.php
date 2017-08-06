@@ -37,7 +37,7 @@ if (!isset($editable))
                         'obj' => $obj,
                         'name' => 'amount',
                         'label' => 'Valore',
-                        'postlabel' => '€',
+                        'is_price' => true,
                         'fixed_value' => $editable ? false : $obj->amount
                     ])
 
