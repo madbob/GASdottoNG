@@ -10,6 +10,7 @@ class UsersServiceTest extends TestCase
 
     private $userWithViewPerm;
     private $userWithAdminPerm;
+    private $userWithMovementPerm;
     private $userWithNoPerms;
     private $gas;
     private $usersService;
@@ -42,6 +43,17 @@ class UsersServiceTest extends TestCase
         ]);
 
         $this->userWithAdminPerm->addRole($admin_role, $this->gas);
+
+        $treasure_role = App\Role::create([
+            'name' => 'Treasure',
+            'actions' => 'movements.admin'
+        ]);
+
+        $this->userWithMovementPerm = factory(App\User::class)->create([
+            'gas_id' => $this->gas->id
+        ]);
+
+        $this->userWithMovementPerm->addRole($treasure_role, $this->gas);
 
         $this->userWithNoPerms = factory(App\User::class)->create([
             'gas_id' => $this->gas->id
@@ -76,7 +88,7 @@ class UsersServiceTest extends TestCase
         $this->actingAs($this->userWithViewPerm);
 
         $users = $this->usersService->listUsers();
-        $this->assertCount(6, $users);
+        $this->assertCount(7, $users);
         foreach ($users as $user) {
             $this->assertEquals($this->gas->id, $user->gas_id);
         }
@@ -139,8 +151,9 @@ class UsersServiceTest extends TestCase
         ));
 
         $this->assertEquals('test user', $newUser->username);
-        $this->assertEquals(0, $newUser->balance);
         $this->assertTrue(Hash::check('password', $newUser->password));
+        $this->assertEquals('rossi mario', $newUser->printableName());
+        $this->assertEquals(0, $newUser->pending_balance);
     }
 
     /**
@@ -177,6 +190,7 @@ class UsersServiceTest extends TestCase
         ));
 
         $this->assertNotEquals($user->birthday, $updatedUser->birthday);
+        $this->assertEquals(0, $updatedUser->pending_balance);
     }
 
     /**
@@ -206,6 +220,27 @@ class UsersServiceTest extends TestCase
         $this->assertEquals($this->userWithViewPerm->id, $user->id);
         $this->assertEquals($this->userWithViewPerm->firstname, $user->firstname);
         $this->assertEquals($this->userWithViewPerm->lastname, $user->lastname);
+    }
+
+    public function testAnnualFee()
+    {
+        $this->actingAs($this->userWithMovementPerm);
+
+        $this->assertEquals(null, $this->userWithNoPerms->fee);
+
+        $movement = new App\Movement();
+        $movement->type = 'annual-fee';
+        $movement->sender_type = 'App\User';
+        $movement->sender_id = $this->userWithNoPerms->id;
+        $movement->target_type = 'App\Gas';
+        $movement->target_id = $this->gas->id;
+        $movement->date = date('Y-m-d');
+        $movement->amount = 10;
+        $movement->method = 'cash';
+        $movement->save();
+
+        $this->userWithNoPerms = $this->userWithNoPerms->fresh();
+        $this->assertEquals($movement->id, $this->userWithNoPerms->fee_id);
     }
 
     /**
