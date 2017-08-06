@@ -14,12 +14,67 @@
                     'post-saved-function' => ['refreshFilter', 'refreshBalanceView']
                 ]
             ])
+
+            <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#handleMovementTypes">Amministra Tipi Movimento</button>
+            <div class="collapse dynamic-contents" id="handleMovementTypes" tabindex="-1" role="dialog" data-contents-url="{{ url('movtypes') }}">
+            </div>
+
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#configAccounting">Configurazione Contabilità</button>
+            <div class="modal fade" id="configAccounting" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form class="form-horizontal inner-form" method="POST" action="{{ url('gas/' . $currentgas->id) }}">
+                            <input type="hidden" name="reload-whole-page" value="1">
+                            <input type="hidden" name="_method" value="PUT">
+
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Configurazione Contabilità</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="year_closing" class="col-sm-{{ $labelsize }} control-label">Chiusura Anno</label>
+                                    <div class="col-sm-{{ $fieldsize }}">
+                                        <div class="input-group">
+                                            <input type="text" class="date-to-month form-control" name="year_closing" value="{{ ucwords(strftime('%d %B', strtotime($currentgas->getConfig('year_closing')))) }}" required autocomplete="off">
+                                            <div class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                                            </div>
+                                        </div>
+                                        <span class="help-block">In questa data le quote di iscrizione verranno automaticamente fatte scadere e dovranno essere rinnovate</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="annual_fee_amount" class="col-sm-{{ $labelsize }} control-label">Quota Annuale</label>
+                                    <div class="col-sm-{{ $fieldsize }}">
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="annual_fee_amount" step="0.01" min="0" value="{{ printablePrice($currentgas->getConfig('annual_fee_amount')) }}" autocomplete="off">
+                                            <div class="input-group-addon">€</div>
+                                        </div>
+                                        <span class="help-block">Se non configurato (valore = 0) non verranno gestite le quote di iscrizione</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="deposit_amount" class="col-sm-{{ $labelsize }} control-label">Cauzione</label>
+                                    <div class="col-sm-{{ $fieldsize }}">
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="deposit_amount" step="0.01" min="0" value="{{ printablePrice($currentgas->getConfig('deposit_amount')) }}" autocomplete="off">
+                                            <div class="input-group-addon">€</div>
+                                        </div>
+                                        <span class="help-block">Se non configurato (valore = 0) non verranno gestite le cauzioni da parte dei nuovi soci</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
+                                <button type="submit" class="btn btn-success">Salva</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         @endcan
-
-        <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#handleMovementTypes">Amministra Tipi Movimento</button>
-
-        <div class="collapse dynamic-contents" id="handleMovementTypes" tabindex="-1" role="dialog" data-contents-url="{{ url('movtypes') }}">
-        </div>
     </div>
 
     <div class="clearfix"></div>

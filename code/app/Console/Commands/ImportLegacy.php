@@ -203,6 +203,8 @@ class ImportLegacy extends Command
             $this->appendBalance($obj, $row, true);
 
             $obj->setConfig('year_closing', $row->payment_date);
+            $obj->setConfig('annual_fee_amount', $row->default_fee);
+            $obj->setConfig('deposit_amount', $row->default_deposit);
         }
 
         $map['deliveries'] = [];

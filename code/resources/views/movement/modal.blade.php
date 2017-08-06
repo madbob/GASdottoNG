@@ -60,7 +60,7 @@ if (!isset($editable))
                         <div class="col-sm-{{ $fieldsize }}">
                             <div class="btn-group" data-toggle="buttons">
                                 @foreach($obj->valid_payments as $method_id => $info)
-                                    <label class="btn btn-primary {{ $obj->method == $method_id ? 'active' : '' }}">
+                                    <label class="btn btn-default {{ $obj->method == $method_id ? 'active' : '' }}">
                                         <input type="radio" name="method" value="{{ $method_id }}" autocomplete="off" {{ $obj->method == $method_id ? 'checked' : '' }}> {{ $info->name }}
                                     </label>
                                 @endforeach

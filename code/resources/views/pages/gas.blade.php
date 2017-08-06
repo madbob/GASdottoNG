@@ -31,18 +31,6 @@
                 }
 
                 ?>
-
-                <div class="form-group">
-                    <label for="year_closing" class="col-sm-{{ $labelsize }} control-label">Chiusura Anno</label>
-                    <div class="col-sm-{{ $fieldsize }}">
-                        <div class="input-group">
-                            <input type="text" class="date-to-month form-control" name="year_closing" value="{{ ucwords(strftime('%d %B', strtotime($gas->getConfig('year_closing')))) }}" required autocomplete="off">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 

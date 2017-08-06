@@ -52,6 +52,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $gas->setConfig('year_closing', date('Y') . '-09-01');
+        $gas->setConfig('annual_fee_amount', 10.00);
+        $gas->setConfig('deposit_amount', 10.00);
 
         $user_role = Role::create([
             'name' => 'Utente',

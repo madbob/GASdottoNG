@@ -24,6 +24,10 @@ class CheckFees extends Command
         $today = date('Y-m-d');
 
         foreach(Gas::all() as $gas) {
+            $amount = $gas->getConfig('annual_fee_amount');
+            if ($amount == 0)
+                continue;
+
             $date_close = $gas->getConfig('year_closing');
             if ($date_close < $today) {
                 Log::info('Scaduto anno sociale GAS ' . $gas->name);

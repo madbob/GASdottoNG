@@ -251,15 +251,26 @@ trait GASModel
                     ],
                 ],
                 'User' => [
-                    'euro' => (object) [
-                        'test' => function ($obj) {
-                            return $obj->fee == null;
-                        },
-                        'text' => 'Quota non Pagata',
-                    ],
                 ],
             ];
 
+            /*
+                Se la gestione delle quote di iscrizione è abilitata, viene
+                attivata la relativa icona per distinguere gli utenti che non
+                l'hanno pagata o rinnovata
+            */
+            if (Auth::user()->gas->getConfig('annual_fee_amount') != 0) {
+                $icons['User']['euro'] = (object) [
+                    'test' => function ($obj) {
+                        return $obj->fee == null;
+                    },
+                    'text' => 'Quota non Pagata',
+                ];
+            }
+
+            /*
+                Questo è per generare le icone dei ruoli degli utenti
+            */
             $roles = Role::where('always', false)->get();
             foreach($roles as $index => $role) {
                 $icons['User']['king' . $index] = (object) [

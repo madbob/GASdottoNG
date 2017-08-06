@@ -39,6 +39,7 @@ class MovementType extends Model
 
     public static function systemTypes()
     {
+        $currentgas = Auth::user()->gas;
         $types = new Collection();
 
         /*********************************/
@@ -51,7 +52,7 @@ class MovementType extends Model
         $type->allow_negative = false;
         $type->visibility = false;
         $type->system = true;
-        $type->fixed_value = null;
+        $type->fixed_value = $currentgas->getConfig('deposit_amount');
         $type->function = json_encode(
             [
                 (object) [
@@ -140,7 +141,7 @@ class MovementType extends Model
         $type->allow_negative = false;
         $type->visibility = true;
         $type->system = true;
-        $type->fixed_value = null;
+        $type->fixed_value = $currentgas->getConfig('deposit_amount');
         $type->function = json_encode(
             [
                 (object) [
@@ -207,7 +208,7 @@ class MovementType extends Model
         $type->allow_negative = false;
         $type->visibility = false;
         $type->system = true;
-        $type->fixed_value = null;
+        $type->fixed_value = $currentgas->getConfig('annual_fee_amount');
         $type->function = json_encode(
             [
                 (object) [
