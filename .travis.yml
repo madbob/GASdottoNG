@@ -4,3 +4,5 @@ php:
 before_script:
     - cd code
     - composer update --no-scripts
+script:
+    - ./vendor/bin/phpunit
