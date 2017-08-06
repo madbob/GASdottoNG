@@ -19,20 +19,24 @@
                     @if($order->hasProduct($product))
                         @if(isset($summary->by_variant[$product->id]))
                             @foreach($summary->by_variant[$product->id] as $name => $variant)
-                                <tr>
-                                    <td width="40%">{{ $product->printableName() }} {{ $name }}</td>
-                                    <td width="20%">{{ $variant['quantity'] }}</td>
-                                    <td width="20%">{{ printablePrice($variant['price']) }} €</td>
-                                    <td width="20%">{{ printablePrice($summary->products[$product->id]['transport']) }} €</td>
-                                </tr>
+                                @if($variant['quantity'] != 0)
+                                    <tr>
+                                        <td width="40%">{{ $product->printableName() }} {{ $name }}</td>
+                                        <td width="20%">{{ $variant['quantity'] }}</td>
+                                        <td width="20%">{{ printablePrice($variant['price']) }} €</td>
+                                        <td width="20%">{{ printablePrice($summary->products[$product->id]['transport']) }} €</td>
+                                    </tr>
+                                @endif
                             @endforeach
                         @else
-                            <tr>
-                                <td width="40%">{{ $product->printableName() }}</td>
-                                <td width="20%">{{ $summary->products[$product->id]['quantity'] }}</td>
-                                <td width="20%">{{ printablePrice($summary->products[$product->id]['price']) }} €</td>
-                                <td width="20%">{{ printablePrice($summary->products[$product->id]['transport']) }} €</td>
-                            </tr>
+                            @if($summary->products[$product->id]['quantity'] != 0)
+                                <tr>
+                                    <td width="40%">{{ $product->printableName() }}</td>
+                                    <td width="20%">{{ $summary->products[$product->id]['quantity'] }}</td>
+                                    <td width="20%">{{ printablePrice($summary->products[$product->id]['price']) }} €</td>
+                                    <td width="20%">{{ printablePrice($summary->products[$product->id]['transport']) }} €</td>
+                                </tr>
+                            @endif
                         @endif
                     @endif
                 @endforeach

@@ -272,13 +272,13 @@ class Order extends Model
             complessivo
         */
         $summary = new Attachment();
-        $summary->name = 'Riassunto Prodotti (CSV)';
+        $summary->name = 'Riassunto Prodotti Ordinati (CSV)';
         $summary->url = url('orders/document/'.$this->id.'/summary/csv');
         $summary->internal = true;
         $ret[] = $summary;
 
         $summary = new Attachment();
-        $summary->name = 'Riassunto Prodotti (PDF)';
+        $summary->name = 'Riassunto Prodotti Ordinati (PDF)';
         $summary->url = url('orders/document/'.$this->id.'/summary/pdf');
         $summary->internal = true;
         $ret[] = $summary;
