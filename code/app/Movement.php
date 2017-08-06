@@ -59,7 +59,7 @@ class Movement extends Model
 
     public function getValidPaymentsAttribute()
     {
-        $movement_methods = $this->payments();
+        $movement_methods = MovementType::payments();
         $type_metadata = $this->type_metadata;
         $function = json_decode($type_metadata->function);
         $ret = [];
@@ -92,7 +92,7 @@ class Movement extends Model
         $ret->target_type = get_class($target);
         $ret->target_id = $target->id;
 
-        $type_descr = self::types($type);
+        $type_descr = MovementType::types($type);
         if ($type_descr->fixed_value != false) {
             $ret->amount = $type_descr->fixed_value;
         } else {

@@ -59,6 +59,7 @@ Route::get('delivery/{aggregate_id}/user/{user_id}/header', 'DeliveryUserControl
 Route::get('booking/{id}/header', 'BookingController@objhead');
 Route::get('notifications/{id}/header', 'NotificationsController@objhead');
 Route::get('movements/{id}/header', 'MovementsController@objhead');
+Route::get('movtypes/{id}/header', 'MovementTypesController@objhead');
 
 Route::resource('gas', 'GasController');
 Route::resource('users', 'UsersController');

@@ -56,6 +56,8 @@ class Order extends Model
         if (!empty($this->comment))
             $ret .= ' - ' . $this->comment;
 
+        $ret .= ' - ' . $this->internal_number;
+
         return $ret;
     }
 
