@@ -143,7 +143,6 @@ class MovementsKeeper extends ServiceProvider
             $metadata = $original->type_metadata;
             $original->amount = $original->amount * -1;
             $original->apply();
-            $handler($original);
 
             return true;
         });
@@ -156,7 +155,6 @@ class MovementsKeeper extends ServiceProvider
             $metadata = $movement->type_metadata;
             $movement->amount = $movement->amount * -1;
             $movement->apply();
-            $handler($movement);
         });
     }
 

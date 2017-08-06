@@ -139,10 +139,13 @@ class Product extends Model
         return $price;
     }
 
-    public function printableMeasure()
+    public function printableMeasure($easy = false)
     {
         if ($this->portion_quantity != 0) {
-            return sprintf('%.02f %s', $this->portion_quantity, $this->measure->name);
+            if ($easy)
+                return 'Pezzi';
+            else
+                return sprintf('%.02f %s', $this->portion_quantity, $this->measure->name);
         } else {
             $m = $this->measure;
             if ($m == null) {
