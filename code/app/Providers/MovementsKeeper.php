@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 
 use Log;
 use Session;
+use Auth;
 
 use App\Movement;
 
@@ -61,6 +62,15 @@ class MovementsKeeper extends ServiceProvider
     public function boot()
     {
         Movement::saving(function ($movement) {
+            if ($movement->registration_date == null)
+                $movement->registration_date = date('Y-m-d G:i:s');
+            if ($movement->registerer_id == null)
+                $movement->registerer_id = Auth::user()->id;
+            if ($movement->identifier == null)
+                $movement->identifier = '';
+            if ($movement->notes == null)
+                $movement->notes = '';
+
             $metadata = $movement->type_metadata;
 
             /*
