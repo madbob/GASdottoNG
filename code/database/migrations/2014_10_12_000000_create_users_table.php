@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->string('firstname');
             $table->string('lastname');
             $table->string('password');
-            $table->date('birthday')->default('');
+            $table->date('birthday')->nullable();
             $table->integer('family_members')->unsigned()->nullable();
             $table->string('picture')->default('');
             $table->string('taxcode')->default('');
