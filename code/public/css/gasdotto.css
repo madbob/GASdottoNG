@@ -78,12 +78,6 @@ table label {
     .tt-menu .tt-dataset .tt-selectable:hover {
       background-color: #EEE; }
 
-.bootstrap-tagsinput {
-  width: 100%;
-  height: 34px;
-  font-size: 14px;
-  background-image: none; }
-
 .booking-product .row {
   margin-left: 0; }
 .booking-product .input-group {
@@ -152,6 +146,11 @@ table label {
 
 .glyphicon-king9:before {
   content: "\e211"; }
+
+.btn-group label.btn.active:after {
+  content: '\e067';
+  font-size: 10px;
+  font-family: 'Glyphicons Halflings'; }
 
 .dense-list ul {
   height: 710px;

@@ -39,10 +39,12 @@
     <label for="method" class="col-sm-{{ $labelsize }} control-label">Metodo</label>
     <div class="col-sm-{{ $fieldsize }}">
         <div class="btn-group" data-toggle="buttons">
+            <?php $index = 0 ?>
             @foreach($payments as $method_id => $info)
-                <label class="btn btn-primary">
-                    <input type="radio" name="method" value="{{ $method_id }}" autocomplete="off"> {{ $info->name }}
+                <label class="btn btn-default {{ $index == 0 ? 'active' :'' }}">
+                    <input type="radio" name="method" value="{{ $method_id }}" autocomplete="off" {{ $index == 0 ? 'checked' :'' }}> {{ $info->name }}
                 </label>
+                <?php $index++ ?>
             @endforeach
         </div>
     </div>
