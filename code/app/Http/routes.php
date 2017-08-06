@@ -79,4 +79,5 @@ Route::resource('booking', 'BookingController');
 Route::resource('bookings', 'BookingController');
 Route::resource('notifications', 'NotificationsController');
 Route::resource('movements', 'MovementsController');
+Route::resource('movtypes', 'MovementTypesController');
 Route::resource('stats', 'StatisticsController');

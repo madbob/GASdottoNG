@@ -122,4 +122,13 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
         return $value;
     }
+
+    /******************************************************** CreditableTrait */
+
+    public static function balanceFields()
+    {
+        return [
+            'bank' => 'Credito',
+        ];
+    }
 }

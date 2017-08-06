@@ -37,7 +37,15 @@ class MovementsKeeper extends ServiceProvider
             }
         }
 
-        if (isset($metadata->methods[$movement->method]) == false) {
+        $found = false;
+        $operations = json_decode($metadata->function);
+        foreach($operations as $op) {
+            if ($movement->method == $op->method) {
+                $found = true;
+                break;
+            }
+        }
+        if ($found == false) {
             Log::error('Movimento: metodo non permesso');
             return false;
         }
@@ -86,11 +94,8 @@ class MovementsKeeper extends ServiceProvider
             if (isset($metadata->callbacks['post'])) {
                 $metadata->callbacks['post']($movement);
             }
-            if (isset($metadata->methods[$movement->method])) {
-                $handler = $metadata->methods[$movement->method]->handler;
-                $handler($movement);
-            }
 
+            $movement->apply();
             $movement->saved = true;
         });
 
@@ -127,7 +132,7 @@ class MovementsKeeper extends ServiceProvider
             $original = Movement::find($movement->id);
             $metadata = $original->type_metadata;
             $original->amount = $original->amount * -1;
-            $handler = $metadata->methods[$original->method]->handler;
+            $original->apply();
             $handler($original);
 
             return true;
@@ -140,7 +145,7 @@ class MovementsKeeper extends ServiceProvider
         Movement::deleting(function ($movement) {
             $metadata = $movement->type_metadata;
             $movement->amount = $movement->amount * -1;
-            $handler = $metadata->methods[$movement->method]->handler;
+            $movement->apply();
             $handler($movement);
         });
     }

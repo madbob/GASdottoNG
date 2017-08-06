@@ -137,6 +137,22 @@ function generalInit() {
         }
     });
 
+    $('.collapse.dynamic-contents').on('show.bs.collapse', function(e) {
+        if (typeof $.data(e.target, 'dynamic-inited') == 'undefined') {
+            $.data(e.target, 'dynamic-inited', {
+                done: true
+            });
+
+            var contents = $(this);
+            contents.empty();
+            var url = $(this).attr('data-contents-url');
+
+            $.get(url, function(data) {
+                contents.append(data);
+            });
+        }
+    });
+
     $('.dynamic-tree').jstree({
         'core': {
             'check_callback': true
@@ -1609,6 +1625,48 @@ $(document).ready(function() {
                 selectors.empty().append(data);
             }
         });
+    });
+
+    $('body').on('change', '.movement-type-editor select[name=sender_type], .movement-type-editor select[name=target_type]', function() {
+        var editor = $(this).closest('.movement-type-editor');
+        var sender = editor.find('select[name=sender_type] option:selected').val();
+        var target = editor.find('select[name=target_type] option:selected').val();
+        var table = editor.find('table');
+        table.find('tbody tr').each(function() {
+            var type = $(this).attr('data-target-class');
+            if(type != sender && type != target)
+                $(this).addClass('hidden');
+            else
+                $(this).removeClass('hidden');
+        });
+    })
+    .on('change', '.movement-type-editor table thead input:checkbox', function() {
+        var active = $(this).prop('checked');
+        var index = $(this).closest('th').index();
+
+        if (active == false) {
+            $(this).closest('table').find('tbody tr').each(function() {
+                var cell = $(this).find('td:nth-child(' + (index + 1) + ')');
+                cell.find('input[value=ignore]').click();
+                cell.find('label, input').attr('disabled', 'disabled');
+            });
+        }
+        else {
+            $(this).closest('table').find('tbody tr').each(function() {
+                var cell = $(this).find('td:nth-child(' + (index + 1) + ')');
+                cell.find('label, input').removeAttr('disabled');
+            });
+        }
+    })
+    /*
+        In Bootstrap i button group disabilitati non vengono visualizzati come
+        selezionati, dunque per rappresentare comunque il comportamento dei tipi
+        movimento di sistema pur senza permettere di modificarli ne inibisco qui
+        gli eventi di click
+    */
+    .on('click', '.movement-type-editor table.system-type label, .movement-type-editor table.system-type input', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
     });
 
     $('body').on('click', '.form-filler button[type=submit]', function(event) {

@@ -7,11 +7,6 @@ use URL;
 
 trait GASModel
 {
-    public static function commonClassName()
-    {
-        return 'Oggetto';
-    }
-
     public function printableName()
     {
         return $this->name;
@@ -68,6 +63,14 @@ trait GASModel
         $action = sprintf('%s@show', $controller);
 
         return URL::action($action, $this->id);
+    }
+
+    /*
+        Questa va all'occorrenza sovrascritta
+    */
+    public static function commonClassName()
+    {
+        return 'Oggetto';
     }
 
     /*

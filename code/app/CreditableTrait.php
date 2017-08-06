@@ -18,6 +18,7 @@ trait CreditableTrait
         $balance->target_type = get_class($this);
         $balance->bank = 0;
         $balance->cash = 0;
+        $balance->gas = 0;
         $balance->suppliers = 0;
         $balance->deposits = 0;
         $balance->date = date('Y-m-d');
@@ -41,6 +42,19 @@ trait CreditableTrait
 
             $new->save();
         }
+    }
+
+    public static function acceptedClasses()
+    {
+        $ret = [];
+
+        $classes = DB::table('balances')->select('target_type')->distinct()->get();
+        foreach($classes as $c) {
+            $class = $c->target_type;
+            $ret[$class] = $class::commonClassName();
+        }
+
+        return $ret;
     }
 
     public static function resetAllCurrentBalances()
@@ -95,4 +109,6 @@ trait CreditableTrait
 
         $balance->save();
     }
+
+    abstract public static function balanceFields();
 }

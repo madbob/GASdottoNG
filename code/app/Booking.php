@@ -163,4 +163,9 @@ class Booking extends Model
     {
         return URL::action('BookingUserController@show', $this->order->aggregate_id, $this->user_id);
     }
+
+    public function alterBalance($amount, $type = 'bank')
+    {
+        $this->order->supplier->alterBalance($amount, $type);
+    }
 }

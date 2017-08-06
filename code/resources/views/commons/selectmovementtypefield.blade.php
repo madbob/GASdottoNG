@@ -7,11 +7,13 @@ $types[] = [
     'value' => 'none',
 ];
 
-foreach (App\Movement::types() as $method_id => $info) {
-    $types[] = [
-        'label' => $info->name,
-        'value' => $method_id,
-    ];
+foreach (App\MovementType::types() as $info) {
+    if ($info->visibility) {
+        $types[] = [
+            'label' => $info->name,
+            'value' => $info->id,
+        ];
+    }
 }
 
 ?>

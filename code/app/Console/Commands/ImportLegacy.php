@@ -76,6 +76,7 @@ class ImportLegacy extends Command
         if ($full) {
             $balance->bank = $row->last_bank_balance;
             $balance->cash = $row->last_cash_balance;
+            $balance->gas = 0;
             $balance->suppliers = $row->last_orders_balance;
             $balance->deposits = $row->last_deposit_balance;
         }
@@ -94,6 +95,7 @@ class ImportLegacy extends Command
             if ($full) {
                 $balance->bank = $row->current_bank_balance;
                 $balance->cash = $row->current_cash_balance;
+                $balance->gas = 0;
                 $balance->suppliers = $row->current_orders_balance;
                 $balance->deposits = $row->current_deposit_balance;
             }

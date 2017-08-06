@@ -137,4 +137,15 @@ class Gas extends Model
     {
         return 'gas.config';
     }
+
+    public static function balanceFields()
+    {
+        return [
+            'bank' => 'Conto Corrente',
+            'cash' => 'Cassa Contanti',
+            'gas' => 'Saldo GAS',
+            'suppliers' => 'Saldo Fornitori',
+            'deposits' => 'Saldo Cauzioni',
+        ];
+    }
 }

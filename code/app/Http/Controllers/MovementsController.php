@@ -12,6 +12,7 @@ use Log;
 use Session;
 
 use App\Movement;
+use App\MovementType;
 use App\Balance;
 use App\User;
 use App\Supplier;
@@ -134,13 +135,14 @@ class MovementsController extends Controller
             return '';
         }
 
-        $metadata = Movement::types($type);
+        $metadata = MovementType::types($type);
         $data = [];
 
         $payments = [];
-        $all_payments = Movement::payments();
-        foreach ($metadata->methods as $identifier => $info) {
-            $payments[$identifier] = $all_payments[$identifier];
+        $all_payments = MovementType::payments();
+        $functions = json_decode($metadata->function);
+        foreach ($functions as $info) {
+            $payments[$info->method] = $all_payments[$info->method];
         }
 
         $data['payments'] = $payments;
@@ -156,14 +158,10 @@ class MovementsController extends Controller
 
         $data['target_type'] = $metadata->target_type;
         if ($metadata->target_type != null) {
-            if ($type == 'booking-payment') {
-                $data['targets'] = Aggregate::getByStatus('archived', true);
-                $data['target_type'] = 'App\Aggregate';
-            } else {
-                $tt = $metadata->target_type;
-                $data['targets'] = $tt::sorted()->get();
-            }
-        } else {
+            $tt = $metadata->target_type;
+            $data['targets'] = $tt::sorted()->get();
+        }
+        else {
             $data['targets'] = [];
         }
 

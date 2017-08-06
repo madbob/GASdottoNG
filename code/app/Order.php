@@ -323,4 +323,9 @@ class Order extends Model
     {
         return [$this->supplier];
     }
+
+    public function alterBalance($amount, $type = 'bank')
+    {
+        $this->supplier->alterBalance($amount, $type);
+    }
 }

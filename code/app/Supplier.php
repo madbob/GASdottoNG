@@ -142,4 +142,13 @@ class Supplier extends Model
 
         return $query;
     }
+
+    /******************************************************** CreditableTrait */
+
+    public static function balanceFields()
+    {
+        return [
+            'bank' => 'Saldo',
+        ];
+    }
 }
