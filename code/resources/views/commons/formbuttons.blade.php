@@ -5,12 +5,19 @@ if (!isset($no_delete))
 if (!isset($no_save))
     $no_save = false;
 
+if (!isset($export_url))
+    $export_url = false;
+
 ?>
 
 <hr/>
 
 <div class="row">
     <div class="col-md-12">
+        @if($export_url)
+            <a href="{{ $export_url }}" class="btn btn-default">Esporta</a>
+        @endif
+
         <div class="btn-group pull-right main-form-buttons" role="group" aria-label="Opzioni">
             @if($no_delete == false)
                 <button type="button" class="btn btn-danger delete-button">Elimina</button>

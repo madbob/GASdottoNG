@@ -23,7 +23,7 @@
                 </div>
             </div>
 
-            @include('commons.formbuttons')
+            @include('commons.formbuttons', ['export_url' => $supplier->exportableURL()])
         </form>
     </div>
 

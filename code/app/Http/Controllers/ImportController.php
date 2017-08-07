@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
 use DB;
 use Theme;
 use Auth;
 use CsvReader;
+use ezcArchive;
+
 use App\User;
 use App\Supplier;
 use App\Product;
@@ -267,5 +270,87 @@ class ImportController extends Controller
         }
 
         return $this->errorResponse('Comando non valido');
+    }
+
+    public function getGdxp(Request $request)
+    {
+        $classname = $request->input('classname');
+        $id = $request->input('id');
+        $obj = $classname::findOrFail($id);
+        $xml = $obj->exportXML();
+
+        $working_dir = sys_get_temp_dir();
+        chdir($working_dir);
+        $filename = md5($xml);
+        file_put_contents($filename, $xml);
+
+        $archivepath = sprintf('%s/%s.gdxp', $working_dir, str_replace('/', '_', $obj->printableName()));
+        $archive = ezcArchive::open('compress.zlib://' . $archivepath, ezcArchive::TAR_USTAR);
+        $archive->append($filename, '');
+        unlink($filename);
+
+        return response()->download($archivepath)->deleteFileAfterSend(true);
+    }
+
+    private function readGdxpFile($path, $execute, $supplier_replace)
+    {
+        $working_dir = sys_get_temp_dir();
+
+        $data = [];
+        $archive = ezcArchive::open('compress.zlib://' . $path);
+        while($archive->valid()) {
+            $entry = $archive->current();
+            $archive->extractCurrent($working_dir);
+            $filepath = sprintf('%s/%s', $working_dir, $entry->getPath());
+
+            /*
+                Il vecchio GASdotto usata entities HTML per rappresentare i
+                caratteri accentati, qui li riconverto in UTF-8
+            */
+            $escaped = html_entity_decode(file_get_contents($filepath));
+
+            $contents = simplexml_load_string($escaped);
+            foreach($contents->children() as $c) {
+                if ($execute)
+                    $data[] = Supplier::importXML($c, $supplier_replace);
+                else
+                    $data[] = Supplier::readXML($c);
+            }
+
+            unlink($filepath);
+            $archive->next();
+        }
+
+        return $data;
+    }
+
+    public function postGdxp(Request $request)
+    {
+        $working_dir = sys_get_temp_dir();
+        $step = $request->input('step', 'read');
+
+        if ($step == 'read') {
+            $file = $request->file('file');
+            $filename = basename(tempnam($working_dir, 'import_gdxp_'));
+            $file->move($working_dir, $filename);
+            $archivepath = sprintf('%s/%s', $working_dir, $filename);
+
+            $data = $this->readGdxpFile($archivepath, false, null);
+            return Theme::view('import.gdxpsummary', ['data' => $data, 'path' => $archivepath]);
+        }
+        else if ($step == 'run') {
+            DB::beginTransaction();
+
+            $archivepath = $request->input('path');
+            if ($request->input('supplier_source') == 'new')
+                $data = $this->readGdxpFile($archivepath, true, null);
+            else
+                $data = $this->readGdxpFile($archivepath, true, $request->input('supplier_update'));
+
+            unlink($archivepath);
+            DB::commit();
+
+            return Theme::view('import.gdxpfinal', ['data' => $data]);
+        }
     }
 }

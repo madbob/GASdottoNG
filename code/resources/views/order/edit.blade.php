@@ -55,5 +55,5 @@
     <hr/>
 
     @include('order.summary', ['order' => $order, 'summary' => $summary])
-    @include('commons.formbuttons')
+    @include('commons.formbuttons', ['export_url' => $order->exportableURL()])
 </form>

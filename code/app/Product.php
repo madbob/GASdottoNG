@@ -42,7 +42,22 @@ class Product extends Model
 
     public function getSlugID()
     {
-        return sprintf('%s::%s', $this->supplier_id, str_slug($this->name));
+        $append = '';
+        $index = 1;
+        $classname = get_class($this);
+
+        while(true) {
+            $slug = sprintf('%s::%s', $this->supplier_id, str_slug($this->name)) . $append;
+            if (Product::where('id', $slug)->first() != null) {
+                $append = '_' . $index;
+                $index++;
+            }
+            else {
+                break;
+            }
+        }
+
+        return $slug;
     }
 
     public function stillAvailable($order)

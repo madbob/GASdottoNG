@@ -11,7 +11,6 @@
             ])
 
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importCSV{{ $supplier->id }}">Importa CSV</button>
-
             <div class="modal fade wizard" id="importCSV{{ $supplier->id }}" tabindex="-1" role="dialog" aria-labelledby="importCSV{{ $supplier->id }}">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">

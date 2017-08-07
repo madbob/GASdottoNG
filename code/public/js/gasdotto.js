@@ -1720,25 +1720,6 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('submit', '.modal form', function(event) {
-        if (event.isDefaultPrevented())
-            return;
-
-        event.preventDefault();
-        var form = $(this);
-        var data = form.serializeArray();
-
-        $.ajax({
-            method: form.attr('method'),
-            url: form.attr('action'),
-            data: data,
-
-            success: function(data) {
-                /* dummy */
-            }
-        });
-    });
-
     /*
     	Gestione ordini
     */
@@ -2097,6 +2078,7 @@ $(document).ready(function() {
         $(this).find('.wizard_page:not(:first)').hide();
 
     }).on('submit', '.wizard_page form', function(e) {
+        e.preventDefault();
         e.stopPropagation();
 
         var form = $(this);
@@ -2114,6 +2096,25 @@ $(document).ready(function() {
         });
 
         return false;
+    });
+
+    $('body').on('submit', '.modal form', function(event) {
+        if (event.isDefaultPrevented())
+            return;
+
+        event.preventDefault();
+        var form = $(this);
+        var data = form.serializeArray();
+
+        $.ajax({
+            method: form.attr('method'),
+            url: form.attr('action'),
+            data: data,
+
+            success: function(data) {
+                /* dummy */
+            }
+        });
     });
 
     setupHelp();

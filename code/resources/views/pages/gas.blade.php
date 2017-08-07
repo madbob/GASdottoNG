@@ -21,16 +21,52 @@
                     @include('commons.boolfield', ['obj' => $gas, 'name' => 'restricted', 'label' => 'Modalità Manutenzione'])
                 @endif
 
-                <?php
+                <div class="form-group">
+                    <label class="col-sm-{{ $labelsize }} control-label">Importazione</label>
+                    <div class="col-sm-{{ $fieldsize }}">
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importGDXP">Importa GDXP</button>
+                        @push('postponed')
+                            <div class="modal fade wizard" id="importGDXP" tabindex="-1" role="dialog">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title">Importa GDXP</h4>
+                                        </div>
+                                        <div class="wizard_page">
+                                            <form class="form-horizontal" method="POST" action="{{ url('import/gdxp?step=read') }}" data-toggle="validator" enctype="multipart/form-data">
+                                                <div class="modal-body">
+                                                    <p>
+                                                        GDXP è un formato interoperabile per scambiare listini e ordini tra diversi gestionali. Da qui puoi importare un file in tale formato.
+                                                    </p>
 
-                if (isset($defaults_now) == false) {
-                    $defaults_now = false;
-                }
-                else {
-                    $enforced_default = ucwords(strftime('%A %d %B %G', time()));
-                }
+                                                    <hr/>
 
-                ?>
+                                                    @include('commons.filefield', [
+                                                        'obj' => null,
+                                                        'name' => 'file',
+                                                        'label' => 'File da Caricare',
+                                                        'mandatory' => true,
+                                                        'extra_class' => 'immediate-run',
+                                                        'extras' => [
+                                                            'data-url' => url('import/gdxp?step=read'),
+                                                            'data-run-callback' => 'wizardLoadPage'
+                                                        ]
+                                                    ])
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
+                                                    <button type="submit" class="btn btn-success">Avanti</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endpush
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -162,5 +198,7 @@
 
     <br/>
 @endcan
+
+@stack('postponed')
 
 @endsection

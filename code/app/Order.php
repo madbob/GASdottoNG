@@ -8,14 +8,16 @@ use Illuminate\Database\Eloquent\Collection;
 use Auth;
 use DB;
 use URL;
+use Theme;
 
 use App\GASModel;
 use App\SluggableID;
 use App\BookedProduct;
+use App\ExportableTrait;
 
 class Order extends Model
 {
-    use AttachableTrait, GASModel, SluggableID, PayableTrait;
+    use AttachableTrait, ExportableTrait, GASModel, SluggableID, PayableTrait;
 
     public $incrementing = false;
 
@@ -329,5 +331,45 @@ class Order extends Model
     public function alterBalance($amount, $type = 'bank')
     {
         $this->supplier->alterBalance($amount, $type);
+    }
+
+    /******************************************************** ExportableTrait */
+
+    public function exportXML()
+    {
+        return Theme::view('gdxp.supplier', ['obj' => $this->supplier, 'orders' => [$this]])->render();
+    }
+
+    public static function readXML($xml)
+    {
+        $order = new Order();
+
+        foreach($xml->children() as $p) {
+            switch($p->getName()) {
+                case 'openDate':
+                    $d = (string) $p;
+                    $year = substr($d, 0, 4);
+                    $month = substr($d, 4, 2);
+                    $day = substr($d, 6, 2);
+                    $order->start = sprintf('%d-%d-%d', $year, $month, $day);
+                    break;
+                case 'closeDate':
+                    $d = (string) $p;
+                    $year = substr($d, 0, 4);
+                    $month = substr($d, 4, 2);
+                    $day = substr($d, 6, 2);
+                    $order->end = sprintf('%d-%d-%d', $year, $month, $day);
+                    break;
+                case 'deliveryDate':
+                    $d = (string) $p;
+                    $year = substr($d, 0, 4);
+                    $month = substr($d, 4, 2);
+                    $day = substr($d, 6, 2);
+                    $order->shipping = sprintf('%d-%d-%d', $year, $month, $day);
+                    break;
+            }
+        }
+
+        return $order;
     }
 }
