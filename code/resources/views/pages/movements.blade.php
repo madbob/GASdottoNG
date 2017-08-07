@@ -16,7 +16,7 @@
             ])
 
             <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#handleMovementTypes">Amministra Tipi Movimento</button>
-            <div class="collapse dynamic-contents" id="handleMovementTypes" tabindex="-1" role="dialog" data-contents-url="{{ url('movtypes') }}">
+            <div class="collapse dynamic-contents" id="handleMovementTypes" tabindex="-1" data-contents-url="{{ url('movtypes') }}">
             </div>
 
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#configAccounting">Configurazione Contabilità</button>

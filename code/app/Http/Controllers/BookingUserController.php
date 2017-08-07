@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use DB;
+use URL;
 use Auth;
+
 use App\User;
 use App\Aggregate;
 
@@ -62,15 +65,15 @@ class BookingUserController extends BookingHandler
         return $this->successResponse();
     }
 
-    public function objhead2(Request $request, $booking_id, $user_id)
+    public function objhead2(Request $request, $aggregate_id, $user_id)
     {
-        $aggregate = Aggregate::findOrFail($booking_id);
+        $aggregate = Aggregate::findOrFail($aggregate_id);
         $subject = $aggregate->bookingBy($user_id);
 
         return response()->json([
             'id' => $subject->id,
             'header' => $subject->printableHeader(),
-            'url' => URL::action('BookingUserController@show', ['booking' => $booking_id, 'user' => $user_id])
+            'url' => URL::action('BookingUserController@show', ['aggregate' => $aggregate_id, 'user' => $user_id])
         ]);
     }
 }

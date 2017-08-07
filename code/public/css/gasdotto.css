@@ -106,6 +106,9 @@ table label {
 .icons-legend {
   margin-bottom: 10px; }
 
+.modal-extra-lg {
+  width: 90%; }
+
 #delete-confirm-modal {
   z-index: 1500; }
 

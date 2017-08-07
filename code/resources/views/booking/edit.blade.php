@@ -6,10 +6,15 @@ $grand_total = 0;
 ?>
 
 <form class="form-horizontal inner-form booking-form" method="PUT" action="{{ url('booking/' . $aggregate->id . '/user/' . $user->id) }}">
-    <input type="hidden" name="post-saved-function" value="closeMainForm">
+    <input type="hidden" name="post-saved-function" value="afterBookingSaved">
 
     @foreach($aggregate->orders as $order)
-        @if($order->status != 'open')
+        {{--
+            Gli addetti alle consegne devono sempre poter accedere, capita di
+            dover creare una nuova prenotazione a ordine chiuso (con "Aggiungi
+            Utente" in fase di consegna)
+        --}}
+        @if($order->status != 'open' && Gate::check('supplier.shippings', $order->supplier) == false)
             <?php continue ?>
         @endif
 

@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
 use DB;
 use Auth;
+use URL;
+
 use App\User;
 use App\Aggregate;
 use App\BookedProductVariant;
@@ -141,6 +144,11 @@ class BookingHandler extends Controller
             }
         }
 
-        return $this->successResponse();
+        $subject = $aggregate->bookingBy($user_id);
+        return $this->successResponse([
+            'id' => $subject->id,
+            'header' => $subject->printableHeader(),
+            'url' => URL::action($delivering ? 'DeliveryUserController@show' : 'BookingUserController@show', ['aggregate' => $aggregate_id, 'user' => $user_id])
+        ]);
     }
 }

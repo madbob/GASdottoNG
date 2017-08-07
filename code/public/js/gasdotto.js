@@ -231,7 +231,7 @@ function voidForm(form) {
     form.find('textarea').val('');
 }
 
-function closeMainForm(form) {
+function closeMainForm(form, data) {
     var container = form.closest('.list-group-item');
     var head = container.prev();
     head.removeClass('active');
@@ -240,6 +240,9 @@ function closeMainForm(form) {
     $('html, body').animate({
         scrollTop: head.offset().top - 60
     }, 300);
+
+    if (typeof(data) != 'undefined' && data.hasOwnProperty('header'))
+        head.empty().append(data.header).attr('href', data.url);
 
     return head;
 }
@@ -483,7 +486,7 @@ function miscInnerCallbacks(form, data) {
         test.each(function() {
             var fn = window[$(this).val()];
             if (typeof fn === 'function')
-                fn(form);
+                fn(form, data);
         });
     }
 
@@ -571,7 +574,7 @@ function updateOrderSummary(form) {
     */
     var main_form = form.parents('.loadable-contents').last();
     main_form.find('.order-editor').each(function() {
-        var identifier = $(this).find('input[name=id]');
+        var identifier = $(this).find('input[name=order_id]');
         if (identifier.length == 0)
             return;
 
@@ -579,13 +582,13 @@ function updateOrderSummary(form) {
         var data = $(this).serializeArray();
 
         $.ajax({
-            method: 'GET',
+            method: 'POST',
             url: '/orders/recalculate/' + order_id,
             data: data,
             dataType: 'json',
 
             success: function(data) {
-                var summary = main_form.find('.order-editor input[name=id][value="' + data.order + '"]').closest('.order-editor').find('.order-summary');
+                var summary = main_form.find('.order-editor input[name=order_id][value="' + data.order + '"]').closest('.order-editor').find('.order-summary');
 
                 for (var info in data) {
                     if (data.hasOwnProperty(info)) {
@@ -624,6 +627,29 @@ $('body').on('keyup', '.order-summary input', function() {
 /*******************************************************************************
 	Prenotazioni / Consegne
 */
+
+function afterBookingSaved(form, data) {
+    var modal = form.closest('.modal');
+
+    var url = data.url.replace('booking/', 'delivery/');
+
+    /*
+        In questo caso, ho aggiunto una prenotazione dal modale di "Aggiunti
+        Utente" in fase di consegna
+    */
+    if (modal.length != 0) {
+        var list = $("button[data-target='#" + modal.attr('id') + "']").parent().find('.loadablelist');
+        list.append('<a data-element-id="' + data.id + '" href="' + url + '" class="loadable-item list-group-item">' + data.header + '</a>');
+        testListsEmptiness();
+        modal.modal('hide');
+    }
+    /*
+        In questo caso, ho aggiunto la prenotazione dal pannello "Prenotazioni"
+    */
+    else {
+        closeMainForm(form, data);
+    }
+}
 
 function bookingTotal(editor) {
     var total_price = 0;
@@ -789,10 +815,9 @@ function submitDeliveryForm(form) {
     var modal = form.closest('.modal');
     var id = modal.attr('id');
     var mainform = $('form[data-reference-modal=' + id + ']');
-    mainform.submit();
 
     modal.on('hidden.bs.modal', function() {
-        closeMainForm(mainform);
+        mainform.submit();
     });
     modal.modal('hide');
 }

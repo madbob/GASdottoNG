@@ -206,6 +206,7 @@ $rand = rand();
     @endif
 
     <input type="hidden" name="post-saved-function" value="updateOrderSummary">
+    <input type="hidden" name="post-saved-function" value="closeMainForm">
 </form>
 
 @if($handling_movements)

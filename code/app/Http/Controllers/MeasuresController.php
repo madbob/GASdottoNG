@@ -49,7 +49,7 @@ class MeasuresController extends Controller
 
         return $this->successResponse([
             'id' => $measure->id,
-                        'discrete' => $measure->discrete,
+            'discrete' => $measure->discrete,
             'name' => $measure->name,
         ]);
     }
