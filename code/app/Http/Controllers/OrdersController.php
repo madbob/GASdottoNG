@@ -270,7 +270,20 @@ class OrdersController extends Controller
         Questa funzione è usata per aggiornare manualmente le quantità
         di un certo prodotto all'interno di un ordine
     */
-    public function fixes(Request $request, $id)
+    public function getFixes(Request $request, $id, $product_id)
+    {
+        $order = Order::findOrFail($id);
+        if ($request->user()->can('supplier.orders', $order->supplier) == false) {
+            return $this->errorResponse('Non autorizzato');
+        }
+
+        $product = Product::findOrFail($product_id);
+        $order->hasProduct($product);
+
+        return Theme::view('order.fixes', ['order' => $order, 'product' => $product]);
+    }
+
+    public function postFixes(Request $request, $id)
     {
         DB::beginTransaction();
 

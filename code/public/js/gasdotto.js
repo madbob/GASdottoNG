@@ -131,11 +131,11 @@ function generalInit() {
             });
 
             var contents = $(this).find('.modal-content');
-            contents.empty();
+            contents.empty().append(loadingPlaceholder());
             var url = $(this).attr('data-contents-url');
 
             $.get(url, function(data) {
-                contents.append(data);
+                contents.empty().append(data);
             });
         }
     });
