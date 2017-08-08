@@ -392,18 +392,25 @@ class MovementType extends Model
                             $delivered = $total;
                         }
 
-                        $m = $movement->replicate();
-                        $m->target_id = $booking->id;
-                        $m->target_type = 'App\Booking';
+                        $existing_movement = $booking->payment;
+                        if ($existing_movement == null) {
+                            $m = $movement->replicate();
+                            $m->target_id = $booking->id;
+                            $m->target_type = 'App\Booking';
+
+                            /*
+                                Qui devo ricaricare la relazione "target",
+                                altrimenti resta in memoria quella precedente
+                                (che faceva riferimento ad un Aggregate, dunque
+                                non è corretta e sul salvataggio spacca tutto)
+                            */
+                            $m->load('target');
+                        }
+                        else {
+                            $m = $existing_movement;
+                        }
+
                         $m->amount = $delivered;
-
-                        /*
-                            Qui devo ricaricare la relazione "target", altrimenti resta in memoria quella precedente
-                            (che faceva riferimento ad un Aggregate, dunque non è corretta e sul salvataggio spacca
-                            tutto)
-                        */
-                        $m->load('target');
-
                         $m->save();
 
                         $total -= $delivered;
@@ -412,6 +419,10 @@ class MovementType extends Model
                         }
                     }
 
+                    /*
+                        Se avanza qualcosa, lo metto sulla fiducia nell'ultimo
+                        movimento salvato
+                    */
                     if ($total > 0 && $m != null) {
                         $m->amount += $total;
                         $m->save();

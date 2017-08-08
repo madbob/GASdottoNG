@@ -714,7 +714,7 @@ function bookingTotal(editor) {
         status[$(this).attr('data-booking-id')] = t;
     });
 
-    form.find('.all-bookings-total').text(grand_total);
+    form.find('.all-bookings-total').text(priceRound(grand_total));
 
     /*
     	Qui aggiorno il valore totale della prenotazione nel (eventuale)

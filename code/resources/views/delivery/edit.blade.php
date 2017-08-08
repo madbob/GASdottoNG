@@ -212,7 +212,7 @@ $rand = rand();
 @if($handling_movements)
     @include('movement.modal', [
         'dom_id' => $rand,
-        'obj' => $o->payment,
+        'obj' => null, // qui gestisco sempre un movimento di pagamento come nuovo, eventualmente la pre-callback di 'booking-payment' provvederà a caricare quelli esistenti assegnati alle prenotazioni contemplate
         'default' => \App\Movement::generate('booking-payment', $user, $aggregate, $tot_amount),
         'extra' => [
             'post-saved-function' => 'submitDeliveryForm',

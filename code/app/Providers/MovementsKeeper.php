@@ -16,6 +16,11 @@ class MovementsKeeper extends ServiceProvider
     {
         $metadata = $movement->type_metadata;
 
+        if ($movement->archived == true) {
+            Log::error('Movimento: tentata modifica di movimento già storicizzato in bilancio passato');
+            return false;
+        }
+
         if ($metadata->sender_type == null) {
             $movement->sender_type = null;
             $movement->sender_id = null;
@@ -113,9 +118,6 @@ class MovementsKeeper extends ServiceProvider
             Questo è per invertire l'effetto del movimento contabile modificato
             sui bilanci, in modo che possa poi essere riapplicato coi nuovi
             valori
-
-            TODO: impedire aggiornamento di movimenti precedenti alla chiusura
-            dell'ultimo bilancio
         */
         Movement::updating(function ($movement) {
             /*
