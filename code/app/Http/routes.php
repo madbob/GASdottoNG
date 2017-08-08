@@ -15,6 +15,7 @@ Route::get('/home', function () {
 
 Route::get('users/search', 'UsersController@search');
 Route::get('users/profile', 'UsersController@profile');
+Route::get('users/picture/{id}', 'UsersController@picture');
 Route::get('roles/user/{user_id}', 'RolesController@formByUser');
 Route::get('roles/supplier/{supplier_id}', 'RolesController@formBySupplier');
 Route::post('roles/attach', 'RolesController@attach');

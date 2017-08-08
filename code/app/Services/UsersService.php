@@ -141,6 +141,14 @@ class UsersService
 
             $user->save();
 
+            if (isset($request['picture'])) {
+                $file = $request['picture'];
+                $filename = str_random(30);
+                $file->move(storage_path('app'), $filename);
+                $user->picture = sprintf('app/%s', $filename);
+                $user->save();
+            }
+
             $user->updateContacts($request);
 
             return $user;
@@ -183,5 +191,12 @@ class UsersService
         });
 
         return $user;
+    }
+
+    public function picture($id)
+    {
+        $this->ensureAuth();
+        $user = User::findOrFail($id);
+        return response()->download(storage_path($user->picture));
     }
 }

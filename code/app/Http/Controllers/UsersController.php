@@ -110,6 +110,15 @@ class UsersController extends Controller
         }
     }
 
+    public function picture($id)
+    {
+        try {
+            return $this->usersService->picture($id);
+        } catch (AuthException $e) {
+            abort($e->status());
+        }
+    }
+
     private function userSuccessResponse($user)
     {
         return $this->successResponse([

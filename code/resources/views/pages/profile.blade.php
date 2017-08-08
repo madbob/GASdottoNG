@@ -9,6 +9,8 @@
             @include('commons.contactswidget', ['obj' => $user])
         </div>
         <div class="col-md-6">
+            @include('commons.imagefield', ['obj' => $user, 'name' => 'picture', 'label' => 'Foto', 'valuefrom' => 'picture_url'])
+
             @if(Gate::check('users.admin', $currentgas))
                 @include('commons.datefield', ['obj' => $user, 'name' => 'member_since', 'label' => 'Membro da'])
                 @include('commons.textfield', ['obj' => $user, 'name' => 'card_number', 'label' => 'Numero Tessera'])

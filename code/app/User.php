@@ -123,6 +123,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $value;
     }
 
+    public function getPictureUrlAttribute()
+    {
+        if (empty($this->picture))
+            return '';
+        else
+            return url('users/picture/' . $this->id);
+    }
+
     /******************************************************** CreditableTrait */
 
     public static function balanceFields()

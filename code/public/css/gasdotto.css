@@ -170,6 +170,9 @@ table label {
   font-size: 10px;
   font-family: 'Glyphicons Halflings'; }
 
+.img-preview img {
+  max-height: 150px; }
+
 .movement-type-editor .btn-group label.btn.active:after {
   content: ''; }
 

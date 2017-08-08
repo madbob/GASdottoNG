@@ -146,5 +146,5 @@ if (isset($init_function) == false) {
         @endforeach
     @endif
 
-    <button class="btn btn-default add-many-rows">{{ $new_label }}</button>
+    <button class="btn btn-warning add-many-rows">{{ $new_label }}</button>
 </div>

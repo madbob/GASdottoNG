@@ -272,6 +272,19 @@ function checkboxSorter(a, b) {
         return 1;
 }
 
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        var img = $(input).closest('.img-preview').find('img');
+
+        reader.onload = function (e) {
+            img.attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
 function wizardLoadPage(node, contents) {
     var page = node.closest('.wizard_page');
     var parent = page.parent();
@@ -1407,16 +1420,29 @@ $(document).ready(function() {
 
     $('body').on('submit', '.main-form', function(event) {
         event.preventDefault();
-        var form = $(this);
-        var data = form.serializeArray();
 
+        var form = $(this);
         form.find('.main-form-buttons button').attr('disabled', 'disabled');
 
+        /*
+            Problema di origine sconosciuta: i dati in multipart/form-data
+            inviati con una PUT non vengono letti
+            https://github.com/laravel/framework/issues/13457
+        */
+        var data = new FormData(this);
+        var method = form.attr('method').toUpperCase();
+        if (method == 'PUT') {
+            method = 'POST';
+            data.append('_method', 'PUT');
+        }
+
         $.ajax({
-            method: form.attr('method'),
+            method: method,
             url: form.attr('action'),
             data: data,
             dataType: 'json',
+            processData: false,
+            contentType: false,
 
             success: function(data) {
                 var h = closeMainForm(form);
@@ -1543,6 +1569,10 @@ $(document).ready(function() {
                     $(this).addClass('hidden');
             });
         }
+    });
+
+    $('body').on('change', '.img-preview input:file', function() {
+        previewImage(this);
     });
 
     $('body').on('submit', '.inner-form', function(event) {

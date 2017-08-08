@@ -1,4 +1,4 @@
-<form class="form-horizontal main-form user-editor" method="PUT" action="{{ url('users/' . $user->id) }}">
+<form class="form-horizontal main-form user-editor" method="PUT" action="{{ url('users/' . $user->id) }}" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-6">
             @include('user.base-edit', ['user' => $user])
@@ -6,9 +6,11 @@
         </div>
         <div class="col-md-6">
             @if(Gate::check('users.admin', $currentgas))
+                @include('commons.imagefield', ['obj' => $user, 'name' => 'picture', 'label' => 'Foto', 'valuefrom' => 'picture_url'])
                 @include('commons.datefield', ['obj' => $user, 'name' => 'member_since', 'label' => 'Membro da'])
                 @include('commons.textfield', ['obj' => $user, 'name' => 'card_number', 'label' => 'Numero Tessera'])
             @else
+                @include('commons.staticimagefield', ['obj' => $user, 'label' => 'Foto', 'valuefrom' => 'picture_url'])
                 @include('commons.staticdatefield', ['obj' => $user, 'name' => 'member_since', 'label' => 'Membro da'])
                 @include('commons.staticstringfield', ['obj' => $user, 'name' => 'card_number', 'label' => 'Numero Tessera'])
             @endif
