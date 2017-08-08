@@ -13,6 +13,10 @@ if (isset($width)) {
     $column_size = floor(11 / $columns_count);
 }
 
+foreach($columns as $index => $column)
+    if (!isset($columns[$index]['width']))
+        $columns[$index]['width'] = $column_size;
+
 if (isset($new_label) == false) {
     $new_label = 'Aggiungi Nuovo';
 }
@@ -32,7 +36,7 @@ if (isset($init_function) == false) {
         <div class="row many-rows-header">
             @foreach($columns as $column)
                 @if($column['type'] != 'hidden')
-                    <div class="col-md-{{ $column_size }} col-sm-{{ $column_size }}">
+                    <div class="col-md-{{ $column['width'] }} col-sm-{{ $column['width'] }}">
                         <label>{{ $column['label'] }}</label>
                         @if(isset($column['help']))
                             <button type="button" class="btn btn-xs btn-default" data-container="body" data-toggle="popover" data-placement="right" data-trigger="hover" data-content="{{ $column['help'] }}">
@@ -71,7 +75,7 @@ if (isset($init_function) == false) {
                     ?>
 
                     @if($column['type'] != 'hidden')
-                        <div class="col-md-{{ $column_size }} col-sm-{{ $column_size }}">
+                        <div class="col-md-{{ $column['width'] }} col-sm-{{ $column['width'] }}">
                             @include('commons.' . $column['type'] . 'field', $attributes)
                         </div>
                     @else
@@ -108,7 +112,7 @@ if (isset($init_function) == false) {
 
                         ?>
 
-                        <div class="col-md-{{ $column_size }} col-sm-{{ $column_size }} customized-cell">
+                        <div class="col-md-{{ $column['width'] }} col-sm-{{ $column['width'] }} customized-cell">
                             {!! vsprintf($column['contents'], $values) !!}
                         </div>
                     @else
@@ -130,7 +134,7 @@ if (isset($init_function) == false) {
                         ?>
 
                         @if($column['type'] != 'hidden')
-                            <div class="col-md-{{ $column_size }} col-sm-{{ $column_size }}">
+                            <div class="col-md-{{ $column['width'] }} col-sm-{{ $column['width'] }}">
                                 @include('commons.' . $column['type'] . 'field', $attributes)
                             </div>
                         @else

@@ -120,6 +120,10 @@ function generalInit() {
         }
     });
 
+    $('.modal').draggable({
+        handle: '.modal-header'
+    });
+
     $('.modal.dynamic-contents').on('show.bs.modal', function(e) {
         if (typeof $.data(e.target, 'dynamic-inited') == 'undefined') {
             $.data(e.target, 'dynamic-inited', {
@@ -2085,11 +2089,6 @@ $(document).ready(function() {
             data: {
                 serialized: data
             },
-            dataType: 'json',
-
-            success: function(data) {
-                box.closest('.modal').modal('hide');
-            }
         });
 
         return false;
@@ -2121,6 +2120,10 @@ $(document).ready(function() {
         });
 
         return false;
+    });
+
+    $('body').on('submit', '.modal.close-on-submit form', function(event) {
+        $(this).closest('.modal').modal('hide');
     });
 
     $('body').on('submit', '.modal form', function(event) {

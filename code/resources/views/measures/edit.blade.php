@@ -16,18 +16,21 @@
                         [
                             'label' => 'ID',
                             'field' => 'id',
-                            'type' => 'hidden'
+                            'type' => 'hidden',
+                            'width' => 0
                         ],
                         [
                             'label' => 'Nome',
                             'field' => 'name',
-                            'type' => 'text'
+                            'type' => 'text',
+                            'width' => 5
                         ],
                         [
                             'label' => 'Unità Discreta',
                             'field' => 'discrete',
                             'help' => 'Le unità discrete non sono frazionabili: sui prodotti cui viene assegnata una unità di misura etichettata con questo attributo non sarà possibile attivare proprietà come "Prezzo Variabile" e "Pezzatura"',
                             'type' => 'bool',
+                            'width' => 3,
                             'extra' => [
                                 'valuefrom' => 'id'
                             ]
@@ -36,6 +39,7 @@
                             'label' => 'Prodotti',
                             'field' => 'id',
                             'type' => 'custom',
+                            'width' => 3,
                             'contents' => '<button type="button" class="btn btn-default async-popover" data-contents-url="' . url('measures/list/%s') . '" data-container="body" data-toggle="popover" data-placement="right" data-content="placeholder" data-html="true" data-trigger="hover"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></button>'
                         ]
                     ]
