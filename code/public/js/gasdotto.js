@@ -113,7 +113,16 @@ function generalInit() {
                 source: userBlood.ttAdapter()
             }).on('typeahead:selected', function(obj, result, name) {
                 var aggregate_id = $(this).attr('data-aggregate');
+
+                /*
+                    Cfr. BookingHandler::bookingUpdate();
+                */
+                var inject_special_identifier = ($(this).closest('.modal').lenght != 0);
+
                 $.get('/booking/' + aggregate_id + '/user/' + result.id, function(form) {
+                    form = $(form);
+                    if (inject_special_identifier)
+                        form.append('<input type="hidden" name="booking-on-shipping" value="1">');
                     $('.other-booking').empty().append(form);
                 });
             });
@@ -635,14 +644,13 @@ $('body').on('keyup', '.order-summary input', function() {
 function afterBookingSaved(form, data) {
     var modal = form.closest('.modal');
 
-    var url = data.url.replace('booking/', 'delivery/');
-
     /*
         In questo caso, ho aggiunto una prenotazione dal modale di "Aggiunti
         Utente" in fase di consegna
     */
     if (modal.length != 0) {
         var list = $("button[data-target='#" + modal.attr('id') + "']").parent().find('.loadablelist');
+        var url = data.url.replace('booking/', 'delivery/');
         list.append('<a data-element-id="' + data.id + '" href="' + url + '" class="loadable-item list-group-item">' + data.header + '</a>');
         testListsEmptiness();
         modal.modal('hide');
