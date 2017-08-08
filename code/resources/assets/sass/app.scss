@@ -217,6 +217,11 @@ table {
     }
 }
 
+.address-popover {
+    width: 400px;
+    max-width: 400px;
+}
+
 .movement-type-editor {
     .btn-group {
         label.btn.active:after {

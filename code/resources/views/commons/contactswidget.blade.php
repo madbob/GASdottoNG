@@ -6,6 +6,7 @@
     <div class="col-sm-{{ $fieldsize }}">
         @include('commons.manyrows', [
             'contents' => $obj ? $obj->contacts : [],
+            'extra_class' => 'contacts-selection',
             'columns' => [
                 [
                     'label' => 'ID',

@@ -58,6 +58,12 @@ function generalInit() {
         }, 300);
     });
 
+    $('.contacts-selection .row').each(function() {
+        var input = $(this).find('input:text');
+        var typeclass = $(this).find('select option:selected').val();
+        input.attr('class', '').addClass('form-control').addClass(typeclass);
+    });
+
     $('.trim-2-ddigits').blur(function() {
         $(this).val(parseFloatC($(this).val()).toFixed(2));
     });
@@ -1665,6 +1671,71 @@ $(document).ready(function() {
 
     $('body').on('change', '.measure-selector', function(event) {
         enforceMeasureDiscrete($(this));
+    });
+
+    $('body').on('change', '.contacts-selection select', function() {
+        $(this).closest('.row').find('input:text').attr('class', '').addClass('form-control').addClass($(this).find('option:selected').val());
+    });
+
+    $('body').on('focus', 'input.address', function() {
+        $(this).popover({
+            content: function() {
+                var input = $(this);
+
+                var ret = $('<div>\
+                    <div class="form-group">\
+                        <label for="street" class="col-sm-4 control-label">Indirizzo</label>\
+                        <div class="col-sm-8"><input type="text" class="form-control" name="street" value="" autocomplete="off"></div>\
+                    </div>\
+                    <div class="form-group">\
+                        <label for="city" class="col-sm-4 control-label">Città</label>\
+                        <div class="col-sm-8"><input type="text" class="form-control" name="city" value="" autocomplete="off"></div>\
+                    </div>\
+                    <div class="form-group">\
+                        <label for="cap" class="col-sm-4 control-label">CAP</label>\
+                        <div class="col-sm-8"><input type="text" class="form-control" name="cap" value="" autocomplete="off"></div>\
+                    </div>\
+                    <div class="form-group">\
+                        <div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">Annulla</button> <button class="btn btn-success">Salva</button></div>\
+                    </div>\
+                </div>');
+
+                var value = $(this).val();
+                if (value != '') {
+                    var values = value.split(',');
+                    for(var i = values.length; i < 3; i++)
+                        values[i] = '';
+                    ret.find('input[name=street]').val(values[0].trim());
+                    ret.find('input[name=city]').val(values[1].trim());
+                    ret.find('input[name=cap]').val(values[2].trim());
+                }
+
+                ret.find('button.btn-success').click(function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var street = ret.find('input[name=street]').val().trim().replace(',', '');
+                    var city = ret.find('input[name=city]').val().trim().replace(',', '');
+                    var cap = ret.find('input[name=cap]').val().trim().replace(',', '');
+
+                    if (street == '' && city == '' && cap == '')
+                        input.val('');
+                    else
+                        input.val(street + ', ' + city + ', ' + cap);
+
+                    input.popover('destroy');
+                });
+
+                ret.find('button.btn-default').click(function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    input.popover('destroy');
+                });
+
+                return ret;
+            },
+            template: '<div class="popover address-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
+            html: true,
+        });
     });
 
     $('body').on('change', '.movement-type-selector', function(event) {

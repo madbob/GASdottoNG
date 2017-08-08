@@ -25,13 +25,14 @@ if (isset($show_columns) == false) {
     $show_columns = false;
 }
 
-if (isset($init_function) == false) {
-    $init_function = null;
+$class = 'many-rows';
+if (isset($extra_class)) {
+    $class .= ' ' . $extra_class;
 }
 
 ?>
 
-<div class="many-rows" {!! $init_function ? 'data-init-function="' . $init_function . '"' : '' !!}>
+<div class="{{ $class }}">
     @if($show_columns == true)
         <div class="row many-rows-header">
             @foreach($columns as $column)

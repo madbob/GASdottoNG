@@ -39,9 +39,12 @@ class ImportLegacy extends Command
     {
         list($street, $cap, $city) = explode(';', $old);
         list($prefix, $street) = explode(':', $street);
+        $street = str_replace(',', '', $street);
         list($prefix, $cap) = explode(':', $cap);
+        $cap = str_replace(',', '', $cap);
         list($prefix, $city) = explode(':', $city);
-        return sprintf('%s, %s, %s', $street, $cap, $city);
+        $city = str_replace(',', '', $city);
+        return sprintf('%s, %s, %s', $street, $city, $cap);
     }
 
     private function handleContact($type, $external_name, $source, $obj)
