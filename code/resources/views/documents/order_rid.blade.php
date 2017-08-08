@@ -47,8 +47,8 @@ foreach($order->bookings as $booking) {
             echo ' 20' . $block_head . str_pad(strtoupper($currentgas->rid_name), 110) . "\n";
             echo ' 30' . $block_head . str_pad(strtoupper($user->printableName()), 110 ) . "\n";
 
-            // echo ' 40' . $block_head . str_pad(strtoupper($user_address->street), 30) . str_pad(strtoupper($user_address->cap), 5) . str_pad(strtoupper($user_address->city), 25) . str_pad('', 50) . "\n";
-            echo ' 40' . $block_head . str_pad(strtoupper($user->contacts()->where('contact_type', 'address')->first()->value), 60) . str_pad('', 50) . "\n";
+            list($street, $city, $cap) = $user->getAddress();
+            echo ' 40' . $block_head . str_pad(strtoupper($street), 30) . str_pad(strtoupper($cap), 5) . str_pad(strtoupper($city), 25) . str_pad('', 50) . "\n";
 
             echo ' 50' . $block_head . str_pad('PAGAMENTO ORDINE ' . $supplier_name, 110) . "\n";
             echo ' 70' . $block_head . str_pad('', 110) . "\n";

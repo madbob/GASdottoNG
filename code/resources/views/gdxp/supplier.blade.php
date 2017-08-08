@@ -6,9 +6,10 @@
 		<name>{{ $obj->business_name }}</name>
 
 		<address>
-			<street>Via Antica Torriana, 11</street>
-			<locality>Barge (CN)</locality>
-			<zipCode>12032</zipCode>
+            <?php list($street, $city, $cap) = $obj->getAddress() ?>
+			<street>{{ $street }}</street>
+			<locality>{{ $city }}</locality>
+			<zipCode>{{ $cap }}</zipCode>
 			<country>IT</country>
 		</address>
 
