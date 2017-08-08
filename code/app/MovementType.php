@@ -600,7 +600,7 @@ class MovementType extends Model
         $ops = json_decode($this->function);
 
         foreach($ops as $o) {
-            if ($o->method == $movement->method)
+            if ($o->method != $movement->method)
                 continue;
 
             foreach($o->sender->operations as $op)

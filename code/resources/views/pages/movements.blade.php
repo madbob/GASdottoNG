@@ -33,7 +33,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <label for="year_closing" class="col-sm-{{ $labelsize }} control-label">Chiusura Anno</label>
+                                    <label for="year_closing" class="col-sm-{{ $labelsize }} control-label">Inizio Anno Sociale</label>
                                     <div class="col-sm-{{ $fieldsize }}">
                                         <div class="input-group">
                                             <input type="text" class="date-to-month form-control" name="year_closing" value="{{ ucwords(strftime('%d %B', strtotime($currentgas->getConfig('year_closing')))) }}" required autocomplete="off">

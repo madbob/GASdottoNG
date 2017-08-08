@@ -155,6 +155,9 @@ table label {
   font-size: 10px;
   font-family: 'Glyphicons Halflings'; }
 
+.movement-type-editor .btn-group label.btn.active:after {
+  content: ''; }
+
 .dense-list ul {
   height: 710px;
   overflow-x: hidden; }

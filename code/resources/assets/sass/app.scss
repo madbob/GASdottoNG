@@ -186,6 +186,14 @@ table {
     }
 }
 
+.movement-type-editor {
+    .btn-group {
+        label.btn.active:after {
+            content: '';
+        }
+    }
+}
+
 .dense-list {
     ul {
         height: 710px;
