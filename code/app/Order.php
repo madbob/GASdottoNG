@@ -125,8 +125,18 @@ class Order extends Model
 
     public function getInternalNumberAttribute()
     {
-        $year = date('Y', strtotime($this->start));
-        return (Order::where('supplier_id', $this->supplier_id)->where(DB::raw('YEAR(start)'), $year)->where('start', '<', $this->start)->count() + 1) . '/' . $year;
+        if(!isset($this->internal_number_cache)) {
+            $o = $this;
+            $year = date('Y', strtotime($o->start));
+
+            $this->internal_number_cache = (Order::where(DB::raw('YEAR(start)'), $year)->where(function($query) use ($o) {
+                $query->where('start', '<', $this->start)->orWhere(function($query) use ($o) {
+                    $query->where('start', $this->start)->where('id', '<', $this->id);
+                });
+            })->count() + 1) . '/' . $year;
+        }
+
+        return $this->internal_number_cache;
     }
 
     /*
