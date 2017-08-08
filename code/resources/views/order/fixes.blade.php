@@ -14,23 +14,27 @@
             <hr/>
         @endif
 
-        <table class="table table-striped">
-            @foreach($order->bookings as $po)
-                <tr>
-                    <td>
-                        <label>{{ $po->user->printableName() }}</label>
-                    </td>
-                    <td>
-                        <input type="hidden" name="booking[]" value="{{ $po->id }}" />
+        @if($order->bookings->isEmpty())
+            <div class="alert alert-info">Da qui è possibile modificare la quantità prenotata di questo prodotto per ogni prenotazione, ma nessun utente ha ancora partecipato all'ordine.</div>
+        @else
+            <table class="table table-striped">
+                @foreach($order->bookings as $po)
+                    <tr>
+                        <td>
+                            <label>{{ $po->user->printableName() }}</label>
+                        </td>
+                        <td>
+                            <input type="hidden" name="booking[]" value="{{ $po->id }}" />
 
-                        <div class="input-group">
-                            <input type="number" class="form-control" name="quantity[]" value="{{ $po->getBookedQuantity($product) }}" />
-                            <div class="input-group-addon">{{ $product->printableMeasure() }}</div>
-                        </div>
-                    </td>
-                </tr>
-            @endforeach
-        </table>
+                            <div class="input-group">
+                                <input type="number" class="form-control" name="quantity[]" value="{{ $po->getBookedQuantity($product) }}" />
+                                <div class="input-group-addon">{{ $product->printableMeasure() }}</div>
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+            </table>
+        @endif
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>

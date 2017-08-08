@@ -2,12 +2,12 @@
     <thead>
         <tr>
             @if($order->isActive())
-                <th width="5%"><button class="btn btn-default toggle-product-abilitation" data-toggle="button" aria-pressed="false" autocomplete="off">Visualizza<br/>tutti</button></th>
+                <th class="hidden-md" width="5%"><button class="btn btn-default toggle-product-abilitation" data-toggle="button" aria-pressed="false" autocomplete="off">Visualizza<br/>tutti</button></th>
                 <th width="17%">Prodotto</th>
                 <th width="8%">Prezzo</th>
                 <th width="8%">Trasporto</th>
                 <th width="8%">Disponibile</th>
-                <th width="5%">Sconto Prodotto</th>
+                <th class="hidden-md" width="5%">Sconto Prodotto</th>
                 <th width="9%">Unità di Misura</th>
                 <th width="9%">Quantità Ordinata</th>
                 <th width="5%">Totale Prezzo</th>
@@ -42,7 +42,7 @@
 
                 @if($order->isActive())
                     <!-- Visualizza tutti -->
-                    <td>
+                    <td class="hidden-md">
                         <input class="enabling-toggle" type="checkbox" name="enabled[]" value="{{ $product->id }}" <?php if($enabled) echo 'checked' ?> />
                     </td>
                 @endif
@@ -94,7 +94,7 @@
                     </td>
 
                     <!-- Sconto Prodotto -->
-                    <td>
+                    <td class="hidden-md">
                         @if(!empty($product->discount))
                             <input class="discount-toggle" type="checkbox" name="discounted[]" value="{{ $product->id }}" <?php if($enabled && $product->pivot->discount_enabled) echo 'checked' ?> />
                         @endif

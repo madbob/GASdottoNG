@@ -12,7 +12,7 @@ if(isset($empty_message) == false)
 @if(!empty($filters) || !is_null($legend))
     <div class="row">
         <div class="col-md-12 flowbox">
-            <div class="form-group mainflow">
+            <div class="form-group mainflow hidden-md">
                 <input type="text" class="form-control list-text-filter" data-list-target="#{{ $identifier }}">
             </div>
             <div>

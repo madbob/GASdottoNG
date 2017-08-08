@@ -292,7 +292,7 @@ class MovementType extends Model
 
         $type = new MovementType();
         $type->id = 'booking-payment';
-        $type->name = 'Pagamento di una prenotazione da parte di un socio';
+        $type->name = 'Pagamento prenotazione da parte di un socio';
         $type->sender_type = 'App\User';
         $type->target_type = 'App\Booking';
         $type->allow_negative = false;
@@ -453,7 +453,7 @@ class MovementType extends Model
 
         $type = new MovementType();
         $type->id = 'order-payment';
-        $type->name = 'Pagamento dell\'ordine presso il fornitore';
+        $type->name = 'Pagamento ordine presso il fornitore';
         $type->sender_type = 'App\Gas';
         $type->target_type = 'App\Order';
         $type->allow_negative = false;

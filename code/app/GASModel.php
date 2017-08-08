@@ -153,13 +153,13 @@ trait GASModel
                         'test' => function ($obj) use ($user) {
                             return $user->can('supplier.orders', $obj);
                         },
-                        'text' => 'Puoi modificare l\'ordine',
+                        'text' => 'Puoi modificare',
                     ],
                     'arrow-down' => (object) [
                         'test' => function ($obj) use ($user) {
                             return $user->can('supplier.shippings', $obj);
                         },
-                        'text' => 'Gestisci le consegne per l\'ordine',
+                        'text' => 'Gestisci le consegne',
                     ],
                     'play' => (object) [
                         'test' => function ($obj) {

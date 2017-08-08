@@ -11,6 +11,7 @@
                     'label' => 'ID',
                     'field' => 'id',
                     'type' => 'hidden',
+                    'width' => 0,
                     'extra' => [
                         'prefix' => 'contact_'
                     ]
@@ -19,6 +20,7 @@
                     'label' => 'Tipo',
                     'field' => 'type',
                     'type' => 'selectenum',
+                    'width' => 4,
                     'extra' => [
                         'prefix' => 'contact_',
                         'values' => App\Contact::types()
@@ -28,6 +30,7 @@
                     'label' => 'Valore',
                     'field' => 'value',
                     'type' => 'text',
+                    'width' => 6,
                     'extra' => [
                         'prefix' => 'contact_'
                     ]
