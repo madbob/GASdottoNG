@@ -62,7 +62,7 @@ else {
                 <tr>
                     <td>{{ $mov->printableDate('registration_date') }}</td>
                     <td>{{ $mov->printableType() }}</td>
-                    <td><span class="glyphicon {{ $mov->payment_icon }}" aria-hidden="true"></span></td>
+                    <td>{!! $mov->payment_icon !!}</td>
                     <td>{{ $reference ? $reference->printableName() : '' }}</td>
                     <td>{{ $in != 0 ? $in . '€' : '' }}</td>
                     <td>{{ $out != 0 ? $out . '€' : '' }}</td>

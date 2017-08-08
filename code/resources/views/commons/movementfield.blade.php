@@ -14,10 +14,10 @@ $rand = rand();
     <div class="col-sm-{{ $fieldsize }}">
         <div class="col-sm-10">
             <label class="static-label text-muted" data-updatable-name="movement-date-{{ $rand }}" data-updatable-field="printable_text">
-                @if (!$obj || empty($obj->registration_date) || strstr($obj->registration_date, '0000-00-00') !== false)
+                @if (!$obj)
                     Mai
                 @else
-                    {{ $obj->printableDate('registration_date') }} <span class="glyphicon {{ $obj->payment_icon }}" aria-hidden="true"></span>
+                    {!! $obj->printableName() !!}
                 @endif
             </label>
         </div>

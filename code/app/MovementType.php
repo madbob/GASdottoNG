@@ -31,7 +31,7 @@ class MovementType extends Model
                 'icon' => 'glyphicon-ok',
             ],
             'bank' => (object) [
-                'name' => 'Conto Corrente',
+                'name' => 'Bonifico',
                 'identifier' => true,
                 'icon' => 'glyphicon-link',
             ],
@@ -349,7 +349,7 @@ class MovementType extends Model
                     'master' => (object) [
                         'operations' => [
                             (object) [
-                                'operation' => 'decrement',
+                                'operation' => 'increment',
                                 'field' => 'suppliers'
                             ],
                         ]

@@ -42,14 +42,18 @@ class Movement extends Model
     public function getPaymentIconAttribute()
     {
         $types = MovementType::payments();
+        $icon = 'glyphicon-question-sign';
+        $name = '???';
 
         foreach ($types as $id => $details) {
             if ($this->method == $id) {
-                return $details->icon;
+                $icon = $details->icon;
+                $name = $details->name;
+                break;
             }
         }
 
-        return 'glyphicon-question-sign';
+        return '<span class="glyphicon ' . $icon . '" aria-hidden="true"></span> ' . $name;
     }
 
     public function getTypeMetadataAttribute()
@@ -77,7 +81,10 @@ class Movement extends Model
 
     public function printableName()
     {
-        return sprintf('%s | %f €', $this->printableDate('created_at'), $this->amount);
+        if (empty($this->registration_date) || strstr($this->registration_date, '0000-00-00') !== false)
+            return 'Mai';
+        else
+            return sprintf('%s | %s € | %s', $this->printableDate('registration_date'), printablePrice($this->amount), $this->payment_icon);
     }
 
     public function printableType()

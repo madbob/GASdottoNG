@@ -113,11 +113,11 @@ class MovementsController extends Controller
             $bilist = false;
         }
 
-        if ($request->input('amountstart', '') != '') {
+        if ($request->input('amountstart', '0') != '0') {
             $query->where('amount', '>=', $request->input('amountstart'));
         }
 
-        if ($request->input('amountend', '') != '') {
+        if ($request->input('amountend', '0') != '0') {
             $query->where('amount', '<=', $request->input('amountend'));
         }
 
@@ -208,7 +208,7 @@ class MovementsController extends Controller
             return $this->successResponse([
                 'id' => $m->id,
                 'registration_date' => $printable_date,
-                'printable_text' => $printable_date . ' <span class="glyphicon ' . $m->payment_icon . '" aria-hidden="true"></span>'
+                'printable_text' => $m->printableName()
             ]);
         }
     }

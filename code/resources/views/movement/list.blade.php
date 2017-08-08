@@ -63,7 +63,7 @@ else {
                 <tr data-filtered-movements-filter="{{ $filtered_type }}">
                     <td>{{ $mov->printableDate('registration_date') }}</td>
                     <td>{{ $mov->printableType() }}</td>
-                    <td><span class="glyphicon {{ $mov->payment_icon }}" aria-hidden="true"></span></td>
+                    <td>{!! $mov->payment_icon !!}</td>
 
                     @if($exclude_sender == false)
                         <td>{{ $mov->sender ? $mov->sender->printableName() : '' }}</td>
