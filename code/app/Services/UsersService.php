@@ -124,12 +124,11 @@ class UsersService
                 $this->setIfSet($user, $request, 'card_number');
             }
 
-            $this->transformAndSetIfSet($user, $request, 'password', function ($password) {
-                if ($password == '') {
-                    return $password;
-                }
-                return Hash::make($password);
-            });
+            if(isset($request['password']) && !empty($request['password'])) {
+                $this->transformAndSetIfSet($user, $request, 'password', function ($password) {
+                    return Hash::make($password);
+                });
+            }
 
             if(!empty($user->gas->rid_name)) {
                 $this->transformAndSetIfSet($user, $request, 'iban', function ($iban) {
