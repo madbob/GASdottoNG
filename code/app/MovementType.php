@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 use Auth;
 
+use App\Events\SluggableCreating;
 use App\GASModel;
 
 class MovementType extends Model
@@ -16,6 +17,10 @@ class MovementType extends Model
     use SoftDeletes, GASModel, SluggableID;
 
     public $incrementing = false;
+
+    protected $events = [
+        'creating' => SluggableCreating::class,
+    ];
 
     public static function payments()
     {

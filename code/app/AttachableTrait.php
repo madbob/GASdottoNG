@@ -12,6 +12,8 @@ trait AttachableTrait
         if ($attachments->isEmpty()) {
             $extra = $this->defaultAttachments();
             foreach ($extra as $e) {
+                $e->target_id = $this->id;
+                $e->target_type = get_class($this);
                 $e->save();
                 $relation->save($e);
             }

@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Illuminate\Notifications\Notifiable;
+
 trait SluggableID
 {
     public function getSlugID()

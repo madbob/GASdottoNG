@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests;
+
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,51 +22,51 @@ class UsersServiceTest extends TestCase
         parent::setUp();
         Model::unguard();
 
-        $this->gas = factory(App\Gas::class)->create();
+        $this->gas = factory(\App\Gas::class)->create();
 
-        $view_role = App\Role::create([
+        $view_role = \App\Role::create([
             'name' => 'Viewer',
             'actions' => 'users.view'
         ]);
 
-        $this->userWithViewPerm = factory(App\User::class)->create([
+        $this->userWithViewPerm = factory(\App\User::class)->create([
             'gas_id' => $this->gas->id
         ]);
 
         $this->userWithViewPerm->addRole($view_role, $this->gas);
 
-        $admin_role = App\Role::create([
+        $admin_role = \App\Role::create([
             'name' => 'Admin',
             'actions' => 'users.admin'
         ]);
 
-        $this->userWithAdminPerm = factory(App\User::class)->create([
+        $this->userWithAdminPerm = factory(\App\User::class)->create([
             'gas_id' => $this->gas->id
         ]);
 
         $this->userWithAdminPerm->addRole($admin_role, $this->gas);
 
-        $treasure_role = App\Role::create([
+        $treasure_role = \App\Role::create([
             'name' => 'Treasure',
             'actions' => 'movements.admin'
         ]);
 
-        $this->userWithMovementPerm = factory(App\User::class)->create([
+        $this->userWithMovementPerm = factory(\App\User::class)->create([
             'gas_id' => $this->gas->id
         ]);
 
         $this->userWithMovementPerm->addRole($treasure_role, $this->gas);
 
-        $this->userWithNoPerms = factory(App\User::class)->create([
+        $this->userWithNoPerms = factory(\App\User::class)->create([
             'gas_id' => $this->gas->id
         ]);
 
-        factory(App\User::class, 3)->create([
+        factory(\App\User::class, 3)->create([
             'gas_id' => $this->gas->id
         ]);
 
-        $otherGas = factory(App\Gas::class)->create();
-        factory(App\User::class, 3)->create([
+        $otherGas = factory(\App\Gas::class)->create();
+        factory(\App\User::class, 3)->create([
             'gas_id' => $otherGas->id
         ]);
 
@@ -98,17 +100,17 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithViewPerm);
 
-        $user1 = factory(App\User::class)->create([
+        $user1 = factory(\App\User::class)->create([
             'gas_id' => $this->gas->id,
             'firstname' => 'supermario'
         ]);
 
-        $user2 = factory(App\User::class)->create([
+        $user2 = factory(\App\User::class)->create([
             'gas_id' => $this->gas->id,
             'lastname' => 'mariobros'
         ]);
 
-        factory(App\User::class)->create([
+        factory(\App\User::class)->create([
             'gas_id' => $this->gas->id,
             'firstname' => 'luigi'
         ]);
@@ -151,7 +153,7 @@ class UsersServiceTest extends TestCase
         ));
 
         $this->assertEquals('test user', $newUser->username);
-        $this->assertTrue(Hash::check('password', $newUser->password));
+        $this->assertTrue(\Hash::check('password', $newUser->password));
         $this->assertEquals('rossi mario', $newUser->printableName());
         $this->assertEquals(0, $newUser->pending_balance);
     }
@@ -180,7 +182,7 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $user = factory(App\User::class)->create([
+        $user = factory(\App\User::class)->create([
             'gas_id' => $this->gas->id
         ]);
 
@@ -228,7 +230,7 @@ class UsersServiceTest extends TestCase
 
         $this->assertEquals(null, $this->userWithNoPerms->fee);
 
-        $movement = new App\Movement();
+        $movement = new \App\Movement();
         $movement->type = 'annual-fee';
         $movement->sender_type = 'App\User';
         $movement->sender_id = $this->userWithNoPerms->id;

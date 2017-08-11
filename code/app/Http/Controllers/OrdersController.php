@@ -105,7 +105,7 @@ class OrdersController extends Controller
         if ($s != '') {
             $o->shipping = decodeDate($s);
         } else {
-            $o->shipping = '';
+            $o->shipping = null;
         }
 
         $a = new Aggregate();

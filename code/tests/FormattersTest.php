@@ -1,5 +1,9 @@
 <?php
 
+namespace Tests;
+
+use Tests\TestCase;
+
 class FormattersTest extends TestCase
 {
     public function testPrintablePrice()

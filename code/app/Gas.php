@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+
+use App\Events\SluggableCreating;
 use App\AttachableTrait;
 use App\GASModel;
 use App\SluggableID;
@@ -12,6 +14,10 @@ class Gas extends Model
     use AttachableTrait, CreditableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
+
+    protected $events = [
+        'creating' => SluggableCreating::class,
+    ];
 
     public static function commonClassName()
     {

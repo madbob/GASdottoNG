@@ -216,6 +216,9 @@ class ImportLegacy extends Command
 
         foreach ($result as $row) {
             try {
+                if ($row->name == 'Nuovo Luogo di Consegna')
+                    continue;
+
                 $obj = new Delivery();
                 $obj->name = $row->name;
                 $obj->address = $this->addressTranslate($row->address);
@@ -246,11 +249,11 @@ class ImportLegacy extends Command
                 $obj->password = Hash::make($row->login);
                 $obj->birthday = $row->birthday;
                 $obj->family_members = $row->family;
-                $obj->taxcode = $row->codfisc;
+                $obj->taxcode = $row->codfisc ? $row->codfisc : '';
                 $obj->member_since = $row->join_date;
                 $obj->card_number = $row->card_number;
                 $obj->last_login = $row->lastlogin;
-                $obj->iban = $row->bank_account;
+                $obj->iban = $row->bank_account ? $row->bank_account : '';
                 $obj->sepa_subscribe = $row->sepa_subscribe;
                 $obj->sepa_first = $row->first_sepa;
 

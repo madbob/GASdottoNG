@@ -13,7 +13,7 @@ class CreateOrdersTable extends Migration
 
             $table->string('supplier_id');
             $table->integer('aggregate_id')->unsigned();
-            $table->string('comment')->default('');
+            $table->string('comment')->nullable();
             $table->date('start')->useCurrent();
             $table->date('end')->useCurrent();
             $table->date('shipping')->nullable();

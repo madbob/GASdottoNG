@@ -16,9 +16,9 @@ class CreateBookingsTable extends Migration
             $table->enum('status', ['pending', 'partial', 'shipped', 'saved']);
             $table->text('notes');
 
-            $table->string('deliverer_id');
+            $table->string('deliverer_id')->nullable();
             $table->date('delivery')->nullable();
-            $table->integer('payment_id');
+            $table->integer('payment_id')->nullable();
 
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
         });

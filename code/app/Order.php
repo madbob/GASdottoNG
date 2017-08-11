@@ -10,6 +10,7 @@ use DB;
 use URL;
 use Theme;
 
+use App\Events\SluggableCreating;
 use App\GASModel;
 use App\SluggableID;
 use App\BookedProduct;
@@ -20,6 +21,10 @@ class Order extends Model
     use AttachableTrait, ExportableTrait, GASModel, SluggableID, PayableTrait;
 
     public $incrementing = false;
+
+    protected $events = [
+        'creating' => SluggableCreating::class,
+    ];
 
     public function supplier()
     {

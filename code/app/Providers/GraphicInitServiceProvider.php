@@ -54,6 +54,7 @@ class GraphicInitServiceProvider extends ServiceProvider
 
         setlocale(LC_TIME, 'it_IT.UTF-8');
 
+		/*
         Event::listen('eloquent.creating*', function ($model) {
             if (array_search('App\SluggableID', class_uses($model))) {
                 if (empty($model->id)) {
@@ -61,6 +62,7 @@ class GraphicInitServiceProvider extends ServiceProvider
                 }
             }
         });
+        */
     }
 
     public function register()

@@ -1,5 +1,7 @@
 <?php
 
+Auth::routes();
+
 Route::group(array('prefix' => 'api/1'), function () {
     Route::get('users/search', 'REST\UsersController@search');
     Route::resource('users', 'REST\UsersController');
@@ -13,6 +15,8 @@ Route::get('/home', function () {
     return Redirect::to('/dashboard');
 });
 
+Route::get('dashboard', 'CommonsController@getIndex');
+Route::post('verify', 'CommonsController@postVerify');
 Route::get('users/search', 'UsersController@search');
 Route::get('users/profile', 'UsersController@profile');
 Route::get('users/picture/{id}', 'UsersController@picture');
@@ -34,13 +38,9 @@ Route::get('suppliers/{id}/plain_balance', 'SuppliersController@plainBalance');
 Route::get('movements/balance', 'MovementsController@getBalance');
 Route::post('movements/recalculate', 'MovementsController@recalculate');
 Route::post('movements/close', 'MovementsController@closeBalance');
-
-Route::controllers([
-    'auth' => 'Auth\AuthController',
-    'password' => 'Auth\PasswordController',
-    'dashboard' => 'CommonsController',
-    'import' => 'ImportController',
-]);
+Route::post('import/csv', 'ImportController@postCsv');
+Route::get('import/gdxp', 'ImportController@getGdxp');
+Route::post('import/gdxp', 'ImportController@postGdxp');
 
 Route::get('gas/{id}/header', 'GasController@objhead');
 Route::get('users/{id}/header', 'UsersController@objhead');

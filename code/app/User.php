@@ -2,26 +2,30 @@
 
 namespace App;
 
-use Illuminate\Auth\Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+
+use App\Events\SluggableCreating;
 use App\GASModel;
 use App\SluggableID;
 use App\ContactableTrait;
 use App\PayableTrait;
 
-class User extends Model implements AuthenticatableContract, CanResetPasswordContract
+class User extends Authenticatable
 {
-    use Authenticatable, Authorizable, CanResetPassword, SoftDeletes, ContactableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID;
+    use Notifiable, Authorizable, SoftDeletes, ContactableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
     protected $table = 'users';
     protected $hidden = ['password', 'remember_token'];
     protected $dates = ['deleted_at'];
+
+    protected $events = [
+        'creating' => SluggableCreating::class,
+    ];
 
     public static function commonClassName()
     {

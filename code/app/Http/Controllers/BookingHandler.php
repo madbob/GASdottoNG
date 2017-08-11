@@ -46,6 +46,7 @@ class BookingHandler extends Controller
                 $booking->delivery = date('Y-m-d');
             }
 
+            $booking->notes = '';
             $booking->save();
 
             foreach ($order->products as $product) {

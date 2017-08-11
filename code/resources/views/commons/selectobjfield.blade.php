@@ -18,19 +18,15 @@ if (function_exists('recursiveOptionsSelectObj') == false) {
                 }
             } else {
                 $selected = ($obj && $obj->$name == $o->id);
-            } ?>
+            }
 
-			<option value="{{ $o->id }}"<?php if ($selected) {
-                echo ' selected="selected"';
-            } ?>
-				@foreach($datafields as $d)
-					data-{{ $d }}="{{ $o->$d }}"
-				@endforeach
-			>
-				{{ $option_prefix . $o->printableName() }}
-			</option>
+            $attributes = [];
+            if ($selected)
+                $attributes[] = 'selected="selected"';
+            foreach($datafields as $d)
+                $attributes[] = 'data-' . $d . '="' . $o->$d . '"';
 
-			<?php
+            echo '<option value="' . $o->id . '" ' . join(' ', $attributes) . '>' . $option_prefix . $o->printableName() . '</option>';
 
             if (is_a($o, 'App\Hierarchic')) {
                 recursiveOptionsSelectObj($obj, $o->children, $indent + 1, $name, $multiple, $datafields);

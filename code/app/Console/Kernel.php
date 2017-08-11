@@ -17,4 +17,9 @@ class Kernel extends ConsoleKernel
     {
     	$schedule->command('check:fees')->daily();
     }
+
+    protected function commands()
+    {
+        require base_path('routes/console.php');
+    }
 }

@@ -1,31 +1,17 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
+namespace Tests;
 
-class TestCase extends Illuminate\Foundation\Testing\TestCase
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+
+use Artisan;
+
+abstract class TestCase extends BaseTestCase
 {
-    /**
-     * The base URL to use while testing the application.
-     *
-     * @var string
-     */
+    use CreatesApplication;
+    
     protected $baseUrl = 'http://localhost';
-
-    /**
-     * Creates the application.
-     *
-     * @return \Illuminate\Foundation\Application
-     */
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../bootstrap/app.php';
-
-        $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-
-        return $app;
-    }
 
     public function setUp()
     {

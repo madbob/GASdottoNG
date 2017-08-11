@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use URL;
 
+use App\Events\SluggableCreating;
 use App\GASModel;
 use App\SluggableID;
 use App\BookedProduct;
@@ -15,6 +16,10 @@ class Booking extends Model
     use GASModel, SluggableID, PayableTrait;
 
     public $incrementing = false;
+
+    protected $events = [
+        'creating' => SluggableCreating::class,
+    ];
 
     public function user()
     {

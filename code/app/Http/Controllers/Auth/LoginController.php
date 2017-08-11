@@ -2,44 +2,50 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+
 use Theme;
 use App\User;
 use App\Gas;
 
-class AuthController extends Controller
+class LoginController extends Controller
 {
-    use AuthenticatesAndRegistersUsers {
-        postLogin as realPostLogin;
+    use AuthenticatesUsers {
+        login as realLogin;
     }
 
-    protected $username = 'username';
+    protected $redirectTo = '/dashboard';
 
     public function __construct()
     {
-        $this->middleware('guest', ['except' => 'getLogout']);
+        $this->middleware('guest')->except('logout');
     }
 
-    public function getLogin()
+    public function username()
+    {
+        return 'username';
+    }
+
+    public function showLoginForm()
     {
         $gas = Gas::first();
 
         return Theme::view('auth.login', ['gas' => $gas]);
     }
 
-    public function postLogin(Request $request)
+    public function login(Request $request)
     {
         $gas = Gas::first();
         if ($gas->restricted == '1') {
             $username = $request->input('username');
             $user = User::where('username', $username)->first();
             if ($user == null || $user->can('gas.access', $gas) == false) {
-                return redirect(url('auth/login'));
+                return redirect(url('login'));
             }
         }
 
-        return $this->realPostLogin($request);
+        return $this->realLogin($request);
     }
 }

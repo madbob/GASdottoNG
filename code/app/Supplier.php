@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 use Theme;
 
+use App\Events\SluggableCreating;
 use App\AttachableTrait;
 use App\Attachment;
 use App\GASModel;
@@ -23,6 +24,10 @@ class Supplier extends Model
 
     public $incrementing = false;
     protected $dates = ['deleted_at'];
+
+    protected $events = [
+        'creating' => SluggableCreating::class,
+    ];
 
     public static function commonClassName()
     {
