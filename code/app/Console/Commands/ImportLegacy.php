@@ -20,6 +20,7 @@ use App\Category;
 use App\Measure;
 use App\Product;
 use App\VatRate;
+use App\Movement;
 use App\Variant;
 use App\VariantValue;
 
@@ -279,6 +280,69 @@ class ImportLegacy extends Command
             catch (\Exception $e) {
                 echo sprintf("Errore nell'importazione dell'utente %s: %s\n", $row->login, $e->getMessage());
             }
+        }
+
+        foreach ($result as $row) {
+            /*
+            try {
+            */
+                $fee_id = null;
+                $deposit_id = null;
+
+                if (!empty($row->paying)) {
+                    $query = 'SELECT * FROM BankMovement WHERE id = ' . $row->paying;
+                    $inner_result = $old->select($query)[0];
+                    if ($inner_result->amount != 0) {
+                        $movement = new Movement();
+                        $movement->type = 'annual-fee';
+                        $movement->method = $inner_result->method == 0 ? 'bank' : 'cash';
+                        $movement->sender_id = $map['users'][$row->id];
+                        $movement->sender_type = 'App\User';
+                        $movement->target_id = $master_gas->id;
+                        $movement->target_type = get_class($master_gas);
+                        $movement->amount = $inner_result->amount;
+                        $movement->date = $inner_result->date;
+                        $movement->registration_date = $inner_result->registrationdate;
+                        $movement->registerer_id = $map['users'][$inner_result->registrationperson];
+                        $movement->archived = true;
+                        $movement->save();
+                        $fee_id = $movement->id;
+                    }
+                }
+
+                if (!empty($row->deposit)) {
+                    $query = 'SELECT * FROM BankMovement WHERE id = ' . $row->deposit;
+                    $inner_result = $old->select($query)[0];
+                    if ($inner_result->amount != 0) {
+                        $movement = new Movement();
+                        $movement->type = 'deposit-pay';
+                        $movement->method = $inner_result->method == 0 ? 'bank' : 'cash';
+                        $movement->sender_id = $map['users'][$row->id];
+                        $movement->sender_type = 'App\User';
+                        $movement->target_id = $master_gas->id;
+                        $movement->target_type = get_class($master_gas);
+                        $movement->amount = $inner_result->amount;
+                        $movement->date = $inner_result->date;
+                        $movement->registration_date = $inner_result->registrationdate;
+                        $movement->registerer_id = $map['users'][$inner_result->registrationperson];
+                        $movement->archived = true;
+                        $movement->save();
+                        $deposit_id = $movement->id;
+                    }
+                }
+
+                if ($fee_id != null || $deposit_id != null) {
+                    $obj = User::find($map['users'][$row->id]);
+                    $obj->fee_id = $fee_id;
+                    $obj->deposit_id = $deposit_id;
+                    $obj->save();
+                }
+            /*
+            }
+            catch(\Exception $e) {
+                echo sprintf("Errore nell'importazione quota iscrizione e cauzione di %s: %s\n", $row->login, $e->getMessage());
+            }
+            */
         }
 
         $map['suppliers'] = [];

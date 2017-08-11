@@ -66,98 +66,108 @@ class MovementsKeeper extends ServiceProvider
 
     public function boot()
     {
-        Movement::saving(function ($movement) {
-            if ($movement->registration_date == null)
-                $movement->registration_date = date('Y-m-d G:i:s');
-            if ($movement->registerer_id == null)
-                $movement->registerer_id = Auth::user()->id;
-            if ($movement->identifier == null)
-                $movement->identifier = '';
-            if ($movement->notes == null)
-                $movement->notes = '';
-
-            $metadata = $movement->type_metadata;
-
-            /*
-                La pre-callback può tornare:
-
-                0 se il salvataggio viene negato
-                1 se il salvataggio viene concesso
-                2 se la callback stessa ha già provveduto a fare quanto
-                  necessario. In tal caso blocchiamo il salvataggio e settiamo
-                  artificiosamente l'attributo "saved" a true.
-                  Per maggiori informazioni, cfr. Movement::saved
-            */
-            if (isset($metadata->callbacks['pre'])) {
-                $pre = $metadata->callbacks['pre']($movement);
-                if ($pre == 0) {
-                    Log::error('Movimento: salvataggio negato da pre-callback');
-                    return false;
-                }
-                else if ($pre == 2) {
-                    $movement->saved = true;
-                    return false;
-                }
-            }
-
-            return $this->verifyConsistency($movement);
-        });
-
-        Movement::saved(function ($movement) {
-            $metadata = $movement->type_metadata;
-
-            if (isset($metadata->callbacks['post'])) {
-                $metadata->callbacks['post']($movement);
-            }
-
-            $movement->apply();
-            $movement->saved = true;
-        });
-
         /*
-            Questo è per invertire l'effetto del movimento contabile modificato
-            sui bilanci, in modo che possa poi essere riapplicato coi nuovi
-            valori
+            Le varie callback sui movimenti contabili, atte ad alterare
+            opportunamente i bilanci, vengono registrate solo se sono in
+            presenza di una normale sessione. Questo per evitare di eseguirle in
+            fase di importazione da una precedente istanza GASdotto (contesto in
+            cui devo solo salvare sul database l'informazione sui movimenti, ma
+            i bilanci importati sono già tutti aggiornati).
         */
-        Movement::updating(function ($movement) {
-            /*
-                Reminder: per invalidare il movimento devo sottoporre un
-                ammontare negativo (pari al negativo dell'ammontare
-                precedentemente salvato), il quale potrebbe non essere accettato
-                dal tipo di movimento stesso
-            */
+        if (Auth::user() != null) {
+            Movement::saving(function ($movement) {
+                if ($movement->registration_date == null)
+                    $movement->registration_date = date('Y-m-d G:i:s');
+                if ($movement->registerer_id == null)
+                    $movement->registerer_id = Auth::user()->id;
+                if ($movement->identifier == null)
+                    $movement->identifier = '';
+                if ($movement->notes == null)
+                    $movement->notes = '';
 
-            if ($this->verifyConsistency($movement) == false)
-                return false;
+                $metadata = $movement->type_metadata;
+
+                /*
+                    La pre-callback può tornare:
+
+                    0 se il salvataggio viene negato
+                    1 se il salvataggio viene concesso
+                    2 se la callback stessa ha già provveduto a fare quanto
+                      necessario. In tal caso blocchiamo il salvataggio e settiamo
+                      artificiosamente l'attributo "saved" a true.
+                      Per maggiori informazioni, cfr. Movement::saved
+                */
+                if (isset($metadata->callbacks['pre'])) {
+                    $pre = $metadata->callbacks['pre']($movement);
+                    if ($pre == 0) {
+                        Log::error('Movimento: salvataggio negato da pre-callback');
+                        return false;
+                    }
+                    else if ($pre == 2) {
+                        $movement->saved = true;
+                        return false;
+                    }
+                }
+
+                return $this->verifyConsistency($movement);
+            });
+
+            Movement::saved(function ($movement) {
+                $metadata = $movement->type_metadata;
+
+                if (isset($metadata->callbacks['post'])) {
+                    $metadata->callbacks['post']($movement);
+                }
+
+                $movement->apply();
+                $movement->saved = true;
+            });
 
             /*
-                Se mi trovo in fase di ricalcolo dei saldi, non inverto
-                l'effetto del movimento: in tal caso il saldo attuale è già
-                stato riportato alla situazione di partenza, e rieseguo tutti i
-                movimenti come se fosse la prima volta.
-                Il parametro 'movements-recalculating' viene aggiunto in
-                sessione da MovementsController::recalculate()
+                Questo è per invertire l'effetto del movimento contabile modificato
+                sui bilanci, in modo che possa poi essere riapplicato coi nuovi
+                valori
             */
-            if(Session::get('movements-recalculating') == true)
+            Movement::updating(function ($movement) {
+                /*
+                    Reminder: per invalidare il movimento devo sottoporre un
+                    ammontare negativo (pari al negativo dell'ammontare
+                    precedentemente salvato), il quale potrebbe non essere accettato
+                    dal tipo di movimento stesso
+                */
+
+                if ($this->verifyConsistency($movement) == false)
+                    return false;
+
+                /*
+                    Se mi trovo in fase di ricalcolo dei saldi, non inverto
+                    l'effetto del movimento: in tal caso il saldo attuale è già
+                    stato riportato alla situazione di partenza, e rieseguo tutti i
+                    movimenti come se fosse la prima volta.
+                    Il parametro 'movements-recalculating' viene aggiunto in
+                    sessione da MovementsController::recalculate()
+                */
+                if(Session::get('movements-recalculating') == true)
+                    return true;
+
+                $original = Movement::find($movement->id);
+                $metadata = $original->type_metadata;
+                $original->amount = $original->amount * -1;
+                $original->apply();
+
                 return true;
+            });
 
-            $original = Movement::find($movement->id);
-            $metadata = $original->type_metadata;
-            $original->amount = $original->amount * -1;
-            $original->apply();
-
-            return true;
-        });
-
-        /*
-            Questo è per invertire l'effetto del movimento contabile cancellato
-            sui bilanci
-        */
-        Movement::deleting(function ($movement) {
-            $metadata = $movement->type_metadata;
-            $movement->amount = $movement->amount * -1;
-            $movement->apply();
-        });
+            /*
+                Questo è per invertire l'effetto del movimento contabile cancellato
+                sui bilanci
+            */
+            Movement::deleting(function ($movement) {
+                $metadata = $movement->type_metadata;
+                $movement->amount = $movement->amount * -1;
+                $movement->apply();
+            });
+        }
     }
 
     public function register()

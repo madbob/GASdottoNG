@@ -70,7 +70,7 @@ if (!isset($editable))
 
                     @include('commons.datefield', [
                         'obj' => $obj,
-                        'name' => 'registration_date',
+                        'name' => 'date',
                         'label' => 'Data',
                         'defaults_now' => true
                     ])

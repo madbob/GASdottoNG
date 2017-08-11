@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Auth;
 
 use App\Events\SluggableCreating;
+use App\Gas;
 use App\GASModel;
 
 class MovementType extends Model
@@ -45,7 +46,12 @@ class MovementType extends Model
 
     public static function systemTypes()
     {
-        $currentgas = Auth::user()->gas;
+        $currentuser = Auth::user();
+        if($currentuser == null)
+            $currentgas = Gas::get()->first();
+        else
+            $currentgas = $currentuser->gas;
+
         $types = new Collection();
 
         /*********************************/
