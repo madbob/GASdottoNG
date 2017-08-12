@@ -283,9 +283,7 @@ class ImportLegacy extends Command
         }
 
         foreach ($result as $row) {
-            /*
             try {
-            */
                 $fee_id = null;
                 $deposit_id = null;
 
@@ -337,12 +335,10 @@ class ImportLegacy extends Command
                     $obj->deposit_id = $deposit_id;
                     $obj->save();
                 }
-            /*
             }
             catch(\Exception $e) {
                 echo sprintf("Errore nell'importazione quota iscrizione e cauzione di %s: %s\n", $row->login, $e->getMessage());
             }
-            */
         }
 
         $map['suppliers'] = [];
