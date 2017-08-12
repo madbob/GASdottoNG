@@ -55,6 +55,8 @@ class DemoSeeder extends Seeder
             $s = Supplier::create([
                 'id' => str_slug($s_name),
                 'name' => $s_name,
+                'order_method' => '',
+                'payment_method' => ''
             ]);
 
             foreach ($products as $p_name) {

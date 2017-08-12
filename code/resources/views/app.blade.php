@@ -43,8 +43,15 @@
 
                     @if(Auth::check())
                         <ul class="nav navbar-nav navbar-right">
-                            <li id="help-trigger"><a href="#">Aiuto <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a></li>
-                            <li><a href="{{ url('auth/logout') }}">Logout <span class="glyphicon glyphicon-off" aria-hidden="true"></span></a></li>
+                            <li id="help-trigger">
+                                <a href="#">Aiuto <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout <span class="glyphicon glyphicon-off" aria-hidden="true"></span></a>
+                                <form id="logout-form" action="{{ url('logout') }}" method="POST" style="display: none;">
+                                    {{ csrf_field() }}
+                                </form>
+                            </li>
                         </ul>
                     @endif
                 </div>
