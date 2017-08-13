@@ -86,7 +86,7 @@
                             'archived' => (object)[
                                 'icon' => 'inbox',
                                 'label' => 'Archiviati',
-                                'value' => true
+                                'value' => false
                             ]
                         ]
                     ])

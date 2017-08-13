@@ -53,6 +53,13 @@
             'legend' => (object)[
                 'class' => 'Supplier'
             ],
+            'filters' => [
+                'deleted_at' => (object)[
+                    'icon' => 'inbox',
+                    'label' => 'Eliminati',
+                    'value' => null
+                ]
+            ]
         ])
     </div>
 </div>

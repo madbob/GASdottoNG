@@ -31,12 +31,12 @@ class Movement extends Model
 
     public function sender()
     {
-        return $this->morphTo();
+        return $this->morphTo()->withTrashed();
     }
 
     public function target()
     {
-        return $this->morphTo();
+        return $this->morphTo()->withTrashed();
     }
 
     public function getPaymentIconAttribute()

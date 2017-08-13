@@ -51,7 +51,7 @@ if(isset($empty_message) == false)
             $extra_attributes = '';
 
             foreach($filters as $attribute => $info) {
-                if($item->$attribute == $info->value) {
+                if($item->$attribute != $info->value) {
                     $extra_class = 'hidden';
                     $extra_attributes = 'data-filtered-' . $attribute . '="true"';
                 }

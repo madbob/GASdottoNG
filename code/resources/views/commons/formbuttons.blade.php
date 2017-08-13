@@ -5,6 +5,9 @@ if (!isset($no_delete))
 if (!isset($no_save))
     $no_save = false;
 
+if (!isset($obj))
+    $obj = null;
+
 if (!isset($export_url))
     $export_url = false;
 
@@ -20,11 +23,21 @@ if (!isset($export_url))
 
         <div class="btn-group pull-right main-form-buttons" role="group" aria-label="Opzioni">
             @if($no_delete == false)
-                <button type="button" class="btn btn-danger delete-button">Elimina</button>
+                @if($obj && $obj->deleted_at != null)
+                    <button type="button" class="btn btn-danger delete-button">Elimina Definitivamente</button>
+                @else
+                    <button type="button" class="btn btn-danger delete-button">Elimina</button>
+                @endif
             @endif
+
             <button type="button" class="btn btn-default close-button">Chiudi</button>
+
             @if($no_save == false)
-                <button type="submit" class="btn btn-success">Salva</button>
+                @if($obj && $obj->deleted_at != null)
+                    <button type="submit" class="btn btn-success">Riattiva e Salva</button>
+                @else
+                    <button type="submit" class="btn btn-success">Salva</button>
+                @endif
             @endif
         </div>
     </div>

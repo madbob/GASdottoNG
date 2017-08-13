@@ -109,6 +109,12 @@ trait GASModel
             */
             $icons = [
                 'Supplier' => [
+                    'off' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->deleted_at != null;
+                        },
+                        'text' => 'Eliminato',
+                    ],
                     'pencil' => (object) [
                         'test' => function ($obj) use ($user) {
                             return $user->can('supplier.modify', $obj);
@@ -129,12 +135,6 @@ trait GASModel
                     ],
                 ],
                 'Product' => [
-                    'star' => (object) [
-                        'test' => function ($obj) {
-                            return !empty($obj->discount) && $obj->discount != 0;
-                        },
-                        'text' => 'Scontato',
-                    ],
                     'off' => (object) [
                         'test' => function ($obj) {
                             return $obj->active == false;
@@ -146,6 +146,12 @@ trait GASModel
                             return $obj->active == true;
                         },
                         'text' => 'Attivo',
+                    ],
+                    'star' => (object) [
+                        'test' => function ($obj) {
+                            return !empty($obj->discount) && $obj->discount != 0;
+                        },
+                        'text' => 'Scontato',
                     ],
                 ],
                 'Aggregate' => [
@@ -251,6 +257,12 @@ trait GASModel
                     ],
                 ],
                 'User' => [
+                    'off' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->deleted_at != null;
+                        },
+                        'text' => 'Eliminato',
+                    ],
                 ],
             ];
 

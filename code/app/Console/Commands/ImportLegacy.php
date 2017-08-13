@@ -273,9 +273,10 @@ class ImportLegacy extends Command
 
                 $map['users'][$row->id] = $obj->id;
 
-                if ($row->privileges == 2) {
+                if ($row->privileges == 2)
                     $obj->addRole($admin_role, $master_gas);
-                }
+                else if ($row->privileges == 3)
+                    $obj->deleted_at = $row->leaving_date;
             }
             catch (\Exception $e) {
                 echo sprintf("Errore nell'importazione dell'utente %s: %s\n", $row->login, $e->getMessage());

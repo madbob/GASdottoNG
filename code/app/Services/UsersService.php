@@ -63,7 +63,7 @@ class UsersService
         throw new AuthException(403);
     }
 
-    public function listUsers($term = '')
+    public function listUsers($term = '', $all = false)
     {
         $this->ensureAuthAdminOrView();
 
@@ -77,6 +77,9 @@ class UsersService
             });
         }
 
+        if ($all)
+            $query->withTrashed();
+
         $users = $query->orderBy('lastname', 'asc')->get();
 
         return $users;
@@ -86,7 +89,7 @@ class UsersService
     {
         $this->ensureAuthAdminOrView();
 
-        return User::findOrFail($id);
+        return User::withTrashed()->findOrFail($id);
     }
 
     public function destroy($id)
@@ -96,7 +99,10 @@ class UsersService
         $user = DB::transaction(function () use ($id) {
             $user = $this->show($id);
 
-            $user->delete();
+            if ($user->trashed())
+                $user->forceDelete();
+            else
+                $user->delete();
 
             return $user;
         });
@@ -138,6 +144,7 @@ class UsersService
                 $this->transformAndSetIfSet($user, $request, 'sepa_subscribe', "decodeDate");
             }
 
+            $user->restore();
             $user->save();
 
             if (isset($request['picture'])) {

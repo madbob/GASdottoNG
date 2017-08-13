@@ -8,6 +8,9 @@
             @if(Gate::check('users.admin', $currentgas))
                 @include('commons.imagefield', ['obj' => $user, 'name' => 'picture', 'label' => 'Foto', 'valuefrom' => 'picture_url'])
                 @include('commons.datefield', ['obj' => $user, 'name' => 'member_since', 'label' => 'Membro da'])
+                @if($user->deleted_at != null)
+                    @include('commons.staticdatefield', ['obj' => $user, 'name' => 'deleted_at', 'label' => 'Data Eliminazione'])
+                @endif
                 @include('commons.textfield', ['obj' => $user, 'name' => 'card_number', 'label' => 'Numero Tessera'])
             @else
                 @include('commons.staticimagefield', ['obj' => $user, 'label' => 'Foto', 'valuefrom' => 'picture_url'])
@@ -68,7 +71,7 @@
         @include('movement.targetlist', ['target' => $user])
     @endif
 
-    @include('commons.formbuttons')
+    @include('commons.formbuttons', ['obj' => $user])
 </form>
 
 @stack('postponed')

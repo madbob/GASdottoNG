@@ -19,11 +19,15 @@
                     @include('commons.contactswidget', ['obj' => $supplier])
                 </div>
                 <div class="col-md-6">
+                    @if($supplier->deleted_at != null)
+                        @include('commons.staticdatefield', ['obj' => $supplier, 'name' => 'deleted_at', 'label' => 'Data Eliminazione'])
+                    @endif
+
                     @include('commons.permissionseditor', ['object' => $supplier, 'master_permission' => 'supplier.modify'])
                 </div>
             </div>
 
-            @include('commons.formbuttons', ['export_url' => $supplier->exportableURL()])
+            @include('commons.formbuttons', ['obj' => $supplier, 'export_url' => $supplier->exportableURL()])
         </form>
     </div>
 

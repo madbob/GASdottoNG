@@ -33,7 +33,7 @@ class SuppliersController extends Controller
 
     public function index()
     {
-        $data['suppliers'] = Supplier::orderBy('name', 'asc')->get();
+        $data['suppliers'] = Supplier::withTrashed()->orderBy('name', 'asc')->get();
 
         return Theme::view('pages.suppliers', $data);
     }
@@ -67,7 +67,7 @@ class SuppliersController extends Controller
     public function show($id)
     {
         $user = Auth::user();
-        $s = Supplier::findOrFail($id);
+        $s = Supplier::withTrashed()->findOrFail($id);
 
         if ($user->can('supplier.modify', $s)) {
             return Theme::view('supplier.edit', ['supplier' => $s]);
@@ -81,13 +81,14 @@ class SuppliersController extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
-        $s = Supplier::findOrFail($id);
+        $s = Supplier::withTrashed()->findOrFail($id);
 
         if ($user->can('supplier.modify', $s) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
         $this->basicReadFromRequest($s, $request);
+        $s->restore();
         $s->save();
 
         $s->updateContacts($request);
@@ -104,13 +105,16 @@ class SuppliersController extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
-        $s = Supplier::findOrFail($id);
+        $s = Supplier::withTrashed()->findOrFail($id);
 
         if ($user->can('supplier.modify', $s) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
-        $s->delete();
+        if ($s->trashed())
+            $s->forceDelete();
+        else
+            $s->delete();
 
         return $this->successResponse();
     }

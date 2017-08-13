@@ -22,7 +22,6 @@ class CreateUsersTable extends Migration
             $table->string('picture')->default('');
             $table->string('taxcode')->default('');
             $table->date('member_since')->useCurrent();
-            $table->date('leaving_date')->nullable();
             $table->string('card_number')->default('');
             $table->datetime('last_login')->nullable();
             $table->string('preferred_delivery_id')->default('');

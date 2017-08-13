@@ -42,23 +42,6 @@ class OverwriteMail
             $conf->sendmail = '';
             $conf->pretend = false;
             Config::set('mail', (array) $conf);
-
-            /*
-                Per rendere effettivi i nuovi parametri occorre
-                rimpiazzare il singleton registrato all'inizio
-                del bootstrap coi parametri salvati sul file
-
-                cfr. http://laravel.io/forum/07-22-2014-swiftmailer-with-dynamic-mail-configuration
-            */
-
-            $app = App::getInstance();
-
-            $app['swift.transport'] = $app->share(function ($app) {
-                return new TransportManager($app);
-            });
-
-            $mailer = new \Swift_Mailer($app['swift.transport']->driver());
-            Mail::setSwiftMailer($mailer);
             Mail::alwaysFrom($conf->address, $gas->name);
         }
 

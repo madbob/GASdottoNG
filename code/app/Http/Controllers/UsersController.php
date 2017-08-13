@@ -27,7 +27,7 @@ class UsersController extends Controller
     public function index()
     {
         try {
-            $users = $this->usersService->listUsers();
+            $users = $this->usersService->listUsers('', true);
 
             return Theme::view('pages.users', ['users' => $users]);
         } catch (AuthException $e) {
@@ -78,12 +78,12 @@ class UsersController extends Controller
         try {
             $user = $this->usersService->show($id);
 
-            if ($request->user()->can('users.admin', $user->gas)) {
+            if ($request->user()->can('users.admin', $user->gas))
                 return Theme::view('user.edit', ['user' => $user]);
-            }
-
-            return Theme::view('user.show', ['user' => $user]);
-        } catch (AuthException $e) {
+            else
+                return Theme::view('user.show', ['user' => $user]);
+        }
+        catch (AuthException $e) {
             abort($e->status());
         }
     }
