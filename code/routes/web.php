@@ -22,7 +22,7 @@ Route::get('/home', function () {
 });
 
 Route::get('dashboard', 'CommonsController@getIndex');
-Route::post('verify', 'CommonsController@postVerify');
+Route::post('dashboard/verify', 'CommonsController@postVerify');
 
 Route::get('gas/{id}/header', 'GasController@objhead');
 

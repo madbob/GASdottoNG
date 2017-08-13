@@ -1,5 +1,8 @@
 <?php
 
+if(!isset($show_all))
+    $show_all = false;
+
 $types = [];
 
 $types[] = [
@@ -8,7 +11,7 @@ $types[] = [
 ];
 
 foreach (App\MovementType::types() as $info) {
-    if ($info->visibility) {
+    if ($show_all || $info->visibility) {
         $types[] = [
             'label' => $info->name,
             'value' => $info->id,

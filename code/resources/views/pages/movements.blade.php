@@ -85,7 +85,7 @@
     <div class="col-md-6">
         <div class="form-horizontal form-filler" data-action="{{ url('movements') }}" data-toggle="validator" data-fill-target="#movements-in-range">
             @include('commons.genericdaterange')
-            @include('commons.selectmovementtypefield')
+            @include('commons.selectmovementtypefield', ['show_all' => true])
             @include('commons.selectobjfield', [
                 'obj' => null,
                 'name' => 'user_id',
@@ -158,6 +158,7 @@
                                                 <th>Data</th>
                                                 <th>Conto Corrente</th>
                                                 <th>Contanti</th>
+                                                <th>GAS</th>
                                                 <th>Fornitori</th>
                                                 <th>Depositi</th>
                                             </tr>
@@ -168,6 +169,7 @@
                                                     <td>{{ $index == 0 ? 'Saldo Corrente' : ucwords(strftime('%d %B %G', strtotime($bal->date))) }}</td>
                                                     <td>{{ $bal->bank }} €</td>
                                                     <td>{{ $bal->cash }} €</td>
+                                                    <td>{{ $bal->gas }} €</td>
                                                     <td>{{ $bal->suppliers }} €</td>
                                                     <td>{{ $bal->deposits }} €</td>
                                                 </tr>
