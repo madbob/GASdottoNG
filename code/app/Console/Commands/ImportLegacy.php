@@ -273,10 +273,13 @@ class ImportLegacy extends Command
 
                 $map['users'][$row->id] = $obj->id;
 
-                if ($row->privileges == 2)
+                if ($row->privileges == 2) {
                     $obj->addRole($admin_role, $master_gas);
-                else if ($row->privileges == 3)
+                }
+                else if ($row->privileges == 3) {
                     $obj->deleted_at = $row->leaving_date;
+                    $obj->save();
+                }
             }
             catch (\Exception $e) {
                 echo sprintf("Errore nell'importazione dell'utente %s: %s\n", $row->login, $e->getMessage());
@@ -331,7 +334,7 @@ class ImportLegacy extends Command
                 }
 
                 if ($fee_id != null || $deposit_id != null) {
-                    $obj = User::find($map['users'][$row->id]);
+                    $obj = User::withTrashed()->find($map['users'][$row->id]);
                     $obj->fee_id = $fee_id;
                     $obj->deposit_id = $deposit_id;
                     $obj->save();
@@ -381,9 +384,11 @@ class ImportLegacy extends Command
 
         foreach ($result as $row) {
             try {
-                $parent = Supplier::withTrashed()->findOrFail($map['suppliers'][$row->parent]);
                 $target = User::findOrFail($map['users'][$row->target]);
-                $target->addRole($referrer_role, $parent);
+                if($target != null) {
+                    $parent = Supplier::withTrashed()->findOrFail($map['suppliers'][$row->parent]);
+                    $target->addRole($referrer_role, $parent);
+                }
             }
             catch (\Exception $e) {
                 echo sprintf("Errore nell'assegnazione di privilegi: %s\n", $e->getMessage());
