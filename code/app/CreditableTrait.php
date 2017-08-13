@@ -48,11 +48,9 @@ trait CreditableTrait
     {
         $ret = [];
 
-        $classes = DB::table('balances')->select('target_type')->distinct()->get();
-        foreach($classes as $c) {
-            $class = $c->target_type;
-            $ret[$class] = $class::commonClassName();
-        }
+        $models = modelsUsingTrait('App\CreditableTrait');
+        foreach($models as $m)
+            $ret[$m] = $m::commonClassName();
 
         return $ret;
     }

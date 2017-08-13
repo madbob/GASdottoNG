@@ -21,6 +21,11 @@ class Booking extends Model
         'creating' => SluggableCreating::class,
     ];
 
+    public static function commonClassName()
+    {
+        return 'Prenotazione';
+    }
+
     public function user()
     {
         return $this->belongsTo('App\User');
@@ -169,8 +174,17 @@ class Booking extends Model
         return URL::action('BookingUserController@show', $this->order->aggregate_id, $this->user_id);
     }
 
+    /******************************************************** CreditableTrait */
+
     public function alterBalance($amount, $type = 'bank')
     {
         $this->order->supplier->alterBalance($amount, $type);
+    }
+
+    public static function balanceFields()
+    {
+        return [
+            'bank' => 'Saldo',
+        ];
     }
 }

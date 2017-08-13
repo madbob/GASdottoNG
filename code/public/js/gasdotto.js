@@ -1777,12 +1777,21 @@ $(document).ready(function() {
         var sender = editor.find('select[name=sender_type] option:selected').val();
         var target = editor.find('select[name=target_type] option:selected').val();
         var table = editor.find('table');
+
         table.find('tbody tr').each(function() {
             var type = $(this).attr('data-target-class');
             if(type != sender && type != target)
                 $(this).addClass('hidden');
             else
                 $(this).removeClass('hidden');
+        });
+
+        table.find('thead input[data-active-for]').each(function() {
+            var type = $(this).attr('data-active-for');
+            if(type != '' && type != sender && type != target)
+                $(this).bootstrapToggle('off').bootstrapToggle('disable').change();
+            else
+                $(this).bootstrapToggle('enable');
         });
     })
     .on('change', '.movement-type-editor table thead input:checkbox', function() {

@@ -1,5 +1,23 @@
 <?php
 
+/*
+    Questa classe è strettamente legata a CreditableTrait, anche se
+    rappresentano due cose leggermente diverse.
+
+    PayableTrait viene usato da tutti i soggetti che possono essere soggetti di
+    un movimento contabile (Movement), e wrappa l'accesso a suddetti movimenti.
+    CreditableTrait viene usato da tutti i soggetti di cui viene tenuta traccia
+    di un bilancio (Balance), e wrappa l'accesso a suddetti bilanci.
+    Tutti i CreditableTrait sono anche PayableTrait, ma non viceversa.
+
+    In fase di editing dei tipi di movimento contabile devo interagire
+    contemporaneamente con bilanci e destinazioni dei movimenti contabili. Per
+    far quadrare i conti, le classi visualizzate sono spesso quelle che usano
+    PayableTrait anche se le impropriamente le uso come se fossero come
+    CreditableTrait. Questo è il motivo percui Booking o Order implementano
+    funzioni di CreditableTrait pur non usando quel tratto
+*/
+
 namespace App;
 
 trait PayableTrait

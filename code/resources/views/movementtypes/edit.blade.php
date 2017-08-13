@@ -1,6 +1,10 @@
 <?php
 
-$classes = App\CreditableTrait::acceptedClasses();
+if($type->system)
+    $classes = modelsUsingTrait('App\PayableTrait');
+else
+    $classes = modelsUsingTrait('App\CreditableTrait');
+
 $target_classes = [];
 
 $target_classes[] = [
@@ -71,16 +75,18 @@ foreach($classes as $class => $name) {
             }
         }
 
+        $width = floor(100 / (count(App\MovementType::payments()) + 1));
+
         ?>
 
         <div class="col-md-12">
             <table class="table {{ $type->system ? 'system-type' : '' }}">
                 <thead>
                     <tr>
-                        <th>Saldo</th>
+                        <th width="{{ $width }}%">Saldo</th>
 
                         @foreach(App\MovementType::payments() as $pay_id => $pay)
-                            <th>{{ $pay->name }} <input type="checkbox" data-toggle="toggle" data-size="mini" name="{{ $pay_id }}" {{ $payments[$pay_id] ? 'checked' : '' }}></th>
+                            <th width="{{ $width }}%">{{ $pay->name }} <input type="checkbox" data-toggle="toggle" data-size="mini" name="{{ $pay_id }}" {{ $payments[$pay_id] ? 'checked' : '' }} data-active-for="{{ $pay->active_for }}" {{ $pay->active_for != null && $pay->active_for != $type->sender_type && $pay->active_for != $type->target_type ? 'disabled' : '' }}></th>
                         @endforeach
                     </tr>
                 </thead>
@@ -106,13 +112,13 @@ foreach($classes as $class => $name) {
 
                                     <td>
                                         <div class="btn-group" data-toggle="buttons">
-                                            <label class="btn btn-default {{ $selection == 'increment' ? 'active' : '' }}" {{ $payments[$pay_id] ? '' : 'disabled="disabled"' }}>
+                                            <label class="btn btn-default {{ $selection == 'increment' ? 'active' : '' }}" {{ $payments[$pay_id] ? '' : 'disabled' }}>
                                                 <input type="radio" name="{{ $classname }}-{{ $field }}-{{ $pay_id }}" value="increment" autocomplete="off" {{ $selection == 'increment' ? 'checked' : '' }} {{ $payments[$pay_id] ? '' : 'disabled="disabled"' }}> +
                                             </label>
-                                            <label class="btn btn-default {{ $selection == 'decrement' ? 'active' : '' }}" {{ $payments[$pay_id] ? '' : 'disabled="disabled"' }}>
+                                            <label class="btn btn-default {{ $selection == 'decrement' ? 'active' : '' }}" {{ $payments[$pay_id] ? '' : 'disabled' }}>
                                                 <input type="radio" name="{{ $classname }}-{{ $field }}-{{ $pay_id }}" value="decrement" autocomplete="off" {{ $selection == 'decrement' ? 'checked' : '' }} {{ $payments[$pay_id] ? '' : 'disabled="disabled"' }}> -
                                             </label>
-                                            <label class="btn btn-default {{ $selection == 'ignore' ? 'active' : '' }}" {{ $payments[$pay_id] ? '' : 'disabled="disabled"' }}>
+                                            <label class="btn btn-default {{ $selection == 'ignore' ? 'active' : '' }}" {{ $payments[$pay_id] ? '' : 'disabled' }}>
                                                 <input type="radio" name="{{ $classname }}-{{ $field }}-{{ $pay_id }}" value="ignore" autocomplete="off" {{ $selection == 'ignore' ? 'checked' : '' }} {{ $payments[$pay_id] ? '' : 'disabled="disabled"' }}> =
                                             </label>
                                         </div>

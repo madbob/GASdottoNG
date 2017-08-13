@@ -30,16 +30,25 @@ class MovementType extends Model
                 'name' => 'Contanti',
                 'identifier' => false,
                 'icon' => 'glyphicon-euro',
-            ],
-            'credit' => (object) [
-                'name' => 'Credito Utente',
-                'identifier' => false,
-                'icon' => 'glyphicon-ok',
+                'active_for' => null
             ],
             'bank' => (object) [
                 'name' => 'Bonifico',
                 'identifier' => true,
                 'icon' => 'glyphicon-link',
+                'active_for' => null
+            ],
+            'credit' => (object) [
+                'name' => 'Credito Utente',
+                'identifier' => false,
+                'icon' => 'glyphicon-ok',
+                'active_for' => 'App\User'
+            ],
+            'rid' => (object) [
+                'name' => 'RID/SEPA',
+                'identifier' => false,
+                'icon' => 'glyphicon-check',
+                'active_for' => 'App\User'
             ],
         ];
     }
@@ -382,6 +391,32 @@ class MovementType extends Model
                             (object) [
                                 'operation' => 'increment',
                                 'field' => 'suppliers'
+                            ],
+                        ]
+                    ],
+                ],
+                (object) [
+                    'method' => 'rid',
+                    'sender' => (object) [
+                        'operations' => []
+                    ],
+                    'target' => (object) [
+                        'operations' => [
+                            (object) [
+                                'operation' => 'increment',
+                                'field' => 'bank'
+                            ],
+                        ]
+                    ],
+                    'master' => (object) [
+                        'operations' => [
+                            (object) [
+                                'operation' => 'increment',
+                                'field' => 'suppliers'
+                            ],
+                            (object) [
+                                'operation' => 'increment',
+                                'field' => 'bank'
                             ],
                         ]
                     ],

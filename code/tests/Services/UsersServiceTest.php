@@ -260,7 +260,6 @@ class UsersServiceTest extends TestCase
         $this->actingAs($this->userWithAdminPerm);
 
         $user = $this->usersService->destroy($this->userWithNoPerms->id);
-
         $user = $this->usersService->show($this->userWithNoPerms->id);
         $this->assertEquals($this->userWithNoPerms->id, $user->id);
         $this->assertNotEquals(null, $user->deleted_at);

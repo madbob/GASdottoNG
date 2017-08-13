@@ -26,6 +26,11 @@ class Order extends Model
         'creating' => SluggableCreating::class,
     ];
 
+    public static function commonClassName()
+    {
+        return 'Ordine';
+    }
+
     public function supplier()
     {
         return $this->belongsTo('App\Supplier');
@@ -343,9 +348,18 @@ class Order extends Model
         return [$this->supplier];
     }
 
+    /******************************************************** CreditableTrait */
+
     public function alterBalance($amount, $type = 'bank')
     {
         $this->supplier->alterBalance($amount, $type);
+    }
+
+    public static function balanceFields()
+    {
+        return [
+            'bank' => 'Saldo',
+        ];
     }
 
     /******************************************************** ExportableTrait */

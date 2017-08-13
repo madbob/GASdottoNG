@@ -1,6 +1,6 @@
 <?php
 
-$classes = App\CreditableTrait::acceptedClasses();
+$classes = modelsUsingTrait('App\CreditableTrait');
 $target_classes = [];
 
 $target_classes[] = [

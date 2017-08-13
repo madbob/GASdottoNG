@@ -11,7 +11,7 @@ use App\SluggableID;
 
 class Gas extends Model
 {
-    use AttachableTrait, CreditableTrait, GASModel, SluggableID;
+    use AttachableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
 

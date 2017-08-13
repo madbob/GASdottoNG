@@ -29,7 +29,8 @@
             "App\\": "app/"
         },
         "files": [
-            "app/Helpers/Formatters.php"
+            "app/Helpers/Formatters.php",
+            "app/Helpers/Reflection.php"
         ]
     },
     "autoload-dev": {
