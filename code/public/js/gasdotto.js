@@ -678,7 +678,7 @@ function afterBookingSaved(form, data) {
         In questo caso, ho aggiunto la prenotazione dal pannello "Prenotazioni"
     */
     else {
-        closeMainForm(form, data);
+        closeMainForm(form);
     }
 }
 
@@ -1351,6 +1351,17 @@ $(document).ready(function() {
         }
     });
 
+    $('body').on('change', '.triggers-all-checkbox', function() {
+        var form = $(this).closest('form');
+        var target = $(this).attr('data-target-class');
+        form.find('.' + target).prop('checked', $(this).prop('checked'));
+    })
+    .on('click', '.triggers-all-radio label', function() {
+        var form = $(this).closest('form');
+        var target = $(this).attr('data-target-class');
+        form.find('.' + target).button('toggle');
+    });
+
     $('body').on('click', '.reloader', function(event) {
         var listid = $(this).attr('data-reload-target');
         var list = $(listid);
@@ -1929,6 +1940,20 @@ $(document).ready(function() {
             $.ajax({
                 method: 'GET',
                 url: '/booking/' + id + '/user',
+                dataType: 'html',
+
+                success: function(data) {
+                    tab.empty().append(data);
+                }
+            });
+        }
+        else if (tab.hasClass('fast-shippable-bookings')) {
+            var id = tab.closest('.aggregate-bookings').find('input:hidden[name=aggregate_id]').val();
+            tab.empty().append(loadingPlaceholder());
+
+            $.ajax({
+                method: 'GET',
+                url: '/deliveries/' + id + '/fast',
                 dataType: 'html',
 
                 success: function(data) {

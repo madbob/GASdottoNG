@@ -63,20 +63,7 @@ class Movement extends Model
 
     public function getValidPaymentsAttribute()
     {
-        $movement_methods = MovementType::payments();
-        $function = json_decode($this->type_metadata->function);
-        $ret = [];
-
-        foreach ($movement_methods as $method_id => $info) {
-            foreach($function as $f) {
-                if ($f->method == $method_id) {
-                    $ret[$method_id] = $info;
-                    break;
-                }
-            }
-        }
-
-        return $ret;
+        return MovementType::paymentsByType($this->type);
     }
 
     public function printableName()

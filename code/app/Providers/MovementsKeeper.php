@@ -67,6 +67,8 @@ class MovementsKeeper extends ServiceProvider
     public function boot()
     {
         Movement::saving(function ($movement) {
+            if ($movement->date == null)
+                $movement->date = date('Y-m-d G:i:s');
             if ($movement->registration_date == null)
                 $movement->registration_date = date('Y-m-d G:i:s');
             if ($movement->registerer_id == null)

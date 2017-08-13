@@ -44,6 +44,26 @@ class MovementType extends Model
         ];
     }
 
+    public static function paymentsByType($type)
+    {
+        $metadata = self::types($type);
+
+        $movement_methods = MovementType::payments();
+        $function = json_decode($metadata->function);
+        $ret = [];
+
+        foreach ($movement_methods as $method_id => $info) {
+            foreach($function as $f) {
+                if ($f->method == $method_id) {
+                    $ret[$method_id] = $info;
+                    break;
+                }
+            }
+        }
+
+        return $ret;
+    }
+
     public static function systemTypes()
     {
         $currentuser = Auth::user();

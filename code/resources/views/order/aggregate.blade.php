@@ -47,11 +47,13 @@ $panel_rand_wrap = rand();
         <div class="col-md-12">
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation"><a href="#shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab">Consegne</a></li>
+                <li role="presentation"><a href="#fast-shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab">Consegne Veloci</a></li>
             </ul>
 
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane shippable-bookings" id="shippings-{{ $aggregate->id }}">
-                    @include('booking.list', ['aggregate' => $aggregate])
+                </div>
+                <div role="tabpanel" class="tab-pane fast-shippable-bookings" id="fast-shippings-{{ $aggregate->id }}">
                 </div>
             </div>
         </div>

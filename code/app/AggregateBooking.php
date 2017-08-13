@@ -17,8 +17,7 @@ class AggregateBooking extends Model
     use GASModel;
 
     public $id;
-
-    private $user;
+    public $user;
     private $bookings = [];
 
     public function __construct($user_id)
@@ -41,6 +40,16 @@ class AggregateBooking extends Model
         }
 
         return 'shipped';
+    }
+
+    public function getTotalValueAttribute()
+    {
+        $grand_total = 0;
+
+        foreach ($this->bookings as $booking)
+            $grand_total += $booking->total_value;
+
+        return $grand_total;
     }
 
     public function printableHeader()

@@ -74,6 +74,7 @@ $grand_total = 0;
                     <th></th>
                     <th></th>
                     <th></th>
+                    <th></th>
                     <th class="text-right">Totale: <span class="booking-total">{{ printablePrice($o->value) }}</span> €</th>
                 </tr>
             </tfoot>
@@ -87,9 +88,9 @@ $grand_total = 0;
             <tfoot>
                 <tr>
                     <th>
-                    <div class="pull-right">
-                    <strong>Totale Complessivo: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> €</strong>
-                    </div>
+                        <div class="pull-right">
+                            <strong>Totale Complessivo: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> €</strong>
+                        </div>
                     </th>
                 </tr>
             </tfoot>
