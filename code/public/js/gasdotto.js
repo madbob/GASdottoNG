@@ -214,10 +214,6 @@ function generalInit() {
     testListsEmptiness();
 }
 
-function filteredSerialize(form) {
-    return $(':not(.skip-on-submit)', form).serializeArray();
-}
-
 function randomString(total)
 {
     var text = "";
@@ -1595,15 +1591,23 @@ $(document).ready(function() {
     $('body').on('submit', '.inner-form', function(event) {
         event.preventDefault();
         var form = $(this);
-        var data = filteredSerialize(form);
-        var save_button = form.find('.saving-button');
 
+        var data = new FormData(this);
+        var method = form.attr('method').toUpperCase();
+        if (method == 'PUT') {
+            method = 'POST';
+            data.append('_method', 'PUT');
+        }
+
+        var save_button = form.find('.saving-button');
         save_button.text('Attendere').attr('disabled', 'disabled');
 
         $.ajax({
-            method: form.attr('method'),
+            method: method,
             url: form.attr('action'),
             data: data,
+            processData: false,
+            contentType: false,
             dataType: 'json',
 
             success: function(data) {

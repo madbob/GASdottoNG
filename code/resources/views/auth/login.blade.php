@@ -17,6 +17,11 @@
         <hr/>
     @endif
 
+    @if(!empty($gas->logo))
+        <img class="img-responsive" src="{{ $gas->logo_url }}">
+        <br/>
+    @endif
+
     <form class="form-horizontal" method="POST" action="{{ url('login') }}">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
 

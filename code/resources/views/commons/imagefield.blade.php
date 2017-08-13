@@ -13,7 +13,7 @@ if (isset($valuefrom) == false) {
     <div class="col-sm-{{ $fieldsize }}">
         <div class="img-preview">
             <input type="file" name="{{ $name }}">
-            <img src="{{ $obj && $valuefrom ? $obj->$valuefrom : '' }}"><br/>
+            <img src="{{ $obj && $valuefrom ? $obj->$valuefrom : '' }}">
         </div>
     </div>
 </div>

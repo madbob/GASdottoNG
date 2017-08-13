@@ -14,7 +14,7 @@ class GasController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['getLogo']]);
 
         $this->commonInit([
             'reference_class' => 'App\\Gas'
@@ -25,6 +25,12 @@ class GasController extends Controller
     {
         $user = Auth::user();
         return redirect(url('gas/' . $user->gas->id . '/edit'));
+    }
+
+    public function getLogo($id)
+    {
+        $gas = Gas::findOrFail($id);
+        return response()->download(storage_path($gas->logo));
     }
 
     public function edit($id)
@@ -68,6 +74,7 @@ class GasController extends Controller
             $gas->name = $request->input('name');
             $gas->email = $request->input('email');
             $gas->message = $request->input('message');
+            $this->handleDirectFileUpload($request, 'logo', $gas);
             $gas->setConfig('restricted', $request->has('restricted') ? '1' : '0');
 
             $mailconf = $gas->getConfig('mail_conf');

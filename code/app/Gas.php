@@ -24,6 +24,14 @@ class Gas extends Model
         return 'GAS';
     }
 
+    public function getLogoUrlAttribute()
+    {
+        if (empty($this->logo))
+            return '';
+        else
+            return url('gas/' . $this->id . '/logo');
+    }
+
     public function configs()
     {
         return $this->hasMany('App\Config');

@@ -15,6 +15,7 @@
 
                 @include('commons.textfield', ['obj' => $gas, 'name' => 'name', 'label' => 'Nome', 'mandatory' => true])
                 @include('commons.textfield', ['obj' => $gas, 'name' => 'email', 'label' => 'E-Mail', 'mandatory' => true])
+                @include('commons.imagefield', ['obj' => $gas, 'name' => 'logo', 'label' => 'Logo Homepage', 'valuefrom' => 'logo_url'])
                 @include('commons.textarea', ['obj' => $gas, 'name' => 'message', 'label' => 'Messaggio Homepage'])
 
                 @if(App\Role::someone('gas.access', $gas))
