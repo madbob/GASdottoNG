@@ -33,8 +33,7 @@ class SuppliersController extends Controller
 
     public function index()
     {
-        $data['suppliers'] = Supplier::withTrashed()->orderBy('name', 'asc')->get();
-
+        $data['suppliers'] = Supplier::orderBy('name', 'asc')->filterEnabled()->get();
         return Theme::view('pages.suppliers', $data);
     }
 

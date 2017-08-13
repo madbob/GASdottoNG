@@ -109,12 +109,6 @@ trait GASModel
             */
             $icons = [
                 'Supplier' => [
-                    'off' => (object) [
-                        'test' => function ($obj) {
-                            return $obj->deleted_at != null;
-                        },
-                        'text' => 'Eliminato',
-                    ],
                     'pencil' => (object) [
                         'test' => function ($obj) use ($user) {
                             return $user->can('supplier.modify', $obj);
@@ -257,21 +251,33 @@ trait GASModel
                     ],
                 ],
                 'User' => [
-                    'off' => (object) [
-                        'test' => function ($obj) {
-                            return $obj->deleted_at != null;
-                        },
-                        'text' => 'Eliminato',
-                    ],
                 ],
             ];
+
+            if ($user->can('supplier.add', $user->gas)) {
+                $icons['Supplier']['off'] = (object) [
+                    'test' => function ($obj) {
+                        return $obj->deleted_at != null;
+                    },
+                    'text' => 'Eliminato',
+                ];
+            }
+
+            if ($user->can('users.admin', $user->gas)) {
+                $icons['User']['off'] = (object) [
+                    'test' => function ($obj) {
+                        return $obj->deleted_at != null;
+                    },
+                    'text' => 'Eliminato',
+                ];
+            }
 
             /*
                 Se la gestione delle quote di iscrizione è abilitata, viene
                 attivata la relativa icona per distinguere gli utenti che non
                 l'hanno pagata o rinnovata
             */
-            if (Auth::user()->gas->getConfig('annual_fee_amount') != 0) {
+            if ($user->gas->getConfig('annual_fee_amount') != 0) {
                 $icons['User']['euro'] = (object) [
                     'test' => function ($obj) {
                         return $obj->fee_id == 0;

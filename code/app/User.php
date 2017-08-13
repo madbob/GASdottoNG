@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use Auth;
+
 use App\Events\SluggableCreating;
 use App\GASModel;
 use App\SluggableID;
@@ -74,7 +76,16 @@ class User extends Authenticatable
 
     public function scopeEnabled($query)
     {
-        return $query->whereNull('leaving_date');
+        return $query->whereNull('deleted_at');
+    }
+
+    public function scopeFilterEnabled($query)
+    {
+        $user = Auth::user();
+        if ($user->can('users.admin', $user->gas))
+            return $query->withTrashed();
+        else
+            return $query;
     }
 
     public function scopeSorted($query)

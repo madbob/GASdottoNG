@@ -67,20 +67,30 @@
 
 <div class="row">
     <div class="col-md-12">
-        @include('commons.loadablelist', [
-            'identifier' => 'user-list',
-            'items' => $users,
-            'legend' => (object)[
-                'class' => 'User'
-            ],
-            'filters' => [
-                'deleted_at' => (object)[
-                    'icon' => 'inbox',
-                    'label' => 'Eliminati',
-                    'value' => null
+        @can('users.admin', $currentgas)
+            @include('commons.loadablelist', [
+                'identifier' => 'user-list',
+                'items' => $users,
+                'legend' => (object)[
+                    'class' => 'User'
+                ],
+                'filters' => [
+                    'deleted_at' => (object)[
+                        'icon' => 'inbox',
+                        'label' => 'Eliminati',
+                        'value' => null
+                    ]
                 ]
-            ]
-        ])
+            ])
+        @else
+            @include('commons.loadablelist', [
+                'identifier' => 'user-list',
+                'items' => $users,
+                'legend' => (object)[
+                    'class' => 'User'
+                ]
+            ])
+        @endif
     </div>
 </div>
 

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Collection;
 
+use Auth;
 use Theme;
 
 use App\Events\SluggableCreating;
@@ -52,6 +53,15 @@ class Supplier extends Model
     public function bookings()
     {
         return $this->hasManyThrough('App\Booking', 'App\Order');
+    }
+
+    public function scopeFilterEnabled($query)
+    {
+        $user = Auth::user();
+        if ($user->can('supplier.add', $user->gas))
+            return $query->withTrashed();
+        else
+            return $query;
     }
 
     public function getAggregatesAttribute()

@@ -27,10 +27,11 @@ class UsersController extends Controller
     public function index()
     {
         try {
-            $users = $this->usersService->listUsers('', true);
-
+            $user = Auth::user();
+            $users = $this->usersService->listUsers('', $user->can('users.admin', $user->gas));
             return Theme::view('pages.users', ['users' => $users]);
-        } catch (AuthException $e) {
+        }
+        catch (AuthException $e) {
             abort($e->status());
         }
     }

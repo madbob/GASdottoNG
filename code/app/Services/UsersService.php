@@ -25,7 +25,7 @@ class UsersService
 
         $user = Auth::user();
         if ($user->can('users.admin', $user->gas) || $user->can('users.view', $user->gas)) {
-            return;
+            return $user;
         }
 
         throw new AuthException(403);
@@ -65,9 +65,8 @@ class UsersService
 
     public function listUsers($term = '', $all = false)
     {
-        $this->ensureAuthAdminOrView();
-
-        $gasID = Auth::user()->gas['id'];
+        $user = $this->ensureAuthAdminOrView();
+        $gasID = $user->gas['id'];
 
         $query = User::with('roles')->where('gas_id', '=', $gasID);
 
@@ -78,7 +77,7 @@ class UsersService
         }
 
         if ($all)
-            $query->withTrashed();
+            $query->filterEnabled();
 
         $users = $query->orderBy('lastname', 'asc')->get();
 

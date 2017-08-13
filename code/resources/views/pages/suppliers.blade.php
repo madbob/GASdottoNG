@@ -47,20 +47,30 @@
 
 <div class="row">
     <div class="col-md-12">
-        @include('commons.loadablelist', [
-            'identifier' => 'supplier-list',
-            'items' => $suppliers,
-            'legend' => (object)[
-                'class' => 'Supplier'
-            ],
-            'filters' => [
-                'deleted_at' => (object)[
-                    'icon' => 'inbox',
-                    'label' => 'Eliminati',
-                    'value' => null
+        @can('supplier.add', $currentgas)
+            @include('commons.loadablelist', [
+                'identifier' => 'supplier-list',
+                'items' => $suppliers,
+                'legend' => (object)[
+                    'class' => 'Supplier'
+                ],
+                'filters' => [
+                    'deleted_at' => (object)[
+                        'icon' => 'inbox',
+                        'label' => 'Eliminati',
+                        'value' => null
+                    ]
                 ]
-            ]
-        ])
+            ])
+        @else
+            @include('commons.loadablelist', [
+                'identifier' => 'supplier-list',
+                'items' => $suppliers,
+                'legend' => (object)[
+                    'class' => 'Supplier'
+                ],
+            ])
+        @endif
     </div>
 </div>
 
