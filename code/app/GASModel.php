@@ -272,6 +272,15 @@ trait GASModel
                 ];
             }
 
+            if ($user->can('movements.admin', $user->gas) || $user->can('movements.view', $user->gas)) {
+                $icons['User']['ban-circle'] = (object) [
+                    'test' => function ($obj) {
+                        return $obj->current_balance_amount < 0;
+                    },
+                    'text' => 'Credito < 0',
+                ];
+            }
+
             /*
                 Se la gestione delle quote di iscrizione è abilitata, viene
                 attivata la relativa icona per distinguere gli utenti che non

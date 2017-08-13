@@ -20,7 +20,9 @@ $gran_total = 0;
 echo ' IR' . $stream_id . str_pad('', 67) . '00000  E ' . $gas_abi . "\n";
 
 foreach($order->bookings as $booking) {
-    if($booking->payment == null && !empty($booking->user->iban)) {
+    $payment = $booking->payment;
+
+    if($payment && $payment->method == 'rid' && !empty($booking->user->iban)) {
         try {
             $block++;
             $block_head = sprintf('%07d', $block);

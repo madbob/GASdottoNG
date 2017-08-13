@@ -15,10 +15,6 @@
                 ]
             ])
 
-            <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#handleMovementTypes">Amministra Tipi Movimento</button>
-            <div class="collapse dynamic-contents" id="handleMovementTypes" tabindex="-1" data-contents-url="{{ url('movtypes') }}">
-            </div>
-
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#configAccounting">Configurazione Contabilità</button>
             <div class="modal fade" id="configAccounting" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
@@ -73,6 +69,10 @@
                         </form>
                     </div>
                 </div>
+            </div>
+
+            <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#handleMovementTypes">Amministra Tipi Movimento</button>
+            <div class="collapse dynamic-contents" id="handleMovementTypes" tabindex="-1" data-contents-url="{{ url('movtypes') }}">
             </div>
         @endcan
     </div>
@@ -140,6 +140,7 @@
         </ul>
 
         <div class="pull-right">
+            <br/>
             <div class="form-inline iblock inner-form">
                 <div class="form-group">
                     <button class="btn btn-default" data-toggle="modal" data-target="#movements-history">Consulta Storico</button>

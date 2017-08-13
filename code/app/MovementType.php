@@ -25,7 +25,7 @@ class MovementType extends Model
 
     public static function payments()
     {
-        return [
+        $ret = [
             'cash' => (object) [
                 'name' => 'Contanti',
                 'identifier' => false,
@@ -44,13 +44,19 @@ class MovementType extends Model
                 'icon' => 'glyphicon-ok',
                 'active_for' => 'App\User'
             ],
-            'rid' => (object) [
+        ];
+
+        $user = Auth::user();
+        if($user && !empty($user->gas->rid_name)) {
+            $ret['rid'] = (object) [
                 'name' => 'RID/SEPA',
                 'identifier' => false,
                 'icon' => 'glyphicon-check',
                 'active_for' => 'App\User'
-            ],
-        ];
+            ];
+        }
+
+        return $ret;
     }
 
     public static function paymentsByType($type)
