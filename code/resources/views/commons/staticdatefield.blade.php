@@ -8,8 +8,7 @@
                 if ($obj->$name == null || $obj->$name == '0000-00-00') {
                     echo 'Mai';
                 } else {
-                    $d = strtotime($obj->$name);
-                    echo strftime('%A %d %B %G', $d);
+                    echo $obj->printableDate($name);
                 }
             }
 
