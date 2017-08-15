@@ -147,10 +147,14 @@ class Gas extends Model
         return $this->getConfig('restricted') == '1';
     }
 
+    /******************************************************** AttachableTrait */
+
     protected function requiredAttachmentPermission()
     {
         return 'gas.config';
     }
+
+    /******************************************************** CreditableTrait */
 
     public static function balanceFields()
     {

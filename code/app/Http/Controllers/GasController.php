@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use AutoMail\AutoMail;
+
 use Auth;
 use DB;
 use Theme;
+
 use App\Role;
 use App\Gas;
 
@@ -108,5 +111,17 @@ class GasController extends Controller
         $gas->save();
 
         return $this->successResponse();
+    }
+
+    public function configureMail(Request $request)
+    {
+        $email = $request->input('email');
+        $conf = AutoMail::discover($email);
+
+        $ret = [];
+        if ($conf != null)
+            $ret = $conf['outgoing'][0];
+
+        return response()->json($ret);
     }
 }

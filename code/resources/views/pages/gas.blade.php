@@ -79,12 +79,12 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        @include('commons.textfield', ['obj' => $gas, 'name' => 'mailusername', 'label' => 'Username'])
-                        @include('commons.textfield', ['obj' => $gas, 'name' => 'mailserver', 'label' => 'Server SMTP'])
                         @include('commons.textfield', ['obj' => $gas, 'name' => 'mailaddress', 'label' => 'Indirizzo'])
+                        @include('commons.textfield', ['obj' => $gas, 'name' => 'mailusername', 'label' => 'Username'])
+                        @include('commons.passwordfield', ['obj' => $gas, 'name' => 'mailpassword', 'label' => 'Password'])
                     </div>
                     <div class="col-md-6">
-                        @include('commons.passwordfield', ['obj' => $gas, 'name' => 'mailpassword', 'label' => 'Password'])
+                        @include('commons.textfield', ['obj' => $gas, 'name' => 'mailserver', 'label' => 'Server SMTP'])
                         @include('commons.numberfield', ['obj' => $gas, 'name' => 'mailport', 'label' => 'Porta'])
                         @include('commons.boolfield', ['obj' => $gas, 'name' => 'mailssl', 'label' => 'Abilita SSL'])
                     </div>

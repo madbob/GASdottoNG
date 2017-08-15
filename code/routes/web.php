@@ -26,6 +26,7 @@ Route::post('dashboard/verify', 'CommonsController@postVerify');
 
 Route::get('gas/{id}/header', 'GasController@objhead');
 Route::get('gas/{id}/logo', 'GasController@getLogo');
+Route::get('gas/configmail', 'GasController@configureMail');
 
 Route::get('users/{id}/header', 'UsersController@objhead');
 Route::get('users/search', 'UsersController@search');
