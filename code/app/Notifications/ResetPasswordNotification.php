@@ -2,15 +2,10 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use App\Notifications\ManyMailNotification;
 
-class ResetPasswordNotification extends Notification
+class ResetPasswordNotification extends ManyMailNotification
 {
-    use Queueable;
-
     private $reset_token = null;
 
     public function __construct($token)
@@ -18,13 +13,10 @@ class ResetPasswordNotification extends Notification
         $this->reset_token = $token;
     }
 
-    public function via($notifiable)
-    {
-        return ['mail'];
-    }
-
     public function toMail($notifiable)
     {
-        return (new MailMessage)->view('emails.resetpassword', ['url' => url('password/reset/' . $this->reset_token)]);
+        $message = $this->initMailMessage($notifiable);
+        $message->view('emails.resetpassword', ['url' => url('password/reset/' . $this->reset_token)]);
+        return $message;
     }
 }

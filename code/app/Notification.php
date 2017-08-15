@@ -3,8 +3,17 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+
+use App\Notifications\GenericNotificationWrapper;
+
 use Mail;
+
 use App\GASModel;
+
+/*
+    TODO In una futura versione, questo sarà da rimpiazzare col meccanismo delle
+    notifiche nativo di Laravel
+*/
 
 class Notification extends Model
 {
@@ -38,14 +47,11 @@ class Notification extends Model
         }
 
         foreach ($this->users as $user) {
-            Mail::send(['text' => 'emails.notification'], ['notification' => $this], function ($m) use ($user) {
-                $m->to($user->email, $user->name)->subject('nuova notifica');
-            });
+            $user->notify(new GenericNotificationWrapper($this));
 
             /*
-                Onde evitare di farsi bloccare dal server SMTP,
-                qui attendiamo mezzo secondo tra una mail e
-                l'altra
+                Onde evitare di farsi bloccare dal server SMTP, qui attendiamo
+                mezzo secondo tra una mail e l'altra
             */
             usleep(500000);
         }

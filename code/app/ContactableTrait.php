@@ -50,6 +50,22 @@ trait ContactableTrait
     }
 
     /*
+        Questa viene usata da ManyMailNotification per popolare la notifica
+        mail con tutte le destinazioni possibili. La prima mail disponibile
+        viene già aggiunta dal sistema delle notifiche (e acceduta per mezzo del
+        mutator getEmailAttribute()), le eventuali altre sono messe in CC.
+        Sconsigliato usare questa funzione altrove
+    */
+    public function messageAll(&$message)
+    {
+        $master_mail = $this->email;
+
+        foreach($this->contacts as $contact)
+            if ($contact->type == 'email' && $contact->value != $master_mail)
+                $message->cc($contact->value);
+    }
+
+    /*
         Questo è per sopperire alla mancanza di un attributo "email", richiesto
         ad esempio dalle funzioni per recuperare la password.
     */
