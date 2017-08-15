@@ -2190,11 +2190,24 @@ $(document).ready(function() {
 
             success: function(data) {
                 panel.find('input').prop('disabled', false);
-                panel.find('input[name=mailusername]').val(data.username);
-                panel.find('input[name=mailserver]').val(data.hostname);
-                panel.find('input[name=mailport]').val(data.port);
-                if (data.socketType == 'SSL')
-                    panel.find('input[name=mailssl]').bootstrapToggle('on');
+
+                if (data.hasOwnProperty('hostname')) {
+                    panel.find('input[name=mailusername]').val(data.username);
+                    panel.find('input[name=mailserver]').val(data.hostname);
+                    panel.find('input[name=mailport]').val(data.port);
+
+                    var val = '';
+
+                    switch(data.socketType) {
+                        case 'SSL':
+                            val = 'ssl';
+                            break;
+                        case 'STARTTLS':
+                            val = 'tls';
+                    }
+
+                    panel.find('select[name=mailssl] option[value=' + val + ']').prop('selected', true);
+                }
             },
             error: function() {
                 panel.find('input').prop('disabled', false);

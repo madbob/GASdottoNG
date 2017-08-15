@@ -115,7 +115,7 @@ class Gas extends Model
 
     public function getMailsslAttribute()
     {
-        return $this->mailConfig()->encryption != '';
+        return $this->mailConfig()->encryption;
     }
 
     private function ridConfig()

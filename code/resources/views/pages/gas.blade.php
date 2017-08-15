@@ -86,7 +86,25 @@
                     <div class="col-md-6">
                         @include('commons.textfield', ['obj' => $gas, 'name' => 'mailserver', 'label' => 'Server SMTP'])
                         @include('commons.numberfield', ['obj' => $gas, 'name' => 'mailport', 'label' => 'Porta'])
-                        @include('commons.boolfield', ['obj' => $gas, 'name' => 'mailssl', 'label' => 'Abilita SSL'])
+                        @include('commons.selectenumfield', [
+                            'obj' => $gas,
+                            'name' => 'mailssl',
+                            'label' => 'Crittografia',
+                            'values' => [
+                                [
+                                    'label' => 'Nessuna',
+                                    'value' => ''
+                                ],
+                                [
+                                    'label' => 'SSL',
+                                    'value' => 'ssl'
+                                ],
+                                [
+                                    'label' => 'STARTTLS',
+                                    'value' => 'tls'
+                                ],
+                            ]
+                        ])
                     </div>
                 </div>
             </div>

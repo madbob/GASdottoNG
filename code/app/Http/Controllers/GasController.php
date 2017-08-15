@@ -94,7 +94,7 @@ class GasController extends Controller
                 'host' => $request->input('mailserver'),
                 'port' => $request->input('mailport'),
                 'address' => $request->input('mailaddress'),
-                'encryption' => $request->has('mailssl') ? 'tls' : '',
+                'encryption' => $request->input('mailssl'),
             ];
 
             $gas->setConfig('mail_conf', json_encode($mail));
@@ -116,7 +116,13 @@ class GasController extends Controller
     public function configureMail(Request $request)
     {
         $email = $request->input('email');
-        $conf = AutoMail::discover($email);
+
+        try {
+            $conf = AutoMail::discover($email);
+        }
+        catch(\Exception $e) {
+            $conf = null;
+        }
 
         $ret = [];
         if ($conf != null)
