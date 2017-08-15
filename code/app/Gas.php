@@ -83,6 +83,11 @@ class Gas extends Model
         }
     }
 
+    public function has_mail()
+    {
+        return !empty($this->mailConfig()->host);
+    }
+
     public function getMailusernameAttribute()
     {
         return $this->mailConfig()->username;

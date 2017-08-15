@@ -20,7 +20,7 @@ class Contact extends Model
 
     public function target()
     {
-        return $this->morphsTo();
+        return $this->morphTo();
     }
 
     public function getSlugID()

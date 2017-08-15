@@ -49,6 +49,19 @@ trait ContactableTrait
         $this->contacts()->whereNotIn('id', $contacts)->delete();
     }
 
+    /*
+        Questo è per sopperire alla mancanza di un attributo "email", richiesto
+        ad esempio dalle funzioni per recuperare la password.
+    */
+    public function getEmailAttribute()
+    {
+        $contact = $this->contacts()->where('type', 'email')->first();
+        if ($contact != null)
+            return $contact->value;
+        else
+            return '';
+    }
+
     public function getAddress()
     {
         $address = $this->contacts()->where('type', 'address')->first();

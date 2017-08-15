@@ -59,4 +59,13 @@
     </form>
 </div>
 
+@if($gas->has_mail())
+    <div class="col-md-6 col-md-offset-3">
+        <hr/>
+        <p>
+            <a class="pull-right" href="{{ url('password/reset') }}">Recupero Password</a>
+        </p>
+    </div>
+@endif
+
 @endsection

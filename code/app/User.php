@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Notifications\ResetPasswordNotification;
+
 use Auth;
 
 use App\Events\SluggableCreating;
@@ -144,6 +146,11 @@ class User extends Authenticatable
             return '';
         else
             return url('users/picture/' . $this->id);
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 
     /******************************************************** CreditableTrait */

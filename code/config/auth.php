@@ -69,6 +69,10 @@ return [
             'driver' => 'eloquent',
             'model' => App\User::class,
         ],
+        'bypass' => [
+            'driver' => 'bypass',
+            'model' => App\User::class,
+        ],
 
         // 'users' => [
         //     'driver' => 'database',
@@ -94,6 +98,11 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
+            'table' => 'password_resets',
+            'expire' => 60,
+        ],
+        'bypass' => [
+            'provider' => 'bypass',
             'table' => 'password_resets',
             'expire' => 60,
         ],

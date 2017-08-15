@@ -35,13 +35,22 @@ class OverwriteMail
             $gas = Gas::first();
         }
 
-        if ($gas != null && ($mailconf = $gas->getConfig('mail_conf')) != '') {
+        if ($gas != null && $gas->has_mail()) {
+            $mailconf = $gas->getConfig('mail_conf');
             $conf = json_decode($mailconf);
             $conf->driver = 'smtp';
             $conf->from = array('address' => $conf->address, 'name' => $gas->name);
             $conf->sendmail = '';
             $conf->pretend = false;
             Config::set('mail', (array) $conf);
+
+            /*
+                Qua registro il service provider solo dopo aver alterato la
+                configurazione
+            */
+            $app = App::getInstance();
+            $app->register('Illuminate\Mail\MailServiceProvider');
+
             Mail::alwaysFrom($conf->address, $gas->name);
         }
 
