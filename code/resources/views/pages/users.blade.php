@@ -77,7 +77,7 @@
                 'filters' => [
                     'deleted_at' => (object)[
                         'icon' => 'inbox',
-                        'label' => 'Eliminati',
+                        'label' => 'Cessati',
                         'value' => null
                     ]
                 ]

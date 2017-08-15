@@ -3,7 +3,7 @@
 
 @if(!empty($senders))
     @if($senders->count() == 1)
-        <input type="hidden" name="target_id" value="{{ $senders->first()->id }}">
+        <input type="hidden" name="sender_id" value="{{ $senders->first()->id }}">
     @else
         @include('commons.selectobjfield', [
             'obj' => null,

@@ -115,7 +115,7 @@
         </div>
     </div>
 
-    <div id="current-balance" class="col-md-3 col-md-offset-3">
+    <div class="col-md-3 col-md-offset-3 current-balance">
         <ul class="list-group">
             <li class="list-group-item">
                 Saldo Conto Corrente
@@ -143,7 +143,7 @@
             <br/>
             <div class="form-inline iblock inner-form">
                 <div class="form-group">
-                    <button class="btn btn-default" data-toggle="modal" data-target="#movements-history">Consulta Storico</button>
+                    <button class="btn btn-default" data-toggle="modal" data-target="#movements-history">Storico Saldi</button>
 
                     <div class="modal fade" id="movements-history" tabindex="-1" role="dialog">
                         <div class="modal-dialog modal-lg" role="document">
@@ -166,13 +166,13 @@
                                         </thead>
                                         <tbody>
                                             @foreach($currentgas->balances as $index => $bal)
-                                                <tr>
+                                                <tr class="{{ $index == 0 ? 'current-balance' : '' }}">
                                                     <td>{{ $index == 0 ? 'Saldo Corrente' : ucwords(strftime('%d %B %G', strtotime($bal->date))) }}</td>
-                                                    <td>{{ $bal->bank }} €</td>
-                                                    <td>{{ $bal->cash }} €</td>
-                                                    <td>{{ $bal->gas }} €</td>
-                                                    <td>{{ $bal->suppliers }} €</td>
-                                                    <td>{{ $bal->deposits }} €</td>
+                                                    <td class="{{ $index == 0 ? 'bank' : '' }}"><span>{{ $bal->bank }}</span> €</td>
+                                                    <td class="{{ $index == 0 ? 'cash' : '' }}"><span>{{ $bal->cash }}</span> €</td>
+                                                    <td class="{{ $index == 0 ? 'gas' : '' }}"><span>{{ $bal->gas }}</span> €</td>
+                                                    <td class="{{ $index == 0 ? 'suppliers' : '' }}"><span>{{ $bal->suppliers }}</span> €</td>
+                                                    <td class="{{ $index == 0 ? 'deposits' : '' }}"><span>{{ $bal->deposits }}</span> €</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -194,7 +194,7 @@
             </form>
             <div class="iblock">
                 <div class="form-group">
-                    <button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#close-balance-modal">Chiudi Bilancio</button>
+                    <button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#close-balance-modal">Archivia Saldo</button>
                 </div>
 
                 <div class="modal fade" id="close-balance-modal" tabindex="-1" role="dialog">

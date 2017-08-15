@@ -9,7 +9,7 @@
                 @include('commons.imagefield', ['obj' => $user, 'name' => 'picture', 'label' => 'Foto', 'valuefrom' => 'picture_url'])
                 @include('commons.datefield', ['obj' => $user, 'name' => 'member_since', 'label' => 'Membro da'])
                 @if($user->deleted_at != null)
-                    @include('commons.staticdatefield', ['obj' => $user, 'name' => 'deleted_at', 'label' => 'Data Eliminazione'])
+                    @include('commons.staticdatefield', ['obj' => $user, 'name' => 'deleted_at', 'label' => 'Data Cessazione'])
                 @endif
                 @include('commons.textfield', ['obj' => $user, 'name' => 'card_number', 'label' => 'Numero Tessera'])
             @else

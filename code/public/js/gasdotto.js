@@ -1018,10 +1018,11 @@ function refreshBalanceView() {
         url: '/movements/balance',
         dataType: 'JSON',
         success: function(data) {
-            var panel = $('#current-balance');
-            for (var property in data)
-                if (data.hasOwnProperty(property))
-                    panel.find('.' + property + ' span').text(data[property]);
+            $('.current-balance').each(function() {
+                for (var property in data)
+                    if (data.hasOwnProperty(property))
+                        $(this).find('.' + property + ' span').text(data[property]);
+            });
         }
     });
 }
