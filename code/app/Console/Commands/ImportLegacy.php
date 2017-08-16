@@ -262,6 +262,18 @@ class ImportLegacy extends Command
             $obj->setConfig('year_closing', $row->payment_date);
             $obj->setConfig('annual_fee_amount', $row->default_fee);
             $obj->setConfig('deposit_amount', $row->default_deposit);
+
+            list($email, $username, $password, $host, $port, $ssl) = explode('::', $row->mail_conf);
+            $mail_conf = (object) [
+                'username' => $username,
+                'password' => $password,
+                'host' => $host,
+                'port' => $port,
+                'address' => $email,
+                'encryption' => $ssl ? 'ssl' : '',
+            ];
+
+            $obj->setConfig('mail_conf', json_encode($mail_conf));
         }
 
         $map['deliveries'] = [];
