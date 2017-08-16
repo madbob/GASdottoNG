@@ -2,11 +2,13 @@
 
 namespace App;
 
+use Auth;
+
 trait AttachableTrait
 {
     public function attachments()
     {
-        $relation = $this->morphMany('App\Attachment', 'target');
+        $relation = $this->morphMany('App\Attachment', 'target')->orderBy('name', 'asc');
         $attachments = $relation->get();
 
         if ($attachments->isEmpty()) {
@@ -38,17 +40,17 @@ trait AttachableTrait
         $filename = $file->getClientOriginalName();
         $file->move($filepath, $filename);
 
-        $name = $request->input('filename', '');
+        $name = $request->input('name', '');
         if ($name == '') {
             $name = $filename;
         }
 
         $attachment = new Attachment();
+        $attachment->target_type = get_class($this);
+        $attachment->target_id = $this->id;
         $attachment->name = $name;
         $attachment->filename = $filename;
         $attachment->save();
-
-        $this->attachments()->save($attachment);
 
         return $attachment;
     }
@@ -87,14 +89,13 @@ trait AttachableTrait
 
     public function attachmentPermissionGranted()
     {
-        if (array_search('App\AllowableTrait', class_uses($this)) !== false) {
-            $permission = $this->requiredAttachmentPermission();
-            if ($permission == null) {
-                return true;
-            }
+        $required = $this->requiredAttachmentPermission();
 
-            return $this->userCan($permission);
-        } else {
+        if ($required != null) {
+            $user = Auth::user();
+            return $user->can($required, $this);
+        }
+        else {
             return true;
         }
     }

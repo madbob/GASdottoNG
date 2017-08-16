@@ -16,7 +16,7 @@
     </div>
 
     <div class="clearfix"></div>
-    <hr />
+    <br />
 @endcan
 
 <div class="row">

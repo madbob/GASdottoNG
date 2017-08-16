@@ -63,6 +63,21 @@
             <p class="lead">Credito Corrente: {{ printablePrice($currentuser->current_balance_amount) }} €</p>
             <p class="lead">Da Pagare: {{ printablePrice($currentuser->pending_balance) }} €</p>
         </div>
+
+        @if($currentgas->attachments->isEmpty() == false)
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Files Condivisi</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="list-group">
+                        @foreach($currentgas->attachments as $attachment)
+                            <a href="{{ $attachment->download_url }}" class="list-group-item">{{ $attachment->name }}</a>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 </div>
 

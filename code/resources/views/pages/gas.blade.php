@@ -162,7 +162,42 @@
             </div>
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="page-header">
+            <h3>Files Condivisi</h3>
+        </div>
 
+        <div class="row">
+            <div class="col-md-12">
+                @include('commons.addingbutton', [
+                    'template' => 'attachment.base-edit',
+                    'typename' => 'attachment',
+                    'target_update' => 'attachment-list-' . $gas->id,
+                    'typename_readable' => 'File',
+                    'targeturl' => 'attachments',
+                    'extra' => [
+                        'target_type' => 'App\Gas',
+                        'target_id' => $gas->id
+                    ]
+                ])
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+        <br/>
+
+        <div class="row">
+            <div class="col-md-12">
+                @include('commons.loadablelist', [
+                    'identifier' => 'attachment-list-' . $gas->id,
+                    'items' => $gas->attachments
+                ])
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-md-6">
         <div class="page-header">
             <h3>Aliquote IVA</h3>
@@ -184,7 +219,10 @@
 
         <div class="row">
             <div class="col-md-12">
-                @include('commons.loadablelist', ['identifier' => 'vatrate-list', 'items' => App\VatRate::orderBy('name', 'asc')->get()])
+                @include('commons.loadablelist', [
+                    'identifier' => 'vatrate-list',
+                    'items' => App\VatRate::orderBy('name', 'asc')->get()
+                ])
             </div>
         </div>
     </div>
@@ -211,7 +249,10 @@
 
     <div class="row">
         <div class="col-md-12">
-            @include('commons.loadablelist', ['identifier' => 'role-list', 'items' => App\Role::orderBy('name', 'asc')->get()])
+            @include('commons.loadablelist', [
+                'identifier' => 'role-list',
+                'items' => App\Role::orderBy('name', 'asc')->get()
+            ])
         </div>
     </div>
 

@@ -26,7 +26,7 @@ use App\VariantValue;
 
 class ImportLegacy extends Command
 {
-    protected $signature = 'import:legacy {old_driver} {old_host} {old_username} {old_password} {old_database} {new_driver} {new_host} {new_username} {new_password} {new_database}';
+    protected $signature = 'import:legacy {old_path} {old_driver} {old_host} {old_username} {old_password} {old_database} {new_driver} {new_host} {new_username} {new_password} {new_database}';
     protected $description = 'Importa dati da una istanza di GASdotto Legacy';
 
     private $last_balance_date = null;
@@ -111,6 +111,56 @@ class ImportLegacy extends Command
         }
     }
 
+    private function importFiles($old_path, $old_db, $type, $new_ids)
+    {
+        if ($type == 'supplier')
+            $table = 'Supplier_files';
+        else
+            $table = 'Gas_files';
+
+        $query = 'SELECT * FROM ' . $table;
+        $result = $old_db->select($query);
+
+        foreach ($result as $row) {
+            try {
+                $old_id = $row->target;
+                $query = 'SELECT * FROM Customfile WHERE id = ' . $old_id;
+                $subresult = $old_db->select($query);
+
+                foreach ($subresult as $subrow) {
+                    if (empty($subrow->server_path)) {
+                        continue;
+                    }
+
+                    $old_file_path = sprintf('%s%s', $old_path, $subrow->server_path);
+                    if (file_exists($old_file_path) == false) {
+                        echo sprintf("File non reperibile: %s\n", $old_file_path);
+                    }
+                    else {
+                        if ($type == 'supplier')
+                            $parent = Supplier::withTrashed()->findOrFail($new_ids['suppliers'][$row->parent]);
+                        else
+                            $parent = Gas::findOrFail($new_ids['gas'][$row->parent]);
+
+                        $filename = basename($subrow->server_path);
+                        $new_path = sprintf('%s/%s', $parent->filesPath(), $filename);
+                        copy($old_file_path, $new_path);
+
+                        $file = new Attachment();
+                        $attachment->target_type = get_class($parent);
+                        $attachment->target_id = $parent->id;
+                        $file->name = $subrow->name;
+                        $file->filename = $filename;
+                        $file->save();
+                    }
+                }
+            }
+            catch (\Exception $e) {
+                echo sprintf("Errore nell'importazione del file %s: %s\n", $row->name, $e->getMessage());
+            }
+        }
+    }
+
     public function handle()
     {
         Model::unguard();
@@ -164,6 +214,8 @@ class ImportLegacy extends Command
         DB::table('movements')->delete();
         DB::table('contacts')->delete();
         DB::table('comments')->delete();
+
+        $old_path = $this->argument('old_path');
 
         $map = [];
 
@@ -260,6 +312,19 @@ class ImportLegacy extends Command
 
                 if (array_key_exists($row->shipping, $map['deliveries'])) {
                     $obj->preferred_delivery_id = $map['deliveries'][$row->shipping];
+                }
+
+                if (!empty($row->photo)) {
+                    $old_file_path = sprintf('%s/%s', $old_path, $row->photo);
+                    if (file_exists($old_file_path) == false) {
+                        echo sprintf("File non reperibile: %s\n", $old_file_path);
+                    }
+                    else {
+                        $filename = str_random(30);
+                        $new_path = sprintf('%s/%s', storage_path('app'), $filename);
+                        copy($old_file_path, $new_path);
+                        $obj->picture = sprintf('app/%s', $filename);
+                    }
                 }
 
                 $obj->save();
@@ -379,12 +444,15 @@ class ImportLegacy extends Command
             }
         }
 
+        $this->importFiles($old_path, $old, 'supplier', $map);
+        $this->importFiles($old_path, $old, 'gas', $map);
+
         $query = 'SELECT * FROM Supplier_references';
         $result = $old->select($query);
 
         foreach ($result as $row) {
             try {
-                $target = User::findOrFail($map['users'][$row->target]);
+                $target = User::withTrashed()->findOrFail($map['users'][$row->target]);
                 if($target != null) {
                     $parent = Supplier::withTrashed()->findOrFail($map['suppliers'][$row->parent]);
                     $target->addRole($referrer_role, $parent);
