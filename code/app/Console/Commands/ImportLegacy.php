@@ -15,6 +15,7 @@ use App\Role;
 use App\Balance;
 use App\Delivery;
 use App\Supplier;
+use App\Attachment;
 use App\Contact;
 use App\Category;
 use App\Measure;
@@ -147,8 +148,8 @@ class ImportLegacy extends Command
                         copy($old_file_path, $new_path);
 
                         $file = new Attachment();
-                        $attachment->target_type = get_class($parent);
-                        $attachment->target_id = $parent->id;
+                        $file->target_type = get_class($parent);
+                        $file->target_id = $parent->id;
                         $file->name = $subrow->name;
                         $file->filename = $filename;
                         $file->save();
@@ -156,7 +157,7 @@ class ImportLegacy extends Command
                 }
             }
             catch (\Exception $e) {
-                echo sprintf("Errore nell'importazione del file %s: %s\n", $row->name, $e->getMessage());
+                echo sprintf("Errore nell'importazione del file %s: %s\n", $subrow->name, $e->getMessage());
             }
         }
     }

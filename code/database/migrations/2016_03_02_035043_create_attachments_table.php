@@ -14,7 +14,7 @@ class CreateAttachmentsTable extends Migration
             $table->string('target_type');
             $table->string('target_id');
             $table->string('name')->default('');
-            $table->string('filename');
+            $table->string('filename')->default('');
             $table->string('url')->default('');
             $table->boolean('internal')->default(false);
         });
