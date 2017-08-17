@@ -2,16 +2,12 @@
 
 function descent($category)
 {
-    ?>
-    <li class="list-group-item jstree-open" id="{{ $category->id }}"><span class="badge pull-right"><span class="glyphicon glyphicon-remove dynamic-tree-remove" aria-hidden="true"></span></span>{{ $category->name }}
-        <ul class="list-group">
-            @foreach($category->children as $c)
-                <?php descent($c) ?>
-            @endforeach
-        </ul>
-    </li>
-    <?php
+    echo '<li class="list-group-item jstree-open" id="' . $category->id . '"><span class="badge pull-right"><span class="glyphicon glyphicon-remove dynamic-tree-remove" aria-hidden="true"></span></span>' . $category->name . '<ul class="list-group">';
 
+    foreach($category->children as $c)
+        echo descent($c);
+
+    echo '</ul></li>';
 }
 
 ?>
