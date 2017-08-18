@@ -124,5 +124,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $notification->users()->attach($admin->id, ['done' => false]);
+
+        $this->call(MovementTypesSeeder::class);
     }
 }

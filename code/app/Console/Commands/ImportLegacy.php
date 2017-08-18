@@ -27,7 +27,7 @@ use App\VariantValue;
 
 class ImportLegacy extends Command
 {
-    protected $signature = 'import:legacy {old_path} {old_driver} {old_host} {old_username} {old_password} {old_database} {new_driver} {new_host} {new_username} {new_password} {new_database}';
+    protected $signature = 'import:legacy {old_path} {old_driver} {old_host} {old_username} {old_password} {old_database}';
     protected $description = 'Importa dati da una istanza di GASdotto Legacy';
 
     private $last_balance_date = null;
@@ -182,11 +182,11 @@ class ImportLegacy extends Command
         $old = $factory->make($old_config);
 
         $new_config = [
-            'driver' => $this->argument('new_driver'),
-            'host' => $this->argument('new_host'),
-            'username' => $this->argument('new_username'),
-            'password' => $this->argument('new_password'),
-            'database' => $this->argument('new_database'),
+            'driver' => env('DB_CONNECTION'),
+            'host' => env('DB_HOST'),
+            'username' => env('DB_USERNAME'),
+            'password' => env('DB_PASSWORD'),
+            'database' => env('DB_DATABASE'),
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',

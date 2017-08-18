@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 use DB;
 use Theme;
 use Auth;
 use CsvReader;
 use ezcArchive;
+use Artisan;
 
 use App\User;
 use App\Supplier;
@@ -72,6 +74,37 @@ class ImportController extends Controller
 
         } catch (\Exception $e) {
             return $this->errorResponse('Errore nel salvataggio del file');
+        }
+    }
+
+    public function getLegacy()
+    {
+        return Theme::view('import.legacy-pre');
+    }
+
+    public function postLegacy(Request $request)
+    {
+        $old_path = $request->input('old_path');
+        $config = sprintf('%s/server/config.php', $old_path);
+
+        if (file_exists($config) == false) {
+            return Theme::view('import.legacy-pre', ['error' => 'Il file di configurazione non è stato trovato in ' . $config]);
+        }
+        else {
+            require_once($config);
+
+            $output = new BufferedOutput();
+
+            Artisan::call('import:legacy', [
+                'old_path' => $old_path,
+                'old_driver' => $dbdriver,
+                'old_host' => isset($dbhost) ? $dbhost : 'localhost',
+                'old_username' => $dbuser,
+                'old_password' => $dbpassword,
+                'old_database' => $dbname
+            ], $output);
+
+            return Theme::view('import.legacy-post', ['output' => $output]);
         }
     }
 

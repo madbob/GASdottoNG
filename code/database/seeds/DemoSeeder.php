@@ -18,7 +18,7 @@ class DemoSeeder extends Seeder
         $gas = Gas::where('name', '!=', '')->first();
 
         $gas->name = 'GAS Demo';
-        $gas->message = "Questa è la pre-demo di GASdottoNG. La piattaforma è ancora lungi dall'essere utilizzabile, ma questa istanza permette di vedere a che punto siamo arrivati.\n\nPer accedere:\nUtente amministratore: username: root, password: root\nUtente non privilegiato: username: user, password: user";
+        $gas->message = "Questa è la demo di GASdottoNG. Questa istanza permette di vedere a che punto siamo arrivati con lo sviluppo.\n\nPer accedere:\nUtente amministratore: username: root, password: root\nUtente non privilegiato: username: user, password: user";
         $gas->save();
 
         User::create([

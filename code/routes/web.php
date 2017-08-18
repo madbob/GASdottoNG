@@ -88,6 +88,8 @@ Route::post('movements/close', 'MovementsController@closeBalance');
 Route::post('import/csv', 'ImportController@postCsv');
 Route::get('import/gdxp', 'ImportController@getGdxp');
 Route::post('import/gdxp', 'ImportController@postGdxp');
+Route::get('import/legacy', 'ImportController@getLegacy');
+Route::post('import/legacy', 'ImportController@postLegacy');
 
 Route::resource('gas', 'GasController');
 Route::resource('users', 'UsersController');
