@@ -343,6 +343,7 @@ class ImportLegacy extends Command
                 $obj->save();
 
                 $this->handleContact('phone', 'phone', $row, $obj);
+                $this->handleContact('mobile', 'mobile', $row, $obj);
                 $this->handleContact('email', 'mail', $row, $obj);
                 $this->handleContact('email', 'mail2', $row, $obj);
                 $this->handleContact('address', 'address', $row, $obj);
