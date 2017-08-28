@@ -81,9 +81,11 @@ Route::post('notifications/markread/{id}', 'NotificationsController@markread');
 
 Route::get('movements/{id}/header', 'MovementsController@objhead');
 Route::get('movtypes/{id}/header', 'MovementTypesController@objhead');
+Route::get('movements/showcredits', 'MovementsController@creditsTable');
 Route::get('movements/balance', 'MovementsController@getBalance');
 Route::post('movements/recalculate', 'MovementsController@recalculate');
 Route::post('movements/close', 'MovementsController@closeBalance');
+Route::get('movements/document/{type}/{subtype?}', 'MovementsController@document');
 
 Route::post('import/csv', 'ImportController@postCsv');
 Route::get('import/gdxp', 'ImportController@getGdxp');

@@ -331,15 +331,6 @@ class Order extends Model
         $table->internal = true;
         $ret[] = $table;
 
-        $user = Auth::user();
-        if(!empty($user->gas->rid_name)) {
-            $table = new Attachment();
-            $table->name = 'RID / SEPA';
-            $table->url = url('orders/document/'.$this->id.'/rid');
-            $table->internal = true;
-            $ret[] = $table;
-        }
-
         return $ret;
     }
 

@@ -239,6 +239,45 @@ class MovementsController extends Controller
         return $this->successResponse();
     }
 
+    public function creditsTable()
+    {
+        $user = Auth::user();
+        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
+            abort(503);
+        }
+
+        return Theme::view('movement.credits');
+    }
+
+    public function document(Request $request, $type, $subtype = 'none')
+    {
+        $user = Auth::user();
+        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
+            abort(503);
+        }
+
+        switch ($type) {
+            case 'credits':
+                $users = App\User::sorted()->get();
+
+                if ($subtype == 'csv') {
+                    $filename = sprintf('Crediti al %s.csv', date('d/m/Y'));
+                    http_csv_headers($filename);
+                    return Theme::view('documents.credits_table_csv', ['users' => $users]);
+                }
+                else if ($subtype == 'rid') {
+                    $filename = sprintf('RID Debiti al %s.txt', date('d/m/Y'));
+                    header('Content-Type: plain/text');
+                    header('Content-Disposition: attachment; filename="' . $filename . '"');
+                    header('Cache-Control: no-cache, no-store, must-revalidate');
+                    header('Pragma: no-cache');
+                    header('Expires: 0');
+                    return Theme::view('documents.credits_rid', ['users' => $users]);
+                }
+                break;
+        }
+    }
+
     public function getBalance()
     {
         $user = Auth::user();

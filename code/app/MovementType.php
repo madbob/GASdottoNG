@@ -46,16 +46,6 @@ class MovementType extends Model
             ],
         ];
 
-        $user = Auth::user();
-        if($user && !empty($user->gas->rid_name)) {
-            $ret['rid'] = (object) [
-                'name' => 'RID/SEPA',
-                'identifier' => false,
-                'icon' => 'glyphicon-check',
-                'active_for' => 'App\User'
-            ];
-        }
-
         return $ret;
     }
 
@@ -401,32 +391,6 @@ class MovementType extends Model
                         ]
                     ],
                 ],
-                (object) [
-                    'method' => 'rid',
-                    'sender' => (object) [
-                        'operations' => []
-                    ],
-                    'target' => (object) [
-                        'operations' => [
-                            (object) [
-                                'operation' => 'increment',
-                                'field' => 'bank'
-                            ],
-                        ]
-                    ],
-                    'master' => (object) [
-                        'operations' => [
-                            (object) [
-                                'operation' => 'increment',
-                                'field' => 'suppliers'
-                            ],
-                            (object) [
-                                'operation' => 'increment',
-                                'field' => 'bank'
-                            ],
-                        ]
-                    ],
-                ]
             ]
         );
         $type->callbacks = [

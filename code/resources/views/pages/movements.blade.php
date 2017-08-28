@@ -71,6 +71,14 @@
                 </div>
             </div>
 
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#creditsStatus">Stato Crediti</button>
+            <div class="modal fade dynamic-contents" id="creditsStatus" tabindex="-1" data-contents-url="{{ url('movements/showcredits') }}">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    </div>
+                </div>
+            </div>
+
             <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#handleMovementTypes">Amministra Tipi Movimento</button>
             <div class="collapse dynamic-contents" id="handleMovementTypes" tabindex="-1" data-contents-url="{{ url('movtypes') }}">
             </div>
