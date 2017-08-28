@@ -268,7 +268,7 @@ trait GASModel
                     'test' => function ($obj) {
                         return $obj->deleted_at != null;
                     },
-                    'text' => 'Eliminato',
+                    'text' => 'Cessato',
                 ];
             }
 
