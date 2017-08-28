@@ -712,10 +712,10 @@ function bookingTotal(editor) {
             }
 
             row_p += current_price * q;
-            total_price += row_p;
         });
 
         $(this).closest('tr').find('.booking-product-price').text(priceRound(row_p) + ' €');
+        total_price += row_p;
     });
 
     var transport = editor.find('.booking-transport');
