@@ -33,8 +33,10 @@ class CommonsController extends Controller
 
         /*
             In mancanza d'altro, eseguo qui lo scheduling delle operazioni
+            periodiche
         */
-        Artisan::call('schedule:run');
+        Artisan::call('check:fees');
+        Artisan::call('check:orders');
 
         return Theme::view('pages.dashboard', $data);
     }

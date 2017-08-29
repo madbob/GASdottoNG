@@ -11,11 +11,13 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\ResetPassword::class,
         \App\Console\Commands\ImportLegacy::class,
         \App\Console\Commands\CheckFees::class,
+        \App\Console\Commands\CloseOrders::class,
     ];
 
     protected function schedule(Schedule $schedule)
     {
     	$schedule->command('check:fees')->daily();
+        $schedule->command('check:orders')->daily();
     }
 
     protected function commands()

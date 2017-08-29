@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
+use DB;
 use Log;
 
 use App\Gas;
@@ -12,7 +13,7 @@ use App\User;
 class CheckFees extends Command
 {
     protected $signature = 'check:fees';
-    protected $description = 'Controlla la scandenza delle quote di iscrizione alla chiusura dell\'anno sociale';
+    protected $description = 'Controlla la scadenza delle quote di iscrizione alla chiusura dell\'anno sociale';
 
     public function __construct()
     {
@@ -39,7 +40,7 @@ class CheckFees extends Command
                 })->update(['fee_id' => 0]);
 
                 $date_close = date('Y-m-d', strtotime($date_close . ' +1 years'));
-                $user->gas->setConfig('year_closing', $date_close);
+                $gas->setConfig('year_closing', $date_close);
 
                 DB::commit();
             }
