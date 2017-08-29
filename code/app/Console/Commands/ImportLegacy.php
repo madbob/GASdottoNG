@@ -598,17 +598,17 @@ class ImportLegacy extends Command
         }
 
         VatRate::create([
-            'name' => '4%',
+            'name' => 'Minima',
             'percentage' => 4,
         ]);
 
         VatRate::create([
-            'name' => '10%',
+            'name' => 'Ridotta',
             'percentage' => 10,
         ]);
 
         VatRate::create([
-            'name' => '22%',
+            'name' => 'Ordinaria',
             'percentage' => 22,
         ]);
 
