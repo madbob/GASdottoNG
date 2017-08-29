@@ -146,7 +146,7 @@ class BookingHandler extends Controller
             }
 
             if ($delivering) {
-                $booking->status = 'shipped';
+                $booking->status = $request->input('action');
                 $booking->save();
             }
         }

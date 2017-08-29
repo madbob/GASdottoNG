@@ -249,6 +249,12 @@ trait GASModel
                         },
                         'text' => 'Consegnato',
                     ],
+                    'download-alt' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'saved';
+                        },
+                        'text' => 'Salvato',
+                    ],
                 ],
                 'User' => [
                 ],

@@ -16,6 +16,8 @@ $rand = rand();
 ?>
 
 <form class="form-horizontal inner-form booking-form" method="PUT" action="{{ url('delivery/' . $aggregate->id . '/user/' . $user->id) }}" data-reference-modal="editMovement-{{ $rand }}">
+    <input type="hidden" name="action" value="shipped">
+
     @foreach($aggregate->orders as $order)
         @if($more_orders)
             <h3>{{ $order->printableName() }}</h3>
@@ -194,11 +196,12 @@ $rand = rand();
             <div class="col-md-12">
                 <div class="btn-group pull-right main-form-buttons" role="group" aria-label="Opzioni">
                     <button class="btn btn-default preload-quantities">Carica Quantità Prenotate</button>
+                    <button type="submit" class="btn btn-info info-button">Salva Informazioni</button>
 
                     @if($handling_movements)
-                        <button type="button" class="btn btn-success saving-button" data-toggle="modal" data-target="#editMovement-{{ $rand }}">Salva</button>
+                        <button type="button" class="btn btn-success saving-button" data-toggle="modal" data-target="#editMovement-{{ $rand }}">Consegna</button>
                     @else
-                        <button type="submit" class="btn btn-success saving-button">Salva</button>
+                        <button type="submit" class="btn btn-success saving-button">Consegna</button>
                     @endif
                 </div>
             </div>

@@ -2115,6 +2115,13 @@ $(document).ready(function() {
         return false;
     });
 
+    $('body').on('click', '.booking-form .info-button', function(e) {
+        e.preventDefault();
+        var form = $(this).closest('form');
+        form.find('input:hidden[name=action]').val('saved');
+        form.submit();
+    });
+
     $('body').on('click', '.inline-calculator button[type=submit]', function(e) {
         e.preventDefault();
         var modal = $(this).closest('.modal');
