@@ -337,6 +337,8 @@ class MovementsController extends Controller
         }
 
         try {
+            DB::beginTransaction();
+
             Session::put('movements-recalculating', true);
             $date = decodeDate($request->input('date'));
 
@@ -367,11 +369,14 @@ class MovementsController extends Controller
                 data di chiusura alla data corrente
             */
             $this->recalculateCurrentBalance();
+
+            DB::commit();
         }
         catch(\Exception $e) {
             Log::error('Errore nel ricalcolo saldi: ' . $e->getMessage());
         }
 
+        Session::forget('movements-recalculating');
         return redirect(url('/movements'));
     }
 }

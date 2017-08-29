@@ -318,11 +318,13 @@ function manyRowsAddDeleteButtons(node) {
     var fields = node.find('.row:not(.many-rows-header)');
     if (fields.length > 1 && node.find('.delete-many-rows').length == 0) {
         fields.each(function() {
-            var button = '<div class="btn btn-danger delete-many-rows"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>';
+            var button = '<div class="col-md-2"><div class="btn btn-danger delete-many-rows pull-right"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div></div>';
             $(this).append(button);
         });
     } else if (fields.length == 1) {
-        node.find('.delete-many-rows').remove();
+        node.find('.delete-many-rows').each(function() {
+            $(this).closest('.col-md-2').remove();
+        });
     }
 }
 
@@ -1254,6 +1256,16 @@ $(document).ready(function() {
         }
 
         return false;
+    });
+
+    $('body').on('click', '.password-field .glyphicon', function() {
+        var i = $(this).closest('.password-field').find('input');
+        if (i.attr('type') == 'password')
+            i.attr('type', 'text');
+        else
+            i.attr('type', 'password');
+
+        $(this).toggleClass('glyphicon-eye-open').toggleClass('glyphicon-eye-close');
     });
 
     $('body').on('submit', '.list-filter form', function(e) {
