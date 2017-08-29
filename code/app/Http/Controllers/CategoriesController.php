@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
 use DB;
 use Auth;
 use Theme;
+
 use App\Category;
+use App\Product;
 
 class CategoriesController extends Controller
 {
@@ -53,7 +56,7 @@ class CategoriesController extends Controller
 
         return $this->successResponse([
             'id' => $category->id,
-                        'parent' => $category->parent_id,
+            'parent' => $category->parent_id,
             'name' => $category->name,
         ]);
     }
@@ -61,10 +64,13 @@ class CategoriesController extends Controller
     private function updateRecursive($data, $parent, &$accumulator)
     {
         foreach ($data as $category) {
-            $c = Category::find($category['id']);
-            if ($c == null) {
+            $c = null;
+
+            if (isset($category['id']))
+                $c = Category::find($category['id']);
+
+            if ($c == null)
                 $c = new Category();
-            }
 
             $c->name = $category['name'];
             $c->parent_id = $parent;
@@ -90,6 +96,7 @@ class CategoriesController extends Controller
         $accumulator = [];
 
         $this->updateRecursive($data, null, $accumulator);
+        Product::whereNotIn('category_id', $accumulator)->update(['category_id' => 1]);
         Category::whereNotIn('id', $accumulator)->delete();
 
         return $this->successResponse();

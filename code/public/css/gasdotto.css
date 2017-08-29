@@ -93,6 +93,11 @@ table label {
     .tt-menu .tt-dataset .tt-selectable:hover {
       background-color: #EEE; }
 
+.dynamic-tree input {
+  width: 80%; }
+.dynamic-tree .dynamic-tree-add-row {
+  margin-top: 20px; }
+
 .booking-product .row {
   margin-left: 0; }
 .booking-product .input-group {

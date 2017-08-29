@@ -477,6 +477,11 @@ class ImportLegacy extends Command
             }
         }
 
+        $first_category = Category::create([
+            'id' => 1,
+            'name' => 'Non Specificato'
+        ]);
+
         $map['categories'] = [];
         $query = 'SELECT * FROM Category';
         $result = $old->select($query);
@@ -530,7 +535,6 @@ class ImportLegacy extends Command
                 $obj->name = $row->name;
                 $obj->supplier_id = $map['suppliers'][$row->supplier];
                 $obj->supplier_code = $row->code;
-                $obj->category_id = $map['categories'][$row->category];
                 $obj->measure_id = $map['measures'][$row->measure];
                 $obj->active = $row->available;
                 $obj->description = $row->description;
@@ -542,6 +546,12 @@ class ImportLegacy extends Command
                 $obj->min_quantity = $row->minimum_order;
                 $obj->multiple = $row->multiple_order;
                 $obj->max_available = $row->total_max_order;
+
+                if (isset($map['categories'][$row->category]))
+                    $obj->category_id = $map['categories'][$row->category];
+                else
+                    $obj->category_id = $first_category->id;
+
                 $obj->save();
                 $map['products'][$row->id] = $obj->id;
             }

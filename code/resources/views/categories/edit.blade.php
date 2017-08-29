@@ -2,7 +2,12 @@
 
 function descent($category)
 {
-    echo '<li class="list-group-item jstree-open" id="' . $category->id . '"><span class="badge pull-right"><span class="glyphicon glyphicon-remove dynamic-tree-remove" aria-hidden="true"></span></span>' . $category->name . '<ul class="list-group">';
+    echo '<li class="list-group-item" id="' . $category->id . '"><div>';
+
+    if ($category->id != 1)
+        echo '<span class="badge pull-right"><span class="glyphicon glyphicon-remove dynamic-tree-remove"></span></span>';
+
+    echo '<input type="text" class="form-control" value="' . $category->name . '"></div><ul>';
 
     foreach($category->children as $c)
         echo descent($c);
@@ -28,8 +33,8 @@ function descent($category)
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div id="categories-editor" class="dynamic-tree">
-                    <ul class="list-group">
+                <div id="categories-editor">
+                    <ul class="list-group dynamic-tree">
                         @foreach($categories as $cat)
                             <?php descent($cat) ?>
                         @endforeach
@@ -38,7 +43,7 @@ function descent($category)
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group dynamic-tree-add-row">
             <div class="col-md-10">
                 <input type="text" class="form-control" name="new_category" placeholder="Crea Nuova Categoria" autocomplete="off">
             </div>

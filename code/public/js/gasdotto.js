@@ -140,49 +140,30 @@ function generalInit() {
     });
 
     $('.modal.dynamic-contents').on('show.bs.modal', function(e) {
-        if (typeof $.data(e.target, 'dynamic-inited') == 'undefined') {
-            $.data(e.target, 'dynamic-inited', {
-                done: true
-            });
+        var contents = $(this).find('.modal-content');
+        contents.empty().append(loadingPlaceholder());
+        var url = $(this).attr('data-contents-url');
 
-            var contents = $(this).find('.modal-content');
-            contents.empty().append(loadingPlaceholder());
-            var url = $(this).attr('data-contents-url');
-
-            $.get(url, function(data) {
-                contents.empty().append(data);
-            });
-        }
+        $.get(url, function(data) {
+            contents.empty().append(data);
+        });
     });
 
     $('.collapse.dynamic-contents').on('show.bs.collapse', function(e) {
-        if (typeof $.data(e.target, 'dynamic-inited') == 'undefined') {
-            $.data(e.target, 'dynamic-inited', {
-                done: true
-            });
+        var contents = $(this);
+        contents.empty().append(loadingPlaceholder());
+        var url = $(this).attr('data-contents-url');
 
-            var contents = $(this);
-            contents.empty();
-            var url = $(this).attr('data-contents-url');
-
-            $.get(url, function(data) {
-                contents.append(data);
-            });
-        }
+        $.get(url, function(data) {
+            contents.empty().append(data);
+        });
     });
 
-    $('.dynamic-tree').jstree({
-        'core': {
-            'check_callback': true
-        },
-        'plugins': ['dnd', 'unique', 'sort']
+    $('.dynamic-tree').nestedSortable({
+        listType: 'ul',
+        items: 'li',
+        toleranceElement: '> div'
     });
-
-    /*
-    	jstree rimuove la classe esistente sulla ul di riferimento,
-    	qui ce la rimetto. TODO: correggere jstree
-    */
-    $('.dynamic-tree ul').addClass('list-group');
 
     $('#orderAggregator ul').droppable({
         accept: 'li',
@@ -398,21 +379,23 @@ function setupImportCsvEditor() {
     });
 }
 
-function parseDynamicTree(unparsed_data) {
+function parseDynamicTree(tree) {
     var data = [];
+    var index = 1;
 
-    for (var i = 0; i < unparsed_data.length; i++) {
-        var unparsed_node = unparsed_data[i];
-        /*
-        	Per avere il contenuto testuale del nodo devo rimuovere
-        	l'HTML del pulsante di rimozione della riga
-        */
+    while(true) {
+        var n = tree.find('> li:nth-child(' + index + ')');
+        if (n.length == 0)
+            break;
+
         var node = {
-            id: unparsed_node.id,
-            name: unparsed_node.text.replace(/<[^>]*>?/g, '')
+            id: n.attr('id'),
+            name: n.find('input:text').val()
         };
-        node.children = parseDynamicTree(unparsed_node.children);
+
+        node.children = parseDynamicTree(n.find('ul'));
         data.push(node);
+        index++;
     }
 
     return data;
@@ -2241,16 +2224,8 @@ $(document).ready(function() {
     	Widget albero gerarchico dinamico
     */
 
-    $(document).on('dnd_stop.vakata', function(e) {
-        $('.dynamic-tree').jstree().open_all();
-    });
-
     $('body').on('click', '.dynamic-tree .dynamic-tree-remove', function() {
-        var item = $(this).closest('li');
-        var list = item.closest('ul');
-        item.remove();
-        if (list.find('li').length == 0)
-            list.remove();
+        $(this).closest('li').remove();
 
     }).on('click', '.dynamic-tree-box .dynamic-tree-add', function(e) {
         e.preventDefault();
@@ -2259,12 +2234,9 @@ $(document).ready(function() {
         var name = input.val();
         var tree = box.find('.dynamic-tree');
 
-        tree.jstree().create_node(null, {
-            text: '<span class="badge pull-right"><span class="glyphicon glyphicon-remove dynamic-tree-remove" aria-hidden="true"></span></span>' + name,
-            li_attr: {
-                class: 'list-group-item jstree-open'
-            }
-        });
+        tree.append('<li class="list-group-item"><div><span class="badge pull-right"><span class="glyphicon glyphicon-remove dynamic-tree-remove"></span></span><input name="names[]" class="form-control" value="' + name + '"></div><ul></ul></li>');
+        tree.nestedSortable('refresh');
+
         input.val('');
 
         return false;
@@ -2273,8 +2245,7 @@ $(document).ready(function() {
         e.preventDefault();
         var box = $(this);
         var tree = box.find('.dynamic-tree');
-        var unparsed_data = tree.jstree().get_json();
-        var data = parseDynamicTree(unparsed_data);
+        var data = parseDynamicTree(tree);
 
         $.ajax({
             method: box.attr('method'),
