@@ -429,8 +429,10 @@ function miscInnerCallbacks(form, data) {
     if (test.length != 0) {
         var listname = test.val();
         var list = $('#' + listname);
-        list.append('<a data-element-id="' + data.id + '" href="' + data.url + '" class="loadable-item list-group-item">' + data.header + '</a>');
+        var node = $('<a data-element-id="' + data.id + '" href="' + data.url + '" class="loadable-item list-group-item">' + data.header + '</a>');
+        list.append(node);
         testListsEmptiness();
+        node.click();
     }
 
     var test = form.find('input[name=update-select]');
@@ -1238,9 +1240,12 @@ $(document).ready(function() {
             });
         }
         else {
-            $(this).find('a').removeClass('active');
             var node = $('<li>').addClass('list-group-item').addClass('loadable-contents').attr('data-random-identifier', randomString(10)).append(loadingPlaceholder());
             $(this).addClass('active').after(node);
+
+            $('html, body').animate({
+                scrollTop: node.offset().top - 120
+            }, 300);
 
             $.ajax({
                 method: 'GET',
@@ -1250,7 +1255,7 @@ $(document).ready(function() {
                     node.empty().append(data);
                 },
                 error: function() {
-                    node.empty().append();
+                    node.empty();
                 }
             });
         }

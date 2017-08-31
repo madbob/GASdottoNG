@@ -28,7 +28,15 @@ class SuppliersController extends Controller
         $obj->business_name = $request->input('business_name');
         $obj->taxcode = $request->input('taxcode');
         $obj->vat = $request->input('vat');
-        $obj->description = $request->input('description');
+        $obj->description = $request->input('description', '');
+
+        $obj->payment_method = $request->input('payment_method', '');
+        if ($obj->payment_method == null)
+            $obj->payment_method = '';
+
+        $obj->order_method = $request->input('order_method', '');
+        if ($obj->order_method == null)
+            $obj->order_method = '';
     }
 
     public function index()
