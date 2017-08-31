@@ -27,16 +27,16 @@ class CommonsController extends Controller
         $user->last_login = date('Y-m-d G:i:s');
         $user->save();
 
-        $data['notifications'] = $user->notifications;
-        $data['opened'] = Aggregate::getByStatus('open');
-        $data['shipping'] = Aggregate::getByStatus('closed');
-
         /*
             In mancanza d'altro, eseguo qui lo scheduling delle operazioni
             periodiche
         */
         Artisan::call('check:fees');
         Artisan::call('check:orders');
+
+        $data['notifications'] = $user->notifications;
+        $data['opened'] = Aggregate::getByStatus('open');
+        $data['shipping'] = Aggregate::getByStatus('closed');
 
         return Theme::view('pages.dashboard', $data);
     }

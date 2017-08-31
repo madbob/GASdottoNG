@@ -172,7 +172,6 @@ class OrdersController extends Controller
         $order->comment = $request->input('comment');
         $order->start = decodeDate($request->input('start'));
         $order->end = decodeDate($request->input('end'));
-        $order->status = $request->input('status');
         $order->discount = $request->input('discount');
         $order->transport = $request->input('transport');
 
@@ -181,6 +180,20 @@ class OrdersController extends Controller
             $order->shipping = decodeDate($s);
         } else {
             $order->shipping = null;
+        }
+
+        /*
+            Se un ordine viene riaperto, modifico artificiosamente la sua data
+            di chiusura. Questo per evitare che venga nuovamente automaticamente
+            chiuso
+        */
+        $status = $request->input('status');
+        if ($order->status != $status) {
+            $today = date('Y-m-d');
+            if ($status == 'open' && $order->end < $today)
+                $order->end = $today;
+
+            $order->status = $status;
         }
 
         $order->save();
