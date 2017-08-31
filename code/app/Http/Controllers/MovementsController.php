@@ -151,7 +151,12 @@ class MovementsController extends Controller
 
     public function create(Request $request)
     {
-        $type = $request->input('type');
+        $type = $request->input('type', null);
+
+        if ($type == null) {
+            return Theme::view('movement.create');
+        }
+
         if ($type == 'none') {
             return '';
         }

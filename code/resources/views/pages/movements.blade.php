@@ -6,13 +6,9 @@
     <div class="col-md-12">
         @can('movements.admin', $currentgas)
             @include('commons.addingbutton', [
-                'template' => 'movement.base-edit',
                 'typename' => 'movement',
                 'typename_readable' => 'Movimento',
-                'targeturl' => 'movements',
-                'extra' => [
-                    'post-saved-function' => ['refreshFilter', 'refreshBalanceView']
-                ]
+                'dynamic_url' => url('movements/create')
             ])
 
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#configAccounting">Configurazione Contabilità</button>
