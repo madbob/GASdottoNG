@@ -262,6 +262,7 @@ class Order extends Model
             $summary->products[$product->id]['quantity_pieces'] = $quantity_pieces;
             $summary->products[$product->id]['price'] = $price;
             $summary->products[$product->id]['transport'] = $transport;
+            $summary->products[$product->id]['delivered'] = $delivered;
             $summary->products[$product->id]['delivered_pieces'] = $delivered_pieces;
             $summary->products[$product->id]['price_delivered'] = $price_delivered;
 

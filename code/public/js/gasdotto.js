@@ -934,7 +934,7 @@ function setupPermissionsEditor() {
             }
         });
 
-    }).on('change', 'input:checkbox', function(e) {
+    }).on('change', 'input:checkbox[data-role]', function(e) {
         var check = $(this);
 
         var url = '';
@@ -1344,9 +1344,24 @@ $(document).ready(function() {
     });
 
     $('body').on('change', '.triggers-all-checkbox', function() {
+        $(this).prop('disabled', true);
+
         var form = $(this).closest('form');
         var target = $(this).attr('data-target-class');
-        form.find('.' + target).prop('checked', $(this).prop('checked'));
+        var new_status = $(this).prop('checked');
+
+        /*
+            Le checkbox in oggetto possono essere "lisce" o gestite con
+            bootstrapToggle, e vanno cambiate in modo diverso
+        */
+        form.find('.' + target).each(function() {
+            if ($(this).parent().attr('data-toggle') == 'toggle')
+                $(this).bootstrapToggle(new_status ? 'on' : 'off');
+            else
+                $(this).prop('checked', new_status);
+        });
+
+        $(this).prop('disabled', false);
     })
     .on('click', '.triggers-all-radio label', function() {
         var form = $(this).closest('form');
