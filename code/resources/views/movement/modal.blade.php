@@ -42,13 +42,13 @@ if (!isset($editable))
                     ])
 
                     <div class="col-sm-{{ $fieldsize }} col-sm-offset-{{ $labelsize }}">
-                        @if($obj->sender && array_search('App\CreditableTrait', class_uses($obj->sender)) !== false)
+                        @if($obj->sender && array_search('App\CreditableTrait', class_uses($obj->sender)) !== false && count($obj->sender->balanceFields()) == 1)
                             <p>
                                 {{ $obj->sender->printableName() }}: {{ $obj->sender->current_balance_amount }} €
                             </p>
                         @endif
 
-                        @if($obj->target && array_search('App\CreditableTrait', class_uses($obj->target)) !== false)
+                        @if($obj->target && array_search('App\CreditableTrait', class_uses($obj->target)) !== false && count($obj->target->balanceFields()) == 1)
                             <p>
                                 {{ $obj->target->printableName() }}: {{ $obj->target->current_balance_amount }} €
                             </p>
