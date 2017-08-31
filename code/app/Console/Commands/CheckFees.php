@@ -35,7 +35,7 @@ class CheckFees extends Command
 
                 DB::beginTransaction();
 
-                User::whereHas('fee', function($query) use ($date_close) {
+                User::withTrashed()->whereHas('fee', function($query) use ($date_close) {
                     $query->where('date', '<', $date_close);
                 })->update(['fee_id' => 0]);
 

@@ -9,7 +9,7 @@
 @endforeach
 @else
 @if($summary->products[$product->id]['quantity'])
-{{ $product->printableName() }};{{ $summary->products[$product->id]['quantity'] }};{{ printablePrice($summary->products[$product->id]['price']) }};{{ printablePrice($summary->products[$product->id]['transport']) }}
+{{ $product->printableName() }};{{ $summary->products[$product->id]['quantity_pieces'] }};{{ printablePrice($summary->products[$product->id]['price']) }};{{ printablePrice($summary->products[$product->id]['transport']) }}
 @endif
 @endif
 @endif

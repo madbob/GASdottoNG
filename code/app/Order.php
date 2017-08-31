@@ -248,14 +248,21 @@ class Order extends Model
             }
 
             if ($product->portion_quantity > 0) {
+                $quantity_pieces = $quantity;
+                $delivered_pieces = $delivered;
                 $quantity = $quantity * $product->portion_quantity;
                 $delivered = $delivered * $product->portion_quantity;
             }
+            else {
+                $quantity_pieces = $quantity;
+                $delivered_pieces = $delivered;
+            }
 
             $summary->products[$product->id]['quantity'] = $quantity;
+            $summary->products[$product->id]['quantity_pieces'] = $quantity_pieces;
             $summary->products[$product->id]['price'] = $price;
             $summary->products[$product->id]['transport'] = $transport;
-            $summary->products[$product->id]['delivered'] = $delivered;
+            $summary->products[$product->id]['delivered_pieces'] = $delivered_pieces;
             $summary->products[$product->id]['price_delivered'] = $price_delivered;
 
             $total_price += $price;

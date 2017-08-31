@@ -32,7 +32,7 @@
                             @if($summary->products[$product->id]['quantity'] != 0)
                                 <tr>
                                     <td width="40%">{{ $product->printableName() }}</td>
-                                    <td width="20%">{{ $summary->products[$product->id]['quantity'] }}</td>
+                                    <td width="20%">{{ $summary->products[$product->id]['quantity_pieces'] }}</td>
                                     <td width="20%">{{ printablePrice($summary->products[$product->id]['price']) }} €</td>
                                     <td width="20%">{{ printablePrice($summary->products[$product->id]['transport']) }} €</td>
                                 </tr>
