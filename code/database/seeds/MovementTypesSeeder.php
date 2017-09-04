@@ -399,5 +399,40 @@ class MovementTypesSeeder extends Seeder
             ]
         );
         $type->save();
+
+        $type = new MovementType();
+        $type->id = 'supplier-rounding';
+        $type->name = 'Arrotondamento/sconto fornitore';
+        $type->sender_type = 'App\Supplier';
+        $type->target_type = 'App\Gas';
+        $type->allow_negative = true;
+        $type->fixed_value = null;
+        $type->function = json_encode(
+            [
+                (object) [
+                    'method' => 'bank',
+                    'sender' => (object) [
+                        'operations' => [
+                            (object) [
+                                'operation' => 'decrement',
+                                'field' => 'bank'
+                            ],
+                        ]
+                    ],
+                    'target' => (object) [
+                        'operations' => [
+                            (object) [
+                                'operation' => 'increment',
+                                'field' => 'gas'
+                            ],
+                        ]
+                    ],
+                    'master' => (object) [
+                        'operations' => []
+                    ]
+                ]
+            ]
+        );
+        $type->save();
     }
 }
