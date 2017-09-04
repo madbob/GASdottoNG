@@ -33,6 +33,9 @@ trait ContactableTrait
         $contacts = [];
 
         foreach($ids as $index => $id) {
+            if (empty($values[$index]))
+                continue;
+
             if (empty($id))
                 $contact = new Contact();
             else
