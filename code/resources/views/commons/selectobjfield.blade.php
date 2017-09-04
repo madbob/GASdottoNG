@@ -1,7 +1,7 @@
 <?php
 
 if (function_exists('recursiveOptionsSelectObj') == false) {
-    function recursiveOptionsSelectObj($obj, $options, $indent, $name, $multiple, $datafields)
+    function recursiveOptionsSelectObj($obj, $options, $indent, $name, $multiple, $datafields, $selected_value)
     {
         $option_prefix = str_repeat('&nbsp;&nbsp;', $indent);
         foreach ($options as $o) {
@@ -17,7 +17,7 @@ if (function_exists('recursiveOptionsSelectObj') == false) {
                     }
                 }
             } else {
-                $selected = ($obj && $obj->$name == $o->id);
+                $selected = ($selected_value == $o->id);
             }
 
             $attributes = [];
@@ -29,7 +29,7 @@ if (function_exists('recursiveOptionsSelectObj') == false) {
 
             if (is_a($o, 'App\Hierarchic') && $o->children->isEmpty() == false) {
                 echo '<optgroup label="' . $o->printableName() . '">';
-                recursiveOptionsSelectObj($obj, $o->children, $indent + 1, $name, $multiple, $datafields);
+                recursiveOptionsSelectObj($obj, $o->children, $indent + 1, $name, $multiple, $datafields, $selected_value);
                 echo '</optgroup>';
             }
             else {
@@ -46,6 +46,13 @@ if ($multiple_select) {
 if (!isset($datafields)) {
     $datafields = [];
 }
+
+if ($obj)
+    $selected_value = $obj->$name;
+else if (isset($enforced_default))
+    $selected_value = $enforced_default;
+else
+    $selected_value = null;
 
 $select_class = 'form-control';
 if ($extra_class) {
@@ -70,7 +77,7 @@ if ($triggering_modal !== false) {
                 @endforeach
             @endif
 
-            <?php recursiveOptionsSelectObj($obj, $objects, 0, $name, $multiple_select, $datafields) ?>
+            <?php recursiveOptionsSelectObj($obj, $objects, 0, $name, $multiple_select, $datafields, $selected_value) ?>
 
             @if($triggering_modal !== false)
                 <option value="run_modal">Crea Nuovo</option>

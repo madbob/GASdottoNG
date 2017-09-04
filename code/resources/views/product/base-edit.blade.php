@@ -8,7 +8,8 @@
     'name' => 'category_id',
     'objects' => App\Category::orderBy('name', 'asc')->where('parent_id', '=', null)->get(),
     'triggering_modal' => $currentuser->can('categories.admin', $currentgas) ? 'createCategory' : false,
-    'label' => 'Categoria'
+    'label' => 'Categoria',
+    'enforced_default' => 1
 ])
 
 @include('commons.selectobjfield', [
