@@ -29,12 +29,12 @@
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h2 class="panel-title">Ordini Aperti</h2>
+                <h2 class="panel-title">Prenotazioni Aperte</h2>
             </div>
             <div class="panel-body">
                 @if(count($opened) == 0)
                     <div class="alert alert-info" role="alert">
-                        Non ci sono ordini aperti.
+                        Non ci sono prenotazioni aperte.
                     </div>
                 @else
                     @include('order.homelist', ['orders' => $opened])
@@ -59,9 +59,15 @@
     </div>
 
     <div class="col-md-6">
-        <div class="text-right">
-            <p class="lead">Credito Corrente: {{ printablePrice($currentuser->current_balance_amount) }} €</p>
-            <p class="lead">Da Pagare: {{ printablePrice($currentuser->pending_balance) }} €</p>
+        <?php
+
+        $current_balance = $currentuser->current_balance_amount;
+        $to_pay = $currentuser->pending_balance;
+
+        ?>
+        <div class="alert {{ $current_balance >= $to_pay ? 'alert-success' : 'alert-danger' }} text-right">
+            <p class="lead">Credito Corrente: {{ printablePrice($current_balance) }} €</p>
+            <p class="lead">Da Pagare: {{ printablePrice($to_pay) }} €</p>
         </div>
 
         @if($currentgas->attachments->isEmpty() == false)
