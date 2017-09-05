@@ -111,7 +111,7 @@ class Order extends Model
         return URL::action('BookingController@index').'#' . $this->aggregate->id;
     }
 
-    public function userBooking($userid = null)
+    public function userBooking($userid = null, $fallback = true)
     {
         if ($userid == null) {
             $userid = Auth::user()->id;
@@ -121,16 +121,14 @@ class Order extends Model
             $query->where('id', '=', $userid);
         })->first();
 
-        if ($ret == null) {
-            $b = new Booking();
-            $b->user_id = $userid;
-            $b->order_id = $this->id;
-            $b->status = 'pending';
-
-            return $b;
-        } else {
-            return $ret;
+        if ($ret == null && $fallback == true) {
+            $ret = new Booking();
+            $ret->user_id = $userid;
+            $ret->order_id = $this->id;
+            $ret->status = 'pending';
         }
+
+        return $ret;
     }
 
     public function getInternalNumberAttribute()

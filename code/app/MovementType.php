@@ -416,7 +416,9 @@ class MovementType extends Model
                     unset($movement->handling_status);
 
                     foreach ($aggregate->orders as $order) {
-                        $booking = $order->userBooking($user->id);
+                        $booking = $order->userBooking($user->id, false);
+                        if ($booking == false)
+                            continue;
 
                         if (isset($handling_status->{$booking->id})) {
                             $delivered = $handling_status->{$booking->id};
@@ -471,8 +473,10 @@ class MovementType extends Model
             },
             'post' => function (Movement $movement) {
                 $target = $movement->target;
-                $target->payment_id = $movement->id;
-                $target->save();
+                if($target != null) {
+                    $target->payment_id = $movement->id;
+                    $target->save();
+                }
             },
             'parse' => function (Movement &$movement, Request $request) {
                 if ($movement->target_type == 'App\Aggregate') {
