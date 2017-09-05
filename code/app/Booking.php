@@ -137,10 +137,13 @@ class Booking extends Model
 
     public function getTransportAttribute()
     {
-        if($this->order->transport)
-            return ($this->order->transport / $this->order->bookings()->count());
-        else
-            return 0;
+        if($this->order->transport) {
+            $count = $this->order->bookings()->count();
+            if ($count != 0)
+                return ($this->order->transport / $count);
+        }
+
+        return 0;
     }
 
     /*
