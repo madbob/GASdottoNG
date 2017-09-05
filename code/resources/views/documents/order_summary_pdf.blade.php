@@ -9,8 +9,8 @@
             <thead>
                 <tr>
                     <th width="40%"><strong>Nome</strong></th>
-                    <th width="15%"><strong>Unità Misura</strong></th>
                     <th width="15%"><strong>Quantità Totale</strong></th>
+                    <th width="15%"><strong>Unità Misura</strong></th>
                     <th width="15%"><strong>Prezzo Totale</strong></th>
                     <th width="15%"><strong>Trasporto</strong></th>
                 </tr>
