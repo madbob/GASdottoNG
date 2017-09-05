@@ -181,6 +181,7 @@ return [
         Wilgucki\Csv\CsvServiceProvider::class,
         Elibyy\TCPDF\ServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+        Devfactory\Minify\MinifyServiceProvider::class,
 
         App\Providers\GraphicInitServiceProvider::class,
         App\Providers\MenuServiceProvider::class,
@@ -240,6 +241,7 @@ return [
         'CsvReader' => Wilgucki\Csv\Facades\Reader::class,
         'CsvWriter' => Wilgucki\Csv\Facades\Writer::class,
         'PDF'       => Elibyy\TCPDF\Facades\TCPDF::class,
+        'Minify'    => Devfactory\Minify\Facades\MinifyFacade::class,
     ],
 
 ];

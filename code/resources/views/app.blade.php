@@ -7,15 +7,29 @@
 
         <title>GASdotto</title>
 
-        <link rel="stylesheet" type="text/css" href="{{ url('css/bootstrap.min.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ url('css/bootstrap-datepicker3.min.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ url('css/bootstrap-multiselect.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ url('css/bootstrap-table.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ url('css/bootstrap-toggle.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ url('css/bootstrap.vertical-tabs.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ url('css/jquery-ui.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ url('css/chartist.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ url('css/gasdotto.css') }}">
+        <?php
+
+        $css = [
+            '/css/bootstrap.min.css',
+            '/css/bootstrap-datepicker3.min.css',
+            '/css/bootstrap-multiselect.css',
+            '/css/bootstrap-table.css',
+            '/css/bootstrap-toggle.css',
+            '/css/bootstrap.vertical-tabs.css',
+            '/css/jquery-ui.css',
+            '/css/chartist.css',
+            '/css/gasdotto.css'
+        ];
+
+        ?>
+
+        @if(env('APP_DEBUG') == true)
+            @foreach($css as $c)
+                <link rel="stylesheet" type="text/css" href="{{ url($c) }}">
+            @endforeach
+        @else
+            {!! Minify::stylesheet($css)->withFullUrl() !!}
+        @endif
 
         <meta name="csrf-token" content="{{ csrf_token() }}"/>
     </head>
@@ -70,21 +84,35 @@
         <div id="postponed"></div>
         <div id="bottom-stop"></div>
 
-        <script type="application/javascript" src="{{ url('js/jquery-2.1.1.js') }}"></script>
-        <script type="application/javascript" src="{{ url('js/jquery-ui.js') }}"></script>
-        <script type="application/javascript" src="{{ url('js/bootstrap.min.js') }}"></script>
-        <script type="application/javascript" src="{{ url('js/bootstrap-datepicker.min.js') }}"></script>
-        <script type="application/javascript" src="{{ url('js/bootstrap-datepicker.it.min.js') }}"></script>
-        <script type="application/javascript" src="{{ url('js/bootstrap-multiselect.js') }}"></script>
-        <script type="application/javascript" src="{{ url('js/jquery.mjs.nestedSortable.js') }}"></script>
-        <script type="application/javascript" src="{{ url('js/typeahead.bundle.js') }}"></script>
-        <script type="application/javascript" src="{{ url('js/validator.min.js') }}"></script>
-        <script type="application/javascript" src="{{ url('js/jquery.fileupload.js') }}"></script>
-        <script type="application/javascript" src="{{ url('js/bootstrap-table.js') }}"></script>
-        <script type="application/javascript" src="{{ url('js/bootstrap-table-it-IT.js') }}"></script>
-        <script type="application/javascript" src="{{ url('js/bootstrap-toggle.js') }}"></script>
-        <script type="application/javascript" src="{{ url('js/marked.js') }}"></script>
-        <script type="application/javascript" src="{{ url('js/chartist.js') }}"></script>
-        <script type="application/javascript" src="{{ url('js/gasdotto.js') }}"></script>
+        <?php
+
+        $scripts = [
+            '/js/jquery-2.1.1.js',
+            '/js/jquery-ui.js',
+            '/js/bootstrap.min.js',
+            '/js/bootstrap-datepicker.min.js',
+            '/js/bootstrap-datepicker.it.min.js',
+            '/js/bootstrap-multiselect.js',
+            '/js/jquery.mjs.nestedSortable.js',
+            '/js/typeahead.bundle.js',
+            '/js/validator.min.js',
+            '/js/jquery.fileupload.js',
+            '/js/bootstrap-table.js',
+            '/js/bootstrap-table-it-IT.js',
+            '/js/bootstrap-toggle.js',
+            '/js/marked.min.js',
+            '/js/chartist.js',
+            '/js/gasdotto.js'
+        ];
+
+        ?>
+
+        @if(env('APP_DEBUG') == true)
+            @foreach($scripts as $s)
+                <script type="application/javascript" src="{{ url($s) }}"></script>
+            @endforeach
+        @else
+            {!! Minify::javascript($scripts)->withFullUrl() !!}
+        @endif
     </body>
 </html>
