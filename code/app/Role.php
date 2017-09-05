@@ -222,6 +222,7 @@ class Role extends Model
                 'users.view' => 'Vedere tutti gli utenti',
                 'movements.admin' => 'Amministrare i movimenti contabili',
                 'movements.view' => 'Vedere i movimenti contabili',
+                'movements.types' => 'Amministrare i tipi dei movimenti contabili',
                 'categories.admin' => 'Amministrare le categorie',
                 'measures.admin' => 'Amministrare le unità di misura',
                 'gas.statistics' => 'Visualizzare le statistiche',

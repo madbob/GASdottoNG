@@ -24,7 +24,7 @@ class MovementTypesController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if ($user->can('movements.admin', $user->gas) == false) {
+        if ($user->can('movements.types', $user->gas) == false) {
             abort(503);
         }
 
@@ -34,7 +34,7 @@ class MovementTypesController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        if ($user->can('movements.admin', $user->gas) == false) {
+        if ($user->can('movements.types', $user->gas) == false) {
             abort(503);
         }
 
@@ -59,7 +59,7 @@ class MovementTypesController extends Controller
     public function show(Request $request, $id)
     {
         $user = Auth::user();
-        if ($user->can('movements.admin', $user->gas) == false) {
+        if ($user->can('movements.types', $user->gas) == false) {
             abort(503);
         }
 
@@ -118,7 +118,7 @@ class MovementTypesController extends Controller
     public function update(Request $request, $id)
     {
         $user = Auth::user();
-        if ($user->can('movements.admin', $user->gas) == false) {
+        if ($user->can('movements.types', $user->gas) == false) {
             abort(503);
         }
 

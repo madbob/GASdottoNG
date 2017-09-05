@@ -74,7 +74,9 @@
                     </div>
                 </div>
             </div>
+        @endcan
 
+        @can('movements.types', $currentgas)
             <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#handleMovementTypes">Amministra Tipi Movimento</button>
             <div class="collapse dynamic-contents" id="handleMovementTypes" tabindex="-1" data-contents-url="{{ url('movtypes') }}">
             </div>

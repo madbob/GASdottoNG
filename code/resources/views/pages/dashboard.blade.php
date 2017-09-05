@@ -65,9 +65,13 @@
         $to_pay = $currentuser->pending_balance;
 
         ?>
-        <div class="alert {{ $current_balance >= $to_pay ? 'alert-success' : 'alert-danger' }} text-right">
-            <p class="lead">Credito Corrente: {{ printablePrice($current_balance) }} €</p>
-            <p class="lead">Da Pagare: {{ printablePrice($to_pay) }} €</p>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="alert {{ $current_balance >= $to_pay ? 'alert-success' : 'alert-danger' }} text-right">
+                    <p class="lead">Credito Corrente: {{ printablePrice($current_balance) }} €</p>
+                    <p class="lead">Da Pagare: {{ printablePrice($to_pay) }} €</p>
+                </div>
+            </div>
         </div>
 
         @if($currentgas->attachments->isEmpty() == false)
