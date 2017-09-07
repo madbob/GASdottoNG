@@ -144,6 +144,27 @@ class Aggregate extends Model
             }
         }
 
+        uasort($ret, function($a, $b) {
+            $a_status = $a->status;
+            $b_status = $b->status;
+
+            if ($a_status == $b_status) {
+                return strcmp($a->user->printableName(), $b->user->printableName());
+            }
+            else {
+                if ($a_status == 'shipped')
+                    return -1;
+                if ($b_status == 'shipped')
+                    return 1;
+                if ($a_status == 'saved')
+                    return -1;
+                if ($b_status == 'saved')
+                    return 1;
+
+                return -1;
+            }
+        });
+
         return $ret;
     }
 

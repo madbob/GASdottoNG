@@ -192,7 +192,10 @@ function generalInit() {
     setupVariantsEditor();
     setupImportCsvEditor();
     setupPermissionsEditor();
-    testListsEmptiness();
+
+    $('.loadablelist').each(function() {
+        testListsEmptiness($(this));
+    });
 }
 
 function randomString(total)
@@ -237,8 +240,10 @@ function closeMainForm(form, data) {
         scrollTop: head.offset().top - 60
     }, 300);
 
-    if (typeof(data) != 'undefined' && data.hasOwnProperty('header'))
+    if (typeof(data) != 'undefined' && data.hasOwnProperty('header')) {
         head.empty().append(data.header).attr('href', data.url);
+        afterListChanges(head.closest('.loadablelist'));
+    }
 
     return head;
 }
@@ -275,6 +280,25 @@ function wizardLoadPage(node, contents) {
     parent.append(next);
     page.hide();
     next.show();
+}
+
+function testListsEmptiness(list) {
+    var id = list.attr('id');
+    var c = list.find('a').length;
+    var alert = $('#empty-' + id);
+
+    if (c == 0)
+        alert.removeClass('hidden');
+    else
+        alert.addClass('hidden');
+}
+
+function afterListChanges(list) {
+    var sorting = list.attr('data-sorting-function');
+    if (sorting != null)
+        window[sorting](list);
+
+    testListsEmptiness(list);
 }
 
 function completionRowsInit(node) {
@@ -340,19 +364,6 @@ function manyRowsInit(node) {
 
     node.find('.row').each(function() {
         manyRowsInitRow($(this), false);
-    });
-}
-
-function testListsEmptiness() {
-    $('.loadablelist').each(function() {
-        var id = $(this).attr('id');
-        var c = $(this).find('a').length;
-        var alert = $('#empty-' + id);
-
-        if (c == 0)
-            alert.removeClass('hidden');
-        else
-            alert.addClass('hidden');
     });
 }
 
@@ -431,7 +442,7 @@ function miscInnerCallbacks(form, data) {
         var list = $('#' + listname);
         var node = $('<a data-element-id="' + data.id + '" href="' + data.url + '" class="loadable-item list-group-item">' + data.header + '</a>');
         list.append(node);
-        testListsEmptiness();
+        afterListChanges(list.closest('.loadablelist'));
         node.click();
     }
 
@@ -654,7 +665,7 @@ function afterBookingSaved(form, data) {
         var list = $("button[data-target='#" + modal.attr('id') + "']").parent().find('.loadablelist');
         var url = data.url.replace('booking/', 'delivery/');
         list.append('<a data-element-id="' + data.id + '" href="' + url + '" class="loadable-item list-group-item">' + data.header + '</a>');
-        testListsEmptiness();
+        afterListChanges(list);
         modal.modal('hide');
     }
     /*
@@ -822,6 +833,42 @@ function setupVariantsEditor() {
         });
 
         return false;
+    });
+}
+
+function getBookingRowStatus(row) {
+    if (row.find('.glyphicon-ok').length)
+        return 'shipped';
+    if (row.find('.glyphicon-download-alt').length)
+        return 'saved';
+    return 'pending';
+}
+
+function sortShippingBookings(list) {
+    list.find('> a').sort(function(a, b) {
+        a = $(a);
+        b = $(b);
+
+        var a_status = getBookingRowStatus(a);
+        var b_status = getBookingRowStatus(b);
+
+        if (a_status == b_status) {
+            return a.text().localeCompare(b.text());
+        }
+
+        if (a_status == 'shipped')
+            return -1;
+        if (b_status == 'shipped')
+            return 1;
+        if (a_status == 'saved')
+            return -1;
+        if (b_status == 'saved')
+            return 1;
+
+        return -1;
+    }).each(function() {
+        $(this).remove();
+        $(this).appendTo(list);
     });
 }
 
@@ -1231,6 +1278,7 @@ $(document).ready(function() {
 
                 success: function(data) {
                     item.empty().append(data.header).attr('href', data.url);
+                    afterListChanges(item.closest('.loadablelist'));
                 }
             });
 
@@ -1476,6 +1524,7 @@ $(document).ready(function() {
             success: function(data) {
                 var h = closeMainForm(form);
                 h.empty().append(data.header).attr('href', data.url);
+                afterListChanges(h.closest('.loadablelist'));
             }
         });
     });
@@ -1505,8 +1554,9 @@ $(document).ready(function() {
 
                 success: function(data) {
                     var upper = closeMainForm(form);
+                    var list = upper.closest('.loadablelist');
                     upper.remove();
-                    testListsEmptiness();
+                    testListsEmptiness(list);
                 }
             });
         }

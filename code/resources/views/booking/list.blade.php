@@ -28,6 +28,13 @@
 
 <div class="row">
     <div class="col-md-12">
-        @include('commons.loadablelist', ['identifier' => $identifier, 'items' => $aggregate->bookings, 'url' => url('delivery/' . $aggregate->id . '/user')])
+        @include('commons.loadablelist', [
+            'identifier' => $identifier,
+            'items' => $aggregate->bookings,
+            'url' => url('delivery/' . $aggregate->id . '/user'),
+            'extra_data' => [
+                'data-sorting-function' => 'sortShippingBookings'
+            ]
+        ])
     </div>
 </div>

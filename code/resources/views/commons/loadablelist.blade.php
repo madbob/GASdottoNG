@@ -7,6 +7,13 @@ if(isset($filters) == false)
 if(isset($empty_message) == false)
     $empty_message = 'Non ci sono elementi da visualizzare.';
 
+$data = [];
+if(isset($extra_data)) {
+    foreach($extra_data as $name => $value)
+        $data[] = sprintf('%s="%s"', $name, $value);
+}
+$data = join(' ', $data);
+
 ?>
 
 @if(!empty($filters) || !is_null($legend))
@@ -37,7 +44,7 @@ if(isset($empty_message) == false)
         {!! $empty_message !!}
     </div>
 
-    <div class="list-group loadablelist" id="{{ $identifier }}">
+    <div class="list-group loadablelist" id="{{ $identifier }}" {!! $data !!}>
         @foreach($items as $item)
             @if(isset($url))
                 <?php $u = url($url.'/'.$item->id) ?>
