@@ -152,11 +152,6 @@ class MovementsController extends Controller
     public function create(Request $request)
     {
         $type = $request->input('type', null);
-
-        if ($type == null) {
-            return Theme::view('movement.create');
-        }
-
         if ($type == 'none') {
             return '';
         }
@@ -198,10 +193,12 @@ class MovementsController extends Controller
     {
         DB::beginTransaction();
 
-        $user = Auth::user();
-        if ($user->can('movements.admin', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
-        }
+        /*
+            Attenzione!!! Qui ci va un controllo sulle autorizzazioni, ma non
+            basta movements.admin in quanto anche gli addetti consegne devono
+            poter creare movimenti (i pagamenti delle consegne, ovviamente solo
+            dei fornitori che gli competono)
+        */
 
         $m = $this->basicReadFromRequest($request);
         $m->save();
