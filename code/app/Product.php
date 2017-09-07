@@ -159,14 +159,15 @@ class Product extends Model
         return $price;
     }
 
-    public function printableMeasure($easy = false)
+    public function printableMeasure($verbose = false)
     {
         if ($this->portion_quantity != 0) {
-            if ($easy)
-                return 'Pezzi';
+            if ($verbose)
+                return sprintf('Pezzi da %.02f %s', $this->portion_quantity, $this->measure->name);
             else
                 return sprintf('%.02f %s', $this->portion_quantity, $this->measure->name);
-        } else {
+        }
+        else {
             $m = $this->measure;
             if ($m == null) {
                 return '';
