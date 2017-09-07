@@ -86,8 +86,16 @@ trait CreditableTrait
     public function getCurrentBalanceAttribute()
     {
         $balance = $this->balances()->where('current', true)->first();
-        if ($balance == null)
-            $balance = $this->fixFirstBalance();
+        if ($balance == null) {
+            $balance = $this->balances()->where('current', false)->first();
+            if ($balance == null) {
+                $balance = $this->fixFirstBalance();
+            }
+            else {
+                $balance->current = true;
+                $balance->save();
+            }
+        }
 
         return $balance;
     }
