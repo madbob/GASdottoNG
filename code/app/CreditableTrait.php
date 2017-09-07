@@ -21,6 +21,7 @@ trait CreditableTrait
         $balance->gas = 0;
         $balance->suppliers = 0;
         $balance->deposits = 0;
+        $balance->current = true;
         $balance->date = date('Y-m-d');
         $balance->save();
         return $balance;
@@ -28,18 +29,17 @@ trait CreditableTrait
 
     public function resetCurrentBalance()
     {
-        $this->balances()->first()->delete();
+        $this->current_balance->delete();
 
         if ($this->balances()->count() == 0) {
             $this->fixFirstBalance();
         }
         else {
-            $latest = $this->balances()->first();
+            $latest = $this->balances()->where('current', false)->first();
             $new = $latest->replicate();
 
-            $latest->date = date('Y-m-d G:i:s');
-            $latest->save();
-
+            $new->date = date('Y-m-d G:i:s');
+            $new->current = true;
             $new->save();
         }
     }
@@ -73,21 +73,28 @@ trait CreditableTrait
             $class = $c->target_type;
             $objects = $class::all();
             foreach($objects as $obj) {
-                $latest = $obj->balances()->first();
+                $latest = $obj->current_balance;
                 $new = $latest->replicate();
                 $latest->date = $latest_date;
+                $latest->current = false;
                 $latest->save();
                 $new->save();
             }
         }
     }
 
-    public function getCurrentBalanceAmountAttribute()
+    public function getCurrentBalanceAttribute()
     {
-        $balance = $this->balances()->first();
+        $balance = $this->balances()->where('current', true)->first();
         if ($balance == null)
             $balance = $this->fixFirstBalance();
 
+        return $balance;
+    }
+
+    public function getCurrentBalanceAmountAttribute()
+    {
+        $balance = $this->current_balance;
         return $balance->bank + $balance->cash;
     }
 
@@ -97,9 +104,7 @@ trait CreditableTrait
             $type = [$type];
         }
 
-        $balance = $this->balances()->first();
-        if ($balance == null)
-            $balance = $this->fixFirstBalance();
+        $balance = $this->current_balance;
 
         foreach ($type as $t) {
             $balance->$t += $amount;

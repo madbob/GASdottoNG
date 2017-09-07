@@ -96,6 +96,7 @@ class ImportLegacy extends Command
             $balance->target_id = $obj->id;
             $balance->target_type = get_class($obj);
             $balance->date = date('Y-m-d G:i:s', time() + 1);
+            $balance->current = true;
 
             if ($full) {
                 $balance->bank = $row->current_bank_balance;

@@ -1937,12 +1937,15 @@ $(document).ready(function() {
                     var form = $(target);
                     form.attr('data-password-protected-verified', '1');
 
-                    form.submit();
-
-                    setTimeout(function() {
-                        miscInnerCallbacks(form, data);
-                        form.attr('data-password-protected-verified', '0');
-                    }, 300);
+                    $.ajax({
+                        method: form.attr('method'),
+                        url: form.attr('action'),
+                        data: form.serializeArray(),
+                        success: function(data) {
+                            miscInnerCallbacks(form, data);
+                            form.attr('data-password-protected-verified', '0');
+                        }
+                    });
                 }
             }
         });

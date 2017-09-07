@@ -128,7 +128,7 @@ class MovementsController extends Controller
                 Qui si finisce quando si accede alla pagina principale della
                 contabilità
             */
-            $data['balance'] = Auth::user()->gas->balances()->first();
+            $data['balance'] = Auth::user()->gas->current_balance;
             return Theme::view('pages.movements', $data);
         }
         else {
@@ -152,6 +152,10 @@ class MovementsController extends Controller
     public function create(Request $request)
     {
         $type = $request->input('type', null);
+        if ($type == null) {
+            return Theme::view('movement.create');
+        }
+
         if ($type == 'none') {
             return '';
         }
@@ -287,7 +291,7 @@ class MovementsController extends Controller
             return $this->errorResponse('Non autorizzato');
         }
 
-        $balance = $user->gas->balances()->first();
+        $balance = $user->gas->current_balance;
         $obj = (object)[
             'bank' => $balance->bank,
             'cash' => $balance->cash,
