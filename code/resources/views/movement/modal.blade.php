@@ -11,7 +11,7 @@ if (!isset($editable))
 
 ?>
 
-<div class="modal fade" id="editMovement-{{ $dom_id }}" tabindex="-1" role="dialog" aria-labelledby="editMovement-{{ $dom_id }}">
+<div class="modal fade movement-modal" id="editMovement-{{ $dom_id }}" tabindex="-1" role="dialog" aria-labelledby="editMovement-{{ $dom_id }}">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form class="form-horizontal creating-form" method="POST" action="{{ url('movements') }}" data-toggle="validator">
@@ -78,7 +78,8 @@ if (!isset($editable))
                     @include('commons.textfield', [
                         'obj' => $obj,
                         'name' => 'identifier',
-                        'label' => 'Identificativo'
+                        'label' => 'Identificativo',
+                        'extra_wrap_class' => 'when-method-bank' . ($obj->method != 'bank' ? ' hidden' : '')
                     ])
 
                     @include('commons.textarea', [

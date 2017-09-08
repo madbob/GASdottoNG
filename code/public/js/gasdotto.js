@@ -1819,6 +1819,21 @@ $(document).ready(function() {
         });
     });
 
+    $('body').on('change', '.movement-modal input[name=method]', function() {
+        if ($(this).prop('checked') == false)
+            return;
+
+        var method = $(this).val();
+        var method_string = 'when-method-' + method;
+        var modal = $(this).closest('.movement-modal');
+        modal.find('[class*="when-method-"]').each(function() {
+            if ($(this).hasClass(method_string))
+                $(this).removeClass('hidden');
+            else
+                $(this).addClass('hidden');
+        });
+    });
+
     $('body').on('change', '.movement-type-selector', function(event) {
         var type = $(this).find('option:selected').val();
         var selectors = $(this).closest('form').find('.selectors');
