@@ -2180,10 +2180,10 @@ $(document).ready(function() {
 
         var editor = $(this).closest('form').find('.booking-editor').each(function() {
             $(this).find('tbody .booking-product').each(function() {
-                var booked = $(this).find('.booking-product-booked');
+                var booked = $(this).find('input:hidden[name=booking-product-real-booked]');
                 if (booked.length != 0) {
                     var input = $(this).find('.booking-product-quantity input');
-                    input.val(booked.text());
+                    input.val(booked.val());
                 }
             });
 
