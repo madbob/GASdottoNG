@@ -32,9 +32,9 @@ class BookedProductVariant extends Model
         return false;
     }
 
-    private function fixQuantity($attribute)
+    private function fixQuantity($attribute, $rectify)
     {
-        $base_price = $this->product->basePrice();
+        $base_price = $this->product->basePrice($rectify);
         $price = $base_price;
 
         foreach ($this->components as $c) {
@@ -46,12 +46,12 @@ class BookedProductVariant extends Model
 
     public function quantityValue()
     {
-        return $this->fixQuantity('quantity');
+        return $this->fixQuantity('quantity', true);
     }
 
     public function deliveredValue()
     {
-        return $this->fixQuantity('delivered');
+        return $this->fixQuantity('delivered', false);
     }
 
     public function printableName()

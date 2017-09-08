@@ -5,6 +5,11 @@ function printablePrice($price)
     return sprintf('%.02f', $price);
 }
 
+function printableQuantity($quantity)
+{
+    return sprintf('%.02f', $quantity);
+}
+
 function normalizePercentage($value)
 {
     return str_replace(' ', '', $value);

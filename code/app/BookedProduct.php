@@ -38,14 +38,14 @@ class BookedProduct extends Model
         return sprintf('%s::%s', $this->booking->id, $this->product->id);
     }
 
-    private function fixQuantity($attribute)
+    private function fixQuantity($attribute, $rectify)
     {
         /*
             Per i prodotti con pezzatura, basePrice() già fornisce il prezzo per
             singola unità. Non è dunque qui necessario effettuare altri
             controlli o aggiustamenti
         */
-        $base_price = $this->basePrice();
+        $base_price = $this->basePrice($rectify);
         $product = $this->product;
 
         $variants = $this->variants;
@@ -69,20 +69,31 @@ class BookedProduct extends Model
         }
     }
 
-    public function basePrice()
+    public function basePrice($rectify = true)
     {
         $product = $this->product;
-        return $product->contextualPrice($this->booking->order) + $product->transport;
+        return $product->contextualPrice($this->booking->order, $rectify) + $product->transport;
     }
+
+    /*
+        In caso di prodotti con pezzatura, si prenota per pezzi e si consegna
+        per quantità.
+        E.g. prodotto distribuito in chili con pezzetura 0.4, ne ordino 2 (pezzi
+        da 0.4 chili) e ne consegno 0.8 (chili complessivi).
+        Dunque anche il calcolo dei valori deve tener presente del diverso
+        significato delle colonne quantity e delivered, premesso che il prezzo è
+        sempre espresso nell'unità di misura principale (nel caso di cui sopra:
+        prezzo al chilo)
+    */
 
     public function quantityValue()
     {
-        return $this->fixQuantity('quantity');
+        return $this->fixQuantity('quantity', true);
     }
 
     public function deliveredValue()
     {
-        return $this->fixQuantity('delivered');
+        return $this->fixQuantity('delivered', false);
     }
 
     public function getBookedVariant($variant, $fallback = false)

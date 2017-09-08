@@ -745,7 +745,7 @@ function bookingTotal(editor) {
     var payment_modal = $('#' + payment_modal_id);
 
     if (payment_modal.length != 0) {
-        payment_modal.find('input[name=amount]').val(grand_total);
+        payment_modal.find('input[name=amount]').val(grand_total.toFixed(2));
         payment_modal.find('input[name=delivering-status]').val(JSON.stringify(status));
     }
 }
