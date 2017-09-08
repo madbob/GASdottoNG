@@ -1846,7 +1846,12 @@ $(document).ready(function() {
 
         table.find('tbody tr').each(function() {
             var type = $(this).attr('data-target-class');
-            if(type != sender && type != target)
+            /*
+                Le righe relative al GAS non vengono mai nascoste, in quanto
+                molti tipi di movimento vanno ad incidere sui saldi globali
+                anche quando il GAS non è direttamente coinvolto
+            */
+            if(type != 'App\\Gas' && type != sender && type != target)
                 $(this).addClass('hidden');
             else
                 $(this).removeClass('hidden');

@@ -19,12 +19,22 @@
                 @include('commons.staticstringfield', ['obj' => $user, 'name' => 'card_number', 'label' => 'Numero Tessera'])
             @endif
 
-            @if(Gate::check('movements.admin', $currentgas) || Gate::check('movements.view', $currentgas))
-                @include('commons.movementfield', ['obj' => $user->fee, 'name' => 'fee_id', 'label' => 'Quota Associativa', 'default' => \App\Movement::generate('annual-fee', $user, $user->gas, 0)])
-                @include('commons.movementfield', ['obj' => $user->deposit, 'name' => 'deposit_id', 'label' => 'Deposito', 'default' => \App\Movement::generate('deposit-pay', $user, $user->gas, 0)])
-            @else
-                @include('commons.staticmovementfield', ['obj' => $user->fee, 'name' => 'fee_id', 'label' => 'Quota Associativa', 'default' => \App\Movement::generate('annual-fee', $user, $user->gas, 0)])
-                @include('commons.staticmovementfield', ['obj' => $user->deposit, 'name' => 'deposit_id', 'label' => 'Deposito', 'default' => \App\Movement::generate('deposit-pay', $user, $user->gas, 0)])
+            @if($currentgas->getConfig('annual_fee_amount') != 0)
+                @include('commons.staticmovementfield', [
+                    'obj' => $user->fee,
+                    'name' => 'fee_id',
+                    'label' => 'Quota Associativa',
+                    'default' => \App\Movement::generate('annual-fee', $user, $user->gas, 0)
+                ])
+            @endif
+
+            @if($currentgas->getConfig('deposit_amount') != 0)
+                @include('commons.staticmovementfield', [
+                    'obj' => $user->deposit,
+                    'name' => 'deposit_id',
+                    'label' => 'Deposito',
+                    'default' => \App\Movement::generate('deposit-pay', $user, $user->gas, 0)
+                ])
             @endif
 
             @include('commons.staticdatefield', ['obj' => $user, 'name' => 'last_login', 'label' => 'Ultimo Accesso'])

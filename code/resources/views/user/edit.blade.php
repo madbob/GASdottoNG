@@ -19,10 +19,21 @@
             @endif
 
             @if($currentgas->getConfig('annual_fee_amount') != 0)
-                @include('commons.movementfield', ['obj' => $user->fee, 'name' => 'fee_id', 'label' => 'Quota Associativa', 'default' => \App\Movement::generate('annual-fee', $user, $user->gas, 0)])
+                @include('commons.movementfield', [
+                    'obj' => $user->fee,
+                    'name' => 'fee_id',
+                    'label' => 'Quota Associativa',
+                    'default' => \App\Movement::generate('annual-fee', $user, $user->gas, 0)
+                ])
             @endif
+
             @if($currentgas->getConfig('deposit_amount') != 0)
-                @include('commons.movementfield', ['obj' => $user->deposit, 'name' => 'deposit_id', 'label' => 'Deposito', 'default' => \App\Movement::generate('deposit-pay', $user, $user->gas, 0)])
+                @include('commons.movementfield', [
+                    'obj' => $user->deposit,
+                    'name' => 'deposit_id',
+                    'label' => 'Deposito',
+                    'default' => \App\Movement::generate('deposit-pay', $user, $user->gas, 0)
+                ])
             @endif
 
             @include('commons.staticdatefield', ['obj' => $user, 'name' => 'last_login', 'label' => 'Ultimo Accesso'])

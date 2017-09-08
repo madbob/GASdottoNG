@@ -20,17 +20,15 @@ $rand = rand();
             @endif
         </label>
 
-        @can('movements.admin', $currentgas)
-            <div class="pull-right">
-                <input type="hidden" name="{{ $name }}" value="{{ $obj->id }}" data-updatable-name="movement-id-{{ $rand }}" data-updatable-field="id">
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editMovement-{{ $rand }}">
-                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                </button>
-            </div>
+        <div class="pull-right">
+            <input type="hidden" name="{{ $name }}" value="{{ $obj->id }}" data-updatable-name="movement-id-{{ $rand }}" data-updatable-field="id">
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editMovement-{{ $rand }}">
+                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+            </button>
+        </div>
 
-            @push('postponed')
-                @include('movement.modal', ['dom_id' => $rand])
-            @endpush
-        @endcan
+        @push('postponed')
+            @include('movement.modal', ['dom_id' => $rand])
+        @endpush
     </div>
 </div>
