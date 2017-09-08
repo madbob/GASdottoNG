@@ -226,22 +226,21 @@ class Order extends Model
                 $price_delivered += $b->deliveredValue();
 
                 if($b->variants->isEmpty() == false) {
-                    $variants = [];
+                    if(isset($summary->by_variant[$product->id]) == false)
+                        $summary->by_variant[$product->id] = [];
 
                     foreach($b->variants as $v) {
                         $name = $v->printableName();
-                        if(isset($variants[$name]) == false) {
-                            $variants[$name] = [
+                        if(isset($summary->by_variant[$product->id][$name]) == false) {
+                            $summary->by_variant[$product->id][$name] = [
                                 'quantity' => 0,
                                 'price' => 0
                             ];
                         }
 
-                        $variants[$name]['quantity'] += $v->quantity;
-                        $variants[$name]['price'] += $v->quantityValue();
+                        $summary->by_variant[$product->id][$name]['quantity'] += $v->quantity;
+                        $summary->by_variant[$product->id][$name]['price'] += $v->quantityValue();
                     }
-
-                    $summary->by_variant[$product->id] = $variants;
                 }
             }
 

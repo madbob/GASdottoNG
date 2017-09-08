@@ -22,7 +22,7 @@
                             @foreach($summary->by_variant[$product->id] as $name => $variant)
                                 @if($variant['quantity'] != 0)
                                     <tr>
-                                        <td width="40%">{{ $product->printableName() }} {{ $name }}</td>
+                                        <td width="40%">{{ $product->printableName() }}<br/>{{ $name }}</td>
                                         <td width="15%">{{ $variant['quantity'] }}</td>
                                         <td width="15%">{{ $product->printableMeasure(true) }}</td>
                                         <td width="15%">{{ printablePrice($variant['price']) }} €</td>
@@ -31,7 +31,7 @@
                                 @endif
                             @endforeach
                         @else
-                            @if($summary->products[$product->id]['quantity'] != 0)
+                            @if($summary->products[$product->id]['quantity_pieces'] != 0)
                                 <tr>
                                     <td width="40%">{{ $product->printableName() }}</td>
                                     <td width="15%">{{ $summary->products[$product->id]['quantity_pieces'] }}</td>

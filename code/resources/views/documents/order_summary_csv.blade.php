@@ -8,7 +8,7 @@
 @endif
 @endforeach
 @else
-@if($summary->products[$product->id]['quantity'])
+@if($summary->products[$product->id]['quantity_pieces'])
 {{ $product->printableName() }};{{ $summary->products[$product->id]['quantity_pieces'] }};{{ $product->printableMeasure(true) }};{{ printablePrice($summary->products[$product->id]['price']) }};{{ printablePrice($summary->products[$product->id]['transport']) }}
 @endif
 @endif
