@@ -97,8 +97,24 @@ class Movement extends Model
         $type_descr = MovementType::types($type);
         if ($type_descr->fixed_value != false) {
             $ret->amount = $type_descr->fixed_value;
-        } else {
+        }
+        else {
             $ret->amount = $amount;
+        }
+
+        /*
+            Se è possibile pagare il tipo di movimento desiderato con il credito
+            utente, si preferisce quello. Soprattutto per via delle consegne.
+            Sarebbe forse utile introdurre prima o poi anche una "modalità di
+            pagamento di default"
+        */
+        $payments = MovementType::paymentsByType($type);
+        if (isset($payments['credit'])) {
+            $ret->method = 'credit';
+        }
+        else {
+            reset($payments);
+            $ret->method = key($payments);
         }
 
         return $ret;
