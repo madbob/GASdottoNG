@@ -152,9 +152,9 @@ class Aggregate extends Model
                 return strcmp($a->user->printableName(), $b->user->printableName());
             }
             else {
-                if ($a_status == 'shipped')
+                if ($a_status == 'pending')
                     return -1;
-                if ($b_status == 'shipped')
+                if ($b_status == 'pending')
                     return 1;
                 if ($a_status == 'saved')
                     return -1;

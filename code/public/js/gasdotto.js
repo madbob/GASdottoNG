@@ -856,9 +856,9 @@ function sortShippingBookings(list) {
             return a.text().localeCompare(b.text());
         }
 
-        if (a_status == 'shipped')
+        if (a_status == 'pending')
             return -1;
-        if (b_status == 'shipped')
+        if (b_status == 'pending')
             return 1;
         if (a_status == 'saved')
             return -1;
