@@ -68,7 +68,7 @@ class BookedProductVariant extends Model
 
     private function normalizeQuantity($attribute)
     {
-        $product = $this->product;
+        $product = $this->product->product;
         if ($product->portion_quantity != 0)
             return $this->$attribute * $product->portion_quantity;
         else

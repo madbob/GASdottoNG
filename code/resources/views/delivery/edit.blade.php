@@ -59,7 +59,7 @@ $rand = rand();
                             @if($product->variants->isEmpty() == true)
                                 <tr class="booking-product">
                                     <td>
-                                        <input type="hidden" name="booking-product-real-booked" value="{{ $product->true_quantity }}" class="skip-on-submit" />
+                                        <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($product->true_quantity) }}" class="skip-on-submit" />
                                         <input type="hidden" name="product-price" value="{{ $product->product->contextualPrice($order, false) + $product->product->transport }}" class="skip-on-submit" />
                                         <label class="static-label">{{ $product->product->name }}</label>
                                     </td>
@@ -97,7 +97,7 @@ $rand = rand();
 
                                     <tr class="booking-product">
                                         <td>
-                                            <input type="hidden" name="booking-product-real-booked" value="{{ $var->true_quantity }}" class="skip-on-submit" />
+                                            <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($var->true_quantity) }}" class="skip-on-submit" />
                                             <input type="hidden" name="product-price" value="{{ $price }}" class="skip-on-submit" />
 
                                             <label class="static-label">{{ $product->product->name }}: {{ $var->printableName() }}</label>
