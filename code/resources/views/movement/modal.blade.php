@@ -43,16 +43,18 @@ if (!isset($editable))
 
                     <div class="col-sm-{{ $fieldsize }} col-sm-offset-{{ $labelsize }}">
                         @if($obj->sender && array_search('App\CreditableTrait', class_uses($obj->sender)) !== false && count($obj->sender->balanceFields()) == 1)
-                            <p>
-                                {{ $obj->sender->printableName() }}: {{ $obj->sender->current_balance_amount }} €
+                            <p class="sender-credit-status alert alert-{{ $obj->amount < $obj->sender->current_balance_amount ? 'success' : 'danger' }}">
+                                {{ $obj->sender->printableName() }}: <span class="current-sender-credit">{{ $obj->sender->current_balance_amount }}</span> €
                             </p>
                         @endif
 
                         @if($obj->target && array_search('App\CreditableTrait', class_uses($obj->target)) !== false && count($obj->target->balanceFields()) == 1)
-                            <p>
+                            <p class="alert alert-success">
                                 {{ $obj->target->printableName() }}: {{ $obj->target->current_balance_amount }} €
                             </p>
                         @endif
+
+                        <br/>
                     </div>
 
                     <div class="form-group">

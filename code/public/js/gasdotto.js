@@ -745,7 +745,7 @@ function bookingTotal(editor) {
     var payment_modal = $('#' + payment_modal_id);
 
     if (payment_modal.length != 0) {
-        payment_modal.find('input[name=amount]').val(grand_total.toFixed(2));
+        payment_modal.find('input[name=amount]').val(grand_total.toFixed(2)).change();
         payment_modal.find('input[name=delivering-status]').val(JSON.stringify(status));
     }
 }
@@ -1832,6 +1832,17 @@ $(document).ready(function() {
             else
                 $(this).addClass('hidden');
         });
+    })
+    .on('change', '.movement-modal input[name=amount]', function() {
+        var status = $(this).closest('.movement-modal').find('.sender-credit-status');
+        if (status.length) {
+            var amount = parseFloatC($(this).val());
+            var current = parseFloatC(status.find('.current-sender-credit').text());
+            if (amount > current)
+                status.removeClass('alert-success').addClass('alert-danger');
+            else
+                status.removeClass('alert-danger').addClass('alert-success');
+        }
     });
 
     $('body').on('change', '.movement-type-selector', function(event) {
