@@ -140,6 +140,14 @@ function generalInit() {
     });
 
     $('.modal.dynamic-contents').on('show.bs.modal', function(e) {
+        /*
+            La callback viene chiamata anche quando mostro il popover di
+            selezione di una data: questo è per evitare di ricaricare tutto un
+            .modal.dynamic-contents che contiene una data
+        */
+        if ($(e.target).hasClass('date'))
+            return;
+
         var contents = $(this).find('.modal-content');
         contents.empty().append(loadingPlaceholder());
         var url = $(this).attr('data-contents-url');

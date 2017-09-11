@@ -228,7 +228,7 @@ class MovementType extends Model
         $type->callbacks = [
             'post' => function (Movement $movement) {
                 $target = $movement->target;
-                $target->deposit_id = null;
+                $target->deposit_id = 0;
                 $target->save();
             },
         ];
