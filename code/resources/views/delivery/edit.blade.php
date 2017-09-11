@@ -141,7 +141,6 @@ $rand = rand();
                                     </select>
                                 </td>
                                 <td>&nbsp;</td>
-                                <td>&nbsp;</td>
                                 <td class="bookable-target">&nbsp;</td>
                             </tr>
                         @endif

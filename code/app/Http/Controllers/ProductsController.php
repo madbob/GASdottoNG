@@ -101,7 +101,7 @@ class ProductsController extends Controller
         } elseif ($format == 'bookable') {
             $order = Order::find($request->input('order_id'));
 
-            return Theme::view('booking.quantityselectrow', ['product' => $p, 'order' => $order, 'populate' => false]);
+            return Theme::view('booking.quantityselectrow', ['product' => $p, 'order' => $order, 'populate' => false, 'while_shipping' => true]);
         }
     }
 
