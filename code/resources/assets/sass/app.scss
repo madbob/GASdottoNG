@@ -190,6 +190,21 @@ table {
 	margin-bottom: 10px;
 }
 
+.modal {
+    .modal-header {
+        background-color: #EEE;
+    }
+
+    .modal-footer {
+        background-color: #EEE;
+
+        .btn-default {
+            background-color: #EEE;
+            border: none;
+        }
+    }
+}
+
 .modal-extra-lg {
     width: 90%;
 }
@@ -238,6 +253,11 @@ table {
             content: '';
         }
     }
+}
+
+.list-group {
+    float: left;
+    width: 100%;
 }
 
 .dense-list {

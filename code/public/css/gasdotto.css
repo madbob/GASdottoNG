@@ -126,6 +126,14 @@ table label {
 .icons-legend {
   margin-bottom: 10px; }
 
+.modal .modal-header {
+  background-color: #EEE; }
+.modal .modal-footer {
+  background-color: #EEE; }
+  .modal .modal-footer .btn-default {
+    background-color: #EEE;
+    border: none; }
+
 .modal-extra-lg {
   width: 90%; }
 
@@ -184,6 +192,10 @@ table label {
 
 .movement-type-editor .btn-group label.btn.active:after {
   content: ''; }
+
+.list-group {
+  float: left;
+  width: 100%; }
 
 .dense-list ul {
   height: 710px;

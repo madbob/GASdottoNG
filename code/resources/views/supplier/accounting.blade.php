@@ -1,12 +1,6 @@
 @if(Gate::check('movements.admin', $currentgas) || Gate::check('movements.view', $currentgas))
     <div class="row">
         <div class="col-md-12">
-            <p class="lead">Saldo Corrente: <span id="balance-supplier-{{ $supplier->id }}" data-fetch-url="{{ url('suppliers/' . $supplier->id . '/plain_balance') }}">{{ $supplier->current_balance_amount }}</span> €</p>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
             <h4>Ordini da pagare</h4>
 
             <?php $orders = $supplier->orders()->where('status', '!=', 'archived')->get() ?>
@@ -27,9 +21,5 @@
         </div>
     </div>
 
-    <hr/>
-    <div class="page-header">
-        <h3>Movimenti Contabili</h3>
-    </div>
     @include('movement.targetlist', ['target' => $supplier])
 @endif
