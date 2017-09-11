@@ -167,7 +167,7 @@ class Supplier extends Model
     public static function balanceFields()
     {
         return [
-            'bank' => 'Saldo',
+            'bank' => 'Ordini',
         ];
     }
 

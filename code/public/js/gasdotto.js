@@ -1383,6 +1383,10 @@ $(document).ready(function() {
         });
     });
 
+    $('body').on('click', '[data-toggle="modal"]', function(e) {
+        e.preventDefault();
+    });
+
     $('body').on('show.bs.popover', '.async-popover', function(e) {
         if (typeof $.data(e.target, 'dynamic-inited') == 'undefined') {
             $.data(e.target, 'dynamic-inited', {

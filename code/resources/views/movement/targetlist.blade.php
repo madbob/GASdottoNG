@@ -23,17 +23,7 @@ $domid = str_random(10);
                 </div>
             </div>
             <div class="col-md-3 col-md-offset-3 current-balance">
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        Saldo Corrente
-                        <span class="badge"><span>{{ $target->current_balance_amount }}</span> €</span>
-                    </li>
-                </ul>
-
-                <div class="pull-right">
-                    <br/>
-
-                </div>
+                @include('movement.status', ['obj' => $target])
             </div>
         </div>
 

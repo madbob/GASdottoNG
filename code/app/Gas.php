@@ -166,9 +166,9 @@ class Gas extends Model
         return [
             'bank' => 'Conto Corrente',
             'cash' => 'Cassa Contanti',
-            'gas' => 'Saldo GAS',
-            'suppliers' => 'Saldo Fornitori',
-            'deposits' => 'Saldo Cauzioni',
+            'gas' => 'GAS',
+            'suppliers' => 'Fornitori',
+            'deposits' => 'Cauzioni',
         ];
     }
 }
