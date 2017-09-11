@@ -5,13 +5,14 @@ if(!isset($while_shipping))
 
 ?>
 
-<input type="hidden" name="product-minimum" value="{{ $product->min_quantity }}" class="skip-on-submit" />
-<input type="hidden" name="product-maximum" value="{{ $product->max_quantity }}" class="skip-on-submit" />
-<input type="hidden" name="product-multiple" value="{{ $product->multiple }}" class="skip-on-submit" />
-<input type="hidden" name="product-available" value="{{ $product->stillAvailable($order) }}" class="skip-on-submit" />
 <input type="hidden" name="product-price" value="{{ $product->contextualPrice($order, !$while_shipping) + $product->transport }}" class="skip-on-submit" />
 
 @if($while_shipping == false)
+    {{-- In fase di consegna non vengono imposti vincoli, assumendo che chi consegna possa fare quel che vuole (e sappia cosa sta facendo) --}}
+    <input type="hidden" name="product-minimum" value="{{ $product->min_quantity }}" class="skip-on-submit" />
+    <input type="hidden" name="product-maximum" value="{{ $product->max_quantity }}" class="skip-on-submit" />
+    <input type="hidden" name="product-multiple" value="{{ $product->multiple }}" class="skip-on-submit" />
+    <input type="hidden" name="product-available" value="{{ $product->stillAvailable($order) }}" class="skip-on-submit" />
     <input type="hidden" name="product-partitioning" value="{{ $product->portion_quantity }}" class="skip-on-submit" />
 @endif
 
