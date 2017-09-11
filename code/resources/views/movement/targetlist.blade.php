@@ -6,8 +6,8 @@ $domid = str_random(10);
 
 <br/>
 
-<div class="row">
-    <div class="well">
+<div class="row gray-row">
+    <div class="col-md-12">
         <div class="row">
             <div class="col-md-6">
                 <div class="form-horizontal form-filler" data-action="{{ url('movements') }}" data-toggle="validator" data-fill-target="#movements-in-range-{{ $domid }}">
@@ -26,8 +26,6 @@ $domid = str_random(10);
                 @include('movement.status', ['obj' => $target])
             </div>
         </div>
-
-        <hr/>
 
         <div class="row">
             <div class="col-md-12" id="movements-in-range-{{ $domid }}">

@@ -211,4 +211,8 @@ table label {
   float: left;
   width: 100%; }
 
+.gray-row {
+  background-color: #F6F6F6;
+  padding: 15px 0; }
+
 /*# sourceMappingURL=gasdotto.css.map */

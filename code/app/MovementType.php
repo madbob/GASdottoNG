@@ -493,7 +493,7 @@ class MovementType extends Model
 
         $type = new MovementType();
         $type->id = 'order-payment';
-        $type->name = 'Pagamento ordine presso il fornitore';
+        $type->name = 'Pagamento ordine a fornitore';
         $type->sender_type = 'App\Gas';
         $type->target_type = 'App\Order';
         $type->allow_negative = false;
