@@ -43,7 +43,7 @@ class Order extends Model
 
     public function products()
     {
-        return $this->belongsToMany('App\Product')->with('measure')->with('category')->with('variants')->withPivot('discount_enabled');
+        return $this->belongsToMany('App\Product')->with('measure')->with('category')->with('variants')->withPivot('discount_enabled')->orderBy('name');
     }
 
     public function bookings()
