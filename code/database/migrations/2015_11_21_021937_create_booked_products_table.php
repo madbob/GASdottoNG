@@ -13,7 +13,7 @@ class CreateBookedProductsTable extends Migration
 
             $table->string('booking_id');
             $table->string('product_id');
-            $table->decimal('quantity', 6, 2);
+            $table->decimal('quantity', 6, 2)->default(0);
             $table->decimal('delivered', 6, 2)->default(0);
             $table->decimal('final_price', 6, 2)->default(0);
 
