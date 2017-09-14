@@ -63,6 +63,7 @@ Route::post('orders/fixes/{id}', 'OrdersController@postFixes');
 Route::get('orders/document/{id}/{type}/{subtype?}', 'OrdersController@document');
 
 Route::get('aggregates/{id}/header', 'AggregatesController@objhead');
+Route::post('aggregates/notify/{id}', 'AggregatesController@notify');
 
 Route::get('attachments/{id}/header', 'AttachmentsController@objhead');
 Route::get('attachments/download/{id}', 'AttachmentsController@download');

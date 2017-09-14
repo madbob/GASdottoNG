@@ -18,7 +18,7 @@ class AggregateBooking extends Model
 
     public $id;
     public $user;
-    private $bookings = [];
+    public $bookings = [];
 
     public function __construct($user_id)
     {

@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
+use App\Notifications\BookingNotification;
+
 use Theme;
 use DB;
+
 use App\Aggregate;
 use App\Order;
 
@@ -65,5 +69,26 @@ class AggregatesController extends OrdersController
         $a = Aggregate::findOrFail($id);
 
         return Theme::view('order.aggregate', ['aggregate' => $a]);
+    }
+
+    public function notify(Request $request, $id)
+    {
+        $aggregate = Aggregate::findOrFail($id);
+
+        foreach($aggregate->bookings as $booking) {
+            if ($booking->status != 'shipped') {
+                $booking->user->notify(new BookingNotification($booking));
+                usleep(200000);
+            }
+        }
+
+        $date = date('Y-m-d');
+
+        foreach($aggregate->orders as $order) {
+            $order->last_notify = $date;
+            $order->save();
+        }
+
+        return $aggregate->printableDate('last_notify');
     }
 }

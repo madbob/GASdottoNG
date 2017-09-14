@@ -7,6 +7,13 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
+/*
+    Di norma le notifiche mail vanno a leggere il campo "email" dell'oggetto da
+    notificare, ma nel nostro caso i contatti sono da un'altra parte e possono
+    essere molteplici.
+    Le classi per le notifiche che estendono questa qua vanno a popolare i
+    destinatari delle mail tenendo conto di questo.
+*/
 class ManyMailNotification extends Notification
 {
     use Queueable;

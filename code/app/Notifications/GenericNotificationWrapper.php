@@ -16,7 +16,7 @@ class GenericNotificationWrapper extends ManyMailNotification
     public function toMail($notifiable)
     {
         $message = $this->initMailMessage($notifiable);
-        $message->subject('nuova notifica')->view('emails.notification', ['notification' => $this->notification]);
+        $message->subject('Nuova notifica dal GAS')->view('emails.notification', ['notification' => $this->notification]);
         return $message;
     }
 }

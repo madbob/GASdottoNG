@@ -39,6 +39,23 @@ $panel_rand_wrap = rand();
 </div>
 
 @if($has_shipping && $aggregate->isActive() && $aggregate->isRunning() == false)
+    @if($aggregate->isActive())
+        <hr/>
+
+        <div class="row">
+            <div class="col-md-4">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-{{ $labelsize }} control-label">Notifiche Mail</label>
+                        <div class="col-sm-{{ $fieldsize }}">
+                            <button class="btn btn-default send-order-notifications" data-aggregate-id="{{ $aggregate->id }}">Invia Mail</button> Ultime notifiche inviate: <span class="last-date">{{ $aggregate->printableDate('last_notify') }}</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
     <hr/>
 
     <div class="row aggregate-bookings">

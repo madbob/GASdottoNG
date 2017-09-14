@@ -2054,6 +2054,27 @@ $(document).ready(function() {
     	Interazioni dinamiche sul pannello prenotazioni
     */
 
+    $('body').on('click', '.send-order-notifications', function(e) {
+        e.preventDefault();
+
+        var button = $(this);
+        button.prop('disabled', true);
+        var id = button.attr('data-aggregate-id');
+        var date = button.closest('form').find('.last-date');
+
+        $.ajax({
+            url: '/aggregates/notify/' + id,
+            method: 'POST',
+            success: function(data) {
+                date.text(data);
+                button.prop('disabled', false);
+            },
+            error: function() {
+                button.prop('disabled', false);
+            }
+        });
+    });
+
     $('body').on('shown.bs.tab', '.aggregate-bookings a[data-toggle="tab"]', function(e) {
         var t = e.target.hash;
         var tab = $(t);

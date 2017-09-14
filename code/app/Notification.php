@@ -51,9 +51,9 @@ class Notification extends Model
 
             /*
                 Onde evitare di farsi bloccare dal server SMTP, qui attendiamo
-                mezzo secondo tra una mail e l'altra
+                un pochino tra una mail e l'altra
             */
-            usleep(500000);
+            usleep(200000);
         }
     }
 
