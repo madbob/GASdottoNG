@@ -26,7 +26,8 @@ else {
     <table class="table">
         <thead>
             <tr>
-                <th>Data</th>
+                <th>Data Registrazione</th>
+                <th>Data Movimento</th>
                 <th>Tipo</th>
                 <th>Pagamento</th>
                 @if($exclude_sender == false)
@@ -62,6 +63,7 @@ else {
                 ?>
                 <tr data-filtered-movements-filter="{{ $filtered_type }}">
                     <td>{{ $mov->printableDate('registration_date') }}</td>
+                    <td>{{ $mov->printableDate('date') }}</td>
                     <td>{{ $mov->printableType() }}</td>
                     <td>{!! $mov->payment_icon !!}</td>
 
