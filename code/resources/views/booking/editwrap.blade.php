@@ -22,28 +22,31 @@ foreach ($aggregate->orders as $order) {
             @if($has_shipping && $aggregate->isActive())
                 <li role="presentation"><a href="#others-{{ $aggregate->id }}" role="tab" data-toggle="tab">Prenotazioni per Altri</a></li>
             @endif
-    </ul>
+        </ul>
 
-    <div class="tab-content">
-        @if($aggregate->isRunning())
+        <div class="tab-content">
             <div role="tabpanel" class="tab-pane" id="myself-{{ $aggregate->id }}">
-                @include('booking.edit', ['aggregate' => $aggregate, 'user' => $user])
+                    @if($aggregate->isRunning())
+                        @include('booking.edit', ['aggregate' => $aggregate, 'user' => $user])
+                    @else
+                        @include('booking.show', ['aggregate' => $aggregate, 'user' => $user])
+                    @endif
             </div>
-        @endif
 
-        @if($has_shipping && $aggregate->isActive())
-            <div role="tabpanel" class="tab-pane" id="others-{{ $aggregate->id }}">
-                <div class="row">
-                    <div class="col-md-12">
-                        <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="Cerca Utente" />
+            @if($has_shipping && $aggregate->isActive())
+                <div role="tabpanel" class="tab-pane" id="others-{{ $aggregate->id }}">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="Cerca Utente" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 other-booking">
+                        </div>
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="col-md-12 other-booking">
-                    </div>
-                </div>
-            </div>
-        @endif
+            @endif
+        </div>
     </div>
 </div>

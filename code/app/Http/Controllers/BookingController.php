@@ -24,8 +24,20 @@ class BookingController extends Controller
     public function index(Request $request)
     {
         $orders = Aggregate::with('orders')->whereHas('orders', function($query) {
-            $query->where('status', 'open');
+            $query->whereIn('status', ['open', 'closed']);
         })->get();
+
+        $orders = $orders->sort(function($a, $b) {
+            $a_end = $a->end;
+            $b_end = $b->end;
+
+            if ($a_end == $b_end)
+                return 0;
+            else if ($a_end < $b_end)
+                return -1;
+            else
+                return 1;
+        });
 
         return Theme::view('pages.bookings', ['orders' => $orders]);
     }

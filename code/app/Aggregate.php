@@ -173,6 +173,11 @@ class Aggregate extends Model
         return $this->orders()->first()->last_notify;
     }
 
+    public function getEndAttribute()
+    {
+        return $this->orders->last()->end;
+    }
+
     public function bookingBy($user_id)
     {
         $ret = new AggregateBooking($user_id);
