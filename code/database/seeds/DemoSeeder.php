@@ -49,7 +49,7 @@ class DemoSeeder extends Seeder
 
         $measure = Measure::where('name', '=', 'Chili')->first();
         $category = Category::where('name', '=', 'Frutta')->first();
-        $vat_rate = VatRate::where('name', '=', '22%')->first();
+        $vat_rate = VatRate::where('percentage', '=', '22')->first();
 
         foreach ($data as $s_name => $products) {
             $s = Supplier::create([
