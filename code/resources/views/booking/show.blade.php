@@ -22,10 +22,11 @@ $grand_total = 0;
             <table class="table table-striped booking-editor">
                 <thead>
                     <tr>
-                        <th width="30%"></th>
-                        <th width="30%"></th>
-                        <th width="30%"></th>
-                        <th width="10%"></th>
+                        <th width="30%">Prodotto</th>
+                        <th width="20%">Ordinato</th>
+                        <th width="20%">Consegnato</th>
+                        <th width="20%">Prezzo Unitario</th>
+                        <th width="10%">Prezzo Totale</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,12 +49,18 @@ $grand_total = 0;
                                     {{ printableQuantity($product->quantity) }} {{ $product->product->printableMeasure(true) }}
                                 </td>
 
+                                <td>
+                                    {{ printableQuantity($product->delivered) }} {{ $product->product->measure->name }}
+                                </td>
+
                                 <td class="text-right">
                                     <label class="static-label">{!! $product->product->printablePrice($order) !!}</label>
                                 </td>
 
                                 <td>
-                                    <label class="static-label booking-product-price pull-right">{{ printablePrice($product->quantityValue()) }} €</label>
+                                    <label class="static-label booking-product-price pull-right">
+                                        {{ printablePrice($o->status == 'shipped' ? $product->deliveredValue() : $product->quantityValue()) }} €
+                                    </label>
                                 </td>
                             </tr>
                         @else
@@ -75,12 +82,18 @@ $grand_total = 0;
                                         {{ printableQuantity($var->quantity) }} {{ $product->product->printableMeasure(true) }}
                                     </td>
 
+                                    <td>
+                                        {{ printableQuantity($var->delivered) }} {{ $product->product->measure->name }}
+                                    </td>
+
                                     <td class="text-right">
                                         <label class="static-label">{!! $product->product->printablePrice($order) !!}</label>
                                     </td>
 
                                     <td>
-                                        <label class="static-label booking-product-price pull-right">{{ printablePrice($var->quantityValue()) }} €</label>
+                                        <label class="static-label booking-product-price pull-right">
+                                            {{ printablePrice($o->status == 'shipped' ? $var->deliveredValue() : $var->quantityValue()) }} €
+                                        </label>
                                     </td>
                                 </tr>
                             @endforeach
@@ -89,6 +102,7 @@ $grand_total = 0;
                 </tbody>
                 <tfoot>
                     <tr>
+                        <th></th>
                         <th></th>
                         <th></th>
                         <th></th>

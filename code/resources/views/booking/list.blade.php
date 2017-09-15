@@ -1,7 +1,7 @@
 <?php $identifier = sprintf('booking-list-', str_random(5)) ?>
 
 <button class="btn btn-default" data-toggle="modal" data-target="#addBooking-{{ $aggregate->id }}">Aggiungi Utente</button>
-<div class="modal fade" id="addBooking-{{ $aggregate->id }}" tabindex="-1">
+<div class="modal fade add-booking-while-shipping" id="addBooking-{{ $aggregate->id }}" tabindex="-1">
     <div class="modal-dialog modal-extra-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">

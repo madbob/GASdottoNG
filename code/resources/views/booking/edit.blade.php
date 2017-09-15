@@ -15,67 +15,61 @@ $grand_total = 0;
 
         <?php $o = $order->userBooking($user->id) ?>
 
-        @if($order->status != 'open')
-            <div class="alert alert-info">
-                Prenotazioni chiuse per questo ordine, hai prenotato {{ printablePrice($o->value) }} €
-            </div>
-        @else
-            <table class="table table-striped booking-editor">
-                <thead>
-                    <tr>
-                        <th width="25%"></th>
-                        <th width="30%"></th>
-                        <th width="25%"></th>
-                        <th width="15%"></th>
-                        <th width="5%"></th>
+        <table class="table table-striped booking-editor">
+            <thead>
+                <tr>
+                    <th width="25%"></th>
+                    <th width="30%"></th>
+                    <th width="25%"></th>
+                    <th width="15%"></th>
+                    <th width="5%"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($order->products as $product)
+                    <?php $p = $o->getBooked($product->id) ?>
+
+                    <tr class="booking-product">
+                        <td>
+                            <label class="static-label">
+                                {{ $product->name }}
+
+                                @if(!empty($product->description))
+                                    <button type="button" class="btn btn-xs btn-default" data-container="body" data-toggle="popover" data-placement="right" data-trigger="hover" data-content="{{ str_replace('"', '\"', $product->description) }}">
+                                        <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                                    </button>
+                                @endif
+                            </label>
+                        </td>
+
+                        <td>
+                            @include('booking.quantityselectrow', ['product' => $product, 'order' => $order, 'populate' => true])
+                        </td>
+
+                        <td>
+                            <label class="static-label">{{ $product->printableDetails($order) }}</label>
+                        </td>
+
+                        <td class="text-right">
+                            <label class="static-label">{!! $product->printablePrice($order) !!}</label>
+                        </td>
+
+                        <td>
+                            <label class="static-label booking-product-price pull-right">{{ $p ? printablePrice($p->quantityValue()) : '0.00' }} €</label>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach($order->products as $product)
-                        <?php $p = $o->getBooked($product->id) ?>
-
-                        <tr class="booking-product">
-                            <td>
-                                <label class="static-label">
-                                    {{ $product->name }}
-
-                                    @if(!empty($product->description))
-                                        <button type="button" class="btn btn-xs btn-default" data-container="body" data-toggle="popover" data-placement="right" data-trigger="hover" data-content="{{ str_replace('"', '\"', $product->description) }}">
-                                            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-                                        </button>
-                                    @endif
-                                </label>
-                            </td>
-
-                            <td>
-                                @include('booking.quantityselectrow', ['product' => $product, 'order' => $order, 'populate' => true])
-                            </td>
-
-                            <td>
-                                <label class="static-label">{{ $product->printableDetails($order) }}</label>
-                            </td>
-
-                            <td class="text-right">
-                                <label class="static-label">{!! $product->printablePrice($order) !!}</label>
-                            </td>
-
-                            <td>
-                                <label class="static-label booking-product-price pull-right">{{ $p ? printablePrice($p->quantityValue()) : '0.00' }} €</label>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th class="text-right">Totale: <span class="booking-total">{{ printablePrice($o->value) }}</span> €</th>
-                    </tr>
-                </tfoot>
-            </table>
-        @endif
+                @endforeach
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th class="text-right">Totale: <span class="booking-total">{{ printablePrice($o->value) }}</span> €</th>
+                </tr>
+            </tfoot>
+        </table>
 
         <?php $grand_total += $o->value ?>
     @endforeach

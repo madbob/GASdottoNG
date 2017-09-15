@@ -123,13 +123,23 @@ function generalInit() {
                 /*
                     Cfr. BookingHandler::bookingUpdate();
                 */
-                var inject_special_identifier = ($(this).closest('.modal').lenght != 0);
+                var while_shipping = ($(this).closest('.modal.add-booking-while-shipping').length != 0);
 
-                $.get('/booking/' + aggregate_id + '/user/' + result.id, function(form) {
-                    form = $(form);
-                    if (inject_special_identifier)
-                        form.append('<input type="hidden" name="booking-on-shipping" value="1">');
-                    $('.other-booking').empty().append(form);
+                $.ajax({
+                    url: '/booking/' + aggregate_id + '/user/' + result.id,
+                    method: 'GET',
+                    data: {
+                        'booking-on-shipping': while_shipping ? 1 : 0,
+                    },
+                    dataType: 'HTML',
+                    success: function(data) {
+                        if(while_shipping) {
+                            data = $(data);
+                            data.append('<input type="hidden" name="booking-on-shipping" value="1">');
+                        }
+
+                        $('.other-booking').empty().append(data);
+                    }
                 });
             });
         }

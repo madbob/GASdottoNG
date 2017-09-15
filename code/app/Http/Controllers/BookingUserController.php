@@ -37,7 +37,10 @@ class BookingUserController extends BookingHandler
 
         $user = User::findOrFail($user_id);
 
-        return view('booking.edit', ['aggregate' => $aggregate, 'user' => $user]);
+        if ($aggregate->isRunning() || ($aggregate->isActive() && $request->input('booking-on-shipping', 0) == 1))
+            return view('booking.edit', ['aggregate' => $aggregate, 'user' => $user]);
+        else
+            return view('booking.show', ['aggregate' => $aggregate, 'user' => $user]);
     }
 
     public function update(Request $request, $aggregate_id, $user_id)
