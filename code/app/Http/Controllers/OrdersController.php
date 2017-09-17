@@ -370,8 +370,8 @@ class OrdersController extends Controller
         switch ($type) {
             case 'shipping':
                 $html = Theme::view('documents.order_shipping', ['order' => $order])->render();
-                $filename = sprintf('Dettaglio Consegne %s.pdf', $order->supplier->name);
-                PDF::SetTitle(sprintf('Dettaglio Consegne %s del %s', $order->supplier->name, date('d/m/Y')));
+                $filename = sprintf('Dettaglio Consegne ordine %s presso %s.pdf', $order->internal_number, $order->supplier->name);
+                PDF::SetTitle(sprintf('Dettaglio Consegne ordine %s presso %s del %s', $order->internal_number, $order->supplier->name, date('d/m/Y')));
                 PDF::AddPage();
                 PDF::writeHTML($html, true, false, true, false, '');
                 PDF::Output($filename, 'D');
@@ -380,21 +380,21 @@ class OrdersController extends Controller
             case 'summary':
                 if ($subtype == 'pdf') {
                     $html = Theme::view('documents.order_summary_pdf', ['order' => $order])->render();
-                    $filename = sprintf('Prodotti ordinati %s.pdf', $order->supplier->name);
-                    PDF::SetTitle(sprintf('Prodotti ordinati %s del %s', $order->supplier->name, date('d/m/Y')));
+                    $filename = sprintf('Prodotti Ordinati ordine %s presso %s.pdf', $order->internal_number, $order->supplier->name);
+                    PDF::SetTitle(sprintf('Prodotti Ordinati ordine %s presso %s del %s', $order->internal_number, $order->supplier->name, date('d/m/Y')));
                     PDF::AddPage();
                     PDF::writeHTML($html, true, false, true, false, '');
                     PDF::Output($filename, 'D');
                 }
                 else if ($subtype == 'csv') {
-                    $filename = sprintf('Prodotti ordinati %s.csv', $order->supplier->name);
+                    $filename = sprintf('Prodotti Ordinati Ordine %s presso %s.csv', $order->internal_number, $order->supplier->name);
                     http_csv_headers($filename);
                     return Theme::view('documents.order_summary_csv', ['order' => $order]);
                 }
                 break;
 
             case 'table':
-                $filename = sprintf('Tabella Ordine %s.csv', $order->supplier->name);
+                $filename = sprintf('Tabella Ordine %s presso %s.csv', $order->internal_number, $order->supplier->name);
                 http_csv_headers($filename);
                 if ($subtype == 'booked')
                     return Theme::view('documents.order_table_booked', ['order' => $order]);
@@ -403,7 +403,7 @@ class OrdersController extends Controller
                 break;
 
             case 'rid':
-                $filename = sprintf('RID Ordine %s.txt', $order->supplier->name);
+                $filename = sprintf('RID Ordine %s presso %s.txt', $order->internal_number, $order->supplier->name);
                 header('Content-Type: plain/text');
                 header('Content-Disposition: attachment; filename="' . $filename . '"');
                 header('Cache-Control: no-cache, no-store, must-revalidate');

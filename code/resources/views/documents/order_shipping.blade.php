@@ -1,6 +1,6 @@
 <html>
     <body>
-        <h3>Dettaglio Consegne {{ $order->supplier->printableName() }} del {{ date('d/m/Y') }}</h3>
+        <h3>Dettaglio Consegne Ordine {{ $order->internal_number }} presso {{ $order->supplier->printableName() }} del {{ date('d/m/Y') }}</h3>
 
         <hr/>
 

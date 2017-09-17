@@ -1,7 +1,7 @@
 <?php $summary = $order->calculateSummary(); ?>
 <html>
     <body>
-        <h3>Prodotti ordinati {{ $order->supplier->printableName() }} del {{ date('d/m/Y') }}</h3>
+        <h3>Prodotti Ordinati Ordine {{ $order->internal_number }} presso {{ $order->supplier->printableName() }} del {{ date('d/m/Y') }}</h3>
 
         <hr/>
 
