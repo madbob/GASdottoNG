@@ -171,7 +171,7 @@ $rand = rand();
                         <tr>
                             <th>
                                 @if($order->isActive())
-                                    <button class="btn btn-default add-booking-product">Aggiungi Prodotto</button>
+                                    <button class="btn btn-warning add-booking-product">Aggiungi Prodotto</button>
                                 @endif
                             </th>
                             <th></th>

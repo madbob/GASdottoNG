@@ -37,7 +37,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <button type="button" class="btn btn-default add-variant">Crea Nuova Variante</button>
+            <button type="button" class="btn btn-warning add-variant">Crea Nuova Variante</button>
         </div>
     </div>
 </div>

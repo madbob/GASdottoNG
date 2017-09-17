@@ -227,6 +227,22 @@ function randomString(total)
     return text;
 }
 
+function parseFullDate(string) {
+    var components = string.split(' ');
+
+    var month = 0;
+    var months = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+    for(month = 0; month < months.length; month++) {
+        if (components[2] == months[month]) {
+            month++;
+            break;
+        }
+    }
+
+    var date = components[3] + '-' + month + '-' + components[1];
+    return Date.parse(date);
+}
+
 function parseFloatC(value) {
     return parseFloat(value.replace(/,/, '.'));
 }
@@ -264,6 +280,30 @@ function closeMainForm(form, data) {
     }
 
     return head;
+}
+
+function sortingDates(a, b) {
+    a = parseFullDate(a);
+    b = parseFullDate(b);
+
+    if (a == b)
+        return 0;
+    else if (a < b)
+        return -1;
+    else
+        return 1;
+}
+
+function sortingValues(a, b) {
+    a = parseFloatC(a);
+    b = parseFloatC(b);
+
+    if (a == b)
+        return 0;
+    else if (a < b)
+        return -1;
+    else
+        return 1;
 }
 
 function checkboxSorter(a, b) {

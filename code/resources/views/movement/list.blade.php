@@ -23,20 +23,20 @@ else {
         Non ci sono elementi da visualizzare.
     </div>
 @else
-    <table class="table">
+    <table class="table addicted-table" data-classes="table table-no-bordered">
         <thead>
             <tr>
-                <th>Data Registrazione</th>
-                <th>Data Movimento</th>
-                <th>Tipo</th>
-                <th>Pagamento</th>
+                <th data-sortable="true" data-sorter="sortingDates">Data Registrazione</th>
+                <th data-sortable="true" data-sorter="sortingDates">Data Movimento</th>
+                <th data-sortable="true">Tipo</th>
+                <th data-sortable="true">Pagamento</th>
                 @if($exclude_sender == false)
-                    <th>Pagante</th>
+                    <th data-sortable="true">Pagante</th>
                 @endif
                 @if($exclude_target == false)
-                    <th>Pagato</th>
+                    <th data-sortable="true">Pagato</th>
                 @endif
-                <th>Valore</th>
+                <th data-sortable="true" data-sorter="sortingValues">Valore</th>
                 @if(Gate::check('movements.admin', $currentgas))
                     <th>Modifica</th>
                 @endif

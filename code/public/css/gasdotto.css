@@ -215,4 +215,7 @@ table label {
   background-color: #F6F6F6;
   padding: 15px 0; }
 
+.ct-chart-bar, .ct-chart-pie {
+  height: 400px; }
+
 /*# sourceMappingURL=gasdotto.css.map */
