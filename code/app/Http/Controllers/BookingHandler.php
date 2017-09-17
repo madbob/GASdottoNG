@@ -49,6 +49,8 @@ class BookingHandler extends Controller
             $booking->notes = '';
             $booking->save();
 
+            $count_products = 0;
+
             foreach ($order->products as $product) {
                 $quantity = $request->input($product->id, 0);
                 $booked = $booking->getBooked($product, true);
@@ -132,8 +134,10 @@ class BookingHandler extends Controller
 
                 if ($delivering == false && $quantity == 0) {
                     $booked->delete();
-                } else {
+                }
+                else {
                     if ($booked->$param != $quantity) {
+                        $count_products++;
                         $booked->$param = $quantity;
 
                         if ($delivering) {
@@ -148,6 +152,11 @@ class BookingHandler extends Controller
             if ($delivering) {
                 $booking->status = $request->input('action');
                 $booking->save();
+            }
+            else {
+                if ($count_products == 0) {
+                    $booking->delete();
+                }
             }
         }
 
@@ -168,11 +177,16 @@ class BookingHandler extends Controller
         }
         else {
             $subject = $aggregate->bookingBy($user_id);
-            return $this->successResponse([
-                'id' => $subject->id,
-                'header' => $subject->printableHeader(),
-                'url' => URL::action($delivering ? 'DeliveryUserController@show' : 'BookingUserController@show', ['aggregate' => $aggregate_id, 'user' => $user_id])
-            ]);
+            if ($subject->total_value == 0) {
+                return $this->successResponse();
+            }
+            else {
+                return $this->successResponse([
+                    'id' => $subject->id,
+                    'header' => $subject->printableHeader(),
+                    'url' => URL::action($delivering ? 'DeliveryUserController@show' : 'BookingUserController@show', ['aggregate' => $aggregate_id, 'user' => $user_id])
+                ]);
+            }
         }
     }
 }
