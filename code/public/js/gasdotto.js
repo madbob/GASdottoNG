@@ -566,13 +566,13 @@ function creatingFormCallback(form, data) {
 
 function currentLoadableUniqueSelector(target)
 {
-    var identifier = $(target).closest('li.list-group-item').attr('data-random-identifier');
-    return 'li.list-group-item[data-random-identifier=' + identifier + ']';
+    var identifier = $(target).closest('div.list-group-item').attr('data-random-identifier');
+    return 'div.list-group-item[data-random-identifier=' + identifier + ']';
 }
 
 function currentLoadableLoaded(target)
 {
-    return $(target).closest('li.list-group-item').prev('a').attr('data-element-id');
+    return $(target).closest('div.list-group-item').prev('a').attr('data-element-id');
 }
 
 function reloadCurrentLoadable(target)
@@ -580,7 +580,7 @@ function reloadCurrentLoadable(target)
     listid = currentLoadableUniqueSelector(target);
     var current = $(listid);
     var toggle = current.prev('.loadable-item');
-    current.slideUp(500, function() {
+    current.slideUp(200, function() {
         $(this).remove();
         toggle.removeClass('active').click();
     });
@@ -1309,13 +1309,20 @@ $(document).ready(function() {
                 }
             });
 
-            content.slideUp(500, function() {
+            content.slideUp(200, function() {
                 $(this).remove();
                 item.removeClass('active');
             });
         }
         else {
-            var node = $('<li>').addClass('list-group-item').addClass('loadable-contents').attr('data-random-identifier', randomString(10)).append(loadingPlaceholder());
+            var list = $(this).closest('.loadablelist');
+            if (list.attr('data-sorting-function') != null) {
+                list.find('> a.active').each(function() {
+                    $(this).removeClass('active').next().remove();
+                });
+            }
+
+            var node = $('<div>').addClass('list-group-item').addClass('loadable-contents').attr('data-random-identifier', randomString(10)).append(loadingPlaceholder());
             $(this).addClass('active').after(node);
 
             $('html, body').animate({
