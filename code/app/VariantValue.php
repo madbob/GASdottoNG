@@ -26,7 +26,7 @@ class VariantValue extends Model
     public function printableFullValue()
     {
         if ($this->variant->has_offset) {
-            return sprintf('%s (+%.02f€)', $this->value, $this->price_offset);
+            return sprintf('%s (%s%.02f€)', $this->value, ($this->price_offset > 0 ? '+' : '-'), abs($this->price_offset));
         } else {
             return $this->value;
         }

@@ -18,6 +18,9 @@ if(isset($is_price)) {
     $postlabel = '€';
 }
 
+if(!isset($minval))
+    $minval = 0;
+
 ?>
 
 <div class="form-group">
@@ -34,7 +37,7 @@ if(isset($is_price)) {
             class="form-control"
             name="{{ $prefix . $name . $postfix }}"
             step="0.01"
-            min="0"
+            min="{{ $minval }}"
             value="{{ $value }}"
 
             @if(isset($mandatory) && $mandatory == true)

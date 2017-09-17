@@ -81,7 +81,8 @@
                                         'field' => 'price_offset',
                                         'type' => 'decimal',
                                         'extra' => [
-                                            'postlabel' => '€'
+                                            'is_price' => true,
+                                            'minval' => '-9999'
                                         ]
                                     ]
                                 ]
