@@ -1427,6 +1427,18 @@ $(document).ready(function() {
         }
     });
 
+    $('body').on('keydown', 'input[type=number][step=1]', function (e) {
+        if (e.which === 188 || e.which === 190)
+            return false;
+    })
+    .on('input', 'input[type=number][step=1]', function () {
+        var self = this;
+        setTimeout(function () {
+            if (self.value.indexOf('.') != -1)
+                self.value = parseInt(self.value, 10);
+        }, 0);
+    });
+
     $('body').on('change', '.triggers-all-checkbox', function() {
         $(this).prop('disabled', true);
 

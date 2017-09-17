@@ -5,9 +5,12 @@ function printablePrice($price)
     return sprintf('%.02f', $price);
 }
 
-function printableQuantity($quantity)
+function printableQuantity($quantity, $discrete)
 {
-    return sprintf('%.02f', $quantity);
+    if ($discrete)
+        return sprintf('%d', $quantity);
+    else
+        return sprintf('%.02f', $quantity);
 }
 
 function normalizePercentage($value)

@@ -46,11 +46,11 @@ $grand_total = 0;
                                 </td>
 
                                 <td>
-                                    {{ printableQuantity($product->quantity) }} {{ $product->product->printableMeasure(true) }}
+                                    {{ printableQuantity($product->quantity, $product->product->measure->discrete) }} {{ $product->product->printableMeasure(true) }}
                                 </td>
 
                                 <td>
-                                    {{ printableQuantity($product->delivered) }} {{ $product->product->measure->name }}
+                                    {{ printableQuantity($product->delivered, $product->product->measure->discrete) }} {{ $product->product->measure->name }}
                                 </td>
 
                                 <td class="text-right">
@@ -79,11 +79,11 @@ $grand_total = 0;
                                     </td>
 
                                     <td>
-                                        {{ printableQuantity($var->quantity) }} {{ $product->product->printableMeasure(true) }}
+                                        {{ printableQuantity($var->quantity, $product->product->measure->discrete) }} {{ $product->product->printableMeasure(true) }}
                                     </td>
 
                                     <td>
-                                        {{ printableQuantity($var->delivered) }} {{ $product->product->measure->name }}
+                                        {{ printableQuantity($var->delivered, $product->product->measure->discrete) }} {{ $product->product->measure->name }}
                                     </td>
 
                                     <td class="text-right">

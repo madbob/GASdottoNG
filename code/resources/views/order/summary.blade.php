@@ -109,7 +109,7 @@
                 @if($order->isActive())
                     <!-- Quantità Ordinata -->
                     <td>
-                        <label class="order-summary-product-quantity">{{ printableQuantity($summary->products[$product->id]['quantity']) }}</label>
+                        <label class="order-summary-product-quantity">{{ printableQuantity($summary->products[$product->id]['quantity'], $product->measure->discrete) }}</label>
                     </td>
 
                     <!-- Totale Prezzo -->
@@ -125,7 +125,7 @@
 
                 <!-- Quantità Consegnata -->
                 <td>
-                    <label class="order-summary-product-delivered">{{ printableQuantity($summary->products[$product->id]['delivered']) }}</label>
+                    <label class="order-summary-product-delivered">{{ printableQuantity($summary->products[$product->id]['delivered'], $product->measure->discrete) }}</label>
                 </td>
 
                 <!-- Totale Consegnato -->

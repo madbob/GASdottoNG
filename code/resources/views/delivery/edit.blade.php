@@ -56,21 +56,23 @@ $rand = rand();
 
                     <tbody>
                         @foreach($o->products as $product)
+                            <?php $discrete_quantity = $product->product->measure->discrete ?>
+
                             @if($product->variants->isEmpty() == true)
                                 <tr class="booking-product">
                                     <td>
-                                        <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($product->true_quantity) }}" class="skip-on-submit" />
+                                        <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($product->true_quantity, $discrete_quantity) }}" class="skip-on-submit" />
                                         <input type="hidden" name="product-price" value="{{ $product->product->contextualPrice($order, false) + $product->product->transport }}" class="skip-on-submit" />
                                         <label class="static-label">{{ $product->product->name }}</label>
                                     </td>
 
                                     <td>
-                                        <label class="static-label booking-product-booked">{{ printableQuantity($product->quantity) }} {{ $product->product->printableMeasure(true) }}</label>
+                                        <label class="static-label booking-product-booked">{{ printableQuantity($product->quantity, $discrete_quantity) }} {{ $product->product->printableMeasure(true) }}</label>
                                     </td>
 
                                     <td>
                                         <div class="input-group booking-product-quantity">
-                                            <input type="number" step="any" min="0" class="form-control trim-2-ddigits" name="{{ $product->product->id }}" value="{{ $product->delivered }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
+                                            <input type="number" step="{{ $discrete_quantity ? 1 : 0.01 }}" min="0" class="form-control trim-2-ddigits" name="{{ $product->product->id }}" value="{{ printableQuantity($product->delivered, $discrete_quantity) }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
                                             <div class="input-group-addon">{{ $product->product->measure->name }}</div>
                                             @if($product->product->portion_quantity != 0)
                                                 @include('delivery.calculator', ['pieces' => $product->quantity, 'measure' => $product->product->measure->name])
@@ -97,7 +99,7 @@ $rand = rand();
 
                                     <tr class="booking-product">
                                         <td>
-                                            <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($var->true_quantity) }}" class="skip-on-submit" />
+                                            <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($var->true_quantity, $discrete_quantity) }}" class="skip-on-submit" />
                                             <input type="hidden" name="product-price" value="{{ $price }}" class="skip-on-submit" />
 
                                             <label class="static-label">{{ $product->product->name }}: {{ $var->printableName() }}</label>
@@ -109,12 +111,12 @@ $rand = rand();
                                         </td>
 
                                         <td>
-                                            <label class="static-label booking-product-booked">{{ printableQuantity($var->quantity) }} {{ $product->product->printableMeasure(true) }}</label>
+                                            <label class="static-label booking-product-booked">{{ printableQuantity($var->quantity, $discrete_quantity) }} {{ $product->product->printableMeasure(true) }}</label>
                                         </td>
 
                                         <td>
                                             <div class="input-group booking-product-quantity">
-                                                <input type="number" step="any" min="0" class="form-control" name="variant_quantity_{{ $product->product->id }}[]" value="{{ $var->delivered }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
+                                                <input type="number" step="{{ $discrete_quantity ? 1 : 0.01 }}" min="0" class="form-control" name="variant_quantity_{{ $product->product->id }}[]" value="{{ printableQuantity($var->delivered, $discrete_quantity) }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
                                                 <div class="input-group-addon">{{ $product->product->measure->name }}</div>
                                                 @if($product->product->portion_quantity != 0)
                                                     @include('delivery.calculator', ['pieces' => $var->quantity, 'measure' => $product->product->measure->name])
