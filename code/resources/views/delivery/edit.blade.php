@@ -140,8 +140,14 @@ $rand = rand();
                                         @endforeach
                                     </select>
                                 </td>
+
                                 <td>&nbsp;</td>
+
                                 <td class="bookable-target">&nbsp;</td>
+
+                                <td>
+                                    <label class="static-label booking-product-price pull-right">0.00 €</label>
+                                </td>
                             </tr>
                         @endif
 
