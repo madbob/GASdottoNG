@@ -681,9 +681,11 @@ function afterBookingSaved(form, data) {
     */
     if (modal.length != 0) {
         var list = $("button[data-target='#" + modal.attr('id') + "']").parent().find('.loadablelist');
-        var url = data.url.replace('booking/', 'delivery/');
-        list.append('<a data-element-id="' + data.id + '" href="' + url + '" class="loadable-item list-group-item">' + data.header + '</a>');
-        afterListChanges(list);
+        if (list.find('> a[data-element-id=' + data.id + ']').length == 0) {
+            var url = data.url.replace('booking/', 'delivery/');
+            list.append('<a data-element-id="' + data.id + '" href="' + url + '" class="loadable-item list-group-item">' + data.header + '</a>');
+            afterListChanges(list);
+        }
         modal.modal('hide');
     }
     /*
