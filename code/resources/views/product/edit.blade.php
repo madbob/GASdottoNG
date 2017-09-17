@@ -4,7 +4,6 @@
             @include('product.base-edit', ['product' => $product])
             @include('commons.textfield', ['obj' => $product, 'name' => 'supplier_code', 'label' => 'Codice Fornitore'])
             @include('commons.boolfield', ['obj' => $product, 'name' => 'active', 'label' => 'Ordinabile'])
-            @include('commons.boolfield', ['obj' => $product, 'name' => 'archived', 'label' => 'Archiviato'])
         </div>
         <div class="col-md-6">
             <div class="well">

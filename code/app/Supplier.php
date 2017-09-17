@@ -37,7 +37,7 @@ class Supplier extends Model
 
     public function products()
     {
-        return $this->hasMany('App\Product')->with('measure')->where('archived', false)->orderBy('name');
+        return $this->hasMany('App\Product')->with('measure')->orderBy('name');
     }
 
     public function all_products()
@@ -225,7 +225,6 @@ class Supplier extends Model
         }
         else {
             $supplier = Supplier::findOrFail($replace);
-            $supplier->products()->update(['archived' => true]);
             $supplier->contacts()->delete();
         }
 
@@ -256,11 +255,11 @@ class Supplier extends Model
                     break;
 
                 case 'contacts':
+                    $supplier->save();
+
                     foreach($c->children() as $a) {
                         foreach($a->children() as $p) {
                             foreach($p->children() as $e) {
-                                $supplier->save();
-
                                 $contact = new Contact();
 
                                 switch($e->getName()) {
@@ -289,10 +288,27 @@ class Supplier extends Model
                     break;
 
                 case 'products':
+                    $supplier->save();
+
                     foreach($c->children() as $a) {
-                        $product = new Product();
-                        $supplier->save();
-                        $product->supplier_id = $supplier->id;
+                        $product_name = null;
+
+                        foreach($a->children() as $p) {
+                            if($p->getName() == 'name') {
+                                $product_name = (string) $p;
+                                break;
+                            }
+                        }
+
+                        if ($product_name == null) {
+                            continue;
+                        }
+
+                        $product = $supplier->products()->where('name', $product_name)->first();
+                        if ($product == null) {
+                            $product = new Product();
+                            $product->supplier_id = $supplier->id;
+                        }
 
                         foreach($a->children() as $p) {
                             switch($p->getName()) {

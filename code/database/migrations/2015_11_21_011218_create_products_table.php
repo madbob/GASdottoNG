@@ -19,7 +19,6 @@ class CreateProductsTable extends Migration
             $table->string('measure_id');
             $table->integer('vat_rate_id')->nullable();
             $table->boolean('active')->default(true);
-            $table->boolean('archived')->default(false);
             $table->text('description')->nullable();
             $table->string('picture')->nullable();
 

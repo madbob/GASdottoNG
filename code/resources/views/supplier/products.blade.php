@@ -81,13 +81,6 @@
                         'items' => $supplier->all_products,
                         'legend' => (object)[
                             'class' => 'Product'
-                        ],
-                        'filters' => [
-                            'archived' => (object)[
-                                'icon' => 'inbox',
-                                'label' => 'Archiviati',
-                                'value' => false
-                            ]
                         ]
                     ])
                 </div>
