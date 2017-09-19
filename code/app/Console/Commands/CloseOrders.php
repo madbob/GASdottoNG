@@ -18,6 +18,6 @@ class CloseOrders extends Command
 
     public function handle()
     {
-        Order::where('end', '<', date('Y-m-d'))->update(['status' => 'closed']);
+        Order::where('status', 'opened')->where('end', '<', date('Y-m-d'))->update(['status' => 'closed']);
     }
 }

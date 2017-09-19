@@ -117,7 +117,7 @@ class ProductsController extends Controller
 
         $this->basicReadFromRequest($p, $request);
         $p->active = $request->has('active');
-        $p->supplier_code = $request->has('supplier_code');
+        $p->supplier_code = $request->input('supplier_code');
         $p->package_size = $request->input('package_size');
         $p->multiple = $request->input('multiple');
         $p->min_quantity = $request->input('min_quantity');
