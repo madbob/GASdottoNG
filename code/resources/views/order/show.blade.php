@@ -12,10 +12,10 @@
 
     @can('supplier.shippings', $order->supplier)
         <div class="col-md-4">
-            <div class="well">
+            <div class="well pull-right">
                 <h4>Files</h4>
 
-                <div class="list-group">
+                <div class="list-group pull-right">
                     @foreach($order->attachments as $attachment)
                         <a href="{{ $attachment->download_url }}" class="list-group-item">{{ $attachment->name }}</a>
                     @endforeach

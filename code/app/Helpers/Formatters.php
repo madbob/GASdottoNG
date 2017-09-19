@@ -15,7 +15,10 @@ function printableQuantity($quantity, $discrete)
 
 function normalizePercentage($value)
 {
-    return str_replace(' ', '', $value);
+    if ($value == null)
+        return '';
+    else
+        return str_replace(' ', '', $value);
 }
 
 function applyPercentage($original, $percentage)

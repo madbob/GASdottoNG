@@ -27,7 +27,7 @@ class ProductsController extends Controller
         $obj->name = $request->input('name');
         $obj->description = $request->input('description');
         $obj->price = $request->input('price');
-        $obj->transport = $request->input('transport');
+        $obj->transport = $request->input('transport', 0);
         $obj->discount = normalizePercentage($request->input('discount'));
         $obj->category_id = $request->input('category_id');
         $obj->measure_id = $request->input('measure_id');
