@@ -136,6 +136,9 @@ class BookingHandler extends Controller
                     $booked->delete();
                 }
                 else {
+                    if ($quantity != 0)
+                        $count_products++;
+
                     if ($booked->$param != $quantity) {
                         $count_products++;
                         $booked->$param = $quantity;
