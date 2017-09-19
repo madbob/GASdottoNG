@@ -10,6 +10,7 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->string('supplier_id');
             $table->string('name');

@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Events\SluggableCreating;
 use App\GASModel;
@@ -12,7 +13,7 @@ use App\BookedProduct;
 
 class Product extends Model
 {
-    use GASModel, SluggableID;
+    use SoftDeletes, GASModel, SluggableID;
 
     public $incrementing = false;
 
