@@ -7,33 +7,46 @@
         <div class="col-md-4">
             @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => 'Fornitore'])
             @include('commons.staticstringfield', ['obj' => $order, 'name' => 'internal_number', 'label' => 'Numero'])
-            @include('commons.textfield', ['obj' => $order, 'name' => 'comment', 'label' => 'Commento'])
-            @include('commons.datefield', ['obj' => $order, 'name' => 'start', 'label' => 'Data Apertura', 'mandatory' => true])
 
-            @include('commons.datefield', [
-                'obj' => $order,
-                'name' => 'end',
-                'label' => 'Data Chiusura',
-                'mandatory' => true,
-                'extras' => [
-                    'data-enforce-after' => '.date[name=start]'
-                ]
-            ])
+            @if(in_array($order->status, ['suspended', 'open', 'closed']))
+                @include('commons.textfield', ['obj' => $order, 'name' => 'comment', 'label' => 'Commento'])
+                @include('commons.datefield', ['obj' => $order, 'name' => 'start', 'label' => 'Data Apertura', 'mandatory' => true])
 
-            @include('commons.datefield', [
-                'obj' => $order,
-                'name' => 'shipping',
-                'label' => 'Data Consegna',
-                'extras' => [
-                    'data-enforce-after' => '.date[name=end]'
-                ]
-            ])
+                @include('commons.datefield', [
+                    'obj' => $order,
+                    'name' => 'end',
+                    'label' => 'Data Chiusura',
+                    'mandatory' => true,
+                    'extras' => [
+                        'data-enforce-after' => '.date[name=start]'
+                    ]
+                ])
+
+                @include('commons.datefield', [
+                    'obj' => $order,
+                    'name' => 'shipping',
+                    'label' => 'Data Consegna',
+                    'extras' => [
+                        'data-enforce-after' => '.date[name=end]'
+                    ]
+                ])
+            @else
+                @include('commons.staticstringfield', ['obj' => $order, 'name' => 'comment', 'label' => 'Commento'])
+                @include('commons.staticdatefield', ['obj' => $order, 'name' => 'start', 'label' => 'Data Apertura'])
+                @include('commons.staticdatefield', ['obj' => $order, 'name' => 'end', 'label' => 'Data Chiusura'])
+                @include('commons.staticdatefield', ['obj' => $order, 'name' => 'shipping', 'label' => 'Data Consegna'])
+            @endif
 
             @include('commons.orderstatus', ['order' => $order])
         </div>
         <div class="col-md-4">
-            @include('commons.textfield', ['obj' => $order, 'name' => 'discount', 'label' => 'Sconto Globale', 'postlabel' => '€ / %'])
-            @include('commons.decimalfield', ['obj' => $order, 'name' => 'transport', 'label' => 'Spese Trasporto', 'is_price' => true])
+            @if(in_array($order->status, ['suspended', 'open', 'closed']))
+                @include('commons.textfield', ['obj' => $order, 'name' => 'discount', 'label' => 'Sconto Globale', 'postlabel' => '€ / %'])
+                @include('commons.decimalfield', ['obj' => $order, 'name' => 'transport', 'label' => 'Spese Trasporto', 'is_price' => true])
+            @else
+                @include('commons.staticpercentagefield', ['obj' => $order, 'name' => 'discount', 'label' => 'Sconto Globale'])
+                @include('commons.staticpricefield', ['obj' => $order, 'name' => 'transport', 'label' => 'Spese Trasporto'])
+            @endif
 
             @include('commons.movementfield', [
                 'obj' => $order->payment,

@@ -21,6 +21,17 @@ function normalizePercentage($value)
         return str_replace(' ', '', $value);
 }
 
+function printablePercentage($value)
+{
+    if (empty($value))
+        return printablePrice(0) . ' €';
+
+    if (strpos($value, '%') !== false)
+        return $value;
+    else
+        return printablePrice($value) . ' €';
+}
+
 function applyPercentage($original, $percentage)
 {
     if (empty($percentage)) {

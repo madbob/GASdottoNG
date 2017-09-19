@@ -171,17 +171,23 @@ class OrdersController extends Controller
             return $this->errorResponse('Non autorizzato');
         }
 
-        $order->comment = $request->input('comment');
-        $order->start = decodeDate($request->input('start'));
-        $order->end = decodeDate($request->input('end'));
-        $order->discount = $request->input('discount');
-        $order->transport = $request->input('transport');
+        if ($request->has('comment'))
+            $order->comment = $request->input('comment');
+        if ($request->has('start'))
+            $order->start = decodeDate($request->input('start'));
+        if ($request->has('end'))
+            $order->end = decodeDate($request->input('end'));
+        if ($request->has('discount'))
+            $order->discount = $request->input('discount');
+        if ($request->has('transport'))
+            $order->transport = $request->input('transport');
 
-        $s = $request->input('shipping');
-        if ($s != '') {
-            $order->shipping = decodeDate($s);
-        } else {
-            $order->shipping = null;
+        if ($request->has('shipping')) {
+            $s = $request->input('shipping');
+            if ($s != '')
+                $order->shipping = decodeDate($s);
+            else
+                $order->shipping = null;
         }
 
         /*
