@@ -113,6 +113,7 @@ class MovementType extends Model
                         'operations' => []
                     ]
                 ],
+                /*
                 (object) [
                     'method' => 'bank',
                     'sender' => (object) [
@@ -134,6 +135,7 @@ class MovementType extends Model
                         'operations' => []
                     ]
                 ],
+                */
                 (object) [
                     'method' => 'credit',
                     'sender' => (object) [
@@ -269,6 +271,7 @@ class MovementType extends Model
                         'operations' => []
                     ]
                 ],
+                /*
                 (object) [
                     'method' => 'bank',
                     'sender' => (object) [
@@ -290,6 +293,7 @@ class MovementType extends Model
                         'operations' => []
                     ]
                 ],
+                */
                 (object) [
                     'method' => 'credit',
                     'sender' => (object) [
