@@ -10,7 +10,9 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->timestamps();
+
             $table->softDeletes();
+            $table->boolean('suspended')->default(false);
 
             $table->string('gas_id');
             $table->string('username')->unique();

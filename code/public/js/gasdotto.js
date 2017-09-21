@@ -2073,6 +2073,18 @@ $(document).ready(function() {
     });
 
     /*
+        Gestione utenti
+    */
+
+    $('body').on('change', '.user-editor input:radio[name=status]', function() {
+        var date = $(this).closest('.form-group').find('input.date').closest('.user-status-date');
+        if ($(this).val() == 'deleted')
+            date.removeClass('hidden');
+        else
+            date.addClass('hidden');
+    });
+
+    /*
     	Gestione ordini
     */
 

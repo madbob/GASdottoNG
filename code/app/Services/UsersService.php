@@ -143,7 +143,25 @@ class UsersService
                 $this->transformAndSetIfSet($user, $request, 'sepa_subscribe', "decodeDate");
             }
 
-            $user->restore();
+            if (isset($request['status'])) {
+                $status = $request['status'];
+
+                switch($status) {
+                    case 'active':
+                        $user->suspended = false;
+                        $user->deleted_at = null;
+                        break;
+                    case 'suspended':
+                        $user->suspended = true;
+                        $user->deleted_at = date('Y-m-d');
+                        break;
+                    case 'deleted':
+                        $user->suspended = false;
+                        $user->deleted_at = !empty($request['deleted_at']) ? $request['deleted_at'] : date('Y-m-d');
+                        break;
+                }
+            }
+
             $user->save();
 
             if (isset($request['picture'])) {

@@ -284,9 +284,16 @@ trait GASModel
             }
 
             if ($user->can('users.admin', $user->gas)) {
+                $icons['User']['thumbs-down'] = (object) [
+                    'test' => function ($obj) {
+                        return $obj->suspended == true;
+                    },
+                    'text' => 'Sospeso',
+                ];
+
                 $icons['User']['off'] = (object) [
                     'test' => function ($obj) {
-                        return $obj->deleted_at != null;
+                        return ($obj->suspended == false && $obj->deleted_at != null);
                     },
                     'text' => 'Cessato',
                 ];

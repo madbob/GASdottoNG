@@ -33,11 +33,7 @@ if (!isset($export_url))
             <button type="button" class="btn btn-default close-button">Chiudi</button>
 
             @if($no_save == false)
-                @if($obj && $obj->deleted_at != null)
-                    <button type="submit" class="btn btn-success">Riattiva e Salva</button>
-                @else
-                    <button type="submit" class="btn btn-success">Salva</button>
-                @endif
+                <button type="submit" class="btn btn-success">Salva</button>
             @endif
         </div>
     </div>
