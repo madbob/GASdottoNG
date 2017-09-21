@@ -70,6 +70,15 @@ trait GASModel
         return URL::action($action, $this->id);
     }
 
+    public function testAndSet($request, $name, $field = null)
+    {
+        if ($field == null)
+            $field = $name;
+
+        if ($request->has($name))
+            $this->$field = $request->input($name);
+    }
+
     /*
         Questa va all'occorrenza sovrascritta
     */

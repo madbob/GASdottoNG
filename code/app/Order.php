@@ -33,7 +33,7 @@ class Order extends Model
 
     public function supplier()
     {
-        return $this->belongsTo('App\Supplier');
+        return $this->belongsTo('App\Supplier')->withTrashed();
     }
 
     public function aggregate()

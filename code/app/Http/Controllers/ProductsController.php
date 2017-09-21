@@ -24,19 +24,23 @@ class ProductsController extends Controller
 
     private function basicReadFromRequest(&$obj, $request)
     {
-        $obj->name = $request->input('name');
-        $obj->description = $request->input('description');
-        $obj->price = $request->input('price');
-        $obj->transport = $request->input('transport', 0);
-        $obj->discount = normalizePercentage($request->input('discount'));
-        $obj->category_id = $request->input('category_id');
-        $obj->measure_id = $request->input('measure_id');
+        $obj->testAndSet($request, 'name');
+        $obj->testAndSet($request, 'description');
+        $obj->testAndSet($request, 'price');
+        $obj->testAndSet($request, 'transport');
+        $obj->testAndSet($request, 'category_id');
+        $obj->testAndSet($request, 'measure_id');
 
-        $vat_rate = $request->input('vat_rate_id');
-        if ($vat_rate != 0)
-            $obj->vat_rate_id = $vat_rate;
-        else
-            $obj->vat_rate_id = null;
+        if ($request->has('discount'))
+            $obj->discount = normalizePercentage($request->input('discount'));
+
+        if ($request->has('vat_rate_id')) {
+            $vat_rate = $request->input('vat_rate_id');
+            if ($vat_rate != 0)
+                $obj->vat_rate_id = $vat_rate;
+            else
+                $obj->vat_rate_id = null;
+        }
     }
 
     private function enforceMeasure($product, $request)
@@ -117,12 +121,12 @@ class ProductsController extends Controller
 
         $this->basicReadFromRequest($p, $request);
         $p->active = $request->has('active');
-        $p->supplier_code = $request->input('supplier_code');
-        $p->package_size = $request->input('package_size');
-        $p->multiple = $request->input('multiple');
-        $p->min_quantity = $request->input('min_quantity');
-        $p->max_quantity = $request->input('max_quantity');
-        $p->max_available = $request->input('max_available');
+        $p->testAndSet($request, 'supplier_code');
+        $p->testAndSet($request, 'package_size');
+        $p->testAndSet($request, 'multiple');
+        $p->testAndSet($request, 'min_quantity');
+        $p->testAndSet($request, 'max_quantity');
+        $p->testAndSet($request, 'max_available');
         $p = $this->enforceMeasure($p, $request);
 
         $p->save();
