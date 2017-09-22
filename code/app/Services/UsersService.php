@@ -157,7 +157,7 @@ class UsersService
                         break;
                     case 'deleted':
                         $user->suspended = false;
-                        $user->deleted_at = !empty($request['deleted_at']) ? $request['deleted_at'] : date('Y-m-d');
+                        $user->deleted_at = !empty($request['deleted_at']) ? decodeDate($request['deleted_at']) : date('Y-m-d');
                         break;
                 }
             }
