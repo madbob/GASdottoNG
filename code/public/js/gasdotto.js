@@ -2200,15 +2200,9 @@ $(document).ready(function() {
     });
 
     $('body').on('keyup', '.booking-product-quantity input', function() {
-        var booked = 0;
-        var wrong = false;
-
+        var booked = parseFloatC($(this).val());
         var row = $(this).closest('.booking-product');
-        row.find('.booking-product-quantity input').each(function() {
-            var v = $(this).val();
-            if (v != '')
-                booked += parseFloatC(v);
-        });
+        var wrong = false;
 
         if (booked != 0) {
             var m = row.find('input:hidden[name=product-multiple]');
