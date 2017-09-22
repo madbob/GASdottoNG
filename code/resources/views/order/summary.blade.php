@@ -125,7 +125,7 @@
 
                 <!-- Quantità Consegnata -->
                 <td>
-                    <label class="order-summary-product-delivered">{{ printableQuantity($summary->products[$product->id]['delivered'], $product->measure->discrete) }}</label>
+                    <label class="order-summary-product-delivered">{{ printableQuantity($summary->products[$product->id]['delivered'], $product->measure->discrete, 3) }}</label>
                 </td>
 
                 <!-- Totale Consegnato -->

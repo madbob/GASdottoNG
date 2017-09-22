@@ -23,7 +23,7 @@ class AggregateBooking extends Model
     public function __construct($user_id)
     {
         $this->id = $user_id;
-        $this->user = User::find($user_id);
+        $this->user = User::withTrashed()->find($user_id);
     }
 
     public function add($booking)

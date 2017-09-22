@@ -72,7 +72,7 @@ $rand = rand();
 
                                     <td>
                                         <div class="input-group booking-product-quantity">
-                                            <input type="number" step="{{ $discrete_quantity ? 1 : 0.01 }}" min="0" class="form-control trim-2-ddigits" name="{{ $product->product->id }}" value="{{ printableQuantity($product->delivered, $discrete_quantity) }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
+                                            <input type="number" step="{{ $discrete_quantity ? 1 : 0.01 }}" min="0" class="form-control" name="{{ $product->product->id }}" value="{{ printableQuantity($product->delivered, $discrete_quantity, 3) }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
                                             <div class="input-group-addon">{{ $product->product->measure->name }}</div>
                                             @if($product->product->portion_quantity != 0)
                                                 @include('delivery.calculator', ['pieces' => $product->quantity, 'measure' => $product->product->measure->name])
@@ -116,7 +116,7 @@ $rand = rand();
 
                                         <td>
                                             <div class="input-group booking-product-quantity">
-                                                <input type="number" step="{{ $discrete_quantity ? 1 : 0.01 }}" min="0" class="form-control" name="variant_quantity_{{ $product->product->id }}[]" value="{{ printableQuantity($var->delivered, $discrete_quantity) }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
+                                                <input type="number" step="{{ $discrete_quantity ? 1 : 0.01 }}" min="0" class="form-control" name="variant_quantity_{{ $product->product->id }}[]" value="{{ printableQuantity($var->delivered, $discrete_quantity, 3) }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
                                                 <div class="input-group-addon">{{ $product->product->measure->name }}</div>
                                                 @if($product->product->portion_quantity != 0)
                                                     @include('delivery.calculator', ['pieces' => $var->quantity, 'measure' => $product->product->measure->name])
