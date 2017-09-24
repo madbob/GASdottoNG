@@ -36,7 +36,7 @@ class Movement extends Model
 
     public function target()
     {
-        if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->target_type)))
+        if ($this->target_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->target_type)))
             return $this->morphTo()->withTrashed();
         else
             return $this->morphTo();
