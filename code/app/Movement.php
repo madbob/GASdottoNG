@@ -36,13 +36,10 @@ class Movement extends Model
 
     public function target()
     {
-        /*
-            Attenzione: non usare withTrashed() qui, in quanto soggetto del
-            pagamento potrebbe anche essere un tipo di elemento senza soft
-            deletes (e.g. le prenotazioni). Se e quando dovesse emergere il
-            problema, trovare un'altra soluzione
-        */
-        return $this->morphTo();
+        if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->target_type)))
+            return $this->morphTo()->withTrashed();
+        else
+            return $this->morphTo();
     }
 
     public function getPaymentIconAttribute()

@@ -320,19 +320,20 @@ class MovementsController extends Controller
         }
 
         DB::beginTransaction();
+        $success = false;
 
         try {
             Session::put('movements-recalculating', true);
             CreditableTrait::resetAllCurrentBalances();
             $this->recalculateCurrentBalance();
+            Session::forget('movements-recalculating');
+            return $this->successResponse();
         }
         catch(\Exception $e) {
             Log::error('Errore nel ricalcolo saldi: ' . $e->getMessage());
+            Session::forget('movements-recalculating');
+            return $this->errorResponse('Errore');
         }
-
-        Session::forget('movements-recalculating');
-        DB::commit();
-        return redirect(url('/movements'));
     }
 
     public function closeBalance(Request $request)

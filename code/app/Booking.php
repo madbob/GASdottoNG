@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use URL;
 
 use App\Events\SluggableCreating;
+use App\Events\BookingDeleting;
 use App\GASModel;
 use App\SluggableID;
 use App\BookedProduct;
@@ -19,6 +20,7 @@ class Booking extends Model
 
     protected $events = [
         'creating' => SluggableCreating::class,
+        'deleting' => BookingDeleting::class,
     ];
 
     public static function commonClassName()

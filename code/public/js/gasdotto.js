@@ -227,6 +227,14 @@ function randomString(total)
     return text;
 }
 
+function inlineFeedback(button, feedback_text) {
+    var idle_text = button.text();
+    button.text(feedback_text);
+    setInterval(function() {
+        button.text(idle_text).prop('disabled', false);
+    }, 2000);
+}
+
 function parseFullDate(string) {
     var components = string.split(' ');
 
@@ -1767,11 +1775,7 @@ $(document).ready(function() {
             dataType: 'json',
 
             success: function(data) {
-                save_button.text('Salvato!');
-                setInterval(function() {
-                    save_button.text('Salva').removeAttr('disabled');
-                }, 2000);
-
+                inlineFeedback(save_button, 'Salvato!');
                 miscInnerCallbacks(form, data);
             }
         });
@@ -2036,6 +2040,9 @@ $(document).ready(function() {
             modal.attr('data-form-target', '#' + id);
             modal.find('input:password').val();
             modal.modal('show');
+
+            $('#' + id).find('button:submit').prop('disabled', true);
+
             return false;
         }
 
@@ -2063,8 +2070,13 @@ $(document).ready(function() {
                         url: form.attr('action'),
                         data: form.serializeArray(),
                         success: function(data) {
+                            form.find('button:submit').prop('disabled', false);
                             miscInnerCallbacks(form, data);
                             form.attr('data-password-protected-verified', '0');
+                        },
+                        error: function() {
+                            var button = form.find('button:submit');
+                            inlineFeedback(button, 'ERRORE');
                         }
                     });
                 }
@@ -2239,7 +2251,18 @@ $(document).ready(function() {
                 var maximum = parseFloatC(m.val());
 
                 if (maximum != 0) {
-                    var in_booked = booked;
+                    /*
+                        I controlli li faccio sul contenuto della singola
+                        casella, ma la disponibilità è complessiva (vedasi: il
+                        caso di un prodotto di cui ordino diverse varianti con
+                        diverse quantità)
+                    */
+                    var in_booked = 0;
+                    row.find('.booking-product-quantity input').each(function() {
+                        var v = $(this).val();
+                        if (v != '')
+                        in_booked += parseFloatC(v);
+                    });
 
                     var m = row.find('input:hidden[name=product-partitioning]');
                     if (m.length != 0) {

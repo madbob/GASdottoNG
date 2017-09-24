@@ -53,6 +53,7 @@
         <form class="form-inline iblock password-protected" id="recalculate-account" method="POST" action="{{ url('/movements/recalculate') }}">
             <div class="form-group">
                 {!! csrf_field() !!}
+                <input type="hidden" name="reload-whole-page" value="1">
                 <button type="submit" class="btn btn-danger">Ricalcola Saldi</button>
             </div>
         </form>

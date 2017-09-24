@@ -5,14 +5,14 @@ namespace App\Events;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\SerializesModels;
 
-class SluggableCreating
+class BookingDeleting
 {
     use SerializesModels;
 
-    public $sluggable;
+    public $booking;
 
-    public function __construct(Model $sluggable)
+    public function __construct(Model $booking)
     {
-        $this->sluggable = $sluggable;
+        $this->booking = $booking;
     }
 }

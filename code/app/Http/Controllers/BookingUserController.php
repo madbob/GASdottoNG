@@ -60,9 +60,9 @@ class BookingUserController extends BookingHandler
         }
 
         foreach ($aggregate->orders as $order) {
-            $booking = $order->userBooking($user_id);
-            $booking->deleteMovements();
-            $booking->delete();
+            $booking = $order->userBooking($user_id, false);
+            if ($booking)
+                $booking->delete();
         }
 
         return $this->successResponse();
