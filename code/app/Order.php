@@ -200,7 +200,7 @@ class Order extends Model
         $total_transport = 0;
 
         foreach ($products as $product) {
-            $q = BookedProduct::with('variants')->with('product')->where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order) {
+            $q = BookedProduct::with('variants')->with('booking')->where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order) {
                 $query->where('order_id', '=', $order->id);
             });
 
@@ -219,8 +219,17 @@ class Order extends Model
             $price_delivered = 0;
 
             foreach ($booked as $b) {
-                if ($external_products)
-                    $b->setRelation('product', $product);
+                /*
+                    Qui è per agganciare artificiosamente le relazioni con
+                    oggetti già caricati.
+                    Sia per evitare che vengano ricaricati più volte dal
+                    database dalle funzioni interne di calcolo, sia perché se
+                    l'array $products è stato esplicitamente passato potrebbe
+                    contenere valori (temporanei) da usare al posto di quelli
+                    presenti sul database
+                */
+                $b->setRelation('product', $product);
+                $b->booking->setRelation('order', $order);
 
                 $price += $b->quantityValue();
                 $price_delivered += $b->deliveredValue();
@@ -255,13 +264,13 @@ class Order extends Model
                 $delivered_pieces = $delivered;
             }
 
-            $summary->products[$product->id]['quantity'] = $quantity;
+            $summary->products[$product->id]['quantity'] = printableQuantity($quantity, $product->measure->discrete);
             $summary->products[$product->id]['quantity_pieces'] = $quantity_pieces;
-            $summary->products[$product->id]['price'] = $price;
-            $summary->products[$product->id]['transport'] = $transport;
-            $summary->products[$product->id]['delivered'] = $delivered;
+            $summary->products[$product->id]['price'] = printablePrice($price);
+            $summary->products[$product->id]['transport'] = printablePrice($transport);
+            $summary->products[$product->id]['delivered'] = printableQuantity($delivered, $product->measure->discrete, 3);
             $summary->products[$product->id]['delivered_pieces'] = $delivered_pieces;
-            $summary->products[$product->id]['price_delivered'] = $price_delivered;
+            $summary->products[$product->id]['price_delivered'] = printablePrice($price_delivered);
 
             $total_price += $price;
             $total_price_delivered += $price_delivered;

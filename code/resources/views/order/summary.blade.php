@@ -109,28 +109,28 @@
                 @if($order->isActive())
                     <!-- Quantità Ordinata -->
                     <td>
-                        <label class="order-summary-product-quantity">{{ printableQuantity($summary->products[$product->id]['quantity'], $product->measure->discrete) }}</label>
+                        <label class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity'] }}</label>
                     </td>
 
                     <!-- Totale Prezzo -->
                     <td>
-                        <label class="order-summary-product-price">{{ printablePrice($summary->products[$product->id]['price']) }} €</label>
+                        <label class="order-summary-product-price">{{ $summary->products[$product->id]['price'] }} €</label>
                     </td>
 
                     <!-- Totale Trasporto -->
                     <td>
-                        <label class="order-summary-product-transport">{{ printablePrice($summary->products[$product->id]['transport']) }} €</label>
+                        <label class="order-summary-product-transport">{{ $summary->products[$product->id]['transport'] }} €</label>
                     </td>
                 @endif
 
                 <!-- Quantità Consegnata -->
                 <td>
-                    <label class="order-summary-product-delivered">{{ printableQuantity($summary->products[$product->id]['delivered'], $product->measure->discrete, 3) }}</label>
+                    <label class="order-summary-product-delivered">{{ $summary->products[$product->id]['delivered'] }}</label>
                 </td>
 
                 <!-- Totale Consegnato -->
                 <td>
-                    <label class="order-summary-product-price_delivered">{{ printablePrice($summary->products[$product->id]['price_delivered']) }} €</label>
+                    <label class="order-summary-product-price_delivered">{{ $summary->products[$product->id]['price_delivered'] }} €</label>
                 </td>
 
                 @if($order->isActive())

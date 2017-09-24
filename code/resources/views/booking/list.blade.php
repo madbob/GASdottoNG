@@ -1,4 +1,4 @@
-<?php $identifier = sprintf('booking-list-', str_random(5)) ?>
+<?php $identifier = sprintf('booking-list-%s', $aggregate->id) ?>
 
 <button class="btn btn-warning" data-toggle="modal" data-target="#addBooking-{{ $aggregate->id }}">Aggiungi Utente</button>
 <div class="modal fade add-booking-while-shipping" id="addBooking-{{ $aggregate->id }}" tabindex="-1">

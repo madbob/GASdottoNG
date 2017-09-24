@@ -52,6 +52,16 @@ class AggregateBooking extends Model
         return $grand_total;
     }
 
+    public function getTotalDeliveredAttribute()
+    {
+        $grand_total = 0;
+
+        foreach ($this->bookings as $booking)
+            $grand_total += $booking->total_delivered;
+
+        return $grand_total;
+    }
+
     public function printableHeader()
     {
         $ret = $this->user->printableName();

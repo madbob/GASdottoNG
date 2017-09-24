@@ -12,6 +12,7 @@ $handling_movements = App\Role::someone('movements.admin', $currentgas) && (empt
 $tot_amount = 0;
 $tot_delivered = [];
 $rand = rand();
+$existing = false;
 
 ?>
 
@@ -26,21 +27,24 @@ $rand = rand();
         <?php
 
             $o = $order->userBooking($user->id);
+            $existing = ($existing || $o->exists);
             $now_delivered = $o->total_delivered;
             $tot_delivered[$o->id] = $now_delivered;
             $tot_amount += $now_delivered;
 
         ?>
 
-        <div class="row">
-            <div class="col-md-6">
-                @include('commons.staticobjfield', ['obj' => $o, 'name' => 'deliverer', 'label' => 'Consegnato Da'])
-                @include('commons.staticdatefield', ['obj' => $o, 'name' => 'delivery', 'label' => 'Data Consegna'])
+        @if($o->status == 'shipped')
+            <div class="row">
+                <div class="col-md-6">
+                    @include('commons.staticobjfield', ['obj' => $o, 'name' => 'deliverer', 'label' => 'Consegnato Da'])
+                    @include('commons.staticdatefield', ['obj' => $o, 'name' => 'delivery', 'label' => 'Data Consegna'])
+                </div>
+                <div class="col-md-6">
+                    @include('commons.staticmovementfield', ['obj' => $o->payment, 'label' => 'Pagamento', 'rand' => $rand])
+                </div>
             </div>
-            <div class="col-md-6">
-                @include('commons.staticmovementfield', ['obj' => $o->payment, 'label' => 'Pagamento', 'rand' => $rand])
-            </div>
-        </div>
+        @endif
 
         <div class="row">
             <div class="col-md-12">
@@ -201,9 +205,11 @@ $rand = rand();
     @if($order->isActive())
         <div class="row">
             <div class="col-md-12">
-                <div class="btn-group pull-right main-form-buttons" role="group" aria-label="Opzioni">
-                    <button class="btn btn-default preload-quantities">Carica Quantità Prenotate</button>
-                    <button type="submit" class="btn btn-info info-button">Salva Informazioni</button>
+                <div class="btn-group pull-right main-form-buttons" role="group">
+                    @if($existing)
+                        <button class="btn btn-default preload-quantities">Carica Quantità Prenotate</button>
+                        <button type="submit" class="btn btn-info info-button">Salva Informazioni</button>
+                    @endif
 
                     @if($handling_movements)
                         <button type="button" class="btn btn-success saving-button" data-toggle="modal" data-target="#editMovement-{{ $rand }}">Consegna</button>
@@ -216,7 +222,12 @@ $rand = rand();
     @endif
 
     <input type="hidden" name="post-saved-function" value="updateOrderSummary">
-    <input type="hidden" name="post-saved-function" value="closeMainForm">
+
+    @if($existing)
+        <input type="hidden" name="post-saved-function" value="closeMainForm">
+    @else
+        <input type="hidden" name="append-list" value="booking-list-{{ $aggregate->id }}">
+    @endif
 </form>
 
 @if($handling_movements)

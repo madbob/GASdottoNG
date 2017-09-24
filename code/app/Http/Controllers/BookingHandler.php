@@ -180,14 +180,24 @@ class BookingHandler extends Controller
         }
         else {
             $subject = $aggregate->bookingBy($user_id);
-            if ($subject->total_value == 0) {
+
+            if ($delivering) {
+                $total = $subject->total_delivered;
+                $action = 'DeliveryUserController@show';
+            }
+            else {
+                $total = $subject->total_value;
+                $action = 'BookingUserController@show';
+            }
+
+            if ($total == 0) {
                 return $this->successResponse();
             }
             else {
                 return $this->successResponse([
                     'id' => $subject->id,
                     'header' => $subject->printableHeader(),
-                    'url' => URL::action($delivering ? 'DeliveryUserController@show' : 'BookingUserController@show', ['aggregate' => $aggregate_id, 'user' => $user_id])
+                    'url' => URL::action($action, ['aggregate' => $aggregate_id, 'user' => $user_id])
                 ]);
             }
         }

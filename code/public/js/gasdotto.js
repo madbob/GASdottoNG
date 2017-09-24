@@ -119,28 +119,28 @@ function generalInit() {
                 source: userBlood.ttAdapter()
             }).on('typeahead:selected', function(obj, result, name) {
                 var aggregate_id = $(this).attr('data-aggregate');
-
-                /*
-                    Cfr. BookingHandler::bookingUpdate();
-                */
                 var while_shipping = ($(this).closest('.modal.add-booking-while-shipping').length != 0);
 
-                $.ajax({
-                    url: '/booking/' + aggregate_id + '/user/' + result.id,
-                    method: 'GET',
-                    data: {
-                        'booking-on-shipping': while_shipping ? 1 : 0,
-                    },
-                    dataType: 'HTML',
-                    success: function(data) {
-                        if(while_shipping) {
-                            data = $(data);
-                            data.append('<input type="hidden" name="booking-on-shipping" value="1">');
+                if (while_shipping) {
+                    $.ajax({
+                        url: '/delivery/' + aggregate_id + '/user/' + result.id,
+                        method: 'GET',
+                        dataType: 'HTML',
+                        success: function(data) {
+                            $('.other-booking').empty().append(data);
                         }
-
-                        $('.other-booking').empty().append(data);
-                    }
-                });
+                    });
+                }
+                else {
+                    $.ajax({
+                        url: '/booking/' + aggregate_id + '/user/' + result.id,
+                        method: 'GET',
+                        dataType: 'HTML',
+                        success: function(data) {
+                            $('.other-booking').empty().append(data);
+                        }
+                    });
+                }
             });
         }
     });
@@ -510,6 +510,15 @@ function miscInnerCallbacks(form, data) {
         list.append(node);
         afterListChanges(list.closest('.loadablelist'));
         node.click();
+    }
+
+    var test = form.find('input[name=append-list]');
+    if (test.length != 0) {
+        var listname = test.val();
+        var list = $('#' + listname);
+        var node = $('<a data-element-id="' + data.id + '" href="' + data.url + '" class="loadable-item list-group-item">' + data.header + '</a>');
+        list.append(node);
+        afterListChanges(list.closest('.loadablelist'));
     }
 
     var test = form.find('input[name=update-select]');
@@ -1543,12 +1552,13 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('shown.bs.modal', '.modal', function() {
+    $('body').on('shown.bs.modal', '.modal', function(e) {
         $(this).find('[data-default-value]').each(function() {
             var value = $(this).attr('data-default-value');
             $(this).val(value);
         });
 
+        $(this).parents('.modal-dialog').css('height', '100%');
         $(this).find('[data-empty-on-modal=true]').empty();
     });
 
