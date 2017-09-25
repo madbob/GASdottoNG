@@ -37,3 +37,9 @@
         </p>
     @endif
 @endforeach
+
+@if(!empty($message))
+    <p>
+        {!! nl2br($message) !!}
+    </p>
+@endif

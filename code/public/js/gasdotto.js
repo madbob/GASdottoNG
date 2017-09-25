@@ -559,8 +559,12 @@ function miscInnerCallbacks(form, data) {
     if (test.length != 0) {
         test.each(function() {
             var identifier_holder = sanitizeId($(this).val());
+
             var node = $('[data-updatable-name=' + identifier_holder + ']');
             var field = node.attr('data-updatable-field');
+            if (field == null)
+                field = identifier_holder;
+
             var value = data[field];
 
             if (node.is('input:hidden'))

@@ -43,15 +43,44 @@ $panel_rand_wrap = rand();
         <hr/>
 
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <form class="form-horizontal">
                     <div class="form-group">
                         <label class="col-sm-{{ $labelsize }} control-label">Notifiche Mail</label>
                         <div class="col-sm-{{ $fieldsize }}">
-                            <button class="btn btn-default send-order-notifications" data-aggregate-id="{{ $aggregate->id }}">Invia Mail</button> Ultime notifiche inviate: <span class="last-date">{{ $aggregate->printableDate('last_notify') }}</span>
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#notify-aggregate-{{ $aggregate->id }}">Invia Mail</button> Ultime notifiche inviate: <span class="last-date" data-updatable-name="last-notification-date-{{ $aggregate->id }}">{{ $aggregate->printableDate('last_notify') }}</span>
                         </div>
                     </div>
                 </form>
+
+                <div class="modal fade" tabindex="-1" role="dialog" id="notify-aggregate-{{ $aggregate->id }}">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <form class="form-horizontal inner-form" method="POST" action="{{ url('aggregates/notify/' . $aggregate->id) }}">
+                                <input type="hidden" name="update-field" value="last-notification-date-{{ $aggregate->id }}">
+                                <input type="hidden" name="close-modal" value="1">
+
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">Notifiche Mail</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Messaggio (Opzionale)</label>
+
+                                        <div class="col-sm-{{ $fieldsize }}">
+                                            <textarea class="form-control" name="message" rows="5"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
+                                    <button type="submit" class="btn btn-success">Salva</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     @endif

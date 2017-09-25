@@ -74,13 +74,16 @@ class AggregatesController extends OrdersController
     public function notify(Request $request, $id)
     {
         $aggregate = Aggregate::findOrFail($id);
+        $message = $request->input('message', '');
 
+        /*
         foreach($aggregate->bookings as $booking) {
             if ($booking->status != 'shipped') {
-                $booking->user->notify(new BookingNotification($booking));
+                $booking->user->notify(new BookingNotification($booking, $message));
                 usleep(200000);
             }
         }
+        */
 
         $date = date('Y-m-d');
 
@@ -89,6 +92,8 @@ class AggregatesController extends OrdersController
             $order->save();
         }
 
-        return $aggregate->printableDate('last_notify');
+        return response()->json((object) [
+            'last-notification-date-' . $id => $aggregate->printableDate('last_notify')
+        ]);
     }
 }
