@@ -103,7 +103,7 @@
 
                 <!-- Unità di Misura -->
                 <td>
-                    <label>{{ $product->measure->printableName() }}</label>
+                    <label>{{ $product->printableMeasure(true) }}</label>
                 </td>
 
                 @if($order->isActive())

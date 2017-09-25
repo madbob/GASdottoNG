@@ -257,7 +257,7 @@ class Order extends Model
                 $quantity_pieces = $quantity;
                 $delivered_pieces = $delivered;
                 $quantity = $quantity * $product->portion_quantity;
-                $delivered = $delivered * $product->portion_quantity;
+                $delivered = $delivered;
             }
             else {
                 $quantity_pieces = $quantity;
