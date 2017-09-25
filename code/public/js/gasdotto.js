@@ -852,7 +852,7 @@ function setupVariantsEditor() {
     }).on('click', '.edit-variant', function() {
         var row = $(this).closest('.row');
         var id = row.find('input:hidden[name=variant_id]').val();
-        var name = row.find('.variant_name').text().trim();
+        var name = row.find('span.variant_name').text().trim();
         var offset = row.find('input:hidden[name=variant_offset]').val();
         var values = row.find('.exploded_values').contents().clone();
 
@@ -861,11 +861,11 @@ function setupVariantsEditor() {
         form.find('input[name=name]').val(name);
         form.find('.values_table').empty().append(values);
 
-        if (offset == 'true') {
-            form.find('input[name=has_offset]').attr('checked', 'checked');
+        if (offset == '1') {
+            form.find('input[name=has_offset]').bootstrapToggle('on');
             form.find('input[name*=price_offset]').closest('.form-group').show();
         } else {
-            form.find('input[name=has_offset]').removeAttr('checked');
+            form.find('input[name=has_offset]').bootstrapToggle('off');
             form.find('input[name*=price_offset]').val('0').closest('.form-group').hide();
         }
 
@@ -877,7 +877,7 @@ function setupVariantsEditor() {
         var modal = row.find('.create-variant');
         form.find('input:text').val('');
         form.find('input:hidden[name=variant_id]').val('');
-        form.find('input:checkbox').removeAttr('checked');
+        form.find('input:checkbox').bootstrapToggle('off');
 
         values = form.find('.many-rows');
         values.find('.row:not(:first)').remove();
