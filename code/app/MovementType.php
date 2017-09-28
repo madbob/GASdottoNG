@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 use Auth;
+use Log;
 
 use App\Events\SluggableCreating;
 use App\Gas;
@@ -599,6 +600,18 @@ class MovementType extends Model
 
     private function applyFunction($obj, $movement, $op)
     {
+        /*
+            Inutile perdere tempo su movimenti che non intaccano i bilanci...
+        */
+        if ($movement->amount == 0) {
+            return;
+        }
+
+        if ($obj == null) {
+            Log::error('Applicazione movimento su oggetto nullo: ' . $movement->id);
+            return;
+        }
+
         if ($op->operation == 'decrement')
             $amount = $movement->amount * -1;
         else if ($op->operation == 'increment')

@@ -62,7 +62,7 @@ $existing = false;
                         @foreach($o->products as $product)
                             <?php $discrete_quantity = $product->product->measure->discrete ?>
 
-                            @if($product->variants->isEmpty() == true)
+                            @if($product->product->variants->isEmpty() == true)
                                 <tr class="booking-product">
                                     <td>
                                         <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($product->true_quantity, $discrete_quantity) }}" class="skip-on-submit" />
