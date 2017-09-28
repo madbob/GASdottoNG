@@ -76,14 +76,12 @@ class AggregatesController extends OrdersController
         $aggregate = Aggregate::findOrFail($id);
         $message = $request->input('message', '');
 
-        /*
         foreach($aggregate->bookings as $booking) {
             if ($booking->status != 'shipped') {
                 $booking->user->notify(new BookingNotification($booking, $message));
                 usleep(200000);
             }
         }
-        */
 
         $date = date('Y-m-d');
 

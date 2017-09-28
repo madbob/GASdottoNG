@@ -128,6 +128,8 @@ class MovementsKeeper extends ServiceProvider
             valori
         */
         Movement::updating(function ($movement) {
+            Log::debug('Aggiorno movimento contabile ' . $movement->id);
+
             /*
                 Reminder: per invalidare il movimento devo sottoporre un
                 ammontare negativo (pari al negativo dell'ammontare
@@ -154,6 +156,7 @@ class MovementsKeeper extends ServiceProvider
             $original->amount = $original->amount * -1;
             $original->apply();
 
+            Log::debug('Invalidata precedente versione del movimento ' . $movement->id);
             return true;
         });
 

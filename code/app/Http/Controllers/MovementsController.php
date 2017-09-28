@@ -264,7 +264,7 @@ class MovementsController extends Controller
 
         switch ($type) {
             case 'credits':
-                $users = App\User::sorted()->get();
+                $users = User::sorted()->get();
 
                 if ($subtype == 'csv') {
                     $filename = sprintf('Crediti al %s.csv', date('d/m/Y'));

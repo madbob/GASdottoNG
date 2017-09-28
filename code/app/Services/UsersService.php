@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\AuthException;
 use App\User;
 use Auth;
+use Log;
 use DB;
 use Hash;
 
@@ -220,6 +221,14 @@ class UsersService
     {
         $this->ensureAuth();
         $user = User::findOrFail($id);
-        return response()->download(storage_path($user->picture));
+
+        $path = storage_path($user->picture);
+        if (file_exists($path)) {
+            return response()->download($path);
+        }
+        else {
+            Log::error('File non trovato: ' . $path);
+            return '';
+        }
     }
 }

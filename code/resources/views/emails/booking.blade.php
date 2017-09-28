@@ -6,11 +6,11 @@
     <?php $variable = false ?>
     <h3>{{ $b->order->supplier->printableName() }}</h3>
 
-    <table>
+    <table style="width:100%">
         <thead>
-            <th>Prodotto</th>
-            <th>Quantità</th>
-            <th>Prezzo</th>
+            <th style="width:50%; text-align: left">Prodotto</th>
+            <th style="width:25%; text-align: left">Quantità</th>
+            <th style="width:25%; text-align: left">Prezzo</th>
         </thead>
 
         <tbody>
@@ -38,8 +38,15 @@
     @endif
 @endforeach
 
-@if(!empty($message))
+@if($b->order->shipping != null)
     <p>
-        {!! nl2br($message) !!}
+        La consegna avverrà {{ $b->order->printableDate('shipping') }}.
+    </p>
+@endif
+
+@if(!empty($message))
+    <hr/>
+    <p>
+        {!! nl2br($txt_message) !!}
     </p>
 @endif
