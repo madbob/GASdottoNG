@@ -8,6 +8,8 @@ if (!isset($dom_id))
 
 if (!isset($editable))
     $editable = false;
+if (!isset($amount_editable))
+    $amount_editable = false;
 
 ?>
 
@@ -38,7 +40,7 @@ if (!isset($editable))
                         'name' => 'amount',
                         'label' => 'Valore',
                         'is_price' => true,
-                        'fixed_value' => $editable ? false : $obj->amount
+                        'fixed_value' => $amount_editable ? false : ($editable ? false : $obj->amount)
                     ])
 
                     <div class="col-sm-{{ $fieldsize }} col-sm-offset-{{ $labelsize }}">

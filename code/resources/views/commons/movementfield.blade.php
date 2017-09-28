@@ -6,6 +6,11 @@ if ($obj == null) {
 
 $rand = rand();
 
+if(!isset($to_modal))
+    $to_modal = [];
+
+$to_modal['dom_id'] = $rand;
+
 ?>
 
 <div class="form-group">
@@ -28,7 +33,7 @@ $rand = rand();
         </div>
 
         @push('postponed')
-            @include('movement.modal', ['dom_id' => $rand])
+            @include('movement.modal', $to_modal)
         @endpush
     </div>
 </div>
