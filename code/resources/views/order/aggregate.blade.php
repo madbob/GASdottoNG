@@ -75,7 +75,7 @@ $panel_rand_wrap = rand();
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
-                                    <button type="submit" class="btn btn-success">Salva</button>
+                                    <button type="submit" class="btn btn-success saving-button">Salva</button>
                                 </div>
                             </form>
                         </div>
