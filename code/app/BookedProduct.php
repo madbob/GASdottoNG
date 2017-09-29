@@ -91,6 +91,13 @@ class BookedProduct extends Model
         return $this->fixQuantity('quantity', true);
     }
 
+    /*
+        Questa funzione è utile per calcolare dinamicamente il costo del
+        prodotto consegnato, il quale viene salvato sul database nell'attributo
+        final_price. Leggere tale attributo per ottenere l'informazione, salvata
+        e immutabile nel tempo (anche se il prezzo del prodotto di riferimento
+        cambia)
+    */
     public function deliveredValue()
     {
         return $this->fixQuantity('delivered', false);

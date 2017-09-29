@@ -83,7 +83,7 @@ class StatisticsController extends Controller
                             }
 
                             $data[$name]->users[$booking->user_id] = true;
-                            $data[$name]->value += $product->deliveredValue();
+                            $data[$name]->value += $product->final_value;
                         }
                     }
 

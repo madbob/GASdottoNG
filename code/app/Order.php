@@ -232,7 +232,7 @@ class Order extends Model
                 $b->booking->setRelation('order', $order);
 
                 $price += $b->quantityValue();
-                $price_delivered += $b->deliveredValue();
+                $price_delivered += $b->final_price;
 
                 if($b->variants->isEmpty() == false) {
                     if(isset($summary->by_variant[$product->id]) == false)

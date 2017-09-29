@@ -59,7 +59,7 @@ $grand_total = 0;
 
                                 <td>
                                     <label class="static-label booking-product-price pull-right">
-                                        {{ printablePrice($o->status == 'shipped' ? $product->deliveredValue() : $product->quantityValue()) }} €
+                                        {{ printablePrice($o->status == 'shipped' ? $product->final_price : $product->quantityValue()) }} €
                                     </label>
                                 </td>
                             </tr>
@@ -92,7 +92,7 @@ $grand_total = 0;
 
                                     <td>
                                         <label class="static-label booking-product-price pull-right">
-                                            {{ printablePrice($o->status == 'shipped' ? $var->deliveredValue() : $var->quantityValue()) }} €
+                                            {{ printablePrice($o->status == 'shipped' ? $var->final_price : $var->quantityValue()) }} €
                                         </label>
                                     </td>
                                 </tr>

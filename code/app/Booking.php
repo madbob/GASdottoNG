@@ -131,7 +131,7 @@ class Booking extends Model
         $sum = 0;
 
         foreach ($this->products as $booked) {
-            $sum += $booked->deliveredValue();
+            $sum += $booked->final_price;
         }
 
         return $sum;
