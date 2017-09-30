@@ -64,28 +64,40 @@ class Role extends Model
         return $this->targets;
     }
 
-    /*
-        Questa funzione va chiamata solo sugli oggetti Role restituiti da
-        User::roles(), in quanto si applica solo sull'istanza del ruolo
-        assegnata ad uno specifico utente
-    */
-    public function applies($obj)
+    private function appliesCache()
     {
         if (isset($this->applies_cache) == false) {
             $applies_cache = [];
+            $applies_only_cache = [];
+
             $rules = DB::table('attached_role_user')->where('role_user_id', $this->pivot->id)->get();
             foreach($rules as $r) {
                 $class = $r->target_type;
                 if (isset($applies_cache[$class]) == false)
                     $applies_cache[$class] = [];
-                $applies_cache[$class][] = $r->target_id;
+
+                if ($r->target_id == '*') {
+                    $objects = $class::withTrashed()->get();
+                    foreach($objects as $o)
+                        $applies_cache[$class][] = $o->id;
+                }
+                else {
+                    $applies_cache[$class][] = $r->target_id;
+                    $applies_only_cache[$class][] = $r->target_id;
+                }
             }
 
             $this->applies_cache = $applies_cache;
+            $this->applies_only_cache = $applies_only_cache;
         }
+    }
+
+    private function testApplication($obj, $cache_type)
+    {
+        $this->appliesCache();
 
         $class = get_class($obj);
-        if (!isset($this->applies_cache[$class])) {
+        if (!isset($this->$cache_type[$class])) {
             $proxies = $obj->getPermissionsProxies();
             if ($proxies != null) {
                 foreach($proxies as $proxy) {
@@ -98,7 +110,7 @@ class Role extends Model
             return false;
         }
         else {
-            return (isset($this->applies_cache[$class]) && array_search($obj->id, $this->applies_cache[$class]) !== false);
+            return (isset($this->$cache_type[$class]) && array_search($obj->id, $this->$cache_type[$class]) !== false);
         }
     }
 
@@ -107,19 +119,59 @@ class Role extends Model
         User::roles(), in quanto si applica solo sull'istanza del ruolo
         assegnata ad uno specifico utente
     */
-    public function applications()
+    public function applies($obj)
     {
+        return $this->testApplication($obj, 'applies_cache');
+    }
+
+    /*
+        Questa funzione va chiamata solo sugli oggetti Role restituiti da
+        User::roles(), in quanto si applica solo sull'istanza del ruolo
+        assegnata ad uno specifico utente
+    */
+    public function appliesOnly($obj)
+    {
+        return $this->testApplication($obj, 'applies_only_cache');
+    }
+
+    /*
+        Questa funzione va chiamata solo sugli oggetti Role restituiti da
+        User::roles(), in quanto si applica solo sull'istanza del ruolo
+        assegnata ad uno specifico utente
+    */
+    public function appliesAll($class)
+    {
+        return DB::table('attached_role_user')
+            ->where('role_user_id', $this->pivot->id)
+            ->where('target_type', $class)
+            ->where('target_id', '*')
+            ->count();
+    }
+
+    /*
+        Questa funzione va chiamata solo sugli oggetti Role restituiti da
+        User::roles(), in quanto si applica solo sull'istanza del ruolo
+        assegnata ad uno specifico utente
+    */
+    public function applications($all = false)
+    {
+        $this->appliesCache();
+
+        if ($all)
+            $cache_type = 'applies_cache';
+        else
+            $cache_type = 'applies_only_cache';
+
         $ret = [];
 
-        $attached_objects = DB::table('attached_role_user')->where('role_user_id', $this->pivot->id)->get();
-        foreach($attached_objects as $ao) {
-            $class = $ao->target_type;
+        foreach($this->$cache_type as $class => $ids) {
+            foreach($ids as $id) {
+                $obj = $class::find($id);
+                if ($obj == null)
+                    continue;
 
-            $obj = $class::find($ao->target_id);
-            if ($obj == null)
-                continue;
-
-            $ret[] = $obj;
+                $ret[] = $obj;
+            }
         }
 
         return $ret;
@@ -128,19 +180,35 @@ class Role extends Model
     /*
         Questa funzione va chiamata solo sugli oggetti Role restituiti da
         User::roles(), in quanto si applica solo sull'istanza del ruolo
-        assegnata ad uno specifico utente
+        assegnata ad uno specifico utente.
+
+        Se $obj è un oggetto, il permesso viene applicato solo su quello.
+        Se è una stringa viene applicato un permesso speciale valevole per tutti
+        i soggetti della classe specificata
     */
     public function attachApplication($obj)
     {
-        if ($obj == null || $this->applies($obj))
-            return;
-
         $now = date('Y-m-d G:i:s');
+
+        if (is_string($obj)) {
+            if ($this->appliesAll($obj))
+                return;
+
+            $obj_class = $obj;
+            $obj_id = '*';
+        }
+        else {
+            if ($obj == null || $this->appliesOnly($obj))
+                return;
+
+            $obj_class = get_class($obj);
+            $obj_id = $obj->id;
+        }
 
         DB::table('attached_role_user')->insert([
             'role_user_id' => $this->pivot->id,
-            'target_id' => $obj->id,
-            'target_type' => get_class($obj),
+            'target_id' => $obj_id,
+            'target_type' => $obj_class,
             'created_at' => $now,
             'updated_at' => $now
         ]);
@@ -149,14 +217,32 @@ class Role extends Model
     /*
         Questa funzione va chiamata solo sugli oggetti Role restituiti da
         User::roles(), in quanto si applica solo sull'istanza del ruolo
-        assegnata ad uno specifico utente
+        assegnata ad uno specifico utente.
+
+        Se $obj è un oggetto, il permesso viene revocato solo su quello.
+        Se è una stringa viene revocato ogni permesso valevole per tutti i
+        soggetti della classe specificata (inclusi quelli speciali, cfr.
+        attachApplication())
     */
     public function detachApplication($obj)
     {
-        if ($obj == null || $this->applies($obj) == false)
-            return;
+        if (is_string($obj)) {
+            DB::table('attached_role_user')
+                ->where('role_user_id', $this->pivot->id)
+                ->where('target_id', '*')
+                ->where('target_type', $obj)
+                ->delete();
+        }
+        else {
+            if ($obj == null || $this->appliesOnly($obj) == false)
+                return;
 
-        DB::table('attached_role_user')->where('role_user_id', $this->pivot->id)->where('target_id', $obj->id)->where('target_type', get_class($obj))->delete();
+            DB::table('attached_role_user')
+                ->where('role_user_id', $this->pivot->id)
+                ->where('target_id', $obj->id)
+                ->where('target_type', get_class($obj))
+                ->delete();
+        }
     }
 
     public function enabledAction($action)

@@ -1,23 +1,32 @@
 <div role="tabpanel" class="tab-pane" id="permissions-{{ $user->id }}-{{ $role->id }}">
     <div class="row">
         <div class="col-md-12">
-            <div class="checkbox pull-right">
-                <label>
-                    <input type="checkbox" class="triggers-all-checkbox" data-target-class="supplier-for-{{ $user->id }}-{{ $role->id }}"> Seleziona/Deseleziona Tutti
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
             <ul class="list-group">
-                <?php $r = $user->roles()->where('roles.id', $role->id)->first() ?>
-                @foreach($role->targets as $target)
+                <?php
+
+                $r = $user->roles()->where('roles.id', $role->id)->first();
+                $targets = $role->targets;
+                $last_class = null;
+
+                ?>
+                @foreach($targets as $target)
+                    @if ($targets->count() > 1 && $last_class != get_class($target))
+                        <?php $last_class = get_class($target) ?>
+                        <li class="list-group-item list-group-item-danger">
+                            Tutti ({{ $last_class::commonClassName() }})<br/>
+                            <small>
+                                Questo permesso speciale si applica automaticamente a tutti i soggetti (presenti e futuri) e permette di agire su tutti, benché l'utente assegnatario non sarà esplicitamente visibile dagli altri.
+                            </small>
+                            <span class="pull-right">
+                                <input type="checkbox" class="all-{{ $user->id }}-{{ $role->id }}" data-toggle="toggle" data-size="mini" data-user="{{ $user->id }}" data-role="{{ $role->id }}" data-target-id="*" data-target-class="{{ $last_class }}" {{ $r->appliesAll($last_class) ? 'checked' : '' }}>
+                            </span>
+                        </li>
+                    @endif
+
                     <li class="list-group-item">
                         {{ $target->printableName() }}
                         <span class="pull-right">
-                            <input type="checkbox" class="supplier-for-{{ $user->id }}-{{ $role->id }}" data-toggle="toggle" data-size="mini" data-user="{{ $user->id }}" data-role="{{ $role->id }}" data-target-id="{{ $target->id }}" data-target-class="{{ get_class($target) }}" {{ $r->applies($target) ? 'checked' : '' }}>
+                            <input type="checkbox" data-toggle="toggle" data-size="mini" data-user="{{ $user->id }}" data-role="{{ $role->id }}" data-target-id="{{ $target->id }}" data-target-class="{{ get_class($target) }}" {{ $r->appliesOnly($target) ? 'checked' : '' }}>
                         </span>
                     </li>
                 @endforeach

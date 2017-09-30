@@ -120,7 +120,7 @@ class User extends Authenticatable
 
         if ($assigned) {
             $test->detachApplication($assigned);
-            if (empty($test->applications())) {
+            if (empty($test->applications(true))) {
                 $this->roles()->detach($role->id);
             }
         }

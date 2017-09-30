@@ -136,7 +136,11 @@ class RolesController extends Controller
             if ($request->has('target_id')) {
                 $target_id = $request->input('target_id');
                 $target_class = $request->input('target_class');
-                $target = $target_class::findOrFail($target_id);
+
+                if ($target_id == '*')
+                    $target = $target_class;
+                else
+                    $target = $target_class::findOrFail($target_id);
 
                 $u->addRole($r, $target);
                 return $this->successResponse();
@@ -176,7 +180,11 @@ class RolesController extends Controller
             if ($request->has('target_id')) {
                 $target_id = $request->input('target_id');
                 $target_class = $request->input('target_class');
-                $target = $target_class::findOrFail($target_id);
+
+                if ($target_id == '*')
+                    $target = $target_class;
+                else
+                    $target = $target_class::findOrFail($target_id);
             }
             else {
                 $target = null;
