@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 
 use DB;
 use Auth;
+use Log;
 use URL;
 
 use App\User;
@@ -67,13 +68,6 @@ class BookingHandler extends Controller
 
                         $saved_variants = [];
 
-                        $total_quantity = 0;
-                        foreach($quantities as $q)
-                            $total_quantity += $q;
-
-                        $booked->$param = $total_quantity;
-                        $booked->save();
-
                         for ($i = 0; $i < count($quantities); ++$i) {
                             $q = (float) $quantities[$i];
                             if ($q == 0)
@@ -90,9 +84,9 @@ class BookingHandler extends Controller
                             }
 
                             $query->whereNotIn('id', $saved_variants);
-                            $existing = $query->first();
+                            $bpv = $query->first();
 
-                            if ($existing == null) {
+                            if ($bpv == null) {
                                 $bpv = new BookedProductVariant();
                                 $bpv->product_id = $booked->id;
 
@@ -117,18 +111,30 @@ class BookingHandler extends Controller
 
                                 $saved_variants[] = $bpv->id;
                             } else {
-                                if ($existing->$param != $q) {
-                                    $existing->$param = $q;
-                                    $existing->save();
+                                if ($bpv->$param != $q) {
+                                    $bpv->$param = $q;
+                                    $bpv->save();
                                 }
 
-                                $saved_variants[] = $existing->id;
+                                $saved_variants[] = $bpv->id;
+                            }
+
+                            if ($delivering) {
+                                $bpv->final_price = $bpv->deliveredValue();
+                                $bpv->save();
                             }
 
                             $quantity += $q;
                         }
 
                         BookedProductVariant::where('product_id', '=', $booked->id)->whereNotIn('id', $saved_variants)->delete();
+
+                        /*
+                            Per ogni evenienza qui ricarico le varianti appena
+                            salvate, affinché il computo del prezzo totale
+                            finale per il prodotto risulti corretto
+                        */
+                        $booked->load('variants');
                     }
                 }
 
@@ -140,7 +146,6 @@ class BookingHandler extends Controller
                         $count_products++;
 
                     if ($booked->$param != $quantity) {
-                        $count_products++;
                         $booked->$param = $quantity;
 
                         if ($delivering) {
