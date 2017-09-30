@@ -19,9 +19,21 @@ $existing = false;
 <form class="form-horizontal inner-form booking-form" method="PUT" action="{{ url('delivery/' . $aggregate->id . '/user/' . $user->id) }}" data-reference-modal="editMovement-{{ $rand }}">
     <input type="hidden" name="action" value="shipped">
 
+    <div class="well">
+        <div class="row">
+            <div class="col-md-6">
+                @foreach($user->contacts as $contact)
+                    @if($contact->type == 'phone' || $contact->type == 'mobile')
+                        @include('commons.staticstringfield', ['obj' => $contact, 'name' => 'value', 'label' => $contact->type_name])
+                    @endif
+                @endforeach
+            </div>
+        </div>
+    </div>
+
     @foreach($aggregate->orders as $order)
         @if($more_orders)
-            <h3>{{ $order->printableName() }}</h3>
+            <h4>{{ $order->printableName() }}</h4>
         @endif
 
         <?php
