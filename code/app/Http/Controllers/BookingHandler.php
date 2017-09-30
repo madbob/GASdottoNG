@@ -157,13 +157,13 @@ class BookingHandler extends Controller
                 }
             }
 
-            if ($delivering) {
-                $booking->status = $request->input('action');
-                $booking->save();
+            if ($count_products == 0) {
+                $booking->delete();
             }
             else {
-                if ($count_products == 0) {
-                    $booking->delete();
+                if ($delivering) {
+                    $booking->status = $request->input('action');
+                    $booking->save();
                 }
             }
         }

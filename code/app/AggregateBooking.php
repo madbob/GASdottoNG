@@ -34,7 +34,17 @@ class AggregateBooking extends Model
     public function getStatusAttribute()
     {
         foreach ($this->bookings as $booking) {
-            if ($booking->status != 'shipped') {
+            /*
+                Nota bene: in questo aggregato ci vanno sia le prenotazioni
+                effettivamente salvate sul database che le prenotazioni allocate
+                ma non realmente esistenti (ma che funge da wrapper in molte
+                circostanze).
+                Lo stato dell'aggregato dipende solo da quelle reali: se una
+                prenotazioni vera risulta consegnata, ed una "virtuale" no
+                (quelle virtuali non lo sono mai, per definizione), comunque
+                tutto l'aggregato deve risultare consegnato
+            */
+            if ($booking->exists && $booking->status != 'shipped') {
                 return $booking->status;
             }
         }
