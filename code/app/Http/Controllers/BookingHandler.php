@@ -57,6 +57,8 @@ class BookingHandler extends Controller
                 $booked = $booking->getBooked($product, true);
 
                 if ($quantity != 0) {
+                    $booked->save();
+
                     if ($product->variants->isEmpty() == false) {
                         $quantity = 0;
                         $quantities = $request->input('variant_quantity_'.$product->id);
