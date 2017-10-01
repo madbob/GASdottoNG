@@ -8,6 +8,7 @@
             'identifier' => 'booking-list',
             'items' => $orders,
             'url' => 'bookings',
+            'header_function' => 'printableUserHeader',
             'legend' => (object)[
                 'class' => 'Aggregate'
             ],

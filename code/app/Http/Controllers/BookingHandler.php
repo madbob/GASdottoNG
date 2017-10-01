@@ -170,20 +170,12 @@ class BookingHandler extends Controller
             }
         }
 
-        /*
-            Da qui ci posso passare in svariati casi, tra cui:
-            - creo o modifico una prenotazione dal pannello "Prenotazioni"
-            - creo una nuova prenotazione con "Aggiungi Utente" in fase di consegna
-            - consegno una prenotazione
-
-            Negli ultimi due casi l'intestazione dell'oggetto (ciò che appare nella loadablelist di riferimento) è
-            quella della prenotazione, nel primo è quella dell'ordine. Onde evitare di inviare l'header sbagliato, mi
-            aspetto che il client mi dica se si trova in una situazione potenzialmente ambigua per mezzo del parametro
-            'booking-on-shipping'. Se non allego informazioni alla risposta, rimane l'header che c'era prima
-        */
-        $booking_on_shipping = $request->input('booking-on-shipping', null);
-        if ($delivering == false && $booking_on_shipping == null) {
-            return $this->successResponse();
+        if ($delivering == false) {
+            return $this->successResponse([
+                'id' => $aggregate->id,
+                'header' => $aggregate->printableUserHeader(),
+                'url' => URL::action('BookingController@show', ['id' => $aggregate->id])
+            ]);
         }
         else {
             $subject = $aggregate->bookingBy($user_id);

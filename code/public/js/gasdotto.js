@@ -760,7 +760,7 @@ function afterBookingSaved(form, data) {
         In questo caso, ho aggiunto la prenotazione dal pannello "Prenotazioni"
     */
     else {
-        closeMainForm(form);
+        closeMainForm(form, data);
     }
 }
 

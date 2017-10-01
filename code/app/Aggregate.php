@@ -101,6 +101,26 @@ class Aggregate extends Model
         return $ret;
     }
 
+    public function printableUserHeader()
+    {
+        $ret = $this->printableHeader();
+
+        $tot = 0;
+
+        foreach($this->orders as $o) {
+            $b = $o->userBooking();
+            if ($b->exists())
+                $tot += $b->total_value;
+        }
+
+        if($tot == 0)
+            $ret .= '<span class="pull-right">Non hai partecipato a quest\'ordine</span>';
+        else
+            $ret .= '<span class="pull-right">Hai ordinato ' . printablePrice($tot) . '€</span>';
+
+        return $ret;
+    }
+
     public function getBookingURL()
     {
         return URL::action('BookingController@index').'#' . $this->id;

@@ -6,6 +6,8 @@ if(isset($filters) == false)
     $filters = [];
 if(isset($empty_message) == false)
     $empty_message = 'Non ci sono elementi da visualizzare.';
+if(isset($header_function) == false)
+    $header_function = 'printableHeader';
 
 $data = [];
 if(isset($extra_data)) {
@@ -66,7 +68,7 @@ $data = join(' ', $data);
 
             ?>
 
-            <a data-element-id="{{ $item->id }}" {!! $extra_attributes !!} href="{{ $u }}" class="loadable-item list-group-item {{ $extra_class }}">{!! $item->printableHeader() !!}</a>
+            <a data-element-id="{{ $item->id }}" {!! $extra_attributes !!} href="{{ $u }}" class="loadable-item list-group-item {{ $extra_class }}">{!! $item->$header_function() !!}</a>
         @endforeach
     </div>
 </div>

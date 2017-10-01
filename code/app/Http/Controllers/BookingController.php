@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 
 use Auth;
 use Theme;
+use URL;
 
 use App\Aggregate;
 
@@ -73,5 +74,16 @@ class BookingController extends Controller
         }
 
         return $this->successResponse();
+    }
+
+    public function objhead(Request $request, $id)
+    {
+        $aggregate = Aggregate::findOrFail($id);
+
+        return response()->json([
+            'id' => $aggregate->id,
+            'header' => $aggregate->printableUserHeader(),
+            'url' => URL::action('BookingController@show', ['id' => $aggregate->id])
+        ]);
     }
 }
