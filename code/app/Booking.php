@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use DB;
 use URL;
 
 use App\Events\SluggableCreating;
@@ -58,6 +59,12 @@ class Booking extends Model
     public function payment()
     {
         return $this->belongsTo('App\Movement');
+    }
+
+    public function scopeSorted($query)
+    {
+        $sorted_users = "'" . join("', '", User::withTrashed()->sorted()->pluck('id')->toArray()) . "'";
+        return $query->orderByRaw(DB::raw("FIELD(user_id, $sorted_users)"));
     }
 
     public function getBooked($product_id, $fallback = false)

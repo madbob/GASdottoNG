@@ -48,7 +48,7 @@ class Order extends Model
 
     public function bookings()
     {
-        return $this->hasMany('App\Booking')->with('user');
+        return $this->hasMany('App\Booking')->with('user')->sorted();
     }
 
     public function payment()

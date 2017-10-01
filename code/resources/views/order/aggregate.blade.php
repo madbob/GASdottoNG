@@ -9,46 +9,22 @@ foreach ($aggregate->orders as $order) {
     }
 }
 
+$has_notifications = ($has_shipping && $aggregate->isActive() && $aggregate->isRunning() == false);
 $more_orders = ($aggregate->orders->count() > 1);
 $panel_rand_wrap = rand();
 
 ?>
 
-<div class="row">
-    <div class="col-md-12">
-        @if($more_orders)
-            <ul class="nav nav-tabs" role="tablist">
-                @foreach($aggregate->orders as $index => $order)
-                    <li role="presentation" class="{{ $index == 0 ? 'active' : '' }}"><a href="#order-{{ $panel_rand_wrap }}-{{ $index }}" role="tab" data-toggle="tab">{{ $order->printableName() }}</a></li>
-                @endforeach
-            </ul>
-        @endif
-
-        <div class="tab-content">
-            @foreach($aggregate->orders as $index => $order)
-                <div role="tabpanel" class="tab-pane {{ $index == 0 ? 'active' : '' }}" id="order-{{ $panel_rand_wrap }}-{{ $index }}">
-                    @can('supplier.orders', $order->supplier)
-                        @include('order.edit', ['order' => $order])
-                    @else
-                        @include('order.show', ['order' => $order])
-                    @endcan
-                </div>
-            @endforeach
-        </div>
-    </div>
-</div>
-
-@if($has_shipping && $aggregate->isActive() && $aggregate->isRunning() == false)
-    @if($aggregate->isActive())
-        <hr/>
-
-        <div class="row">
-            <div class="col-md-6">
+@if($aggregate->isRunning() == false && ($more_orders || $has_notifications))
+    <div class="row gray-row">
+        <div class="col-md-4">
+            @if($has_notifications)
                 <form class="form-horizontal">
                     <div class="form-group">
                         <label class="col-sm-{{ $labelsize }} control-label">Notifiche Mail</label>
                         <div class="col-sm-{{ $fieldsize }}">
-                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#notify-aggregate-{{ $aggregate->id }}">Invia Mail</button> Ultime notifiche inviate: <span class="last-date" data-updatable-name="last-notification-date-{{ $aggregate->id }}">{{ $aggregate->printableDate('last_notify') }}</span>
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#notify-aggregate-{{ $aggregate->id }}">Invia Mail</button>
+                            <span class="help-block">Ultime notifiche inviate: <span class="last-date" data-updatable-name="last-notification-date-{{ $aggregate->id }}">{{ $aggregate->printableDate('last_notify') }}</span></span>
                         </div>
                     </div>
                 </form>
@@ -81,10 +57,44 @@ $panel_rand_wrap = rand();
                         </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
-    @endif
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            @if($more_orders)
+                <a href="{{ url('aggregates/document/' . $aggregate->id . '/shipping') }}" class="btn btn-default">Dettaglio Consegne Complessivo</a>
+            @endif
+        </div>
+    </div>
+    <br/>
+@endif
 
+<div class="row">
+    <div class="col-md-12">
+        @if($more_orders)
+            <ul class="nav nav-tabs" role="tablist">
+                @foreach($aggregate->orders as $index => $order)
+                    <li role="presentation" class="{{ $index == 0 ? 'active' : '' }}"><a href="#order-{{ $panel_rand_wrap }}-{{ $index }}" role="tab" data-toggle="tab">{{ $order->printableName() }}</a></li>
+                @endforeach
+            </ul>
+        @endif
+
+        <div class="tab-content">
+            @foreach($aggregate->orders as $index => $order)
+                <div role="tabpanel" class="tab-pane {{ $index == 0 ? 'active' : '' }}" id="order-{{ $panel_rand_wrap }}-{{ $index }}">
+                    @can('supplier.orders', $order->supplier)
+                        @include('order.edit', ['order' => $order])
+                    @else
+                        @include('order.show', ['order' => $order])
+                    @endcan
+                </div>
+            @endforeach
+        </div>
+    </div>
+</div>
+
+@if($has_shipping && $aggregate->isActive() && $aggregate->isRunning() == false)
     <hr/>
 
     <div class="row aggregate-bookings">

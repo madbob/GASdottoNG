@@ -8,6 +8,7 @@ use App\Notifications\BookingNotification;
 
 use Theme;
 use DB;
+use PDF;
 
 use App\Aggregate;
 use App\Order;
@@ -93,5 +94,27 @@ class AggregatesController extends OrdersController
         return response()->json((object) [
             'last-notification-date-' . $id => $aggregate->printableDate('last_notify')
         ]);
+    }
+
+    public function document(Request $request, $id, $type, $subtype = 'none')
+    {
+        $aggregate = Aggregate::findOrFail($id);
+
+        switch ($type) {
+            case 'shipping':
+                $names = [];
+                foreach($aggregate->orders as $order) {
+                    $names[] = sprintf('%s %s', $order->supplier->name, $order->internal_number);
+                }
+                $names = join(' / ', $names);
+
+                $html = Theme::view('documents.aggregate_shipping', ['aggregate' => $aggregate])->render();
+                $filename = sprintf('Dettaglio Consegne ordini %s.pdf', $names);
+                PDF::SetTitle(sprintf('Dettaglio Consegne ordini %s', $names));
+                PDF::AddPage();
+                PDF::writeHTML($html, true, false, true, false, '');
+                PDF::Output($filename, 'D');
+                break;
+        }
     }
 }

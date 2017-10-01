@@ -32,7 +32,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="3">Totale: {{ printablePrice($booking->value) }} €</th>
+                        <th colspan="3">Totale: {{ printablePrice($booking->total_value) }} €</th>
                     </tr>
                 </tfoot>
             </table>

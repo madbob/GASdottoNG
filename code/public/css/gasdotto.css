@@ -193,6 +193,9 @@ table label {
 .movement-type-editor .btn-group label.btn.active:after {
   content: ''; }
 
+.separated_cell.on-left {
+  border-left: 1px solid #ddd; }
+
 .list-group {
   float: left;
   width: 100%; }
