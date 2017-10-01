@@ -1,16 +1,25 @@
 <?php
 
-function printablePrice($price)
+function printablePrice($price, $separator = '.')
 {
-    return sprintf('%.02f', $price);
+    $ret = sprintf('%.02f', $price);
+    if ($separator != '.')
+        $ret = str_replace('.', $separator, $ret);
+
+    return $ret;
 }
 
-function printableQuantity($quantity, $discrete, $decimals = 2)
+function printableQuantity($quantity, $discrete, $decimals = 2, $separator = '.')
 {
     if ($discrete)
-        return sprintf('%d', $quantity);
+        $ret = sprintf('%d', $quantity);
     else
-        return sprintf('%.0' . $decimals . 'f', $quantity);
+        $ret = sprintf('%.0' . $decimals . 'f', $quantity);
+
+    if ($separator != '.')
+        $ret = str_replace('.', $separator, $ret);
+
+    return $ret;
 }
 
 function normalizePercentage($value)

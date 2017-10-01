@@ -18,8 +18,8 @@
                 <tr>
                     <td width="40%">{{ $product->name }}</td>
                     <td width="20%">{{ $product->measure->printableName() }}</td>
-                    <td width="20%">{{ printablePrice($product->price) }} €</td>
-                    <td width="20%">{{ printablePrice($product->transport) }} €</td>
+                    <td width="20%">{{ printablePrice($product->price, ',') }} €</td>
+                    <td width="20%">{{ printablePrice($product->transport, ',') }} €</td>
                 </tr>
                 @endforeach
             </tbody>

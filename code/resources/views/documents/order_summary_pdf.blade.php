@@ -23,10 +23,10 @@
                                 @if($variant['quantity'] != 0)
                                     <tr>
                                         <td width="40%">{{ $product->printableName() }}<br/>{{ $name }}</td>
-                                        <td width="15%">{{ $variant['quantity'] }}</td>
+                                        <td width="15%">{{ printableQuantity($variant['quantity'], $product->measure->discrete, 2, ',') }}</td>
                                         <td width="15%">{{ $product->printableMeasure(true) }}</td>
-                                        <td width="15%">{{ printablePrice($variant['price']) }} €</td>
-                                        <td width="15%">{{ printablePrice($summary->products[$product->id]['transport']) }} €</td>
+                                        <td width="15%">{{ printablePrice($variant['price'], ',') }} €</td>
+                                        <td width="15%">{{ printablePrice($summary->products[$product->id]['transport'], ',') }} €</td>
                                     </tr>
                                 @endif
                             @endforeach
@@ -34,10 +34,10 @@
                             @if($summary->products[$product->id]['quantity_pieces'] != 0)
                                 <tr>
                                     <td width="40%">{{ $product->printableName() }}</td>
-                                    <td width="15%">{{ $summary->products[$product->id]['quantity_pieces'] }}</td>
+                                    <td width="15%">{{ printableQuantity($summary->products[$product->id]['quantity_pieces'], $product->measure->discrete, 2, ',') }}</td>
                                     <td width="15%">{{ $product->printableMeasure(true) }}</td>
-                                    <td width="15%">{{ printablePrice($summary->products[$product->id]['price']) }} €</td>
-                                    <td width="15%">{{ printablePrice($summary->products[$product->id]['transport']) }} €</td>
+                                    <td width="15%">{{ printablePrice($summary->products[$product->id]['price'], ',') }} €</td>
+                                    <td width="15%">{{ printablePrice($summary->products[$product->id]['transport'], ',') }} €</td>
                                 </tr>
                             @endif
                         @endif

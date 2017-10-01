@@ -17,22 +17,22 @@
                             @foreach($product->variants as $variant)
                                 <tr>
                                     <td width="40%">{{ $product->product->printableName() }}</td>
-                                    <td width="40%">{{ $variant->quantity }} {{ $product->product->printableMeasure(true) }} {{ $variant->printableName() }}</td>
-                                    <td width="20%">{{ printablePrice($variant->quantityValue()) }} €</td>
+                                    <td width="40%">{{ printableQuantity($variant->quantity, $product->product->measure->discrete, 2, ',') }} {{ $product->product->printableMeasure(true) }} {{ $variant->printableName() }}</td>
+                                    <td width="20%">{{ printablePrice($variant->quantityValue(), ',') }} €</td>
                                 </tr>
                             @endforeach
                         @else
                             <tr>
                                 <td width="40%">{{ $product->product->printableName() }}</td>
-                                <td width="40%">{{ $product->quantity }} {{ $product->product->printableMeasure(true) }}</td>
-                                <td width="20%">{{ printablePrice($product->quantityValue()) }} €</td>
+                                <td width="40%">{{ printableQuantity($product->quantity, $product->product->measure->discrete, 2, ',') }} {{ $product->product->printableMeasure(true) }}</td>
+                                <td width="20%">{{ printablePrice($product->quantityValue(), ',') }} €</td>
                             </tr>
                         @endif
                     @endforeach
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="3">Totale: {{ printablePrice($booking->total_value) }} €</th>
+                        <th colspan="3">Totale: {{ printablePrice($booking->total_value, ',') }} €</th>
                     </tr>
                 </tfoot>
             </table>
