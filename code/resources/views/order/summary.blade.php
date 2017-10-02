@@ -109,7 +109,12 @@
                 @if($order->isActive())
                     <!-- Quantità Ordinata -->
                     <td>
-                        <label class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity'] }}</label>
+                        <label class="order-summary-product-quantity">
+                            @if($product->portion_quantity != 0)
+                                {{ sprintf('%d', $summary->products[$product->id]['quantity_pieces']) }} Pezzi / 
+                            @endif
+                            {{ $summary->products[$product->id]['quantity'] }} {{ $product->measure->name }}
+                        </label>
                     </td>
 
                     <!-- Totale Prezzo -->
@@ -125,7 +130,7 @@
 
                 <!-- Quantità Consegnata -->
                 <td>
-                    <label class="order-summary-product-delivered">{{ $summary->products[$product->id]['delivered'] }}</label>
+                    <label class="order-summary-product-delivered">{{ $summary->products[$product->id]['delivered'] }} {{ $product->measure->name }}</label>
                 </td>
 
                 <!-- Totale Consegnato -->

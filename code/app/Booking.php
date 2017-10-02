@@ -101,6 +101,13 @@ class Booking extends Model
         }
     }
 
+    /*
+        $real: in caso di prodotti con pezzatura, se == false restituisce la
+        quantità eventualmente normalizzata in numeri di pezzi altrimenti
+        restituisce la quantità intera.
+        In caso di prodotti senza pezzatura, restituisce sempre la quantità
+        consegnata non ulteriormente elaborata
+    */
     public function getDeliveredQuantity($product, $real = false)
     {
         $p = $this->getBooked($product);
