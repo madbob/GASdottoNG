@@ -1,4 +1,4 @@
-<form class="form-horizontal creating-form" method="POST" action="{{ url('movements') }}" data-toggle="validator">
+<form class="form-horizontal creating-form movement-modal" method="POST" action="{{ url('movements') }}" data-toggle="validator">
     <input type="hidden" name="update-list" value="movement-list">
     <input type="hidden" name="post-saved-function[]" value="refreshFilter">
     <input type="hidden" name="post-saved-function[]" value="refreshBalanceView">

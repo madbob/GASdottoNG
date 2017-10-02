@@ -172,6 +172,7 @@ class MovementsController extends Controller
 
         $data['payments'] = $payments;
         $data['fixed'] = $metadata->fixed_value;
+        $data['default_notes'] = $metadata->default_notes;
 
         $data['sender_type'] = $metadata->sender_type;
         if ($metadata->sender_type != null) {

@@ -39,8 +39,9 @@
     <label for="method" class="col-sm-{{ $labelsize }} control-label">Metodo</label>
     <div class="col-sm-{{ $fieldsize }}">
         <div class="btn-group" data-toggle="buttons">
-            <?php $index = 0 ?>
+            <?php $index = 0; $visible_identifier = false ?>
             @foreach($payments as $method_id => $info)
+                <?php if($index == 0 && $method_id == 'bank') $visible_identifier = true; ?>
                 <label class="btn btn-default {{ $index == 0 ? 'active' :'' }}">
                     <input type="radio" name="method" value="{{ $method_id }}" autocomplete="off" {{ $index == 0 ? 'checked' :'' }}> {{ $info->name }}
                 </label>
@@ -49,3 +50,17 @@
         </div>
     </div>
 </div>
+
+@include('commons.textfield', [
+    'obj' => null,
+    'name' => 'identifier',
+    'label' => 'Identificativo',
+    'extra_wrap_class' => 'when-method-bank' . ($visible_identifier ? '' : ' hidden')
+])
+
+@include('commons.textarea', [
+    'obj' => null,
+    'name' => 'notes',
+    'label' => 'Note',
+    'default_value' => $default_notes
+])

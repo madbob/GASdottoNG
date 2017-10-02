@@ -241,7 +241,7 @@ class MovementType extends Model
         static $types = null;
 
         if ($types == null) {
-            $types = self::initSystemTypes(MovementType::all());
+            $types = self::initSystemTypes(MovementType::orderBy('name', 'asc')->get());
         }
 
         if ($identifier) {

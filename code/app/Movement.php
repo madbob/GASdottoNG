@@ -99,6 +99,8 @@ class Movement extends Model
             $ret->amount = $amount;
         }
 
+        $ret->notes = $type_descr->default_notes;
+
         /*
             Se è possibile pagare il tipo di movimento desiderato con il credito
             utente, si preferisce quello. Soprattutto per via delle consegne.

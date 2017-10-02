@@ -23,10 +23,11 @@ foreach($classes as $class => $name) {
 
 <form class="form-horizontal main-form movement-type-editor" method="PUT" action="{{ url('movtypes/' . $type->id) }}">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             @if($type->system)
                 @include('commons.textfield', ['obj' => $type, 'name' => 'name', 'label' => 'Nome', 'mandatory' => true])
                 @include('commons.boolfield', ['obj' => $type, 'name' => 'allow_negative', 'label' => 'Accetta Valori Negativi'])
+
                 @include('commons.staticpricefield', ['obj' => $type, 'name' => 'fixed_value', 'label' => 'Valore Fisso'])
 
                 @include('commons.staticenumfield', [
@@ -45,6 +46,9 @@ foreach($classes as $class => $name) {
             @else
                 @include('movementtypes.base-edit', ['movementtype' => $type])
             @endif
+        </div>
+        <div class="col-md-6">
+            @include('commons.textarea', ['obj' => $type, 'name' => 'default_notes', 'label' => 'Note di Default'])
         </div>
 
         <?php

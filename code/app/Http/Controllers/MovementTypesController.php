@@ -127,6 +127,7 @@ class MovementTypesController extends Controller
         $type = MovementType::findOrFail($id);
         $type->name = $request->input('name');
         $type->allow_negative = $request->has('allow_negative');
+        $type->default_notes = $request->input('default_notes');;
 
         if ($type->system == false) {
             $sender_type = $request->input('sender_type');
