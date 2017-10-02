@@ -70,7 +70,7 @@ class MovementsController extends Controller
             $filtered = true;
         }
         else {
-            $start = date('Y-m-d', strtotime('-1 months'));
+            $start = date('Y-m-d', strtotime('-1 weeks'));
             $filtered = false;
         }
 

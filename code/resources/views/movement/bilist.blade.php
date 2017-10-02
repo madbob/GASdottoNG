@@ -26,6 +26,7 @@ else {
                 <th>Riferimento</th>
                 <th>Credito</th>
                 <th>Debito</th>
+                <th>Note</th>
                 @if(Gate::check('movements.admin', $currentgas))
                     <th>Modifica</th>
                 @endif
@@ -66,6 +67,14 @@ else {
                     <td>{{ $reference ? $reference->printableName() : '' }}</td>
                     <td>{{ $in != 0 ? $in . '€' : '' }}</td>
                     <td>{{ $out != 0 ? $out . '€' : '' }}</td>
+
+                    <td>
+                        @if(!empty($mov->notes))
+                            <button type="button" class="btn btn-xs btn-default" data-container="body" data-toggle="popover" data-placement="left" data-trigger="hover" data-content="{{ str_replace('"', '\"', $mov->notes) }}">
+                                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                            </button>
+                        @endif
+                    </td>
 
                     @if(Gate::check('movements.admin', $currentgas))
                         <td>

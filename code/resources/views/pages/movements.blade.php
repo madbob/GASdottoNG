@@ -90,7 +90,9 @@
 <div class="row">
     <div class="col-md-6">
         <div class="form-horizontal form-filler" data-action="{{ url('movements') }}" data-toggle="validator" data-fill-target="#movements-in-range">
-            @include('commons.genericdaterange')
+            @include('commons.genericdaterange', [
+                'start_date' => strtotime('-1 weeks'),
+            ])
             @include('commons.selectmovementtypefield', ['show_all' => true])
             @include('commons.selectobjfield', [
                 'obj' => null,

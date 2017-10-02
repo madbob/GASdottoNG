@@ -37,6 +37,7 @@ else {
                     <th data-sortable="true">Pagato</th>
                 @endif
                 <th data-sortable="true" data-sorter="sortingValues">Valore</th>
+                <th>Note</th>
                 @if(Gate::check('movements.admin', $currentgas))
                     <th>Modifica</th>
                 @endif
@@ -76,6 +77,14 @@ else {
                     @endif
 
                     <td>{{ printablePrice($mov->amount) }} €</td>
+
+                    <td>
+                        @if(!empty($mov->notes))
+                            <button type="button" class="btn btn-xs btn-default" data-container="body" data-toggle="popover" data-placement="left" data-trigger="hover" data-content="{{ str_replace('"', '\"', $mov->notes) }}">
+                                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                            </button>
+                        @endif
+                    </td>
 
                     @if(Gate::check('movements.admin', $currentgas))
                         <td>
