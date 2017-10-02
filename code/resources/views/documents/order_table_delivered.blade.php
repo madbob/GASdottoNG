@@ -4,8 +4,8 @@
 
 @foreach($order->bookings as $booking)
 {{ $booking->user->printableName() }}<?php foreach ($order->products as $product) {
-    echo ';'.$booking->getDeliveredQuantity($product);
-} ?>;{{ $booking->delivered }};{{ $booking->user->printableName() }}
+    echo ';' . printableQuantity($booking->getDeliveredQuantity($product), $product->measure->discrete, 3, ',');
+} ?>;{{ printablePrice($booking->delivered, ',') }};{{ $booking->user->printableName() }}
 @endforeach
 
 <?php foreach ($order->products as $product) {
