@@ -2016,16 +2016,6 @@ $(document).ready(function() {
                 cell.find('label, input').removeAttr('disabled');
             });
         }
-    })
-    /*
-        In Bootstrap i button group disabilitati non vengono visualizzati come
-        selezionati, dunque per rappresentare comunque il comportamento dei tipi
-        movimento di sistema pur senza permettere di modificarli ne inibisco qui
-        gli eventi di click
-    */
-    .on('click', '.movement-type-editor table.system-type label, .movement-type-editor table.system-type input', function(e) {
-        e.stopPropagation();
-        e.preventDefault();
     });
 
     $('body').on('click', '.form-filler button[type=submit]', function(event) {

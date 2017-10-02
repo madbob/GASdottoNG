@@ -125,24 +125,22 @@ class MovementTypesController extends Controller
         DB::beginTransaction();
 
         $type = MovementType::findOrFail($id);
-        if ($type->system) {
-            abort(503);
-        }
-
         $type->name = $request->input('name');
         $type->allow_negative = $request->has('allow_negative');
 
-        $sender_type = $request->input('sender_type');
-        if (!empty($sender_type))
-            $type->sender_type = $sender_type;
-        else
-            $type->sender_type = null;
+        if ($type->system == false) {
+            $sender_type = $request->input('sender_type');
+            if (!empty($sender_type))
+                $type->sender_type = $sender_type;
+            else
+                $type->sender_type = null;
 
-        $target_type = $request->input('target_type');
-        if (!empty($target_type))
-            $type->target_type = $target_type;
-        else
-            $type->target_type = null;
+            $target_type = $request->input('target_type');
+            if (!empty($target_type))
+                $type->target_type = $target_type;
+            else
+                $type->target_type = null;
+        }
 
         $data = [];
 

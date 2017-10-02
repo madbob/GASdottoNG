@@ -25,8 +25,8 @@ foreach($classes as $class => $name) {
     <div class="row">
         <div class="col-md-12">
             @if($type->system)
-                @include('commons.staticstringfield', ['obj' => $type, 'name' => 'name', 'label' => 'Nome', 'mandatory' => true])
-                @include('commons.staticboolfield', ['obj' => $type, 'name' => 'allow_negative', 'label' => 'Accetta Valori Negativi'])
+                @include('commons.textfield', ['obj' => $type, 'name' => 'name', 'label' => 'Nome', 'mandatory' => true])
+                @include('commons.boolfield', ['obj' => $type, 'name' => 'allow_negative', 'label' => 'Accetta Valori Negativi'])
                 @include('commons.staticpricefield', ['obj' => $type, 'name' => 'fixed_value', 'label' => 'Valore Fisso'])
 
                 @include('commons.staticenumfield', [
@@ -80,7 +80,7 @@ foreach($classes as $class => $name) {
         ?>
 
         <div class="col-md-12">
-            <table class="table {{ $type->system ? 'system-type' : '' }}">
+            <table class="table">
                 <thead>
                     <tr>
                         <th width="{{ $width }}%">Saldo</th>
@@ -132,7 +132,7 @@ foreach($classes as $class => $name) {
         </div>
     </div>
 
-    @include('commons.formbuttons', ['no_delete' => $type->system, 'no_save' => $type->system])
+    @include('commons.formbuttons', ['no_delete' => $type->system])
 </form>
 
 @stack('postponed')

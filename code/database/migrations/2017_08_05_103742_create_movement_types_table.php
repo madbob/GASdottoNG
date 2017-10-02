@@ -16,6 +16,8 @@ class CreateMovementTypesTable extends Migration
             $table->string('sender_type')->nullable();
             $table->string('target_type')->nullable();
             $table->boolean('allow_negative')->default(false);
+            $table->boolean('visibility')->default(false);
+            $table->boolean('system')->default(false);
             $table->decimal('fixed_value', 6, 2)->nullable();
             $table->text('function');
         });
