@@ -10,13 +10,14 @@ use Artisan;
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
-    
+
     protected $baseUrl = 'http://localhost';
 
     public function setUp()
     {
         parent::setUp();
         Artisan::call('migrate');
+        Artisan::call('db:seed', ['--force' => true, '--class' => 'MovementTypesSeeder']);
     }
 
     public function enabledQueryDump()
