@@ -92,6 +92,7 @@ class MovementTypesController extends Controller
                     if ($cell == null) {
                         $cell = (object) [
                             'method' => $pay_id,
+                            'is_default' => ($request->input('payment_default', null) == $pay_id),
                             'sender' => (object) [
                                 'operations' => []
                             ],

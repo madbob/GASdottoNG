@@ -158,6 +158,10 @@ function generalInit() {
         if ($(e.target).hasClass('date'))
             return;
 
+        if ($(this).attr('data-dynamic-contents-callback-init') == 'true')
+            return;
+        $(this).attr('data-dynamic-contents-callback-init', 'true');
+
         var contents = $(this).find('.modal-content');
         contents.empty().append(loadingPlaceholder());
         var url = $(this).attr('data-contents-url');
@@ -1531,6 +1535,10 @@ $(document).ready(function() {
         var form = $(this).closest('form');
         var target = $(this).attr('data-target-class');
         form.find('.' + target).button('toggle');
+    });
+
+    $('body').on('click', '.decorated_radio label', function() {
+        $(this).siblings('input[type=radio]').prop('checked', true);
     });
 
     $('body').on('click', '.reloader', function(event) {

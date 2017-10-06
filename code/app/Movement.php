@@ -100,21 +100,7 @@ class Movement extends Model
         }
 
         $ret->notes = $type_descr->default_notes;
-
-        /*
-            Se è possibile pagare il tipo di movimento desiderato con il credito
-            utente, si preferisce quello. Soprattutto per via delle consegne.
-            Sarebbe forse utile introdurre prima o poi anche una "modalità di
-            pagamento di default"
-        */
-        $payments = MovementType::paymentsByType($type);
-        if (isset($payments['credit'])) {
-            $ret->method = 'credit';
-        }
-        else {
-            reset($payments);
-            $ret->method = key($payments);
-        }
+        $ret->method = MovementType::defaultPaymentByType($type);
 
         return $ret;
     }

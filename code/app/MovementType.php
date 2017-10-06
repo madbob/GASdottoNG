@@ -70,6 +70,23 @@ class MovementType extends Model
         return $ret;
     }
 
+    public static function defaultPaymentByType($type)
+    {
+        $metadata = self::types($type);
+        $function = json_decode($metadata->function);
+
+        foreach($function as $f) {
+            if (isset($f->is_default) && $f->is_default) {
+                return $f->method;
+            }
+        }
+
+        if (empty($function))
+            return null;
+        else
+            return $function[0]->method;
+    }
+
     public static function initSystemTypes($types)
     {
         $currentuser = Auth::user();

@@ -163,14 +163,8 @@ class MovementsController extends Controller
         $metadata = MovementType::types($type);
         $data = [];
 
-        $payments = [];
-        $all_payments = MovementType::payments();
-        $functions = json_decode($metadata->function);
-        foreach ($functions as $info) {
-            $payments[$info->method] = $all_payments[$info->method];
-        }
-
-        $data['payments'] = $payments;
+        $data['payments'] = MovementType::paymentsByType($type);
+        $data['default_method'] = MovementType::defaultPaymentByType($type);
         $data['fixed'] = $metadata->fixed_value;
         $data['default_notes'] = $metadata->default_notes;
 

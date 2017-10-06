@@ -55,6 +55,7 @@ foreach($classes as $class => $name) {
 
         $ops = json_decode($type->function);
         $methods = [];
+        $defaults = [];
 
         $payments = [];
         foreach(App\MovementType::payments() as $id => $pay)
@@ -62,6 +63,7 @@ foreach($classes as $class => $name) {
 
         foreach($ops as $o) {
             $methods[$o->method] = [];
+            $defaults[$o->method] = isset($o->is_default) ? $o->is_default : false;
             $payments[$o->method] = true;
 
             $methods[$o->method][$type->sender_type] = [];
@@ -90,7 +92,14 @@ foreach($classes as $class => $name) {
                         <th width="{{ $width }}%">Saldo</th>
 
                         @foreach(App\MovementType::payments() as $pay_id => $pay)
-                            <th width="{{ $width }}%">{{ $pay->name }} <input type="checkbox" data-toggle="toggle" data-size="mini" name="{{ $pay_id }}" {{ $payments[$pay_id] ? 'checked' : '' }} data-active-for="{{ $pay->active_for }}" {{ $pay->active_for != null && $pay->active_for != $type->sender_type && $pay->active_for != $type->target_type ? 'disabled' : '' }}></th>
+                            <th width="{{ $width }}%">
+                                {{ $pay->name }}
+                                <input type="checkbox" data-toggle="toggle" data-size="mini" name="{{ $pay_id }}" {{ $payments[$pay_id] ? 'checked' : '' }} data-active-for="{{ $pay->active_for }}" {{ $pay->active_for != null && $pay->active_for != $type->sender_type && $pay->active_for != $type->target_type ? 'disabled' : '' }}>
+                                <span class="decorated_radio">
+                                    <input type="radio" name="payment_default" value="{{ $pay_id }}" {{ isset($defaults[$pay_id]) && $defaults[$pay_id] ? 'checked' : '' }}>
+                                    <label>default</label>
+                                </span>
+                            </th>
                         @endforeach
                     </tr>
                 </thead>
