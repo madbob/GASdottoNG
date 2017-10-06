@@ -21,6 +21,7 @@ class Order extends Model
     use AttachableTrait, ExportableTrait, GASModel, SluggableID, PayableTrait;
 
     public $incrementing = false;
+    private $total_value = null;
 
     protected $events = [
         'creating' => SluggableCreating::class,
@@ -82,7 +83,7 @@ class Order extends Model
             $ret .= '<div class="pull-right">';
 
             foreach ($icons as $i) {
-                $ret .= '<span class="glyphicon glyphicon-'.$i.'" aria-hidden="true"></span>&nbsp;';
+                $ret .= '<span class="glyphicototal_valuen glyphicon-'.$i.'" aria-hidden="true"></span>&nbsp;';
             }
 
             $ret .= '</div>';
@@ -145,6 +146,18 @@ class Order extends Model
         }
 
         return $this->internal_number_cache;
+    }
+
+    public function getTotalValueAttribute()
+    {
+        if ($this->total_value == null) {
+            $this->total_value = 0;
+
+            foreach($this->bookings as $booking)
+                $this->total_value += $booking->value;
+        }
+
+        return $this->total_value;
     }
 
     /*

@@ -154,9 +154,17 @@ class Booking extends Model
     public function getTransportAttribute()
     {
         if($this->order->transport) {
+            /*
             $count = $this->order->bookings()->count();
             if ($count != 0)
                 return ($this->order->transport / $count);
+            */
+
+            $total_value = $this->order->total_value;
+            if ($total_value == 0)
+                return 0;
+
+            return round($this->value * $this->order->transport / $total_value, 2);
         }
 
         return 0;

@@ -810,7 +810,7 @@ function bookingTotal(editor) {
 
     var transport = editor.find('.booking-transport');
     if (transport.length != 0)
-        total_price += parseFloatC(transport.find('span').text());
+        total_price += parseFloatC(transport.find('.booking-transport-price span').text());
 
     total_price = priceRound(total_price);
 

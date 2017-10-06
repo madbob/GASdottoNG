@@ -177,7 +177,7 @@ $existing = false;
                                 <td>&nbsp;</td>
                                 <td>&nbsp;</td>
                                 <td>
-                                    <span>{{ printablePrice($o->transport) }}</span> €
+                                    <label class="static-label booking-transport-price pull-right"><span>{{ printablePrice($o->transport) }}</span> €</label>
                                 </td>
                             </tr>
                         @endif
