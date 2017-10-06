@@ -1566,8 +1566,10 @@ $(document).ready(function() {
 
     $('body').on('shown.bs.modal', '.modal', function(e) {
         $(this).find('[data-default-value]').each(function() {
-            var value = $(this).attr('data-default-value');
-            $(this).val(value);
+            if ($(this).val() == '') {
+                var value = $(this).attr('data-default-value');
+                $(this).val(value);
+            }
         });
 
         $(this).parents('.modal-dialog').css('height', '100%');
