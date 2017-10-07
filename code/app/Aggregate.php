@@ -198,6 +198,11 @@ class Aggregate extends Model
         return $this->orders->last()->end;
     }
 
+    public function getShippingAttribute()
+    {
+        return $this->orders()->min('shipping');
+    }
+
     public function bookingBy($user_id)
     {
         $ret = new AggregateBooking($user_id);
