@@ -29,15 +29,7 @@ class BookingController extends Controller
         })->get();
 
         $orders = $orders->sort(function($a, $b) {
-            $a_end = $a->end;
-            $b_end = $b->end;
-
-            if ($a_end == $b_end)
-                return 0;
-            else if ($a_end < $b_end)
-                return -1;
-            else
-                return 1;
+            return strcmp($a->end, $b->end);
         });
 
         return Theme::view('pages.bookings', ['orders' => $orders]);

@@ -49,7 +49,7 @@ class Order extends Model
 
     public function bookings()
     {
-        return $this->hasMany('App\Booking')->with('user')->sorted();
+        return $this->hasMany('App\Booking')->with('user')->with('products')->sorted();
     }
 
     public function payment()
@@ -153,8 +153,12 @@ class Order extends Model
         if ($this->total_value == null) {
             $this->total_value = 0;
 
-            foreach($this->bookings as $booking)
-                $this->total_value += $booking->value;
+            $bookings_ids = $this->bookings->pluck('id');
+            $products = BookedProduct::whereIn('booking_id', $bookings_ids)->with('booking')->with('product')->get();
+            foreach($products as $booked) {
+                $booked->booking->setRelation('order', $this);
+                $this->total_value += $booked->quantityValue();
+            }
         }
 
         return $this->total_value;

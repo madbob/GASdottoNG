@@ -82,6 +82,10 @@ class OrdersController extends Controller
     {
         $orders = $this->defaultOrders();
 
+        usort($orders, function($a, $b) {
+            return strcmp($a->shipping, $b->shipping);
+        });
+
         return Theme::view('pages.orders', ['orders' => $orders]);
     }
 

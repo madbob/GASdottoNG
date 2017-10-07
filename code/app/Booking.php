@@ -153,7 +153,7 @@ class Booking extends Model
 
     public function getTransportAttribute()
     {
-        if($this->order->transport) {
+        if($this->order->transport > 0) {
             /*
             $count = $this->order->bookings()->count();
             if ($count != 0)
