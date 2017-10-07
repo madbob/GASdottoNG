@@ -35,8 +35,18 @@ class CommonsController extends Controller
         Artisan::call('check:orders');
 
         $data['notifications'] = $user->notifications;
-        $data['opened'] = Aggregate::getByStatus('open');
-        $data['shipping'] = Aggregate::getByStatus('closed');
+
+        $opened = Aggregate::getByStatus('open');
+        $opened = $opened->sort(function($a, $b) {
+            return strcmp($a->end, $b->end);
+        });
+        $data['opened'] = $opened;
+
+        $shipping = Aggregate::getByStatus('closed');
+        $shipping = $shipping->sort(function($a, $b) {
+            return strcmp($a->shipping, $b->shipping);
+        });
+        $data['shipping'] = $shipping;
 
         return Theme::view('pages.dashboard', $data);
     }
