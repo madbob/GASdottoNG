@@ -66,13 +66,13 @@ foreach($classes as $class => $name) {
             $defaults[$o->method] = isset($o->is_default) ? $o->is_default : false;
             $payments[$o->method] = true;
 
-            $methods[$o->method][$type->sender_type] = [];
-            foreach($o->sender->operations as $op)
-                $methods[$o->method][$type->sender_type][$op->field] = $op->operation;
-
             $methods[$o->method][$type->target_type] = [];
             foreach($o->target->operations as $op)
                 $methods[$o->method][$type->target_type][$op->field] = $op->operation;
+
+            $methods[$o->method][$type->sender_type] = [];
+            foreach($o->sender->operations as $op)
+                $methods[$o->method][$type->sender_type][$op->field] = $op->operation;
 
             if($type->target_type != 'App\Gas' && $type->sender_type != 'App\Gas') {
                 $methods[$o->method]['App\Gas'] = [];
