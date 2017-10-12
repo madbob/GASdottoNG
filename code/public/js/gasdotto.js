@@ -120,27 +120,32 @@ function generalInit() {
             }).on('typeahead:selected', function(obj, result, name) {
                 var aggregate_id = $(this).attr('data-aggregate');
                 var while_shipping = ($(this).closest('.modal.add-booking-while-shipping').length != 0);
+                var fill_target = $(this).closest('.fillable-booking-space').find('.other-booking');
+                fill_target.empty().append(loadingPlaceholder());
+
+                var data = {};
+                var mode = $(this).attr('data-enforce-booking-mode');
+                if (mode != null)
+                    data.enforce = mode;
+
+                var url = '';
 
                 if (while_shipping) {
-                    $.ajax({
-                        url: '/delivery/' + aggregate_id + '/user/' + result.id,
-                        method: 'GET',
-                        dataType: 'HTML',
-                        success: function(data) {
-                            $('.other-booking').empty().append(data);
-                        }
-                    });
+                    url = '/delivery/' + aggregate_id + '/user/' + result.id;
                 }
                 else {
-                    $.ajax({
-                        url: '/booking/' + aggregate_id + '/user/' + result.id,
-                        method: 'GET',
-                        dataType: 'HTML',
-                        success: function(data) {
-                            $('.other-booking').empty().append(data);
-                        }
-                    });
+                    url = '/booking/' + aggregate_id + '/user/' + result.id;
                 }
+
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    data: data,
+                    dataType: 'HTML',
+                    success: function(data) {
+                        fill_target.empty().append(data);
+                    }
+                });
             });
         }
     });

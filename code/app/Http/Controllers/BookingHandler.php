@@ -159,7 +159,7 @@ class BookingHandler extends Controller
                 }
             }
 
-            if ($count_products == 0) {
+            if ($delivering == false && $count_products == 0) {
                 $booking->delete();
             }
             else {

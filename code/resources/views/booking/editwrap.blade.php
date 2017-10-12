@@ -22,6 +22,10 @@ foreach ($aggregate->orders as $order) {
             @if($has_shipping && $aggregate->isActive())
                 <li role="presentation"><a href="#others-{{ $aggregate->id }}" role="tab" data-toggle="tab">Prenotazioni per Altri</a></li>
             @endif
+
+            @if($has_shipping && $aggregate->status == 'closed')
+                <li role="presentation"><a href="#add-others-{{ $aggregate->id }}" role="tab" data-toggle="tab">Aggiungi/Modifica Prenotazione</a></li>
+            @endif
         </ul>
 
         <div class="tab-content">
@@ -34,10 +38,29 @@ foreach ($aggregate->orders as $order) {
             </div>
 
             @if($has_shipping && $aggregate->isActive())
-                <div role="tabpanel" class="tab-pane" id="others-{{ $aggregate->id }}">
+                <div role="tabpanel" class="tab-pane fillable-booking-space" id="others-{{ $aggregate->id }}">
                     <div class="row">
                         <div class="col-md-12">
                             <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="Cerca Utente" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 other-booking">
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @if($has_shipping && $aggregate->status == 'closed')
+                <div role="tabpanel" class="tab-pane fillable-booking-space" id="add-others-{{ $aggregate->id }}">
+                    <div class="alert alert-danger">
+                        Attenzione: questo ordine è stato chiuso, prima di aggiungere o modificare una prenotazione accertati che i quantitativi totali desiderati non siano già stati comunicati al fornitore o che possano comunque essere modificati.
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" data-enforce-booking-mode="edit" placeholder="Cerca Utente" />
                         </div>
                     </div>
 

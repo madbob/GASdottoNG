@@ -36,11 +36,12 @@ class BookingUserController extends BookingHandler
         }
 
         $user = User::findOrFail($user_id);
+        $required_mode = $request->input('enforce', '');
+        if (empty($required_mode)) {
+            $required_mode = $aggregate->isRunning() ? 'edit' : 'show';
+        }
 
-        if ($aggregate->isRunning() || $aggregate->isActive())
-            return view('booking.edit', ['aggregate' => $aggregate, 'user' => $user]);
-        else
-            return view('booking.show', ['aggregate' => $aggregate, 'user' => $user]);
+        return view('booking.' . $required_mode, ['aggregate' => $aggregate, 'user' => $user]);
     }
 
     public function update(Request $request, $aggregate_id, $user_id)
