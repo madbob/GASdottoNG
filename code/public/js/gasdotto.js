@@ -622,6 +622,15 @@ function miscInnerCallbacks(form, data) {
     }
 }
 
+function displayServerError(form, data) {
+    if (data.target != '') {
+        inlineFeedback(form.find('.main-form-buttons button[type=submit]'), 'Errore!');
+        var input = form.find('[name=' + data.target + ']');
+        input.closest('.form-group').addClass('has-error');
+        input.closest('div').append('<span class="help-block error-message">' + data.message + '</span>');
+    }
+}
+
 function creatingFormCallback(form, data) {
     if (data.status == 'success') {
         voidForm(form);
@@ -631,6 +640,9 @@ function creatingFormCallback(form, data) {
             modal.modal('hide');
 
         miscInnerCallbacks(form, data);
+    }
+    else if (data.status == 'error') {
+        displayServerError(form, data);
     }
 }
 
@@ -1626,7 +1638,7 @@ $(document).ready(function() {
         event.preventDefault();
 
         var form = $(this);
-        form.find('.main-form-buttons button').attr('disabled', 'disabled');
+        form.find('.main-form-buttons button').prop('disabled', true);
 
         /*
             Problema di origine sconosciuta: i dati in multipart/form-data
@@ -1649,9 +1661,15 @@ $(document).ready(function() {
             contentType: false,
 
             success: function(data) {
-                var h = closeMainForm(form);
-                h.empty().append(data.header).attr('href', data.url);
-                afterListChanges(h.closest('.loadablelist'));
+                if (data.hasOwnProperty('status') && data.status == 'error') {
+                    displayServerError(form, data);
+                    form.find('.main-form-buttons button').prop('disabled', false);
+                }
+                else {
+                    var h = closeMainForm(form);
+                    h.empty().append(data.header).attr('href', data.url);
+                    afterListChanges(h.closest('.loadablelist'));
+                }
             }
         });
     });

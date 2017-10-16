@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\AuthException;
+use App\Exceptions\IllegalArgumentException;
 use App\User;
 use Auth;
 use Log;
@@ -117,6 +118,18 @@ class UsersService
         $user = DB::transaction(function () use ($id, $request, $type) {
             $user = $this->show($id);
 
+            $username = $request['username'];
+            $test = User::where('id', '!=', $user->id)->where('username', $username)->first();
+            if ($test != null) {
+                throw new IllegalArgumentException('Username già assegnato', 'username');
+            }
+
+            $card_number = $request['card_number'];
+            $test = User::where('id', '!=', $user->id)->where('gas_id', $user->gas_id)->where('card_number', $card_number)->first();
+            if ($test != null) {
+                throw new IllegalArgumentException('Numero tessera già assegnato', 'card_number');
+            }
+
             $this->setIfSet($user, $request, 'username');
             $this->setIfSet($user, $request, 'firstname');
             $this->setIfSet($user, $request, 'lastname');
@@ -201,11 +214,17 @@ class UsersService
 
         $creator = Auth::user();
 
+        $username = $request['username'];
+        $test = User::where('username', $username)->first();
+        if ($test != null) {
+            throw new IllegalArgumentException('Username già assegnato', 'username');
+        }
+
         $user = new User();
-        $user->id = $request['username'];
+        $user->id = $username;
         $user->gas_id = $creator->gas->id;
         $user->member_since = date('Y-m-d', time());
-        $user->username = $request['username'];
+        $user->username = $username;
         $user->firstname = $request['firstname'];
         $user->lastname = $request['lastname'];
         $user->password = Hash::make($request['password']);

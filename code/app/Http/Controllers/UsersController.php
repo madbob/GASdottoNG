@@ -9,6 +9,7 @@ use Theme;
 
 use App\Services\UsersService;
 use App\Exceptions\AuthException;
+use App\Exceptions\IllegalArgumentException;
 
 class UsersController extends Controller
 {
@@ -67,10 +68,13 @@ class UsersController extends Controller
     {
         try {
             $user = $this->usersService->store($request->all());
-
             return $this->userSuccessResponse($user);
-        } catch (AuthException $e) {
+        }
+        catch (AuthException $e) {
             abort($e->status());
+        }
+        catch (IllegalArgumentException $e) {
+            return $this->errorResponse($e->getMessage(), $e->getArgument());
         }
     }
 
@@ -97,6 +101,9 @@ class UsersController extends Controller
         }
         catch (AuthException $e) {
             abort($e->status());
+        }
+        catch (IllegalArgumentException $e) {
+            return $this->errorResponse($e->getMessage(), $e->getArgument());
         }
     }
 

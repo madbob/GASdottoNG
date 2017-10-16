@@ -21,10 +21,11 @@ class Controller extends BaseController
         $this->reference_class = $parameters['reference_class'];
     }
 
-    protected function errorResponse($message)
+    protected function errorResponse($message, $target = '')
     {
         $ret = (object)[
             'status' => 'error',
+            'target' => $target,
             'message' => $message,
         ];
 
