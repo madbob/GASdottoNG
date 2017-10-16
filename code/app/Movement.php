@@ -71,10 +71,10 @@ class Movement extends Model
 
     public function printableName()
     {
-        if (empty($this->registration_date) || strstr($this->registration_date, '0000-00-00') !== false)
+        if (empty($this->date) || strstr($this->date, '0000-00-00') !== false)
             return 'Mai';
         else
-            return sprintf('%s | %s € | %s', $this->printableDate('registration_date'), printablePrice($this->amount), $this->payment_icon);
+            return sprintf('%s | %s € | %s', $this->printableDate('date'), printablePrice($this->amount), $this->payment_icon);
     }
 
     public function printableType()
