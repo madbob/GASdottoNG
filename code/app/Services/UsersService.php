@@ -118,16 +118,20 @@ class UsersService
         $user = DB::transaction(function () use ($id, $request, $type) {
             $user = $this->show($id);
 
-            $username = $request['username'];
-            $test = User::where('id', '!=', $user->id)->where('username', $username)->first();
-            if ($test != null) {
-                throw new IllegalArgumentException('Username già assegnato', 'username');
+            if (isset($request['username'])) {
+                $username = $request['username'];
+                $test = User::where('id', '!=', $user->id)->where('username', $username)->first();
+                if ($test != null) {
+                    throw new IllegalArgumentException('Username già assegnato', 'username');
+                }
             }
 
-            $card_number = $request['card_number'];
-            $test = User::where('id', '!=', $user->id)->where('gas_id', $user->gas_id)->where('card_number', $card_number)->first();
-            if ($test != null) {
-                throw new IllegalArgumentException('Numero tessera già assegnato', 'card_number');
+            if (isset($request['card_number'])) {
+                $card_number = $request['card_number'];
+                $test = User::where('id', '!=', $user->id)->where('gas_id', $user->gas_id)->where('card_number', $card_number)->first();
+                if ($test != null) {
+                    throw new IllegalArgumentException('Numero tessera già assegnato', 'card_number');
+                }
             }
 
             $this->setIfSet($user, $request, 'username');
