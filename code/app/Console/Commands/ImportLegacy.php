@@ -241,7 +241,7 @@ class ImportLegacy extends Command
 
         $admin_role = Role::create([
             'name' => 'Amministratore',
-            'actions' => 'gas.access,gas.permissions,gas.config,supplier.add,users.admin,movements.admin,movements.types,categories.admin,measures.admin,gas.statistics,notifications.admin'
+            'actions' => 'gas.access,gas.permissions,gas.config,supplier.add,users.admin,users.movements,movements.admin,movements.types,categories.admin,measures.admin,gas.statistics,notifications.admin'
         ]);
 
         $referrer_role = Role::create([
