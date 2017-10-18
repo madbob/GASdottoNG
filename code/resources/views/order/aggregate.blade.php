@@ -1,24 +1,24 @@
 <?php
 
-$has_shipping = false;
+$shippable_status = false;
 
 foreach ($aggregate->orders as $order) {
     if ($currentuser->can('supplier.shippings', $order->supplier)) {
-        $has_shipping = true;
+        $shippable_status = true;
         break;
     }
 }
 
-$has_notifications = ($has_shipping && $aggregate->isActive() && $aggregate->isRunning() == false);
+$shippable_status = ($shippable_status && $aggregate->isActive() && $aggregate->isRunning() == false);
 $more_orders = ($aggregate->orders->count() > 1);
 $panel_rand_wrap = rand();
 
 ?>
 
-@if($aggregate->isRunning() == false && ($more_orders || $has_notifications))
+@if($aggregate->isRunning() == false && ($more_orders || $shippable_status))
     <div class="row gray-row">
         <div class="col-md-4">
-            @if($has_notifications)
+            @if($shippable_status)
                 <form class="form-horizontal">
                     <div class="form-group">
                         <label class="col-sm-{{ $labelsize }} control-label">Notifiche Mail</label>
@@ -72,13 +72,17 @@ $panel_rand_wrap = rand();
 
 <div class="row">
     <div class="col-md-12">
-        @if($more_orders)
-            <ul class="nav nav-tabs" role="tablist">
-                @foreach($aggregate->orders as $index => $order)
-                    <li role="presentation" class="{{ $index == 0 ? 'active' : '' }}"><a href="#order-{{ $panel_rand_wrap }}-{{ $index }}" role="tab" data-toggle="tab">{{ $order->printableName() }}</a></li>
-                @endforeach
-            </ul>
-        @endif
+        <ul class="nav nav-tabs" role="tablist">
+            @foreach($aggregate->orders as $index => $order)
+                <li role="presentation" class="{{ $index == 0 ? 'active' : '' }}"><a href="#order-{{ $panel_rand_wrap }}-{{ $index }}" role="tab" data-toggle="tab">{{ $order->printableName() }}</a></li>
+            @endforeach
+
+            <li role="presentation"><a href="#shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab" data-async-load="{{ url('/booking/' . $aggregate->id . '/user') }}">Consegne</a></li>
+
+            @if($currentgas->getConfig('fast_shipping_enabled'))
+                <li role="presentation"><a href="#fast-shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab" data-async-load="{{ url('/deliveries/' . $aggregate->id . '/fast') }}">Consegne Veloci</a></li>
+            @endif
+        </ul>
 
         <div class="tab-content">
             @foreach($aggregate->orders as $index => $order)
@@ -90,35 +94,16 @@ $panel_rand_wrap = rand();
                     @endcan
                 </div>
             @endforeach
+
+            <div role="tabpanel" class="tab-pane shippable-bookings" id="shippings-{{ $aggregate->id }}" data-aggregate-id="{{ $aggregate->id }}">
+            </div>
+
+            @if($currentgas->getConfig('fast_shipping_enabled'))
+                <div role="tabpanel" class="tab-pane fast-shippable-bookings" id="fast-shippings-{{ $aggregate->id }}">
+                </div>
+            @endif
         </div>
     </div>
 </div>
-
-@if($has_shipping && $aggregate->isActive() && $aggregate->isRunning() == false)
-    <hr/>
-
-    <div class="row aggregate-bookings">
-        <input type="hidden" name="aggregate_id" value="{{ $aggregate->id }}" />
-
-        <div class="col-md-12">
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation"><a href="#shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab">Consegne</a></li>
-
-                @if($currentgas->getConfig('fast_shipping_enabled'))
-                    <li role="presentation"><a href="#fast-shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab">Consegne Veloci</a></li>
-                @endif
-            </ul>
-
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane shippable-bookings" id="shippings-{{ $aggregate->id }}">
-                </div>
-                @if($currentgas->getConfig('fast_shipping_enabled'))
-                    <div role="tabpanel" class="tab-pane fast-shippable-bookings" id="fast-shippings-{{ $aggregate->id }}">
-                    </div>
-                @endif
-            </div>
-        </div>
-    </div>
-@endif
 
 @stack('postponed')

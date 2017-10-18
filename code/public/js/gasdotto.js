@@ -284,6 +284,9 @@ function voidForm(form) {
 function closeMainForm(form, data) {
     var container = form.closest('.list-group-item');
     var head = container.prev();
+    if (head.length == 0)
+        return;
+
     head.removeClass('active');
     container.remove();
 
@@ -2214,38 +2217,20 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('shown.bs.tab', '.aggregate-bookings a[data-toggle="tab"]', function(e) {
+    $('body').on('shown.bs.tab', 'a[data-toggle="tab"][data-async-load]', function(e) {
         var t = e.target.hash;
         var tab = $(t);
+        tab.empty().append(loadingPlaceholder());
 
-        if (tab.hasClass('shippable-bookings')) {
-            var id = tab.closest('.aggregate-bookings').find('input:hidden[name=aggregate_id]').val();
-            tab.empty().append(loadingPlaceholder());
+        $.ajax({
+            method: 'GET',
+            url: $(this).attr('data-async-load'),
+            dataType: 'html',
 
-            $.ajax({
-                method: 'GET',
-                url: '/booking/' + id + '/user',
-                dataType: 'html',
-
-                success: function(data) {
-                    tab.empty().append(data);
-                }
-            });
-        }
-        else if (tab.hasClass('fast-shippable-bookings')) {
-            var id = tab.closest('.aggregate-bookings').find('input:hidden[name=aggregate_id]').val();
-            tab.empty().append(loadingPlaceholder());
-
-            $.ajax({
-                method: 'GET',
-                url: '/deliveries/' + id + '/fast',
-                dataType: 'html',
-
-                success: function(data) {
-                    tab.empty().append(data);
-                }
-            });
-        }
+            success: function(data) {
+                tab.empty().append(data);
+            }
+        });
     });
 
     $('body').on('keyup', '.booking-product-quantity input', function() {
