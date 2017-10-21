@@ -14,6 +14,10 @@
                 foreach($role->applications() as $targets)
                     $final[] = $targets->printableName();
 
+                if (empty($final))
+                    if ($role->appliesAll())
+                        $final[] = 'Tutti';
+
                 ?>
 
                 {{ join(', ', $final) }}

@@ -37,27 +37,34 @@ class Role extends Model
         return User::whereIn('id', $user_ids)->get();
     }
 
+    private function getAllClasses()
+    {
+        $ret = [];
+        $permissions = self::allPermissions();
+
+        foreach ($permissions as $class => $types) {
+            $found = false;
+
+            foreach($types as $t => $label) {
+                if ($this->enabledAction($t)) {
+                    $ret[] = $class;
+                    break;
+                }
+            }
+        }
+
+        return $ret;
+    }
+
     public function getTargetsAttribute()
     {
         if ($this->targets == null) {
             $this->targets = new Collection();
 
-            $permissions = self::allPermissions();
-
-            foreach ($permissions as $class => $types) {
-                $found = false;
-
-                foreach($types as $t => $label) {
-                    if ($this->enabledAction($t)) {
-                        $found = true;
-                        break;
-                    }
-                }
-
-                if ($found == true) {
-                    $all = $class::orderBy('name', 'asc')->get();
-                    $this->targets = $this->targets->merge($all);
-                }
+            $classes = $this->getAllClasses();
+            foreach($classes as $class) {
+                $all = $class::orderBy('name', 'asc')->get();
+                $this->targets = $this->targets->merge($all);
             }
         }
 
@@ -139,13 +146,25 @@ class Role extends Model
         User::roles(), in quanto si applica solo sull'istanza del ruolo
         assegnata ad uno specifico utente
     */
-    public function appliesAll($class)
+    public function appliesAll($class = null)
     {
-        return DB::table('attached_role_user')
-            ->where('role_user_id', $this->pivot->id)
-            ->where('target_type', $class)
-            ->where('target_id', '*')
-            ->count();
+        if ($class == null) {
+            $ret = true;
+
+            $classes = $this->getAllClasses();
+            foreach($classes as $class) {
+                $ret = $ret && $this->appliesAll($class);
+            }
+
+            return $ret;
+        }
+        else {
+            return DB::table('attached_role_user')
+                ->where('role_user_id', $this->pivot->id)
+                ->where('target_type', $class)
+                ->where('target_id', '*')
+                ->count();
+        }
     }
 
     /*

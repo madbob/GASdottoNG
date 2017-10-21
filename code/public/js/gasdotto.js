@@ -288,6 +288,7 @@ function sanitizeId(identifier) {
 function voidForm(form) {
     form.find('input[type!=hidden]').val('');
     form.find('textarea').val('');
+    form.find('.error-message').remove();
 }
 
 function closeMainForm(form, data) {
