@@ -247,6 +247,7 @@ $existing = false;
         'dom_id' => $rand,
         'obj' => null, // qui gestisco sempre un movimento di pagamento come nuovo, eventualmente la pre-callback di 'booking-payment' provvederà a caricare quelli esistenti assegnati alle prenotazioni contemplate
         'default' => \App\Movement::generate('booking-payment', $user, $aggregate, $tot_amount),
+        'amount_label' => 'Importo da Pagare',
         'extra' => [
             'post-saved-function' => 'submitDeliveryForm',
             'delivering-status' => json_encode($tot_delivered)

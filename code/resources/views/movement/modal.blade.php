@@ -10,6 +10,8 @@ if (!isset($editable))
     $editable = false;
 if (!isset($amount_editable))
     $amount_editable = false;
+if (!isset($amount_label))
+    $amount_label = 'Valore';
 
 ?>
 
@@ -38,7 +40,7 @@ if (!isset($amount_editable))
                     @include('commons.decimalfield', [
                         'obj' => $obj,
                         'name' => 'amount',
-                        'label' => 'Valore',
+                        'label' => $amount_label,
                         'is_price' => true,
                         'fixed_value' => $amount_editable ? false : ($editable ? false : $obj->amount)
                     ])
@@ -46,7 +48,7 @@ if (!isset($amount_editable))
                     <div class="col-sm-{{ $fieldsize }} col-sm-offset-{{ $labelsize }}">
                         @if($obj->sender && array_search('App\CreditableTrait', class_uses($obj->sender)) !== false && count($obj->sender->balanceFields()) == 1)
                             <p class="sender-credit-status alert alert-{{ $obj->amount < $obj->sender->current_balance_amount ? 'success' : 'danger' }}">
-                                {{ $obj->sender->printableName() }}: <span class="current-sender-credit">{{ $obj->sender->current_balance_amount }}</span> €
+                                Credito Attuale {{ $obj->sender->printableName() }}: <span class="current-sender-credit">{{ $obj->sender->current_balance_amount }}</span> €
                             </p>
                         @endif
 
