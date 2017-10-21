@@ -143,6 +143,15 @@ function generalInit() {
                     data: data,
                     dataType: 'HTML',
                     success: function(data) {
+                        data = $(data);
+
+                        if (while_shipping) {
+                            var test = data.find('.booking-product:not(.fit-add-product)');
+                            if (test.length != 0) {
+                                data = $('<div class="alert alert-danger">Questa prenotazione esiste già e non può essere ricreata: modificala!</div>');
+                            }
+                        }
+
                         fill_target.empty().append(data);
                     }
                 });

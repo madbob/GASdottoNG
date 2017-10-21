@@ -15,6 +15,7 @@
                             <div class="col-md-12">
                                 <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="Cerca Utente" />
                             </div>
+                            <p>&nbsp;</p>
                         </div>
 
                         <div class="row">

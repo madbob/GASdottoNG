@@ -43,6 +43,7 @@ foreach ($aggregate->orders as $order) {
                         <div class="col-md-12">
                             <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="Cerca Utente" />
                         </div>
+                        <p>&nbsp;</p>
                     </div>
 
                     <div class="row">
@@ -62,6 +63,7 @@ foreach ($aggregate->orders as $order) {
                         <div class="col-md-12">
                             <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" data-enforce-booking-mode="edit" placeholder="Cerca Utente" />
                         </div>
+                        <p>&nbsp;</p>
                     </div>
 
                     <div class="row">
