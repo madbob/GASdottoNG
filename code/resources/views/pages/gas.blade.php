@@ -251,7 +251,7 @@
         <div class="col-md-12">
             @include('commons.loadablelist', [
                 'identifier' => 'role-list',
-                'items' => App\Role::orderBy('name', 'asc')->get()
+                'items' => App\Role::sortedByHierarchy()
             ])
         </div>
     </div>

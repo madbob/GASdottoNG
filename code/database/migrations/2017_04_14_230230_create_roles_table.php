@@ -14,6 +14,7 @@ class CreateRolesTable extends Migration
             $table->string('name');
             $table->boolean('always')->default(false);
             $table->text('actions');
+            $table->integer('parent_id')->unsigned()->default(0);
         });
 
         Schema::create('role_user', function (Blueprint $table) {

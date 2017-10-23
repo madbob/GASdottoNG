@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 use DB;
+use Auth;
 use URL;
 
 use App\GASModel;
@@ -20,6 +21,78 @@ class Role extends Model
     public function users()
     {
         return $this->belongsToMany('App\User')->orderBy('lastname', 'asc')->with('roles');
+    }
+
+    public function children()
+    {
+        return $this->hasMany('App\Role', 'parent_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo('App\Role', 'parent_id');
+    }
+
+    private static function recursiveSortedByHierarchy($roles, &$collection, &$ids)
+    {
+        foreach($roles as $role) {
+            if (in_array($role->id, $ids) == false) {
+                $collection->push($role);
+                $ids[] = $role->id;
+                self::recursiveSortedByHierarchy($role->children, $collection, $ids);
+            }
+        }
+    }
+
+    public static function sortedByHierarchy($limited = false)
+    {
+        $ret = new Collection();
+        $ids = [];
+
+        if ($limited) {
+            $user = Auth::user();
+            $roles = $user->roles;
+
+            foreach($roles as $role) {
+                self::recursiveSortedByHierarchy($role->children, $ret, $ids);
+            }
+        }
+        else {
+            $roles = self::where('parent_id', 0)->orderBy('name', 'asc')->get();
+            self::recursiveSortedByHierarchy($roles, $ret, $ids);
+        }
+
+        return $ret;
+    }
+
+    public function printableHeader()
+    {
+        $ret = $this->printableName();
+
+        $step = $this;
+        while(true) {
+            $parent = $step->parent;
+            if ($parent)
+                $ret = '&nbsp;&nbsp;&nbsp;&nbsp;' . $ret;
+            else
+                break;
+
+            $step = $parent;
+        }
+
+        $icons = $this->icons();
+
+        if (!empty($icons)) {
+            $ret .= '<div class="pull-right">';
+
+            foreach ($icons as $i) {
+                $ret .= '<span class="glyphicon glyphicon-'.$i.'" aria-hidden="true"></span>&nbsp;';
+            }
+
+            $ret .= '</div>';
+        }
+
+        return $ret;
     }
 
     public function usersByTarget($target)
@@ -355,6 +428,11 @@ class Role extends Model
         }
 
         return $targets;
+    }
+
+    public function enabledClass($class)
+    {
+        return in_array($class, $this->getAllClasses());
     }
 
     public static function classByRule($rule_id)

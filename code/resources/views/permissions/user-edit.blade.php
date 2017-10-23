@@ -7,7 +7,7 @@
             </div>
             <div class="modal-body">
                 <div class="container-fluid role-editor">
-                    @foreach(App\Role::all() as $role)
+                    @foreach($currentuser->managed_roles as $role)
                         <?php $urole = $user->roles()->where('roles.id', $role->id)->first() ?>
 
                         <div class="row">

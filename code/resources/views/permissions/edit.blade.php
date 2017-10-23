@@ -1,8 +1,29 @@
 <form class="form-horizontal main-form role-editor" method="PUT" action="{{ url('roles/' . $role->id) }}" data-target="role-editor-{{ rand() }}">
+    <input type="hidden" name="post-saved-refetch" value="#role-list" data-fetch-url="{{ url('roles') }}">
+
     <div class="row">
         <div class="col-md-6">
-            @include('commons.textfield', ['obj' => $role, 'name' => 'name', 'label' => 'Nome'])
-            @include('commons.boolfield', ['obj' => $role, 'name' => 'always', 'label' => 'Abilitato di Default'])
+            @include('commons.textfield', [
+                'obj' => $role,
+                'name' => 'name',
+                'label' => 'Nome'
+            ])
+            @include('commons.boolfield', [
+                'obj' => $role,
+                'name' => 'always',
+                'label' => 'Abilitato di Default'
+            ])
+        </div>
+        <div class="col-md-6">
+            @include('commons.selectobjfield', [
+                'obj' => $role,
+                'name' => 'parent_id',
+                'objects' => App\Role::orderBy('name')->get(),
+                'label' => 'Ruolo Superiore',
+                'extra_selection' => [
+                    '0' => 'Nessuno'
+                ]
+            ])
         </div>
     </div>
 
@@ -40,7 +61,10 @@
         </div>
         <div class="col-md-4 tab-content role-users dense-list">
             @foreach($role->users as $user)
-                @include('permissions.main_roleuser', ['role' => $role, 'user' => $user])
+                @include('permissions.main_roleuser', [
+                    'role' => $role,
+                    'user' => $user
+                ])
             @endforeach
         </div>
     </div>

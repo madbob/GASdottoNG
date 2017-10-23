@@ -46,6 +46,11 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Role')->orderBy('name', 'asc')->withPivot('id');
     }
 
+    public function getManagedRolesAttribute()
+    {
+        return Role::sortedByHierarchy(true);
+    }
+
     public function notifications()
     {
         return $this->belongsToMany('App\Notification')->withPivot('done')->where('notification_user.done', '=', false)->orderBy('start_date', 'desc');

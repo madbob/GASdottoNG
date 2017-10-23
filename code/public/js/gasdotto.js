@@ -292,6 +292,8 @@ function voidForm(form) {
 }
 
 function closeMainForm(form, data) {
+    miscInnerCallbacks(form, data);
+
     var container = form.closest('.list-group-item');
     var head = container.prev();
     if (head.length == 0)
@@ -601,7 +603,11 @@ function miscInnerCallbacks(form, data) {
         test.each(function() {
             var target = sanitizeId($(this).val());
             var box = $(target);
+
             var url = box.attr('data-fetch-url');
+            if (url == null)
+                url = $(this).attr('data-fetch-url');
+
             $.get(url, function(data) {
                 box.empty().append(data);
             });
@@ -1679,9 +1685,7 @@ $(document).ready(function() {
                     form.find('.main-form-buttons button').prop('disabled', false);
                 }
                 else {
-                    var h = closeMainForm(form);
-                    h.empty().append(data.header).attr('href', data.url);
-                    afterListChanges(h.closest('.loadablelist'));
+                    closeMainForm(form, data);
                 }
             }
         });

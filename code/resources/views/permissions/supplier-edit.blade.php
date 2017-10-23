@@ -7,24 +7,26 @@
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
-                    @foreach(App\Role::rolesByClass(get_class($supplier)) as $role)
-                        <div class="row">
-                            <h3>{{ $role->name }}</h3>
-                        </div>
+                    @foreach($currentuser->managed_roles as $role)
+                        @if($role->enabledClass(get_class($supplier)))
+                            <div class="row">
+                                <h3>{{ $role->name }}</h3>
+                            </div>
 
-                        <div class="row">
-                            @include('commons.completionrows', [
-                                'objects' => $role->usersByTarget($supplier),
-                                'source' => 'userBlood',
-                                'adding_label' => 'Aggiungi Nuovo Utente',
-                                'add_callback' => 'supplierAttachUser',
-                                'remove_callback' => 'supplierDetachUser',
-                                'extras' => [
-                                    'supplier-id' => $supplier->id,
-                                    'role-id' => $role->id
-                                ]
-                            ])
-                        </div>
+                            <div class="row">
+                                @include('commons.completionrows', [
+                                    'objects' => $role->usersByTarget($supplier),
+                                    'source' => 'userBlood',
+                                    'adding_label' => 'Aggiungi Nuovo Utente',
+                                    'add_callback' => 'supplierAttachUser',
+                                    'remove_callback' => 'supplierDetachUser',
+                                    'extras' => [
+                                        'supplier-id' => $supplier->id,
+                                        'role-id' => $role->id
+                                    ]
+                                ])
+                            </div>
+                        @endif
                     @endforeach
                 </div>
             </div>

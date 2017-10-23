@@ -56,20 +56,22 @@ class DatabaseSeeder extends Seeder
         $gas->setConfig('annual_fee_amount', 10.00);
         $gas->setConfig('deposit_amount', 10.00);
 
-        $user_role = Role::create([
-            'name' => 'Utente',
-            'actions' => 'users.view,supplier.book',
-            'always' => true
-        ]);
-
         $admin_role = Role::create([
             'name' => 'Amministratore',
             'actions' => 'gas.access,gas.permissions,gas.config,supplier.add,users.admin,users.movements,movements.admin,movements.types,categories.admin,measures.admin,gas.statistics,notifications.admin'
         ]);
 
+        $user_role = Role::create([
+            'name' => 'Utente',
+            'actions' => 'users.view,supplier.book',
+            'always' => true,
+            'parent_id' => $admin_role->id
+        ]);
+
         $referrer_role = Role::create([
             'name' => 'Referente',
-            'actions' => 'supplier.modify,supplier.orders,supplier.shippings'
+            'actions' => 'supplier.modify,supplier.orders,supplier.shippings',
+            'parent_id' => $admin_role->id
         ]);
 
         $admin = User::create([

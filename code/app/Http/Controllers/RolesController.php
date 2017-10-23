@@ -24,14 +24,27 @@ class RolesController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function index()
     {
-        DB::beginTransaction();
-
         $user = Auth::user();
         if ($user->can('gas.permissions', $user->gas) == false) {
             return $this->errorResponse('Non autorizzato');
         }
+
+        return Theme::view('commons.loadablelist', [
+            'identifier' => 'role-list',
+            'items' => Role::sortedByHierarchy()
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $user = Auth::user();
+        if ($user->can('gas.permissions', $user->gas) == false) {
+            return $this->errorResponse('Non autorizzato');
+        }
+
+        DB::beginTransaction();
 
         $r = new Role();
         $r->name = $request->input('name');
@@ -70,6 +83,7 @@ class RolesController extends Controller
         $r = Role::findOrFail($id);
         $r->name = $request->input('name');
         $r->always = $request->has('always');
+        $r->parent_id = $request->input('parent_id');
         $r->save();
 
         return $this->successResponse([

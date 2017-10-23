@@ -233,20 +233,22 @@ class ImportLegacy extends Command
 
         $map = [];
 
-        $user_role = Role::create([
-            'name' => 'Utente',
-            'always' => true,
-            'actions' => 'users.view,supplier.book'
-        ]);
-
         $admin_role = Role::create([
             'name' => 'Amministratore',
             'actions' => 'gas.access,gas.permissions,gas.config,supplier.add,users.admin,users.movements,movements.admin,movements.types,categories.admin,measures.admin,gas.statistics,notifications.admin'
         ]);
 
+        $user_role = Role::create([
+            'name' => 'Utente',
+            'always' => true,
+            'actions' => 'users.view,supplier.book',
+            'parent_id' => $admin_role->id
+        ]);
+
         $referrer_role = Role::create([
             'name' => 'Referente',
-            'actions' => 'supplier.modify,supplier.orders,supplier.shippings'
+            'actions' => 'supplier.modify,supplier.orders,supplier.shippings',
+            'parent_id' => $admin_role->id
         ]);
 
         /*
