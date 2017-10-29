@@ -57,6 +57,9 @@
 
                     @if(Auth::check())
                         <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <a href="#" data-toggle="modal" data-target="#feedback-modal"><span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span></a>
+                            </li>
                             <li id="help-trigger">
                                 <a href="#"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
                             </li>
@@ -83,6 +86,51 @@
 
         <div id="postponed"></div>
         <div id="bottom-stop"></div>
+
+        <div class="modal fade" id="feedback-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Feedback</h4>
+                    </div>
+                    <form class="form-horizontal inner-form" method="POST" action="http://vh.madbob.org/vh.js.php">
+                        <input type="hidden" name="project" value="madbob/gasdottong">
+                        <input type="hidden" name="close-modal" value="1">
+
+                        <div class="modal-body">
+                            <p>
+                                Vuoi inviare una segnalazione su GASdotto? Fallo qui!
+                            </p>
+                            <p>
+                                Attenzione: per problemi sui contenuti di questo sito (fornitori, ordini, prenotazioni...) fai riferimento agli amministrazioni del tuo GAS. I dati inviati per mezzo di questo pannello saranno pubblici: non immettere informazioni e contatti personali!
+                            </p>
+
+                            <hr/>
+
+                            @include('commons.textfield', [
+                                'obj' => null,
+                                'name' => 'title',
+                                'label' => 'Titolo',
+                                'mandatory' => true,
+                            ])
+
+                            @include('commons.textarea', [
+                                'obj' => null,
+                                'name' => 'contents',
+                                'label' => 'Contenuto',
+                                'mandatory' => true,
+                            ])
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
+                            <button type="submit" class="btn btn-success">Invia</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <?php
 
