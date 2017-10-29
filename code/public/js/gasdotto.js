@@ -664,10 +664,15 @@ function creatingFormCallback(form, data) {
         voidForm(form);
 
         var modal = form.parents('.modal');
-        if (modal.length != 0)
+        if (modal.length != 0) {
+            modal.on('hidden.bs.modal', function() {
+                miscInnerCallbacks(form, data);
+            });
             modal.modal('hide');
-
-        miscInnerCallbacks(form, data);
+        }
+        else {
+            miscInnerCallbacks(form, data);
+        }
     }
     else if (data.status == 'error') {
         displayServerError(form, data);
