@@ -148,7 +148,7 @@ function generalInit() {
                         if (while_shipping) {
                             var test = data.find('.booking-product:not(.fit-add-product)');
                             if (test.length != 0) {
-                                data = $('<div class="alert alert-danger">Questa prenotazione esiste già e non può essere ricreata: modificala!</div>');
+                                data = $('<div class="alert alert-danger">Questa prenotazione esiste già e non può essere ricreata.</div>');
                             }
                         }
 
