@@ -33,7 +33,18 @@ class GasController extends Controller
     public function getLogo($id)
     {
         $gas = Gas::findOrFail($id);
-        return response()->download(storage_path($gas->logo));
+        if (!empty($gas->logo)) {
+            $path = storage_path($gas->logo);
+            if (file_exists($path)) {
+                return response()->download(storage_path($gas->logo));
+            }
+            else {
+                $gas->logo = '';
+                $gas->save();
+            }
+        }
+
+        return '';
     }
 
     public function edit($id)
