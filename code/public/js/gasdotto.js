@@ -676,14 +676,16 @@ function currentLoadableLoaded(target)
     return $(target).closest('div.list-group-item').prev('a').attr('data-element-id');
 }
 
-function reloadCurrentLoadable(target)
+function reloadCurrentLoadable(listid)
 {
-    listid = currentLoadableUniqueSelector(target);
-    var current = $(listid);
-    var toggle = current.prev('.loadable-item');
-    current.slideUp(200, function() {
-        $(this).remove();
-        toggle.removeClass('active').click();
+    var list = $(listid);
+    var activated = list.find('a.loadable-item.active');
+    activated.each(function() {
+        var r = $(this);
+        r.click();
+        setTimeout(function() {
+            r.click();
+        }, 600);
     });
 }
 
@@ -1579,7 +1581,6 @@ $(document).ready(function() {
 
     $('body').on('click', '.reloader', function(event) {
         var listid = $(this).attr('data-reload-target');
-        var list = $(listid);
 
         /*
             Nel caso in cui il tasto sia dentro ad un modale, qui ne forzo la
@@ -1587,17 +1588,15 @@ $(document).ready(function() {
             l'overlay grigio in sovraimpressione)
         */
         var modal = $(this).closest('.modal').first();
-        if (modal != null)
+        if (modal != null) {
+            modal.on('hidden.bs.modal', function() {
+                reloadCurrentLoadable(listid);
+            });
             modal.modal('hide');
-
-        var activated = list.find('a.loadable-item.active');
-        activated.each(function() {
-            var r = $(this);
-            r.click();
-            setTimeout(function() {
-                r.click();
-            }, 600);
-        });
+        }
+        else {
+            reloadCurrentLoadable(listid);
+        }
     });
 
     $('body').on('shown.bs.modal', '.modal', function(e) {

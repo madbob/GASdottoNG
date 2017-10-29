@@ -111,7 +111,7 @@
                     <td>
                         <label class="order-summary-product-quantity">
                             @if($product->portion_quantity != 0)
-                                {{ sprintf('%d', $summary->products[$product->id]['quantity_pieces']) }} Pezzi / 
+                                {{ sprintf('%d', $summary->products[$product->id]['quantity_pieces']) }} Pezzi /
                             @endif
                             {{ $summary->products[$product->id]['quantity'] }} {{ $product->measure->name }}
                         </label>
