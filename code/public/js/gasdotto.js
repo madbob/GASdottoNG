@@ -2407,12 +2407,11 @@ $(document).ready(function() {
     $('body').on('click', '.booking-form .saving-button', function(e) {
         if (typeof $(this).data('total-checked') === 'undefined') {
             e.stopPropagation();
-            var test = true;
+            var test = false;
 
             $(this).closest('form').find('.booking-total').each(function() {
                 var total = parseFloatC($(this).text());
-                if (total == 0)
-                    test = false;
+                test = (test || (total != 0));
             });
 
             if (test == false)
