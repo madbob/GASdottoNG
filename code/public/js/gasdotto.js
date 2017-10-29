@@ -2,6 +2,8 @@
 	Varie ed eventuali
 */
 
+var locker = false;
+
 $.fn.tagName = function() {
     return this.prop("tagName").toLowerCase();
 };
@@ -526,6 +528,11 @@ function addPanelToTabs(group, panel, label) {
     dopo il submit usando il valore ritornato
 */
 function miscInnerCallbacks(form, data) {
+    if (locker == true)
+        return;
+
+    locker = true;
+
     var test = form.find('input[name=update-list]');
     if (test.length != 0) {
         var listname = test.val();
@@ -639,6 +646,8 @@ function miscInnerCallbacks(form, data) {
     if (test.length != 0) {
         location.reload();
     }
+
+    locker = false;
 }
 
 function displayServerError(form, data) {
