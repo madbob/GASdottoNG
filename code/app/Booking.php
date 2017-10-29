@@ -18,6 +18,8 @@ class Booking extends Model
     use GASModel, SluggableID, PayableTrait;
 
     public $incrementing = false;
+    private $value_cache = null;
+    private $transport_cache = null;
 
     protected $events = [
         'creating' => SluggableCreating::class,
@@ -128,13 +130,15 @@ class Booking extends Model
     */
     public function getValueAttribute()
     {
-        $sum = 0;
+        if ($this->value_cache == null) {
+            $this->value_cache = 0;
 
-        foreach ($this->products as $booked) {
-            $sum += $booked->quantityValue();
+            foreach ($this->products as $booked) {
+                $this->value_cache += $booked->quantityValue();
+            }
         }
 
-        return $sum;
+        return $this->value_cache;
     }
 
     /*
@@ -153,21 +157,26 @@ class Booking extends Model
 
     public function getTransportAttribute()
     {
-        if($this->order->transport > 0) {
-            /*
-            $count = $this->order->bookings()->count();
-            if ($count != 0)
-                return ($this->order->transport / $count);
-            */
+        if ($this->transport_cache == null) {
+            if($this->order->transport > 0) {
+                /*
+                $count = $this->order->bookings()->count();
+                if ($count != 0)
+                    return ($this->order->transport / $count);
+                */
 
-            $total_value = $this->order->total_value;
-            if ($total_value == 0)
-                return 0;
-
-            return round($this->value * $this->order->transport / $total_value, 2);
+                $total_value = $this->order->total_value;
+                if ($total_value == 0)
+                    $this->transport_cache = 0;
+                else
+                    $this->transport_cache = round($this->value * $this->order->transport / $total_value, 2);
+            }
+            else {
+                $this->transport_cache = 0;
+            }
         }
 
-        return 0;
+        return $this->transport_cache;
     }
 
     /*
