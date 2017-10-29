@@ -11,12 +11,12 @@
                 <?php
 
                 $final = [];
+
+                if ($role->appliesAll())
+                    $final[] = 'Tutti';
+
                 foreach($role->applications() as $targets)
                     $final[] = $targets->printableName();
-
-                if (empty($final))
-                    if ($role->appliesAll())
-                        $final[] = 'Tutti';
 
                 ?>
 

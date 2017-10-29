@@ -7,8 +7,8 @@
                 <?php
 
                 $final = [];
-                $users = $role->usersByTarget($supplier);
 
+                $users = $role->usersByTarget($supplier);
                 foreach($users as $user)
                     $final[] = $user->printableName();
 
