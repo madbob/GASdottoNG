@@ -47,7 +47,7 @@ class Controller extends BaseController
         if ($request->hasFile($field)) {
             $file = $request->file($field);
             $filename = str_random(30);
-            $file->move(storage_path('app'), $filename);
+            $file->move(gas_storage_path('app'), $filename);
             $obj->$field = sprintf('app/%s', $filename);
         }
     }

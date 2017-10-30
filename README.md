@@ -27,6 +27,12 @@ nano .env
 
 Al primo accesso verranno eseguiti il popolamento del database e la configurazione iniziale, che permette anche l'importazione dei contenuti da una vecchia istanza di GASdotto.
 
+### Configurazioni Avanzate
+
+È possibile allestire una istanza di GASdottoNG che serva diversi GAS isolati tra loro, ciascuno con un proprio database. Per farlo, cambiare manualmente il valore true/false ritornato dalla funzione `global_multi_installation()` nel file `code/app/Helpers/Setup.php`.
+
+Si presuppone che ogni istanza sia raggiungibile da istanza1.example.com, istanza2.example.com, istanza3.example.com... Ogni istanza deve avere un suo proprio file `.env`, nominato a seconda del dominio (`.env.istanza1`, `.env.istanza2`, `.env.istanza3`...).
+
 ### Docker
 
 ```bash
@@ -44,6 +50,7 @@ cd code
 ### Troubleshooting
 
  * l'applicazione utilizza di default la localizzazione italiana del sistema (in particolare per formattare le date). Per installarla, qualora mancante, eseguire `dpkg-reconfigure locales` sul proprio server
+ * per versioni di MySQL inferiori alla 5.7, occorre editare il file `code/app/Providers/AppServiceProvider.php`. Fare riferimento a [queste indicazioni](https://laravel-news.com/laravel-5-4-key-too-long-error).
 
 ### Licenza
 

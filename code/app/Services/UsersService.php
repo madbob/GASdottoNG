@@ -185,7 +185,7 @@ class UsersService
             if (isset($request['picture'])) {
                 $file = $request['picture'];
                 $filename = str_random(30);
-                $file->move(storage_path('app'), $filename);
+                $file->move(gas_storage_path('app'), $filename);
                 $user->picture = sprintf('app/%s', $filename);
                 $user->save();
             }
@@ -245,7 +245,7 @@ class UsersService
         $this->ensureAuth();
         $user = User::findOrFail($id);
 
-        $path = storage_path($user->picture);
+        $path = gas_storage_path($user->picture);
         if (file_exists($path)) {
             return response()->download($path);
         }

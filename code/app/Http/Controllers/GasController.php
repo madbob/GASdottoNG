@@ -34,9 +34,9 @@ class GasController extends Controller
     {
         $gas = Gas::findOrFail($id);
         if (!empty($gas->logo)) {
-            $path = storage_path($gas->logo);
+            $path = gas_storage_path($gas->logo);
             if (file_exists($path)) {
-                return response()->download(storage_path($gas->logo));
+                return response()->download($path);
             }
             else {
                 $gas->logo = '';

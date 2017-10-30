@@ -349,9 +349,8 @@ class ImportLegacy extends Command
                     }
                     else {
                         $filename = str_random(30);
-                        $new_path = sprintf('%s/%s', storage_path('app'), $filename);
-                        copy($old_file_path, $new_path);
                         $obj->picture = sprintf('app/%s', $filename);
+                        copy($old_file_path, gas_storage_path($obj->picture));
                     }
                 }
 

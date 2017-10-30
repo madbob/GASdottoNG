@@ -77,7 +77,7 @@ trait AttachableTrait
 
     public function filesPath()
     {
-        $path = sprintf('%s/%s', storage_path(), $this->name);
+        $path = gas_storage_path($this->name);
         if (file_exists($path) == false) {
             if (mkdir($path) == false) {
                 return null;

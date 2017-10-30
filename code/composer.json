@@ -31,8 +31,10 @@
             "App\\": "app/"
         },
         "files": [
+            "app/Helpers/Setup.php",
             "app/Helpers/Formatters.php",
-            "app/Helpers/Reflection.php"
+            "app/Helpers/Reflection.php",
+            "app/Helpers/Paths.php"
         ]
     },
     "autoload-dev": {

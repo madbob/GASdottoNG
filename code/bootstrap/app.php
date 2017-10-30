@@ -16,6 +16,14 @@ $app = new Illuminate\Foundation\Application(
 );
 
 /*
+    Impostare a TRUE per attivare una istanza multi-GAS, ciascuna col suo file
+    .env (nominato in funzione del dominio)
+*/
+if (global_multi_installation()) {
+    $app->loadEnvironmentFrom(env_file());
+}
+
+/*
 |--------------------------------------------------------------------------
 | Bind Important Interfaces
 |--------------------------------------------------------------------------
