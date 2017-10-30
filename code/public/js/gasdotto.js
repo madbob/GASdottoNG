@@ -1017,14 +1017,9 @@ function sortShippingBookings(list) {
 }
 
 function submitDeliveryForm(form) {
-    var modal = form.closest('.modal');
-    var id = modal.attr('id');
+    var id = form.closest('.modal').attr('id');
     var mainform = $('form[data-reference-modal=' + id + ']');
-
-    modal.on('hidden.bs.modal', function() {
-        mainform.submit();
-    });
-    modal.modal('hide');
+    mainform.submit();
 }
 
 /*******************************************************************************
