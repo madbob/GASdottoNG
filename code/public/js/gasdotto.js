@@ -250,7 +250,7 @@ function randomString(total)
 function inlineFeedback(button, feedback_text) {
     var idle_text = button.text();
     button.text(feedback_text);
-    setInterval(function() {
+    setTimeout(function() {
         button.text(idle_text).prop('disabled', false);
     }, 2000);
 }
@@ -721,8 +721,10 @@ function enforceMeasureDiscrete(node) {
 
 function setCellValue(cell, value) {
     string = value;
+
     if (cell.text().indexOf('€') != -1)
         string = priceRound(value) + ' €';
+
     cell.text(string);
 }
 
@@ -1836,7 +1838,7 @@ $(document).ready(function() {
         }
 
         var save_button = form.find('.saving-button');
-        save_button.text('Attendere').attr('disabled', 'disabled');
+        save_button.attr('disabled', 'disabled');
 
         $.ajax({
             method: method,

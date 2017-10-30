@@ -65,7 +65,7 @@ class BookedProduct extends Model
             return $total;
         }
         else {
-            return ($base_price + $product->transport) * $this->$attribute;
+            return $base_price * $this->$attribute;
         }
     }
 

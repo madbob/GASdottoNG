@@ -109,11 +109,11 @@
                 @if($order->isActive())
                     <!-- Quantità Ordinata -->
                     <td>
-                        <label class="order-summary-product-quantity">
+                        <label>
                             @if($product->portion_quantity != 0)
                                 {{ sprintf('%d', $summary->products[$product->id]['quantity_pieces']) }} Pezzi /
                             @endif
-                            {{ $summary->products[$product->id]['quantity'] }} {{ $product->measure->name }}
+                            <span class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity'] }}</span> {{ $product->measure->name }}
                         </label>
                     </td>
 
