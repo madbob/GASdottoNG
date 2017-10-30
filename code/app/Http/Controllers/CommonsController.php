@@ -42,10 +42,16 @@ class CommonsController extends Controller
         });
         $data['opened'] = $opened;
 
-        $shipping = Aggregate::getByStatus('closed');
+        $shipping = Aggregate::whereHas('orders', function ($query) use ($user) {
+            $query->where('status', 'closed')->whereHas('bookings', function($query) use ($user) {
+                $query->where('user_id', $user->id)->where('status', '!=', 'shipped');
+            });
+        })->get();
+
         $shipping = $shipping->sort(function($a, $b) {
             return strcmp($a->shipping, $b->shipping);
         });
+
         $data['shipping'] = $shipping;
 
         return Theme::view('pages.dashboard', $data);
