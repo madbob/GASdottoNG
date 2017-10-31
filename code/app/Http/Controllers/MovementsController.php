@@ -319,10 +319,13 @@ class MovementsController extends Controller
 
         try {
             Session::put('movements-recalculating', true);
-            CreditableTrait::resetAllCurrentBalances();
+            $current_status = CreditableTrait::resetAllCurrentBalances();
             $this->recalculateCurrentBalance();
             Session::forget('movements-recalculating');
-            return $this->successResponse();
+            $diffs = CreditableTrait::compareBalances($current_status);
+            return $this->successResponse([
+                'diffs' => $diffs
+            ]);
         }
         catch(\Exception $e) {
             Log::error('Errore nel ricalcolo saldi: ' . $e->getMessage());

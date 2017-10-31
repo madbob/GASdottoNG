@@ -53,8 +53,44 @@
         <form class="form-inline iblock password-protected" id="recalculate-account" method="POST" action="{{ url('/movements/recalculate') }}">
             <div class="form-group">
                 {!! csrf_field() !!}
-                <input type="hidden" name="reload-whole-page" value="1">
+                <input type="hidden" name="post-saved-function" value="displayRecalculatedBalances">
                 <button type="submit" class="btn btn-danger">Ricalcola Saldi</button>
+            </div>
+
+            <div class="modal fade" id="display-recalculated-balance-modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Bilanci Ricalcolati</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                Operazione conclusa.
+                            </p>
+                            <div class="hidden alert alert-danger">
+                                <p>
+                                    I seguenti saldi sono risultati diversi al termine del ricalcolo.
+                                </p>
+                                <br>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Soggetto</th>
+                                            <th>Prima</th>
+                                            <th>Dopo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="" class="btn btn-success">Ricarica la Pagina</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
         <div class="iblock">

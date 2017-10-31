@@ -1187,6 +1187,20 @@ function supplierDetachUser(list, user_id) {
 	Contabilità
 */
 
+function displayRecalculatedBalances(form, data) {
+    var modal = $('#display-recalculated-balance-modal');
+
+    if (data.diffs.length != 0) {
+        var table = modal.find('.hidden').removeClass('hidden').find('tbody');
+        for (var name in data.diffs) {
+            if (data.diffs.hasOwnProperty(name))
+                table.append('<tr><td>' + name + '</td><td>' + data.diffs[name][0] + ' €</td><td>' + data.diffs[name][1] + ' €</td></tr>');
+        }
+    }
+
+    modal.modal('show');
+}
+
 function refreshBalanceView() {
     $.ajax({
         method: 'GET',
@@ -2133,6 +2147,7 @@ $(document).ready(function() {
                         method: form.attr('method'),
                         url: form.attr('action'),
                         data: form.serializeArray(),
+                        dataType: 'JSON',
                         success: function(data) {
                             form.find('button:submit').prop('disabled', false);
                             miscInnerCallbacks(form, data);

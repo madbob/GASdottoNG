@@ -32,7 +32,7 @@ trait CreditableTrait
         $this->current_balance->delete();
 
         if ($this->balances()->count() == 0) {
-            $this->fixFirstBalance();
+            return $this->fixFirstBalance();
         }
         else {
             $latest = $this->balances()->where('current', false)->first();
@@ -41,6 +41,7 @@ trait CreditableTrait
             $new->date = date('Y-m-d G:i:s');
             $new->current = true;
             $new->save();
+            return $new;
         }
     }
 
@@ -57,13 +58,36 @@ trait CreditableTrait
 
     public static function resetAllCurrentBalances()
     {
+        $current_status = [];
+
         $classes = DB::table('balances')->select('target_type')->distinct()->get();
         foreach($classes as $c) {
             $class = $c->target_type;
+
+            $current_status[$class] = [];
+            $fields = $class::balanceFields();
+
             $objects = $class::all();
-            foreach($objects as $obj)
+            foreach($objects as $obj) {
+                $now = [];
+                $cb = $obj->current_balance;
+
+                if ($cb == null) {
+                    foreach($fields as $field => $name)
+                        $now[$field] = 0;
+                }
+                else {
+                    foreach($fields as $field => $name)
+                        $now[$field] = $cb->$field;
+                }
+
+                $current_status[$class][$obj->id] = $now;
+
                 $obj->resetCurrentBalance();
+            }
         }
+
+        return $current_status;
     }
 
     public static function duplicateAllCurrentBalances($latest_date)
@@ -81,6 +105,52 @@ trait CreditableTrait
                 $new->save();
             }
         }
+    }
+
+    /*
+        Si aspetta come parametro un array formattato come quello restituito da
+        resetAllCurrentBalances()
+
+        [
+            'Classe' => [
+                'ID Oggetto' => [
+                    'cash' => XXX,
+                    'bank' => XXX,
+                ],
+                'ID Oggetto' => [
+                    'cash' => XXX,
+                    'bank' => XXX,
+                ],
+            ]
+        ]
+    */
+    public static function compareBalances($old_balances)
+    {
+        $diff = [];
+
+        foreach($old_balances as $class => $ids) {
+            $fields = $class::balanceFields();
+
+            foreach($ids as $id => $old) {
+                $obj = $class::find($id);
+                if ($obj == null)
+                    continue;
+
+                $cb = $obj->current_balance;
+                foreach($fields as $field => $name) {
+                    if ($old[$field] != $cb->$field) {
+                        $diff[$obj->printableName()] = [
+                            $old[$field],
+                            $cb->$field
+                        ];
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $diff;
     }
 
     public function getCurrentBalanceAttribute()
