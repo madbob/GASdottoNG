@@ -665,7 +665,7 @@ function creatingFormCallback(form, data) {
 
         var modal = form.parents('.modal');
         if (modal.length != 0) {
-            modal.on('hidden.bs.modal', function() {
+            modal.one('hidden.bs.modal', function() {
                 miscInnerCallbacks(form, data);
             });
             modal.modal('hide');
