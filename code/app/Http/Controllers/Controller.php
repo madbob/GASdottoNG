@@ -15,10 +15,13 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     private $reference_class;
+    private $endpoint;
 
     protected function commonInit($parameters)
     {
         $this->reference_class = $parameters['reference_class'];
+        if (isset($parameters['endpoint']))
+            $this->endpoint = $parameters['endpoint'];
     }
 
     protected function errorResponse($message, $target = '')
@@ -38,8 +41,17 @@ class Controller extends BaseController
     {
         $data['status'] = 'success';
         DB::commit();
-
         return json_encode((object)$data);
+    }
+
+    protected function commonSuccessResponse($obj)
+    {
+        return $this->successResponse([
+            'id' => $obj->id,
+            'name' => $obj->printableName(),
+            'header' => $obj->printableHeader(),
+            'url' => url($this->endpoint . '/' . $obj->id),
+        ]);
     }
 
     protected function handleDirectFileUpload($request, $field, $obj)

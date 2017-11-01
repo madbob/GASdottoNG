@@ -3,160 +3,115 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use DB;
+
 use Auth;
 use Theme;
-use PDF;
-use App\Supplier;
-use App\Role;
+
+use App\Services\SuppliersService;
+use App\Exceptions\AuthException;
+use App\Exceptions\IllegalArgumentException;
 
 class SuppliersController extends Controller
 {
-    public function __construct()
+    public function __construct(SuppliersService $suppliersService)
     {
         $this->middleware('auth');
+        $this->suppliersService = $suppliersService;
 
         $this->commonInit([
-            'reference_class' => 'App\\Supplier'
+            'reference_class' => 'App\\Supplier',
+            'endpoint' => 'suppliers'
         ]);
-    }
-
-    private function basicReadFromRequest(&$obj, $request)
-    {
-        $obj->name = $request->input('name');
-        $obj->business_name = $request->input('business_name');
-        $obj->taxcode = $request->input('taxcode');
-        $obj->vat = $request->input('vat');
-        $obj->description = $request->input('description', '');
-
-        $obj->payment_method = $request->input('payment_method', '');
-        if ($obj->payment_method == null)
-            $obj->payment_method = '';
-
-        $obj->order_method = $request->input('order_method', '');
-        if ($obj->order_method == null)
-            $obj->order_method = '';
     }
 
     public function index()
     {
-        $data['suppliers'] = Supplier::orderBy('name', 'asc')->filterEnabled()->get();
-        return Theme::view('pages.suppliers', $data);
+        try {
+            $suppliers = $this->suppliersService->list('', true);
+            return Theme::view('pages.suppliers', ['suppliers' => $suppliers]);
+        }
+        catch (AuthException $e) {
+            abort($e->status());
+        }
     }
 
     public function store(Request $request)
     {
-        DB::beginTransaction();
-
-        $user = Auth::user();
-        if ($user->can('supplier.add', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+        try {
+            $supplier = $this->suppliersService->store($request->all());
+            return $this->commonSuccessResponse($supplier);
         }
-
-        $s = new Supplier();
-        $this->basicReadFromRequest($s, $request);
-        $s->save();
-
-        $roles = Role::havingAction('supplier.modify');
-        foreach($roles as $r) {
-            $user->addRole($r, $s);
+        catch (AuthException $e) {
+            abort($e->status());
         }
-
-        return $this->successResponse([
-            'id' => $s->id,
-            'name' => $s->name,
-            'header' => $s->printableHeader(),
-            'url' => url('suppliers/'.$s->id),
-        ]);
+        catch (IllegalArgumentException $e) {
+            return $this->errorResponse($e->getMessage(), $e->getArgument());
+        }
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $user = Auth::user();
-        $s = Supplier::withTrashed()->findOrFail($id);
+        try {
+            $supplier = $this->suppliersService->show($id);
 
-        if ($user->can('supplier.modify', $s)) {
-            return Theme::view('supplier.edit', ['supplier' => $s]);
-        } else {
-            return Theme::view('supplier.show', ['supplier' => $s]);
+            if ($request->user()->can('supplier.modify', $supplier))
+                return Theme::view('supplier.edit', ['supplier' => $supplier]);
+            else
+                return Theme::view('supplier.show', ['user' => $supplier]);
+        }
+        catch (AuthException $e) {
+            abort($e->status());
         }
     }
 
     public function update(Request $request, $id)
     {
-        DB::beginTransaction();
-
-        $user = Auth::user();
-        $s = Supplier::withTrashed()->findOrFail($id);
-
-        if ($user->can('supplier.modify', $s) == false) {
-            return $this->errorResponse('Non autorizzato');
+        try {
+            $supplier = $this->suppliersService->update($id, $request->all());
+            return $this->commonSuccessResponse($supplier);
         }
-
-        $this->basicReadFromRequest($s, $request);
-        $s->restore();
-        $s->save();
-
-        $s->updateContacts($request);
-
-        return $this->successResponse([
-            'id' => $s->id,
-            'header' => $s->printableHeader(),
-            'url' => url('suppliers/'.$s->id),
-        ]);
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+        catch (IllegalArgumentException $e) {
+            return $this->errorResponse($e->getMessage(), $e->getArgument());
+        }
     }
 
     public function destroy($id)
     {
-        DB::beginTransaction();
-
-        $user = Auth::user();
-        $s = Supplier::withTrashed()->findOrFail($id);
-
-        if ($user->can('supplier.modify', $s) == false) {
-            return $this->errorResponse('Non autorizzato');
+        try {
+            $this->suppliersService->destroy($id);
+            return $this->successResponse();
         }
-
-        if ($s->trashed())
-            $s->forceDelete();
-        else
-            $s->delete();
-
-        return $this->successResponse();
+        catch (AuthException $e) {
+            abort($e->status());
+        }
     }
 
     public function catalogue(Request $request, $id, $format)
     {
-        $s = Supplier::findOrFail($id);
-
-        if ($format == 'pdf') {
-            $html = Theme::view('documents.cataloguepdf', ['supplier' => $s])->render();
-            $filename = sprintf('Listino %s.pdf', $s->name);
-            PDF::SetTitle(sprintf('Listino %s del %s', $s->name, date('d/m/Y')));
-            PDF::AddPage();
-            PDF::writeHTML($html, true, false, true, false, '');
-            PDF::Output($filename, 'D');
-        } elseif ($format == 'csv') {
-            $filename = sprintf('Listino %s.csv', $s->name);
-            header('Content-Type: text/csv');
-            header('Content-Disposition: attachment; filename="'.$filename.'"');
-            header('Cache-Control: no-cache, no-store, must-revalidate');
-            header('Pragma: no-cache');
-            header('Expires: 0');
-
-            return Theme::view('documents.cataloguecsv', ['supplier' => $s]);
+        try {
+            return $this->suppliersService->catalogue($id, $format);
+        }
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+        catch (IllegalArgumentException $e) {
+            return $this->errorResponse($e->getMessage(), $e->getArgument());
         }
     }
 
     public function plainBalance(Request $request, $id)
     {
-        $user = Auth::user();
-        if ($user->can('movements.view', $user->gas) == false || $user->can('movements.admin', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+        try {
+            return $this->suppliersService->plainBalance($id);
         }
-
-        $s = Supplier::findOrFail($id);
-        return $s->current_balance_amount;
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+        catch (IllegalArgumentException $e) {
+            return $this->errorResponse($e->getMessage(), $e->getArgument());
+        }
     }
 }

@@ -21,7 +21,8 @@ class UsersController extends Controller
         $this->usersService = $usersService;
 
         $this->commonInit([
-            'reference_class' => 'App\\User'
+            'reference_class' => 'App\\User',
+            'endpoint' => 'users'
         ]);
     }
 
@@ -43,11 +44,10 @@ class UsersController extends Controller
 
         try {
             $users = $this->usersService->listUsers($term);
-
             $users = $this->toJQueryAutocompletionFormat($users);
-
             return json_encode($users);
-        } catch (AuthException $e) {
+        }
+        catch (AuthException $e) {
             abort($e->status());
         }
     }
@@ -68,7 +68,7 @@ class UsersController extends Controller
     {
         try {
             $user = $this->usersService->store($request->all());
-            return $this->userSuccessResponse($user);
+            return $this->commonSuccessResponse($user);
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -97,7 +97,7 @@ class UsersController extends Controller
     {
         try {
             $user = $this->usersService->update($id, $request->all());
-            return $this->userSuccessResponse($user);
+            return $this->commonSuccessResponse($user);
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -111,9 +111,9 @@ class UsersController extends Controller
     {
         try {
             $this->usersService->destroy($id);
-
             return $this->successResponse();
-        } catch (AuthException $e) {
+        }
+        catch (AuthException $e) {
             abort($e->status());
         }
     }
@@ -122,19 +122,10 @@ class UsersController extends Controller
     {
         try {
             return $this->usersService->picture($id);
-        } catch (AuthException $e) {
+        }
+        catch (AuthException $e) {
             abort($e->status());
         }
-    }
-
-    private function userSuccessResponse($user)
-    {
-        return $this->successResponse([
-            'id' => $user->id,
-            'name' => $user->printableName(),
-            'header' => $user->printableHeader(),
-            'url' => url('users/' . $user->id),
-        ]);
     }
 
     private function toJQueryAutocompletionFormat($users)

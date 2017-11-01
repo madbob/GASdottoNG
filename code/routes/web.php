@@ -11,6 +11,7 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::group(array('prefix' => 'api/1'), function () {
     Route::get('users/search', 'REST\UsersController@search');
     Route::resource('users', 'REST\UsersController');
+    Route::resource('suppliers', 'REST\SuppliersController');
 });
 
 Route::get('/', function () {

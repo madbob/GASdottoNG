@@ -10,29 +10,8 @@ use Log;
 use DB;
 use Hash;
 
-class UsersService
+class UsersService extends BaseService
 {
-    private function ensureAuth()
-    {
-        if (Auth::check()) {
-            return;
-        }
-
-        throw new AuthException(401);
-    }
-
-    private function ensureAuthAdminOrView()
-    {
-        $this->ensureAuth();
-
-        $user = Auth::user();
-        if ($user->can('users.admin', $user->gas) || $user->can('users.view', $user->gas)) {
-            return $user;
-        }
-
-        throw new AuthException(403);
-    }
-
     /*
         Ritorna:
         - 1 se l'utente ha permessi di amministrazione
@@ -40,36 +19,27 @@ class UsersService
     */
     private function ensureAuthAdminOrOwner($id)
     {
-        $this->ensureAuth();
-
         $user = Auth::user();
-
-        if ($user->can('users.admin', $user->gas))
-            return 1;
-        else if ($user->id == $id)
-            return 2;
-
-        throw new AuthException(403);
-        return 0;
-    }
-
-    private function ensureAuthAdmin()
-    {
-        $this->ensureAuth();
-
-        $user = Auth::user();
-        if ($user->can('users.admin', $user->gas)) {
-            return;
+        if ($user == null) {
+            throw new AuthException(401);
         }
 
-        throw new AuthException(403);
+        if ($user->can('users.admin', $user->gas)) {
+            return 1;
+        }
+        else if ($user->id == $id) {
+            return 2;
+        }
+        else {
+            throw new AuthException(403);
+            return 0;
+        }
     }
 
     public function listUsers($term = '', $all = false)
     {
-        $user = $this->ensureAuthAdminOrView();
+        $user = $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
         $gasID = $user->gas['id'];
-
         $query = User::with('roles')->where('gas_id', '=', $gasID);
 
         if (!empty($term)) {
@@ -82,20 +52,18 @@ class UsersService
             $query->filterEnabled();
 
         $users = $query->orderBy('lastname', 'asc')->get();
-
         return $users;
     }
 
     public function show($id)
     {
-        $this->ensureAuthAdminOrView();
-
+        $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
         return User::withTrashed()->findOrFail($id);
     }
 
     public function destroy($id)
     {
-        $this->ensureAuthAdmin();
+        $this->ensureAuth(['users.admin' => 'gas']);
 
         $user = DB::transaction(function () use ($id) {
             $user = $this->show($id);
@@ -198,25 +166,9 @@ class UsersService
         return $user;
     }
 
-    private function setIfSet($target, array $source, $key)
-    {
-        if (isset($source[$key])) {
-            $target->$key = $source[$key];
-        }
-    }
-
-    private function transformAndSetIfSet($target, array $source, $key, $transformerFunction)
-    {
-        if (isset($source[$key])) {
-            $target->$key = $transformerFunction($source[$key]);
-        }
-    }
-
     public function store(array $request)
     {
-        $this->ensureAuthAdmin();
-
-        $creator = Auth::user();
+        $creator = $this->ensureAuth(['users.admin' => 'gas']);
 
         $username = $request['username'];
         $test = User::where('username', $username)->first();
@@ -242,7 +194,6 @@ class UsersService
 
     public function picture($id)
     {
-        $this->ensureAuth();
         $user = User::findOrFail($id);
 
         $path = gas_storage_path($user->picture);

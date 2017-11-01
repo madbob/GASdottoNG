@@ -27,6 +27,15 @@ $factory->define(App\Gas::class, function (Faker\Generator $faker) {
     ];
 });
 
+$factory->define(App\Supplier::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'business_name' => $faker->company,
+        'payment_method' => $faker->text(100),
+        'order_method' => $faker->text(100)
+    ];
+});
+
 $factory->define(App\Permission::class, function (Faker\Generator $faker) {
     return [
         'target_type' => 'App\Gas',

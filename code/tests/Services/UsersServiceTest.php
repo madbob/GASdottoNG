@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class UsersServiceTest extends TestCase
 {
-
     use DatabaseTransactions;
 
     private $userWithViewPerm;
