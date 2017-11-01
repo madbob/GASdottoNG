@@ -444,56 +444,6 @@ class Order extends Model
         }
     }
 
-    protected function defaultAttachments()
-    {
-        $ret = [];
-
-        /*
-            Documento con i prodotti e le relative quantità totali.
-            Solitamente destinato al fornitore, come riassunto dell'ordine
-            complessivo
-        */
-        $summary = new Attachment();
-        $summary->name = 'Riassunto Prodotti Ordinati (CSV)';
-        $summary->url = url('orders/document/'.$this->id.'/summary/csv');
-        $summary->internal = true;
-        $ret[] = $summary;
-
-        $summary = new Attachment();
-        $summary->name = 'Riassunto Prodotti Ordinati (PDF)';
-        $summary->url = url('orders/document/'.$this->id.'/summary/pdf');
-        $summary->internal = true;
-        $ret[] = $summary;
-
-        /*
-            Rappresentazione strutturata delle prenotazioni
-            effettuate, da usare in fase di consegna
-        */
-        $shipping = new Attachment();
-        $shipping->name = 'Dettaglio Consegne';
-        $shipping->url = url('orders/document/'.$this->id.'/shipping');
-        $shipping->internal = true;
-        $ret[] = $shipping;
-
-        /*
-            CVS completo dei prodotti, degli utenti e delle quantità (ordinate e
-            consegnate)
-        */
-        $table = new Attachment();
-        $table->name = 'Tabella Complessiva Prodotti Ordinati';
-        $table->url = url('orders/document/'.$this->id.'/table/booked');
-        $table->internal = true;
-        $ret[] = $table;
-
-        $table = new Attachment();
-        $table->name = 'Tabella Complessiva Prodotti Consegnati';
-        $table->url = url('orders/document/'.$this->id.'/table/delivered');
-        $table->internal = true;
-        $ret[] = $table;
-
-        return $ret;
-    }
-
     public function getPermissionsProxies()
     {
         return [$this->supplier];
