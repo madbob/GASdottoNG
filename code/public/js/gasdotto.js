@@ -2666,7 +2666,7 @@ $(document).ready(function() {
         $(this).closest('.modal').modal('hide');
     });
 
-    $('body').on('submit', '.modal form', function(event) {
+    $('body').on('submit', '.modal form:not(.direct-submit)', function(event) {
         if (event.isDefaultPrevented())
             return;
 

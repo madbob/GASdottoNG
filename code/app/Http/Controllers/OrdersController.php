@@ -375,7 +375,7 @@ class OrdersController extends Controller
         return Theme::view('commons.loadablelist', ['identifier' => $list_identifier, 'items' => $orders]);
     }
 
-    public function document(Request $request, $id, $type, $subtype = 'none')
+    public function document(Request $request, $id, $type)
     {
         $order = Order::findOrFail($id);
 
@@ -390,28 +390,37 @@ class OrdersController extends Controller
                 break;
 
             case 'summary':
+                $subtype = $request->input('format', 'pdf');
+                $required_fields = $request->input('fields', []);
+                $data = $order->formatSummary($required_fields);
+                $filename = sprintf('Prodotti ordinati ordine %s presso %s.%s', $order->internal_number, $order->supplier->name, $subtype);
+
                 if ($subtype == 'pdf') {
-                    $html = Theme::view('documents.order_summary_pdf', ['order' => $order])->render();
-                    $filename = sprintf('Prodotti Ordinati ordine %s presso %s.pdf', $order->internal_number, $order->supplier->name);
-                    PDF::SetTitle(sprintf('Prodotti Ordinati ordine %s presso %s del %s', $order->internal_number, $order->supplier->name, date('d/m/Y')));
-                    PDF::AddPage();
+                    $html = Theme::view('documents.order_summary_pdf', ['order' => $order, 'data' => $data])->render();
+                    PDF::SetTitle(sprintf('Prodotti ordinati ordine %s presso %s del %s', $order->internal_number, $order->supplier->name, date('d/m/Y')));
+                    PDF::AddPage('L');
                     PDF::writeHTML($html, true, false, true, false, '');
                     PDF::Output($filename, 'D');
                 }
                 else if ($subtype == 'csv') {
-                    $filename = sprintf('Prodotti Ordinati Ordine %s presso %s.csv', $order->internal_number, $order->supplier->name);
                     http_csv_headers($filename);
-                    return Theme::view('documents.order_summary_csv', ['order' => $order]);
+                    return Theme::view('documents.order_summary_csv', ['order' => $order, 'data' => $data]);
                 }
+
                 break;
 
             case 'table':
+                $status = $request->input('status', 'booked');
                 $filename = sprintf('Tabella Ordine %s presso %s.csv', $order->internal_number, $order->supplier->name);
                 http_csv_headers($filename);
-                if ($subtype == 'booked')
+
+                if ($status == 'booked')
                     return Theme::view('documents.order_table_booked', ['order' => $order]);
-                else if ($subtype == 'delivered')
+                else if ($status == 'delivered')
                     return Theme::view('documents.order_table_delivered', ['order' => $order]);
+                else if ($status == 'saved')
+                    return Theme::view('documents.order_table_saved', ['order' => $order]);
+
                 break;
 
             case 'rid':

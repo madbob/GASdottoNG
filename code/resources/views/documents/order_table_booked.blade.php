@@ -1,6 +1,6 @@
-<?php foreach ($order->products as $product) {
-    echo ';'.$product->printableName();
-} ?>
+Utente;<?php foreach ($order->products as $product) {
+    echo $product->printableName() . ';';
+} ?>Prezzo Totale;Trasporto;Utente
 
 @foreach($order->bookings as $booking)
 {{ $booking->user->printableName() }}<?php foreach ($order->products as $product) {
@@ -8,6 +8,6 @@
 } ?>;{{ printablePrice($booking->value, ',') }};{{ $booking->user->printableName() }}
 @endforeach
 
-<?php foreach ($order->products as $product) {
-    echo ';'.$product->printableName();
-} ?>
+Utente;<?php foreach ($order->products as $product) {
+    echo $product->printableName() . ';';
+} ?>Prezzo Totale;Trasporto;Utente

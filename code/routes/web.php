@@ -60,7 +60,7 @@ Route::get('orders/search', 'OrdersController@search');
 Route::post('orders/recalculate/{id}', 'OrdersController@recalculate');
 Route::get('orders/fixes/{id}/{product_id}', 'OrdersController@getFixes');
 Route::post('orders/fixes/{id}', 'OrdersController@postFixes');
-Route::get('orders/document/{id}/{type}/{subtype?}', 'OrdersController@document');
+Route::get('orders/document/{id}/{type}', 'OrdersController@document');
 
 Route::get('aggregates/{id}/header', 'AggregatesController@objhead');
 Route::post('aggregates/notify/{id}', 'AggregatesController@notify');

@@ -315,6 +315,135 @@ class Order extends Model
         return $summary;
     }
 
+    public function formatSummary($fields)
+    {
+        $ret = (object) [
+            'header' => [],
+            'contents' => []
+        ];
+
+        $summary = $this->calculateSummary();
+        $formattable = self::formattableColumns('summary');
+
+        foreach($fields as $f) {
+            $ret->headers[] = $formattable[$f]->name;
+        }
+
+        foreach ($this->supplier->products as $product) {
+            if($this->hasProduct($product) == false)
+                continue;
+
+            $row = [];
+
+            if(isset($summary->by_variant[$product->id])) {
+                foreach ($summary->by_variant[$product->id] as $name => $variant) {
+                    if ($variant['quantity'] == 0)
+                        continue;
+
+                    foreach($fields as $f) {
+                        $row[] = call_user_func($formattable[$f]->format_variant, $product, $summary, $name, $variant);
+                    }
+                }
+            }
+            else {
+                if ($summary->products[$product->id]['quantity_pieces'] == 0)
+                    continue;
+
+                foreach($fields as $f) {
+                    $row[] = call_user_func($formattable[$f]->format_product, $product, $summary);
+                }
+            }
+
+            $ret->contents[] = $row;
+        }
+
+        return $ret;
+    }
+
+    public static function formattableColumns($type)
+    {
+        if ($type == 'summary') {
+            return [
+                'name' => (object) [
+                    'name' => 'Nome Prodotto',
+                    'checked' => true,
+                    'format_product' => function($product, $summary) {
+                        return $product->printableName();
+                    },
+                    'format_variant' => function($product, $summary, $name, $variant) {
+                        return $product->printableName() . ' ' . $name;
+                    }
+                ],
+                'code' => (object) [
+                    'name' => 'Codice Fornitore',
+                    'format_product' => function($product, $summary) {
+                        return $product->supplier_code;
+                    },
+                    'format_variant' => function($product, $summary, $name, $variant) {
+                        /*
+                            TODO: le varianti hanno un loro proprio codice?
+                        */
+                        return $product->supplier_code;
+                    }
+                ],
+                'quantity' => (object) [
+                    'name' => 'Quantità Totale',
+                    'checked' => true,
+                    'format_product' => function($product, $summary) {
+                        return printableQuantity($summary->products[$product->id]['quantity_pieces'], $product->measure->discrete, 2, ',');
+                    },
+                    'format_variant' => function($product, $summary, $name, $variant) {
+                        return printableQuantity($variant['quantity'], $product->measure->discrete, 2, ',');
+                    }
+                ],
+                'boxes' => (object) [
+                    'name' => 'Numero Confezioni',
+                    'format_product' => function($product, $summary) {
+                        if ($product->package_size != 0)
+                            return $summary->products[$product->id]['quantity_pieces'] / $product->package_size;
+                        else
+                            return '';
+                    },
+                    'format_variant' => function($product, $summary, $name, $variant) {
+                        if ($product->package_size != 0)
+                            return $variant['quantity'] / $product->package_size;
+                        else
+                            return '';
+                    }
+                ],
+                'measure' => (object) [
+                    'name' => 'Unità di Misura',
+                    'checked' => true,
+                    'format_product' => function($product, $summary) {
+                        return $product->printableMeasure(true);
+                    },
+                    'format_variant' => function($product, $summary, $name, $variant) {
+                        return $product->printableMeasure(true);
+                    }
+                ],
+                'price' => (object) [
+                    'name' => 'Prezzo Totale',
+                    'checked' => true,
+                    'format_product' => function($product, $summary) {
+                        return printablePrice($summary->products[$product->id]['price'], ',');
+                    },
+                    'format_variant' => function($product, $summary, $name, $variant) {
+                        return printablePrice($variant['price'], ',');
+                    }
+                ],
+                'transport' => (object) [
+                    'name' => 'Prezzo Trasporto',
+                    'format_product' => function($product, $summary) {
+                        return printablePrice($summary->products[$product->id]['transport'], ',');
+                    },
+                    'format_variant' => function($product, $summary, $name, $variant) {
+                        return printablePrice($summary->products[$product->id]['transport'], ',');
+                    }
+                ],
+            ];
+        }
+    }
+
     protected function defaultAttachments()
     {
         $ret = [];
