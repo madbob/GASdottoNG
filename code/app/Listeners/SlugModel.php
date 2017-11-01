@@ -14,7 +14,19 @@ class SlugModel
     public function handle(SluggableCreating $event)
     {
         if (empty($event->sluggable->id)) {
-            $event->sluggable->id = $event->sluggable->getSlugID();
+            $id = $template = $event->sluggable->getSlugID();
+            $class = get_class($event->sluggable);
+            $index = 1;
+
+            do {
+                $test = $class::where('id', $id)->withTrashed()->first();
+                if ($test == null)
+                    break;
+
+                $id = $template . '-' . $index++;
+            } while(true);
+
+            $event->sluggable->id = $id;
         }
     }
 }

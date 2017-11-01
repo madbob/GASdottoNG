@@ -522,6 +522,19 @@ function addPanelToTabs(group, panel, label) {
     tab.find('a').click();
 }
 
+function listRow(id, url, header) {
+    return $('<a data-element-id="' + id + '" href="' + url + '" class="loadable-item list-group-item">' + header + '</a>');
+}
+
+function appendToLoadableList(list, data, open) {
+    var node = listRow(data.id, data.url, data.header);
+    list.append(node);
+    afterListChanges(list.closest('.loadablelist'));
+
+    if (open)
+        node.click();
+}
+
 /*
     I form possono includere una serie di campi <input type="hidden"> che, in
     funzione dell'attributo "name", possono attivare delle funzioni speciali
@@ -537,19 +550,14 @@ function miscInnerCallbacks(form, data) {
     if (test.length != 0) {
         var listname = test.val();
         var list = $('#' + listname);
-        var node = $('<a data-element-id="' + data.id + '" href="' + data.url + '" class="loadable-item list-group-item">' + data.header + '</a>');
-        list.append(node);
-        afterListChanges(list.closest('.loadablelist'));
-        node.click();
+        appendToLoadableList(list, data, true);
     }
 
     var test = form.find('input[name=append-list]');
     if (test.length != 0) {
         var listname = test.val();
         var list = $('#' + listname);
-        var node = $('<a data-element-id="' + data.id + '" href="' + data.url + '" class="loadable-item list-group-item">' + data.header + '</a>');
-        list.append(node);
-        afterListChanges(list.closest('.loadablelist'));
+        appendToLoadableList(list, data, false);
     }
 
     var test = form.find('input[name=update-select]');
@@ -807,9 +815,8 @@ function afterBookingSaved(form, data) {
         if (data.hasOwnProperty('id')) {
             var list = $("button[data-target='#" + modal.attr('id') + "']").parent().find('.loadablelist');
             if (list.find('> a[data-element-id=' + data.id + ']').length == 0) {
-                var url = data.url.replace('booking/', 'delivery/');
-                list.append('<a data-element-id="' + data.id + '" href="' + url + '" class="loadable-item list-group-item">' + data.header + '</a>');
-                afterListChanges(list);
+                data.url = data.url.replace('booking/', 'delivery/');
+                appendToLoadableList(list, data, false);
             }
         }
         modal.modal('hide');
@@ -2159,6 +2166,27 @@ $(document).ready(function() {
                         }
                     });
                 }
+            }
+        });
+    });
+
+    /*
+        Gestione fornitori
+    */
+
+    $('body').on('click', '.product-editor .duplicate-product', function(e) {
+        e.preventDefault();
+        var id = currentLoadableLoaded(this);
+        var list = $(this).closest('.loadablelist');
+        $.ajax({
+            url: '/products',
+            method: 'POST',
+            dataType: 'JSON',
+            data: {
+                duplicate_id: id
+            },
+            success: function(data) {
+                appendToLoadableList(list, data, true);
             }
         });
     });

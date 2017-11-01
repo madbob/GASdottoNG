@@ -45,7 +45,15 @@
         </div>
     </div>
 
-    @include('commons.formbuttons')
+    @include('commons.formbuttons', [
+        'left_buttons' => [
+            (object) [
+                'label' => 'Duplica',
+                'url' => '',
+                'class' => 'duplicate-product'
+            ]
+        ]
+    ])
 </form>
 
 <div class="modal fade create-variant" tabindex="-1" role="dialog" aria-labelledby="createVariant">

@@ -62,16 +62,31 @@ class ProductsController extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
-        $supplier = Supplier::findOrFail($request->input('supplier_id'));
 
-        if ($user->can('supplier.modify', $supplier) == false) {
-            return $this->errorResponse('Non autorizzato');
+        $duplicate = $request->input('duplicate_id', null);
+        if ($duplicate) {
+            $original = Product::find($duplicate);
+
+            if ($user->can('supplier.modify', $original->supplier) == false) {
+                return $this->errorResponse('Non autorizzato');
+            }
+
+            $p = $original->replicate();
+            $p->id = '';
+            $p->name = 'Copia di ' . $p->name;
+        }
+        else {
+            $supplier = Supplier::findOrFail($request->input('supplier_id'));
+            if ($user->can('supplier.modify', $supplier) == false) {
+                return $this->errorResponse('Non autorizzato');
+            }
+
+            $p = new Product();
+            $p->supplier_id = $supplier->id;
+            $p->active = true;
+            $this->basicReadFromRequest($p, $request);
         }
 
-        $p = new Product();
-        $p->supplier_id = $supplier->id;
-        $p->active = true;
-        $this->basicReadFromRequest($p, $request);
         $p->save();
 
         return $this->successResponse([

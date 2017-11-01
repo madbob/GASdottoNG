@@ -70,5 +70,13 @@
     <hr/>
 
     @include('order.summary', ['order' => $order, 'summary' => $summary])
-    @include('commons.formbuttons', ['export_url' => $order->exportableURL()])
+    @include('commons.formbuttons', [
+        'left_buttons' => [
+            (object) [
+                'label' => 'Esporta',
+                'url' => $order->exportableURL(),
+                'class' => ''
+            ]
+        ]
+    ])
 </form>

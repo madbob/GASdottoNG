@@ -8,8 +8,8 @@ if (!isset($no_save))
 if (!isset($obj))
     $obj = null;
 
-if (!isset($export_url))
-    $export_url = false;
+if (!isset($left_buttons))
+    $left_buttons = false;
 
 ?>
 
@@ -17,8 +17,14 @@ if (!isset($export_url))
 
 <div class="row">
     <div class="col-md-12">
-        @if($export_url)
-            <a href="{{ $export_url }}" class="btn btn-default">Esporta</a>
+        @if($left_buttons)
+            @foreach($left_buttons as $lb)
+                @if(isset($lb->custom))
+                    {!! $lb->custom !!}
+                @else
+                    <a href="{{ $lb->url }}" class="btn btn-default {{ $lb->class }}">{{ $lb->label }}</a>
+                @endif
+            @endforeach
         @endif
 
         <div class="btn-group pull-right main-form-buttons" role="group" aria-label="Opzioni">

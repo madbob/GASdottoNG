@@ -27,7 +27,16 @@
                 </div>
             </div>
 
-            @include('commons.formbuttons', ['obj' => $supplier, 'export_url' => $supplier->exportableURL()])
+            @include('commons.formbuttons', [
+                'obj' => $supplier,
+                'left_buttons' => [
+                    (object) [
+                        'label' => 'Esporta',
+                        'url' => $supplier->exportableURL(),
+                        'class' => ''
+                    ]
+                ]
+            ])
         </form>
     </div>
 
