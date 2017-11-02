@@ -1953,6 +1953,54 @@ $(document).ready(function() {
         $(this).closest('.row').find('input:text').attr('class', '').addClass('form-control').addClass($(this).find('option:selected').val());
     });
 
+    $('body').on('focus', 'input.password-changer', function() {
+        $(this).popover({
+            content: function() {
+                var input = $(this);
+
+                var ret = $('<div>\
+                    <div class="form-group">\
+                        <label for="password" class="col-sm-4 control-label">Nuova Password</label>\
+                        <div class="col-sm-8"><input type="password" class="form-control" name="password" value="" autocomplete="off"></div>\
+                    </div>\
+                    <div class="form-group">\
+                        <label for="password_confirm" class="col-sm-4 control-label">Conferma Password</label>\
+                        <div class="col-sm-8"><input type="password" class="form-control" name="password_confirm" value="" autocomplete="off"></div>\
+                    </div>\
+                    <div class="form-group">\
+                        <div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">Annulla</button> <button class="btn btn-success">Salva</button></div>\
+                    </div>\
+                </div>');
+
+                ret.find('button.btn-success').click(function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var password = ret.find('input[name=password]').val();
+                    var confirm = ret.find('input[name=password_confirm]').val();
+
+                    if (password == confirm) {
+                        input.val(password);
+                        input.popover('destroy');
+                    }
+                    else {
+                        alert('Le password sono diverse!');
+                    }
+                });
+
+                ret.find('button.btn-default').click(function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    input.popover('destroy');
+                });
+
+                return ret;
+            },
+            template: '<div class="popover password-popover" role="tooltip"><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
+            placement: 'left',
+            html: true,
+        });
+    });
+
     $('body').on('focus', 'input.address', function() {
         $(this).popover({
             content: function() {
@@ -2009,7 +2057,8 @@ $(document).ready(function() {
 
                 return ret;
             },
-            template: '<div class="popover address-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
+            template: '<div class="popover address-popover" role="tooltip"><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
+            placement: 'left',
             html: true,
         });
     });

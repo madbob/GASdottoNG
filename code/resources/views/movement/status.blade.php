@@ -95,7 +95,7 @@
         </form>
         <div class="iblock">
             <div class="form-group">
-                <button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#close-balance-modal">Archivia Saldo</button>
+                <button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#close-balance-modal">Archivia Saldi</button>
             </div>
 
             <div class="modal fade" id="close-balance-modal" tabindex="-1" role="dialog">

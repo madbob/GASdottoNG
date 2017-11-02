@@ -5,11 +5,11 @@ body {
 @media (max-width: 1280px) and (min-width: 751px) {
   body {
     padding-top: 150px; }
-
   .order-summary .input-group-addon {
     display: none; }
   .order-summary .form-control {
     padding: 6px; } }
+
 input[type='number'] {
   -moz-appearance: textfield; }
 
@@ -70,8 +70,10 @@ table label {
   color: #31708F;
   background-color: #D9EDF7;
   border-color: #BCE8F1; }
+
 .loadablelist .list-group-item.active {
   border: 2px solid #000; }
+
 .loadablelist .loadable-contents {
   border: 2px solid #000; }
 
@@ -105,15 +107,19 @@ table label {
 
 .dynamic-tree input {
   width: 80%; }
+
 .dynamic-tree .dynamic-tree-add-row {
   margin-top: 20px; }
 
 .booking-product .row {
   margin-left: 0; }
+
 .booking-product .input-group {
   float: left; }
+
 .booking-product .master-variant-selector {
   display: none; }
+
 .booking-product .inline-calculator-trigger {
   cursor: pointer; }
 
@@ -138,6 +144,7 @@ table label {
 
 .modal .modal-header {
   background-color: #EEE; }
+
 .modal .modal-footer {
   background-color: #EEE; }
   .modal .modal-footer .btn-default {
@@ -198,7 +205,13 @@ table label {
 
 .address-popover {
   width: 400px;
-  max-width: 400px; }
+  max-width: 400px;
+  margin-left: 300px !important; }
+
+.password-popover {
+  width: 400px;
+  max-width: 400px;
+  margin-left: 300px !important; }
 
 .movement-type-editor .btn-group label.btn.active:after {
   content: ''; }
@@ -213,9 +226,11 @@ table label {
 .dense-list ul {
   height: 710px;
   overflow-x: hidden; }
+
 .dense-list .nav > li > a {
   padding-top: 5px;
   padding-bottom: 5px; }
+
 .dense-list .list-group-item {
   padding-top: 5px;
   padding-bottom: 5px; }

@@ -1,10 +1,19 @@
+<?php
+
+$class = 'form-control';
+if (isset($extra_class)) {
+    $class .= ' ' . $extra_class;
+}
+
+?>
+
 <div class="form-group password-field">
     <label for="{{ $prefix . $name }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
     <div class="col-sm-{{ $fieldsize }}">
         <div class="input-group">
             <input
                 type="password"
-                class="form-control"
+                class="{{ $class }}"
 
                 @if($obj == null && isset($mandatory) && $mandatory == true)
                     required
