@@ -694,9 +694,14 @@ function currentLoadableUniqueSelector(target)
     return 'div.list-group-item[data-random-identifier=' + identifier + ']';
 }
 
+function currentLoadableTrigger(target)
+{
+    return $(target).closest('.list-group-item').prev('a');
+}
+
 function currentLoadableLoaded(target)
 {
-    return $(target).closest('div.list-group-item').prev('a').attr('data-element-id');
+    return currentLoadableTrigger(target).attr('data-element-id');
 }
 
 function reloadCurrentLoadable(listid)
@@ -2179,6 +2184,7 @@ $(document).ready(function() {
         e.preventDefault();
         var id = currentLoadableLoaded(this);
         var list = $(this).closest('.loadablelist');
+        var original = currentLoadableTrigger(this);
         $.ajax({
             url: '/products',
             method: 'POST',
@@ -2187,7 +2193,10 @@ $(document).ready(function() {
                 duplicate_id: id
             },
             success: function(data) {
-                appendToLoadableList(list, data, true);
+                original.click();
+                setTimeout(function() {
+                    appendToLoadableList(list, data, true);
+                }, 200);
             }
         });
     });
