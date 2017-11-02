@@ -1391,8 +1391,13 @@ $(document).ready(function() {
         }
     });
 
-    $(document).ajaxComplete(function(event) {
+    $(document).ajaxSuccess(function(event) {
         generalInit();
+    });
+
+    $(document).ajaxError(function(event, jqXHR) {
+        if (jqXHR.status == 401)
+            window.location.href = '/login';
     });
 
     if (location.hash != '') {
