@@ -1,4 +1,4 @@
-<?php $cellsize = floor(100 / count($data->headers)) ?>
+<?php $cellsize = round(100 / count($data->headers), 3) ?>
 <html>
     <body>
         <h3>Prodotti ordinati ordine {{ $order->internal_number }} presso {{ $order->supplier->printableName() }} del {{ date('d/m/Y') }}</h3>
