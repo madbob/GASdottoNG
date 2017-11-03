@@ -9,11 +9,14 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use DB;
 use Theme;
 use Auth;
+use Hash;
 use CsvReader;
 use ezcArchive;
 use Artisan;
 
 use App\User;
+use App\Contact;
+use App\Movement;
 use App\Supplier;
 use App\Product;
 use App\Category;
@@ -260,6 +263,7 @@ class ImportController extends Controller
                     }
 
                     $creator = Auth::user();
+                    $gas = $creator->gas;
                     $users = [];
                     $errors = [];
 
@@ -274,23 +278,60 @@ class ImportController extends Controller
                             $u = User::where('username', '=', $login)->orderBy('id', 'desc')->first();
                             if ($u == null) {
                                 $u = new User();
-                                $u->gas_id = $creator->gas->id;
+                                $u->gas_id = $gas->id;
                                 $u->username = $login;
+                                $u->password = Hash::make($login);
                             }
+
+                            $contacts = [];
+                            $credit = null;
 
                             foreach ($columns as $index => $field) {
                                 if ($field == 'none') {
                                     continue;
-                                } else {
-                                    $value = $line[$index];
                                 }
-
-                                $u->$field = $value;
+                                else if ($field == 'phone' || $field == 'email') {
+                                    $c = new Contact();
+                                    $c->type = $field;
+                                    $c->value = $line[$index];
+                                    $contacts[] = $c;
+                                    continue;
+                                }
+                                else if ($field == 'member_since') {
+                                    $u->$field = date('Y-m-d', strtotime($line[$index]));
+                                }
+                                else if ($field == 'credit') {
+                                    if (!empty($line[$index]) && $line[$index] != 0) {
+                                        $credit = new Movement();
+                                        $credit->type = 'user-credit';
+                                        $credit->amount = str_replace(',', '.', $line[$index]);
+                                        $credit->method = 'bank';
+                                        $credit->notes = 'Importazione utenti del ' . date('d/m/Y');
+                                    }
+                                }
+                                else {
+                                    $u->$field = $line[$index];
+                                }
                             }
 
                             $u->save();
                             $users[] = $u;
-                        } catch (\Exception $e) {
+
+                            if (!empty($contacts)) {
+                                foreach($contacts as $c) {
+                                    $c->target_id = $u->id;
+                                    $c->target_type = get_class($u);
+                                    $c->save();
+                                }
+                            }
+
+                            if ($credit != null) {
+                                $credit->target_id = $u->id;
+                                $credit->target_type = get_class($u);
+                                $credit->save();
+                            }
+                        }
+                        catch (\Exception $e) {
                             $errors[] = implode($target_separator, $line).'<br/>'.$e->getMessage();
                         }
                     }

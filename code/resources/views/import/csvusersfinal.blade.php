@@ -27,6 +27,8 @@
                 @endforeach
             </ul>
         @endif
+
+        <div class="clearfix"></div>
     </div>
 
     <div class="modal-footer">

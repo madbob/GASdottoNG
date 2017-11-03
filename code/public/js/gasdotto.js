@@ -2710,6 +2710,7 @@ $(document).ready(function() {
 
         var form = $(this);
         var data = form.serializeArray();
+        form.find('button[type=submit]').prop('disabled', true);
 
         $.ajax({
             method: form.attr('method'),

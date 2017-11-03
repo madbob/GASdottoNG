@@ -13,7 +13,7 @@
                 <div class="col-md-4">
                     <ul class="list-group">
                         @foreach($columns as $column)
-                            <li class="list-group-item">{{ $column }}</li>
+                            <li class="list-group-item">{{ empty($column) ? '&nbsp;' : $column }}</li>
                         @endforeach
                     </ul>
                 </div>
@@ -32,6 +32,8 @@
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="username" />Login</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="email" />E-Mail</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="phone" />Telefono</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="member_since" />Membro Dal</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="credit" />Credito Attuale</li>
                     </ul>
                 </div>
             </div>
