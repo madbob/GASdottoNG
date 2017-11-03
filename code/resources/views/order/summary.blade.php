@@ -181,13 +181,23 @@
                 <th class="order-summary-order-price">{{ printablePrice($summary->price) }} €</th>
                 <th class="order-summary-order-transport">{{ printablePrice($summary->transport) }} €</th>
                 <th></th>
-                <th class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} €</th>
+                <th>
+                    <span class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} €</span>
+                    @if($summary->transport_delivered)
+                        +<br/><span class="order-summary-order-transport_delivered">{{ printablePrice($summary->transport_delivered) }} €</span>
+                    @endif
+                </th>
                 <th></th>
             @else
                 <th></th>
                 <th></th>
                 <th></th>
-                <th class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} €</th>
+                <th>
+                    <span class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} €</span>
+                    @if($summary->transport_delivered)
+                        +<br/><span class="order-summary-order-transport_delivered">{{ printablePrice($summary->transport_delivered) }} €</span>
+                    @endif
+                </th>
             @endif
         </tr>
     </thead>

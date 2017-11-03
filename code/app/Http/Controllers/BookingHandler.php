@@ -164,6 +164,17 @@ class BookingHandler extends Controller
             }
             else {
                 if ($delivering) {
+                    /*
+                        Attenzione!!!
+                        Il valore restituito da $booking->check_transport
+                        dipende dallo stato della prenotazione, se è "shipped"
+                        restituisce... la stessa variabile $booking->transport
+                        che vorremmo qui settare!
+                        Dunque: prima ricalcolare il costo di trasporto,
+                        aggiornato in funzione dei prodotti consegnati (salvati
+                        sopra), dopo modificare lo stato
+                    */
+                    $booking->transport = $booking->check_transport;
                     $booking->status = $request->input('action');
                     $booking->save();
                 }

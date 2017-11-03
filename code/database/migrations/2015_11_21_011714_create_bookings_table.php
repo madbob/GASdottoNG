@@ -15,6 +15,7 @@ class CreateBookingsTable extends Migration
             $table->string('user_id');
             $table->enum('status', ['pending', 'partial', 'shipped', 'saved']);
             $table->text('notes');
+            $table->decimal('transport', 6, 2)->default(0);
 
             $table->string('deliverer_id')->nullable();
             $table->date('delivery')->nullable();

@@ -837,6 +837,7 @@ function afterBookingSaved(form, data) {
 
 function bookingTotal(editor) {
     var total_price = 0;
+    var total_transport = parseFloatC(editor.find('input:hidden[name=global-transport-price]').val());
 
     editor.find('.booking-product').each(function() {
         if ($(this).hasClass('hidden'))
@@ -849,8 +850,13 @@ function bookingTotal(editor) {
         var price = product_price.val();
         price = parseFloatC(price);
 
+        var product_transport = $(this).find('input:hidden[name=product-transport]');
+        var transport = product_transport.val();
+        transport = parseFloatC(transport);
+
         var quantity = 0;
         var row_p = 0;
+        var row_t = 0;
 
         $(this).find('.booking-product-quantity').each(function() {
             var input = $(this).find('input');
@@ -869,20 +875,18 @@ function bookingTotal(editor) {
             }
 
             row_p += current_price * q;
+            row_t += transport * q;
         });
 
         $(this).closest('tr').find('.booking-product-price').text(priceRound(row_p) + ' €');
         total_price += row_p;
+        total_transport += row_t;
     });
 
-    var transport = editor.find('.booking-transport');
-    if (transport.length != 0)
-        total_price += parseFloatC(transport.find('.booking-transport-price span').text());
+    editor.find('.booking-transport .booking-transport-price span').text(priceRound(total_transport));
 
-    total_price = priceRound(total_price);
-
-    var total_label = editor.find('.booking-total');
-    total_label.text(total_price);
+    total_price += total_transport;
+    editor.find('.booking-total').text(priceRound(total_price));
 
     var form = editor.closest('form');
     var grand_total = 0;

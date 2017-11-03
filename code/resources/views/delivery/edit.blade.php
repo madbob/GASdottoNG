@@ -78,7 +78,8 @@ $existing = false;
                                 <tr class="booking-product">
                                     <td>
                                         <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($product->true_quantity, $discrete_quantity) }}" class="skip-on-submit" />
-                                        <input type="hidden" name="product-price" value="{{ $product->product->contextualPrice($order, false) + $product->product->transport }}" class="skip-on-submit" />
+                                        <input type="hidden" name="product-price" value="{{ $product->product->contextualPrice($order, false) }}" class="skip-on-submit" />
+                                        <input type="hidden" name="product-transport" value="{{ $product->product->transport }}" class="skip-on-submit" />
                                         <label class="static-label">{{ $product->product->name }}</label>
                                     </td>
 
@@ -101,7 +102,7 @@ $existing = false;
                                     </td>
                                 </tr>
                             @else
-                                <?php $base_price = $product->product->contextualPrice($order, false) + $product->product->transport ?>
+                                <?php $base_price = $product->product->contextualPrice($order, false) ?>
 
                                 @foreach($product->variants as $var)
                                     <?php
@@ -169,18 +170,17 @@ $existing = false;
                             </tr>
                         @endif
 
-                        @if($o->transport != 0)
-                            <tr class="booking-transport">
-                                <td>
-                                    <label class="static-label">Trasporto</label>
-                                </td>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td>
-                                    <label class="static-label booking-transport-price pull-right"><span>{{ printablePrice($o->transport) }}</span> €</label>
-                                </td>
-                            </tr>
-                        @endif
+                        <tr class="booking-transport">
+                            <td>
+                                <label class="static-label">Trasporto</label>
+                            </td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>
+                                <input type="hidden" name="global-transport-price" value="{{ $o->major_transport }}" class="skip-on-submit" />
+                                <label class="static-label booking-transport-price pull-right"><span>{{ printablePrice($o->check_transport) }}</span> €</label>
+                            </td>
+                        </tr>
                     </tbody>
 
                     <tfoot>

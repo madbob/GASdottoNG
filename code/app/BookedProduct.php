@@ -59,7 +59,7 @@ class BookedProduct extends Model
                     $price += $c->value->price_offset;
                 }
 
-                $total += ($price + $product->transport) * $v->$attribute;
+                $total += $price * $v->$attribute;
             }
 
             return $total;
@@ -72,7 +72,7 @@ class BookedProduct extends Model
     public function basePrice($rectify = true)
     {
         $product = $this->product;
-        return $product->contextualPrice($this->booking->order, $rectify) + $product->transport;
+        return $product->contextualPrice($this->booking->order, $rectify);
     }
 
     /*
@@ -101,6 +101,16 @@ class BookedProduct extends Model
     public function deliveredValue()
     {
         return $this->fixQuantity('delivered', false);
+    }
+
+    public function transportBookedValue()
+    {
+        return $this->product->transport * $this->quantity;
+    }
+
+    public function transportDeliveredValue()
+    {
+        return $this->product->transport * $this->delivered;
     }
 
     public function getBookedVariant($variant, $fallback = false)

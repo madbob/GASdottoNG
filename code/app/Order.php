@@ -310,7 +310,21 @@ class Order extends Model
 
         $summary->price = $total_price;
         $summary->price_delivered = $total_price_delivered;
-        $summary->transport = $total_transport;
+
+        /*
+            Il prezzo del trasporto è la somma del prezzo di trasporto di tutti
+            i prodotti con il prezzo di trasporto globale di tutto l'ordine.
+            Solitamente solo uno dei due è valorizzato, ma per buona misura li
+            metto insieme
+        */
+        $summary->transport = $total_transport + $order->transport;
+
+        $total_transport_delivered = 0;
+        if ($order->transport > 0) {
+            foreach ($order->bookings()->where('status', 'shipped')->get() as $shipped_booking)
+                $total_transport_delivered += $shipped_booking->transport;
+        }
+        $summary->transport_delivered = $total_transport_delivered;
 
         return $summary;
     }

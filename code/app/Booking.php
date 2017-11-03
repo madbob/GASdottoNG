@@ -155,28 +155,44 @@ class Booking extends Model
         return $sum;
     }
 
-    public function getTransportAttribute()
+    /*
+        Questo ritorna solo il costo di trasporto applicato sull'ordine
+        complessivo
+    */
+    public function getMajorTransportAttribute()
     {
-        if ($this->transport_cache == null) {
-            if($this->order->transport > 0) {
-                /*
-                $count = $this->order->bookings()->count();
-                if ($count != 0)
-                    return ($this->order->transport / $count);
-                */
-
-                $total_value = $this->order->total_value;
-                if ($total_value == 0)
-                    $this->transport_cache = 0;
-                else
-                    $this->transport_cache = round($this->value * $this->order->transport / $total_value, 2);
-            }
-            else {
-                $this->transport_cache = 0;
-            }
+        if($this->order->transport > 0) {
+            $total_value = $this->order->total_value;
+            if ($total_value != 0)
+                return round($this->value * $this->order->transport / $total_value, 2);
         }
 
-        return $this->transport_cache;
+        return 0;
+    }
+
+    /*
+        Se la prenotazione non è ancora stata consegnata, restituisce il costo
+        di trasporto sull'ordine complessivo (cfr. getMajorTransportAttribute())
+        sommato alla somma di trasporto dei singoli prodotti già consegnati.
+        Se la prenotazione è stata consegnata, restituisce il valore salvato sul
+        database
+    */
+    public function getCheckTransportAttribute()
+    {
+        if ($this->status == 'shipped') {
+            return $this->transport;
+        }
+        else {
+            if ($this->transport_cache == null) {
+                $this->transport_cache = $this->major_transport;
+
+                foreach($this->products as $p) {
+                    $this->transport_cache += $p->transportDeliveredValue();
+                }
+            }
+
+            return $this->transport_cache;
+        }
     }
 
     /*
@@ -184,7 +200,7 @@ class Booking extends Model
     */
     public function getTotalValueAttribute()
     {
-        return $this->value + $this->transport;
+        return $this->value + $this->check_transport;
     }
 
     /*
