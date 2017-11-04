@@ -22,7 +22,7 @@ function gas_storage_path($path = null)
 function env_file()
 {
     if (global_multi_installation()) {
-        $instance = substr($_SERVER['SERVER_NAME'], 0, strpos($_SERVER['SERVER_NAME'], '.'));
+        $instance = substr($_SERVER['HTTP_HOST'], 0, strpos($_SERVER['HTTP_HOST'], '.'));
         return ('.env.' . $instance);
     }
     else {
