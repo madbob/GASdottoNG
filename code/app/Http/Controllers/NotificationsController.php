@@ -107,7 +107,7 @@ class NotificationsController extends Controller
         $n = Notification::findOrFail($id);
 
         $user = Auth::user();
-        if ($user->can('notifications.admin', $user->can) == false && $n->hasUser($user) == false) {
+        if ($user->can('notifications.admin', $user->gas) == false && $n->hasUser($user) == false) {
             return $this->errorResponse('Non autorizzato');
         }
 
