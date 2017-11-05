@@ -16,7 +16,6 @@ use Artisan;
 
 use App\User;
 use App\Contact;
-use App\Movement;
 use App\Supplier;
 use App\Product;
 use App\Category;
@@ -302,11 +301,7 @@ class ImportController extends Controller
                                 }
                                 else if ($field == 'credit') {
                                     if (!empty($line[$index]) && $line[$index] != 0) {
-                                        $credit = new Movement();
-                                        $credit->type = 'user-credit';
-                                        $credit->amount = str_replace(',', '.', $line[$index]);
-                                        $credit->method = 'bank';
-                                        $credit->notes = 'Importazione utenti del ' . date('d/m/Y');
+                                        $credit = str_replace(',', '.', $line[$index]);
                                     }
                                 }
                                 else {
@@ -326,9 +321,7 @@ class ImportController extends Controller
                             }
 
                             if ($credit != null) {
-                                $credit->target_id = $u->id;
-                                $credit->target_type = get_class($u);
-                                $credit->save();
+                                $u->alterBalance($credit);
                             }
                         }
                         catch (\Exception $e) {
