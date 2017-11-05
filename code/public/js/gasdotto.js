@@ -101,9 +101,8 @@ function generalInit() {
         });
     });
 
-    $('.many-rows').each(function() {
-        manyRowsInit($(this));
-    });
+    $('.many-rows').manyrows();
+    $('.dynamic-tree-box').dynamictree();
 
     $('.completion-rows').each(function() {
         completionRowsInit($(this));
@@ -197,12 +196,6 @@ function generalInit() {
         });
     });
 
-    $('.dynamic-tree').nestedSortable({
-        listType: 'ul',
-        items: 'li',
-        toleranceElement: '> div'
-    });
-
     $('#orderAggregator ul').droppable({
         accept: 'li',
         drop: function(event, ui) {
@@ -245,14 +238,6 @@ function randomString(total)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
 
     return text;
-}
-
-function inlineFeedback(button, feedback_text) {
-    var idle_text = button.text();
-    button.text(feedback_text);
-    setTimeout(function() {
-        button.text(idle_text).prop('disabled', false);
-    }, 2000);
 }
 
 function parseFullDate(string) {
@@ -431,35 +416,6 @@ function completionRowsInit(node) {
     });
 }
 
-function manyRowsAddDeleteButtons(node) {
-    var fields = node.find('.row:not(.many-rows-header)');
-    if (fields.length > 1 && node.find('.delete-many-rows').length == 0) {
-        fields.each(function() {
-            var button = '<div class="col-md-2"><div class="btn btn-danger delete-many-rows pull-right"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div></div>';
-            $(this).append(button);
-        });
-    } else if (fields.length == 1) {
-        node.find('.delete-many-rows').each(function() {
-            $(this).closest('.col-md-2').remove();
-        });
-    }
-}
-
-function manyRowsInitRow(row, fresh) {
-    if (fresh) {
-        row.find('input').val('');
-        row.find('.customized-cell').empty();
-    }
-}
-
-function manyRowsInit(node) {
-    manyRowsAddDeleteButtons(node);
-
-    node.find('.row').each(function() {
-        manyRowsInitRow($(this), false);
-    });
-}
-
 function loadingPlaceholder() {
     return $('<div class="progress"><div class="progress-bar progress-bar-striped active" style="width: 100%"></div></div>');
 }
@@ -483,28 +439,6 @@ function setupImportCsvEditor() {
             $(this).find('.column_content').empty().append(node.contents());
         }
     });
-}
-
-function parseDynamicTree(tree) {
-    var data = [];
-    var index = 1;
-
-    while(true) {
-        var n = tree.find('> li:nth-child(' + index + ')');
-        if (n.length == 0)
-            break;
-
-        var node = {
-            id: n.attr('id'),
-            name: n.find('input:text').val()
-        };
-
-        node.children = parseDynamicTree(n.find('ul'));
-        data.push(node);
-        index++;
-    }
-
-    return data;
 }
 
 function addPanelToTabs(group, panel, label) {
@@ -939,6 +873,7 @@ function setupVariantsEditor() {
         form.find('input:hidden[name=variant_id]').val(id);
         form.find('input[name=name]').val(name);
         form.find('.values_table').empty().append(values);
+        form.find('.many-rows').manyrows();
 
         if (offset == '1') {
             form.find('input[name=has_offset]').bootstrapToggle('on');
@@ -954,14 +889,10 @@ function setupVariantsEditor() {
         var row = $(this).closest('.list-group');
         var form = row.find('.creating-variant-form');
         var modal = row.find('.create-variant');
+        form.find('.many-rows').manyrows('refresh');
         form.find('input:text').val('');
         form.find('input:hidden[name=variant_id]').val('');
         form.find('input:checkbox').bootstrapToggle('off');
-
-        values = form.find('.many-rows');
-        values.find('.row:not(:first)').remove();
-        manyRowsAddDeleteButtons(values);
-
         form.find('input[name*=price_offset]').val('0').closest('.form-group').hide();
         modal.modal('show');
     });
@@ -1308,78 +1239,6 @@ function setupStatisticsForm() {
             runSupplierStats();
         });
     }
-}
-
-/*******************************************************************************
-	Help
-*/
-
-function helpFillNode(nodes, text) {
-    if (nodes != null) {
-        nodes.parent().addClass('help-sensitive').popover({
-            content: text,
-            placement: 'auto right',
-            container: 'body',
-            html: true,
-            trigger: 'hover'
-        });
-    }
-
-    return '';
-}
-
-function setupHelp() {
-    $('body').on('click', '#help-trigger', function(e) {
-        e.preventDefault();
-
-        if ($(this).hasClass('active')) {
-            $('.help-sensitive').removeClass('help-sensitive').popover('destroy');
-        } else {
-            $.ajax({
-                url: '/help/data.md',
-                method: 'GET',
-
-                success: function(data) {
-                    var renderer = new marked.Renderer();
-                    var container = null;
-                    var nodes = null;
-                    var inner_text = '';
-
-                    /*
-                    	Qui abuso del renderer Markdown per
-                    	filtrare i contenuti del file ed
-                    	assegnarli ai vari elementi sulla pagina
-                    */
-
-                    renderer.heading = function(text, level) {
-                        inner_text = helpFillNode(nodes, inner_text);
-
-                        if (level == 2)
-                            container = $(text);
-                        else if (level == 1)
-                            nodes = container.find(':contains(' + text + ')').last();
-                    };
-                    renderer.paragraph = function(text, level) {
-                        if (inner_text != '')
-                            inner_text += '<br/>';
-                        inner_text += text;
-                    };
-                    renderer.list = function(text, level) {
-                        inner_text += '<ul>' + text + '</ul>';
-                    };
-
-                    marked(data, {
-                        renderer: renderer
-                    }, function() {
-                        inner_text = helpFillNode(nodes, inner_text);
-                    });
-                }
-            });
-        }
-
-        $(this).toggleClass('active');
-        return false;
-    });
 }
 
 /*******************************************************************************
@@ -2653,65 +2512,6 @@ $(document).ready(function() {
     });
 
     /*
-    	Widget generico multiriga
-    */
-
-    $('body').on('click', '.delete-many-rows', function(event) {
-        event.preventDefault();
-        var container = $(this).closest('.many-rows');
-        $(this).closest('.row').remove();
-        manyRowsAddDeleteButtons(container);
-        return false;
-
-    }).on('click', '.add-many-rows', function(event) {
-        event.preventDefault();
-        var container = $(this).closest('.many-rows');
-        var row = container.find('.row:not(.many-rows-header)').first().clone();
-        container.find('.add-many-rows').before(row);
-        manyRowsInitRow(row, true);
-        manyRowsAddDeleteButtons(container);
-        return false;
-    });
-
-    /*
-    	Widget albero gerarchico dinamico
-    */
-
-    $('body').on('click', '.dynamic-tree .dynamic-tree-remove', function() {
-        $(this).closest('li').remove();
-
-    }).on('click', '.dynamic-tree-box .dynamic-tree-add', function(e) {
-        e.preventDefault();
-        var box = $(this).closest('.dynamic-tree-box');
-        var input = box.find('input[name=new_category]');
-        var name = input.val();
-        var tree = box.find('.dynamic-tree');
-
-        tree.append('<li class="list-group-item"><div><span class="badge pull-right"><span class="glyphicon glyphicon-remove dynamic-tree-remove"></span></span><input name="names[]" class="form-control" value="' + name + '"></div><ul></ul></li>');
-        tree.nestedSortable('refresh');
-
-        input.val('');
-
-        return false;
-
-    }).on('submit', '.dynamic-tree-box', function(e) {
-        e.preventDefault();
-        var box = $(this);
-        var tree = box.find('.dynamic-tree');
-        var data = parseDynamicTree(tree);
-
-        $.ajax({
-            method: box.attr('method'),
-            url: box.attr('action'),
-            data: {
-                serialized: data
-            },
-        });
-
-        return false;
-    });
-
-    /*
     	Widget generico wizard
     */
 
@@ -2763,6 +2563,5 @@ $(document).ready(function() {
         });
     });
 
-    setupHelp();
     setupStatisticsForm();
 });

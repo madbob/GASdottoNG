@@ -151,6 +151,11 @@
             '/js/marked.min.js',
             '/js/chartist.js',
             '/js/jquery.TableCSVExport.js',
+
+            '/js/utils.js',
+            '/js/inline-help.js',
+            '/js/jquery.manyrows.js',
+            '/js/jquery.dynamictree.js',
             '/js/gasdotto.js'
         ];
 
