@@ -68,12 +68,12 @@
                             <p>
                                 Operazione conclusa.
                             </p>
-                            <div class="hidden alert alert-danger">
+                            <div class="hidden alert alert-danger broken">
                                 <p>
                                     I seguenti saldi sono risultati diversi al termine del ricalcolo.
                                 </p>
                                 <br>
-                                <table class="table">
+                                <table class="table" id="broken_balances">
                                     <thead>
                                         <tr>
                                             <th>Soggetto</th>
@@ -87,6 +87,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
+                            <a href="" class="btn btn-default hidden table_to_csv" data-target="#broken_balances">Scarica CSV</a>
                             <a href="" class="btn btn-success">Ricarica la Pagina</a>
                         </div>
                     </div>

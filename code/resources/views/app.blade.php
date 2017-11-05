@@ -150,6 +150,7 @@
             '/js/bootstrap-toggle.js',
             '/js/marked.min.js',
             '/js/chartist.js',
+            '/js/jquery.TableCSVExport.js',
             '/js/gasdotto.js'
         ];
 

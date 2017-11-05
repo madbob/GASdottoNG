@@ -1208,10 +1208,11 @@ function displayRecalculatedBalances(form, data) {
     var modal = $('#display-recalculated-balance-modal');
 
     if (data.diffs.length != 0) {
-        var table = modal.find('.hidden').removeClass('hidden').find('tbody');
+        modal.find('a.hidden').removeClass('hidden');
+        var table = modal.find('.broken.hidden').removeClass('hidden').find('tbody');
         for (var name in data.diffs) {
             if (data.diffs.hasOwnProperty(name))
-                table.append('<tr><td>' + name + '</td><td>' + data.diffs[name][0] + ' €</td><td>' + data.diffs[name][1] + ' €</td></tr>');
+                table.append('<tr><td>' + name + '</td><td>' + data.diffs[name][0] + '</td><td>' + data.diffs[name][1] + '</td></tr>');
         }
     }
 
@@ -1951,6 +1952,15 @@ $(document).ready(function() {
                     $(this).remove();
                 });
             }
+        });
+    });
+
+    $('body').on('click', '.table_to_csv', function(e) {
+        e.preventDefault();
+        var target = $(this).attr('data-target');
+        var data = $(target).TableCSVExport({
+            delivery: 'download',
+            filename: 'bilanci_ricalcolati.csv'
         });
     });
 

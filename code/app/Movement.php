@@ -31,7 +31,10 @@ class Movement extends Model
 
     public function sender()
     {
-        return $this->morphTo();
+        if ($this->sender_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->sender_type)))
+            return $this->morphTo()->withTrashed();
+        else
+            return $this->morphTo();
     }
 
     public function target()
