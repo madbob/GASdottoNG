@@ -14,7 +14,7 @@
 
         <div class="alert alert-info">
             <p>
-                Da qui puoi importare i dati della tua vecchia istanza GASdotto. Indica il percorso completo dove GASdotto è installato, e la procedura automatica provvederà al resto. Potrebbe volerci un poco di tempo: non chiudere questa pagina!
+                Da qui puoi importare i dati della tua vecchia istanza GASdotto, purché installata su questo stesso server. Indica il percorso completo dove GASdotto è installato, e la procedura automatica provvederà al resto. Potrebbe volerci un poco di tempo: non chiudere questa pagina!
             </p>
         </div>
 
