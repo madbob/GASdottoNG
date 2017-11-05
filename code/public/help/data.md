@@ -23,39 +23,35 @@ del popup relativo.
 
 ## .user-editor
 
-# Login
+# Username
 
 Username col quale l'utente si può autenticare. Deve essere univoco.
-
-# E-Mail
-
-Indirizzo mail dell'utente. Qui verranno spediti eventuali messaggi generati dal sistema.
 
 # Password
 
 Password di accesso dell'utente. Lasciando in bianco questo campo, la password attuale non sarà modificata.
 
+# Contatti
+
+Qui si può specificare un numero arbitrario di contatti per l'utente. Le notifiche saranno spedite a tutti gli indirizzi e-mail indicati.
+
+# Stato
+
+Gli utenti Sospesi e Cessati non possono accedere alla piattaforma.
+
 ## .supplier-editor
 
 # Nome
 
-Nome del fornitore.
+Nome informale del fornitore.
+
+# Ragione Sociale
+
+Nome completo del fornitore, da usare per fini contabili e fiscali.
 
 # Descrizione
 
 Breve descrizione leggibile da tutti gli utenti.
-
-# Codice Fiscale
-
-Codice fiscale del fornitore.
-
-# Partita IVA
-
-Partita IVA del fornitore.
-
-# Sito Web
-
-Indirizzo del sito web.
 
 # Modalità Pagamento
 
@@ -65,6 +61,10 @@ Eventuale nota sulle modalità di pagamento al fornitore. Visibile solo ai refer
 
 Eventuale nota sulle modalità per sottoporre gli ordini al fornitore. Visibile solo ai referenti.
 
+# Contatti
+
+Qui si può specificare un numero arbitrario di contatti per il fornitore.
+
 ## .product-editor
 
 # Nome
@@ -73,7 +73,7 @@ Nome del prodotto.
 
 # Prezzo Unitario
 
-Prezzo unitario per unità di misura. Può assumere un significato particolare quando viene attivata la "Pezzatura".
+Prezzo unitario per unità di misura. Si intende "IVA inclusa", per maggiori dettagli si veda il campo "Aliquota IVA". Può assumere un significato particolare quando viene attivata la "Pezzatura".
 
 # Prezzo Trasporto
 
@@ -89,11 +89,15 @@ Categoria assegnata al prodotto.
 
 # Unità di Misura
 
-Unità di misura assegnata al prodotto. Attenzione: può influenzare l'abilitazione di alcune variabili.
+Unità di misura assegnata al prodotto. Attenzione: può influenzare l'abilitazione di alcune variabili del prodotto, si veda il parametro "Unità Discreta" nel pannello di amministrazione delle unità di misura (acessibile solo agli utenti abilitati).
 
 # Descrizione
 
 Breve descrizione del prodotto.
+
+# Aliquota IVA
+
+Le aliquote esistenti possono essere configurate nel pannello "Configurazioni".
 
 # Codice Fornitore
 
@@ -102,10 +106,6 @@ Eventuale codice di riferimento del prodotto per il fornitore, viene incluso nei
 # Ordinabile
 
 Indica se il prodotto potrà essere ordinabile o meno all'interno dei nuovi ordini per il fornitore. Lo stato dei singoli prodotti potrà comunque essere cambiato da parte dei referenti anche all'interno di un ordine aperto.
-
-# Archiviato
-
-Un prodotto archiviato viene nascosto nell'elenco dei prodotti del fornitore, e non rientra (neppure come non ordinabile) all'interno dei nuovi ordini. Da usare per prodotti fuori listino, per mantenerne un riferimento storico.
 
 # Pezzatura
 
@@ -127,11 +127,11 @@ Da usare per prodotti consegnati in pezzi non sempre uniformi, come il formaggio
 
 # Confezione
 
-.
+Se il prodotto viene distribuito in confezioni da N pezzi, indicare qui il valore di N. Gli ordini da sottoporre al fornitore dovranno essere espressi in numero di confezioni, ovvero numero di pezzi ordinati / numero di pezzi nella confezione. Se la quantità totale di pezzi ordinati non è un multiplo di questo numero il prodotto sarà marcato con una icona rossa nel pannello di riassunto dell'ordine, da cui sarà possibile sistemare le quantità aggiungendo e togliendo ove opportuno.
 
 # Multiplo
 
-Se diverso da 0, il prodotto è prenotabile solo per multipli di questo valore. Utile per prodotti pre-confezionati ma prenotabili individualmente.
+Se diverso da 0, il prodotto è prenotabile solo per multipli di questo valore. Utile per prodotti pre-confezionati ma prenotabili individualmente. Da non confondere con l'attributo "Confezione".
 
 # Minimo
 
@@ -147,37 +147,55 @@ Se diverso da 0, questa è la quantità massima di prodotto che complessivamente
 
 # Crea Nuova Variante
 
-.
+Ogni prodotto può avere delle varianti, ad esempio la taglia o il colore per i capi di abbigliamento. In fase di prenotazione, gli utenti potranno indicare quantità diverse per ogni combinazione di varianti. Le varianti possono inoltre avere un proprio prezzo, da specificare in funzione del prezzo unitario del prodotto (ad esempio: +1 euro o -0.8 euro).
 
 ## .order-editor
 
 # Fornitore
 
-.
+Il fornitore presso cui l'ordine è aperto.
+
+# Numero
+
+Numero progressivo automaticamente assegnato ad ogni ordine.
+
+# Commento
+
+Eventuale testo informativo da visualizzare nel titolo dell'ordine, oltre al nome del fornitore e alle date di apertura e chiusura.
 
 # Data Apertura
 
-.
+Data di apertura dell'ordine.
 
 # Data Chiusura
 
-.
+Data di chiusura dell'ordine. Al termine del giorno qui indicato, l'ordine sarà automaticamente impostato nello stato "Prenotazioni Chiuse".
 
 # Data Consegna
 
-.
+Eventuale data di consegna dell'ordine. Ha solo un valore informativo per gli utenti.
 
 # Stato
 
-.
+Stato attuale dell'ordine. Può assumere i valori:
+
+  * prenotazioni aperte: tutti gli utenti vedono l'ordine e possono sottoporre le loro prenotazioni
+  * prenotazioni chiuse: tutti gli utenti vedono l'ordine ma non possono aggiungere o modificare le prenotazioni. Gli utenti abilitati a modificare il fornitore possono comunque intervenire
+  * consegnato: l'ordine appare nell'elenco degli ordini solo per gli utenti abilitati, ma nessun valore può essere modificato né tantomeno possono essere modificate le prenotazioni
+  * archiviato: l'ordine non appare più nell'elenco, può solo essere ripescato con la funzione di ricerca
+  * in sospeso: l'ordine appare nell'elenco degli ordini solo per gli utenti abilitati, e può essere modificato
 
 # Sconto Globale
 
 Sconto applicato su tutti i prodotti nell'ordine. Può eventualmente essere sommato allo sconto individualmente applicabile sui singoli prodotti, che va configurato nell'apposito pannello. Se espresso con un numero decimale (e.g. 2,10) viene considerato come valore assoluto, altrimenti se termina con un simbolo di percentuale (e.g. 20%) viene considerato come percentuale sul Prezzo Unitario.
 
+# Spese Trasporto
+
+Eventuali spese di trasporto da applicare a tutte le prenotazioni avanzate su questo ordine. Tale valore sarà distribuito proporzionalmente tra le diverse prenotazioni ed apparirà alla voce "Trasporto" in fase di consegna. Va a sommarsi ad eventuali spese di trasporto definite sui singoli prodotti.
+
 # Pagamento
 
-.
+Da qui è possibile immettere il movimento contabile di pagamento dell'ordine nei confronti del fornitore.
 
 ## .gas-editor
 
@@ -189,21 +207,17 @@ Nome del GAS.
 
 Indirizzo mail di riferimento del GAS. Attenzione: viene specificato a titolo informativo, le configurazioni per la spedizione di email generate dal sistema sono nel riquadro accanto.
 
-# Descrizione
-
-.
-
 # Messaggio Homepage
 
 Eventuale messaggio da visualizzare sulla pagina di autenticazione di GASdotto, utile per comunicazioni speciali verso i membri del GAS.
 
 # Username
 
-Username da utilizzare per connettersi al server SMTP (specificato sotto)
+Username da utilizzare per connettersi al server SMTP (specificato accanto)
 
 # Password
 
-Password da utilizzare per connettersi al server SMTP (specificato sotto)
+Password da utilizzare per connettersi al server SMTP (specificato accanto)
 
 # Server SMTP
 
@@ -213,13 +227,9 @@ Server SMTP da utilizzare per l'invio delle mail di sistema. Se non viene specif
 
 Porta TCP da usare per connettersi al server SMTP. Consultare la documentazione del proprio fornitore di posta elettronica per questi dettagli.
 
-# Indirizzo
+# Crittografia
 
-Indirizzo mail autorizzato ad inviare mail usando le configurazioni sopra specificate. Attenzione: non necessariamente coincide con l'indirizzo mail generico del GAS indicato nel campo "E-Mail".
-
-# Abilita SSL
-
-Spuntare questa casella per abilitare la connessione TLS col server SMTP. Consultare la documentazione del proprio fornitore di posta elettronica per questi dettagli.
+Tipo di connessione sicura usata dal proprio server SMTP. Consultare la documentazione del proprio fornitore di posta elettronica per questi dettagli.
 
 # Denominazione
 
