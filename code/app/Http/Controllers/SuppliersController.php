@@ -57,7 +57,7 @@ class SuppliersController extends Controller
             if ($request->user()->can('supplier.modify', $supplier))
                 return Theme::view('supplier.edit', ['supplier' => $supplier]);
             else
-                return Theme::view('supplier.show', ['user' => $supplier]);
+                return Theme::view('supplier.show', ['supplier' => $supplier]);
         }
         catch (AuthException $e) {
             abort($e->status());
