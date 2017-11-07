@@ -118,6 +118,7 @@ $existing = false;
                                         <td>
                                             <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($var->true_quantity, $discrete_quantity) }}" class="skip-on-submit" />
                                             <input type="hidden" name="product-price" value="{{ $price }}" class="skip-on-submit" />
+                                            <input type="hidden" name="product-transport" value="{{ $product->product->transport }}" class="skip-on-submit" />
 
                                             <label class="static-label">{{ $product->product->name }}: {{ $var->printableName() }}</label>
 
