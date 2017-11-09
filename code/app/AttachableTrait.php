@@ -24,7 +24,7 @@ trait AttachableTrait
         return $relation;
     }
 
-    public function attachByRequest($request)
+    public function attachByRequest($request, $id = null)
     {
         $file = $request->file('file');
 
@@ -38,16 +38,23 @@ trait AttachableTrait
         }
 
         $filename = $file->getClientOriginalName();
-        $file->move($filepath, $filename);
-
         $name = $request->input('name', '');
         if ($name == '') {
             $name = $filename;
         }
 
-        $attachment = new Attachment();
-        $attachment->target_type = get_class($this);
-        $attachment->target_id = $this->id;
+        if ($id == null) {
+            $attachment = new Attachment();
+            $attachment->target_type = get_class($this);
+            $attachment->target_id = $this->id;
+        }
+        else {
+            $attachment = Attachment::findOrFail($id);
+            @unlink($attachment->getPathAttribute());
+        }
+
+        $file->move($filepath, $filename);
+
         $attachment->name = $name;
         $attachment->filename = $filename;
         $attachment->save();

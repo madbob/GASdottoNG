@@ -43,6 +43,28 @@ class AttachmentsController extends Controller
         ]);
     }
 
+    public function update(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        $a = Attachment::findOrFail($id);
+        if ($a->attached->attachmentPermissionGranted() == false) {
+            return $this->errorResponse('Non autorizzato');
+        }
+
+        $a = $a->attached->attachByRequest($request, $a->id);
+        if ($a === false) {
+            return $this->errorResponse('File non caricato correttamente');
+        }
+
+        return $this->successResponse([
+            'id' => $a->id,
+            'name' => $a->name,
+            'header' => $a->printableHeader(),
+            'url' => url('attachments/'.$a->id),
+        ]);
+    }
+
     public function show($id)
     {
         $a = Attachment::findOrFail($id);

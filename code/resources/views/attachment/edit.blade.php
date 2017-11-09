@@ -1,9 +1,9 @@
-<form class="form-horizontal main-form attachment-editor" method="PUT" action="{{ url('attachments/' . $attachment->id) }}">
+<form class="form-horizontal main-form attachment-editor" method="PUT" action="{{ url('attachments/' . $attachment->id) }}" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-12">
             @if($attachment->internal == false)
                 @include('commons.textfield', ['obj' => $attachment, 'name' => 'name', 'label' => 'Nome'])
-                @include('commons.filefield', ['obj' => $attachment, 'name' => 'update', 'label' => 'Sostituisci File'])
+                @include('commons.filefield', ['obj' => $attachment, 'name' => 'file', 'label' => 'Sostituisci File'])
             @else
                 @include('commons.staticstringfield', ['obj' => $attachment, 'name' => 'name', 'label' => 'Nome'])
             @endif
