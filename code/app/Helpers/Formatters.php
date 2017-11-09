@@ -47,12 +47,14 @@ function applyPercentage($original, $percentage)
         return $original;
     }
 
-    if (strpos($percentage, '%') !== false) {
-        $p = (float)$percentage;
+    $p = (float)$percentage;
+    $o = (float)$original;
 
-        return $original - (($original * $p) / 100);
-    } else {
-        return $original - $value;
+    if (strpos($percentage, '%') !== false) {
+        return $o - (($o * $p) / 100);
+    }
+    else {
+        return $o - $p;
     }
 }
 
