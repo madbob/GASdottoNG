@@ -24,7 +24,7 @@
                                 @foreach($product->variants as $variant)
                                     <tr>
                                         <td width="40%">{{ $product->product->printableName() }}</td>
-                                        <td width="40%">{{ printableQuantity($variant->quantity, $product->products->measure->discrete, 2, ',') }} {{ $product->product->printableMeasure(true) }} {{ $variant->printableName() }}</td>
+                                        <td width="40%">{{ printableQuantity($variant->quantity, $product->product->measure->discrete, 2, ',') }} {{ $product->product->printableMeasure(true) }} {{ $variant->printableName() }}</td>
                                         <td width="20%">{{ printablePrice($variant->quantityValue(), ',') }} €</td>
                                     </tr>
                                 @endforeach
