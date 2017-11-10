@@ -1,7 +1,7 @@
 <?php $cellsize = round(100 / count($data->headers), 3) ?>
 <html>
     <body>
-        <h3>Prodotti ordinati ordine {{ $order->internal_number }} presso {{ $order->supplier->printableName() }} del {{ date('d/m/Y') }}</h3>
+        <h3>Prodotti ordinati ordine {{ $order->internal_number }} presso {{ $order->supplier->printableName() }} del {{ $order->shipping ? date('d/m/Y', strtotime($order->shipping)) : date('d/m/Y') }}</h3>
 
         <hr/>
 
