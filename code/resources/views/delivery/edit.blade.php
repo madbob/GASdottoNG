@@ -182,6 +182,18 @@ $existing = false;
                                 <label class="static-label booking-transport-price pull-right"><span>{{ printablePrice($o->check_transport) }}</span> €</label>
                             </td>
                         </tr>
+
+                        <tr class="booking-transport">
+                            <td>
+                                <label class="static-label">Sconto</label>
+                            </td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>
+                                <input type="hidden" name="global-discount" value="{{ $o->major_discount * -1 }}" class="skip-on-submit" />
+                                <label class="static-label booking-discount pull-right"><span>{{ printablePrice($o->major_discount * -1) }}</span> €</label>
+                            </td>
+                        </tr>
                     </tbody>
 
                     <tfoot>

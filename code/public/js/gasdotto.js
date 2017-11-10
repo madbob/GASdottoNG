@@ -779,6 +779,11 @@ function bookingTotal(editor) {
     if (total_transport_tag.length != 0)
         total_transport = parseFloatC(total_transport_tag.val());
 
+    var total_discount_tag = editor.find('input:hidden[name=global-discount]');
+    var total_discount = 0;
+    if (total_discount_tag.length != 0)
+        total_discount = parseFloatC(total_discount_tag.val());
+
     editor.find('.booking-product').each(function() {
         if ($(this).hasClass('hidden'))
             return true;
@@ -831,6 +836,7 @@ function bookingTotal(editor) {
     editor.find('.booking-transport .booking-transport-price span').text(priceRound(total_transport));
 
     total_price += total_transport;
+    total_price += total_discount;
     editor.find('.booking-total').text(priceRound(total_price));
 
     var form = editor.closest('form');

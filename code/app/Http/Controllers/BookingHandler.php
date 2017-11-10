@@ -69,12 +69,14 @@ class BookingHandler extends Controller
                         }
 
                         $saved_variants = [];
+                        $variant_added = false;
 
                         for ($i = 0; $i < count($quantities); ++$i) {
                             $q = (float) $quantities[$i];
                             if ($q == 0)
                                 continue;
 
+                            $variant_added = true;
                             $query = BookedProductVariant::where('product_id', '=', $booked->id);
 
                             foreach ($values as $variant_id => $vals) {

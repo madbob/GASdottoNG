@@ -163,8 +163,14 @@ class Booking extends Model
     {
         if($this->order->transport > 0) {
             $total_value = $this->order->total_value;
-            if ($total_value != 0)
-                return round($this->value * $this->order->transport / $total_value, 2);
+            if ($total_value != 0) {
+                if (is_numeric($this->order->transport)) {
+                    return round($this->value * $this->order->transport / $total_value, 2);
+                }
+                else {
+                    return $this->value - applyPercentage($this->value, $this->order->transport);
+                }
+            }
         }
 
         return 0;
@@ -193,6 +199,26 @@ class Booking extends Model
 
             return $this->transport_cache;
         }
+    }
+
+    /*
+        Questo ritorna solo lo sconto applicato sull'ordine complessivo
+    */
+    public function getMajorDiscountAttribute()
+    {
+        if(!empty($this->order->discount)) {
+            $total_value = $this->order->total_value;
+            if ($total_value != 0) {
+                if (is_numeric($this->order->discount)) {
+                    return round($this->value * $this->order->discount / $total_value, 2);
+                }
+                else {
+                    return $this->value - applyPercentage($this->value, $this->order->discount);
+                }
+            }
+        }
+
+        return 0;
     }
 
     /*

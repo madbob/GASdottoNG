@@ -47,10 +47,10 @@ $rand = rand();
         <div class="col-md-4">
             @if(in_array($order->status, ['suspended', 'open', 'closed']))
                 @include('commons.textfield', ['obj' => $order, 'name' => 'discount', 'label' => 'Sconto Globale', 'postlabel' => '€ / %'])
-                @include('commons.decimalfield', ['obj' => $order, 'name' => 'transport', 'label' => 'Spese Trasporto', 'is_price' => true])
+                @include('commons.textfield', ['obj' => $order, 'name' => 'transport', 'label' => 'Spese Trasporto', 'postlabel' => '€ / %'])
             @else
                 @include('commons.staticpercentagefield', ['obj' => $order, 'name' => 'discount', 'label' => 'Sconto Globale'])
-                @include('commons.staticpricefield', ['obj' => $order, 'name' => 'transport', 'label' => 'Spese Trasporto'])
+                @include('commons.staticpercentagefield', ['obj' => $order, 'name' => 'transport', 'label' => 'Spese Trasporto'])
             @endif
 
             @include('commons.movementfield', [

@@ -123,11 +123,9 @@ class Product extends Model
 
     /*
         Questo è per determinare il prezzo del prodotto in un dato contesto,
-        ovvero in un ordine. I casi possibili sono:
-        - se lo sconto del singolo prodotto è stato abilitato per l'ordine,
-          viene applicato. Altrimenti resta il prezzo di riferimento
-        - se l'ordine ha uno sconto, viene a sua volta applicato
-
+        ovvero in un ordine. Se lo sconto del singolo prodotto è stato abilitato
+        per l'ordine, viene applicato. Altrimenti resta il prezzo di
+        riferimento.
         Per i prodotti con pezzatura, ritorna già il prezzo per singola unità
         e non è dunque necessario normalizzare ulteriormente
     */
@@ -151,8 +149,6 @@ class Product extends Model
         } else {
             $price = $this->price;
         }
-
-        $price = applyPercentage($price, $order->discount);
 
         if ($rectify && $product->portion_quantity != 0)
             $price = $price * $product->portion_quantity;
