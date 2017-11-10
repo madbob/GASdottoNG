@@ -35,7 +35,7 @@ class MenuServiceProvider extends ServiceProvider
                 $menu->add('bookings', '<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Prenotazioni');
 
                 if ($user->can('movements.view', $gas) || $user->can('movements.admin', $gas)) {
-                    $menu->add('movements', '<span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> Contabilità');
+                    $menu->add('movements', '<span class="glyphicon glyphicon-euro" aria-hidden="true"></span> Contabilità');
                 }
 
                 if ($user->can('gas.statistics', $gas)) {
