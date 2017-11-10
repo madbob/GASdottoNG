@@ -103,6 +103,7 @@ function generalInit() {
 
     $('.many-rows').manyrows();
     $('.dynamic-tree-box').dynamictree();
+    $('#orderAggregator').aggregator();
 
     $('.completion-rows').each(function() {
         completionRowsInit($(this));
@@ -194,18 +195,6 @@ function generalInit() {
         $.get(url, function(data) {
             contents.empty().append(data);
         });
-    });
-
-    $('#orderAggregator ul').droppable({
-        accept: 'li',
-        drop: function(event, ui) {
-            ui.draggable.css('right', '').css('left', '').css('top', '').css('bottom', '').css('width', '').css('height', '');
-            $(this).append(ui.draggable);
-        }
-    });
-
-    $('#orderAggregator ul li').draggable({
-        revert: 'invalid'
     });
 
     $('.measure-selector').each(function() {
@@ -2098,43 +2087,6 @@ $(document).ready(function() {
         /*
         	TODO: aggiornare i prezzi totali nella tabella dell'ordine
         */
-    });
-
-    /*
-    	Aggregazione ordini
-    */
-
-    $('#orderAggregator form').submit(function(e) {
-        e.preventDefault();
-        var form = $(this);
-
-        var data = new Array();
-
-        form.find('ul').each(function() {
-            var a = {
-                id: $(this).attr('data-aggregate-id'),
-                orders: new Array()
-            };
-
-            $(this).find('li').each(function() {
-                a.orders.push($(this).attr('data-order-id'));
-            });
-
-            data.push(a);
-        });
-
-        $.ajax({
-            method: form.attr('method'),
-            url: form.attr('action'),
-            data: {
-                data: JSON.stringify(data)
-            },
-            dataType: 'json',
-
-            success: function(data) {
-                location.reload();
-            }
-        });
     });
 
     /*

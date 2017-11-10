@@ -155,6 +155,7 @@
             '/js/utils.js',
             '/js/inline-help.js',
             '/js/statistics.js',
+            '/js/aggregation.js',
             '/js/jquery.manyrows.js',
             '/js/jquery.dynamictree.js',
             '/js/gasdotto.js'
