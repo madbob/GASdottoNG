@@ -257,6 +257,8 @@ function parseFullDate(string) {
 }
 
 function parseFloatC(value) {
+    if (typeof value === 'undefined')
+        return 0;
     return parseFloat(value.replace(/,/, '.'));
 }
 
@@ -771,7 +773,11 @@ function afterBookingSaved(form, data) {
 
 function bookingTotal(editor) {
     var total_price = 0;
-    var total_transport = parseFloatC(editor.find('input:hidden[name=global-transport-price]').val());
+
+    var total_transport_tag = editor.find('input:hidden[name=global-transport-price]');
+    var total_transport = 0;
+    if (total_transport_tag.length != 0)
+        total_transport = parseFloatC(total_transport_tag.val());
 
     editor.find('.booking-product').each(function() {
         if ($(this).hasClass('hidden'))
@@ -785,8 +791,13 @@ function bookingTotal(editor) {
         price = parseFloatC(price);
 
         var product_transport = $(this).find('input:hidden[name=product-transport]');
-        var transport = product_transport.val();
-        transport = parseFloatC(transport);
+        if (product_transport.length == 0) {
+            transport = 0;
+        }
+        else {
+            var transport = product_transport.val();
+            transport = parseFloatC(transport);
+        }
 
         var quantity = 0;
         var row_p = 0;
@@ -2320,21 +2331,23 @@ $(document).ready(function() {
     });
 
     $('body').on('click', '.booking-form .saving-button', function(e) {
-        if (typeof $(this).data('total-checked') === 'undefined') {
-            e.stopPropagation();
-            var test = false;
+        if ($(this).closest('.booking-form').find('input:hidden[name=action]').val() == 'shipped') {
+            if (typeof $(this).data('total-checked') === 'undefined') {
+                e.stopPropagation();
+                var test = false;
 
-            $(this).closest('form').find('.booking-total').each(function() {
-                var total = parseFloatC($(this).text());
-                test = (test || (total != 0));
-            });
+                $(this).closest('form').find('.booking-total').each(function() {
+                    var total = parseFloatC($(this).text());
+                    test = (test || (total != 0));
+                });
 
-            if (test == false)
-                test = confirm('Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?');
+                if (test == false)
+                    test = confirm('Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?');
 
-            if (test == true) {
-                $(this).data('total-checked', 1);
-                $(this).click();
+                if (test == true) {
+                    $(this).data('total-checked', 1);
+                    $(this).click();
+                }
             }
         }
     });
