@@ -43,28 +43,24 @@ class OrdersController extends Controller
     private function defaultOrders()
     {
         /*
-            La selezione degli ordini da visualizzare si può forse
-            fare con una query complessa, premesso che bisogna
-            prendere in considerazione i permessi che l'utente
-            corrente ha nei confronti dei fornitori degli ordini
-            inclusi negli aggregati
+            La selezione degli ordini da visualizzare si può forse fare con una
+            query complessa, premesso che bisogna prendere in considerazione i
+            permessi che l'utente corrente ha nei confronti dei fornitori degli
+            ordini inclusi negli aggregati
         */
 
         $orders = [];
 
         $user = Auth::user();
-        $aggregates = Aggregate::with('orders')->get();
+        $aggregates = Aggregate::whereHas('orders', function($query) {
+            $query->where('status', 'open')->orWhere('status', 'closed')->orWhere('status', 'shipped')->orWhere('status', 'suspended');
+        })->with('orders')->get();
 
         foreach ($aggregates as $aggregate) {
             $ok = false;
 
             foreach ($aggregate->orders as $order) {
-                if ($order->status == 'open') {
-                    $ok = true;
-                    break;
-                }
-
-                if ($order->status != 'archived' && ($user->can('supplier.orders', $order->supplier) || $user->can('supplier.shippings', $order->supplier))) {
+                if ($user->can('supplier.orders', $order->supplier) || $user->can('supplier.shippings', $order->supplier)) {
                     $ok = true;
                     break;
                 }
