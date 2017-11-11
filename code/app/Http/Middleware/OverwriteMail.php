@@ -38,8 +38,19 @@ class OverwriteMail
         if ($gas != null && $gas->has_mail()) {
             $mailconf = $gas->getConfig('mail_conf');
             $conf = json_decode($mailconf);
-            $conf->driver = 'smtp';
-            $conf->from = array('address' => $conf->address, 'name' => $gas->name);
+
+            if ($gas->maildriver == 'smtp') {
+                $from_address = $conf->address;
+                $from_name = $gas->name;
+                $conf->driver = 'smtp';
+            }
+            else if ($gas->maildriver == 'ses') {
+                $from_address = config('services.ses.from.address');
+                $from_name = config('services.ses.from.name');
+                $conf->driver = 'ses';
+            }
+
+            $conf->from = array('address' => $from_address, 'name' => $from_name);
             $conf->sendmail = '';
             $conf->pretend = false;
             Config::set('mail', (array) $conf);
@@ -51,7 +62,7 @@ class OverwriteMail
             $app = App::getInstance();
             $app->register('Illuminate\Mail\MailServiceProvider');
 
-            Mail::alwaysFrom($conf->address, $gas->name);
+            Mail::alwaysFrom($from_address, $from_name);
         }
 
         return $next($request);

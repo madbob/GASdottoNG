@@ -71,6 +71,7 @@ class Gas extends Model
         $conf = $this->getConfig('mail_conf');
         if ($conf == '') {
             return (object) [
+                'driver' => '',
                 'username' => '',
                 'password' => '',
                 'host' => '',
@@ -86,6 +87,12 @@ class Gas extends Model
     public function has_mail()
     {
         return !empty($this->mailConfig()->host);
+    }
+
+    public function getMaildriverAttribute()
+    {
+        $config = $this->mailConfig();
+        return $config->driver ?? 'smtp';
     }
 
     public function getMailusernameAttribute()
@@ -145,6 +152,11 @@ class Gas extends Model
     public function getRidcodeAttribute()
     {
         return $this->ridConfig()->code;
+    }
+
+    public function getFastShippingEnabledAttribute()
+    {
+        return $this->getConfig('fast_shipping_enabled') == '1';
     }
 
     public function getRestrictedAttribute()

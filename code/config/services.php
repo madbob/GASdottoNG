@@ -20,9 +20,13 @@ return [
     ],
 
     'ses' => [
-        'key' => env('SES_KEY'),
-        'secret' => env('SES_SECRET'),
+        'key' => env('SES_KEY', ''),
+        'secret' => env('SES_SECRET', ''),
         'region' => 'us-east-1',
+        'from' => [
+            'address' => env('MAIL_FROM_ADDRESS', 'info@gasdotto.net'),
+            'name' => env('MAIL_FROM_NAME', 'GASdotto'),
+        ],
     ],
 
     'sparkpost' => [
