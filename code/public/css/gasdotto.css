@@ -111,6 +111,9 @@ table label {
 .dynamic-tree .dynamic-tree-add-row {
   margin-top: 20px; }
 
+.order-summary .col-sm-12 {
+  padding: 0; }
+
 .booking-product .row {
   margin-left: 0; }
 
@@ -245,5 +248,3 @@ table label {
 
 .ct-chart-bar, .ct-chart-pie {
   height: 400px; }
-
-/*# sourceMappingURL=gasdotto.css.map */
