@@ -23,61 +23,55 @@
 
     <tbody>
         @foreach($order->supplier->products as $product)
-            <?php
-
-                $enabled = $order->hasProduct($product);
-                if ($order->isActive() == false & $enabled == false)
-                    continue;
-
-            ?>
-
-            <tr data-product-id="{{ $product->id }}">
-                <!-- Prodotto -->
-                <td>
-                    <label>{{ $product->printableName() }}</label>
-                </td>
-
-                @if($order->isActive())
-                    <td>{{ printablePrice($product->price) }} €</td>
-                    <td>{{ printablePrice($product->transport) }} €</td>
-                    <td>{{ printableQuantity($product->max_available, $product->measure->discrete) }}</td>
-                @endif
-
-                <!-- Unità di Misura -->
-                <td>{{ $product->printableMeasure(true) }}</td>
-
-                @if($order->isActive())
-                    <!-- Quantità Ordinata -->
+            @if($order->hasProduct($product))
+                <tr data-product-id="{{ $product->id }}">
+                    <!-- Prodotto -->
                     <td>
-                        <label>
-                            @if($product->portion_quantity != 0)
-                                {{ sprintf('%d', $summary->products[$product->id]['quantity_pieces']) }} Pezzi /
-                            @endif
-                            <span class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity'] }}</span> {{ $product->measure->name }}
-                        </label>
+                        <label>{{ $product->printableName() }}</label>
                     </td>
 
-                    <!-- Totale Prezzo -->
+                    @if($order->isActive())
+                        <td>{{ printablePrice($product->price) }} €</td>
+                        <td>{{ printablePrice($product->transport) }} €</td>
+                        <td>{{ printableQuantity($product->max_available, $product->measure->discrete) }}</td>
+                    @endif
+
+                    <!-- Unità di Misura -->
+                    <td>{{ $product->printableMeasure(true) }}</td>
+
+                    @if($order->isActive())
+                        <!-- Quantità Ordinata -->
+                        <td>
+                            <label>
+                                @if($product->portion_quantity != 0)
+                                    {{ sprintf('%d', $summary->products[$product->id]['quantity_pieces']) }} Pezzi /
+                                @endif
+                                <span class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity'] }}</span> {{ $product->measure->name }}
+                            </label>
+                        </td>
+
+                        <!-- Totale Prezzo -->
+                        <td>
+                            <label class="order-summary-product-price">{{ $summary->products[$product->id]['price'] }} €</label>
+                        </td>
+
+                        <!-- Totale Trasporto -->
+                        <td>
+                            <label class="order-summary-product-transport">{{ $summary->products[$product->id]['transport'] }} €</label>
+                        </td>
+                    @endif
+
+                    <!-- Quantità Consegnata -->
                     <td>
-                        <label class="order-summary-product-price">{{ $summary->products[$product->id]['price'] }} €</label>
+                        <label class="order-summary-product-delivered">{{ $summary->products[$product->id]['delivered'] }} {{ $product->measure->name }}</label>
                     </td>
 
-                    <!-- Totale Trasporto -->
+                    <!-- Totale Consegnato -->
                     <td>
-                        <label class="order-summary-product-transport">{{ $summary->products[$product->id]['transport'] }} €</label>
+                        <label class="order-summary-product-price_delivered">{{ $summary->products[$product->id]['price_delivered'] }} €</label>
                     </td>
-                @endif
-
-                <!-- Quantità Consegnata -->
-                <td>
-                    <label class="order-summary-product-delivered">{{ $summary->products[$product->id]['delivered'] }} {{ $product->measure->name }}</label>
-                </td>
-
-                <!-- Totale Consegnato -->
-                <td>
-                    <label class="order-summary-product-price_delivered">{{ $summary->products[$product->id]['price_delivered'] }} €</label>
-                </td>
-            </tr>
+                </tr>
+            @endif
         @endforeach
     </tbody>
 
