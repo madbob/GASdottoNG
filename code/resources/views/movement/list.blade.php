@@ -88,9 +88,11 @@ else {
 
                     @if(Gate::check('movements.admin', $currentgas))
                         <td>
-                            <button class="btn btn-default async-modal" data-target-url="{{ url('/movements/' . $mov->id) }}">
-                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                            </button>
+                            @if($mov->archived == false)
+                                <button class="btn btn-default async-modal" data-target-url="{{ url('/movements/' . $mov->id) }}">
+                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                </button>
+                            @endif
                         </td>
                     @endif
                 </tr>
