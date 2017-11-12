@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
 use DB;
+use Log;
 use Theme;
+
 use App\Attachment;
 
 class AttachmentsController extends Controller
@@ -82,7 +85,13 @@ class AttachmentsController extends Controller
         if (!empty($a->url)) {
             return redirect($a->url);
         } else {
-            return response()->download($a->path);
+            if (file_exists($a->path)) {
+                return response()->download($a->path);
+            }
+            else {
+                Log::error('File non trovato: ' . $a->path);
+                return '';
+            }
         }
     }
 
