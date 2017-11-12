@@ -14,9 +14,6 @@ class Aggregate extends Model
 {
     use GASModel;
 
-    private $names_string = null;
-    private $dates_string = null;
-
     public function orders()
     {
         return $this->hasMany('App\Order')->with('products')->orderBy('end', 'desc');
@@ -59,26 +56,25 @@ class Aggregate extends Model
             $dates[] = $order->printableDates();
         }
 
-        $this->names_string = implode(' / ', $names);
-        $this->dates_string = implode(' / ', $dates);
+        return [implode(' / ', $names), implode(' / ', $dates)];
     }
 
     public function printableName()
     {
-        if ($this->names_string == null) {
-            $this->computeStrings();
-        }
-
-        return $this->names_string;
+        return $this->innerCache('names', function($obj) {
+            list($name, $date) = $this->computeStrings();
+            $this->setInnerCache('dates', $date);
+            return $name;
+        });
     }
 
     public function printableDates()
     {
-        if ($this->dates_string == null) {
-            $this->computeStrings();
-        }
-
-        return $this->dates_string;
+        return $this->innerCache('dates', function($obj) {
+            list($name, $date) = $this->computeStrings();
+            $this->setInnerCache('names', $name);
+            return $date;
+        });
     }
 
     public function printableHeader()
@@ -190,17 +186,23 @@ class Aggregate extends Model
 
     public function getLastNotifyAttribute()
     {
-        return $this->orders()->first()->last_notify;
+        return $this->innerCache('last_notify', function($obj) {
+            return $obj->orders()->first()->last_notify;
+        });
     }
 
     public function getEndAttribute()
     {
-        return $this->orders->last()->end;
+        return $this->innerCache('end', function($obj) {
+            return $obj->orders->last()->end;
+        });
     }
 
     public function getShippingAttribute()
     {
-        return $this->orders()->min('shipping');
+        return $this->innerCache('shipping', function($obj) {
+            return $obj->orders()->min('shipping');
+        });
     }
 
     public function bookingBy($user_id)

@@ -18,8 +18,6 @@ class Booking extends Model
     use GASModel, SluggableID, PayableTrait;
 
     public $incrementing = false;
-    private $value_cache = null;
-    private $transport_cache = null;
 
     protected $events = [
         'creating' => SluggableCreating::class,
@@ -50,7 +48,7 @@ class Booking extends Model
     {
         return $this->hasMany('App\BookedProduct')->whereHas('product', function ($query) {
             $query->orderBy('name', 'asc');
-        });
+        })->with('variants');
     }
 
     public function deliverer()
@@ -130,15 +128,15 @@ class Booking extends Model
     */
     public function getValueAttribute()
     {
-        if ($this->value_cache == null) {
-            $this->value_cache = 0;
+        return $this->innerCache('value', function($obj) {
+            $value = 0;
 
-            foreach ($this->products as $booked) {
-                $this->value_cache += $booked->quantityValue();
+            foreach ($obj->products as $booked) {
+                $value += $booked->quantityValue();
             }
-        }
 
-        return $this->value_cache;
+            return $value;
+        });
     }
 
     /*
@@ -189,15 +187,15 @@ class Booking extends Model
             return $this->transport;
         }
         else {
-            if ($this->transport_cache == null) {
-                $this->transport_cache = $this->major_transport;
+            return $this->innerCache('transport', function($obj) {
+                $transport = $obj->major_transport;
 
                 foreach($this->products as $p) {
-                    $this->transport_cache += $p->transportDeliveredValue();
+                    $transport += $p->transportDeliveredValue();
                 }
-            }
 
-            return $this->transport_cache;
+                return $transport;
+            });
         }
     }
 

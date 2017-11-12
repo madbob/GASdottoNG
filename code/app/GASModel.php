@@ -7,6 +7,8 @@ use URL;
 
 trait GASModel
 {
+    private $inner_runtime_cache;
+
     public function printableName()
     {
         return $this->name;
@@ -44,6 +46,18 @@ trait GASModel
             $t = strtotime($this->$name);
             return ucwords(strftime('%A %d %B %G', $t));
         }
+    }
+
+    protected function innerCache($name, $function)
+    {
+        if (!isset($this->inner_runtime_cache[$name]))
+            $this->inner_runtime_cache[$name] = $function($this);
+        return $this->inner_runtime_cache[$name];
+    }
+
+    protected function setInnerCache($name, $value)
+    {
+        $this->inner_runtime_cache[$name] = $value;
     }
 
     private function relatedController()

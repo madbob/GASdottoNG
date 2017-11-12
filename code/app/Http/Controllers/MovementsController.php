@@ -63,7 +63,7 @@ class MovementsController extends Controller
 
     public function index(Request $request)
     {
-        $query = Movement::orderBy('registration_date', 'desc');
+        $query = Movement::with('sender')->with('target')->orderBy('registration_date', 'desc');
 
         if ($request->has('startdate')) {
             $start = decodeDate($request->input('startdate'));

@@ -21,7 +21,6 @@ class Order extends Model
     use AttachableTrait, ExportableTrait, GASModel, SluggableID, PayableTrait;
 
     public $incrementing = false;
-    private $total_value = null;
 
     protected $events = [
         'creating' => SluggableCreating::class,
@@ -150,18 +149,18 @@ class Order extends Model
 
     public function getTotalValueAttribute()
     {
-        if ($this->total_value == null) {
-            $this->total_value = 0;
+        return $this->innerCache('total_value', function($obj) {
+            $total_value = 0;
 
-            $bookings_ids = $this->bookings->pluck('id');
-            $products = BookedProduct::whereIn('booking_id', $bookings_ids)->with('booking')->with('product')->get();
+            $bookings_ids = $obj->bookings->pluck('id');
+            $products = BookedProduct::whereIn('booking_id', $bookings_ids)->with('booking')->with('product')->with('variants')->get();
             foreach($products as $booked) {
-                $booked->booking->setRelation('order', $this);
-                $this->total_value += $booked->quantityValue();
+                $booked->booking->setRelation('order', $obj);
+                $total_value += $booked->quantityValue();
             }
-        }
 
-        return $this->total_value;
+            return $total_value;
+        });
     }
 
     /*
