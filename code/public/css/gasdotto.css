@@ -111,8 +111,8 @@ table label {
 .dynamic-tree .dynamic-tree-add-row {
   margin-top: 20px; }
 
-.order-summary .col-sm-12 {
-  padding: 0; }
+.order-summary .form-group {
+  margin-bottom: 0; }
 
 .booking-product .row {
   margin-left: 0; }
