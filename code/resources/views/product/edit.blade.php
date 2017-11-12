@@ -88,8 +88,7 @@
                                         'field' => 'price_offset',
                                         'type' => 'decimal',
                                         'extra' => [
-                                            'is_price' => true,
-                                            'minval' => '-9999'
+                                            'is_price' => true
                                         ]
                                     ]
                                 ]

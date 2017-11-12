@@ -66,10 +66,6 @@ function generalInit() {
         input.attr('class', '').addClass('form-control').addClass(typeclass);
     });
 
-    $('.trim-2-ddigits').blur(function() {
-        $(this).val(parseFloatC($(this).val()).toFixed(2));
-    });
-
     function setupCheckboxes() {
         var checkboxes = $('input:checkbox[data-toggle=toggle]').slice(0, 200);
         if (checkboxes.length != 0) {
@@ -1374,16 +1370,24 @@ $(document).ready(function() {
         }
     });
 
-    $('body').on('keydown', 'input[type=number][step=1]', function (e) {
-        if (e.which === 188 || e.which === 190)
-            return false;
+    $('body').on('keyup', 'input.number', function(e) {
+        if (e.which >= 37 && e.which <= 40)
+            return;
+
+        $(this).val(function(index, value) {
+            return value.replace(/,/g, '.').replace(/[^0-9\.]/g, '');
+        });
     })
-    .on('input', 'input[type=number][step=1]', function () {
-        var self = this;
-        setTimeout(function () {
-            if (self.value.indexOf('.') != -1)
-                self.value = parseInt(self.value, 10);
-        }, 0);
+    .on('blur', 'input.number', function(e) {
+        $(this).val(function(index, value) {
+            return parseFloatC(value);
+        });
+    });
+
+    $('body').on('blur', '.trim-2-ddigits', function() {
+        $(this).val(function(index, value) {
+            return parseFloatC(value).toFixed(2);
+        });
     });
 
     $('body').on('change', '.triggers-all-checkbox', function() {

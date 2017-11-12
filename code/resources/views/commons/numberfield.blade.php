@@ -4,8 +4,8 @@
     @endif
 
     <div class="col-sm-{{ $fieldsize }}">
-        <input type="number"
-            class="form-control"
+        <input type="text"
+            class="form-control number"
             name="{{ $prefix . $name }}"
             value="{{ $obj ? $obj->$name : '' }}"
 

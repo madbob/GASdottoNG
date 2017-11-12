@@ -40,7 +40,7 @@
                                     <label for="annual_fee_amount" class="col-sm-{{ $labelsize }} control-label">Quota Annuale</label>
                                     <div class="col-sm-{{ $fieldsize }}">
                                         <div class="input-group">
-                                            <input type="number" class="form-control" name="annual_fee_amount" step="0.01" min="0" value="{{ printablePrice($currentgas->getConfig('annual_fee_amount')) }}" autocomplete="off">
+                                            <input type="text" class="form-control number" name="annual_fee_amount" value="{{ printablePrice($currentgas->getConfig('annual_fee_amount')) }}" autocomplete="off">
                                             <div class="input-group-addon">€</div>
                                         </div>
                                         <span class="help-block">Se non configurato (valore = 0) non verranno gestite le quote di iscrizione</span>
@@ -51,7 +51,7 @@
                                     <label for="deposit_amount" class="col-sm-{{ $labelsize }} control-label">Cauzione</label>
                                     <div class="col-sm-{{ $fieldsize }}">
                                         <div class="input-group">
-                                            <input type="number" class="form-control" name="deposit_amount" step="0.01" min="0" value="{{ printablePrice($currentgas->getConfig('deposit_amount')) }}" autocomplete="off">
+                                            <input type="text" class="form-control number" name="deposit_amount" value="{{ printablePrice($currentgas->getConfig('deposit_amount')) }}" autocomplete="off">
                                             <div class="input-group-addon">€</div>
                                         </div>
                                         <span class="help-block">Se non configurato (valore = 0) non verranno gestite le cauzioni da parte dei nuovi soci</span>

@@ -16,7 +16,7 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             <div class="input-group">
-                                <input type="number" step="any" min="0" class="form-control" autocomplete="off" value="0">
+                                <input type="text" class="form-control number" autocomplete="off" value="0">
                                 <div class="input-group-addon">{{ $measure }}</div>
                             </div>
                         </div>

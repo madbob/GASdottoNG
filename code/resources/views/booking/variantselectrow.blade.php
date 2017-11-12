@@ -1,6 +1,6 @@
 <div class="row inline-variant-selector {{ $master ? 'master-variant-selector' : '' }}">
     <div class="input-group booking-product-quantity booking-variant-quantity col-md-4">
-        <input type="number" step="{{ $product->measure->discrete ? 1 : 0.01 }}" min="0" class="form-control {{ $master ? 'skip-on-submit' : '' }}" name="variant_quantity_{{ $product->id }}[]" value="{{ ($saved != null) ? $saved->quantity : '0' }}" />
+        <input type="text" class="form-control number {{ $master ? 'skip-on-submit' : '' }}" name="variant_quantity_{{ $product->id }}[]" value="{{ ($saved != null) ? $saved->quantity : '0' }}" />
         <div class="input-group-addon">{{ $product->printableMeasure() }}</div>
     </div>
 

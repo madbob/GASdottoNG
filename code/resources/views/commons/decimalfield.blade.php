@@ -3,7 +3,8 @@
 if (isset($fixed_value) && $fixed_value != false) {
     $value = $fixed_value;
     $disabled = true;
-} else {
+}
+else {
     if ($obj) {
         $value = $obj->$name;
     } else {
@@ -13,13 +14,13 @@ if (isset($fixed_value) && $fixed_value != false) {
     $disabled = isset($disabled) ? $disabled : false;
 }
 
+$class = 'form-control number';
+
 if(isset($is_price)) {
     $value = printablePrice($value);
     $postlabel = '€';
+    $class .= ' trim-2-ddigits';
 }
-
-if(!isset($minval))
-    $minval = 0;
 
 ?>
 
@@ -33,11 +34,9 @@ if(!isset($minval))
             <div class="input-group">
         @endif
 
-        <input type="number"
-            class="form-control"
+        <input type="text"
+            class="{{ $class }}"
             name="{{ $prefix . $name . $postfix }}"
-            step="0.01"
-            min="{{ $minval }}"
             value="{{ $value }}"
 
             @if(isset($mandatory) && $mandatory == true)

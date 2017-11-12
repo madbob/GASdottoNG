@@ -35,7 +35,7 @@ if(!isset($while_shipping))
     </div>
 @else
     <div class="input-group booking-product-quantity">
-        <input step="{{ $product->measure->discrete ? 1 : 0.01 }}" min="0" type="number" class="form-control" name="{{ $product->id }}" value="{{ $populate ? $o->getBookedQuantity($product) : '' }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
+        <input type="text" class="form-control number" name="{{ $product->id }}" value="{{ $populate ? $o->getBookedQuantity($product) : '' }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
         <div class="input-group-addon">
             @if($while_shipping)
                 {{ $product->measure->name }}

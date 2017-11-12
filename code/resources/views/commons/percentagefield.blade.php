@@ -7,8 +7,8 @@
 
     <div class="col-sm-{{ $fieldsize }}">
         <div class="input-group">
-            <input type="number"
-                class="form-control"
+            <input type="text"
+                class="form-control number"
                 name="{{ $prefix . $name . $postfix }}"
                 value="{{ $value }}"
 

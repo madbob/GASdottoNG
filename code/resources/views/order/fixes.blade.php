@@ -27,7 +27,7 @@
                             <input type="hidden" name="booking[]" value="{{ $po->id }}" />
 
                             <div class="input-group">
-                                <input type="number" class="form-control" name="quantity[]" value="{{ $po->getBookedQuantity($product) }}" />
+                                <input type="text" class="form-control number" name="quantity[]" value="{{ $po->getBookedQuantity($product) }}" />
                                 <div class="input-group-addon">{{ $product->printableMeasure() }}</div>
                             </div>
                         </td>
