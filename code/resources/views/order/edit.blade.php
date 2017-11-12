@@ -41,8 +41,8 @@
         </div>
         <div class="col-md-4">
             @if(in_array($order->status, ['suspended', 'open', 'closed']))
-                @include('commons.textfield', ['obj' => $order, 'name' => 'discount', 'label' => 'Sconto Globale', 'postlabel' => '€ / %'])
-                @include('commons.textfield', ['obj' => $order, 'name' => 'transport', 'label' => 'Spese Trasporto', 'postlabel' => '€ / %'])
+                @include('commons.percentagefield', ['obj' => $order, 'name' => 'discount', 'label' => 'Sconto Globale'])
+                @include('commons.percentagefield', ['obj' => $order, 'name' => 'transport', 'label' => 'Spese Trasporto'])
             @else
                 @include('commons.staticpercentagefield', ['obj' => $order, 'name' => 'discount', 'label' => 'Sconto Globale'])
                 @include('commons.staticpercentagefield', ['obj' => $order, 'name' => 'transport', 'label' => 'Spese Trasporto'])

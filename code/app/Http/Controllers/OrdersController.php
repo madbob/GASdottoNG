@@ -178,9 +178,9 @@ class OrdersController extends Controller
         if ($request->has('end'))
             $order->end = decodeDate($request->input('end'));
         if ($request->has('discount'))
-            $order->discount = $request->input('discount');
+            $order->discount = savingPercentage($request, 'discount');
         if ($request->has('transport'))
-            $order->transport = $request->input('transport');
+            $order->transport = savingPercentage($request, 'transport');
 
         if ($request->has('shipping')) {
             $s = $request->input('shipping');

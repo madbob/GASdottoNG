@@ -41,6 +41,33 @@ function printablePercentage($value)
         return printablePrice($value) . ' €';
 }
 
+function readPercentage($value)
+{
+    if (empty($value))
+        return [printablePrice(0), false];
+
+    if (strpos($value, '%') !== false)
+        return [(float) $value, true];
+    else
+        return [printablePrice($value), false];
+}
+
+function savingPercentage($request, $name)
+{
+    /*
+        Questa funzione è costruita in funzione di percentagefield.blade.php,
+        che prevede un campo radio nominato 'percentage_type' con cui l'utente
+        specifica se il valore immesso debba essere interpretato come valore
+        assoluto o come percentuale
+    */
+    $value = $request->input($name);
+    $is_percentage = $request->input($name . '_percentage_type', 'euro');
+    if ($is_percentage == 'percentage')
+        return $value . '%';
+    else
+        return $value;
+}
+
 function applyPercentage($original, $percentage)
 {
     if (empty($percentage)) {
