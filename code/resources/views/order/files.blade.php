@@ -6,6 +6,8 @@
     <a href="#" class="list-group-item" data-toggle="modal" data-target="#all-products-document-{{ $rand }}">Tabella Complessiva Prodotti</a>
 </div>
 
+@push('postponed')
+
 <div class="modal fade close-on-submit" id="summary-products-document-{{ $rand }}" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-extra-lg" role="document">
         <div class="modal-content">
@@ -99,3 +101,5 @@
         </div>
     </div>
 </div>
+
+@endpush

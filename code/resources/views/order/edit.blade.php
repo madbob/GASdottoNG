@@ -63,7 +63,7 @@
         </div>
     </div>
 
-    <hr/>
+    <hr>
 
     @include('order.summary', ['order' => $order, 'summary' => $summary])
     @include('commons.formbuttons', [
