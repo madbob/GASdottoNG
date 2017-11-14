@@ -36,6 +36,25 @@ $factory->define(App\Supplier::class, function (Faker\Generator $faker) {
     ];
 });
 
+$factory->define(App\Category::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->text(10),
+    ];
+});
+
+$factory->define(App\Measure::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->text(10),
+    ];
+});
+
+$factory->define(App\Product::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->text(10),
+        'price' => $faker->randomNumber(2)
+    ];
+});
+
 $factory->define(App\Permission::class, function (Faker\Generator $faker) {
     return [
         'target_type' => 'App\Gas',
