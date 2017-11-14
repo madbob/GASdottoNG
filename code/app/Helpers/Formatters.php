@@ -85,6 +85,18 @@ function applyPercentage($original, $percentage)
     }
 }
 
+function normalizeUrl($url)
+{
+    $url = strtolower($url);
+    if (starts_with($url, 'http') == false)
+        $url = 'http://' . $url;
+
+    if (filter_var($url, FILTER_VALIDATE_URL))
+        return $url;
+    else
+        return false;
+}
+
 function decodeDate($date)
 {
     if ($date == '') {
