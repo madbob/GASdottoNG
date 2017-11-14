@@ -3,97 +3,27 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BackedController;
+
 use DB;
 use Auth;
 use Theme;
-use App\Supplier;
+
+use App\Services\ProductsService;
 use App\Order;
 use App\Product;
 
-class ProductsController extends Controller
+class ProductsController extends BackedController
 {
-    public function __construct()
+    public function __construct(ProductsService $service)
     {
         $this->middleware('auth');
+        $this->service = $service;
 
         $this->commonInit([
-            'reference_class' => 'App\\Product'
-        ]);
-    }
-
-    private function basicReadFromRequest(&$obj, $request)
-    {
-        $obj->testAndSet($request, 'name');
-        $obj->testAndSet($request, 'description');
-        $obj->testAndSet($request, 'price');
-        $obj->testAndSet($request, 'transport');
-        $obj->testAndSet($request, 'category_id');
-        $obj->testAndSet($request, 'measure_id');
-
-        if ($request->has('discount'))
-            $obj->discount = normalizePercentage($request->input('discount'));
-
-        if ($request->has('vat_rate_id')) {
-            $vat_rate = $request->input('vat_rate_id');
-            if ($vat_rate != 0)
-                $obj->vat_rate_id = $vat_rate;
-            else
-                $obj->vat_rate_id = null;
-        }
-    }
-
-    private function enforceMeasure($product, $request)
-    {
-        if ($product->measure->discrete) {
-            $product->portion_quantity = 0;
-            $product->variable = false;
-        }
-        else {
-            $product->portion_quantity = $request->input('portion_quantity', 0);
-            $product->variable = $request->has('variable') ? true : false;
-        }
-
-        return $product;
-    }
-
-    public function store(Request $request)
-    {
-        DB::beginTransaction();
-
-        $user = Auth::user();
-
-        $duplicate = $request->input('duplicate_id', null);
-        if ($duplicate) {
-            $original = Product::find($duplicate);
-
-            if ($user->can('supplier.modify', $original->supplier) == false) {
-                return $this->errorResponse('Non autorizzato');
-            }
-
-            $p = $original->replicate();
-            $p->id = '';
-            $p->name = 'Copia di ' . $p->name;
-        }
-        else {
-            $supplier = Supplier::findOrFail($request->input('supplier_id'));
-            if ($user->can('supplier.modify', $supplier) == false) {
-                return $this->errorResponse('Non autorizzato');
-            }
-
-            $p = new Product();
-            $p->supplier_id = $supplier->id;
-            $p->active = true;
-            $this->basicReadFromRequest($p, $request);
-        }
-
-        $p->save();
-
-        return $this->successResponse([
-            'id' => $p->id,
-            'name' => $p->name,
-            'header' => $p->printableHeader(),
-            'url' => url('products/'.$p->id),
+            'reference_class' => 'App\\Product',
+            'endpoint' => 'products',
+            'service' => $service
         ]);
     }
 
@@ -102,92 +32,62 @@ class ProductsController extends Controller
         $user = Auth::user();
 
         $format = $request->input('format', 'html');
-        $p = Product::with('variants')->with('variants.values')->findOrFail($id);
+        $product = $this->service->show($id);
 
         if ($format == 'html') {
-            if ($user->can('supplier.modify', $p->supplier)) {
-                return Theme::view('product.edit', ['product' => $p]);
-            } else {
-                return Theme::view('product.show', ['product' => $p]);
+            if ($user->can('supplier.modify', $product->supplier)) {
+                return Theme::view('product.edit', ['product' => $product]);
             }
-        } elseif ($format == 'json') {
-            $ret = $p->toJson();
+            else {
+                return Theme::view('product.show', ['product' => $product]);
+            }
+        }
+        elseif ($format == 'json') {
+            $ret = $product->toJson();
             $ret = json_decode($ret);
-            $ret->printableMeasure = $p->printableMeasure();
-
+            $ret->printableMeasure = $product->printableMeasure();
             return json_encode($ret);
-        } elseif ($format == 'bookable') {
+        }
+        elseif ($format == 'bookable') {
             $order = Order::find($request->input('order_id'));
-
-            return Theme::view('booking.quantityselectrow', ['product' => $p, 'order' => $order, 'populate' => false, 'while_shipping' => true]);
+            return Theme::view('booking.quantityselectrow', ['product' => $product, 'order' => $order, 'populate' => false, 'while_shipping' => true]);
         }
     }
 
-    public function update(Request $request, $id)
+    public function store(Request $request)
     {
-        DB::beginTransaction();
+        try {
+            $duplicate = $request->input('duplicate_id', null);
+            if ($duplicate) {
+                $product = $this->service->duplicate($duplicate);
+            }
+            else {
+                $product = $this->service->store($request->all());
+            }
 
-        $user = Auth::user();
-        $p = Product::findOrFail($id);
-
-        if ($user->can('supplier.modify', $p->supplier) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->commonSuccessResponse($product);
         }
-
-        $this->basicReadFromRequest($p, $request);
-        $p->active = $request->has('active');
-        $p->testAndSet($request, 'supplier_code');
-        $p->testAndSet($request, 'package_size');
-        $p->testAndSet($request, 'multiple');
-        $p->testAndSet($request, 'min_quantity');
-        $p->testAndSet($request, 'max_quantity');
-        $p->testAndSet($request, 'max_available');
-        $p = $this->enforceMeasure($p, $request);
-
-        $p->save();
-
-        return $this->successResponse([
-            'id' => $p->id,
-            'header' => $p->printableHeader(),
-            'url' => url('products/'.$p->id),
-        ]);
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+        catch (IllegalArgumentException $e) {
+            return $this->errorResponse($e->getMessage(), $e->getArgument());
+        }
     }
 
     public function massiveUpdate(Request $request)
     {
         DB::beginTransaction();
 
-        $user = Auth::user();
-
         $product_ids = $request->input('id', []);
         foreach($product_ids as $id) {
-            $product = Product::with('supplier')->findOrFail($id);
-            if ($user->can('supplier.modify', $product->supplier) == false)
-                continue;
-
-            $product->name = $request->input($id . '-name', $product->name);
-            $product->price = $request->input($id . '-price', $product->price);
-            $product->transport = $request->input($id . '-transport', $product->transport);
-            $product->measure_id = $request->input($id . '-measure_id', $product->measure_id);
-            $product = $this->enforceMeasure($product, $request);
-            $product->save();
+            $product = $this->service->show($id);
+            $data['name'] = $request->input($id . '-name', $product->name);
+            $data['price'] = $request->input($id . '-price', $product->price);
+            $data['transport'] = $request->input($id . '-transport', $product->transport);
+            $data['measure_id'] = $request->input($id . '-measure_id', $product->measure_id);
+            $this->service->update($id, $data);
         }
-
-        return $this->successResponse();
-    }
-
-    public function destroy($id)
-    {
-        DB::beginTransaction();
-
-        $user = Auth::user();
-        $p = Product::findOrFail($id);
-
-        if ($user->can('supplier.modify', $p->supplier) == false) {
-            return $this->errorResponse('Non autorizzato');
-        }
-
-        $p->delete();
 
         return $this->successResponse();
     }

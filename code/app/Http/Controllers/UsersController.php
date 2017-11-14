@@ -11,18 +11,16 @@ use App\Services\UsersService;
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
 
-class UsersController extends Controller
+class UsersController extends BackedController
 {
-    protected $usersService;
-
-    public function __construct(UsersService $usersService)
+    public function __construct(UsersService $service)
     {
         $this->middleware('auth');
-        $this->usersService = $usersService;
 
         $this->commonInit([
             'reference_class' => 'App\\User',
-            'endpoint' => 'users'
+            'endpoint' => 'users',
+            'service' => $service
         ]);
     }
 
@@ -30,7 +28,7 @@ class UsersController extends Controller
     {
         try {
             $user = Auth::user();
-            $users = $this->usersService->listUsers('', $user->can('users.admin', $user->gas));
+            $users = $this->service->listUsers('', $user->can('users.admin', $user->gas));
             return Theme::view('pages.users', ['users' => $users]);
         }
         catch (AuthException $e) {
@@ -43,7 +41,7 @@ class UsersController extends Controller
         $term = $request->input('term');
 
         try {
-            $users = $this->usersService->listUsers($term);
+            $users = $this->service->listUsers($term);
             $users = $this->toJQueryAutocompletionFormat($users);
             return json_encode($users);
         }
@@ -56,7 +54,7 @@ class UsersController extends Controller
     {
         try {
             $id = Auth::user()->id;
-            $user = $this->usersService->show($id);
+            $user = $this->service->show($id);
             return Theme::view('pages.profile', ['user' => $user]);
         }
         catch (AuthException $e) {
@@ -64,24 +62,10 @@ class UsersController extends Controller
         }
     }
 
-    public function store(Request $request)
-    {
-        try {
-            $user = $this->usersService->store($request->all());
-            return $this->commonSuccessResponse($user);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
-        catch (IllegalArgumentException $e) {
-            return $this->errorResponse($e->getMessage(), $e->getArgument());
-        }
-    }
-
     public function show(Request $request, $id)
     {
         try {
-            $user = $this->usersService->show($id);
+            $user = $this->service->show($id);
 
             if ($request->user()->can('users.admin', $user->gas))
                 return Theme::view('user.edit', ['user' => $user]);
@@ -93,35 +77,10 @@ class UsersController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
-    {
-        try {
-            $user = $this->usersService->update($id, $request->all());
-            return $this->commonSuccessResponse($user);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
-        catch (IllegalArgumentException $e) {
-            return $this->errorResponse($e->getMessage(), $e->getArgument());
-        }
-    }
-
-    public function destroy($id)
-    {
-        try {
-            $this->usersService->destroy($id);
-            return $this->successResponse();
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
-    }
-
     public function picture($id)
     {
         try {
-            return $this->usersService->picture($id);
+            return $this->service->picture($id);
         }
         catch (AuthException $e) {
             abort($e->status());

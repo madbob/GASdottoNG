@@ -8,7 +8,6 @@ use App\Exceptions\IllegalArgumentException;
 use Auth;
 use Log;
 use DB;
-use Hash;
 
 use App\User;
 use App\Supplier;
@@ -56,20 +55,24 @@ class SuppliersService extends BaseService
         return $supplier;
     }
 
+    private function setCommonAttributes($supplier, $request)
+    {
+        $this->setIfSet($supplier, $request, 'name');
+        $this->setIfSet($supplier, $request, 'business_name');
+        $this->setIfSet($supplier, $request, 'taxcode');
+        $this->setIfSet($supplier, $request, 'vat');
+        $this->setIfSet($supplier, $request, 'description');
+        $this->setIfSet($supplier, $request, 'payment_method');
+        $this->setIfSet($supplier, $request, 'order_method');
+    }
+
     public function update($id, array $request)
     {
         $supplier = $this->show($id);
         $this->ensureAuth(['supplier.modify' => $supplier]);
 
-        DB::transaction(function () use ($supplier, $id, $request) {
-            $this->setIfSet($supplier, $request, 'name');
-            $this->setIfSet($supplier, $request, 'business_name');
-            $this->setIfSet($supplier, $request, 'taxcode');
-            $this->setIfSet($supplier, $request, 'vat');
-            $this->setIfSet($supplier, $request, 'description');
-            $this->setIfSet($supplier, $request, 'payment_method');
-            $this->setIfSet($supplier, $request, 'order_method');
-
+        DB::transaction(function () use ($supplier, $request) {
+            $this->setCommonAttributes($supplier, $request);
             $supplier->restore();
             $supplier->save();
             $supplier->updateContacts($request);
@@ -89,13 +92,7 @@ class SuppliersService extends BaseService
             $request['order_method'] = '';
 
         $supplier = new Supplier();
-        $this->setIfSet($supplier, $request, 'name');
-        $this->setIfSet($supplier, $request, 'business_name');
-        $this->setIfSet($supplier, $request, 'taxcode');
-        $this->setIfSet($supplier, $request, 'vat');
-        $this->setIfSet($supplier, $request, 'description');
-        $this->setIfSet($supplier, $request, 'payment_method');
-        $this->setIfSet($supplier, $request, 'order_method');
+        $this->setCommonAttributes($supplier, $request);
 
         DB::transaction(function () use ($supplier, $creator) {
             $supplier->save();
