@@ -149,7 +149,7 @@ class BookingHandler extends Controller
                     if ($quantity != 0)
                         $count_products++;
 
-                    if ($booked->$param != $quantity) {
+                    if ($booked->$param != 0 || $quantity != 0) {
                         $booked->$param = $quantity;
 
                         if ($delivering) {
