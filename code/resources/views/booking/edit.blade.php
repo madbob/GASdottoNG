@@ -35,7 +35,7 @@ $grand_total = 0;
                                 {{ $product->name }}
 
                                 @if(!empty($product->description))
-                                    <button type="button" class="btn btn-xs btn-default" data-container="body" data-toggle="popover" data-placement="right" data-trigger="hover" data-content="{{ str_replace('"', '\"', $product->description) }}">
+                                    <button type="button" class="btn btn-xs btn-default hidden-xs" data-container="body" data-toggle="popover" data-placement="right" data-trigger="hover" data-content="{{ str_replace('"', '\"', $product->description) }}">
                                         <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
                                     </button>
                                 @endif
@@ -47,7 +47,7 @@ $grand_total = 0;
                         </td>
 
                         <td>
-                            <label class="static-label">{{ $product->printableDetails($order) }}</label>
+                            <label class="static-label"><small>{{ $product->printableDetails($order) }}</small></label>
                         </td>
 
                         <td class="text-right">

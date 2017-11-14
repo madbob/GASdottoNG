@@ -102,7 +102,7 @@ class Product extends Model
         }
 
         if ($this->variable) {
-            $str .= '<small> (prodotto a prezzo variabile)</small>';
+            $str .= '<small> <span class="visible-sm">(prodotto a prezzo variabile)</span><span class="visible-xs">(variabile)</span></small>';
         }
 
         return $str;

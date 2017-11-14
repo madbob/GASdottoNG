@@ -16,7 +16,7 @@ foreach ($aggregate->orders as $order) {
 
 <div class="row">
     <div class="col-md-12">
-        <ul class="nav nav-tabs" role="tablist">
+        <ul class="nav nav-tabs hidden-xs" role="tablist">
             <li role="presentation"><a href="#myself-{{ $aggregate->id }}" role="tab" data-toggle="tab">La Mia Prenotazione</a></li>
 
             @if($has_shipping && $aggregate->isActive())

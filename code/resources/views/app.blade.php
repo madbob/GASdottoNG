@@ -60,7 +60,7 @@
                             <li>
                                 <a href="#" data-toggle="modal" data-target="#feedback-modal"><span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span></a>
                             </li>
-                            <li id="help-trigger">
+                            <li id="help-trigger" class="hidden-xs">
                                 <a href="#"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
                             </li>
                             <li>

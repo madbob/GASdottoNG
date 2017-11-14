@@ -37,7 +37,7 @@ if (isset($extra_class)) {
         <div class="row many-rows-header">
             @foreach($columns as $column)
                 @if($column['type'] != 'hidden')
-                    <div class="col-md-{{ $column['width'] }} col-sm-{{ $column['width'] }}">
+                    <div class="col-md-{{ $column['width'] }} col-xs-{{ $column['width'] }}">
                         <label>{{ $column['label'] }}</label>
                         @if(isset($column['help']))
                             <button type="button" class="btn btn-xs btn-default" data-container="body" data-toggle="popover" data-placement="right" data-trigger="hover" data-content="{{ $column['help'] }}">
@@ -76,7 +76,7 @@ if (isset($extra_class)) {
                     ?>
 
                     @if($column['type'] != 'hidden')
-                        <div class="col-md-{{ $column['width'] }} col-sm-{{ $column['width'] }}">
+                        <div class="col-md-{{ $column['width'] }} col-xs-{{ $column['width'] }}">
                             @include('commons.' . $column['type'] . 'field', $attributes)
                         </div>
                     @else
@@ -113,7 +113,7 @@ if (isset($extra_class)) {
 
                         ?>
 
-                        <div class="col-md-{{ $column['width'] }} col-sm-{{ $column['width'] }} customized-cell">
+                        <div class="col-md-{{ $column['width'] }} col-xs-{{ $column['width'] }} customized-cell">
                             {!! vsprintf($column['contents'], $values) !!}
                         </div>
                     @else
@@ -135,7 +135,7 @@ if (isset($extra_class)) {
                         ?>
 
                         @if($column['type'] != 'hidden')
-                            <div class="col-md-{{ $column['width'] }} col-sm-{{ $column['width'] }}">
+                            <div class="col-md-{{ $column['width'] }} col-xs-{{ $column['width'] }}">
                                 @include('commons.' . $column['type'] . 'field', $attributes)
                             </div>
                         @else

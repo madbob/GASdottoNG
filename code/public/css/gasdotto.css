@@ -10,13 +10,6 @@ body {
   .order-summary .form-control {
     padding: 6px; } }
 
-input[type='number'] {
-  -moz-appearance: textfield; }
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none; }
-
 #preloader {
   position: absolute;
   background: white;
@@ -114,8 +107,14 @@ table label {
 .order-summary .form-group {
   margin-bottom: 0; }
 
+.table-striped > tbody > tr:nth-of-type(even) {
+  background-color: #FFF; }
+
 .booking-product .row {
   margin-left: 0; }
+
+.booking-product input[type=text] {
+  min-width: 60px; }
 
 .booking-product .input-group {
   float: left; }

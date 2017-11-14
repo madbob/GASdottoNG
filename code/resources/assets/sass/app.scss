@@ -164,10 +164,18 @@ table {
     }
 }
 
+.table-striped>tbody>tr:nth-of-type(even) {
+    background-color: #FFF;
+}
+
 .booking-product {
 	.row {
 		margin-left: 0;
 	}
+
+    input[type=text] {
+        min-width: 60px;
+    }
 
 	.input-group {
 		float: left;
