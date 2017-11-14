@@ -2173,32 +2173,30 @@ $(document).ready(function() {
             if (m.length != 0) {
                 var maximum = parseFloatC(m.val());
 
-                if (maximum != 0) {
-                    /*
-                        I controlli li faccio sul contenuto della singola
-                        casella, ma la disponibilità è complessiva (vedasi: il
-                        caso di un prodotto di cui ordino diverse varianti con
-                        diverse quantità)
-                    */
-                    var in_booked = 0;
-                    row.find('.booking-product-quantity input').each(function() {
-                        var v = $(this).val();
-                        if (v != '')
-                        in_booked += parseFloatC(v);
-                    });
+                /*
+                    I controlli li faccio sul contenuto della singola
+                    casella, ma la disponibilità è complessiva (vedasi: il
+                    caso di un prodotto di cui ordino diverse varianti con
+                    diverse quantità)
+                */
+                var in_booked = 0;
+                row.find('.booking-product-quantity input').each(function() {
+                    var v = $(this).val();
+                    if (v != '')
+                    in_booked += parseFloatC(v);
+                });
 
-                    var m = row.find('input:hidden[name=product-partitioning]');
-                    if (m.length != 0) {
-                        var portion = parseFloatC(m.val());
-                        if (portion != 0)
-                            in_booked = in_booked * portion;
-                    }
+                var m = row.find('input:hidden[name=product-partitioning]');
+                if (m.length != 0) {
+                    var portion = parseFloatC(m.val());
+                    if (portion != 0)
+                        in_booked = in_booked * portion;
+                }
 
-                    if (in_booked > maximum) {
-                        row.addClass('has-error');
-                        booked = 0;
-                        wrong = true;
-                    }
+                if (in_booked > maximum) {
+                    row.addClass('has-error');
+                    booked = 0;
+                    wrong = true;
                 }
             }
 

@@ -11,8 +11,11 @@ if(!isset($while_shipping))
     <input type="hidden" name="product-minimum" value="{{ $product->min_quantity }}" class="skip-on-submit" />
     <input type="hidden" name="product-maximum" value="{{ $product->max_quantity }}" class="skip-on-submit" />
     <input type="hidden" name="product-multiple" value="{{ $product->multiple }}" class="skip-on-submit" />
-    <input type="hidden" name="product-available" value="{{ $product->stillAvailable($order) }}" class="skip-on-submit" />
     <input type="hidden" name="product-partitioning" value="{{ $product->portion_quantity }}" class="skip-on-submit" />
+
+    @if($product->max_available != 0)
+        <input type="hidden" name="product-available" value="{{ $product->stillAvailable($order) }}" class="skip-on-submit" />
+    @endif
 @else
     <input type="hidden" name="product-price" value="{{ $product->contextualPrice($order, !$while_shipping) }}" class="skip-on-submit" />
     <input type="hidden" name="product-transport" value="{{ $product->transport }}" class="skip-on-submit" />
