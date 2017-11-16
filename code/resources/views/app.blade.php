@@ -137,6 +137,7 @@
         $scripts = [
             '/js/jquery-2.1.1.js',
             '/js/jquery-ui.js',
+            'js/jquery.ui.touch-punch.js',
             '/js/bootstrap.min.js',
             '/js/bootstrap-datepicker.min.js',
             '/js/bootstrap-datepicker.it.min.js',
