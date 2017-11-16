@@ -5,34 +5,30 @@
         <hr/>
 
         @foreach($order->bookings as $booking)
-            <table border="1" style="width: 100%" cellpadding="5">
-                <thead>
-                    <tr>
-                        <th colspan="3">{{ $booking->user->printableName() }}
+            <table border="1" style="width: 100%" cellpadding="5" nobr="true">
+                <tr>
+                    <th colspan="3"><strong>{{ $booking->user->printableName() }}
 
-                            <?php
+                        <?php
 
-                            $contacts = [];
+                        $contacts = [];
 
-                            foreach($booking->user->contacts as $contact) {
-                                if ($contact->type == 'phone' || $contact->type == 'mobile')
-                                    $contacts[] = $contact->value;
-                            }
+                        foreach($booking->user->contacts as $contact) {
+                            if ($contact->type == 'phone' || $contact->type == 'mobile')
+                                $contacts[] = $contact->value;
+                        }
 
-                            if (!empty($contacts))
-                                echo ' - ' . join(', ', $contacts);
+                        if (!empty($contacts))
+                            echo ' - ' . join(', ', $contacts);
 
-                        ?></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @include('documents.booking_shipping', ['booking' => $booking])
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th colspan="3">Totale: {{ printablePrice($booking->total_value, ',') }} €</th>
-                    </tr>
-                </tfoot>
+                    ?></strong></th>
+                </tr>
+
+                @include('documents.booking_shipping', ['booking' => $booking])
+
+                <tr>
+                    <th colspan="3"><strong>Totale: {{ printablePrice($booking->total_value, ',') }} €</strong></th>
+                </tr>
             </table>
 
             <p>&nbsp;</p>

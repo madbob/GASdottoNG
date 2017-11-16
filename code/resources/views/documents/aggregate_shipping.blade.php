@@ -11,42 +11,38 @@
                 @continue
             @endif
 
-            <table border="1" style="width: 100%" cellpadding="5">
-                <thead>
-                    <tr>
-                        <th colspan="3">{{ $super_booking->user->printableName() }}
+            <table border="1" style="width: 100%" cellpadding="5" nobr="true">
+                <tr>
+                    <th colspan="3"><strong>{{ $super_booking->user->printableName() }}
 
-                            <?php
+                        <?php
 
-                            $contacts = [];
+                        $contacts = [];
 
-                            foreach($super_booking->user->contacts as $contact) {
-                                if ($contact->type == 'phone' || $contact->type == 'mobile')
-                                    $contacts[] = $contact->value;
-                            }
+                        foreach($super_booking->user->contacts as $contact) {
+                            if ($contact->type == 'phone' || $contact->type == 'mobile')
+                                $contacts[] = $contact->value;
+                        }
 
-                            if (!empty($contacts))
-                                echo ' - ' . join(', ', $contacts);
+                        if (!empty($contacts))
+                            echo ' - ' . join(', ', $contacts);
 
-                        ?></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($super_booking->bookings as $booking)
-                        @if($booking->products->isEmpty() == false)
-                            <tr>
-                                <td colspan="3"><strong>{{ $booking->order->supplier->printableName() }}</strong></td>
-                            </tr>
+                    ?></strong></th>
+                </tr>
 
-                            @include('documents.booking_shipping', ['booking' => $booking])
-                        @endif
-                    @endforeach
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th colspan="3">Totale: {{ printablePrice($super_booking->total_value, ',') }} €</th>
-                    </tr>
-                </tfoot>
+                @foreach($super_booking->bookings as $booking)
+                    @if($booking->products->isEmpty() == false)
+                        <tr>
+                            <td colspan="3"><strong>{{ $booking->order->supplier->printableName() }}</strong></td>
+                        </tr>
+
+                        @include('documents.booking_shipping', ['booking' => $booking])
+                    @endif
+                @endforeach
+
+                <tr>
+                    <th colspan="3"><strong>Totale: {{ printablePrice($super_booking->total_value, ',') }} €</strong></th>
+                </tr>
             </table>
 
             <p>&nbsp;</p>
