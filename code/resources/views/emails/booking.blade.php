@@ -44,7 +44,7 @@
     </p>
 @endif
 
-@if(!empty($message))
+@if(!empty($txt_message))
     <hr/>
     <p>
         {!! nl2br($txt_message) !!}

@@ -1,5 +1,9 @@
 <?php
 
+if (!isset($help_text)) {
+    $help_text = '';
+}
+
 if (isset($valuefrom) == false) {
     $valuefrom = null;
 }
@@ -25,5 +29,9 @@ if (isset($valuefrom) == false) {
             @endif
 
             autocomplete="off">
+
+        @if(!empty($help_text))
+            <span class="help-block">{{ $help_text }}</span>
+        @endif
     </div>
 </div>

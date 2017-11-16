@@ -16,6 +16,7 @@ use App\Order;
 use App\Aggregate;
 use App\Booking;
 use App\BookedProduct;
+use App\Notifications\SupplierOrderSummary;
 
 /*
     Attenzione, quando si maneggia in questo file bisogna ricordare la
@@ -386,21 +387,43 @@ class OrdersController extends Controller
                 break;
 
             case 'summary':
+                $send_mail = $request->has('send_mail');
+
                 $subtype = $request->input('format', 'pdf');
                 $required_fields = $request->input('fields', []);
                 $data = $order->formatSummary($required_fields);
                 $filename = sprintf('Prodotti ordinati ordine %s presso %s.%s', $order->internal_number, $order->supplier->name, $subtype);
+                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $filename));
 
                 if ($subtype == 'pdf') {
                     $html = Theme::view('documents.order_summary_pdf', ['order' => $order, 'data' => $data])->render();
                     PDF::SetTitle(sprintf('Prodotti ordinati ordine %s presso %s del %s', $order->internal_number, $order->supplier->name, date('d/m/Y')));
                     PDF::AddPage('L');
                     PDF::writeHTML($html, true, false, true, false, '');
-                    PDF::Output($filename, 'D');
+
+                    if ($send_mail) {
+                        PDF::Output($temp_file_path, 'F');
+                    }
+                    else {
+                        PDF::Output($filename, 'D');
+                    }
                 }
                 else if ($subtype == 'csv') {
-                    http_csv_headers($filename);
-                    return Theme::view('documents.order_summary_csv', ['order' => $order, 'data' => $data]);
+                    $output = Theme::view('documents.order_summary_csv', ['order' => $order, 'data' => $data]);
+
+                    if ($send_mail) {
+                        file_put_contents($temp_file_path, $output->render());
+                    }
+                    else {
+                        http_csv_headers($filename);
+                        return $output;
+                    }
+                }
+
+                if ($send_mail) {
+                    $body_mail = $request->input('body_mail');
+                    $order->supplier->notify(new SupplierOrderSummary($temp_file_path, $body_mail));
+                    @unlink($temp_file_path);
                 }
 
                 break;

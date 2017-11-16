@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Collection;
@@ -21,7 +22,7 @@ use App\ExportableTrait;
 
 class Supplier extends Model
 {
-    use SoftDeletes, AttachableTrait, ContactableTrait, CreditableTrait, PayableTrait, ExportableTrait, GASModel, SluggableID;
+    use Notifiable, SoftDeletes, AttachableTrait, ContactableTrait, CreditableTrait, PayableTrait, ExportableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
     protected $dates = ['deleted_at'];

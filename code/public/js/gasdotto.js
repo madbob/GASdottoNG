@@ -2091,6 +2091,27 @@ $(document).ready(function() {
         /*
         	TODO: aggiornare i prezzi totali nella tabella dell'ordine
         */
+    })
+    .on('shown.bs.modal', '.order-summary-download-modal', function() {
+        $(this).find('input[name=send_mail]').bootstrapToggle('off');
+        $(this).find('.order_summary_body_mail').hide();
+    })
+    .on('change', '.order-summary-download-modal input[name=send_mail]', function() {
+        var status = $(this).prop('checked');
+        var form = $(this).closest('.order-summary-download-modal').find('form');
+        var textarea = form.find('.order_summary_body_mail');
+        var submit = form.find('.btn-success');
+
+        if (status) {
+            textarea.show();
+            submit.text('Invia Mail');
+            form.removeClass('direct-submit');
+        }
+        else {
+            textarea.hide();
+            submit.text('Download');
+            form.addClass('direct-submit');
+        }
     });
 
     /*

@@ -8,7 +8,7 @@
 
 @push('postponed')
 
-<div class="modal fade close-on-submit" id="summary-products-document-{{ $rand }}" tabindex="-1" role="dialog">
+<div class="modal fade close-on-submit order-summary-download-modal" id="summary-products-document-{{ $rand }}" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-extra-lg" role="document">
         <div class="modal-content">
             <form class="form-horizontal direct-submit" method="GET" action="{{ url('orders/document/' . $order->id . '/summary') }}" data-toggle="validator">
@@ -48,6 +48,25 @@
                             ],
                         ]
                     ])
+
+                    @if(!empty($order->supplier->email))
+                        @include('commons.boolfield', [
+                            'obj' => null,
+                            'name' => 'send_mail',
+                            'label' => 'Inoltra Mail',
+                            'labelsize' => 2,
+                            'fieldsize' => 10,
+                            'help_text' => sprintf('Sarà inviata a %s e, in CC, a %s', $order->supplier->email, $currentuser->email)
+                        ])
+                        @include('commons.textarea', [
+                            'obj' => null,
+                            'name' => 'body_mail',
+                            'label' => 'Testo Mail',
+                            'labelsize' => 2,
+                            'fieldsize' => 10,
+                            'extra_wrap_class' => 'order_summary_body_mail'
+                        ])
+                    @endif
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>

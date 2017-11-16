@@ -7,9 +7,14 @@ $value = ($obj ? $obj->$name : '');
 if(empty($value))
     $value = $default_value;
 
+$wrap_class = 'form-group';
+if (isset($extra_wrap_class)) {
+    $wrap_class .= ' ' . $extra_wrap_class;
+}
+
 ?>
 
-<div class="form-group">
+<div class="{{ $wrap_class }}">
     @if($squeeze == false)
         <label for="{{ $prefix . $name . $postfix }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
     @endif
