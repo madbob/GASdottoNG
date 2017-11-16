@@ -8,15 +8,13 @@ if (!isset($end_date))
 ?>
 
 <div class="form-group">
-    <label for="startdate" class="col-sm-{{ $labelsize }} control-label">Dal</label>
+    <label for="startdate" class="col-sm-{{ $labelsize }} control-label">Intervallo</label>
     <div class="col-sm-{{ $fieldsize }}">
-        <input type="text" class="date form-control" name="startdate" value="{{ ucwords(strftime('%A %d %B %G', $start_date)) }}" required autocomplete="off">
-    </div>
-</div>
-
-<div class="form-group">
-    <label for="enddate" class="col-sm-{{ $labelsize }} control-label">Al</label>
-    <div class="col-sm-{{ $fieldsize }}">
-        <input type="text" class="date form-control" name="enddate" value="{{ ucwords(strftime('%A %d %B %G', $end_date)) }}" required autocomplete="off">
+        <div class="input-group">
+            <div class="input-group-addon">Da</div>
+            <input type="text" class="date form-control" name="startdate" value="{{ ucwords(strftime('%A %d %B %G', $start_date)) }}" required autocomplete="off">
+            <div class="input-group-addon">a</div>
+            <input type="text" class="date form-control" name="enddate" value="{{ ucwords(strftime('%A %d %B %G', $end_date)) }}" required autocomplete="off">
+        </div>
     </div>
 </div>
