@@ -223,6 +223,8 @@ class Supplier extends Model
     {
         if ($replace == null) {
             $supplier = new Supplier();
+            $supplier->payment_method = '';
+            $supplier->order_method = '';
         }
         else {
             $supplier = Supplier::findOrFail($replace);

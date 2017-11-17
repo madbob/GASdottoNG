@@ -105,7 +105,8 @@ table label {
   margin-top: 20px; }
 
 .explode-aggregate {
-  z-index: 10; }
+  z-index: 10;
+  cursor: pointer; }
 
 .order-summary .form-group {
   margin-bottom: 0; }

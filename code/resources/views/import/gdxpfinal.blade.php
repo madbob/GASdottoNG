@@ -13,6 +13,8 @@
                 @endforeach
             @endif
         </ul>
+
+        <p class="clearfix"></p>
     </div>
 
     <div class="modal-footer">

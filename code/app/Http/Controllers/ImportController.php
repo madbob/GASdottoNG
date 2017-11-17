@@ -371,7 +371,7 @@ class ImportController extends Controller
             $filepath = sprintf('%s/%s', $working_dir, $entry->getPath());
 
             /*
-                Il vecchio GASdotto usata entities HTML per rappresentare i
+                Il vecchio GASdotto usava entities HTML per rappresentare i
                 caratteri accentati, qui li riconverto in UTF-8
             */
             $escaped = html_entity_decode(file_get_contents($filepath));
