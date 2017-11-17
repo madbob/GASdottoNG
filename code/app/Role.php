@@ -157,7 +157,11 @@ class Role extends Model
                     $applies_cache[$class] = [];
 
                 if ($r->target_id == '*') {
-                    $objects = $class::withTrashed()->get();
+                    if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
+                        $objects = $class::withTrashed()->get();
+                    else
+                        $objects = $class::get();
+
                     foreach($objects as $o)
                         $applies_cache[$class][] = $o->id;
                 }

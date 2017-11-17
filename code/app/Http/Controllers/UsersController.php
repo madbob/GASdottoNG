@@ -91,7 +91,7 @@ class UsersController extends BackedController
     {
         $ret = [];
         foreach ($users as $user) {
-            $fullname = $user->lastname . ' ' . $user->firstname;
+            $fullname = $user->printableName();
             $u = (object)array(
                 'id' => $user->id,
                 'label' => $fullname,
