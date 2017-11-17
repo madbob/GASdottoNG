@@ -104,6 +104,9 @@ table label {
 .dynamic-tree .dynamic-tree-add-row {
   margin-top: 20px; }
 
+.explode-aggregate {
+  z-index: 10; }
+
 .order-summary .form-group {
   margin-bottom: 0; }
 

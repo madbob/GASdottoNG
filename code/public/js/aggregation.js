@@ -1,12 +1,21 @@
 (function ($) {
     $.fn.aggregator = function() {
         $(this).each(function() {
-            $(this).find('ul').each(function() {
+            $(this).find('div.well').each(function() {
                 initAggregatorList($(this));
             });
 
             $(this).find('ul li').draggable({
                 revert: 'invalid'
+            });
+
+            $(this).on('click', '.explode-aggregate', function() {
+                var container = $(this).closest('.well');
+                container.find('li').each(function() {
+                    var cell = prependCell(container);
+                    cell.find('ul').append($(this).clone());
+                });
+                container.remove();
             });
 
             $(this).find('form').submit(function(e) {
@@ -16,7 +25,7 @@
 
                 var data = new Array();
 
-                form.find('ul').each(function() {
+                form.find('.well').each(function() {
                     var a = {
                         id: $(this).attr('data-aggregate-id'),
                         orders: new Array()
@@ -44,18 +53,38 @@
             });
         });
 
+        function prependCell(node) {
+            var cell = node.clone();
+            cell.attr('data-aggregate-id', 'new').find('ul').empty();
+            node.before(cell);
+            initAggregatorList(cell);
+            return cell;
+        }
+
         function initAggregatorList(node) {
+            var items = node.find('li').length;
+            if (items < 2) {
+                node.find('.explode-aggregate').hide();
+            }
+
             node.droppable({
                 accept: 'li',
                 drop: function(event, ui) {
                     var items = $(this).find('li').length;
                     if (items == 0) {
-                        var cell = $(this).clone();
-                        $(this).before(cell);
-                        initAggregatorList(cell);
+                        prependCell($(this));
                     }
+                    else if (items == 1) {
+                        $(this).find('.explode-aggregate').show();
+                    }
+
+                    var source = ui.draggable.closest('.well');
+                    var ex_items = source.find('li').length;
+                    if (ex_items == 2)
+                        source.find('.explode-aggregate').hide();
+
                     ui.draggable.css('right', '').css('left', '').css('top', '').css('bottom', '').css('width', '').css('height', '');
-                    $(this).append(ui.draggable);
+                    $(this).find('ul').append(ui.draggable);
                 }
             });
         }
