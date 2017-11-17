@@ -224,7 +224,7 @@ class Booking extends Model
     */
     public function getTotalValueAttribute()
     {
-        return $this->value + $this->check_transport;
+        return $this->value + $this->check_transport - $this->major_discount;
     }
 
     /*
