@@ -45,6 +45,11 @@ class Movement extends Model
             return $this->morphTo();
     }
 
+    public function registerer()
+    {
+        return $this->belongsTo('App\User');
+    }
+
     public function getPaymentIconAttribute()
     {
         $types = MovementType::payments();

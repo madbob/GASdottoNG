@@ -8,5 +8,9 @@
                 {!! $obj->printableName() !!}
             @endif
         </label>
+
+        <div class="pull-right">
+            @include('commons.detailsbutton', ['obj' => $obj])
+        </div>
     </div>
 </div>

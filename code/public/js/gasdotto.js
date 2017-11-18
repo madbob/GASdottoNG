@@ -1485,6 +1485,23 @@ $(document).ready(function() {
         }
     });
 
+    $('body').on('click', '.object-details', function() {
+        var url = $(this).attr('data-show-url');
+        var modal = $('#service-modal');
+        modal.find('.modal-body').empty().append(loadingPlaceholder());
+        modal.modal('show');
+
+        $.ajax({
+            url: url,
+            method: 'GET',
+            dataType: 'HTML',
+            success: function(data) {
+                var modal = $('#service-modal');
+                modal.find('.modal-body').empty().append(data);
+            }
+        });
+    });
+
     $('body').on('change', 'select.triggers-modal', function(event) {
         var val = $(this).find('option:selected').val();
         if (val == 'run_modal') {

@@ -54,6 +54,12 @@ class ProductsController extends BackedController
         }
     }
 
+    public function show_ro(Request $request, $id)
+    {
+        $product = $this->service->show($id);
+        return Theme::view('product.show', ['product' => $product]);
+    }
+
     public function store(Request $request)
     {
         try {

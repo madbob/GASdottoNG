@@ -34,15 +34,7 @@ $grand_total = 0;
                         @if($product->variants->isEmpty() == true)
                             <tr>
                                 <td>
-                                    <label class="static-label">
-                                        {{ $product->product->name }}
-
-                                        @if(!empty($product->description))
-                                            <button type="button" class="btn btn-xs btn-default" data-container="body" data-toggle="popover" data-placement="right" data-trigger="hover" data-content="{{ str_replace('"', '\"', $product->description) }}">
-                                                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-                                            </button>
-                                        @endif
-                                    </label>
+                                    @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product->product])
                                 </td>
 
                                 <td>

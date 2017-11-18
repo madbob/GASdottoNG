@@ -18,7 +18,7 @@
                 @include('commons.staticstringfield', ['obj' => $user, 'name' => 'card_number', 'label' => 'Numero Tessera'])
             @endif
 
-            @include('user.movements')
+            @include('user.movements', ['editable' => true])
 
             @include('commons.staticdatefield', ['obj' => $user, 'name' => 'last_login', 'label' => 'Ultimo Accesso'])
 
@@ -68,7 +68,7 @@
             </div>
 
             <hr/>
-            @include('commons.permissionsviewer', ['object' => $user])
+            @include('commons.permissionsviewer', ['object' => $user, 'editable' => true])
         </div>
     </div>
 

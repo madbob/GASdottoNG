@@ -9,9 +9,9 @@
         <div class="col-md-6">
             @include('commons.staticimagefield', ['obj' => $user, 'label' => 'Foto', 'valuefrom' => 'picture_url'])
             @include('commons.staticdatefield', ['obj' => $user, 'name' => 'member_since', 'label' => 'Membro da'])
-            @include('user.movements')
+            @include('user.movements', ['editable' => $editable])
             <hr/>
-            @include('commons.permissionsviewer', ['object' => $user])
+            @include('commons.permissionsviewer', ['object' => $user, 'editable' => $editable])
         </div>
     </div>
 </form>

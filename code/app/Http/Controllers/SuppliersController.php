@@ -50,6 +50,17 @@ class SuppliersController extends BackedController
         }
     }
 
+    public function show_ro(Request $request, $id)
+    {
+        try {
+            $supplier = $this->service->show($id);
+            return Theme::view('supplier.base_show', ['supplier' => $supplier, 'editable' => false]);
+        }
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+    }
+
     public function catalogue(Request $request, $id, $format)
     {
         try {

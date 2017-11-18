@@ -23,7 +23,7 @@
                         @include('commons.staticdatefield', ['obj' => $supplier, 'name' => 'deleted_at', 'label' => 'Data Eliminazione'])
                     @endif
 
-                    @include('commons.permissionseditor', ['object' => $supplier, 'master_permission' => 'supplier.modify'])
+                    @include('commons.permissionseditor', ['object' => $supplier, 'master_permission' => 'supplier.modify', 'editable' => true])
                 </div>
             </div>
 

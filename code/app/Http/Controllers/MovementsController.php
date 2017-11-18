@@ -225,6 +225,17 @@ class MovementsController extends Controller
         return Theme::view('movement.modal', ['obj' => $movement, 'editable' => true]);
     }
 
+    public function show_ro(Request $request, $id)
+    {
+        $user = Auth::user();
+        if ($user->can('movements.view', $user->gas) == false) {
+            abort(503);
+        }
+
+        $movement = Movement::findOrFail($id);
+        return Theme::view('movement.show', ['obj' => $movement]);
+    }
+
     public function destroy(Request $request, $id)
     {
         DB::beginTransaction();

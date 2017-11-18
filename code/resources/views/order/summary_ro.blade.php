@@ -27,7 +27,7 @@
                 <tr data-product-id="{{ $product->id }}">
                     <!-- Prodotto -->
                     <td>
-                        <label>{{ $product->printableName() }}</label>
+                        @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product])
                     </td>
 
                     @if($order->isActive())

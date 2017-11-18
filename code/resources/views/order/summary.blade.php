@@ -50,7 +50,7 @@
                 <!-- Prodotto -->
                 <td>
                     <input type="hidden" name="productid[]" value="{{ $product->id }}" />
-                    <label>{{ $product->printableName() }}</label>
+                    @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product])
                 </td>
 
                 @if($order->isActive())

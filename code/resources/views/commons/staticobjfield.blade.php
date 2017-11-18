@@ -1,12 +1,32 @@
+<?php
+
+if (isset($obj) && $obj != null && $obj->$name != null)
+    $target_obj = $obj->$name;
+else if (isset($target_obj))
+    $target_obj = $target_obj;
+else
+    $target_obj = null;
+
+?>
+
 <div class="form-group">
-    <label class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
+    @if($squeeze == false)
+        <label class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
+    @endif
+
     <div class="col-sm-{{ $fieldsize }}">
-        <label class="static-label text-muted">
-            @if($obj != null && $obj->$name != null)
-                {{ $obj->$name->printableName() }}
-            @else
+        @if($target_obj != null)
+            <label class="static-label text-muted">
+                {{ $target_obj->printableName() }}
+            </label>
+
+            <div class="pull-right">
+                @include('commons.detailsbutton', ['obj' => $target_obj])
+            </div>
+        @else
+            <label class="static-label text-muted">
                 Nessuno
-            @endif
-        </label>
+            </label>
+        @endif
     </div>
 </div>

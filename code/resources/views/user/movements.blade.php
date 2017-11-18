@@ -1,6 +1,6 @@
 @if(Gate::check('users.admin', $currentgas) || Gate::check('users.movements', $currentgas))
     @if($currentgas->getConfig('annual_fee_amount') != 0)
-        @can('users.movements', $currentgas)
+        @if($editable && Gate::check('users.movements', $currentgas))
             @include('commons.movementfield', [
                 'obj' => $user->fee,
                 'name' => 'fee_id',
@@ -14,11 +14,11 @@
                 'label' => 'Quota Associativa',
                 'default' => \App\Movement::generate('annual-fee', $user, $user->gas, 0)
             ])
-        @endcan
+        @endif
     @endif
 
     @if($currentgas->getConfig('deposit_amount') != 0)
-        @can('users.movements', $currentgas)
+        @if($editable && Gate::check('users.movements', $currentgas))
             @include('commons.movementfield', [
                 'obj' => $user->deposit,
                 'name' => 'deposit_id',

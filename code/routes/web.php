@@ -30,6 +30,7 @@ Route::get('gas/{id}/header', 'GasController@objhead');
 Route::get('gas/{id}/logo', 'GasController@getLogo');
 Route::get('gas/configmail', 'GasController@configureMail');
 
+Route::get('users/ro/{id}', 'UsersController@show_ro');
 Route::get('users/{id}/header', 'UsersController@objhead');
 Route::get('users/search', 'UsersController@search');
 Route::get('users/profile', 'UsersController@profile');
@@ -41,10 +42,12 @@ Route::get('roles/supplier/{supplier_id}', 'RolesController@formBySupplier');
 Route::post('roles/attach', 'RolesController@attach');
 Route::post('roles/detach', 'RolesController@detach');
 
+Route::get('suppliers/ro/{id}', 'SuppliersController@show_ro');
 Route::get('suppliers/{id}/header', 'SuppliersController@objhead');
 Route::get('suppliers/catalogue/{id}/{format}', 'SuppliersController@catalogue');
 Route::get('suppliers/{id}/plain_balance', 'SuppliersController@plainBalance');
 
+Route::get('products/ro/{id}', 'ProductsController@show_ro');
 Route::get('products/{id}/header', 'ProductsController@objhead');
 Route::post('products/massiveupdate', 'ProductsController@massiveUpdate');
 
@@ -83,6 +86,7 @@ Route::post('deliveries/{aggregate_id}/fast', 'DeliveryUserController@postFastSh
 Route::get('notifications/{id}/header', 'NotificationsController@objhead');
 Route::post('notifications/markread/{id}', 'NotificationsController@markread');
 
+Route::get('movements/ro/{id}', 'MovementsController@show_ro');
 Route::get('movements/{id}/header', 'MovementsController@objhead');
 Route::get('movtypes/{id}/header', 'MovementTypesController@objhead');
 Route::get('movements/showcredits', 'MovementsController@creditsTable');

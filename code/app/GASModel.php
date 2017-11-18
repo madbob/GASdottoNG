@@ -84,6 +84,19 @@ trait GASModel
         return URL::action($action, $this->id);
     }
 
+    public function getROShowURL()
+    {
+        $controller = $this->relatedController();
+        $action = sprintf('%s@show_ro', $controller);
+
+        try {
+            return URL::action($action, $this->id);
+        }
+        catch(\Exception $e) {
+            return null;
+        }
+    }
+
     public function testAndSet($request, $name, $field = null)
     {
         if ($field == null)

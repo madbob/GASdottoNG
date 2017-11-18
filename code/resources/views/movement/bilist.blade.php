@@ -82,6 +82,8 @@ else {
                                 <button class="btn btn-default async-modal" data-target-url="{{ url('/movements/' . $mov->id) }}">
                                     <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                                 </button>
+                            @else
+                                @include('commons.detailsbutton', ['obj' => $mov])
                             @endif
                         </td>
                     @endif

@@ -70,7 +70,18 @@ class UsersController extends BackedController
             if ($request->user()->can('users.admin', $user->gas))
                 return Theme::view('user.edit', ['user' => $user]);
             else
-                return Theme::view('user.show', ['user' => $user]);
+                return Theme::view('user.show', ['user' => $user, 'editable' => true]);
+        }
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+    }
+
+    public function show_ro(Request $request, $id)
+    {
+        try {
+            $user = $this->service->show($id);
+            return Theme::view('user.show', ['user' => $user, 'editable' => false]);
         }
         catch (AuthException $e) {
             abort($e->status());
