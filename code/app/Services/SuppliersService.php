@@ -8,6 +8,8 @@ use App\Exceptions\IllegalArgumentException;
 use Auth;
 use Log;
 use DB;
+use PDF;
+use Theme;
 
 use App\User;
 use App\Supplier;
