@@ -92,6 +92,7 @@ class ProductsController extends BackedController
             $data['price'] = $request->input($id . '-price', $product->price);
             $data['transport'] = $request->input($id . '-transport', $product->transport);
             $data['measure_id'] = $request->input($id . '-measure_id', $product->measure_id);
+            $data['active'] = $request->has($id . '-active');
             $this->service->update($id, $data);
         }
 

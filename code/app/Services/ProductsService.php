@@ -78,7 +78,7 @@ class ProductsService extends BaseService
         DB::transaction(function () use ($product, $request) {
             $this->setCommonAttributes($product, $request);
 
-            $product->active = isset($request['active']);
+            $product->active = $request['active'] ?? false;
             $this->setIfSet($product, $request, 'supplier_code');
             $this->setIfSet($product, $request, 'package_size');
             $this->setIfSet($product, $request, 'multiple');
