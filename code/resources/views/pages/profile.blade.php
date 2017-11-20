@@ -53,7 +53,7 @@
             @endif
 
             <hr/>
-            @include('commons.permissionsviewer', ['object' => $user])
+            @include('commons.permissionsviewer', ['object' => $user, 'editable' => true])
         </div>
     </div>
 
