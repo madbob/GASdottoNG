@@ -2355,7 +2355,7 @@ $(document).ready(function() {
         var modal = $(this).closest('.modal');
         var quantity = 0;
 
-        modal.find('input[type=number]').each(function() {
+        modal.find('input.number').each(function() {
             var v = $(this).val();
             if (v != '')
                 quantity += parseFloatC(v);
@@ -2367,7 +2367,7 @@ $(document).ready(function() {
             Il trigger keyup() alla fine serve a forzare il ricalcolo del totale
             della consegna quando il modale viene chiuso
         */
-        modal.closest('.booking-product-quantity').find('input[type=number]').first().val(quantity).keyup();
+        modal.closest('.booking-product-quantity').find('input.number').first().val(quantity).keyup();
         modal.modal('hide');
     });
 
