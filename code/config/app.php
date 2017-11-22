@@ -182,6 +182,7 @@ return [
         Elibyy\TCPDF\ServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Devfactory\Minify\MinifyServiceProvider::class,
+        Xinax\LaravelGettext\LaravelGettextServiceProvider::class,
 
         App\Providers\GraphicInitServiceProvider::class,
         App\Providers\MenuServiceProvider::class,

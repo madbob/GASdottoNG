@@ -16,7 +16,8 @@
         "madbob/automail": "dev-master",
         "vespakoen/menu": "^3.0",
         "wilgucki/csv": "^0.6.2",
-        "zetacomponents/archive": "^1.5"
+        "zetacomponents/archive": "^1.5",
+        "belphemur/laravel-gettext": "5.x"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
