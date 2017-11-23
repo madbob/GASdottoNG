@@ -80,12 +80,6 @@ function generalInit() {
         $(this).tab('show');
     });
 
-    $('.middle-tabs').on('click', '.btn', function() {
-        var target = $(this).attr('data-target');
-        $(this).addClass('active').siblings().removeClass('active');
-        $(target).addClass('active').siblings().removeClass('active');
-    });
-
     $('input:file.immediate-run').each(function() {
         var i = $(this);
         i.fileupload({

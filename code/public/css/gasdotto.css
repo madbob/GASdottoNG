@@ -41,6 +41,10 @@ body {
   .middle-tabs hr {
     position: absolute;
     width: 100%; }
+  .middle-tabs .nav-pills {
+    display: inline-block; }
+    .middle-tabs .nav-pills li {
+      background-color: #FFF; }
 
 .static-label {
   padding-top: 7px;

@@ -61,6 +61,24 @@ class SuppliersController extends BackedController
         }
     }
 
+    public function productsDetails(Request $request, $id)
+    {
+        $supplier = $this->service->show($id);
+        if ($request->user()->can('supplier.modify', $supplier))
+            return Theme::view('supplier.products_details', ['supplier' => $supplier]);
+        else
+            abort();
+    }
+
+    public function productsGrid(Request $request, $id)
+    {
+        $supplier = $this->service->show($id);
+        if ($request->user()->can('supplier.modify', $supplier))
+            return Theme::view('supplier.products_grid', ['supplier' => $supplier]);
+        else
+            abort();
+    }
+
     public function catalogue(Request $request, $id, $format)
     {
         try {
