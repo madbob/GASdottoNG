@@ -21,7 +21,7 @@ class SupplierOrderSummary extends ManyMailNotification
     {
         $user = Auth::user();
         $message = $this->initMailMessage($notifiable);
-        $message->subject('nuovo ordine')->cc($user->email)->attach($this->temp_file)->view('emails.supplier_summary', ['txt_message' => $this->message]);
+        $message->subject('nuovo ordine')->cc($user->email)->replyTo($user)->attach($this->temp_file)->view('emails.supplier_summary', ['txt_message' => $this->message]);
         return $message;
     }
 }

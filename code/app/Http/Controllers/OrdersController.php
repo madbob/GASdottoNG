@@ -9,6 +9,7 @@ use DB;
 use Auth;
 use Theme;
 use PDF;
+use Mail;
 
 use App\Supplier;
 use App\Product;
@@ -17,6 +18,7 @@ use App\Aggregate;
 use App\Booking;
 use App\BookedProduct;
 use App\Notifications\SupplierOrderSummary;
+use App\Notifications\GenericOrderShipping;
 
 /*
     Attenzione, quando si maneggia in questo file bisogna ricordare la
@@ -383,7 +385,29 @@ class OrdersController extends Controller
                 PDF::SetTitle(sprintf('Dettaglio Consegne ordine %s presso %s del %s', $order->internal_number, $order->supplier->name, date('d/m/Y')));
                 PDF::AddPage();
                 PDF::writeHTML($html, true, false, true, false, '');
-                PDF::Output($filename, 'D');
+
+                $send_mail = $request->has('send_mail');
+                if ($send_mail) {
+                    $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $filename));
+                    PDF::Output($temp_file_path, 'F');
+                    $body_mail = $request->input('body_mail');
+
+                    $recipient_mail = $request->input('recipient_mail');
+                    if (empty(trim($recipient_mail)))
+                        $recipient_mail = $request->user()->email;
+                    $recipient_mails = explode(',', $recipient_mail);
+
+                    $m = Mail::to(trim($recipient_mails[0]));
+                    for($i = 1; $i < count($recipient_mails); $i++)
+                        $m->to(trim($recipient_mails[$i]));
+                    $m->send(new GenericOrderShipping($temp_file_path, $body_mail));
+
+                    @unlink($temp_file_path);
+                }
+                else {
+                    PDF::Output($filename, 'D');
+                }
+
                 break;
 
             case 'summary':

@@ -1,14 +1,65 @@
 <?php $rand = rand() ?>
 
 <div class="list-group pull-right">
-    <a href="{{ url('orders/document/' . $order->id . '/shipping') }}" class="list-group-item">Dettaglio Consegne</a>
+    <a href="#" class="list-group-item" data-toggle="modal" data-target="#shipping-products-document-{{ $rand }}">Dettaglio Consegne</a>
     <a href="#" class="list-group-item" data-toggle="modal" data-target="#summary-products-document-{{ $rand }}">Riassunto Prodotti Ordinati</a>
     <a href="#" class="list-group-item" data-toggle="modal" data-target="#all-products-document-{{ $rand }}">Tabella Complessiva Prodotti</a>
 </div>
 
 @push('postponed')
 
-<div class="modal fade close-on-submit order-summary-download-modal" id="summary-products-document-{{ $rand }}" tabindex="-1" role="dialog">
+<div class="modal fade close-on-submit order-document-download-modal" id="shipping-products-document-{{ $rand }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-extra-lg" role="document">
+        <div class="modal-content">
+            <form class="form-horizontal direct-submit" method="GET" action="{{ url('orders/document/' . $order->id . '/shipping') }}" data-toggle="validator">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Dettaglio Consegne</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si trovano le informazioni relative alle singole prenotazioni.
+                    </p>
+
+                    <hr/>
+
+                    @if(!empty($order->supplier->email))
+                        @include('commons.boolfield', [
+                            'obj' => null,
+                            'name' => 'send_mail',
+                            'label' => 'Inoltra Mail',
+                            'labelsize' => 2,
+                            'fieldsize' => 10
+                        ])
+                        @include('commons.textfield', [
+                            'obj' => null,
+                            'name' => 'recipient_mail',
+                            'label' => 'Destinatari',
+                            'labelsize' => 2,
+                            'fieldsize' => 10,
+                            'extra_wrap_class' => 'order_document_recipient_mail',
+                            'help_text' => 'Puoi specificare più indirizzi mail, separandoli con una virgola'
+                        ])
+                        @include('commons.textarea', [
+                            'obj' => null,
+                            'name' => 'body_mail',
+                            'label' => 'Testo Mail',
+                            'labelsize' => 2,
+                            'fieldsize' => 10,
+                            'extra_wrap_class' => 'order_document_body_mail'
+                        ])
+                    @endif
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
+                    <button type="submit" class="btn btn-success">Download</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade close-on-submit order-document-download-modal" id="summary-products-document-{{ $rand }}" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-extra-lg" role="document">
         <div class="modal-content">
             <form class="form-horizontal direct-submit" method="GET" action="{{ url('orders/document/' . $order->id . '/summary') }}" data-toggle="validator">
@@ -64,7 +115,7 @@
                             'label' => 'Testo Mail',
                             'labelsize' => 2,
                             'fieldsize' => 10,
-                            'extra_wrap_class' => 'order_summary_body_mail'
+                            'extra_wrap_class' => 'order_document_body_mail'
                         ])
                     @endif
                 </div>
