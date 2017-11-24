@@ -130,13 +130,13 @@ class BookingHandler extends Controller
                             $quantity += $q;
                         }
 
-                        if ($quantity != 0 && empty($saved_variants)) {
-                            Log::error('Prodotto con varianti, prenotazione senza varianti salvate');
-                            Log::debug("Dump della richiesta:\n" . print_r($request->all(), true));
-                            return $this->errorResponse('Errore nel salvataggio');
-                        }
-
-                        BookedProductVariant::where('product_id', '=', $booked->id)->whereNotIn('id', $saved_variants)->delete();
+                        /*
+                            Attenzione: in fase di consegna/salvataggio è lecito
+                            che una quantità sia a zero, ma ciò non implica
+                            eliminare la variante
+                        */
+                        if ($delivering == false)
+                            BookedProductVariant::where('product_id', '=', $booked->id)->whereNotIn('id', $saved_variants)->delete();
 
                         /*
                             Per ogni evenienza qui ricarico le varianti appena
