@@ -22,6 +22,9 @@ $existing = false;
     <div class="well">
         <div class="row">
             <div class="col-md-6">
+                @include('commons.staticobjfield', ['target_obj' => $user, 'label' => 'Prenotato Da'])
+            </div>
+            <div class="col-md-6">
                 @foreach($user->contacts as $contact)
                     @if($contact->type == 'phone' || $contact->type == 'mobile')
                         @include('commons.staticstringfield', ['obj' => $contact, 'name' => 'value', 'label' => $contact->type_name])
