@@ -8,6 +8,8 @@
 
 @push('postponed')
 
+<?php $contacts = $order->supplier->involvedEmails() ?>
+
 <div class="modal fade close-on-submit order-document-download-modal" id="shipping-products-document-{{ $rand }}" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-extra-lg" role="document">
         <div class="modal-content">
@@ -21,34 +23,7 @@
                         Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si trovano le informazioni relative alle singole prenotazioni.
                     </p>
 
-                    <hr/>
-
-                    @if(!empty($order->supplier->email))
-                        @include('commons.boolfield', [
-                            'obj' => null,
-                            'name' => 'send_mail',
-                            'label' => 'Inoltra Mail',
-                            'labelsize' => 2,
-                            'fieldsize' => 10
-                        ])
-                        @include('commons.textfield', [
-                            'obj' => null,
-                            'name' => 'recipient_mail',
-                            'label' => 'Destinatari',
-                            'labelsize' => 2,
-                            'fieldsize' => 10,
-                            'extra_wrap_class' => 'order_document_recipient_mail',
-                            'help_text' => 'Puoi specificare più indirizzi mail, separandoli con una virgola'
-                        ])
-                        @include('commons.textarea', [
-                            'obj' => null,
-                            'name' => 'body_mail',
-                            'label' => 'Testo Mail',
-                            'labelsize' => 2,
-                            'fieldsize' => 10,
-                            'extra_wrap_class' => 'order_document_body_mail'
-                        ])
-                    @endif
+                    @include('order.filesmail', ['contacts' => $contacts])
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
@@ -84,6 +59,7 @@
                         'fieldsize' => 10,
                         'values' => App\Order::formattableColumns('summary')
                     ])
+
                     @include('commons.radios', [
                         'name' => 'format',
                         'label' => 'Formato',
@@ -100,24 +76,7 @@
                         ]
                     ])
 
-                    @if(!empty($order->supplier->email))
-                        @include('commons.boolfield', [
-                            'obj' => null,
-                            'name' => 'send_mail',
-                            'label' => 'Inoltra Mail',
-                            'labelsize' => 2,
-                            'fieldsize' => 10,
-                            'help_text' => sprintf('Sarà inviata a %s e, in CC, a %s', $order->supplier->email, $currentuser->email)
-                        ])
-                        @include('commons.textarea', [
-                            'obj' => null,
-                            'name' => 'body_mail',
-                            'label' => 'Testo Mail',
-                            'labelsize' => 2,
-                            'fieldsize' => 10,
-                            'extra_wrap_class' => 'order_document_body_mail'
-                        ])
-                    @endif
+                    @include('order.filesmail', ['contacts' => $contacts])
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>

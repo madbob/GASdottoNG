@@ -11,6 +11,7 @@ use Auth;
 use Theme;
 
 use App\Events\SluggableCreating;
+use App\Role;
 use App\AttachableTrait;
 use App\Attachment;
 use App\GASModel;
@@ -77,6 +78,19 @@ class Supplier extends Model
     public function getDisplayURL()
     {
         return Illuminate\Routing\UrlGenerator::action('SuppliersController@show');
+    }
+
+    public function involvedEmails()
+    {
+        $contacts = new Collection();
+
+        $contacts = $contacts->merge($this->contacts()->where('type', 'email')->get());
+
+        $users = Role::everybodyCan('supplier.modify', $this);
+        foreach($users as $u)
+            $contacts = $contacts->merge($u->contacts()->where('type', 'email')->get());
+
+        return $contacts;
     }
 
     /******************************************************** AttachableTrait */

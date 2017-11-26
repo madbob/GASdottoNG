@@ -17,7 +17,6 @@ use App\Order;
 use App\Aggregate;
 use App\Booking;
 use App\BookedProduct;
-use App\Notifications\SupplierOrderSummary;
 use App\Notifications\GenericOrderShipping;
 
 /*
@@ -374,6 +373,19 @@ class OrdersController extends Controller
         return Theme::view('commons.loadablelist', ['identifier' => $list_identifier, 'items' => $orders]);
     }
 
+    private function sendDocumentMail($request, $temp_file_path)
+    {
+        $recipient_mails = $request->input('recipient_mail_value', []);
+        if (empty($recipient_mails))
+            return;
+
+        $m = Mail::to($recipient_mails);
+        $body_mail = $request->input('body_mail');
+        $m->send(new GenericOrderShipping($temp_file_path, $body_mail));
+
+        @unlink($temp_file_path);
+    }
+
     public function document(Request $request, $id, $type)
     {
         $order = Order::findOrFail($id);
@@ -390,19 +402,7 @@ class OrdersController extends Controller
                 if ($send_mail) {
                     $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $filename));
                     PDF::Output($temp_file_path, 'F');
-                    $body_mail = $request->input('body_mail');
-
-                    $recipient_mail = $request->input('recipient_mail');
-                    if (empty(trim($recipient_mail)))
-                        $recipient_mail = $request->user()->email;
-                    $recipient_mails = explode(',', $recipient_mail);
-
-                    $m = Mail::to(trim($recipient_mails[0]));
-                    for($i = 1; $i < count($recipient_mails); $i++)
-                        $m->to(trim($recipient_mails[$i]));
-                    $m->send(new GenericOrderShipping($temp_file_path, $body_mail));
-
-                    @unlink($temp_file_path);
+                    $this->sendDocumentMail($request, $temp_file_path);
                 }
                 else {
                     PDF::Output($filename, 'D');
@@ -445,9 +445,7 @@ class OrdersController extends Controller
                 }
 
                 if ($send_mail) {
-                    $body_mail = $request->input('body_mail');
-                    $order->supplier->notify(new SupplierOrderSummary($temp_file_path, $body_mail));
-                    @unlink($temp_file_path);
+                    $this->sendDocumentMail($request, $temp_file_path);
                 }
 
                 break;

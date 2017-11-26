@@ -391,6 +391,23 @@ class Role extends Model
         return false;
     }
 
+    public static function everybodyCan($permission, $subject = null)
+    {
+        $ret = new Collection();
+
+        $basic_roles = self::havingAction($permission);
+        foreach($basic_roles as $br) {
+            $users = $br->users;
+
+            if ($subject != null)
+                $users = $br->usersByTarget($subject);
+
+            $ret = $ret->merge($users);
+        }
+
+        return $ret->unique('id');
+    }
+
     public static function allPermissions()
     {
         return [
