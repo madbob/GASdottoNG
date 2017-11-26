@@ -33,6 +33,10 @@ if (isset($extra_wrap_class)) {
                 data-default-value="{{ $enforced_default }}"
             @endif
 
+            @if(isset($maxlength))
+                maxlength="{{ $maxlength }}"
+            @endif
+
             autocomplete="off">{{ $value }}</textarea>
     </div>
 </div>

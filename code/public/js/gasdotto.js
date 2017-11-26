@@ -1496,14 +1496,6 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('change', 'select.triggers-modal', function(event) {
-        var val = $(this).find('option:selected').val();
-        if (val == 'run_modal') {
-            var modal = $(this).attr('data-trigger-modal');
-            $('#' + modal).modal('show');
-        }
-    });
-
     $('body').on('submit', '.main-form', function(event) {
         event.preventDefault();
 

@@ -48,6 +48,9 @@ class VariantsController extends Controller
 
         for ($i = 0; $i < count($new_values); ++$i) {
             $value = $new_values[$i];
+            if (empty($value))
+                continue;
+
             $offset = $new_offsets[$i];
             $value_found = false;
 

@@ -58,9 +58,6 @@ $select_class = 'form-control';
 if ($extra_class) {
     $select_class .= ' '.$extra_class;
 }
-if ($triggering_modal !== false) {
-    $select_class .= ' triggers-modal';
-}
 
 ?>
 
@@ -70,7 +67,7 @@ if ($triggering_modal !== false) {
     @endif
 
     <div class="col-sm-{{ $fieldsize }}">
-        <select class="{{ $select_class }}" {{ $triggering_modal !== false ? 'data-trigger-modal="' . $triggering_modal . '"' : '' }} {{ $multiple_select ? 'multiple size="10"' : '' }} name="{{ $prefix . $name . $postfix }}">
+        <select class="{{ $select_class }}" {{ $multiple_select ? 'multiple size="10"' : '' }} name="{{ $prefix . $name . $postfix }}">
             @if(!empty($extra_selection))
                 @foreach($extra_selection as $value => $label)
                     <option value="{{ $value }}">{{ $label }}</option>
@@ -78,10 +75,6 @@ if ($triggering_modal !== false) {
             @endif
 
             <?php recursiveOptionsSelectObj($obj, $objects, 0, $name, $multiple_select, $datafields, $selected_value) ?>
-
-            @if($triggering_modal !== false)
-                <option value="run_modal">Crea Nuovo</option>
-            @endif
         </select>
 
         @if(!empty($help_text))
