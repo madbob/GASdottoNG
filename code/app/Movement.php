@@ -74,7 +74,9 @@ class Movement extends Model
 
     public function getValidPaymentsAttribute()
     {
-        return MovementType::paymentsByType($this->type);
+        $ret = MovementType::paymentsByType($this->type);
+        $ret[$this->method]->checked = true;
+        return $ret;
     }
 
     public function printableName()

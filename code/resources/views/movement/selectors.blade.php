@@ -35,18 +35,11 @@
     'fixed_value' => $fixed
 ])
 
-<div class="form-group">
-    <label for="method" class="col-sm-{{ $labelsize }} control-label">Metodo</label>
-    <div class="col-sm-{{ $fieldsize }}">
-        <div class="btn-group" data-toggle="buttons">
-            @foreach($payments as $method_id => $info)
-                <label class="btn btn-default {{ $default_method == $method_id ? 'active' :'' }}">
-                    <input type="radio" name="method" value="{{ $method_id }}" autocomplete="off" {{ $default_method == $method_id ? 'checked' :'' }}> {{ $info->name }}
-                </label>
-            @endforeach
-        </div>
-    </div>
-</div>
+@include('commons.radios', [
+    'name' => 'method',
+    'label' => 'Metodo',
+    'values' => $payments
+])
 
 @include('commons.textfield', [
     'obj' => null,

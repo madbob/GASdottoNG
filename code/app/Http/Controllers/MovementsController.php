@@ -89,6 +89,10 @@ class MovementsController extends Controller
             $query->where('type', $request->input('type'));
         }
 
+        if ($request->input('method', 'all') != 'all') {
+            $query->where('method', $request->input('method'));
+        }
+
         if ($request->input('user_id', '0') != '0') {
             $user_id = $request->input('user_id');
             $generic_target = User::find($user_id);
@@ -164,7 +168,10 @@ class MovementsController extends Controller
         $data = [];
 
         $data['payments'] = MovementType::paymentsByType($type);
-        $data['default_method'] = MovementType::defaultPaymentByType($type);
+        $default_method = MovementType::defaultPaymentByType($type);
+        $data['payments'][$default_method]->checked = true;
+        $data['default_method'] = $default_method;
+
         $data['fixed'] = $metadata->fixed_value;
         $data['default_notes'] = $metadata->default_notes;
 

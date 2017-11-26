@@ -94,6 +94,11 @@
                 'start_date' => strtotime('-1 weeks'),
             ])
             @include('commons.selectmovementtypefield', ['show_all' => true])
+            @include('commons.radios', [
+                'name' => 'method',
+                'label' => 'Pagamento',
+                'values' => ['all' => (object)['name' => 'Tutti', 'checked' => true]] + App\MovementType::payments()
+            ])
             @include('commons.selectobjfield', [
                 'obj' => null,
                 'name' => 'user_id',
