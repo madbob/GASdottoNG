@@ -39,7 +39,7 @@ class DeliveriesController extends Controller
         $d->default = $request->has('default');
 
         if ($d->default) {
-            Delivery::where('default', true)->update('default', false);
+            Delivery::where('default', true)->update(['default' => false]);
         }
 
         $d->save();
