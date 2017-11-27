@@ -34,6 +34,21 @@ class VariantValue extends Model
 
     public function getSlugID()
     {
-        return sprintf('%s::%s', $this->variant_id, str_slug($this->value));
+        $append = '';
+        $index = 1;
+        $classname = get_class($this);
+
+        while(true) {
+            $slug = sprintf('%s::%s', $this->variant_id, str_slug($this->value)) . $append;
+            if ($classname::where('id', $slug)->first() != null) {
+                $append = '_' . $index;
+                $index++;
+            }
+            else {
+                break;
+            }
+        }
+
+        return $slug;
     }
 }

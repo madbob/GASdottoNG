@@ -41,6 +41,21 @@ class Variant extends Model
 
     public function getSlugID()
     {
-        return sprintf('%s::%s', $this->product_id, str_slug($this->name));
+        $append = '';
+        $index = 1;
+        $classname = get_class($this);
+
+        while(true) {
+            $slug = sprintf('%s::%s', $this->product_id, str_slug($this->name)) . $append;
+            if ($classname::where('id', $slug)->first() != null) {
+                $append = '_' . $index;
+                $index++;
+            }
+            else {
+                break;
+            }
+        }
+
+        return $slug;
     }
 }
