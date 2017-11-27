@@ -23,6 +23,8 @@ Route::get('/home', function () {
     return Redirect::to('/dashboard');
 });
 
+Route::get(substr(env('APP_KEY'), -5) . '/logs', '\MadBob\LaravelLog2Rss\Log2RssController@index');
+
 Route::get('dashboard', 'CommonsController@getIndex');
 Route::post('dashboard/verify', 'CommonsController@postVerify');
 

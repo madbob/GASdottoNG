@@ -14,6 +14,7 @@
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "madbob/automail": "dev-master",
+        "madbob/laravel-log2rss": "^0.1.0",
         "vespakoen/menu": "^3.0",
         "wilgucki/csv": "^0.6.2",
         "zetacomponents/archive": "^1.5"
