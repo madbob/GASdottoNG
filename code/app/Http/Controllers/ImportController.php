@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use DB;
 use Theme;
 use Auth;
+use Log;
 use Hash;
 use CsvReader;
 use ezcArchive;
@@ -369,14 +370,9 @@ class ImportController extends Controller
             $entry = $archive->current();
             $archive->extractCurrent($working_dir);
             $filepath = sprintf('%s/%s', $working_dir, $entry->getPath());
+            $contents = file_get_contents($filepath);
+            $contents = simplexml_load_string($contents);
 
-            /*
-                Il vecchio GASdotto usava entities HTML per rappresentare i
-                caratteri accentati, qui li riconverto in UTF-8
-            */
-            $escaped = html_entity_decode(file_get_contents($filepath));
-
-            $contents = simplexml_load_string($escaped);
             foreach($contents->children() as $c) {
                 if ($execute)
                     $data[] = Supplier::importXML($c, $supplier_replace);
@@ -393,31 +389,38 @@ class ImportController extends Controller
 
     public function postGdxp(Request $request)
     {
-        $working_dir = sys_get_temp_dir();
-        $step = $request->input('step', 'read');
+        try {
+            $archivepath = '';
+            $working_dir = sys_get_temp_dir();
+            $step = $request->input('step', 'read');
 
-        if ($step == 'read') {
-            $file = $request->file('file');
-            $filename = basename(tempnam($working_dir, 'import_gdxp_'));
-            $file->move($working_dir, $filename);
-            $archivepath = sprintf('%s/%s', $working_dir, $filename);
+            if ($step == 'read') {
+                $file = $request->file('file');
+                $filename = basename(tempnam($working_dir, 'import_gdxp_'));
+                $file->move($working_dir, $filename);
+                $archivepath = sprintf('%s/%s', $working_dir, $filename);
 
-            $data = $this->readGdxpFile($archivepath, false, null);
-            return Theme::view('import.gdxpsummary', ['data' => $data, 'path' => $archivepath]);
+                $data = $this->readGdxpFile($archivepath, false, null);
+                return Theme::view('import.gdxpsummary', ['data' => $data, 'path' => $archivepath]);
+            }
+            else if ($step == 'run') {
+                DB::beginTransaction();
+
+                $archivepath = $request->input('path');
+                if ($request->input('supplier_source') == 'new')
+                    $data = $this->readGdxpFile($archivepath, true, null);
+                else
+                    $data = $this->readGdxpFile($archivepath, true, $request->input('supplier_update'));
+
+                unlink($archivepath);
+                DB::commit();
+
+                return Theme::view('import.gdxpfinal', ['data' => $data]);
+            }
         }
-        else if ($step == 'run') {
-            DB::beginTransaction();
-
-            $archivepath = $request->input('path');
-            if ($request->input('supplier_source') == 'new')
-                $data = $this->readGdxpFile($archivepath, true, null);
-            else
-                $data = $this->readGdxpFile($archivepath, true, $request->input('supplier_update'));
-
-            unlink($archivepath);
-            DB::commit();
-
-            return Theme::view('import.gdxpfinal', ['data' => $data]);
+        catch(\Exception $e) {
+            Log::error('Errore importando file GDXP');
+            return Theme::view('import.gdxperror');
         }
     }
 }

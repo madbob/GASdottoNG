@@ -490,21 +490,21 @@ class Order extends Model
         foreach($xml->children() as $p) {
             switch($p->getName()) {
                 case 'openDate':
-                    $d = (string) $p;
+                    $d = html_entity_decode((string) $p);
                     $year = substr($d, 0, 4);
                     $month = substr($d, 4, 2);
                     $day = substr($d, 6, 2);
                     $order->start = sprintf('%d-%d-%d', $year, $month, $day);
                     break;
                 case 'closeDate':
-                    $d = (string) $p;
+                    $d = html_entity_decode((string) $p);
                     $year = substr($d, 0, 4);
                     $month = substr($d, 4, 2);
                     $day = substr($d, 6, 2);
                     $order->end = sprintf('%d-%d-%d', $year, $month, $day);
                     break;
                 case 'deliveryDate':
-                    $d = (string) $p;
+                    $d = html_entity_decode((string) $p);
                     $year = substr($d, 0, 4);
                     $month = substr($d, 4, 2);
                     $day = substr($d, 6, 2);
