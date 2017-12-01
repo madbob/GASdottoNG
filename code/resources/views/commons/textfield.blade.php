@@ -29,7 +29,7 @@ if (!isset($help_text)) {
         <input type="text"
             class="{{ $class }}"
             name="{{ $prefix . $name . $postfix }}"
-            value="{{ $obj ? $obj->$name : '' }}"
+            value="{{ accessAttr($obj, $name, '') }}"
 
             @if(isset($mandatory) && $mandatory == true)
                 required

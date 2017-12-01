@@ -10,6 +10,7 @@
         "barryvdh/laravel-debugbar": "^2.4",
         "caffeinated/themes": "^3.0",
         "devfactory/minify": "^1.0",
+        "digitick/sepa-xml": "^1.2",
         "elibyy/tcpdf-laravel": "^5.4",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",

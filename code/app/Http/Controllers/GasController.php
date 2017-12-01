@@ -75,17 +75,6 @@ class GasController extends Controller
                 $gas->setConfig('year_closing', decodeDateMonth($request->input('year_closing')));
                 $gas->setConfig('annual_fee_amount', $request->input('annual_fee_amount', 0));
                 $gas->setConfig('deposit_amount', $request->input('deposit_amount', 0));
-
-                /*
-                $rid = (object) [
-                    'name' => $request->input('ridname'),
-                    'iban' => $request->input('ridiban'),
-                    'code' => $request->input('ridcode'),
-                ];
-
-                $gas->setConfig('rid_conf', json_encode($rid));
-                */
-
                 break;
 
             case 'general':
@@ -125,6 +114,14 @@ class GasController extends Controller
                 ];
 
                 $gas->setConfig('mail_conf', json_encode($mail));
+                break;
+
+            case 'banking':
+                if ($user->can('gas.config', $gas) == false) {
+                    return $this->errorResponse('Non autorizzato');
+                }
+
+                $gas->setConfig('iban', $request->input('iban'));
                 break;
 
             case 'orders':

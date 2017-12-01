@@ -125,33 +125,9 @@ class Gas extends Model
         return $this->mailConfig()->encryption;
     }
 
-    private function ridConfig()
+    public function getIbanAttribute()
     {
-        $conf = $this->getConfig('rid_conf');
-        if ($conf == '') {
-            return (object) [
-                'name' => '',
-                'iban' => '',
-                'code' => '',
-            ];
-        } else {
-            return json_decode($conf);
-        }
-    }
-
-    public function getRidnameAttribute()
-    {
-        return $this->ridConfig()->name;
-    }
-
-    public function getRidibanAttribute()
-    {
-        return $this->ridConfig()->iban;
-    }
-
-    public function getRidcodeAttribute()
-    {
-        return $this->ridConfig()->code;
+        return $this->getConfig('iban');
     }
 
     public function getFastShippingEnabledAttribute()

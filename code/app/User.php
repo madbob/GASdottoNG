@@ -31,6 +31,10 @@ class User extends Authenticatable
         'creating' => SluggableCreating::class,
     ];
 
+    protected $casts = [
+        'rid' => 'array',
+    ];
+
     public static function commonClassName()
     {
         return 'Utente';

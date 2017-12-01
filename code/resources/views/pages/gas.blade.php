@@ -147,7 +147,6 @@
                 </div>
             </div>
 
-            <!--
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab">
                     <h4 class="panel-title">
@@ -158,15 +157,12 @@
                 </div>
                 <div id="accounting-config" class="panel-collapse collapse" role="tabpanel">
                     <div class="panel-body">
-                        <div class="page-header">
-                            <h4>RID/SEPA</h4>
-                        </div>
                         <div class="row">
                             <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ url('gas/' . $gas->id) }}">
+                                <input type="hidden" name="group" value="banking">
+
                                 <div class="col-md-12">
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'ridname', 'label' => 'Denominazione'])
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'ridiban', 'label' => 'IBAN'])
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'ridcode', 'label' => 'Codice Azienda'])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'iban', 'label' => 'IBAN', 'help_text' => "Popolando questo campo verrà attivata l'esportazione dei files SEPA, con cui automatizzare le transazioni bancarie. Per ogni utente dovrai specificare alcuni parametri (che appariranno dopo aver immesso l'IBAN del GAS)."])
 
                                     <div class="btn-group pull-right main-form-buttons" role="group">
                                         <button type="submit" class="btn btn-success saving-button">Salva</button>
@@ -177,7 +173,7 @@
                     </div>
                 </div>
             </div>
-            -->
+
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab">
                     <h4 class="panel-title">

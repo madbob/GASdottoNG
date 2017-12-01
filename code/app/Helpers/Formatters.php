@@ -9,6 +9,17 @@ function printablePrice($price, $separator = '.')
     return $ret;
 }
 
+function printableDate($value)
+{
+    if ($value == null) {
+        return 'Mai';
+    }
+    else {
+        $t = strtotime($value);
+        return ucwords(strftime('%A %d %B %G', $t));
+    }
+}
+
 function printableQuantity($quantity, $discrete, $decimals = 2, $separator = '.')
 {
     if ($discrete)

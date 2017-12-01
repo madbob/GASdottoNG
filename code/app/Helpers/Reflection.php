@@ -18,3 +18,17 @@ function modelsUsingTrait($trait_name) {
 
     return $out;
 }
+
+function accessAttr($obj, $name, $default = '')
+{
+    if ($obj == null)
+        return $default;
+
+    if (strpos($name, '->') !== false) {
+        list($array, $index) = explode('->', $name);
+        return $obj->$array[$index];
+    }
+    else {
+        return $obj->$name;
+    }
+}

@@ -121,12 +121,11 @@ class UsersService extends BaseService
                 });
             }
 
-            if(!empty($user->gas->rid_name)) {
-                $this->transformAndSetIfSet($user, $request, 'iban', function ($iban) {
-                    return strtoupper(str_replace(' ', '', $iban));
-                });
-
-                $this->transformAndSetIfSet($user, $request, 'sepa_subscribe', "decodeDate");
+            if(!empty($user->gas->iban)) {
+                $rid_info['iban'] = $request['rid->iban'] ?? $user->rid->iban;
+                $rid_info['id'] = $request['rid->id'] ?? $user->rid->id;
+                $rid_info['date'] = $request['rid->date'] ? decodeDate($request['rid->date']) : $user->rid->date;
+                $user->rid = $rid_info;
             }
 
             if (isset($request['status'])) {

@@ -19,20 +19,7 @@ else {
             <input type="text"
                 class="date form-control"
                 name="{{ $prefix . $name }}"
-
-                value="<?php
-                    $current_value = '';
-
-                    if ($obj && $obj->$name != null && $obj->$name != '0000-00-00') {
-                        $current_value = $obj->printableDate($name);
-                    }
-
-                    if (empty($current_value) && $defaults_now) {
-                        $current_value = ucwords(strftime('%A %d %B %G', time()));
-                    }
-
-                    echo $current_value;
-                ?>"
+                value="{{ printableDate(accessAttr($obj, $name, $defaults_now ? date('Y-m-d G:i:s') : '')) }}"
 
                 @if(isset($enforced_default))
                     data-default-value="{{ $enforced_default }}"
