@@ -121,10 +121,10 @@ class UsersService extends BaseService
                 });
             }
 
-            if(!empty($user->gas->iban)) {
-                $rid_info['iban'] = $request['rid->iban'] ?? $user->rid->iban;
-                $rid_info['id'] = $request['rid->id'] ?? $user->rid->id;
-                $rid_info['date'] = $request['rid->date'] ? decodeDate($request['rid->date']) : $user->rid->date;
+            if(!empty($user->gas->rid['iban'])) {
+                $rid_info['iban'] = $request['rid->iban'] ?? $user->rid['iban'];
+                $rid_info['id'] = $request['rid->id'] ?? $user->rid['id'];
+                $rid_info['date'] = $request['rid->date'] ? decodeDate($request['rid->date']) : $user->rid['date'];
                 $user->rid = $rid_info;
             }
 

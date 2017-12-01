@@ -334,9 +334,13 @@ class ImportLegacy extends Command
                 $obj->member_since = $row->join_date;
                 $obj->card_number = $row->card_number;
                 $obj->last_login = $row->lastlogin;
-                $obj->iban = $row->bank_account ? $row->bank_account : '';
-                $obj->sepa_subscribe = $row->sepa_subscribe;
-                $obj->sepa_first = $row->first_sepa;
+
+                $rid_info = [
+                    'iban' => $row->bank_account ? $row->bank_account : '',
+                    'id' => '',
+                    'date' => ''
+                ];
+                $obj->rid = $rid_info;
 
                 if (array_key_exists($row->shipping, $map['deliveries'])) {
                     $obj->preferred_delivery_id = $map['deliveries'][$row->shipping];
