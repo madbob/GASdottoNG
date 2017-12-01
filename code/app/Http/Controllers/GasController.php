@@ -113,7 +113,7 @@ class GasController extends Controller
                     'encryption' => $request->input('mailssl'),
                 ];
 
-                $gas->setConfig('mail_conf', json_encode($mail));
+                $gas->setConfig('mail_conf', $mail);
                 break;
 
             case 'banking':
@@ -121,7 +121,12 @@ class GasController extends Controller
                     return $this->errorResponse('Non autorizzato');
                 }
 
-                $gas->setConfig('iban', $request->input('iban'));
+                $rid_info = (object) [
+                    'iban' => $request->input('rid->iban'),
+                    'id' => $request->input('rid->id'),
+                ];
+
+                $gas->setConfig('rid', $rid_info);
                 break;
 
             case 'orders':

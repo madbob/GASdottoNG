@@ -285,8 +285,8 @@ class MovementsController extends Controller
                     return Theme::view('documents.credits_table_csv', ['users' => $users]);
                 }
                 else if ($subtype == 'rid') {
-                    $filename = sprintf('RID Debiti al %s.txt', date('d/m/Y'));
-                    header('Content-Type: plain/text');
+                    $filename = sprintf('SEPA del %s.xml', date('d/m/Y'));
+                    header('Content-Type: text/xml');
                     header('Content-Disposition: attachment; filename="' . $filename . '"');
                     header('Cache-Control: no-cache, no-store, must-revalidate');
                     header('Pragma: no-cache');

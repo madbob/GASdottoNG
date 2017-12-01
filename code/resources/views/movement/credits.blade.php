@@ -25,7 +25,7 @@
             <table class="table">
                 <thead>
                     <tr>
-                        @if(!empty($currentgas->iban))
+                        @if(!empty($currentgas->rid['iban']))
                             <th width="50%">Nome</th>
                             <th width="35%">Credito Residuo</th>
                             <th width="15%">IBAN</th>
@@ -42,7 +42,7 @@
                             <td>{{ $user->printableName() }}</td>
                             <td>{{ $amount }} €</td>
 
-                            @if(!empty($currentgas->iban))
+                            @if(!empty($currentgas->rid['iban']))
                                 <td>
                                     @if(empty($user->rid['iban']))
                                         <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>

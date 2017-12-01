@@ -56,7 +56,7 @@
                 </div>
             </div>
 
-            @if(!empty($currentgas->iban))
+            @if(!empty($currentgas->rid['iban']))
                 <div class="form-group">
                     <label class="col-sm-{{ $labelsize }} control-label">Configurazione SEPA</label>
 

@@ -162,7 +162,12 @@
                                 <input type="hidden" name="group" value="banking">
 
                                 <div class="col-md-12">
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'iban', 'label' => 'IBAN', 'help_text' => "Popolando questo campo verrà attivata l'esportazione dei files SEPA, con cui automatizzare le transazioni bancarie. Per ogni utente dovrai specificare alcuni parametri (che appariranno dopo aver immesso l'IBAN del GAS)."])
+                                    <p>
+                                        Popolando questo campo verrà attivata l'esportazione dei files SEPA, con cui automatizzare le transazioni bancarie.<br>Per ogni utente dovrai specificare alcuni parametri.
+                                    </p>
+
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'rid->iban', 'label' => 'IBAN'])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'rid->id', 'label' => 'Identificativo Azienda'])
 
                                     <div class="btn-group pull-right main-form-buttons" role="group">
                                         <button type="submit" class="btn btn-success saving-button">Salva</button>
