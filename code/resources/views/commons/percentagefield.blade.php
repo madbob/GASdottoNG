@@ -8,7 +8,7 @@
     <div class="col-sm-{{ $fieldsize }}">
         <div class="input-group">
             <input type="text"
-                class="form-control number"
+                class="form-control number trim-2-ddigits"
                 name="{{ $prefix . $name . $postfix }}"
                 value="{{ $value }}"
 

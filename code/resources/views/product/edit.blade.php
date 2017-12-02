@@ -9,7 +9,7 @@
             <div class="well">
                 <div class="row">
                     <div class="col-md-6">
-                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'portion_quantity', 'label' => 'Pezzatura'])
+                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'portion_quantity', 'label' => 'Pezzatura', 'decimals' => 3])
                     </div>
                     <div class="col-md-6">
                         @include('commons.boolfield', ['obj' => $product, 'name' => 'variable', 'label' => 'Variabile'])
@@ -18,25 +18,25 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'package_size', 'label' => 'Confezione'])
+                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'package_size', 'label' => 'Confezione', 'decimals' => 3])
                     </div>
                     <div class="col-md-6">
-                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'multiple', 'label' => 'Multiplo'])
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'min_quantity', 'label' => 'Minimo'])
-                    </div>
-                    <div class="col-md-6">
-                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'max_quantity', 'label' => 'Massimo Consigliato'])
+                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'multiple', 'label' => 'Multiplo', 'decimals' => 3])
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6">
-                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'max_available', 'label' => 'Disponibile'])
+                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'min_quantity', 'label' => 'Minimo', 'decimals' => 3])
+                    </div>
+                    <div class="col-md-6">
+                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'max_quantity', 'label' => 'Massimo Consigliato', 'decimals' => 3])
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'max_available', 'label' => 'Disponibile', 'decimals' => 3])
                     </div>
                 </div>
             </div>

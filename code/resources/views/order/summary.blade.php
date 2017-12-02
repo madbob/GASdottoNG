@@ -90,6 +90,7 @@
                             'name' => 'max_available',
                             'postfix' => '[]',
                             'squeeze' => true,
+                            'decimals' => 3
                         ])
                     </td>
 

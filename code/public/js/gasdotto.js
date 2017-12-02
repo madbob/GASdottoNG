@@ -1372,6 +1372,11 @@ $(document).ready(function() {
             return value.replace(/,/g, '.').replace(/[^0-9\.]/g, '');
         });
     })
+    .on('focus', 'input.number', function(e) {
+        var v = parseFloatC($(this).val());
+        if (v == 0)
+            $(this).val('0');
+    })
     .on('blur', 'input.number', function(e) {
         $(this).val(function(index, value) {
             return parseFloatC(value);
@@ -1381,6 +1386,11 @@ $(document).ready(function() {
     $('body').on('blur', '.trim-2-ddigits', function() {
         $(this).val(function(index, value) {
             return parseFloatC(value).toFixed(2);
+        });
+    })
+    .on('blur', '.trim-3-ddigits', function() {
+        $(this).val(function(index, value) {
+            return parseFloatC(value).toFixed(3);
         });
     });
 
