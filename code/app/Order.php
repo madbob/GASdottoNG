@@ -346,28 +346,30 @@ class Order extends Model
             if($this->hasProduct($product) == false)
                 continue;
 
-            $row = [];
-
             if(isset($summary->by_variant[$product->id])) {
                 foreach ($summary->by_variant[$product->id] as $name => $variant) {
                     if ($variant['quantity'] == 0)
                         continue;
 
+                    $row = [];
                     foreach($fields as $f) {
                         $row[] = call_user_func($formattable[$f]->format_variant, $product, $summary, $name, $variant);
                     }
+
+                    $ret->contents[] = $row;
                 }
             }
             else {
                 if ($summary->products[$product->id]['quantity_pieces'] == 0)
                     continue;
 
+                $row = [];
                 foreach($fields as $f) {
                     $row[] = call_user_func($formattable[$f]->format_product, $product, $summary);
                 }
-            }
 
-            $ret->contents[] = $row;
+                $ret->contents[] = $row;
+            }
         }
 
         return $ret;

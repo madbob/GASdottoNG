@@ -51,7 +51,7 @@ class MovementsController extends Controller
         $obj->sender_id = $request->input('sender_id');
         $obj->target_type = $request->input('target_type');
         $obj->target_id = $request->input('target_id');
-        $obj->amount = $request->input('amount');
+        $obj->amount = $request->input('amount', 0);
         $obj->method = $request->input('method');
         $obj->type = $request->input('type');
         $obj->identifier = $request->input('identifier');
