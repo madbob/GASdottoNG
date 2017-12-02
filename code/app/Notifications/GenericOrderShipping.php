@@ -23,7 +23,12 @@ class GenericOrderShipping extends Mailable
 
     public function build()
     {
+        $message = $this->subject('Dettaglio Consegne')->attach($this->temp_file)->view('emails.supplier_summary', ['txt_message' => $this->message]);
+
         $user = Auth::user();
-        return $this->subject('Dettaglio Consegne')->replyTo($user)->attach($this->temp_file)->view('emails.supplier_summary', ['txt_message' => $this->message]);
+        if (!empty($user->email))
+            $message->replyTo($user->email);
+
+        return $message;
     }
 }

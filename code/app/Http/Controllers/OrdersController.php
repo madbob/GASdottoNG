@@ -379,7 +379,11 @@ class OrdersController extends Controller
         if (empty($recipient_mails))
             return;
 
-        $m = Mail::to($recipient_mails);
+        $real_recipient_mails = [];
+        foreach($recipient_mails as $rm)
+            $real_recipient_mails[] = (object) ['email' => $rm];
+
+        $m = Mail::to($real_recipient_mails);
         $body_mail = $request->input('body_mail');
         $m->send(new GenericOrderShipping($temp_file_path, $body_mail));
 

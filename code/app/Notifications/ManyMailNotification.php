@@ -23,12 +23,19 @@ class ManyMailNotification extends Notification
         return ['mail'];
     }
 
-    protected function initMailMessage($notifiable)
+    protected function initMailMessage($notifiable, $replyTo = null)
     {
         $message = new MailMessage();
 
         if (class_uses(get_class($notifiable), 'App\ContactableTrait'))
             $notifiable->messageAll($message);
+
+        if ($replyTo != null) {
+            if (is_string($replyTo))
+                $message->replyTo($replyTo);
+            else
+                $message->replyTo($replyTo->email);
+        }
 
         return $message;
     }

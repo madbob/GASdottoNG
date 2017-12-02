@@ -18,8 +18,8 @@ class GenericNotificationWrapper extends ManyMailNotification
     public function toMail($notifiable)
     {
         $user = Auth::user();
-        $message = $this->initMailMessage($notifiable);
-        $message->subject('Nuova notifica dal GAS')->replyTo($user)->view('emails.notification', ['notification' => $this->notification]);
+        $message = $this->initMailMessage($notifiable, $user);
+        $message->subject('Nuova notifica dal GAS')->view('emails.notification', ['notification' => $this->notification]);
         return $message;
     }
 }
