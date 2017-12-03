@@ -16,7 +16,7 @@ class Aggregate extends Model
 
     public function orders()
     {
-        return $this->hasMany('App\Order')->with('products')->orderBy('end', 'desc');
+        return $this->hasMany('App\Order')->with('supplier')->with('products')->orderBy('end', 'desc');
     }
 
     public function getStatusAttribute()
@@ -104,8 +104,8 @@ class Aggregate extends Model
         $tot = 0;
 
         foreach($this->orders as $o) {
-            $b = $o->userBooking();
-            if ($b->exists())
+            $b = $o->userBooking(null, false);
+            if ($b != null)
                 $tot += $b->total_value;
         }
 

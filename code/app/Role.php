@@ -258,16 +258,11 @@ class Role extends Model
         else
             $cache_type = 'applies_only_cache';
 
-        $ret = [];
+        $ret = new Collection();
 
         foreach($this->$cache_type as $class => $ids) {
-            foreach($ids as $id) {
-                $obj = $class::find($id);
-                if ($obj == null)
-                    continue;
-
-                $ret[] = $obj;
-            }
+            $objs = $class::whereIn('id', $ids)->get();
+            $ret = $ret->merge($objs);
         }
 
         return $ret;
