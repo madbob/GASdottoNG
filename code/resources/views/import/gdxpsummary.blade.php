@@ -28,7 +28,7 @@
                                 <input type="radio" name="supplier_source" value="update">
                                 Aggiorna fornitore esistente: <select name="supplier_update" class="form-control">
                                     <option value="none" selected>Selezione un fornitore</option>
-                                    @foreach(App\Supplier::orderBy('name', 'asc')->get() as $s)
+                                    @foreach($currentgas->suppliers as $s)
                                         <option value="{{ $s->id }}">{{ $s->name }}</option>
                                     @endforeach
                                 </select><br/>

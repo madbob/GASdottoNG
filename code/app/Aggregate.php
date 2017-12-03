@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 use Auth;
 use URL;
+
+use App\Events\AttachableToGas;
 use App\GASModel;
 use App\AggregateBooking;
 
@@ -15,16 +17,24 @@ class Aggregate extends Model
 {
     use GASModel;
 
+    protected $events = [
+        'created' => AttachableToGas::class
+    ];
+
     protected static function boot()
     {
         parent::boot();
 
-        static::addGlobalScope('gas', function (Builder $builder) {
-            $builder->whereHas('gas', function($query) {
-                $user = Auth::user();
-                $query->where('gas_id', $user->gas->id);
+        $user = Auth::user();
+        if ($user != null) {
+            $gas_id = $user->gas->id;
+
+            static::addGlobalScope('gas', function (Builder $builder) use ($gas_id) {
+                $builder->whereHas('gas', function($query) use ($gas_id) {
+                    $query->where('gas_id', $gas_id);
+                });
             });
-        });
+        }
     }
 
     public function gas()
@@ -48,6 +58,9 @@ class Aggregate extends Model
                 $index = $a;
             }
         }
+
+        if ($index == 10)
+            return null;
 
         return $priority[$index];
     }

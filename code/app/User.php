@@ -40,12 +40,6 @@ class User extends Authenticatable
     {
         parent::boot();
 
-        /*
-            Qui estrapolo l'ID del GAS corrente prima di aggiungere lo scope
-            globale, altrimenti la callback dello scope stesso sarebbe
-            ricorsivamente chiamata all'infinito
-        */
-
         $user = Auth::user();
         if ($user != null) {
             $gas_id = $user->gas->id;

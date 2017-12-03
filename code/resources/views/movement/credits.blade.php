@@ -36,7 +36,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach(App\User::sorted()->get() as $user)
+                    @foreach($currentgas->users as $user)
                         <?php $amount = $user->current_balance_amount ?>
                         <tr data-filtered-credit="{{ $amount < 0 ? 'minor' : 'major' }}">
                             <td>{{ $user->printableName() }}</td>

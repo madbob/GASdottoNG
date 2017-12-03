@@ -7,6 +7,7 @@ use Illuminate\Database\Migrations\Migration;
 use App\Gas;
 use App\Supplier;
 use App\Aggregate;
+use App\Delivery;
 
 class ExtendedRelationshipsMultigas extends Migration
 {
@@ -34,9 +35,21 @@ class ExtendedRelationshipsMultigas extends Migration
             $table->foreign('aggregate_id')->references('id')->on('aggregates')->onDelete('cascade');
         });
 
+        Schema::create('delivery_gas', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
+
+            $table->string('gas_id');
+            $table->string('delivery_id');
+
+            $table->foreign('gas_id')->references('id')->on('gas')->onDelete('cascade');
+            $table->foreign('delivery_id')->references('id')->on('deliveries')->onDelete('cascade');
+        });
+
         $gas = Gas::orderBy('id')->first();
         $gas->suppliers()->sync(Supplier::withTrashed()->orderBy('id')->pluck('id'));
         $gas->aggregates()->sync(Aggregate::orderBy('id')->pluck('id'));
+        $gas->deliveries()->sync(Delivery::orderBy('id')->pluck('id'));
     }
 
     public function down()

@@ -24,7 +24,7 @@ class Order extends Model
     public $incrementing = false;
 
     protected $events = [
-        'creating' => SluggableCreating::class,
+        'creating' => SluggableCreating::class
     ];
 
     protected static function boot()
@@ -35,6 +35,8 @@ class Order extends Model
             $builder->whereHas('aggregate', function($query) {
                 $query->whereHas('gas', function($query) {
                     $user = Auth::user();
+                    if ($user == null)
+                        return;
                     $query->where('gas_id', $user->gas->id);
                 });
             });

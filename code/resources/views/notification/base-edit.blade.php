@@ -10,9 +10,10 @@
 
 $extras['special::referrers'] = 'Tutti i Referenti';
 
-$orders = App\Order::where('status', '!=', 'closed')->get();
-foreach ($orders as $order) {
-    $extras['special::order::'.$order->id] = 'Tutti i Partecipanti all\'ordine per '.$order->supplier->name;
+foreach ($currentgas->aggregates as $aggregate) {
+    foreach($aggregate->orders as $order)
+        if($order->status != 'closed')
+            $extras['special::order::'.$order->id] = 'Tutti i Partecipanti all\'ordine per '.$order->supplier->name;
 }
 
 ?>
@@ -20,7 +21,7 @@ foreach ($orders as $order) {
 @include('commons.selectobjfield', [
     'obj' => $notification,
     'name' => 'users',
-    'objects' => App\User::orderBy('lastname', 'asc')->get(),
+    'objects' => $currentgas->users,
     'extra_selection' => $extras,
     'multiple_select' => true,
     'label' => 'Destinatari',

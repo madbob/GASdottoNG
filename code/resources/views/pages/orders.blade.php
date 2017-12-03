@@ -61,7 +61,7 @@
                                     'name' => 'supplier_id',
                                     'label' => 'Fornitore',
                                     'mandatory' => true,
-                                    'objects' => App\Supplier::orderBy('name', 'asc')->get()
+                                    'objects' => $currentgas->suppliers
                                 ])
 
                                 @include('commons.genericdaterange')
