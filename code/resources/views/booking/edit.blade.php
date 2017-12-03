@@ -83,8 +83,8 @@ $grand_total = 0;
     <div class="row">
         <div class="col-md-12">
             <div class="btn-group pull-right main-form-buttons" role="group" aria-label="Opzioni">
-                <button type="button" class="btn btn-danger delete-booking">Annulla Prenotazione</button>
-                <button type="submit" class="btn btn-success saving-button">Salva</button>
+                <button type="button" class="btn btn-danger delete-booking">{{ _i('Annulla Prenotazione') }}</button>
+                <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
             </div>
         </div>
     </div>

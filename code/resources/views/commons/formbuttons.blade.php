@@ -30,16 +30,16 @@ if (!isset($left_buttons))
         <div class="btn-group pull-right main-form-buttons" role="group" aria-label="Opzioni">
             @if($no_delete == false)
                 @if($obj && $obj->deleted_at != null)
-                    <button type="button" class="btn btn-danger delete-button">Elimina Definitivamente</button>
+                    <button type="button" class="btn btn-danger delete-button">{{ _i('Elimina Definitivamente') }}</button>
                 @else
-                    <button type="button" class="btn btn-danger delete-button">Elimina</button>
+                    <button type="button" class="btn btn-danger delete-button">{{ _i('Elimina') }}</button>
                 @endif
             @endif
 
-            <button type="button" class="btn btn-default close-button">Chiudi</button>
+            <button type="button" class="btn btn-default close-button">{{ _i('Chiudi') }}</button>
 
             @if($no_save == false)
-                <button type="submit" class="btn btn-success">Salva</button>
+                <button type="submit" class="btn btn-success">{{ _i('Salva') }}</button>
             @endif
         </div>
     </div>

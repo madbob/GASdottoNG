@@ -15,18 +15,18 @@ $grand_total = 0;
 
         @if($o->products->isEmpty())
             <div class="alert alert-info">
-                Non hai partecipato a quest'ordine.
+                {{ _i("Non hai partecipato a quest'ordine.") }}
             </div>
             <br/>
         @else
             <table class="table table-striped booking-editor">
                 <thead>
                     <tr>
-                        <th width="30%">Prodotto</th>
-                        <th width="20%">Ordinato</th>
-                        <th width="20%">Consegnato</th>
-                        <th width="20%">Prezzo Unitario</th>
-                        <th width="10%">Prezzo Totale</th>
+                        <th width="30%">{{ _i('Prodotto') }}</th>
+                        <th width="20%">{{ _i('Ordinato') }}</th>
+                        <th width="20%">{{ _i('Consegnato') }}</th>
+                        <th width="20%">{{ _i('Prezzo Unitario') }}</th>
+                        <th width="10%">{{ _i('Prezzo Totale') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -98,7 +98,7 @@ $grand_total = 0;
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th class="text-right">Totale: <span class="booking-total">{{ printablePrice($o->value) }}</span> €</th>
+                        <th class="text-right">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($o->value) }}</span> €</th>
                     </tr>
                 </tfoot>
             </table>
@@ -113,7 +113,7 @@ $grand_total = 0;
                 <tr>
                     <th>
                         <div class="pull-right">
-                            <strong>Totale Complessivo: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> €</strong>
+                            <strong>{{ _i('Totale Complessivo') }}: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> €</strong>
                         </div>
                     </th>
                 </tr>
@@ -123,8 +123,8 @@ $grand_total = 0;
 
     <div class="row">
         <div class="col-md-12">
-            <div class="btn-group pull-right main-form-buttons" role="group" aria-label="Opzioni">
-                <button type="button" class="btn btn-default close-button">Chiudi</button>
+            <div class="btn-group pull-right main-form-buttons" role="group">
+                <button type="button" class="btn btn-default close-button">{{ _i('Chiudi') }}</button>
             </div>
         </div>
     </div>

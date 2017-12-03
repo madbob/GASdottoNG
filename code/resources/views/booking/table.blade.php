@@ -54,13 +54,13 @@
 
             <div class="col-md-12">
                 <div class="btn-group pull-right" role="group">
-                    <button type="submit" class="btn btn-success">Salva</button>
+                    <button type="submit" class="btn btn-success">{{ _i('Salva') }}</button>
                 </div>
             </div>
         </form>
     </div>
 @else
     <div class="alert alert-danger">
-        Questo pannello sarà attivo quando le prenotazioni saranno chiuse
+        {{ _i('Questo pannello sarà attivo quando le prenotazioni saranno chiuse') }}
     </div>
 @endif
