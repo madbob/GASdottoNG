@@ -38,9 +38,9 @@ class UsersService extends BaseService
 
     public function listUsers($term = '', $all = false)
     {
-        $user = $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
-        $gasID = $user->gas['id'];
-        $query = User::with('roles')->where('gas_id', '=', $gasID);
+        $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
+
+        $query = User::with('roles');
 
         if (!empty($term)) {
             $query->where(function ($query) use ($term) {

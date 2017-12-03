@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 use Auth;
@@ -25,6 +26,20 @@ class Order extends Model
     protected $events = [
         'creating' => SluggableCreating::class,
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('gas', function (Builder $builder) {
+            $builder->whereHas('aggregate', function($query) {
+                $query->whereHas('gas', function($query) {
+                    $user = Auth::user();
+                    $query->where('gas_id', $user->gas->id);
+                });
+            });
+        });
+    }
 
     public static function commonClassName()
     {

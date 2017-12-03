@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Notifications\ResetPasswordNotification;
@@ -34,6 +35,26 @@ class User extends Authenticatable
     protected $casts = [
         'rid' => 'array',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        /*
+            Qui estrapolo l'ID del GAS corrente prima di aggiungere lo scope
+            globale, altrimenti la callback dello scope stesso sarebbe
+            ricorsivamente chiamata all'infinito
+        */
+
+        $user = Auth::user();
+        if ($user != null) {
+            $gas_id = $user->gas->id;
+
+            static::addGlobalScope('gas', function (Builder $builder) use ($gas_id) {
+                $builder->where('gas_id', $gas_id);
+            });
+        }
+    }
 
     public static function commonClassName()
     {

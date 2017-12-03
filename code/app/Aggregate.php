@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 use Auth;
@@ -13,6 +14,23 @@ use App\AggregateBooking;
 class Aggregate extends Model
 {
     use GASModel;
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('gas', function (Builder $builder) {
+            $builder->whereHas('gas', function($query) {
+                $user = Auth::user();
+                $query->where('gas_id', $user->gas->id);
+            });
+        });
+    }
+
+    public function gas()
+    {
+        return $this->belongsToMany('App\Gas');
+    }
 
     public function orders()
     {

@@ -38,6 +38,16 @@ class Gas extends Model
             return url('gas/' . $this->id . '/logo');
     }
 
+    public function suppliers()
+    {
+        return $this->belongsToMany('App\Supplier')->orderBy('name', 'asc');
+    }
+
+    public function aggregates()
+    {
+        return $this->belongsToMany('App\Aggregate')->orderBy('id', 'desc');
+    }
+
     public function configs()
     {
         return $this->hasMany('App\Config');
