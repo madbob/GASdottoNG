@@ -110,8 +110,8 @@ function normalizeUrl($url)
 
 function decodeDate($date)
 {
-    if ($date == '') {
-        return '';
+    if ($date == '' || $date == 'Mai') {
+        return null;
     }
 
     $months = [

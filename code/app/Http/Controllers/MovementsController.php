@@ -96,21 +96,25 @@ class MovementsController extends Controller
         if ($request->input('user_id', '0') != '0') {
             $user_id = $request->input('user_id');
             $generic_target = User::find($user_id);
-            $query = $generic_target->queryMovements($query);
+            if ($generic_target)
+                $query = $generic_target->queryMovements($query);
         }
 
         if ($request->input('supplier_id', '0') != '0') {
             $supplier_id = $request->input('supplier_id');
-            $generic_target = Supplier::find($supplier_id);
-            $query = $generic_target->queryMovements($query);
+            $generic_target = Supplier::withTrashed()->find($supplier_id);
+            if ($generic_target)
+                $query = $generic_target->queryMovements($query);
         }
 
         if ($request->input('generic_target_id', '0') != '0') {
             $target_id = $request->input('generic_target_id');
             $target_type = $request->input('generic_target_type');
             $generic_target = $target_type::find($target_id);
-            $query = $generic_target->queryMovements($query);
-            $data['main_target'] = $generic_target;
+            if ($generic_target) {
+                $query = $generic_target->queryMovements($query);
+                $data['main_target'] = $generic_target;
+            }
             $bilist = true;
         }
         else {
