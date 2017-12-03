@@ -347,6 +347,8 @@ class Order extends Model
                 continue;
 
             if(isset($summary->by_variant[$product->id])) {
+                $variants_rows = [];
+
                 foreach ($summary->by_variant[$product->id] as $name => $variant) {
                     if ($variant['quantity'] == 0)
                         continue;
@@ -356,8 +358,14 @@ class Order extends Model
                         $row[] = call_user_func($formattable[$f]->format_variant, $product, $summary, $name, $variant);
                     }
 
-                    $ret->contents[] = $row;
+                    $variants_rows[] = $row;
                 }
+
+                usort($variants_rows, function($a, $b) {
+                    return $a[0] <=> $b[0];
+                });
+
+                $ret->contents = array_merge($ret->contents, $variants_rows);
             }
             else {
                 if ($summary->products[$product->id]['quantity_pieces'] == 0)
@@ -386,7 +394,7 @@ class Order extends Model
                         return $product->printableName();
                     },
                     'format_variant' => function($product, $summary, $name, $variant) {
-                        return $product->printableName() . ' ' . $name;
+                        return $product->printableName() . ' - ' . $name;
                     }
                 ],
                 'code' => (object) [
