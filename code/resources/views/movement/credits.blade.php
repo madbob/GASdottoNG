@@ -25,8 +25,14 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th width="60%">Nome</th>
-                        <th width="40%">Credito Residuo</th>
+                        @if(!empty($currentgas->rid['iban']))
+                            <th width="50%">Nome</th>
+                            <th width="35%">Credito Residuo</th>
+                            <th width="15%">IBAN</th>
+                        @else
+                            <th width="60%">Nome</th>
+                            <th width="40%">Credito Residuo</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -35,6 +41,16 @@
                         <tr data-filtered-credit="{{ $amount < 0 ? 'minor' : 'major' }}">
                             <td>{{ $user->printableName() }}</td>
                             <td>{{ $amount }} €</td>
+
+                            @if(!empty($currentgas->rid['iban']))
+                                <td>
+                                    @if(empty($user->rid['iban']))
+                                        <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                                    @else
+                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                    @endif
+                                </td>
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>
@@ -46,7 +62,5 @@
 <div class="modal-footer">
     <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
     <a href="{{ url('movements/document/credits/csv') }}" class="btn btn-success">Esporta CSV</a>
-    @if(!empty($currentgas->rid_name))
-        <a href="{{ url('movements/document/credits/rid') }}" class="btn btn-success">Esporta RID</a>
-    @endif
+    <a href="{{ url('movements/document/credits/rid') }}" class="btn btn-success">Esporta RID</a>
 </div>

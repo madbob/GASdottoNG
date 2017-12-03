@@ -58,6 +58,14 @@ body {
         position: absolute;
         width: 100%;
     }
+
+    .nav-pills {
+        display: inline-block;
+
+        li {
+            background-color: #FFF;
+        }
+    }
 }
 
 .static-label {

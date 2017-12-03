@@ -346,28 +346,38 @@ class Order extends Model
             if($this->hasProduct($product) == false)
                 continue;
 
-            $row = [];
-
             if(isset($summary->by_variant[$product->id])) {
+                $variants_rows = [];
+
                 foreach ($summary->by_variant[$product->id] as $name => $variant) {
                     if ($variant['quantity'] == 0)
                         continue;
 
+                    $row = [];
                     foreach($fields as $f) {
                         $row[] = call_user_func($formattable[$f]->format_variant, $product, $summary, $name, $variant);
                     }
+
+                    $variants_rows[] = $row;
                 }
+
+                usort($variants_rows, function($a, $b) {
+                    return $a[0] <=> $b[0];
+                });
+
+                $ret->contents = array_merge($ret->contents, $variants_rows);
             }
             else {
                 if ($summary->products[$product->id]['quantity_pieces'] == 0)
                     continue;
 
+                $row = [];
                 foreach($fields as $f) {
                     $row[] = call_user_func($formattable[$f]->format_product, $product, $summary);
                 }
-            }
 
-            $ret->contents[] = $row;
+                $ret->contents[] = $row;
+            }
         }
 
         return $ret;
@@ -384,7 +394,7 @@ class Order extends Model
                         return $product->printableName();
                     },
                     'format_variant' => function($product, $summary, $name, $variant) {
-                        return $product->printableName() . ' ' . $name;
+                        return $product->printableName() . ' - ' . $name;
                     }
                 ],
                 'code' => (object) [
@@ -490,21 +500,21 @@ class Order extends Model
         foreach($xml->children() as $p) {
             switch($p->getName()) {
                 case 'openDate':
-                    $d = (string) $p;
+                    $d = html_entity_decode((string) $p);
                     $year = substr($d, 0, 4);
                     $month = substr($d, 4, 2);
                     $day = substr($d, 6, 2);
                     $order->start = sprintf('%d-%d-%d', $year, $month, $day);
                     break;
                 case 'closeDate':
-                    $d = (string) $p;
+                    $d = html_entity_decode((string) $p);
                     $year = substr($d, 0, 4);
                     $month = substr($d, 4, 2);
                     $day = substr($d, 6, 2);
                     $order->end = sprintf('%d-%d-%d', $year, $month, $day);
                     break;
                 case 'deliveryDate':
-                    $d = (string) $p;
+                    $d = html_entity_decode((string) $p);
                     $year = substr($d, 0, 4);
                     $month = substr($d, 4, 2);
                     $day = substr($d, 6, 2);

@@ -35,17 +35,6 @@
                 ])
             @endif
 
-            @if(!empty($currentgas->rid_name))
-                <div class="form-group">
-                    <label class="col-sm-{{ $labelsize }} control-label">Configurazione RID/SEPA</label>
-
-                    <div class="col-sm-{{ $fieldsize }}">
-                        @include('commons.textfield', ['obj' => $user, 'name' => 'iban', 'label' => 'IBAN', 'squeeze' => true])
-                        @include('commons.datefield', ['obj' => $user, 'name' => 'sepa_subscribe', 'label' => 'Sottoscrizione SEPA', 'squeeze' => true])
-                    </div>
-                </div>
-            @endif
-
             <div class="form-group">
                 <label class="col-sm-{{ $labelsize }} control-label">Stato</label>
 
@@ -66,6 +55,25 @@
                     @include('commons.datefield', ['obj' => $user, 'name' => 'deleted_at', 'label' => 'Data', 'squeeze' => true])
                 </div>
             </div>
+
+            @if(!empty($currentgas->rid['iban']))
+                <div class="form-group">
+                    <label class="col-sm-{{ $labelsize }} control-label">Configurazione SEPA</label>
+
+                    <div class="col-sm-{{ $fieldsize }}">
+                        @include('commons.textfield', ['obj' => $user, 'name' => 'rid->iban', 'label' => 'IBAN', 'squeeze' => true])
+
+                        <div class="form-group">
+                            <div class="col-sm-5">
+                                @include('commons.textfield', ['obj' => $user, 'name' => 'rid->id', 'label' => 'Identificativo Mandato SEPA', 'squeeze' => true])
+                            </div>
+                            <div class="col-sm-7">
+                                @include('commons.datefield', ['obj' => $user, 'name' => 'rid->date', 'label' => 'Data Mandato SEPA', 'squeeze' => true])
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
 
             <hr/>
             @include('commons.permissionsviewer', ['object' => $user, 'editable' => true])

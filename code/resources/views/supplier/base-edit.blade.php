@@ -1,6 +1,6 @@
 @include('commons.textfield', ['obj' => $supplier, 'name' => 'name', 'label' => 'Nome', 'mandatory' => true])
 @include('commons.textfield', ['obj' => $supplier, 'name' => 'business_name', 'label' => 'Ragione Sociale'])
-@include('commons.textarea', ['obj' => $supplier, 'name' => 'description', 'label' => 'Descrizione'])
+@include('commons.textarea', ['obj' => $supplier, 'name' => 'description', 'label' => 'Descrizione', 'maxlength' => 500])
 @include('commons.textfield', ['obj' => $supplier, 'name' => 'taxcode', 'label' => 'Codice Fiscale'])
 @include('commons.textfield', ['obj' => $supplier, 'name' => 'vat', 'label' => 'Partita IVA'])
 @include('commons.textarea', ['obj' => $supplier, 'name' => 'payment_method', 'label' => 'Modalità Pagamento'])

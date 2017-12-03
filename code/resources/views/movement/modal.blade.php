@@ -61,18 +61,11 @@ if (!isset($amount_label))
                         <br/>
                     </div>
 
-                    <div class="form-group">
-                        <label for="method" class="col-sm-{{ $labelsize }} control-label">Metodo</label>
-                        <div class="col-sm-{{ $fieldsize }}">
-                            <div class="btn-group" data-toggle="buttons">
-                                @foreach($obj->valid_payments as $method_id => $info)
-                                    <label class="btn btn-default {{ $obj->method == $method_id ? 'active' : '' }}">
-                                        <input type="radio" name="method" value="{{ $method_id }}" autocomplete="off" {{ $obj->method == $method_id ? 'checked' : '' }}> {{ $info->name }}
-                                    </label>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
+                    @include('commons.radios', [
+                        'name' => 'method',
+                        'label' => 'Metodo',
+                        'values' => $obj->valid_payments
+                    ])
 
                     @include('commons.datefield', [
                         'obj' => $obj,

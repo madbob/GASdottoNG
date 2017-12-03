@@ -7,7 +7,7 @@ $more_orders = ($aggregate->orders->count() > 1);
     l'utente, non viene chiesto il pagamento della consegna (assumendo che
     avverrà appunto via RID)
 */
-$handling_movements = App\Role::someone('movements.admin', $currentgas) && (empty($currentgas->rid_name) || empty($user->iban));
+$handling_movements = App\Role::someone('movements.admin', $currentgas) && (empty($currentgas->rid['iban']) || empty($user->rid['iban']));
 
 $tot_amount = 0;
 $tot_delivered = [];
@@ -21,6 +21,9 @@ $existing = false;
 
     <div class="well">
         <div class="row">
+            <div class="col-md-6">
+                @include('commons.staticobjfield', ['target_obj' => $user, 'label' => 'Prenotato Da'])
+            </div>
             <div class="col-md-6">
                 @foreach($user->contacts as $contact)
                     @if($contact->type == 'phone' || $contact->type == 'mobile')

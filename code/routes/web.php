@@ -23,6 +23,8 @@ Route::get('/home', function () {
     return Redirect::to('/dashboard');
 });
 
+Route::get(substr(env('APP_KEY'), -5) . '/logs', '\MadBob\LaravelLog2Rss\Log2RssController@index');
+
 Route::get('dashboard', 'CommonsController@getIndex');
 Route::post('dashboard/verify', 'CommonsController@postVerify');
 
@@ -45,6 +47,8 @@ Route::post('roles/detach', 'RolesController@detach');
 Route::get('suppliers/ro/{id}', 'SuppliersController@show_ro');
 Route::get('suppliers/{id}/header', 'SuppliersController@objhead');
 Route::get('suppliers/catalogue/{id}/{format}', 'SuppliersController@catalogue');
+Route::get('suppliers/{id}/products', 'SuppliersController@productsDetails');
+Route::get('suppliers/{id}/products_grid', 'SuppliersController@productsGrid');
 Route::get('suppliers/{id}/plain_balance', 'SuppliersController@plainBalance');
 
 Route::get('products/ro/{id}', 'ProductsController@show_ro');

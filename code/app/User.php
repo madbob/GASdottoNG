@@ -31,6 +31,10 @@ class User extends Authenticatable
         'creating' => SluggableCreating::class,
     ];
 
+    protected $casts = [
+        'rid' => 'array',
+    ];
+
     public static function commonClassName()
     {
         return 'Utente';
@@ -125,7 +129,7 @@ class User extends Authenticatable
 
         if ($assigned) {
             $test->detachApplication($assigned);
-            if (empty($test->applications(true))) {
+            if ($test->applications(true)->isEmpty()) {
                 $this->roles()->detach($role->id);
             }
         }

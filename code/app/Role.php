@@ -258,16 +258,11 @@ class Role extends Model
         else
             $cache_type = 'applies_only_cache';
 
-        $ret = [];
+        $ret = new Collection();
 
         foreach($this->$cache_type as $class => $ids) {
-            foreach($ids as $id) {
-                $obj = $class::find($id);
-                if ($obj == null)
-                    continue;
-
-                $ret[] = $obj;
-            }
+            $objs = $class::whereIn('id', $ids)->get();
+            $ret = $ret->merge($objs);
         }
 
         return $ret;
@@ -389,6 +384,23 @@ class Role extends Model
         }
 
         return false;
+    }
+
+    public static function everybodyCan($permission, $subject = null)
+    {
+        $ret = new Collection();
+
+        $basic_roles = self::havingAction($permission);
+        foreach($basic_roles as $br) {
+            $users = $br->users;
+
+            if ($subject != null)
+                $users = $br->usersByTarget($subject);
+
+            $ret = $ret->merge($users);
+        }
+
+        return $ret->unique('id');
     }
 
     public static function allPermissions()

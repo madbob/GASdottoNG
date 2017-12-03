@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Log;
+
 use App\Events\SluggableCreating;
 use App\AttachableTrait;
 use App\GASModel;
@@ -17,6 +19,10 @@ class Gas extends Model
 
     protected $events = [
         'creating' => SluggableCreating::class,
+    ];
+
+    protected $casts = [
+        'rid' => 'array',
     ];
 
     public static function commonClassName()
@@ -37,6 +43,50 @@ class Gas extends Model
         return $this->hasMany('App\Config');
     }
 
+    private function handlingConfigs()
+    {
+        return [
+            'year_closing' => [
+                'default' => date('Y') . '-09-01'
+            ],
+
+            'annual_fee_amount' => [
+                'default' => 10.00
+            ],
+
+            'deposit_amount' => [
+                'default' => 10.00
+            ],
+
+            'restricted' => [
+                'default' => '0'
+            ],
+
+            'fast_shipping_enabled' => [
+                'default' => '0'
+            ],
+
+            'mail_conf' => [
+                'default' => (object) [
+                    'driver' => '',
+                    'username' => '',
+                    'password' => '',
+                    'host' => '',
+                    'port' => '',
+                    'address' => '',
+                    'encryption' => ''
+                ]
+            ],
+
+            'rid' => [
+                'default' => (object) [
+                    'iban' => '',
+                    'id' => ''
+                ]
+            ],
+        ];
+    }
+
     public function getConfig($name)
     {
         foreach ($this->configs as $conf) {
@@ -45,16 +95,27 @@ class Gas extends Model
             }
         }
 
-        return '';
+        $defined = self::handlingConfigs();
+        if (!isset($defined[$name])) {
+            Log::error('Configurazione GAS non prevista');
+            return '';
+        }
+        else {
+            $this->setConfig($name, $defined[$name]['default']);
+            $this->load('configs');
+            return $this->getConfig($name);
+        }
     }
 
     public function setConfig($name, $value)
     {
+        if (is_object($value))
+            $value = json_encode($value);
+
         foreach ($this->configs as $conf) {
             if ($conf->name == $name) {
                 $conf->value = $value;
                 $conf->save();
-
                 return;
             }
         }
@@ -125,33 +186,9 @@ class Gas extends Model
         return $this->mailConfig()->encryption;
     }
 
-    private function ridConfig()
+    public function getRidAttribute()
     {
-        $conf = $this->getConfig('rid_conf');
-        if ($conf == '') {
-            return (object) [
-                'name' => '',
-                'iban' => '',
-                'code' => '',
-            ];
-        } else {
-            return json_decode($conf);
-        }
-    }
-
-    public function getRidnameAttribute()
-    {
-        return $this->ridConfig()->name;
-    }
-
-    public function getRidibanAttribute()
-    {
-        return $this->ridConfig()->iban;
-    }
-
-    public function getRidcodeAttribute()
-    {
-        return $this->ridConfig()->code;
+        return (array) json_decode($this->getConfig('rid'));
     }
 
     public function getFastShippingEnabledAttribute()

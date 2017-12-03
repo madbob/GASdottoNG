@@ -51,7 +51,7 @@ class MovementsController extends Controller
         $obj->sender_id = $request->input('sender_id');
         $obj->target_type = $request->input('target_type');
         $obj->target_id = $request->input('target_id');
-        $obj->amount = $request->input('amount');
+        $obj->amount = $request->input('amount', 0);
         $obj->method = $request->input('method');
         $obj->type = $request->input('type');
         $obj->identifier = $request->input('identifier');
@@ -89,24 +89,32 @@ class MovementsController extends Controller
             $query->where('type', $request->input('type'));
         }
 
+        if ($request->input('method', 'all') != 'all') {
+            $query->where('method', $request->input('method'));
+        }
+
         if ($request->input('user_id', '0') != '0') {
             $user_id = $request->input('user_id');
             $generic_target = User::find($user_id);
-            $query = $generic_target->queryMovements($query);
+            if ($generic_target)
+                $query = $generic_target->queryMovements($query);
         }
 
         if ($request->input('supplier_id', '0') != '0') {
             $supplier_id = $request->input('supplier_id');
-            $generic_target = Supplier::find($supplier_id);
-            $query = $generic_target->queryMovements($query);
+            $generic_target = Supplier::withTrashed()->find($supplier_id);
+            if ($generic_target)
+                $query = $generic_target->queryMovements($query);
         }
 
         if ($request->input('generic_target_id', '0') != '0') {
             $target_id = $request->input('generic_target_id');
             $target_type = $request->input('generic_target_type');
             $generic_target = $target_type::find($target_id);
-            $query = $generic_target->queryMovements($query);
-            $data['main_target'] = $generic_target;
+            if ($generic_target) {
+                $query = $generic_target->queryMovements($query);
+                $data['main_target'] = $generic_target;
+            }
             $bilist = true;
         }
         else {
@@ -164,7 +172,10 @@ class MovementsController extends Controller
         $data = [];
 
         $data['payments'] = MovementType::paymentsByType($type);
-        $data['default_method'] = MovementType::defaultPaymentByType($type);
+        $default_method = MovementType::defaultPaymentByType($type);
+        $data['payments'][$default_method]->checked = true;
+        $data['default_method'] = $default_method;
+
         $data['fixed'] = $metadata->fixed_value;
         $data['default_notes'] = $metadata->default_notes;
 
@@ -278,8 +289,8 @@ class MovementsController extends Controller
                     return Theme::view('documents.credits_table_csv', ['users' => $users]);
                 }
                 else if ($subtype == 'rid') {
-                    $filename = sprintf('RID Debiti al %s.txt', date('d/m/Y'));
-                    header('Content-Type: plain/text');
+                    $filename = sprintf('SEPA del %s.xml', date('d/m/Y'));
+                    header('Content-Type: text/xml');
                     header('Content-Disposition: attachment; filename="' . $filename . '"');
                     header('Cache-Control: no-cache, no-store, must-revalidate');
                     header('Pragma: no-cache');

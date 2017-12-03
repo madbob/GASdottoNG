@@ -10,6 +10,10 @@ if (isset($extra_wrap_class)) {
     $wrap_class .= ' ' . $extra_wrap_class;
 }
 
+if (!isset($help_text)) {
+    $help_text = '';
+}
+
 ?>
 
 <div class="{{ $wrap_class }}">
@@ -25,7 +29,7 @@ if (isset($extra_wrap_class)) {
         <input type="text"
             class="{{ $class }}"
             name="{{ $prefix . $name . $postfix }}"
-            value="{{ $obj ? $obj->$name : '' }}"
+            value="{{ accessAttr($obj, $name, '') }}"
 
             @if(isset($mandatory) && $mandatory == true)
                 required
@@ -44,6 +48,10 @@ if (isset($extra_wrap_class)) {
         @if(isset($postlabel))
             <div class="input-group-addon">{{ $postlabel }}</div>
             </div>
+        @endif
+
+        @if(!empty($help_text))
+            <span class="help-block">{{ $help_text }}</span>
         @endif
     </div>
 </div>

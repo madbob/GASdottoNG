@@ -80,12 +80,6 @@ function generalInit() {
         $(this).tab('show');
     });
 
-    $('.middle-tabs').on('click', '.btn', function() {
-        var target = $(this).attr('data-target');
-        $(this).addClass('active').siblings().removeClass('active');
-        $(target).addClass('active').siblings().removeClass('active');
-    });
-
     $('input:file.immediate-run').each(function() {
         var i = $(this);
         i.fileupload({
@@ -1378,6 +1372,11 @@ $(document).ready(function() {
             return value.replace(/,/g, '.').replace(/[^0-9\.]/g, '');
         });
     })
+    .on('focus', 'input.number', function(e) {
+        var v = parseFloatC($(this).val());
+        if (v == 0)
+            $(this).val('0');
+    })
     .on('blur', 'input.number', function(e) {
         $(this).val(function(index, value) {
             return parseFloatC(value);
@@ -1387,6 +1386,11 @@ $(document).ready(function() {
     $('body').on('blur', '.trim-2-ddigits', function() {
         $(this).val(function(index, value) {
             return parseFloatC(value).toFixed(2);
+        });
+    })
+    .on('blur', '.trim-3-ddigits', function() {
+        $(this).val(function(index, value) {
+            return parseFloatC(value).toFixed(3);
         });
     });
 
@@ -1500,14 +1504,6 @@ $(document).ready(function() {
                 modal.find('.modal-body').empty().append(data);
             }
         });
-    });
-
-    $('body').on('change', 'select.triggers-modal', function(event) {
-        var val = $(this).find('option:selected').val();
-        if (val == 'run_modal') {
-            var modal = $(this).attr('data-trigger-modal');
-            $('#' + modal).modal('show');
-        }
     });
 
     $('body').on('submit', '.main-form', function(event) {
@@ -2109,23 +2105,27 @@ $(document).ready(function() {
         	TODO: aggiornare i prezzi totali nella tabella dell'ordine
         */
     })
-    .on('shown.bs.modal', '.order-summary-download-modal', function() {
+    .on('shown.bs.modal', '.order-document-download-modal', function() {
         $(this).find('input[name=send_mail]').bootstrapToggle('off');
-        $(this).find('.order_summary_body_mail').hide();
+        $(this).find('.order_document_body_mail').hide();
+        $(this).find('.order_document_recipient_mail').hide();
     })
-    .on('change', '.order-summary-download-modal input[name=send_mail]', function() {
+    .on('change', '.order-document-download-modal input[name=send_mail]', function() {
         var status = $(this).prop('checked');
-        var form = $(this).closest('.order-summary-download-modal').find('form');
-        var textarea = form.find('.order_summary_body_mail');
+        var form = $(this).closest('.order-document-download-modal').find('form');
+        var textarea = form.find('.order_document_body_mail');
+        var recipient = form.find('.order_document_recipient_mail');
         var submit = form.find('.btn-success');
 
         if (status) {
             textarea.show();
+            recipient.show();
             submit.text('Invia Mail');
             form.removeClass('direct-submit');
         }
         else {
             textarea.hide();
+            recipient.hide();
             submit.text('Download');
             form.addClass('direct-submit');
         }
@@ -2355,7 +2355,7 @@ $(document).ready(function() {
         var modal = $(this).closest('.modal');
         var quantity = 0;
 
-        modal.find('input[type=number]').each(function() {
+        modal.find('input.number').each(function() {
             var v = $(this).val();
             if (v != '')
                 quantity += parseFloatC(v);
@@ -2367,7 +2367,7 @@ $(document).ready(function() {
             Il trigger keyup() alla fine serve a forzare il ricalcolo del totale
             della consegna quando il modale viene chiuso
         */
-        modal.closest('.booking-product-quantity').find('input[type=number]').first().val(quantity).keyup();
+        modal.closest('.booking-product-quantity').find('input.number').first().val(quantity).keyup();
         modal.modal('hide');
     });
 

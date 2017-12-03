@@ -16,11 +16,19 @@ else {
 
 $class = 'form-control number';
 
+if(!isset($decimals))
+    $decimals = 2;
+
 if(isset($is_price)) {
     $value = printablePrice($value);
     $postlabel = '€';
-    $class .= ' trim-2-ddigits';
+    $decimals = 2;
 }
+else {
+    $value = sprintf('%.0' . $decimals . 'f', $value);
+}
+
+$class .= ' trim-' . $decimals . '-ddigits';
 
 ?>
 

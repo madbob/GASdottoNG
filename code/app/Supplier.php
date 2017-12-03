@@ -11,6 +11,7 @@ use Auth;
 use Theme;
 
 use App\Events\SluggableCreating;
+use App\Role;
 use App\AttachableTrait;
 use App\Attachment;
 use App\GASModel;
@@ -77,6 +78,19 @@ class Supplier extends Model
     public function getDisplayURL()
     {
         return Illuminate\Routing\UrlGenerator::action('SuppliersController@show');
+    }
+
+    public function involvedEmails()
+    {
+        $contacts = new Collection();
+
+        $contacts = $contacts->merge($this->contacts()->where('type', 'email')->get());
+
+        $users = Role::everybodyCan('supplier.modify', $this);
+        foreach($users as $u)
+            $contacts = $contacts->merge($u->contacts()->where('type', 'email')->get());
+
+        return $contacts;
     }
 
     /******************************************************** AttachableTrait */
@@ -188,7 +202,7 @@ class Supplier extends Model
         foreach($xml->children() as $c) {
             switch($c->getName()) {
                 case 'name':
-                    $supplier->name = $supplier->business_name = (string) $c;
+                    $supplier->name = $supplier->business_name = html_entity_decode((string) $c);
                     break;
 
                 case 'products':
@@ -198,7 +212,7 @@ class Supplier extends Model
                         foreach($a->children() as $p) {
                             switch($p->getName()) {
                                 case 'name':
-                                    $product->name = (string) $p;
+                                    $product->name = html_entity_decode((string) $p);
                                     break;
                             }
                         }
@@ -236,19 +250,18 @@ class Supplier extends Model
         foreach($xml->children() as $c) {
             switch($c->getName()) {
                 case 'taxCode':
-                    $supplier->taxcode = (string) $c;
+                    $supplier->taxcode = html_entity_decode((string) $c);
                     break;
 
                 case 'vatNumber':
-                    $supplier->vat = (string) $c;
+                    $supplier->vat = html_entity_decode((string) $c);
                     break;
 
                 case 'name':
-                    $name = $supplier->business_name = (string) $c;
+                    $name = $supplier->business_name = html_entity_decode((string) $c);
 
                     /*
-                        Per impedire collisioni sui nomi dei fornitori (che
-                        devono essere univoci)
+                        Per evitare collisioni sui nomi dei fornitori
                     */
                     $index = 2;
                     while(Supplier::where('name', $name)->first() != null)
@@ -280,7 +293,7 @@ class Supplier extends Model
                                         break;
                                 }
 
-                                $contact->value = (string) $e;
+                                $contact->value = html_entity_decode((string) $e);
 
                                 $contact->target_id = $supplier->id;
                                 $contact->target_type = get_class($supplier);
@@ -298,7 +311,7 @@ class Supplier extends Model
 
                         foreach($a->children() as $p) {
                             if($p->getName() == 'name') {
-                                $product_name = (string) $p;
+                                $product_name = html_entity_decode((string) $p);
                                 break;
                             }
                         }
@@ -316,15 +329,15 @@ class Supplier extends Model
                         foreach($a->children() as $p) {
                             switch($p->getName()) {
                                 case 'sku':
-                                    $product->supplier_code = (string) $p;
+                                    $product->supplier_code = html_entity_decode((string) $p);
                                     break;
 
                                 case 'name':
-                                    $product->name = (string) $p;
+                                    $product->name = html_entity_decode((string) $p);
                                     break;
 
                                 case 'category':
-                                    $name = (string) $p;
+                                    $name = html_entity_decode((string) $p);
                                     $category = Category::where('name', $name)->first();
                                     if($category == null) {
                                         $category = new Category();
@@ -335,7 +348,7 @@ class Supplier extends Model
                                     break;
 
                                 case 'um':
-                                    $name = (string) $p;
+                                    $name = html_entity_decode((string) $p);
                                     $measure = Measure::where('name', $name)->first();
                                     if($measure == null) {
                                         $measure = new Measure();
@@ -346,26 +359,26 @@ class Supplier extends Model
                                     break;
 
                                 case 'description':
-                                    $product->description = (string) $p;
+                                    $product->description = html_entity_decode((string) $p);
                                     break;
 
                                 case 'orderInfo':
                                     foreach($p->children() as $e) {
                                         switch($e->getName()) {
                                             case 'umPrice':
-                                                $product->price = (string) $e;
+                                                $product->price = html_entity_decode((string) $e);
                                                 break;
                                             case 'packageQty':
-                                                $product->package_size = (string) $e;
+                                                $product->package_size = html_entity_decode((string) $e);
                                                 break;
                                             case 'minQty':
-                                                $product->min_quantity = (string) $e;
+                                                $product->min_quantity = html_entity_decode((string) $e);
                                                 break;
                                             case 'maxQty':
-                                                $product->max_quantity = (string) $e;
+                                                $product->max_quantity = html_entity_decode((string) $e);
                                                 break;
                                             case 'shippingCost':
-                                                $product->transport = (string) $e;
+                                                $product->transport = html_entity_decode((string) $e);
                                                 break;
                                         }
                                     }
@@ -387,7 +400,7 @@ class Supplier extends Model
                                         foreach($e->children() as $i) {
                                             $vv = new VariantValue();
                                             $vv->variant_id = $variant->id;
-                                            $vv->value = (string) $i;
+                                            $vv->value = html_entity_decode((string) $i);
                                         }
                                     }
                                     break;

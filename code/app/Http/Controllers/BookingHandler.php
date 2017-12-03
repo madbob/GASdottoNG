@@ -112,16 +112,15 @@ class BookingHandler extends Controller
                                     $bpc->value_id = $value_id;
                                     $bpc->save();
                                 }
-
-                                $saved_variants[] = $bpv->id;
-                            } else {
+                            }
+                            else {
                                 if ($bpv->$param != $q) {
                                     $bpv->$param = $q;
                                     $bpv->save();
                                 }
-
-                                $saved_variants[] = $bpv->id;
                             }
+
+                            $saved_variants[] = $bpv->id;
 
                             if ($delivering) {
                                 $bpv->final_price = $bpv->deliveredValue();
@@ -131,7 +130,13 @@ class BookingHandler extends Controller
                             $quantity += $q;
                         }
 
-                        BookedProductVariant::where('product_id', '=', $booked->id)->whereNotIn('id', $saved_variants)->delete();
+                        /*
+                            Attenzione: in fase di consegna/salvataggio è lecito
+                            che una quantità sia a zero, ma ciò non implica
+                            eliminare la variante
+                        */
+                        if ($delivering == false)
+                            BookedProductVariant::where('product_id', '=', $booked->id)->whereNotIn('id', $saved_variants)->delete();
 
                         /*
                             Per ogni evenienza qui ricarico le varianti appena

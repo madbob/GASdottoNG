@@ -2,6 +2,8 @@
 
 namespace App\Notifications;
 
+use Auth;
+
 use App\Notifications\ManyMailNotification;
 
 class BookingNotification extends ManyMailNotification
@@ -17,7 +19,8 @@ class BookingNotification extends ManyMailNotification
 
     public function toMail($notifiable)
     {
-        $message = $this->initMailMessage($notifiable);
+        $user = Auth::user();
+        $message = $this->initMailMessage($notifiable, $user);
         $message->subject('Riassunto prenotazione del GAS')->view('emails.booking', ['booking' => $this->booking, 'txt_message' => $this->message]);
         return $message;
     }
