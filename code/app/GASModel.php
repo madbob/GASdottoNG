@@ -4,6 +4,7 @@ namespace App;
 
 use Auth;
 use URL;
+use Schema;
 
 trait GASModel
 {
@@ -132,7 +133,12 @@ trait GASModel
 
     public function scopeSorted($query)
     {
-        return $query->orderBy('name', 'asc');
+        if (Schema::hasColumn($this->table, 'name'))
+            return $query->orderBy('name', 'asc');
+        else if (Schema::hasColumn($this->table, 'lastname'))
+            return $query->orderBy('lastname', 'asc');
+        else
+            return $query->orderBy('id', 'asc');
     }
 
     public static function iconsMap()
