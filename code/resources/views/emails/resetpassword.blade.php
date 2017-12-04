@@ -1,5 +1,5 @@
 <p>
-    È stato chiesto l'aggiornamento della tua password su GASdotto.
+    {{ _i("È stato chiesto l'aggiornamento della tua password su GASdotto.") }}
 </p>
 
 <p>

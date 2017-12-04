@@ -18,7 +18,7 @@ foreach($columns as $index => $column)
         $columns[$index]['width'] = $column_size;
 
 if (isset($new_label) == false) {
-    $new_label = 'Aggiungi Nuovo';
+    $new_label = _i('Aggiungi Nuovo');
 }
 
 if (isset($show_columns) == false) {

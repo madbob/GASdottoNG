@@ -1,5 +1,5 @@
 <p>
-    Di seguito il riassunto dei prodotti che hai ordinato:
+    {{ _i('Di seguito il riassunto dei prodotti che hai ordinato:') }}
 </p>
 
 @foreach($booking->bookings as $b)
@@ -8,9 +8,9 @@
 
     <table style="width:100%">
         <thead>
-            <th style="width:50%; text-align: left">Prodotto</th>
-            <th style="width:25%; text-align: left">Quantità</th>
-            <th style="width:25%; text-align: left">Prezzo</th>
+            <th style="width:50%; text-align: left">{{ _i('Prodotto') }}</th>
+            <th style="width:25%; text-align: left">{{ _i('Quantità') }}</th>
+            <th style="width:25%; text-align: left">{{ _i('Prezzo') }}</th>
         </thead>
 
         <tbody>
@@ -24,7 +24,7 @@
             @endforeach
 
             <tr>
-                <td><strong>Totale</strong></td>
+                <td><strong>{{ _i('Totale') }}</strong></td>
                 <td>&nbsp;</td>
                 <td>{{ printablePrice($b->value) }} €</td>
             </tr>
@@ -33,14 +33,14 @@
 
     @if($variable)
         <p>
-            L'importo reale di questo ordine dipende dal peso effettivo dei prodotti consegnati; il totale qui riportato è solo indicativo.
+            {{ _i("L'importo reale di questo ordine dipende dal peso effettivo dei prodotti consegnati; il totale qui riportato è solo indicativo.") }}
         </p>
     @endif
 @endforeach
 
 @if($b->order->shipping != null)
     <p>
-        La consegna avverrà {{ $b->order->printableDate('shipping') }}.
+        {{ _i('La consegna avverrà %s.', $b->order->printableDate('shipping')) }}
     </p>
 @endif
 

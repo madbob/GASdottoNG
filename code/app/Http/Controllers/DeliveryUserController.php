@@ -54,7 +54,7 @@ class DeliveryUserController extends BookingHandler
 
         DB::beginTransaction();
 
-        $users = $request->input('bookings');
+        $users = $request->input('bookings', []);
 
         foreach($users as $index => $user_id) {
             $grand_total = 0;

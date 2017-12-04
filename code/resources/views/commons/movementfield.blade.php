@@ -19,7 +19,7 @@ $to_modal['dom_id'] = $rand;
     <div class="col-sm-{{ $fieldsize }}">
         <label class="static-label text-muted" data-updatable-name="movement-date-{{ $rand }}" data-updatable-field="printable_text">
             @if (!$obj)
-                Mai
+                {{ _i('Mai') }}
             @else
                 {!! $obj->printableName() !!}
             @endif

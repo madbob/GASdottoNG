@@ -3,9 +3,9 @@
     <div class="col-sm-{{ $fieldsize }}">
         <label class="static-label text-muted">
             @if($obj->$name)
-                SI
+                {{ _i('SI') }}
             @else
-                NO
+                {{ _i('NO') }}
             @endif
         </label>
     </div>

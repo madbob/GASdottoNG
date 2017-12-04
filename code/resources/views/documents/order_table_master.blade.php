@@ -1,9 +1,9 @@
-Utente;<?php foreach ($order->products as $product) {
+{{ _i('Utente') }};<?php foreach ($order->products as $product) {
     $total_price = 0;
     $total_transport = 0;
     $all_products[$product->id] = 0;
     echo $product->printableName() . ';';
-} ?>Prezzo Totale;Trasporto;Utente
+} ?>{{ _i('Prezzo Totale') }};{{ _i('Trasporto') }};{{ _i('Utente') }}
 
 @foreach($selected_bookings as $booking)
 {{ $booking->user->printableName() }}<?php foreach ($order->products as $product) {
@@ -17,6 +17,6 @@ TOTALI;<?php foreach ($order->products as $product) {
     echo printableQuantity($all_products[$product->id], $product->measure->discrete, 3, ',') . ';';
 } ?>{{ printablePrice($total_price, ',') }};{{ printablePrice($total_transport, ',') }};TOTALI
 
-Utente;<?php foreach ($order->products as $product) {
+{{ _i('Utente') }};<?php foreach ($order->products as $product) {
     echo $product->printableName() . ';';
-} ?>Prezzo Totale;Trasporto;Utente
+} ?>{{ _i('Prezzo Totale') }};{{ _i('Trasporto') }};{{ _i('Utente') }}

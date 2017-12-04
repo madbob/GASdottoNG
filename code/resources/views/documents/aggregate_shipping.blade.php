@@ -1,6 +1,6 @@
 <html>
     <body>
-        <h3>Dettaglio Consegne Ordini<br/>
+        <h3>{{ _i('Dettaglio Consegne Ordini') }}<br/>
             @foreach($aggregate->orders as $order)
                 {{ $order->supplier->name }} {{ $order->internal_number }}<br/>
             @endforeach
@@ -41,7 +41,7 @@
                 @endforeach
 
                 <tr>
-                    <th colspan="3"><strong>Totale: {{ printablePrice($super_booking->total_value, ',') }} €</strong></th>
+                    <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePrice($super_booking->total_value, ',') }} €</strong></th>
                 </tr>
             </table>
 

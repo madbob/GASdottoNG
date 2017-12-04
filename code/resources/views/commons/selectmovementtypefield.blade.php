@@ -6,7 +6,7 @@ if(!isset($show_all))
 $types = [];
 
 $types[] = [
-    'label' => 'Seleziona un Tipo',
+    'label' => _i('Seleziona un Tipo'),
     'value' => 'none',
 ];
 
@@ -24,7 +24,7 @@ foreach (App\MovementType::types() as $info) {
 @include('commons.selectenumfield', [
     'obj' => null,
     'name' => 'type',
-    'label' => 'Tipo',
+    'label' => _i('Tipo'),
     'values' => $types,
     'enforced_default' => 'none',
     'extra_class' => 'movement-type-selector'

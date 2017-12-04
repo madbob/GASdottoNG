@@ -5,7 +5,7 @@ if(isset($legend) == false)
 if(isset($filters) == false)
     $filters = [];
 if(isset($empty_message) == false)
-    $empty_message = 'Non ci sono elementi da visualizzare.';
+    $empty_message = _i('Non ci sono elementi da visualizzare.');
 if(isset($header_function) == false)
     $header_function = 'printableHeader';
 

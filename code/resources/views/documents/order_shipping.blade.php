@@ -1,6 +1,6 @@
 <html>
     <body>
-        <h3>Dettaglio Consegne Ordine {{ $order->internal_number }} presso {{ $order->supplier->printableName() }} del {{ $order->shipping ? date('d/m/Y', strtotime($order->shipping)) : date('d/m/Y') }}</h3>
+        <h3>{{ _i('Dettaglio Consegne Ordine %s presso %s del %s', $order->internal_number, $order->supplier->printableName(), $order->shipping ? date('d/m/Y', strtotime($order->shipping)) : date('d/m/Y')) }}</h3>
 
         <hr/>
 
@@ -27,7 +27,7 @@
                 @include('documents.booking_shipping', ['booking' => $booking])
 
                 <tr>
-                    <th colspan="3"><strong>Totale: {{ printablePrice($booking->total_value, ',') }} €</strong></th>
+                    <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePrice($booking->total_value, ',') }} €</strong></th>
                 </tr>
             </table>
 

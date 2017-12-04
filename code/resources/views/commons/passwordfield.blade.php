@@ -20,7 +20,7 @@ if (isset($extra_class)) {
                 @endif
 
                 @if($obj != null)
-                    placeholder="Lascia vuoto per non modificare la password"
+                    placeholder="{{ _i('Lascia vuoto per non modificare la password') }}"
                 @endif
 
                 name="{{ $prefix . $name }}">

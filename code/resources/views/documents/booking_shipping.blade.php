@@ -18,7 +18,7 @@
 
 @if($booking->transport != 0)
     <tr>
-        <td width="40%">Trasporto</td>
+        <td width="40%">{{ _i('Trasporto') }}</td>
         <td width="40%">&nbsp;</td>
         <td width="20%">{{ $booking->transport }} €</td>
     </tr>
