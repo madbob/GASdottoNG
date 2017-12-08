@@ -46,7 +46,7 @@ class ProductsService extends BaseService
         }
         else {
             $this->setIfSet($product, $request, 'portion_quantity');
-            $product->active = isset($request['variable']);
+            $product->variable = isset($request['variable']);
         }
 
         return $product;

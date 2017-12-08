@@ -21,6 +21,10 @@ class Product extends Model
         'creating' => SluggableCreating::class,
     ];
 
+    protected $casts = [
+        'active' => 'boolean',
+    ];
+
     public function category()
     {
         return $this->belongsTo('App\Category');
