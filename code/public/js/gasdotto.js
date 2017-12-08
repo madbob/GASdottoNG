@@ -1702,6 +1702,9 @@ $(document).ready(function() {
         if (event.isDefaultPrevented())
             return;
 
+        var save_button = $(this).find('button[type=submit]');
+        save_button.prop('disabled', true);
+
         event.preventDefault();
         var form = $(this);
         var disabled = form.find(':disabled').removeAttr('disabled');
@@ -1715,6 +1718,7 @@ $(document).ready(function() {
             contentType: false,
             success: function(data) {
                 creatingFormCallback(form, data);
+                save_button.prop('disabled', false);
             }
         });
 

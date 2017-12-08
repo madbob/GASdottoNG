@@ -150,6 +150,7 @@ class Aggregate extends Model
 
         foreach ($this->orders as $order) {
             foreach ($order->bookings as $booking) {
+                $booking->setRelation('order', $order);
                 $user_id = $booking->user->id;
 
                 if (!isset($ret[$user_id])) {
