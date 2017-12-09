@@ -82,6 +82,7 @@ class DeliveryUserController extends BookingHandler
                 $booking->status = 'shipped';
                 $booking->save();
 
+                $booking->load('products');
                 $grand_total += $booking->total_value;
             }
 

@@ -1681,7 +1681,7 @@ $(document).ready(function() {
         }
 
         var save_button = form.find('.saving-button');
-        save_button.attr('disabled', 'disabled');
+        save_button.prop('disabled', true);
 
         $.ajax({
             method: method,

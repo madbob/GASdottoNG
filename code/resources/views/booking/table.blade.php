@@ -54,7 +54,7 @@
 
             <div class="col-md-12">
                 <div class="btn-group pull-right" role="group">
-                    <button type="submit" class="btn btn-success">Salva</button>
+                    <button type="submit" class="btn btn-success saving-button">Salva</button>
                 </div>
             </div>
         </form>
