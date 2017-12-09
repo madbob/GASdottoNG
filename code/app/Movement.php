@@ -92,6 +92,17 @@ class Movement extends Model
         return $this->type_metadata->name;
     }
 
+    public function printablePayment()
+    {
+        $types = MovementType::payments();
+        foreach ($types as $id => $details) {
+            if ($this->method == $id) {
+                return $details->name;
+            }
+        }
+        return '???';
+    }
+
     public static function generate($type, $sender, $target, $amount)
     {
         $ret = new self();

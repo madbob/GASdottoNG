@@ -123,6 +123,8 @@
             <div class="form-group">
                 <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
                     <button type="submit" class="btn btn-success">Ricerca</button>
+                    <a href="{{ url('movements?format=csv') }}" class="btn btn-default form-filler-download">Esporta CSV</a>
+                    <a href="{{ url('movements?format=pdf') }}" class="btn btn-default form-filler-download">Esporta PDF</a>
                 </div>
             </div>
         </div>

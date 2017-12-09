@@ -9,6 +9,7 @@ use Auth;
 use DB;
 use Theme;
 use Log;
+use PDF;
 use Session;
 
 use App\Movement;
@@ -140,19 +141,37 @@ class MovementsController extends Controller
             return Theme::view('pages.movements', $data);
         }
         else {
-            if ($bilist) {
-                /*
-                    Qui si finisce quando si aggiorna l'elenco di movimenti
-                    facenti riferimento ad un soggetto specifico
-                */
-                return Theme::view('movement.bilist', $data);
+            $format = $request->input('format', 'none');
+
+            if ($format == 'none') {
+                if ($bilist) {
+                    /*
+                        Qui si finisce quando si aggiorna l'elenco di movimenti
+                        facenti riferimento ad un soggetto specifico
+                    */
+                    return Theme::view('movement.bilist', $data);
+                }
+                else {
+                    /*
+                        Qui si finisce quando si aggiorna l'elenco di movimenti
+                        nella pagina principale della contabilità
+                    */
+                    return Theme::view('movement.list', $data);
+                }
             }
-            else {
-                /*
-                    Qui si finisce quando si aggiorna l'elenco di movimenti
-                    nella pagina principale della contabilità
-                */
-                return Theme::view('movement.list', $data);
+            else if ($format == 'csv') {
+                $output = Theme::view('documents.movements_csv', ['movements' => $data['movements']]);
+                $filename = sprintf('Esportazione movimenti GAS %s.csv', date('d/m/Y'));
+                http_csv_headers($filename);
+                return $output;
+            }
+            else if ($format == 'pdf') {
+                $html = Theme::view('documents.movements_pdf', ['movements' => $data['movements']])->render();
+                $filename = sprintf('Esportazione movimenti GAS %s.pdf', date('d/m/Y'));
+                PDF::SetTitle(sprintf('Esportazione movimenti GAS %s', date('d/m/Y')));
+                PDF::AddPage('L');
+                PDF::writeHTML($html, true, false, true, false, '');
+                PDF::Output($filename, 'D');
             }
         }
     }

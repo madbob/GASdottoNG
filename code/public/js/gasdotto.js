@@ -1985,9 +1985,9 @@ $(document).ready(function() {
 
     $('body').on('click', '.form-filler button[type=submit]', function(event) {
         event.preventDefault();
-        form = $(this).closest('.form-filler');
-        var data = form.find('input, select').serialize();
+        var form = $(this).closest('.form-filler');
         var target = $(form.attr('data-fill-target'));
+        var data = form.find('input, select').serialize();
 
         $.ajax({
             method: 'GET',
@@ -1999,6 +1999,12 @@ $(document).ready(function() {
                 target.empty().append(data);
             }
         });
+    })
+    .on('click', '.form-filler a.form-filler-download', function() {
+        event.preventDefault();
+        var data = $(this).closest('.form-filler').find('input, select').serializeArray();
+        var url = $(this).attr('href') + '&' + $.param(data);
+        window.open(url, '_blank');
     });
 
     $('body').on('submit', '.password-protected', function(event) {
