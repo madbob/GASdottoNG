@@ -380,8 +380,14 @@ class OrdersController extends Controller
             return;
 
         $real_recipient_mails = [];
-        foreach($recipient_mails as $rm)
+        foreach($recipient_mails as $rm) {
+            if (empty($rm))
+                continue;
             $real_recipient_mails[] = (object) ['email' => $rm];
+        }
+
+        if (empty($real_recipient_mails))
+            return;
 
         $m = Mail::to($real_recipient_mails);
         $body_mail = $request->input('body_mail');

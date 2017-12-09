@@ -19,7 +19,7 @@
                     [
                         'label' => 'Valore',
                         'field' => 'value',
-                        'type' => 'text',
+                        'type' => 'email',
                         'width' => 10,
                         'extra' => [
                             'prefix' => 'recipient_mail_'
