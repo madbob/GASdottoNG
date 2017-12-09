@@ -107,7 +107,7 @@ class UsersService extends BaseService
             $this->setIfSet($user, $request, 'lastname');
             $this->transformAndSetIfSet($user, $request, 'birthday', "decodeDate");
             $this->setIfSet($user, $request, 'taxcode');
-            $this->setIfSet($user, $request, 'family_members');
+            $this->transformAndSetIfSet($user, $request, 'family_members' 'enforceNumber');
             $this->setIfSet($user, $request, 'preferred_delivery_id');
 
             if ($type == 1) {

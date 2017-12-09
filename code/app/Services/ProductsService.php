@@ -45,7 +45,7 @@ class ProductsService extends BaseService
             $product->variable = false;
         }
         else {
-            $this->setIfSet($product, $request, 'portion_quantity');
+            $this->transformAndSetIfSet($product, $request, 'portion_quantity', 'enforceNumber');
             $product->variable = isset($request['variable']);
         }
 
@@ -56,8 +56,8 @@ class ProductsService extends BaseService
     {
         $this->setIfSet($product, $request, 'name');
         $this->setIfSet($product, $request, 'description');
-        $this->setIfSet($product, $request, 'price');
-        $this->setIfSet($product, $request, 'transport');
+        $this->transformAndSetIfSet($product, $request, 'price', 'enforceNumber');
+        $this->transformAndSetIfSet($product, $request, 'transport', 'enforceNumber');
         $this->setIfSet($product, $request, 'category_id');
         $this->setIfSet($product, $request, 'measure_id');
         $this->transformAndSetIfSet($product, $request, 'discount', 'normalizePercentage');
@@ -80,11 +80,11 @@ class ProductsService extends BaseService
 
             $product->active = (isset($request['active']) && $request['active'] !== false);
             $this->setIfSet($product, $request, 'supplier_code');
-            $this->setIfSet($product, $request, 'package_size');
-            $this->setIfSet($product, $request, 'multiple');
-            $this->setIfSet($product, $request, 'min_quantity');
-            $this->setIfSet($product, $request, 'max_quantity');
-            $this->setIfSet($product, $request, 'max_available');
+            $this->transformAndSetIfSet($product, $request, 'package_size', 'enforceNumber');
+            $this->transformAndSetIfSet($product, $request, 'multiple', 'enforceNumber');
+            $this->transformAndSetIfSet($product, $request, 'min_quantity', 'enforceNumber');
+            $this->transformAndSetIfSet($product, $request, 'max_quantity', 'enforceNumber');
+            $this->transformAndSetIfSet($product, $request, 'max_available', 'enforceNumber');
             $product = $this->enforceMeasure($product, $request);
 
             $product->save();

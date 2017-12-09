@@ -96,6 +96,14 @@ function applyPercentage($original, $percentage)
     }
 }
 
+function enforceNumber($value)
+{
+    if (is_numeric($value))
+        return $value;
+    else
+        return 0;
+}
+
 function normalizeUrl($url)
 {
     $url = strtolower($url);
