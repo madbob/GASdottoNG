@@ -14,9 +14,10 @@
                 <th width="9%">Totale Consegnato</th>
             @else
                 <th width="25%">Prodotto</th>
-                <th width="25%">Unità di Misura</th>
-                <th width="25%">Quantità Consegnata</th>
-                <th width="25%">Totale Consegnato</th>
+                <th width="15%">Unità di Misura</th>
+                <th width="20%">Quantità Ordinata</th>
+                <th width="20%">Quantità Consegnata</th>
+                <th width="20%">Totale Consegnato</th>
             @endif
         </tr>
     </thead>
@@ -39,17 +40,17 @@
                     <!-- Unità di Misura -->
                     <td>{{ $product->printableMeasure(true) }}</td>
 
-                    @if($order->isActive())
-                        <!-- Quantità Ordinata -->
-                        <td>
-                            <label>
-                                @if($product->portion_quantity != 0)
-                                    {{ sprintf('%d', $summary->products[$product->id]['quantity_pieces']) }} Pezzi /
-                                @endif
-                                <span class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity'] }}</span> {{ $product->measure->name }}
-                            </label>
-                        </td>
+                    <!-- Quantità Ordinata -->
+                    <td>
+                        <label>
+                            @if($product->portion_quantity != 0)
+                                {{ sprintf('%d', $summary->products[$product->id]['quantity_pieces']) }} Pezzi /
+                            @endif
+                            <span class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity'] }}</span> {{ $product->measure->name }}
+                        </label>
+                    </td>
 
+                    @if($order->isActive())
                         <!-- Totale Prezzo -->
                         <td>
                             <label class="order-summary-product-price">{{ $summary->products[$product->id]['price'] }} €</label>
