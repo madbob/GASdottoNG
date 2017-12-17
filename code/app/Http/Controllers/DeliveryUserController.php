@@ -11,6 +11,7 @@ use URL;
 use App\User;
 use App\Aggregate;
 use App\Movement;
+use App\MovementType;
 
 class DeliveryUserController extends BookingHandler
 {
@@ -55,6 +56,7 @@ class DeliveryUserController extends BookingHandler
         DB::beginTransaction();
 
         $users = $request->input('bookings', []);
+        $default_payment_method = MovementType::defaultPaymentByType('booking-payment');
 
         foreach($users as $index => $user_id) {
             $grand_total = 0;
@@ -93,7 +95,7 @@ class DeliveryUserController extends BookingHandler
                 $movement->sender_id = $user_id;
                 $movement->target_type = 'App\Aggregate';
                 $movement->target_id = $aggregate_id;
-                $movement->method = $request->input('method-' . $user_id);
+                $movement->method = $request->input('method-' . $user_id, $default_payment_method);
                 $movement->amount = $grand_total;
                 $movement->save();
             }

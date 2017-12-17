@@ -1,5 +1,10 @@
 @if($aggregate->isRunning() == false)
-    <?php $payments = App\MovementType::paymentsByType('booking-payment') ?>
+    <?php
+
+    $payments = App\MovementType::paymentsByType('booking-payment');
+    $default_payment_method = App\MovementType::defaultPaymentByType('booking-payment');
+
+    ?>
 
     <div class="row">
         <form class="inner-form" method="POST" action="{{ url('deliveries/' . $aggregate->id . '/fast') }}">
@@ -39,8 +44,8 @@
                                     @if($booking->status != 'shipped')
                                         <div class="btn-group pull-right" data-toggle="buttons">
                                             @foreach($payments as $method_id => $info)
-                                                <label class="btn btn-default method-select-{{ $method_id }}">
-                                                    <input type="radio" name="method-{{ $booking->id }}" value="{{ $method_id }}" autocomplete="off"> {{ $info->name }}
+                                                <label class="btn btn-default method-select-{{ $method_id }} {{ $method_id == $default_payment_method ? 'active' : '' }}">
+                                                    <input type="radio" name="method-{{ $booking->id }}" value="{{ $method_id }}" autocomplete="off" {{ $method_id == $default_payment_method ? 'checked' : '' }}> {{ $info->name }}
                                                 </label>
                                             @endforeach
                                         </div>
