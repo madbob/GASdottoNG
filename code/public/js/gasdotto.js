@@ -238,7 +238,12 @@ function parseFullDate(string) {
 function parseFloatC(value) {
     if (typeof value === 'undefined')
         return 0;
-    return parseFloat(value.replace(/,/, '.'));
+
+    var ret = parseFloat(value.replace(/,/, '.'));
+    if (isNaN(ret))
+        ret = 0;
+
+    return ret;
 }
 
 function priceRound(price) {
@@ -250,7 +255,7 @@ function priceRound(price) {
     un attributo, questa funzione serve ad applicare l'escape necessario
 */
 function sanitizeId(identifier) {
-    return identifier.replace(/:/, '\\:');
+    return identifier.replace(/:/g, '\\:');
 }
 
 function voidForm(form) {
@@ -965,6 +970,25 @@ function sortShippingBookings(list) {
 function submitDeliveryForm(form) {
     var id = form.closest('.modal').attr('id');
     var mainform = $('form[data-reference-modal=' + id + ']');
+
+    /*
+        Questo è per condensare eventuali nuovi prodotti aggiunti ma già
+        presenti nella prenotazione.
+    */
+    mainform.find('.fit-add-product').not('.hidden').each(function() {
+        var i = $(this).find('.booking-product-quantity input:text.number');
+        if (i.length == 0)
+            return;
+
+        var product = sanitizeId(i.attr('name'));
+        var added_value = parseFloatC(i.val());
+        var existing = mainform.find('tr.booking-product').not('.fit-add-product').find('input:text.number[name=' + product + ']');
+        if (existing.length != 0) {
+            existing.val(parseFloatC(existing.val()) + added_value);
+            i.remove();
+        }
+    });
+
     mainform.submit();
 }
 
