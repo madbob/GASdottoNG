@@ -67,16 +67,6 @@ class GasController extends Controller
         $group = $request->input('group');
 
         switch($group) {
-            case 'accounting':
-                if ($user->can('movements.admin', $gas) == false) {
-                    return $this->errorResponse('Non autorizzato');
-                }
-
-                $gas->setConfig('year_closing', decodeDateMonth($request->input('year_closing')));
-                $gas->setConfig('annual_fee_amount', $request->input('annual_fee_amount', 0));
-                $gas->setConfig('deposit_amount', $request->input('deposit_amount', 0));
-                break;
-
             case 'general':
                 if ($user->can('gas.config', $gas) == false) {
                     return $this->errorResponse('Non autorizzato');
@@ -121,11 +111,14 @@ class GasController extends Controller
                     return $this->errorResponse('Non autorizzato');
                 }
 
+                $gas->setConfig('year_closing', decodeDateMonth($request->input('year_closing')));
+                $gas->setConfig('annual_fee_amount', $request->input('annual_fee_amount', 0));
+                $gas->setConfig('deposit_amount', $request->input('deposit_amount', 0));
+
                 $rid_info = (object) [
                     'iban' => $request->input('rid->iban'),
                     'id' => $request->input('rid->id'),
                 ];
-
                 $gas->setConfig('rid', $rid_info);
                 break;
 

@@ -235,10 +235,22 @@ Tipo di connessione sicura usata dal proprio server SMTP. Consultare la document
 
 .
 
+# Inizio Anno Sociale
+
+In questa data le quote di iscrizione verranno automaticamente fatte scadere e dovranno essere rinnovate.
+
+# Quota Annuale
+
+Se non configurato (valore = 0) non verranno gestite le quote di iscrizione.
+
+# Cauzione
+
+Se non configurato (valore = 0) non verranno gestite le cauzioni da parte dei nuovi soci.
+
 # IBAN
 
 .
 
-# Codice Azienda
+# Identificativo Azienda
 
 .
