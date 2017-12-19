@@ -2024,7 +2024,7 @@ $(document).ready(function() {
             }
         });
     })
-    .on('click', '.form-filler a.form-filler-download', function() {
+    .on('click', '.form-filler a.form-filler-download', function(event) {
         event.preventDefault();
         var data = $(this).closest('.form-filler').find('input, select').serializeArray();
         var url = $(this).attr('href') + '&' + $.param(data);
