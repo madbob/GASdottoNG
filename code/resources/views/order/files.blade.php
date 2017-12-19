@@ -13,7 +13,7 @@
 <div class="modal fade close-on-submit order-document-download-modal" id="shipping-products-document-{{ $rand }}" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-extra-lg" role="document">
         <div class="modal-content">
-            <form class="form-horizontal direct-submit" method="GET" action="{{ url('orders/document/' . $order->id . '/shipping') }}" data-toggle="validator">
+            <form class="form-horizontal direct-submit" method="GET" action="{{ url('orders/document/' . $order->id . '/shipping') }}" data-toggle="validator" novalidate>
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">Dettaglio Consegne</h4>
@@ -37,7 +37,7 @@
 <div class="modal fade close-on-submit order-document-download-modal" id="summary-products-document-{{ $rand }}" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-extra-lg" role="document">
         <div class="modal-content">
-            <form class="form-horizontal direct-submit" method="GET" action="{{ url('orders/document/' . $order->id . '/summary') }}" data-toggle="validator">
+            <form class="form-horizontal direct-submit" method="GET" action="{{ url('orders/document/' . $order->id . '/summary') }}" data-toggle="validator" novalidate>
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">Riassunto Prodotti Ordinati</h4>
@@ -90,7 +90,7 @@
 <div class="modal fade close-on-submit" id="all-products-document-{{ $rand }}" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form class="form-horizontal direct-submit" method="GET" action="{{ url('orders/document/' . $order->id . '/table') }}" data-toggle="validator">
+            <form class="form-horizontal direct-submit" method="GET" action="{{ url('orders/document/' . $order->id . '/table') }}" data-toggle="validator" novalidate>
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">Tabella Complessiva Prodotti</h4>
