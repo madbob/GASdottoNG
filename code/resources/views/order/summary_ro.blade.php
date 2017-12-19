@@ -12,6 +12,13 @@
                 <th width="9%">Totale Trasporto</th>
                 <th width="9%">Quantità Consegnata</th>
                 <th width="9%">Totale Consegnato</th>
+            @elseif($order->status != 'archived')
+                <th width="25%">Prodotto</th>
+                <th width="15%">Unità di Misura</th>
+                <th width="15%">Quantità Ordinata</th>
+                <th width="15%">Totale Trasporto</th>
+                <th width="15%">Quantità Consegnata</th>
+                <th width="15%">Totale Consegnato</th>
             @else
                 <th width="25%">Prodotto</th>
                 <th width="15%">Unità di Misura</th>
@@ -55,7 +62,9 @@
                         <td>
                             <label class="order-summary-product-price">{{ $summary->products[$product->id]['price'] }} €</label>
                         </td>
+                    @endif
 
+                    @if($order->status != 'archived')
                         <!-- Totale Trasporto -->
                         <td>
                             <label class="order-summary-product-transport">{{ $summary->products[$product->id]['transport'] }} €</label>
@@ -97,6 +106,12 @@
             @else
                 <th></th>
                 <th></th>
+                <th></th>
+
+                @if($order->status != 'archived')
+                    <th class="order-summary-order-transport">{{ printablePrice($summary->transport) }} €</th>
+                @endif
+
                 <th></th>
                 <th>
                     <span class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} €</span>
