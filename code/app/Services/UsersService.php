@@ -176,7 +176,6 @@ class UsersService extends BaseService
         }
 
         $user = new User();
-        $user->id = $username;
         $user->gas_id = $creator->gas->id;
         $user->member_since = date('Y-m-d', time());
         $user->username = $username;
