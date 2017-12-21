@@ -187,6 +187,47 @@ function http_csv_headers($filename)
     header('Expires: 0');
 }
 
+/*
+    Se $format_callback è null, si assume che $contents sia una stringa da
+    scrivere direttamente nel file CSV
+*/
+function output_csv($filename, $head, $contents, $format_callback, $out_file = null)
+{
+    $headers = [
+        'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+        'Content-type' => 'text/csv',
+        'Content-Disposition' => 'attachment; filename=' . $filename,
+        'Expires' => '0',
+        'Pragma' => 'public'
+    ];
+
+    $callback = function() use ($head, $contents, $format_callback, $out_file) {
+        if ($out_file == null)
+            $FH = fopen('php://output', 'w');
+        else
+            $FH = fopen($out_file, 'w');
+
+        if ($format_callback == null) {
+            fwrite($FH, $contents);
+        }
+        else {
+            fputcsv($FH, $head);
+
+            foreach ($contents as $c) {
+                $row = $format_callback($c);
+                fputcsv($FH, $row);
+            }
+        }
+
+        fclose($FH);
+    };
+
+    if ($out_file == null)
+        return Response::stream($callback, 200, $headers);
+    else
+        return $out_file;
+}
+
 function iban_split($iban, $field)
 {
     switch($field) {

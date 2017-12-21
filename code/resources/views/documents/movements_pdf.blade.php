@@ -14,6 +14,7 @@
                     <th>Pagante</th>
                     <th>Pagato</th>
                     <th>Valore</th>
+                    <th>Note</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,6 +27,7 @@
                         <td>{{ $mov->sender ? $mov->sender->printableName() : '' }}</td>
                         <td>{{ $mov->target ? $mov->target->printableName() : '' }}</td>
                         <td>{{ printablePrice($mov->amount) }} €</td>
+                        <td>{{ $mov->notes }}</td>
                     </tr>
                 @endforeach
             </tbody>

@@ -443,14 +443,15 @@ class OrdersController extends Controller
                     }
                 }
                 else if ($subtype == 'csv') {
-                    $output = Theme::view('documents.order_summary_csv', ['order' => $order, 'data' => $data]);
-
                     if ($send_mail) {
-                        file_put_contents($temp_file_path, $output->render());
+                        output_csv($filename, $data->headers, $data->contents, function($row) {
+                            return $row;
+                        }, $temp_file_path);
                     }
                     else {
-                        http_csv_headers($filename);
-                        return $output;
+                        return output_csv($filename, $data->headers, $data->contents, function($row) {
+                            return $row;
+                        });
                     }
                 }
 
@@ -462,16 +463,15 @@ class OrdersController extends Controller
 
             case 'table':
                 $status = $request->input('status', 'booked');
-                $filename = sprintf('Tabella Ordine %s presso %s.csv', $order->internal_number, $order->supplier->name);
-                http_csv_headers($filename);
-
                 if ($status == 'booked')
-                    return Theme::view('documents.order_table_booked', ['order' => $order]);
+                    $contents = Theme::view('documents.order_table_booked', ['order' => $order])->render();
                 else if ($status == 'delivered')
-                    return Theme::view('documents.order_table_delivered', ['order' => $order]);
+                    $contents = Theme::view('documents.order_table_delivered', ['order' => $order])->render();
                 else if ($status == 'saved')
-                    return Theme::view('documents.order_table_saved', ['order' => $order]);
+                    $contents = Theme::view('documents.order_table_saved', ['order' => $order])->render();
 
+                $filename = sprintf('Tabella Ordine %s presso %s.csv', $order->internal_number, $order->supplier->name);
+                return output_csv($filename, null, $contents, null, null);
                 break;
 
             case 'rid':

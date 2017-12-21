@@ -122,12 +122,15 @@ class SuppliersService extends BaseService
             PDF::Output($filename, 'D');
         }
         elseif ($format == 'csv') {
-            header('Content-Type: text/csv');
-            header('Content-Disposition: attachment; filename="' . $filename . '"');
-            header('Cache-Control: no-cache, no-store, must-revalidate');
-            header('Pragma: no-cache');
-            header('Expires: 0');
-            return Theme::view('documents.cataloguecsv', ['supplier' => $supplier]);
+            $headers = ['Nome', 'Unità di Misura', 'Prezzo Unitario (€)', 'Trasporto (€)'];
+            return output_csv($filename, $headers, $supplier->products, function($product) {
+                $row = [];
+                $row[] = $product->name;
+                $row[] = $product->measure->printableName();
+                $row[] = printablePrice($product->price, ',');
+                $row[] = printablePrice($product->transport, ',');
+                return $row;
+            });
         }
     }
 

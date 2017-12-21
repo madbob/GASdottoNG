@@ -64,6 +64,10 @@ class MovementsController extends Controller
 
     public function index(Request $request)
     {
+        /*
+            TODO: controllare permessi
+        */
+
         $query = Movement::with('sender')->with('target')->orderBy('registration_date', 'desc');
 
         if ($request->has('startdate')) {
@@ -160,10 +164,20 @@ class MovementsController extends Controller
                 }
             }
             else if ($format == 'csv') {
-                $output = Theme::view('documents.movements_csv', ['movements' => $data['movements']]);
                 $filename = sprintf('Esportazione movimenti GAS %s.csv', date('d/m/Y'));
-                http_csv_headers($filename);
-                return $output;
+                $headers = ['Data Registrazione', 'Data Movimento', 'Tipo', 'Pagamento', 'Pagante', 'Pagato', 'Valore', 'Note'];
+                return output_csv($filename, $headers, $data['movements'], function($mov) {
+                    $row = [];
+                    $row[] = $mov->registration_date;
+                    $row[] = $mov->date;
+                    $row[] = $mov->printableType();
+                    $row[] = $mov->printablePayment();
+                    $row[] = $mov->sender ? $mov->sender->printableName() : '';
+                    $row[] = $mov->target ? $mov->target->printableName() : '';
+                    $row[] = printablePrice($mov->amount);
+                    $row[] = $mov->notes;
+                    return $row;
+                });
             }
             else if ($format == 'pdf') {
                 $html = Theme::view('documents.movements_pdf', ['movements' => $data['movements']])->render();
@@ -304,8 +318,13 @@ class MovementsController extends Controller
 
                 if ($subtype == 'csv') {
                     $filename = sprintf('Crediti al %s.csv', date('d/m/Y'));
-                    http_csv_headers($filename);
-                    return Theme::view('documents.credits_table_csv', ['users' => $users]);
+                    $headers = ['Nome', 'Credito Residuo'];
+                    return output_csv($filename, $headers, $users, function($user) {
+                        $row = [];
+                        $row[] = $user->printableName();
+                        $row[] = printablePrice($user->current_balance_amount, ',');
+                        return $row;
+                    });
                 }
                 else if ($subtype == 'rid') {
                     $filename = sprintf('SEPA del %s.xml', date('d/m/Y'));
