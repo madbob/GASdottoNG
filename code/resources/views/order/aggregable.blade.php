@@ -1,10 +1,6 @@
 <?php $index = 0 ?>
 
 @foreach($orders as $order)
-    @if($order->status == 'shipped')
-        @continue
-    @endif
-
     @if($index % 5 == 0)
         <div class="well" data-aggregate-id="new">
             <span class="glyphicon glyphicon-fullscreen pull-right explode-aggregate" aria-hidden="true"></span>
