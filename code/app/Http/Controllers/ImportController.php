@@ -164,8 +164,16 @@ class ImportController extends Controller
                         $errors[] = _i('Colonna obbligatoria non specificata: unità di misura');
                     }
 
-                    if (!empty($errors))
-                        return Theme::view('import.csvproductsfinal', ['supplier' => $s, 'products' => [], 'errors' => $errors]);
+                    if (!empty($errors)) {
+                        return Theme::view('import.csvimportfinal', [
+                            'title' => _i('Prodotti importati'),
+                            'objects' => [],
+                            'errors' => $errors,
+                            'extra_closing_attributes' => [
+                                'data-reload-target' => '#supplier-list'
+                            ]
+                        ]);
+                    }
 
                     $target_separator = $this->guessCsvFileSeparator($path);
                     if ($target_separator == null) {
@@ -230,7 +238,15 @@ class ImportController extends Controller
 
                     DB::commit();
 
-                    return Theme::view('import.csvproductsfinal', ['supplier' => $s, 'products' => $products, 'errors' => $errors]);
+                    return Theme::view('import.csvimportfinal', [
+                        'title' => _i('Prodotti importati'),
+                        'objects' => $products,
+                        'errors' => $errors,
+                        'extra_closing_attributes' => [
+                            'data-reload-target' => '#supplier-list'
+                        ]
+                    ]);
+
                     break;
             }
         }
@@ -334,7 +350,15 @@ class ImportController extends Controller
 
                     DB::commit();
 
-                    return Theme::view('import.csvusersfinal', ['users' => $users, 'errors' => $errors]);
+                    return Theme::view('import.csvimportfinal', [
+                        'title' => _i('Utenti importati'),
+                        'objects' => $users,
+                        'errors' => $errors,
+                        'extra_closing_attributes' => [
+                            'data-reload-target' => '#user-list'
+                        ]
+                    ]);
+
                     break;
             }
         }
@@ -463,7 +487,12 @@ class ImportController extends Controller
 
                     DB::commit();
 
-                    return Theme::view('import.csvmovementsfinal', ['movements' => $movements, 'errors' => $errors]);
+                    return Theme::view('import.csvimportfinal', [
+                        'title' => _i('Movimenti importati'),
+                        'objects' => $movements,
+                        'errors' => $errors
+                    ]);
+
                     break;
             }
         }
