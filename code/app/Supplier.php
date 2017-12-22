@@ -11,6 +11,7 @@ use Auth;
 use Theme;
 
 use App\Events\SluggableCreating;
+use App\Events\SupplierDeleting;
 use App\Role;
 use App\AttachableTrait;
 use App\Attachment;
@@ -30,6 +31,7 @@ class Supplier extends Model
 
     protected $events = [
         'creating' => SluggableCreating::class,
+        'deleting' => SupplierDeleting::class,
     ];
 
     public static function commonClassName()

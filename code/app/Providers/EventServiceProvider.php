@@ -11,6 +11,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\SluggableCreating' => [
             'App\Listeners\SlugModel',
         ],
+        'App\Events\SupplierDeleting' => [
+            'App\Listeners\DetachSupplierRole',
+        ],
     ];
 
     public function boot()

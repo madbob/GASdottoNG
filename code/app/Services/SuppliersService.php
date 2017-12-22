@@ -44,12 +44,15 @@ class SuppliersService extends BaseService
     {
         $supplier = DB::transaction(function () use ($id) {
             $supplier = $this->show($id);
-            $this->ensureAuth(['supplier.modify' => $supplier]);
 
-            if ($supplier->trashed())
+            if ($supplier->trashed()) {
+                $this->ensureAuth(['supplier.add' => 'gas']);
                 $supplier->forceDelete();
-            else
+            }
+            else {
+                $this->ensureAuth(['supplier.modify' => $supplier]);
                 $supplier->delete();
+            }
 
             return $supplier;
         });

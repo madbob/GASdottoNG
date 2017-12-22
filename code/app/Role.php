@@ -176,6 +176,14 @@ class Role extends Model
         }
     }
 
+    private function invalidateAppliesCache()
+    {
+        if (isset($this->applies_cache)) {
+            unset($this->applies_cache);
+            unset($this->applies_only_cache);
+        }
+    }
+
     private function testApplication($obj, $cache_type)
     {
         $this->appliesCache();
@@ -334,6 +342,8 @@ class Role extends Model
                 ->where('target_type', get_class($obj))
                 ->delete();
         }
+
+        $this->invalidateAppliesCache();
     }
 
     public function enabledAction($action)
