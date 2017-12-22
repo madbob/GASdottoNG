@@ -29,7 +29,7 @@ class VerifyCsrfToken extends BaseVerifier
                 'message' => 'Sessione scaduta',
             ];
 
-            return response()->toJson($ret, 401);
+            return response()->json($ret, 401);
         }
         else {
             return redirect('login');

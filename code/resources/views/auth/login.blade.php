@@ -22,6 +22,15 @@
         <br/>
     @endif
 
+    <?php $browser_name = strtolower((new Sinergi\BrowserDetector\Browser())->getName()) ?>
+    @if ($browser_name != 'firefox' && $browser_name != 'chrome')
+        <div class="alert alert-warning">
+            GASdotto è testato con Firefox e Chrome/Chromium, ti consigliamo di usare uno di questi!<br>
+            <a href="https://www.mozilla.org/it/firefox/new/">Clicca qui per scaricare ed installare Firefox.</a>
+        </div>
+        <br>
+    @endif
+
     <form class="form-horizontal" method="POST" action="{{ url('login') }}">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
 

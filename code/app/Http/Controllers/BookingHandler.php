@@ -182,7 +182,14 @@ class BookingHandler extends Controller
                         sopra), dopo modificare lo stato
                     */
                     $booking->transport = $booking->check_transport;
-                    $booking->status = $request->input('action');
+
+                    $new_status = $request->input('action');
+                    if ($new_status == 'saved' && $booking->payment != null) {
+                        $booking->payment->delete();
+                        $booking->payment_id = null;
+                    }
+                    $booking->status = $new_status;
+
                     $booking->save();
                 }
             }

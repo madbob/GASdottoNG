@@ -21,7 +21,7 @@
 
                                 <div class="col-md-12">
                                     @include('commons.textfield', ['obj' => $gas, 'name' => 'name', 'label' => 'Nome', 'mandatory' => true])
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'email', 'label' => 'E-Mail', 'mandatory' => true])
+                                    @include('commons.emailfield', ['obj' => $gas, 'name' => 'email', 'label' => 'E-Mail', 'mandatory' => true])
                                     @include('commons.imagefield', ['obj' => $gas, 'name' => 'logo', 'label' => 'Logo Homepage', 'valuefrom' => 'logo_url'])
                                     @include('commons.textarea', ['obj' => $gas, 'name' => 'message', 'label' => 'Messaggio Homepage'])
 
@@ -162,8 +162,41 @@
                                 <input type="hidden" name="group" value="banking">
 
                                 <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="year_closing" class="col-sm-{{ $labelsize }} control-label">Inizio Anno Sociale</label>
+                                        <div class="col-sm-{{ $fieldsize }}">
+                                            <div class="input-group">
+                                                <input type="text" class="date-to-month form-control" name="year_closing" value="{{ ucwords(strftime('%d %B', strtotime($currentgas->getConfig('year_closing')))) }}" required autocomplete="off">
+                                                <div class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="annual_fee_amount" class="col-sm-{{ $labelsize }} control-label">Quota Annuale</label>
+                                        <div class="col-sm-{{ $fieldsize }}">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control number" name="annual_fee_amount" value="{{ printablePrice($currentgas->getConfig('annual_fee_amount')) }}" autocomplete="off">
+                                                <div class="input-group-addon">€</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="deposit_amount" class="col-sm-{{ $labelsize }} control-label">Cauzione</label>
+                                        <div class="col-sm-{{ $fieldsize }}">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control number" name="deposit_amount" value="{{ printablePrice($currentgas->getConfig('deposit_amount')) }}" autocomplete="off">
+                                                <div class="input-group-addon">€</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
                                     <p>
-                                        Popolando questo campo verrà attivata l'esportazione dei files SEPA, con cui automatizzare le transazioni bancarie.<br>Per ogni utente dovrai specificare alcuni parametri.
+                                        Popolando questi campi verrà attivata l'esportazione dei files SEPA, con cui automatizzare le transazioni bancarie.<br>Per ogni utente dovrai specificare alcuni parametri.
                                     </p>
 
                                     @include('commons.textfield', ['obj' => $gas, 'name' => 'rid->iban', 'label' => 'IBAN'])

@@ -15,11 +15,19 @@
                 <th width="8%">Quantità Consegnata</th>
                 <th width="8%">Totale Consegnato</th>
                 <th width="7%">Note</th>
+            @elseif($order->status != 'archived')
+                <th width="25%">Prodotto</th>
+                <th width="15%">Unità di Misura</th>
+                <th width="15%">Quantità Ordinata</th>
+                <th width="15%">Totale Trasporto</th>
+                <th width="15%">Quantità Consegnata</th>
+                <th width="15%">Totale Consegnato</th>
             @else
                 <th width="25%">Prodotto</th>
-                <th width="25%">Unità di Misura</th>
-                <th width="25%">Quantità Consegnata</th>
-                <th width="25%">Totale Consegnato</th>
+                <th width="15%">Unità di Misura</th>
+                <th width="20%">Quantità Ordinata</th>
+                <th width="20%">Quantità Consegnata</th>
+                <th width="20%">Totale Consegnato</th>
             @endif
         </tr>
     </thead>
@@ -107,22 +115,24 @@
                     <label>{{ $product->printableMeasure(true) }}</label>
                 </td>
 
-                @if($order->isActive())
-                    <!-- Quantità Ordinata -->
-                    <td>
-                        <label>
-                            @if($product->portion_quantity != 0)
-                                {{ sprintf('%d', $summary->products[$product->id]['quantity_pieces']) }} Pezzi /
-                            @endif
-                            <span class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity'] }}</span> {{ $product->measure->name }}
-                        </label>
-                    </td>
+                <!-- Quantità Ordinata -->
+                <td>
+                    <label>
+                        @if($product->portion_quantity != 0)
+                            {{ sprintf('%d', $summary->products[$product->id]['quantity_pieces']) }} Pezzi /
+                        @endif
+                        <span class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity'] }}</span> {{ $product->measure->name }}
+                    </label>
+                </td>
 
+                @if($order->isActive())
                     <!-- Totale Prezzo -->
                     <td>
                         <label class="order-summary-product-price">{{ $summary->products[$product->id]['price'] }} €</label>
                     </td>
+                @endif
 
+                @if($order->status != 'archived')
                     <!-- Totale Trasporto -->
                     <td>
                         <label class="order-summary-product-transport">{{ $summary->products[$product->id]['transport'] }} €</label>
@@ -192,6 +202,12 @@
             @else
                 <th></th>
                 <th></th>
+                <th></th>
+
+                @if($order->status != 'archived')
+                    <th class="order-summary-order-transport">{{ printablePrice($summary->transport) }} €</th>
+                @endif
+
                 <th></th>
                 <th>
                     <span class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} €</span>

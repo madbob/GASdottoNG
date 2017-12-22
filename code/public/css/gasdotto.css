@@ -112,7 +112,7 @@ table label {
   z-index: 10;
   cursor: pointer; }
 
-.order-summary .form-group {
+table .form-group {
   margin-bottom: 0; }
 
 .table-striped > tbody > tr:nth-of-type(even) {

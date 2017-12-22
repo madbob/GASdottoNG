@@ -268,6 +268,12 @@ class MovementType extends Model
         }
     }
 
+    public function hasPayment($type)
+    {
+        $valid = MovementType::paymentsByType($this->id);
+        return array_key_exists($type, $valid);
+    }
+
     private function applyFunction($obj, $movement, $op)
     {
         /*

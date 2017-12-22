@@ -3,6 +3,7 @@
 */
 
 var locker = false;
+var absolute_url = $('meta[name=absolute_url]').attr('content');
 
 $.fn.tagName = function() {
     return this.prop("tagName").toLowerCase();
@@ -12,7 +13,7 @@ var userBlood = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     remote: {
-        url: '/users/search?term=%QUERY',
+        url: absolute_url + '/users/search?term=%QUERY',
         wildcard: '%QUERY'
     }
 });
@@ -123,10 +124,10 @@ function generalInit() {
                 var url = '';
 
                 if (while_shipping) {
-                    url = '/delivery/' + aggregate_id + '/user/' + result.id;
+                    url = absolute_url + '/delivery/' + aggregate_id + '/user/' + result.id;
                 }
                 else {
-                    url = '/booking/' + aggregate_id + '/user/' + result.id;
+                    url = absolute_url + '/booking/' + aggregate_id + '/user/' + result.id;
                 }
 
                 $.ajax({
@@ -238,7 +239,12 @@ function parseFullDate(string) {
 function parseFloatC(value) {
     if (typeof value === 'undefined')
         return 0;
-    return parseFloat(value.replace(/,/, '.'));
+
+    var ret = parseFloat(value.replace(/,/, '.'));
+    if (isNaN(ret))
+        ret = 0;
+
+    return ret;
 }
 
 function priceRound(price) {
@@ -250,7 +256,7 @@ function priceRound(price) {
     un attributo, questa funzione serve ad applicare l'escape necessario
 */
 function sanitizeId(identifier) {
-    return identifier.replace(/:/, '\\:');
+    return identifier.replace(/:/g, '\\:');
 }
 
 function voidForm(form) {
@@ -675,7 +681,7 @@ function updateOrderSummary(form) {
 
         $.ajax({
             method: 'POST',
-            url: '/orders/recalculate/' + order_id,
+            url: absolute_url + '/orders/recalculate/' + order_id,
             data: data,
             dataType: 'json',
 
@@ -850,7 +856,7 @@ function setupVariantsEditor() {
 
         $.ajax({
             method: 'DELETE',
-            url: '/variants/' + id,
+            url: absolute_url + '/variants/' + id,
             dataType: 'html',
 
             success: function(data) {
@@ -912,7 +918,7 @@ function setupVariantsEditor() {
 
         $.ajax({
             method: 'POST',
-            url: '/variants',
+            url: absolute_url + '/variants',
             data: data,
             dataType: 'html',
 
@@ -965,6 +971,25 @@ function sortShippingBookings(list) {
 function submitDeliveryForm(form) {
     var id = form.closest('.modal').attr('id');
     var mainform = $('form[data-reference-modal=' + id + ']');
+
+    /*
+        Questo è per condensare eventuali nuovi prodotti aggiunti ma già
+        presenti nella prenotazione.
+    */
+    mainform.find('.fit-add-product').not('.hidden').each(function() {
+        var i = $(this).find('.booking-product-quantity input:text.number');
+        if (i.length == 0)
+            return;
+
+        var product = sanitizeId(i.attr('name'));
+        var added_value = parseFloatC(i.val());
+        var existing = mainform.find('tr.booking-product').not('.fit-add-product').find('input:text.number[name=' + product + ']');
+        if (existing.length != 0) {
+            existing.val(parseFloatC(existing.val()) + added_value);
+            i.remove();
+        }
+    });
+
     mainform.submit();
 }
 
@@ -975,7 +1000,7 @@ function submitDeliveryForm(form) {
 function attachUserRole(role_id, user_id, target_id, target_class, callback) {
     $.ajax({
         method: 'POST',
-        url: '/roles/attach',
+        url: absolute_url + '/roles/attach',
         data: {
             role: role_id,
             user: user_id,
@@ -992,7 +1017,7 @@ function attachUserRole(role_id, user_id, target_id, target_class, callback) {
 function detachUserRole(role_id, user_id, target_id, target_class, callback) {
     $.ajax({
         method: 'POST',
-        url: '/roles/detach',
+        url: absolute_url + '/roles/detach',
         data: {
             role: role_id,
             user: user_id,
@@ -1032,7 +1057,7 @@ function setupPermissionsEditor() {
                 var label = result.label;
                 $.ajax({
                     method: 'POST',
-                    url: '/roles/attach',
+                    url: absolute_url + '/roles/attach',
                     dataType: 'HTML',
                     data: {
                         role: role_id,
@@ -1073,9 +1098,9 @@ function setupPermissionsEditor() {
 
         var url = '';
         if (check.is(':checked') == true)
-            url = '/roles/attach';
+            url = absolute_url + '/roles/attach';
         else
-            url = '/roles/detach';
+            url = absolute_url + '/roles/detach';
 
         var data = {};
         data.role = check.attr('data-role');
@@ -1105,7 +1130,7 @@ function setupPermissionsEditor() {
 
             $.ajax({
                 method: 'POST',
-                url: '/roles/detach',
+                url: absolute_url + '/roles/detach',
                 data: data,
                 success() {
                     button.closest('.loadable-contents').find('.role-users').find('[data-user=' + userid + ']').remove();
@@ -1149,7 +1174,7 @@ function displayRecalculatedBalances(form, data) {
 function refreshBalanceView() {
     $.ajax({
         method: 'GET',
-        url: '/movements/balance',
+        url: absolute_url + '/movements/balance',
         dataType: 'JSON',
         success: function(data) {
             $('.current-balance').each(function() {
@@ -1418,6 +1443,12 @@ $(document).ready(function() {
         var form = $(this).closest('form');
         var target = $(this).attr('data-target-class');
         form.find('.' + target).button('toggle');
+    })
+    .on('change', '.triggers-all-selects', function() {
+        var form = $(this).closest('form');
+        var target = $(this).attr('data-target-class');
+        var value = $(this).find('option:selected').val();
+        form.find('.' + target).find('option[value=' + value + ']').prop('selected', true);
     });
 
     $('body').on('click', '.decorated_radio label', function() {
@@ -1427,20 +1458,25 @@ $(document).ready(function() {
     $('body').on('click', '.reloader', function(event) {
         var listid = $(this).attr('data-reload-target');
 
-        /*
-            Nel caso in cui il tasto sia dentro ad un modale, qui ne forzo la
-            chiusura (che non e' implicita, se questo non viene fatto resta
-            l'overlay grigio in sovraimpressione)
-        */
-        var modal = $(this).closest('.modal').first();
-        if (modal != null) {
-            modal.on('hidden.bs.modal', function() {
-                reloadCurrentLoadable(listid);
-            });
-            modal.modal('hide');
+        if (listid == null) {
+            location.reload();
         }
         else {
-            reloadCurrentLoadable(listid);
+            /*
+                Nel caso in cui il tasto sia dentro ad un modale, qui ne forzo la
+                chiusura (che non e' implicita, se questo non viene fatto resta
+                l'overlay grigio in sovraimpressione)
+            */
+            var modal = $(this).closest('.modal').first();
+            if (modal != null) {
+                modal.on('hidden.bs.modal', function() {
+                    reloadCurrentLoadable(listid);
+                });
+                modal.modal('hide');
+            }
+            else {
+                reloadCurrentLoadable(listid);
+            }
         }
     });
 
@@ -1681,7 +1717,7 @@ $(document).ready(function() {
         }
 
         var save_button = form.find('.saving-button');
-        save_button.attr('disabled', 'disabled');
+        save_button.prop('disabled', true);
 
         $.ajax({
             method: method,
@@ -1702,6 +1738,9 @@ $(document).ready(function() {
         if (event.isDefaultPrevented())
             return;
 
+        var save_button = $(this).find('button[type=submit]');
+        save_button.prop('disabled', true);
+
         event.preventDefault();
         var form = $(this);
         var disabled = form.find(':disabled').removeAttr('disabled');
@@ -1715,6 +1754,7 @@ $(document).ready(function() {
             contentType: false,
             success: function(data) {
                 creatingFormCallback(form, data);
+                save_button.prop('disabled', false);
             }
         });
 
@@ -1921,7 +1961,7 @@ $(document).ready(function() {
 
         $.ajax({
             method: 'GET',
-            url: '/movements/create',
+            url: absolute_url + '/movements/create',
             dataType: 'html',
             data: {
                 type: type
@@ -1981,9 +2021,9 @@ $(document).ready(function() {
 
     $('body').on('click', '.form-filler button[type=submit]', function(event) {
         event.preventDefault();
-        form = $(this).closest('.form-filler');
-        var data = form.find('input, select').serialize();
+        var form = $(this).closest('.form-filler');
         var target = $(form.attr('data-fill-target'));
+        var data = form.find('input, select').serialize();
 
         $.ajax({
             method: 'GET',
@@ -1995,6 +2035,12 @@ $(document).ready(function() {
                 target.empty().append(data);
             }
         });
+    })
+    .on('click', '.form-filler a.form-filler-download', function(event) {
+        event.preventDefault();
+        var data = $(this).closest('.form-filler').find('input, select').serializeArray();
+        var url = $(this).attr('href') + '&' + $.param(data);
+        window.open(url, '_blank');
     });
 
     $('body').on('submit', '.password-protected', function(event) {
@@ -2060,7 +2106,7 @@ $(document).ready(function() {
         var list = $(this).closest('.loadablelist');
         var original = currentLoadableTrigger(this);
         $.ajax({
-            url: '/products',
+            url: absolute_url + '/products',
             method: 'POST',
             dataType: 'JSON',
             data: {
@@ -2144,7 +2190,7 @@ $(document).ready(function() {
         var date = button.closest('form').find('.last-date');
 
         $.ajax({
-            url: '/aggregates/notify/' + id,
+            url: absolute_url + '/aggregates/notify/' + id,
             method: 'POST',
             success: function(data) {
                 date.text(data);
@@ -2285,7 +2331,7 @@ $(document).ready(function() {
         } else {
             $.ajax({
                 method: 'GET',
-                url: '/products/' + id,
+                url: absolute_url + '/products/' + id,
                 data: {
                     format: 'bookable',
                     order_id: editor.attr('data-order-id')
@@ -2413,7 +2459,7 @@ $(document).ready(function() {
 
         $.ajax({
             method: 'GET',
-            url: '/gas/configmail',
+            url: absolute_url + '/gas/configmail',
             data: {
                 email: email
             },

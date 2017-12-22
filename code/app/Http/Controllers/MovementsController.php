@@ -9,6 +9,7 @@ use Auth;
 use DB;
 use Theme;
 use Log;
+use PDF;
 use Session;
 
 use App\Movement;
@@ -63,7 +64,11 @@ class MovementsController extends Controller
 
     public function index(Request $request)
     {
-        $query = Movement::with('sender')->with('target')->orderBy('registration_date', 'desc');
+        /*
+            TODO: controllare permessi
+        */
+
+        $query = Movement::with('sender')->with('target')->orderBy('date', 'desc');
 
         if ($request->has('startdate')) {
             $start = decodeDate($request->input('startdate'));
@@ -74,7 +79,7 @@ class MovementsController extends Controller
             $filtered = false;
         }
 
-        $query->where('registration_date', '>=', $start);
+        $query->where('date', '>=', $start);
 
         if ($request->has('enddate')) {
             $end = decodeDate($request->input('enddate'));
@@ -83,7 +88,7 @@ class MovementsController extends Controller
             $end = date('Y-m-d');
         }
 
-        $query->where('registration_date', '<=', $end);
+        $query->where('date', '<=', $end);
 
         if ($request->input('type', 'none') != 'none') {
             $query->where('type', $request->input('type'));
@@ -140,19 +145,47 @@ class MovementsController extends Controller
             return Theme::view('pages.movements', $data);
         }
         else {
-            if ($bilist) {
-                /*
-                    Qui si finisce quando si aggiorna l'elenco di movimenti
-                    facenti riferimento ad un soggetto specifico
-                */
-                return Theme::view('movement.bilist', $data);
+            $format = $request->input('format', 'none');
+
+            if ($format == 'none') {
+                if ($bilist) {
+                    /*
+                        Qui si finisce quando si aggiorna l'elenco di movimenti
+                        facenti riferimento ad un soggetto specifico
+                    */
+                    return Theme::view('movement.bilist', $data);
+                }
+                else {
+                    /*
+                        Qui si finisce quando si aggiorna l'elenco di movimenti
+                        nella pagina principale della contabilità
+                    */
+                    return Theme::view('movement.list', $data);
+                }
             }
-            else {
-                /*
-                    Qui si finisce quando si aggiorna l'elenco di movimenti
-                    nella pagina principale della contabilità
-                */
-                return Theme::view('movement.list', $data);
+            else if ($format == 'csv') {
+                $filename = sprintf('Esportazione movimenti GAS %s.csv', date('d/m/Y'));
+                $headers = ['Data Registrazione', 'Data Movimento', 'Tipo', 'Pagamento', 'Pagante', 'Pagato', 'Valore', 'Note'];
+                return output_csv($filename, $headers, $data['movements'], function($mov) {
+                    $row = [];
+                    $row[] = $mov->registration_date;
+                    $row[] = $mov->date;
+                    $row[] = $mov->printableType();
+                    $row[] = $mov->printablePayment();
+                    $row[] = $mov->sender ? $mov->sender->printableName() : '';
+                    $row[] = $mov->target ? $mov->target->printableName() : '';
+                    $row[] = printablePrice($mov->amount);
+                    $row[] = $mov->notes;
+                    return $row;
+                });
+            }
+            else if ($format == 'pdf') {
+                $html = Theme::view('documents.movements_pdf', ['movements' => $data['movements']])->render();
+                $filename = sprintf('Esportazione movimenti GAS %s.pdf', date('d/m/Y'));
+                PDF::SetTitle(sprintf('Esportazione movimenti GAS %s', date('d/m/Y')));
+                PDF::AddPage('L');
+                PDF::writeHTML($html, true, false, true, false, '');
+                PDF::Output($filename, 'D');
             }
         }
     }
@@ -285,8 +318,13 @@ class MovementsController extends Controller
 
                 if ($subtype == 'csv') {
                     $filename = sprintf('Crediti al %s.csv', date('d/m/Y'));
-                    http_csv_headers($filename);
-                    return Theme::view('documents.credits_table_csv', ['users' => $users]);
+                    $headers = ['Nome', 'Credito Residuo'];
+                    return output_csv($filename, $headers, $users, function($user) {
+                        $row = [];
+                        $row[] = $user->printableName();
+                        $row[] = printablePrice($user->current_balance_amount, ',');
+                        return $row;
+                    });
                 }
                 else if ($subtype == 'rid') {
                     $filename = sprintf('SEPA del %s.xml', date('d/m/Y'));

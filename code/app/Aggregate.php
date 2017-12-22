@@ -51,9 +51,41 @@ class Aggregate extends Model
         $names = [];
         $dates = [];
 
-        foreach ($this->orders as $order) {
-            $names[] = $order->printableName();
-            $dates[] = $order->printableDates();
+        $orders = $this->orders;
+
+        if ($orders->count() > 3) {
+            $start_date = PHP_INT_MAX;
+            $end_date = 0;
+            $shipping_date = 0;
+
+            foreach ($orders as $order) {
+                $names[] = $order->printableName();
+
+                $this_start = strtotime($order->start);
+                if ($this_start < $start_date)
+                    $start_date = $this_start;
+
+                $this_end = strtotime($order->end);
+                if ($this_end > $end_date)
+                    $end_date = $this_end;
+
+                if ($this->shipping != null && $this->shipping != '0000-00-00') {
+                    $this_shipping = strtotime($order->shipping);
+                    if ($this_shipping > $shipping_date)
+                        $shipping_date = $this_shipping;
+                }
+            }
+
+            $date_string = sprintf('da %s a %s', strftime('%A %d %B %G', $start_date), strftime('%A %d %B %G', $end_date));
+            if ($shipping_date != 0)
+                $date_string .= sprintf(', in consegna %s', strftime('%A %d %B %G', $shipping_date));
+            $dates[] = $date_string;
+        }
+        else {
+            foreach ($orders as $order) {
+                $names[] = $order->printableName();
+                $dates[] = $order->printableDates();
+            }
         }
 
         return [implode(' / ', $names), implode(' / ', $dates)];
@@ -150,6 +182,7 @@ class Aggregate extends Model
 
         foreach ($this->orders as $order) {
             foreach ($order->bookings as $booking) {
+                $booking->setRelation('order', $order);
                 $user_id = $booking->user->id;
 
                 if (!isset($ret[$user_id])) {

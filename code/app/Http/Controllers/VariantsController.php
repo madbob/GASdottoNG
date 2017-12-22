@@ -99,7 +99,7 @@ class VariantsController extends Controller
                     if ($v->has_offset) {
                         $v->has_offset = false;
                         $v->save();
-                        $v->values()->update('price_offset', 0);
+                        $v->values()->update(['price_offset' => 0]);
                         break;
                     }
                 }
