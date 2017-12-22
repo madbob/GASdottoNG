@@ -34,7 +34,7 @@ class Supplier extends Model
 
     public static function commonClassName()
     {
-        return 'Fornitore';
+        return _i('Fornitore');
     }
 
     public function products()
@@ -103,12 +103,12 @@ class Supplier extends Model
     protected function defaultAttachments()
     {
         $cataloguepdf = new Attachment();
-        $cataloguepdf->name = 'Listino PDF (autogenerato)';
+        $cataloguepdf->name = _i('Listino PDF (autogenerato)');
         $cataloguepdf->url = url('suppliers/catalogue/'.$this->id.'/pdf');
         $cataloguepdf->internal = true;
 
         $cataloguecsv = new Attachment();
-        $cataloguecsv->name = 'Listino CSV (autogenerato)';
+        $cataloguecsv->name = _i('Listino CSV (autogenerato)');
         $cataloguecsv->url = url('suppliers/catalogue/'.$this->id.'/csv');
         $cataloguecsv->internal = true;
 
@@ -182,7 +182,7 @@ class Supplier extends Model
     public static function balanceFields()
     {
         return [
-            'bank' => 'Ordini',
+            'bank' => _i('Ordini'),
         ];
     }
 

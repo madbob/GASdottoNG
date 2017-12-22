@@ -37,7 +37,7 @@ class User extends Authenticatable
 
     public static function commonClassName()
     {
-        return 'Utente';
+        return _i('Utente');
     }
 
     public function gas()
@@ -167,7 +167,7 @@ class User extends Authenticatable
     public static function balanceFields()
     {
         return [
-            'bank' => 'Credito',
+            'bank' => _i('Credito'),
         ];
     }
 }

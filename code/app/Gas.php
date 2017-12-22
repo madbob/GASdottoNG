@@ -97,7 +97,7 @@ class Gas extends Model
 
         $defined = self::handlingConfigs();
         if (!isset($defined[$name])) {
-            Log::error('Configurazione GAS non prevista');
+            Log::error(_i('Configurazione GAS non prevista'));
             return '';
         }
         else {
@@ -213,11 +213,11 @@ class Gas extends Model
     public static function balanceFields()
     {
         return [
-            'bank' => 'Conto Corrente',
-            'cash' => 'Cassa Contanti',
-            'gas' => 'GAS',
-            'suppliers' => 'Fornitori',
-            'deposits' => 'Cauzioni',
+            'bank' => _i('Conto Corrente'),
+            'cash' => _i('Cassa Contanti'),
+            'gas' => _i('GAS'),
+            'suppliers' => _i('Fornitori'),
+            'deposits' => _i('Cauzioni'),
         ];
     }
 }

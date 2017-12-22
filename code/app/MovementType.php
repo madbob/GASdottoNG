@@ -28,19 +28,19 @@ class MovementType extends Model
     {
         $ret = [
             'cash' => (object) [
-                'name' => 'Contanti',
+                'name' => _i('Contanti'),
                 'identifier' => false,
                 'icon' => 'glyphicon-euro',
                 'active_for' => null
             ],
             'bank' => (object) [
-                'name' => 'Bonifico',
+                'name' => _i('Bonifico'),
                 'identifier' => true,
                 'icon' => 'glyphicon-link',
                 'active_for' => null
             ],
             'credit' => (object) [
-                'name' => 'Credito Utente',
+                'name' => _i('Credito Utente'),
                 'identifier' => false,
                 'icon' => 'glyphicon-ok',
                 'active_for' => 'App\User'
@@ -284,7 +284,7 @@ class MovementType extends Model
         }
 
         if ($obj == null) {
-            Log::error('Applicazione movimento su oggetto nullo: ' . $movement->id);
+            Log::error(_i('Applicazione movimento su oggetto nullo: %s', $movement->id));
             return;
         }
 

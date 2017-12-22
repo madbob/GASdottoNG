@@ -87,9 +87,8 @@ return [
      * Remember to call artisan gettext:update after change this.
      */
     'source-paths' => [
-        'Http',
+        '.',
         '../resources/views',
-        'Console',
     ],
 
     /**

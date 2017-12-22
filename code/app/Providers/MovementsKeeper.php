@@ -17,7 +17,7 @@ class MovementsKeeper extends ServiceProvider
         $metadata = $movement->type_metadata;
 
         if ($movement->archived == true) {
-            Log::error('Movimento: tentata modifica di movimento già storicizzato in bilancio passato');
+            Log::error(_i('Movimento: tentata modifica di movimento già storicizzato in bilancio passato'));
             return false;
         }
 
@@ -27,7 +27,7 @@ class MovementsKeeper extends ServiceProvider
         }
         else {
             if ($metadata->sender_type != $movement->sender_type) {
-                Log::error('Movimento: sender_type non coerente ('.$metadata->sender_type.' != '.$movement->sender_type.')');
+                Log::error(_i('Movimento: sender_type non coerente (%s != %s)', $metadata->sender_type, $movement->sender_type));
                 return false;
             }
         }
@@ -38,7 +38,7 @@ class MovementsKeeper extends ServiceProvider
         }
         else {
             if ($metadata->target_type != $movement->target_type) {
-                Log::error('Movimento: target_type non coerente ('.$metadata->target_type.' != '.$movement->target_type.')');
+                Log::error(_i('Movimento: target_type non coerente (%s != %s)', $metadata->target_type, $movement->target_type));
                 return false;
             }
         }
@@ -52,12 +52,12 @@ class MovementsKeeper extends ServiceProvider
             }
         }
         if ($found == false) {
-            Log::error('Movimento: metodo non permesso');
+            Log::error(_i('Movimento: metodo non permesso'));
             return false;
         }
 
         if ($metadata->allow_negative == false && $movement->amount < 0) {
-            Log::error('Movimento: ammontare negativo non permesso');
+            Log::error(_i('Movimento: ammontare negativo non permesso'));
             return false;
         }
 
@@ -96,7 +96,7 @@ class MovementsKeeper extends ServiceProvider
             if (isset($metadata->callbacks['pre'])) {
                 $pre = $metadata->callbacks['pre']($movement);
                 if ($pre == 0) {
-                    Log::error('Movimento: salvataggio negato da pre-callback');
+                    Log::error(_i('Movimento: salvataggio negato da pre-callback'));
                     return false;
                 }
                 else if ($pre == 2) {
@@ -128,8 +128,6 @@ class MovementsKeeper extends ServiceProvider
             valori
         */
         Movement::updating(function ($movement) {
-            Log::debug('Aggiorno movimento contabile ' . $movement->id);
-
             /*
                 Reminder: per invalidare il movimento devo sottoporre un
                 ammontare negativo (pari al negativo dell'ammontare
@@ -156,7 +154,6 @@ class MovementsKeeper extends ServiceProvider
             $original->amount = $original->amount * -1;
             $original->apply();
 
-            Log::debug('Invalidata precedente versione del movimento ' . $movement->id);
             return true;
         });
 

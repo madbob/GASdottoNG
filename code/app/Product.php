@@ -106,7 +106,7 @@ class Product extends Model
         }
 
         if ($this->variable) {
-            $str .= '<small> <span class="visible-sm">(prodotto a prezzo variabile)</span><span class="visible-xs">(variabile)</span></small>';
+            $str .= '<small> <span class="visible-sm">' . _i('(prodotto a prezzo variabile)') . '</span><span class="visible-xs">' . _i('(variabile)') . '</span></small>';
         }
 
         return $str;
@@ -183,16 +183,16 @@ class Product extends Model
         $details = [];
 
         if ($this->min_quantity != 0) {
-            $details[] = sprintf('Minimo: %.02f', $this->min_quantity);
+            $details[] = _i('Minimo: %.02f', $this->min_quantity);
         }
         if ($this->max_quantity != 0) {
-            $details[] = sprintf('Massimo Consigliato: %.02f', $this->max_quantity);
+            $details[] = _i('Massimo Consigliato: %.02f', $this->max_quantity);
         }
         if ($this->max_available != 0) {
-            $details[] = sprintf('Disponibile: %.02f (%.02f totale)', $this->stillAvailable($order), $this->max_available);
+            $details[] = _i('Disponibile: %.02f (%.02f totale)', $this->stillAvailable($order), $this->max_available);
         }
         if ($this->multiple != 0) {
-            $details[] = sprintf('Multiplo: %.02f', $this->multiple);
+            $details[] = _i('Multiplo: %.02f', $this->multiple);
         }
 
         return implode(', ', $details);

@@ -28,7 +28,7 @@ class Order extends Model
 
     public static function commonClassName()
     {
-        return 'Ordine';
+        return _i('Ordine');
     }
 
     public function supplier()
@@ -97,10 +97,10 @@ class Order extends Model
     {
         $start = strtotime($this->start);
         $end = strtotime($this->end);
-        $string = sprintf('da %s a %s', strftime('%A %d %B %G', $start), strftime('%A %d %B %G', $end));
+        $string = _i('da %s a %s', strftime('%A %d %B %G', $start), strftime('%A %d %B %G', $end));
         if ($this->shipping != null && $this->shipping != '0000-00-00') {
             $shipping = strtotime($this->shipping);
-            $string .= sprintf(', in consegna %s', strftime('%A %d %B %G', $shipping));
+            $string .= _i(', in consegna %s', strftime('%A %d %B %G', $shipping));
         }
 
         return $string;
@@ -388,7 +388,7 @@ class Order extends Model
         if ($type == 'summary') {
             return [
                 'name' => (object) [
-                    'name' => 'Nome Prodotto',
+                    'name' => _i('Nome Prodotto'),
                     'checked' => true,
                     'format_product' => function($product, $summary) {
                         return $product->printableName();
@@ -398,7 +398,7 @@ class Order extends Model
                     }
                 ],
                 'code' => (object) [
-                    'name' => 'Codice Fornitore',
+                    'name' => _i('Codice Fornitore'),
                     'format_product' => function($product, $summary) {
                         return $product->supplier_code;
                     },
@@ -410,7 +410,7 @@ class Order extends Model
                     }
                 ],
                 'quantity' => (object) [
-                    'name' => 'Quantità Totale',
+                    'name' => _i('Quantità Totale'),
                     'checked' => true,
                     'format_product' => function($product, $summary) {
                         return printableQuantity($summary->products[$product->id]['quantity_pieces'], $product->measure->discrete, 2, ',');
@@ -420,7 +420,7 @@ class Order extends Model
                     }
                 ],
                 'boxes' => (object) [
-                    'name' => 'Numero Confezioni',
+                    'name' => _i('Numero Confezioni'),
                     'format_product' => function($product, $summary) {
                         if ($product->package_size != 0)
                             return $summary->products[$product->id]['quantity_pieces'] / $product->package_size;
@@ -435,7 +435,7 @@ class Order extends Model
                     }
                 ],
                 'measure' => (object) [
-                    'name' => 'Unità di Misura',
+                    'name' => _i('Unità di Misura'),
                     'checked' => true,
                     'format_product' => function($product, $summary) {
                         return $product->printableMeasure(true);
@@ -445,7 +445,7 @@ class Order extends Model
                     }
                 ],
                 'price' => (object) [
-                    'name' => 'Prezzo Totale',
+                    'name' => _i('Prezzo Totale'),
                     'checked' => true,
                     'format_product' => function($product, $summary) {
                         return printablePrice($summary->products[$product->id]['price'], ',');
@@ -455,7 +455,7 @@ class Order extends Model
                     }
                 ],
                 'transport' => (object) [
-                    'name' => 'Prezzo Trasporto',
+                    'name' => _i('Prezzo Trasporto'),
                     'format_product' => function($product, $summary) {
                         return printablePrice($summary->products[$product->id]['transport'], ',');
                     },
@@ -482,7 +482,7 @@ class Order extends Model
     public static function balanceFields()
     {
         return [
-            'bank' => 'Saldo',
+            'bank' => _i('Saldo'),
         ];
     }
 
