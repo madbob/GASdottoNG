@@ -1442,6 +1442,12 @@ $(document).ready(function() {
         var form = $(this).closest('form');
         var target = $(this).attr('data-target-class');
         form.find('.' + target).button('toggle');
+    })
+    .on('change', '.triggers-all-selects', function() {
+        var form = $(this).closest('form');
+        var target = $(this).attr('data-target-class');
+        var value = $(this).find('option:selected').val();
+        form.find('.' + target).find('option[value=' + value + ']').prop('selected', true);
     });
 
     $('body').on('click', '.decorated_radio label', function() {
@@ -1451,20 +1457,25 @@ $(document).ready(function() {
     $('body').on('click', '.reloader', function(event) {
         var listid = $(this).attr('data-reload-target');
 
-        /*
-            Nel caso in cui il tasto sia dentro ad un modale, qui ne forzo la
-            chiusura (che non e' implicita, se questo non viene fatto resta
-            l'overlay grigio in sovraimpressione)
-        */
-        var modal = $(this).closest('.modal').first();
-        if (modal != null) {
-            modal.on('hidden.bs.modal', function() {
-                reloadCurrentLoadable(listid);
-            });
-            modal.modal('hide');
+        if (listid == null) {
+            location.reload();
         }
         else {
-            reloadCurrentLoadable(listid);
+            /*
+                Nel caso in cui il tasto sia dentro ad un modale, qui ne forzo la
+                chiusura (che non e' implicita, se questo non viene fatto resta
+                l'overlay grigio in sovraimpressione)
+            */
+            var modal = $(this).closest('.modal').first();
+            if (modal != null) {
+                modal.on('hidden.bs.modal', function() {
+                    reloadCurrentLoadable(listid);
+                });
+                modal.modal('hide');
+            }
+            else {
+                reloadCurrentLoadable(listid);
+            }
         }
     });
 

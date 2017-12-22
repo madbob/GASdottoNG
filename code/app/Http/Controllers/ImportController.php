@@ -21,6 +21,8 @@ use App\Supplier;
 use App\Product;
 use App\Category;
 use App\Measure;
+use App\Movement;
+use App\MovementType;
 
 class ImportController extends Controller
 {
@@ -336,8 +338,137 @@ class ImportController extends Controller
                     break;
             }
         }
+        else if ($type == 'movements') {
+            $user = $request->user();
+            if ($user->can('movements.admin', $user->gas) == false) {
+                return $this->errorResponse('Non autorizzato');
+            }
 
-        return $this->errorResponse('Comando non valido');
+            switch ($step) {
+                case 'guess':
+                    return $this->storeUploadedFile($request, 'import.csvmovementssortcolumns', []);
+                    break;
+
+                case 'select':
+                    $path = $request->input('path');
+                    $columns = $request->input('column');
+
+                    $target_separator = $this->guessCsvFileSeparator($path);
+                    if ($target_separator == null) {
+                        return $this->errorResponse('Impossibile interpretare il file');
+                    }
+
+                    $movements = [];
+
+                    $reader = CsvReader::open($path, $target_separator);
+                    while (($line = $reader->readLine()) !== false) {
+                        try {
+                            /*
+                                In questa fase, genero dei Movement
+                                temporanei al solo scopo di popolare la
+                                vista di selezione.
+                                Non salvare gli oggetti qui creati!!!
+                            */
+                            $m = new Movement();
+                            $m->method = 'bank';
+
+                            foreach ($columns as $index => $field) {
+                                if ($field == 'none') {
+                                    continue;
+                                }
+                                elseif ($field == 'date') {
+                                    $value = date('Y-m-d', strtotime($line[$index]));
+                                }
+                                elseif ($field == 'user') {
+                                    $field = 'sender_id';
+
+                                    $name = $line[$index];
+                                    $user = User::where('username', $name)->first();
+                                    if ($user == null) {
+                                        $user = User::whereHas('contacts', function($query) use ($name) {
+                                            $query->where('value', $name);
+                                        })->first();
+                                    }
+
+                                    $value = $user->id;
+                                }
+                                else {
+                                    $value = $line[$index];
+                                }
+
+                                $m->$field = $value;
+                            }
+
+                            $movements[] = $m;
+                        }
+                        catch (\Exception $e) {
+                            $errors[] = implode($target_separator, $line) . '<br/>' . $e->getMessage();
+                        }
+                    }
+
+                    return Theme::view('import.csvmovementsselect', ['movements' => $movements, 'errors' => $errors]);
+                    break;
+
+                case 'run':
+                    $imports = $request->input('import', []);
+                    $dates = $request->input('date', []);
+                    $senders = $request->input('sender_id', []);
+                    $types = $request->input('mtype', []);
+                    $methods = $request->input('method', []);
+                    $amounts = $request->input('amount', []);
+
+                    $errors = [];
+                    $movements = [];
+                    $current_gas = $request->user()->gas;
+
+                    DB::beginTransaction();
+
+                    foreach($imports as $index) {
+                        try {
+                            $m = new Movement();
+                            $m->date = $dates[$index];
+                            $m->type = $types[$index];
+                            $m->amount = $amounts[$index];
+                            $m->method = $methods[$index];
+
+                            $t = MovementType::find($m->type);
+
+                            if ($senders[$index] !== '0') {
+                                if ($t->sender_type == 'App\User') {
+                                    $m->sender_id = $senders[$index];
+                                    $m->sender_type = 'App\User';
+                                }
+                                if ($t->target_type == 'App\User') {
+                                    $m->target_id = $senders[$index];
+                                    $m->target_type = 'App\User';
+                                }
+                            }
+
+                            if ($t->sender_type == 'App\Gas') {
+                                $m->sender_id = $current_gas->id;
+                                $m->sender_type = 'App\Gas';
+                            }
+                            if ($t->target_type == 'App\Gas') {
+                                $m->target_id = $current_gas->id;
+                                $m->target_type = 'App\Gas';
+                            }
+
+                            $m->save();
+                            $movements[] = $m;
+                        }
+                        catch (\Exception $e) {
+                            $errors[] = $index . '<br/>' . $e->getMessage();
+                        }
+                    }
+
+                    DB::commit();
+
+                    return Theme::view('import.csvmovementsfinal', ['movements' => $movements, 'errors' => $errors]);
+                    break;
+            }
+        }
+
+        return $this->errorResponse("Comando $type/$step non valido");
     }
 
     public function getGdxp(Request $request)

@@ -68,7 +68,7 @@ class MovementsController extends Controller
             TODO: controllare permessi
         */
 
-        $query = Movement::with('sender')->with('target')->orderBy('registration_date', 'desc');
+        $query = Movement::with('sender')->with('target')->orderBy('date', 'desc');
 
         if ($request->has('startdate')) {
             $start = decodeDate($request->input('startdate'));
@@ -79,7 +79,7 @@ class MovementsController extends Controller
             $filtered = false;
         }
 
-        $query->where('registration_date', '>=', $start);
+        $query->where('date', '>=', $start);
 
         if ($request->has('enddate')) {
             $end = decodeDate($request->input('enddate'));
@@ -88,7 +88,7 @@ class MovementsController extends Controller
             $end = date('Y-m-d');
         }
 
-        $query->where('registration_date', '<=', $end);
+        $query->where('date', '<=', $end);
 
         if ($request->input('type', 'none') != 'none') {
             $query->where('type', $request->input('type'));

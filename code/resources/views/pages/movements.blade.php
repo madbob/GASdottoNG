@@ -11,6 +11,11 @@
                 'dynamic_url' => url('movements/create')
             ])
 
+            @include('commons.importcsv', [
+                'modal_id' => 'importCSVmovements',
+                'import_target' => 'movements'
+            ])
+
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#creditsStatus">Stato Crediti</button>
             <div class="modal fade dynamic-contents" id="creditsStatus" tabindex="-1" data-contents-url="{{ url('movements/showcredits') }}">
                 <div class="modal-dialog" role="document">
