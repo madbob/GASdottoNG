@@ -69,7 +69,7 @@ class GasController extends Controller
         switch($group) {
             case 'general':
                 if ($user->can('gas.config', $gas) == false) {
-                    return $this->errorResponse('Non autorizzato');
+                    return $this->errorResponse(_i('Non autorizzato'));
                 }
 
                 $gas->name = $request->input('name');
@@ -81,7 +81,7 @@ class GasController extends Controller
 
             case 'email':
                 if ($user->can('gas.config', $gas) == false) {
-                    return $this->errorResponse('Non autorizzato');
+                    return $this->errorResponse(_i('Non autorizzato'));
                 }
 
                 $mailconf = $gas->getConfig('mail_conf');
@@ -108,7 +108,7 @@ class GasController extends Controller
 
             case 'banking':
                 if ($user->can('gas.config', $gas) == false) {
-                    return $this->errorResponse('Non autorizzato');
+                    return $this->errorResponse(_i('Non autorizzato'));
                 }
 
                 $gas->setConfig('year_closing', decodeDateMonth($request->input('year_closing')));

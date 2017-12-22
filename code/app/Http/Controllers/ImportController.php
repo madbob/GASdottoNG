@@ -56,7 +56,7 @@ class ImportController extends Controller
         try {
             $f = $request->file('file', null);
             if ($f == null || $f->isValid() == false) {
-                return $this->errorResponse('File non caricato correttamente, possibili problemi con la dimensione');
+                return $this->errorResponse(_i('File non caricato correttamente, possibili problemi con la dimensione'));
             }
 
             $filepath = sys_get_temp_dir();
@@ -66,7 +66,7 @@ class ImportController extends Controller
 
             $target_separator = $this->guessCsvFileSeparator($path);
             if ($target_separator == null) {
-                return $this->errorResponse('Impossibile interpretare il file');
+                return $this->errorResponse(_i('Impossibile interpretare il file'));
             }
 
             $reader = CsvReader::open($path, $target_separator);
@@ -78,7 +78,7 @@ class ImportController extends Controller
             return Theme::view($response, $parameters);
 
         } catch (\Exception $e) {
-            return $this->errorResponse('Errore nel salvataggio del file');
+            return $this->errorResponse(_i('Errore nel salvataggio del file'));
         }
     }
 
@@ -93,7 +93,7 @@ class ImportController extends Controller
         $config = sprintf('%s/server/config.php', $old_path);
 
         if (file_exists($config) == false) {
-            return Theme::view('import.legacy-pre', ['error' => 'Il file di configurazione non è stato trovato in ' . $config]);
+            return Theme::view('import.legacy-pre', ['error' => _i('Il file di configurazione non è stato trovato in %s', $config)]);
         }
         else {
             require_once($config);
@@ -122,7 +122,7 @@ class ImportController extends Controller
             $supplier_id = $request->input('supplier_id');
             $s = Supplier::findOrFail($supplier_id);
             if ($request->user()->can('supplier.modify', $s) == false) {
-                return $this->errorResponse('Non autorizzato');
+                return $this->errorResponse(_i('Non autorizzato'));
             }
 
             /*
@@ -155,13 +155,13 @@ class ImportController extends Controller
                     }
 
                     if ($name_index == -1) {
-                        $errors[] = 'Colonna obbligatoria non specificata: nome del prodotto';
+                        $errors[] = _i('Colonna obbligatoria non specificata: nome del prodotto');
                     }
                     if ($category_index == -1) {
-                        $errors[] = 'Colonna obbligatoria non specificata: categoria';
+                        $errors[] = _i('Colonna obbligatoria non specificata: categoria');
                     }
                     if ($measure_index == -1) {
-                        $errors[] = 'Colonna obbligatoria non specificata: unità di misura';
+                        $errors[] = _i('Colonna obbligatoria non specificata: unità di misura');
                     }
 
                     if (!empty($errors))
@@ -169,7 +169,7 @@ class ImportController extends Controller
 
                     $target_separator = $this->guessCsvFileSeparator($path);
                     if ($target_separator == null) {
-                        return $this->errorResponse('Impossibile interpretare il file');
+                        return $this->errorResponse(_i('Impossibile interpretare il file'));
                     }
 
                     $products = [];
@@ -256,12 +256,12 @@ class ImportController extends Controller
                     }
 
                     if ($login_index == -1) {
-                        return $this->errorResponse('Colonna obbligatoria non specificata');
+                        return $this->errorResponse(_i('Colonna obbligatoria non specificata'));
                     }
 
                     $target_separator = $this->guessCsvFileSeparator($path);
                     if ($target_separator == null) {
-                        return $this->errorResponse('Impossibile interpretare il file');
+                        return $this->errorResponse(_i('Impossibile interpretare il file'));
                     }
 
                     $creator = Auth::user();
@@ -341,7 +341,7 @@ class ImportController extends Controller
         else if ($type == 'movements') {
             $user = $request->user();
             if ($user->can('movements.admin', $user->gas) == false) {
-                return $this->errorResponse('Non autorizzato');
+                return $this->errorResponse(_i('Non autorizzato'));
             }
 
             switch ($step) {
@@ -355,7 +355,7 @@ class ImportController extends Controller
 
                     $target_separator = $this->guessCsvFileSeparator($path);
                     if ($target_separator == null) {
-                        return $this->errorResponse('Impossibile interpretare il file');
+                        return $this->errorResponse(_i('Impossibile interpretare il file'));
                     }
 
                     $movements = [];
@@ -468,7 +468,7 @@ class ImportController extends Controller
             }
         }
 
-        return $this->errorResponse("Comando $type/$step non valido");
+        return $this->errorResponse(_i('Comando %s/%s non valido', $type, $step));
     }
 
     public function getGdxp(Request $request)
@@ -550,7 +550,7 @@ class ImportController extends Controller
             }
         }
         catch(\Exception $e) {
-            Log::error('Errore importando file GDXP');
+            Log::error(_i('Errore importando file GDXP'));
             return Theme::view('import.gdxperror');
         }
     }

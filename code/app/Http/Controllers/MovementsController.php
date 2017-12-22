@@ -164,8 +164,8 @@ class MovementsController extends Controller
                 }
             }
             else if ($format == 'csv') {
-                $filename = sprintf('Esportazione movimenti GAS %s.csv', date('d/m/Y'));
-                $headers = ['Data Registrazione', 'Data Movimento', 'Tipo', 'Pagamento', 'Pagante', 'Pagato', 'Valore', 'Note'];
+                $filename = _i('Esportazione movimenti GAS %s.csv', date('d/m/Y'));
+                $headers = [_i('Data Registrazione'), _i('Data Movimento'), _i('Tipo'), _i('Pagamento'), _i('Pagante'), _i('Pagato'), _i('Valore'), _i('Note')];
                 return output_csv($filename, $headers, $data['movements'], function($mov) {
                     $row = [];
                     $row[] = $mov->registration_date;
@@ -181,8 +181,9 @@ class MovementsController extends Controller
             }
             else if ($format == 'pdf') {
                 $html = Theme::view('documents.movements_pdf', ['movements' => $data['movements']])->render();
-                $filename = sprintf('Esportazione movimenti GAS %s.pdf', date('d/m/Y'));
-                PDF::SetTitle(sprintf('Esportazione movimenti GAS %s', date('d/m/Y')));
+                $title = _i('Esportazione movimenti GAS %s', date('d/m/Y'));
+                $filename = $title . '.pdf';
+                PDF::SetTitle($title);
                 PDF::AddPage('L');
                 PDF::writeHTML($html, true, false, true, false, '');
                 PDF::Output($filename, 'D');
@@ -247,7 +248,7 @@ class MovementsController extends Controller
         $m->save();
 
         if ($m->saved == false) {
-            return $this->errorResponse('Salvataggio fallito');
+            return $this->errorResponse(_i('Salvataggio fallito'));
         } else {
             $printable_date = $m->printableDate('registration_date');
             return $this->successResponse([
@@ -286,7 +287,7 @@ class MovementsController extends Controller
 
         $user = Auth::user();
         if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $movement = Movement::findOrFail($id);
@@ -317,8 +318,8 @@ class MovementsController extends Controller
                 $users = User::sorted()->get();
 
                 if ($subtype == 'csv') {
-                    $filename = sprintf('Crediti al %s.csv', date('d/m/Y'));
-                    $headers = ['Nome', 'Credito Residuo'];
+                    $filename = _i('Crediti al %s.csv', date('d/m/Y'));
+                    $headers = [_i('Nome'), _i('Credito Residuo')];
                     return output_csv($filename, $headers, $users, function($user) {
                         $row = [];
                         $row[] = $user->printableName();
@@ -327,7 +328,7 @@ class MovementsController extends Controller
                     });
                 }
                 else if ($subtype == 'rid') {
-                    $filename = sprintf('SEPA del %s.xml', date('d/m/Y'));
+                    $filename = _i('SEPA del %s.xml', date('d/m/Y'));
                     header('Content-Type: text/xml');
                     header('Content-Disposition: attachment; filename="' . $filename . '"');
                     header('Cache-Control: no-cache, no-store, must-revalidate');
@@ -343,7 +344,7 @@ class MovementsController extends Controller
     {
         $user = Auth::user();
         if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $balance = $user->gas->current_balance;
@@ -371,7 +372,7 @@ class MovementsController extends Controller
     {
         $user = Auth::user();
         if ($user->can('movements.admin', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         DB::beginTransaction();
@@ -388,9 +389,9 @@ class MovementsController extends Controller
             ]);
         }
         catch(\Exception $e) {
-            Log::error('Errore nel ricalcolo saldi: ' . $e->getMessage());
+            Log::error(_i('Errore nel ricalcolo saldi: %s', $e->getMessage()));
             Session::forget('movements-recalculating');
-            return $this->errorResponse('Errore');
+            return $this->errorResponse(_i('Errore'));
         }
     }
 
@@ -398,7 +399,7 @@ class MovementsController extends Controller
     {
         $user = Auth::user();
         if ($user->can('movements.admin', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         try {
@@ -438,7 +439,7 @@ class MovementsController extends Controller
             DB::commit();
         }
         catch(\Exception $e) {
-            Log::error('Errore nel ricalcolo saldi: ' . $e->getMessage());
+            Log::error(_i('Errore nel ricalcolo saldi: %s', $e->getMessage()));
         }
 
         Session::forget('movements-recalculating');

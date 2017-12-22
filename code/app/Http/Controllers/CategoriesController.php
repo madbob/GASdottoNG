@@ -39,7 +39,7 @@ class CategoriesController extends Controller
 
         $user = Auth::user();
         if ($user->can('categories.admin', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $category = new Category();
@@ -89,7 +89,7 @@ class CategoriesController extends Controller
 
         $user = Auth::user();
         if ($user->can('categories.admin', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $data = $request->input('serialized');

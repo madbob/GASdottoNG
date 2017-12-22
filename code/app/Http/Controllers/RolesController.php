@@ -28,7 +28,7 @@ class RolesController extends Controller
     {
         $user = Auth::user();
         if ($user->can('gas.permissions', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         return Theme::view('commons.loadablelist', [
@@ -41,7 +41,7 @@ class RolesController extends Controller
     {
         $user = Auth::user();
         if ($user->can('gas.permissions', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         DB::beginTransaction();
@@ -77,7 +77,7 @@ class RolesController extends Controller
 
         $user = Auth::user();
         if ($user->can('gas.permissions', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $r = Role::findOrFail($id);
@@ -99,7 +99,7 @@ class RolesController extends Controller
 
         $user = Auth::user();
         if ($user->can('gas.permissions', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $r = Role::findOrFail($id);
@@ -137,7 +137,7 @@ class RolesController extends Controller
 
         $user = Auth::user();
         if ($user->can('gas.permissions', $user->gas) == false && $user->can('users.admin', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $role_id = $request->input('role');
@@ -173,7 +173,7 @@ class RolesController extends Controller
                 return $this->successResponse();
             }
             else {
-                return $this->errorResponse('Parametri mancanti');
+                return $this->errorResponse(_i('Parametri mancanti'));
             }
         }
     }
@@ -184,7 +184,7 @@ class RolesController extends Controller
 
         $user = Auth::user();
         if ($user->can('gas.permissions', $user->gas) == false && $user->can('users.admin', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $role_id = $request->input('role');

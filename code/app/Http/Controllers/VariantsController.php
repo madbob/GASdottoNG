@@ -26,7 +26,7 @@ class VariantsController extends Controller
         $product = Product::findOrFail($product_id);
 
         if ($request->user()->can('supplier.modify', $product->supplier) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $variant_id = $request->input('variant_id');
@@ -119,7 +119,7 @@ class VariantsController extends Controller
 
         $product = $variant->product;
         if ($request->user()->can('supplier.modify', $product->supplier) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $variant->values()->delete();

@@ -93,7 +93,7 @@ class OrdersController extends Controller
 
         $supplier = Supplier::findOrFail($request->input('supplier_id', -1));
         if ($request->user()->can('supplier.orders', $supplier) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $o = new Order();
@@ -170,7 +170,7 @@ class OrdersController extends Controller
 
         $order = Order::findOrFail($id);
         if ($request->user()->can('supplier.orders', $order->supplier) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         if ($request->has('comment'))
@@ -279,7 +279,7 @@ class OrdersController extends Controller
         $order = Order::findOrFail($id);
 
         if ($request->user()->can('supplier.orders', $order->supplier) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         foreach($order->bookings as $booking)
@@ -299,7 +299,7 @@ class OrdersController extends Controller
     {
         $order = Order::findOrFail($id);
         if ($request->user()->can('supplier.orders', $order->supplier) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $product = Product::findOrFail($product_id);
@@ -314,7 +314,7 @@ class OrdersController extends Controller
 
         $order = Order::findOrFail($id);
         if ($request->user()->can('supplier.orders', $order->supplier) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $product_id = $request->input('product', []);
@@ -330,7 +330,7 @@ class OrdersController extends Controller
             }
 
             if ($booking->order->id != $id) {
-                return $this->errorResponse('Non autorizzato');
+                return $this->errorResponse(_i('Non autorizzato'));
             }
 
             $product = $booking->getBooked($product_id, true);
@@ -403,8 +403,9 @@ class OrdersController extends Controller
         switch ($type) {
             case 'shipping':
                 $html = Theme::view('documents.order_shipping', ['order' => $order])->render();
-                $filename = sprintf('Dettaglio Consegne ordine %s presso %s.pdf', $order->internal_number, $order->supplier->name);
-                PDF::SetTitle(sprintf('Dettaglio Consegne ordine %s presso %s del %s', $order->internal_number, $order->supplier->name, date('d/m/Y')));
+                $title = _i('Dettaglio Consegne ordine %s presso %s', $order->internal_number, $order->supplier->name);
+                $filename = $title . '.pdf';
+                PDF::SetTitle($title);
                 PDF::AddPage();
                 PDF::writeHTML($html, true, false, true, false, '');
 
@@ -426,12 +427,13 @@ class OrdersController extends Controller
                 $subtype = $request->input('format', 'pdf');
                 $required_fields = $request->input('fields', []);
                 $data = $order->formatSummary($required_fields);
-                $filename = sprintf('Prodotti ordinati ordine %s presso %s.%s', $order->internal_number, $order->supplier->name, $subtype);
+                $title = _i('Prodotti ordinati ordine %s presso %s', $order->internal_number, $order->supplier->name, $subtype);
+                $filename = $title . '.' . $subtype;
                 $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $filename));
 
                 if ($subtype == 'pdf') {
                     $html = Theme::view('documents.order_summary_pdf', ['order' => $order, 'data' => $data])->render();
-                    PDF::SetTitle(sprintf('Prodotti ordinati ordine %s presso %s del %s', $order->internal_number, $order->supplier->name, date('d/m/Y')));
+                    PDF::SetTitle($title);
                     PDF::AddPage('L');
                     PDF::writeHTML($html, true, false, true, false, '');
 
@@ -475,7 +477,7 @@ class OrdersController extends Controller
                 break;
 
             case 'rid':
-                $filename = sprintf('RID Ordine %s presso %s.txt', $order->internal_number, $order->supplier->name);
+                $filename = _i('RID Ordine %s presso %s.txt', $order->internal_number, $order->supplier->name);
                 header('Content-Type: plain/text');
                 header('Content-Disposition: attachment; filename="' . $filename . '"');
                 header('Cache-Control: no-cache, no-store, must-revalidate');

@@ -96,7 +96,7 @@ class DeliveriesController extends Controller
 
         $user = Auth::user();
         if ($user->can('gas.config', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $d = Delivery::findOrFail($id);

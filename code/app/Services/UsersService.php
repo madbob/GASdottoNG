@@ -90,7 +90,7 @@ class UsersService extends BaseService
                 $username = $request['username'];
                 $test = User::where('id', '!=', $user->id)->where('username', $username)->first();
                 if ($test != null) {
-                    throw new IllegalArgumentException('Username già assegnato', 'username');
+                    throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
                 }
             }
 
@@ -98,7 +98,7 @@ class UsersService extends BaseService
                 $card_number = $request['card_number'];
                 $test = User::where('id', '!=', $user->id)->where('gas_id', $user->gas_id)->where('card_number', $card_number)->first();
                 if ($test != null) {
-                    throw new IllegalArgumentException('Numero tessera già assegnato', 'card_number');
+                    throw new IllegalArgumentException(_i('Numero tessera già assegnato'), 'card_number');
                 }
             }
 
@@ -172,7 +172,7 @@ class UsersService extends BaseService
         $username = $request['username'];
         $test = User::where('username', $username)->first();
         if ($test != null) {
-            throw new IllegalArgumentException('Username già assegnato', 'username');
+            throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
         }
 
         $user = new User();
@@ -199,7 +199,7 @@ class UsersService extends BaseService
             return response()->download($path);
         }
         else {
-            Log::error('File non trovato: ' . $path);
+            Log::error(_i('File non trovato: %s', $path));
             return '';
         }
     }

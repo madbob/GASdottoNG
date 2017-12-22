@@ -116,13 +116,13 @@ class SuppliersService extends BaseService
 
         if ($format == 'pdf') {
             $html = Theme::view('documents.cataloguepdf', ['supplier' => $supplier])->render();
-            PDF::SetTitle(sprintf('Listino %s del %s', $supplier->name, date('d/m/Y')));
+            PDF::SetTitle(_i('Listino %s del %s', $supplier->name, date('d/m/Y')));
             PDF::AddPage();
             PDF::writeHTML($html, true, false, true, false, '');
             PDF::Output($filename, 'D');
         }
         elseif ($format == 'csv') {
-            $headers = ['Nome', 'Unità di Misura', 'Prezzo Unitario (€)', 'Trasporto (€)'];
+            $headers = [_i('Nome'), _i('Unità di Misura'), _i('Prezzo Unitario (€)'), _i('Trasporto (€)')];
             return output_csv($filename, $headers, $supplier->products, function($product) {
                 $row = [];
                 $row[] = $product->name;
