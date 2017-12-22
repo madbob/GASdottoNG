@@ -2,29 +2,29 @@
     <thead>
         <tr>
             @if($order->isActive())
-                <th width="19%">Prodotto</th>
-                <th width="9%">Prezzo</th>
-                <th width="9%">Trasporto</th>
-                <th width="9%">Disponibile</th>
-                <th width="9%">Unità di Misura</th>
-                <th width="9%">Quantità Ordinata</th>
-                <th width="9%">Totale Prezzo</th>
-                <th width="9%">Totale Trasporto</th>
-                <th width="9%">Quantità Consegnata</th>
-                <th width="9%">Totale Consegnato</th>
+                <th width="19%">{{ _i('Prodotto') }}</th>
+                <th width="9%">{{ _i('Prezzo') }}</th>
+                <th width="9%">{{ _i('Trasporto') }}</th>
+                <th width="9%">{{ _i('Disponibile') }}</th>
+                <th width="9%">{{ _i('Unità di Misura') }}</th>
+                <th width="9%">{{ _i('Quantità Ordinata') }}</th>
+                <th width="9%">{{ _i('Totale Prezzo') }}</th>
+                <th width="9%">{{ _i('Totale Trasporto') }}</th>
+                <th width="9%">{{ _i('Quantità Consegnata') }}</th>
+                <th width="9%">{{ _i('Totale Consegnato') }}</th>
             @elseif($order->status != 'archived')
-                <th width="25%">Prodotto</th>
-                <th width="15%">Unità di Misura</th>
-                <th width="15%">Quantità Ordinata</th>
-                <th width="15%">Totale Trasporto</th>
-                <th width="15%">Quantità Consegnata</th>
-                <th width="15%">Totale Consegnato</th>
+                <th width="25%">{{ _i('Prodotto') }}</th>
+                <th width="15%">{{ _i('Unità di Misura') }}</th>
+                <th width="15%">{{ _i('Quantità Ordinata') }}</th>
+                <th width="15%">{{ _i('Totale Trasporto') }}</th>
+                <th width="15%">{{ _i('Quantità Consegnata') }}</th>
+                <th width="15%">{{ _i('Totale Consegnato') }}</th>
             @else
-                <th width="25%">Prodotto</th>
-                <th width="15%">Unità di Misura</th>
-                <th width="20%">Quantità Ordinata</th>
-                <th width="20%">Quantità Consegnata</th>
-                <th width="20%">Totale Consegnato</th>
+                <th width="25%">{{ _i('Prodotto') }}</th>
+                <th width="15%">{{ _i('Unità di Misura') }}</th>
+                <th width="20%">{{ _i('Quantità Ordinata') }}</th>
+                <th width="20%">{{ _i('Quantità Consegnata') }}</th>
+                <th width="20%">{{ _i('Totale Consegnato') }}</th>
             @endif
         </tr>
     </thead>

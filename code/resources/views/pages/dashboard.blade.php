@@ -7,7 +7,7 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h2 class="panel-title">Notifiche</h2>
+                    <h2 class="panel-title">{{ _i('Notifiche') }}</h2>
                 </div>
                 <div class="panel-body">
                     <ul class="list-group">
@@ -29,12 +29,12 @@
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h2 class="panel-title">Prenotazioni Aperte</h2>
+                <h2 class="panel-title">{{ _i('Prenotazioni Aperte') }}</h2>
             </div>
             <div class="panel-body">
                 @if(count($opened) == 0)
                     <div class="alert alert-info" role="alert">
-                        Non ci sono prenotazioni aperte.
+                        {{ _i('Non ci sono prenotazioni aperte.') }}
                     </div>
                 @else
                     @include('order.homelist', ['orders' => $opened])
@@ -44,12 +44,12 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h2 class="panel-title">Ordini in Consegna</h2>
+                <h2 class="panel-title">{{ _i('Ordini in Consegna') }}</h2>
             </div>
             <div class="panel-body">
                 @if(count($shipping) == 0)
                     <div class="alert alert-info" role="alert">
-                        Non ci sono ordini in consegna.
+                        {{ _i('Non ci sono ordini in consegna.') }}
                     </div>
                 @else
                     @include('order.homelist', ['orders' => $shipping])
@@ -68,8 +68,8 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="alert {{ $current_balance >= $to_pay ? 'alert-success' : 'alert-danger' }} text-right">
-                    <p class="lead">Credito Corrente: {{ printablePrice($current_balance) }} €</p>
-                    <p class="lead">Da Pagare: {{ printablePrice($to_pay) }} €</p>
+                    <p class="lead">{{ _i('Credito Corrente') }}: {{ printablePrice($current_balance) }} €</p>
+                    <p class="lead">{{ _i('Da Pagare') }}: {{ printablePrice($to_pay) }} €</p>
                 </div>
             </div>
         </div>
@@ -77,7 +77,7 @@
         @if($currentgas->attachments->isEmpty() == false)
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h2 class="panel-title">Files Condivisi</h2>
+                    <h2 class="panel-title">{{ _i('File Condivisi') }}</h2>
                 </div>
                 <div class="panel-body">
                     <div class="list-group">

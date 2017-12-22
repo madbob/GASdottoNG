@@ -5,7 +5,7 @@
                 'template' => 'product.base-edit',
                 'typename' => 'product',
                 'target_update' => 'product-list-' . $supplier->id,
-                'typename_readable' => 'Prodotto',
+                'typename_readable' => _i('Prodotto'),
                 'targeturl' => 'products',
                 'extra' => [
                     'supplier_id' => $supplier->id
@@ -28,10 +28,10 @@
         <hr/>
         <ul class="nav nav-pills" role="tablist">
             <li role="presentation" class="active">
-                <a role="tab" data-toggle="tab" href="#product-full-list-{{ $supplier->id }}" data-async-load="{{ url('suppliers/' . $supplier->id . '/products') }}">Dettagli</a>
+                <a role="tab" data-toggle="tab" href="#product-full-list-{{ $supplier->id }}" data-async-load="{{ url('suppliers/' . $supplier->id . '/products') }}">{{ _i('Dettagli') }}</a>
             </li>
             <li role="presentation">
-                <a role="tab" data-toggle="tab" href="#product-rapid-list-{{ $supplier->id }}" data-async-load="{{ url('suppliers/' . $supplier->id . '/products_grid') }}">Modifica Rapida</a>
+                <a role="tab" data-toggle="tab" href="#product-rapid-list-{{ $supplier->id }}" data-async-load="{{ url('suppliers/' . $supplier->id . '/products_grid') }}">{{ _i('Modifica Rapida') }}</a>
             </li>
         </ul>
     </div>

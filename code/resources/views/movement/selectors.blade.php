@@ -30,27 +30,27 @@
 @include('commons.decimalfield', [
     'obj' => null,
     'name' => 'amount',
-    'label' => 'Valore',
+    'label' => _i('Valore'),
     'is_price' => true,
     'fixed_value' => $fixed
 ])
 
 @include('commons.radios', [
     'name' => 'method',
-    'label' => 'Metodo',
+    'label' => _i('Metodo'),
     'values' => $payments
 ])
 
 @include('commons.textfield', [
     'obj' => null,
     'name' => 'identifier',
-    'label' => 'Identificativo',
+    'label' => _i('Identificativo'),
     'extra_wrap_class' => 'when-method-bank' . ($default_method == 'bank' ? '' : ' hidden')
 ])
 
 @include('commons.textarea', [
     'obj' => null,
     'name' => 'notes',
-    'label' => 'Note',
+    'label' => _i('Note'),
     'default_value' => $default_notes
 ])

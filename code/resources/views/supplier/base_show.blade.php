@@ -3,11 +3,11 @@
 
     <div class="row">
         <div class="col-md-6">
-            @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'name', 'label' => 'Nome'])
-            @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'business_name', 'label' => 'Ragione Sociale'])
-            @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'description', 'label' => 'Descrizione'])
-            @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'taxcode', 'label' => 'Codice Fiscale'])
-            @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'vat', 'label' => 'Partita IVA'])
+            @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'name', 'label' => _i('Nome')])
+            @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'business_name', 'label' => _i('Ragione Sociale')])
+            @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'description', 'label' => _i('Descrizione')])
+            @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'taxcode', 'label' => _i('Codice Fiscale')])
+            @include('commons.staticstringfield', ['obj' => $supplier, 'name' => 'vat', 'label' => _i('Partita IVA')])
             @include('commons.staticcontactswidget', ['obj' => $supplier])
         </div>
         <div class="col-md-6">

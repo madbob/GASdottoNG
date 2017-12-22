@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close reloader" data-dismiss="modal" data-reload-target="#user-list" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Configura Ruoli per {{ $supplier->printableName() }}</h4>
+                <h4 class="modal-title">{{ _i('Configura Ruoli per %s', $supplier->printableName()) }}</h4>
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
@@ -17,7 +17,7 @@
                                 @include('commons.completionrows', [
                                     'objects' => $role->usersByTarget($supplier),
                                     'source' => 'userBlood',
-                                    'adding_label' => 'Aggiungi Nuovo Utente',
+                                    'adding_label' => _i('Aggiungi Nuovo Utente'),
                                     'add_callback' => 'supplierAttachUser',
                                     'remove_callback' => 'supplierDetachUser',
                                     'extras' => [
@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default reloader" data-dismiss="modal" data-reload-target="#supplier-list">Chiudi</button>
+                <button type="button" class="btn btn-default reloader" data-dismiss="modal" data-reload-target="#supplier-list">{{ _i('Chiudi') }}</button>
             </div>
         </div>
     </div>

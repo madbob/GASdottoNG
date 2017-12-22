@@ -26,16 +26,16 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Importa</th>
-                        <th>Data</th>
-                        <th>Utente</th>
+                        <th>{{ _i('Importa') }}</th>
+                        <th>{{ _i('Data') }}</th>
+                        <th>{{ _i('Utente') }}</th>
                         <th>
                             @include('commons.selectenumfield', [
                                 'obj' => null,
                                 'squeeze' => true,
                                 'prefix' => 'skip',
                                 'name' => 'type',
-                                'label' => 'Tipo',
+                                'label' => _i('Tipo'),
                                 'values' => $types,
                                 'extra_class' => 'triggers-all-selects',
                                 'extra_attrs' => [
@@ -49,7 +49,7 @@
                                 'squeeze' => true,
                                 'prefix' => 'skip',
                                 'name' => 'method',
-                                'label' => 'Metodo',
+                                'label' => _i('Metodo'),
                                 'values' => $payments,
                                 'enforced_default' => 'bank',
                                 'extra_class' => 'triggers-all-selects',
@@ -58,7 +58,7 @@
                                 ]
                             ])
                         </th>
-                        <th>Valore</th>
+                        <th>{{ _i('Valore') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -79,7 +79,7 @@
                                     'postfix' => '[]',
                                     'objects' => $users,
                                     'extra_selection' => [
-                                        '0' => 'Nessuno'
+                                        '0' => _i('Nessuno')
                                     ]
                                 ])
                             </td>
@@ -90,7 +90,7 @@
                                     'prefix' => 'm',
                                     'name' => 'type',
                                     'postfix' => '[]',
-                                    'label' => 'Tipo',
+                                    'label' => _i('Tipo'),
                                     'values' => $types,
                                     'extra_class' => 'csv_movement_type_select',
                                 ])
@@ -101,7 +101,7 @@
                                     'squeeze' => true,
                                     'name' => 'method',
                                     'postfix' => '[]',
-                                    'label' => 'Metodo',
+                                    'label' => _i('Metodo'),
                                     'values' => $payments,
                                     'extra_class' => 'csv_movement_method_select',
                                 ])
@@ -117,8 +117,8 @@
         </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
-            <button type="submit" class="btn btn-success">Avanti</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+            <button type="submit" class="btn btn-success">{{ _i('Avanti') }}</button>
         </div>
     </form>
 </div>

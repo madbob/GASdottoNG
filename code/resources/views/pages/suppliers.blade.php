@@ -8,13 +8,13 @@
             @include('commons.addingbutton', [
                 'template' => 'supplier.base-edit',
                 'typename' => 'supplier',
-                'typename_readable' => 'Fornitore',
+                'typename_readable' => _i('Fornitore'),
                 'targeturl' => 'suppliers'
             ])
         @endcan
 
         @can('categories.admin', $currentgas)
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleCategories">Amministra Categorie</button>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleCategories">{{ _i('Amministra Categorie') }}</button>
             <div class="modal fade dynamic-contents close-on-submit" id="handleCategories" tabindex="-1" role="dialog" aria-labelledby="handleCategories" data-contents-url="{{ url('categories') }}">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -24,7 +24,7 @@
         @endcan
 
         @can('measures.admin', $currentgas)
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleMeasures">Amministra Unità di Misura</button>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleMeasures">{{ _i('Amministra Unità di Misura') }}</button>
             <div class="modal fade dynamic-contents close-on-submit" id="handleMeasures" tabindex="-1" role="dialog" data-contents-url="{{ url('measures') }}">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -57,7 +57,7 @@
                 'filters' => [
                     'deleted_at' => (object)[
                         'icon' => 'inbox',
-                        'label' => 'Eliminati',
+                        'label' => _i('Eliminati'),
                         'value' => null
                     ]
                 ]

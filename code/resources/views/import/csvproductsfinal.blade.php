@@ -1,12 +1,12 @@
 <div class="wizard_page">
     <div class="modal-body">
         <p>
-            Prodotti importati:
+            {{ _i('Prodotti importati') }}:
         </p>
 
         <ul class="list-group">
             @if(empty($products))
-                <li>Nessuno!</li>
+                <li>{{ _i('Nessuno') }}</li>
             @else
                 @foreach($products as $p)
                     <li class="list-group-item">{{ $p->name }}</li>
@@ -18,7 +18,7 @@
             <hr/>
 
             <p>
-                Errori:
+                {{ _i('Errori') }}:
             </p>
 
             <ul class="list-group">
@@ -30,6 +30,6 @@
     </div>
 
     <div class="modal-footer">
-        <button type="button" class="btn btn-default reloader" data-dismiss="modal" data-reload-target="#supplier-list">Chiudi</button>
+        <button type="button" class="btn btn-default reloader" data-dismiss="modal" data-reload-target="#supplier-list">{{ _i('Chiudi') }}</button>
     </div>
 </div>

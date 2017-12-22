@@ -8,15 +8,15 @@
             @include('commons.addingbutton', [
                 'template' => 'order.base-edit',
                 'typename' => 'order',
-                'typename_readable' => 'Ordine',
+                'typename_readable' => _i('Ordine'),
                 'targeturl' => 'orders',
                 'extra' => [
                     'post-saved-refetch' => '#aggregable-list'
                 ]
             ])
 
-            <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#orderSearch">Ricerca</button>
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#orderAggregator">Aggrega Ordini</button>
+            <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#orderSearch">{{ _i('Ricerca') }}</button>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#orderAggregator">{{ _i('Aggrega Ordini') }}</button>
 
             <div class="modal fade" id="orderAggregator" tabindex="-1" role="dialog" aria-labelledby="orderAggregator">
                 <div class="modal-dialog" role="document">
@@ -26,14 +26,14 @@
 
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">Aggrega Ordini</h4>
+                                <h4 class="modal-title">{{ _i('Aggrega Ordini') }}</h4>
                             </div>
                             <div class="modal-body">
                                 <p>
-                                    Clicca e trascina gli ordini nella stessa cella per aggregarli, o nella cella vuota per disaggregarli.
+                                    {{ _i("Clicca e trascina gli ordini nella stessa cella per aggregarli, o nella cella vuota per disaggregarli.") }}
                                 </p>
                                 <p>
-                                    Una volta aggregati, gli ordini verranno visualizzati come uno solo pur mantenendo ciascuno i suoi attributi. Questa funzione è consigliata per facilitare l'amministrazione di ordini che, ad esempio, vengono consegnati nella stessa data.
+                                    {{ _i("Una volta aggregati, gli ordini verranno visualizzati come uno solo pur mantenendo ciascuno i suoi attributi. Questa funzione è consigliata per facilitare l'amministrazione di ordini che, ad esempio, vengono consegnati nella stessa data.") }}
                                 </p>
 
                                 <hr/>
@@ -43,8 +43,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
-                                <button type="submit" class="btn btn-success">Salva</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+                                <button type="submit" class="btn btn-success">{{ _i('Salva') }}</button>
                             </div>
                         </form>
                     </div>
@@ -59,7 +59,7 @@
                                 @include('commons.selectobjfield', [
                                     'obj' => null,
                                     'name' => 'supplier_id',
-                                    'label' => 'Fornitore',
+                                    'label' => _i('Fornitore'),
                                     'mandatory' => true,
                                     'objects' => App\Supplier::orderBy('name', 'asc')->get()
                                 ])
@@ -67,7 +67,7 @@
                                 @include('commons.genericdaterange')
                             </form>
 
-                            <button class="btn btn-danger pull-right">Chiudi</button>
+                            <button class="btn btn-danger pull-right">{{ _i('Chiudi') }}</button>
                             <div class="clearfix"></div>
                         </div>
                     </div>

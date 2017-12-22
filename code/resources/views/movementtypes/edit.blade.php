@@ -9,7 +9,7 @@ $target_classes = [];
 
 $target_classes[] = [
     'value' => null,
-    'label' => 'Nessuno',
+    'label' => _i('Nessuno'),
 ];
 
 foreach($classes as $class => $name) {
@@ -25,22 +25,22 @@ foreach($classes as $class => $name) {
     <div class="row">
         <div class="col-md-6">
             @if($type->system)
-                @include('commons.textfield', ['obj' => $type, 'name' => 'name', 'label' => 'Nome', 'mandatory' => true])
-                @include('commons.boolfield', ['obj' => $type, 'name' => 'allow_negative', 'label' => 'Accetta Valori Negativi'])
+                @include('commons.textfield', ['obj' => $type, 'name' => 'name', 'label' => _i('Nome'), 'mandatory' => true])
+                @include('commons.boolfield', ['obj' => $type, 'name' => 'allow_negative', 'label' => _i('Accetta Valori Negativi')])
 
-                @include('commons.staticpricefield', ['obj' => $type, 'name' => 'fixed_value', 'label' => 'Valore Fisso'])
+                @include('commons.staticpricefield', ['obj' => $type, 'name' => 'fixed_value', 'label' => _i('Valore Fisso')])
 
                 @include('commons.staticenumfield', [
                     'obj' => $type,
                     'name' => 'sender_type',
-                    'label' => 'Pagante',
+                    'label' => _i('Pagante'),
                     'values' => $target_classes
                 ])
 
                 @include('commons.staticenumfield', [
                     'obj' => $type,
                     'name' => 'target_type',
-                    'label' => 'Pagato',
+                    'label' => _i('Pagato'),
                     'values' => $target_classes
                 ])
             @else
@@ -48,7 +48,7 @@ foreach($classes as $class => $name) {
             @endif
         </div>
         <div class="col-md-6">
-            @include('commons.textarea', ['obj' => $type, 'name' => 'default_notes', 'label' => 'Note di Default'])
+            @include('commons.textarea', ['obj' => $type, 'name' => 'default_notes', 'label' => _i('Note di Default')])
         </div>
 
         <?php
@@ -97,7 +97,7 @@ foreach($classes as $class => $name) {
                                 <input type="checkbox" data-toggle="toggle" data-size="mini" name="{{ $pay_id }}" {{ $payments[$pay_id] ? 'checked' : '' }} data-active-for="{{ $pay->active_for }}" {{ $pay->active_for != null && $pay->active_for != $type->sender_type && $pay->active_for != $type->target_type ? 'disabled' : '' }}>
                                 <span class="decorated_radio">
                                     <input type="radio" name="payment_default" value="{{ $pay_id }}" {{ isset($defaults[$pay_id]) && $defaults[$pay_id] ? 'checked' : '' }}>
-                                    <label>default</label>
+                                    <label>{{ ('default') }}</label>
                                 </span>
                             </th>
                         @endforeach

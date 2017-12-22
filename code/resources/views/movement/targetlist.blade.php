@@ -17,7 +17,7 @@ $domid = str_random(10);
 
                     <div class="form-group">
                         <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
-                            <button type="submit" class="btn btn-success">Ricerca</button>
+                            <button type="submit" class="btn btn-success">{{ _i('Ricerca') }}</button>
                         </div>
                     </div>
                 </div>

@@ -2,32 +2,32 @@
     <thead>
         <tr>
             @if($order->isActive())
-                <th class="hidden-md" width="5%"><button class="btn btn-default btn-xs toggle-product-abilitation" data-toggle="button" aria-pressed="false" autocomplete="off">Visualizza<br/>tutti</button></th>
-                <th width="17%">Prodotto</th>
-                <th width="8%">Prezzo</th>
-                <th width="8%">Trasporto</th>
-                <th width="8%">Disponibile</th>
-                <th class="hidden-md" width="5%">Sconto Prodotto</th>
-                <th width="9%">Unità di Misura</th>
-                <th width="9%">Quantità Ordinata</th>
-                <th width="5%">Totale Prezzo</th>
-                <th width="5%">Totale Trasporto</th>
-                <th width="8%">Quantità Consegnata</th>
-                <th width="8%">Totale Consegnato</th>
-                <th width="7%">Note</th>
+                <th class="hidden-md" width="5%"><button class="btn btn-default btn-xs toggle-product-abilitation" data-toggle="button" aria-pressed="false" autocomplete="off">{{ _i('Visualizza<br/>tutti') }}</button></th>
+                <th width="17%">{{ _i('Prodotto') }}</th>
+                <th width="8%">{{ _i('Prezzo') }}</th>
+                <th width="8%">{{ _i('Trasporto') }}</th>
+                <th width="8%">{{ _i('Disponibile') }}</th>
+                <th class="hidden-md" width="5%">{{ _i('Sconto Prodotto') }}</th>
+                <th width="9%">{{ _i('Unità di Misura') }}</th>
+                <th width="9%">{{ _i('Quantità Ordinata') }}</th>
+                <th width="5%">{{ _i('Totale Prezzo') }}</th>
+                <th width="5%">{{ _i('Totale Trasporto') }}</th>
+                <th width="8%">{{ _i('Quantità Consegnata') }}</th>
+                <th width="8%">{{ _i('Totale Consegnato') }}</th>
+                <th width="7%">{{ _i('Note') }}</th>
             @elseif($order->status != 'archived')
-                <th width="25%">Prodotto</th>
-                <th width="15%">Unità di Misura</th>
-                <th width="15%">Quantità Ordinata</th>
-                <th width="15%">Totale Trasporto</th>
-                <th width="15%">Quantità Consegnata</th>
-                <th width="15%">Totale Consegnato</th>
+                <th width="25%">{{ _i('Prodotto') }}</th>
+                <th width="15%">{{ _i('Unità di Misura') }}</th>
+                <th width="15%">{{ _i('Quantità Ordinata') }}</th>
+                <th width="15%">{{ _i('Totale Trasporto') }}</th>
+                <th width="15%">{{ _i('Quantità Consegnata') }}</th>
+                <th width="15%">{{ _i('Totale Consegnato') }}</th>
             @else
-                <th width="25%">Prodotto</th>
-                <th width="15%">Unità di Misura</th>
-                <th width="20%">Quantità Ordinata</th>
-                <th width="20%">Quantità Consegnata</th>
-                <th width="20%">Totale Consegnato</th>
+                <th width="25%">{{ _i('Prodotto') }}</th>
+                <th width="15%">{{ _i('Unità di Misura') }}</th>
+                <th width="20%">{{ _i('Quantità Ordinata') }}</th>
+                <th width="20%">{{ _i('Quantità Consegnata') }}</th>
+                <th width="20%">{{ _i('Totale Consegnato') }}</th>
             @endif
         </tr>
     </thead>

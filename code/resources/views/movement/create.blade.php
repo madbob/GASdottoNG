@@ -5,13 +5,13 @@
 
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Crea Nuovo Movimento</h4>
+        <h4 class="modal-title">{{ _i('Crea Nuovo Movimento') }}</h4>
     </div>
     <div class="modal-body">
         @include('movement.base-edit', ['movement' => null])
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
-        <button type="submit" class="btn btn-success">Salva</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+        <button type="submit" class="btn btn-success">{{ _i('Salva') }}</button>
     </div>
 </form>

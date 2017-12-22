@@ -3,19 +3,19 @@
 
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Modifica Quantità</h4>
+        <h4 class="modal-title">{{ _i('Modifica Quantità') }}</h4>
     </div>
     <div class="modal-body">
         @if($product->package_size != 0)
             <p>
-                Dimensione confezione: {{ $product->package_size }}
+                {{ _i('Dimensione confezione') }}: {{ $product->package_size }}
             </p>
 
             <hr/>
         @endif
 
         @if($order->bookings->isEmpty())
-            <div class="alert alert-info">Da qui è possibile modificare la quantità prenotata di questo prodotto per ogni prenotazione, ma nessun utente ha ancora partecipato all'ordine.</div>
+            <div class="alert alert-info">{{ _i("Da qui è possibile modificare la quantità prenotata di questo prodotto per ogni prenotazione, ma nessun utente ha ancora partecipato all'ordine.") }}</div>
         @else
             <table class="table table-striped">
                 @foreach($order->bookings as $po)
@@ -37,7 +37,7 @@
         @endif
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
-        <button type="submit" class="btn btn-primary reloader" data-reload-target="#order-list">Salva</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+        <button type="submit" class="btn btn-primary reloader" data-reload-target="#order-list">{{ _i('Salva') }}</button>
     </div>
 </form>

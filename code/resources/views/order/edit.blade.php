@@ -5,17 +5,17 @@
 
     <div class="row">
         <div class="col-md-4">
-            @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => 'Fornitore'])
-            @include('commons.staticstringfield', ['obj' => $order, 'name' => 'internal_number', 'label' => 'Numero'])
+            @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => _i('Fornitore')])
+            @include('commons.staticstringfield', ['obj' => $order, 'name' => 'internal_number', 'label' => _i('Numero')])
 
             @if(in_array($order->status, ['suspended', 'open', 'closed']))
-                @include('commons.textfield', ['obj' => $order, 'name' => 'comment', 'label' => 'Commento'])
-                @include('commons.datefield', ['obj' => $order, 'name' => 'start', 'label' => 'Data Apertura', 'mandatory' => true])
+                @include('commons.textfield', ['obj' => $order, 'name' => 'comment', 'label' => _i('Commento')])
+                @include('commons.datefield', ['obj' => $order, 'name' => 'start', 'label' => _i('Data Apertura'), 'mandatory' => true])
 
                 @include('commons.datefield', [
                     'obj' => $order,
                     'name' => 'end',
-                    'label' => 'Data Chiusura',
+                    'label' => _i('Data Chiusura'),
                     'mandatory' => true,
                     'extras' => [
                         'data-enforce-after' => '.date[name=start]'
@@ -25,33 +25,33 @@
                 @include('commons.datefield', [
                     'obj' => $order,
                     'name' => 'shipping',
-                    'label' => 'Data Consegna',
+                    'label' => _i('Data Consegna'),
                     'extras' => [
                         'data-enforce-after' => '.date[name=end]'
                     ]
                 ])
             @else
-                @include('commons.staticstringfield', ['obj' => $order, 'name' => 'comment', 'label' => 'Commento'])
-                @include('commons.staticdatefield', ['obj' => $order, 'name' => 'start', 'label' => 'Data Apertura'])
-                @include('commons.staticdatefield', ['obj' => $order, 'name' => 'end', 'label' => 'Data Chiusura'])
-                @include('commons.staticdatefield', ['obj' => $order, 'name' => 'shipping', 'label' => 'Data Consegna'])
+                @include('commons.staticstringfield', ['obj' => $order, 'name' => 'comment', 'label' => _i('Commento')])
+                @include('commons.staticdatefield', ['obj' => $order, 'name' => 'start', 'label' => _i('Data Apertura')])
+                @include('commons.staticdatefield', ['obj' => $order, 'name' => 'end', 'label' => _i('Data Chiusura')])
+                @include('commons.staticdatefield', ['obj' => $order, 'name' => 'shipping', 'label' => _i('Data Consegna')])
             @endif
 
             @include('commons.orderstatus', ['order' => $order])
         </div>
         <div class="col-md-4">
             @if(in_array($order->status, ['suspended', 'open', 'closed']))
-                @include('commons.percentagefield', ['obj' => $order, 'name' => 'discount', 'label' => 'Sconto Globale'])
-                @include('commons.percentagefield', ['obj' => $order, 'name' => 'transport', 'label' => 'Spese Trasporto'])
+                @include('commons.percentagefield', ['obj' => $order, 'name' => 'discount', 'label' => _i('Sconto Globale')])
+                @include('commons.percentagefield', ['obj' => $order, 'name' => 'transport', 'label' => _i('Spese Trasporto')])
             @else
-                @include('commons.staticpercentagefield', ['obj' => $order, 'name' => 'discount', 'label' => 'Sconto Globale'])
-                @include('commons.staticpercentagefield', ['obj' => $order, 'name' => 'transport', 'label' => 'Spese Trasporto'])
+                @include('commons.staticpercentagefield', ['obj' => $order, 'name' => 'discount', 'label' => _i('Sconto Globale')])
+                @include('commons.staticpercentagefield', ['obj' => $order, 'name' => 'transport', 'label' => _i('Spese Trasporto')])
             @endif
 
             @include('commons.movementfield', [
                 'obj' => $order->payment,
                 'name' => 'payment_id',
-                'label' => 'Pagamento',
+                'label' => _i('Pagamento'),
                 'default' => \App\Movement::generate('order-payment', $currentgas, $order, $summary->price_delivered),
                 'to_modal' => [
                     'amount_editable' => true
@@ -69,7 +69,7 @@
     @include('commons.formbuttons', [
         'left_buttons' => [
             (object) [
-                'label' => 'Esporta',
+                'label' => _i('Esporta'),
                 'url' => $order->exportableURL(),
                 'class' => ''
             ]

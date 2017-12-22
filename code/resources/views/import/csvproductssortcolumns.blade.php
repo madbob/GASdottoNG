@@ -5,10 +5,10 @@
 
         <div class="modal-body">
             <p>
-                Clicca e trascina gli attributi sulla destra nel blocco centrale, per assegnare ad ogni colonna del tuo file un significato.
+                {{ _i('Clicca e trascina gli attributi sulla destra nel blocco centrale, per assegnare ad ogni colonna del tuo file un significato.') }}
             </p>
             <p>
-                Le categorie e le unità di misura il cui nome non sarà trovato tra quelle esistenti saranno create.
+                {{ _i('Le categorie e le unità di misura il cui nome non sarà trovato tra quelle esistenti saranno create.') }}
             </p>
 
             <hr/>
@@ -24,22 +24,22 @@
                 <div class="col-md-4">
                     <ul class="list-group">
                         @foreach($columns as $index => $column)
-                            <li class="list-group-item im_droppable">Colonna <span class="columns_index">{{ $index + 1 }}</span>: <span class="column_content"><input type="hidden" name="column[]" value="none" />[Ignora]</span></li>
+                            <li class="list-group-item im_droppable">{{ _i('Colonna') }} <span class="columns_index">{{ $index + 1 }}</span>: <span class="column_content"><input type="hidden" name="column[]" value="none" />{{ _i('[Ignora]') }}</span></li>
                         @endforeach
                     </ul>
                 </div>
                 <div class="col-md-4">
                     <ul class="list-group">
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="none" />[Ignora]</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="name" />Nome Prodotto</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="description" />Descrizione</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="price" />Prezzo Unitario</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="transport" />Prezzo Trasporto</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="category" />Categoria</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="measure" />Unità di Misura</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="package_size" />Dimensione Confezione</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="min_quantity" />Ordine Minimo</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="multiple" />Ordinabile per Multipli</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="none" />{{ _i('[Ignora]') }}</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="name" />{{ _i('Nome Prodotto') }}</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="description" />{{ _i('Descrizione') }}</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="price" />{{ _i('Prezzo Unitario') }}</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="transport" />{{ _i('Prezzo Trasporto') }}</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="category" />{{ _i('Categoria') }}</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="measure" />{{ _i('Unità di Misura') }}</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="package_size" />{{ _i('Dimensione Confezione') }}</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="min_quantity" />{{ _i('Ordine Minimo') }}</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="multiple" />{{ _i('Ordinabile per Multipli') }}</li>
                     </ul>
                 </div>
             </div>
@@ -48,8 +48,8 @@
         </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
-            <button type="submit" class="btn btn-success">Avanti</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+            <button type="submit" class="btn btn-success">{{ _i('Avanti') }}</button>
         </div>
     </form>
 </div>

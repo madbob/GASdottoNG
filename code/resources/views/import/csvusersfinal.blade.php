@@ -1,12 +1,12 @@
 <div class="wizard_page">
     <div class="modal-body">
         <p>
-            Utenti importati:
+            {{ _i('Utenti importati') }}:
         </p>
 
         <ul class="list-group">
             @if(empty($users))
-                <li>Nessuno!</li>
+                <li>{{ _i('Nessuno') }}</li>
             @else
                 @foreach($users as $u)
                     <li class="list-group-item">{{ $u->printableName() }}</li>
@@ -18,7 +18,7 @@
             <hr/>
 
             <p>
-                Errori:
+                {{ _i('Errori') }}:
             </p>
 
             <ul class="list-group">
@@ -32,6 +32,6 @@
     </div>
 
     <div class="modal-footer">
-        <button type="button" class="btn btn-default reloader" data-dismiss="modal" data-reload-target="#user-list">Chiudi</button>
+        <button type="button" class="btn btn-default reloader" data-dismiss="modal" data-reload-target="#user-list">{{ _i('Chiudi') }}</button>
     </div>
 </div>

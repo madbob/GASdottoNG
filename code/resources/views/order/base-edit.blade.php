@@ -15,7 +15,7 @@ foreach ($user->roles as $role) {
 @include('commons.selectobjfield', [
     'obj' => $order,
     'name' => 'supplier_id',
-    'label' => 'Fornitore',
+    'label' => _i('Fornitore'),
     'mandatory' => true,
     'objects' => $suppliers
 ])
@@ -23,13 +23,13 @@ foreach ($user->roles as $role) {
 @include('commons.textfield', [
     'obj' => $order,
     'name' => 'comment',
-    'label' => 'Commento'
+    'label' => _i('Commento')
 ])
 
 @include('commons.datefield', [
     'obj' => $order,
     'name' => 'start',
-    'label' => 'Data Apertura Prenotazioni',
+    'label' => _i('Data Apertura Prenotazioni'),
     'defaults_now' => true,
     'mandatory' => true
 ])
@@ -37,7 +37,7 @@ foreach ($user->roles as $role) {
 @include('commons.datefield', [
     'obj' => $order,
     'name' => 'end',
-    'label' => 'Data Chiusura Prenotazioni',
+    'label' => _i('Data Chiusura Prenotazioni'),
     'mandatory' => true,
     'extras' => [
         'data-enforce-after' => '.date[name=start]'
@@ -47,7 +47,7 @@ foreach ($user->roles as $role) {
 @include('commons.datefield', [
     'obj' => $order,
     'name' => 'shipping',
-    'label' => 'Data Consegna',
+    'label' => _i('Data Consegna'),
     'extras' => [
         'data-enforce-after' => '.date[name=end]'
     ]

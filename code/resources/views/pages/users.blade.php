@@ -8,7 +8,7 @@
             @include('commons.addingbutton', [
                 'template' => 'user.base-edit',
                 'typename' => 'user',
-                'typename_readable' => 'Utente',
+                'typename_readable' => _i('Utente'),
                 'targeturl' => 'users'
             ])
 
@@ -35,7 +35,7 @@
                 'filters' => [
                     'deleted_at' => (object)[
                         'icon' => 'inbox',
-                        'label' => 'Sospesi e Cessati',
+                        'label' => _i('Sospesi e Cessati'),
                         'value' => null
                     ]
                 ]

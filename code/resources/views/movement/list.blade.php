@@ -20,26 +20,26 @@ else {
 
 @if($movements->count() == 0)
     <div class="alert alert-info" role="alert">
-        Non ci sono elementi da visualizzare.
+        {{ _i('Non ci sono elementi da visualizzare.') }}
     </div>
 @else
     <table class="table addicted-table" data-classes="table table-no-bordered">
         <thead>
             <tr>
-                <th data-sortable="true" data-sorter="sortingDates">Data Registrazione</th>
-                <th data-sortable="true" data-sorter="sortingDates">Data Movimento</th>
-                <th data-sortable="true">Tipo</th>
-                <th data-sortable="true">Pagamento</th>
+                <th data-sortable="true" data-sorter="sortingDates">{{ _i('Data Registrazione') }}</th>
+                <th data-sortable="true" data-sorter="sortingDates">{{ _i('Data Movimento') }}</th>
+                <th data-sortable="true">{{ _i('Tipo') }}</th>
+                <th data-sortable="true">{{ _i('Pagamento') }}</th>
                 @if($exclude_sender == false)
-                    <th data-sortable="true">Pagante</th>
+                    <th data-sortable="true">{{ _i('Pagante') }}</th>
                 @endif
                 @if($exclude_target == false)
-                    <th data-sortable="true">Pagato</th>
+                    <th data-sortable="true">{{ _i('Pagato') }}</th>
                 @endif
-                <th data-sortable="true" data-sorter="sortingValues">Valore</th>
-                <th>Note</th>
+                <th data-sortable="true" data-sorter="sortingValues">{{ _i('Valore') }}</th>
+                <th>{{ _i('Note') }}</th>
                 @if(Gate::check('movements.admin', $currentgas))
-                    <th>Modifica</th>
+                    <th>{{ _i('Modifica') }}</th>
                 @endif
             </tr>
         </thead>

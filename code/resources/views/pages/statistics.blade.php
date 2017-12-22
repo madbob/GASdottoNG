@@ -6,7 +6,7 @@
 </div>
 
 <div class="page-header">
-    <h3>Statistiche Generali</h3>
+    <h3>{{ _i('Statistiche Generali') }}</h3>
 </div>
 
 <div class="row">
@@ -16,7 +16,7 @@
 
             <div class="form-group">
                 <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
-                    <button type="submit" class="btn btn-success">Ricerca</button>
+                    <button type="submit" class="btn btn-success">{{ _i('Ricerca') }}</button>
                 </div>
             </div>
         </form>
@@ -35,7 +35,7 @@
 </div>
 
 <div class="page-header">
-    <h3>Statistiche per Fornitore</h3>
+    <h3>{{ _i('Statistiche per Fornitore') }}</h3>
 </div>
 
 <div class="row">
@@ -44,7 +44,7 @@
             @include('commons.selectobjfield', [
                 'obj' => null,
                 'name' => 'supplier',
-                'label' => 'Fornitore',
+                'label' => _i('Fornitore'),
                 'mandatory' => true,
                 'objects' => App\Supplier::orderBy('name', 'asc')->get()
             ])
@@ -53,7 +53,7 @@
 
             <div class="form-group">
                 <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
-                    <button type="submit" class="btn btn-success">Ricerca</button>
+                    <button type="submit" class="btn btn-success">{{ _i('Ricerca') }}</button>
                 </div>
             </div>
         </form>

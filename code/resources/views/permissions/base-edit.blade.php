@@ -3,22 +3,22 @@
 @include('commons.textfield', [
     'obj' => $role,
     'name' => 'name',
-    'label' => 'Nome'
+    'label' => _i('Nome')
 ])
 
 @include('commons.boolfield', [
     'obj' => $role,
     'name' => 'always',
-    'label' => 'Abilitato di Default'
+    'label' => _i('Abilitato di Default')
 ])
 
 @include('commons.selectobjfield', [
     'obj' => $role,
     'name' => 'parent_id',
     'objects' => App\Role::orderBy('name')->get(),
-    'label' => 'Ruolo Superiore',
+    'label' => _i('Ruolo Superiore'),
     'extra_selection' => [
-        '0' => 'Nessuno'
+        '0' => _i('Nessuno')
     ]
 ])
 

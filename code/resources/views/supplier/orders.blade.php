@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-12">
-        <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#orderSearch-{{ $supplier->id }}">Ricerca</button>
+        <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#orderSearch-{{ $supplier->id }}">{{ _i('Ricerca') }}</button>
 
         <div class="collapse list-filter" id="orderSearch-{{ $supplier->id }}" data-list-target="#wrapper-order-list-{{ $supplier->id }}">
             <div class="row">
@@ -12,7 +12,7 @@
                             @include('commons.genericdaterange')
                         </form>
 
-                        <button class="btn btn-danger pull-right">Chiudi</button>
+                        <button class="btn btn-danger pull-right">{{ _i('Chiudi') }}</button>
                         <div class="clearfix"></div>
                     </div>
                 </div>

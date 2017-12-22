@@ -1,12 +1,12 @@
 <div class="wizard_page">
     <div class="modal-body">
         <p>
-            Movimenti importati:
+            {{ _i('Movimenti importati') }}:
         </p>
 
         <ul class="list-group">
             @if(empty($movements))
-                <li>Nessuno!</li>
+                <li>{{ _i('Nessuno') }}</li>
             @else
                 @foreach($movements as $m)
                     <li class="list-group-item">{!! $m->printableName() !!}</li>
@@ -18,7 +18,7 @@
             <hr/>
 
             <p>
-                Errori:
+                {{ _i('Errori') }}:
             </p>
 
             <ul class="list-group">
@@ -32,6 +32,6 @@
     </div>
 
     <div class="modal-footer">
-        <button type="button" class="btn btn-default reloader" data-dismiss="modal">Chiudi</button>
+        <button type="button" class="btn btn-default reloader" data-dismiss="modal">{{ _i('Chiudi') }}</button>
     </div>
 </div>

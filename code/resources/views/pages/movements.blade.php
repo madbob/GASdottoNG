@@ -7,7 +7,7 @@
         @can('movements.admin', $currentgas)
             @include('commons.addingbutton', [
                 'typename' => 'movement',
-                'typename_readable' => 'Movimento',
+                'typename_readable' => _i('Movimento'),
                 'dynamic_url' => url('movements/create')
             ])
 
@@ -16,7 +16,7 @@
                 'import_target' => 'movements'
             ])
 
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#creditsStatus">Stato Crediti</button>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#creditsStatus">{{ _i('Stato Crediti') }}</button>
             <div class="modal fade dynamic-contents" id="creditsStatus" tabindex="-1" data-contents-url="{{ url('movements/showcredits') }}">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -26,7 +26,7 @@
         @endcan
 
         @can('movements.types', $currentgas)
-            <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#handleMovementTypes">Amministra Tipi Movimento</button>
+            <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#handleMovementTypes">{{ _i('Amministra Tipi Movimento') }}</button>
             <div class="collapse dynamic-contents" id="handleMovementTypes" tabindex="-1" data-contents-url="{{ url('movtypes') }}">
             </div>
         @endcan
@@ -45,35 +45,35 @@
             @include('commons.selectmovementtypefield', ['show_all' => true])
             @include('commons.radios', [
                 'name' => 'method',
-                'label' => 'Pagamento',
+                'label' => _i('Pagamento'),
                 'values' => ['all' => (object)['name' => 'Tutti', 'checked' => true]] + App\MovementType::payments()
             ])
             @include('commons.selectobjfield', [
                 'obj' => null,
                 'name' => 'user_id',
-                'label' => 'Utente',
+                'label' => _i('Utente'),
                 'objects' => App\User::orderBy('lastname', 'asc')->get(),
                 'extra_selection' => [
-                    '0' => 'Nessuno'
+                    '0' => _i('Nessuno')
                 ]
             ])
             @include('commons.selectobjfield', [
                 'obj' => null,
                 'name' => 'supplier_id',
-                'label' => 'Fornitore',
+                'label' => _i('Fornitore'),
                 'objects' => App\Supplier::orderBy('name', 'asc')->get(),
                 'extra_selection' => [
-                    '0' => 'Nessuno'
+                    '0' => _i('Nessuno')
                 ]
             ])
-            @include('commons.decimalfield', ['obj' => null, 'name' => 'amountstart', 'label' => 'Importo Minimo', 'is_price' => true])
-            @include('commons.decimalfield', ['obj' => null, 'name' => 'amountend', 'label' => 'Importo Massimo', 'is_price' => true])
+            @include('commons.decimalfield', ['obj' => null, 'name' => 'amountstart', 'label' => _i('Importo Minimo'), 'is_price' => true])
+            @include('commons.decimalfield', ['obj' => null, 'name' => 'amountend', 'label' => _i('Importo Massimo'), 'is_price' => true])
 
             <div class="form-group">
                 <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
-                    <button type="submit" class="btn btn-success">Ricerca</button>
-                    <a href="{{ url('movements?format=csv') }}" class="btn btn-default form-filler-download">Esporta CSV</a>
-                    <a href="{{ url('movements?format=pdf') }}" class="btn btn-default form-filler-download">Esporta PDF</a>
+                    <button type="submit" class="btn btn-success">{{ _i('Ricerca') }}</button>
+                    <a href="{{ url('movements?format=csv') }}" class="btn btn-default form-filler-download">{{ _i('Esporta CSV') }}</a>
+                    <a href="{{ url('movements?format=pdf') }}" class="btn btn-default form-filler-download">{{ _i('Esporta PDF') }}</a>
                 </div>
             </div>
         </div>
