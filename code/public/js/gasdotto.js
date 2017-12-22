@@ -3,6 +3,7 @@
 */
 
 var locker = false;
+var absolute_url = $('meta[name=absolute_url]').attr('content');
 
 $.fn.tagName = function() {
     return this.prop("tagName").toLowerCase();
@@ -12,7 +13,7 @@ var userBlood = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     remote: {
-        url: '/users/search?term=%QUERY',
+        url: absolute_url + '/users/search?term=%QUERY',
         wildcard: '%QUERY'
     }
 });
@@ -123,10 +124,10 @@ function generalInit() {
                 var url = '';
 
                 if (while_shipping) {
-                    url = '/delivery/' + aggregate_id + '/user/' + result.id;
+                    url = absolute_url + '/delivery/' + aggregate_id + '/user/' + result.id;
                 }
                 else {
-                    url = '/booking/' + aggregate_id + '/user/' + result.id;
+                    url = absolute_url + '/booking/' + aggregate_id + '/user/' + result.id;
                 }
 
                 $.ajax({
@@ -680,7 +681,7 @@ function updateOrderSummary(form) {
 
         $.ajax({
             method: 'POST',
-            url: '/orders/recalculate/' + order_id,
+            url: absolute_url + '/orders/recalculate/' + order_id,
             data: data,
             dataType: 'json',
 
@@ -855,7 +856,7 @@ function setupVariantsEditor() {
 
         $.ajax({
             method: 'DELETE',
-            url: '/variants/' + id,
+            url: absolute_url + '/variants/' + id,
             dataType: 'html',
 
             success: function(data) {
@@ -917,7 +918,7 @@ function setupVariantsEditor() {
 
         $.ajax({
             method: 'POST',
-            url: '/variants',
+            url: absolute_url + '/variants',
             data: data,
             dataType: 'html',
 
@@ -999,7 +1000,7 @@ function submitDeliveryForm(form) {
 function attachUserRole(role_id, user_id, target_id, target_class, callback) {
     $.ajax({
         method: 'POST',
-        url: '/roles/attach',
+        url: absolute_url + '/roles/attach',
         data: {
             role: role_id,
             user: user_id,
@@ -1016,7 +1017,7 @@ function attachUserRole(role_id, user_id, target_id, target_class, callback) {
 function detachUserRole(role_id, user_id, target_id, target_class, callback) {
     $.ajax({
         method: 'POST',
-        url: '/roles/detach',
+        url: absolute_url + '/roles/detach',
         data: {
             role: role_id,
             user: user_id,
@@ -1056,7 +1057,7 @@ function setupPermissionsEditor() {
                 var label = result.label;
                 $.ajax({
                     method: 'POST',
-                    url: '/roles/attach',
+                    url: absolute_url + '/roles/attach',
                     dataType: 'HTML',
                     data: {
                         role: role_id,
@@ -1097,9 +1098,9 @@ function setupPermissionsEditor() {
 
         var url = '';
         if (check.is(':checked') == true)
-            url = '/roles/attach';
+            url = absolute_url + '/roles/attach';
         else
-            url = '/roles/detach';
+            url = absolute_url + '/roles/detach';
 
         var data = {};
         data.role = check.attr('data-role');
@@ -1129,7 +1130,7 @@ function setupPermissionsEditor() {
 
             $.ajax({
                 method: 'POST',
-                url: '/roles/detach',
+                url: absolute_url + '/roles/detach',
                 data: data,
                 success() {
                     button.closest('.loadable-contents').find('.role-users').find('[data-user=' + userid + ']').remove();
@@ -1173,7 +1174,7 @@ function displayRecalculatedBalances(form, data) {
 function refreshBalanceView() {
     $.ajax({
         method: 'GET',
-        url: '/movements/balance',
+        url: absolute_url + '/movements/balance',
         dataType: 'JSON',
         success: function(data) {
             $('.current-balance').each(function() {
@@ -1960,7 +1961,7 @@ $(document).ready(function() {
 
         $.ajax({
             method: 'GET',
-            url: '/movements/create',
+            url: absolute_url + '/movements/create',
             dataType: 'html',
             data: {
                 type: type
@@ -2105,7 +2106,7 @@ $(document).ready(function() {
         var list = $(this).closest('.loadablelist');
         var original = currentLoadableTrigger(this);
         $.ajax({
-            url: '/products',
+            url: absolute_url + '/products',
             method: 'POST',
             dataType: 'JSON',
             data: {
@@ -2189,7 +2190,7 @@ $(document).ready(function() {
         var date = button.closest('form').find('.last-date');
 
         $.ajax({
-            url: '/aggregates/notify/' + id,
+            url: absolute_url + '/aggregates/notify/' + id,
             method: 'POST',
             success: function(data) {
                 date.text(data);
@@ -2330,7 +2331,7 @@ $(document).ready(function() {
         } else {
             $.ajax({
                 method: 'GET',
-                url: '/products/' + id,
+                url: absolute_url + '/products/' + id,
                 data: {
                     format: 'bookable',
                     order_id: editor.attr('data-order-id')
@@ -2458,7 +2459,7 @@ $(document).ready(function() {
 
         $.ajax({
             method: 'GET',
-            url: '/gas/configmail',
+            url: absolute_url + '/gas/configmail',
             data: {
                 email: email
             },
