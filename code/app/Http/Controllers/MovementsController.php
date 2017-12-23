@@ -11,6 +11,7 @@ use Theme;
 use Log;
 use PDF;
 use Session;
+use Response;
 
 use App\Movement;
 use App\MovementType;
@@ -329,12 +330,22 @@ class MovementsController extends Controller
                 }
                 else if ($subtype == 'rid') {
                     $filename = _i('SEPA del %s.xml', date('d/m/Y'));
-                    header('Content-Type: text/xml');
-                    header('Content-Disposition: attachment; filename="' . $filename . '"');
-                    header('Cache-Control: no-cache, no-store, must-revalidate');
-                    header('Pragma: no-cache');
-                    header('Expires: 0');
-                    return Theme::view('documents.credits_rid', ['users' => $users]);
+
+                    $headers = [
+                        'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+                        'Content-type' => 'text/xml',
+                        'Content-Disposition' => 'attachment; filename=' . $filename,
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Expires' => '0',
+                        'Pragma' => 'no-cache'
+                    ];
+
+                    return Response::stream(function() use ($users) {
+                        $FH = fopen('php://output', 'w');
+                        $contents = Theme::view('documents.credits_rid', ['users' => $users])->render();
+                        fwrite($FH, $contents);
+                        fclose($FH);
+                    }, 200, $headers);
                 }
                 break;
         }

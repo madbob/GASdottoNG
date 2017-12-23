@@ -196,11 +196,12 @@
 
                                 <div class="col-md-12">
                                     <p>
-                                        {{ _i("Popolando questi campi verrà attivata l'esportazione dei files SEPA, con cui automatizzare le transazioni bancarie.<br>Per ogni utente dovrai specificare alcuni parametri.") }}
+                                        {!! _i("Popolando questi campi verrà attivata l'esportazione dei files SEPA, con cui automatizzare le transazioni bancarie.<br>Per ogni utente dovrai specificare alcuni parametri.") !!}
                                     </p>
 
                                     @include('commons.textfield', ['obj' => $gas, 'name' => 'rid->iban', 'label' => _i('IBAN')])
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'rid->id', 'label' => _i('Identificativo Azienda')])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'rid->id', 'label' => _i('Identificativo Creditore')])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'rid->org', 'label' => _i('Codice Univoco Azienda')])
 
                                     <div class="btn-group pull-right main-form-buttons" role="group">
                                         <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>

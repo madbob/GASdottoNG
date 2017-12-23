@@ -26,7 +26,10 @@ function accessAttr($obj, $name, $default = '')
 
     if (strpos($name, '->') !== false) {
         list($array, $index) = explode('->', $name);
-        return $obj->$array[$index];
+        if (isset($obj->$array[$index]))
+            return $obj->$array[$index];
+        else
+            return '';
     }
     else {
         return $obj->$name;

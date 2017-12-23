@@ -118,6 +118,7 @@ class GasController extends Controller
                 $rid_info = (object) [
                     'iban' => $request->input('rid->iban'),
                     'id' => $request->input('rid->id'),
+                    'org' => $request->input('rid->org'),
                 ];
                 $gas->setConfig('rid', $rid_info);
                 break;
