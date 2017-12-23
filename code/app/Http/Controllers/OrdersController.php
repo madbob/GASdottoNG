@@ -475,16 +475,6 @@ class OrdersController extends Controller
                 $filename = sprintf('Tabella Ordine %s presso %s.csv', $order->internal_number, $order->supplier->name);
                 return output_csv($filename, null, $contents, null, null);
                 break;
-
-            case 'rid':
-                $filename = _i('RID Ordine %s presso %s.txt', $order->internal_number, $order->supplier->name);
-                header('Content-Type: plain/text');
-                header('Content-Disposition: attachment; filename="' . $filename . '"');
-                header('Cache-Control: no-cache, no-store, must-revalidate');
-                header('Pragma: no-cache');
-                header('Expires: 0');
-                return Theme::view('documents.order_rid', ['order' => $order]);
-                break;
         }
     }
 }
