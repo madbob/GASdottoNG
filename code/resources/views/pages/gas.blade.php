@@ -196,7 +196,7 @@
 
                                 <div class="col-md-12">
                                     <p>
-                                        {!! _i("Popolando questi campi verrà attivata l'esportazione dei files SEPA, con cui automatizzare le transazioni bancarie.<br>Per ogni utente dovrai specificare alcuni parametri.") !!}
+                                        {!! _i("Popolando questi campi verrà attivata l'esportazione dei files SEPA, con cui automatizzare le transazioni bancarie.<br>I files saranno generabili da <strong>Contabilità -> Stato Crediti -> Esporta RID</strong><br>Dopo aver compilato questo form, per ogni utente dovrai specificare alcuni parametri.") !!}
                                     </p>
 
                                     @include('commons.textfield', ['obj' => $gas, 'name' => 'rid->iban', 'label' => _i('IBAN')])

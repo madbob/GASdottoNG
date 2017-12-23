@@ -21,7 +21,7 @@ del popup relativo.
 
 ```
 
-## .user-editor
+## .user-editor, #createUser
 
 # Username
 
@@ -29,17 +29,35 @@ Username col quale l'utente si può autenticare. Deve essere univoco.
 
 # Password
 
-Password di accesso dell'utente. Lasciando in bianco questo campo, la password attuale non sarà modificata.
+Password di accesso dell'utente. Per gli utenti già esistenti, lasciando in bianco questo campo al salvataggio la password attuale non sarà modificata.
 
 # Contatti
 
 Qui si può specificare un numero arbitrario di contatti per l'utente. Le notifiche saranno spedite a tutti gli indirizzi e-mail indicati.
 
+# Quota Associativa
+
+Dati relativi alla quota associativa dell'utente, che scade ogni anno. Per disabilitare questa opzione, vai in<br>
+Configurazione -> Contabilità
+
+# Deposito
+
+Dati relativi al deposito pagato dall'utente al momento dell'iscrizione al GAS. Per disabilitare questa opzione, vai in<br>
+Configurazione -> Contabilità
+
+# Luogo di Consegna
+
+Dove l'utente preferisce avere i propri prodotti recapitati. Permette di organizzare le consegne in luoghi diversi.
+
 # Stato
 
-Gli utenti Sospesi e Cessati non possono accedere alla piattaforma.
+Gli utenti Sospesi e Cessati non possono accedere alla piattaforma, pur restando registrati.
 
-## .supplier-editor
+# Configurazione SEPA
+
+Specifica qui i parametri per la generazione dei RID per questo utente. Per gli utenti per i quali questi campi non sono stati compilati non sarà possibile generare alcun RID.
+
+## .supplier-editor, #createSupplier
 
 # Nome
 
@@ -47,7 +65,7 @@ Nome informale del fornitore.
 
 # Ragione Sociale
 
-Nome completo del fornitore, da usare per fini contabili e fiscali.
+Nome completo del fornitore, da usare per fini contabili e fiscali. Se non specificato, verrà usato il Nome
 
 # Descrizione
 
@@ -77,11 +95,11 @@ Prezzo unitario per unità di misura. Si intende "IVA inclusa", per maggiori det
 
 # Prezzo Trasporto
 
-Prezzo di trasporto per singola unità.
+Prezzo di trasporto per singola unità. Attenzione: da non confondere con le Spese di Trasporto applicabili globalmente su un ordine.
 
 # Sconto
 
-Sconto applicabile occasionalmente sul prezzo del prodotto. Se espresso con un numero decimale (e.g. 2,10) viene considerato come valore assoluto, altrimenti se termina con un simbolo di percentuale (e.g. 20%) viene considerato come percentuale sul Prezzo Unitario. Lo sconto può essere attivato o disattivato su ogni ordine che include il prodotto.
+Sconto applicabile occasionalmente sul prezzo del prodotto. Lo sconto può essere attivato o disattivato su ogni ordine che include il prodotto.
 
 # Categoria
 
@@ -97,7 +115,8 @@ Breve descrizione del prodotto.
 
 # Aliquota IVA
 
-Le aliquote esistenti possono essere configurate nel pannello "Configurazioni".
+Le aliquote esistenti possono essere configurate nel pannello<br>
+Configurazioni
 
 # Codice Fornitore
 
@@ -149,7 +168,7 @@ Se diverso da 0, questa è la quantità massima di prodotto che complessivamente
 
 Ogni prodotto può avere delle varianti, ad esempio la taglia o il colore per i capi di abbigliamento. In fase di prenotazione, gli utenti potranno indicare quantità diverse per ogni combinazione di varianti. Le varianti possono inoltre avere un proprio prezzo, da specificare in funzione del prezzo unitario del prodotto (ad esempio: +1 euro o -0.8 euro).
 
-## .order-editor
+## .order-editor, #createOrder
 
 # Fornitore
 
@@ -187,7 +206,7 @@ Stato attuale dell'ordine. Può assumere i valori:
 
 # Sconto Globale
 
-Sconto applicato su tutti i prodotti nell'ordine. Può eventualmente essere sommato allo sconto individualmente applicabile sui singoli prodotti, che va configurato nell'apposito pannello. Se espresso con un numero decimale (e.g. 2,10) viene considerato come valore assoluto, altrimenti se termina con un simbolo di percentuale (e.g. 20%) viene considerato come percentuale sul Prezzo Unitario.
+Sconto applicato su tutti i prodotti nell'ordine. Può eventualmente essere sommato allo sconto individualmente applicabile sui singoli prodotti, che va configurato nell'apposito pannello.
 
 # Spese Trasporto
 
@@ -195,7 +214,7 @@ Eventuali spese di trasporto da applicare a tutte le prenotazioni avanzate su qu
 
 # Pagamento
 
-Da qui è possibile immettere il movimento contabile di pagamento dell'ordine nei confronti del fornitore.
+Da qui è possibile immettere il movimento contabile di pagamento dell'ordine nei confronti del fornitore, che andrà ad alterare il relativo saldo.
 
 ## .gas-editor
 
@@ -205,11 +224,15 @@ Nome del GAS.
 
 # E-Mail
 
-Indirizzo mail di riferimento del GAS. Attenzione: viene specificato a titolo informativo, le configurazioni per la spedizione di email generate dal sistema sono nel riquadro accanto.
+Indirizzo mail di riferimento del GAS. Attenzione: viene specificato a titolo informativo, le configurazioni per la spedizione di email generate dal sistema sono nel riquadro dedicato.
 
 # Messaggio Homepage
 
-Eventuale messaggio da visualizzare sulla pagina di autenticazione di GASdotto, utile per comunicazioni speciali verso i membri del GAS.
+Eventuale messaggio da visualizzare sulla pagina di autenticazione di GASdotto, utile per comunicazioni speciali verso i membri del GAS o come messaggio di benvenuto.
+
+# Indirizzo
+
+Indirizzo mail da cui verranno spedite le mail.
 
 # Username
 
@@ -231,9 +254,9 @@ Porta TCP da usare per connettersi al server SMTP. Consultare la documentazione 
 
 Tipo di connessione sicura usata dal proprio server SMTP. Consultare la documentazione del proprio fornitore di posta elettronica per questi dettagli.
 
-# Denominazione
+# Abilita Consegne Rapide
 
-.
+Quando questa opzione è abilitata, nel pannello dell'ordine viene attivato il tab "Consegne Rapide" (accanto a "Consegne") che permette di marcare più prenotazioni come consegnate in un'unica operazione.
 
 # Inizio Anno Sociale
 
@@ -249,8 +272,16 @@ Se non configurato (valore = 0) non verranno gestite le cauzioni da parte dei nu
 
 # IBAN
 
-.
+IBAN su cui dovranno avvenire i versamenti generati per mezzo dei RID.
 
-# Identificativo Azienda
+# Identificativo Creditore
 
-.
+Codice identificativo erogato dalla banca.
+
+# Codice Univoco Azienda
+
+Codice identificativo erogato dalla banca, detto anche "CUC".
+
+# Importazione
+
+Da qui è possibile importare un file GDXP generato da un'altra istanza di GASdotto o da qualsiasi altra piattaforma che supporta il formato.

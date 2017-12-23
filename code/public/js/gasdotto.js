@@ -37,6 +37,7 @@ function generalInit() {
     });
 
     $('.addicted-table').bootstrapTable();
+    $('#help-trigger').helperTrigger();
 
     /*
         https://stackoverflow.com/questions/15989591/how-can-i-keep-bootstrap-popover-alive-while-the-popover-is-being-hovered
