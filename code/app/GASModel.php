@@ -339,20 +339,20 @@ trait GASModel
                     },
                     'text' => _i('Credito < 0'),
                 ];
-            }
 
-            /*
-                Se la gestione delle quote di iscrizione è abilitata, viene
-                attivata la relativa icona per distinguere gli utenti che non
-                l'hanno pagata o rinnovata
-            */
-            if ($user->gas->getConfig('annual_fee_amount') != 0) {
-                $icons['User']['euro'] = (object) [
-                    'test' => function ($obj) {
-                        return $obj->fee_id == 0;
-                    },
-                    'text' => _i('Quota non Pagata'),
-                ];
+                /*
+                    Se la gestione delle quote di iscrizione è abilitata, viene
+                    attivata la relativa icona per distinguere gli utenti che non
+                    l'hanno pagata o rinnovata
+                */
+                if ($user->gas->getConfig('annual_fee_amount') != 0) {
+                    $icons['User']['euro'] = (object) [
+                        'test' => function ($obj) {
+                            return $obj->fee_id == 0;
+                        },
+                        'text' => _i('Quota non Pagata'),
+                    ];
+                }
             }
 
             /*

@@ -8,7 +8,6 @@
 </ul>
 
 <div class="pull-right">
-    <br/>
     <div class="form-inline iblock inner-form">
         <button class="btn btn-default" data-toggle="modal" data-target="#movements-history-{{ $obj->id }}">{{ _i('Storico Saldi') }}</button>
 

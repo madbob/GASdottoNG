@@ -231,7 +231,8 @@ table .form-group {
 
 .list-group {
   float: left;
-  width: 100%; }
+  width: 100%;
+  margin-bottom: 11px; }
 
 .dense-list ul {
   height: 710px;

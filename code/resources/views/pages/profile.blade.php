@@ -37,8 +37,6 @@
                 ])
             @endif
 
-            @include('commons.staticdatefield', ['obj' => $user, 'name' => 'last_login', 'label' => _i('Ultimo Accesso')])
-
             <?php $places = App\Delivery::orderBy('name', 'asc')->get() ?>
             @if($places->isEmpty() == false)
                 @include('commons.selectobjfield', [
