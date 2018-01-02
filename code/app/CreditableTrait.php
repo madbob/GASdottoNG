@@ -67,7 +67,11 @@ trait CreditableTrait
             $current_status[$class] = [];
             $fields = $class::balanceFields();
 
-            $objects = $class::all();
+            if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
+                $objects = $class::withTrashed()->get();
+            else
+                $objects = $class::all();
+
             foreach($objects as $obj) {
                 $now = [];
                 $cb = $obj->current_balance;
