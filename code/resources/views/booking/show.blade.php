@@ -22,11 +22,11 @@ $grand_total = 0;
             <table class="table table-striped booking-editor">
                 <thead>
                     <tr>
-                        <th width="30%">{{ _i('Prodotto') }}</th>
-                        <th width="20%">{{ _i('Ordinato') }}</th>
-                        <th width="20%">{{ _i('Consegnato') }}</th>
-                        <th width="20%">{{ _i('Prezzo Unitario') }}</th>
-                        <th width="10%">{{ _i('Prezzo Totale') }}</th>
+                        <th width="50%">{{ _i('Prodotto') }}</th>
+                        <th width="15%">{{ _i('Ordinato') }}</th>
+                        <th width="15%">{{ _i('Consegnato') }}</th>
+                        <th width="10%">{{ _i('Prezzo Unitario') }}</th>
+                        <th width="10%" class="text-right">{{ _i('Prezzo Totale') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,8 +45,10 @@ $grand_total = 0;
                                     {{ printableQuantity($product->delivered, $product->product->measure->discrete, 3) }} {{ $product->product->measure->name }}
                                 </td>
 
-                                <td class="text-right">
-                                    <label class="static-label">{!! $product->product->printablePrice($order) !!}</label>
+                                <td>
+                                    <label class="static-label">
+                                        {!! $product->product->printablePrice($order) !!}
+                                    </label>
                                 </td>
 
                                 <td>
@@ -78,8 +80,10 @@ $grand_total = 0;
                                         {{ printableQuantity($var->delivered, $product->product->measure->discrete, 3) }} {{ $product->product->measure->name }}
                                     </td>
 
-                                    <td class="text-right">
-                                        <label class="static-label">{!! $product->product->printablePrice($order) !!}</label>
+                                    <td>
+                                        <label class="static-label">
+                                            {!! $product->product->printablePrice($order) !!}
+                                        </label>
                                     </td>
 
                                     <td>

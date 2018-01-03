@@ -18,10 +18,10 @@ $grand_total = 0;
         <table class="table table-striped booking-editor">
             <thead>
                 <tr>
-                    <th width="25%"></th>
+                    <th width="40%"></th>
                     <th width="30%"></th>
-                    <th width="25%"></th>
                     <th width="15%"></th>
+                    <th width="10%"></th>
                     <th width="5%"></th>
                 </tr>
             </thead>
@@ -43,7 +43,7 @@ $grand_total = 0;
                         </td>
 
                         <td class="text-right">
-                            <label class="static-label">{!! $product->printablePrice($order) !!}</label>
+                            <label class="static-label"><small>{!! $product->printablePrice($order) !!}</small></label>
                         </td>
 
                         <td>
