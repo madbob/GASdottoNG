@@ -69,12 +69,16 @@ class MeasuresController extends Controller
         $saved_ids = [];
 
         for ($i = 0; $i < count($ids); ++$i) {
-            $id = $ids[$i];
-            $name = $new_names[$i];
+            $name = trim($new_names[$i]);
+            if (empty($name))
+                continue;
 
-            if ($id == '') {
+            $id = $ids[$i];
+
+            if (empty($id)) {
                 $measure = new Measure();
-            } else {
+            }
+            else {
                 $measure = Measure::find($id);
                 $measure->discrete = (array_search($id, $new_discretes) !== false);
             }
