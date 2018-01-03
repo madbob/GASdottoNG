@@ -81,6 +81,7 @@ class DeliveryUserController extends BookingHandler
                     $booked->save();
                 }
 
+                $booking->transport = $booking->check_transport;
                 $booking->status = 'shipped';
                 $booking->save();
 
