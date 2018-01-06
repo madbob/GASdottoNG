@@ -9,9 +9,11 @@ $index = 1;
 foreach($users as $user) {
     if ($user->current_balance_amount < 0 && !empty($user->rid['iban'])) {
         $count_rows++;
-        $count_total += ($user->current_balance_amount * 1);
+        $count_total += $user->current_balance_amount;
     }
 }
+
+$count_total = $count_total * -1;
 
 ?>
 <urn:CBIBdySDDReq xmlns:urn="urn:CBI:xsd:CBIBdySDDReq.00.01.00">
