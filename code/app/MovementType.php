@@ -253,12 +253,15 @@ class MovementType extends Model
         return $types;
     }
 
-    public static function types($identifier = null)
+    public static function types($identifier = null, $with_trashed = false)
     {
         static $types = null;
 
         if ($types == null) {
-            $types = self::initSystemTypes(MovementType::orderBy('name', 'asc')->get());
+            $query = MovementType::orderBy('name', 'asc');
+            if ($with_trashed)
+                $query = $query->withTrashed();
+            $types = self::initSystemTypes($query->get());
         }
 
         if ($identifier) {

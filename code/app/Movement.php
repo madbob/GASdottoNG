@@ -69,7 +69,7 @@ class Movement extends Model
 
     public function getTypeMetadataAttribute()
     {
-        return MovementType::types($this->type);
+        return MovementType::types($this->type, true);
     }
 
     public function getValidPaymentsAttribute()
