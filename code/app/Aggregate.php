@@ -31,6 +31,11 @@ class Aggregate extends Model
             }
         }
 
+        if ($index == 10) {
+            Log::debug('Impossibile recuperare stato aggregato ' . $this->id . ' con ' . $this->orders->count() . ' ordini');
+            $index = 2;
+        }
+
         return $priority[$index];
     }
 

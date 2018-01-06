@@ -35,19 +35,16 @@ class OverwriteMail
             $gas = Gas::first();
         }
 
-        if ($gas != null && $gas->has_mail()) {
-            $mailconf = $gas->getConfig('mail_conf');
-            $conf = json_decode($mailconf);
+        if ($gas != null) {
+            $conf = (object) $gas->mail;
 
-            if ($gas->maildriver == 'smtp') {
+            if ($conf->driver == 'smtp') {
                 $from_address = $conf->address;
                 $from_name = $gas->name;
-                $conf->driver = 'smtp';
             }
-            else if ($gas->maildriver == 'ses') {
+            else if ($conf->driver == 'ses') {
                 $from_address = config('services.ses.from.address');
                 $from_name = config('services.ses.from.name');
-                $conf->driver = 'ses';
             }
 
             $conf->from = array('address' => $from_address, 'name' => $from_name);

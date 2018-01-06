@@ -1,10 +1,7 @@
 @include('commons.textarea', ['obj' => $notification, 'name' => 'content', 'label' => _i('Contenuto'), 'mandatory' => true])
 @include('commons.datefield', ['obj' => $notification, 'name' => 'start_date', 'label' => _i('Inizio'), 'mandatory' => true])
 @include('commons.datefield', ['obj' => $notification, 'name' => 'end_date', 'label' => _i('Scadenza'), 'mandatory' => true])
-
-@if($currentgas->has_mail())
-    @include('commons.boolfield', ['obj' => $notification, 'name' => 'mailed', 'label' => _i('Invia Mail')])
-@endif
+@include('commons.boolfield', ['obj' => $notification, 'name' => 'mailed', 'label' => _i('Invia Mail')])
 
 <?php
 

@@ -56,7 +56,7 @@
                                     <div class="col-md-12">
                                         <div class="radio">
                                             <label>
-                                                <input type="radio" name="maildriver" value="ses" {{ $gas->maildriver == 'ses' ? 'checked' : '' }}>
+                                                <input type="radio" name="maildriver" value="ses" {{ $gas->mail->driver == 'ses' ? 'checked' : '' }}>
                                                 {{ _i('Utilizza configurazione globale.') }}<br>
                                                 {{ _i("Le mail generate dal sistema saranno inviate dall'indirizzo %s.", config('services.ses.from.address')) }}
                                             </label>
@@ -69,27 +69,27 @@
                                     <div class="col-md-12">
                                         <div class="radio">
                                             <label>
-                                                <input type="radio" name="maildriver" value="smtp" {{ $gas->maildriver == 'smtp' ? 'checked' : '' }}>
+                                                <input type="radio" name="maildriver" value="smtp" {{ $gas->mail->driver == 'smtp' ? 'checked' : '' }}>
                                                 {{ _i('Utilizza configurazione personalizzata.') }}<br>
                                                 {{ _i('Le mail generate dal sistema saranno inviate dal tuo indirizzo.') }}
                                             </label>
                                         </div>
                                     </div>
                                 @else
-                                    <input type="hidden" name="mail-mode" value="smtp">
+                                    <input type="hidden" name="maildriver" value="smtp">
                                 @endif
 
                                 <div class="col-md-6">
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'mailaddress', 'label' => _i('Indirizzo')])
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'mailusername', 'label' => _i('Username')])
-                                    @include('commons.passwordfield', ['obj' => $gas, 'name' => 'mailpassword', 'label' => _i('Password')])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'mail->address', 'label' => _i('Indirizzo')])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'mail->username', 'label' => _i('Username')])
+                                    @include('commons.passwordfield', ['obj' => $gas, 'name' => 'mail->password', 'label' => _i('Password')])
                                 </div>
                                 <div class="col-md-6">
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'mailserver', 'label' => _i('Server SMTP')])
-                                    @include('commons.numberfield', ['obj' => $gas, 'name' => 'mailport', 'label' => _i('Porta')])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'mail->host', 'label' => _i('Server SMTP')])
+                                    @include('commons.numberfield', ['obj' => $gas, 'name' => 'mail->port', 'label' => _i('Porta')])
                                     @include('commons.selectenumfield', [
                                         'obj' => $gas,
-                                        'name' => 'mailssl',
+                                        'name' => 'mail->encryption',
                                         'label' => _i('Crittografia'),
                                         'values' => [
                                             [
