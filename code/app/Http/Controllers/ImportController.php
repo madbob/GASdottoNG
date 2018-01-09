@@ -383,6 +383,7 @@ class ImportController extends Controller
                     }
 
                     $movements = [];
+                    $errors = [];
 
                     $reader = CsvReader::open($path, $target_separator);
                     while (($line = $reader->readLine()) !== false) {
@@ -395,23 +396,30 @@ class ImportController extends Controller
                             */
                             $m = new Movement();
                             $m->method = 'bank';
+                            $save_me = true;
 
                             foreach ($columns as $index => $field) {
                                 if ($field == 'none') {
                                     continue;
                                 }
                                 elseif ($field == 'date') {
-                                    $value = date('Y-m-d', strtotime($line[$index]));
+                                    $value = date('Y-m-d', readDate($line[$index]));
                                 }
                                 elseif ($field == 'user') {
                                     $field = 'sender_id';
 
-                                    $name = $line[$index];
+                                    $name = trim($line[$index]);
                                     $user = User::where('username', $name)->first();
+
                                     if ($user == null) {
                                         $user = User::whereHas('contacts', function($query) use ($name) {
                                             $query->where('value', $name);
                                         })->first();
+                                    }
+
+                                    if ($user == null) {
+                                        $save_me = false;
+                                        continue;
                                     }
 
                                     $value = $user->id;
@@ -423,7 +431,8 @@ class ImportController extends Controller
                                 $m->$field = $value;
                             }
 
-                            $movements[] = $m;
+                            if ($save_me)
+                                $movements[] = $m;
                         }
                         catch (\Exception $e) {
                             $errors[] = implode($target_separator, $line) . '<br/>' . $e->getMessage();
