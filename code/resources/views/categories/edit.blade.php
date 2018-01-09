@@ -7,7 +7,7 @@ function descent($category)
     if ($category->id != 1)
         echo '<span class="badge pull-right"><span class="glyphicon glyphicon-remove dynamic-tree-remove"></span></span>';
 
-    echo '<input type="text" class="form-control" value="' . $category->name . '"></div><ul>';
+    echo '<input type="text" class="form-control" value="' . $category->name . '" required></div><ul>';
 
     foreach($category->children as $c)
         echo descent($c);

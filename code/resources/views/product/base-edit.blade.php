@@ -8,7 +8,7 @@
     'name' => 'category_id',
     'objects' => App\Category::orderBy('name', 'asc')->where('parent_id', '=', null)->get(),
     'label' => _i('Categoria'),
-    'enforced_default' => 1
+    'enforced_default' => 'non-specificato'
 ])
 
 @include('commons.selectobjfield', [
@@ -17,7 +17,8 @@
     'objects' => App\Measure::orderBy('name', 'asc')->get(),
     'extra_class' => 'measure-selector',
     'label' => _i('Unità di Misura'),
-    'datafields' => ['discrete']
+    'datafields' => ['discrete'],
+    'enforced_default' => 'non-specificato'
 ])
 
 @include('commons.textarea', ['obj' => $product, 'name' => 'description', 'label' => _i('Descrizione')])

@@ -71,6 +71,7 @@
                 },
                 success: function() {
                     inlineFeedback(button, 'Salvato!');
+                    $(this).closest('.modal').modal('hide');
                 }
             });
 
