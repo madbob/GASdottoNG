@@ -425,6 +425,7 @@ class Role extends Model
                 'users.admin' => _i('Amministrare le anagrafiche degli utenti'),
                 'users.view' => _i('Vedere tutti gli utenti'),
                 'users.movements' => _i('Amministrare i movimento contabili degli utenti'),
+                'users.subusers' => _i('Avere sotto-utenti con funzioni limitate'),
                 'movements.admin' => _i('Amministrare tutti i movimenti contabili'),
                 'movements.view' => _i('Vedere i movimenti contabili'),
                 'movements.types' => _i('Amministrare i tipi dei movimenti contabili'),

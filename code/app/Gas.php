@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Log;
 
 use App\Events\SluggableCreating;
+
+use App\Role;
 use App\AttachableTrait;
 use App\GASModel;
 use App\SluggableID;
@@ -81,6 +83,13 @@ class Gas extends Model
                     'org' => ''
                 ]
             ],
+
+            'roles' => [
+                'default' => (object) [
+                    'user' => Role::where('name', 'Utente')->first()->id,
+                    'friend' => Role::where('name', 'Utente')->first()->id
+                ]
+            ]
         ];
     }
 
@@ -150,6 +159,11 @@ class Gas extends Model
     public function getRidAttribute()
     {
         return (array) json_decode($this->getConfig('rid'));
+    }
+
+    public function getRolesAttribute()
+    {
+        return (array) json_decode($this->getConfig('roles'));
     }
 
     public function getFastShippingEnabledAttribute()

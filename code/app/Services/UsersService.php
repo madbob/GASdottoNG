@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
 use App\User;
+
 use Auth;
 use Log;
 use DB;
@@ -77,6 +78,50 @@ class UsersService extends BaseService
         });
 
         return $user;
+    }
+
+    private function updateFriends($parent, $request)
+    {
+        $ids = [];
+        $usernames = [];
+
+        if (isset($request['friend_id'])) {
+            $ids = $request['friend_id'];
+            $usernames = $request['friend_username'];
+        }
+
+        $friends = [];
+
+        if (!empty($ids)) {
+            $role_id = $parent->gas->roles->friend;
+            $role = Role::find($role_id);
+
+            foreach($ids as $index => $id) {
+                if (empty($usernames[$index]))
+                    continue;
+
+                if (empty($id)) {
+                    $user = new User();
+                    $user->password = Hash::make($usernames[$index]);
+                }
+                else {
+                    $user = User::find($id);
+                }
+
+                $user->username = $usernames[$index];
+                $user->parent_id = $parent->id;
+                $user->save();
+
+                if ($role != null) {
+                    $user->roles()->detach();
+                    $user->addRole($role, $parent->gas);
+                }
+
+                $friends[] = $user->id;
+            }
+        }
+
+        $parent->friends()->whereNotIn('id', $friends)->delete();
     }
 
     public function update($id, array $request)
@@ -158,6 +203,9 @@ class UsersService extends BaseService
             }
 
             $user->updateContacts($request);
+
+            if ($user->can('users.subusers'))
+                $this->updateFriends($user, $request);
 
             return $user;
         });

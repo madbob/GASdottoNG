@@ -7,6 +7,38 @@
         <div class="col-md-6">
             @include('user.base-edit', ['user' => $user])
             @include('commons.contactswidget', ['obj' => $user])
+
+            @if($user->can('users.subusers'))
+                <div class="form-group">
+                    <label for="contacts" class="col-sm-{{ $labelsize }} control-label">{{ _i('Amici') }}</label>
+
+                    <div class="col-sm-{{ $fieldsize }}">
+                        @include('commons.manyrows', [
+                            'contents' => $user->friends,
+                            'columns' => [
+                                [
+                                    'label' => _i('ID'),
+                                    'field' => 'id',
+                                    'type' => 'hidden',
+                                    'width' => 0,
+                                    'extra' => [
+                                        'prefix' => 'friend_'
+                                    ]
+                                ],
+                                [
+                                    'label' => _i('Username'),
+                                    'field' => 'username',
+                                    'type' => 'text',
+                                    'width' => 10,
+                                    'extra' => [
+                                        'prefix' => 'friend_'
+                                    ]
+                                ],
+                            ]
+                        ])
+                    </div>
+                </div>
+            @endif
         </div>
         <div class="col-md-6">
             @include('commons.imagefield', ['obj' => $user, 'name' => 'picture', 'label' => _i('Foto'), 'valuefrom' => 'picture_url'])

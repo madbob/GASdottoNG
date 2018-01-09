@@ -400,6 +400,28 @@
     </div>
 
     <div class="row">
+        <div class="col-md-6">
+            <form class="form-horizontal">
+                @include('commons.selectobjfield', [
+                    'obj' => $gas,
+                    'name' => 'roles->user',
+                    'label' => _i('Ruolo Utente non Privilegiato'),
+                    'objects' => App\Role::all()
+                ])
+
+                @if(App\Role::someone('users.subusers'))
+                    @include('commons.selectobjfield', [
+                        'obj' => $gas,
+                        'name' => 'roles->friend',
+                        'label' => _i('Ruolo Sotto-Utente'),
+                        'objects' => App\Role::all()
+                    ])
+                @endif
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-md-12">
             @include('commons.addingbutton', [
                 'template' => 'permissions.base-edit',

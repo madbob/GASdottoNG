@@ -50,6 +50,11 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Role')->orderBy('name', 'asc')->withPivot('id');
     }
 
+    public function friends()
+    {
+        return $this->hasMany('App\User', 'parent_id');
+    }
+
     public function getManagedRolesAttribute()
     {
         return Role::sortedByHierarchy(true);
