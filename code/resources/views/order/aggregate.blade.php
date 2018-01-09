@@ -63,7 +63,7 @@ $panel_rand_wrap = rand();
         </div>
         <div class="col-md-4">
             @if($more_orders)
-                <a href="{{ url('aggregates/document/' . $aggregate->id . '/shipping') }}" class="btn btn-default">{{ _i('Dettaglio Consegne Complessivo') }}</a>
+                <a href="{{ url('aggregates/document/' . $aggregate->id . '/shipping') }}" class="btn btn-default">{{ _i('Dettaglio Consegne Aggregato') }}</a>
             @endif
         </div>
     </div>

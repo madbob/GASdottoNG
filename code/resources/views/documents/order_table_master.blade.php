@@ -3,7 +3,7 @@
     $total_transport = 0;
     $all_products[$product->id] = 0;
     echo $product->printableName() . ';';
-} ?>{{ _i('Prezzo Totale') }};{{ _i('Trasporto') }};{{ _i('Utente') }}
+} ?>{{ _i('Totale Prezzo') }};{{ _i('Trasporto') }};{{ _i('Utente') }}
 
 @foreach($selected_bookings as $booking)
 {{ $booking->user->printableName() }}<?php foreach ($order->products as $product) {
@@ -19,4 +19,4 @@ TOTALI;<?php foreach ($order->products as $product) {
 
 {{ _i('Utente') }};<?php foreach ($order->products as $product) {
     echo $product->printableName() . ';';
-} ?>{{ _i('Prezzo Totale') }};{{ _i('Trasporto') }};{{ _i('Utente') }}
+} ?>{{ _i('Totale Prezzo') }};{{ _i('Trasporto') }};{{ _i('Utente') }}

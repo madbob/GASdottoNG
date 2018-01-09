@@ -321,7 +321,7 @@
                 <div class="panel-heading" role="tab">
                     <h4 class="panel-title">
                     <a class="collapsed" role="button" data-toggle="collapse" data-parent="#list-configs" href="#files-config">
-                        {{ _i('Files Condivisi') }}
+                        {{ _i('File Condivisi') }}
                     </a>
                 </div>
                 <div id="files-config" class="panel-collapse collapse" role="tabpanel">

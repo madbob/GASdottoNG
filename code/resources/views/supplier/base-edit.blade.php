@@ -4,4 +4,4 @@
 @include('commons.textfield', ['obj' => $supplier, 'name' => 'taxcode', 'label' => _i('Codice Fiscale')])
 @include('commons.textfield', ['obj' => $supplier, 'name' => 'vat', 'label' => _i('Partita IVA')])
 @include('commons.textarea', ['obj' => $supplier, 'name' => 'payment_method', 'label' => _i('Modalità Pagamento')])
-@include('commons.textarea', ['obj' => $supplier, 'name' => 'order_method', 'label' => _i('Modalià Avanzamento Ordini')])
+@include('commons.textarea', ['obj' => $supplier, 'name' => 'order_method', 'label' => _i('Modalità Avanzamento Ordini')])

@@ -8,7 +8,7 @@
     <div class="modal-body">
         @if($product->package_size != 0)
             <p>
-                {{ _i('Dimensione confezione') }}: {{ $product->package_size }}
+                {{ _i('Dimensione Confezione') }}: {{ $product->package_size }}
             </p>
 
             <hr/>

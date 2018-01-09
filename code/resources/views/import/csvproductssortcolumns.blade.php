@@ -5,7 +5,7 @@
 
         <div class="modal-body">
             <p>
-                {{ _i('Clicca e trascina gli attributi sulla destra nel blocco centrale, per assegnare ad ogni colonna del tuo file un significato.') }}
+                {{ _i('Clicca e trascina gli attributi dalla colonna di destra alla colonna centrale, per assegnare ad ogni colonna del tuo file un significato.') }}
             </p>
             <p>
                 {{ _i('Le categorie e le unità di misura il cui nome non sarà trovato tra quelle esistenti saranno create.') }}
