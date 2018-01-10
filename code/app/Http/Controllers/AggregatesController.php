@@ -72,6 +72,21 @@ class AggregatesController extends OrdersController
         return Theme::view('order.aggregate', ['aggregate' => $a]);
     }
 
+    public function update(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        $a = Aggregate::findOrFail($id);
+        $a->comment = $request->input('comment', '');
+        $a->save();
+
+        return $this->successResponse([
+            'id' => $a->id,
+            'header' => $a->printableHeader(),
+            'url' => url('aggregates/' . $a->id),
+        ]);
+    }
+
     public function notify(Request $request, $id)
     {
         $aggregate = Aggregate::findOrFail($id);
