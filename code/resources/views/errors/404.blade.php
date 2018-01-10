@@ -28,11 +28,8 @@
             <div class="row">
                 <div class="col-md-12" id="main-contents">
                     <br><br><br><br>
-                    <h1>Permesso negato...</h1>
+                    <h1>Questa pagina non esiste...</h1>
                     <br><br>
-                    <p>
-                        Non sei autorizzato ad accedere alla pagina richesta.
-                    </p>
                     <p>
                         <a class="btn btn-default btn-lg" href="{{ url('/') }}">Torna alla Home</a>
                     </p>

@@ -28,11 +28,24 @@
             <div class="row">
                 <div class="col-md-12" id="main-contents">
                     <br><br><br><br>
-                    <h1>Permesso negato...</h1>
+                    <h1>Oops... Si è verificato un errore...</h1>
                     <br><br>
                     <p>
-                        Non sei autorizzato ad accedere alla pagina richesta.
+                        Gli errori vengono solitamente intercettati e notificati agli sviluppatori.
                     </p>
+                    <p>
+                        Se questo dovesse continuare a ripetersi, segnalalo all'indirizzo info@gasdotto.net avendo cura di specificare:
+                    </p>
+                    <ul>
+                        <li>l'istanza su cui stavi lavorando</li>
+                        <li>cosa stavi facendo nel momento in cui si è manifestato</li>
+                        <li>quale utente, fornitore, ordine o prenotazione stavi manipolando</li>
+                    </ul>
+                    <br><br>
+                    <p>
+                        GASdotto è in continua evoluzione... Ma di tanto in tanto ci scappa qualche svista!
+                    </p>
+                    <br><br>
                     <p>
                         <a class="btn btn-default btn-lg" href="{{ url('/') }}">Torna alla Home</a>
                     </p>
