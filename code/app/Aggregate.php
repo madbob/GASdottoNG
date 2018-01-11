@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 use Auth;
 use URL;
+use Log;
+
 use App\GASModel;
 use App\AggregateBooking;
 

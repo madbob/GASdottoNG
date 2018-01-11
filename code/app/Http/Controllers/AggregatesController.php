@@ -94,8 +94,13 @@ class AggregatesController extends OrdersController
 
         foreach($aggregate->bookings as $booking) {
             if ($booking->status != 'shipped') {
-                $booking->user->notify(new BookingNotification($booking, $message));
-                usleep(200000);
+                try {
+                    $booking->user->notify(new BookingNotification($booking, $message));
+                    usleep(200000);
+                }
+                catch(\Exception $e) {
+                    Log::error('Impossibile inviare notifica mail prenotazione di ' . $booking->user->id);
+                }
             }
         }
 

@@ -78,7 +78,7 @@ $panel_rand_wrap = rand();
                 <li role="presentation"><a href="#aggregate-metadata-{{ $aggregate->id }}" role="tab" data-toggle="tab">{{ _i('Aggregato') }}</a></li>
             @endif
 
-            @can('supplier.shippings', $order->supplier)
+            @can('supplier.shippings', $aggregate)
                 <li role="presentation"><a href="#shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab" data-async-load="{{ url('/booking/' . $aggregate->id . '/user') }}">{{ _i('Consegne') }}</a></li>
 
                 @if($currentgas->getConfig('fast_shipping_enabled'))
