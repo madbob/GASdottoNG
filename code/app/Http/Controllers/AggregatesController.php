@@ -128,7 +128,7 @@ class AggregatesController extends OrdersController
                 }
                 $names = join(' / ', $names);
 
-                $html = Theme::view('documents.aggregate_shipping', ['aggregate' => $aggregate])->render();
+                $html = Theme::view('documents.aggregate_shipping', ['aggregate' => $aggregate, 'bookings' => $aggregate->bookings])->render();
                 $filename = sprintf('Dettaglio Consegne ordini %s.pdf', $names);
                 PDF::SetTitle(sprintf('Dettaglio Consegne ordini %s', $names));
                 PDF::AddPage();

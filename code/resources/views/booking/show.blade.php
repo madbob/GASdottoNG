@@ -5,6 +5,8 @@ $grand_total = 0;
 
 ?>
 
+@include('booking.head', ['aggregate' => $aggregate])
+
 <form class="form-horizontal main-form">
     @foreach($aggregate->orders as $order)
         @if($more_orders)

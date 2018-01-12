@@ -5,6 +5,8 @@ $grand_total = 0;
 
 ?>
 
+@include('booking.head', ['aggregate' => $aggregate])
+
 <form class="form-horizontal inner-form booking-form" method="PUT" action="{{ url('booking/' . $aggregate->id . '/user/' . $user->id) }}">
     <input type="hidden" name="post-saved-function" value="afterBookingSaved">
 

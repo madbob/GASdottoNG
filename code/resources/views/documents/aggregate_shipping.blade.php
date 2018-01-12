@@ -6,7 +6,7 @@
             @endforeach
         </h3>
 
-        @foreach($aggregate->bookings as $super_booking)
+        @foreach($bookings as $super_booking)
             @if($super_booking->total_value == 0)
                 @continue
             @endif

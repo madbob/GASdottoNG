@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use DB;
 use URL;
 use Auth;
+use Theme;
+use PDF;
 
 use App\User;
 use App\Aggregate;
@@ -67,6 +69,29 @@ class BookingUserController extends BookingHandler
         }
 
         return $this->successResponse();
+    }
+
+    public function document(Request $request, $aggregate_id, $user_id)
+    {
+        $aggregate = Aggregate::findOrFail($aggregate_id);
+        $subject = $aggregate->bookingBy($user_id);
+
+        $names = [];
+        foreach($aggregate->orders as $order) {
+            $names[] = sprintf('%s %s', $order->supplier->name, $order->internal_number);
+        }
+        $names = join(' / ', $names);
+
+        $html = Theme::view('documents.aggregate_shipping', [
+            'aggregate' => $aggregate,
+            'bookings' => [$subject]
+        ])->render();
+
+        $filename = sprintf('Dettaglio Consegne ordini %s.pdf', $names);
+        PDF::SetTitle(sprintf('Dettaglio Consegne ordini %s', $names));
+        PDF::AddPage();
+        PDF::writeHTML($html, true, false, true, false, '');
+        PDF::Output($filename, 'D');
     }
 
     public function objhead2(Request $request, $aggregate_id, $user_id)
