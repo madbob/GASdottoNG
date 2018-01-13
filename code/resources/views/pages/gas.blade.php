@@ -56,7 +56,7 @@
                                     <div class="col-md-12">
                                         <div class="radio">
                                             <label>
-                                                <input type="radio" name="maildriver" value="ses" {{ $gas->mail->driver == 'ses' ? 'checked' : '' }}>
+                                                <input type="radio" name="maildriver" value="ses" {{ $gas->mail['driver'] == 'ses' ? 'checked' : '' }}>
                                                 {{ _i('Utilizza configurazione globale.') }}<br>
                                                 {{ _i("Le mail generate dal sistema saranno inviate dall'indirizzo %s.", config('services.ses.from.address')) }}
                                             </label>
@@ -69,7 +69,7 @@
                                     <div class="col-md-12">
                                         <div class="radio">
                                             <label>
-                                                <input type="radio" name="maildriver" value="smtp" {{ $gas->mail->driver == 'smtp' ? 'checked' : '' }}>
+                                                <input type="radio" name="maildriver" value="smtp" {{ $gas->mail['driver'] == 'smtp' ? 'checked' : '' }}>
                                                 {{ _i('Utilizza configurazione personalizzata.') }}<br>
                                                 {{ _i('Le mail generate dal sistema saranno inviate dal tuo indirizzo.') }}
                                             </label>
