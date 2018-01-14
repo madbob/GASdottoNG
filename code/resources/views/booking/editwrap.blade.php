@@ -19,6 +19,10 @@ foreach ($aggregate->orders as $order) {
         <ul class="nav nav-tabs hidden-xs" role="tablist">
             <li role="presentation"><a href="#myself-{{ $aggregate->id }}" role="tab" data-toggle="tab">{{ _i('La Mia Prenotazione') }}</a></li>
 
+            @if($user->can('users.subusers'))
+                <li role="presentation"><a href="#friends-{{ $aggregate->id }}" role="tab" data-toggle="tab">{{ _i('Prenotazioni per gli Amici') }}</a></li>
+            @endif
+
             @if($has_shipping && $aggregate->isActive())
                 <li role="presentation"><a href="#others-{{ $aggregate->id }}" role="tab" data-toggle="tab">{{ _i('Prenotazioni per Altri') }}</a></li>
             @endif
@@ -36,6 +40,23 @@ foreach ($aggregate->orders as $order) {
                         @include('booking.show', ['aggregate' => $aggregate, 'user' => $user])
                     @endif
             </div>
+
+            @if($user->can('users.subusers'))
+                <div role="tabpanel" class="tab-pane" id="friends-{{ $aggregate->id }}">
+                    <div class="row">
+                        <div class="col-md-12">
+                            @include('commons.loadablelist', [
+                                'identifier' => 'list-friends-' . $aggregate->id,
+                                'items' => $user->friends,
+                                'header_function' => function($friend) use ($aggregate) {
+                                    return $friend->printableFriendHeader($aggregate);
+                                },
+                                'url' => url('booking/' . $aggregate->id . '/user'),
+                            ])
+                        </div>
+                    </div>
+                </div>
+            @endif
 
             @if($has_shipping && $aggregate->isActive())
                 <div role="tabpanel" class="tab-pane fillable-booking-space" id="others-{{ $aggregate->id }}">

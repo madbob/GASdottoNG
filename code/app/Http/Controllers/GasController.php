@@ -64,14 +64,15 @@ class GasController extends Controller
 
         $user = Auth::user();
         $gas = Gas::findOrFail($id);
+
+        if ($user->can('gas.config', $gas) == false) {
+            return $this->errorResponse(_i('Non autorizzato'));
+        }
+
         $group = $request->input('group');
 
         switch($group) {
             case 'general':
-                if ($user->can('gas.config', $gas) == false) {
-                    return $this->errorResponse(_i('Non autorizzato'));
-                }
-
                 $gas->name = $request->input('name');
                 $gas->email = $request->input('email');
                 $gas->message = $request->input('message');
@@ -80,10 +81,6 @@ class GasController extends Controller
                 break;
 
             case 'email':
-                if ($user->can('gas.config', $gas) == false) {
-                    return $this->errorResponse(_i('Non autorizzato'));
-                }
-
                 $mailconf = $gas->getConfig('mail_conf');
                 if ($mailconf == '') {
                     $old_password = '';
@@ -107,10 +104,6 @@ class GasController extends Controller
                 break;
 
             case 'banking':
-                if ($user->can('gas.config', $gas) == false) {
-                    return $this->errorResponse(_i('Non autorizzato'));
-                }
-
                 $gas->setConfig('year_closing', decodeDateMonth($request->input('year_closing')));
                 $gas->setConfig('annual_fee_amount', $request->input('annual_fee_amount', 0));
                 $gas->setConfig('deposit_amount', $request->input('deposit_amount', 0));
@@ -125,6 +118,15 @@ class GasController extends Controller
 
             case 'orders':
                 $gas->setConfig('fast_shipping_enabled', $request->has('fast_shipping_enabled') ? '1' : '0');
+                break;
+
+            case 'roles':
+                $conf = (object) [
+                    'user' => $request->input('roles->user'),
+                    'friend' => $request->input('roles->friend'),
+                ];
+
+                $gas->setConfig('roles', $conf);
                 break;
         }
 

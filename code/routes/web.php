@@ -38,6 +38,8 @@ Route::get('users/search', 'UsersController@search');
 Route::get('users/profile', 'UsersController@profile');
 Route::get('users/picture/{id}', 'UsersController@picture');
 
+Route::get('friends/{id}/header', 'FriendsController@objhead');
+
 Route::get('roles/{id}/header', 'RolesController@objhead');
 Route::get('roles/user/{user_id}', 'RolesController@formByUser');
 Route::get('roles/supplier/{supplier_id}', 'RolesController@formBySupplier');
@@ -107,6 +109,7 @@ Route::post('import/legacy', 'ImportController@postLegacy');
 
 Route::resource('gas', 'GasController');
 Route::resource('users', 'UsersController');
+Route::resource('friends', 'FriendsController');
 Route::resource('roles', 'RolesController');
 Route::resource('suppliers', 'SuppliersController');
 Route::resource('products', 'ProductsController');

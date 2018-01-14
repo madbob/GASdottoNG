@@ -61,23 +61,37 @@ class BookingUserController extends BookingHandler
         }
 
         foreach ($aggregate->orders as $order) {
-            $booking = $order->userBooking($user_id, false);
-            if ($booking)
-                $booking->delete();
+            $booking = $order->userBooking($user_id);
+            $booking->delete();
         }
 
         return $this->successResponse();
     }
 
+    /*
+        Questa è la funzione che viene invocata per gli header delle
+        prenotazioni nel pannello consegne (nome utente + icona dello stato)
+    */
     public function objhead2(Request $request, $aggregate_id, $user_id)
     {
         $aggregate = Aggregate::findOrFail($aggregate_id);
-        $subject = $aggregate->bookingBy($user_id);
 
-        return response()->json([
-            'id' => $subject->id,
-            'header' => $subject->printableHeader(),
-            'url' => URL::action('BookingUserController@show', ['aggregate' => $aggregate_id, 'user' => $user_id])
-        ]);
+        $user = User::findOrFail($user_id);
+        if ($user->isFriend()) {
+            return response()->json([
+                'id' => $user->id,
+                'header' => $user->printableFriendHeader($aggregate),
+                'url' => URL::action('BookingUserController@show', ['aggregate' => $aggregate_id, 'user' => $user_id])
+            ]);
+        }
+        else {
+            $subject = $aggregate->bookingBy($user_id);
+
+            return response()->json([
+                'id' => $subject->id,
+                'header' => $subject->printableHeader(),
+                'url' => URL::action('BookingUserController@show', ['aggregate' => $aggregate_id, 'user' => $user_id])
+            ]);
+        }
     }
 }

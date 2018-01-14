@@ -1735,6 +1735,30 @@ $(document).ready(function() {
         });
     });
 
+    $('body').on('change', '.auto-submit select', function(event) {
+        var form = $(this).closest('form');
+
+        var data = new FormData(form.get(0));
+        var method = form.attr('method').toUpperCase();
+        if (method == 'PUT') {
+            method = 'POST';
+            data.append('_method', 'PUT');
+        }
+
+        $.ajax({
+            method: method,
+            url: form.attr('action'),
+            data: data,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+
+            success: function(data) {
+                miscInnerCallbacks(form, data);
+            }
+        });
+    });
+
     $('body').on('submit', '.creating-form', function(event) {
         if (event.isDefaultPrevented())
             return;

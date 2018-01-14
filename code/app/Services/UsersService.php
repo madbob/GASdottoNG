@@ -4,12 +4,14 @@ namespace App\Services;
 
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
-use App\User;
 
 use Auth;
 use Log;
 use DB;
 use Hash;
+
+use App\User;
+use App\Role;
 
 class UsersService extends BaseService
 {
@@ -41,7 +43,7 @@ class UsersService extends BaseService
     {
         $user = $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
         $gasID = $user->gas['id'];
-        $query = User::with('roles')->where('gas_id', '=', $gasID);
+        $query = User::with('roles')->where('parent_id', null)->where('gas_id', '=', $gasID);
 
         if (!empty($term)) {
             $query->where(function ($query) use ($term) {
@@ -58,8 +60,19 @@ class UsersService extends BaseService
 
     public function show($id)
     {
-        $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
-        return User::withTrashed()->findOrFail($id);
+        $user = Auth::user();
+
+        $searched = User::withTrashed()->findOrFail($id);
+
+        if ($searched->isFriend()) {
+            if ($searched->id != $user->id)
+                $this->ensureAuth(['users.subusers' => 'gas']);
+        }
+        else if ($user->id != $id) {
+            $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
+        }
+
+        return $searched;
     }
 
     public function destroy($id)
@@ -78,50 +91,6 @@ class UsersService extends BaseService
         });
 
         return $user;
-    }
-
-    private function updateFriends($parent, $request)
-    {
-        $ids = [];
-        $usernames = [];
-
-        if (isset($request['friend_id'])) {
-            $ids = $request['friend_id'];
-            $usernames = $request['friend_username'];
-        }
-
-        $friends = [];
-
-        if (!empty($ids)) {
-            $role_id = $parent->gas->roles->friend;
-            $role = Role::find($role_id);
-
-            foreach($ids as $index => $id) {
-                if (empty($usernames[$index]))
-                    continue;
-
-                if (empty($id)) {
-                    $user = new User();
-                    $user->password = Hash::make($usernames[$index]);
-                }
-                else {
-                    $user = User::find($id);
-                }
-
-                $user->username = $usernames[$index];
-                $user->parent_id = $parent->id;
-                $user->save();
-
-                if ($role != null) {
-                    $user->roles()->detach();
-                    $user->addRole($role, $parent->gas);
-                }
-
-                $friends[] = $user->id;
-            }
-        }
-
-        $parent->friends()->whereNotIn('id', $friends)->delete();
     }
 
     public function update($id, array $request)
@@ -203,10 +172,6 @@ class UsersService extends BaseService
             }
 
             $user->updateContacts($request);
-
-            if ($user->can('users.subusers'))
-                $this->updateFriends($user, $request);
-
             return $user;
         });
 
@@ -233,6 +198,41 @@ class UsersService extends BaseService
 
         DB::transaction(function () use ($user) {
             $user->save();
+        });
+
+        return $user;
+    }
+
+    public function storeFriend(array $request)
+    {
+        $creator = $this->ensureAuth(['users.subusers' => 'gas']);
+
+        $username = $request['username'];
+        $test = User::where('username', $username)->first();
+        if ($test != null) {
+            throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
+        }
+
+        $user = new User();
+        $user->parent_id = $creator->id;
+        $user->gas_id = $creator->gas->id;
+        $user->member_since = date('Y-m-d', time());
+        $user->username = $username;
+        $user->firstname = $request['firstname'];
+        $user->lastname = $request['lastname'];
+        $user->password = Hash::make($request['password']);
+
+        DB::transaction(function () use ($user, $creator) {
+            $user->save();
+
+            $user_role = $creator->gas->roles['user'];
+            $friend_role = $creator->gas->roles['friend'];
+
+            if ($user_role != $friend_role) {
+                $role = Role::find($friend_role);
+                $user->roles()->detach();
+                $user->addRole($role, $creator->gas);
+            }
         });
 
         return $user;

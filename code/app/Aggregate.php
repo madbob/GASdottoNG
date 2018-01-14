@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 use Auth;
 use URL;
+
 use App\GASModel;
 use App\AggregateBooking;
 
@@ -138,19 +139,27 @@ class Aggregate extends Model
     {
         $ret = $this->printableHeader();
 
+        $user = Auth::user();
         $tot = 0;
+        $friends_tot = 0;
 
         foreach($this->orders as $o) {
-            $b = $o->userBooking(null, false);
-            if ($b != null)
-                $tot += $b->total_value;
+            $b = $o->userBooking($user->id);
+            $tot += $b->total_value;
+            $friends_tot += $b->total_friends_value;
         }
 
-        if($tot == 0)
-            $ret .= '<span class="pull-right">' . _i("Non hai partecipato a quest'ordine") . '</span>';
-        else
-            $ret .= '<span class="pull-right">' . _i('Hai ordinato %s€', printablePrice($tot)) . '</span>';
+        if($tot == 0 && $friends_tot == 0) {
+            $message = _i("Non hai partecipato a quest'ordine");
+        }
+        else {
+            if ($friends_tot == 0)
+                $message = _i('Hai ordinato %s€', printablePrice($tot));
+            else
+                $message = _i('Hai ordinato %s€ + %s€', printablePrice($tot), printablePrice($friends_tot));
+        }
 
+        $ret .= '<span class="pull-right">' . $message . '</span>';
         return $ret;
     }
 
@@ -186,7 +195,7 @@ class Aggregate extends Model
         $ret = [];
 
         foreach ($this->orders as $order) {
-            foreach ($order->bookings as $booking) {
+            foreach ($order->bookings()->toplevel()->get() as $booking) {
                 $booking->setRelation('order', $order);
                 $user_id = $booking->user->id;
 

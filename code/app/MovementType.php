@@ -164,8 +164,8 @@ class MovementType extends Model
                                 unset($movement->handling_status);
 
                                 foreach ($aggregate->orders as $order) {
-                                    $booking = $order->userBooking($user->id, false);
-                                    if ($booking == false)
+                                    $booking = $order->userBooking($user->id);
+                                    if ($booking->exists == false)
                                         continue;
 
                                     if (isset($handling_status->{$booking->id})) {

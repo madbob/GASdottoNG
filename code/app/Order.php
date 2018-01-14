@@ -111,7 +111,7 @@ class Order extends Model
         return URL::action('BookingController@index').'#' . $this->aggregate->id;
     }
 
-    public function userBooking($userid = null, $fallback = true)
+    public function userBooking($userid = null)
     {
         if ($userid == null) {
             $userid = Auth::user()->id;
@@ -121,10 +121,11 @@ class Order extends Model
             $query->where('id', '=', $userid);
         })->first();
 
-        if ($ret == null && $fallback == true) {
+        if ($ret == null) {
             $ret = new Booking();
             $ret->user_id = $userid;
             $ret->order_id = $this->id;
+            $ret->notes = '';
             $ret->status = 'pending';
         }
 

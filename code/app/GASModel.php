@@ -356,9 +356,9 @@ trait GASModel
             }
 
             /*
-                Questo è per generare le icone dei ruoli degli utenti
+                Questo è per generare le icone dei ruoli degli utenti comuni
             */
-            $roles = Role::where('always', false)->get();
+            $roles = Role::where('id', '!=', $user->gas->roles['user'])->where('id', '!=', $user->gas->roles['friend'])->get();
             foreach($roles as $index => $role) {
                 $icons['User']['king' . $index] = (object) [
                     'test' => function($obj) use ($role) {

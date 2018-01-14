@@ -401,7 +401,9 @@
 
     <div class="row">
         <div class="col-md-6">
-            <form class="form-horizontal">
+            <form class="form-horizontal auto-submit" method="PUT" action="{{ url('gas/' . $gas->id) }}">
+                <input type="hidden" name="group" value="roles">
+
                 @include('commons.selectobjfield', [
                     'obj' => $gas,
                     'name' => 'roles->user',

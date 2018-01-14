@@ -31,7 +31,7 @@
                 </tr>
 
                 @foreach($super_booking->bookings as $booking)
-                    @if($booking->products->isEmpty() == false)
+                    @if($booking->products_with_friends->isEmpty() == false)
                         <tr>
                             <td colspan="3"><strong>{{ $booking->order->supplier->printableName() }}</strong></td>
                         </tr>

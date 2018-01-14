@@ -95,6 +95,19 @@ $grand_total = 0;
                             @endforeach
                         @endif
                     @endforeach
+
+                    <tr class="booking-transport">
+                        <td>
+                            <label class="static-label">{{ _i('Trasporto') }}</label>
+                        </td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>
+                            <input type="hidden" name="global-transport-price" value="{{ $o->major_transport }}" class="skip-on-submit" />
+                            <label class="static-label booking-transport-price pull-right"><span>{{ printablePrice($o->check_transport) }}</span> €</label>
+                        </td>
+                    </tr>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -102,7 +115,7 @@ $grand_total = 0;
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th class="text-right">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($o->value) }}</span> €</th>
+                        <th class="text-right">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($o->total_value) }}</span> €</th>
                     </tr>
                 </tfoot>
             </table>

@@ -29,7 +29,7 @@ class BookingHandler extends Controller
         $user = Auth::user();
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
-        if ($user->id != $user_id && $user->can('supplier.shippings', $aggregate) == false) {
+        if ($user->id != $user_id && $user->can('supplier.shippings', $aggregate) == false && in_array($user_id, $user->friends()->pluck('id')) == false) {
             abort(503);
         }
 
@@ -167,9 +167,22 @@ class BookingHandler extends Controller
             }
 
             if ($delivering == false && $count_products == 0) {
-                $booking->delete();
+                if ($booking->friends_bookings->empty())
+                    $booking->delete();
             }
             else {
+                /*
+                    Per convenienza, quando un utente amico sottopone una
+                    prenotazione mi accerto che anche il suo utente "padre" ne
+                    abbia una aperta per lo stesso ordine (benché vuota)
+                */
+                if ($user->isFriend()) {
+                    $parent_user = $user->parent;
+                    $super_booking = $order->userBooking($parent_user->id);
+                    if ($super_booking->exists == false)
+                        $super_booking->save();
+                }
+
                 if ($delivering) {
                     /*
                         Attenzione!!!
