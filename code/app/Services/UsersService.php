@@ -61,6 +61,9 @@ class UsersService extends BaseService
     public function show($id)
     {
         $user = Auth::user();
+        if ($user == null) {
+            throw new AuthException(401);
+        }
 
         $searched = User::withTrashed()->findOrFail($id);
 

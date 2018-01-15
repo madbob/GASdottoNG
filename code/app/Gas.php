@@ -43,6 +43,8 @@ class Gas extends Model
 
     private function handlingConfigs()
     {
+        $default_role = Role::where('name', 'Utente')->first();
+
         return [
             'year_closing' => [
                 'default' => date('Y') . '-09-01'
@@ -86,8 +88,8 @@ class Gas extends Model
 
             'roles' => [
                 'default' => (object) [
-                    'user' => Role::where('name', 'Utente')->first()->id,
-                    'friend' => Role::where('name', 'Utente')->first()->id
+                    'user' => $default_role ? $default_role->id : -1,
+                    'friend' => $default_role ? $default_role->id : -1
                 ]
             ]
         ];
