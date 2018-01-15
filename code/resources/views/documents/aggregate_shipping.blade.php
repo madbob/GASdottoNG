@@ -1,12 +1,12 @@
 <html>
     <body>
-        <h3>{{ _i('Dettaglio Consegne Ordini') }}<br/>
+        <h3>{{ _i('Dettaglio Consegne') }}<br/>
             @foreach($aggregate->orders as $order)
                 {{ $order->supplier->name }} {{ $order->internal_number }}<br/>
             @endforeach
         </h3>
 
-        @foreach($aggregate->bookings as $super_booking)
+        @foreach($bookings as $super_booking)
             @if($super_booking->total_value == 0)
                 @continue
             @endif

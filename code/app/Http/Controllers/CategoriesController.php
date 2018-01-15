@@ -28,7 +28,7 @@ class CategoriesController extends Controller
             abort(503);
         }
 
-        $categories = Category::where('parent_id', '=', null)->get();
+        $categories = Category::where('id', '!=', 'non-specificato')->where('parent_id', '=', null)->get();
 
         return Theme::view('categories.edit', ['categories' => $categories]);
     }
@@ -96,7 +96,7 @@ class CategoriesController extends Controller
         $accumulator = [];
 
         $this->updateRecursive($data, null, $accumulator);
-        Product::whereNotIn('category_id', $accumulator)->update(['category_id' => 1]);
+        Product::whereNotIn('category_id', $accumulator)->update(['category_id' => 'non-specificato']);
         Category::whereNotIn('id', $accumulator)->delete();
 
         return $this->successResponse();

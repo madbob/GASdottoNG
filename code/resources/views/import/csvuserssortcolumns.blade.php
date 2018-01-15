@@ -32,7 +32,7 @@
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="username" />{{ _i('Login') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="email" />{{ _i('E-Mail') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="phone" />{{ _i('Telefono') }}</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="member_since" />{{ _i('Membro Dal') }}</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="member_since" />{{ _i('Membro da') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="credit" />{{ _i('Credito Attuale') }}</li>
                     </ul>
                 </div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ htmlLang() }}">
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -154,14 +154,13 @@
             '/js/jquery.ui.touch-punch.js',
             '/js/bootstrap.min.js',
             '/js/bootstrap-datepicker.min.js',
-            '/js/bootstrap-datepicker.it.min.js',
             '/js/bootstrap-multiselect.js',
             '/js/jquery.mjs.nestedSortable.js',
+            '/js/translate.js',
             '/js/typeahead.bundle.js',
             '/js/validator.min.js',
             '/js/jquery.fileupload.js',
             '/js/bootstrap-table.js',
-            '/js/bootstrap-table-it-IT.js',
             '/js/bootstrap-toggle.js',
             '/js/marked.min.js',
             '/js/chartist.js',
@@ -185,5 +184,9 @@
         @else
             {!! Minify::javascript($scripts)->withFullUrl() !!}
         @endif
+
+        <script type="application/javascript" src="{{ url('/js/lang/bootstrap-datepicker.' . htmlLang() . '.min.js') }}"></script>
+        <script type="application/javascript" src="{{ url('/js/lang/bootstrap-table-' . htmlLang() . '.js') }}"></script>
+        <script type="application/javascript" src="{{ url('/js/lang/' . htmlLang() . '.js') }}"></script>
     </body>
 </html>

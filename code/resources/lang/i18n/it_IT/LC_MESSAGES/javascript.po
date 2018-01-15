@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: GASdotto\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-10 16:59+0100\n"
+"PO-Revision-Date: 2018-01-10 16:59+0100\n"
+"Last-Translator: Roberto Guido <bob@linux.it>\n"
+"Language-Team: Roberto Guido <bob@linux.it>\n"
+"Language: it_IT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: public/js/gasdotto.js:145
+msgid "Questa prenotazione esiste già e non può essere ricreata."
+msgstr ""
+
+#: public/js/gasdotto.js:1122
+msgid "Sei sicuro di voler revocare questo ruolo?"
+msgstr ""
+
+#: public/js/gasdotto.js:1599
+msgid "Sei sicuro di voler eliminare questo elemento?"
+msgstr ""
+
+#: public/js/gasdotto.js:1732 public/js/jquery.dynamictree.js:73
+msgid "Salvato!"
+msgstr ""
+
+#: public/js/gasdotto.js:1810
+msgid "bilanci_ricalcolati.csv"
+msgstr ""
+
+#: public/js/gasdotto.js:1829
+msgid "Nuova Password"
+msgstr ""
+
+#: public/js/gasdotto.js:1833
+msgid "Conferma Password"
+msgstr ""
+
+#: public/js/gasdotto.js:1837 public/js/gasdotto.js:1889
+msgid "Annulla"
+msgstr ""
+
+#: public/js/gasdotto.js:1837 public/js/gasdotto.js:1889
+msgid "Salva"
+msgstr ""
+
+#: public/js/gasdotto.js:1877
+msgid "Indirizzo"
+msgstr ""
+
+#: public/js/gasdotto.js:1881
+msgid "Città"
+msgstr ""
+
+#: public/js/gasdotto.js:1885
+msgid "CAP"
+msgstr ""
+
+#: public/js/gasdotto.js:2092
+msgid "ERRORE"
+msgstr ""
+
+#: public/js/gasdotto.js:2170
+msgid "Invia Mail"
+msgstr ""
+
+#: public/js/gasdotto.js:2176
+msgid "Download"
+msgstr ""
+
+#: public/js/gasdotto.js:2390
+msgid "Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?"
+msgstr ""
+
+#: public/js/gasdotto.js:2426
+msgid "Sei sicuro di voler annullare questa prenotazione?"
+msgstr ""

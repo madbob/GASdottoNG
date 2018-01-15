@@ -5,6 +5,8 @@ $grand_total = 0;
 
 ?>
 
+@include('booking.head', ['aggregate' => $aggregate])
+
 <form class="form-horizontal main-form">
     @foreach($aggregate->orders as $order)
         @if($more_orders)
@@ -26,7 +28,7 @@ $grand_total = 0;
                         <th width="15%">{{ _i('Ordinato') }}</th>
                         <th width="15%">{{ _i('Consegnato') }}</th>
                         <th width="10%">{{ _i('Prezzo Unitario') }}</th>
-                        <th width="10%" class="text-right">{{ _i('Prezzo Totale') }}</th>
+                        <th width="10%" class="text-right">{{ _i('Totale Prezzo') }}</th>
                     </tr>
                 </thead>
                 <tbody>

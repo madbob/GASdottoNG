@@ -20,6 +20,27 @@ function printableDate($value)
     }
 }
 
+function readDate($date)
+{
+    if (preg_match('/\d{1,2}\/\d{1,2}\/\d{1,4}/', $date) == 1) {
+        list($day, $month, $year) = explode('/', $date);
+        if ($year < 1000)
+            $year = (int)$year + 2000;
+
+        return strtotime("$year-$month-$day");
+    }
+
+    if (preg_match('/\d{1,2}\.\d{1,2}\.\d{1,4}/', $date) == 1) {
+        list($day, $month, $year) = explode('.', $date);
+        if ($year < 1000)
+            $year = (int)$year + 2000;
+
+        return strtotime("$year-$month-$day");
+    }
+
+    return strtotime($date);
+}
+
 function printableQuantity($quantity, $discrete, $decimals = 2, $separator = '.')
 {
     if ($discrete)

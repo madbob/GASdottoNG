@@ -82,6 +82,7 @@ Route::get('attachments/download/{id}', 'AttachmentsController@download');
 
 Route::get('bookings/{id}/header', 'BookingController@objhead');
 Route::get('booking/{aggregate_id}/user/{user_id}/header', 'BookingUserController@objhead2');
+Route::get('booking/{aggregate_id}/user/{user_id}/document', 'BookingUserController@document');
 Route::get('booking/{id}/header', 'BookingController@objhead');
 
 Route::get('deliveries/{id}/header', 'DeliveriesController@objhead');

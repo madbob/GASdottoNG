@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 use Auth;
 use URL;
+use Log;
 
 use App\GASModel;
 use App\AggregateBooking;
@@ -99,11 +100,17 @@ class Aggregate extends Model
 
     public function printableName()
     {
-        return $this->innerCache('names', function($obj) {
+        $name = $this->comment;
+        if (!empty($name))
+            $name .= ': ';
+
+        $name .= $this->innerCache('names', function($obj) {
             list($name, $date) = $this->computeStrings();
             $this->setInnerCache('dates', $date);
             return $name;
         });
+
+        return $name;
     }
 
     public function printableDates()

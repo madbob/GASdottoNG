@@ -37,6 +37,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \Xinax\LaravelGettext\Middleware\GettextMiddleware::class,
             \App\Http\Middleware\OverwriteMail::class,
+            \App\Http\Middleware\FixDatabase::class,
         ],
 
         'api' => [

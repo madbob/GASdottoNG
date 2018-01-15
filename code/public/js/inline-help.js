@@ -45,8 +45,10 @@
                         active = true;
 
                         if (helpData == null) {
+                            var lang = $('html').attr('lang');
+
                             $.ajax({
-                                url: '/help/data.md',
+                                url: '/help/data.' + lang + '.md',
                                 method: 'GET',
 
                                 success: function(data) {
