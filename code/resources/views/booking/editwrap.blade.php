@@ -51,6 +51,7 @@ foreach ($aggregate->orders as $order) {
                                 'header_function' => function($friend) use ($aggregate) {
                                     return $friend->printableFriendHeader($aggregate);
                                 },
+                                'empty_message' => _i('Da qui potrai creare delle sotto-prenotazioni assegnate ai tuoi amici. Esse andranno a far parte della tua prenotazione globale, ma potrai comunque mantenere separate le informazioni. Popola la tua lista di amici dalla pagina del tuo profilo.'),
                                 'url' => url('booking/' . $aggregate->id . '/user'),
                             ])
                         </div>

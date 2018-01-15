@@ -31,10 +31,7 @@ class RolesController extends Controller
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
-        return Theme::view('commons.loadablelist', [
-            'identifier' => 'role-list',
-            'items' => Role::sortedByHierarchy()
-        ]);
+        return Theme::view('permissions.gas-management', ['gas' => $user->gas]);
     }
 
     public function store(Request $request)

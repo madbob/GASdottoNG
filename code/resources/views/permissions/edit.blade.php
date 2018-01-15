@@ -1,5 +1,5 @@
 <form class="form-horizontal main-form role-editor" method="PUT" action="{{ url('roles/' . $role->id) }}" data-target="role-editor-{{ rand() }}">
-    <input type="hidden" name="post-saved-refetch" value="#role-list" data-fetch-url="{{ url('roles') }}">
+    <input type="hidden" name="post-saved-refetch" value="#permissions-management">
 
     <div class="row">
         <div class="col-md-6">

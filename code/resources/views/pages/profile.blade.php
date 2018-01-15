@@ -114,6 +114,7 @@
                             @include('commons.loadablelist', [
                                 'identifier' => 'friend-list',
                                 'items' => $user->friends,
+                                'empty_message' => _i('Aggiungi le informazioni relative agli amici per i quali vuoi creare delle sotto-prenotazioni. Ogni singola prenotazione sarà autonoma, ma trattata come una sola in fase di consegna. Ogni amico può anche avere delle proprie credenziali di accesso, per entrare in GASdotto e popolare da sé le proprie prenotazioni.'),
                                 'url' => 'friends'
                             ])
                         </div>

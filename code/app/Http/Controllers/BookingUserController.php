@@ -73,7 +73,14 @@ class BookingUserController extends BookingHandler
     public function document(Request $request, $aggregate_id, $user_id)
     {
         $aggregate = Aggregate::findOrFail($aggregate_id);
-        $subject = $aggregate->bookingBy($user_id);
+        $user = User::find($user_id);
+
+        $bookings = [$aggregate->bookingBy($user_id)];
+        foreach($user->friends as $friend) {
+            $friend_booking = $aggregate->bookingBy($friend->id);
+            if (!empty($friend_booking->bookings))
+                $bookings[] = $friend_booking;
+        }
 
         $names = [];
         foreach($aggregate->orders as $order) {
@@ -83,7 +90,8 @@ class BookingUserController extends BookingHandler
 
         $html = Theme::view('documents.aggregate_shipping', [
             'aggregate' => $aggregate,
-            'bookings' => [$subject]
+            'bookings' => $bookings,
+            'products_source' => 'products'
         ])->render();
 
         $filename = sprintf('Dettaglio Consegne ordini %s.pdf', $names);

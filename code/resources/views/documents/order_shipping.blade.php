@@ -24,7 +24,10 @@
                     ?></strong></th>
                 </tr>
 
-                @include('documents.booking_shipping', ['booking' => $booking])
+                @include('documents.booking_shipping', [
+                    'booking' => $booking,
+                    'products_source' => 'products_with_friends'
+                ])
 
                 <tr>
                     <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePrice($booking->total_value, ',') }} €</strong></th>

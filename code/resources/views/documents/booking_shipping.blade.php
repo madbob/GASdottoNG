@@ -1,4 +1,4 @@
-@foreach($booking->products_with_friends as $product)
+@foreach($booking->$products_source as $product)
     @if($product->variants->isEmpty() == false)
         @foreach($product->variants as $variant)
             <tr>
