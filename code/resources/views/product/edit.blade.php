@@ -6,41 +6,13 @@
             @include('commons.boolfield', ['obj' => $product, 'name' => 'active', 'label' => 'Ordinabile'])
         </div>
         <div class="col-md-6">
-            <div class="well">
-                <div class="row">
-                    <div class="col-md-6">
-                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'portion_quantity', 'label' => 'Pezzatura', 'decimals' => 3])
-                    </div>
-                    <div class="col-md-6">
-                        @include('commons.boolfield', ['obj' => $product, 'name' => 'variable', 'label' => 'Variabile'])
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'package_size', 'label' => 'Confezione', 'decimals' => 3])
-                    </div>
-                    <div class="col-md-6">
-                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'multiple', 'label' => 'Multiplo', 'decimals' => 3])
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'min_quantity', 'label' => 'Minimo', 'decimals' => 3])
-                    </div>
-                    <div class="col-md-6">
-                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'max_quantity', 'label' => 'Massimo Consigliato', 'decimals' => 3])
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        @include('commons.decimalfield', ['obj' => $product, 'name' => 'max_available', 'label' => 'Disponibile', 'decimals' => 3])
-                    </div>
-                </div>
-            </div>
-
+            @include('commons.decimalfield', ['obj' => $product, 'name' => 'portion_quantity', 'label' => 'Pezzatura', 'decimals' => 3])
+            @include('commons.boolfield', ['obj' => $product, 'name' => 'variable', 'label' => 'Variabile'])
+            @include('commons.decimalfield', ['obj' => $product, 'name' => 'package_size', 'label' => 'Confezione', 'decimals' => 3])
+            @include('commons.decimalfield', ['obj' => $product, 'name' => 'multiple', 'label' => 'Multiplo', 'decimals' => 3])
+            @include('commons.decimalfield', ['obj' => $product, 'name' => 'min_quantity', 'label' => 'Minimo', 'decimals' => 3])
+            @include('commons.decimalfield', ['obj' => $product, 'name' => 'max_quantity', 'label' => 'Massimo Consigliato', 'decimals' => 3])
+            @include('commons.decimalfield', ['obj' => $product, 'name' => 'max_available', 'label' => 'Disponibile', 'decimals' => 3])
             @include('product.variantseditor', ['product' => $product])
         </div>
     </div>
@@ -72,7 +44,7 @@
                     @include('commons.boolfield', ['obj' => null, 'name' => 'has_offset', 'label' => 'Differenza Prezzo'])
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">Valori</label>
+                        <label class="col-sm-{{ $labelsize }} control-label">Valori</label>
 
                         <div class="col-sm-{{ $fieldsize }} values_table">
                             @include('commons.manyrows', [

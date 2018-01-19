@@ -128,14 +128,14 @@
                 @if($order->isActive())
                     <!-- Totale Prezzo -->
                     <td>
-                        <label class="order-summary-product-price">{{ $summary->products[$product->id]['price'] }} €</label>
+                        <label class="order-summary-product-price">{{ $summary->products[$product->id]['price'] }} {{ $currentgas->currency }}</label>
                     </td>
                 @endif
 
                 @if($order->status != 'archived')
                     <!-- Totale Trasporto -->
                     <td>
-                        <label class="order-summary-product-transport">{{ $summary->products[$product->id]['transport'] }} €</label>
+                        <label class="order-summary-product-transport">{{ $summary->products[$product->id]['transport'] }} {{ $currentgas->currency }}</label>
                     </td>
                 @endif
 
@@ -146,7 +146,7 @@
 
                 <!-- Totale Consegnato -->
                 <td>
-                    <label class="order-summary-product-price_delivered">{{ $summary->products[$product->id]['price_delivered'] }} €</label>
+                    <label class="order-summary-product-price_delivered">{{ $summary->products[$product->id]['price_delivered'] }} {{ $currentgas->currency }}</label>
                 </td>
 
                 @if($order->isActive())
@@ -189,13 +189,13 @@
                 <th></th>
                 <th></th>
                 <th></th>
-                <th class="order-summary-order-price">{{ printablePrice($summary->price) }} €</th>
-                <th class="order-summary-order-transport">{{ printablePrice($summary->transport) }} €</th>
+                <th class="order-summary-order-price">{{ printablePrice($summary->price) }} {{ $currentgas->currency }}</th>
+                <th class="order-summary-order-transport">{{ printablePrice($summary->transport) }} {{ $currentgas->currency }}</th>
                 <th></th>
                 <th>
-                    <span class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} €</span>
+                    <span class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} {{ $currentgas->currency }}</span>
                     @if($summary->transport_delivered)
-                        +<br/><span class="order-summary-order-transport_delivered">{{ printablePrice($summary->transport_delivered) }} €</span>
+                        +<br/><span class="order-summary-order-transport_delivered">{{ printablePrice($summary->transport_delivered) }} {{ $currentgas->currency }}</span>
                     @endif
                 </th>
                 <th></th>
@@ -205,14 +205,14 @@
                 <th></th>
 
                 @if($order->status != 'archived')
-                    <th class="order-summary-order-transport">{{ printablePrice($summary->transport) }} €</th>
+                    <th class="order-summary-order-transport">{{ printablePrice($summary->transport) }} {{ $currentgas->currency }}</th>
                 @endif
 
                 <th></th>
                 <th>
-                    <span class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} €</span>
+                    <span class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} {{ $currentgas->currency }}</span>
                     @if($summary->transport_delivered)
-                        +<br/><span class="order-summary-order-transport_delivered">{{ printablePrice($summary->transport_delivered) }} €</span>
+                        +<br/><span class="order-summary-order-transport_delivered">{{ printablePrice($summary->transport_delivered) }} {{ $currentgas->currency }}</span>
                     @endif
                 </th>
             @endif

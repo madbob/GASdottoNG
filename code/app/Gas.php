@@ -85,6 +85,10 @@ class Gas extends Model
             'language' => [
                 'default' => 'it_IT'
             ],
+
+            'currency' => [
+                'default' => '€'
+            ],
         ];
     }
 
@@ -169,6 +173,11 @@ class Gas extends Model
     public function getLanguageAttribute()
     {
         return $this->getConfig('language');
+    }
+
+    public function getCurrencyAttribute()
+    {
+        return $this->getConfig('currency');
     }
 
     /******************************************************** AttachableTrait */

@@ -26,6 +26,7 @@
                                     @include('commons.imagefield', ['obj' => $gas, 'name' => 'logo', 'label' => _i('Logo Homepage'), 'valuefrom' => 'logo_url'])
                                     @include('commons.textarea', ['obj' => $gas, 'name' => 'message', 'label' => _i('Messaggio Homepage')])
                                     @include('commons.selectenumfield', ['obj' => $gas, 'name' => 'language', 'label' => _i('Lingua'), 'values' => getLanguages()])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'currency', 'label' => _i('Valuta')])
 
                                     @if(App\Role::someone('gas.access', $gas))
                                         @include('commons.boolfield', ['obj' => $gas, 'name' => 'restricted', 'label' => _i('Modalità Manutenzione')])
@@ -180,7 +181,7 @@
                                         <div class="col-sm-{{ $fieldsize }}">
                                             <div class="input-group">
                                                 <input type="text" class="form-control number" name="annual_fee_amount" value="{{ printablePrice($currentgas->getConfig('annual_fee_amount')) }}" autocomplete="off">
-                                                <div class="input-group-addon">€</div>
+                                                <div class="input-group-addon">{{ $currentgas->currency }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -190,7 +191,7 @@
                                         <div class="col-sm-{{ $fieldsize }}">
                                             <div class="input-group">
                                                 <input type="text" class="form-control number" name="deposit_amount" value="{{ printablePrice($currentgas->getConfig('deposit_amount')) }}" autocomplete="off">
-                                                <div class="input-group-addon">€</div>
+                                                <div class="input-group-addon">{{ $currentgas->currency }}</div>
                                             </div>
                                         </div>
                                     </div>

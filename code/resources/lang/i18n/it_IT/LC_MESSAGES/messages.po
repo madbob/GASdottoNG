@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2018-01-19 17:37+0100\n"
-"PO-Revision-Date: 2018-01-19 17:38+0100\n"
+"PO-Revision-Date: 2018-01-20 00:56+0100\n"
 "Last-Translator: Roberto Guido <bob@linux.it>\n"
 "Language-Team: Roberto Guido <bob@linux.it>\n"
 "Language: it_IT\n"
@@ -1091,12 +1091,12 @@ msgstr ""
 
 #: ../storage/framework/messages/30fc88b034fce8e5805eff35fa55ff66010fd8f1.php.php:128
 #: Services/SuppliersService.php:128
-msgid "Prezzo Unitario (€)"
+msgid "Prezzo Unitario (%s)"
 msgstr ""
 
 #: ../storage/framework/messages/30fc88b034fce8e5805eff35fa55ff66010fd8f1.php.php:128
 #: Services/SuppliersService.php:128
-msgid "Trasporto (€)"
+msgid "Trasporto (%s)"
 msgstr ""
 
 #: ../storage/framework/messages/32a6e60a67c0a75785c8979a7d694a1ca97bc14b.php.php:3
@@ -2263,7 +2263,7 @@ msgstr ""
 #: ../storage/framework/messages/e86b7d84d02bf5f1c489215f5c62081e651580ab.php.php:160
 #: Aggregate.php:160
 #, php-format
-msgid "Hai ordinato %s€"
+msgid "Hai ordinato %s%s"
 msgstr ""
 
 #: ../storage/framework/messages/e8b3a964af84cfa9bdb41b7a7faef7f6ff0b830f.php.php:38

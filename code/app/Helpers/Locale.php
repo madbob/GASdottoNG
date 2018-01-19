@@ -1,8 +1,19 @@
 <?php
 
+function currentLang()
+{
+    static $lang = '';
+
+    if (empty($lang)) {
+        $lang = currentAbsoluteGas()->getConfig('language');
+    }
+
+    return $lang;
+}
+
 function htmlLang()
 {
-    return str_replace('_', '-', LaravelGettext::getLocale());
+    return str_replace('_', '-', currentLang());
 }
 
 /*
@@ -25,7 +36,8 @@ function getLanguages()
 
 function localeMonths()
 {
-    $lang = LaravelGettext::getLocale();
+    $lang = currentLang();
+    $months = [];
 
     switch($lang) {
         case 'it_IT':

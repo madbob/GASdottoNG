@@ -41,7 +41,7 @@
                 @endforeach
 
                 <tr>
-                    <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePrice($super_booking->total_value, ',') }} €</strong></th>
+                    <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePrice($super_booking->total_value, ',') }} {{ $currentgas->currency }}</strong></th>
                 </tr>
             </table>
 

@@ -68,8 +68,8 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="alert {{ $current_balance >= $to_pay ? 'alert-success' : 'alert-danger' }} text-right">
-                    <p class="lead">{{ _i('Credito Attuale') }}: {{ printablePrice($current_balance) }} €</p>
-                    <p class="lead">{{ _i('Da Pagare') }}: {{ printablePrice($to_pay) }} €</p>
+                    <p class="lead">{{ _i('Credito Attuale') }}: {{ printablePrice($current_balance) }} {{ $currentgas->currency }}</p>
+                    <p class="lead">{{ _i('Da Pagare') }}: {{ printablePrice($to_pay) }} {{ $currentgas->currency }}</p>
                 </div>
             </div>
         </div>

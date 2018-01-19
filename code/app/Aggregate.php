@@ -157,7 +157,7 @@ class Aggregate extends Model
         if($tot == 0)
             $ret .= '<span class="pull-right">' . _i("Non hai partecipato a quest'ordine") . '</span>';
         else
-            $ret .= '<span class="pull-right">' . _i('Hai ordinato %s€', printablePrice($tot)) . '</span>';
+            $ret .= '<span class="pull-right">' . _i('Hai ordinato %s%s', printablePrice($tot), currentAbsoluteGas()->currency) . '</span>';
 
         return $ret;
     }

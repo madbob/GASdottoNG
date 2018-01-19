@@ -27,7 +27,7 @@ if (!isset($left_buttons))
             @endforeach
         @endif
 
-        <div class="btn-group pull-right main-form-buttons" role="group" aria-label="Opzioni">
+        <div class="pull-right main-form-buttons" role="group">
             @if($no_delete == false)
                 @if($obj && $obj->deleted_at != null)
                     <button type="button" class="btn btn-danger delete-button">{{ _i('Elimina Definitivamente') }}</button>

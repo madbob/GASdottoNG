@@ -55,7 +55,7 @@ $grand_total = 0;
 
                                 <td>
                                     <label class="static-label booking-product-price pull-right">
-                                        {{ printablePrice($o->status == 'shipped' ? $product->final_price : $product->quantityValue()) }} €
+                                        {{ printablePrice($o->status == 'shipped' ? $product->final_price : $product->quantityValue()) }} {{ $currentgas->currency }}
                                     </label>
                                 </td>
                             </tr>
@@ -90,7 +90,7 @@ $grand_total = 0;
 
                                     <td>
                                         <label class="static-label booking-product-price pull-right">
-                                            {{ printablePrice($o->status == 'shipped' ? $var->final_price : $var->quantityValue()) }} €
+                                            {{ printablePrice($o->status == 'shipped' ? $var->final_price : $var->quantityValue()) }} {{ $currentgas->currency }}
                                         </label>
                                     </td>
                                 </tr>
@@ -104,7 +104,7 @@ $grand_total = 0;
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th class="text-right">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($o->value) }}</span> €</th>
+                        <th class="text-right">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($o->value) }}</span> {{ $currentgas->currency }}</th>
                     </tr>
                 </tfoot>
             </table>
@@ -119,7 +119,7 @@ $grand_total = 0;
                 <tr>
                     <th>
                         <div class="pull-right">
-                            <strong>{{ _i('Totale Complessivo') }}: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> €</strong>
+                            <strong>{{ _i('Totale Complessivo') }}: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currentgas->currency }}</strong>
                         </div>
                     </th>
                 </tr>

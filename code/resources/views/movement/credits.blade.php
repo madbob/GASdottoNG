@@ -40,7 +40,7 @@
                         <?php $amount = $user->current_balance_amount ?>
                         <tr data-filtered-credit="{{ $amount < 0 ? 'minor' : 'major' }}">
                             <td>{{ $user->printableName() }}</td>
-                            <td>{{ $amount }} €</td>
+                            <td>{{ $amount }} {{ $currentgas->currency }}</td>
 
                             @if(!empty($currentgas->rid['iban']))
                                 <td>

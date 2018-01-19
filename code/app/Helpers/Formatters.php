@@ -65,12 +65,12 @@ function normalizePercentage($value)
 function printablePercentage($value)
 {
     if (empty($value))
-        return printablePrice(0) . ' €';
+        return printablePrice(0) . ' ' . currentAbsoluteGas()->currency;
 
     if (strpos($value, '%') !== false)
         return $value;
     else
-        return printablePrice($value) . ' €';
+        return printablePrice($value) . ' ' . currentAbsoluteGas()->currency;
 }
 
 function readPercentage($value)
