@@ -25,7 +25,7 @@
 
         @if(env('APP_DEBUG') == true)
             @foreach($css as $c)
-                <link rel="stylesheet" type="text/css" href="{{ url($c) }}">
+                <link rel="stylesheet" type="text/css" href="{{ asset($c) }}">
             @endforeach
         @else
             {!! Minify::stylesheet($css)->withFullUrl() !!}
@@ -179,14 +179,14 @@
 
         @if(env('APP_DEBUG') == true)
             @foreach($scripts as $s)
-                <script type="application/javascript" src="{{ url($s) }}"></script>
+                <script type="application/javascript" src="{{ asset($s) }}"></script>
             @endforeach
         @else
             {!! Minify::javascript($scripts)->withFullUrl() !!}
         @endif
 
-        <script type="application/javascript" src="{{ url('/js/lang/bootstrap-datepicker.' . htmlLang() . '.min.js') }}"></script>
-        <script type="application/javascript" src="{{ url('/js/lang/bootstrap-table-' . htmlLang() . '.js') }}"></script>
-        <script type="application/javascript" src="{{ url('/js/lang/' . htmlLang() . '.js') }}"></script>
+        <script type="application/javascript" src="{{ asset('/js/lang/bootstrap-datepicker.' . htmlLang() . '.min.js') }}"></script>
+        <script type="application/javascript" src="{{ asset('/js/lang/bootstrap-table-' . htmlLang() . '.js') }}"></script>
+        <script type="application/javascript" src="{{ asset('/js/lang/' . htmlLang() . '.js') }}"></script>
     </body>
 </html>
