@@ -62,4 +62,6 @@ function localeMonths()
             ];
             break;
     }
+
+    return $months;
 }
