@@ -12,68 +12,68 @@ msgstr ""
 
 #: public/js/gasdotto.js:145
 msgid "Questa prenotazione esiste già e non può essere ricreata."
-msgstr ""
+msgstr "This reservation already exists and cannot be recreated."
 
 #: public/js/gasdotto.js:1122
 msgid "Sei sicuro di voler revocare questo ruolo?"
-msgstr ""
+msgstr "Are you sure you want to revoke this role?"
 
 #: public/js/gasdotto.js:1599
 msgid "Sei sicuro di voler eliminare questo elemento?"
-msgstr ""
+msgstr "Are you sure you want to delete this elemet?"
 
 #: public/js/gasdotto.js:1732 public/js/jquery.dynamictree.js:73
 msgid "Salvato!"
-msgstr ""
+msgstr "Saved!"
 
 #: public/js/gasdotto.js:1810
 msgid "bilanci_ricalcolati.csv"
-msgstr ""
+msgstr "recalculated_balances.csv"
 
 #: public/js/gasdotto.js:1829
 msgid "Nuova Password"
-msgstr ""
+msgstr "New Password"
 
 #: public/js/gasdotto.js:1833
 msgid "Conferma Password"
-msgstr ""
+msgstr "Confirm Password"
 
 #: public/js/gasdotto.js:1837 public/js/gasdotto.js:1889
 msgid "Annulla"
-msgstr ""
+msgstr "Cancel"
 
 #: public/js/gasdotto.js:1837 public/js/gasdotto.js:1889
 msgid "Salva"
-msgstr ""
+msgstr "Save"
 
 #: public/js/gasdotto.js:1877
 msgid "Indirizzo"
-msgstr ""
+msgstr "Address"
 
 #: public/js/gasdotto.js:1881
 msgid "Città"
-msgstr ""
+msgstr "City"
 
 #: public/js/gasdotto.js:1885
 msgid "CAP"
-msgstr ""
+msgstr "ZIP"
 
 #: public/js/gasdotto.js:2092
 msgid "ERRORE"
-msgstr ""
+msgstr "ERROR"
 
 #: public/js/gasdotto.js:2170
 msgid "Invia Mail"
-msgstr ""
+msgstr "Send Mail"
 
 #: public/js/gasdotto.js:2176
 msgid "Download"
-msgstr ""
+msgstr "Download"
 
 #: public/js/gasdotto.js:2390
 msgid "Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?"
-msgstr ""
+msgstr "All quantities are set to zero! Do you really want to proceed?"
 
 #: public/js/gasdotto.js:2426
 msgid "Sei sicuro di voler annullare questa prenotazione?"
-msgstr ""
+msgstr "Are you sure you want to cancel this reservation?"
