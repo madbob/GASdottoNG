@@ -46,7 +46,7 @@
             @include('commons.radios', [
                 'name' => 'method',
                 'label' => _i('Pagamento'),
-                'values' => ['all' => (object)['name' => 'Tutti', 'checked' => true]] + App\MovementType::payments()
+                'values' => ['all' => (object)['name' => _i('Tutti'), 'checked' => true]] + App\MovementType::payments()
             ])
             @include('commons.selectobjfield', [
                 'obj' => null,
@@ -79,7 +79,7 @@
         </div>
     </div>
 
-    <div class="col-md-3 col-md-offset-3 current-balance">
+    <div class="col-md-4 col-md-offset-2 current-balance">
         @include('movement.status', ['obj' => $currentgas])
     </div>
 </div>

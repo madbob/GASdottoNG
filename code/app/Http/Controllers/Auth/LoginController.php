@@ -7,6 +7,8 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 
 use Theme;
+use LaravelGettext;
+
 use App\User;
 use App\Gas;
 
@@ -46,6 +48,7 @@ class LoginController extends Controller
             }
         }
 
+        LaravelGettext::setLocale($request->input('language'));
         return $this->realLogin($request);
     }
 }

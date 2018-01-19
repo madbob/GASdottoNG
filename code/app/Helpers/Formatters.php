@@ -12,7 +12,7 @@ function printablePrice($price, $separator = '.')
 function printableDate($value)
 {
     if ($value == null) {
-        return 'Mai';
+        return _i('Mai');
     }
     else {
         $t = strtotime($value);
@@ -139,25 +139,11 @@ function normalizeUrl($url)
 
 function decodeDate($date)
 {
-    if ($date == '' || $date == 'Mai') {
+    if ($date == '' || $date == _i('Mai')) {
         return null;
     }
 
-    $months = [
-        'gennaio' => 'january',
-        'febbraio' => 'february',
-        'marzo' => 'march',
-        'aprile' => 'april',
-        'maggio' => 'may',
-        'giugno' => 'june',
-        'luglio' => 'july',
-        'agosto' => 'august',
-        'settembre' => 'september',
-        'ottobre' => 'october',
-        'novembre' => 'november',
-        'dicembre' => 'december',
-    ];
-
+    $months = localeMonths();
     list($weekday, $day, $month, $year) = explode(' ', $date);
     $month = strtolower($month);
     if (!in_array($month, array_values($months))) {
@@ -174,21 +160,7 @@ function decodeDateMonth($date)
         return '';
     }
 
-    $months = [
-        'gennaio' => 'january',
-        'febbraio' => 'february',
-        'marzo' => 'march',
-        'aprile' => 'april',
-        'maggio' => 'may',
-        'giugno' => 'june',
-        'luglio' => 'july',
-        'agosto' => 'august',
-        'settembre' => 'september',
-        'ottobre' => 'october',
-        'novembre' => 'november',
-        'dicembre' => 'december',
-    ];
-
+    $months = localeMonths();
     list($day, $month) = explode(' ', $date);
     $month = strtolower($month);
     if (!in_array($month, array_values($months))) {

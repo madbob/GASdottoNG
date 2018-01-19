@@ -1,7 +1,7 @@
 <ul class="list-group">
     @foreach($obj->balanceFields() as $identifier => $name)
         <li class="list-group-item">
-            Saldo {{ $name }}
+            {{ $name }}
             <span class="badge {{ $identifier }}"><span>{{ $obj->current_balance->$identifier }}</span> €</span>
         </li>
     @endforeach

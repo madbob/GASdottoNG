@@ -77,6 +77,7 @@ class GasController extends Controller
                 $gas->message = $request->input('message');
                 $this->handleDirectFileUpload($request, 'logo', $gas);
                 $gas->setConfig('restricted', $request->has('restricted') ? '1' : '0');
+                $gas->setConfig('language', $request->input('language'));
                 break;
 
             case 'email':

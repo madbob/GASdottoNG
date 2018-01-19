@@ -81,6 +81,10 @@ class Gas extends Model
                     'org' => ''
                 ]
             ],
+
+            'language' => [
+                'default' => 'it_IT'
+            ],
         ];
     }
 
@@ -160,6 +164,11 @@ class Gas extends Model
     public function getRestrictedAttribute()
     {
         return $this->getConfig('restricted') == '1';
+    }
+
+    public function getLanguageAttribute()
+    {
+        return $this->getConfig('language');
     }
 
     /******************************************************** AttachableTrait */
