@@ -325,6 +325,14 @@ class Order extends Model
         }
         $summary->transport_delivered = $total_transport_delivered;
 
+        $summary->notes = [];
+        foreach ($order->bookings()->where('notes', '!=', '')->get() as $annotated_booking) {
+            $summary->notes[] = (object) [
+                'user' => $annotated_booking->user->printableName(),
+                'note' => $annotated_booking->notes
+            ];
+        }
+
         return $summary;
     }
 

@@ -22,5 +22,7 @@
 
     <hr/>
 
-    @include('order.summary_ro', ['order' => $order, 'summary' => $order->calculateSummary()])
+    <?php $summary = $order->calculateSummary() ?>
+    @include('order.summary_ro', ['order' => $order, 'summary' => $summary])
+    @include('order.annotations', ['order' => $order, 'summary' => $summary])
 </form>

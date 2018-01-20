@@ -66,6 +66,8 @@
     <hr>
 
     @include('order.summary', ['order' => $order, 'summary' => $summary])
+    @include('order.annotations', ['order' => $order, 'summary' => $summary])
+
     @include('commons.formbuttons', [
         'left_buttons' => [
             (object) [

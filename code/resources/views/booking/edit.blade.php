@@ -65,6 +65,12 @@ $grand_total = 0;
             </tfoot>
         </table>
 
+        <div class="row">
+            <div class="col-md-12">
+                @include('commons.textarea', ['obj' => $o, 'name' => 'notes', 'postfix' => '_' . $order->id, 'label' => _i('Note')])
+            </div>
+        </div>
+
         <?php $grand_total += $o->value ?>
     @endforeach
 
