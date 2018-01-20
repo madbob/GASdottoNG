@@ -136,6 +136,7 @@ class Booking extends Model
             $value = 0;
 
             foreach ($obj->products as $booked) {
+                $booked->setRelation('booking', $this);
                 $value += $booked->quantityValue();
             }
 
@@ -208,7 +209,7 @@ class Booking extends Model
     */
     public function getMajorDiscountAttribute()
     {
-        if(!empty($this->order->discount)) {
+        if(!empty($this->order->discount) && $this->order->discount != 0) {
             $total_value = $this->order->total_value;
             if ($total_value != 0) {
                 if (is_numeric($this->order->discount)) {

@@ -125,7 +125,8 @@ class SuppliersService extends BaseService
             PDF::Output($filename, 'D');
         }
         elseif ($format == 'csv') {
-            $headers = [_i('Nome'), _i('Unità di Misura'), _i('Prezzo Unitario (€)'), _i('Trasporto (€)')];
+            $currency = currentAbsoluteGas()->currency;
+            $headers = [_i('Nome'), _i('Unità di Misura'), _i('Prezzo Unitario (%s)', $currency), _i('Trasporto (%s)', $currency)];
             return output_csv($filename, $headers, $supplier->products, function($product) {
                 $row = [];
                 $row[] = $product->name;

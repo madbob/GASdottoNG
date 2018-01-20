@@ -52,7 +52,7 @@
                 'obj' => $order->payment,
                 'name' => 'payment_id',
                 'label' => _i('Pagamento'),
-                'default' => \App\Movement::generate('order-payment', $currentgas, $order, $summary->price_delivered),
+                'default' => \App\Movement::generate('order-payment', $currentgas, $order, $summary->price_delivered + $summary->transport_delivered),
                 'to_modal' => [
                     'amount_editable' => true
                 ]
@@ -66,6 +66,8 @@
     <hr>
 
     @include('order.summary', ['order' => $order, 'summary' => $summary])
+    @include('order.annotations', ['order' => $order, 'summary' => $summary])
+
     @include('commons.formbuttons', [
         'left_buttons' => [
             (object) [

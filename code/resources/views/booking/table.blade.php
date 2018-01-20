@@ -39,7 +39,7 @@
                                     @endif
                                 </td>
                                 <td>{{ $booking->user->printableName() }}</td>
-                                <td>{{ printablePrice($booking->total_value) }} €</td>
+                                <td>{{ printablePrice($booking->total_value) }} {{ $currentgas->currency }}</td>
                                 <td>
                                     @if($booking->status != 'shipped')
                                         <div class="btn-group pull-right" data-toggle="buttons">

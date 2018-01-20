@@ -4,6 +4,7 @@
 
 var locker = false;
 var absolute_url = $('meta[name=absolute_url]').attr('content');
+var current_currency = $('meta[name=current_currency]').attr('content');
 
 $.fn.tagName = function() {
     return this.prop("tagName").toLowerCase();
@@ -658,8 +659,8 @@ function enforceMeasureDiscrete(node) {
 function setCellValue(cell, value) {
     string = value;
 
-    if (cell.text().indexOf('€') != -1)
-        string = priceRound(value) + ' €';
+    if (cell.text().indexOf(current_currency) != -1)
+        string = priceRound(value) + ' ' + current_currency;
 
     cell.text(string);
 }
@@ -814,7 +815,7 @@ function bookingTotal(editor) {
             row_t += transport * q;
         });
 
-        $(this).closest('tr').find('.booking-product-price').text(priceRound(row_p) + ' €');
+        $(this).closest('tr').find('.booking-product-price').text(priceRound(row_p) + ' ' + current_currency);
         total_price += row_p;
         total_transport += row_t;
     });

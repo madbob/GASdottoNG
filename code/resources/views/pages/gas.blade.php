@@ -17,6 +17,7 @@
                     <div class="panel-body">
                         <div class="row">
                             <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ url('gas/' . $gas->id) }}">
+                                <input type="hidden" name="reload-whole-page" value="1">
                                 <input type="hidden" name="group" value="general">
 
                                 <div class="col-md-12">
@@ -24,6 +25,8 @@
                                     @include('commons.emailfield', ['obj' => $gas, 'name' => 'email', 'label' => _i('E-Mail'), 'mandatory' => true])
                                     @include('commons.imagefield', ['obj' => $gas, 'name' => 'logo', 'label' => _i('Logo Homepage'), 'valuefrom' => 'logo_url'])
                                     @include('commons.textarea', ['obj' => $gas, 'name' => 'message', 'label' => _i('Messaggio Homepage')])
+                                    @include('commons.selectenumfield', ['obj' => $gas, 'name' => 'language', 'label' => _i('Lingua'), 'values' => getLanguages()])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'currency', 'label' => _i('Valuta')])
 
                                     @if(App\Role::someone('gas.access', $gas))
                                         @include('commons.boolfield', ['obj' => $gas, 'name' => 'restricted', 'label' => _i('Modalità Manutenzione')])
@@ -56,7 +59,7 @@
                                     <div class="col-md-12">
                                         <div class="radio">
                                             <label>
-                                                <input type="radio" name="maildriver" value="ses" {{ $gas->mail->driver == 'ses' ? 'checked' : '' }}>
+                                                <input type="radio" name="maildriver" value="ses" {{ $gas->mail['driver'] == 'ses' ? 'checked' : '' }}>
                                                 {{ _i('Utilizza configurazione globale.') }}<br>
                                                 {{ _i("Le mail generate dal sistema saranno inviate dall'indirizzo %s.", config('services.ses.from.address')) }}
                                             </label>
@@ -69,7 +72,7 @@
                                     <div class="col-md-12">
                                         <div class="radio">
                                             <label>
-                                                <input type="radio" name="maildriver" value="smtp" {{ $gas->mail->driver == 'smtp' ? 'checked' : '' }}>
+                                                <input type="radio" name="maildriver" value="smtp" {{ $gas->mail['driver'] == 'smtp' ? 'checked' : '' }}>
                                                 {{ _i('Utilizza configurazione personalizzata.') }}<br>
                                                 {{ _i('Le mail generate dal sistema saranno inviate dal tuo indirizzo.') }}
                                             </label>
@@ -178,7 +181,7 @@
                                         <div class="col-sm-{{ $fieldsize }}">
                                             <div class="input-group">
                                                 <input type="text" class="form-control number" name="annual_fee_amount" value="{{ printablePrice($currentgas->getConfig('annual_fee_amount')) }}" autocomplete="off">
-                                                <div class="input-group-addon">€</div>
+                                                <div class="input-group-addon">{{ $currentgas->currency }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -188,7 +191,7 @@
                                         <div class="col-sm-{{ $fieldsize }}">
                                             <div class="input-group">
                                                 <input type="text" class="form-control number" name="deposit_amount" value="{{ printablePrice($currentgas->getConfig('deposit_amount')) }}" autocomplete="off">
-                                                <div class="input-group-addon">€</div>
+                                                <div class="input-group-addon">{{ $currentgas->currency }}</div>
                                             </div>
                                         </div>
                                     </div>

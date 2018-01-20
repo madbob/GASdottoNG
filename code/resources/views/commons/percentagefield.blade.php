@@ -24,7 +24,7 @@
 
             <div class="input-group-addon">
                 <label class="radio-inline">
-                    <input type="radio" name="{{ $name }}_percentage_type" value="euro" {{ $is_percentage == false ? 'checked' : '' }}> €
+                    <input type="radio" name="{{ $name }}_percentage_type" value="euro" {{ $is_percentage == false ? 'checked' : '' }}> {{ $currentgas->currency }}
                 </label>
                 <label class="radio-inline">
                     <input type="radio" name="{{ $name }}_percentage_type" value="percentage" {{ $is_percentage ? 'checked' : '' }}> %

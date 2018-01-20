@@ -91,7 +91,15 @@ class Gas extends Model
                     'user' => $default_role ? $default_role->id : -1,
                     'friend' => $default_role ? $default_role->id : -1
                 ]
-            ]
+            ],
+
+            'language' => [
+                'default' => 'it_IT'
+            ],
+
+            'currency' => [
+                'default' => '€'
+            ],
         ];
     }
 
@@ -176,6 +184,16 @@ class Gas extends Model
     public function getRestrictedAttribute()
     {
         return $this->getConfig('restricted') == '1';
+    }
+
+    public function getLanguageAttribute()
+    {
+        return $this->getConfig('language');
+    }
+
+    public function getCurrencyAttribute()
+    {
+        return $this->getConfig('currency');
     }
 
     /******************************************************** AttachableTrait */

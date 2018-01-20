@@ -7,9 +7,9 @@
 
 $extras['special::referrers'] = _i('Tutti i Referenti');
 
-$orders = App\Order::where('status', '!=', 'closed')->get();
+$orders = App\Order::where('status', '!=', 'closed')->where('status', '!=', 'archived')->get();
 foreach ($orders as $order) {
-    $extras['special::order::'.$order->id] = _i("Tutti i Partecipanti all'ordine per %s", $order->supplier->name);
+    $extras['special::order::'.$order->id] = _i("Tutti i Partecipanti all'ordine %s %s", $order->supplier->name, $order->internal_number);
 }
 
 ?>

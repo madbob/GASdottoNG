@@ -49,7 +49,7 @@ $grand_total = 0;
                         </td>
 
                         <td>
-                            <label class="static-label booking-product-price pull-right">{{ $p ? printablePrice($p->quantityValue()) : '0.00' }} €</label>
+                            <label class="static-label booking-product-price pull-right">{{ $p ? printablePrice($p->quantityValue()) : '0.00' }} {{ $currentgas->currency }}</label>
                         </td>
                     </tr>
                 @endforeach
@@ -60,10 +60,16 @@ $grand_total = 0;
                     <th></th>
                     <th></th>
                     <th></th>
-                    <th class="text-right">Totale: <span class="booking-total">{{ printablePrice($o->value) }}</span> €</th>
+                    <th class="text-right">Totale: <span class="booking-total">{{ printablePrice($o->value) }}</span> {{ $currentgas->currency }}</th>
                 </tr>
             </tfoot>
         </table>
+
+        <div class="row">
+            <div class="col-md-12">
+                @include('commons.textarea', ['obj' => $o, 'name' => 'notes', 'postfix' => '_' . $order->id, 'label' => _i('Note')])
+            </div>
+        </div>
 
         <?php $grand_total += $o->value ?>
     @endforeach
@@ -74,7 +80,7 @@ $grand_total = 0;
                 <tr>
                     <th>
                         <div class="pull-right">
-                            <strong>Totale Complessivo: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> €</strong>
+                            <strong>Totale Complessivo: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currentgas->currency }}</strong>
                         </div>
                     </th>
                 </tr>

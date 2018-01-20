@@ -21,7 +21,7 @@ if(!isset($decimals))
 
 if(isset($is_price)) {
     $value = printablePrice($value);
-    $postlabel = '€';
+    $postlabel = $currentgas->currency;
     $decimals = 2;
 }
 else {

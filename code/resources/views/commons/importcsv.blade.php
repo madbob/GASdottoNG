@@ -5,13 +5,13 @@ if (!isset($modal_extras))
 
 ?>
 
-<button type="button" class="btn btn-default" data-toggle="modal" data-target="#{{ $modal_id }}">Importa CSV</button>
+<button type="button" class="btn btn-default" data-toggle="modal" data-target="#{{ $modal_id }}">{{ _i('Importa CSV') }}</button>
 <div class="modal fade wizard" id="{{ $modal_id }}" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-extra-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Importa CSV</h4>
+                <h4 class="modal-title">{{ _i('Importa CSV') }}</h4>
             </div>
             <div class="wizard_page">
                 <form class="form-horizontal" method="POST" action="{{ url('import/csv?type=' . $import_target . '&step=guess') }}" data-toggle="validator" enctype="multipart/form-data">
@@ -21,10 +21,10 @@ if (!isset($modal_extras))
 
                     <div class="modal-body">
                         <p>
-                            Sono ammessi solo files in formato CSV. Si raccomanda di formattare la propria tabella in modo omogeneo, senza usare celle unite, celle vuote, intestazioni: ogni riga deve contenere tutte le informazioni relative al soggetto. Eventuali prezzi e somme vanno espresse senza includere il simbolo dell'euro.
+                            {{ _i('Sono ammessi solo files in formato CSV. Si raccomanda di formattare la propria tabella in modo omogeneo, senza usare celle unite, celle vuote, intestazioni: ogni riga deve contenere tutte le informazioni relative al soggetto. Eventuali prezzi e somme vanno espresse senza includere il simbolo dell\'euro.') }}
                         </p>
                         <p>
-                            Una volta caricato il file sarà possibile specificare quale attributo rappresenta ogni colonna trovata nel documento.
+                            {{ _i('Una volta caricato il file sarà possibile specificare quale attributo rappresenta ogni colonna trovata nel documento.') }}
                         </p>
                         <p class="text-center">
                             <img src="{{ url('images/csv_explain.png') }}">
@@ -44,7 +44,7 @@ if (!isset($modal_extras))
                         @include('commons.filefield', [
                             'obj' => null,
                             'name' => 'file',
-                            'label' => 'File da Caricare',
+                            'label' => _i('File da Caricare'),
                             'mandatory' => true,
                             'extra_class' => 'immediate-run',
                             'extras' => [
@@ -56,8 +56,8 @@ if (!isset($modal_extras))
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
-                        <button type="submit" class="btn btn-success">Avanti</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+                        <button type="submit" class="btn btn-success">{{ _i('Avanti') }}</button>
                     </div>
                 </form>
             </div>

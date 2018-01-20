@@ -320,11 +320,12 @@ class MovementsController extends Controller
 
                 if ($subtype == 'csv') {
                     $filename = _i('Crediti al %s.csv', date('d/m/Y'));
-                    $headers = [_i('ID'), _i('Nome'), _i('Credito Residuo')];
+                    $headers = [_i('ID'), _i('Nome'), _i('E-Mail'), _i('Credito Residuo')];
                     return output_csv($filename, $headers, $users, function($user) {
                         $row = [];
                         $row[] = $user->username;
                         $row[] = $user->printableName();
+                        $row[] = $user->email;
                         $row[] = printablePrice($user->current_balance_amount, ',');
                         return $row;
                     });

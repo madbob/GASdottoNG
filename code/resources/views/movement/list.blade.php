@@ -76,7 +76,7 @@ else {
                         <td>{{ $mov->target ? $mov->target->printableName() : '' }}</td>
                     @endif
 
-                    <td>{{ printablePrice($mov->amount) }} €</td>
+                    <td>{{ printablePrice($mov->amount) }} {{ $currentgas->currency }}</td>
 
                     <td>
                         @if(!empty($mov->notes))

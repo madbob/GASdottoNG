@@ -422,6 +422,7 @@ class Role extends Model
                 'gas.config' => _i('Modificare le configurazioni del GAS'),
                 'supplier.add' => _i('Creare nuovi fornitori'),
                 'supplier.book' => _i('Effettuare ordini'),
+                'users.self' => _i('Modificare la propria anagrafica'),
                 'users.admin' => _i('Amministrare le anagrafiche degli utenti'),
                 'users.view' => _i('Vedere tutti gli utenti'),
                 'users.movements' => _i('Amministrare i movimenti contabili degli utenti'),

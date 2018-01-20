@@ -29,11 +29,7 @@ class OverwriteMail
 
     public function handle($request, Closure $next)
     {
-        if ($this->auth->check()) {
-            $gas = $this->auth->user()->gas;
-        } else {
-            $gas = Gas::first();
-        }
+        $gas = currentAbsoluteGas();
 
         if ($gas != null) {
             $conf = (object) $gas->mail;

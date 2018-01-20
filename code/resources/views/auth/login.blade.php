@@ -48,6 +48,21 @@
             </div>
         </div>
 
+        @if($gas->getConfig('language'))
+            <input type="hidden" name="language" value="{{ $gas->getConfig('language') }}">
+        @else
+            <div class="form-group">
+                <label class="col-sm-2 control-label">{{ _i('Lingua') }}</label>
+                <div class="col-sm-10">
+                    <select name="language">
+                        @foreach(getLanguages() as $lang)
+                            <option value="{{ $lang['value'] }}">{{ $lang['label'] }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        @endif
+
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <div class="checkbox">

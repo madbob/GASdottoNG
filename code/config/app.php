@@ -12,7 +12,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'GASdotto'),
 
     /*
     |--------------------------------------------------------------------------
@@ -184,6 +184,7 @@ return [
         Devfactory\Minify\MinifyServiceProvider::class,
         Xinax\LaravelGettext\LaravelGettextServiceProvider::class,
 
+        App\Providers\SingletonsProvider::class,
         App\Providers\GraphicInitServiceProvider::class,
         App\Providers\MenuServiceProvider::class,
         App\Providers\MovementsKeeper::class,

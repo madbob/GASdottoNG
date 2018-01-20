@@ -1,8 +1,8 @@
 <ul class="list-group">
     @foreach($obj->balanceFields() as $identifier => $name)
         <li class="list-group-item">
-            Saldo {{ $name }}
-            <span class="badge {{ $identifier }}"><span>{{ $obj->current_balance->$identifier }}</span> €</span>
+            {{ $name }}
+            <span class="badge {{ $identifier }}"><span>{{ $obj->current_balance->$identifier }}</span> {{ $currentgas->currency }}</span>
         </li>
     @endforeach
 </ul>
@@ -33,7 +33,7 @@
                                     <tr class="{{ $index == 0 ? 'current-balance' : '' }}">
                                         <td>{{ $index == 0 ? _i('Saldo Corrente') : ucwords(strftime('%d %B %G', strtotime($bal->date))) }}</td>
                                         @foreach($obj->balanceFields() as $identifier => $name)
-                                            <td class="{{ $index == 0 ? $identifier : '' }}"><span>{{ $bal->$identifier }}</span> €</td>
+                                            <td class="{{ $index == 0 ? $identifier : '' }}"><span>{{ $bal->$identifier }}</span> {{ $currentgas->currency }}</td>
                                         @endforeach
                                     </tr>
                                 @endforeach
