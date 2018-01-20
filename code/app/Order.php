@@ -43,12 +43,12 @@ class Order extends Model
 
     public function products()
     {
-        return $this->belongsToMany('App\Product')->with('measure')->with('category')->with('variants')->withPivot('discount_enabled')->withTrashed()->orderBy('name');
+        return $this->belongsToMany('App\Product')->with(['measure', 'category', 'variants'])->withPivot('discount_enabled', 'notes')->withTrashed()->orderBy('name');
     }
 
     public function bookings()
     {
-        return $this->hasMany('App\Booking')->with('user')->with('products')->sorted();
+        return $this->hasMany('App\Booking')->with(['user', 'products'])->sorted();
     }
 
     public function payment()
@@ -469,6 +469,15 @@ class Order extends Model
                     },
                     'format_variant' => function($product, $summary, $name, $variant) {
                         return printablePrice($summary->products[$product->id]['transport'], ',');
+                    }
+                ],
+                'notes' => (object) [
+                    'name' => _i('Note Prodotto'),
+                    'format_product' => function($product, $summary) {
+                        return $product->pivot->notes;
+                    },
+                    'format_variant' => function($product, $summary, $name, $variant) {
+                        return $product->pivot->notes;
                     }
                 ],
             ];

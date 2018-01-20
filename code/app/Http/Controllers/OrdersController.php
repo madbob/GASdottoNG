@@ -303,7 +303,8 @@ class OrdersController extends Controller
         }
 
         $product = Product::findOrFail($product_id);
-        $order->hasProduct($product);
+        if ($order->hasProduct($product) == false)
+            abort(404);
 
         return Theme::view('order.fixes', ['order' => $order, 'product' => $product]);
     }
@@ -320,6 +321,8 @@ class OrdersController extends Controller
         $product_id = $request->input('product', []);
         $bookings = $request->input('booking', []);
         $quantities = $request->input('quantity', []);
+
+        $order->products()->updateExistingPivot($product_id, ['notes' => $request->input('notes')]);
 
         for ($i = 0; $i < count($bookings); ++$i) {
             $booking_id = $bookings[$i];
