@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
+use App;
 use Auth;
 use DB;
 use URL;
@@ -43,7 +44,7 @@ class Order extends Model
 
     public function products()
     {
-        return $this->belongsToMany('App\Product')->with(['measure', 'category', 'variants'])->withPivot('discount_enabled', 'notes')->withTrashed()->orderBy('name');
+        return $this->belongsToMany('App\Product')->with(['variants'])->withPivot('discount_enabled', 'notes')->withTrashed()->orderBy('name');
     }
 
     public function bookings()
@@ -133,18 +134,7 @@ class Order extends Model
 
     public function getInternalNumberAttribute()
     {
-        if(!isset($this->internal_number_cache)) {
-            $o = $this;
-            $year = date('Y', strtotime($o->start));
-
-            $this->internal_number_cache = (Order::where(DB::raw('YEAR(start)'), $year)->where(function($query) use ($o) {
-                $query->where('start', '<', $this->start)->orWhere(function($query) use ($o) {
-                    $query->where('start', $this->start)->where('id', '<', $this->id);
-                });
-            })->count() + 1) . '/' . $year;
-        }
-
-        return $this->internal_number_cache;
+        return App::make('OrderNumbersDispatcher')->getNumber($this);
     }
 
     public function getTotalValueAttribute()
@@ -152,8 +142,8 @@ class Order extends Model
         return $this->innerCache('total_value', function($obj) {
             $total_value = 0;
 
-            $bookings_ids = $obj->bookings->pluck('id');
-            $products = BookedProduct::whereIn('booking_id', $bookings_ids)->with('booking')->with('product')->with('variants')->get();
+            $bookings_ids = $obj->bookings()->pluck('id');
+            $products = BookedProduct::whereIn('booking_id', $bookings_ids)->with(['booking', 'product', 'variants'])->get();
             foreach($products as $booked) {
                 $booked->booking->setRelation('order', $obj);
                 $total_value += $booked->quantityValue();
@@ -171,6 +161,11 @@ class Order extends Model
     */
     public function hasProduct(&$product)
     {
+        /*
+            Non usare qui una query diretta
+            $this->products()->where(...)
+            in modo da sfruttare la copia di products cachata in $this
+        */
         foreach ($this->products as $p) {
             if ($p->id == $product->id) {
                 $product = $p;

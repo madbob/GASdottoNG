@@ -19,16 +19,9 @@ class SetLanguage
      */
     public function handle($request, Closure $next)
     {
-        $user = Auth::user();
-        if ($user != null)
-            $gas = $user->gas;
-        else
-            $gas = Gas::first();
-
-        $locale = $gas->getConfig('language');
+        $locale = currentLang();
         setlocale(LC_TIME, $locale. '.UTF-8');
         LaravelGettext::setLocale($locale);
-
         return $next($request);
     }
 }
