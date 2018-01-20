@@ -12,30 +12,6 @@ use Hash;
 
 class UsersService extends BaseService
 {
-    /*
-        Ritorna:
-        - 1 se l'utente ha permessi di amministrazione
-        - 2 se l'utente richiesto è l'utente corrente
-    */
-    private function ensureAuthAdminOrOwner($id)
-    {
-        $user = Auth::user();
-        if ($user == null) {
-            throw new AuthException(401);
-        }
-
-        if ($user->can('users.admin', $user->gas)) {
-            return 1;
-        }
-        else if ($user->id == $id) {
-            return 2;
-        }
-        else {
-            throw new AuthException(403);
-            return 0;
-        }
-    }
-
     public function listUsers($term = '', $all = false)
     {
         $user = $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
@@ -81,7 +57,20 @@ class UsersService extends BaseService
 
     public function update($id, array $request)
     {
-        $type = $this->ensureAuthAdminOrOwner($id);
+        $user = Auth::user();
+        if ($user == null) {
+            throw new AuthException(401);
+        }
+
+        if ($user->can('users.admin', $user->gas)) {
+            $type = 1;
+        }
+        else if ($user->id == $id && $user->can('users.self', $user->gas)) {
+            $type = 2;
+        }
+        else {
+            throw new AuthException(403);
+        }
 
         $user = DB::transaction(function () use ($id, $request, $type) {
             $user = $this->show($id);
