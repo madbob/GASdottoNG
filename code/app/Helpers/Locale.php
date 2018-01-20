@@ -5,7 +5,18 @@ function currentLang()
     static $lang = '';
 
     if (empty($lang)) {
-        $lang = currentAbsoluteGas()->getConfig('language');
+        /*
+            Nel caso estremo in cui non ci sia alcun GAS recuperabile chiamando
+            questa funzione, assumo che la lingua sia l'italiano. Ma non salvo
+            questa informazione nella variabile statica, sperando che alla
+            prossima iterazione possa accedere ad un GAS effettivo.
+            Serve soprattutto a far funzionare gli unit test...
+        */
+        $gas = currentAbsoluteGas();
+        if ($gas == null)
+            return 'it_IT';
+        else
+            $lang = currentAbsoluteGas()->getConfig('language');
     }
 
     return $lang;
