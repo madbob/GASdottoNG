@@ -109,11 +109,13 @@ $grand_total = 0;
                 </tfoot>
             </table>
 
-            <div class="row">
-                <div class="col-md-12">
-                    @include('commons.staticstringfield', ['obj' => $o, 'name' => 'notes', 'label' => _i('Note')])
+            @if(!empty($o->notes))
+                <div class="row">
+                    <div class="col-md-12">
+                        @include('commons.staticstringfield', ['obj' => $o, 'name' => 'notes', 'label' => _i('Note')])
+                    </div>
                 </div>
-            </div>
+            @endif
 
             <?php $grand_total += $o->value ?>
         @endif
