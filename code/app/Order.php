@@ -127,6 +127,7 @@ class Order extends Model
             $ret->user_id = $userid;
             $ret->order_id = $this->id;
             $ret->status = 'pending';
+            $ret->notes = '';
         }
 
         return $ret;
