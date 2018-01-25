@@ -44,6 +44,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof \ErrorException && env('APP_DEBUG', false) == false) {
+            $response = response()->view('errors.500', [], 500);
+            return $this->toIlluminateResponse($response, $exception);
+        }
+
         return parent::render($request, $exception);
     }
 

@@ -62,9 +62,6 @@ $panel_rand_wrap = rand();
         <div class="col-md-4">
         </div>
         <div class="col-md-4">
-            @if($more_orders)
-                <a href="{{ url('aggregates/document/' . $aggregate->id . '/shipping') }}" class="btn btn-default">{{ _i('Dettaglio Consegne Complessivo') }}</a>
-            @endif
         </div>
     </div>
     <br/>
@@ -77,7 +74,11 @@ $panel_rand_wrap = rand();
                 <li role="presentation" class="{{ $index == 0 ? 'active' : '' }}"><a href="#order-{{ $panel_rand_wrap }}-{{ $index }}" role="tab" data-toggle="tab">{{ $order->printableName() }}</a></li>
             @endforeach
 
-            @can('supplier.shippings', $order->supplier)
+            @if($more_orders)
+                <li role="presentation"><a href="#aggregate-metadata-{{ $aggregate->id }}" role="tab" data-toggle="tab">{{ _i('Aggregato') }}</a></li>
+            @endif
+
+            @can('supplier.shippings', $aggregate)
                 <li role="presentation"><a href="#shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab" data-async-load="{{ url('/booking/' . $aggregate->id . '/user') }}">{{ _i('Consegne') }}</a></li>
 
                 @if($currentgas->getConfig('fast_shipping_enabled'))
@@ -96,6 +97,29 @@ $panel_rand_wrap = rand();
                     @endcan
                 </div>
             @endforeach
+
+            @if($more_orders)
+                <div role="tabpanel" class="tab-pane" id="aggregate-metadata-{{ $aggregate->id }}">
+                    <form class="form-horizontal main-form" method="PUT" action="{{ url('aggregates/' . $aggregate->id) }}">
+                        <div class="row">
+                            <div class="col-md-4">
+                                @include('commons.textfield', ['obj' => $aggregate, 'name' => 'comment', 'label' => _i('Commento')])
+                            </div>
+                            <div class="col-md-4">
+                            </div>
+                            <div class="col-md-4">
+                                <div class="list-group pull-right">
+                                    <a href="{{ url('aggregates/document/' . $aggregate->id . '/shipping') }}" class="list-group-item">{{ _i('Dettaglio Consegne Aggregato') }}</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        @include('commons.formbuttons', [
+                            'no_delete' => true
+                        ])
+                    </form>
+                </div>
+            @endif
 
             <div role="tabpanel" class="tab-pane shippable-bookings" id="shippings-{{ $aggregate->id }}" data-aggregate-id="{{ $aggregate->id }}">
             </div>

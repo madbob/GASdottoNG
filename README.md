@@ -49,11 +49,12 @@ cd code
 
 ### Troubleshooting
 
- * l'applicazione utilizza di default la localizzazione italiana del sistema (in particolare per formattare le date). Per installarla, qualora mancante, eseguire `dpkg-reconfigure locales` sul proprio server
+ * potrebbe essere necessario installare la localizzazione italiana del sistema (in particolare per formattare le date). Per installarla, qualora mancante, eseguire `dpkg-reconfigure locales` sul proprio server
  * per versioni di MySQL inferiori alla 5.7, occorre editare il file `code/app/Providers/AppServiceProvider.php`. Fare riferimento a [queste indicazioni](https://laravel-news.com/laravel-5-4-key-too-long-error).
+ * è possibile installare l'applicazione in una sotto-cartella del proprio dominio, avendo cura di configurare il parametro `base_url` in `code/config/minify.config.php` con l'URL completo di path (escludendo però il riferimento a `index.php`)
 
 ### Licenza
 
 GASdotto è distribuito in licenza AGPLv3+.
 
-Copyright (C) 2017 Roberto Guido <bob@linux.it>
+Copyright (C) 2017/2018 Roberto Guido <bob@linux.it>

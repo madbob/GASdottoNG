@@ -10,6 +10,7 @@ use DB;
 use Auth;
 use Theme;
 
+use App\Movement;
 use App\MovementType;
 
 class MovementTypesController extends Controller
@@ -204,5 +205,24 @@ class MovementTypesController extends Controller
             'header' => $type->printableHeader(),
             'url' => url('movtypes/' . $type->id),
         ]);
+    }
+
+    public function destroy($id)
+    {
+        $user = Auth::user();
+        if ($user->can('movements.types', $user->gas) == false) {
+            abort(503);
+        }
+
+        DB::beginTransaction();
+
+        $type = MovementType::findOrFail($id);
+        $existing = Movement::where('type', $id)->count();
+        if ($existing == 0)
+            $type->forceDelete();
+        else
+            $type->delete();
+
+        return $this->successResponse();
     }
 }

@@ -1,18 +1,15 @@
 @include('commons.textarea', ['obj' => $notification, 'name' => 'content', 'label' => _i('Contenuto'), 'mandatory' => true])
 @include('commons.datefield', ['obj' => $notification, 'name' => 'start_date', 'label' => _i('Inizio'), 'mandatory' => true])
 @include('commons.datefield', ['obj' => $notification, 'name' => 'end_date', 'label' => _i('Scadenza'), 'mandatory' => true])
-
-@if($currentgas->has_mail())
-    @include('commons.boolfield', ['obj' => $notification, 'name' => 'mailed', 'label' => _i('Invia Mail')])
-@endif
+@include('commons.boolfield', ['obj' => $notification, 'name' => 'mailed', 'label' => _i('Invia Mail')])
 
 <?php
 
 $extras['special::referrers'] = _i('Tutti i Referenti');
 
-$orders = App\Order::where('status', '!=', 'closed')->get();
+$orders = App\Order::where('status', '!=', 'closed')->where('status', '!=', 'archived')->get();
 foreach ($orders as $order) {
-    $extras['special::order::'.$order->id] = _i("Tutti i Partecipanti all'ordine per %s", $order->supplier->name);
+    $extras['special::order::'.$order->id] = _i("Tutti i Partecipanti all'ordine %s %s", $order->supplier->name, $order->internal_number);
 }
 
 ?>

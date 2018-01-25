@@ -77,6 +77,8 @@ class GasController extends Controller
                 $gas->message = $request->input('message');
                 $this->handleDirectFileUpload($request, 'logo', $gas);
                 $gas->setConfig('restricted', $request->has('restricted') ? '1' : '0');
+                $gas->setConfig('language', $request->input('language'));
+                $gas->setConfig('currency', $request->input('currency'));
                 break;
 
             case 'email':
@@ -95,12 +97,12 @@ class GasController extends Controller
 
                 $mail = (object) [
                     'driver' => $request->input('maildriver'),
-                    'username' => $request->input('mailusername'),
-                    'password' => $request->input('mailpassword') == '' ? $old_password : $request->input('mailpassword'),
-                    'host' => $request->input('mailserver'),
-                    'port' => $request->input('mailport'),
-                    'address' => $request->input('mailaddress'),
-                    'encryption' => $request->input('mailssl'),
+                    'username' => $request->input('mail->username'),
+                    'password' => $request->input('mail->password') == '' ? $old_password : $request->input('mail->password'),
+                    'host' => $request->input('mail->host'),
+                    'port' => $request->input('mail->port'),
+                    'address' => $request->input('mail->address'),
+                    'encryption' => $request->input('mail->encryption'),
                 ];
 
                 $gas->setConfig('mail_conf', $mail);

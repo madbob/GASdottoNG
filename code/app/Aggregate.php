@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 use Auth;
 use URL;
+use Log;
+
 use App\GASModel;
 use App\AggregateBooking;
 
@@ -29,6 +31,11 @@ class Aggregate extends Model
             if ($a < $index) {
                 $index = $a;
             }
+        }
+
+        if ($index == 10) {
+            Log::debug('Impossibile recuperare stato aggregato ' . $this->id . ' con ' . $this->orders->count() . ' ordini');
+            $index = 2;
         }
 
         return $priority[$index];
@@ -93,11 +100,17 @@ class Aggregate extends Model
 
     public function printableName()
     {
-        return $this->innerCache('names', function($obj) {
+        $name = $this->comment;
+        if (!empty($name))
+            $name .= ': ';
+
+        $name .= $this->innerCache('names', function($obj) {
             list($name, $date) = $this->computeStrings();
             $this->setInnerCache('dates', $date);
             return $name;
         });
+
+        return $name;
     }
 
     public function printableDates()
@@ -144,7 +157,7 @@ class Aggregate extends Model
         if($tot == 0)
             $ret .= '<span class="pull-right">' . _i("Non hai partecipato a quest'ordine") . '</span>';
         else
-            $ret .= '<span class="pull-right">' . _i('Hai ordinato %s€', printablePrice($tot)) . '</span>';
+            $ret .= '<span class="pull-right">' . _i('Hai ordinato %s%s', printablePrice($tot), currentAbsoluteGas()->currency) . '</span>';
 
         return $ret;
     }

@@ -7,7 +7,7 @@
         <input type="text"
             class="form-control number"
             name="{{ $prefix . $name }}"
-            value="{{ $obj ? $obj->$name : '' }}"
+            value="{{ accessAttr($obj, $name, '') }}"
 
             @if(isset($mandatory) && $mandatory == true)
                 required

@@ -21,10 +21,6 @@ class Gas extends Model
         'creating' => SluggableCreating::class,
     ];
 
-    protected $casts = [
-        'rid' => 'array',
-    ];
-
     public static function commonClassName()
     {
         return 'GAS';
@@ -81,8 +77,17 @@ class Gas extends Model
             'rid' => [
                 'default' => (object) [
                     'iban' => '',
-                    'id' => ''
+                    'id' => '',
+                    'org' => ''
                 ]
+            ],
+
+            'language' => [
+                'default' => 'it_IT'
+            ],
+
+            'currency' => [
+                'default' => '€'
             ],
         ];
     }
@@ -132,7 +137,7 @@ class Gas extends Model
         $conf = $this->getConfig('mail_conf');
         if ($conf == '') {
             return (object) [
-                'driver' => '',
+                'driver' => !empty(config('services.ses.key')) ? 'ses' : 'smtp',
                 'username' => '',
                 'password' => '',
                 'host' => '',
@@ -145,45 +150,9 @@ class Gas extends Model
         }
     }
 
-    public function has_mail()
+    public function getMailAttribute()
     {
-        return !empty($this->mailConfig()->host);
-    }
-
-    public function getMaildriverAttribute()
-    {
-        $config = $this->mailConfig();
-        return $config->driver ?? 'smtp';
-    }
-
-    public function getMailusernameAttribute()
-    {
-        return $this->mailConfig()->username;
-    }
-
-    public function getMailpasswordAttribute()
-    {
-        return $this->mailConfig()->password;
-    }
-
-    public function getMailserverAttribute()
-    {
-        return $this->mailConfig()->host;
-    }
-
-    public function getMailportAttribute()
-    {
-        return $this->mailConfig()->port;
-    }
-
-    public function getMailaddressAttribute()
-    {
-        return $this->mailConfig()->address;
-    }
-
-    public function getMailsslAttribute()
-    {
-        return $this->mailConfig()->encryption;
+        return (array) $this->mailConfig();
     }
 
     public function getRidAttribute()
@@ -199,6 +168,16 @@ class Gas extends Model
     public function getRestrictedAttribute()
     {
         return $this->getConfig('restricted') == '1';
+    }
+
+    public function getLanguageAttribute()
+    {
+        return $this->getConfig('language');
+    }
+
+    public function getCurrencyAttribute()
+    {
+        return $this->getConfig('currency');
     }
 
     /******************************************************** AttachableTrait */

@@ -27,7 +27,7 @@
                 @include('documents.booking_shipping', ['booking' => $booking])
 
                 <tr>
-                    <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePrice($booking->total_value, ',') }} €</strong></th>
+                    <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePrice($booking->total_value, ',') }} {{ $currentgas->currency }}</strong></th>
                 </tr>
             </table>
 

@@ -98,11 +98,12 @@ class Product extends Model
     public function printablePrice($order)
     {
         $price = $this->contextualPrice($order, false);
+        $currency = currentAbsoluteGas()->currency;
 
         if (!empty($this->transport) && $this->transport != 0) {
-            $str = sprintf('%.02f € / %s + %.02f € trasporto', $price, $this->measure->name, $this->transport);
+            $str = sprintf('%.02f %s / %s + %.02f %s trasporto', $price, $currency, $this->measure->name, $this->transport, $currency);
         } else {
-            $str = sprintf('%.02f € / %s', $price, $this->measure->name);
+            $str = sprintf('%.02f %s / %s', $price, $currency, $this->measure->name);
         }
 
         if ($this->variable) {

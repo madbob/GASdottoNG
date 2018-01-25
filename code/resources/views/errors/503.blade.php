@@ -1,47 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ htmlLang() }}">
     <head>
-	<title>Be right back.</title>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-	<link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
+        <title>GASdotto: ERRORE</title>
 
-	<style>
-	    html, body {
-		          height: 100%;
-	    }
-
-	    body {
-    		margin: 0;
-    		padding: 0;
-    		width: 100%;
-    		color: #B0BEC5;
-    		display: table;
-    		font-weight: 100;
-    		font-family: 'Lato';
-	    }
-
-	    .container {
-    		text-align: center;
-    		display: table-cell;
-    		vertical-align: middle;
-	    }
-
-	    .content {
-    		text-align: center;
-    		display: inline-block;
-	    }
-
-	    .title {
-    		font-size: 72px;
-    		margin-bottom: 40px;
-	    }
-	</style>
+        <link rel="stylesheet" type="text/css" href="{{ url('/css/bootstrap.min.css') }}">
     </head>
     <body>
-    	<div class="container">
-    	    <div class="content">
-    		<div class="title">Be right back.</div>
-    	    </div>
-    	</div>
+        <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand hidden-md" href="{{ url('/') }}">GASdotto</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12" id="main-contents">
+                    <br><br><br><br>
+                    <h1>Permesso negato...</h1>
+                    <br><br>
+                    <p>
+                        Non sei autorizzato ad accedere alla pagina richesta.
+                    </p>
+                    <p>
+                        <a class="btn btn-default btn-lg" href="{{ url('/') }}">Torna alla Home</a>
+                    </p>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

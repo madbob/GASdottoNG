@@ -203,6 +203,12 @@ table {
     }
 }
 
+.variants-editor {
+    .variant-descr {
+        margin-top: 10px;
+    }
+}
+
 .product-disabled {
 	opacity: 0.2;
     display: none;
@@ -225,6 +231,17 @@ table {
 
 .icons-legend {
 	margin-bottom: 10px;
+}
+
+.main-form-buttons {
+    .btn-default {
+        background-color: #FFF;
+        border: none;
+    }
+
+    .close-button {
+        margin: 0 10px;
+    }
 }
 
 .modal {

@@ -28,7 +28,7 @@ class MeasuresController extends Controller
             abort(503);
         }
 
-        $measures = Measure::orderBy('name', 'asc')->get();
+        $measures = Measure::where('id', '!=', 'non-specificato')->orderBy('name', 'asc')->get();
 
         return Theme::view('measures.edit', ['measures' => $measures]);
     }
@@ -66,7 +66,7 @@ class MeasuresController extends Controller
         $ids = $request->input('id', []);
         $new_names = $request->input('name', []);
         $new_discretes = $request->input('discrete', []);
-        $saved_ids = [];
+        $saved_ids = ['non-specificato'];
 
         for ($i = 0; $i < count($ids); ++$i) {
             $name = trim($new_names[$i]);
@@ -89,11 +89,8 @@ class MeasuresController extends Controller
             $saved_ids[] = $measure->id;
         }
 
-        $deleted = Measure::whereNotIn('id', $saved_ids)->get();
-        foreach ($deleted as $del) {
-            Product::where('measure_id', '=', $del->id)->update(['measure_id' => null]);
-            $del->delete();
-        }
+        Product::whereNotIn('measure_id', $saved_ids)->update(['measure_id' => 'non-specificato']);
+        Measure::whereNotIn('id', $saved_ids)->delete();
 
         return $this->successResponse();
     }

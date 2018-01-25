@@ -23,7 +23,10 @@
                             'label' => _i('Nome'),
                             'field' => 'name',
                             'type' => 'text',
-                            'width' => 5
+                            'width' => 5,
+                            'extra' => [
+                                'mandatory' => true
+                            ]
                         ],
                         [
                             'label' => _i('Unità Discreta'),

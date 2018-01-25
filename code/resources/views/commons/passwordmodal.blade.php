@@ -8,7 +8,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        {{ _i('Per confermare questa operazione devi confermarla immettendo la tua password utente') }}
+                        {{ _i('Per confermare questa operazione devi immettere la tua password utente') }}
                     </div>
 
                     <br/>

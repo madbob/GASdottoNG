@@ -94,7 +94,7 @@ $existing = false;
                                     </td>
 
                                     <td>
-                                        <label class="static-label booking-product-price pull-right">{{ printablePrice($product->final_price) }} €</label>
+                                        <label class="static-label booking-product-price pull-right">{{ printablePrice($product->final_price) }} {{ $currentgas->currency }}</label>
                                     </td>
                                 </tr>
                             @else
@@ -139,7 +139,7 @@ $existing = false;
                                         </td>
 
                                         <td>
-                                            <label class="static-label booking-product-price pull-right">{{ printablePrice($var->final_price) }} €</label>
+                                            <label class="static-label booking-product-price pull-right">{{ printablePrice($var->final_price) }} {{ $currentgas->currency }}</label>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -162,7 +162,7 @@ $existing = false;
                                 <td class="bookable-target">&nbsp;</td>
 
                                 <td>
-                                    <label class="static-label booking-product-price pull-right">0.00 €</label>
+                                    <label class="static-label booking-product-price pull-right">0.00 {{ $currentgas->currency }}</label>
                                 </td>
                             </tr>
                         @endif
@@ -175,7 +175,7 @@ $existing = false;
                             <td>&nbsp;</td>
                             <td>
                                 <input type="hidden" name="global-transport-price" value="{{ $o->major_transport }}" class="skip-on-submit" />
-                                <label class="static-label booking-transport-price pull-right"><span>{{ printablePrice($o->check_transport) }}</span> €</label>
+                                <label class="static-label booking-transport-price pull-right"><span>{{ printablePrice($o->check_transport) }}</span> {{ $currentgas->currency }}</label>
                             </td>
                         </tr>
 
@@ -187,7 +187,7 @@ $existing = false;
                             <td>&nbsp;</td>
                             <td>
                                 <input type="hidden" name="global-discount" value="{{ $o->major_discount * -1 }}" class="skip-on-submit" />
-                                <label class="static-label booking-discount pull-right"><span>{{ printablePrice($o->major_discount * -1) }}</span> €</label>
+                                <label class="static-label booking-discount pull-right"><span>{{ printablePrice($o->major_discount * -1) }}</span> {{ $currentgas->currency }}</label>
                             </td>
                         </tr>
                     </tbody>
@@ -201,7 +201,7 @@ $existing = false;
                             </th>
                             <th></th>
                             <th></th>
-                            <th class="text-right">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> €</th>
+                            <th class="text-right">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> {{ $currentgas->currency }}</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -215,7 +215,7 @@ $existing = false;
                 <tr>
                     <th>
                         <div class="pull-right">
-                            <strong>{{ _i('Totale Complessivo') }}: <span class="all-bookings-total">{{ printablePrice($tot_amount) }}</span> €</strong>
+                            <strong>{{ _i('Totale Complessivo') }}: <span class="all-bookings-total">{{ printablePrice($tot_amount) }}</span> {{ $currentgas->currency }}</strong>
                         </div>
                     </th>
                 </tr>

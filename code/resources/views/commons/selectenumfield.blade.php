@@ -9,7 +9,7 @@ if (!isset($extra_attrs))
     $extra_attrs = [];
 
 if ($obj)
-    $selected_value = $obj->$name;
+    $selected_value = accessAttr($obj, $name, '');
 else if (isset($enforced_default))
     $selected_value = $enforced_default;
 else

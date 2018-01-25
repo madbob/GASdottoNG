@@ -8,7 +8,7 @@
             @include('commons.contactswidget', ['obj' => $user])
         </div>
         <div class="col-md-6">
-            @if(Gate::check('users.admin', $currentgas))
+            @if($currentuser->can('users.admin', $currentgas))
                 @include('commons.imagefield', ['obj' => $user, 'name' => 'picture', 'label' => _i('Foto'), 'valuefrom' => 'picture_url'])
                 @include('commons.datefield', ['obj' => $user, 'name' => 'member_since', 'label' => _i('Membro da')])
                 @include('commons.textfield', ['obj' => $user, 'name' => 'card_number', 'label' => _i('Numero Tessera')])
@@ -80,7 +80,7 @@
         </div>
     </div>
 
-    @if(Gate::check('movements.admin', $currentgas) || Gate::check('movements.view', $currentgas))
+    @if($currentuser->can('movements.admin', $currentgas) || $currentuser->can('movements.view', $currentgas))
         @include('movement.targetlist', ['target' => $user])
     @endif
 

@@ -4,6 +4,7 @@
 
 var locker = false;
 var absolute_url = $('meta[name=absolute_url]').attr('content');
+var current_currency = $('meta[name=current_currency]').attr('content');
 
 $.fn.tagName = function() {
     return this.prop("tagName").toLowerCase();
@@ -142,7 +143,7 @@ function generalInit() {
                         if (while_shipping) {
                             var test = data.find('.booking-product:not(.fit-add-product)');
                             if (test.length != 0) {
-                                data = $('<div class="alert alert-danger">Questa prenotazione esiste già e non può essere ricreata.</div>');
+                                data = $('<div class="alert alert-danger">' + _('Questa prenotazione esiste già e non può essere ricreata.') + '</div>');
                             }
                         }
 
@@ -658,8 +659,8 @@ function enforceMeasureDiscrete(node) {
 function setCellValue(cell, value) {
     string = value;
 
-    if (cell.text().indexOf('€') != -1)
-        string = priceRound(value) + ' €';
+    if (cell.text().indexOf(current_currency) != -1)
+        string = priceRound(value) + ' ' + current_currency;
 
     cell.text(string);
 }
@@ -814,7 +815,7 @@ function bookingTotal(editor) {
             row_t += transport * q;
         });
 
-        $(this).closest('tr').find('.booking-product-price').text(priceRound(row_p) + ' €');
+        $(this).closest('tr').find('.booking-product-price').text(priceRound(row_p) + ' ' + current_currency);
         total_price += row_p;
         total_transport += row_t;
     });
@@ -1119,7 +1120,7 @@ function setupPermissionsEditor() {
     }).on('click', '.remove-role', function(e) {
         e.preventDefault();
 
-        if(confirm('Sei sicuro di voler revocare questo ruolo?')) {
+        if(confirm(_('Sei sicuro di voler revocare questo ruolo?'))) {
             var button = $(this);
 
             var data = {
@@ -1596,7 +1597,7 @@ $(document).ready(function() {
         	TODO: visualizzare nome dell'elemento che si sta rimuovendo
         */
 
-        if (confirm('Sei sicuro di voler eliminare questo elemento?')) {
+        if (confirm(_('Sei sicuro di voler eliminare questo elemento?'))) {
             form.find('.main-form-buttons button').attr('disabled', 'disabled');
 
             $.ajax({
@@ -1729,7 +1730,7 @@ $(document).ready(function() {
             dataType: 'json',
 
             success: function(data) {
-                inlineFeedback(save_button, 'Salvato!');
+                inlineFeedback(save_button, _('Salvato!'));
                 miscInnerCallbacks(form, data);
             }
         });
@@ -1807,7 +1808,7 @@ $(document).ready(function() {
         var target = $(this).attr('data-target');
         var data = $(target).TableCSVExport({
             delivery: 'download',
-            filename: 'bilanci_ricalcolati.csv'
+            filename: _('bilanci_ricalcolati.csv')
         });
     });
 
@@ -1826,15 +1827,15 @@ $(document).ready(function() {
 
                 var ret = $('<div>\
                     <div class="form-group">\
-                        <label for="password" class="col-sm-4 control-label">Nuova Password</label>\
+                        <label for="password" class="col-sm-4 control-label">' + _('Nuova Password') + '</label>\
                         <div class="col-sm-8"><input type="password" class="form-control" name="password" value="" autocomplete="off"></div>\
                     </div>\
                     <div class="form-group">\
-                        <label for="password_confirm" class="col-sm-4 control-label">Conferma Password</label>\
+                        <label for="password_confirm" class="col-sm-4 control-label">' + _('Conferma Password') + '</label>\
                         <div class="col-sm-8"><input type="password" class="form-control" name="password_confirm" value="" autocomplete="off"></div>\
                     </div>\
                     <div class="form-group">\
-                        <div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">Annulla</button> <button class="btn btn-success">Salva</button></div>\
+                        <div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Salva') + '</button></div>\
                     </div>\
                 </div>');
 
@@ -1874,19 +1875,19 @@ $(document).ready(function() {
 
                 var ret = $('<div>\
                     <div class="form-group">\
-                        <label for="street" class="col-sm-4 control-label">Indirizzo</label>\
+                        <label for="street" class="col-sm-4 control-label">' + _('Indirizzo') + '</label>\
                         <div class="col-sm-8"><input type="text" class="form-control" name="street" value="" autocomplete="off"></div>\
                     </div>\
                     <div class="form-group">\
-                        <label for="city" class="col-sm-4 control-label">Città</label>\
+                        <label for="city" class="col-sm-4 control-label">' + _('Città') + '</label>\
                         <div class="col-sm-8"><input type="text" class="form-control" name="city" value="" autocomplete="off"></div>\
                     </div>\
                     <div class="form-group">\
-                        <label for="cap" class="col-sm-4 control-label">CAP</label>\
+                        <label for="cap" class="col-sm-4 control-label">' + _('CAP') + '</label>\
                         <div class="col-sm-8"><input type="text" class="form-control" name="cap" value="" autocomplete="off"></div>\
                     </div>\
                     <div class="form-group">\
-                        <div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">Annulla</button> <button class="btn btn-success">Salva</button></div>\
+                        <div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Salva') + '</button></div>\
                     </div>\
                 </div>');
 
@@ -2089,7 +2090,7 @@ $(document).ready(function() {
                         },
                         error: function() {
                             var button = form.find('button:submit');
-                            inlineFeedback(button, 'ERRORE');
+                            inlineFeedback(button, _('ERRORE'));
                         }
                     });
                 }
@@ -2167,13 +2168,13 @@ $(document).ready(function() {
         if (status) {
             textarea.show();
             recipient.show();
-            submit.text('Invia Mail');
+            submit.text(_('Invia Mail'));
             form.removeClass('direct-submit');
         }
         else {
             textarea.hide();
             recipient.hide();
-            submit.text('Download');
+            submit.text(_('Download'));
             form.addClass('direct-submit');
         }
     });
@@ -2387,7 +2388,7 @@ $(document).ready(function() {
                 });
 
                 if (test == false)
-                    test = confirm('Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?');
+                    test = confirm(_('Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?'));
 
                 if (test == true) {
                     $(this).data('total-checked', 1);
@@ -2423,7 +2424,7 @@ $(document).ready(function() {
 
         var form = $(this).closest('.inner-form');
 
-        if (confirm('Sei sicuro di voler annullare questa prenotazione?')) {
+        if (confirm(_('Sei sicuro di voler annullare questa prenotazione?'))) {
             form.find('.main-form-buttons button').attr('disabled', 'disabled');
 
             $.ajax({

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+
 use Event;
 use Auth;
 use Theme;
@@ -51,8 +52,6 @@ class GraphicInitServiceProvider extends ServiceProvider
                 $view->with('fieldsize', 12);
             }
         });
-
-        setlocale(LC_TIME, 'it_IT.UTF-8');
     }
 
     public function register()

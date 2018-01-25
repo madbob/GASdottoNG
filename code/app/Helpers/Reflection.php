@@ -1,5 +1,20 @@
 <?php
 
+function currentAbsoluteGas()
+{
+    static $gas = null;
+
+    if ($gas == null) {
+        $user = Auth::user();
+        if ($user != null)
+            $gas = $user->gas;
+        else
+            $gas = App\Gas::first();
+    }
+
+    return $gas;
+}
+
 function modelsUsingTrait($trait_name) {
     $out = [];
     $results = scandir(app_path());

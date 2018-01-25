@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ htmlLang() }}">
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -25,7 +25,7 @@
 
         @if(env('APP_DEBUG') == true)
             @foreach($css as $c)
-                <link rel="stylesheet" type="text/css" href="{{ url($c) }}">
+                <link rel="stylesheet" type="text/css" href="{{ asset($c) }}">
             @endforeach
         @else
             {!! Minify::stylesheet($css)->withFullUrl() !!}
@@ -33,6 +33,7 @@
 
         <meta name="csrf-token" content="{{ csrf_token() }}"/>
         <meta name="absolute_url" content="{{ url('/') }}"/>
+        <meta name="current_currency" content="{{ currentAbsoluteGas()->curency }}"/>
     </head>
     <body>
         <div id="preloader">
@@ -154,14 +155,13 @@
             '/js/jquery.ui.touch-punch.js',
             '/js/bootstrap.min.js',
             '/js/bootstrap-datepicker.min.js',
-            '/js/bootstrap-datepicker.it.min.js',
             '/js/bootstrap-multiselect.js',
             '/js/jquery.mjs.nestedSortable.js',
+            '/js/translate.js',
             '/js/typeahead.bundle.js',
             '/js/validator.min.js',
             '/js/jquery.fileupload.js',
             '/js/bootstrap-table.js',
-            '/js/bootstrap-table-it-IT.js',
             '/js/bootstrap-toggle.js',
             '/js/marked.min.js',
             '/js/chartist.js',
@@ -180,10 +180,14 @@
 
         @if(env('APP_DEBUG') == true)
             @foreach($scripts as $s)
-                <script type="application/javascript" src="{{ url($s) }}"></script>
+                <script type="application/javascript" src="{{ asset($s) }}"></script>
             @endforeach
         @else
             {!! Minify::javascript($scripts)->withFullUrl() !!}
         @endif
+
+        <script type="application/javascript" src="{{ asset('/js/lang/bootstrap-datepicker.' . htmlLang() . '.min.js') }}"></script>
+        <script type="application/javascript" src="{{ asset('/js/lang/bootstrap-table-' . htmlLang() . '.js') }}"></script>
+        <script type="application/javascript" src="{{ asset('/js/lang/' . htmlLang() . '.js') }}"></script>
     </body>
 </html>
