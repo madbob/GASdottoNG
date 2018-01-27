@@ -11,18 +11,20 @@
         </div>
     @endif
 
-    <div class="well" data-aggregate-id="{{ $order->id }}">
-        <span class="glyphicon glyphicon-fullscreen pull-right explode-aggregate" aria-hidden="true"></span>
+    @if(($order->status == 'shipped' && count($order->orders) > 1) || $order->status != 'shipped')
+        <div class="well" data-aggregate-id="{{ $order->id }}">
+            <span class="glyphicon glyphicon-fullscreen pull-right explode-aggregate" aria-hidden="true"></span>
 
-        <ul>
-            @foreach($order->orders as $suborder)
-                <li data-order-id="{{ $suborder->id }}">
-                    {{ $suborder->printableName() }}<br/>
-                    <small>{{ $suborder->printableDates() }}</small>
-                </li>
-            @endforeach
-        </ul>
-    </div>
+            <ul>
+                @foreach($order->orders as $suborder)
+                    <li data-order-id="{{ $suborder->id }}">
+                        {{ $suborder->printableName() }}<br/>
+                        <small>{{ $suborder->printableDates() }}</small>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
 
-    <?php $index++ ?>
+        <?php $index++ ?>
+    @endif
 @endforeach
