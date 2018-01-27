@@ -42,6 +42,10 @@ function getLanguages()
             'value' => 'en_EN',
             'label' => 'English'
         ],
+        [
+            'value' => 'de_DE',
+            'label' => 'Deutsch'
+        ],
     ];
 }
 
@@ -82,6 +86,23 @@ function localeMonths()
                 'october' => 'october',
                 'november' => 'november',
                 'december' => 'december',
+            ];
+            break;
+
+        case 'de_DE':
+            $months = [
+                'january' => 'januar',
+                'february' => 'februar',
+                'march' => 'märz',
+                'april' => 'april',
+                'may' => 'mai',
+                'june' => 'juni',
+                'july' => 'juli',
+                'august' => 'august',
+                'september' => 'september',
+                'october' => 'oktober',
+                'november' => 'november',
+                'december' => 'dezember',
             ];
             break;
     }

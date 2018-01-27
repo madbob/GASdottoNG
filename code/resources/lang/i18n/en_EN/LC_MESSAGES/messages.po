@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
-"POT-Creation-Date: 2018-01-20 19:41+0100\n"
-"PO-Revision-Date: 2018-01-20 19:41+0100\n"
+"POT-Creation-Date: 2018-01-27 01:13+0100\n"
+"PO-Revision-Date: 2018-01-27 01:14+0100\n"
 "Last-Translator: Roberto Guido <bob@linux.it>\n"
 "Language-Team: Roberto Guido <bob@linux.it>\n"
 "Language: en_EN\n"
@@ -71,8 +71,8 @@ msgstr "All Referents"
 #: ../resources/views/notification/base-edit.blade.php:12
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:12
 #, php-format
-msgid "Tutti i Partecipanti all'ordine per %s"
-msgstr "Every order's Participants for %s"
+msgid "Tutti i Partecipanti all'ordine %s %s"
+msgstr "All Participants to order %s %s"
 
 #: ../storage/framework/messages/011e39d68f39ddd07dc8b80ff0d7659141956607.php.php:4
 #, php-format
@@ -145,11 +145,11 @@ msgid "Prezzo Unitario"
 msgstr "Unit Price"
 
 #: ../storage/framework/messages/03fe6cae2ede501c06dab5b92f4dbd9960b195d1.php.php:3
-#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:466
+#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:462
 #: ../storage/framework/messages/939678dcfaab8b8718bb2f71649e4484a2db059b.php.php:39
 #: ../storage/framework/messages/ce8e28c6c53c5bf8df34a17e43697f3ad2be3a72.php.php:12
 #: ../storage/framework/messages/ce8e28c6c53c5bf8df34a17e43697f3ad2be3a72.php.php:62
-#: Order.php:466
+#: Order.php:462
 msgid "Prezzo Trasporto"
 msgstr "Shipment Cost"
 
@@ -165,7 +165,7 @@ msgstr "Category"
 
 #: ../storage/framework/messages/03fe6cae2ede501c06dab5b92f4dbd9960b195d1.php.php:19
 #: ../storage/framework/messages/30fc88b034fce8e5805eff35fa55ff66010fd8f1.php.php:129
-#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:446
+#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:442
 #: ../storage/framework/messages/939678dcfaab8b8718bb2f71649e4484a2db059b.php.php:41
 #: ../storage/framework/messages/aafab70db3d231a41f00b6d79e72ed9590b37bcf.php.php:11
 #: ../storage/framework/messages/ce8e28c6c53c5bf8df34a17e43697f3ad2be3a72.php.php:10
@@ -176,7 +176,7 @@ msgstr "Category"
 #: ../storage/framework/messages/fb2596140bdca13096d7fa498c1fdf0584b8d658.php.php:9
 #: ../storage/framework/messages/fb2596140bdca13096d7fa498c1fdf0584b8d658.php.php:17
 #: ../storage/framework/messages/fb2596140bdca13096d7fa498c1fdf0584b8d658.php.php:24
-#: Order.php:446 Services/SuppliersService.php:129
+#: Order.php:442 Services/SuppliersService.php:129
 msgid "Unità di Misura"
 msgstr "Measure Unit"
 
@@ -263,13 +263,13 @@ msgstr "The configuration file was not found in %s"
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:360
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:388
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:415
-#: ../storage/framework/messages/f2df9ebaeed2519509db6f69913f8c268d49dd9f.php.php:42
-#: ../storage/framework/messages/f2df9ebaeed2519509db6f69913f8c268d49dd9f.php.php:92
+#: ../storage/framework/messages/f2df9ebaeed2519509db6f69913f8c268d49dd9f.php.php:43
+#: ../storage/framework/messages/f2df9ebaeed2519509db6f69913f8c268d49dd9f.php.php:96
 #: Http/Controllers/AttachmentsController.php:33
 #: Http/Controllers/AttachmentsController.php:55
 #: Http/Controllers/AttachmentsController.php:108
-#: Http/Controllers/CategoriesController.php:42
-#: Http/Controllers/CategoriesController.php:92
+#: Http/Controllers/CategoriesController.php:43
+#: Http/Controllers/CategoriesController.php:96
 #: Http/Controllers/DeliveriesController.php:99
 #: Http/Controllers/GasController.php:72 Http/Controllers/GasController.php:86
 #: Http/Controllers/GasController.php:113
@@ -645,7 +645,7 @@ msgstr "Identifier"
 #: ../storage/framework/messages/ca9924efcb403a0f0f8b6ade8f1bcf218597d207.php.php:54
 #: ../storage/framework/messages/d9da9680f882d257f8cb22d7fc339948c7e741ba.php.php:17
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:169
-#: ../storage/framework/messages/f796dafdee82b09381216fb50e2ba2e5fad4fb8b.php.php:124
+#: ../storage/framework/messages/f796dafdee82b09381216fb50e2ba2e5fad4fb8b.php.php:125
 #: Http/Controllers/MovementsController.php:169
 msgid "Note"
 msgstr "Notes"
@@ -832,7 +832,7 @@ msgstr "Configure roles for %s"
 #: ../storage/framework/messages/cac23c1f807d35ed3aefa09946d6973937a89c57.php.php:40
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:45
 #: ../storage/framework/messages/e236757f5a10863f3866601bdbb99ee72f99060e.php.php:21
-#: ../storage/framework/messages/f796dafdee82b09381216fb50e2ba2e5fad4fb8b.php.php:149
+#: ../storage/framework/messages/f796dafdee82b09381216fb50e2ba2e5fad4fb8b.php.php:151
 msgid "Chiudi"
 msgstr "Close"
 
@@ -1402,7 +1402,7 @@ msgid "Aggiungi Prodotto"
 msgstr "Add Product"
 
 #: ../storage/framework/messages/47a7dc8de105e7a903e7f944b5ba60c7af395b42.php.php:218
-#: ../storage/framework/messages/f796dafdee82b09381216fb50e2ba2e5fad4fb8b.php.php:138
+#: ../storage/framework/messages/f796dafdee82b09381216fb50e2ba2e5fad4fb8b.php.php:140
 msgid "Totale Complessivo"
 msgstr "Total"
 
@@ -1658,8 +1658,8 @@ msgid "Note di Default"
 msgstr "Default Notes"
 
 #: ../storage/framework/messages/5ec30665b3114e6137babf75150ae220b1b20c48.php.php:9
-#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:31
-#: Order.php:31
+#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:32
+#: Order.php:32
 msgid "Ordine"
 msgstr "Order"
 
@@ -1687,52 +1687,52 @@ msgstr ""
 "of each one. This function is suggested to simplify orders administration, "
 "for example for orders delivered in the same date."
 
-#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:100
-#: Order.php:100
+#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:101
+#: Order.php:101
 #, php-format
 msgid "da %s a %s"
 msgstr "form %s to %s"
 
-#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:103
-#: Order.php:103
+#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:104
+#: Order.php:104
 #, php-format
 msgid ", in consegna %s"
 msgstr ", to deliver on %s"
 
-#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:399
+#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:395
 #: ../storage/framework/messages/939678dcfaab8b8718bb2f71649e4484a2db059b.php.php:36
-#: Order.php:399
+#: Order.php:395
 msgid "Nome Prodotto"
 msgstr "Product Name"
 
-#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:409
-#: Order.php:409
+#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:405
+#: Order.php:405
 msgid "Codice Fornitore"
 msgstr "Supplier Code"
 
-#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:421
-#: Order.php:421
+#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:417
+#: Order.php:417
 msgid "Quantità Totale"
 msgstr "Total"
 
-#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:431
-#: Order.php:431
+#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:427
+#: Order.php:427
 msgid "Numero Confezioni"
 msgstr "Number of Packs"
 
-#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:456
-#: Order.php:456
+#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:452
+#: Order.php:452
 msgid "Prezzo Totale"
 msgstr "Total Price"
 
-#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:475
-#: Order.php:475
+#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:471
+#: Order.php:471
 msgid "Note Prodotto"
 msgstr "Products Notes"
 
-#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:502
-#: ../storage/framework/messages/662512e6723d9f6ca3ef15d15e16df54c796fbb7.php.php:263
-#: Booking.php:263 Order.php:502
+#: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:498
+#: ../storage/framework/messages/662512e6723d9f6ca3ef15d15e16df54c796fbb7.php.php:264
+#: Booking.php:264 Order.php:498
 msgid "Saldo"
 msgstr "Balance"
 
