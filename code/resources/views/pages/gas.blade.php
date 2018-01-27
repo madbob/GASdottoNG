@@ -41,87 +41,6 @@
                     </div>
                 </div>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab">
-                    <h4 class="panel-title">
-                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#main-configs" href="#email-config">
-                            {{ _i('Configurazione E-Mail') }}
-                        </a>
-                    </h4>
-                </div>
-                <div id="email-config" class="panel-collapse collapse" role="tabpanel">
-                    <div class="panel-body">
-                        <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ url('gas/' . $gas->id) }}">
-                            <input type="hidden" name="group" value="email">
-
-                            @if(!empty(config('services.ses.key')))
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="radio">
-                                            <label>
-                                                <input type="radio" name="maildriver" value="ses" {{ $gas->mail['driver'] == 'ses' ? 'checked' : '' }}>
-                                                {{ _i('Utilizza configurazione globale.') }}<br>
-                                                {{ _i("Le mail generate dal sistema saranno inviate dall'indirizzo %s.", config('services.ses.from.address')) }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
-                            <div class="row">
-                                @if(!empty(config('services.ses.key')))
-                                    <div class="col-md-12">
-                                        <div class="radio">
-                                            <label>
-                                                <input type="radio" name="maildriver" value="smtp" {{ $gas->mail['driver'] == 'smtp' ? 'checked' : '' }}>
-                                                {{ _i('Utilizza configurazione personalizzata.') }}<br>
-                                                {{ _i('Le mail generate dal sistema saranno inviate dal tuo indirizzo.') }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                @else
-                                    <input type="hidden" name="maildriver" value="smtp">
-                                @endif
-
-                                <div class="col-md-6">
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'mail->address', 'label' => _i('Indirizzo')])
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'mail->username', 'label' => _i('Username')])
-                                    @include('commons.passwordfield', ['obj' => $gas, 'name' => 'mail->password', 'label' => _i('Password')])
-                                </div>
-                                <div class="col-md-6">
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'mail->host', 'label' => _i('Server SMTP')])
-                                    @include('commons.numberfield', ['obj' => $gas, 'name' => 'mail->port', 'label' => _i('Porta')])
-                                    @include('commons.selectenumfield', [
-                                        'obj' => $gas,
-                                        'name' => 'mail->encryption',
-                                        'label' => _i('Crittografia'),
-                                        'values' => [
-                                            [
-                                                'label' => _i('Nessuna'),
-                                                'value' => ''
-                                            ],
-                                            [
-                                                'label' => 'SSL',
-                                                'value' => 'ssl'
-                                            ],
-                                            [
-                                                'label' => 'STARTTLS',
-                                                'value' => 'tls'
-                                            ],
-                                        ]
-                                    ])
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="btn-group pull-right main-form-buttons" role="group">
-                                        <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
 
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab">
@@ -399,7 +318,7 @@
 
 @can('gas.permissions', $gas)
     <div class="page-header">
-        <h3>Permessi</h3>
+        <h3>{{ _i('Permessi') }}</h3>
     </div>
 
     <div class="row">

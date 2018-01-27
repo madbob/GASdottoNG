@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use AutoMail\AutoMail;
 
 use Auth;
 use DB;
@@ -81,33 +80,6 @@ class GasController extends Controller
                 $gas->setConfig('currency', $request->input('currency'));
                 break;
 
-            case 'email':
-                if ($user->can('gas.config', $gas) == false) {
-                    return $this->errorResponse(_i('Non autorizzato'));
-                }
-
-                $mailconf = $gas->getConfig('mail_conf');
-                if ($mailconf == '') {
-                    $old_password = '';
-                }
-                else {
-                    $mail = json_decode($mailconf);
-                    $old_password = $mail->password;
-                }
-
-                $mail = (object) [
-                    'driver' => $request->input('maildriver'),
-                    'username' => $request->input('mail->username'),
-                    'password' => $request->input('mail->password') == '' ? $old_password : $request->input('mail->password'),
-                    'host' => $request->input('mail->host'),
-                    'port' => $request->input('mail->port'),
-                    'address' => $request->input('mail->address'),
-                    'encryption' => $request->input('mail->encryption'),
-                ];
-
-                $gas->setConfig('mail_conf', $mail);
-                break;
-
             case 'banking':
                 if ($user->can('gas.config', $gas) == false) {
                     return $this->errorResponse(_i('Non autorizzato'));
@@ -132,23 +104,5 @@ class GasController extends Controller
 
         $gas->save();
         return $this->successResponse();
-    }
-
-    public function configureMail(Request $request)
-    {
-        $email = $request->input('email');
-
-        try {
-            $conf = AutoMail::discover($email);
-        }
-        catch(\Exception $e) {
-            $conf = null;
-        }
-
-        $ret = [];
-        if ($conf != null)
-            $ret = $conf['outgoing'][0];
-
-        return response()->json($ret);
     }
 }

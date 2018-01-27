@@ -2450,51 +2450,6 @@ $(document).ready(function() {
     });
 
     /*
-        Configurazioni GAS
-    */
-
-    $('.gas-editor').on('change', 'input[name=mailaddress]', function() {
-        var email = $(this).val();
-        var panel = $(this).closest('.well');
-
-        panel.find('input').prop('disabled', true);
-
-        $.ajax({
-            method: 'GET',
-            url: absolute_url + '/gas/configmail',
-            data: {
-                email: email
-            },
-            dataType: 'JSON',
-
-            success: function(data) {
-                panel.find('input').prop('disabled', false);
-
-                if (data.hasOwnProperty('hostname')) {
-                    panel.find('input[name=mailusername]').val(data.username);
-                    panel.find('input[name=mailserver]').val(data.hostname);
-                    panel.find('input[name=mailport]').val(data.port);
-
-                    var val = '';
-
-                    switch(data.socketType) {
-                        case 'SSL':
-                            val = 'ssl';
-                            break;
-                        case 'STARTTLS':
-                            val = 'tls';
-                    }
-
-                    panel.find('select[name=mailssl] option[value=' + val + ']').prop('selected', true);
-                }
-            },
-            error: function() {
-                panel.find('input').prop('disabled', false);
-            }
-        });
-    });
-
-    /*
     	Widget generico wizard
     */
 

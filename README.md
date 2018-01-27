@@ -20,7 +20,7 @@ git clone https://github.com/madbob/GASdottoNG.git
 cd GASdottoNG/code
 # per installare le dipendenze PHP
 composer install
-# nel file .env vanno specificati i propri parametri di connessione al database
+# nel file .env vanno specificati i propri parametri di connessione al database e l'invio delle mail
 cp .env.example .env
 nano .env
 ```
@@ -52,6 +52,7 @@ cd code
  * potrebbe essere necessario installare la localizzazione italiana del sistema (in particolare per formattare le date). Per installarla, qualora mancante, eseguire `dpkg-reconfigure locales` sul proprio server
  * per versioni di MySQL inferiori alla 5.7, occorre editare il file `code/app/Providers/AppServiceProvider.php`. Fare riferimento a [queste indicazioni](https://laravel-news.com/laravel-5-4-key-too-long-error).
  * è possibile installare l'applicazione in una sotto-cartella del proprio dominio, avendo cura di configurare il parametro `base_url` in `code/config/minify.config.php` con l'URL completo di path (escludendo però il riferimento a `index.php`)
+ * per inoltrare le mail con GMail, è necessario abilitare l'[accesso alle applicazioni "meno sicure"](https://myaccount.google.com/lesssecureapps)
 
 ### Licenza
 
