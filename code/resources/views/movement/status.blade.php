@@ -102,6 +102,8 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <form class="form-horizontal password-protected" id="close-balance" method="POST" action="{{ url('/movements/close') }}">
+                            <input type="hidden" name="reload-whole-page" value="1">
+
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                 <h4 class="modal-title">{{ _i('Conferma Operazione') }}</h4>

@@ -374,11 +374,21 @@ class MovementsController extends Controller
     public function recalculateCurrentBalance()
     {
         $current_date = date('Y-m-d');
-        $movements = Movement::where('archived', false)->get();
-        foreach($movements as $m) {
-            $m->updated_at = $current_date;
-            $m->save();
-        }
+        $index = 0;
+
+        do {
+            $movements = Movement::where('archived', false)->take(100)->offset(100 * $index)->get();
+            if ($movements->count() == 0)
+                break;
+
+            foreach($movements as $m) {
+                $m->updated_at = $current_date;
+                $m->save();
+            }
+
+            $index++;
+
+        } while(true);
     }
 
     public function recalculate(Request $request)
@@ -430,12 +440,26 @@ class MovementsController extends Controller
                 Ricalcolo i movimenti fino alla data desiderata
             */
             $current_date = date('Y-m-d');
-            $movements = Movement::where('date', '<', $date)->where('archived', false)->get();
-            foreach($movements as $m) {
-                $m->updated_at = $current_date;
-                $m->archived = true;
-                $m->save();
-            }
+
+            $index = 0;
+            do {
+                $movements = Movement::where('date', '<', $date)->where('archived', false)->take(100)->offset(100 * $index)->get();
+                if ($movements->count() == 0)
+                    break;
+
+                foreach($movements as $m) {
+                    $m->updated_at = $current_date;
+                    $m->save();
+                }
+
+                $index++;
+
+            } while(true);
+
+            /*
+                Archivio i movimenti più vecchi della data indicata
+            */
+            Movement::where('date', '<', $date)->where('archived', false)->update(['archived' => true]);
 
             /*
                 Duplico i saldi appena calcolati, e alle copie precedenti
@@ -449,13 +473,12 @@ class MovementsController extends Controller
             */
             $this->recalculateCurrentBalance();
 
-            DB::commit();
+            Session::forget('movements-recalculating');
+            return $this->successResponse();
         }
         catch(\Exception $e) {
             Log::error(_i('Errore nel ricalcolo saldi: %s', $e->getMessage()));
+            return $this->errorResponse(_i('Errore'));
         }
-
-        Session::forget('movements-recalculating');
-        return redirect(url('/movements'));
     }
 }
