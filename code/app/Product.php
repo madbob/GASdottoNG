@@ -50,6 +50,11 @@ class Product extends Model
         return $this->hasMany('App\Variant')->with('values')->orderBy('name', 'asc');
     }
 
+    public function vat_rate()
+    {
+        return $this->belongsTo('App\VatRate');
+    }
+
     public function getSlugID()
     {
         $append = '';

@@ -11,8 +11,10 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::group(array('prefix' => 'api/1'), function () {
     Route::get('users/search', 'REST\UsersController@search');
     Route::resource('users', 'REST\UsersController');
+    /*
     Route::resource('suppliers', 'REST\SuppliersController');
     Route::resource('products', 'REST\ProductsController');
+    */
 });
 
 Route::get('/', function () {
@@ -55,6 +57,9 @@ Route::get('products/{id}/header', 'ProductsController@objhead');
 Route::post('products/massiveupdate', 'ProductsController@massiveUpdate');
 
 Route::get('vatrates/{id}/header', 'VatRatesController@objhead');
+
+Route::post('invoices/wire/{step}/{id}', 'InvoicesController@wiring');
+Route::get('invoices/{id}/header', 'InvoicesController@objhead');
 
 Route::get('categories/{id}/header', 'CategoriesController@objhead');
 
@@ -111,6 +116,7 @@ Route::resource('roles', 'RolesController');
 Route::resource('suppliers', 'SuppliersController');
 Route::resource('products', 'ProductsController');
 Route::resource('vatrates', 'VatRatesController');
+Route::resource('invoices', 'InvoicesController');
 Route::resource('deliveries', 'DeliveriesController');
 Route::resource('categories', 'CategoriesController');
 Route::resource('measures', 'MeasuresController');

@@ -374,6 +374,75 @@ class MovementTypesSeeder extends Seeder
             $type->save();
         }
 
+        if (MovementType::find('invoice-payment') == null) {
+            $type = new MovementType();
+            $type->id = 'invoice-payment';
+            $type->name = 'Pagamento fattura a fornitore';
+            $type->sender_type = 'App\Gas';
+            $type->target_type = 'App\Invoice';
+            $type->allow_negative = false;
+            $type->fixed_value = null;
+            $type->visibility = false;
+            $type->system = true;
+            $type->function = json_encode(
+                [
+                    (object) [
+                        'method' => 'cash',
+                        'target' => (object) [
+                            'operations' => [
+                                (object) [
+                                    'operation' => 'decrement',
+                                    'field' => 'bank'
+                                ],
+                            ]
+                        ],
+                        'sender' => (object) [
+                            'operations' => [
+                                (object) [
+                                    'operation' => 'decrement',
+                                    'field' => 'cash'
+                                ],
+                                (object) [
+                                    'operation' => 'decrement',
+                                    'field' => 'suppliers'
+                                ],
+                            ]
+                        ],
+                        'master' => (object) [
+                            'operations' => []
+                        ]
+                    ],
+                    (object) [
+                        'method' => 'bank',
+                        'target' => (object) [
+                            'operations' => [
+                                (object) [
+                                    'operation' => 'decrement',
+                                    'field' => 'bank'
+                                ],
+                            ]
+                        ],
+                        'sender' => (object) [
+                            'operations' => [
+                                (object) [
+                                    'operation' => 'decrement',
+                                    'field' => 'bank'
+                                ],
+                                (object) [
+                                    'operation' => 'decrement',
+                                    'field' => 'suppliers'
+                                ],
+                            ]
+                        ],
+                        'master' => (object) [
+                            'operations' => []
+                        ]
+                    ]
+                ]
+            );
+            $type->save();
+        }
+
         /*
             Il comportamento di questi movimenti non è strettamente vincolati al
             codice, ma si consiglia comunque di non modificarli se non molto

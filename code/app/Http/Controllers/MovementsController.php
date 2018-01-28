@@ -15,6 +15,7 @@ use Response;
 
 use App\Movement;
 use App\MovementType;
+use App\Invoice;
 use App\Balance;
 use App\User;
 use App\Supplier;
@@ -143,6 +144,8 @@ class MovementsController extends Controller
                 contabilità
             */
             $data['balance'] = Auth::user()->gas->current_balance;
+            $data['types'] = MovementType::types();
+            $data['invoices'] = Invoice::orderBy('date', 'desc')->get();
             return Theme::view('pages.movements', $data);
         }
         else {
