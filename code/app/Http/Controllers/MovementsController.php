@@ -318,6 +318,18 @@ class MovementsController extends Controller
             case 'credits':
                 $users = User::sorted()->get();
 
+                $group = $request->input('credit', 'all');
+                if ($group == 'minor') {
+                    $users = $users->filter(function($u) {
+                        return $u->current_balance_amount < 0;
+                    });
+                }
+                else if ($group == 'major') {
+                    $users = $users->filter(function($u) {
+                        return $u->current_balance_amount >= 0;
+                    });
+                }
+
                 if ($subtype == 'csv') {
                     $filename = _i('Crediti al %s.csv', date('d/m/Y'));
                     $headers = [_i('ID'), _i('Nome'), _i('E-Mail'), _i('Credito Residuo')];

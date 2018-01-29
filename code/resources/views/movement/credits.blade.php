@@ -6,7 +6,7 @@
 <div class="modal-body">
     <div class="row">
         <div class="col-md-12">
-            <div class="btn-group pull-right table-filters" data-table-target="#credits_status_table" data-toggle="buttons">
+            <div class="btn-group pull-right table-filters link-filters" data-table-target="#credits_status_table" data-link-target="#csv_credits_download" data-toggle="buttons">
                 <label class="btn btn-info active">
                     <input type="radio" name="credit" value="all" autocomplete="off" checked> {{ _i('Tutti') }}
                 </label>
@@ -61,6 +61,6 @@
 
 <div class="modal-footer">
     <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
-    <a href="{{ url('movements/document/credits/csv') }}" class="btn btn-success">{{ _i('Esporta CSV') }}</a>
+    <a id="csv_credits_download" href="{{ url('movements/document/credits/csv?credit=all') }}" class="btn btn-success">{{ _i('Esporta CSV') }}</a>
     <a href="{{ url('movements/document/credits/rid') }}" class="btn btn-success">{{ _i('Esporta RID') }}</a>
 </div>

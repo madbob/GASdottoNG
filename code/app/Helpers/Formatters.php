@@ -189,7 +189,7 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
     $headers = [
         'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
         'Content-type' => 'text/csv',
-        'Content-Disposition' => 'attachment; filename=' . $filename,
+        'Content-Disposition' => 'attachment; filename=' . str_replace(' ', '\\', $filename),
         'Expires' => '0',
         'Pragma' => 'public'
     ];

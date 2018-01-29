@@ -1703,6 +1703,18 @@ $(document).ready(function() {
         }
     });
 
+    $('body').on('change', '.link-filters input:radio', function() {
+        var filter = $(this).closest('.table-filters');
+        var target = filter.attr('data-link-target');
+        var link = $(target);
+        var attribute = $(this).attr('name');
+        var value = $(this).val();
+
+        var parsed = new URL(link.attr('href'));
+        var url = parsed.protocol + '//' + parsed.host + parsed.pathname + '?' + attribute + '=' + value;
+        link.attr('href', url);
+    });
+
     $('body').on('change', '.img-preview input:file', function() {
         previewImage(this);
     });
