@@ -134,19 +134,21 @@ class Supplier extends Model
             case 'all':
                 $query->where(function($query) use ($supplier) {
                     $query->where(function($query) use ($supplier) {
-                        $query->where('sender_type', 'App\Supplier')->where('sender_id', $supplier->id);
+                        $query->where(function($query) use ($supplier) {
+                            $query->where('sender_type', 'App\Supplier')->where('sender_id', $supplier->id);
+                        })->orWhere(function($query) use ($supplier) {
+                            $query->where('sender_type', 'App\Order')->whereIn('sender_id', $supplier->orders()->pluck('orders.id'));
+                        })->orWhere(function($query) use ($supplier) {
+                            $query->where('sender_type', 'App\Booking')->whereIn('sender_id', $supplier->bookings()->pluck('bookings.id'));
+                        });
                     })->orWhere(function($query) use ($supplier) {
-                        $query->where('sender_type', 'App\Order')->whereIn('sender_id', $supplier->orders()->pluck('orders.id'));
-                    })->orWhere(function($query) use ($supplier) {
-                        $query->where('sender_type', 'App\Booking')->whereIn('sender_id', $supplier->bookings()->pluck('bookings.id'));
-                    });
-                })->orWhere(function($query) use ($supplier) {
-                    $query->where(function($query) use ($supplier) {
-                        $query->where('target_type', 'App\Supplier')->where('target_id', $supplier->id);
-                    })->orWhere(function($query) use ($supplier) {
-                        $query->where('target_type', 'App\Order')->whereIn('target_id', $supplier->orders()->pluck('orders.id'));
-                    })->orWhere(function($query) use ($supplier) {
-                        $query->where('target_type', 'App\Booking')->whereIn('target_id', $supplier->bookings()->pluck('bookings.id'));
+                        $query->where(function($query) use ($supplier) {
+                            $query->where('target_type', 'App\Supplier')->where('target_id', $supplier->id);
+                        })->orWhere(function($query) use ($supplier) {
+                            $query->where('target_type', 'App\Order')->whereIn('target_id', $supplier->orders()->pluck('orders.id'));
+                        })->orWhere(function($query) use ($supplier) {
+                            $query->where('target_type', 'App\Booking')->whereIn('target_id', $supplier->bookings()->pluck('bookings.id'));
+                        });
                     });
                 });
                 break;
