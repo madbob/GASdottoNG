@@ -12,7 +12,7 @@ use Hash;
 
 class UsersService extends BaseService
 {
-    public function listUsers($term = '', $all = false)
+    public function list($term = '', $all = false)
     {
         $user = $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
         $gasID = $user->gas['id'];

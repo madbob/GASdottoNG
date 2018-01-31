@@ -8,13 +8,6 @@ Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail'
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
-Route::group(array('prefix' => 'api/1'), function () {
-    Route::get('users/search', 'REST\UsersController@search');
-    Route::resource('users', 'REST\UsersController');
-    Route::resource('suppliers', 'REST\SuppliersController');
-    Route::resource('products', 'REST\ProductsController');
-});
-
 Route::get('/', function () {
     return Redirect::to('/dashboard');
 });

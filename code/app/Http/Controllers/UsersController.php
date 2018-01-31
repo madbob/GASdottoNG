@@ -28,7 +28,7 @@ class UsersController extends BackedController
     {
         try {
             $user = Auth::user();
-            $users = $this->service->listUsers('', $user->can('users.admin', $user->gas));
+            $users = $this->service->list('', $user->can('users.admin', $user->gas));
             return Theme::view('pages.users', ['users' => $users]);
         }
         catch (AuthException $e) {
@@ -41,7 +41,7 @@ class UsersController extends BackedController
         $term = $request->input('term');
 
         try {
-            $users = $this->service->listUsers($term);
+            $users = $this->service->list($term);
             $users = $this->toJQueryAutocompletionFormat($users);
             return json_encode($users);
         }
