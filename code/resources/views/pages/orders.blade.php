@@ -29,18 +29,24 @@
                                 <h4 class="modal-title">{{ _i('Aggrega Ordini') }}</h4>
                             </div>
                             <div class="modal-body">
-                                <p>
-                                    {{ _i("Clicca e trascina gli ordini nella stessa cella per aggregarli, o nella cella vuota per disaggregarli.") }}
-                                </p>
-                                <p>
-                                    {{ _i("Una volta aggregati, gli ordini verranno visualizzati come uno solo pur mantenendo ciascuno i suoi attributi. Questa funzione è consigliata per facilitare l'amministrazione di ordini che, ad esempio, vengono consegnati nella stessa data.") }}
-                                </p>
+                                @if(empty($orders))
+                                    <p>
+                                        {{ _i('Non ci sono elementi da visualizzare.') }}
+                                    </p>
+                                    <p>
+                                        {{ _i("Una volta aggregati, gli ordini verranno visualizzati come uno solo pur mantenendo ciascuno i suoi attributi. Questa funzione è consigliata per facilitare l'amministrazione di ordini che, ad esempio, vengono consegnati nella stessa data.") }}
+                                    </p>
+                                @else
+                                    <p>
+                                        {{ _i("Clicca e trascina gli ordini nella stessa cella per aggregarli, o nella cella vuota per disaggregarli.") }}
+                                    </p>
 
-                                <hr/>
+                                    <hr/>
 
-                                <div id="aggregable-list" data-fetch-url="{{ url('aggregates/create') }}">
-                                    @include('order.aggregable', ['orders' => $orders])
-                                </div>
+                                    <div id="aggregable-list" data-fetch-url="{{ url('aggregates/create') }}">
+                                        @include('order.aggregable', ['orders' => $orders])
+                                    </div>
+                                @endif
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
