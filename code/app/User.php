@@ -140,7 +140,10 @@ class User extends Authenticatable
 
     public function getPendingBalanceAttribute()
     {
-        $bookings = $this->bookings()->where('status', 'pending')->get();
+        $bookings = $this->bookings()->where('status', 'pending')->whereHas('order', function($query) {
+            $query->whereIn('status', ['open', 'closed']);
+        })->get();
+
         $value = 0;
 
         foreach($bookings as $b)
