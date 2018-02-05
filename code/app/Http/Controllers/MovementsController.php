@@ -65,11 +65,12 @@ class MovementsController extends Controller
 
     public function index(Request $request)
     {
-        /*
-            TODO: controllare permessi
-        */
+        $user = Auth::user();
+        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
+            abort(503);
+        }
 
-        $query = Movement::with('sender')->with('target')->orderBy('date', 'desc');
+        $query = Movement::orderBy('date', 'desc');
 
         if ($request->has('startdate')) {
             $start = decodeDate($request->input('startdate'));
