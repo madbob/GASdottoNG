@@ -221,6 +221,21 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
         return $out_file;
 }
 
+function htmlize($string)
+{
+    $string = str_replace('"', '\"', $string);
+
+    /*
+        https://stackoverflow.com/questions/1960461/convert-plain-text-urls-into-html-hyperlinks-in-php
+    */
+    $url = '~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i';
+    $string = preg_replace($url, '<a href="$0" target="_blank" title="$0">$0</a>', $string);
+
+    $string = nl2br($string);
+
+    return $string;
+}
+
 function iban_split($iban, $field)
 {
     switch($field) {

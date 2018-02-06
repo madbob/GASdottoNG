@@ -70,6 +70,13 @@ class MovementsController extends Controller
             abort(503);
         }
 
+        /*
+            TODO sarebbe assai più efficiente usare with('sender') e
+            with('target'), ma poi la relazione in Movement si spacca (cambiando
+            in virtù del tipo di oggetto linkato). Sarebbe opportuno inrodurre
+            un'altra relazione espressamente dedicata ai tipi di oggetto
+            soft-deletable
+        */
         $query = Movement::orderBy('date', 'desc');
 
         if ($request->has('startdate')) {
