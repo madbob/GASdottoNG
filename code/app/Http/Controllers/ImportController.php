@@ -299,32 +299,39 @@ class ImportController extends Controller
                                 $u->gas_id = $gas->id;
                                 $u->username = $login;
                                 $u->password = Hash::make($login);
+                                $u->member_since = date('Y-m-d');
                             }
 
                             $contacts = [];
                             $credit = null;
 
                             foreach ($columns as $index => $field) {
+                                $value = (string)$line[$index];
+
                                 if ($field == 'none') {
                                     continue;
                                 }
                                 else if ($field == 'phone' || $field == 'email') {
                                     $c = new Contact();
                                     $c->type = $field;
-                                    $c->value = $line[$index];
+                                    $c->value = $value;
                                     $contacts[] = $c;
                                     continue;
                                 }
                                 else if ($field == 'member_since') {
-                                    $u->$field = date('Y-m-d', strtotime($line[$index]));
+                                    $u->$field = date('Y-m-d', strtotime($value));
                                 }
                                 else if ($field == 'credit') {
                                     if (!empty($line[$index]) && $line[$index] != 0) {
-                                        $credit = str_replace(',', '.', $line[$index]);
+                                        $credit = str_replace(',', '.', $value);
                                     }
                                 }
+                                else if ($field == 'ceased') {
+                                    if (strtolower($value) == 'true' || strtolower($value) == 'vero' || $value == '1')
+                                        $u->deleted_at = date('Y-m-d');
+                                }
                                 else {
-                                    $u->$field = $line[$index];
+                                    $u->$field = $value;
                                 }
                             }
 
