@@ -3,7 +3,8 @@
 @include('commons.textfield', [
     'obj' => $role,
     'name' => 'name',
-    'label' => _i('Nome')
+    'label' => _i('Nome'),
+    'mandatory' => true
 ])
 
 @include('commons.boolfield', [
