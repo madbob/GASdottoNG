@@ -366,6 +366,10 @@ class Supplier extends Model
                                     $product->description = html_entity_decode((string) $p);
                                     break;
 
+                                case 'active':
+                                    $product->active = (strtolower((string) $p) == 'true');
+                                    break;
+
                                 case 'orderInfo':
                                     foreach($p->children() as $e) {
                                         switch($e->getName()) {

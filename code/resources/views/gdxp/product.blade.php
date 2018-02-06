@@ -6,6 +6,7 @@
     <category>{{ $obj->category->name }}</category>
     <um>{{ $obj->measure->name }}</um>
     <description>{{ $obj->description }}</description>
+    <active>{{ $obj->active ? 'true' : 'false' }}</active>
 
     <orderInfo>
         <umPrice>{{ $obj->price }}</umPrice>
