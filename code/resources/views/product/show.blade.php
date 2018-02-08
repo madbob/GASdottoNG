@@ -5,7 +5,7 @@
             @include('commons.staticpricefield', ['obj' => $product, 'name' => 'transport', 'label' => 'Prezzo Trasporto'])
             @include('commons.staticobjfield', ['obj' => $product, 'name' => 'category', 'label' => 'Categoria'])
             @include('commons.staticobjfield', ['obj' => $product, 'name' => 'measure', 'label' => 'Unità di Misura'])
-            @include('commons.staticstringfield', ['obj' => $product, 'name' => 'description', 'label' => 'Descrizione'])
+            @include('commons.staticstringfield', ['obj' => $product, 'name' => 'description', 'label' => 'Descrizione', 'callable' => 'htmlize'])
             @include('commons.staticstringfield', ['obj' => $product, 'name' => 'supplier_code', 'label' => 'Codice Fornitore'])
             @include('commons.staticboolfield', ['obj' => $product, 'name' => 'active', 'label' => 'Ordinabile'])
         </div>

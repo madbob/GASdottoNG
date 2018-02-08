@@ -33,7 +33,7 @@
 
         <meta name="csrf-token" content="{{ csrf_token() }}"/>
         <meta name="absolute_url" content="{{ url('/') }}"/>
-        <meta name="current_currency" content="{{ currentAbsoluteGas()->curency }}"/>
+        <meta name="current_currency" content="{{ currentAbsoluteGas()->currency }}"/>
     </head>
     <body>
         <div id="preloader">

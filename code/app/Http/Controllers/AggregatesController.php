@@ -9,6 +9,7 @@ use App\Notifications\BookingNotification;
 use Theme;
 use DB;
 use PDF;
+use Log;
 
 use App\Aggregate;
 use App\Order;

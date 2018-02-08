@@ -66,7 +66,7 @@ class MeasuresController extends Controller
         $ids = $request->input('id', []);
         $new_names = $request->input('name', []);
         $new_discretes = $request->input('discrete', []);
-        $saved_ids = [];
+        $saved_ids = ['non-specificato'];
 
         for ($i = 0; $i < count($ids); ++$i) {
             $name = trim($new_names[$i]);
@@ -90,7 +90,7 @@ class MeasuresController extends Controller
         }
 
         Product::whereNotIn('measure_id', $saved_ids)->update(['measure_id' => 'non-specificato']);
-        Measure::where('id', '!=', 'non-specificato')->whereNotIn('id', $saved_ids)->delete();
+        Measure::whereNotIn('id', $saved_ids)->delete();
 
         return $this->successResponse();
     }

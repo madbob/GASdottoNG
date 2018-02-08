@@ -128,6 +128,7 @@ class Order extends Model
             $ret->order_id = $this->id;
             $ret->notes = '';
             $ret->status = 'pending';
+            $ret->notes = '';
         }
 
         return $ret;
@@ -315,10 +316,8 @@ class Order extends Model
         $summary->transport = $total_transport + $order->transport;
 
         $total_transport_delivered = 0;
-        if ($order->transport > 0) {
-            foreach ($order->bookings()->where('status', 'shipped')->get() as $shipped_booking)
-                $total_transport_delivered += $shipped_booking->transport;
-        }
+        foreach ($order->bookings()->where('status', 'shipped')->get() as $shipped_booking)
+            $total_transport_delivered += $shipped_booking->transport;
         $summary->transport_delivered = $total_transport_delivered;
 
         $summary->notes = [];

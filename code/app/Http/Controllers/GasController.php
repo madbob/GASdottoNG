@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use AutoMail\AutoMail;
 
 use Auth;
 use DB;
@@ -25,6 +24,12 @@ class GasController extends Controller
     }
 
     public function index()
+    {
+        $user = Auth::user();
+        return redirect(url('gas/' . $user->gas->id . '/edit'));
+    }
+
+    public function show()
     {
         $user = Auth::user();
         return redirect(url('gas/' . $user->gas->id . '/edit'));
@@ -82,29 +87,6 @@ class GasController extends Controller
                 $gas->setConfig('currency', $request->input('currency'));
                 break;
 
-            case 'email':
-                $mailconf = $gas->getConfig('mail_conf');
-                if ($mailconf == '') {
-                    $old_password = '';
-                }
-                else {
-                    $mail = json_decode($mailconf);
-                    $old_password = $mail->password;
-                }
-
-                $mail = (object) [
-                    'driver' => $request->input('maildriver'),
-                    'username' => $request->input('mail->username'),
-                    'password' => $request->input('mail->password') == '' ? $old_password : $request->input('mail->password'),
-                    'host' => $request->input('mail->host'),
-                    'port' => $request->input('mail->port'),
-                    'address' => $request->input('mail->address'),
-                    'encryption' => $request->input('mail->encryption'),
-                ];
-
-                $gas->setConfig('mail_conf', $mail);
-                break;
-
             case 'banking':
                 $gas->setConfig('year_closing', decodeDateMonth($request->input('year_closing')));
                 $gas->setConfig('annual_fee_amount', $request->input('annual_fee_amount', 0));
@@ -134,23 +116,5 @@ class GasController extends Controller
 
         $gas->save();
         return $this->successResponse();
-    }
-
-    public function configureMail(Request $request)
-    {
-        $email = $request->input('email');
-
-        try {
-            $conf = AutoMail::discover($email);
-        }
-        catch(\Exception $e) {
-            $conf = null;
-        }
-
-        $ret = [];
-        if ($conf != null)
-            $ret = $conf['outgoing'][0];
-
-        return response()->json($ret);
     }
 }

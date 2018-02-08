@@ -22,7 +22,7 @@ return [
     'ses' => [
         'key' => env('SES_KEY', ''),
         'secret' => env('SES_SECRET', ''),
-        'region' => 'us-east-1',
+        'region' => env('SES_REGION', 'us-east-1'),
         'from' => [
             'address' => env('MAIL_FROM_ADDRESS', 'info@gasdotto.net'),
             'name' => env('MAIL_FROM_NAME', 'GASdotto'),

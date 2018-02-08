@@ -66,18 +66,6 @@ class Gas extends Model
                 'default' => '0'
             ],
 
-            'mail_conf' => [
-                'default' => (object) [
-                    'driver' => '',
-                    'username' => '',
-                    'password' => '',
-                    'host' => '',
-                    'port' => '',
-                    'address' => '',
-                    'encryption' => ''
-                ]
-            ],
-
             'rid' => [
                 'default' => (object) [
                     'iban' => '',
@@ -141,29 +129,6 @@ class Gas extends Model
         $conf->value = $value;
         $conf->gas_id = $this->id;
         $conf->save();
-    }
-
-    private function mailConfig()
-    {
-        $conf = $this->getConfig('mail_conf');
-        if ($conf == '') {
-            return (object) [
-                'driver' => !empty(config('services.ses.key')) ? 'ses' : 'smtp',
-                'username' => '',
-                'password' => '',
-                'host' => '',
-                'port' => '',
-                'address' => '',
-                'encryption' => '',
-            ];
-        } else {
-            return json_decode($conf);
-        }
-    }
-
-    public function getMailAttribute()
-    {
-        return (array) $this->mailConfig();
     }
 
     public function getRidAttribute()

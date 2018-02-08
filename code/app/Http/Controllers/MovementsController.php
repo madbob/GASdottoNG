@@ -65,11 +65,19 @@ class MovementsController extends Controller
 
     public function index(Request $request)
     {
-        /*
-            TODO: controllare permessi
-        */
+        $user = Auth::user();
+        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
+            abort(503);
+        }
 
-        $query = Movement::with('sender')->with('target')->orderBy('date', 'desc');
+        /*
+            TODO sarebbe assai più efficiente usare with('sender') e
+            with('target'), ma poi la relazione in Movement si spacca (cambiando
+            in virtù del tipo di oggetto linkato). Sarebbe opportuno inrodurre
+            un'altra relazione espressamente dedicata ai tipi di oggetto
+            soft-deletable
+        */
+        $query = Movement::orderBy('date', 'desc');
 
         if ($request->has('startdate')) {
             $start = decodeDate($request->input('startdate'));
@@ -318,6 +326,18 @@ class MovementsController extends Controller
             case 'credits':
                 $users = User::sorted()->get();
 
+                $group = $request->input('credit', 'all');
+                if ($group == 'minor') {
+                    $users = $users->filter(function($u) {
+                        return $u->current_balance_amount < 0;
+                    });
+                }
+                else if ($group == 'major') {
+                    $users = $users->filter(function($u) {
+                        return $u->current_balance_amount >= 0;
+                    });
+                }
+
                 if ($subtype == 'csv') {
                     $filename = _i('Crediti al %s.csv', date('d/m/Y'));
                     $headers = [_i('ID'), _i('Nome'), _i('E-Mail'), _i('Credito Residuo')];
@@ -374,11 +394,21 @@ class MovementsController extends Controller
     public function recalculateCurrentBalance()
     {
         $current_date = date('Y-m-d');
-        $movements = Movement::where('archived', false)->get();
-        foreach($movements as $m) {
-            $m->updated_at = $current_date;
-            $m->save();
-        }
+        $index = 0;
+
+        do {
+            $movements = Movement::where('archived', false)->take(100)->offset(100 * $index)->get();
+            if ($movements->count() == 0)
+                break;
+
+            foreach($movements as $m) {
+                $m->updated_at = $current_date;
+                $m->save();
+            }
+
+            $index++;
+
+        } while(true);
     }
 
     public function recalculate(Request $request)
@@ -430,12 +460,26 @@ class MovementsController extends Controller
                 Ricalcolo i movimenti fino alla data desiderata
             */
             $current_date = date('Y-m-d');
-            $movements = Movement::where('date', '<', $date)->where('archived', false)->get();
-            foreach($movements as $m) {
-                $m->updated_at = $current_date;
-                $m->archived = true;
-                $m->save();
-            }
+
+            $index = 0;
+            do {
+                $movements = Movement::where('date', '<', $date)->where('archived', false)->take(100)->offset(100 * $index)->get();
+                if ($movements->count() == 0)
+                    break;
+
+                foreach($movements as $m) {
+                    $m->updated_at = $current_date;
+                    $m->save();
+                }
+
+                $index++;
+
+            } while(true);
+
+            /*
+                Archivio i movimenti più vecchi della data indicata
+            */
+            Movement::where('date', '<', $date)->where('archived', false)->update(['archived' => true]);
 
             /*
                 Duplico i saldi appena calcolati, e alle copie precedenti
@@ -449,13 +493,12 @@ class MovementsController extends Controller
             */
             $this->recalculateCurrentBalance();
 
-            DB::commit();
+            Session::forget('movements-recalculating');
+            return $this->successResponse();
         }
         catch(\Exception $e) {
             Log::error(_i('Errore nel ricalcolo saldi: %s', $e->getMessage()));
+            return $this->errorResponse(_i('Errore'));
         }
-
-        Session::forget('movements-recalculating');
-        return redirect(url('/movements'));
     }
 }

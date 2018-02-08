@@ -1703,6 +1703,18 @@ $(document).ready(function() {
         }
     });
 
+    $('body').on('change', '.link-filters input:radio', function() {
+        var filter = $(this).closest('.table-filters');
+        var target = filter.attr('data-link-target');
+        var link = $(target);
+        var attribute = $(this).attr('name');
+        var value = $(this).val();
+
+        var parsed = new URL(link.attr('href'));
+        var url = parsed.protocol + '//' + parsed.host + parsed.pathname + '?' + attribute + '=' + value;
+        link.attr('href', url);
+    });
+
     $('body').on('change', '.img-preview input:file', function() {
         previewImage(this);
     });
@@ -2471,51 +2483,6 @@ $(document).ready(function() {
         }
 
         return false;
-    });
-
-    /*
-        Configurazioni GAS
-    */
-
-    $('.gas-editor').on('change', 'input[name=mailaddress]', function() {
-        var email = $(this).val();
-        var panel = $(this).closest('.well');
-
-        panel.find('input').prop('disabled', true);
-
-        $.ajax({
-            method: 'GET',
-            url: absolute_url + '/gas/configmail',
-            data: {
-                email: email
-            },
-            dataType: 'JSON',
-
-            success: function(data) {
-                panel.find('input').prop('disabled', false);
-
-                if (data.hasOwnProperty('hostname')) {
-                    panel.find('input[name=mailusername]').val(data.username);
-                    panel.find('input[name=mailserver]').val(data.hostname);
-                    panel.find('input[name=mailport]').val(data.port);
-
-                    var val = '';
-
-                    switch(data.socketType) {
-                        case 'SSL':
-                            val = 'ssl';
-                            break;
-                        case 'STARTTLS':
-                            val = 'tls';
-                    }
-
-                    panel.find('select[name=mailssl] option[value=' + val + ']').prop('selected', true);
-                }
-            },
-            error: function() {
-                panel.find('input').prop('disabled', false);
-            }
-        });
     });
 
     /*

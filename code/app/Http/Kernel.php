@@ -36,7 +36,6 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             // \Xinax\LaravelGettext\Middleware\GettextMiddleware::class,
-            \App\Http\Middleware\OverwriteMail::class,
             \App\Http\Middleware\SetLanguage::class,
             \App\Http\Middleware\FixDatabase::class,
         ],
@@ -44,6 +43,7 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:60,1',
             'bindings',
+            'auth:api'
         ],
     ];
 

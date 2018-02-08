@@ -120,6 +120,7 @@ class Movement extends Model
             $ret->amount = $amount;
         }
 
+        $ret->date = date('Y-m-d');
         $ret->notes = $type_descr->default_notes;
         $ret->method = MovementType::defaultPaymentByType($type);
 
