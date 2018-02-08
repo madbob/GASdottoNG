@@ -11,6 +11,7 @@ use Theme;
 
 use App\Role;
 use App\Gas;
+use App\User;
 
 class GasController extends Controller
 {
@@ -110,7 +111,24 @@ class GasController extends Controller
                     'friend' => $request->input('roles->friend'),
                 ];
 
+                $old_friend_role = $gas->roles['friend'];
+                $update_users = ($conf->friend != $old_friend_role);
+
                 $gas->setConfig('roles', $conf);
+
+                /*
+                    Se il ruolo "amico" viene cambiato, cambio effettivamente
+                    gli utenti coinvolti
+                */
+                if ($update_users) {
+                    $friends = User::whereNotNull('parent_id')->get();
+
+                    foreach($friends as $friend) {
+                        $friend->removeRole($old_friend_role, $gas);
+                        $friend->addRole($conf->friend, $gas);
+                    }
+                }
+
                 break;
         }
 

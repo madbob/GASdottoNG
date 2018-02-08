@@ -50,3 +50,13 @@ function accessAttr($obj, $name, $default = '')
         return $obj->$name;
     }
 }
+
+function normalizeId($subject)
+{
+    if (is_object($subject)) {
+        return $subject->id;
+    }
+    else {
+        return $subject;
+    }
+}

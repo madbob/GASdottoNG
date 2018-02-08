@@ -5,6 +5,10 @@ $count_products = 0;
 foreach($aggregate->orders as $order) {
     $o = $order->userBooking($user->id);
     $count_products += $o->products()->count();
+
+    foreach($o->friends_bookings as $sub_o) {
+        $count_products += $sub_o->products()->count();
+    }
 }
 
 ?>

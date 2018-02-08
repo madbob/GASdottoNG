@@ -11,6 +11,8 @@
                 @continue
             @endif
 
+            <?php $cell_value = 0 ?>
+
             <table border="1" style="width: 100%" cellpadding="5" nobr="true">
                 <tr>
                     <th colspan="3"><strong>{{ $super_booking->user->printableName() }}
@@ -32,6 +34,8 @@
 
                 @foreach($super_booking->bookings as $booking)
                     @if($booking->$products_source->isEmpty() == false)
+                        <?php $cell_value += $booking->total_value ?>
+
                         <tr>
                             <td colspan="3"><strong>{{ $booking->order->supplier->printableName() }}</strong></td>
                         </tr>
@@ -44,7 +48,7 @@
                 @endforeach
 
                 <tr>
-                    <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePrice($super_booking->total_value, ',') }} {{ $currentgas->currency }}</strong></th>
+                    <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePrice($cell_value, ',') }} {{ $currentgas->currency }}</strong></th>
                 </tr>
             </table>
 

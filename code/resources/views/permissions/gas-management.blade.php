@@ -1,6 +1,6 @@
 <div id="permissions-management" data-fetch-url="{{ url('roles') }}">
     <div class="page-header">
-        <h3>Permessi</h3>
+        <h3>{{ _i('Permessi') }}</h3>
     </div>
 
     <div class="row">

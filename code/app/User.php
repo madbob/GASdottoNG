@@ -175,10 +175,12 @@ class User extends Authenticatable
 
     public function addRole($role, $assigned)
     {
-        $test = $this->roles()->where('roles.id', $role->id)->first();
+        $role_id = normalizeId($role);
+
+        $test = $this->roles()->where('roles.id', $role_id)->first();
         if ($test == null) {
-            $this->roles()->attach($role->id);
-            $test = $this->roles()->where('roles.id', $role->id)->first();
+            $this->roles()->attach($role_id);
+            $test = $this->roles()->where('roles.id', $role_id)->first();
         }
 
         if ($assigned)
@@ -187,18 +189,20 @@ class User extends Authenticatable
 
     public function removeRole($role, $assigned)
     {
-        $test = $this->roles()->where('roles.id', $role->id)->first();
+        $role_id = normalizeId($role);
+
+        $test = $this->roles()->where('roles.id', $role_id)->first();
         if ($test == null)
             return;
 
         if ($assigned) {
             $test->detachApplication($assigned);
             if ($test->applications(true)->isEmpty()) {
-                $this->roles()->detach($role->id);
+                $this->roles()->detach($role_id);
             }
         }
         else {
-            $this->roles()->detach($role->id);
+            $this->roles()->detach($role_id);
         }
     }
 
