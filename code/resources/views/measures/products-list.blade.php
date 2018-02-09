@@ -1,6 +1,6 @@
 @if($products->isEmpty())
     <div class="alert alert-danger">
-        Non ci sono prodotti
+        {{ _i('Non ci sono prodotti') }}
     </div>
 @else
     <ul>

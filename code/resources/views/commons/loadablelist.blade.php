@@ -5,7 +5,7 @@ if(isset($legend) == false)
 if(isset($filters) == false)
     $filters = [];
 if(isset($empty_message) == false)
-    $empty_message = 'Non ci sono elementi da visualizzare.';
+    $empty_message = _i('Non ci sono elementi da visualizzare.');
 if(isset($header_function) == false)
     $header_function = 'printableHeader';
 
@@ -68,7 +68,7 @@ $data = join(' ', $data);
 
             ?>
 
-            <a data-element-id="{{ $item->id }}" {!! $extra_attributes !!} href="{{ $u }}" class="loadable-item list-group-item {{ $extra_class }}">{!! $item->$header_function() !!}</a>
+            <a data-element-id="{{ $item->id }}" {!! $extra_attributes !!} href="{{ $u }}" class="loadable-item list-group-item {{ $extra_class }}">{!! is_callable($header_function) ? $header_function($item) : $item->$header_function() !!}</a>
         @endforeach
     </div>
 </div>

@@ -163,13 +163,11 @@ class SuppliersServiceTest extends TestCase
     public function testDestroy()
     {
         $this->actingAs($this->userWithReferrerPerms);
-
         $supplier = $this->suppliersService->destroy($this->supplier->id);
-        $supplier = $this->suppliersService->show($this->supplier->id);
-        $this->assertEquals($this->supplier->id, $supplier->id);
-        $this->assertNotEquals(null, $supplier->deleted_at);
 
+        $this->actingAs($this->userWithAdminPerm);
         $supplier = $this->suppliersService->destroy($this->supplier->id);
+
         try {
             $this->suppliersService->show($this->supplier->id);
             $this->fail('should never run');

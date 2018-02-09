@@ -39,8 +39,9 @@ class SuppliersController extends BackedController
     {
         try {
             $supplier = $this->service->show($id);
+            $user = $request->user();
 
-            if ($request->user()->can('supplier.modify', $supplier))
+            if ($user->can('supplier.modify', $supplier) || ($supplier->trashed() && $user->can('supplier.add', $user->gas)))
                 return Theme::view('supplier.edit', ['supplier' => $supplier]);
             else
                 return Theme::view('supplier.show', ['supplier' => $supplier]);

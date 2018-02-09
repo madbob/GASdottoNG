@@ -3,6 +3,8 @@
 */
 
 var locker = false;
+var absolute_url = $('meta[name=absolute_url]').attr('content');
+var current_currency = $('meta[name=current_currency]').attr('content');
 
 $.fn.tagName = function() {
     return this.prop("tagName").toLowerCase();
@@ -12,7 +14,7 @@ var userBlood = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     remote: {
-        url: '/users/search?term=%QUERY',
+        url: absolute_url + '/users/search?term=%QUERY',
         wildcard: '%QUERY'
     }
 });
@@ -36,6 +38,7 @@ function generalInit() {
     });
 
     $('.addicted-table').bootstrapTable();
+    $('#help-trigger').helperTrigger();
 
     /*
         https://stackoverflow.com/questions/15989591/how-can-i-keep-bootstrap-popover-alive-while-the-popover-is-being-hovered
@@ -123,10 +126,10 @@ function generalInit() {
                 var url = '';
 
                 if (while_shipping) {
-                    url = '/delivery/' + aggregate_id + '/user/' + result.id;
+                    url = absolute_url + '/delivery/' + aggregate_id + '/user/' + result.id;
                 }
                 else {
-                    url = '/booking/' + aggregate_id + '/user/' + result.id;
+                    url = absolute_url + '/booking/' + aggregate_id + '/user/' + result.id;
                 }
 
                 $.ajax({
@@ -140,7 +143,7 @@ function generalInit() {
                         if (while_shipping) {
                             var test = data.find('.booking-product:not(.fit-add-product)');
                             if (test.length != 0) {
-                                data = $('<div class="alert alert-danger">Questa prenotazione esiste già e non può essere ricreata.</div>');
+                                data = $('<div class="alert alert-danger">' + _('Questa prenotazione esiste già e non può essere ricreata.') + '</div>');
                             }
                         }
 
@@ -238,7 +241,12 @@ function parseFullDate(string) {
 function parseFloatC(value) {
     if (typeof value === 'undefined')
         return 0;
-    return parseFloat(value.replace(/,/, '.'));
+
+    var ret = parseFloat(value.replace(/,/, '.'));
+    if (isNaN(ret))
+        ret = 0;
+
+    return ret;
 }
 
 function priceRound(price) {
@@ -250,7 +258,7 @@ function priceRound(price) {
     un attributo, questa funzione serve ad applicare l'escape necessario
 */
 function sanitizeId(identifier) {
-    return identifier.replace(/:/, '\\:');
+    return identifier.replace(/:/g, '\\:');
 }
 
 function voidForm(form) {
@@ -651,8 +659,8 @@ function enforceMeasureDiscrete(node) {
 function setCellValue(cell, value) {
     string = value;
 
-    if (cell.text().indexOf('€') != -1)
-        string = priceRound(value) + ' €';
+    if (cell.text().indexOf(current_currency) != -1)
+        string = priceRound(value) + ' ' + current_currency;
 
     cell.text(string);
 }
@@ -675,7 +683,7 @@ function updateOrderSummary(form) {
 
         $.ajax({
             method: 'POST',
-            url: '/orders/recalculate/' + order_id,
+            url: absolute_url + '/orders/recalculate/' + order_id,
             data: data,
             dataType: 'json',
 
@@ -807,7 +815,7 @@ function bookingTotal(editor) {
             row_t += transport * q;
         });
 
-        $(this).closest('tr').find('.booking-product-price').text(priceRound(row_p) + ' €');
+        $(this).closest('tr').find('.booking-product-price').text(priceRound(row_p) + ' ' + current_currency);
         total_price += row_p;
         total_transport += row_t;
     });
@@ -850,7 +858,7 @@ function setupVariantsEditor() {
 
         $.ajax({
             method: 'DELETE',
-            url: '/variants/' + id,
+            url: absolute_url + '/variants/' + id,
             dataType: 'html',
 
             success: function(data) {
@@ -912,7 +920,7 @@ function setupVariantsEditor() {
 
         $.ajax({
             method: 'POST',
-            url: '/variants',
+            url: absolute_url + '/variants',
             data: data,
             dataType: 'html',
 
@@ -965,6 +973,25 @@ function sortShippingBookings(list) {
 function submitDeliveryForm(form) {
     var id = form.closest('.modal').attr('id');
     var mainform = $('form[data-reference-modal=' + id + ']');
+
+    /*
+        Questo è per condensare eventuali nuovi prodotti aggiunti ma già
+        presenti nella prenotazione.
+    */
+    mainform.find('.fit-add-product').not('.hidden').each(function() {
+        var i = $(this).find('.booking-product-quantity input:text.number');
+        if (i.length == 0)
+            return;
+
+        var product = sanitizeId(i.attr('name'));
+        var added_value = parseFloatC(i.val());
+        var existing = mainform.find('tr.booking-product').not('.fit-add-product').find('input:text.number[name=' + product + ']');
+        if (existing.length != 0) {
+            existing.val(parseFloatC(existing.val()) + added_value);
+            i.remove();
+        }
+    });
+
     mainform.submit();
 }
 
@@ -975,7 +1002,7 @@ function submitDeliveryForm(form) {
 function attachUserRole(role_id, user_id, target_id, target_class, callback) {
     $.ajax({
         method: 'POST',
-        url: '/roles/attach',
+        url: absolute_url + '/roles/attach',
         data: {
             role: role_id,
             user: user_id,
@@ -992,7 +1019,7 @@ function attachUserRole(role_id, user_id, target_id, target_class, callback) {
 function detachUserRole(role_id, user_id, target_id, target_class, callback) {
     $.ajax({
         method: 'POST',
-        url: '/roles/detach',
+        url: absolute_url + '/roles/detach',
         data: {
             role: role_id,
             user: user_id,
@@ -1032,7 +1059,7 @@ function setupPermissionsEditor() {
                 var label = result.label;
                 $.ajax({
                     method: 'POST',
-                    url: '/roles/attach',
+                    url: absolute_url + '/roles/attach',
                     dataType: 'HTML',
                     data: {
                         role: role_id,
@@ -1073,9 +1100,9 @@ function setupPermissionsEditor() {
 
         var url = '';
         if (check.is(':checked') == true)
-            url = '/roles/attach';
+            url = absolute_url + '/roles/attach';
         else
-            url = '/roles/detach';
+            url = absolute_url + '/roles/detach';
 
         var data = {};
         data.role = check.attr('data-role');
@@ -1093,7 +1120,7 @@ function setupPermissionsEditor() {
     }).on('click', '.remove-role', function(e) {
         e.preventDefault();
 
-        if(confirm('Sei sicuro di voler revocare questo ruolo?')) {
+        if(confirm(_('Sei sicuro di voler revocare questo ruolo?'))) {
             var button = $(this);
 
             var data = {
@@ -1105,7 +1132,7 @@ function setupPermissionsEditor() {
 
             $.ajax({
                 method: 'POST',
-                url: '/roles/detach',
+                url: absolute_url + '/roles/detach',
                 data: data,
                 success() {
                     button.closest('.loadable-contents').find('.role-users').find('[data-user=' + userid + ']').remove();
@@ -1149,7 +1176,7 @@ function displayRecalculatedBalances(form, data) {
 function refreshBalanceView() {
     $.ajax({
         method: 'GET',
-        url: '/movements/balance',
+        url: absolute_url + '/movements/balance',
         dataType: 'JSON',
         success: function(data) {
             $('.current-balance').each(function() {
@@ -1418,6 +1445,12 @@ $(document).ready(function() {
         var form = $(this).closest('form');
         var target = $(this).attr('data-target-class');
         form.find('.' + target).button('toggle');
+    })
+    .on('change', '.triggers-all-selects', function() {
+        var form = $(this).closest('form');
+        var target = $(this).attr('data-target-class');
+        var value = $(this).find('option:selected').val();
+        form.find('.' + target).find('option[value=' + value + ']').prop('selected', true);
     });
 
     $('body').on('click', '.decorated_radio label', function() {
@@ -1427,20 +1460,25 @@ $(document).ready(function() {
     $('body').on('click', '.reloader', function(event) {
         var listid = $(this).attr('data-reload-target');
 
-        /*
-            Nel caso in cui il tasto sia dentro ad un modale, qui ne forzo la
-            chiusura (che non e' implicita, se questo non viene fatto resta
-            l'overlay grigio in sovraimpressione)
-        */
-        var modal = $(this).closest('.modal').first();
-        if (modal != null) {
-            modal.on('hidden.bs.modal', function() {
-                reloadCurrentLoadable(listid);
-            });
-            modal.modal('hide');
+        if (listid == null) {
+            location.reload();
         }
         else {
-            reloadCurrentLoadable(listid);
+            /*
+                Nel caso in cui il tasto sia dentro ad un modale, qui ne forzo la
+                chiusura (che non e' implicita, se questo non viene fatto resta
+                l'overlay grigio in sovraimpressione)
+            */
+            var modal = $(this).closest('.modal').first();
+            if (modal != null) {
+                modal.on('hidden.bs.modal', function() {
+                    reloadCurrentLoadable(listid);
+                });
+                modal.modal('hide');
+            }
+            else {
+                reloadCurrentLoadable(listid);
+            }
         }
     });
 
@@ -1559,7 +1597,7 @@ $(document).ready(function() {
         	TODO: visualizzare nome dell'elemento che si sta rimuovendo
         */
 
-        if (confirm('Sei sicuro di voler eliminare questo elemento?')) {
+        if (confirm(_('Sei sicuro di voler eliminare questo elemento?'))) {
             form.find('.main-form-buttons button').attr('disabled', 'disabled');
 
             $.ajax({
@@ -1665,6 +1703,18 @@ $(document).ready(function() {
         }
     });
 
+    $('body').on('change', '.link-filters input:radio', function() {
+        var filter = $(this).closest('.table-filters');
+        var target = filter.attr('data-link-target');
+        var link = $(target);
+        var attribute = $(this).attr('name');
+        var value = $(this).val();
+
+        var parsed = new URL(link.attr('href'));
+        var url = parsed.protocol + '//' + parsed.host + parsed.pathname + '?' + attribute + '=' + value;
+        link.attr('href', url);
+    });
+
     $('body').on('change', '.img-preview input:file', function() {
         previewImage(this);
     });
@@ -1681,7 +1731,7 @@ $(document).ready(function() {
         }
 
         var save_button = form.find('.saving-button');
-        save_button.attr('disabled', 'disabled');
+        save_button.prop('disabled', true);
 
         $.ajax({
             method: method,
@@ -1692,7 +1742,31 @@ $(document).ready(function() {
             dataType: 'json',
 
             success: function(data) {
-                inlineFeedback(save_button, 'Salvato!');
+                inlineFeedback(save_button, _('Salvato!'));
+                miscInnerCallbacks(form, data);
+            }
+        });
+    });
+
+    $('body').on('change', '.auto-submit select', function(event) {
+        var form = $(this).closest('form');
+
+        var data = new FormData(form.get(0));
+        var method = form.attr('method').toUpperCase();
+        if (method == 'PUT') {
+            method = 'POST';
+            data.append('_method', 'PUT');
+        }
+
+        $.ajax({
+            method: method,
+            url: form.attr('action'),
+            data: data,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+
+            success: function(data) {
                 miscInnerCallbacks(form, data);
             }
         });
@@ -1701,6 +1775,9 @@ $(document).ready(function() {
     $('body').on('submit', '.creating-form', function(event) {
         if (event.isDefaultPrevented())
             return;
+
+        var save_button = $(this).find('button[type=submit]');
+        save_button.prop('disabled', true);
 
         event.preventDefault();
         var form = $(this);
@@ -1715,6 +1792,7 @@ $(document).ready(function() {
             contentType: false,
             success: function(data) {
                 creatingFormCallback(form, data);
+                save_button.prop('disabled', false);
             }
         });
 
@@ -1766,7 +1844,7 @@ $(document).ready(function() {
         var target = $(this).attr('data-target');
         var data = $(target).TableCSVExport({
             delivery: 'download',
-            filename: 'bilanci_ricalcolati.csv'
+            filename: _('bilanci_ricalcolati.csv')
         });
     });
 
@@ -1785,15 +1863,15 @@ $(document).ready(function() {
 
                 var ret = $('<div>\
                     <div class="form-group">\
-                        <label for="password" class="col-sm-4 control-label">Nuova Password</label>\
+                        <label for="password" class="col-sm-4 control-label">' + _('Nuova Password') + '</label>\
                         <div class="col-sm-8"><input type="password" class="form-control" name="password" value="" autocomplete="off"></div>\
                     </div>\
                     <div class="form-group">\
-                        <label for="password_confirm" class="col-sm-4 control-label">Conferma Password</label>\
+                        <label for="password_confirm" class="col-sm-4 control-label">' + _('Conferma Password') + '</label>\
                         <div class="col-sm-8"><input type="password" class="form-control" name="password_confirm" value="" autocomplete="off"></div>\
                     </div>\
                     <div class="form-group">\
-                        <div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">Annulla</button> <button class="btn btn-success">Salva</button></div>\
+                        <div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Salva') + '</button></div>\
                     </div>\
                 </div>');
 
@@ -1833,19 +1911,19 @@ $(document).ready(function() {
 
                 var ret = $('<div>\
                     <div class="form-group">\
-                        <label for="street" class="col-sm-4 control-label">Indirizzo</label>\
+                        <label for="street" class="col-sm-4 control-label">' + _('Indirizzo') + '</label>\
                         <div class="col-sm-8"><input type="text" class="form-control" name="street" value="" autocomplete="off"></div>\
                     </div>\
                     <div class="form-group">\
-                        <label for="city" class="col-sm-4 control-label">Città</label>\
+                        <label for="city" class="col-sm-4 control-label">' + _('Città') + '</label>\
                         <div class="col-sm-8"><input type="text" class="form-control" name="city" value="" autocomplete="off"></div>\
                     </div>\
                     <div class="form-group">\
-                        <label for="cap" class="col-sm-4 control-label">CAP</label>\
+                        <label for="cap" class="col-sm-4 control-label">' + _('CAP') + '</label>\
                         <div class="col-sm-8"><input type="text" class="form-control" name="cap" value="" autocomplete="off"></div>\
                     </div>\
                     <div class="form-group">\
-                        <div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">Annulla</button> <button class="btn btn-success">Salva</button></div>\
+                        <div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Salva') + '</button></div>\
                     </div>\
                 </div>');
 
@@ -1921,7 +1999,7 @@ $(document).ready(function() {
 
         $.ajax({
             method: 'GET',
-            url: '/movements/create',
+            url: absolute_url + '/movements/create',
             dataType: 'html',
             data: {
                 type: type
@@ -1981,9 +2059,9 @@ $(document).ready(function() {
 
     $('body').on('click', '.form-filler button[type=submit]', function(event) {
         event.preventDefault();
-        form = $(this).closest('.form-filler');
-        var data = form.find('input, select').serialize();
+        var form = $(this).closest('.form-filler');
         var target = $(form.attr('data-fill-target'));
+        var data = form.find('input, select').serialize();
 
         $.ajax({
             method: 'GET',
@@ -1995,6 +2073,12 @@ $(document).ready(function() {
                 target.empty().append(data);
             }
         });
+    })
+    .on('click', '.form-filler a.form-filler-download', function(event) {
+        event.preventDefault();
+        var data = $(this).closest('.form-filler').find('input, select').serializeArray();
+        var url = $(this).attr('href') + '&' + $.param(data);
+        window.open(url, '_blank');
     });
 
     $('body').on('submit', '.password-protected', function(event) {
@@ -2042,7 +2126,7 @@ $(document).ready(function() {
                         },
                         error: function() {
                             var button = form.find('button:submit');
-                            inlineFeedback(button, 'ERRORE');
+                            inlineFeedback(button, _('ERRORE'));
                         }
                     });
                 }
@@ -2060,7 +2144,7 @@ $(document).ready(function() {
         var list = $(this).closest('.loadablelist');
         var original = currentLoadableTrigger(this);
         $.ajax({
-            url: '/products',
+            url: absolute_url + '/products',
             method: 'POST',
             dataType: 'JSON',
             data: {
@@ -2120,13 +2204,13 @@ $(document).ready(function() {
         if (status) {
             textarea.show();
             recipient.show();
-            submit.text('Invia Mail');
+            submit.text(_('Invia Mail'));
             form.removeClass('direct-submit');
         }
         else {
             textarea.hide();
             recipient.hide();
-            submit.text('Download');
+            submit.text(_('Download'));
             form.addClass('direct-submit');
         }
     });
@@ -2144,7 +2228,7 @@ $(document).ready(function() {
         var date = button.closest('form').find('.last-date');
 
         $.ajax({
-            url: '/aggregates/notify/' + id,
+            url: absolute_url + '/aggregates/notify/' + id,
             method: 'POST',
             success: function(data) {
                 date.text(data);
@@ -2285,7 +2369,7 @@ $(document).ready(function() {
         } else {
             $.ajax({
                 method: 'GET',
-                url: '/products/' + id,
+                url: absolute_url + '/products/' + id,
                 data: {
                     format: 'bookable',
                     order_id: editor.attr('data-order-id')
@@ -2340,7 +2424,7 @@ $(document).ready(function() {
                 });
 
                 if (test == false)
-                    test = confirm('Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?');
+                    test = confirm(_('Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?'));
 
                 if (test == true) {
                     $(this).data('total-checked', 1);
@@ -2376,7 +2460,7 @@ $(document).ready(function() {
 
         var form = $(this).closest('.inner-form');
 
-        if (confirm('Sei sicuro di voler annullare questa prenotazione?')) {
+        if (confirm(_('Sei sicuro di voler annullare questa prenotazione?'))) {
             form.find('.main-form-buttons button').attr('disabled', 'disabled');
 
             $.ajax({
@@ -2399,51 +2483,6 @@ $(document).ready(function() {
         }
 
         return false;
-    });
-
-    /*
-        Configurazioni GAS
-    */
-
-    $('.gas-editor').on('change', 'input[name=mailaddress]', function() {
-        var email = $(this).val();
-        var panel = $(this).closest('.well');
-
-        panel.find('input').prop('disabled', true);
-
-        $.ajax({
-            method: 'GET',
-            url: '/gas/configmail',
-            data: {
-                email: email
-            },
-            dataType: 'JSON',
-
-            success: function(data) {
-                panel.find('input').prop('disabled', false);
-
-                if (data.hasOwnProperty('hostname')) {
-                    panel.find('input[name=mailusername]').val(data.username);
-                    panel.find('input[name=mailserver]').val(data.hostname);
-                    panel.find('input[name=mailport]').val(data.port);
-
-                    var val = '';
-
-                    switch(data.socketType) {
-                        case 'SSL':
-                            val = 'ssl';
-                            break;
-                        case 'STARTTLS':
-                            val = 'tls';
-                    }
-
-                    panel.find('select[name=mailssl] option[value=' + val + ']').prop('selected', true);
-                }
-            },
-            error: function() {
-                panel.find('input').prop('disabled', false);
-            }
-        });
     });
 
     /*

@@ -25,7 +25,7 @@ else
             </div>
         @else
             <label class="static-label text-muted">
-                Nessuno
+                {{ _i('Nessuno') }}
             </label>
         @endif
     </div>

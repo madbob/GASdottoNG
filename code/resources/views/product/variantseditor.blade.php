@@ -1,6 +1,12 @@
 <div class="well variants-editor">
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-warning add-variant pull-right">Crea Nuova Variante</button>
+        </div>
+    </div>
+
     @foreach ($product->variants as $variant)
-        <div class="row">
+        <div class="row variant-descr">
             <input type="hidden" name="variant_id" value="{{ $variant->id }}">
             <input type="hidden" name="variant_offset" value="{{ $variant->has_offset }}">
 
@@ -34,10 +40,4 @@
             </div>
         </div>
     @endforeach
-
-    <div class="row">
-        <div class="col-md-12">
-            <button type="button" class="btn btn-warning add-variant">Crea Nuova Variante</button>
-        </div>
-    </div>
 </div>

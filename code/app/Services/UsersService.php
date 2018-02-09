@@ -4,43 +4,22 @@ namespace App\Services;
 
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
-use App\User;
+
 use Auth;
 use Log;
 use DB;
 use Hash;
 
+use App\User;
+use App\Role;
+
 class UsersService extends BaseService
 {
-    /*
-        Ritorna:
-        - 1 se l'utente ha permessi di amministrazione
-        - 2 se l'utente richiesto è l'utente corrente
-    */
-    private function ensureAuthAdminOrOwner($id)
+    public function list($term = '', $all = false)
     {
-        $user = Auth::user();
-        if ($user == null) {
-            throw new AuthException(401);
-        }
-
-        if ($user->can('users.admin', $user->gas)) {
-            return 1;
-        }
-        else if ($user->id == $id) {
-            return 2;
-        }
-        else {
-            throw new AuthException(403);
-            return 0;
-        }
-    }
-
-    public function listUsers($term = '', $all = false)
-    {
-        $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
-
-        $query = User::with('roles');
+        $user = $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
+        $gas_id = $user->gas['id'];
+        $query = User::with('roles')->where('parent_id', null)->where('gas_id', '=', $gas_id);
 
         if (!empty($term)) {
             $query->where(function ($query) use ($term) {
@@ -57,8 +36,22 @@ class UsersService extends BaseService
 
     public function show($id)
     {
-        $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
-        return User::withTrashed()->findOrFail($id);
+        $user = Auth::user();
+        if ($user == null) {
+            throw new AuthException(401);
+        }
+
+        $searched = User::withTrashed()->findOrFail($id);
+
+        if ($searched->isFriend()) {
+            if ($searched->id != $user->id)
+                $this->ensureAuth(['users.subusers' => 'gas']);
+        }
+        else if ($user->id != $id) {
+            $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
+        }
+
+        return $searched;
     }
 
     public function destroy($id)
@@ -81,7 +74,20 @@ class UsersService extends BaseService
 
     public function update($id, array $request)
     {
-        $type = $this->ensureAuthAdminOrOwner($id);
+        $user = Auth::user();
+        if ($user == null) {
+            throw new AuthException(401);
+        }
+
+        if ($user->can('users.admin', $user->gas)) {
+            $type = 1;
+        }
+        else if ($user->id == $id && $user->can('users.self', $user->gas)) {
+            $type = 2;
+        }
+        else {
+            throw new AuthException(403);
+        }
 
         $user = DB::transaction(function () use ($id, $request, $type) {
             $user = $this->show($id);
@@ -90,7 +96,7 @@ class UsersService extends BaseService
                 $username = $request['username'];
                 $test = User::where('id', '!=', $user->id)->where('username', $username)->first();
                 if ($test != null) {
-                    throw new IllegalArgumentException('Username già assegnato', 'username');
+                    throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
                 }
             }
 
@@ -98,7 +104,7 @@ class UsersService extends BaseService
                 $card_number = $request['card_number'];
                 $test = User::where('id', '!=', $user->id)->where('gas_id', $user->gas_id)->where('card_number', $card_number)->first();
                 if ($test != null) {
-                    throw new IllegalArgumentException('Numero tessera già assegnato', 'card_number');
+                    throw new IllegalArgumentException(_i('Numero tessera già assegnato'), 'card_number');
                 }
             }
 
@@ -107,7 +113,7 @@ class UsersService extends BaseService
             $this->setIfSet($user, $request, 'lastname');
             $this->transformAndSetIfSet($user, $request, 'birthday', "decodeDate");
             $this->setIfSet($user, $request, 'taxcode');
-            $this->setIfSet($user, $request, 'family_members');
+            $this->transformAndSetIfSet($user, $request, 'family_members', 'enforceNumber');
             $this->setIfSet($user, $request, 'preferred_delivery_id');
 
             if ($type == 1) {
@@ -158,7 +164,6 @@ class UsersService extends BaseService
             }
 
             $user->updateContacts($request);
-
             return $user;
         });
 
@@ -172,11 +177,10 @@ class UsersService extends BaseService
         $username = $request['username'];
         $test = User::where('username', $username)->first();
         if ($test != null) {
-            throw new IllegalArgumentException('Username già assegnato', 'username');
+            throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
         }
 
         $user = new User();
-        $user->id = $username;
         $user->gas_id = $creator->gas->id;
         $user->member_since = date('Y-m-d', time());
         $user->username = $username;
@@ -191,6 +195,41 @@ class UsersService extends BaseService
         return $user;
     }
 
+    public function storeFriend(array $request)
+    {
+        $creator = $this->ensureAuth(['users.subusers' => 'gas']);
+
+        $username = $request['username'];
+        $test = User::where('username', $username)->first();
+        if ($test != null) {
+            throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
+        }
+
+        $user = new User();
+        $user->parent_id = $creator->id;
+        $user->gas_id = $creator->gas->id;
+        $user->member_since = date('Y-m-d', time());
+        $user->username = $username;
+        $user->firstname = $request['firstname'];
+        $user->lastname = $request['lastname'];
+        $user->password = Hash::make($request['password']);
+
+        DB::transaction(function () use ($user, $creator) {
+            $user->save();
+
+            $user_role = $creator->gas->roles['user'];
+            $friend_role = $creator->gas->roles['friend'];
+
+            if ($user_role != $friend_role) {
+                $role = Role::find($friend_role);
+                $user->roles()->detach();
+                $user->addRole($role, $creator->gas);
+            }
+        });
+
+        return $user;
+    }
+
     public function picture($id)
     {
         $user = User::findOrFail($id);
@@ -200,7 +239,7 @@ class UsersService extends BaseService
             return response()->download($path);
         }
         else {
-            Log::error('File non trovato: ' . $path);
+            Log::error(_i('File non trovato: %s', $path));
             return '';
         }
     }

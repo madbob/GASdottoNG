@@ -12,12 +12,33 @@ function printablePrice($price, $separator = '.')
 function printableDate($value)
 {
     if ($value == null) {
-        return 'Mai';
+        return _i('Mai');
     }
     else {
         $t = strtotime($value);
         return ucwords(strftime('%A %d %B %G', $t));
     }
+}
+
+function readDate($date)
+{
+    if (preg_match('/\d{1,2}\/\d{1,2}\/\d{1,4}/', $date) == 1) {
+        list($day, $month, $year) = explode('/', $date);
+        if ($year < 1000)
+            $year = (int)$year + 2000;
+
+        return strtotime("$year-$month-$day");
+    }
+
+    if (preg_match('/\d{1,2}\.\d{1,2}\.\d{1,4}/', $date) == 1) {
+        list($day, $month, $year) = explode('.', $date);
+        if ($year < 1000)
+            $year = (int)$year + 2000;
+
+        return strtotime("$year-$month-$day");
+    }
+
+    return strtotime($date);
 }
 
 function printableQuantity($quantity, $discrete, $decimals = 2, $separator = '.')
@@ -44,12 +65,12 @@ function normalizePercentage($value)
 function printablePercentage($value)
 {
     if (empty($value))
-        return printablePrice(0) . ' €';
+        return printablePrice(0) . ' ' . currentAbsoluteGas()->currency;
 
     if (strpos($value, '%') !== false)
         return $value;
     else
-        return printablePrice($value) . ' €';
+        return printablePrice($value) . ' ' . currentAbsoluteGas()->currency;
 }
 
 function readPercentage($value)
@@ -96,6 +117,14 @@ function applyPercentage($original, $percentage)
     }
 }
 
+function enforceNumber($value)
+{
+    if (is_numeric($value))
+        return $value;
+    else
+        return 0;
+}
+
 function normalizeUrl($url)
 {
     $url = strtolower($url);
@@ -110,25 +139,11 @@ function normalizeUrl($url)
 
 function decodeDate($date)
 {
-    if ($date == '' || $date == 'Mai') {
+    if ($date == '' || $date == _i('Mai')) {
         return null;
     }
 
-    $months = [
-        'gennaio' => 'january',
-        'febbraio' => 'february',
-        'marzo' => 'march',
-        'aprile' => 'april',
-        'maggio' => 'may',
-        'giugno' => 'june',
-        'luglio' => 'july',
-        'agosto' => 'august',
-        'settembre' => 'september',
-        'ottobre' => 'october',
-        'novembre' => 'november',
-        'dicembre' => 'december',
-    ];
-
+    $months = localeMonths();
     list($weekday, $day, $month, $year) = explode(' ', $date);
     $month = strtolower($month);
     if (!in_array($month, array_values($months))) {
@@ -145,21 +160,7 @@ function decodeDateMonth($date)
         return '';
     }
 
-    $months = [
-        'gennaio' => 'january',
-        'febbraio' => 'february',
-        'marzo' => 'march',
-        'aprile' => 'april',
-        'maggio' => 'may',
-        'giugno' => 'june',
-        'luglio' => 'july',
-        'agosto' => 'august',
-        'settembre' => 'september',
-        'ottobre' => 'october',
-        'novembre' => 'november',
-        'dicembre' => 'december',
-    ];
-
+    $months = localeMonths();
     list($day, $month) = explode(' ', $date);
     $month = strtolower($month);
     if (!in_array($month, array_values($months))) {
@@ -177,6 +178,62 @@ function http_csv_headers($filename)
     header('Cache-Control: no-cache, no-store, must-revalidate');
     header('Pragma: no-cache');
     header('Expires: 0');
+}
+
+/*
+    Se $format_callback è null, si assume che $contents sia una stringa da
+    scrivere direttamente nel file CSV
+*/
+function output_csv($filename, $head, $contents, $format_callback, $out_file = null)
+{
+    $headers = [
+        'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+        'Content-type' => 'text/csv',
+        'Content-Disposition' => 'attachment; filename=' . str_replace(' ', '\\', $filename),
+        'Expires' => '0',
+        'Pragma' => 'public'
+    ];
+
+    $callback = function() use ($head, $contents, $format_callback, $out_file) {
+        if ($out_file == null)
+            $FH = fopen('php://output', 'w');
+        else
+            $FH = fopen($out_file, 'w');
+
+        if ($format_callback == null) {
+            fwrite($FH, $contents);
+        }
+        else {
+            fputcsv($FH, $head);
+
+            foreach ($contents as $c) {
+                $row = $format_callback($c);
+                fputcsv($FH, $row);
+            }
+        }
+
+        fclose($FH);
+    };
+
+    if ($out_file == null)
+        return Response::stream($callback, 200, $headers);
+    else
+        return $out_file;
+}
+
+function htmlize($string)
+{
+    $string = str_replace('"', '\"', $string);
+
+    /*
+        https://stackoverflow.com/questions/1960461/convert-plain-text-urls-into-html-hyperlinks-in-php
+    */
+    $url = '~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i';
+    $string = preg_replace($url, '<a href="$0" target="_blank" title="$0">$0</a>', $string);
+
+    $string = nl2br($string);
+
+    return $string;
 }
 
 function iban_split($iban, $field)

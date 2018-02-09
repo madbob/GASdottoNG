@@ -42,27 +42,27 @@ class Contact extends Model
     {
         return [
             [
-                'label' => 'Indirizzo',
+                'label' => _i('Indirizzo'),
                 'value' => 'address'
             ],
             [
-                'label' => 'E-Mail',
+                'label' => _i('E-Mail'),
                 'value' => 'email'
             ],
             [
-                'label' => 'Telefono',
+                'label' => _i('Telefono'),
                 'value' => 'phone'
             ],
             [
-                'label' => 'Cellulare',
+                'label' => _i('Cellulare'),
                 'value' => 'mobile'
             ],
             [
-                'label' => 'Fax',
+                'label' => _i('Fax'),
                 'value' => 'fax'
             ],
             [
-                'label' => 'Sito Web',
+                'label' => _i('Sito Web'),
                 'value' => 'website'
             ],
         ];

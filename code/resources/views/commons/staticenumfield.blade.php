@@ -1,7 +1,7 @@
 <?php
 
 if (!isset($empty_label))
-    $empty_label = 'Nessuno';
+    $empty_label = _i('Nessuno');
 
 ?>
 

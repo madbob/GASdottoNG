@@ -27,7 +27,7 @@ if (!isset($amount_label))
 
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Modifica Movimento</h4>
+                    <h4 class="modal-title">{{ _i('Modifica Movimento') }}</h4>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" name="id" value="{{ $obj->id }}">
@@ -48,13 +48,13 @@ if (!isset($amount_label))
                     <div class="col-sm-{{ $fieldsize }} col-sm-offset-{{ $labelsize }}">
                         @if($obj->sender && array_search('App\CreditableTrait', class_uses($obj->sender)) !== false && count($obj->sender->balanceFields()) == 1)
                             <p class="sender-credit-status alert alert-{{ $obj->amount < $obj->sender->current_balance_amount ? 'success' : 'danger' }}">
-                                Credito Attuale {{ $obj->sender->printableName() }}: <span class="current-sender-credit">{{ $obj->sender->current_balance_amount }}</span> €
+                                Credito Attuale {{ $obj->sender->printableName() }}: <span class="current-sender-credit">{{ $obj->sender->current_balance_amount }}</span> {{ $currentgas->currency }}
                             </p>
                         @endif
 
                         @if($obj->target && array_search('App\CreditableTrait', class_uses($obj->target)) !== false && count($obj->target->balanceFields()) == 1)
                             <p class="alert alert-success">
-                                {{ $obj->target->printableName() }}: {{ $obj->target->current_balance_amount }} €
+                                {{ $obj->target->printableName() }}: {{ $obj->target->current_balance_amount }} {{ $currentgas->currency }}
                             </p>
                         @endif
 
@@ -63,38 +63,38 @@ if (!isset($amount_label))
 
                     @include('commons.radios', [
                         'name' => 'method',
-                        'label' => 'Metodo',
+                        'label' => _i('Metodo'),
                         'values' => $obj->valid_payments
                     ])
 
                     @include('commons.datefield', [
                         'obj' => $obj,
                         'name' => 'date',
-                        'label' => 'Data',
+                        'label' => _i('Data'),
                         'defaults_now' => true
                     ])
 
                     @include('commons.textfield', [
                         'obj' => $obj,
                         'name' => 'identifier',
-                        'label' => 'Identificativo',
+                        'label' => _i('Identificativo'),
                         'extra_wrap_class' => 'when-method-bank' . ($obj->method != 'bank' ? ' hidden' : '')
                     ])
 
                     @include('commons.textarea', [
                         'obj' => $obj,
                         'name' => 'notes',
-                        'label' => 'Note'
+                        'label' => _i('Note')
                     ])
                 </div>
 
                 <div class="modal-footer">
                     @if($editable)
-                        <button type="button" class="btn btn-danger spare-modal-delete-button" data-delete-url="{{ url('movements/' . $obj->id) }}">Elimina</button>
+                        <button type="button" class="btn btn-danger spare-modal-delete-button" data-delete-url="{{ url('movements/' . $obj->id) }}">{{ _i('Elimina') }}</button>
                     @endif
 
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
-                    <button type="submit" class="btn btn-success">Salva</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+                    <button type="submit" class="btn btn-success">{{ _i('Salva') }}</button>
                 </div>
             </form>
         </div>

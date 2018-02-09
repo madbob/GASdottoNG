@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
+use App;
 use Auth;
 use DB;
 use URL;
@@ -45,7 +46,7 @@ class Order extends Model
 
     public static function commonClassName()
     {
-        return 'Ordine';
+        return _i('Ordine');
     }
 
     public function supplier()
@@ -60,12 +61,12 @@ class Order extends Model
 
     public function products()
     {
-        return $this->belongsToMany('App\Product')->with('measure')->with('category')->with('variants')->withPivot('discount_enabled')->withTrashed()->orderBy('name');
+        return $this->belongsToMany('App\Product')->with(['variants'])->withPivot('discount_enabled', 'notes')->withTrashed()->orderBy('name');
     }
 
     public function bookings()
     {
-        return $this->hasMany('App\Booking')->with('user')->with('products')->sorted();
+        return $this->hasMany('App\Booking')->with(['user', 'products'])->sorted();
     }
 
     public function payment()
@@ -114,10 +115,10 @@ class Order extends Model
     {
         $start = strtotime($this->start);
         $end = strtotime($this->end);
-        $string = sprintf('da %s a %s', strftime('%A %d %B %G', $start), strftime('%A %d %B %G', $end));
+        $string = _i('da %s a %s', strftime('%A %d %B %G', $start), strftime('%A %d %B %G', $end));
         if ($this->shipping != null && $this->shipping != '0000-00-00') {
             $shipping = strtotime($this->shipping);
-            $string .= sprintf(', in consegna %s', strftime('%A %d %B %G', $shipping));
+            $string .= _i(', in consegna %s', strftime('%A %d %B %G', $shipping));
         }
 
         return $string;
@@ -128,7 +129,7 @@ class Order extends Model
         return URL::action('BookingController@index').'#' . $this->aggregate->id;
     }
 
-    public function userBooking($userid = null, $fallback = true)
+    public function userBooking($userid = null)
     {
         if ($userid == null) {
             $userid = Auth::user()->id;
@@ -138,11 +139,13 @@ class Order extends Model
             $query->where('id', '=', $userid);
         })->first();
 
-        if ($ret == null && $fallback == true) {
+        if ($ret == null) {
             $ret = new Booking();
             $ret->user_id = $userid;
             $ret->order_id = $this->id;
+            $ret->notes = '';
             $ret->status = 'pending';
+            $ret->notes = '';
         }
 
         return $ret;
@@ -150,18 +153,7 @@ class Order extends Model
 
     public function getInternalNumberAttribute()
     {
-        if(!isset($this->internal_number_cache)) {
-            $o = $this;
-            $year = date('Y', strtotime($o->start));
-
-            $this->internal_number_cache = (Order::where(DB::raw('YEAR(start)'), $year)->where(function($query) use ($o) {
-                $query->where('start', '<', $this->start)->orWhere(function($query) use ($o) {
-                    $query->where('start', $this->start)->where('id', '<', $this->id);
-                });
-            })->count() + 1) . '/' . $year;
-        }
-
-        return $this->internal_number_cache;
+        return App::make('OrderNumbersDispatcher')->getNumber($this);
     }
 
     public function getTotalValueAttribute()
@@ -169,8 +161,8 @@ class Order extends Model
         return $this->innerCache('total_value', function($obj) {
             $total_value = 0;
 
-            $bookings_ids = $obj->bookings->pluck('id');
-            $products = BookedProduct::whereIn('booking_id', $bookings_ids)->with('booking')->with('product')->with('variants')->get();
+            $bookings_ids = $obj->bookings()->pluck('id');
+            $products = BookedProduct::whereIn('booking_id', $bookings_ids)->with(['booking', 'product', 'variants'])->get();
             foreach($products as $booked) {
                 $booked->booking->setRelation('order', $obj);
                 $total_value += $booked->quantityValue();
@@ -188,6 +180,11 @@ class Order extends Model
     */
     public function hasProduct(&$product)
     {
+        /*
+            Non usare qui una query diretta
+            $this->products()->where(...)
+            in modo da sfruttare la copia di products cachata in $this
+        */
         foreach ($this->products as $p) {
             if ($p->id == $product->id) {
                 $product = $p;
@@ -336,11 +333,17 @@ class Order extends Model
         $summary->transport = $total_transport + $order->transport;
 
         $total_transport_delivered = 0;
-        if ($order->transport > 0) {
-            foreach ($order->bookings()->where('status', 'shipped')->get() as $shipped_booking)
-                $total_transport_delivered += $shipped_booking->transport;
-        }
+        foreach ($order->bookings()->where('status', 'shipped')->get() as $shipped_booking)
+            $total_transport_delivered += $shipped_booking->transport;
         $summary->transport_delivered = $total_transport_delivered;
+
+        $summary->notes = [];
+        foreach ($order->bookings()->where('notes', '!=', '')->get() as $annotated_booking) {
+            $summary->notes[] = (object) [
+                'user' => $annotated_booking->user->printableName(),
+                'note' => $annotated_booking->notes
+            ];
+        }
 
         return $summary;
     }
@@ -405,7 +408,7 @@ class Order extends Model
         if ($type == 'summary') {
             return [
                 'name' => (object) [
-                    'name' => 'Nome Prodotto',
+                    'name' => _i('Nome Prodotto'),
                     'checked' => true,
                     'format_product' => function($product, $summary) {
                         return $product->printableName();
@@ -415,7 +418,7 @@ class Order extends Model
                     }
                 ],
                 'code' => (object) [
-                    'name' => 'Codice Fornitore',
+                    'name' => _i('Codice Fornitore'),
                     'format_product' => function($product, $summary) {
                         return $product->supplier_code;
                     },
@@ -427,7 +430,7 @@ class Order extends Model
                     }
                 ],
                 'quantity' => (object) [
-                    'name' => 'Quantità Totale',
+                    'name' => _i('Quantità Totale'),
                     'checked' => true,
                     'format_product' => function($product, $summary) {
                         return printableQuantity($summary->products[$product->id]['quantity_pieces'], $product->measure->discrete, 2, ',');
@@ -437,7 +440,7 @@ class Order extends Model
                     }
                 ],
                 'boxes' => (object) [
-                    'name' => 'Numero Confezioni',
+                    'name' => _i('Numero Confezioni'),
                     'format_product' => function($product, $summary) {
                         if ($product->package_size != 0)
                             return $summary->products[$product->id]['quantity_pieces'] / $product->package_size;
@@ -452,7 +455,7 @@ class Order extends Model
                     }
                 ],
                 'measure' => (object) [
-                    'name' => 'Unità di Misura',
+                    'name' => _i('Unità di Misura'),
                     'checked' => true,
                     'format_product' => function($product, $summary) {
                         return $product->printableMeasure(true);
@@ -462,7 +465,7 @@ class Order extends Model
                     }
                 ],
                 'price' => (object) [
-                    'name' => 'Prezzo Totale',
+                    'name' => _i('Prezzo Totale'),
                     'checked' => true,
                     'format_product' => function($product, $summary) {
                         return printablePrice($summary->products[$product->id]['price'], ',');
@@ -472,12 +475,21 @@ class Order extends Model
                     }
                 ],
                 'transport' => (object) [
-                    'name' => 'Prezzo Trasporto',
+                    'name' => _i('Prezzo Trasporto'),
                     'format_product' => function($product, $summary) {
                         return printablePrice($summary->products[$product->id]['transport'], ',');
                     },
                     'format_variant' => function($product, $summary, $name, $variant) {
                         return printablePrice($summary->products[$product->id]['transport'], ',');
+                    }
+                ],
+                'notes' => (object) [
+                    'name' => _i('Note Prodotto'),
+                    'format_product' => function($product, $summary) {
+                        return $product->pivot->notes;
+                    },
+                    'format_variant' => function($product, $summary, $name, $variant) {
+                        return $product->pivot->notes;
                     }
                 ],
             ];
@@ -499,7 +511,7 @@ class Order extends Model
     public static function balanceFields()
     {
         return [
-            'bank' => 'Saldo',
+            'bank' => _i('Saldo'),
         ];
     }
 

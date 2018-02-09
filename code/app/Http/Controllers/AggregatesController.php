@@ -9,6 +9,7 @@ use App\Notifications\BookingNotification;
 use Theme;
 use DB;
 use PDF;
+use Log;
 
 use App\Aggregate;
 use App\Order;
@@ -72,6 +73,21 @@ class AggregatesController extends OrdersController
         return Theme::view('order.aggregate', ['aggregate' => $a]);
     }
 
+    public function update(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        $a = Aggregate::findOrFail($id);
+        $a->comment = $request->input('comment', '');
+        $a->save();
+
+        return $this->successResponse([
+            'id' => $a->id,
+            'header' => $a->printableHeader(),
+            'url' => url('aggregates/' . $a->id),
+        ]);
+    }
+
     public function notify(Request $request, $id)
     {
         $aggregate = Aggregate::findOrFail($id);
@@ -79,8 +95,13 @@ class AggregatesController extends OrdersController
 
         foreach($aggregate->bookings as $booking) {
             if ($booking->status != 'shipped') {
-                $booking->user->notify(new BookingNotification($booking, $message));
-                usleep(200000);
+                try {
+                    $booking->user->notify(new BookingNotification($booking, $message));
+                    usleep(200000);
+                }
+                catch(\Exception $e) {
+                    Log::error('Impossibile inviare notifica mail prenotazione di ' . $booking->user->id);
+                }
             }
         }
 
@@ -108,7 +129,12 @@ class AggregatesController extends OrdersController
                 }
                 $names = join(' / ', $names);
 
-                $html = Theme::view('documents.aggregate_shipping', ['aggregate' => $aggregate])->render();
+                $html = Theme::view('documents.aggregate_shipping', [
+                    'aggregate' => $aggregate,
+                    'bookings' => $aggregate->bookings,
+                    'products_source' => 'products_with_friends'
+                ])->render();
+
                 $filename = sprintf('Dettaglio Consegne ordini %s.pdf', $names);
                 PDF::SetTitle(sprintf('Dettaglio Consegne ordini %s', $names));
                 PDF::AddPage();

@@ -4,10 +4,10 @@
     </p>
 @else
     <p>
-        In allegato il file per l'ordine di {{ $currentuser->gas->printableName }}.
+        {{ _i("In allegato il file per l'ordine di %s.", $currentuser->gas->printableName) }}
     </p>
     <p>
-        Cordiali saluti,<br>
+        {{ _i('Cordiali saluti') }},<br>
         {{ $currentuser->printableName() }}
     </p>
 @endif

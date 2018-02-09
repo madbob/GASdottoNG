@@ -112,7 +112,7 @@ table label {
   z-index: 10;
   cursor: pointer; }
 
-.order-summary .form-group {
+table .form-group {
   margin-bottom: 0; }
 
 .table-striped > tbody > tr:nth-of-type(even) {
@@ -133,6 +133,9 @@ table label {
 .booking-product .inline-calculator-trigger {
   cursor: pointer; }
 
+.variants-editor .variant-descr {
+  margin-top: 10px; }
+
 .product-disabled {
   opacity: 0.2;
   display: none; }
@@ -151,6 +154,13 @@ table label {
 
 .icons-legend {
   margin-bottom: 10px; }
+
+.main-form-buttons .btn-default {
+  background-color: #FFF;
+  border: none; }
+
+.main-form-buttons .close-button {
+  margin: 0 10px; }
 
 .modal .modal-header {
   background-color: #EEE; }
@@ -231,7 +241,8 @@ table label {
 
 .list-group {
   float: left;
-  width: 100%; }
+  width: 100%;
+  margin-bottom: 11px; }
 
 .dense-list ul {
   height: 710px;

@@ -1,17 +1,17 @@
 <form class="form-horizontal main-form role-editor" method="PUT" action="{{ url('roles/' . $role->id) }}" data-target="role-editor-{{ rand() }}">
-    <input type="hidden" name="post-saved-refetch" value="#role-list" data-fetch-url="{{ url('roles') }}">
+    <input type="hidden" name="post-saved-refetch" value="#permissions-management">
 
     <div class="row">
         <div class="col-md-6">
             @include('commons.textfield', [
                 'obj' => $role,
                 'name' => 'name',
-                'label' => 'Nome'
+                'label' => _i('Nome')
             ])
             @include('commons.boolfield', [
                 'obj' => $role,
                 'name' => 'always',
-                'label' => 'Abilitato di Default'
+                'label' => _i('Abilitato di Default')
             ])
         </div>
         <div class="col-md-6">
@@ -19,9 +19,9 @@
                 'obj' => $role,
                 'name' => 'parent_id',
                 'objects' => App\Role::orderBy('name')->get(),
-                'label' => 'Ruolo Superiore',
+                'label' => _i('Ruolo Superiore'),
                 'extra_selection' => [
-                    '0' => 'Nessuno'
+                    '0' => _i('Nessuno')
                 ]
             ])
         </div>
@@ -55,7 +55,7 @@
                 @endforeach
 
                 <li class="presentation last-tab">
-                    <input class="form-control roleAssign" type="text" placeholder="Aggiungi Nuovo Utente">
+                    <input class="form-control roleAssign" type="text" placeholder="{{ _i('Aggiungi Nuovo Utente') }}">
                 </li>
             </ul>
         </div>

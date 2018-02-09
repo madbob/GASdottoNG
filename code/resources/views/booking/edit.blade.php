@@ -5,6 +5,8 @@ $grand_total = 0;
 
 ?>
 
+@include('booking.head', ['aggregate' => $aggregate])
+
 <form class="form-horizontal inner-form booking-form" method="PUT" action="{{ url('booking/' . $aggregate->id . '/user/' . $user->id) }}">
     <input type="hidden" name="post-saved-function" value="afterBookingSaved">
 
@@ -18,10 +20,10 @@ $grand_total = 0;
         <table class="table table-striped booking-editor">
             <thead>
                 <tr>
-                    <th width="25%"></th>
+                    <th width="40%"></th>
                     <th width="30%"></th>
-                    <th width="25%"></th>
                     <th width="15%"></th>
+                    <th width="10%"></th>
                     <th width="5%"></th>
                 </tr>
             </thead>
@@ -43,11 +45,11 @@ $grand_total = 0;
                         </td>
 
                         <td class="text-right">
-                            <label class="static-label">{!! $product->printablePrice($order) !!}</label>
+                            <label class="static-label"><small>{!! $product->printablePrice($order) !!}</small></label>
                         </td>
 
                         <td>
-                            <label class="static-label booking-product-price pull-right">{{ $p ? printablePrice($p->quantityValue()) : '0.00' }} €</label>
+                            <label class="static-label booking-product-price pull-right">{{ $p ? printablePrice($p->quantityValue()) : '0.00' }} {{ $currentgas->currency }}</label>
                         </td>
                     </tr>
                 @endforeach
@@ -58,10 +60,16 @@ $grand_total = 0;
                     <th></th>
                     <th></th>
                     <th></th>
-                    <th class="text-right">Totale: <span class="booking-total">{{ printablePrice($o->value) }}</span> €</th>
+                    <th class="text-right">Totale: <span class="booking-total">{{ printablePrice($o->value) }}</span> {{ $currentgas->currency }}</th>
                 </tr>
             </tfoot>
         </table>
+
+        <div class="row">
+            <div class="col-md-12">
+                @include('commons.textarea', ['obj' => $o, 'name' => 'notes', 'postfix' => '_' . $order->id, 'label' => _i('Note')])
+            </div>
+        </div>
 
         <?php $grand_total += $o->value ?>
     @endforeach
@@ -72,7 +80,7 @@ $grand_total = 0;
                 <tr>
                     <th>
                         <div class="pull-right">
-                            <strong>Totale Complessivo: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> €</strong>
+                            <strong>Totale Complessivo: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currentgas->currency }}</strong>
                         </div>
                     </th>
                 </tr>
@@ -83,8 +91,8 @@ $grand_total = 0;
     <div class="row">
         <div class="col-md-12">
             <div class="btn-group pull-right main-form-buttons" role="group" aria-label="Opzioni">
-                <button type="button" class="btn btn-danger delete-booking">Annulla Prenotazione</button>
-                <button type="submit" class="btn btn-success saving-button">Salva</button>
+                <button type="button" class="btn btn-danger delete-booking">{{ _i('Annulla Prenotazione') }}</button>
+                <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
             </div>
         </div>
     </div>

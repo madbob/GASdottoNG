@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Collection;
 
 use Auth;
 use URL;
+use Log;
 
-use App\Events\AttachableToGas;
 use App\GASModel;
 use App\AggregateBooking;
+use App\Events\AttachableToGas;
 
 class Aggregate extends Model
 {
@@ -44,7 +45,7 @@ class Aggregate extends Model
 
     public function orders()
     {
-        return $this->hasMany('App\Order')->with('products')->orderBy('end', 'desc');
+        return $this->hasMany('App\Order')->with('supplier')->with('products')->orderBy('end', 'desc');
     }
 
     public function getStatusAttribute()
@@ -59,8 +60,10 @@ class Aggregate extends Model
             }
         }
 
-        if ($index == 10)
-            return null;
+        if ($index == 10) {
+            Log::debug('Impossibile recuperare stato aggregato ' . $this->id . ' con ' . $this->orders->count() . ' ordini');
+            $index = 2;
+        }
 
         return $priority[$index];
     }
@@ -82,9 +85,41 @@ class Aggregate extends Model
         $names = [];
         $dates = [];
 
-        foreach ($this->orders as $order) {
-            $names[] = $order->printableName();
-            $dates[] = $order->printableDates();
+        $orders = $this->orders;
+
+        if ($orders->count() > 3) {
+            $start_date = PHP_INT_MAX;
+            $end_date = 0;
+            $shipping_date = 0;
+
+            foreach ($orders as $order) {
+                $names[] = $order->printableName();
+
+                $this_start = strtotime($order->start);
+                if ($this_start < $start_date)
+                    $start_date = $this_start;
+
+                $this_end = strtotime($order->end);
+                if ($this_end > $end_date)
+                    $end_date = $this_end;
+
+                if ($this->shipping != null && $this->shipping != '0000-00-00') {
+                    $this_shipping = strtotime($order->shipping);
+                    if ($this_shipping > $shipping_date)
+                        $shipping_date = $this_shipping;
+                }
+            }
+
+            $date_string = sprintf('da %s a %s', strftime('%A %d %B %G', $start_date), strftime('%A %d %B %G', $end_date));
+            if ($shipping_date != 0)
+                $date_string .= sprintf(', in consegna %s', strftime('%A %d %B %G', $shipping_date));
+            $dates[] = $date_string;
+        }
+        else {
+            foreach ($orders as $order) {
+                $names[] = $order->printableName();
+                $dates[] = $order->printableDates();
+            }
         }
 
         return [implode(' / ', $names), implode(' / ', $dates)];
@@ -92,11 +127,17 @@ class Aggregate extends Model
 
     public function printableName()
     {
-        return $this->innerCache('names', function($obj) {
+        $name = $this->comment;
+        if (!empty($name))
+            $name .= ': ';
+
+        $name .= $this->innerCache('names', function($obj) {
             list($name, $date) = $this->computeStrings();
             $this->setInnerCache('dates', $date);
             return $name;
         });
+
+        return $name;
     }
 
     public function printableDates()
@@ -132,19 +173,29 @@ class Aggregate extends Model
     {
         $ret = $this->printableHeader();
 
+        $user = Auth::user();
         $tot = 0;
+        $friends_tot = 0;
 
         foreach($this->orders as $o) {
-            $b = $o->userBooking();
-            if ($b->exists())
-                $tot += $b->total_value;
+            $b = $o->userBooking($user->id);
+            $tot += $b->total_value;
+            $friends_tot += $b->total_friends_value;
         }
 
-        if($tot == 0)
-            $ret .= '<span class="pull-right">Non hai partecipato a quest\'ordine</span>';
-        else
-            $ret .= '<span class="pull-right">Hai ordinato ' . printablePrice($tot) . '€</span>';
+        if($tot == 0 && $friends_tot == 0) {
+            $message = _i("Non hai partecipato a quest'ordine");
+        }
+        else {
+            $currency = currentAbsoluteGas()->currency;
 
+            if ($friends_tot == 0)
+                $message = _i('Hai ordinato %s%s', printablePrice($tot), $currency);
+            else
+                $message = _i('Hai ordinato %s%s + %s%s', printablePrice($tot), $currency, printablePrice($friends_tot), $currency);
+        }
+
+        $ret .= '<span class="pull-right">' . $message . '</span>';
         return $ret;
     }
 
@@ -180,7 +231,8 @@ class Aggregate extends Model
         $ret = [];
 
         foreach ($this->orders as $order) {
-            foreach ($order->bookings as $booking) {
+            foreach ($order->bookings()->toplevel()->get() as $booking) {
+                $booking->setRelation('order', $order);
                 $user_id = $booking->user->id;
 
                 if (!isset($ret[$user_id])) {

@@ -6,11 +6,11 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Nome</th>
-                        <th>Unità di Misura</th>
-                        <th>Prezzo Unitario</th>
-                        <th>Prezzo Trasporto</th>
-                        <th>Ordinabile</th>
+                        <th>{{ _i('Nome') }}</th>
+                        <th>{{ _i('Unità di Misura') }}</th>
+                        <th>{{ _i('Prezzo Unitario') }}</th>
+                        <th>{{ _i('Prezzo Trasporto') }}</th>
+                        <th>{{ _i('Ordinabile') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -28,7 +28,7 @@
                                     'obj' => $product,
                                     'prefix' => $product->id . '-',
                                     'name' => 'name',
-                                    'label' => 'Nome',
+                                    'label' => _i('Nome'),
                                     'squeeze' => true,
                                     'mandatory' => true
                                 ])
@@ -39,7 +39,7 @@
                                     'prefix' => $product->id . '-',
                                     'name' => 'measure_id',
                                     'objects' => $measures,
-                                    'label' => 'Unità di Misura',
+                                    'label' => _i('Unità di Misura'),
                                     'squeeze' => true
                                 ])
                             </td>
@@ -48,7 +48,7 @@
                                     'obj' => $product,
                                     'prefix' => $product->id . '-',
                                     'name' => 'price',
-                                    'label' => 'Prezzo Unitario',
+                                    'label' => _i('Prezzo Unitario'),
                                     'squeeze' => true,
                                     'is_price' => true,
                                     'mandatory' => true
@@ -59,7 +59,7 @@
                                     'obj' => $product,
                                     'prefix' => $product->id . '-',
                                     'name' => 'transport',
-                                    'label' => 'Prezzo Trasporto',
+                                    'label' => _i('Prezzo Trasporto'),
                                     'squeeze' => true,
                                     'is_price' => true
                                 ])
@@ -69,7 +69,7 @@
                                     'obj' => $product,
                                     'prefix' => $product->id . '-',
                                     'name' => 'active',
-                                    'label' => 'Ordinabile',
+                                    'label' => _i('Ordinabile'),
                                     'squeeze' => true
                                 ])
                             </td>
@@ -83,7 +83,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="btn-group pull-right" role="group">
-                <button type="submit" class="btn btn-success saving-button">Salva</button>
+                <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
             </div>
         </div>
     </div>

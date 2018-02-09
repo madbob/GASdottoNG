@@ -2,7 +2,7 @@
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">
-            Modifica Unità di Misura
+            {{ _i('Modifica Unità di Misura') }}
         </h4>
     </div>
 
@@ -14,21 +14,24 @@
                     'show_columns' => true,
                     'columns' => [
                         [
-                            'label' => 'ID',
+                            'label' => _i('ID'),
                             'field' => 'id',
                             'type' => 'hidden',
                             'width' => 0
                         ],
                         [
-                            'label' => 'Nome',
+                            'label' => _i('Nome'),
                             'field' => 'name',
                             'type' => 'text',
-                            'width' => 5
+                            'width' => 5,
+                            'extra' => [
+                                'mandatory' => true
+                            ]
                         ],
                         [
-                            'label' => 'Unità Discreta',
+                            'label' => _i('Unità Discreta'),
                             'field' => 'discrete',
-                            'help' => 'Le unità discrete non sono frazionabili: sui prodotti cui viene assegnata una unità di misura etichettata con questo attributo non sarà possibile attivare proprietà come "Prezzo Variabile" e "Pezzatura"',
+                            'help' => _i('Le unità discrete non sono frazionabili: sui prodotti cui viene assegnata una unità di misura etichettata con questo attributo non sarà possibile attivare proprietà come "Prezzo Variabile" e "Pezzatura"'),
                             'type' => 'bool',
                             'width' => 3,
                             'extra' => [
@@ -36,7 +39,7 @@
                             ]
                         ],
                         [
-                            'label' => 'Prodotti',
+                            'label' => _i('Prodotti'),
                             'field' => 'id',
                             'type' => 'custom',
                             'width' => 2,
@@ -49,7 +52,7 @@
     </div>
 
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
-        <button type="submit" class="btn btn-success">Salva</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+        <button type="submit" class="btn btn-success">{{ _i('Salva') }}</button>
     </div>
 </form>

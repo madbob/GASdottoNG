@@ -1,67 +1,94 @@
-function helpFillNode(nodes, text) {
-    if (nodes != null) {
-        nodes.parent().addClass('help-sensitive').popover({
-            content: text,
-            placement: 'auto right',
-            container: 'body',
-            html: true,
-            trigger: 'hover'
-        });
+(function ($) {
+    var active = false;
+    var inited = false;
+    var container = null;
+    var nodes = null;
+    var inner_text = '';
+
+    var helpRenderer = new marked.Renderer();
+
+    helpRenderer.heading = function(text, level) {
+        inner_text = helpFillNode(nodes, inner_text);
+
+        if (level == 2)
+            container = $(text);
+        else if (level == 1)
+            nodes = container.find(':contains(' + text + ')').last();
+    };
+    helpRenderer.paragraph = function(text, level) {
+        if (inner_text != '')
+            inner_text += '<br/>';
+        inner_text += text;
+    };
+    helpRenderer.list = function(text, level) {
+        inner_text += '<ul>' + text + '</ul>';
+    };
+
+    var helpData = null;
+
+    $.fn.helperTrigger = function(option) {
+        if (active == true) {
+            refreshInlineHelp();
+        }
+        else {
+            if (inited == false) {
+                inited = true;
+
+                $(this).click(function(e) {
+                    e.preventDefault();
+
+                    if ($(this).hasClass('active')) {
+                        active = false;
+                        $('.help-sensitive').removeClass('help-sensitive').popover('destroy');
+                    }
+                    else {
+                        active = true;
+
+                        if (helpData == null) {
+                            var lang = $('html').attr('lang');
+
+                            $.ajax({
+                                url: '/help/data.' + lang + '.md',
+                                method: 'GET',
+
+                                success: function(data) {
+                                    helpData = data;
+                                    refreshInlineHelp();
+                                }
+                            });
+                        }
+                        else {
+                            refreshInlineHelp();
+                        }
+                    }
+
+                    $(this).toggleClass('active');
+                    return false;
+                });
+            }
+        }
     }
 
-    return '';
-}
-
-$(document).ready(function() {
-    $('body').on('click', '#help-trigger', function(e) {
-        e.preventDefault();
-
-        if ($(this).hasClass('active')) {
-            $('.help-sensitive').removeClass('help-sensitive').popover('destroy');
-        } else {
-            $.ajax({
-                url: '/help/data.md',
-                method: 'GET',
-
-                success: function(data) {
-                    var renderer = new marked.Renderer();
-                    var container = null;
-                    var nodes = null;
-                    var inner_text = '';
-
-                    /*
-                    	Qui abuso del renderer Markdown per
-                    	filtrare i contenuti del file ed
-                    	assegnarli ai vari elementi sulla pagina
-                    */
-
-                    renderer.heading = function(text, level) {
-                        inner_text = helpFillNode(nodes, inner_text);
-
-                        if (level == 2)
-                            container = $(text);
-                        else if (level == 1)
-                            nodes = container.find(':contains(' + text + ')').last();
-                    };
-                    renderer.paragraph = function(text, level) {
-                        if (inner_text != '')
-                            inner_text += '<br/>';
-                        inner_text += text;
-                    };
-                    renderer.list = function(text, level) {
-                        inner_text += '<ul>' + text + '</ul>';
-                    };
-
-                    marked(data, {
-                        renderer: renderer
-                    }, function() {
-                        inner_text = helpFillNode(nodes, inner_text);
-                    });
-                }
+    function helpFillNode(nodes, text) {
+        if (nodes != null) {
+            nodes.parent().addClass('help-sensitive').popover({
+                content: text,
+                placement: 'auto right',
+                container: 'body',
+                html: true,
+                trigger: 'hover'
             });
         }
 
-        $(this).toggleClass('active');
-        return false;
-    });
-});
+        return '';
+    }
+
+    function refreshInlineHelp() {
+        marked(helpData, {
+            renderer: helpRenderer
+        }, function() {
+            inner_text = helpFillNode(nodes, inner_text);
+        });
+    }
+
+}(jQuery));

@@ -9,7 +9,9 @@ use Auth;
 use DB;
 use Theme;
 use Log;
+use PDF;
 use Session;
+use Response;
 
 use App\Movement;
 use App\MovementType;
@@ -63,7 +65,19 @@ class MovementsController extends Controller
 
     public function index(Request $request)
     {
-        $query = Movement::with('sender')->with('target')->orderBy('registration_date', 'desc');
+        $user = Auth::user();
+        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
+            abort(503);
+        }
+
+        /*
+            TODO sarebbe assai più efficiente usare with('sender') e
+            with('target'), ma poi la relazione in Movement si spacca (cambiando
+            in virtù del tipo di oggetto linkato). Sarebbe opportuno inrodurre
+            un'altra relazione espressamente dedicata ai tipi di oggetto
+            soft-deletable
+        */
+        $query = Movement::orderBy('date', 'desc');
 
         if ($request->has('startdate')) {
             $start = decodeDate($request->input('startdate'));
@@ -74,7 +88,7 @@ class MovementsController extends Controller
             $filtered = false;
         }
 
-        $query->where('registration_date', '>=', $start);
+        $query->where('date', '>=', $start);
 
         if ($request->has('enddate')) {
             $end = decodeDate($request->input('enddate'));
@@ -83,7 +97,7 @@ class MovementsController extends Controller
             $end = date('Y-m-d');
         }
 
-        $query->where('registration_date', '<=', $end);
+        $query->where('date', '<=', $end);
 
         if ($request->input('type', 'none') != 'none') {
             $query->where('type', $request->input('type'));
@@ -140,19 +154,48 @@ class MovementsController extends Controller
             return Theme::view('pages.movements', $data);
         }
         else {
-            if ($bilist) {
-                /*
-                    Qui si finisce quando si aggiorna l'elenco di movimenti
-                    facenti riferimento ad un soggetto specifico
-                */
-                return Theme::view('movement.bilist', $data);
+            $format = $request->input('format', 'none');
+
+            if ($format == 'none') {
+                if ($bilist) {
+                    /*
+                        Qui si finisce quando si aggiorna l'elenco di movimenti
+                        facenti riferimento ad un soggetto specifico
+                    */
+                    return Theme::view('movement.bilist', $data);
+                }
+                else {
+                    /*
+                        Qui si finisce quando si aggiorna l'elenco di movimenti
+                        nella pagina principale della contabilità
+                    */
+                    return Theme::view('movement.list', $data);
+                }
             }
-            else {
-                /*
-                    Qui si finisce quando si aggiorna l'elenco di movimenti
-                    nella pagina principale della contabilità
-                */
-                return Theme::view('movement.list', $data);
+            else if ($format == 'csv') {
+                $filename = _i('Esportazione movimenti GAS %s.csv', date('d/m/Y'));
+                $headers = [_i('Data Registrazione'), _i('Data Movimento'), _i('Tipo'), _i('Pagamento'), _i('Pagante'), _i('Pagato'), _i('Valore'), _i('Note')];
+                return output_csv($filename, $headers, $data['movements'], function($mov) {
+                    $row = [];
+                    $row[] = $mov->registration_date;
+                    $row[] = $mov->date;
+                    $row[] = $mov->printableType();
+                    $row[] = $mov->printablePayment();
+                    $row[] = $mov->sender ? $mov->sender->printableName() : '';
+                    $row[] = $mov->target ? $mov->target->printableName() : '';
+                    $row[] = printablePrice($mov->amount);
+                    $row[] = $mov->notes;
+                    return $row;
+                });
+            }
+            else if ($format == 'pdf') {
+                $html = Theme::view('documents.movements_pdf', ['movements' => $data['movements']])->render();
+                $title = _i('Esportazione movimenti GAS %s', date('d/m/Y'));
+                $filename = $title . '.pdf';
+                PDF::SetTitle($title);
+                PDF::AddPage('L');
+                PDF::writeHTML($html, true, false, true, false, '');
+                PDF::Output($filename, 'D');
             }
         }
     }
@@ -214,7 +257,7 @@ class MovementsController extends Controller
         $m->save();
 
         if ($m->saved == false) {
-            return $this->errorResponse('Salvataggio fallito');
+            return $this->errorResponse(_i('Salvataggio fallito'));
         } else {
             $printable_date = $m->printableDate('registration_date');
             return $this->successResponse([
@@ -253,7 +296,7 @@ class MovementsController extends Controller
 
         $user = Auth::user();
         if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $movement = Movement::findOrFail($id);
@@ -283,19 +326,48 @@ class MovementsController extends Controller
             case 'credits':
                 $users = User::sorted()->get();
 
+                $group = $request->input('credit', 'all');
+                if ($group == 'minor') {
+                    $users = $users->filter(function($u) {
+                        return $u->current_balance_amount < 0;
+                    });
+                }
+                else if ($group == 'major') {
+                    $users = $users->filter(function($u) {
+                        return $u->current_balance_amount >= 0;
+                    });
+                }
+
                 if ($subtype == 'csv') {
-                    $filename = sprintf('Crediti al %s.csv', date('d/m/Y'));
-                    http_csv_headers($filename);
-                    return Theme::view('documents.credits_table_csv', ['users' => $users]);
+                    $filename = _i('Crediti al %s.csv', date('d/m/Y'));
+                    $headers = [_i('ID'), _i('Nome'), _i('E-Mail'), _i('Credito Residuo')];
+                    return output_csv($filename, $headers, $users, function($user) {
+                        $row = [];
+                        $row[] = $user->username;
+                        $row[] = $user->printableName();
+                        $row[] = $user->email;
+                        $row[] = printablePrice($user->current_balance_amount, ',');
+                        return $row;
+                    });
                 }
                 else if ($subtype == 'rid') {
-                    $filename = sprintf('SEPA del %s.xml', date('d/m/Y'));
-                    header('Content-Type: text/xml');
-                    header('Content-Disposition: attachment; filename="' . $filename . '"');
-                    header('Cache-Control: no-cache, no-store, must-revalidate');
-                    header('Pragma: no-cache');
-                    header('Expires: 0');
-                    return Theme::view('documents.credits_rid', ['users' => $users]);
+                    $filename = _i('SEPA del %s.xml', date('d/m/Y'));
+
+                    $headers = [
+                        'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+                        'Content-type' => 'text/xml',
+                        'Content-Disposition' => 'attachment; filename=' . $filename,
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Expires' => '0',
+                        'Pragma' => 'no-cache'
+                    ];
+
+                    return Response::stream(function() use ($users) {
+                        $FH = fopen('php://output', 'w');
+                        $contents = Theme::view('documents.credits_rid', ['users' => $users])->render();
+                        fwrite($FH, $contents);
+                        fclose($FH);
+                    }, 200, $headers);
                 }
                 break;
         }
@@ -305,7 +377,7 @@ class MovementsController extends Controller
     {
         $user = Auth::user();
         if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $balance = $user->gas->current_balance;
@@ -322,18 +394,28 @@ class MovementsController extends Controller
     public function recalculateCurrentBalance()
     {
         $current_date = date('Y-m-d');
-        $movements = Movement::where('archived', false)->get();
-        foreach($movements as $m) {
-            $m->updated_at = $current_date;
-            $m->save();
-        }
+        $index = 0;
+
+        do {
+            $movements = Movement::where('archived', false)->take(100)->offset(100 * $index)->get();
+            if ($movements->count() == 0)
+                break;
+
+            foreach($movements as $m) {
+                $m->updated_at = $current_date;
+                $m->save();
+            }
+
+            $index++;
+
+        } while(true);
     }
 
     public function recalculate(Request $request)
     {
         $user = Auth::user();
         if ($user->can('movements.admin', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         DB::beginTransaction();
@@ -350,9 +432,9 @@ class MovementsController extends Controller
             ]);
         }
         catch(\Exception $e) {
-            Log::error('Errore nel ricalcolo saldi: ' . $e->getMessage());
+            Log::error(_i('Errore nel ricalcolo saldi: %s', $e->getMessage()));
             Session::forget('movements-recalculating');
-            return $this->errorResponse('Errore');
+            return $this->errorResponse(_i('Errore'));
         }
     }
 
@@ -360,7 +442,7 @@ class MovementsController extends Controller
     {
         $user = Auth::user();
         if ($user->can('movements.admin', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         try {
@@ -378,12 +460,26 @@ class MovementsController extends Controller
                 Ricalcolo i movimenti fino alla data desiderata
             */
             $current_date = date('Y-m-d');
-            $movements = Movement::where('date', '<', $date)->where('archived', false)->get();
-            foreach($movements as $m) {
-                $m->updated_at = $current_date;
-                $m->archived = true;
-                $m->save();
-            }
+
+            $index = 0;
+            do {
+                $movements = Movement::where('date', '<', $date)->where('archived', false)->take(100)->offset(100 * $index)->get();
+                if ($movements->count() == 0)
+                    break;
+
+                foreach($movements as $m) {
+                    $m->updated_at = $current_date;
+                    $m->save();
+                }
+
+                $index++;
+
+            } while(true);
+
+            /*
+                Archivio i movimenti più vecchi della data indicata
+            */
+            Movement::where('date', '<', $date)->where('archived', false)->update(['archived' => true]);
 
             /*
                 Duplico i saldi appena calcolati, e alle copie precedenti
@@ -397,13 +493,12 @@ class MovementsController extends Controller
             */
             $this->recalculateCurrentBalance();
 
-            DB::commit();
+            Session::forget('movements-recalculating');
+            return $this->successResponse();
         }
         catch(\Exception $e) {
-            Log::error('Errore nel ricalcolo saldi: ' . $e->getMessage());
+            Log::error(_i('Errore nel ricalcolo saldi: %s', $e->getMessage()));
+            return $this->errorResponse(_i('Errore'));
         }
-
-        Session::forget('movements-recalculating');
-        return redirect(url('/movements'));
     }
 }

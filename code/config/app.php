@@ -12,7 +12,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'GASdotto'),
 
     /*
     |--------------------------------------------------------------------------
@@ -151,7 +151,7 @@ return [
         Illuminate\Filesystem\FilesystemServiceProvider::class,
         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
         Illuminate\Hashing\HashServiceProvider::class,
-        // Illuminate\Mail\MailServiceProvider::class, // questo viene al'occorrenza registrato da OverwriteMail.php
+        Illuminate\Mail\MailServiceProvider::class,
         Illuminate\Notifications\NotificationServiceProvider::class,
         Illuminate\Pagination\PaginationServiceProvider::class,
         Illuminate\Pipeline\PipelineServiceProvider::class,
@@ -182,7 +182,9 @@ return [
         Elibyy\TCPDF\ServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Devfactory\Minify\MinifyServiceProvider::class,
+        Xinax\LaravelGettext\LaravelGettextServiceProvider::class,
 
+        App\Providers\SingletonsProvider::class,
         App\Providers\GraphicInitServiceProvider::class,
         App\Providers\MenuServiceProvider::class,
         App\Providers\MovementsKeeper::class,

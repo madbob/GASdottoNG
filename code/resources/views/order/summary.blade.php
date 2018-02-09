@@ -2,24 +2,32 @@
     <thead>
         <tr>
             @if($order->isActive())
-                <th class="hidden-md" width="5%"><button class="btn btn-default btn-xs toggle-product-abilitation" data-toggle="button" aria-pressed="false" autocomplete="off">Visualizza<br/>tutti</button></th>
-                <th width="17%">Prodotto</th>
-                <th width="8%">Prezzo</th>
-                <th width="8%">Trasporto</th>
-                <th width="8%">Disponibile</th>
-                <th class="hidden-md" width="5%">Sconto Prodotto</th>
-                <th width="9%">Unità di Misura</th>
-                <th width="9%">Quantità Ordinata</th>
-                <th width="5%">Totale Prezzo</th>
-                <th width="5%">Totale Trasporto</th>
-                <th width="8%">Quantità Consegnata</th>
-                <th width="8%">Totale Consegnato</th>
-                <th width="7%">Note</th>
+                <th class="hidden-md" width="5%"><button class="btn btn-default btn-xs toggle-product-abilitation" data-toggle="button" aria-pressed="false" autocomplete="off">{!! _i('Visualizza<br/>tutti') !!}</button></th>
+                <th width="17%">{{ _i('Prodotto') }}</th>
+                <th width="8%">{{ _i('Prezzo') }}</th>
+                <th width="8%">{{ _i('Trasporto') }}</th>
+                <th width="8%">{{ _i('Disponibile') }}</th>
+                <th class="hidden-md" width="5%">{{ _i('Sconto Prodotto') }}</th>
+                <th width="9%">{{ _i('Unità di Misura') }}</th>
+                <th width="9%">{{ _i('Quantità Ordinata') }}</th>
+                <th width="5%">{{ _i('Totale Prezzo') }}</th>
+                <th width="5%">{{ _i('Totale Trasporto') }}</th>
+                <th width="8%">{{ _i('Quantità Consegnata') }}</th>
+                <th width="8%">{{ _i('Totale Consegnato') }}</th>
+                <th width="7%">{{ _i('Note') }}</th>
+            @elseif($order->status != 'archived')
+                <th width="25%">{{ _i('Prodotto') }}</th>
+                <th width="15%">{{ _i('Unità di Misura') }}</th>
+                <th width="15%">{{ _i('Quantità Ordinata') }}</th>
+                <th width="15%">{{ _i('Totale Trasporto') }}</th>
+                <th width="15%">{{ _i('Quantità Consegnata') }}</th>
+                <th width="15%">{{ _i('Totale Consegnato') }}</th>
             @else
-                <th width="25%">Prodotto</th>
-                <th width="25%">Unità di Misura</th>
-                <th width="25%">Quantità Consegnata</th>
-                <th width="25%">Totale Consegnato</th>
+                <th width="25%">{{ _i('Prodotto') }}</th>
+                <th width="15%">{{ _i('Unità di Misura') }}</th>
+                <th width="20%">{{ _i('Quantità Ordinata') }}</th>
+                <th width="20%">{{ _i('Quantità Consegnata') }}</th>
+                <th width="20%">{{ _i('Totale Consegnato') }}</th>
             @endif
         </tr>
     </thead>
@@ -107,25 +115,27 @@
                     <label>{{ $product->printableMeasure(true) }}</label>
                 </td>
 
-                @if($order->isActive())
-                    <!-- Quantità Ordinata -->
-                    <td>
-                        <label>
-                            @if($product->portion_quantity != 0)
-                                {{ sprintf('%d', $summary->products[$product->id]['quantity_pieces']) }} Pezzi /
-                            @endif
-                            <span class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity'] }}</span> {{ $product->measure->name }}
-                        </label>
-                    </td>
+                <!-- Quantità Ordinata -->
+                <td>
+                    <label>
+                        @if($product->portion_quantity != 0)
+                            {{ sprintf('%d', $summary->products[$product->id]['quantity_pieces']) }} Pezzi /
+                        @endif
+                        <span class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity'] }}</span> {{ $product->measure->name }}
+                    </label>
+                </td>
 
+                @if($order->isActive())
                     <!-- Totale Prezzo -->
                     <td>
-                        <label class="order-summary-product-price">{{ $summary->products[$product->id]['price'] }} €</label>
+                        <label class="order-summary-product-price">{{ $summary->products[$product->id]['price'] }} {{ $currentgas->currency }}</label>
                     </td>
+                @endif
 
+                @if($order->status != 'archived')
                     <!-- Totale Trasporto -->
                     <td>
-                        <label class="order-summary-product-transport">{{ $summary->products[$product->id]['transport'] }} €</label>
+                        <label class="order-summary-product-transport">{{ $summary->products[$product->id]['transport'] }} {{ $currentgas->currency }}</label>
                     </td>
                 @endif
 
@@ -136,7 +146,7 @@
 
                 <!-- Totale Consegnato -->
                 <td>
-                    <label class="order-summary-product-price_delivered">{{ $summary->products[$product->id]['price_delivered'] }} €</label>
+                    <label class="order-summary-product-price_delivered">{{ $summary->products[$product->id]['price_delivered'] }} {{ $currentgas->currency }}</label>
                 </td>
 
                 @if($order->isActive())
@@ -179,13 +189,13 @@
                 <th></th>
                 <th></th>
                 <th></th>
-                <th class="order-summary-order-price">{{ printablePrice($summary->price) }} €</th>
-                <th class="order-summary-order-transport">{{ printablePrice($summary->transport) }} €</th>
+                <th class="order-summary-order-price">{{ printablePrice($summary->price) }} {{ $currentgas->currency }}</th>
+                <th class="order-summary-order-transport">{{ printablePrice($summary->transport) }} {{ $currentgas->currency }}</th>
                 <th></th>
                 <th>
-                    <span class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} €</span>
+                    <span class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} {{ $currentgas->currency }}</span>
                     @if($summary->transport_delivered)
-                        +<br/><span class="order-summary-order-transport_delivered">{{ printablePrice($summary->transport_delivered) }} €</span>
+                        +<br/><span class="order-summary-order-transport_delivered">{{ printablePrice($summary->transport_delivered) }} {{ $currentgas->currency }}</span>
                     @endif
                 </th>
                 <th></th>
@@ -193,10 +203,16 @@
                 <th></th>
                 <th></th>
                 <th></th>
+
+                @if($order->status != 'archived')
+                    <th class="order-summary-order-transport">{{ printablePrice($summary->transport) }} {{ $currentgas->currency }}</th>
+                @endif
+
+                <th></th>
                 <th>
-                    <span class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} €</span>
+                    <span class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} {{ $currentgas->currency }}</span>
                     @if($summary->transport_delivered)
-                        +<br/><span class="order-summary-order-transport_delivered">{{ printablePrice($summary->transport_delivered) }} €</span>
+                        +<br/><span class="order-summary-order-transport_delivered">{{ printablePrice($summary->transport_delivered) }} {{ $currentgas->currency }}</span>
                     @endif
                 </th>
             @endif

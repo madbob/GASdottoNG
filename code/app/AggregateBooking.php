@@ -37,7 +37,7 @@ class AggregateBooking extends Model
             /*
                 Nota bene: in questo aggregato ci vanno sia le prenotazioni
                 effettivamente salvate sul database che le prenotazioni allocate
-                ma non realmente esistenti (ma che funge da wrapper in molte
+                ma non realmente esistenti (ma che fungono da wrapper in molte
                 circostanze).
                 Lo stato dell'aggregato dipende solo da quelle reali: se una
                 prenotazioni vera risulta consegnata, ed una "virtuale" no
@@ -56,8 +56,10 @@ class AggregateBooking extends Model
     {
         $grand_total = 0;
 
-        foreach ($this->bookings as $booking)
+        foreach ($this->bookings as $booking) {
             $grand_total += $booking->total_value;
+            $grand_total += $booking->total_friends_value;
+        }
 
         return $grand_total;
     }

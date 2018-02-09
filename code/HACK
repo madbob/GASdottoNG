@@ -1,0 +1,14 @@
+# Traduzioni
+
+Per aggiornare i file delle traduzioni: `php artisan gettext:update`
+
+Per aggiornare il file delle traduzioni Javascript: `xgettext --from-code=UTF-8 public/js/*.js -o resources/lang/i18n/it_IT/LC_MESSAGES/javascript.po`
+
+Per generare i file Javascript delle traduzioni:
+
+```
+python po2js.py resources/lang/i18n/it_IT/LC_MESSAGES/javascript.po
+mv resources/lang/i18n/it_IT/LC_MESSAGES/javascript.js public/js/lang/it-IT.js
+```
+
+L'utility `po2js.py` è reperibile [qui](https://github.com/fileformat/lptools/blob/master/po2js.py).

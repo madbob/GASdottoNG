@@ -4,30 +4,26 @@ namespace App\Http\Controllers\REST;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
 use Response;
+
 use App\Services\UsersService;
+use App\Http\Controllers\REST\BackedController;
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
 
-class UsersController extends Controller
+class UsersController extends BackedController
 {
-    protected $usersService;
-
-    public function __construct(UsersService $usersService)
+    public function __construct(UsersService $service)
     {
-        $this->middleware('nodebugbar');
-        $this->usersService = $usersService;
-    }
+        $this->middleware('auth');
 
-    public function index()
-    {
-        try {
-            $users = $this->usersService->listUsers();
-
-            return response()->json(['users' => $users], 200);
-        } catch (AuthException $e) {
-            return response(null, $e->status());
-        }
+        $this->commonInit([
+            'reference_class' => 'App\\User',
+            'endpoint' => 'users',
+            'service' => $service,
+            'json_wrapper' => 'user',
+        ]);
     }
 
     public function search(Request $request)
@@ -39,54 +35,10 @@ class UsersController extends Controller
         }
 
         try {
-            $users = $this->usersService->listUsers($term);
-
+            $users = $this->service->list($term);
             return response()->json(['users' => $users], 200);
-        } catch (AuthException $e) {
-            return response(null, $e->status());
         }
-    }
-
-    public function show($id)
-    {
-        try {
-            $user = $this->usersService->show($id);
-
-            return response()->json(['user' => $user], 200);
-        } catch (AuthException $e) {
-            return response(null, $e->status());
-        }
-    }
-
-    public function destroy($id)
-    {
-        try {
-            $this->usersService->destroy($id);
-
-            return response(null, 200);
-        } catch (AuthException $e) {
-            return response(null, $e->status());
-        }
-    }
-
-    public function update(Request $request, $id)
-    {
-        try {
-            $user = $this->usersService->update($id, $request->all());
-
-            return response()->json(['user' => $user], 200);
-        } catch (AuthException $e) {
-            return response(null, $e->status());
-        }
-    }
-
-    public function store(Request $request)
-    {
-        try {
-            $user = $this->usersService->store($request->all());
-
-            return response()->json(['user' => $user], 200);
-        } catch (AuthException $e) {
+        catch (AuthException $e) {
             return response(null, $e->status());
         }
     }

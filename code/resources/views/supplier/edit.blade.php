@@ -1,10 +1,10 @@
 <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#details-{{ $supplier->id }}" aria-controls="details-{{ $supplier->id }}" role="tab" data-toggle="tab">Dettagli</a></li>
-    <li role="presentation"><a href="#orders-{{ $supplier->id }}" aria-controls="orders-{{ $supplier->id }}" role="tab" data-toggle="tab">Ordini</a></li>
-    <li role="presentation"><a href="#products-{{ $supplier->id }}" aria-controls="products-{{ $supplier->id }}" role="tab" data-toggle="tab">Prodotti</a></li>
-    <li role="presentation"><a href="#files-{{ $supplier->id }}" aria-controls="files-{{ $supplier->id }}" role="tab" data-toggle="tab">Files</a></li>
+    <li role="presentation" class="active"><a href="#details-{{ $supplier->id }}" aria-controls="details-{{ $supplier->id }}" role="tab" data-toggle="tab">{{ _i('Dettagli') }}</a></li>
+    <li role="presentation"><a href="#orders-{{ $supplier->id }}" aria-controls="orders-{{ $supplier->id }}" role="tab" data-toggle="tab">{{ _i('Ordini') }}</a></li>
+    <li role="presentation"><a href="#products-{{ $supplier->id }}" aria-controls="products-{{ $supplier->id }}" role="tab" data-toggle="tab">{{ _i('Prodotti') }}</a></li>
+    <li role="presentation"><a href="#files-{{ $supplier->id }}" aria-controls="files-{{ $supplier->id }}" role="tab" data-toggle="tab">{{ _i('Files') }}</a></li>
     @if(Gate::check('movements.view', $currentgas) || Gate::check('movements.admin', $currentgas))
-        <li role="presentation"><a href="#accounting-{{ $supplier->id }}" aria-controls="accounting-{{ $supplier->id }}" role="tab" data-toggle="tab">Contabilità</a></li>
+        <li role="presentation"><a href="#accounting-{{ $supplier->id }}" aria-controls="accounting-{{ $supplier->id }}" role="tab" data-toggle="tab">{{ _i('Contabilità') }}</a></li>
     @endif
 </ul>
 
@@ -20,7 +20,7 @@
                 </div>
                 <div class="col-md-6">
                     @if($supplier->deleted_at != null)
-                        @include('commons.staticdatefield', ['obj' => $supplier, 'name' => 'deleted_at', 'label' => 'Data Eliminazione'])
+                        @include('commons.staticdatefield', ['obj' => $supplier, 'name' => 'deleted_at', 'label' => _i('Data Eliminazione')])
                     @endif
 
                     @include('commons.permissionseditor', ['object' => $supplier, 'master_permission' => 'supplier.modify', 'editable' => true])
@@ -31,7 +31,7 @@
                 'obj' => $supplier,
                 'left_buttons' => [
                     (object) [
-                        'label' => 'Esporta',
+                        'label' => _i('Esporta'),
                         'url' => $supplier->exportableURL(),
                         'class' => ''
                     ]

@@ -4,6 +4,8 @@ if (isset($valuefrom) == false) {
     $valuefrom = null;
 }
 
+$url = $obj && $valuefrom ? $obj->$valuefrom : '';
+
 ?>
 
 <div class="form-group">
@@ -13,7 +15,9 @@ if (isset($valuefrom) == false) {
     <div class="col-sm-{{ $fieldsize }}">
         <div class="img-preview">
             <input type="file" name="{{ $name }}">
-            <img src="{{ $obj && $valuefrom ? $obj->$valuefrom : '' }}">
+            @if(!empty($url))
+                <img src="{{ $url }}">
+            @endif
         </div>
     </div>
 </div>

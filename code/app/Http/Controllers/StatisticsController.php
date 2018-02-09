@@ -28,7 +28,7 @@ class StatisticsController extends Controller
 
         switch ($id) {
             case 'summary':
-                $bookings = Booking::where('delivery', '!=', '0000-00-00')->where('delivery', '>=', $start)->where('delivery', '<=', $end)->with('order')->get();
+                $bookings = Booking::where('delivery', '!=', '0000-00-00')->where('delivery', '>=', $start)->where('delivery', '<=', $end)->toplevel()->with('order')->get();
                 foreach ($bookings as $booking) {
                     $name = $booking->order->supplier->printableName();
                     if (isset($data[$name]) == false) {
@@ -39,7 +39,7 @@ class StatisticsController extends Controller
                     }
 
                     $data[$name]->users[$booking->user_id] = true;
-                    $data[$name]->value += $booking->delivered;
+                    $data[$name]->value += $booking->delivered_with_friends;
                 }
 
                 $ret = (object) [
@@ -68,10 +68,10 @@ class StatisticsController extends Controller
 
                     $bookings = Booking::where('delivery', '!=', '0000-00-00')->where('delivery', '>=', $start)->where('delivery', '<=', $end)->whereHas('order', function ($query) use ($supplier) {
                         $query->where('supplier_id', '=', $supplier);
-                    })->with('order')->get();
+                    })->toplevel()->with('order')->get();
 
                     foreach ($bookings as $booking) {
-                        foreach ($booking->products as $product) {
+                        foreach ($booking->products_with_friends as $product) {
                             $name = $product->product->id;
 
                             if (isset($data[$name]) == false) {

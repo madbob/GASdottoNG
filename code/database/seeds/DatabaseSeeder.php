@@ -59,7 +59,7 @@ class DatabaseSeeder extends Seeder
 
         $user_role = Role::create([
             'name' => 'Utente',
-            'actions' => 'users.view,supplier.book',
+            'actions' => 'users.self,users.view,supplier.book',
             'always' => true,
             'parent_id' => $admin_role->id
         ]);
@@ -68,6 +68,11 @@ class DatabaseSeeder extends Seeder
             'name' => 'Referente',
             'actions' => 'supplier.modify,supplier.orders,supplier.shippings',
             'parent_id' => $admin_role->id
+        ]);
+
+        $gas->setConfig('roles', (object) [
+            'user' => $user_role->id,
+            'friend' > $user_role->id
         ]);
 
         $admin = User::create([

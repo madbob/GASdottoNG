@@ -84,7 +84,7 @@ class Movement extends Model
 
     public function getTypeMetadataAttribute()
     {
-        return MovementType::types($this->type);
+        return MovementType::types($this->type, true);
     }
 
     public function getValidPaymentsAttribute()
@@ -99,12 +99,23 @@ class Movement extends Model
         if (empty($this->date) || strstr($this->date, '0000-00-00') !== false)
             return 'Mai';
         else
-            return sprintf('%s | %s € | %s', $this->printableDate('date'), printablePrice($this->amount), $this->payment_icon);
+            return sprintf('%s | %s %s | %s', $this->printableDate('date'), printablePrice($this->amount), currentAbsoluteGas()->currency, $this->payment_icon);
     }
 
     public function printableType()
     {
         return $this->type_metadata->name;
+    }
+
+    public function printablePayment()
+    {
+        $types = MovementType::payments();
+        foreach ($types as $id => $details) {
+            if ($this->method == $id) {
+                return $details->name;
+            }
+        }
+        return '???';
     }
 
     public static function generate($type, $sender, $target, $amount)
@@ -124,6 +135,7 @@ class Movement extends Model
             $ret->amount = $amount;
         }
 
+        $ret->date = date('Y-m-d');
         $ret->notes = $type_descr->default_notes;
         $ret->method = MovementType::defaultPaymentByType($type);
 

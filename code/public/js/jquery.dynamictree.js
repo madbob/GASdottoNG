@@ -70,7 +70,8 @@
                     serialized: data
                 },
                 success: function() {
-                    inlineFeedback(button, 'Salvato!');
+                    inlineFeedback(button, _('Salvato!'));
+                    $(this).closest('.modal').modal('hide');
                 }
             });
 

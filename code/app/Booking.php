@@ -83,6 +83,13 @@ class Booking extends Model
         return $query->orderByRaw(DB::raw("FIELD(user_id, $sorted_users)"));
     }
 
+    public function scopeToplevel($query)
+    {
+        $query->whereHas('user', function($query) {
+            $query->where('parent_id', null);
+        });
+    }
+
     public function getBooked($product_id, $fallback = false)
     {
         if (is_object($product_id)) {
@@ -102,19 +109,26 @@ class Booking extends Model
         return $p;
     }
 
-    public function getBookedQuantity($product, $real = false)
+    private function readProductQuantity($product, $field, $friends_bookings)
     {
         $p = $this->getBooked($product);
 
-        if ($p == null) {
-            return 0;
+        if ($p == null)
+            $ret = 0;
+        else
+            $ret = $p->$field;
+
+        if ($friends_bookings) {
+            foreach ($this->friends_bookings as $sub)
+                $ret += $sub->readProductQuantity($product, $field, false);
         }
-        else {
-            if ($real)
-                return $p->true_quantity;
-            else
-                return $p->quantity;
-        }
+
+        return $ret;
+    }
+
+    public function getBookedQuantity($product, $real = false, $friends_bookings = false)
+    {
+        return $this->readProductQuantity($product, $real ? 'true_quantity' : 'quantity', $friends_bookings);
     }
 
     /*
@@ -124,19 +138,9 @@ class Booking extends Model
         In caso di prodotti senza pezzatura, restituisce sempre la quantità
         consegnata non ulteriormente elaborata
     */
-    public function getDeliveredQuantity($product, $real = false)
+    public function getDeliveredQuantity($product, $real = false, $friends_bookings = false)
     {
-        $p = $this->getBooked($product);
-
-        if ($p == null) {
-            return 0;
-        }
-        else {
-            if ($real)
-                return $p->true_delivered;
-            else
-                return $p->delivered;
-        }
+        return $this->readProductQuantity($product, $real ? 'true_delivered' : 'delivered', $friends_bookings);
     }
 
     /*
@@ -148,6 +152,7 @@ class Booking extends Model
             $value = 0;
 
             foreach ($obj->products as $booked) {
+                $booked->setRelation('booking', $this);
                 $value += $booked->quantityValue();
             }
 
@@ -220,7 +225,7 @@ class Booking extends Model
     */
     public function getMajorDiscountAttribute()
     {
-        if(!empty($this->order->discount)) {
+        if(!empty($this->order->discount) && $this->order->discount != 0) {
             $total_value = $this->order->total_value;
             if ($total_value != 0) {
                 if (is_numeric($this->order->discount)) {
@@ -251,6 +256,105 @@ class Booking extends Model
         return $this->delivered + $this->transport;
     }
 
+    public function getProductsWithFriendsAttribute()
+    {
+        $products = $this->products;
+
+        foreach($this->friends_bookings as $sub) {
+            foreach($sub->products as $sub_p) {
+                $master_p = $products->keyBy('product_id')->get($sub_p->product_id);
+                if ($master_p == null) {
+                    $products->push($sub_p);
+                }
+                else {
+                    $master_p->quantity += $sub_p->quantity;
+                    $master_p->delivered += $sub_p->delivered;
+
+                    if($master_p->product->variants->isEmpty() == false) {
+                        foreach($sub_p->variants as $sub_variant) {
+                            $counter = 0;
+
+                            foreach($master_p->variants as $master_variant) {
+                                $counter = 0;
+
+                                foreach($sub_variant->components as $sub_component) {
+                                    $counter++;
+
+                                    foreach($master_variant->components as $master_component) {
+                                        if($master_component->variant_id == $sub_component->variant_id && $master_component->value_id == $sub_component->value_id) {
+                                            $counter--;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if ($counter == 0)
+                                    break;
+                            }
+
+                            if ($counter == 0) {
+                                $master_variant->quantity += $sub_variant->quantity;
+                                $master_variant->delivered += $sub_variant->delivered;
+                            }
+                            else {
+                                $master_p->variants->push($sub_variant);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $products = $products->sort(function($a, $b) {
+            return $a->product->name <=> $b->product->name;
+        });
+
+        return $products;
+    }
+
+    public function getFriendsBookingsAttribute()
+    {
+        return $this->innerCache('friends_bookings', function($obj) {
+            $bookings = Booking::where('order_id', $obj->order_id)->whereIn('user_id', $obj->user->friends()->withTrashed()->pluck('id'))->get();
+
+            foreach($bookings as $b) {
+                $b->setRelation('order', $obj->order);
+            }
+
+            return $bookings;
+        });
+    }
+
+    public function getValueWithFriendsAttribute()
+    {
+        $ret = $this->value;
+
+        foreach($this->friends_bookings as $sub)
+            $ret += $sub->value;
+
+        return $ret;
+    }
+
+    public function getDeliveredWithFriendsAttribute()
+    {
+        $ret = $this->delivered;
+
+        foreach($this->friends_bookings as $sub)
+            $ret += $sub->delivered;
+
+        return $ret;
+    }
+
+    public function getTotalFriendsValueAttribute()
+    {
+        $ret = 0;
+
+        foreach($this->friends_bookings as $sub)
+            $ret += $sub->total_value;
+
+        return $ret;
+    }
+
     public function getSlugID()
     {
         return sprintf('%s::%s', $this->order->id, $this->user->id);
@@ -276,7 +380,7 @@ class Booking extends Model
     public static function balanceFields()
     {
         return [
-            'bank' => 'Saldo',
+            'bank' => _i('Saldo'),
         ];
     }
 }

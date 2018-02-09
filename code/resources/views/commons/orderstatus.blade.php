@@ -2,26 +2,26 @@
     @include('commons.selectenumfield', [
         'obj' => $order,
         'name' => 'status',
-        'label' => 'Stato',
+        'label' => _i('Stato'),
         'values' => [
             [
-                'label' => 'Prenotazioni Aperte',
+                'label' => _i('Prenotazioni Aperte'),
                 'value' => 'open',
             ],
             [
-                'label' => 'Prenotazioni Chiuse',
+                'label' => _i('Prenotazioni Chiuse'),
                 'value' => 'closed',
             ],
             [
-                'label' => 'Consegnato',
+                'label' => _i('Consegnato'),
                 'value' => 'shipped',
             ],
             [
-                'label' => 'Archiviato',
+                'label' => _i('Archiviato'),
                 'value' => 'archived',
             ],
             [
-                'label' => 'In Sospeso',
+                'label' => _i('In Sospeso'),
                 'value' => 'suspended',
             ],
         ]
@@ -30,26 +30,26 @@
     @include('commons.staticenumfield', [
         'obj' => $order,
         'name' => 'status',
-        'label' => 'Stato',
+        'label' => _i('Stato'),
         'values' => [
             [
-                'label' => 'Prenotazioni Aperte',
+                'label' => _i('Prenotazioni Aperte'),
                 'value' => 'open',
             ],
             [
-                'label' => 'Prenotazioni Chiuse',
+                'label' => _i('Prenotazioni Chiuse'),
                 'value' => 'closed',
             ],
             [
-                'label' => 'Consegnato',
+                'label' => _i('Consegnato'),
                 'value' => 'shipped',
             ],
             [
-                'label' => 'Archiviato',
+                'label' => _i('Archiviato'),
                 'value' => 'archived',
             ],
             [
-                'label' => 'In Sospeso',
+                'label' => _i('In Sospeso'),
                 'value' => 'suspended',
             ],
         ]

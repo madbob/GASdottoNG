@@ -160,19 +160,19 @@ trait GASModel
                         'test' => function ($obj) use ($user) {
                             return $user->can('supplier.modify', $obj);
                         },
-                        'text' => 'Puoi modificare il fornitore',
+                        'text' => _i('Puoi modificare il fornitore'),
                     ],
                     'th-list' => (object) [
                         'test' => function ($obj) use ($user) {
                             return $user->can('supplier.orders', $obj);
                         },
-                        'text' => 'Puoi aprire nuovi ordini per il fornitore',
+                        'text' => _i('Puoi aprire nuovi ordini per il fornitore'),
                     ],
                     'arrow-down' => (object) [
                         'test' => function ($obj) use ($user) {
                             return $user->can('supplier.shippings', $obj);
                         },
-                        'text' => 'Gestisci le consegne per il fornitore',
+                        'text' => _i('Gestisci le consegne per il fornitore'),
                     ],
                 ],
                 'Product' => [
@@ -180,19 +180,19 @@ trait GASModel
                         'test' => function ($obj) {
                             return $obj->active == false;
                         },
-                        'text' => 'Disabilitato',
+                        'text' => _i('Disabilitato'),
                     ],
                     '.on' => (object) [
                         'test' => function ($obj) {
                             return $obj->active == true;
                         },
-                        'text' => 'Attivo',
+                        'text' => _i('Attivo'),
                     ],
                     'star' => (object) [
                         'test' => function ($obj) {
                             return !empty($obj->discount) && $obj->discount != 0;
                         },
-                        'text' => 'Scontato',
+                        'text' => _i('Scontato'),
                     ],
                 ],
                 'Aggregate' => [
@@ -200,43 +200,43 @@ trait GASModel
                         'test' => function ($obj) use ($user) {
                             return $user->can('supplier.orders', $obj);
                         },
-                        'text' => 'Puoi modificare',
+                        'text' => _i('Puoi modificare'),
                     ],
                     'arrow-down' => (object) [
                         'test' => function ($obj) use ($user) {
                             return $user->can('supplier.shippings', $obj);
                         },
-                        'text' => 'Gestisci le consegne',
+                        'text' => _i('Gestisci le consegne'),
                     ],
                     'play' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'open';
                         },
-                        'text' => 'Prenotazioni Aperte',
+                        'text' => _i('Prenotazioni Aperte'),
                     ],
                     'pause' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'suspended';
                         },
-                        'text' => 'In Sospeso',
+                        'text' => _i('In Sospeso'),
                     ],
                     'stop' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'closed';
                         },
-                        'text' => 'Prenotazioni Chiuse',
+                        'text' => _i('Prenotazioni Chiuse'),
                     ],
                     'step-forward' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'shipped';
                         },
-                        'text' => 'Consegnato',
+                        'text' => _i('Consegnato'),
                     ],
                     'eject' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'archived';
                         },
-                        'text' => 'Archiviato',
+                        'text' => _i('Archiviato'),
                     ],
                 ],
                 'Order' => [
@@ -244,43 +244,43 @@ trait GASModel
                         'test' => function ($obj) use ($user) {
                             return $user->can('supplier.orders', $obj);
                         },
-                        'text' => 'Puoi modificare l\'ordine',
+                        'text' => _i("Puoi modificare l'ordine"),
                     ],
                     'arrow-down' => (object) [
                         'test' => function ($obj) use ($user) {
                             return $user->can('supplier.shippings', $obj);
                         },
-                        'text' => 'Gestisci le consegne per l\'ordine',
+                        'text' => _i("Gestisci le consegne per l'ordine"),
                     ],
                     'play' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'open';
                         },
-                        'text' => 'Prenotazioni Aperte',
+                        'text' => _i('Prenotazioni Aperte'),
                     ],
                     'pause' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'suspended';
                         },
-                        'text' => 'In Sospeso',
+                        'text' => _i('In Sospeso'),
                     ],
                     'stop' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'closed';
                         },
-                        'text' => 'Prenotazioni Chiuse',
+                        'text' => _i('Prenotazioni Chiuse'),
                     ],
                     'step-forward' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'shipped';
                         },
-                        'text' => 'Consegnato',
+                        'text' => _i('Consegnato'),
                     ],
                     'eject' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'archived';
                         },
-                        'text' => 'Archiviato',
+                        'text' => _i('Archiviato'),
                     ],
                 ],
                 'AggregateBooking' => [
@@ -288,19 +288,19 @@ trait GASModel
                         'test' => function ($obj) {
                             return $obj->status != 'shipped';
                         },
-                        'text' => 'Da consegnare',
+                        'text' => _i('Da consegnare'),
                     ],
                     'ok' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'shipped';
                         },
-                        'text' => 'Consegnato',
+                        'text' => _i('Consegnato'),
                     ],
                     'download-alt' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'saved';
                         },
-                        'text' => 'Salvato',
+                        'text' => _i('Salvato'),
                     ],
                 ],
                 'User' => [
@@ -312,7 +312,7 @@ trait GASModel
                     'test' => function ($obj) {
                         return $obj->deleted_at != null;
                     },
-                    'text' => 'Eliminato',
+                    'text' => _i('Eliminato'),
                 ];
             }
 
@@ -321,14 +321,14 @@ trait GASModel
                     'test' => function ($obj) {
                         return $obj->suspended == true;
                     },
-                    'text' => 'Sospeso',
+                    'text' => _i('Sospeso'),
                 ];
 
                 $icons['User']['off'] = (object) [
                     'test' => function ($obj) {
                         return ($obj->suspended == false && $obj->deleted_at != null);
                     },
-                    'text' => 'Cessato',
+                    'text' => _i('Cessato'),
                 ];
             }
 
@@ -337,28 +337,28 @@ trait GASModel
                     'test' => function ($obj) {
                         return $obj->current_balance_amount < 0;
                     },
-                    'text' => 'Credito < 0',
+                    'text' => _i('Credito < 0'),
                 ];
+
+                /*
+                    Se la gestione delle quote di iscrizione è abilitata, viene
+                    attivata la relativa icona per distinguere gli utenti che non
+                    l'hanno pagata o rinnovata
+                */
+                if ($user->gas->getConfig('annual_fee_amount') != 0) {
+                    $icons['User']['euro'] = (object) [
+                        'test' => function ($obj) {
+                            return $obj->fee_id == 0;
+                        },
+                        'text' => _i('Quota non Pagata'),
+                    ];
+                }
             }
 
             /*
-                Se la gestione delle quote di iscrizione è abilitata, viene
-                attivata la relativa icona per distinguere gli utenti che non
-                l'hanno pagata o rinnovata
+                Questo è per generare le icone dei ruoli degli utenti comuni
             */
-            if ($user->gas->getConfig('annual_fee_amount') != 0) {
-                $icons['User']['euro'] = (object) [
-                    'test' => function ($obj) {
-                        return $obj->fee_id == 0;
-                    },
-                    'text' => 'Quota non Pagata',
-                ];
-            }
-
-            /*
-                Questo è per generare le icone dei ruoli degli utenti
-            */
-            $roles = Role::where('always', false)->get();
+            $roles = Role::where('id', '!=', $user->gas->roles['user'])->where('id', '!=', $user->gas->roles['friend'])->get();
             foreach($roles as $index => $role) {
                 $icons['User']['king' . $index] = (object) [
                     'test' => function($obj) use ($role) {

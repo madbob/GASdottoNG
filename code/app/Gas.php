@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Log;
 
 use App\Events\SluggableCreating;
+
+use App\Role;
 use App\AttachableTrait;
 use App\GASModel;
 use App\SluggableID;
@@ -19,10 +21,6 @@ class Gas extends Model
 
     protected $events = [
         'creating' => SluggableCreating::class,
-    ];
-
-    protected $casts = [
-        'rid' => 'array',
     ];
 
     public static function commonClassName()
@@ -65,6 +63,8 @@ class Gas extends Model
 
     private function handlingConfigs()
     {
+        $default_role = Role::where('name', 'Utente')->first();
+
         return [
             'year_closing' => [
                 'default' => date('Y') . '-09-01'
@@ -86,23 +86,27 @@ class Gas extends Model
                 'default' => '0'
             ],
 
-            'mail_conf' => [
-                'default' => (object) [
-                    'driver' => '',
-                    'username' => '',
-                    'password' => '',
-                    'host' => '',
-                    'port' => '',
-                    'address' => '',
-                    'encryption' => ''
-                ]
-            ],
-
             'rid' => [
                 'default' => (object) [
                     'iban' => '',
-                    'id' => ''
+                    'id' => '',
+                    'org' => ''
                 ]
+            ],
+
+            'roles' => [
+                'default' => (object) [
+                    'user' => $default_role ? $default_role->id : -1,
+                    'friend' => $default_role ? $default_role->id : -1
+                ]
+            ],
+
+            'language' => [
+                'default' => 'it_IT'
+            ],
+
+            'currency' => [
+                'default' => '€'
             ],
         ];
     }
@@ -117,7 +121,7 @@ class Gas extends Model
 
         $defined = self::handlingConfigs();
         if (!isset($defined[$name])) {
-            Log::error('Configurazione GAS non prevista');
+            Log::error(_i('Configurazione GAS non prevista'));
             return '';
         }
         else {
@@ -147,68 +151,14 @@ class Gas extends Model
         $conf->save();
     }
 
-    private function mailConfig()
-    {
-        $conf = $this->getConfig('mail_conf');
-        if ($conf == '') {
-            return (object) [
-                'driver' => '',
-                'username' => '',
-                'password' => '',
-                'host' => '',
-                'port' => '',
-                'address' => '',
-                'encryption' => '',
-            ];
-        } else {
-            return json_decode($conf);
-        }
-    }
-
-    public function has_mail()
-    {
-        return !empty($this->mailConfig()->host);
-    }
-
-    public function getMaildriverAttribute()
-    {
-        $config = $this->mailConfig();
-        return $config->driver ?? 'smtp';
-    }
-
-    public function getMailusernameAttribute()
-    {
-        return $this->mailConfig()->username;
-    }
-
-    public function getMailpasswordAttribute()
-    {
-        return $this->mailConfig()->password;
-    }
-
-    public function getMailserverAttribute()
-    {
-        return $this->mailConfig()->host;
-    }
-
-    public function getMailportAttribute()
-    {
-        return $this->mailConfig()->port;
-    }
-
-    public function getMailaddressAttribute()
-    {
-        return $this->mailConfig()->address;
-    }
-
-    public function getMailsslAttribute()
-    {
-        return $this->mailConfig()->encryption;
-    }
-
     public function getRidAttribute()
     {
         return (array) json_decode($this->getConfig('rid'));
+    }
+
+    public function getRolesAttribute()
+    {
+        return (array) json_decode($this->getConfig('roles'));
     }
 
     public function getFastShippingEnabledAttribute()
@@ -219,6 +169,16 @@ class Gas extends Model
     public function getRestrictedAttribute()
     {
         return $this->getConfig('restricted') == '1';
+    }
+
+    public function getLanguageAttribute()
+    {
+        return $this->getConfig('language');
+    }
+
+    public function getCurrencyAttribute()
+    {
+        return $this->getConfig('currency');
     }
 
     /******************************************************** AttachableTrait */
@@ -233,11 +193,11 @@ class Gas extends Model
     public static function balanceFields()
     {
         return [
-            'bank' => 'Conto Corrente',
-            'cash' => 'Cassa Contanti',
-            'gas' => 'GAS',
-            'suppliers' => 'Fornitori',
-            'deposits' => 'Cauzioni',
+            'bank' => _i('Conto Corrente'),
+            'cash' => _i('Cassa Contanti'),
+            'gas' => _i('GAS'),
+            'suppliers' => _i('Fornitori'),
+            'deposits' => _i('Cauzioni'),
         ];
     }
 }

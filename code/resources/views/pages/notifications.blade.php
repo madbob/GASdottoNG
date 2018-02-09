@@ -8,7 +8,7 @@
             @include('commons.addingbutton', [
                 'template' => 'notification.base-edit',
                 'typename' => 'notification',
-                'typename_readable' => 'Notifica',
+                'typename_readable' => _i('Notifica'),
                 'targeturl' => 'notifications'
             ])
         @endcan

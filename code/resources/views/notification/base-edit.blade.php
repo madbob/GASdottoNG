@@ -1,19 +1,15 @@
-@include('commons.textarea', ['obj' => $notification, 'name' => 'content', 'label' => 'Contenuto', 'mandatory' => true])
-@include('commons.datefield', ['obj' => $notification, 'name' => 'start_date', 'label' => 'Inizio', 'mandatory' => true])
-@include('commons.datefield', ['obj' => $notification, 'name' => 'end_date', 'label' => 'Scadenza', 'mandatory' => true])
-
-@if($currentgas->has_mail())
-    @include('commons.boolfield', ['obj' => $notification, 'name' => 'mailed', 'label' => 'Invia Mail'])
-@endif
+@include('commons.textarea', ['obj' => $notification, 'name' => 'content', 'label' => _i('Contenuto'), 'mandatory' => true])
+@include('commons.datefield', ['obj' => $notification, 'name' => 'start_date', 'label' => _i('Inizio'), 'mandatory' => true])
+@include('commons.datefield', ['obj' => $notification, 'name' => 'end_date', 'label' => _i('Scadenza'), 'mandatory' => true])
+@include('commons.boolfield', ['obj' => $notification, 'name' => 'mailed', 'label' => _i('Invia Mail')])
 
 <?php
 
-$extras['special::referrers'] = 'Tutti i Referenti';
+$extras['special::referrers'] = _i('Tutti i Referenti');
 
 foreach ($currentgas->aggregates as $aggregate) {
-    foreach($aggregate->orders as $order)
-        if($order->status != 'closed')
-            $extras['special::order::'.$order->id] = 'Tutti i Partecipanti all\'ordine per '.$order->supplier->name;
+    foreach($aggregate->orders()->where('status', '!=', 'closed')->where('status', '!=', 'archived')->get() as $order)
+        $extras['special::order::'.$order->id] = _i("Tutti i Partecipanti all'ordine %s %s", $order->supplier->name, $order->internal_number);
 }
 
 ?>
@@ -24,6 +20,6 @@ foreach ($currentgas->aggregates as $aggregate) {
     'objects' => $currentgas->users,
     'extra_selection' => $extras,
     'multiple_select' => true,
-    'label' => 'Destinatari',
-    'help_text' => 'Tenere premuto Ctrl per selezionare più utenti. Se nessun utente viene selezionato, la notifica sarà destinata a tutti.'
+    'label' => _i('Destinatari'),
+    'help_text' => _i('Tenere premuto Ctrl per selezionare più utenti. Se nessun utente viene selezionato, la notifica sarà destinata a tutti.')
 ])

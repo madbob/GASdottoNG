@@ -13,6 +13,7 @@ use Theme;
 
 use App\Events\SluggableCreating;
 use App\Events\AttachableToGas;
+use App\Events\SupplierDeleting;
 use App\Role;
 use App\AttachableTrait;
 use App\Attachment;
@@ -32,7 +33,8 @@ class Supplier extends Model
 
     protected $events = [
         'creating' => SluggableCreating::class,
-        'created' => AttachableToGas::class
+        'created' => AttachableToGas::class,
+        'deleting' => SupplierDeleting::class,
     ];
 
     protected static function boot()
@@ -58,7 +60,7 @@ class Supplier extends Model
 
     public static function commonClassName()
     {
-        return 'Fornitore';
+        return _i('Fornitore');
     }
 
     public function products()
@@ -127,12 +129,12 @@ class Supplier extends Model
     protected function defaultAttachments()
     {
         $cataloguepdf = new Attachment();
-        $cataloguepdf->name = 'Listino PDF (autogenerato)';
+        $cataloguepdf->name = _i('Listino PDF (autogenerato)');
         $cataloguepdf->url = url('suppliers/catalogue/'.$this->id.'/pdf');
         $cataloguepdf->internal = true;
 
         $cataloguecsv = new Attachment();
-        $cataloguecsv->name = 'Listino CSV (autogenerato)';
+        $cataloguecsv->name = _i('Listino CSV (autogenerato)');
         $cataloguecsv->url = url('suppliers/catalogue/'.$this->id.'/csv');
         $cataloguecsv->internal = true;
 
@@ -156,19 +158,21 @@ class Supplier extends Model
             case 'all':
                 $query->where(function($query) use ($supplier) {
                     $query->where(function($query) use ($supplier) {
-                        $query->where('sender_type', 'App\Supplier')->where('sender_id', $supplier->id);
+                        $query->where(function($query) use ($supplier) {
+                            $query->where('sender_type', 'App\Supplier')->where('sender_id', $supplier->id);
+                        })->orWhere(function($query) use ($supplier) {
+                            $query->where('sender_type', 'App\Order')->whereIn('sender_id', $supplier->orders()->pluck('orders.id'));
+                        })->orWhere(function($query) use ($supplier) {
+                            $query->where('sender_type', 'App\Booking')->whereIn('sender_id', $supplier->bookings()->pluck('bookings.id'));
+                        });
                     })->orWhere(function($query) use ($supplier) {
-                        $query->where('sender_type', 'App\Order')->whereIn('sender_id', $supplier->orders()->pluck('orders.id'));
-                    })->orWhere(function($query) use ($supplier) {
-                        $query->where('sender_type', 'App\Booking')->whereIn('sender_id', $supplier->bookings()->pluck('bookings.id'));
-                    });
-                })->orWhere(function($query) use ($supplier) {
-                    $query->where(function($query) use ($supplier) {
-                        $query->where('target_type', 'App\Supplier')->where('target_id', $supplier->id);
-                    })->orWhere(function($query) use ($supplier) {
-                        $query->where('target_type', 'App\Order')->whereIn('target_id', $supplier->orders()->pluck('orders.id'));
-                    })->orWhere(function($query) use ($supplier) {
-                        $query->where('target_type', 'App\Booking')->whereIn('target_id', $supplier->bookings()->pluck('bookings.id'));
+                        $query->where(function($query) use ($supplier) {
+                            $query->where('target_type', 'App\Supplier')->where('target_id', $supplier->id);
+                        })->orWhere(function($query) use ($supplier) {
+                            $query->where('target_type', 'App\Order')->whereIn('target_id', $supplier->orders()->pluck('orders.id'));
+                        })->orWhere(function($query) use ($supplier) {
+                            $query->where('target_type', 'App\Booking')->whereIn('target_id', $supplier->bookings()->pluck('bookings.id'));
+                        });
                     });
                 });
                 break;
@@ -206,7 +210,7 @@ class Supplier extends Model
     public static function balanceFields()
     {
         return [
-            'bank' => 'Ordini',
+            'bank' => _i('Ordini'),
         ];
     }
 
@@ -384,6 +388,10 @@ class Supplier extends Model
 
                                 case 'description':
                                     $product->description = html_entity_decode((string) $p);
+                                    break;
+
+                                case 'active':
+                                    $product->active = (strtolower((string) $p) == 'true');
                                     break;
 
                                 case 'orderInfo':

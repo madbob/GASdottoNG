@@ -16,7 +16,7 @@ if (isset($valuefrom) == false) {
                 <img src="{{ $obj->$valuefrom }}">
             </div>
         @else
-            <label class="static-label text-muted">Nessuna Immagine</label>
+            <label class="static-label text-muted">{{ _i('Nessuna Immagine') }}</label>
         @endif
     </div>
 </div>

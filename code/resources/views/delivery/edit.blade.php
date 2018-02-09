@@ -1,14 +1,7 @@
 <?php
 
 $more_orders = ($aggregate->orders->count() > 1);
-
-/*
-    Se il GAS ha abilitato il pagamento RID, ed esiste la configurazione per
-    l'utente, non viene chiesto il pagamento della consegna (assumendo che
-    avverrà appunto via RID)
-*/
-$handling_movements = App\Role::someone('movements.admin', $currentgas) && (empty($currentgas->rid['iban']) || empty($user->rid['iban']));
-
+$handling_movements = App\Role::someone('movements.admin', $currentgas);
 $tot_amount = 0;
 $tot_delivered = [];
 $rand = rand();
@@ -74,7 +67,7 @@ $existing = false;
                     </thead>
 
                     <tbody>
-                        @foreach($o->products as $product)
+                        @foreach($o->products_with_friends as $product)
                             <?php $discrete_quantity = $product->product->measure->discrete ?>
 
                             @if($product->variants->isEmpty() == true)
@@ -101,7 +94,7 @@ $existing = false;
                                     </td>
 
                                     <td>
-                                        <label class="static-label booking-product-price pull-right">{{ printablePrice($product->final_price) }} €</label>
+                                        <label class="static-label booking-product-price pull-right">{{ printablePrice($product->final_price) }} {{ $currentgas->currency }}</label>
                                     </td>
                                 </tr>
                             @else
@@ -146,7 +139,7 @@ $existing = false;
                                         </td>
 
                                         <td>
-                                            <label class="static-label booking-product-price pull-right">{{ printablePrice($var->final_price) }} €</label>
+                                            <label class="static-label booking-product-price pull-right">{{ printablePrice($var->final_price) }} {{ $currentgas->currency }}</label>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -157,7 +150,7 @@ $existing = false;
                             <tr class="hidden booking-product fit-add-product">
                                 <td>
                                     <select class="fit-add-product-select form-control">
-                                        <option value="-1">Seleziona un Prodotto</option>
+                                        <option value="-1">{{ _i('Seleziona un Prodotto') }}</option>
                                         @foreach($order->products as $product)
                                             <option value="{{ $product->id }}">{{ $product->name }}</option>
                                         @endforeach
@@ -169,32 +162,32 @@ $existing = false;
                                 <td class="bookable-target">&nbsp;</td>
 
                                 <td>
-                                    <label class="static-label booking-product-price pull-right">0.00 €</label>
+                                    <label class="static-label booking-product-price pull-right">0.00 {{ $currentgas->currency }}</label>
                                 </td>
                             </tr>
                         @endif
 
                         <tr class="booking-transport">
                             <td>
-                                <label class="static-label">Trasporto</label>
+                                <label class="static-label">{{ _i('Trasporto') }}</label>
                             </td>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                             <td>
                                 <input type="hidden" name="global-transport-price" value="{{ $o->major_transport }}" class="skip-on-submit" />
-                                <label class="static-label booking-transport-price pull-right"><span>{{ printablePrice($o->check_transport) }}</span> €</label>
+                                <label class="static-label booking-transport-price pull-right"><span>{{ printablePrice($o->check_transport) }}</span> {{ $currentgas->currency }}</label>
                             </td>
                         </tr>
 
                         <tr class="booking-transport">
                             <td>
-                                <label class="static-label">Sconto</label>
+                                <label class="static-label">{{ _i('Sconto') }}</label>
                             </td>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                             <td>
                                 <input type="hidden" name="global-discount" value="{{ $o->major_discount * -1 }}" class="skip-on-submit" />
-                                <label class="static-label booking-discount pull-right"><span>{{ printablePrice($o->major_discount * -1) }}</span> €</label>
+                                <label class="static-label booking-discount pull-right"><span>{{ printablePrice($o->major_discount * -1) }}</span> {{ $currentgas->currency }}</label>
                             </td>
                         </tr>
                     </tbody>
@@ -203,12 +196,12 @@ $existing = false;
                         <tr>
                             <th>
                                 @if($order->isActive())
-                                    <button class="btn btn-warning add-booking-product">Aggiungi Prodotto</button>
+                                    <button class="btn btn-warning add-booking-product">{{ _i('Aggiungi Prodotto') }}</button>
                                 @endif
                             </th>
                             <th></th>
                             <th></th>
-                            <th class="text-right">Totale: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> €</th>
+                            <th class="text-right">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> {{ $currentgas->currency }}</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -222,7 +215,7 @@ $existing = false;
                 <tr>
                     <th>
                         <div class="pull-right">
-                            <strong>Totale Complessivo: <span class="all-bookings-total">{{ printablePrice($tot_amount) }}</span> €</strong>
+                            <strong>{{ _i('Totale Complessivo') }}: <span class="all-bookings-total">{{ printablePrice($tot_amount) }}</span> {{ $currentgas->currency }}</strong>
                         </div>
                     </th>
                 </tr>
@@ -235,14 +228,14 @@ $existing = false;
             <div class="col-md-12">
                 <div class="btn-group pull-right main-form-buttons" role="group">
                     @if($existing)
-                        <button class="btn btn-default preload-quantities">Carica Quantità Prenotate</button>
-                        <button type="submit" class="btn btn-info info-button">Salva Informazioni</button>
+                        <button class="btn btn-default preload-quantities">{{ _i('Carica Quantità Prenotate') }}</button>
+                        <button type="submit" class="btn btn-info info-button">{{ _i('Salva Informazioni') }}</button>
                     @endif
 
                     @if($handling_movements)
-                        <button type="button" class="btn btn-success saving-button" data-toggle="modal" data-target="#editMovement-{{ $rand }}">Consegna</button>
+                        <button type="button" class="btn btn-success saving-button" data-toggle="modal" data-target="#editMovement-{{ $rand }}">{{ _i('Consegna') }}</button>
                     @else
-                        <button type="submit" class="btn btn-success saving-button">Consegna</button>
+                        <button type="submit" class="btn btn-success saving-button">{{ _i('Consegna') }}</button>
                     @endif
                 </div>
             </div>
@@ -263,7 +256,7 @@ $existing = false;
         'dom_id' => $rand,
         'obj' => null, // qui gestisco sempre un movimento di pagamento come nuovo, eventualmente la pre-callback di 'booking-payment' provvederà a caricare quelli esistenti assegnati alle prenotazioni contemplate
         'default' => \App\Movement::generate('booking-payment', $user, $aggregate, $tot_amount),
-        'amount_label' => 'Importo da Pagare',
+        'amount_label' => _i('Importo da Pagare'),
         'extra' => [
             'post-saved-function' => 'submitDeliveryForm',
             'delivering-status' => json_encode($tot_delivered)

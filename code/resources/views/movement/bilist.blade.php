@@ -14,21 +14,21 @@ else {
 
 @if($movements->count() == 0)
     <div class="alert alert-info" role="alert">
-        Non ci sono elementi da visualizzare.
+        {{ _i('Non ci sono elementi da visualizzare.') }}
     </div>
 @else
     <table class="table">
         <thead>
             <tr>
-                <th>Data</th>
-                <th>Tipo</th>
-                <th>Pagamento</th>
-                <th>Riferimento</th>
-                <th>Credito</th>
-                <th>Debito</th>
-                <th>Note</th>
+                <th>{{ _i('Data') }}</th>
+                <th>{{ _i('Tipo') }}</th>
+                <th>{{ _i('Pagamento') }}</th>
+                <th>{{ _i('Riferimento') }}</th>
+                <th>{{ _i('Credito') }}</th>
+                <th>{{ _i('Debito') }}</th>
+                <th>{{ _i('Note') }}</th>
                 @if(Gate::check('movements.admin', $currentgas))
-                    <th>Modifica</th>
+                    <th>{{ _i('Modifica') }}</th>
                 @endif
             </tr>
         </thead>
@@ -65,8 +65,8 @@ else {
                     <td>{{ $mov->printableType() }}</td>
                     <td>{!! $mov->payment_icon !!}</td>
                     <td>{{ $reference ? $reference->printableName() : '' }}</td>
-                    <td>{{ $in != 0 ? $in . '€' : '' }}</td>
-                    <td>{{ $out != 0 ? $out . '€' : '' }}</td>
+                    <td>{{ $in != 0 ? $in . $currentgas->currency : '' }}</td>
+                    <td>{{ $out != 0 ? $out . $currentgas->currency : '' }}</td>
 
                     <td>
                         @if(!empty($mov->notes))

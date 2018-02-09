@@ -8,13 +8,6 @@ Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail'
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
-Route::group(array('prefix' => 'api/1'), function () {
-    Route::get('users/search', 'REST\UsersController@search');
-    Route::resource('users', 'REST\UsersController');
-    Route::resource('suppliers', 'REST\SuppliersController');
-    Route::resource('products', 'REST\ProductsController');
-});
-
 Route::get('/', function () {
     return Redirect::to('/dashboard');
 });
@@ -30,13 +23,14 @@ Route::post('dashboard/verify', 'CommonsController@postVerify');
 
 Route::get('gas/{id}/header', 'GasController@objhead');
 Route::get('gas/{id}/logo', 'GasController@getLogo');
-Route::get('gas/configmail', 'GasController@configureMail');
 
 Route::get('users/ro/{id}', 'UsersController@show_ro');
 Route::get('users/{id}/header', 'UsersController@objhead');
 Route::get('users/search', 'UsersController@search');
 Route::get('users/profile', 'UsersController@profile');
 Route::get('users/picture/{id}', 'UsersController@picture');
+
+Route::get('friends/{id}/header', 'FriendsController@objhead');
 
 Route::get('roles/{id}/header', 'RolesController@objhead');
 Route::get('roles/user/{user_id}', 'RolesController@formByUser');
@@ -80,6 +74,7 @@ Route::get('attachments/download/{id}', 'AttachmentsController@download');
 
 Route::get('bookings/{id}/header', 'BookingController@objhead');
 Route::get('booking/{aggregate_id}/user/{user_id}/header', 'BookingUserController@objhead2');
+Route::get('booking/{aggregate_id}/user/{user_id}/document', 'BookingUserController@document');
 Route::get('booking/{id}/header', 'BookingController@objhead');
 
 Route::get('deliveries/{id}/header', 'DeliveriesController@objhead');
@@ -107,6 +102,7 @@ Route::post('import/legacy', 'ImportController@postLegacy');
 
 Route::resource('gas', 'GasController');
 Route::resource('users', 'UsersController');
+Route::resource('friends', 'FriendsController');
 Route::resource('roles', 'RolesController');
 Route::resource('suppliers', 'SuppliersController');
 Route::resource('products', 'ProductsController');

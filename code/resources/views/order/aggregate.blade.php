@@ -21,10 +21,10 @@ $panel_rand_wrap = rand();
             @if($shippable_status)
                 <form class="form-horizontal">
                     <div class="form-group">
-                        <label class="col-sm-{{ $labelsize }} control-label">Notifiche Mail</label>
+                        <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Notifiche Mail') }}</label>
                         <div class="col-sm-{{ $fieldsize }}">
-                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#notify-aggregate-{{ $aggregate->id }}">Invia Mail</button>
-                            <span class="help-block">Ultime notifiche inviate: <span class="last-date" data-updatable-name="last-notification-date-{{ $aggregate->id }}">{{ $aggregate->printableDate('last_notify') }}</span></span>
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#notify-aggregate-{{ $aggregate->id }}">{{ _i('Invia Mail') }}</button>
+                            <span class="help-block">{{ _i('Ultime notifiche inviate') }}: <span class="last-date" data-updatable-name="last-notification-date-{{ $aggregate->id }}">{{ $aggregate->printableDate('last_notify') }}</span></span>
                         </div>
                     </div>
                 </form>
@@ -38,11 +38,11 @@ $panel_rand_wrap = rand();
 
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">Notifiche Mail</h4>
+                                    <h4 class="modal-title">{{ _i('Notifiche Mail') }}</h4>
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">Messaggio (Opzionale)</label>
+                                        <label class="col-sm-3 control-label">{{ _i('Messaggio (Opzionale)') }}</label>
 
                                         <div class="col-sm-{{ $fieldsize }}">
                                             <textarea class="form-control" name="message" rows="5"></textarea>
@@ -50,8 +50,8 @@ $panel_rand_wrap = rand();
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
-                                    <button type="submit" class="btn btn-success saving-button">Salva</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+                                    <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
                                 </div>
                             </form>
                         </div>
@@ -62,9 +62,6 @@ $panel_rand_wrap = rand();
         <div class="col-md-4">
         </div>
         <div class="col-md-4">
-            @if($more_orders)
-                <a href="{{ url('aggregates/document/' . $aggregate->id . '/shipping') }}" class="btn btn-default">Dettaglio Consegne Complessivo</a>
-            @endif
         </div>
     </div>
     <br/>
@@ -77,11 +74,17 @@ $panel_rand_wrap = rand();
                 <li role="presentation" class="{{ $index == 0 ? 'active' : '' }}"><a href="#order-{{ $panel_rand_wrap }}-{{ $index }}" role="tab" data-toggle="tab">{{ $order->printableName() }}</a></li>
             @endforeach
 
-            <li role="presentation"><a href="#shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab" data-async-load="{{ url('/booking/' . $aggregate->id . '/user') }}">Consegne</a></li>
-
-            @if($currentgas->getConfig('fast_shipping_enabled'))
-                <li role="presentation"><a href="#fast-shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab" data-async-load="{{ url('/deliveries/' . $aggregate->id . '/fast') }}">Consegne Veloci</a></li>
+            @if($more_orders)
+                <li role="presentation"><a href="#aggregate-metadata-{{ $aggregate->id }}" role="tab" data-toggle="tab">{{ _i('Aggregato') }}</a></li>
             @endif
+
+            @can('supplier.shippings', $aggregate)
+                <li role="presentation"><a href="#shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab" data-async-load="{{ url('/booking/' . $aggregate->id . '/user') }}">{{ _i('Consegne') }}</a></li>
+
+                @if($currentgas->getConfig('fast_shipping_enabled'))
+                    <li role="presentation"><a href="#fast-shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab" data-async-load="{{ url('/deliveries/' . $aggregate->id . '/fast') }}">{{ _i('Consegne Veloci') }}</a></li>
+                @endif
+            @endcan
         </ul>
 
         <div class="tab-content">
@@ -94,6 +97,29 @@ $panel_rand_wrap = rand();
                     @endcan
                 </div>
             @endforeach
+
+            @if($more_orders)
+                <div role="tabpanel" class="tab-pane" id="aggregate-metadata-{{ $aggregate->id }}">
+                    <form class="form-horizontal main-form" method="PUT" action="{{ url('aggregates/' . $aggregate->id) }}">
+                        <div class="row">
+                            <div class="col-md-4">
+                                @include('commons.textfield', ['obj' => $aggregate, 'name' => 'comment', 'label' => _i('Commento')])
+                            </div>
+                            <div class="col-md-4">
+                            </div>
+                            <div class="col-md-4">
+                                <div class="list-group pull-right">
+                                    <a href="{{ url('aggregates/document/' . $aggregate->id . '/shipping') }}" class="list-group-item">{{ _i('Dettaglio Consegne Aggregato') }}</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        @include('commons.formbuttons', [
+                            'no_delete' => true
+                        ])
+                    </form>
+                </div>
+            @endif
 
             <div role="tabpanel" class="tab-pane shippable-bookings" id="shippings-{{ $aggregate->id }}" data-aggregate-id="{{ $aggregate->id }}">
             </div>

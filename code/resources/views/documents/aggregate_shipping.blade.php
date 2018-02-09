@@ -1,15 +1,17 @@
 <html>
     <body>
-        <h3>Dettaglio Consegne Ordini<br/>
+        <h3>{{ _i('Dettaglio Consegne') }}<br/>
             @foreach($aggregate->orders as $order)
                 {{ $order->supplier->name }} {{ $order->internal_number }}<br/>
             @endforeach
         </h3>
 
-        @foreach($aggregate->bookings as $super_booking)
+        @foreach($bookings as $super_booking)
             @if($super_booking->total_value == 0)
                 @continue
             @endif
+
+            <?php $cell_value = 0 ?>
 
             <table border="1" style="width: 100%" cellpadding="5" nobr="true">
                 <tr>
@@ -31,17 +33,22 @@
                 </tr>
 
                 @foreach($super_booking->bookings as $booking)
-                    @if($booking->products->isEmpty() == false)
+                    @if($booking->$products_source->isEmpty() == false)
+                        <?php $cell_value += $booking->total_value ?>
+
                         <tr>
                             <td colspan="3"><strong>{{ $booking->order->supplier->printableName() }}</strong></td>
                         </tr>
 
-                        @include('documents.booking_shipping', ['booking' => $booking])
+                        @include('documents.booking_shipping', [
+                            'booking' => $booking,
+                            'products_source' => $products_source
+                        ])
                     @endif
                 @endforeach
 
                 <tr>
-                    <th colspan="3"><strong>Totale: {{ printablePrice($super_booking->total_value, ',') }} €</strong></th>
+                    <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePrice($cell_value, ',') }} {{ $currentgas->currency }}</strong></th>
                 </tr>
             </table>
 

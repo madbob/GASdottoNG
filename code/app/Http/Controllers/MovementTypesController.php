@@ -10,6 +10,7 @@ use DB;
 use Auth;
 use Theme;
 
+use App\Movement;
 use App\MovementType;
 
 class MovementTypesController extends Controller
@@ -116,6 +117,42 @@ class MovementTypesController extends Controller
         }
     }
 
+    public function fixVoidMethods(&$data, $request)
+    {
+        $payments = MovementType::payments();
+
+        foreach($payments as $pay_id => $pay) {
+            if ($request->has($pay_id) == false)
+                continue;
+
+            $found = false;
+            foreach($data as $d) {
+                if ($d->method == $pay_id) {
+                    $found = true;
+                    break;
+                }
+            }
+
+            if ($found == false) {
+                $cell = (object) [
+                    'method' => $pay_id,
+                    'is_default' => ($request->input('payment_default', null) == $pay_id),
+                    'sender' => (object) [
+                        'operations' => []
+                    ],
+                    'target' => (object) [
+                        'operations' => []
+                    ],
+                    'master' => (object) [
+                        'operations' => []
+                    ],
+                ];
+
+                array_push($data, $cell);
+            }
+        }
+    }
+
     public function update(Request $request, $id)
     {
         $user = Auth::user();
@@ -153,6 +190,12 @@ class MovementTypesController extends Controller
         if($type->sender_type != 'App\Gas' && $type->target_type != 'App\Gas')
             $this->parseRules($data, 'master', 'App\Gas', $request);
 
+        /*
+            Questo è per permettere l'esistenza di metodo di pagamento che non
+            agiscono affatto sui saldi
+        */
+        $this->fixVoidMethods($data, $request);
+
         $type->function = json_encode($data);
 
         $type->save();
@@ -162,5 +205,24 @@ class MovementTypesController extends Controller
             'header' => $type->printableHeader(),
             'url' => url('movtypes/' . $type->id),
         ]);
+    }
+
+    public function destroy($id)
+    {
+        $user = Auth::user();
+        if ($user->can('movements.types', $user->gas) == false) {
+            abort(503);
+        }
+
+        DB::beginTransaction();
+
+        $type = MovementType::findOrFail($id);
+        $existing = Movement::where('type', $id)->count();
+        if ($existing == 0)
+            $type->forceDelete();
+        else
+            $type->delete();
+
+        return $this->successResponse();
     }
 }

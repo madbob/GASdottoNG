@@ -1,6 +1,6 @@
 <div class="form-group">
     @if($squeeze == false)
-        <label for="contacts" class="col-sm-{{ $labelsize }} control-label">Contatti</label>
+        <label for="contacts" class="col-sm-{{ $labelsize }} control-label">{{ _i('Contatti') }}</label>
     @endif
 
     <div class="col-sm-{{ $fieldsize }}">
@@ -9,7 +9,7 @@
             'extra_class' => 'contacts-selection',
             'columns' => [
                 [
-                    'label' => 'ID',
+                    'label' => _i('ID'),
                     'field' => 'id',
                     'type' => 'hidden',
                     'width' => 0,
@@ -18,7 +18,7 @@
                     ]
                 ],
                 [
-                    'label' => 'Tipo',
+                    'label' => _i('Tipo'),
                     'field' => 'type',
                     'type' => 'selectenum',
                     'width' => 4,
@@ -28,7 +28,7 @@
                     ]
                 ],
                 [
-                    'label' => 'Valore',
+                    'label' => _i('Valore'),
                     'field' => 'value',
                     'type' => 'text',
                     'width' => 6,

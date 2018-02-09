@@ -41,7 +41,7 @@ class NotificationsController extends Controller
 
         $user = Auth::user();
         if ($user->can('notifications.admin', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         /*
@@ -108,7 +108,7 @@ class NotificationsController extends Controller
 
         $user = Auth::user();
         if ($user->can('notifications.admin', $user->gas) == false && $n->hasUser($user) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         return Theme::view('notification.show', ['notification' => $n]);
@@ -126,7 +126,7 @@ class NotificationsController extends Controller
 
             return $this->successResponse();
         } else {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
     }
 }

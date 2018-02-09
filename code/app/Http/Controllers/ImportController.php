@@ -21,6 +21,8 @@ use App\Supplier;
 use App\Product;
 use App\Category;
 use App\Measure;
+use App\Movement;
+use App\MovementType;
 
 class ImportController extends Controller
 {
@@ -54,7 +56,7 @@ class ImportController extends Controller
         try {
             $f = $request->file('file', null);
             if ($f == null || $f->isValid() == false) {
-                return $this->errorResponse('File non caricato correttamente, possibili problemi con la dimensione');
+                return $this->errorResponse(_i('File non caricato correttamente, possibili problemi con la dimensione'));
             }
 
             $filepath = sys_get_temp_dir();
@@ -64,7 +66,7 @@ class ImportController extends Controller
 
             $target_separator = $this->guessCsvFileSeparator($path);
             if ($target_separator == null) {
-                return $this->errorResponse('Impossibile interpretare il file');
+                return $this->errorResponse(_i('Impossibile interpretare il file'));
             }
 
             $reader = CsvReader::open($path, $target_separator);
@@ -76,7 +78,7 @@ class ImportController extends Controller
             return Theme::view($response, $parameters);
 
         } catch (\Exception $e) {
-            return $this->errorResponse('Errore nel salvataggio del file');
+            return $this->errorResponse(_i('Errore nel salvataggio del file'));
         }
     }
 
@@ -91,7 +93,7 @@ class ImportController extends Controller
         $config = sprintf('%s/server/config.php', $old_path);
 
         if (file_exists($config) == false) {
-            return Theme::view('import.legacy-pre', ['error' => 'Il file di configurazione non è stato trovato in ' . $config]);
+            return Theme::view('import.legacy-pre', ['error' => _i('Il file di configurazione non è stato trovato in %s', $config)]);
         }
         else {
             require_once($config);
@@ -120,7 +122,7 @@ class ImportController extends Controller
             $supplier_id = $request->input('supplier_id');
             $s = Supplier::findOrFail($supplier_id);
             if ($request->user()->can('supplier.modify', $s) == false) {
-                return $this->errorResponse('Non autorizzato');
+                return $this->errorResponse(_i('Non autorizzato'));
             }
 
             /*
@@ -153,21 +155,29 @@ class ImportController extends Controller
                     }
 
                     if ($name_index == -1) {
-                        $errors[] = 'Colonna obbligatoria non specificata: nome del prodotto';
+                        $errors[] = _i('Colonna obbligatoria non specificata: nome del prodotto');
                     }
                     if ($category_index == -1) {
-                        $errors[] = 'Colonna obbligatoria non specificata: categoria';
+                        $errors[] = _i('Colonna obbligatoria non specificata: categoria');
                     }
                     if ($measure_index == -1) {
-                        $errors[] = 'Colonna obbligatoria non specificata: unità di misura';
+                        $errors[] = _i('Colonna obbligatoria non specificata: unità di misura');
                     }
 
-                    if (!empty($errors))
-                        return Theme::view('import.csvproductsfinal', ['supplier' => $s, 'products' => [], 'errors' => $errors]);
+                    if (!empty($errors)) {
+                        return Theme::view('import.csvimportfinal', [
+                            'title' => _i('Prodotti importati'),
+                            'objects' => [],
+                            'errors' => $errors,
+                            'extra_closing_attributes' => [
+                                'data-reload-target' => '#supplier-list'
+                            ]
+                        ]);
+                    }
 
                     $target_separator = $this->guessCsvFileSeparator($path);
                     if ($target_separator == null) {
-                        return $this->errorResponse('Impossibile interpretare il file');
+                        return $this->errorResponse(_i('Impossibile interpretare il file'));
                     }
 
                     $products = [];
@@ -228,7 +238,15 @@ class ImportController extends Controller
 
                     DB::commit();
 
-                    return Theme::view('import.csvproductsfinal', ['supplier' => $s, 'products' => $products, 'errors' => $errors]);
+                    return Theme::view('import.csvimportfinal', [
+                        'title' => _i('Prodotti importati'),
+                        'objects' => $products,
+                        'errors' => $errors,
+                        'extra_closing_attributes' => [
+                            'data-reload-target' => '#supplier-list'
+                        ]
+                    ]);
+
                     break;
             }
         }
@@ -254,12 +272,12 @@ class ImportController extends Controller
                     }
 
                     if ($login_index == -1) {
-                        return $this->errorResponse('Colonna obbligatoria non specificata');
+                        return $this->errorResponse(_i('Colonna obbligatoria non specificata'));
                     }
 
                     $target_separator = $this->guessCsvFileSeparator($path);
                     if ($target_separator == null) {
-                        return $this->errorResponse('Impossibile interpretare il file');
+                        return $this->errorResponse(_i('Impossibile interpretare il file'));
                     }
 
                     $creator = Auth::user();
@@ -281,32 +299,39 @@ class ImportController extends Controller
                                 $u->gas_id = $gas->id;
                                 $u->username = $login;
                                 $u->password = Hash::make($login);
+                                $u->member_since = date('Y-m-d');
                             }
 
                             $contacts = [];
                             $credit = null;
 
                             foreach ($columns as $index => $field) {
+                                $value = (string)$line[$index];
+
                                 if ($field == 'none') {
                                     continue;
                                 }
                                 else if ($field == 'phone' || $field == 'email') {
                                     $c = new Contact();
                                     $c->type = $field;
-                                    $c->value = $line[$index];
+                                    $c->value = $value;
                                     $contacts[] = $c;
                                     continue;
                                 }
                                 else if ($field == 'member_since') {
-                                    $u->$field = date('Y-m-d', strtotime($line[$index]));
+                                    $u->$field = date('Y-m-d', strtotime($value));
                                 }
                                 else if ($field == 'credit') {
                                     if (!empty($line[$index]) && $line[$index] != 0) {
-                                        $credit = str_replace(',', '.', $line[$index]);
+                                        $credit = str_replace(',', '.', $value);
                                     }
                                 }
+                                else if ($field == 'ceased') {
+                                    if (strtolower($value) == 'true' || strtolower($value) == 'vero' || $value == '1')
+                                        $u->deleted_at = date('Y-m-d');
+                                }
                                 else {
-                                    $u->$field = $line[$index];
+                                    $u->$field = $value;
                                 }
                             }
 
@@ -332,12 +357,163 @@ class ImportController extends Controller
 
                     DB::commit();
 
-                    return Theme::view('import.csvusersfinal', ['users' => $users, 'errors' => $errors]);
+                    return Theme::view('import.csvimportfinal', [
+                        'title' => _i('Utenti importati'),
+                        'objects' => $users,
+                        'errors' => $errors,
+                        'extra_closing_attributes' => [
+                            'data-reload-target' => '#user-list'
+                        ]
+                    ]);
+
+                    break;
+            }
+        }
+        else if ($type == 'movements') {
+            $user = $request->user();
+            if ($user->can('movements.admin', $user->gas) == false) {
+                return $this->errorResponse(_i('Non autorizzato'));
+            }
+
+            switch ($step) {
+                case 'guess':
+                    return $this->storeUploadedFile($request, 'import.csvmovementssortcolumns', []);
+                    break;
+
+                case 'select':
+                    $path = $request->input('path');
+                    $columns = $request->input('column');
+
+                    $target_separator = $this->guessCsvFileSeparator($path);
+                    if ($target_separator == null) {
+                        return $this->errorResponse(_i('Impossibile interpretare il file'));
+                    }
+
+                    $movements = [];
+                    $errors = [];
+
+                    $reader = CsvReader::open($path, $target_separator);
+                    while (($line = $reader->readLine()) !== false) {
+                        try {
+                            /*
+                                In questa fase, genero dei Movement
+                                temporanei al solo scopo di popolare la
+                                vista di selezione.
+                                Non salvare gli oggetti qui creati!!!
+                            */
+                            $m = new Movement();
+                            $m->method = 'bank';
+                            $save_me = true;
+
+                            foreach ($columns as $index => $field) {
+                                if ($field == 'none') {
+                                    continue;
+                                }
+                                elseif ($field == 'date') {
+                                    $value = date('Y-m-d', readDate($line[$index]));
+                                }
+                                elseif ($field == 'user') {
+                                    $field = 'sender_id';
+
+                                    $name = trim($line[$index]);
+                                    $user = User::where('username', $name)->first();
+
+                                    if ($user == null) {
+                                        $user = User::whereHas('contacts', function($query) use ($name) {
+                                            $query->where('value', $name);
+                                        })->first();
+                                    }
+
+                                    if ($user == null) {
+                                        $save_me = false;
+                                        continue;
+                                    }
+
+                                    $value = $user->id;
+                                }
+                                else {
+                                    $value = $line[$index];
+                                }
+
+                                $m->$field = $value;
+                            }
+
+                            if ($save_me)
+                                $movements[] = $m;
+                        }
+                        catch (\Exception $e) {
+                            $errors[] = implode($target_separator, $line) . '<br/>' . $e->getMessage();
+                        }
+                    }
+
+                    return Theme::view('import.csvmovementsselect', ['movements' => $movements, 'errors' => $errors]);
+                    break;
+
+                case 'run':
+                    $imports = $request->input('import', []);
+                    $dates = $request->input('date', []);
+                    $senders = $request->input('sender_id', []);
+                    $types = $request->input('mtype', []);
+                    $methods = $request->input('method', []);
+                    $amounts = $request->input('amount', []);
+
+                    $errors = [];
+                    $movements = [];
+                    $current_gas = $request->user()->gas;
+
+                    DB::beginTransaction();
+
+                    foreach($imports as $index) {
+                        try {
+                            $m = new Movement();
+                            $m->date = $dates[$index];
+                            $m->type = $types[$index];
+                            $m->amount = $amounts[$index];
+                            $m->method = $methods[$index];
+
+                            $t = MovementType::find($m->type);
+
+                            if ($senders[$index] !== '0') {
+                                if ($t->sender_type == 'App\User') {
+                                    $m->sender_id = $senders[$index];
+                                    $m->sender_type = 'App\User';
+                                }
+                                if ($t->target_type == 'App\User') {
+                                    $m->target_id = $senders[$index];
+                                    $m->target_type = 'App\User';
+                                }
+                            }
+
+                            if ($t->sender_type == 'App\Gas') {
+                                $m->sender_id = $current_gas->id;
+                                $m->sender_type = 'App\Gas';
+                            }
+                            if ($t->target_type == 'App\Gas') {
+                                $m->target_id = $current_gas->id;
+                                $m->target_type = 'App\Gas';
+                            }
+
+                            $m->save();
+                            $movements[] = $m;
+                        }
+                        catch (\Exception $e) {
+                            $errors[] = $index . '<br/>' . $e->getMessage();
+                        }
+                    }
+
+                    DB::commit();
+
+                    return Theme::view('import.csvimportfinal', [
+                        'title' => _i('Movimenti importati'),
+                        'objects' => $movements,
+                        'errors' => $errors
+                    ]);
+
                     break;
             }
         }
 
-        return $this->errorResponse('Comando non valido');
+        return $this->errorResponse(_i('Comando %s/%s non valido', $type, $step));
     }
 
     public function getGdxp(Request $request)
@@ -419,7 +595,7 @@ class ImportController extends Controller
             }
         }
         catch(\Exception $e) {
-            Log::error('Errore importando file GDXP');
+            Log::error(_i('Errore importando file GDXP'));
             return Theme::view('import.gdxperror');
         }
     }

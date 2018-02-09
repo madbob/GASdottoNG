@@ -1,5 +1,20 @@
 <?php
 
+function currentAbsoluteGas()
+{
+    static $gas = null;
+
+    if ($gas == null) {
+        $user = Auth::user();
+        if ($user != null)
+            $gas = $user->gas;
+        else
+            $gas = App\Gas::first();
+    }
+
+    return $gas;
+}
+
 function modelsUsingTrait($trait_name) {
     $out = [];
     $results = scandir(app_path());
@@ -26,9 +41,22 @@ function accessAttr($obj, $name, $default = '')
 
     if (strpos($name, '->') !== false) {
         list($array, $index) = explode('->', $name);
-        return $obj->$array[$index];
+        if (isset($obj->$array[$index]))
+            return $obj->$array[$index];
+        else
+            return '';
     }
     else {
         return $obj->$name;
+    }
+}
+
+function normalizeId($subject)
+{
+    if (is_object($subject)) {
+        return $subject->id;
+    }
+    else {
+        return $subject;
     }
 }

@@ -3,7 +3,7 @@
 @include('commons.datefield', [
     'obj' => null,
     'name' => 'date',
-    'label' => 'Data',
+    'label' => _i('Data'),
     'defaults_now' => true
 ])
 

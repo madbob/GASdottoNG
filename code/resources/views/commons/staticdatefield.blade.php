@@ -6,7 +6,7 @@
 
             if ($obj) {
                 if ($obj->$name == null || $obj->$name == '0000-00-00') {
-                    echo 'Mai';
+                    echo _i('Mai');
                 } else {
                     echo $obj->printableDate($name);
                 }

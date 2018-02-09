@@ -18,40 +18,40 @@
                 'obj' => $obj,
                 'name' => 'type',
                 'values' => $types,
-                'label' => 'Tipo'
+                'label' => _i('Tipo')
             ])
 
             @include('commons.staticpricefield', [
                 'obj' => $obj,
                 'name' => 'amount',
-                'label' => 'Valore'
+                'label' => _i('Valore')
             ])
             @include('commons.staticdatefield', [
                 'obj' => $obj,
                 'name' => 'date',
-                'label' => 'Data'
+                'label' => _i('Data')
             ])
             @include('commons.staticstringfield', [
                 'obj' => $obj,
                 'name' => 'identifier',
-                'label' => 'Identificativo'
+                'label' => _i('Identificativo')
             ])
             @include('commons.staticstringfield', [
                 'obj' => $obj,
                 'name' => 'notes',
-                'label' => 'Note'
+                'label' => _i('Note')
             ])
         </div>
         <div class="col-md-6">
             @include('commons.staticdatefield', [
                 'obj' => $obj,
                 'name' => 'registration_date',
-                'label' => 'Registrato Il'
+                'label' => _i('Registrato Il')
             ])
             @include('commons.staticobjfield', [
                 'obj' => $obj,
                 'name' => 'registerer',
-                'label' => 'Registrato Da'
+                'label' => _i('Registrato Da')
             ])
         </div>
     </div>

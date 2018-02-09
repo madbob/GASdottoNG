@@ -1,10 +1,10 @@
 <html>
     <body>
-        <h3>Dettaglio Consegne Ordine {{ $order->internal_number }} presso {{ $order->supplier->printableName() }} del {{ $order->shipping ? date('d/m/Y', strtotime($order->shipping)) : date('d/m/Y') }}</h3>
+        <h3>{{ _i('Dettaglio Consegne Ordine %s presso %s del %s', $order->internal_number, $order->supplier->printableName(), $order->shipping ? date('d/m/Y', strtotime($order->shipping)) : date('d/m/Y')) }}</h3>
 
         <hr/>
 
-        @foreach($order->bookings as $booking)
+        @foreach($order->bookings()->toplevel()->get() as $booking)
             <table border="1" style="width: 100%" cellpadding="5" nobr="true">
                 <tr>
                     <th colspan="3"><strong>{{ $booking->user->printableName() }}
@@ -24,10 +24,13 @@
                     ?></strong></th>
                 </tr>
 
-                @include('documents.booking_shipping', ['booking' => $booking])
+                @include('documents.booking_shipping', [
+                    'booking' => $booking,
+                    'products_source' => 'products_with_friends'
+                ])
 
                 <tr>
-                    <th colspan="3"><strong>Totale: {{ printablePrice($booking->total_value, ',') }} €</strong></th>
+                    <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePrice($booking->total_value, ',') }} {{ $currentgas->currency }}</strong></th>
                 </tr>
             </table>
 

@@ -44,12 +44,15 @@ class SuppliersService extends BaseService
     {
         $supplier = DB::transaction(function () use ($id) {
             $supplier = $this->show($id);
-            $this->ensureAuth(['supplier.modify' => $supplier]);
 
-            if ($supplier->trashed())
+            if ($supplier->trashed()) {
+                $this->ensureAuth(['supplier.add' => 'gas']);
                 $supplier->forceDelete();
-            else
+            }
+            else {
+                $this->ensureAuth(['supplier.modify' => $supplier]);
                 $supplier->delete();
+            }
 
             return $supplier;
         });
@@ -116,18 +119,22 @@ class SuppliersService extends BaseService
 
         if ($format == 'pdf') {
             $html = Theme::view('documents.cataloguepdf', ['supplier' => $supplier])->render();
-            PDF::SetTitle(sprintf('Listino %s del %s', $supplier->name, date('d/m/Y')));
+            PDF::SetTitle(_i('Listino %s del %s', $supplier->name, date('d/m/Y')));
             PDF::AddPage();
             PDF::writeHTML($html, true, false, true, false, '');
             PDF::Output($filename, 'D');
         }
         elseif ($format == 'csv') {
-            header('Content-Type: text/csv');
-            header('Content-Disposition: attachment; filename="' . $filename . '"');
-            header('Cache-Control: no-cache, no-store, must-revalidate');
-            header('Pragma: no-cache');
-            header('Expires: 0');
-            return Theme::view('documents.cataloguecsv', ['supplier' => $supplier]);
+            $currency = currentAbsoluteGas()->currency;
+            $headers = [_i('Nome'), _i('Unità di Misura'), _i('Prezzo Unitario (%s)', $currency), _i('Trasporto (%s)', $currency)];
+            return output_csv($filename, $headers, $supplier->products, function($product) {
+                $row = [];
+                $row[] = $product->name;
+                $row[] = $product->measure->printableName();
+                $row[] = printablePrice($product->price, ',');
+                $row[] = printablePrice($product->transport, ',');
+                return $row;
+            });
         }
     }
 

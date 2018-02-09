@@ -176,6 +176,14 @@ class Role extends Model
         }
     }
 
+    private function invalidateAppliesCache()
+    {
+        if (isset($this->applies_cache)) {
+            unset($this->applies_cache);
+            unset($this->applies_only_cache);
+        }
+    }
+
     private function testApplication($obj, $cache_type)
     {
         $this->appliesCache();
@@ -258,16 +266,11 @@ class Role extends Model
         else
             $cache_type = 'applies_only_cache';
 
-        $ret = [];
+        $ret = new Collection();
 
         foreach($this->$cache_type as $class => $ids) {
-            foreach($ids as $id) {
-                $obj = $class::find($id);
-                if ($obj == null)
-                    continue;
-
-                $ret[] = $obj;
-            }
+            $objs = $class::whereIn('id', $ids)->get();
+            $ret = $ret->merge($objs);
         }
 
         return $ret;
@@ -339,6 +342,8 @@ class Role extends Model
                 ->where('target_type', get_class($obj))
                 ->delete();
         }
+
+        $this->invalidateAppliesCache();
     }
 
     public function enabledAction($action)
@@ -412,26 +417,28 @@ class Role extends Model
     {
         return [
             'App\Gas' => [
-                'gas.access' => 'Accesso consentito anche in manutenzione',
-                'gas.permissions' => 'Modificare tutti i permessi',
-                'gas.config' => 'Modificare le configurazioni del GAS',
-                'supplier.add' => 'Creare nuovi fornitori',
-                'supplier.book' => 'Effettuare ordini',
-                'users.admin' => 'Amministrare le anagrafiche degli utenti',
-                'users.view' => 'Vedere tutti gli utenti',
-                'users.movements' => 'Amministrare i movimento contabili degli utenti',
-                'movements.admin' => 'Amministrare tutti i movimenti contabili',
-                'movements.view' => 'Vedere i movimenti contabili',
-                'movements.types' => 'Amministrare i tipi dei movimenti contabili',
-                'categories.admin' => 'Amministrare le categorie',
-                'measures.admin' => 'Amministrare le unità di misura',
-                'gas.statistics' => 'Visualizzare le statistiche',
-                'notifications.admin' => 'Amministrare le notifiche',
+                'gas.access' => _i('Accesso consentito anche in manutenzione'),
+                'gas.permissions' => _i('Modificare tutti i permessi'),
+                'gas.config' => _i('Modificare le configurazioni del GAS'),
+                'supplier.add' => _i('Creare nuovi fornitori'),
+                'supplier.book' => _i('Effettuare ordini'),
+                'users.self' => _i('Modificare la propria anagrafica'),
+                'users.admin' => _i('Amministrare le anagrafiche degli utenti'),
+                'users.view' => _i('Vedere tutti gli utenti'),
+                'users.movements' => _i('Amministrare i movimenti contabili degli utenti'),
+                'users.subusers' => _i('Avere sotto-utenti con funzioni limitate'),
+                'movements.admin' => _i('Amministrare tutti i movimenti contabili'),
+                'movements.view' => _i('Vedere i movimenti contabili'),
+                'movements.types' => _i('Amministrare i tipi dei movimenti contabili'),
+                'categories.admin' => _i('Amministrare le categorie'),
+                'measures.admin' => _i('Amministrare le unità di misura'),
+                'gas.statistics' => _i('Visualizzare le statistiche'),
+                'notifications.admin' => _i('Amministrare le notifiche'),
             ],
             'App\Supplier' => [
-                'supplier.modify' => 'Modificare i fornitori assegnati',
-                'supplier.orders' => 'Aprire e modificare ordini',
-                'supplier.shippings' => 'Effettuare le consegne',
+                'supplier.modify' => _i('Modificare i fornitori assegnati'),
+                'supplier.orders' => _i('Aprire e modificare ordini'),
+                'supplier.shippings' => _i('Effettuare le consegne'),
             ],
         ];
     }

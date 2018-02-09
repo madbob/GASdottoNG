@@ -7,16 +7,16 @@
 
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Elimina</h4>
+                    <h4 class="modal-title">{{ _i('Elimina') }}</h4>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        Sei sicuro di voler eliminare questo elemento?
+                        {{ _i('Sei sicuro di voler eliminare questo elemento?') }}
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
-                    <button type="submit" class="btn btn-danger">Conferma</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+                    <button type="submit" class="btn btn-danger">{{ _i('Conferma') }}</button>
                 </div>
             </form>
         </div>

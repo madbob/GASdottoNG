@@ -35,12 +35,15 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Http\Middleware\OverwriteMail::class,
+            // \Xinax\LaravelGettext\Middleware\GettextMiddleware::class,
+            \App\Http\Middleware\SetLanguage::class,
+            \App\Http\Middleware\FixDatabase::class,
         ],
 
         'api' => [
             'throttle:60,1',
             'bindings',
+            'auth:api'
         ],
     ];
 

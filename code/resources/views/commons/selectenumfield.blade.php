@@ -5,6 +5,16 @@ if ($extra_class) {
     $select_class .= ' ' . $extra_class;
 }
 
+if (!isset($extra_attrs))
+    $extra_attrs = [];
+
+if ($obj)
+    $selected_value = accessAttr($obj, $name, '');
+else if (isset($enforced_default))
+    $selected_value = $enforced_default;
+else
+    $selected_value = null;
+
 ?>
 
 <div class="form-group">
@@ -21,11 +31,15 @@ if ($extra_class) {
                 data-default-value="{{ $enforced_default }}"
             @endif
 
+            @foreach($extra_attrs as $attr => $val)
+                {{ $attr }}="{{ $val }}"
+            @endforeach
+
             autocomplete="off">
 
             @foreach($values as $v)
                 <option value="{{ $v['value'] }}"
-                @if ($obj && $obj->$name == $v['value'])
+                @if ($selected_value == $v['value'])
                     selected="selected"
                 @endif
                 >{{ $v['label'] }}</option>

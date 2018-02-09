@@ -93,7 +93,7 @@ class OrdersController extends Controller
 
         $supplier = Supplier::findOrFail($request->input('supplier_id', -1));
         if ($request->user()->can('supplier.orders', $supplier) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $o = new Order();
@@ -170,7 +170,7 @@ class OrdersController extends Controller
 
         $order = Order::findOrFail($id);
         if ($request->user()->can('supplier.orders', $order->supplier) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         if ($request->has('comment'))
@@ -279,7 +279,7 @@ class OrdersController extends Controller
         $order = Order::findOrFail($id);
 
         if ($request->user()->can('supplier.orders', $order->supplier) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         foreach($order->bookings as $booking)
@@ -299,11 +299,12 @@ class OrdersController extends Controller
     {
         $order = Order::findOrFail($id);
         if ($request->user()->can('supplier.orders', $order->supplier) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $product = Product::findOrFail($product_id);
-        $order->hasProduct($product);
+        if ($order->hasProduct($product) == false)
+            abort(404);
 
         return Theme::view('order.fixes', ['order' => $order, 'product' => $product]);
     }
@@ -314,12 +315,14 @@ class OrdersController extends Controller
 
         $order = Order::findOrFail($id);
         if ($request->user()->can('supplier.orders', $order->supplier) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $product_id = $request->input('product', []);
         $bookings = $request->input('booking', []);
         $quantities = $request->input('quantity', []);
+
+        $order->products()->updateExistingPivot($product_id, ['notes' => $request->input('notes')]);
 
         for ($i = 0; $i < count($bookings); ++$i) {
             $booking_id = $bookings[$i];
@@ -330,7 +333,7 @@ class OrdersController extends Controller
             }
 
             if ($booking->order->id != $id) {
-                return $this->errorResponse('Non autorizzato');
+                return $this->errorResponse(_i('Non autorizzato'));
             }
 
             $product = $booking->getBooked($product_id, true);
@@ -380,8 +383,14 @@ class OrdersController extends Controller
             return;
 
         $real_recipient_mails = [];
-        foreach($recipient_mails as $rm)
+        foreach($recipient_mails as $rm) {
+            if (empty($rm))
+                continue;
             $real_recipient_mails[] = (object) ['email' => $rm];
+        }
+
+        if (empty($real_recipient_mails))
+            return;
 
         $m = Mail::to($real_recipient_mails);
         $body_mail = $request->input('body_mail');
@@ -397,8 +406,9 @@ class OrdersController extends Controller
         switch ($type) {
             case 'shipping':
                 $html = Theme::view('documents.order_shipping', ['order' => $order])->render();
-                $filename = sprintf('Dettaglio Consegne ordine %s presso %s.pdf', $order->internal_number, $order->supplier->name);
-                PDF::SetTitle(sprintf('Dettaglio Consegne ordine %s presso %s del %s', $order->internal_number, $order->supplier->name, date('d/m/Y')));
+                $title = _i('Dettaglio Consegne ordine %s presso %s', $order->internal_number, $order->supplier->name);
+                $filename = $title . '.pdf';
+                PDF::SetTitle($title);
                 PDF::AddPage();
                 PDF::writeHTML($html, true, false, true, false, '');
 
@@ -420,12 +430,13 @@ class OrdersController extends Controller
                 $subtype = $request->input('format', 'pdf');
                 $required_fields = $request->input('fields', []);
                 $data = $order->formatSummary($required_fields);
-                $filename = sprintf('Prodotti ordinati ordine %s presso %s.%s', $order->internal_number, $order->supplier->name, $subtype);
+                $title = _i('Prodotti ordinati ordine %s presso %s', $order->internal_number, $order->supplier->name);
+                $filename = $title . '.' . $subtype;
                 $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $filename));
 
                 if ($subtype == 'pdf') {
                     $html = Theme::view('documents.order_summary_pdf', ['order' => $order, 'data' => $data])->render();
-                    PDF::SetTitle(sprintf('Prodotti ordinati ordine %s presso %s del %s', $order->internal_number, $order->supplier->name, date('d/m/Y')));
+                    PDF::SetTitle($title);
                     PDF::AddPage('L');
                     PDF::writeHTML($html, true, false, true, false, '');
 
@@ -437,14 +448,15 @@ class OrdersController extends Controller
                     }
                 }
                 else if ($subtype == 'csv') {
-                    $output = Theme::view('documents.order_summary_csv', ['order' => $order, 'data' => $data]);
-
                     if ($send_mail) {
-                        file_put_contents($temp_file_path, $output->render());
+                        output_csv($filename, $data->headers, $data->contents, function($row) {
+                            return $row;
+                        }, $temp_file_path);
                     }
                     else {
-                        http_csv_headers($filename);
-                        return $output;
+                        return output_csv($filename, $data->headers, $data->contents, function($row) {
+                            return $row;
+                        });
                     }
                 }
 
@@ -456,26 +468,15 @@ class OrdersController extends Controller
 
             case 'table':
                 $status = $request->input('status', 'booked');
-                $filename = sprintf('Tabella Ordine %s presso %s.csv', $order->internal_number, $order->supplier->name);
-                http_csv_headers($filename);
-
                 if ($status == 'booked')
-                    return Theme::view('documents.order_table_booked', ['order' => $order]);
+                    $contents = Theme::view('documents.order_table_booked', ['order' => $order])->render();
                 else if ($status == 'delivered')
-                    return Theme::view('documents.order_table_delivered', ['order' => $order]);
+                    $contents = Theme::view('documents.order_table_delivered', ['order' => $order])->render();
                 else if ($status == 'saved')
-                    return Theme::view('documents.order_table_saved', ['order' => $order]);
+                    $contents = Theme::view('documents.order_table_saved', ['order' => $order])->render();
 
-                break;
-
-            case 'rid':
-                $filename = sprintf('RID Ordine %s presso %s.txt', $order->internal_number, $order->supplier->name);
-                header('Content-Type: plain/text');
-                header('Content-Disposition: attachment; filename="' . $filename . '"');
-                header('Cache-Control: no-cache, no-store, must-revalidate');
-                header('Pragma: no-cache');
-                header('Expires: 0');
-                return Theme::view('documents.order_rid', ['order' => $order]);
+                $filename = sprintf('Tabella Ordine %s presso %s.csv', $order->internal_number, $order->supplier->name);
+                return output_csv($filename, null, $contents, null, null);
                 break;
         }
     }

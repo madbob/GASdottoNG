@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use DB;
+use Log;
 use Auth;
 use Theme;
 
@@ -28,7 +29,7 @@ class CategoriesController extends Controller
             abort(503);
         }
 
-        $categories = Category::where('parent_id', '=', null)->get();
+        $categories = Category::where('id', '!=', 'non-specificato')->where('parent_id', '=', null)->get();
 
         return Theme::view('categories.edit', ['categories' => $categories]);
     }
@@ -39,7 +40,7 @@ class CategoriesController extends Controller
 
         $user = Auth::user();
         if ($user->can('categories.admin', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $category = new Category();
@@ -66,6 +67,9 @@ class CategoriesController extends Controller
         foreach ($data as $category) {
             $c = null;
 
+            if (empty($category['name']))
+                continue;
+
             if (isset($category['id']))
                 $c = Category::find($category['id']);
 
@@ -89,14 +93,14 @@ class CategoriesController extends Controller
 
         $user = Auth::user();
         if ($user->can('categories.admin', $user->gas) == false) {
-            return $this->errorResponse('Non autorizzato');
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $data = $request->input('serialized');
-        $accumulator = [];
+        $accumulator = ['non-specificato'];
 
         $this->updateRecursive($data, null, $accumulator);
-        Product::whereNotIn('category_id', $accumulator)->update(['category_id' => 1]);
+        Product::whereNotIn('category_id', $accumulator)->update(['category_id' => 'non-specificato']);
         Category::whereNotIn('id', $accumulator)->delete();
 
         return $this->successResponse();

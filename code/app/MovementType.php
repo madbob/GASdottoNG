@@ -28,19 +28,19 @@ class MovementType extends Model
     {
         $ret = [
             'cash' => (object) [
-                'name' => 'Contanti',
+                'name' => _i('Contanti'),
                 'identifier' => false,
                 'icon' => 'glyphicon-euro',
                 'active_for' => null
             ],
             'bank' => (object) [
-                'name' => 'Bonifico',
+                'name' => _i('Bonifico'),
                 'identifier' => true,
                 'icon' => 'glyphicon-link',
                 'active_for' => null
             ],
             'credit' => (object) [
-                'name' => 'Credito Utente',
+                'name' => _i('Credito Utente'),
                 'identifier' => false,
                 'icon' => 'glyphicon-ok',
                 'active_for' => 'App\User'
@@ -164,8 +164,8 @@ class MovementType extends Model
                                 unset($movement->handling_status);
 
                                 foreach ($aggregate->orders as $order) {
-                                    $booking = $order->userBooking($user->id, false);
-                                    if ($booking == false)
+                                    $booking = $order->userBooking($user->id);
+                                    if ($booking->exists == false)
                                         continue;
 
                                     if (isset($handling_status->{$booking->id})) {
@@ -253,12 +253,15 @@ class MovementType extends Model
         return $types;
     }
 
-    public static function types($identifier = null)
+    public static function types($identifier = null, $with_trashed = false)
     {
         static $types = null;
 
         if ($types == null) {
-            $types = self::initSystemTypes(MovementType::orderBy('name', 'asc')->get());
+            $query = MovementType::orderBy('name', 'asc');
+            if ($with_trashed)
+                $query = $query->withTrashed();
+            $types = self::initSystemTypes($query->get());
         }
 
         if ($identifier) {
@@ -266,6 +269,12 @@ class MovementType extends Model
         } else {
             return $types;
         }
+    }
+
+    public function hasPayment($type)
+    {
+        $valid = MovementType::paymentsByType($this->id);
+        return array_key_exists($type, $valid);
     }
 
     private function applyFunction($obj, $movement, $op)
@@ -278,7 +287,7 @@ class MovementType extends Model
         }
 
         if ($obj == null) {
-            Log::error('Applicazione movimento su oggetto nullo: ' . $movement->id);
+            Log::error(_i('Applicazione movimento su oggetto nullo: %s', $movement->id));
             return;
         }
 
