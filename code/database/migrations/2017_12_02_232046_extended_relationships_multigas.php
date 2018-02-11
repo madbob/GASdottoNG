@@ -56,5 +56,6 @@ class ExtendedRelationshipsMultigas extends Migration
     {
         Schema::drop('gas_supplier');
         Schema::drop('aggregate_gas');
+        Schema::drop('delivery_gas');
     }
 }

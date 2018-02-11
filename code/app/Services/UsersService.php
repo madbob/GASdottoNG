@@ -172,7 +172,11 @@ class UsersService extends BaseService
 
     public function store(array $request)
     {
-        $creator = $this->ensureAuth(['users.admin' => 'gas']);
+        /*
+            Gli utenti col permesso di agire sul multi-gas devono poter creare i
+            nuovi utenti amministratori
+        */
+        $creator = $this->ensureAuth(['users.admin' => 'gas', 'gas.multi' => 'gas']);
 
         $username = $request['username'];
         $test = User::where('username', $username)->first();

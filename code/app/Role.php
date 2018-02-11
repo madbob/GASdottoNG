@@ -434,6 +434,7 @@ class Role extends Model
                 'measures.admin' => _i('Amministrare le unità di misura'),
                 'gas.statistics' => _i('Visualizzare le statistiche'),
                 'notifications.admin' => _i('Amministrare le notifiche'),
+                'gas.multi' => _i('Amministrare i GAS su questa istanza'),
             ],
             'App\Supplier' => [
                 'supplier.modify' => _i('Modificare i fornitori assegnati'),
