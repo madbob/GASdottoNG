@@ -1,11 +1,11 @@
 # GASdottoNG
 
-GASdottoNG intende essere l'evoluzione del progetto GASdotto, gestionale web-based per gruppi di acquisto.
+GASdottoNG è l'evoluzione del progetto GASdotto, gestionale web-based per gruppi di acquisto.
 
 Per riferimenti:
 
-* http://gasdotto.net/
-* https://github.com/madbob/GASdotto
+* Sito web: http://gasdotto.net/
+* Vecchia implementazione (non più mantenuta): https://github.com/madbob/GASdotto
 
 ### Build status: [![Build Status](https://travis-ci.org/madbob/GASdottoNG.svg?branch=master)](https://travis-ci.org/madbob/GASdottoNG)
 
@@ -34,6 +34,8 @@ Al primo accesso verranno eseguiti il popolamento del database e la configurazio
 Si presuppone che ogni istanza sia raggiungibile da istanza1.example.com, istanza2.example.com, istanza3.example.com... Ogni istanza deve avere un suo proprio file `.env`, nominato a seconda del dominio (`.env.istanza1`, `.env.istanza2`, `.env.istanza3`...).
 
 ### Docker
+
+Per chi lo trovasse più comodo, è previsto uno script per costruirsi un container Docker in cui procedere con lo sviluppo.
 
 ```bash
 cd code
