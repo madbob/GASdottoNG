@@ -51,7 +51,12 @@ class Order extends Model
 
     public function supplier()
     {
-        return $this->belongsTo('App\Supplier')->withTrashed();
+        /*
+            La rimozione dello scope globale serve nel caso del Multi-GAS, per
+            accedere al fornitore di un ordine anche se il fornitore stesso non
+            è visibile al GAS
+        */
+        return $this->belongsTo('App\Supplier')->withoutGlobalScopes()->withTrashed();
     }
 
     public function aggregate()

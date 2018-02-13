@@ -122,7 +122,7 @@ class Aggregate extends Model
             }
         }
 
-        return [implode(' / ', $names), implode(' / ', $dates)];
+        return [implode(' | ', $names), implode(' / ', $dates)];
     }
 
     public function printableName()

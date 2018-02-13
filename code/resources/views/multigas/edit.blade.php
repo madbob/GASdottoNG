@@ -22,13 +22,13 @@
         </div>
         <div class="col-md-4">
             <ul class="list-group">
-                @foreach(App\Order::whereIn('status', ['open', 'closed', 'suspended'])->orderBy('start', 'asc')->get() as $order)
+                @foreach(App\Aggregate::whereHas('orders', function($query) {
+                    $query->whereIn('status', ['open', 'closed', 'suspended']);
+                })->orderBy('id', 'asc')->get() as $aggregate)
                     <li class="list-group-item">
-                        {{ $order->printableName() }}
+                        {{ $aggregate->printableName() }}
                         <span class="pull-right">
-                            <input type="checkbox" data-toggle="toggle" data-size="mini" data-gas="{{ $gas->id }}" data-target-type="order" data-target-id="{{ $order->id }}" {{ $gas->aggregates()->whereHas('orders', function($query) use ($order) {
-                                $query->where('orders.id', $order->id);
-                            })->first() != null ? 'checked' : '' }}>
+                            <input type="checkbox" data-toggle="toggle" data-size="mini" data-gas="{{ $gas->id }}" data-target-type="aggregate" data-target-id="{{ $aggregate->id }}" {{ $gas->aggregates()->where('aggregates.id', $aggregate->id)->first() != null ? 'checked' : '' }}>
                         </span>
                     </li>
                 @endforeach
@@ -47,4 +47,6 @@
             </ul>
         </div>
     </div>
+
+    @include('commons.formbuttons', ['obj' => $gas, 'no_save' => true])
 </form>

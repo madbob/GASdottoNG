@@ -10,7 +10,7 @@ use Theme;
 
 use App\Gas;
 use App\Supplier;
-use App\Order;
+use App\Aggregate;
 use App\Delivery;
 use App\Role;
 
@@ -130,7 +130,15 @@ class MultiGasController extends Controller
 
     public function destroy($id)
     {
-        //
+        $user = Auth::user();
+        $gas = Gas::findOrFail($id);
+
+        if ($user->can('gas.multi', $gas) == false) {
+            abort(503);
+        }
+
+        $gas->delete();
+        return $this->successResponse();
     }
 
     public function attach(Request $request)
@@ -153,8 +161,8 @@ class MultiGasController extends Controller
                 $gas->suppliers()->attach($target_id);
                 break;
 
-            case 'order':
-                $gas->orders()->attach($target_id);
+            case 'aggregate':
+                $gas->aggregates()->attach($target_id);
                 break;
 
             case 'delivery':
