@@ -47,13 +47,18 @@ class Notification extends Model
         }
 
         foreach ($this->users as $user) {
-            $user->notify(new GenericNotificationWrapper($this));
+            try {
+                $user->notify(new GenericNotificationWrapper($this));
 
-            /*
-                Onde evitare di farsi bloccare dal server SMTP, qui attendiamo
-                un pochino tra una mail e l'altra
-            */
-            usleep(200000);
+                /*
+                    Onde evitare di farsi bloccare dal server SMTP, qui attendiamo
+                    un pochino tra una mail e l'altra
+                */
+                usleep(200000);
+            }
+            catch(\Exception $e) {
+                Log::error('Impossibile inoltrare mail di notifica a utente ' . $user->id . ': ' . $e->getMessage());
+            }
         }
     }
 

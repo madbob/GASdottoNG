@@ -72,7 +72,7 @@ class NotificationsController extends Controller
                     if ($u == 'special::referrers') {
                         $us = User::get();
                         foreach ($us as $u) {
-                            if ($us->can('supplier.add', $us->gas) || $us->can('supplier.modify')) {
+                            if ($u->can('supplier.add', $u->gas) || $u->can('supplier.modify')) {
                                 $map[] = $u->id;
                             }
                         }

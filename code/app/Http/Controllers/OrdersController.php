@@ -322,7 +322,7 @@ class OrdersController extends Controller
         $bookings = $request->input('booking', []);
         $quantities = $request->input('quantity', []);
 
-        $order->products()->updateExistingPivot($product_id, ['notes' => $request->input('notes')]);
+        $order->products()->updateExistingPivot($product_id, ['notes' => $request->input('notes', '')]);
 
         for ($i = 0; $i < count($bookings); ++$i) {
             $booking_id = $bookings[$i];
