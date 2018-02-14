@@ -169,7 +169,7 @@ class BookingHandler extends Controller
             }
 
             if ($delivering == false && $count_products == 0) {
-                if ($booking->friends_bookings->empty())
+                if ($booking->friends_bookings->isEmpty())
                     $booking->delete();
             }
             else {

@@ -58,8 +58,15 @@ class ProductsService extends BaseService
         $this->setIfSet($product, $request, 'description');
         $this->transformAndSetIfSet($product, $request, 'price', 'enforceNumber');
         $this->transformAndSetIfSet($product, $request, 'transport', 'enforceNumber');
-        $this->setIfSet($product, $request, 'category_id', 'non-specificato');
-        $this->setIfSet($product, $request, 'measure_id', 'non-specificato');
+
+        $this->setIfSet($product, $request, 'category_id');
+        if (empty($product->category_id))
+            $product->category_id = 'non-specificato';
+
+        $this->setIfSet($product, $request, 'measure_id');
+        if (empty($product->measure_id))
+            $product->measure_id = 'non-specificato';
+
         $this->transformAndSetIfSet($product, $request, 'discount', 'normalizePercentage');
 
         $this->transformAndSetIfSet($product, $request, 'vat_rate_id', function($value) {
