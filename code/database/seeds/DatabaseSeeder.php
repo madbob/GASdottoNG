@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
 
         $gas->setConfig('roles', (object) [
             'user' => $user_role->id,
-            'friend' > $user_role->id
+            'friend' => $user_role->id
         ]);
 
         $admin = User::create([
