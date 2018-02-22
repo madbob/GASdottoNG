@@ -64,7 +64,7 @@ class UsersService extends BaseService
             */
             $user = $this->show($id);
 
-            if ($searched->isFriend() == false) {
+            if ($user->isFriend() == false) {
                 $this->ensureAuth(['users.admin' => 'gas']);
             }
 
