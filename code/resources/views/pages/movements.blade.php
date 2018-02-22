@@ -134,6 +134,7 @@
                                 'template' => 'invoice.base-edit',
                                 'typename' => 'invoice',
                                 'typename_readable' => _i('Fattura'),
+                                'button_label' => _i('Carica Nuova Fattura'),
                                 'targeturl' => 'invoices'
                             ])
                         </div>
