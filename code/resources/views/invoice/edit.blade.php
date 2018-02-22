@@ -11,15 +11,23 @@
                 'values' => App\Invoice::statuses()
             ])
 
-            @include('commons.movementfield', [
-                'obj' => $invoice->payment,
-                'name' => 'payment_id',
-                'label' => _i('Pagamento'),
-                'default' => $invoice->payment,
-                'to_modal' => [
-                    'amount_editable' => $currentuser->can('movements.admin', $currentgas)
-                ]
-            ])
+            @if($invoice->payment)
+                @include('commons.movementfield', [
+                    'obj' => $invoice->payment,
+                    'name' => 'payment_id',
+                    'label' => _i('Pagamento'),
+                    'default' => null,
+                    'to_modal' => [
+                        'amount_editable' => $currentuser->can('movements.admin', $currentgas)
+                    ]
+                ])
+            @else
+                @include('commons.staticmovementfield', [
+                    'obj' => null,
+                    'name' => 'payment_id',
+                    'label' => _i('Pagamento'),
+                ])
+            @endif
 
             <div class="form-group">
                 <label for="orders" class="col-sm-{{ $labelsize }} control-label">{{ _i('Ordini Coinvolti') }}</label>
