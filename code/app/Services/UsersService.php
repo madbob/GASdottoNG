@@ -56,10 +56,17 @@ class UsersService extends BaseService
 
     public function destroy($id)
     {
-        $this->ensureAuth(['users.admin' => 'gas']);
-
         $user = DB::transaction(function () use ($id) {
+            /*
+                show() già si premura di verificare l'accesso all'utente
+                richiesto, qui dobbiamo solo rafforzare l'accesso da
+                amministratore se l'utente da eliminare non è un "amico"
+            */
             $user = $this->show($id);
+
+            if ($searched->isFriend() == false) {
+                $this->ensureAuth(['users.admin' => 'gas']);
+            }
 
             if ($user->trashed())
                 $user->forceDelete();
