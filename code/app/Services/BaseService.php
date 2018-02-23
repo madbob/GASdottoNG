@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\AuthException;
 
 use Auth;
+use Log;
 
 class BaseService
 {
