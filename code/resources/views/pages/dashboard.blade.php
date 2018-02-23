@@ -64,6 +64,15 @@
 
             $current_balance = $currentuser->current_balance_amount;
             $to_pay = $currentuser->pending_balance;
+            $to_pay_friend = [];
+
+            foreach($currentuser->friends as $friend) {
+                $tpf = $friend->pending_balance;
+                if ($tpf != 0) {
+                    $to_pay += $tpf;
+                    $to_pay_friend[$friend->printableName()] = printablePrice($tpf);
+                }
+            }
 
             ?>
 
@@ -71,7 +80,14 @@
                 <div class="panel-body">
                     <div class="alert {{ $current_balance >= $to_pay ? 'alert-success' : 'alert-danger' }} text-right">
                         <p class="lead">{{ _i('Credito Attuale') }}: {{ printablePrice($current_balance) }} {{ $currentgas->currency }}</p>
+                        <br>
                         <p class="lead">{{ _i('Da Pagare') }}: {{ printablePrice($to_pay) }} {{ $currentgas->currency }}</p>
+                        @if(!empty($to_pay_friend))
+                            <p>di cui</p>
+                            @foreach($to_pay_friend as $friend_name => $friend_amount)
+                                <p>{{ $friend_name }} {{ $friend_amount }} {{ $currentgas->currency }}</p>
+                            @endforeach
+                        @endif
                     </div>
                 </div>
             </div>
