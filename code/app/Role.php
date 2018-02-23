@@ -385,12 +385,17 @@ class Role extends Model
         foreach($basic_roles as $br) {
             $users = $br->users;
 
-            if ($subject == null && $users->isEmpty() == false)
-                return true;
-
-            $users = $br->usersByTarget($subject);
-            if ($users->isEmpty() == false)
-                return true;
+            if ($subject == null) {
+                if ($users->isEmpty() == false)
+                    return true;
+                else
+                    return false;
+            }
+            else {
+                $users = $br->usersByTarget($subject);
+                if ($users->isEmpty() == false)
+                    return true;
+            }
         }
 
         return false;

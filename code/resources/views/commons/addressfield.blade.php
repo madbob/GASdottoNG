@@ -8,7 +8,7 @@
             <input type="text"
                 class="address form-control"
                 name="{{ $prefix . $name }}"
-                value="{{ $obj ? $obj->name : '' }}"
+                value="{{ $obj ? $obj->$name : '' }}"
 
                 @if(isset($mandatory) && $mandatory == true)
                     required

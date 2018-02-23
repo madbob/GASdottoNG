@@ -229,8 +229,10 @@ class UsersService extends BaseService
 
             if ($user_role != $friend_role) {
                 $role = Role::find($friend_role);
-                $user->roles()->detach();
-                $user->addRole($role, $creator->gas);
+                if ($role) {
+                    $user->roles()->detach();
+                    $user->addRole($role, $creator->gas);
+                }
             }
         });
 
