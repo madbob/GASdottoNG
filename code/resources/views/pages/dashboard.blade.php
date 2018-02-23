@@ -83,7 +83,7 @@
                         <br>
                         <p class="lead">{{ _i('Da Pagare') }}: {{ printablePrice($to_pay) }} {{ $currentgas->currency }}</p>
                         @if(!empty($to_pay_friend))
-                            <p>di cui</p>
+                            <p>{{ _i('di cui') }}</p>
                             @foreach($to_pay_friend as $friend_name => $friend_amount)
                                 <p>{{ $friend_name }} {{ $friend_amount }} {{ $currentgas->currency }}</p>
                             @endforeach
