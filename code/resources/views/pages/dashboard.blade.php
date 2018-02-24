@@ -12,10 +12,12 @@
                 <div class="panel-body">
                     <ul class="list-group">
                         @foreach($notifications as $notify)
-                            <li class="list-group-item alert alert-info">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <input type="hidden" name="notification_id" value="{{ $notify->id }}" />
-                                {!! nl2br($notify->content) !!}
+                            <li class="list-group-item">
+                                <div class="alert alert-info">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <input type="hidden" name="notification_id" value="{{ $notify->id }}" />
+                                    {!! nl2br($notify->content) !!}
+                                </div>
                             </li>
                         @endforeach
                     </ul>

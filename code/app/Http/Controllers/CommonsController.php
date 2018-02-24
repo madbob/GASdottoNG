@@ -33,6 +33,7 @@ class CommonsController extends Controller
         */
         Artisan::call('check:fees');
         Artisan::call('check:orders');
+        Artisan::call('check:system_notices');
 
         $data['notifications'] = $user->notifications;
 
