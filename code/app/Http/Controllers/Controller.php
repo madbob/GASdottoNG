@@ -50,7 +50,7 @@ class Controller extends BaseController
             'id' => $obj->id,
             'name' => $obj->printableName(),
             'header' => $obj->printableHeader(),
-            'url' => url($this->endpoint . '/' . $obj->id),
+            'url' => $obj->getShowURL()
         ]);
     }
 

@@ -44,12 +44,7 @@ class DeliveriesController extends Controller
 
         $d->save();
 
-        return $this->successResponse([
-            'id' => $d->id,
-            'name' => $d->name,
-            'header' => $d->printableHeader(),
-            'url' => url('deliveries/' . $d->id),
-        ]);
+        return $this->commonSuccessResponse($d);
     }
 
     public function show($id)
@@ -83,11 +78,7 @@ class DeliveriesController extends Controller
 
         $d->save();
 
-        return $this->successResponse([
-            'id' => $d->id,
-            'header' => $d->printableHeader(),
-            'url' => url('deliveries/' . $d->id),
-        ]);
+        return $this->commonSuccessResponse($d);
     }
 
     public function destroy($id)

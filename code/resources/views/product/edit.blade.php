@@ -1,4 +1,4 @@
-<form class="form-horizontal main-form product-editor" method="PUT" action="{{ url('products/' . $product->id) }}">
+<form class="form-horizontal main-form product-editor" method="PUT" action="{{ route('products.update', $product->id) }}">
     <div class="row">
         <div class="col-md-6">
             @include('product.base-edit', ['product' => $product])
@@ -31,7 +31,7 @@
 <div class="modal fade create-variant" tabindex="-1" role="dialog" aria-labelledby="createVariant">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <form class="form-horizontal creating-variant-form" method="POST" action="{{ url('variants') }}" data-toggle="validator">
+            <form class="form-horizontal creating-variant-form" method="POST" action="{{ route('variants.store') }}" data-toggle="validator">
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                 <input type="hidden" name="variant_id" value="">
 

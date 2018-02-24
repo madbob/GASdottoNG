@@ -21,7 +21,7 @@
             <div class="modal fade" id="orderAggregator" tabindex="-1" role="dialog" aria-labelledby="orderAggregator">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <form class="form-horizontal" method="POST" action="{{ url('aggregates') }}" data-toggle="validator">
+                        <form class="form-horizontal" method="POST" action="{{ route('aggregates.store') }}" data-toggle="validator">
                             <input type="hidden" name="update-select" value="category_id">
 
                             <div class="modal-header">
@@ -43,7 +43,7 @@
 
                                     <hr/>
 
-                                    <div id="aggregable-list" data-fetch-url="{{ url('aggregates/create') }}">
+                                    <div id="aggregable-list" data-fetch-url="{{ route('aggregates.create') }}">
                                         @include('order.aggregable', ['orders' => $orders])
                                     </div>
                                 @endif

@@ -1,6 +1,6 @@
 <?php $summary = $order->calculateSummary() ?>
 
-<form class="form-horizontal main-form order-editor" method="PUT" action="{{ url('orders/' . $order->id) }}">
+<form class="form-horizontal main-form order-editor" method="PUT" action="{{ route('orders.update', $order->id) }}">
     <input type="hidden" name="order_id" value="{{ $order->id }}" />
 
     <div class="row">

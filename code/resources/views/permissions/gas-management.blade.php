@@ -1,11 +1,11 @@
-<div id="permissions-management" data-fetch-url="{{ url('roles') }}">
+<div id="permissions-management" data-fetch-url="{{ route('roles.index') }}">
     <div class="page-header">
         <h3>{{ _i('Permessi') }}</h3>
     </div>
 
     <div class="row">
         <div class="col-md-6">
-            <form class="form-horizontal auto-submit" method="PUT" action="{{ url('gas/' . $gas->id) }}">
+            <form class="form-horizontal auto-submit" method="PUT" action="{{ route('gas.update', $gas->id) }}">
                 <input type="hidden" name="group" value="roles">
 
                 @include('commons.selectobjfield', [

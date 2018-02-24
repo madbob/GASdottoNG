@@ -21,7 +21,7 @@ foreach($classes as $class => $name) {
 
 ?>
 
-<form class="form-horizontal main-form movement-type-editor" method="PUT" action="{{ url('movtypes/' . $type->id) }}">
+<form class="form-horizontal main-form movement-type-editor" method="PUT" action="{{ route('movtypes.update', $type->id) }}">
     <div class="row">
         <div class="col-md-6">
             @if($type->system)

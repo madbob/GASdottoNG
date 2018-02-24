@@ -94,12 +94,7 @@ class NotificationsController extends Controller
         $n->users()->sync($users, ['done' => false]);
         $n->sendMail();
 
-        return $this->successResponse([
-            'id' => $n->id,
-            'name' => $n->printableName(),
-            'header' => $n->printableHeader(),
-            'url' => url('notifications/'.$n->id),
-        ]);
+        return $this->commonSuccessResponse($n);
     }
 
     public function show($id)

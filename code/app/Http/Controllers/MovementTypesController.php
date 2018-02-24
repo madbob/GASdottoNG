@@ -49,12 +49,7 @@ class MovementTypesController extends Controller
         $type->function = '[]';
         $type->save();
 
-        return $this->successResponse([
-            'id' => $type->id,
-            'name' => $type->name,
-            'header' => $type->printableHeader(),
-            'url' => url('movtypes/' . $type->id),
-        ]);
+        return $this->commonSuccessResponse($type);
     }
 
     public function show(Request $request, $id)
@@ -200,11 +195,7 @@ class MovementTypesController extends Controller
 
         $type->save();
 
-        return $this->successResponse([
-            'id' => $type->id,
-            'header' => $type->printableHeader(),
-            'url' => url('movtypes/' . $type->id),
-        ]);
+        return $this->commonSuccessResponse($type);
     }
 
     public function destroy($id)

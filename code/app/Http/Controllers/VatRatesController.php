@@ -37,12 +37,7 @@ class VatratesController extends Controller
         $vr->percentage = $request->input('percentage');
         $vr->save();
 
-        return $this->successResponse([
-            'id' => $vr->id,
-            'name' => $vr->name,
-            'header' => $vr->printableHeader(),
-            'url' => url('vatrates/' . $vr->id),
-        ]);
+        return $this->commonSuccessResponse($vr);
     }
 
     public function show($id)
@@ -70,11 +65,7 @@ class VatratesController extends Controller
         $vr->percentage = $request->input('percentage');
         $vr->save();
 
-        return $this->successResponse([
-            'id' => $vr->id,
-            'header' => $vr->printableHeader(),
-            'url' => url('vatrates/' . $vr->id),
-        ]);
+        return $this->commonSuccessResponse($vr);
     }
 
     public function destroy($id)

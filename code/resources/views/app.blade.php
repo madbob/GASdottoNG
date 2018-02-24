@@ -49,7 +49,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand hidden-md" href="{{ url('/') }}">GASdotto</a>
+                    <a class="navbar-brand hidden-md" href="{{ route('dashboard') }}">GASdotto</a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -66,8 +66,8 @@
                                 <a href="#"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
                             </li>
                             <li>
-                                <a href="{{ url('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><span class="glyphicon glyphicon-off" aria-hidden="true"></span></a>
-                                <form id="logout-form" action="{{ url('logout') }}" method="POST" style="display: none;">
+                                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><span class="glyphicon glyphicon-off" aria-hidden="true"></span></a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                     {{ csrf_field() }}
                                 </form>
                             </li>

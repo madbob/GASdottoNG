@@ -42,7 +42,7 @@ class AttachmentsController extends Controller
             'id' => $a->id,
             'name' => $a->name,
             'header' => $a->printableHeader(),
-            'url' => url('attachments/'.$a->id),
+            'url' => route('attachments.show', $a->id),
         ]);
     }
 
@@ -64,7 +64,7 @@ class AttachmentsController extends Controller
             'id' => $a->id,
             'name' => $a->name,
             'header' => $a->printableHeader(),
-            'url' => url('attachments/'.$a->id),
+            'url' => route('attachments.show', $a->id)
         ]);
     }
 

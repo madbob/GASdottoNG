@@ -8,7 +8,7 @@
             @include('commons.addingbutton', [
                 'typename' => 'movement',
                 'typename_readable' => _i('Movimento'),
-                'dynamic_url' => url('movements/create')
+                'dynamic_url' => route('movements.create')
             ])
 
             @include('commons.importcsv', [
@@ -27,7 +27,7 @@
 
         @can('movements.types', $currentgas)
             <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#handleMovementTypes">{{ _i('Amministra Tipi Movimento') }}</button>
-            <div class="collapse dynamic-contents" id="handleMovementTypes" tabindex="-1" data-contents-url="{{ url('movtypes') }}">
+            <div class="collapse dynamic-contents" id="handleMovementTypes" tabindex="-1" data-contents-url="{{ route('movtypes.index') }}">
             </div>
         @endcan
     </div>
@@ -38,7 +38,7 @@
 
 <div class="row">
     <div class="col-md-6">
-        <div class="form-horizontal form-filler" data-action="{{ url('movements') }}" data-toggle="validator" data-fill-target="#movements-in-range">
+        <div class="form-horizontal form-filler" data-action="{{ route('movements.index') }}" data-toggle="validator" data-fill-target="#movements-in-range">
             @include('commons.genericdaterange', [
                 'start_date' => strtotime('-1 weeks'),
             ])

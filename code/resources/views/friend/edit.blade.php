@@ -1,4 +1,4 @@
-<form class="form-horizontal main-form friend-editor" method="PUT" action="{{ url('friends/' . $user->id) }}" enctype="multipart/form-data">
+<form class="form-horizontal main-form friend-editor" method="PUT" action="{{ route('friends.update', $user->id) }}" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-6">
             @include('user.base-edit', ['user' => $user])

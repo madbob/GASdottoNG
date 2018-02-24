@@ -1,4 +1,4 @@
-<form class="form-horizontal main-form attachment-editor" method="PUT" action="{{ url('attachments/' . $attachment->id) }}">
+<form class="form-horizontal main-form attachment-editor" method="PUT" action="{{ route('attachments.update', $attachment->id) }}">
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">

@@ -84,7 +84,7 @@ class AggregatesController extends OrdersController
         return $this->successResponse([
             'id' => $a->id,
             'header' => $a->printableHeader(),
-            'url' => url('aggregates/' . $a->id),
+            'url' => route('aggregates.show', $a->id),
         ]);
     }
 

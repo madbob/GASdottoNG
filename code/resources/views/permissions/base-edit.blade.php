@@ -1,4 +1,4 @@
-<input type="hidden" name="post-saved-refetch" value="#role-list" data-fetch-url="{{ url('roles') }}">
+<input type="hidden" name="post-saved-refetch" value="#role-list" data-fetch-url="{{ route('roles.index') }}">
 
 @include('commons.textfield', [
     'obj' => $role,

@@ -95,7 +95,7 @@ class MultiGasController extends Controller
                 'id' => $gas->id,
                 'name' => $gas->printableName(),
                 'header' => $gas->printableHeader(),
-                'url' => url('multigas/' . $gas->id),
+                'url' => route('multigas.show', $gas->id)
             ]);
         }
         catch (AuthException $e) {

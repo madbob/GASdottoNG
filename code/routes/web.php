@@ -10,7 +10,7 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
 Route::get('/', function () {
     return Redirect::to('/dashboard');
-});
+})->name('dashboard');
 
 Route::get('/home', function () {
     return Redirect::to('/dashboard');
@@ -21,76 +21,76 @@ Route::get(substr(env('APP_KEY'), -5) . '/logs', '\MadBob\LaravelLog2Rss\Log2Rss
 Route::get('dashboard', 'CommonsController@getIndex');
 Route::post('dashboard/verify', 'CommonsController@postVerify');
 
-Route::get('gas/{id}/header', 'GasController@objhead');
+Route::get('gas/{id}/header', 'GasController@objhead')->name('gas.objhead');
 Route::get('gas/{id}/logo', 'GasController@getLogo');
 
 Route::get('users/ro/{id}', 'UsersController@show_ro');
-Route::get('users/{id}/header', 'UsersController@objhead');
+Route::get('users/{id}/header', 'UsersController@objhead')->name('users.objhead');
 Route::get('users/search', 'UsersController@search');
 Route::get('users/profile', 'UsersController@profile');
 Route::get('users/picture/{id}', 'UsersController@picture');
 
-Route::get('friends/{id}/header', 'FriendsController@objhead');
+Route::get('friends/{id}/header', 'FriendsController@objhead')->name('friends.objhead');
 
-Route::get('roles/{id}/header', 'RolesController@objhead');
+Route::get('roles/{id}/header', 'RolesController@objhead')->name('roles.objhead');
 Route::get('roles/user/{user_id}', 'RolesController@formByUser');
 Route::get('roles/supplier/{supplier_id}', 'RolesController@formBySupplier');
 Route::post('roles/attach', 'RolesController@attach');
 Route::post('roles/detach', 'RolesController@detach');
 
 Route::get('suppliers/ro/{id}', 'SuppliersController@show_ro');
-Route::get('suppliers/{id}/header', 'SuppliersController@objhead');
+Route::get('suppliers/{id}/header', 'SuppliersController@objhead')->name('suppliers.objhead');
 Route::get('suppliers/catalogue/{id}/{format}', 'SuppliersController@catalogue');
 Route::get('suppliers/{id}/products', 'SuppliersController@productsDetails');
 Route::get('suppliers/{id}/products_grid', 'SuppliersController@productsGrid');
 Route::get('suppliers/{id}/plain_balance', 'SuppliersController@plainBalance');
 
 Route::get('products/ro/{id}', 'ProductsController@show_ro');
-Route::get('products/{id}/header', 'ProductsController@objhead');
+Route::get('products/{id}/header', 'ProductsController@objhead')->name('products.objhead');
 Route::post('products/massiveupdate', 'ProductsController@massiveUpdate');
 
-Route::get('vatrates/{id}/header', 'VatRatesController@objhead');
+Route::get('vatrates/{id}/header', 'VatRatesController@objhead')->name('vatrates.objhead');
 
-Route::get('categories/{id}/header', 'CategoriesController@objhead');
+Route::get('categories/{id}/header', 'CategoriesController@objhead')->name('categories.objhead');
 
-Route::get('measures/{id}/header', 'MeasuresController@objhead');
+Route::get('measures/{id}/header', 'MeasuresController@objhead')->name('measures.objhead');
 Route::get('measures/list/{id}', 'MeasuresController@listProducts');
 
-Route::get('variants/{id}/header', 'VariantsController@objhead');
+Route::get('variants/{id}/header', 'VariantsController@objhead')->name('variants.objhead');
 
-Route::get('orders/{id}/header', 'OrdersController@objhead');
+Route::get('orders/{id}/header', 'OrdersController@objhead')->name('orders.objhead');
 Route::get('orders/search', 'OrdersController@search');
 Route::post('orders/recalculate/{id}', 'OrdersController@recalculate');
 Route::get('orders/fixes/{id}/{product_id}', 'OrdersController@getFixes');
 Route::post('orders/fixes/{id}', 'OrdersController@postFixes');
 Route::get('orders/document/{id}/{type}', 'OrdersController@document');
 
-Route::get('aggregates/{id}/header', 'AggregatesController@objhead');
+Route::get('aggregates/{id}/header', 'AggregatesController@objhead')->name('aggregates.objhead');
 Route::post('aggregates/notify/{id}', 'AggregatesController@notify');
 Route::get('aggregates/document/{id}/{type}/{subtype?}', 'AggregatesController@document');
 
-Route::get('attachments/{id}/header', 'AttachmentsController@objhead');
+Route::get('attachments/{id}/header', 'AttachmentsController@objhead')->name('attachments.objhead');
 Route::get('attachments/download/{id}', 'AttachmentsController@download');
 
-Route::get('bookings/{id}/header', 'BookingController@objhead');
+Route::get('bookings/{id}/header', 'BookingController@objhead')->name('bookings.objhead');
 Route::get('booking/{aggregate_id}/user/{user_id}/header', 'BookingUserController@objhead2');
 Route::get('booking/{aggregate_id}/user/{user_id}/document', 'BookingUserController@document');
-Route::get('booking/{id}/header', 'BookingController@objhead');
+Route::get('booking/{id}/header', 'BookingController@objhead')->name('booking.objhead');
 
-Route::get('deliveries/{id}/header', 'DeliveriesController@objhead');
+Route::get('deliveries/{id}/header', 'DeliveriesController@objhead')->name('deliveries.objhead');
 Route::get('delivery/{aggregate_id}/user/{user_id}/header', 'DeliveryUserController@objhead2');
 Route::get('deliveries/{aggregate_id}/fast', 'DeliveryUserController@getFastShipping');
 Route::post('deliveries/{aggregate_id}/fast', 'DeliveryUserController@postFastShipping');
 
-Route::get('notifications/{id}/header', 'NotificationsController@objhead');
+Route::get('notifications/{id}/header', 'NotificationsController@objhead')->name('notifications.objhead');
 Route::post('notifications/markread/{id}', 'NotificationsController@markread');
 
 Route::post('multigas/attach', 'MultiGasController@attach');
 Route::post('multigas/detach', 'MultiGasController@detach');
 
 Route::get('movements/ro/{id}', 'MovementsController@show_ro');
-Route::get('movements/{id}/header', 'MovementsController@objhead');
-Route::get('movtypes/{id}/header', 'MovementTypesController@objhead');
+Route::get('movements/{id}/header', 'MovementsController@objhead')->name('movements.objhead');
+Route::get('movtypes/{id}/header', 'MovementTypesController@objhead')->name('movtypes.objhead');
 Route::get('movements/showcredits', 'MovementsController@creditsTable');
 Route::get('movements/balance', 'MovementsController@getBalance');
 Route::post('movements/recalculate', 'MovementsController@recalculate');

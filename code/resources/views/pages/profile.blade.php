@@ -18,7 +18,7 @@
 
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="profile">
-                <form class="form-horizontal inner-form user-editor" method="PUT" action="{{ url('users/' . $user->id) }}">
+                <form class="form-horizontal inner-form user-editor" method="PUT" action="{{ route('users.update', $user->id) }}">
                     <div class="row">
                         <div class="col-md-6">
                             @if($currentuser->can('users.self', $currentgas))

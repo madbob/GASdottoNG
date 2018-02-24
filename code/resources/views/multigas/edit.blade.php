@@ -1,4 +1,4 @@
-<form class="form-horizontal main-form multigas-editor" method="PUT" action="{{ url('multigas/' . $gas->id) }}">
+<form class="form-horizontal main-form multigas-editor" method="PUT" action="{{ route('multigas.update', $gas->id) }}">
     <div class="row">
         <div class="col-md-6">
             @include('commons.textfield', ['obj' => $gas, 'name' => 'name', 'label' => _i('Nome'), 'mandatory' => true])

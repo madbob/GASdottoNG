@@ -1,4 +1,4 @@
-<form class="form-horizontal main-form" method="PUT" action="{{ url('products/' . $product->id) }}">
+<form class="form-horizontal main-form" method="PUT" action="{{ route('products.update', $product->id) }}">
     <div class="row">
         <div class="col-md-6">
             @include('commons.staticpricefield', ['obj' => $product, 'name' => 'price', 'label' => 'Prezzo Unitario', 'mandatory' => true])

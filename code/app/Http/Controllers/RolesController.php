@@ -50,12 +50,7 @@ class RolesController extends Controller
         $r->actions = join(',', $request->input('actions', []));
         $r->save();
 
-        return $this->successResponse([
-            'id' => $r->id,
-            'name' => $r->name,
-            'header' => $r->printableHeader(),
-            'url' => url('roles/' . $r->id),
-        ]);
+        return $this->commonSuccessResponse($r);
     }
 
     public function show($id)
@@ -84,11 +79,7 @@ class RolesController extends Controller
         $r->parent_id = $request->input('parent_id');
         $r->save();
 
-        return $this->successResponse([
-            'id' => $r->id,
-            'header' => $r->printableHeader(),
-            'url' => url('roles/' . $r->id),
-        ]);
+        return $this->commonSuccessResponse($r);
     }
 
     public function destroy($id)

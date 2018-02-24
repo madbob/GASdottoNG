@@ -100,7 +100,7 @@ $panel_rand_wrap = rand();
 
             @if($more_orders)
                 <div role="tabpanel" class="tab-pane" id="aggregate-metadata-{{ $aggregate->id }}">
-                    <form class="form-horizontal main-form" method="PUT" action="{{ url('aggregates/' . $aggregate->id) }}">
+                    <form class="form-horizontal main-form" method="PUT" action="{{ route('aggregates.update', $aggregate->id) }}">
                         <div class="row">
                             <div class="col-md-4">
                                 @include('commons.textfield', ['obj' => $aggregate, 'name' => 'comment', 'label' => _i('Commento')])

@@ -16,7 +16,7 @@
                 <div id="general-config" class="panel-collapse collapse in" role="tabpanel">
                     <div class="panel-body">
                         <div class="row">
-                            <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ url('gas/' . $gas->id) }}">
+                            <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ route('gas.update', $gas->id) }}">
                                 <input type="hidden" name="reload-whole-page" value="1">
                                 <input type="hidden" name="group" value="general">
 
@@ -53,7 +53,7 @@
                 <div id="orders-config" class="panel-collapse collapse" role="tabpanel">
                     <div class="panel-body">
                         <div class="row">
-                            <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ url('gas/' . $gas->id) }}">
+                            <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ route('gas.update', $gas->id) }}">
                                 <input type="hidden" name="group" value="orders">
 
                                 <div class="col-md-12">
@@ -80,7 +80,7 @@
                 <div id="accounting-config" class="panel-collapse collapse" role="tabpanel">
                     <div class="panel-body">
                         <div class="row">
-                            <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ url('gas/' . $gas->id) }}">
+                            <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ route('gas.update', $gas->id) }}">
                                 <input type="hidden" name="group" value="banking">
 
                                 <div class="col-md-12">

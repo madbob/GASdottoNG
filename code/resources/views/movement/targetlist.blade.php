@@ -10,7 +10,7 @@ $domid = str_random(10);
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-6">
-                <div class="form-horizontal form-filler" data-action="{{ url('movements') }}" data-toggle="validator" data-fill-target="#movements-in-range-{{ $domid }}">
+                <div class="form-horizontal form-filler" data-action="{{ route('movements.index') }}" data-toggle="validator" data-fill-target="#movements-in-range-{{ $domid }}">
                     @include('commons.genericdaterange')
                     <input type="hidden" name="generic_target_id" value="{{ $target->id }}">
                     <input type="hidden" name="generic_target_type" value="{{ get_class($target) }}">

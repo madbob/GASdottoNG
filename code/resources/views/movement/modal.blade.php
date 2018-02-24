@@ -18,7 +18,7 @@ if (!isset($amount_label))
 <div class="modal fade movement-modal" id="editMovement-{{ $dom_id }}" tabindex="-1" role="dialog" aria-labelledby="editMovement-{{ $dom_id }}">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <form class="form-horizontal creating-form" method="POST" action="{{ url('movements') }}" data-toggle="validator">
+            <form class="form-horizontal creating-form" method="POST" action="{{ route('movements.store') }}" data-toggle="validator">
                 <input type="hidden" name="update-field" value="movement-id-{{ $dom_id }}">
                 <input type="hidden" name="update-field" value="movement-date-{{ $dom_id }}">
                 <input type="hidden" name="close-modal" value="">
@@ -90,7 +90,7 @@ if (!isset($amount_label))
 
                 <div class="modal-footer">
                     @if($editable)
-                        <button type="button" class="btn btn-danger spare-modal-delete-button" data-delete-url="{{ url('movements/' . $obj->id) }}">{{ _i('Elimina') }}</button>
+                        <button type="button" class="btn btn-danger spare-modal-delete-button" data-delete-url="{{ route('movements.destroy', $obj->id) }}">{{ _i('Elimina') }}</button>
                     @endif
 
                     <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>

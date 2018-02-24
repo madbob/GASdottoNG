@@ -27,13 +27,13 @@ class GasController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return redirect(url('gas/' . $user->gas->id . '/edit'));
+        return redirect()->route('gas.edit', $user->gas->id);
     }
 
     public function show()
     {
         $user = Auth::user();
-        return redirect(url('gas/' . $user->gas->id . '/edit'));
+        return redirect()->route('gas.edit', $user->gas->id);
     }
 
     public function getLogo($id)

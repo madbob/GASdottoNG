@@ -19,7 +19,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand hidden-md" href="{{ url('/') }}">GASdotto</a>
+                    <a class="navbar-brand hidden-md" href="{{ route('dashboard') }}">GASdotto</a>
                 </div>
             </div>
         </nav>
@@ -47,7 +47,7 @@
                     </p>
                     <br><br>
                     <p>
-                        <a class="btn btn-default btn-lg" href="{{ url('/') }}">Torna alla Home</a>
+                        <a class="btn btn-default btn-lg" href="{{ route('dashboard') }}">Torna alla Home</a>
                     </p>
                 </div>
             </div>

@@ -120,11 +120,7 @@ class OrdersController extends Controller
 
         $o->products()->sync($supplier->products()->where('active', '=', true)->get());
 
-        return $this->successResponse([
-            'id' => $a->id,
-            'header' => $a->printableHeader(),
-            'url' => url('aggregates/'.$a->id),
-        ]);
+        return $this->commonSuccessResponse($a);
     }
 
     public function show(Request $request, $id)
@@ -265,11 +261,7 @@ class OrdersController extends Controller
             }
         }
 
-        return $this->successResponse([
-            'id' => $order->aggregate->id,
-            'header' => $order->aggregate->printableHeader(),
-            'url' => url('aggregates/'.$order->aggregate->id),
-        ]);
+        return $this->commonSuccessResponse($order->aggregate);
     }
 
     public function destroy(Request $request, $id)
