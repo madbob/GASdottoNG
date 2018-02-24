@@ -85,6 +85,9 @@ Route::post('deliveries/{aggregate_id}/fast', 'DeliveryUserController@postFastSh
 Route::get('notifications/{id}/header', 'NotificationsController@objhead');
 Route::post('notifications/markread/{id}', 'NotificationsController@markread');
 
+Route::post('multigas/attach', 'MultiGasController@attach');
+Route::post('multigas/detach', 'MultiGasController@detach');
+
 Route::get('movements/ro/{id}', 'MovementsController@show_ro');
 Route::get('movements/{id}/header', 'MovementsController@objhead');
 Route::get('movtypes/{id}/header', 'MovementTypesController@objhead');
@@ -101,6 +104,7 @@ Route::get('import/legacy', 'ImportController@getLegacy');
 Route::post('import/legacy', 'ImportController@postLegacy');
 
 Route::resource('gas', 'GasController');
+Route::resource('multigas', 'MultiGasController');
 Route::resource('users', 'UsersController');
 Route::resource('friends', 'FriendsController');
 Route::resource('roles', 'RolesController');

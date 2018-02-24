@@ -11,6 +11,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\SluggableCreating' => [
             'App\Listeners\SlugModel',
         ],
+        'App\Events\AttachableToGas' => [
+            'App\Listeners\AttachToGas',
+        ],
         'App\Events\SupplierDeleting' => [
             'App\Listeners\DetachSupplierRole',
         ],

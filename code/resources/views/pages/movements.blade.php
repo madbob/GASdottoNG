@@ -52,7 +52,7 @@
                 'obj' => null,
                 'name' => 'user_id',
                 'label' => _i('Utente'),
-                'objects' => App\User::orderBy('lastname', 'asc')->get(),
+                'objects' => $currentgas->users,
                 'extra_selection' => [
                     '0' => _i('Nessuno')
                 ]
@@ -61,7 +61,7 @@
                 'obj' => null,
                 'name' => 'supplier_id',
                 'label' => _i('Fornitore'),
-                'objects' => App\Supplier::orderBy('name', 'asc')->get(),
+                'objects' => $currentgas->suppliers,
                 'extra_selection' => [
                     '0' => _i('Nessuno')
                 ]

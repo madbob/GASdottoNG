@@ -22,12 +22,11 @@
 
             @include('commons.staticdatefield', ['obj' => $user, 'name' => 'last_login', 'label' => _i('Ultimo Accesso')])
 
-            <?php $places = App\Delivery::orderBy('name', 'asc')->get() ?>
-            @if($places->isEmpty() == false)
+            @if($currentgas->deliveries->isEmpty() == false)
                 @include('commons.selectobjfield', [
                     'obj' => $user,
                     'name' => 'preferred_delivery_id',
-                    'objects' => $places,
+                    'objects' => $currentgas->deliveries,
                     'label' => _i('Luogo di Consegna'),
                     'extra_selection' => [
                         '0' => _i('Nessuno')

@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 use App;
@@ -24,8 +25,24 @@ class Order extends Model
     public $incrementing = false;
 
     protected $events = [
-        'creating' => SluggableCreating::class,
+        'creating' => SluggableCreating::class
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('gas', function (Builder $builder) {
+            $builder->whereHas('aggregate', function($query) {
+                $query->whereHas('gas', function($query) {
+                    $user = Auth::user();
+                    if ($user == null)
+                        return;
+                    $query->where('gas_id', $user->gas->id);
+                });
+            });
+        });
+    }
 
     public static function commonClassName()
     {
@@ -34,7 +51,12 @@ class Order extends Model
 
     public function supplier()
     {
-        return $this->belongsTo('App\Supplier')->withTrashed();
+        /*
+            La rimozione dello scope globale serve nel caso del Multi-GAS, per
+            accedere al fornitore di un ordine anche se il fornitore stesso non
+            è visibile al GAS
+        */
+        return $this->belongsTo('App\Supplier')->withoutGlobalScopes()->withTrashed();
     }
 
     public function aggregate()

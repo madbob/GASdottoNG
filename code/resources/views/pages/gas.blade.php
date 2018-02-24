@@ -230,7 +230,7 @@
                             <div class="col-md-12">
                                 @include('commons.loadablelist', [
                                     'identifier' => 'delivery-list',
-                                    'items' => App\Delivery::orderBy('name', 'asc')->get(),
+                                    'items' => $currentgas->deliveries,
                                     'empty_message' => _i('Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi, verrà attivata la possibilità per ogni utente di selezionare il proprio luogo di consegna preferito.')
                                 ])
                             </div>

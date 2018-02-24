@@ -18,8 +18,8 @@ class UsersService extends BaseService
     public function list($term = '', $all = false)
     {
         $user = $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
-        $gasID = $user->gas['id'];
-        $query = User::with('roles')->where('parent_id', null)->where('gas_id', '=', $gasID);
+        $gas_id = $user->gas['id'];
+        $query = User::with('roles')->where('parent_id', null)->where('gas_id', '=', $gas_id);
 
         if (!empty($term)) {
             $query->where(function ($query) use ($term) {
@@ -179,7 +179,11 @@ class UsersService extends BaseService
 
     public function store(array $request)
     {
-        $creator = $this->ensureAuth(['users.admin' => 'gas']);
+        /*
+            Gli utenti col permesso di agire sul multi-gas devono poter creare i
+            nuovi utenti amministratori
+        */
+        $creator = $this->ensureAuth(['users.admin' => 'gas', 'gas.multi' => 'gas']);
 
         $username = $request['username'];
         $test = User::where('username', $username)->first();

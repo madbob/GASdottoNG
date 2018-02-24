@@ -2403,6 +2403,31 @@ $(document).ready(function() {
     });
 
     /*
+        Multi-GAS
+    */
+
+    $('body').on('change', '.multigas-editor input:checkbox[data-gas]', function(e) {
+        var check = $(this);
+
+        var url = '';
+        if (check.is(':checked') == true)
+            url = absolute_url + '/multigas/attach';
+        else
+            url = absolute_url + '/multigas/detach';
+
+        var data = {};
+        data.gas = check.attr('data-gas');
+        data.target_id = check.attr('data-target-id');
+        data.target_type = check.attr('data-target-type');
+
+        $.ajax({
+            method: 'POST',
+            url: url,
+            data: data
+        });
+    });
+
+    /*
         Pulsante "Salva Informazioni" in pannello consegna
     */
     $('body').on('click', '.booking-form .info-button', function(e) {

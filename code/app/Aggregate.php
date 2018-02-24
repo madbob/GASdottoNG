@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 use Auth;
@@ -11,10 +12,36 @@ use Log;
 
 use App\GASModel;
 use App\AggregateBooking;
+use App\Events\AttachableToGas;
 
 class Aggregate extends Model
 {
     use GASModel;
+
+    protected $events = [
+        'created' => AttachableToGas::class
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        $user = Auth::user();
+        if ($user != null) {
+            $gas_id = $user->gas->id;
+
+            static::addGlobalScope('gas', function (Builder $builder) use ($gas_id) {
+                $builder->whereHas('gas', function($query) use ($gas_id) {
+                    $query->where('gas_id', $gas_id);
+                });
+            });
+        }
+    }
+
+    public function gas()
+    {
+        return $this->belongsToMany('App\Gas');
+    }
 
     public function orders()
     {
@@ -95,7 +122,7 @@ class Aggregate extends Model
             }
         }
 
-        return [implode(' / ', $names), implode(' / ', $dates)];
+        return [implode(' | ', $names), implode(' / ', $dates)];
     }
 
     public function printableName()

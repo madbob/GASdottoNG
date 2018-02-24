@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -11,6 +12,7 @@ use Auth;
 use Theme;
 
 use App\Events\SluggableCreating;
+use App\Events\AttachableToGas;
 use App\Events\SupplierDeleting;
 use App\Role;
 use App\AttachableTrait;
@@ -31,8 +33,30 @@ class Supplier extends Model
 
     protected $events = [
         'creating' => SluggableCreating::class,
+        'created' => AttachableToGas::class,
         'deleting' => SupplierDeleting::class,
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        $user = Auth::user();
+        if ($user != null) {
+            $gas_id = $user->gas->id;
+
+            static::addGlobalScope('gas', function (Builder $builder) use ($gas_id) {
+                $builder->whereHas('gas', function($query) use ($gas_id) {
+                    $query->where('gas_id', $gas_id);
+                });
+            });
+        }
+    }
+
+    public function gas()
+    {
+        return $this->belongsToMany('App\Gas');
+    }
 
     public static function commonClassName()
     {
