@@ -193,8 +193,8 @@ class MultiGasController extends Controller
                 $gas->suppliers()->detach($target_id);
                 break;
 
-            case 'order':
-                $gas->orders()->detach($target_id);
+            case 'aggregate':
+                $gas->aggregates()->detach($target_id);
                 break;
 
             case 'delivery':
