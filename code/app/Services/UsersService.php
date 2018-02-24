@@ -211,7 +211,7 @@ class UsersService extends BaseService
         $creator = $this->ensureAuth(['users.subusers' => 'gas']);
 
         $username = $request['username'];
-        $test = User::where('username', $username)->first();
+        $test = User::withTrashed()->where('username', $username)->first();
         if ($test != null) {
             throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
         }
