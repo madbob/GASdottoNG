@@ -47,9 +47,11 @@ class ExtendedRelationshipsMultigas extends Migration
         });
 
         $gas = Gas::orderBy('id')->first();
-        $gas->suppliers()->sync(Supplier::withTrashed()->orderBy('id')->pluck('id'));
-        $gas->aggregates()->sync(Aggregate::orderBy('id')->pluck('id'));
-        $gas->deliveries()->sync(Delivery::orderBy('id')->pluck('id'));
+        if ($gas != null) {
+            $gas->suppliers()->sync(Supplier::withTrashed()->orderBy('id')->pluck('id'));
+            $gas->aggregates()->sync(Aggregate::orderBy('id')->pluck('id'));
+            $gas->deliveries()->sync(Delivery::orderBy('id')->pluck('id'));
+        }
     }
 
     public function down()
