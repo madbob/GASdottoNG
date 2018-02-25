@@ -60,3 +60,9 @@ $factory->define(App\Permission::class, function (Faker\Generator $faker) {
         'target_type' => 'App\Gas',
     ];
 });
+
+$factory->define(App\Movement::class, function (Faker\Generator $faker) {
+    return [
+        'amount' => $faker->randomNumber(2)
+    ];
+});

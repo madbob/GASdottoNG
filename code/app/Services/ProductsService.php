@@ -26,18 +26,6 @@ class ProductsService extends BaseService
         return Product::withTrashed()->with('variants')->with('variants.values')->findOrFail($id);
     }
 
-    public function destroy($id)
-    {
-        $product = DB::transaction(function() use ($id) {
-            $product = $this->show($id);
-            $this->ensureAuth(['supplier.modify' => $product->supplier]);
-            $product->delete();
-            return $product;
-        });
-
-        return $product;
-    }
-
     private function enforceMeasure($product, $request)
     {
         if ($product->measure->discrete) {
@@ -77,6 +65,23 @@ class ProductsService extends BaseService
         });
     }
 
+    public function store(array $request)
+    {
+        $supplier = Supplier::findOrFail($request['supplier_id']);
+        $this->ensureAuth(['supplier.modify' => $supplier]);
+
+        $product = new Product();
+        $product->supplier_id = $supplier->id;
+        $product->active = true;
+
+        DB::transaction(function () use ($product, $request) {
+            $this->setCommonAttributes($product, $request);
+            $product->save();
+        });
+
+        return $product;
+    }
+
     public function update($id, array $request)
     {
         $product = $this->show($id);
@@ -100,23 +105,6 @@ class ProductsService extends BaseService
         return $product;
     }
 
-    public function store(array $request)
-    {
-        $supplier = Supplier::findOrFail($request['supplier_id']);
-        $this->ensureAuth(['supplier.modify' => $supplier]);
-
-        $product = new Product();
-        $product->supplier_id = $supplier->id;
-        $product->active = true;
-
-        DB::transaction(function () use ($product, $request) {
-            $this->setCommonAttributes($product, $request);
-            $product->save();
-        });
-
-        return $product;
-    }
-
     public function duplicate($id)
     {
         $original = $this->show($id);
@@ -126,6 +114,18 @@ class ProductsService extends BaseService
         $product->id = '';
         $product->name = 'Copia di ' . $product->name;
         $product->save();
+        return $product;
+    }
+
+    public function destroy($id)
+    {
+        $product = DB::transaction(function() use ($id) {
+            $product = $this->show($id);
+            $this->ensureAuth(['supplier.modify' => $product->supplier]);
+            $product->delete();
+            return $product;
+        });
+
         return $product;
     }
 }

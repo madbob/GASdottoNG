@@ -55,7 +55,7 @@ class AggregatesController extends OrdersController
 
                 foreach ($a->orders as $o) {
                     $order = Order::find($o);
-                    if ($order->aggregate_id != $id) {
+                    if ($order && $order->aggregate_id != $id) {
                         $order->aggregate_id = $id;
                         $order->save();
                     }

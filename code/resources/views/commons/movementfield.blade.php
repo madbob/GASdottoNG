@@ -17,7 +17,7 @@ $to_modal['dom_id'] = $rand;
     <label class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
 
     <div class="col-sm-{{ $fieldsize }}">
-        <label class="static-label text-muted" data-updatable-name="movement-date-{{ $rand }}" data-updatable-field="printable_text">
+        <label class="static-label text-muted" data-updatable-name="movement-date-{{ $rand }}" data-updatable-field="name">
             @if (!$obj || $obj->exists == false)
                 {{ _i('Mai') }}
             @else

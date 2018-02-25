@@ -54,26 +54,67 @@ class UsersService extends BaseService
         return $searched;
     }
 
-    public function destroy($id)
+    public function store(array $request)
     {
-        $user = DB::transaction(function () use ($id) {
-            /*
-                show() già si premura di verificare l'accesso all'utente
-                richiesto, qui dobbiamo solo rafforzare l'accesso da
-                amministratore se l'utente da eliminare non è un "amico"
-            */
-            $user = $this->show($id);
+        /*
+            Gli utenti col permesso di agire sul multi-gas devono poter creare i
+            nuovi utenti amministratori
+        */
+        $creator = $this->ensureAuth(['users.admin' => 'gas', 'gas.multi' => 'gas']);
 
-            if ($user->isFriend() == false) {
-                $this->ensureAuth(['users.admin' => 'gas']);
+        $username = $request['username'];
+        $test = User::where('username', $username)->first();
+        if ($test != null) {
+            throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
+        }
+
+        $user = new User();
+        $user->gas_id = $creator->gas->id;
+        $user->member_since = date('Y-m-d', time());
+        $user->username = $username;
+        $user->firstname = $request['firstname'];
+        $user->lastname = $request['lastname'];
+        $user->password = Hash::make($request['password']);
+
+        DB::transaction(function () use ($user) {
+            $user->save();
+        });
+
+        return $user;
+    }
+
+    public function storeFriend(array $request)
+    {
+        $creator = $this->ensureAuth(['users.subusers' => 'gas']);
+
+        $username = $request['username'];
+        $test = User::withTrashed()->where('username', $username)->first();
+        if ($test != null) {
+            throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
+        }
+
+        $user = new User();
+        $user->parent_id = $creator->id;
+        $user->gas_id = $creator->gas->id;
+        $user->member_since = date('Y-m-d', time());
+        $user->username = $username;
+        $user->firstname = $request['firstname'];
+        $user->lastname = $request['lastname'];
+        $user->password = Hash::make($request['password']);
+
+        DB::transaction(function () use ($user, $creator) {
+            $user->save();
+
+            $user_role = $creator->gas->roles['user'];
+            $friend_role = $creator->gas->roles['friend'];
+
+            if ($user_role != $friend_role) {
+                $role = Role::find($friend_role);
+                if ($role) {
+                    $user->roles()->detach();
+                    $user->addRole($role, $creator->gas);
+                }
             }
-
-            if ($user->trashed())
-                $user->forceDelete();
-            else
-                $user->delete();
-
-            return $user;
         });
 
         return $user;
@@ -177,72 +218,6 @@ class UsersService extends BaseService
         return $user;
     }
 
-    public function store(array $request)
-    {
-        /*
-            Gli utenti col permesso di agire sul multi-gas devono poter creare i
-            nuovi utenti amministratori
-        */
-        $creator = $this->ensureAuth(['users.admin' => 'gas', 'gas.multi' => 'gas']);
-
-        $username = $request['username'];
-        $test = User::where('username', $username)->first();
-        if ($test != null) {
-            throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
-        }
-
-        $user = new User();
-        $user->gas_id = $creator->gas->id;
-        $user->member_since = date('Y-m-d', time());
-        $user->username = $username;
-        $user->firstname = $request['firstname'];
-        $user->lastname = $request['lastname'];
-        $user->password = Hash::make($request['password']);
-
-        DB::transaction(function () use ($user) {
-            $user->save();
-        });
-
-        return $user;
-    }
-
-    public function storeFriend(array $request)
-    {
-        $creator = $this->ensureAuth(['users.subusers' => 'gas']);
-
-        $username = $request['username'];
-        $test = User::withTrashed()->where('username', $username)->first();
-        if ($test != null) {
-            throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
-        }
-
-        $user = new User();
-        $user->parent_id = $creator->id;
-        $user->gas_id = $creator->gas->id;
-        $user->member_since = date('Y-m-d', time());
-        $user->username = $username;
-        $user->firstname = $request['firstname'];
-        $user->lastname = $request['lastname'];
-        $user->password = Hash::make($request['password']);
-
-        DB::transaction(function () use ($user, $creator) {
-            $user->save();
-
-            $user_role = $creator->gas->roles['user'];
-            $friend_role = $creator->gas->roles['friend'];
-
-            if ($user_role != $friend_role) {
-                $role = Role::find($friend_role);
-                if ($role) {
-                    $user->roles()->detach();
-                    $user->addRole($role, $creator->gas);
-                }
-            }
-        });
-
-        return $user;
-    }
-
     public function picture($id)
     {
         $user = User::findOrFail($id);
@@ -255,5 +230,30 @@ class UsersService extends BaseService
             Log::error(_i('File non trovato: %s', $path));
             return '';
         }
+    }
+
+    public function destroy($id)
+    {
+        $user = DB::transaction(function () use ($id) {
+            /*
+                show() già si premura di verificare l'accesso all'utente
+                richiesto, qui dobbiamo solo rafforzare l'accesso da
+                amministratore se l'utente da eliminare non è un "amico"
+            */
+            $user = $this->show($id);
+
+            if ($user->isFriend() == false) {
+                $this->ensureAuth(['users.admin' => 'gas']);
+            }
+
+            if ($user->trashed())
+                $user->forceDelete();
+            else
+                $user->delete();
+
+            return $user;
+        });
+
+        return $user;
     }
 }

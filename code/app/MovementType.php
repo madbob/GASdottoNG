@@ -226,10 +226,10 @@ class MovementType extends Model
                                 $target->save();
                             }
                         },
-                        'parse' => function (Movement &$movement, Request $request) {
+                        'parse' => function (Movement &$movement, $request) {
                             if ($movement->target_type == 'App\Aggregate') {
-                                if ($request->has('delivering-status')) {
-                                    $movement->handling_status = json_decode($request->input('delivering-status'));
+                                if (isset($request['delivering-status'])) {
+                                    $movement->handling_status = json_decode($request['delivering-status']);
                                 }
                             }
                         },

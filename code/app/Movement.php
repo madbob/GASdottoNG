@@ -142,7 +142,7 @@ class Movement extends Model
         return $ret;
     }
 
-    public function parseRequest(Request $request)
+    public function parseRequest($request)
     {
         $metadata = $this->type_metadata;
         if (isset($metadata->callbacks['parse'])) {
