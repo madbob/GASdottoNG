@@ -80,6 +80,18 @@ class Aggregate extends Model
         })->get();
     }
 
+    /*
+        Aggregando molti ordini insieme, alcune composizioni grafiche nella
+        visualizzazione degli aggregati diventano sostanzialmente illeggibili.
+        Questa funzione ritorna un numero ragionevole di ordini entro cui si
+        possono comporre stringhe e contenuti, superato il quale è consigliato
+        adottare un'altra strategia
+    */
+    public static function aggregatesConvenienceLimit()
+    {
+        return 3;
+    }
+
     private function computeStrings()
     {
         $names = [];
@@ -87,7 +99,7 @@ class Aggregate extends Model
 
         $orders = $this->orders;
 
-        if ($orders->count() > 3) {
+        if ($orders->count() > Aggregate::aggregatesConvenienceLimit()) {
             $start_date = PHP_INT_MAX;
             $end_date = 0;
             $shipping_date = 0;

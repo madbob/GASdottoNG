@@ -1,9 +1,11 @@
 <html>
     <body>
         <h3>{{ _i('Dettaglio Consegne') }}<br/>
-            @foreach($aggregate->orders as $order)
-                {{ $order->supplier->name }} {{ $order->internal_number }}<br/>
-            @endforeach
+            @if($aggregate->orders()->count() <= App\Aggregate::aggregatesConvenienceLimit())
+                @foreach($aggregate->orders as $order)
+                    {{ $order->supplier->name }} {{ $order->internal_number }}<br/>
+                @endforeach
+            @endif
         </h3>
 
         @foreach($bookings as $super_booking)
