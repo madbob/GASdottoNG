@@ -116,16 +116,6 @@ class MovementsServiceTest extends TestCase
         $this->service->show('random');
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
-    public function testFailsToShow()
-    {
-        $this->actingAs($this->userWithNoPerms);
-
-        $this->service->show($this->sample_movement->id);
-    }
-
     public function testShow()
     {
         $this->actingAs($this->userWithReferrerPerms);
