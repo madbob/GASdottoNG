@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 use DB;
 use Auth;
-use Theme;
 
 use App\Gas;
 use App\Supplier;
@@ -42,7 +41,7 @@ class MultiGasController extends Controller
             }
         }
 
-        return Theme::view('pages.multigas', ['groups' => $groups]);
+        return view('pages.multigas', ['groups' => $groups]);
     }
 
     public function store(Request $request)
@@ -115,7 +114,7 @@ class MultiGasController extends Controller
             abort(503);
         }
 
-        return Theme::view('multigas.edit', ['gas' => $gas]);
+        return view('multigas.edit', ['gas' => $gas]);
     }
 
     public function edit($id)

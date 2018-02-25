@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use DB;
 use URL;
 use Auth;
-use Theme;
 use PDF;
 
 use App\User;
@@ -88,7 +87,7 @@ class BookingUserController extends BookingHandler
         }
         $names = join(' / ', $names);
 
-        $html = Theme::view('documents.aggregate_shipping', [
+        $html = view('documents.aggregate_shipping', [
             'aggregate' => $aggregate,
             'bookings' => $bookings,
             'products_source' => 'products'

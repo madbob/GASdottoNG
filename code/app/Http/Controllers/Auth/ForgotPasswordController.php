@@ -7,7 +7,6 @@ use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 
-use Theme;
 use Session;
 
 use App\User;
@@ -25,7 +24,7 @@ class ForgotPasswordController extends Controller
 
     public function showLinkRequestForm()
     {
-        return Theme::view('auth.passwords.email');
+        return view('auth.passwords.email');
     }
 
     public function sendResetLinkEmail(Request $request)

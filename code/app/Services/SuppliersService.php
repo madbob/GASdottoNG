@@ -9,7 +9,6 @@ use Auth;
 use Log;
 use DB;
 use PDF;
-use Theme;
 
 use App\User;
 use App\Supplier;
@@ -98,7 +97,7 @@ class SuppliersService extends BaseService
         $filename = sprintf('Listino %s.%s', $supplier->name, $format);
 
         if ($format == 'pdf') {
-            $html = Theme::view('documents.cataloguepdf', ['supplier' => $supplier])->render();
+            $html = view('documents.cataloguepdf', ['supplier' => $supplier])->render();
             PDF::SetTitle(_i('Listino %s del %s', $supplier->name, date('d/m/Y')));
             PDF::AddPage();
             PDF::writeHTML($html, true, false, true, false, '');

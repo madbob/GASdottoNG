@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use Auth;
-use Theme;
 use Log;
 use PDF;
 use Response;
@@ -41,7 +40,7 @@ class MovementsController extends BackedController
                     contabilità
                 */
                 $data['balance'] = Auth::user()->gas->current_balance;
-                return Theme::view('pages.movements', $data);
+                return view('pages.movements', $data);
             }
             else {
                 $format = $request->input('format', 'none');
@@ -55,14 +54,14 @@ class MovementsController extends BackedController
                             $data['main_target'] = $generic_target;
                         }
 
-                        return Theme::view('movement.bilist', $data);
+                        return view('movement.bilist', $data);
                     }
                     else {
                         /*
                             Qui si finisce quando si aggiorna l'elenco di movimenti
                             nella pagina principale della contabilità
                         */
-                        return Theme::view('movement.list', $data);
+                        return view('movement.list', $data);
                     }
                 }
                 else if ($format == 'csv') {
@@ -82,7 +81,7 @@ class MovementsController extends BackedController
                     });
                 }
                 else if ($format == 'pdf') {
-                    $html = Theme::view('documents.movements_pdf', ['movements' => $data['movements']])->render();
+                    $html = view('documents.movements_pdf', ['movements' => $data['movements']])->render();
                     $title = _i('Esportazione movimenti GAS %s', date('d/m/Y'));
                     $filename = $title . '.pdf';
                     PDF::SetTitle($title);
@@ -101,7 +100,7 @@ class MovementsController extends BackedController
     {
         $type = $request->input('type', null);
         if ($type == null) {
-            return Theme::view('movement.create');
+            return view('movement.create');
         }
 
         if ($type == 'none') {
@@ -136,14 +135,14 @@ class MovementsController extends BackedController
             $data['targets'] = [];
         }
 
-        return Theme::view('movement.selectors', $data);
+        return view('movement.selectors', $data);
     }
 
     public function show_ro(Request $request, $id)
     {
         try {
             $movement = $this->service->show($id);
-            return Theme::view('movement.show', ['obj' => $movement]);
+            return view('movement.show', ['obj' => $movement]);
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -157,7 +156,7 @@ class MovementsController extends BackedController
             abort(503);
         }
 
-        return Theme::view('movement.credits');
+        return view('movement.credits');
     }
 
     public function document(Request $request, $type, $subtype = 'none')
@@ -209,7 +208,7 @@ class MovementsController extends BackedController
 
                     return Response::stream(function() use ($users) {
                         $FH = fopen('php://output', 'w');
-                        $contents = Theme::view('documents.credits_rid', ['users' => $users])->render();
+                        $contents = view('documents.credits_rid', ['users' => $users])->render();
                         fwrite($FH, $contents);
                         fclose($FH);
                     }, 200, $headers);

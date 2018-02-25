@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 
 use DB;
 use Auth;
-use Theme;
 use PDF;
 use Mail;
 
@@ -84,7 +83,7 @@ class OrdersController extends Controller
             return strcmp($a->shipping, $b->shipping);
         });
 
-        return Theme::view('pages.orders', ['orders' => $orders]);
+        return view('pages.orders', ['orders' => $orders]);
     }
 
     public function store(Request $request)
@@ -298,7 +297,7 @@ class OrdersController extends Controller
         if ($order->hasProduct($product) == false)
             abort(404);
 
-        return Theme::view('order.fixes', ['order' => $order, 'product' => $product]);
+        return view('order.fixes', ['order' => $order, 'product' => $product]);
     }
 
     public function postFixes(Request $request, $id)
@@ -365,7 +364,7 @@ class OrdersController extends Controller
         }
 
         $list_identifier = $request->input('list_identifier', 'order-list');
-        return Theme::view('commons.loadablelist', ['identifier' => $list_identifier, 'items' => $orders]);
+        return view('commons.loadablelist', ['identifier' => $list_identifier, 'items' => $orders]);
     }
 
     private function sendDocumentMail($request, $temp_file_path)
@@ -397,7 +396,7 @@ class OrdersController extends Controller
 
         switch ($type) {
             case 'shipping':
-                $html = Theme::view('documents.order_shipping', ['order' => $order])->render();
+                $html = view('documents.order_shipping', ['order' => $order])->render();
                 $title = _i('Dettaglio Consegne ordine %s presso %s', $order->internal_number, $order->supplier->name);
                 $filename = $title . '.pdf';
                 PDF::SetTitle($title);
@@ -427,7 +426,7 @@ class OrdersController extends Controller
                 $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $filename));
 
                 if ($subtype == 'pdf') {
-                    $html = Theme::view('documents.order_summary_pdf', ['order' => $order, 'data' => $data])->render();
+                    $html = view('documents.order_summary_pdf', ['order' => $order, 'data' => $data])->render();
                     PDF::SetTitle($title);
                     PDF::AddPage('L');
                     PDF::writeHTML($html, true, false, true, false, '');
@@ -461,11 +460,11 @@ class OrdersController extends Controller
             case 'table':
                 $status = $request->input('status', 'booked');
                 if ($status == 'booked')
-                    $contents = Theme::view('documents.order_table_booked', ['order' => $order])->render();
+                    $contents = view('documents.order_table_booked', ['order' => $order])->render();
                 else if ($status == 'delivered')
-                    $contents = Theme::view('documents.order_table_delivered', ['order' => $order])->render();
+                    $contents = view('documents.order_table_delivered', ['order' => $order])->render();
                 else if ($status == 'saved')
-                    $contents = Theme::view('documents.order_table_saved', ['order' => $order])->render();
+                    $contents = view('documents.order_table_saved', ['order' => $order])->render();
 
                 $filename = sprintf('Tabella Ordine %s presso %s.csv', $order->internal_number, $order->supplier->name);
                 return output_csv($filename, null, $contents, null, null);

@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 
 use Auth;
 use DB;
-use Theme;
 
 use App\User;
 use App\Supplier;
@@ -31,7 +30,7 @@ class RolesController extends Controller
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
-        return Theme::view('permissions.gas-management', ['gas' => $user->gas]);
+        return view('permissions.gas-management', ['gas' => $user->gas]);
     }
 
     public function store(Request $request)
@@ -61,7 +60,7 @@ class RolesController extends Controller
         }
 
         $r = Role::findOrFail($id);
-        return Theme::view('permissions.edit', ['role' => $r]);
+        return view('permissions.edit', ['role' => $r]);
     }
 
     public function update(Request $request, $id)
@@ -105,7 +104,7 @@ class RolesController extends Controller
         }
 
         $user = User::find($user_id);
-        return Theme::view('permissions.user-edit', ['user' => $user]);
+        return view('permissions.user-edit', ['user' => $user]);
     }
 
     public function formBySupplier(Request $request, $supplier_id)
@@ -117,7 +116,7 @@ class RolesController extends Controller
             abort(503);
         }
 
-        return Theme::view('permissions.supplier-edit', ['supplier' => $supplier]);
+        return view('permissions.supplier-edit', ['supplier' => $supplier]);
     }
 
     public function attach(Request $request)
@@ -152,7 +151,7 @@ class RolesController extends Controller
                 $u->addRole($r, null);
 
                 DB::commit();
-                return Theme::view('permissions.main_roleuser', ['role' => $r, 'user' => $u]);
+                return view('permissions.main_roleuser', ['role' => $r, 'user' => $u]);
             }
         }
         else {

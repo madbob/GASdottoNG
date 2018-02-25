@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Collection;
 
 use Auth;
-use Theme;
 
 use App\Events\SluggableCreating;
 use App\Events\AttachableToGas;
@@ -218,7 +217,7 @@ class Supplier extends Model
 
     public function exportXML()
     {
-        return Theme::view('gdxp.supplier', ['obj' => $this])->render();
+        return view('gdxp.supplier', ['obj' => $this])->render();
     }
 
     public static function readXML($xml)

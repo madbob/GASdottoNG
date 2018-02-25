@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 
 use Auth;
 use DB;
-use Theme;
 
 use App\Role;
 use App\Gas;
@@ -61,7 +60,7 @@ class GasController extends Controller
             abort(503);
         }
 
-        return Theme::view('pages.gas', ['gas' => $gas]);
+        return view('pages.gas', ['gas' => $gas]);
     }
 
     public function update(Request $request, $id)

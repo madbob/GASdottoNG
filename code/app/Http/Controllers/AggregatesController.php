@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 use App\Notifications\BookingNotification;
 
-use Theme;
 use DB;
 use PDF;
 use Log;
@@ -77,7 +76,7 @@ class AggregatesController extends OrdersController
     {
         $a = Aggregate::findOrFail($id);
 
-        return Theme::view('order.aggregate', ['aggregate' => $a]);
+        return view('order.aggregate', ['aggregate' => $a]);
     }
 
     public function update(Request $request, $id)
@@ -136,7 +135,7 @@ class AggregatesController extends OrdersController
                 }
                 $names = join(' / ', $names);
 
-                $html = Theme::view('documents.aggregate_shipping', [
+                $html = view('documents.aggregate_shipping', [
                     'aggregate' => $aggregate,
                     'bookings' => $aggregate->bookings,
                     'products_source' => 'products_with_friends'

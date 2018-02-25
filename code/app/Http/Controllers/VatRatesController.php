@@ -8,7 +8,6 @@ use App\Http\Requests;
 
 use Auth;
 use DB;
-use Theme;
 
 use App\VatRate;
 
@@ -48,7 +47,7 @@ class VatratesController extends Controller
         }
 
         $vr = VatRate::findOrFail($id);
-        return Theme::view('vatrates.edit', ['vatrate' => $vr]);
+        return view('vatrates.edit', ['vatrate' => $vr]);
     }
 
     public function update(Request $request, $id)

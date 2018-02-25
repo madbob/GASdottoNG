@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use DB;
 use Log;
 use Auth;
-use Theme;
 
 use App\Category;
 use App\Product;
@@ -31,7 +30,7 @@ class CategoriesController extends Controller
 
         $categories = Category::where('id', '!=', 'non-specificato')->where('parent_id', '=', null)->get();
 
-        return Theme::view('categories.edit', ['categories' => $categories]);
+        return view('categories.edit', ['categories' => $categories]);
     }
 
     public function store(Request $request)

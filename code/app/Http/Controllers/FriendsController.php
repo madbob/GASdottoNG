@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Auth;
-use Theme;
 
 use App\User;
 use App\Role;
@@ -45,7 +44,7 @@ class FriendsController extends BackedController
     {
         try {
             $user = $this->service->show($id);
-            return Theme::view('friend.edit', ['user' => $user]);
+            return view('friend.edit', ['user' => $user]);
         }
         catch (AuthException $e) {
             abort($e->status());

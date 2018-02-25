@@ -10,7 +10,6 @@ use App;
 use Auth;
 use DB;
 use URL;
-use Theme;
 
 use App\Events\SluggableCreating;
 use App\GASModel;
@@ -524,7 +523,7 @@ class Order extends Model
 
     public function exportXML()
     {
-        return Theme::view('gdxp.supplier', ['obj' => $this->supplier, 'orders' => [$this]])->render();
+        return view('gdxp.supplier', ['obj' => $this->supplier, 'orders' => [$this]])->render();
     }
 
     public static function readXML($xml)

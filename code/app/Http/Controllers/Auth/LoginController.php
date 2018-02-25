@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 
-use Theme;
 use LaravelGettext;
 
 use App\User;
@@ -34,7 +33,7 @@ class LoginController extends Controller
     {
         $gas = Gas::first();
 
-        return Theme::view('auth.login', ['gas' => $gas]);
+        return view('auth.login', ['gas' => $gas]);
     }
 
     public function login(Request $request)

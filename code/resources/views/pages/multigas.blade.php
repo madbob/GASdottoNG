@@ -1,4 +1,4 @@
-@extends($theme_layout)
+@extends('app')
 
 @section('content')
 

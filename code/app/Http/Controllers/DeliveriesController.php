@@ -8,7 +8,6 @@ use App\Http\Requests;
 
 use Auth;
 use DB;
-use Theme;
 
 use App\User;
 use App\Delivery;
@@ -55,7 +54,7 @@ class DeliveriesController extends Controller
         }
 
         $d = Delivery::findOrFail($id);
-        return Theme::view('deliveries.edit', ['delivery' => $d]);
+        return view('deliveries.edit', ['delivery' => $d]);
     }
 
     public function update(Request $request, $id)

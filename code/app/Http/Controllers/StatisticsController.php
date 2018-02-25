@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
 use Auth;
-use Theme;
+
 use App\Booking;
 
 class StatisticsController extends Controller
@@ -17,7 +18,7 @@ class StatisticsController extends Controller
 
     public function index(Request $request)
     {
-        return Theme::view('pages.statistics');
+        return view('pages.statistics');
     }
 
     public function show(Request $request, $id)

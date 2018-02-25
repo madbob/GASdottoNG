@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use Auth;
-use Theme;
 use URL;
 
 use App\Aggregate;
@@ -32,14 +31,14 @@ class BookingController extends Controller
             return strcmp($a->end, $b->end);
         });
 
-        return Theme::view('pages.bookings', ['orders' => $orders]);
+        return view('pages.bookings', ['orders' => $orders]);
     }
 
     public function show(Request $request, $id)
     {
         $aggregate = Aggregate::findOrFail($id);
         $user = Auth::user();
-        return Theme::view('booking.editwrap', ['aggregate' => $aggregate, 'user' => $user]);
+        return view('booking.editwrap', ['aggregate' => $aggregate, 'user' => $user]);
     }
 
     public function update(Request $request, $id)
