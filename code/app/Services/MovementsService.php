@@ -7,7 +7,8 @@ use App\Exceptions\IllegalArgumentException;
 
 use DB;
 use Auth;
-use Session;
+use App;
+use Log;
 
 use App\Movement;
 use App\CreditableTrait;
@@ -205,20 +206,21 @@ class MovementsService extends BaseService
     public function recalculate()
     {
         $this->ensureAuth(['movements.admin' => 'gas']);
+        $hub = App::make('MovementsHub');
 
         try {
             return DB::transaction(function() {
-                Session::put('movements-recalculating', true);
+                $hub->setRecalculating(true);
                 $current_status = CreditableTrait::resetAllCurrentBalances();
                 $this->recalculateCurrentBalance();
-                Session::forget('movements-recalculating');
+                $hub->setRecalculating(false);
                 $diffs = CreditableTrait::compareBalances($current_status);
                 return $diffs;
             });
         }
         catch(\Exception $e) {
             Log::error(_i('Errore nel ricalcolo saldi: %s', $e->getMessage()));
-            Session::forget('movements-recalculating');
+            $hub->setRecalculating(false);
             return null;
         }
     }
@@ -226,12 +228,13 @@ class MovementsService extends BaseService
     public function closeBalance($request)
     {
         $this->ensureAuth(['movements.admin' => 'gas']);
+        $hub = App::make('MovementsHub');
 
         try {
             $date = decodeDate($request['date']);
 
             return DB::transaction(function() use ($date) {
-                Session::put('movements-recalculating', true);
+                $hub->setRecalculating(true);
 
                 /*
                     Azzero tutti i saldi
@@ -275,12 +278,13 @@ class MovementsService extends BaseService
                 */
                 $this->recalculateCurrentBalance();
 
-                Session::forget('movements-recalculating');
+                $hub->setRecalculating(false);
                 return true;
             });
         }
         catch(\Exception $e) {
             Log::error(_i('Errore nel ricalcolo saldi: %s', $e->getMessage()));
+            $hub->setRecalculating(false);
             return false;
         }
     }

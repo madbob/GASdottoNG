@@ -193,6 +193,7 @@ class MovementType extends Model
                                         $m->load('target');
                                     }
                                     else {
+                                        Log::debug('Aggiorno movimento contabile di consegna già pagata');
                                         $m = $existing_movement;
                                     }
 

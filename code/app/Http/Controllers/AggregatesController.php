@@ -64,11 +64,6 @@ class AggregatesController extends OrdersController
             }
         }
 
-        $empty_aggregates = Aggregate::has('orders', '=', 0)->get();
-        foreach($empty_aggregates as $ea) {
-            $ea->delete();
-        }
-
         return $this->successResponse();
     }
 
