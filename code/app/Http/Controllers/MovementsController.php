@@ -10,6 +10,7 @@ use Log;
 use PDF;
 use Response;
 
+use App\User;
 use App\MovementType;
 
 use App\Services\MovementsService;
