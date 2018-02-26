@@ -425,6 +425,7 @@ class ImportController extends Controller
 
                                     if ($user == null) {
                                         $save_me = false;
+                                        $errors[] = implode($target_separator, $line) . '<br/>' . _i('Utente non trovato: %s', $name);
                                         continue;
                                     }
 
