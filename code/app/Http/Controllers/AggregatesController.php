@@ -36,7 +36,6 @@ class AggregatesController extends OrdersController
 
         $data = $request->input('data');
         $data = json_decode($data);
-        $gas = currentAbsoluteGas();
 
         foreach ($data as $a) {
             if (empty($a->orders)) {
@@ -50,7 +49,6 @@ class AggregatesController extends OrdersController
                     $aggr = new Aggregate();
                     $aggr->save();
                     $id = $aggr->id;
-                    $gas->aggregates()->attach($id);
                 }
                 else {
                     $id = $a->id;
