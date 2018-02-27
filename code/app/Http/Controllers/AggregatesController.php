@@ -38,28 +38,27 @@ class AggregatesController extends OrdersController
         $data = json_decode($data);
 
         foreach ($data as $a) {
+            if ($a->id == 'new') {
+                $aggr = new Aggregate();
+                $aggr->save();
+                $id = $aggr->id;
+            }
+            else {
+                $id = $a->id;
+            }
+
+            foreach ($a->orders as $o) {
+                $order = Order::find($o);
+                if ($order && $order->aggregate_id != $id) {
+                    $order->aggregate_id = $id;
+                    $order->save();
+                }
+            }
+
             if (empty($a->orders)) {
                 $aggr = Aggregate::find($a->id);
                 if ($aggr != null) {
                     $aggr->delete();
-                }
-            }
-            else {
-                if ($a->id == 'new') {
-                    $aggr = new Aggregate();
-                    $aggr->save();
-                    $id = $aggr->id;
-                }
-                else {
-                    $id = $a->id;
-                }
-
-                foreach ($a->orders as $o) {
-                    $order = Order::find($o);
-                    if ($order && $order->aggregate_id != $id) {
-                        $order->aggregate_id = $id;
-                        $order->save();
-                    }
                 }
             }
         }
