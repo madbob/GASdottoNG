@@ -54,14 +54,11 @@ class AggregatesController extends OrdersController
                     $order->save();
                 }
             }
-
-            if (empty($a->orders)) {
-                $aggr = Aggregate::find($a->id);
-                if ($aggr != null) {
-                    $aggr->delete();
-                }
-            }
         }
+
+        $empty_aggregates = Aggregate::has('orders', '=', 0)->get();
+        foreach($empty_aggregates as $ea)
+            $ea->delete();
 
         return $this->successResponse();
     }
