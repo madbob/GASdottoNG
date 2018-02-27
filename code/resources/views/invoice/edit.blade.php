@@ -53,7 +53,7 @@
 @can('movements.admin', $currentgas)
     <?php $current_currency = $currentgas->currency ?>
     <div class="modal fade wizard" id="orders-invoice-{{ $invoice->id }}" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-extra-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
@@ -78,7 +78,10 @@
                                         <?php $summary = $o->calculateInvoicingSummary() ?>
                                         <tr class="orders-in-invoice-candidate">
                                             <td><input type="checkbox" name="order_id[]" value="{{ $o->id }}"></td>
-                                            <td>{{ $o->printableName() }}</td>
+                                            <td>
+                                                {{ $o->printableName() }}<br>
+                                                <small>{{ $o->printableDates() }}</small>
+                                            </td>
                                             <td class="taxable">
                                                 @include('commons.staticpricelabel', ['value' => $summary->total_taxable])
                                             </td>
