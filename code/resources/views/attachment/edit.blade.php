@@ -1,4 +1,4 @@
-<form class="form-horizontal main-form attachment-editor" method="PUT" action="{{ url('attachments/' . $attachment->id) }}" enctype="multipart/form-data">
+<form class="form-horizontal main-form attachment-editor" method="PUT" action="{{ route('attachments.update', $attachment->id) }}" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-12">
             @if($attachment->internal == false)

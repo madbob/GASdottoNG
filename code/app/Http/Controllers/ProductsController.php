@@ -7,7 +7,6 @@ use App\Http\Controllers\BackedController;
 
 use DB;
 use Auth;
-use Theme;
 
 use App\Services\ProductsService;
 use App\Order;
@@ -36,10 +35,10 @@ class ProductsController extends BackedController
 
         if ($format == 'html') {
             if ($user->can('supplier.modify', $product->supplier)) {
-                return Theme::view('product.edit', ['product' => $product]);
+                return view('product.edit', ['product' => $product]);
             }
             else {
-                return Theme::view('product.show', ['product' => $product]);
+                return view('product.show', ['product' => $product]);
             }
         }
         elseif ($format == 'json') {
@@ -50,14 +49,14 @@ class ProductsController extends BackedController
         }
         elseif ($format == 'bookable') {
             $order = Order::find($request->input('order_id'));
-            return Theme::view('booking.quantityselectrow', ['product' => $product, 'order' => $order, 'populate' => false, 'while_shipping' => true]);
+            return view('booking.quantityselectrow', ['product' => $product, 'order' => $order, 'populate' => false, 'while_shipping' => true]);
         }
     }
 
     public function show_ro(Request $request, $id)
     {
         $product = $this->service->show($id);
-        return Theme::view('product.show', ['product' => $product]);
+        return view('product.show', ['product' => $product]);
     }
 
     public function store(Request $request)

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Log;
 
 use App\Events\SluggableCreating;
+
+use App\Role;
 use App\AttachableTrait;
 use App\GASModel;
 use App\SluggableID;
@@ -34,6 +36,26 @@ class Gas extends Model
             return url('gas/' . $this->id . '/logo');
     }
 
+    public function users()
+    {
+        return $this->hasMany('App\User')->orderBy('lastname', 'asc');
+    }
+
+    public function suppliers()
+    {
+        return $this->belongsToMany('App\Supplier')->orderBy('name', 'asc');
+    }
+
+    public function aggregates()
+    {
+        return $this->belongsToMany('App\Aggregate')->orderBy('id', 'desc');
+    }
+
+    public function deliveries()
+    {
+        return $this->belongsToMany('App\Delivery')->orderBy('name', 'asc');
+    }
+
     public function configs()
     {
         return $this->hasMany('App\Config');
@@ -41,6 +63,8 @@ class Gas extends Model
 
     private function handlingConfigs()
     {
+        $default_role = Role::where('name', 'Utente')->first();
+
         return [
             'year_closing' => [
                 'default' => date('Y') . '-09-01'
@@ -67,6 +91,13 @@ class Gas extends Model
                     'iban' => '',
                     'id' => '',
                     'org' => ''
+                ]
+            ],
+
+            'roles' => [
+                'default' => (object) [
+                    'user' => $default_role ? $default_role->id : -1,
+                    'friend' => $default_role ? $default_role->id : -1
                 ]
             ],
 
@@ -123,6 +154,11 @@ class Gas extends Model
     public function getRidAttribute()
     {
         return (array) json_decode($this->getConfig('rid'));
+    }
+
+    public function getRolesAttribute()
+    {
+        return (array) json_decode($this->getConfig('roles'));
     }
 
     public function getFastShippingEnabledAttribute()

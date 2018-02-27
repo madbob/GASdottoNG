@@ -7,10 +7,10 @@ use App\Http\Controllers\Controller;
 
 use Auth;
 use DB;
-use Theme;
 
 use App\Role;
 use App\Gas;
+use App\User;
 
 class GasController extends Controller
 {
@@ -26,7 +26,13 @@ class GasController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return redirect(url('gas/' . $user->gas->id . '/edit'));
+        return redirect()->route('gas.edit', $user->gas->id);
+    }
+
+    public function show()
+    {
+        $user = Auth::user();
+        return redirect()->route('gas.edit', $user->gas->id);
     }
 
     public function getLogo($id)
@@ -54,7 +60,7 @@ class GasController extends Controller
             abort(503);
         }
 
-        return Theme::view('pages.gas', ['gas' => $gas]);
+        return view('pages.gas', ['gas' => $gas]);
     }
 
     public function update(Request $request, $id)
@@ -63,14 +69,15 @@ class GasController extends Controller
 
         $user = Auth::user();
         $gas = Gas::findOrFail($id);
+
+        if ($user->can('gas.config', $gas) == false) {
+            return $this->errorResponse(_i('Non autorizzato'));
+        }
+
         $group = $request->input('group');
 
         switch($group) {
             case 'general':
-                if ($user->can('gas.config', $gas) == false) {
-                    return $this->errorResponse(_i('Non autorizzato'));
-                }
-
                 $gas->name = $request->input('name');
                 $gas->email = $request->input('email');
                 $gas->message = $request->input('message');
@@ -81,10 +88,6 @@ class GasController extends Controller
                 break;
 
             case 'banking':
-                if ($user->can('gas.config', $gas) == false) {
-                    return $this->errorResponse(_i('Non autorizzato'));
-                }
-
                 $gas->setConfig('year_closing', decodeDateMonth($request->input('year_closing')));
                 $gas->setConfig('annual_fee_amount', $request->input('annual_fee_amount', 0));
                 $gas->setConfig('deposit_amount', $request->input('deposit_amount', 0));
@@ -99,6 +102,32 @@ class GasController extends Controller
 
             case 'orders':
                 $gas->setConfig('fast_shipping_enabled', $request->has('fast_shipping_enabled') ? '1' : '0');
+                break;
+
+            case 'roles':
+                $conf = (object) [
+                    'user' => $request->input('roles->user'),
+                    'friend' => $request->input('roles->friend'),
+                ];
+
+                $old_friend_role = $gas->roles['friend'];
+                $update_users = ($conf->friend != $old_friend_role);
+
+                $gas->setConfig('roles', $conf);
+
+                /*
+                    Se il ruolo "amico" viene cambiato, cambio effettivamente
+                    gli utenti coinvolti
+                */
+                if ($update_users) {
+                    $friends = User::whereNotNull('parent_id')->get();
+
+                    foreach($friends as $friend) {
+                        $friend->removeRole($old_friend_role, $gas);
+                        $friend->addRole($conf->friend, $gas);
+                    }
+                }
+
                 break;
         }
 

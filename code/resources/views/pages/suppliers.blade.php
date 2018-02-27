@@ -1,4 +1,4 @@
-@extends($theme_layout)
+@extends('app')
 
 @section('content')
 
@@ -15,7 +15,7 @@
 
         @can('categories.admin', $currentgas)
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleCategories">{{ _i('Amministra Categorie') }}</button>
-            <div class="modal fade dynamic-contents close-on-submit" id="handleCategories" tabindex="-1" role="dialog" aria-labelledby="handleCategories" data-contents-url="{{ url('categories') }}">
+            <div class="modal fade dynamic-contents close-on-submit" id="handleCategories" tabindex="-1" role="dialog" aria-labelledby="handleCategories" data-contents-url="{{ route('categories.index') }}">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                     </div>
@@ -25,7 +25,7 @@
 
         @can('measures.admin', $currentgas)
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleMeasures">{{ _i('Amministra Unità di Misura') }}</button>
-            <div class="modal fade dynamic-contents close-on-submit" id="handleMeasures" tabindex="-1" role="dialog" data-contents-url="{{ url('measures') }}">
+            <div class="modal fade dynamic-contents close-on-submit" id="handleMeasures" tabindex="-1" role="dialog" data-contents-url="{{ route('measures.index') }}">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                     </div>

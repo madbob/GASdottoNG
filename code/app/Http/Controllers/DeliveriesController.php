@@ -8,7 +8,6 @@ use App\Http\Requests;
 
 use Auth;
 use DB;
-use Theme;
 
 use App\User;
 use App\Delivery;
@@ -44,12 +43,7 @@ class DeliveriesController extends Controller
 
         $d->save();
 
-        return $this->successResponse([
-            'id' => $d->id,
-            'name' => $d->name,
-            'header' => $d->printableHeader(),
-            'url' => url('deliveries/' . $d->id),
-        ]);
+        return $this->commonSuccessResponse($d);
     }
 
     public function show($id)
@@ -60,7 +54,7 @@ class DeliveriesController extends Controller
         }
 
         $d = Delivery::findOrFail($id);
-        return Theme::view('deliveries.edit', ['delivery' => $d]);
+        return view('deliveries.edit', ['delivery' => $d]);
     }
 
     public function update(Request $request, $id)
@@ -83,11 +77,7 @@ class DeliveriesController extends Controller
 
         $d->save();
 
-        return $this->successResponse([
-            'id' => $d->id,
-            'header' => $d->printableHeader(),
-            'url' => url('deliveries/' . $d->id),
-        ]);
+        return $this->commonSuccessResponse($d);
     }
 
     public function destroy($id)

@@ -68,7 +68,7 @@ $data = join(' ', $data);
 
             ?>
 
-            <a data-element-id="{{ $item->id }}" {!! $extra_attributes !!} href="{{ $u }}" class="loadable-item list-group-item {{ $extra_class }}">{!! $item->$header_function() !!}</a>
+            <a data-element-id="{{ $item->id }}" {!! $extra_attributes !!} href="{{ $u }}" class="loadable-item list-group-item {{ $extra_class }}">{!! is_callable($header_function) ? $header_function($item) : $item->$header_function() !!}</a>
         @endforeach
     </div>
 </div>

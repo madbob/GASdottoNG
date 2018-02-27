@@ -1,4 +1,4 @@
-<form class="form-horizontal main-form" method="PUT" action="{{ url('users/' . $user->id) }}">
+<form class="form-horizontal main-form" method="PUT" action="{{ route('users.update', $user->id) }}">
     <div class="row">
         <div class="col-md-6">
             @include('commons.staticstringfield', ['obj' => $user, 'name' => 'firstname', 'label' => _i('Nome'), 'mandatory' => true])

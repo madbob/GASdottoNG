@@ -29,7 +29,7 @@ class BookingHandler extends Controller
         $user = Auth::user();
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
-        if ($user->id != $user_id && $user->can('supplier.shippings', $aggregate) == false) {
+        if ($user->id != $user_id && $user->can('supplier.shippings', $aggregate) == false && in_array($user_id, $user->friends()->pluck('id')) == false) {
             abort(503);
         }
 
@@ -71,14 +71,10 @@ class BookingHandler extends Controller
                         }
 
                         $saved_variants = [];
-                        $variant_added = false;
 
                         for ($i = 0; $i < count($quantities); ++$i) {
                             $q = (float) $quantities[$i];
-                            if ($q == 0)
-                                continue;
 
-                            $variant_added = true;
                             $query = BookedProductVariant::where('product_id', '=', $booked->id);
 
                             foreach ($values as $variant_id => $vals) {
@@ -93,6 +89,9 @@ class BookingHandler extends Controller
                             $bpv = $query->first();
 
                             if ($bpv == null) {
+                                if ($q == 0)
+                                    continue;
+
                                 $bpv = new BookedProductVariant();
                                 $bpv->product_id = $booked->id;
 
@@ -169,9 +168,22 @@ class BookingHandler extends Controller
             }
 
             if ($delivering == false && $count_products == 0) {
-                $booking->delete();
+                if ($booking->friends_bookings->isEmpty())
+                    $booking->delete();
             }
             else {
+                /*
+                    Per convenienza, quando un utente amico sottopone una
+                    prenotazione mi accerto che anche il suo utente "padre" ne
+                    abbia una aperta per lo stesso ordine (benché vuota)
+                */
+                if ($user->isFriend()) {
+                    $parent_user = $user->parent;
+                    $super_booking = $order->userBooking($parent_user->id);
+                    if ($super_booking->exists == false)
+                        $super_booking->save();
+                }
+
                 if ($delivering) {
                     /*
                         Attenzione!!!

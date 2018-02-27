@@ -14,7 +14,7 @@ trait SluggableID
 
         while(true) {
             $slug = str_slug($this->name) . $append;
-            if ($classname::where('id', $slug)->first() != null) {
+            if ($classname::withoutGlobalScope('gas')->where('id', $slug)->first() != null) {
                 $append = '_' . $index;
                 $index++;
             }

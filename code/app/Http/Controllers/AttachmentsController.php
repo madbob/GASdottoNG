@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 
 use DB;
 use Log;
-use Theme;
 
 use App\Attachment;
 
@@ -42,7 +41,7 @@ class AttachmentsController extends Controller
             'id' => $a->id,
             'name' => $a->name,
             'header' => $a->printableHeader(),
-            'url' => url('attachments/'.$a->id),
+            'url' => route('attachments.show', $a->id),
         ]);
     }
 
@@ -64,7 +63,7 @@ class AttachmentsController extends Controller
             'id' => $a->id,
             'name' => $a->name,
             'header' => $a->printableHeader(),
-            'url' => url('attachments/'.$a->id),
+            'url' => route('attachments.show', $a->id)
         ]);
     }
 
@@ -73,9 +72,9 @@ class AttachmentsController extends Controller
         $a = Attachment::findOrFail($id);
 
         if ($a->attached->attachmentPermissionGranted()) {
-            return Theme::view('attachment.edit', ['attachment' => $a]);
+            return view('attachment.edit', ['attachment' => $a]);
         } else {
-            return Theme::view('attachment.show', ['attachment' => $a]);
+            return view('attachment.show', ['attachment' => $a]);
         }
     }
 

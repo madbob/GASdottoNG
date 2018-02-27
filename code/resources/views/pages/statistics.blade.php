@@ -1,4 +1,4 @@
-@extends($theme_layout)
+@extends('app')
 
 @section('content')
 
@@ -46,7 +46,7 @@
                 'name' => 'supplier',
                 'label' => _i('Fornitore'),
                 'mandatory' => true,
-                'objects' => App\Supplier::orderBy('name', 'asc')->get()
+                'objects' => $currentgas->suppliers
             ])
 
             @include('commons.genericdaterange')

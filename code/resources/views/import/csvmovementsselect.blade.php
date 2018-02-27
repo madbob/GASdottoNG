@@ -23,6 +23,20 @@
 <div class="wizard_page">
     <form class="form-horizontal" method="POST" action="{{ url('import/csv?type=movements&step=run') }}" data-toggle="validator">
         <div class="modal-body">
+            @if(!empty($errors))
+                <p>
+                    {{ _i('Errori') }}:
+                </p>
+
+                <ul class="list-group">
+                    @foreach($errors as $e)
+                        <li class="list-group-item">{!! $e !!}</li>
+                    @endforeach
+                </ul>
+
+                <hr/>
+            @endif
+
             <table class="table">
                 <thead>
                     <tr>

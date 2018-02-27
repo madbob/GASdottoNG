@@ -16,7 +16,8 @@ if (function_exists('recursiveOptionsSelectObj') == false) {
                         }
                     }
                 }
-            } else {
+            }
+            else {
                 $selected = ($selected_value == $o->id);
             }
 
@@ -48,7 +49,7 @@ if (!isset($datafields)) {
 }
 
 if ($obj)
-    $selected_value = $obj->$name;
+    $selected_value = accessAttr($obj, $name, '');
 else if (isset($enforced_default))
     $selected_value = $enforced_default;
 else

@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use DB;
 use Auth;
 use Hash;
-use Theme;
 use Artisan;
 
 use App\User;
@@ -33,6 +32,7 @@ class CommonsController extends Controller
         */
         Artisan::call('check:fees');
         Artisan::call('check:orders');
+        Artisan::call('check:system_notices');
 
         $data['notifications'] = $user->notifications;
 
@@ -54,7 +54,7 @@ class CommonsController extends Controller
 
         $data['shipping'] = $shipping;
 
-        return Theme::view('pages.dashboard', $data);
+        return view('pages.dashboard', $data);
     }
 
     public function postVerify(Request $request)

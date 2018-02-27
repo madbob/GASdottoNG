@@ -1,4 +1,4 @@
-@extends($theme_layout)
+@extends('app')
 
 @section('content')
 
@@ -20,7 +20,7 @@
                             @include('commons.addingbutton', [
                                 'typename' => 'movement',
                                 'typename_readable' => _i('Movimento'),
-                                'dynamic_url' => url('movements/create')
+                                'dynamic_url' => route('movements.create')
                             ])
 
                             @include('commons.importcsv', [
@@ -44,7 +44,7 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-horizontal form-filler" data-action="{{ url('movements') }}" data-toggle="validator" data-fill-target="#movements-in-range">
+                        <div class="form-horizontal form-filler" data-action="{{ route('movements.index') }}" data-toggle="validator" data-fill-target="#movements-in-range">
                             @include('commons.genericdaterange', [
                                 'start_date' => strtotime('-1 weeks'),
                             ])
@@ -58,7 +58,7 @@
                                 'obj' => null,
                                 'name' => 'user_id',
                                 'label' => _i('Utente'),
-                                'objects' => App\User::orderBy('lastname', 'asc')->get(),
+                                'objects' => $currentgas->users,
                                 'extra_selection' => [
                                     '0' => _i('Nessuno')
                                 ]
@@ -67,7 +67,7 @@
                                 'obj' => null,
                                 'name' => 'supplier_id',
                                 'label' => _i('Fornitore'),
-                                'objects' => App\Supplier::orderBy('name', 'asc')->get(),
+                                'objects' => $currentgas->suppliers,
                                 'extra_selection' => [
                                     '0' => _i('Nessuno')
                                 ]

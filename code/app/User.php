@@ -6,11 +6,13 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Notifications\ResetPasswordNotification;
 
 use Auth;
+use URL;
 
 use App\Events\SluggableCreating;
 use App\GASModel;
@@ -35,6 +37,20 @@ class User extends Authenticatable
         'rid' => 'array',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        $user = Auth::user();
+        if ($user != null) {
+            $gas_id = $user->gas->id;
+
+            static::addGlobalScope('gas', function (Builder $builder) use ($gas_id) {
+                $builder->where('gas_id', $gas_id);
+            });
+        }
+    }
+
     public static function commonClassName()
     {
         return _i('Utente');
@@ -48,6 +64,16 @@ class User extends Authenticatable
     public function roles($target = null)
     {
         return $this->belongsToMany('App\Role')->orderBy('name', 'asc')->withPivot('id');
+    }
+
+    public function friends()
+    {
+        return $this->hasMany('App\User', 'parent_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo('App\User', 'parent_id');
     }
 
     public function getManagedRolesAttribute()
@@ -106,15 +132,70 @@ class User extends Authenticatable
 
     public function printableName()
     {
-        return $this->lastname.' '.$this->firstname;
+        $ret = $this->lastname . ' ' . $this->firstname;
+
+        if (empty(trim($ret)))
+            $ret = $this->username;
+
+        return $ret;
+    }
+
+    public function printableHeader()
+    {
+        $ret = $this->printableName();
+
+        if ($this->isFriend() == false) {
+            $icons = $this->icons();
+
+            if (!empty($icons)) {
+                $ret .= '<div class="pull-right">';
+
+                foreach ($icons as $i) {
+                    $ret .= '<span class="glyphicon glyphicon-'.$i.'" aria-hidden="true"></span>&nbsp;';
+                }
+
+                $ret .= '</div>';
+            }
+        }
+
+        return $ret;
+    }
+
+    public function getShowURL()
+    {
+        if ($this->isFriend())
+            return URL::action('FriendsController@show', $this->id);
+        else
+            return URL::action('UsersController@show', $this->id);
+    }
+
+    public function printableFriendHeader($aggregate)
+    {
+        $ret = $this->printableName();
+
+        $tot = 0;
+        foreach($aggregate->orders as $order)
+            $tot += $order->userBooking($this->id)->total_value;
+
+        if ($tot != 0)
+            $ret .= '<div class="pull-right">' . _i('Ha ordinato %s€', printablePrice($tot)) . '</div>';
+
+        return $ret;
+    }
+
+    public function isFriend()
+    {
+        return $this->parent_id != null;
     }
 
     public function addRole($role, $assigned)
     {
-        $test = $this->roles()->where('roles.id', $role->id)->first();
+        $role_id = normalizeId($role);
+
+        $test = $this->roles()->where('roles.id', $role_id)->first();
         if ($test == null) {
-            $this->roles()->attach($role->id);
-            $test = $this->roles()->where('roles.id', $role->id)->first();
+            $this->roles()->attach($role_id);
+            $test = $this->roles()->where('roles.id', $role_id)->first();
         }
 
         if ($assigned)
@@ -123,24 +204,29 @@ class User extends Authenticatable
 
     public function removeRole($role, $assigned)
     {
-        $test = $this->roles()->where('roles.id', $role->id)->first();
+        $role_id = normalizeId($role);
+
+        $test = $this->roles()->where('roles.id', $role_id)->first();
         if ($test == null)
             return;
 
         if ($assigned) {
             $test->detachApplication($assigned);
             if ($test->applications(true)->isEmpty()) {
-                $this->roles()->detach($role->id);
+                $this->roles()->detach($role_id);
             }
         }
         else {
-            $this->roles()->detach($role->id);
+            $this->roles()->detach($role_id);
         }
     }
 
     public function getPendingBalanceAttribute()
     {
-        $bookings = $this->bookings()->where('status', 'pending')->get();
+        $bookings = $this->bookings()->where('status', 'pending')->whereHas('order', function($query) {
+            $query->whereIn('status', ['open', 'closed']);
+        })->get();
+
         $value = 0;
 
         foreach($bookings as $b)

@@ -4,13 +4,14 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Collection;
 
 use Auth;
-use Theme;
 
 use App\Events\SluggableCreating;
+use App\Events\AttachableToGas;
 use App\Events\SupplierDeleting;
 use App\Role;
 use App\AttachableTrait;
@@ -31,8 +32,30 @@ class Supplier extends Model
 
     protected $events = [
         'creating' => SluggableCreating::class,
+        'created' => AttachableToGas::class,
         'deleting' => SupplierDeleting::class,
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        $user = Auth::user();
+        if ($user != null) {
+            $gas_id = $user->gas->id;
+
+            static::addGlobalScope('gas', function (Builder $builder) use ($gas_id) {
+                $builder->whereHas('gas', function($query) use ($gas_id) {
+                    $query->where('gas_id', $gas_id);
+                });
+            });
+        }
+    }
+
+    public function gas()
+    {
+        return $this->belongsToMany('App\Gas');
+    }
 
     public static function commonClassName()
     {
@@ -134,19 +157,21 @@ class Supplier extends Model
             case 'all':
                 $query->where(function($query) use ($supplier) {
                     $query->where(function($query) use ($supplier) {
-                        $query->where('sender_type', 'App\Supplier')->where('sender_id', $supplier->id);
+                        $query->where(function($query) use ($supplier) {
+                            $query->where('sender_type', 'App\Supplier')->where('sender_id', $supplier->id);
+                        })->orWhere(function($query) use ($supplier) {
+                            $query->where('sender_type', 'App\Order')->whereIn('sender_id', $supplier->orders()->pluck('orders.id'));
+                        })->orWhere(function($query) use ($supplier) {
+                            $query->where('sender_type', 'App\Booking')->whereIn('sender_id', $supplier->bookings()->pluck('bookings.id'));
+                        });
                     })->orWhere(function($query) use ($supplier) {
-                        $query->where('sender_type', 'App\Order')->whereIn('sender_id', $supplier->orders()->pluck('orders.id'));
-                    })->orWhere(function($query) use ($supplier) {
-                        $query->where('sender_type', 'App\Booking')->whereIn('sender_id', $supplier->bookings()->pluck('bookings.id'));
-                    });
-                })->orWhere(function($query) use ($supplier) {
-                    $query->where(function($query) use ($supplier) {
-                        $query->where('target_type', 'App\Supplier')->where('target_id', $supplier->id);
-                    })->orWhere(function($query) use ($supplier) {
-                        $query->where('target_type', 'App\Order')->whereIn('target_id', $supplier->orders()->pluck('orders.id'));
-                    })->orWhere(function($query) use ($supplier) {
-                        $query->where('target_type', 'App\Booking')->whereIn('target_id', $supplier->bookings()->pluck('bookings.id'));
+                        $query->where(function($query) use ($supplier) {
+                            $query->where('target_type', 'App\Supplier')->where('target_id', $supplier->id);
+                        })->orWhere(function($query) use ($supplier) {
+                            $query->where('target_type', 'App\Order')->whereIn('target_id', $supplier->orders()->pluck('orders.id'));
+                        })->orWhere(function($query) use ($supplier) {
+                            $query->where('target_type', 'App\Booking')->whereIn('target_id', $supplier->bookings()->pluck('bookings.id'));
+                        });
                     });
                 });
                 break;
@@ -192,7 +217,7 @@ class Supplier extends Model
 
     public function exportXML()
     {
-        return Theme::view('gdxp.supplier', ['obj' => $this])->render();
+        return view('gdxp.supplier', ['obj' => $this])->render();
     }
 
     public static function readXML($xml)
@@ -362,6 +387,10 @@ class Supplier extends Model
 
                                 case 'description':
                                     $product->description = html_entity_decode((string) $p);
+                                    break;
+
+                                case 'active':
+                                    $product->active = (strtolower((string) $p) == 'true');
                                     break;
 
                                 case 'orderInfo':

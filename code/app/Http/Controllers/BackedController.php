@@ -21,8 +21,8 @@ class BackedController extends Controller
     public function store(Request $request)
     {
         try {
-            $supplier = $this->service->store($request->all());
-            return $this->commonSuccessResponse($supplier);
+            $subject = $this->service->store($request->all());
+            return $this->commonSuccessResponse($subject);
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -35,8 +35,8 @@ class BackedController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $product = $this->service->update($id, $request->all());
-            return $this->commonSuccessResponse($product);
+            $subject = $this->service->update($id, $request->all());
+            return $this->commonSuccessResponse($subject);
         }
         catch (AuthException $e) {
             abort($e->status());

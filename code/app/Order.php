@@ -3,13 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 use App;
 use Auth;
 use DB;
 use URL;
-use Theme;
 
 use App\Events\SluggableCreating;
 use App\GASModel;
@@ -26,8 +26,24 @@ class Order extends Model
     public $incrementing = false;
 
     protected $events = [
-        'creating' => SluggableCreating::class,
+        'creating' => SluggableCreating::class
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('gas', function (Builder $builder) {
+            $builder->whereHas('aggregate', function($query) {
+                $query->whereHas('gas', function($query) {
+                    $user = Auth::user();
+                    if ($user == null)
+                        return;
+                    $query->where('gas_id', $user->gas->id);
+                });
+            });
+        });
+    }
 
     public static function commonClassName()
     {
@@ -36,7 +52,12 @@ class Order extends Model
 
     public function supplier()
     {
-        return $this->belongsTo('App\Supplier')->withTrashed();
+        /*
+            La rimozione dello scope globale serve nel caso del Multi-GAS, per
+            accedere al fornitore di un ordine anche se il fornitore stesso non
+            è visibile al GAS
+        */
+        return $this->belongsTo('App\Supplier')->withoutGlobalScopes()->withTrashed();
     }
 
     public function aggregate()
@@ -119,7 +140,7 @@ class Order extends Model
         return URL::action('BookingController@index').'#' . $this->aggregate->id;
     }
 
-    public function userBooking($userid = null, $fallback = true)
+    public function userBooking($userid = null)
     {
         if ($userid == null) {
             $userid = Auth::user()->id;
@@ -129,10 +150,11 @@ class Order extends Model
             $query->where('id', '=', $userid);
         })->first();
 
-        if ($ret == null && $fallback == true) {
+        if ($ret == null) {
             $ret = new Booking();
             $ret->user_id = $userid;
             $ret->order_id = $this->id;
+            $ret->notes = '';
             $ret->status = 'pending';
             $ret->notes = '';
         }
@@ -577,7 +599,7 @@ class Order extends Model
 
     public function exportXML()
     {
-        return Theme::view('gdxp.supplier', ['obj' => $this->supplier, 'orders' => [$this]])->render();
+        return view('gdxp.supplier', ['obj' => $this->supplier, 'orders' => [$this]])->render();
     }
 
     public static function readXML($xml)

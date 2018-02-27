@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 use App\Notifications\BookingNotification;
 
-use Theme;
 use DB;
 use PDF;
 use Log;
@@ -44,18 +43,20 @@ class AggregatesController extends OrdersController
                 if ($aggr != null) {
                     $aggr->delete();
                 }
-            } else {
+            }
+            else {
                 if ($a->id == 'new') {
                     $aggr = new Aggregate();
                     $aggr->save();
                     $id = $aggr->id;
-                } else {
+                }
+                else {
                     $id = $a->id;
                 }
 
                 foreach ($a->orders as $o) {
                     $order = Order::find($o);
-                    if ($order->aggregate_id != $id) {
+                    if ($order && $order->aggregate_id != $id) {
                         $order->aggregate_id = $id;
                         $order->save();
                     }
@@ -70,7 +71,7 @@ class AggregatesController extends OrdersController
     {
         $a = Aggregate::findOrFail($id);
 
-        return Theme::view('order.aggregate', ['aggregate' => $a]);
+        return view('order.aggregate', ['aggregate' => $a]);
     }
 
     public function update(Request $request, $id)
@@ -84,7 +85,7 @@ class AggregatesController extends OrdersController
         return $this->successResponse([
             'id' => $a->id,
             'header' => $a->printableHeader(),
-            'url' => url('aggregates/' . $a->id),
+            'url' => route('aggregates.show', $a->id),
         ]);
     }
 
@@ -129,7 +130,12 @@ class AggregatesController extends OrdersController
                 }
                 $names = join(' / ', $names);
 
-                $html = Theme::view('documents.aggregate_shipping', ['aggregate' => $aggregate, 'bookings' => $aggregate->bookings])->render();
+                $html = view('documents.aggregate_shipping', [
+                    'aggregate' => $aggregate,
+                    'bookings' => $aggregate->bookings,
+                    'products_source' => 'products_with_friends'
+                ])->render();
+
                 $filename = sprintf('Dettaglio Consegne ordini %s.pdf', $names);
                 PDF::SetTitle(sprintf('Dettaglio Consegne ordini %s', $names));
                 PDF::AddPage();

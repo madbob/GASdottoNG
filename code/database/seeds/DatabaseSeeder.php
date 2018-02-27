@@ -70,6 +70,11 @@ class DatabaseSeeder extends Seeder
             'parent_id' => $admin_role->id
         ]);
 
+        $gas->setConfig('roles', (object) [
+            'user' => $user_role->id,
+            'friend' => $user_role->id
+        ]);
+
         $admin = User::create([
             'id' => str_slug('Amministratore Globale'),
             'gas_id' => $gas->id,

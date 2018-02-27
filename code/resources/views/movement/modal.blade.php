@@ -18,11 +18,16 @@ if (!isset($amount_label))
 <div class="modal fade movement-modal" id="editMovement-{{ $dom_id }}" tabindex="-1" role="dialog" aria-labelledby="editMovement-{{ $dom_id }}">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <form class="form-horizontal creating-form" method="POST" action="{{ url('movements') }}" data-toggle="validator">
+            <form class="form-horizontal creating-form" method="POST" action="{{ $obj->exists ? route('movements.update', $obj->id) : route('movements.store') }}" data-toggle="validator">
                 <input type="hidden" name="update-field" value="movement-id-{{ $dom_id }}">
                 <input type="hidden" name="update-field" value="movement-date-{{ $dom_id }}">
                 <input type="hidden" name="close-modal" value="">
                 <input type="hidden" name="post-saved-function" value="refreshFilter">
+
+                @if($obj->exists)
+                    <input type="hidden" name="_method" value="PUT">
+                @endif
+
                 @include('commons.extrafields')
 
                 <div class="modal-header">
@@ -30,7 +35,6 @@ if (!isset($amount_label))
                     <h4 class="modal-title">{{ _i('Modifica Movimento') }}</h4>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="id" value="{{ $obj->id }}">
                     <input type="hidden" name="type" value="{{ $obj->type }}" />
                     <input type="hidden" name="sender_type" value="{{ $obj->sender_type }}" />
                     <input type="hidden" name="sender_id" value="{{ $obj->sender_id }}" />
@@ -90,7 +94,7 @@ if (!isset($amount_label))
 
                 <div class="modal-footer">
                     @if($editable)
-                        <button type="button" class="btn btn-danger spare-modal-delete-button" data-delete-url="{{ url('movements/' . $obj->id) }}">{{ _i('Elimina') }}</button>
+                        <button type="button" class="btn btn-danger spare-modal-delete-button" data-delete-url="{{ route('movements.destroy', $obj->id) }}">{{ _i('Elimina') }}</button>
                     @endif
 
                     <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>

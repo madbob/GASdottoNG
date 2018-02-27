@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 use Auth;
@@ -11,10 +12,36 @@ use Log;
 
 use App\GASModel;
 use App\AggregateBooking;
+use App\Events\AttachableToGas;
 
 class Aggregate extends Model
 {
     use GASModel;
+
+    protected $events = [
+        'created' => AttachableToGas::class
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        $user = Auth::user();
+        if ($user != null) {
+            $gas_id = $user->gas->id;
+
+            static::addGlobalScope('gas', function (Builder $builder) use ($gas_id) {
+                $builder->whereHas('gas', function($query) use ($gas_id) {
+                    $query->where('gas_id', $gas_id);
+                });
+            });
+        }
+    }
+
+    public function gas()
+    {
+        return $this->belongsToMany('App\Gas');
+    }
 
     public function orders()
     {
@@ -53,6 +80,18 @@ class Aggregate extends Model
         })->get();
     }
 
+    /*
+        Aggregando molti ordini insieme, alcune composizioni grafiche nella
+        visualizzazione degli aggregati diventano sostanzialmente illeggibili.
+        Questa funzione ritorna un numero ragionevole di ordini entro cui si
+        possono comporre stringhe e contenuti, superato il quale è consigliato
+        adottare un'altra strategia
+    */
+    public static function aggregatesConvenienceLimit()
+    {
+        return 3;
+    }
+
     private function computeStrings()
     {
         $names = [];
@@ -60,7 +99,7 @@ class Aggregate extends Model
 
         $orders = $this->orders;
 
-        if ($orders->count() > 3) {
+        if ($orders->count() > Aggregate::aggregatesConvenienceLimit()) {
             $start_date = PHP_INT_MAX;
             $end_date = 0;
             $shipping_date = 0;
@@ -95,7 +134,7 @@ class Aggregate extends Model
             }
         }
 
-        return [implode(' / ', $names), implode(' / ', $dates)];
+        return [implode(' | ', $names), implode(' / ', $dates)];
     }
 
     public function printableName()
@@ -146,19 +185,29 @@ class Aggregate extends Model
     {
         $ret = $this->printableHeader();
 
+        $user = Auth::user();
         $tot = 0;
+        $friends_tot = 0;
 
         foreach($this->orders as $o) {
-            $b = $o->userBooking(null, false);
-            if ($b != null)
-                $tot += $b->total_value;
+            $b = $o->userBooking($user->id);
+            $tot += $b->total_value;
+            $friends_tot += $b->total_friends_value;
         }
 
-        if($tot == 0)
-            $ret .= '<span class="pull-right">' . _i("Non hai partecipato a quest'ordine") . '</span>';
-        else
-            $ret .= '<span class="pull-right">' . _i('Hai ordinato %s%s', printablePrice($tot), currentAbsoluteGas()->currency) . '</span>';
+        if($tot == 0 && $friends_tot == 0) {
+            $message = _i("Non hai partecipato a quest'ordine");
+        }
+        else {
+            $currency = currentAbsoluteGas()->currency;
 
+            if ($friends_tot == 0)
+                $message = _i('Hai ordinato %s%s', printablePrice($tot), $currency);
+            else
+                $message = _i('Hai ordinato %s%s + %s%s', printablePrice($tot), $currency, printablePrice($friends_tot), $currency);
+        }
+
+        $ret .= '<span class="pull-right">' . $message . '</span>';
         return $ret;
     }
 
@@ -194,7 +243,7 @@ class Aggregate extends Model
         $ret = [];
 
         foreach ($this->orders as $order) {
-            foreach ($order->bookings as $booking) {
+            foreach ($order->bookings()->toplevel()->get() as $booking) {
                 $booking->setRelation('order', $order);
                 $user_id = $booking->user->id;
 

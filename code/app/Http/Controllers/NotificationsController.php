@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
 use Auth;
-use Theme;
 use App\Notification;
 use App\User;
 use App\Order;
@@ -32,7 +31,7 @@ class NotificationsController extends Controller
             $data['notifications'] = $user->allnotifications;
         }
 
-        return Theme::view('pages.notifications', $data);
+        return view('pages.notifications', $data);
     }
 
     public function store(Request $request)
@@ -72,7 +71,7 @@ class NotificationsController extends Controller
                     if ($u == 'special::referrers') {
                         $us = User::get();
                         foreach ($us as $u) {
-                            if ($us->can('supplier.add', $us->gas) || $us->can('supplier.modify')) {
+                            if ($u->can('supplier.add', $u->gas) || $u->can('supplier.modify')) {
                                 $map[] = $u->id;
                             }
                         }
@@ -94,12 +93,7 @@ class NotificationsController extends Controller
         $n->users()->sync($users, ['done' => false]);
         $n->sendMail();
 
-        return $this->successResponse([
-            'id' => $n->id,
-            'name' => $n->printableName(),
-            'header' => $n->printableHeader(),
-            'url' => url('notifications/'.$n->id),
-        ]);
+        return $this->commonSuccessResponse($n);
     }
 
     public function show($id)
@@ -111,7 +105,7 @@ class NotificationsController extends Controller
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
-        return Theme::view('notification.show', ['notification' => $n]);
+        return view('notification.show', ['notification' => $n]);
     }
 
     public function markread($id)

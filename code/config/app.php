@@ -176,7 +176,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        Caffeinated\Themes\ThemesServiceProvider::class,
         Menu\MenuServiceProvider::class,
         Wilgucki\Csv\CsvServiceProvider::class,
         Elibyy\TCPDF\ServiceProvider::class,
@@ -238,8 +237,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Menu'      => Menu\Menu::class,
-        'Theme'     => Caffeinated\Themes\Facades\Theme::class,
-        'Component' => Caffeinated\Themes\Facades\Component::class,
         'CsvReader' => Wilgucki\Csv\Facades\Reader::class,
         'CsvWriter' => Wilgucki\Csv\Facades\Writer::class,
         'PDF'       => Elibyy\TCPDF\Facades\TCPDF::class,

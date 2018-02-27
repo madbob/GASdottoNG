@@ -1,4 +1,4 @@
-@extends($theme_layout)
+@extends('app')
 
 @section('content')
 
@@ -31,7 +31,7 @@
         <br>
     @endif
 
-    <form class="form-horizontal" method="POST" action="{{ url('login') }}">
+    <form class="form-horizontal" method="POST" action="{{ route('login') }}">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
         <div class="form-group">
@@ -86,7 +86,7 @@
 <div class="col-md-6 col-md-offset-3">
     <hr/>
     <p>
-        <a class="pull-right" href="{{ url('password/reset') }}">{{ _i('Recupero Password') }}</a>
+        <a class="pull-right" href="{{ route('password.request') }}">{{ _i('Recupero Password') }}</a>
     </p>
 </div>
 

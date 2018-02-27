@@ -4,7 +4,7 @@
 
         <hr/>
 
-        @foreach($order->bookings as $booking)
+        @foreach($order->bookings()->toplevel()->get() as $booking)
             <table border="1" style="width: 100%" cellpadding="5" nobr="true">
                 <tr>
                     <th colspan="3"><strong>{{ $booking->user->printableName() }}
@@ -24,7 +24,10 @@
                     ?></strong></th>
                 </tr>
 
-                @include('documents.booking_shipping', ['booking' => $booking])
+                @include('documents.booking_shipping', [
+                    'booking' => $booking,
+                    'products_source' => 'products_with_friends'
+                ])
 
                 <tr>
                     <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePrice($booking->total_value, ',') }} {{ $currentgas->currency }}</strong></th>

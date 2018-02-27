@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Auth;
-use Theme;
 
 use App\Services\SuppliersService;
 use App\Exceptions\AuthException;
@@ -28,7 +27,7 @@ class SuppliersController extends BackedController
     {
         try {
             $suppliers = $this->service->list('', true);
-            return Theme::view('pages.suppliers', ['suppliers' => $suppliers]);
+            return view('pages.suppliers', ['suppliers' => $suppliers]);
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -42,9 +41,9 @@ class SuppliersController extends BackedController
             $user = $request->user();
 
             if ($user->can('supplier.modify', $supplier) || ($supplier->trashed() && $user->can('supplier.add', $user->gas)))
-                return Theme::view('supplier.edit', ['supplier' => $supplier]);
+                return view('supplier.edit', ['supplier' => $supplier]);
             else
-                return Theme::view('supplier.show', ['supplier' => $supplier]);
+                return view('supplier.show', ['supplier' => $supplier]);
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -55,7 +54,7 @@ class SuppliersController extends BackedController
     {
         try {
             $supplier = $this->service->show($id);
-            return Theme::view('supplier.base_show', ['supplier' => $supplier, 'editable' => false]);
+            return view('supplier.base_show', ['supplier' => $supplier, 'editable' => false]);
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -66,7 +65,7 @@ class SuppliersController extends BackedController
     {
         $supplier = $this->service->show($id);
         if ($request->user()->can('supplier.modify', $supplier))
-            return Theme::view('supplier.products_details', ['supplier' => $supplier]);
+            return view('supplier.products_details', ['supplier' => $supplier]);
         else
             abort();
     }
@@ -75,7 +74,7 @@ class SuppliersController extends BackedController
     {
         $supplier = $this->service->show($id);
         if ($request->user()->can('supplier.modify', $supplier))
-            return Theme::view('supplier.products_grid', ['supplier' => $supplier]);
+            return view('supplier.products_grid', ['supplier' => $supplier]);
         else
             abort();
     }

@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 use DB;
 use Auth;
-use Theme;
 
 use App\Invoice;
 use App\Order;
@@ -55,10 +54,10 @@ class InvoicesController extends Controller
 
         $user = Auth::user();
         if ($user->can('movements.admin', $user->gas)) {
-            return Theme::view('invoice.edit', ['invoice' => $invoice]);
+            return view('invoice.edit', ['invoice' => $invoice]);
         }
         else if ($user->can('movements.view', $user->gas)) {
-            return Theme::view('invoice.show', ['invoice' => $invoice]);
+            return view('invoice.show', ['invoice' => $invoice]);
         }
         else {
             abort(503);
@@ -120,7 +119,7 @@ class InvoicesController extends Controller
         switch($step) {
             case 'review':
                 $orders = Order::whereIn('id', $request->input('order_id', []))->get();
-                return Theme::view('invoice.review', ['invoice' => $invoice, 'orders' => $orders]);
+                return view('invoice.review', ['invoice' => $invoice, 'orders' => $orders]);
                 break;
 
             case 'movements':
@@ -155,7 +154,7 @@ class InvoicesController extends Controller
                     }
                 }
 
-                return Theme::view('invoice.movements', [
+                return view('invoice.movements', [
                     'invoice' => $invoice,
                     'orders' => $orders,
                     'movements' => $movements,

@@ -1,9 +1,9 @@
-@extends($theme_layout)
+@extends('app')
 
 @section('content')
 
 <div class="col-md-6 col-md-offset-3">
-    <form class="form-horizontal" role="form" method="POST" action="{{ url('/password/email') }}">
+    <form class="form-horizontal" role="form" method="POST" action="{{ route('password.email') }}">
         {{ csrf_field() }}
 
         <div class="form-group">

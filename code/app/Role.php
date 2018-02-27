@@ -385,12 +385,17 @@ class Role extends Model
         foreach($basic_roles as $br) {
             $users = $br->users;
 
-            if ($subject == null && $users->isEmpty() == false)
-                return true;
-
-            $users = $br->usersByTarget($subject);
-            if ($users->isEmpty() == false)
-                return true;
+            if ($subject == null) {
+                if ($users->isEmpty() == false)
+                    return true;
+                else
+                    return false;
+            }
+            else {
+                $users = $br->usersByTarget($subject);
+                if ($users->isEmpty() == false)
+                    return true;
+            }
         }
 
         return false;
@@ -426,6 +431,7 @@ class Role extends Model
                 'users.admin' => _i('Amministrare le anagrafiche degli utenti'),
                 'users.view' => _i('Vedere tutti gli utenti'),
                 'users.movements' => _i('Amministrare i movimenti contabili degli utenti'),
+                'users.subusers' => _i('Avere sotto-utenti con funzioni limitate'),
                 'movements.admin' => _i('Amministrare tutti i movimenti contabili'),
                 'movements.view' => _i('Vedere i movimenti contabili'),
                 'movements.types' => _i('Amministrare i tipi dei movimenti contabili'),
@@ -433,6 +439,7 @@ class Role extends Model
                 'measures.admin' => _i('Amministrare le unità di misura'),
                 'gas.statistics' => _i('Visualizzare le statistiche'),
                 'notifications.admin' => _i('Amministrare le notifiche'),
+                'gas.multi' => _i('Amministrare i GAS su questa istanza'),
             ],
             'App\Supplier' => [
                 'supplier.modify' => _i('Modificare i fornitori assegnati'),

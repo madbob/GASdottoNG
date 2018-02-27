@@ -6,14 +6,11 @@ use Illuminate\Support\ServiceProvider;
 
 use Event;
 use Auth;
-use Theme;
 
 class GraphicInitServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        Theme::setLayout('app');
-
         view()->composer('*', function ($view) {
             if (Auth::check()) {
                 $user = Auth::user();

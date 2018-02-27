@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 use Auth;
@@ -29,20 +30,38 @@ class Movement extends Model
     */
     public $saved = false;
 
+    protected $casts = [
+        'amount' => 'float',
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('gas', function (Builder $builder) {
+            $builder->whereHas('registerer', function($query) {
+                $user = Auth::user();
+                if ($user == null)
+                    return;
+                $query->where('gas_id', $user->gas->id);
+            });
+        });
+    }
+
     public function sender()
     {
         if ($this->sender_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->sender_type)))
-            return $this->morphTo()->withTrashed();
+            return $this->morphTo()->withoutGlobalScopes()->withTrashed();
         else
-            return $this->morphTo();
+            return $this->morphTo()->withoutGlobalScopes();
     }
 
     public function target()
     {
         if ($this->target_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->target_type)))
-            return $this->morphTo()->withTrashed();
+            return $this->morphTo()->withoutGlobalScopes()->withTrashed();
         else
-            return $this->morphTo();
+            return $this->morphTo()->withoutGlobalScopes();
     }
 
     public function registerer()
@@ -127,7 +146,7 @@ class Movement extends Model
         return $ret;
     }
 
-    public function parseRequest(Request $request)
+    public function parseRequest($request)
     {
         $metadata = $this->type_metadata;
         if (isset($metadata->callbacks['parse'])) {

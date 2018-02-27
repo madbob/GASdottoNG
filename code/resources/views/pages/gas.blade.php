@@ -1,4 +1,4 @@
-@extends($theme_layout)
+@extends('app')
 
 @section('content')
 
@@ -16,7 +16,7 @@
                 <div id="general-config" class="panel-collapse collapse in" role="tabpanel">
                     <div class="panel-body">
                         <div class="row">
-                            <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ url('gas/' . $gas->id) }}">
+                            <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ route('gas.update', $gas->id) }}">
                                 <input type="hidden" name="reload-whole-page" value="1">
                                 <input type="hidden" name="group" value="general">
 
@@ -53,7 +53,7 @@
                 <div id="orders-config" class="panel-collapse collapse" role="tabpanel">
                     <div class="panel-body">
                         <div class="row">
-                            <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ url('gas/' . $gas->id) }}">
+                            <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ route('gas.update', $gas->id) }}">
                                 <input type="hidden" name="group" value="orders">
 
                                 <div class="col-md-12">
@@ -80,7 +80,7 @@
                 <div id="accounting-config" class="panel-collapse collapse" role="tabpanel">
                     <div class="panel-body">
                         <div class="row">
-                            <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ url('gas/' . $gas->id) }}">
+                            <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ route('gas.update', $gas->id) }}">
                                 <input type="hidden" name="group" value="banking">
 
                                 <div class="col-md-12">
@@ -230,7 +230,7 @@
                             <div class="col-md-12">
                                 @include('commons.loadablelist', [
                                     'identifier' => 'delivery-list',
-                                    'items' => App\Delivery::orderBy('name', 'asc')->get(),
+                                    'items' => $currentgas->deliveries,
                                     'empty_message' => _i('Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi, verrà attivata la possibilità per ogni utente di selezionare il proprio luogo di consegna preferito.')
                                 ])
                             </div>
@@ -317,33 +317,7 @@
 </div>
 
 @can('gas.permissions', $gas)
-    <div class="page-header">
-        <h3>{{ _i('Permessi') }}</h3>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            @include('commons.addingbutton', [
-                'template' => 'permissions.base-edit',
-                'typename' => 'role',
-                'typename_readable' => _i('Ruolo'),
-                'targeturl' => 'roles'
-            ])
-        </div>
-    </div>
-
-    <div class="clearfix"></div>
-    <br/>
-
-    <div class="row">
-        <div class="col-md-12">
-            @include('commons.loadablelist', [
-                'identifier' => 'role-list',
-                'items' => App\Role::sortedByHierarchy()
-            ])
-        </div>
-    </div>
-
+    @include('permissions.gas-management', ['gas' => $gas])
     <br/>
 @endcan
 

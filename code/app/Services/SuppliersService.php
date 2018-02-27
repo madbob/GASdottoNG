@@ -9,7 +9,6 @@ use Auth;
 use Log;
 use DB;
 use PDF;
-use Theme;
 
 use App\User;
 use App\Supplier;
@@ -40,26 +39,6 @@ class SuppliersService extends BaseService
         return Supplier::withTrashed()->findOrFail($id);
     }
 
-    public function destroy($id)
-    {
-        $supplier = DB::transaction(function () use ($id) {
-            $supplier = $this->show($id);
-
-            if ($supplier->trashed()) {
-                $this->ensureAuth(['supplier.add' => 'gas']);
-                $supplier->forceDelete();
-            }
-            else {
-                $this->ensureAuth(['supplier.modify' => $supplier]);
-                $supplier->delete();
-            }
-
-            return $supplier;
-        });
-
-        return $supplier;
-    }
-
     private function setCommonAttributes($supplier, $request)
     {
         $this->setIfSet($supplier, $request, 'name');
@@ -69,22 +48,6 @@ class SuppliersService extends BaseService
         $this->setIfSet($supplier, $request, 'description');
         $this->setIfSet($supplier, $request, 'payment_method');
         $this->setIfSet($supplier, $request, 'order_method');
-    }
-
-    public function update($id, array $request)
-    {
-        $supplier = $this->show($id);
-        $this->ensureAuth(['supplier.modify' => $supplier]);
-
-        DB::transaction(function () use ($supplier, $request) {
-            $this->setCommonAttributes($supplier, $request);
-            $supplier->restore();
-            $supplier->save();
-            $supplier->updateContacts($request);
-            return $supplier;
-        });
-
-        return $supplier;
     }
 
     public function store(array $request)
@@ -111,6 +74,22 @@ class SuppliersService extends BaseService
         return $supplier;
     }
 
+    public function update($id, array $request)
+    {
+        $supplier = $this->show($id);
+        $this->ensureAuth(['supplier.modify' => $supplier]);
+
+        DB::transaction(function () use ($supplier, $request) {
+            $this->setCommonAttributes($supplier, $request);
+            $supplier->restore();
+            $supplier->save();
+            $supplier->updateContacts($request);
+            return $supplier;
+        });
+
+        return $supplier;
+    }
+
     public function catalogue($id, $format)
     {
         $this->ensureAuth();
@@ -118,7 +97,7 @@ class SuppliersService extends BaseService
         $filename = sprintf('Listino %s.%s', $supplier->name, $format);
 
         if ($format == 'pdf') {
-            $html = Theme::view('documents.cataloguepdf', ['supplier' => $supplier])->render();
+            $html = view('documents.cataloguepdf', ['supplier' => $supplier])->render();
             PDF::SetTitle(_i('Listino %s del %s', $supplier->name, date('d/m/Y')));
             PDF::AddPage();
             PDF::writeHTML($html, true, false, true, false, '');
@@ -143,5 +122,25 @@ class SuppliersService extends BaseService
         $this->ensureAuth(['movements.view' => 'gas', 'movements.admin' => 'gas']);
         $supplier = $this->show($id);
         return $supplier->current_balance_amount;
+    }
+
+    public function destroy($id)
+    {
+        $supplier = DB::transaction(function () use ($id) {
+            $supplier = $this->show($id);
+
+            if ($supplier->trashed()) {
+                $this->ensureAuth(['supplier.add' => 'gas']);
+                $supplier->forceDelete();
+            }
+            else {
+                $this->ensureAuth(['supplier.modify' => $supplier]);
+                $supplier->delete();
+            }
+
+            return $supplier;
+        });
+
+        return $supplier;
     }
 }

@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 
 use DB;
 use Auth;
-use Theme;
 
 use App\Product;
 use App\Measure;
@@ -30,7 +29,7 @@ class MeasuresController extends Controller
 
         $measures = Measure::where('id', '!=', 'non-specificato')->orderBy('name', 'asc')->get();
 
-        return Theme::view('measures.edit', ['measures' => $measures]);
+        return view('measures.edit', ['measures' => $measures]);
     }
 
     public function store(Request $request)
@@ -98,6 +97,6 @@ class MeasuresController extends Controller
     public function listProducts(Request $request, $id)
     {
         $measure = Measure::findOrFail($id);
-        return Theme::view('measures.products-list', ['products' => $measure->products]);
+        return view('measures.products-list', ['products' => $measure->products]);
     }
 }

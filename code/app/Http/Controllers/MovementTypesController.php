@@ -8,7 +8,6 @@ use App\Http\Requests;
 
 use DB;
 use Auth;
-use Theme;
 
 use App\Movement;
 use App\MovementType;
@@ -29,7 +28,7 @@ class MovementTypesController extends Controller
             abort(503);
         }
 
-        return Theme::view('movementtypes.admin', ['types' => MovementType::types()]);
+        return view('movementtypes.admin', ['types' => MovementType::types()]);
     }
 
     public function store(Request $request)
@@ -49,12 +48,7 @@ class MovementTypesController extends Controller
         $type->function = '[]';
         $type->save();
 
-        return $this->successResponse([
-            'id' => $type->id,
-            'name' => $type->name,
-            'header' => $type->printableHeader(),
-            'url' => url('movtypes/' . $type->id),
-        ]);
+        return $this->commonSuccessResponse($type);
     }
 
     public function show(Request $request, $id)
@@ -66,7 +60,7 @@ class MovementTypesController extends Controller
 
         $type = MovementType::types($id);
         $type->id = $id;
-        return Theme::view('movementtypes.edit', ['type' => $type]);
+        return view('movementtypes.edit', ['type' => $type]);
     }
 
     private function parseRules(&$data, $role, $classname, $request)
@@ -200,11 +194,7 @@ class MovementTypesController extends Controller
 
         $type->save();
 
-        return $this->successResponse([
-            'id' => $type->id,
-            'header' => $type->printableHeader(),
-            'url' => url('movtypes/' . $type->id),
-        ]);
+        return $this->commonSuccessResponse($type);
     }
 
     public function destroy($id)

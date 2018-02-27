@@ -67,7 +67,7 @@ $existing = false;
                     </thead>
 
                     <tbody>
-                        @foreach($o->products as $product)
+                        @foreach($o->products_with_friends as $product)
                             <?php $discrete_quantity = $product->product->measure->discrete ?>
 
                             @if($product->variants->isEmpty() == true)

@@ -5,7 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 
 use Log;
-use Session;
+use App;
 use Auth;
 
 use App\Movement;
@@ -143,14 +143,12 @@ class MovementsKeeper extends ServiceProvider
                 l'effetto del movimento: in tal caso il saldo attuale è già
                 stato riportato alla situazione di partenza, e rieseguo tutti i
                 movimenti come se fosse la prima volta.
-                Il parametro 'movements-recalculating' viene aggiunto in
-                sessione da MovementsController::recalculate()
             */
-            if(Session::get('movements-recalculating') == true)
+            if (App::make('MovementsHub')->isRecalculating() == true)
                 return true;
 
             $original = Movement::find($movement->id);
-            $metadata = $original->type_metadata;
+            Log::debug('Aggiorno movimento contabile da ' . $original->amount . ' a ' . $movement->amount);
             $original->amount = $original->amount * -1;
             $original->apply();
 

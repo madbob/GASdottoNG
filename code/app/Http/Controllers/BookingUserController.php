@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use DB;
 use URL;
 use Auth;
-use Theme;
 use PDF;
 
 use App\User;
@@ -63,9 +62,8 @@ class BookingUserController extends BookingHandler
         }
 
         foreach ($aggregate->orders as $order) {
-            $booking = $order->userBooking($user_id, false);
-            if ($booking)
-                $booking->delete();
+            $booking = $order->userBooking($user_id);
+            $booking->delete();
         }
 
         return $this->successResponse();
@@ -74,7 +72,14 @@ class BookingUserController extends BookingHandler
     public function document(Request $request, $aggregate_id, $user_id)
     {
         $aggregate = Aggregate::findOrFail($aggregate_id);
-        $subject = $aggregate->bookingBy($user_id);
+        $user = User::find($user_id);
+
+        $bookings = [$aggregate->bookingBy($user_id)];
+        foreach($user->friends as $friend) {
+            $friend_booking = $aggregate->bookingBy($friend->id);
+            if (!empty($friend_booking->bookings))
+                $bookings[] = $friend_booking;
+        }
 
         $names = [];
         foreach($aggregate->orders as $order) {
@@ -82,9 +87,10 @@ class BookingUserController extends BookingHandler
         }
         $names = join(' / ', $names);
 
-        $html = Theme::view('documents.aggregate_shipping', [
+        $html = view('documents.aggregate_shipping', [
             'aggregate' => $aggregate,
-            'bookings' => [$subject]
+            'bookings' => $bookings,
+            'products_source' => 'products'
         ])->render();
 
         $filename = sprintf('Dettaglio Consegne ordini %s.pdf', $names);
@@ -94,15 +100,30 @@ class BookingUserController extends BookingHandler
         PDF::Output($filename, 'D');
     }
 
+    /*
+        Questa è la funzione che viene invocata per gli header delle
+        prenotazioni nel pannello consegne (nome utente + icona dello stato)
+    */
     public function objhead2(Request $request, $aggregate_id, $user_id)
     {
         $aggregate = Aggregate::findOrFail($aggregate_id);
-        $subject = $aggregate->bookingBy($user_id);
 
-        return response()->json([
-            'id' => $subject->id,
-            'header' => $subject->printableHeader(),
-            'url' => URL::action('BookingUserController@show', ['aggregate' => $aggregate_id, 'user' => $user_id])
-        ]);
+        $user = User::findOrFail($user_id);
+        if ($user->isFriend()) {
+            return response()->json([
+                'id' => $user->id,
+                'header' => $user->printableFriendHeader($aggregate),
+                'url' => URL::action('BookingUserController@show', ['aggregate' => $aggregate_id, 'user' => $user_id])
+            ]);
+        }
+        else {
+            $subject = $aggregate->bookingBy($user_id);
+
+            return response()->json([
+                'id' => $subject->id,
+                'header' => $subject->printableHeader(),
+                'url' => URL::action('BookingUserController@show', ['aggregate' => $aggregate_id, 'user' => $user_id])
+            ]);
+        }
     }
 }

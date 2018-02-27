@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Auth;
-use Theme;
 
 use App\Services\UsersService;
 use App\Exceptions\AuthException;
@@ -28,8 +27,8 @@ class UsersController extends BackedController
     {
         try {
             $user = Auth::user();
-            $users = $this->service->listUsers('', $user->can('users.admin', $user->gas));
-            return Theme::view('pages.users', ['users' => $users]);
+            $users = $this->service->list('', $user->can('users.admin', $user->gas));
+            return view('pages.users', ['users' => $users]);
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -41,7 +40,7 @@ class UsersController extends BackedController
         $term = $request->input('term');
 
         try {
-            $users = $this->service->listUsers($term);
+            $users = $this->service->list($term);
             $users = $this->toJQueryAutocompletionFormat($users);
             return json_encode($users);
         }
@@ -55,7 +54,7 @@ class UsersController extends BackedController
         try {
             $id = Auth::user()->id;
             $user = $this->service->show($id);
-            return Theme::view('pages.profile', ['user' => $user]);
+            return view('pages.profile', ['user' => $user]);
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -68,9 +67,9 @@ class UsersController extends BackedController
             $user = $this->service->show($id);
 
             if ($request->user()->can('users.admin', $user->gas))
-                return Theme::view('user.edit', ['user' => $user]);
+                return view('user.edit', ['user' => $user]);
             else
-                return Theme::view('user.show', ['user' => $user, 'editable' => true]);
+                return view('user.show', ['user' => $user, 'editable' => true]);
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -81,7 +80,7 @@ class UsersController extends BackedController
     {
         try {
             $user = $this->service->show($id);
-            return Theme::view('user.show', ['user' => $user, 'editable' => false]);
+            return view('user.show', ['user' => $user, 'editable' => false]);
         }
         catch (AuthException $e) {
             abort($e->status());

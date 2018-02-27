@@ -11,6 +11,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\ResetPassword::class,
         \App\Console\Commands\ImportLegacy::class,
         \App\Console\Commands\CheckFees::class,
+        \App\Console\Commands\CheckSystemNotifications::class,
         \App\Console\Commands\CloseOrders::class,
         \App\Console\Commands\FixFinalPrices::class,
     ];

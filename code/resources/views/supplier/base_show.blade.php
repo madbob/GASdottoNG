@@ -1,4 +1,4 @@
-<form class="form-horizontal main-form" method="PUT" action="{{ url('suppliers/' . $supplier->id) }}">
+<form class="form-horizontal main-form" method="PUT" action="{{ route('suppliers.update', $supplier->id) }}">
     <input type="hidden" name="id" value="{{ $supplier->id }}" />
 
     <div class="row">

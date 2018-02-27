@@ -164,8 +164,8 @@ class MovementType extends Model
                                 unset($movement->handling_status);
 
                                 foreach ($aggregate->orders as $order) {
-                                    $booking = $order->userBooking($user->id, false);
-                                    if ($booking == false)
+                                    $booking = $order->userBooking($user->id);
+                                    if ($booking->exists == false)
                                         continue;
 
                                     if (isset($handling_status->{$booking->id})) {
@@ -193,6 +193,7 @@ class MovementType extends Model
                                         $m->load('target');
                                     }
                                     else {
+                                        Log::debug('Aggiorno movimento contabile di consegna già pagata');
                                         $m = $existing_movement;
                                     }
 
@@ -226,10 +227,10 @@ class MovementType extends Model
                                 $target->save();
                             }
                         },
-                        'parse' => function (Movement &$movement, Request $request) {
+                        'parse' => function (Movement &$movement, $request) {
                             if ($movement->target_type == 'App\Aggregate') {
-                                if ($request->has('delivering-status')) {
-                                    $movement->handling_status = json_decode($request->input('delivering-status'));
+                                if (isset($request['delivering-status'])) {
+                                    $movement->handling_status = json_decode($request['delivering-status']);
                                 }
                             }
                         },

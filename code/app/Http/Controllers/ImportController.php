@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 use DB;
-use Theme;
 use Auth;
 use Log;
 use Hash;
@@ -75,7 +74,7 @@ class ImportController extends Controller
             $parameters['path'] = $path;
             $parameters['columns'] = $sample_line;
 
-            return Theme::view($response, $parameters);
+            return view($response, $parameters);
 
         } catch (\Exception $e) {
             return $this->errorResponse(_i('Errore nel salvataggio del file'));
@@ -84,7 +83,7 @@ class ImportController extends Controller
 
     public function getLegacy()
     {
-        return Theme::view('import.legacy-pre');
+        return view('import.legacy-pre');
     }
 
     public function postLegacy(Request $request)
@@ -93,7 +92,7 @@ class ImportController extends Controller
         $config = sprintf('%s/server/config.php', $old_path);
 
         if (file_exists($config) == false) {
-            return Theme::view('import.legacy-pre', ['error' => _i('Il file di configurazione non è stato trovato in %s', $config)]);
+            return view('import.legacy-pre', ['error' => _i('Il file di configurazione non è stato trovato in %s', $config)]);
         }
         else {
             require_once($config);
@@ -109,7 +108,7 @@ class ImportController extends Controller
                 'old_database' => $dbname
             ], $output);
 
-            return Theme::view('import.legacy-post', ['output' => $output]);
+            return view('import.legacy-post', ['output' => $output]);
         }
     }
 
@@ -165,7 +164,7 @@ class ImportController extends Controller
                     }
 
                     if (!empty($errors)) {
-                        return Theme::view('import.csvimportfinal', [
+                        return view('import.csvimportfinal', [
                             'title' => _i('Prodotti importati'),
                             'objects' => [],
                             'errors' => $errors,
@@ -238,7 +237,7 @@ class ImportController extends Controller
 
                     DB::commit();
 
-                    return Theme::view('import.csvimportfinal', [
+                    return view('import.csvimportfinal', [
                         'title' => _i('Prodotti importati'),
                         'objects' => $products,
                         'errors' => $errors,
@@ -299,32 +298,39 @@ class ImportController extends Controller
                                 $u->gas_id = $gas->id;
                                 $u->username = $login;
                                 $u->password = Hash::make($login);
+                                $u->member_since = date('Y-m-d');
                             }
 
                             $contacts = [];
                             $credit = null;
 
                             foreach ($columns as $index => $field) {
+                                $value = (string)$line[$index];
+
                                 if ($field == 'none') {
                                     continue;
                                 }
                                 else if ($field == 'phone' || $field == 'email') {
                                     $c = new Contact();
                                     $c->type = $field;
-                                    $c->value = $line[$index];
+                                    $c->value = $value;
                                     $contacts[] = $c;
                                     continue;
                                 }
                                 else if ($field == 'member_since') {
-                                    $u->$field = date('Y-m-d', strtotime($line[$index]));
+                                    $u->$field = date('Y-m-d', strtotime($value));
                                 }
                                 else if ($field == 'credit') {
                                     if (!empty($line[$index]) && $line[$index] != 0) {
-                                        $credit = str_replace(',', '.', $line[$index]);
+                                        $credit = str_replace(',', '.', $value);
                                     }
                                 }
+                                else if ($field == 'ceased') {
+                                    if (strtolower($value) == 'true' || strtolower($value) == 'vero' || $value == '1')
+                                        $u->deleted_at = date('Y-m-d');
+                                }
                                 else {
-                                    $u->$field = $line[$index];
+                                    $u->$field = $value;
                                 }
                             }
 
@@ -350,7 +356,7 @@ class ImportController extends Controller
 
                     DB::commit();
 
-                    return Theme::view('import.csvimportfinal', [
+                    return view('import.csvimportfinal', [
                         'title' => _i('Utenti importati'),
                         'objects' => $users,
                         'errors' => $errors,
@@ -419,6 +425,7 @@ class ImportController extends Controller
 
                                     if ($user == null) {
                                         $save_me = false;
+                                        $errors[] = implode($target_separator, $line) . '<br/>' . _i('Utente non trovato: %s', $name);
                                         continue;
                                     }
 
@@ -439,7 +446,7 @@ class ImportController extends Controller
                         }
                     }
 
-                    return Theme::view('import.csvmovementsselect', ['movements' => $movements, 'errors' => $errors]);
+                    return view('import.csvmovementsselect', ['movements' => $movements, 'errors' => $errors]);
                     break;
 
                 case 'run':
@@ -496,7 +503,7 @@ class ImportController extends Controller
 
                     DB::commit();
 
-                    return Theme::view('import.csvimportfinal', [
+                    return view('import.csvimportfinal', [
                         'title' => _i('Movimenti importati'),
                         'objects' => $movements,
                         'errors' => $errors
@@ -570,7 +577,7 @@ class ImportController extends Controller
                 $archivepath = sprintf('%s/%s', $working_dir, $filename);
 
                 $data = $this->readGdxpFile($archivepath, false, null);
-                return Theme::view('import.gdxpsummary', ['data' => $data, 'path' => $archivepath]);
+                return view('import.gdxpsummary', ['data' => $data, 'path' => $archivepath]);
             }
             else if ($step == 'run') {
                 DB::beginTransaction();
@@ -584,12 +591,12 @@ class ImportController extends Controller
                 unlink($archivepath);
                 DB::commit();
 
-                return Theme::view('import.gdxpfinal', ['data' => $data]);
+                return view('import.gdxpfinal', ['data' => $data]);
             }
         }
         catch(\Exception $e) {
             Log::error(_i('Errore importando file GDXP'));
-            return Theme::view('import.gdxperror');
+            return view('import.gdxperror');
         }
     }
 }

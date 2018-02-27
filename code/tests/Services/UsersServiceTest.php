@@ -81,14 +81,14 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithNoPerms);
 
-        $this->usersService->listUsers();
+        $this->usersService->list();
     }
 
     public function testList()
     {
         $this->actingAs($this->userWithViewPerm);
 
-        $users = $this->usersService->listUsers();
+        $users = $this->usersService->list();
         $this->assertCount(7, $users);
         foreach ($users as $user) {
             $this->assertEquals($this->gas->id, $user->gas_id);
@@ -114,7 +114,7 @@ class UsersServiceTest extends TestCase
             'firstname' => 'luigi'
         ]);
 
-        $users = $this->usersService->listUsers('mario');
+        $users = $this->usersService->list('mario');
         $this->assertCount(2, $users);
         foreach ($users as $user) {
             $this->assertEquals($this->gas->id, $user->gas_id);

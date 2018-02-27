@@ -26,9 +26,9 @@
                         <div class="radio">
                             <label>
                                 <input type="radio" name="supplier_source" value="update">
-                                    {{ _i('Aggiorna fornitore esistente') }}: <select name="supplier_update" class="form-control">
+                                {{ _i('Aggiorna fornitore esistente') }}: <select name="supplier_update" class="form-control">
                                     <option value="none" selected>{{ _i('Seleziona un fornitore') }}</option>
-                                    @foreach(App\Supplier::orderBy('name', 'asc')->get() as $s)
+                                    @foreach($currentgas->suppliers as $s)
                                         <option value="{{ $s->id }}">{{ $s->name }}</option>
                                     @endforeach
                                 </select><br/>

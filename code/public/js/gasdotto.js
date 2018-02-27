@@ -258,7 +258,7 @@ function priceRound(price) {
     un attributo, questa funzione serve ad applicare l'escape necessario
 */
 function sanitizeId(identifier) {
-    return identifier.replace(/:/g, '\\:');
+    return identifier.replace(/:/g, '\\:').replace(/\[/g, '\\[').replace(/\]/g, '\\]');
 }
 
 function voidForm(form) {
@@ -1703,6 +1703,18 @@ $(document).ready(function() {
         }
     });
 
+    $('body').on('change', '.link-filters input:radio', function() {
+        var filter = $(this).closest('.table-filters');
+        var target = filter.attr('data-link-target');
+        var link = $(target);
+        var attribute = $(this).attr('name');
+        var value = $(this).val();
+
+        var parsed = new URL(link.attr('href'));
+        var url = parsed.protocol + '//' + parsed.host + parsed.pathname + '?' + attribute + '=' + value;
+        link.attr('href', url);
+    });
+
     $('body').on('change', '.img-preview input:file', function() {
         previewImage(this);
     });
@@ -1731,6 +1743,30 @@ $(document).ready(function() {
 
             success: function(data) {
                 inlineFeedback(save_button, _('Salvato!'));
+                miscInnerCallbacks(form, data);
+            }
+        });
+    });
+
+    $('body').on('change', '.auto-submit select', function(event) {
+        var form = $(this).closest('form');
+
+        var data = new FormData(form.get(0));
+        var method = form.attr('method').toUpperCase();
+        if (method == 'PUT') {
+            method = 'POST';
+            data.append('_method', 'PUT');
+        }
+
+        $.ajax({
+            method: method,
+            url: form.attr('action'),
+            data: data,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+
+            success: function(data) {
                 miscInnerCallbacks(form, data);
             }
         });
@@ -2364,6 +2400,31 @@ $(document).ready(function() {
         });
 
         return false;
+    });
+
+    /*
+        Multi-GAS
+    */
+
+    $('body').on('change', '.multigas-editor input:checkbox[data-gas]', function(e) {
+        var check = $(this);
+
+        var url = '';
+        if (check.is(':checked') == true)
+            url = absolute_url + '/multigas/attach';
+        else
+            url = absolute_url + '/multigas/detach';
+
+        var data = {};
+        data.gas = check.attr('data-gas');
+        data.target_id = check.attr('data-target-id');
+        data.target_type = check.attr('data-target-type');
+
+        $.ajax({
+            method: 'POST',
+            url: url,
+            data: data
+        });
     });
 
     /*

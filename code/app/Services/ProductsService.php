@@ -26,18 +26,6 @@ class ProductsService extends BaseService
         return Product::withTrashed()->with('variants')->with('variants.values')->findOrFail($id);
     }
 
-    public function destroy($id)
-    {
-        $product = DB::transaction(function() use ($id) {
-            $product = $this->show($id);
-            $this->ensureAuth(['supplier.modify' => $product->supplier]);
-            $product->delete();
-            return $product;
-        });
-
-        return $product;
-    }
-
     private function enforceMeasure($product, $request)
     {
         if ($product->measure->discrete) {
@@ -58,8 +46,15 @@ class ProductsService extends BaseService
         $this->setIfSet($product, $request, 'description');
         $this->transformAndSetIfSet($product, $request, 'price', 'enforceNumber');
         $this->transformAndSetIfSet($product, $request, 'transport', 'enforceNumber');
+
         $this->setIfSet($product, $request, 'category_id');
+        if (empty($product->category_id))
+            $product->category_id = 'non-specificato';
+
         $this->setIfSet($product, $request, 'measure_id');
+        if (empty($product->measure_id))
+            $product->measure_id = 'non-specificato';
+
         $this->transformAndSetIfSet($product, $request, 'discount', 'normalizePercentage');
 
         $this->transformAndSetIfSet($product, $request, 'vat_rate_id', function($value) {
@@ -68,6 +63,23 @@ class ProductsService extends BaseService
             else
                 return null;
         });
+    }
+
+    public function store(array $request)
+    {
+        $supplier = Supplier::findOrFail($request['supplier_id']);
+        $this->ensureAuth(['supplier.modify' => $supplier]);
+
+        $product = new Product();
+        $product->supplier_id = $supplier->id;
+        $product->active = true;
+
+        DB::transaction(function () use ($product, $request) {
+            $this->setCommonAttributes($product, $request);
+            $product->save();
+        });
+
+        return $product;
     }
 
     public function update($id, array $request)
@@ -93,23 +105,6 @@ class ProductsService extends BaseService
         return $product;
     }
 
-    public function store(array $request)
-    {
-        $supplier = Supplier::findOrFail($request['supplier_id']);
-        $this->ensureAuth(['supplier.modify' => $supplier]);
-
-        $product = new Product();
-        $product->supplier_id = $supplier->id;
-        $product->active = true;
-
-        DB::transaction(function () use ($product, $request) {
-            $this->setCommonAttributes($product, $request);
-            $product->save();
-        });
-
-        return $product;
-    }
-
     public function duplicate($id)
     {
         $original = $this->show($id);
@@ -119,6 +114,18 @@ class ProductsService extends BaseService
         $product->id = '';
         $product->name = 'Copia di ' . $product->name;
         $product->save();
+        return $product;
+    }
+
+    public function destroy($id)
+    {
+        $product = DB::transaction(function() use ($id) {
+            $product = $this->show($id);
+            $this->ensureAuth(['supplier.modify' => $product->supplier]);
+            $product->delete();
+            return $product;
+        });
+
         return $product;
     }
 }
