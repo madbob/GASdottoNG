@@ -30,6 +30,10 @@ class Movement extends Model
     */
     public $saved = false;
 
+    protected $casts = [
+        'amount' => 'float',
+    ];
+
     protected static function boot()
     {
         parent::boot();
