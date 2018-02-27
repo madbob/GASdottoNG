@@ -258,7 +258,7 @@ function priceRound(price) {
     un attributo, questa funzione serve ad applicare l'escape necessario
 */
 function sanitizeId(identifier) {
-    return identifier.replace(/:/g, '\\:');
+    return identifier.replace(/:/g, '\\:').replace(/\[/g, '\\[').replace(/\]/g, '\\]');
 }
 
 function voidForm(form) {
