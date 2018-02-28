@@ -308,6 +308,12 @@ trait GASModel
                         'test' => function ($obj) {
                             return $obj->status == 'pending';
                         },
+                        'text' => _i('In Attesa'),
+                    ],
+                    'pushpin' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'to_verify';
+                        },
                         'text' => _i('Da Verificare'),
                     ],
                     'search' => (object) [

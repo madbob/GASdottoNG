@@ -118,8 +118,11 @@ class InvoicesController extends Controller
 
         switch($step) {
             case 'review':
-                $orders = Order::whereIn('id', $request->input('order_id', []))->get();
-                return view('invoice.review', ['invoice' => $invoice, 'orders' => $orders]);
+                $order_ids = $request->input('order_id', []);
+                $invoice->orders()->sync($order_ids);
+                $invoice->status = 'to_verify';
+                $invoice->save();
+                return $this->successResponse();
                 break;
 
             case 'movements':

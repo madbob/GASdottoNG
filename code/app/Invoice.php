@@ -34,7 +34,9 @@ class Invoice extends Model
 
     public function ordersCandidates()
     {
-        return $this->supplier->orders()->where('status', 'shipped')->doesntHave('invoice')->get();
+        return $this->supplier->orders()->where('status', 'shipped')->whereDoesntHave('invoice', function($query) {
+            $query->whereIn('invoices.status', ['verified', 'payed']);
+        })->get();
     }
 
     public function getNameAttribute()
@@ -46,8 +48,12 @@ class Invoice extends Model
     {
         return [
             [
-                'label' => _i('Da Verificare'),
+                'label' => _i('In Attesa'),
                 'value' => 'pending',
+            ],
+            [
+                'label' => _i('Da Verificare'),
+                'value' => 'to_verify',
             ],
             [
                 'label' => _i('Verificata'),

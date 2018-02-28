@@ -15,7 +15,7 @@ class CreateInvoicesTable extends Migration
             $table->string('supplier_id');
             $table->string('number')->default('');
             $table->date('date');
-            $table->enum('status', ['pending', 'verified', 'payed'])->default('pending');
+            $table->enum('status', ['pending', 'to_verify', 'verified', 'payed'])->default('pending');
             $table->decimal('total', 6, 2)->default(0);
             $table->decimal('total_vat', 6, 2)->default(0);
             $table->integer('payment_id')->unsigned()->default(0);
