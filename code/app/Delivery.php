@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Auth;
 
 use App\Events\SluggableCreating;
+use App\Events\AttachableToGas;
 use App\GASModel;
 use App\SluggableID;
 
