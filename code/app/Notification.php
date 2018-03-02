@@ -9,6 +9,7 @@ use App\Notifications\GenericNotificationWrapper;
 
 use Auth;
 use Mail;
+use Log;
 
 use App\GASModel;
 
