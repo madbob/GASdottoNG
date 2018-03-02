@@ -6,7 +6,7 @@ $domid = str_random(10);
 
 <br/>
 
-<div class="row gray-row">
+<div class="row">
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-6">
