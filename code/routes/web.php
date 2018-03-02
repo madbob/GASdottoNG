@@ -66,6 +66,7 @@ Route::post('orders/fixes/{id}', 'OrdersController@postFixes');
 Route::get('orders/document/{id}/{type}', 'OrdersController@document');
 
 Route::get('aggregates/{id}/header', 'AggregatesController@objhead')->name('aggregates.objhead');
+Route::get('aggregates/notify/test/{id}', 'AggregatesController@testNotify');
 Route::post('aggregates/notify/{id}', 'AggregatesController@notify');
 Route::get('aggregates/document/{id}/{type}/{subtype?}', 'AggregatesController@document');
 
