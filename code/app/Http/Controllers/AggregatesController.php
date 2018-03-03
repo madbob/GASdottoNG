@@ -38,31 +38,27 @@ class AggregatesController extends OrdersController
         $data = json_decode($data);
 
         foreach ($data as $a) {
-            if (empty($a->orders)) {
-                $aggr = Aggregate::find($a->id);
-                if ($aggr != null) {
-                    $aggr->delete();
-                }
+            if ($a->id == 'new') {
+                $aggr = new Aggregate();
+                $aggr->save();
+                $id = $aggr->id;
             }
             else {
-                if ($a->id == 'new') {
-                    $aggr = new Aggregate();
-                    $aggr->save();
-                    $id = $aggr->id;
-                }
-                else {
-                    $id = $a->id;
-                }
+                $id = $a->id;
+            }
 
-                foreach ($a->orders as $o) {
-                    $order = Order::find($o);
-                    if ($order && $order->aggregate_id != $id) {
-                        $order->aggregate_id = $id;
-                        $order->save();
-                    }
+            foreach ($a->orders as $o) {
+                $order = Order::find($o);
+                if ($order && $order->aggregate_id != $id) {
+                    $order->aggregate_id = $id;
+                    $order->save();
                 }
             }
         }
+
+        $empty_aggregates = Aggregate::has('orders', '=', 0)->get();
+        foreach($empty_aggregates as $ea)
+            $ea->delete();
 
         return $this->successResponse();
     }
@@ -116,6 +112,26 @@ class AggregatesController extends OrdersController
         return response()->json((object) [
             'last-notification-date-' . $id => $aggregate->printableDate('last_notify')
         ]);
+    }
+
+    /*
+        Questa funzione serve solo per debuggare le mail di riassunto dei
+        prodotti destinate agli utenti
+    */
+    public function testNotify(Request $request, $id)
+    {
+        if (env('APP_DEBUG', false) == false)
+            abort(403);
+
+        $aggregate = Aggregate::findOrFail($id);
+        $message = $request->input('message', '');
+
+        foreach($aggregate->bookings as $booking) {
+            if ($booking->status != 'shipped') {
+                echo view('emails.booking', ['booking' => $booking, 'txt_message' => $message])->render();
+                echo '<hr>';
+            }
+        }
     }
 
     public function document(Request $request, $id, $type, $subtype = 'none')

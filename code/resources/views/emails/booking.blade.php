@@ -31,6 +31,39 @@
         </tbody>
     </table>
 
+    @if($b->friends_bookings->isEmpty() == false)
+        <h5>{{ _i('Gli ordini dei tuoi amici') }}</h5>
+
+        @foreach($b->friends_bookings as $fb)
+            <p>{{ $fb->user->printableName() }}</p>
+
+            <table style="width:100%">
+                <thead>
+                    <th style="width:50%; text-align: left">{{ _i('Prodotto') }}</th>
+                    <th style="width:25%; text-align: left">{{ _i('Quantità') }}</th>
+                    <th style="width:25%; text-align: left">{{ _i('Prezzo') }}</th>
+                </thead>
+
+                <tbody>
+                    @foreach($fb->products as $product)
+                        <?php $variable = $variable || $product->product->variable ?>
+                        <tr>
+                            <td>{{ $product->product->printableName() }}</td>
+                            <td>{{ $product->quantity }} {{ $product->product->printableMeasure() }}</td>
+                            <td>{{ printablePrice($product->quantityValue()) }} {{ $currentgas->currency }}</td>
+                        </tr>
+                    @endforeach
+
+                    <tr>
+                        <td><strong>{{ _i('Totale') }}</strong></td>
+                        <td>&nbsp;</td>
+                        <td>{{ printablePrice($fb->value) }} {{ $currentgas->currency }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        @endforeach
+    @endif
+
     @if($variable)
         <p>
             {{ _i("L'importo reale di questo ordine dipende dal peso effettivo dei prodotti consegnati; il totale qui riportato è solo indicativo.") }}
@@ -38,7 +71,7 @@
     @endif
 @endforeach
 
-@if($b->order->shipping != null)
+@if($b && $b->order->shipping != null)
     <p>
         {{ _i('La consegna avverrà %s.', $b->order->printableDate('shipping')) }}
     </p>

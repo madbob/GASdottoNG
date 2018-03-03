@@ -209,7 +209,7 @@ class MovementsService extends BaseService
         $hub = App::make('MovementsHub');
 
         try {
-            return DB::transaction(function() {
+            return DB::transaction(function() use ($hub) {
                 $hub->setRecalculating(true);
                 $current_status = CreditableTrait::resetAllCurrentBalances();
                 $this->recalculateCurrentBalance();
@@ -233,7 +233,7 @@ class MovementsService extends BaseService
         try {
             $date = decodeDate($request['date']);
 
-            return DB::transaction(function() use ($date) {
+            return DB::transaction(function() use ($hub, $date) {
                 $hub->setRecalculating(true);
 
                 /*

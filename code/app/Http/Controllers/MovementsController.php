@@ -144,6 +144,17 @@ class MovementsController extends BackedController
         return view('movement.selectors', $data);
     }
 
+    public function show(Request $request, $id)
+    {
+        try {
+            $movement = $this->service->show($id);
+            return view('movement.show', ['obj' => $movement]);
+        }
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+    }
+
     public function show_ro(Request $request, $id)
     {
         try {

@@ -33,7 +33,7 @@ $count_total = $count_total * -1;
                     <urn1:Id>
                         <urn1:OrgId>
                             <urn1:Othr>
-                                <urn1:Id>{{ $currentgas->rid['org'] }}</urn1:Id>
+                                <urn1:Id>{{ $currentgas->rid['org'] ?? $currentgas->rid['org'] : '' }}</urn1:Id>
                                 <urn1:Issr>CBI</urn1:Issr>
                             </urn1:Othr>
                         </urn1:OrgId>

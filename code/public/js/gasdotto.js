@@ -202,7 +202,6 @@ function generalInit() {
         }
     });
 
-    setupVariantsEditor();
     setupImportCsvEditor();
     setupPermissionsEditor();
 
@@ -849,89 +848,6 @@ function bookingTotal(editor) {
         payment_modal.find('input[name=amount]').val(grand_total.toFixed(2)).change();
         payment_modal.find('input[name=delivering-status]').val(JSON.stringify(status));
     }
-}
-
-function setupVariantsEditor() {
-    $('.variants-editor').on('click', '.delete-variant', function() {
-        var editor = $(this).closest('.variants-editor');
-        var id = $(this).closest('.row').find('input:hidden[name=variant_id]').val();
-
-        $.ajax({
-            method: 'DELETE',
-            url: absolute_url + '/variants/' + id,
-            dataType: 'html',
-
-            success: function(data) {
-                editor.replaceWith(data);
-            }
-        });
-
-    }).on('click', '.edit-variant', function() {
-        var row = $(this).closest('.row');
-        var id = row.find('input:hidden[name=variant_id]').val();
-        var name = row.find('span.variant_name').text().trim();
-        var offset = row.find('input:hidden[name=variant_offset]').val();
-        var values = row.find('.exploded_values').contents().clone();
-
-        var form = $(this).closest('.list-group').find('.creating-variant-form');
-        form.find('input:hidden[name=variant_id]').val(id);
-        form.find('input[name=name]').val(name);
-        form.find('.values_table').empty().append(values);
-        form.find('.many-rows').manyrows();
-
-        if (offset == '1') {
-            form.find('input[name=has_offset]').bootstrapToggle('on');
-            form.find('input[name*=price_offset]').closest('.form-group').show();
-        } else {
-            form.find('input[name=has_offset]').bootstrapToggle('off');
-            form.find('input[name*=price_offset]').val('0').closest('.form-group').hide();
-        }
-
-        form.closest('.modal').modal('show');
-
-    }).on('click', '.add-variant', function() {
-        var row = $(this).closest('.list-group');
-        var form = row.find('.creating-variant-form');
-        var modal = row.find('.create-variant');
-        form.find('.many-rows').manyrows('refresh');
-        form.find('input:text').val('');
-        form.find('input:hidden[name=variant_id]').val('');
-        form.find('input:checkbox').bootstrapToggle('off');
-        form.find('input[name*=price_offset]').val('0').closest('.form-group').hide();
-        modal.modal('show');
-    });
-
-    $('.creating-variant-form').on('change', 'input:checkbox[name=has_offset]', function() {
-        var has = $(this).is(':checked');
-        var form = $(this).closest('form');
-
-        if (has == true)
-            form.find('input[name*=price_offset]').closest('.form-group').show();
-        else
-            form.find('input[name*=price_offset]').val('0').closest('.form-group').hide();
-
-    }).submit(function(e) {
-        e.preventDefault();
-        var modal = $(this).closest('.modal');
-        var editor = $(this).closest('.list-group').find('.variants-editor');
-        var data = $(this).serializeArray();
-
-        editor.empty().append(loadingPlaceholder());
-
-        $.ajax({
-            method: 'POST',
-            url: absolute_url + '/variants',
-            data: data,
-            dataType: 'html',
-
-            success: function(data) {
-                editor.replaceWith(data);
-                modal.modal('hide');
-            }
-        });
-
-        return false;
-    });
 }
 
 function getBookingRowStatus(row) {
@@ -2165,6 +2081,86 @@ $(document).ready(function() {
                 }, 200);
             }
         });
+    });
+
+    $('body').on('click', '.variants-editor .delete-variant', function() {
+        var editor = $(this).closest('.variants-editor');
+        var id = $(this).closest('.row').find('input:hidden[name=variant_id]').val();
+
+        $.ajax({
+            method: 'DELETE',
+            url: absolute_url + '/variants/' + id,
+            dataType: 'html',
+
+            success: function(data) {
+                editor.replaceWith(data);
+            }
+        });
+
+    }).on('click', '.variants-editor .edit-variant', function() {
+        var row = $(this).closest('.row');
+        var id = row.find('input:hidden[name=variant_id]').val();
+        var name = row.find('span.variant_name').text().trim();
+        var offset = row.find('input:hidden[name=variant_offset]').val();
+        var values = row.find('.exploded_values').contents().clone();
+
+        var form = $(this).closest('.list-group').find('.creating-variant-form');
+        form.find('input:hidden[name=variant_id]').val(id);
+        form.find('input[name=name]').val(name);
+        form.find('.values_table').empty().append(values);
+        form.find('.many-rows').manyrows();
+
+        if (offset == '1') {
+            form.find('input[name=has_offset]').bootstrapToggle('on');
+            form.find('input[name*=price_offset]').closest('.form-group').show();
+        } else {
+            form.find('input[name=has_offset]').bootstrapToggle('off');
+            form.find('input[name*=price_offset]').val('0').closest('.form-group').hide();
+        }
+
+        form.closest('.modal').modal('show');
+
+    }).on('click', '.variants-editor .add-variant', function() {
+        var row = $(this).closest('.list-group');
+        var form = row.find('.creating-variant-form');
+        var modal = row.find('.create-variant');
+        form.find('.many-rows').manyrows('refresh');
+        form.find('input:text').val('');
+        form.find('input:hidden[name=variant_id]').val('');
+        form.find('input:checkbox').bootstrapToggle('off');
+        form.find('input[name*=price_offset]').val('0').closest('.form-group').hide();
+        modal.modal('show');
+
+    }).on('change', '.creating-variant-form input:checkbox[name=has_offset]', function() {
+        var has = $(this).is(':checked');
+        var form = $(this).closest('form');
+
+        if (has == true)
+            form.find('input[name*=price_offset]').closest('.form-group').show();
+        else
+            form.find('input[name*=price_offset]').val('0').closest('.form-group').hide();
+
+    }).on('submit', '.creating-variant-form', function(e) {
+        e.preventDefault();
+        var modal = $(this).closest('.modal');
+        var editor = $(this).closest('.list-group').find('.variants-editor');
+        var data = $(this).serializeArray();
+
+        editor.empty().append(loadingPlaceholder());
+
+        $.ajax({
+            method: 'POST',
+            url: absolute_url + '/variants',
+            data: data,
+            dataType: 'html',
+
+            success: function(data) {
+                editor.replaceWith(data);
+                modal.modal('hide');
+            }
+        });
+
+        return false;
     });
 
     /*

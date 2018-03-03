@@ -68,7 +68,7 @@ if (!isset($amount_label))
                     @include('commons.radios', [
                         'name' => 'method',
                         'label' => _i('Metodo'),
-                        'values' => $obj->valid_payments
+                        'values' => $obj ? $obj->valid_payments : App\MovementType::payments()
                     ])
 
                     @include('commons.datefield', [

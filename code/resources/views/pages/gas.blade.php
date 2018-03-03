@@ -146,7 +146,7 @@
                 <div id="import-config" class="panel-collapse collapse" role="tabpanel">
                     <div class="panel-body">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-12 form-horizontal">
                                 <div class="form-group">
                                     <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Importazione') }}</label>
                                     <div class="col-sm-{{ $fieldsize }}">
