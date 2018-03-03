@@ -236,6 +236,20 @@ function htmlize($string)
     return $string;
 }
 
+function as_selectable($array, $value_callback, $label_callback)
+{
+    $ret = [];
+
+    foreach($array as $i => $a) {
+        $ret[] = [
+            'value' => $value_callback($i, $a),
+            'label' => $label_callback($i, $a),
+        ];
+    }
+
+    return $ret;
+}
+
 function iban_split($iban, $field)
 {
     switch($field) {

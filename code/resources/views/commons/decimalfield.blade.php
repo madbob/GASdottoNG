@@ -14,6 +14,9 @@ else {
     $disabled = isset($disabled) ? $disabled : false;
 }
 
+if (!isset($allow_negative))
+    $allow_negative = false;
+
 $class = 'form-control number';
 
 if(!isset($decimals))
@@ -57,6 +60,10 @@ $class .= ' trim-' . $decimals . '-ddigits';
 
             @if($squeeze == true)
                 placeholder="{{ $label }}"
+            @endif
+
+            @if($allow_negative)
+                data-allow-negative="1"
             @endif
 
             autocomplete="off">

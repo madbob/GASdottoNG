@@ -51,6 +51,9 @@ Route::post('products/massiveupdate', 'ProductsController@massiveUpdate');
 
 Route::get('vatrates/{id}/header', 'VatRatesController@objhead')->name('vatrates.objhead');
 
+Route::get('invoices/{id}/products', 'InvoicesController@products')->name('invoices.products');
+Route::get('invoices/{id}/movements', 'InvoicesController@getMovements')->name('invoices.movements');
+Route::post('invoices/{id}/movements', 'InvoicesController@postMovements')->name('invoices.savemovements');
 Route::post('invoices/wire/{step}/{id}', 'InvoicesController@wiring');
 Route::get('invoices/{id}/header', 'InvoicesController@objhead');
 

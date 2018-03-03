@@ -1,4 +1,4 @@
-<form class="form-horizontal main-form invoice-editor" method="PUT" action="{{ url('/invoices/' . $invoice->id) }}">
+<form class="form-horizontal main-form invoice-editor" method="PUT" action="{{ route('invoices.update', $invoice->id) }}">
     <div class="row">
         <div class="col-md-6">
             @include('invoice.base-edit', ['invoice' => $invoice])
@@ -11,38 +11,88 @@
                 'values' => App\Invoice::statuses()
             ])
 
-            @if($invoice->payment)
-                @include('commons.movementfield', [
-                    'obj' => $invoice->payment,
-                    'name' => 'payment_id',
-                    'label' => _i('Pagamento'),
-                    'default' => null,
-                    'to_modal' => [
-                        'amount_editable' => $currentuser->can('movements.admin', $currentgas)
-                    ]
-                ])
-            @else
-                @include('commons.staticmovementfield', [
-                    'obj' => null,
-                    'name' => 'payment_id',
-                    'label' => _i('Pagamento'),
-                ])
-            @endif
+            <div class="form-group">
+                <label for="payment" class="col-sm-{{ $labelsize }} control-label">{{ _i('Pagamento') }}</label>
+
+                <div class="col-sm-{{ $fieldsize }}">
+                    @if($invoice->payment)
+                        <?php $rand = rand() ?>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="static-label text-muted" data-updatable-name="movement-date-{{ $rand }}" data-updatable-field="name">
+                                    {!! $invoice->payment->printableName() !!}
+                                </label>
+
+                                <div class="pull-right">
+                                    <input type="hidden" name="payment" value="{{ $invoice->payment->id }}" data-updatable-name="movement-id-{{ $rand }}" data-updatable-field="id">
+                                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editMovement-{{ $rand }}">
+                                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+
+                                @push('postponed')
+                                    @include('movement.modal', ['obj' => $invoice->payment, 'dom_id' => $rand])
+                                @endpush
+                            </div>
+                        </div>
+
+                        @foreach($invoice->otherMovements as $om)
+                            <?php $rand = rand() ?>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="static-label text-muted" data-updatable-name="movement-date-{{ $rand }}" data-updatable-field="name">
+                                        {!! $om->printableName() !!}
+                                    </label>
+
+                                    <div class="pull-right">
+                                        <input type="hidden" name="payment" value="{{ $om->id }}" data-updatable-name="movement-id-{{ $rand }}" data-updatable-field="id">
+                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editMovement-{{ $rand }}">
+                                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                        </button>
+                                    </div>
+
+                                    @push('postponed')
+                                        @include('movement.modal', ['obj' => $om, 'dom_id' => $rand])
+                                    @endpush
+                                </div>
+                            </div>
+                        @endforeach
+
+                        <br>
+                    @endif
+
+                    @if($invoice->status != 'payed')
+                        <button class="btn btn-default async-modal" data-target-url="{{ route('invoices.movements', $invoice->id) }}">{{ _i('Registra Pagamento') }}</button>
+                    @endif
+                </div>
+            </div>
 
             <div class="form-group">
                 <label for="orders" class="col-sm-{{ $labelsize }} control-label">{{ _i('Ordini Coinvolti') }}</label>
 
                 <div class="col-sm-{{ $fieldsize }}">
-                    @foreach($invoice->orders as $o)
-                        <p>{{ $o->printableName() }}</p>
-                    @endforeach
+                    @if($invoice->orders->count() > 0)
+                        @foreach($invoice->orders as $o)
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="static-label text-muted">
+                                        {{ $o->printableName() }}
+                                    </label>
+                                </div>
+                            </div>
+                        @endforeach
+
+                        <br>
+                    @endif
 
                     @if($invoice->status != 'payed')
                         @can('movements.admin', $currentgas)
                             <button class="btn btn-default" data-toggle="modal" data-target="#orders-invoice-{{ $invoice->id }}">{{ _i('Modifica Ordini') }}</button>
 
                             @if($invoice->orders()->count() != 0)
-                                <button class="btn btn-default" data-toggle="modal" data-target="#products-invoice-{{ $invoice->id }}">{{ _i('Verifica Contenuti') }}</button>
+                                <button class="btn btn-default async-modal" data-target-url="{{ route('invoices.products', $invoice->id) }}">{{ _i('Verifica Contenuti') }}</button>
                             @endif
                         @endcan
                     @endif
@@ -55,8 +105,6 @@
 </form>
 
 @can('movements.admin', $currentgas)
-    <?php $current_currency = $currentgas->currency ?>
-
     <div class="modal fade" id="orders-invoice-{{ $invoice->id }}" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-extra-lg" role="document">
             <div class="modal-content">
@@ -145,55 +193,6 @@
             </div>
         </div>
     </div>
-
-    @if($invoice->orders()->count() != 0)
-        <div class="modal fade" id="products-invoice-{{ $invoice->id }}" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-extra-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">{{ _i('Modifica Ordini') }}</h4>
-                    </div>
-
-                    <form class="form-horizontal" method="POST" action="{{ url('invoices/wire/movements/' . $invoice->id) }}" data-toggle="validator">
-                        <div class="modal-body">
-                            @foreach($invoice->orders as $order)
-                                <input type="hidden" name="order_id[]" value="{{ $order->id }}">
-
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th width="20%">{{ _i('Prodotto') }}</th>
-                                            <th width="10%">{{ _i('Aliquota IVA') }}</th>
-                                            <th width="10%">{{ _i('Totale Imponibile') }}</th>
-                                            <th width="10%">{{ _i('Totale IVA') }}</th>
-                                            <th width="10%">{{ _i('Totale') }}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php $summary = $order->calculateInvoicingSummary() ?>
-                                        @foreach($order->products as $product)
-                                            <tr>
-                                                <td>{{ $product->printableName() }}</td>
-                                                <td>{{ $product->vat_rate ? $product->vat_rate->printableName() : '' }}</td>
-                                                <td>{{ printablePrice($summary->products[$product->id]['total']) }} {{ $current_currency }}</td>
-                                                <td>{{ printablePrice($summary->products[$product->id]['total_vat']) }} {{ $current_currency }}</td>
-                                                <td>{{ printablePrice($summary->products[$product->id]['total'] + $summary->products[$product->id]['total_vat']) }} {{ $current_currency }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            @endforeach
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Chiudi') }}</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    @endif
 @endcan
 
 @stack('postponed')

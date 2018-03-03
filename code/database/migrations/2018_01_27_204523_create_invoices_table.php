@@ -33,6 +33,17 @@ class CreateInvoicesTable extends Migration
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
         });
+
+        Schema::create('invoice_movement', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
+
+            $table->integer('invoice_id')->unsigned();
+            $table->integer('movement_id')->unsigned();
+
+            $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
+            $table->foreign('movement_id')->references('id')->on('movements')->onDelete('cascade');
+        });
     }
 
     public function down()

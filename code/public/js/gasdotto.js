@@ -1395,8 +1395,16 @@ $(document).ready(function() {
         if (e.which >= 37 && e.which <= 40)
             return;
 
+        var allow_negative = ($(this).attr('data-allow-negative') == '1');
+
         $(this).val(function(index, value) {
-            return value.replace(/,/g, '.').replace(/[^0-9\.]/g, '');
+            var val = value.replace(/,/g, '.');
+            if (allow_negative)
+                val = val.replace(/[^\-0-9\.]/g, '');
+            else
+                val = val.replace(/[^0-9\.]/g, '');
+
+            return val;
         });
     })
     .on('focus', 'input.number', function(e) {

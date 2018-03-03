@@ -139,6 +139,8 @@ class MovementsController extends BackedController
             $data['targets'] = [];
         }
 
+        $data['allow_negative'] = $metadata->allow_negative ?? false;
+
         return view('movement.selectors', $data);
     }
 

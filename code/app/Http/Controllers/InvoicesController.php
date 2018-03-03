@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Collection;
 
 use DB;
 use Auth;
@@ -107,6 +108,168 @@ class InvoicesController extends Controller
         return $this->successResponse();
     }
 
+    public function products($id)
+    {
+        DB::beginTransaction();
+
+        $user = Auth::user();
+        if ($user->can('movements.admin', $user->gas) == false) {
+            return $this->errorResponse(_i('Non autorizzato'));
+        }
+
+        $invoice = Invoice::findOrFail($id);
+        $summaries = [];
+        $global_summary = [];
+
+        foreach($invoice->orders as $order) {
+            $summary = $order->calculateInvoicingSummary();
+            $summaries[$order->id] = $summary;
+
+            foreach($order->products as $product) {
+                if (isset($global_summary[$product->id]) == false) {
+                    $global_summary[$product->id] = [
+                        'name' => $product->printableName(),
+                        'vat_rate' => $product->vat_rate ? $product->vat_rate->printableName() : '',
+                        'total' => 0,
+                        'total_vat' => 0
+                    ];
+                }
+
+                $global_summary[$product->id]['total'] += $summary->products[$product->id]['total'];
+                $global_summary[$product->id]['total_vat'] += $summary->products[$product->id]['total_vat'];
+            }
+        }
+
+        return view('invoice.products', [
+            'invoice' => $invoice,
+            'summaries' => $summaries,
+            'global_summary' => $global_summary
+        ]);
+    }
+
+    public function getMovements($id)
+    {
+        $user = Auth::user();
+        if ($user->can('movements.admin', $user->gas) == false) {
+            return $this->errorResponse(_i('Non autorizzato'));
+        }
+
+        $invoice = Invoice::findOrFail($id);
+
+        $invoice_grand_total = $invoice->total + $invoice->total_vat;
+        $main = Movement::generate('invoice-payment', $user->gas, $invoice, $invoice_grand_total);
+        $main->notes = _i('Pagamento fattura %s', $invoice->printableName());
+        $movements = new Collection();
+        $movements->push($main);
+
+        $orders_grand_total = 0;
+        foreach($invoice->orders as $order) {
+            $summary = $order->calculateInvoicingSummary();
+            $orders_grand_total += $summary->total + $summary->transport;
+        }
+
+        $alternative_types = [];
+        $available_types = MovementType::types();
+        foreach($available_types as $at) {
+            if (($at->sender_type == 'App\Gas' && ($at->target_type == 'App\Supplier' || $at->target_type == 'App\Invoice')) || ($at->sender_type == 'App\Supplier' && $at->target_type == 'App\Gas')) {
+                $alternative_types[] = [
+                    'value' => $at->id,
+                    'label' => $at->name,
+                ];
+            }
+        }
+
+        return view('invoice.movements', [
+            'invoice' => $invoice,
+            'total_invoice' => $invoice_grand_total,
+            'total_orders' => $orders_grand_total,
+            'movements' => $movements,
+            'alternative_types' => $alternative_types
+        ]);
+    }
+
+    public function postMovements(Request $request, $id)
+    {
+        $user = Auth::user();
+        if ($user->can('movements.admin', $user->gas) == false) {
+            return $this->errorResponse(_i('Non autorizzato'));
+        }
+
+        DB::beginTransaction();
+
+        $invoice = Invoice::findOrFail($id);
+        $invoice->deleteMovements();
+
+        $master_movement = null;
+        $other_movements = [];
+
+        $movement_types = $request->input('type', []);
+        $movement_amounts = $request->input('amount', []);
+        $movement_methods = $request->input('method', []);
+        $movement_notes = $request->input('notes', []);
+
+        for($i = 0; $i < count($movement_types); $i++) {
+            $type = $movement_types[$i];
+
+            $target = null;
+            $sender = null;
+
+            $metadata = MovementType::types($type);
+
+            if ($metadata->target_type == 'App\Invoice') {
+                $target = $invoice;
+            }
+            else if ($metadata->target_type == 'App\Supplier') {
+                $target = $invoice->supplier;
+            }
+            else if ($metadata->target_type == 'App\Gas') {
+                $target = $user->gas;
+            }
+            else {
+                Log::error(_('Tipo movimento non riconosciuto durante il salvataggio della fattura'));
+                continue;
+            }
+
+            if ($metadata->sender_type == 'App\Supplier') {
+                $sender = $invoice->supplier;
+            }
+            else if ($metadata->sender_type == 'App\Gas') {
+                $sender = $user->gas;
+            }
+            else {
+                Log::error(_('Tipo movimento non riconosciuto durante il salvataggio della fattura'));
+                continue;
+            }
+
+            $amount = $movement_amounts[$i];
+            $mov = Movement::generate($type, $sender, $target, $amount);
+            $mov->notes = $movement_notes[$i];
+            $mov->method = $movement_methods[$i];
+            $mov->save();
+
+            if ($type == 'invoice-payment' && $master_movement == null)
+                $master_movement = $mov;
+            else
+                $other_movements[] = $mov->id;
+        }
+
+        if ($master_movement != null) {
+            foreach($invoice->orders as $order) {
+                $order->payment_id = $master_movement->id;
+                $order->status = 'archived';
+                $order->save();
+            }
+
+            $invoice->status = 'payed';
+            $invoice->payment_id = $master_movement->id;
+            $invoice->save();
+        }
+
+        $invoice->otherMovements()->sync($other_movements);
+
+        return $this->successResponse();
+    }
+
     public function wiring(Request $request, $step, $id)
     {
         $user = Auth::user();
@@ -122,94 +285,6 @@ class InvoicesController extends Controller
                 $invoice->orders()->sync($order_ids);
                 $invoice->status = 'to_verify';
                 $invoice->save();
-                return $this->successResponse();
-                break;
-
-            case 'movements':
-                $invoice_grand_total = $invoice->total + $invoice->total_tax;
-
-                $main = Movement::generate('invoice-payment', $user->gas, $invoice, $invoice_grand_total);
-                $main->notes = _i('Pagamento fattura %s', $invoice->printableName());
-                $movements = [$main];
-
-                $total_orders = 0;
-                $orders = Order::whereIn('id', $request->input('order_id', []))->get();
-                foreach($orders as $order) {
-                    $summary = $order->calculateInvoicingSummary();
-                    $total_orders += $summary->total + $summary->transport;
-                }
-
-                if ($total_orders != $invoice_grand_total) {
-                    $difference = $total_orders - $invoice_grand_total;
-                    $movements[] = Movement::generate('invoice-payment', $user->gas, $user->gas, $difference);
-                }
-
-                $alternative_types = [];
-                if (count($movements) != 1) {
-                    $available_types = MovementType::types();
-                    foreach($available_types as $at) {
-                        if ($at->sender_type == 'App\Gas' && ($at->target_type == 'App\Supplier' || $at->target_type == 'App\Invoice'))
-                            if ($difference > 0 || ($difference < 0 && $at->allow_negative))
-                                $alternative_types[] = [
-                                    'value' => $at->id,
-                                    'label' => $at->name,
-                                ];
-                    }
-                }
-
-                return view('invoice.movements', [
-                    'invoice' => $invoice,
-                    'orders' => $orders,
-                    'movements' => $movements,
-                    'alternative_types' => $alternative_types
-                ]);
-                break;
-
-            case 'save':
-                DB::beginTransaction();
-
-                $order_ids = $request->input('order_id', []);
-
-                $invoice->orders()->sync($order_ids);
-                $invoice->deleteMovements();
-
-                $master_movement = null;
-                $movement_types = $request->input('type', []);
-                $movement_amounts = $request->input('amount', []);
-                $movement_notes = $request->input('notes', []);
-
-                for($i = 0; $i < count($movement_types); $i++) {
-                    $type = $movement_types[$i];
-
-                    $metadata = MovementType::types($type);
-                    if ($metadata->target_type == 'App\Invoice') {
-                        $target = $invoice;
-                    }
-                    else if ($metadata->target_type == 'App\Supplier') {
-                        $target = $invoice->supplier;
-                    }
-                    else {
-                        Log::error(_('Tipo movimento non riconosciuto durante il salvataggio della fattura'));
-                        continue;
-                    }
-
-                    $amount = $movement_amounts[$i];
-                    $mov = Movement::generate($type, $user->gas, $target, $amount);
-                    $mov->notes = $movement_notes[$i];
-                    $mov->save();
-
-                    if ($type == 'invoice-payment')
-                        $master_movement = $mov;
-                }
-
-                if ($master_movement != null) {
-                    Order::whereIn('id', $order_ids)->update(['payment_id' => $master_movement->id, 'status' => 'archived']);
-
-                    $invoice->status = 'payed';
-                    $invoice->payment_id = $master_movement->id;
-                    $invoice->save();
-                }
-
                 return $this->successResponse();
                 break;
         }

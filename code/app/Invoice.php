@@ -27,6 +27,11 @@ class Invoice extends Model
         return $this->belongsTo('App\Movement');
     }
 
+    public function otherMovements()
+    {
+        return $this->belongsToMany('App\Movement');
+    }
+
     public function orders()
     {
         return $this->belongsToMany('App\Order');

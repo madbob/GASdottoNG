@@ -32,7 +32,8 @@
     'name' => 'amount',
     'label' => _i('Valore'),
     'is_price' => true,
-    'fixed_value' => $fixed
+    'fixed_value' => $fixed,
+    'allow_negative' => $allow_negative
 ])
 
 @include('commons.radios', [

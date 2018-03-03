@@ -24,12 +24,14 @@
     'obj' => $invoice,
     'name' => 'total',
     'label' => _i('Totale Imponibile'),
-    'mandatory' => true
+    'mandatory' => true,
+    'is_price' => true
 ])
 
 @include('commons.decimalfield', [
     'obj' => $invoice,
     'name' => 'total_vat',
     'label' => _i('Totale IVA'),
-    'mandatory' => true
+    'mandatory' => true,
+    'is_price' => true
 ])

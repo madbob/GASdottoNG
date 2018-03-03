@@ -1,85 +1,101 @@
-<div class="wizard_page">
-    <form class="form-horizontal" method="POST" action="{{ url('invoices/wire/save/' . $invoice->id) }}" data-toggle="validator">
-        @foreach($orders as $order)
-            @include('commons.hiddenfield', ['obj' => $order, 'name' => 'id', 'prefix' => 'order_', 'postfix' => '[]'])
-        @endforeach
-
-        <div class="modal-body">
-            <div class="row">
-                <div class="col-md-12">
-                    @include('commons.hiddenfield', [
-                        'obj' => $movements[0],
-                        'name' => 'amount',
-                        'postfix' => '[]'
-                    ])
-                    @include('commons.staticpricefield', [
-                        'obj' => $movements[0],
-                        'name' => 'amount',
-                        'label' => 'Valore'
-                    ])
-
-                    @include('commons.hiddenfield', [
-                        'obj' => $movements[0],
-                        'name' => 'type',
-                        'postfix' => '[]'
-                    ])
-
-                    @include('commons.staticenumfield', [
-                        'obj' => $movements[0],
-                        'name' => 'type',
-                        'label' => 'Tipo',
-                        'values' => [
-                            [
-                                'value' => 'invoice-payment',
-                                'label' => App\MovementType::types('invoice-payment')->name
-                            ]
-                        ]
-                    ])
-
-                    @include('commons.textarea', [
-                        'obj' => $movements[0],
-                        'name' => 'notes',
-                        'label' => 'Note',
-                        'postfix' => '[]'
-                    ])
-
-                    @if(count($movements) > 1)
-                        <hr>
-
-                        @include('commons.hiddenfield', [
-                            'obj' => $movements[1],
-                            'name' => 'amount',
-                            'postfix' => '[]'
-                        ])
-
-                        @include('commons.staticpricefield', [
-                            'obj' => $movements[1],
-                            'name' => 'amount',
-                            'label' => 'Valore'
-                        ])
-
-                        @include('commons.selectenumfield', [
-                            'obj' => $movements[1],
-                            'name' => 'type',
-                            'postfix' => '[]',
-                            'label' => 'Tipo',
-                            'values' => $alternative_types
-                        ])
-
-                        @include('commons.textarea', [
-                            'obj' => $movements[1],
-                            'name' => 'notes',
-                            'label' => 'Note',
-                            'postfix' => '[]'
-                        ])
-                    @endif
-                </div>
+<div class="modal fade" id="payment-invoice-{{ $invoice->id }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-extra-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ _i('Paga Fattura') }}</h4>
             </div>
-        </div>
+            <form class="form-horizontal" method="POST" action="{{ route('invoices.savemovements', $invoice->id) }}" data-toggle="validator">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Totale Fattura') }}</label>
+                                <div class="col-sm-{{ $fieldsize }}">
+                                    <label class="static-label text-muted">
+                                        {{ printablePrice($total_invoice) }} {{ $currentcurrency }}
+                                    </label>
+                                </div>
+                            </div>
 
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
-            <button type="submit" class="btn btn-success reloader" data-reload-target="#invoice-list">{{ _i('Salva') }}</button>
+                            <div class="form-group">
+                                <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Totale Ordini') }}</label>
+                                <div class="col-sm-{{ $fieldsize }}">
+                                    <label class="static-label text-muted">
+                                        {{ printablePrice($total_orders) }} {{ $currentcurrency }}
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Saldo Fornitore') }}</label>
+                                <div class="col-sm-{{ $fieldsize }}">
+                                    <label class="static-label text-muted">
+                                        {{ printablePrice($invoice->supplier->current_balance_amount) }} {{ $currentcurrency }}
+                                    </label>
+                                </div>
+                            </div>
+
+                            <hr>
+                        </div>
+
+                        <div class="col-md-12">
+                            @include('commons.manyrows', [
+                                'contents' => $movements,
+                                'columns' => [
+                                    [
+                                        'label' => _i('Tipo'),
+                                        'field' => 'type',
+                                        'type' => 'selectenum',
+                                        'width' => 3,
+                                        'extra' => [
+                                            'values' => $alternative_types
+                                        ]
+                                    ],
+                                    [
+                                        'label' => _i('Metodo'),
+                                        'field' => 'method',
+                                        'type' => 'selectenum',
+                                        'width' => 2,
+                                        'extra' => [
+                                            'values' => as_selectable(
+                                                App\MovementType::payments(),
+                                                function($index, $obj) {
+                                                    return $index;
+                                                },
+                                                function ($index, $obj) {
+                                                    return $obj->name;
+                                                }
+                                            )
+                                        ]
+                                    ],
+                                    [
+                                        'label' => _i('Valore'),
+                                        'field' => 'amount',
+                                        'type' => 'decimal',
+                                        'width' => 2,
+                                        'extra' => [
+                                            'allow_negative' => true,
+                                            'is_price' => true
+                                        ]
+                                    ],
+                                    [
+                                        'label' => _i('Note'),
+                                        'field' => 'notes',
+                                        'type' => 'text',
+                                        'width' => 3,
+                                    ]
+                                ]
+                            ])
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+                    <button type="submit" class="btn btn-success reloader" data-reload-target="#invoice-list">{{ _i('Salva') }}</button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
