@@ -210,11 +210,28 @@ class BookingHandler extends Controller
         }
 
         if ($delivering == false) {
-            return $this->successResponse([
-                'id' => $aggregate->id,
-                'header' => $aggregate->printableUserHeader(),
-                'url' => URL::action('BookingController@show', ['id' => $aggregate->id])
-            ]);
+            $target_user = User::find($user_id);
+            if ($user_id != $user->id && $target_user->isFriend()) {
+                /*
+                    Ho effettuato una prenotazione per un amico
+                */
+                return $this->successResponse([
+                    'id' => $aggregate->id,
+                    'header' => $target_user->printableFriendHeader($aggregate),
+                    'url' => URL::action('BookingUserController@show', ['aggregate_id' => $aggregate_id, 'user_id' => $user_id])
+                ]);
+            }
+            else {
+                /*
+                    Ho effettuato una prenotazione per me o per un utente di
+                    primo livello (non un amico)
+                */
+                return $this->successResponse([
+                    'id' => $aggregate->id,
+                    'header' => $aggregate->printableUserHeader(),
+                    'url' => URL::action('BookingController@show', ['id' => $aggregate->id])
+                ]);
+            }
         }
         else {
             $subject = $aggregate->bookingBy($user_id);
