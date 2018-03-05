@@ -65,8 +65,8 @@ else {
                     <td>{{ $mov->printableType() }}</td>
                     <td>{!! $mov->payment_icon !!}</td>
                     <td>{{ $reference ? $reference->printableName() : '' }}</td>
-                    <td>{{ $in != 0 ? $in . $currentgas->currency : '' }}</td>
-                    <td>{{ $out != 0 ? $out . $currentgas->currency : '' }}</td>
+                    <td>{{ $in != 0 ? (printablePrice($in) . ' ' . $currentgas->currency) : '' }}</td>
+                    <td>{{ $out != 0 ? (printablePrice($out) . ' ' . $currentgas->currency) : '' }}</td>
 
                     <td>
                         @if(!empty($mov->notes))
