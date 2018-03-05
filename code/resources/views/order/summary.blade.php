@@ -2,12 +2,12 @@
     <thead>
         <tr>
             @if($order->isActive())
-                <th class="hidden-md" width="5%"><button class="btn btn-default btn-xs toggle-product-abilitation" data-toggle="button" aria-pressed="false" autocomplete="off">{!! _i('Visualizza<br/>tutti') !!}</button></th>
-                <th width="17%">{{ _i('Prodotto') }}</th>
+                <th class="hidden-md" width="3%"><button class="btn btn-default btn-xs toggle-product-abilitation" data-toggle="button" aria-pressed="false" autocomplete="off">{!! _i('Tutti') !!}</button></th>
+                <th width="20%">{{ _i('Prodotto') }}</th>
                 <th width="8%">{{ _i('Prezzo') }}</th>
                 <th width="8%">{{ _i('Trasporto') }}</th>
                 <th width="8%">{{ _i('Disponibile') }}</th>
-                <th class="hidden-md" width="5%">{{ _i('Sconto Prodotto') }}</th>
+                <th class="hidden-md" width="4%">{{ _i('Sconto') }}</th>
                 <th width="9%">{{ _i('Unità di Misura') }}</th>
                 <th width="9%">{{ _i('Quantità Ordinata') }}</th>
                 <th width="5%">{{ _i('Totale Prezzo') }}</th>

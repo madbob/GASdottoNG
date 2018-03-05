@@ -196,6 +196,7 @@ class BookingHandler extends Controller
                         sopra), dopo modificare lo stato
                     */
                     $booking->transport = $booking->check_transport;
+                    $booking->distributeTransport();
 
                     $new_status = $request->input('action');
                     if ($new_status == 'saved' && $booking->payment != null) {

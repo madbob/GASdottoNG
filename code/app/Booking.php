@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Auth;
 use DB;
 use URL;
+use Log;
 
 use App\Events\SluggableCreating;
 use App\Events\BookingDeleting;
@@ -180,19 +181,21 @@ class Booking extends Model
     */
     public function getMajorTransportAttribute()
     {
-        if($this->order->transport > 0) {
-            $total_value = $this->order->total_value;
-            if ($total_value != 0) {
-                if (is_numeric($this->order->transport)) {
-                    return round($this->value * $this->order->transport / $total_value, 2);
-                }
-                else {
-                    return $this->value - applyPercentage($this->value, $this->order->transport);
+        return $this->innerCache('major_transport', function($obj) {
+            if($obj->order->transport > 0) {
+                $total_value = $obj->order->total_value;
+                if ($total_value != 0) {
+                    if (is_numeric($obj->order->transport)) {
+                        return round($obj->value * $obj->order->transport / $total_value, 2);
+                    }
+                    else {
+                        return $obj->value - applyPercentage($obj->value, $obj->order->transport);
+                    }
                 }
             }
-        }
 
-        return 0;
+            return 0;
+        });
     }
 
     /*
@@ -217,6 +220,37 @@ class Booking extends Model
 
                 return $transport;
             });
+        }
+    }
+
+    /*
+        Questa funzione serve a spalmare il costo di trasporto globale applicato
+        all'ordine (e, dunque, alla prenotazione) su tutti i prodotti coinvolti,
+        in modo proporzionale.
+        Da applicare solo dopo aver fissato il final_price dei prodotti
+        consegnati
+    */
+    public function distributeTransport()
+    {
+        $this->load('products');
+
+        $global_transport = $this->major_transport;
+        $booking_value = $this->delivered;
+        $distributed_amount = 0;
+        $last_product = null;
+
+        foreach($this->products as $p) {
+            $per_product = round(($global_transport * $p->final_price) / $booking_value, 2);
+            $p->final_transport = $p->transportDeliveredValue() + $per_product;
+            $p->save();
+            $distributed_amount += $per_product;
+            $last_product = $p;
+        }
+
+        if ($distributed_amount != $global_transport && $last_product != null) {
+            Log::debug('Arrotondo prezzo di trasporto su ultimo prodotto, ' . ($global_transport - $distributed_amount));
+            $last_product->final_transport += ($global_transport - $distributed_amount);
+            $last_product->save();
         }
     }
 
