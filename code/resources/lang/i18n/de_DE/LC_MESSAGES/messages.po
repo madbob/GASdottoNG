@@ -2,14 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2018-01-27 01:13+0100\n"
-"PO-Revision-Date: 2018-01-27 01:13+0100\n"
-"Last-Translator: Roberto Guido <bob@linux.it>\n"
-"Language-Team: Roberto Guido <bob@linux.it>\n"
+"PO-Revision-Date: 2018-03-05 23:55+0000\n"
+"Last-Translator: Roberto Guido <bob4job@gmail.com>\n"
+"Language-Team: German "
+"<https://hosted.weblate.org/projects/gasdottong/translations/de/>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.5\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.20-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -70,10 +72,9 @@ msgstr "Alle Bezugspersonen"
 
 #: ../resources/views/notification/base-edit.blade.php:12
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:12
-#, fuzzy, php-format
-#| msgid "Tutti i Partecipanti all'ordine per %s"
+#, php-format
 msgid "Tutti i Partecipanti all'ordine %s %s"
-msgstr "Alle Teilnehmer an der Bestellung für %s"
+msgstr "Alle Teilnehmer an der Bestellung %s %s"
 
 #: ../storage/framework/messages/011e39d68f39ddd07dc8b80ff0d7659141956607.php.php:4
 #, fuzzy, php-format
