@@ -70,10 +70,9 @@ msgstr "Alle Bezugspersonen"
 
 #: ../resources/views/notification/base-edit.blade.php:12
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:12
-#, fuzzy, php-format
-#| msgid "Tutti i Partecipanti all'ordine per %s"
+#, php-format
 msgid "Tutti i Partecipanti all'ordine %s %s"
-msgstr "Alle Teilnehmer an der Bestellung für %s"
+msgstr "Alle Teilnehmer an der Bestellung %s %s"
 
 #: ../storage/framework/messages/011e39d68f39ddd07dc8b80ff0d7659141956607.php.php:4
 #, fuzzy, php-format
