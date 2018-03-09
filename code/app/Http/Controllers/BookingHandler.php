@@ -203,9 +203,14 @@ class BookingHandler extends Controller
                         $booking->payment->delete();
                         $booking->payment_id = null;
                     }
-                    $booking->status = $new_status;
 
+                    $booking->status = $new_status;
                     $booking->save();
+
+                    foreach($booking->friends_bookings as $friend_booking) {
+                        $friend_booking->status = $new_status;
+                        $friend_booking->save();
+                    }
                 }
             }
         }
