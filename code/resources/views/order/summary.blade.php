@@ -189,13 +189,13 @@
                 <th></th>
                 <th></th>
                 <th></th>
-                <th class="order-summary-order-price">{{ printablePrice($summary->price) }} {{ $currentgas->currency }}</th>
-                <th class="order-summary-order-transport">{{ printablePrice($summary->transport) }} {{ $currentgas->currency }}</th>
+                <th class="order-summary-order-price">{{ printablePriceCurrency($summary->price) }}</th>
+                <th class="order-summary-order-transport">{{ printablePriceCurrency($summary->transport) }}</th>
                 <th></th>
                 <th>
-                    <span class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} {{ $currentgas->currency }}</span>
+                    <span class="order-summary-order-price_delivered">{{ printablePriceCurrency($summary->price_delivered) }}</span>
                     @if($summary->transport_delivered)
-                        +<br/><span class="order-summary-order-transport_delivered">{{ printablePrice($summary->transport_delivered) }} {{ $currentgas->currency }}</span>
+                        +<br/><span class="order-summary-order-transport_delivered">{{ printablePriceCurrency($summary->transport_delivered) }}</span>
                     @endif
                 </th>
                 <th></th>
@@ -205,14 +205,14 @@
                 <th></th>
 
                 @if($order->status != 'archived')
-                    <th class="order-summary-order-transport">{{ printablePrice($summary->transport) }} {{ $currentgas->currency }}</th>
+                    <th class="order-summary-order-transport">{{ printablePriceCurrency($summary->transport) }}</th>
                 @endif
 
                 <th></th>
                 <th>
-                    <span class="order-summary-order-price_delivered">{{ printablePrice($summary->price_delivered) }} {{ $currentgas->currency }}</span>
+                    <span class="order-summary-order-price_delivered">{{ printablePriceCurrency($summary->price_delivered) }}</span>
                     @if($summary->transport_delivered)
-                        +<br/><span class="order-summary-order-transport_delivered">{{ printablePrice($summary->transport_delivered) }} {{ $currentgas->currency }}</span>
+                        +<br/><span class="order-summary-order-transport_delivered">{{ printablePriceCurrency($summary->transport_delivered) }}</span>
                     @endif
                 </th>
             @endif

@@ -26,7 +26,7 @@
                         <td>{{ $mov->printablePayment() }}</td>
                         <td>{{ $mov->sender ? $mov->sender->printableName() : '' }}</td>
                         <td>{{ $mov->target ? $mov->target->printableName() : '' }}</td>
-                        <td>{{ printablePrice($mov->amount) }} {{ $currentgas->currency }}</td>
+                        <td>{{ printablePriceCurrency($mov->amount) }}</td>
                         <td>{{ $mov->notes }}</td>
                     </tr>
                 @endforeach

@@ -55,7 +55,7 @@ $grand_total = 0;
 
                                 <td>
                                     <label class="static-label booking-product-price pull-right">
-                                        {{ printablePrice($o->status == 'shipped' ? $product->final_price : $product->quantityValue()) }} {{ $currentgas->currency }}
+                                        {{ printablePriceCurrency($o->status == 'shipped' ? $product->final_price : $product->quantityValue()) }}
                                     </label>
                                 </td>
                             </tr>
@@ -90,7 +90,7 @@ $grand_total = 0;
 
                                     <td>
                                         <label class="static-label booking-product-price pull-right">
-                                            {{ printablePrice($o->status == 'shipped' ? $var->final_price : $var->quantityValue()) }} {{ $currentgas->currency }}
+                                            {{ printablePriceCurrency($o->status == 'shipped' ? $var->final_price : $var->quantityValue()) }}
                                         </label>
                                     </td>
                                 </tr>
@@ -107,7 +107,7 @@ $grand_total = 0;
                         <td>&nbsp;</td>
                         <td>
                             <input type="hidden" name="global-transport-price" value="{{ $o->major_transport }}" class="skip-on-submit" />
-                            <label class="static-label booking-transport-price pull-right"><span>{{ printablePrice($o->check_transport) }}</span> €</label>
+                            <label class="static-label booking-transport-price pull-right"><span>{{ printablePrice($o->check_transport) }}</span> {{ $currentgas->currency }}</label>
                         </td>
                     </tr>
                 </tbody>

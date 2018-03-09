@@ -178,7 +178,7 @@ class User extends Authenticatable
             $tot += $order->userBooking($this->id)->total_value;
 
         if ($tot != 0)
-            $ret .= '<div class="pull-right">' . _i('Ha ordinato %s€', printablePrice($tot)) . '</div>';
+            $ret .= '<div class="pull-right">' . _i('Ha ordinato %s', printablePriceCurrency($tot)) . '</div>';
 
         return $ret;
     }

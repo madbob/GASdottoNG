@@ -103,7 +103,7 @@ class Movement extends Model
         if (empty($this->date) || strstr($this->date, '0000-00-00') !== false)
             return 'Mai';
         else
-            return sprintf('%s | %s %s | %s', $this->printableDate('date'), printablePrice($this->amount), currentAbsoluteGas()->currency, $this->payment_icon);
+            return sprintf('%s | %s | %s', $this->printableDate('date'), printablePriceCurrency($this->amount), $this->payment_icon);
     }
 
     public function printableType()

@@ -199,12 +199,10 @@ class Aggregate extends Model
             $message = _i("Non hai partecipato a quest'ordine");
         }
         else {
-            $currency = currentAbsoluteGas()->currency;
-
             if ($friends_tot == 0)
-                $message = _i('Hai ordinato %s%s', printablePrice($tot), $currency);
+                $message = _i('Hai ordinato %s', printablePriceCurrency($tot));
             else
-                $message = _i('Hai ordinato %s%s + %s%s', printablePrice($tot), $currency, printablePrice($friends_tot), $currency);
+                $message = _i('Hai ordinato %s + %s', printablePriceCurrency($tot), printablePriceCurrency($friends_tot));
         }
 
         $ret .= '<span class="pull-right">' . $message . '</span>';

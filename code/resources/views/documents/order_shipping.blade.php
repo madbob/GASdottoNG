@@ -30,7 +30,7 @@
                 ])
 
                 <tr>
-                    <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePrice($booking->total_value, ',') }} {{ $currentgas->currency }}</strong></th>
+                    <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($booking->total_value, ',') }}</strong></th>
                 </tr>
             </table>
 
