@@ -65,6 +65,10 @@ class Contact extends Model
                 'label' => _i('Sito Web'),
                 'value' => 'website'
             ],
+            [
+                'label' => _i('Referente'),
+                'value' => 'referent'
+            ],
         ];
     }
 }
