@@ -16,6 +16,11 @@ class MovementsKeeper extends ServiceProvider
     {
         $metadata = $movement->type_metadata;
 
+        if ($metadata == null) {
+            Log::error('Impossibile recuperare informazioni su movimento tipo ' . $movement->type);
+            return false;
+        }
+
         if ($movement->archived == true) {
             Log::error(_i('Movimento: tentata modifica di movimento già storicizzato in bilancio passato'));
             return false;
