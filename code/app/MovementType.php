@@ -316,7 +316,7 @@ class MovementType extends Model
                 $this->applyFunction($movement->target, $movement, $op);
 
             if (!empty($o->master->operations)) {
-                $currentgas = Auth::user()->gas;
+                $currentgas = currentAbsoluteGas();
 
                 foreach($o->master->operations as $op)
                     $this->applyFunction($currentgas, $movement, $op);
