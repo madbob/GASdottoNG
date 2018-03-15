@@ -240,7 +240,11 @@ class Booking extends Model
         $last_product = null;
 
         foreach($this->products as $p) {
-            $per_product = round(($global_transport * $p->final_price) / $booking_value, 2);
+            if ($booking_value != 0)
+                $per_product = round(($global_transport * $p->final_price) / $booking_value, 2);
+            else
+                $per_product = 0;
+
             $p->final_transport = $p->transportDeliveredValue() + $per_product;
             $p->save();
             $distributed_amount += $per_product;
