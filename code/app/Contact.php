@@ -46,6 +46,10 @@ class Contact extends Model
                 'value' => 'address'
             ],
             [
+                'label' => _i('Referente'),
+                'value' => 'referent'
+            ],
+            [
                 'label' => _i('E-Mail'),
                 'value' => 'email'
             ],
@@ -64,10 +68,6 @@ class Contact extends Model
             [
                 'label' => _i('Sito Web'),
                 'value' => 'website'
-            ],
-            [
-                'label' => _i('Referente'),
-                'value' => 'referent'
             ],
         ];
     }
