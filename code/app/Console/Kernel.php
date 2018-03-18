@@ -9,6 +9,7 @@ class Kernel extends ConsoleKernel
 {
     protected $commands = [
         \App\Console\Commands\ResetPassword::class,
+        \App\Console\Commands\InvalidateDeliveries::class,
         \App\Console\Commands\ImportLegacy::class,
         \App\Console\Commands\CheckFees::class,
         \App\Console\Commands\CheckSystemNotifications::class,
