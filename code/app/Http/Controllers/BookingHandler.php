@@ -27,9 +27,10 @@ class BookingHandler extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
+        $target_user = User::find($user_id);
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
-        if ($user->id != $user_id && $user->can('supplier.shippings', $aggregate) == false && in_array($user_id, $user->friends()->pluck('id')) == false) {
+        if ($target_user->testUserAccess() == false && $user->can('supplier.shippings', $aggregate) == false) {
             abort(503);
         }
 
@@ -216,7 +217,6 @@ class BookingHandler extends Controller
         }
 
         if ($delivering == false) {
-            $target_user = User::find($user_id);
             if ($user_id != $user->id && $target_user->isFriend()) {
                 /*
                     Ho effettuato una prenotazione per un amico

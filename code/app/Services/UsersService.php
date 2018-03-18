@@ -43,13 +43,8 @@ class UsersService extends BaseService
 
         $searched = User::withTrashed()->findOrFail($id);
 
-        if ($searched->isFriend()) {
-            if ($searched->id != $user->id)
-                $this->ensureAuth(['users.subusers' => 'gas']);
-        }
-        else if ($user->id != $id) {
+        if ($searched->testUserAccess() == false)
             $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
-        }
 
         return $searched;
     }

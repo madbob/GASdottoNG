@@ -26,7 +26,10 @@ class InvalidateDeliveries extends Command
             $booking->deliverer_id = null;
             $booking->delivery = null;
             $booking->save();
-            $booking->payment->delete();
+
+            if ($booking->payment)
+                $booking->payment->delete();
+
             $booking->payment_id = null;
 
             foreach($booking->products as $product) {

@@ -188,6 +188,19 @@ class User extends Authenticatable
         return $this->parent_id != null;
     }
 
+    public function testUserAccess()
+    {
+        $myself = Auth::user();
+
+        if ($myself->id == $this->id)
+            return true;
+
+        if ($this->parent_id == $myself->id && $myself->can('users.subusers', $myself->gas))
+            return true;
+
+        return false;
+    }
+
     public function addRole($role, $assigned)
     {
         $role_id = normalizeId($role);
