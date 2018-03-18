@@ -108,6 +108,14 @@ class BookedProduct extends Model
         return $this->product->transport * $this->quantity;
     }
 
+    /*
+        Questa funzione è utile per calcolare dinamicamente il costo di
+        trasporto del prodotto consegnato, il quale viene poi salvato sul
+        database nell'attributo final_transport.
+        Leggere tale attributo per ottenere l'informazione completa, a sua volta
+        eventualmente alterata dal costo di trasporto globale dell'ordine (in
+        modo non direttamente correlato al prodotto)
+    */
     public function transportDeliveredValue()
     {
         return $this->product->transport * $this->delivered;

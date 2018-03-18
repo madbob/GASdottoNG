@@ -329,6 +329,26 @@ trait GASModel
                         'text' => _i('Pagata'),
                     ],
                 ],
+                'Booking' => [
+                    'time' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status != 'shipped';
+                        },
+                        'text' => _i('Da consegnare'),
+                    ],
+                    'ok' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'shipped';
+                        },
+                        'text' => _i('Consegnato'),
+                    ],
+                    'download-alt' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'saved';
+                        },
+                        'text' => _i('Salvato'),
+                    ],
+                ],
                 'User' => [
                 ],
             ];

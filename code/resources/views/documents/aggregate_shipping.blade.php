@@ -50,7 +50,7 @@
                 @endforeach
 
                 <tr>
-                    <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePrice($cell_value, ',') }} {{ $currentgas->currency }}</strong></th>
+                    <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($cell_value, ',') }}</strong></th>
                 </tr>
             </table>
 

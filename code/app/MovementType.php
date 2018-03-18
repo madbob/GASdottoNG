@@ -208,7 +208,6 @@ class MovementType extends Model
                                         $m->load('target');
                                     }
                                     else {
-                                        Log::debug('Aggiorno movimento contabile di consegna già pagata');
                                         $m = $existing_movement;
                                     }
 
@@ -332,7 +331,7 @@ class MovementType extends Model
                 $this->applyFunction($movement->target, $movement, $op);
 
             if (!empty($o->master->operations)) {
-                $currentgas = Auth::user()->gas;
+                $currentgas = currentAbsoluteGas();
 
                 foreach($o->master->operations as $op)
                     $this->applyFunction($currentgas, $movement, $op);

@@ -27,9 +27,10 @@ class BookingHandler extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
+        $target_user = User::find($user_id);
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
-        if ($user->id != $user_id && $user->can('supplier.shippings', $aggregate) == false && in_array($user_id, $user->friends()->pluck('id')) == false) {
+        if ($target_user->testUserAccess() == false && $user->can('supplier.shippings', $aggregate) == false) {
             abort(503);
         }
 
@@ -196,25 +197,47 @@ class BookingHandler extends Controller
                         sopra), dopo modificare lo stato
                     */
                     $booking->transport = $booking->check_transport;
+                    $booking->distributeTransport();
 
                     $new_status = $request->input('action');
                     if ($new_status == 'saved' && $booking->payment != null) {
                         $booking->payment->delete();
                         $booking->payment_id = null;
                     }
-                    $booking->status = $new_status;
 
+                    $booking->status = $new_status;
                     $booking->save();
+
+                    foreach($booking->friends_bookings as $friend_booking) {
+                        $friend_booking->status = $new_status;
+                        $friend_booking->save();
+                    }
                 }
             }
         }
 
         if ($delivering == false) {
-            return $this->successResponse([
-                'id' => $aggregate->id,
-                'header' => $aggregate->printableUserHeader(),
-                'url' => URL::action('BookingController@show', ['id' => $aggregate->id])
-            ]);
+            if ($user_id != $user->id && $target_user->isFriend()) {
+                /*
+                    Ho effettuato una prenotazione per un amico
+                */
+                return $this->successResponse([
+                    'id' => $aggregate->id,
+                    'header' => $target_user->printableFriendHeader($aggregate),
+                    'url' => URL::action('BookingUserController@show', ['aggregate_id' => $aggregate_id, 'user_id' => $user_id])
+                ]);
+            }
+            else {
+                /*
+                    Ho effettuato una prenotazione per me o per un utente di
+                    primo livello (non un amico)
+                */
+                return $this->successResponse([
+                    'id' => $aggregate->id,
+                    'header' => $aggregate->printableUserHeader(),
+                    'url' => URL::action('BookingController@show', ['id' => $aggregate->id])
+                ]);
+            }
         }
         else {
             $subject = $aggregate->bookingBy($user_id);

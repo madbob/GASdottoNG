@@ -79,13 +79,19 @@ class SuppliersService extends BaseService
         $supplier = $this->show($id);
         $this->ensureAuth(['supplier.modify' => $supplier]);
 
-        DB::transaction(function () use ($supplier, $request) {
-            $this->setCommonAttributes($supplier, $request);
-            $supplier->restore();
-            $supplier->save();
-            $supplier->updateContacts($request);
-            return $supplier;
-        });
+        try {
+            $supplier = DB::transaction(function () use ($supplier, $request) {
+                $this->setCommonAttributes($supplier, $request);
+                $supplier->restore();
+                $supplier->save();
+                $supplier->updateContacts($request);
+                return $supplier;
+            });
+        }
+        catch(\Exception $e) {
+            Log::error('Errore aggiornamento fornitore: ' . $e->getMessage() . ' - ' . print_r($request, true));
+            $supplier = null;
+        }
 
         return $supplier;
     }
@@ -131,6 +137,10 @@ class SuppliersService extends BaseService
 
             if ($supplier->trashed()) {
                 $this->ensureAuth(['supplier.add' => 'gas']);
+
+                foreach($supplier->products as $product)
+                    $product->forceDelete();
+
                 $supplier->forceDelete();
             }
             else {

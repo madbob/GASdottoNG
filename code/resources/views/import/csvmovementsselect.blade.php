@@ -121,7 +121,7 @@
                                 ])
                             </td>
                             <td>
-                                {{ printablePrice($mov->amount) }} {{ $currentgas->currency }}
+                                {{ printablePriceCurrency($mov->amount) }}
                                 <input type="hidden" name="amount[]" value="{{ $mov->amount }}">
                             </td>
                         </tr>

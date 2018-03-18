@@ -9,6 +9,15 @@ function printablePrice($price, $separator = '.')
     return $ret;
 }
 
+function printablePriceCurrency($price, $separator = '.')
+{
+    $ret = sprintf('%.02f %s', $price, currentAbsoluteGas()->currency);
+    if ($separator != '.')
+        $ret = str_replace('.', $separator, $ret);
+
+    return $ret;
+}
+
 function printableDate($value)
 {
     if ($value == null) {
@@ -65,12 +74,12 @@ function normalizePercentage($value)
 function printablePercentage($value)
 {
     if (empty($value))
-        return printablePrice(0) . ' ' . currentAbsoluteGas()->currency;
+        return printablePriceCurrency(0);
 
     if (strpos($value, '%') !== false)
         return $value;
     else
-        return printablePrice($value) . ' ' . currentAbsoluteGas()->currency;
+        return printablePriceCurrency($value);
 }
 
 function readPercentage($value)

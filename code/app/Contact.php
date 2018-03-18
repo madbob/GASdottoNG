@@ -46,6 +46,10 @@ class Contact extends Model
                 'value' => 'address'
             ],
             [
+                'label' => _i('Referente'),
+                'value' => 'referent'
+            ],
+            [
                 'label' => _i('E-Mail'),
                 'value' => 'email'
             ],

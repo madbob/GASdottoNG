@@ -16,6 +16,11 @@ class MovementsKeeper extends ServiceProvider
     {
         $metadata = $movement->type_metadata;
 
+        if ($metadata == null) {
+            Log::error('Impossibile recuperare informazioni su movimento tipo ' . $movement->type);
+            return false;
+        }
+
         if ($movement->archived == true) {
             Log::error(_i('Movimento: tentata modifica di movimento già storicizzato in bilancio passato'));
             return false;
@@ -90,8 +95,7 @@ class MovementsKeeper extends ServiceProvider
                 1 se il salvataggio viene concesso
                 2 se la callback stessa ha già provveduto a fare quanto
                   necessario. In tal caso blocchiamo il salvataggio e settiamo
-                  artificiosamente l'attributo "saved" a true.
-                  Per maggiori informazioni, cfr. Movement::saved
+                  artificiosamente l'attributo "saved" a true
             */
             if (isset($metadata->callbacks['pre'])) {
                 $pre = $metadata->callbacks['pre']($movement);
@@ -104,6 +108,20 @@ class MovementsKeeper extends ServiceProvider
                     return false;
                 }
             }
+
+            /*
+                Se un movimento esistente viene salvato pur non essendo stato
+                modificato, non viene chiamata la callback Movement::updating().
+                Però viene sempre chiamata Movement::saved(), che applica il
+                movimento ai saldi. Se updating() non viene chiamata, e pertanto
+                l'effetto del movimento non viene invalidato prima di essere
+                ri-applicato, ci si ritrova coi saldi sballati.
+                Pertanto qui forzo la modifica di almeno un attributo per i
+                movimenti esistenti, affinché updating() sia sempre eseguito
+                (magari a vuoto, ma meglio in più che in meno)
+            */
+            if ($movement->exists)
+                $movement->updated_at = date('Y-m-d H:i:s');
 
             return $this->verifyConsistency($movement);
         });
@@ -148,7 +166,6 @@ class MovementsKeeper extends ServiceProvider
                 return true;
 
             $original = Movement::find($movement->id);
-            Log::debug('Aggiorno movimento contabile da ' . $original->amount . ' a ' . $movement->amount);
             $original->amount = $original->amount * -1;
             $original->apply();
 

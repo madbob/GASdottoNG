@@ -81,9 +81,9 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="alert {{ $current_balance >= $to_pay ? 'alert-success' : 'alert-danger' }} text-right">
-                        <p class="lead">{{ _i('Credito Attuale') }}: {{ printablePrice($current_balance) }} {{ $currentgas->currency }}</p>
+                        <p class="lead">{{ _i('Credito Attuale') }}: {{ printablePriceCurrency($current_balance) }}</p>
                         <br>
-                        <p class="lead">{{ _i('Da Pagare') }}: {{ printablePrice($to_pay) }} {{ $currentgas->currency }}</p>
+                        <p class="lead">{{ _i('Da Pagare') }}: {{ printablePriceCurrency($to_pay) }}</p>
                         @if(!empty($to_pay_friend))
                             <p>{{ _i('di cui') }}</p>
                             @foreach($to_pay_friend as $friend_name => $friend_amount)

@@ -94,7 +94,7 @@ $existing = false;
                                     </td>
 
                                     <td>
-                                        <label class="static-label booking-product-price pull-right">{{ printablePrice($product->final_price) }} {{ $currentgas->currency }}</label>
+                                        <label class="static-label booking-product-price pull-right">{{ printablePriceCurrency($product->final_price) }}</label>
                                     </td>
                                 </tr>
                             @else
@@ -139,7 +139,7 @@ $existing = false;
                                         </td>
 
                                         <td>
-                                            <label class="static-label booking-product-price pull-right">{{ printablePrice($var->final_price) }} {{ $currentgas->currency }}</label>
+                                            <label class="static-label booking-product-price pull-right">{{ printablePriceCurrency($var->final_price) }}</label>
                                         </td>
                                     </tr>
                                 @endforeach

@@ -178,7 +178,7 @@ class User extends Authenticatable
             $tot += $order->userBooking($this->id)->total_value;
 
         if ($tot != 0)
-            $ret .= '<div class="pull-right">' . _i('Ha ordinato %s€', printablePrice($tot)) . '</div>';
+            $ret .= '<div class="pull-right">' . _i('Ha ordinato %s', printablePriceCurrency($tot)) . '</div>';
 
         return $ret;
     }
@@ -186,6 +186,19 @@ class User extends Authenticatable
     public function isFriend()
     {
         return $this->parent_id != null;
+    }
+
+    public function testUserAccess()
+    {
+        $myself = Auth::user();
+
+        if ($myself->id == $this->id)
+            return true;
+
+        if ($this->parent_id == $myself->id && $myself->can('users.subusers', $myself->gas))
+            return true;
+
+        return false;
     }
 
     public function addRole($role, $assigned)

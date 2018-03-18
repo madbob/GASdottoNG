@@ -19,14 +19,14 @@
                 <tr>
                     <td>{{ $product->product->printableName() }}</td>
                     <td>{{ $product->quantity }} {{ $product->product->printableMeasure() }}</td>
-                    <td>{{ printablePrice($product->quantityValue()) }} {{ $currentgas->currency }}</td>
+                    <td>{{ printablePriceCurrency($product->quantityValue()) }}</td>
                 </tr>
             @endforeach
 
             <tr>
                 <td><strong>{{ _i('Totale') }}</strong></td>
                 <td>&nbsp;</td>
-                <td>{{ printablePrice($b->value) }} {{ $currentgas->currency }}</td>
+                <td>{{ printablePriceCurrency($b->value) }}</td>
             </tr>
         </tbody>
     </table>
@@ -50,14 +50,14 @@
                         <tr>
                             <td>{{ $product->product->printableName() }}</td>
                             <td>{{ $product->quantity }} {{ $product->product->printableMeasure() }}</td>
-                            <td>{{ printablePrice($product->quantityValue()) }} {{ $currentgas->currency }}</td>
+                            <td>{{ printablePriceCurrency($product->quantityValue()) }}</td>
                         </tr>
                     @endforeach
 
                     <tr>
                         <td><strong>{{ _i('Totale') }}</strong></td>
                         <td>&nbsp;</td>
-                        <td>{{ printablePrice($fb->value) }} {{ $currentgas->currency }}</td>
+                        <td>{{ printablePriceCurrency($fb->value) }}</td>
                     </tr>
                 </tbody>
             </table>

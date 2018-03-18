@@ -49,7 +49,7 @@ $grand_total = 0;
                         </td>
 
                         <td>
-                            <label class="static-label booking-product-price pull-right">{{ $p ? printablePrice($p->quantityValue()) : '0.00' }} {{ $currentgas->currency }}</label>
+                            <label class="static-label booking-product-price pull-right">{{ printablePriceCurrency($p ? $p->quantityValue() : 0) }}</label>
                         </td>
                     </tr>
                 @endforeach

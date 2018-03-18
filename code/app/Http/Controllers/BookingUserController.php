@@ -31,12 +31,12 @@ class BookingUserController extends BookingHandler
 
     public function show(Request $request, $aggregate_id, $user_id)
     {
-        $aggregate = Aggregate::findOrFail($aggregate_id);
-        if (Auth::user()->id != $user_id && $request->user()->can('supplier.shippings', $aggregate) == false) {
-            abort(503);
-        }
-
         $user = User::findOrFail($user_id);
+        $aggregate = Aggregate::findOrFail($aggregate_id);
+
+        if ($user->testUserAccess() == false && $request->user()->can('supplier.shippings', $aggregate) == false)
+            abort(503);
+
         $required_mode = $request->input('enforce', '');
         if (empty($required_mode)) {
             $required_mode = $aggregate->isRunning() ? 'edit' : 'show';

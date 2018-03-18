@@ -6,5 +6,5 @@ if (isset($obj) && isset($name))
 ?>
 
 <label class="static-label text-muted">
-    {{ printablePrice($value) }} {{ $currentgas->currency }}
+    {{ printablePriceCurrency($value) }}
 </label>

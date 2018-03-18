@@ -148,7 +148,7 @@ class MovementsController extends BackedController
     {
         try {
             $movement = $this->service->show($id);
-            return view('movement.show', ['obj' => $movement]);
+            return view('movement.modal', ['obj' => $movement]);
         }
         catch (AuthException $e) {
             abort($e->status());

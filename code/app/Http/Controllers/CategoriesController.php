@@ -69,8 +69,14 @@ class CategoriesController extends Controller
             if (empty($category['name']))
                 continue;
 
-            if (isset($category['id']))
+            if (isset($category['id'])) {
+                if (in_array($category['id'], $accumulator)) {
+                    Log::error('Itero ricorsivamente categoria già gestita, salto');
+                    continue;
+                }
+
                 $c = Category::find($category['id']);
+            }
 
             if ($c == null)
                 $c = new Category();
