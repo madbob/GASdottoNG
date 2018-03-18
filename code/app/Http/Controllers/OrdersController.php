@@ -54,7 +54,7 @@ class OrdersController extends Controller
 
         $user = Auth::user();
         $aggregates = Aggregate::whereHas('orders', function($query) {
-            $query->where('status', 'open')->orWhere('status', 'closed')->orWhere('status', 'shipped')->orWhere('status', 'suspended');
+            $query->whereIn('status', ['open', 'closed', 'shipped', 'suspended']);
         })->with('orders')->get();
 
         foreach ($aggregates as $aggregate) {

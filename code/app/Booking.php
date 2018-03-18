@@ -403,9 +403,32 @@ class Booking extends Model
         return $this->order->printableName();
     }
 
+    public function printableHeader()
+    {
+        $ret = $this->printableName();
+
+        $user = Auth::user();
+
+        $tot = $this->total_value;
+        $friends_tot = $this->total_friends_value;
+
+        if($tot == 0 && $friends_tot == 0) {
+            $message = _i("Non hai partecipato a quest'ordine");
+        }
+        else {
+            if ($friends_tot == 0)
+                $message = _i('Hai ordinato %s', printablePriceCurrency($tot));
+            else
+                $message = _i('Hai ordinato %s + %s', printablePriceCurrency($tot), printablePriceCurrency($friends_tot));
+        }
+
+        $ret .= '<span class="pull-right">' . $message . '</span>';
+        return $ret;
+    }
+
     public function getShowURL()
     {
-        return URL::action('BookingUserController@show', $this->order->aggregate_id, $this->user_id);
+        return route('booking.user.show', ['booking' => $this->order->aggregate_id, 'user' => $this->user_id]);
     }
 
     /******************************************************** CreditableTrait */

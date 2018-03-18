@@ -11,6 +11,10 @@
                 <li role="presentation"><a href="#accounting" role="tab" data-toggle="tab">Contabilità</a></li>
             @endif
 
+            @if($user->can('supplier.book'))
+                <li role="presentation"><a href="#bookings" role="tab" data-toggle="tab">Prenotazioni</a></li>
+            @endif
+
             @if($user->can('users.subusers'))
                 <li role="presentation"><a href="#friends" role="tab" data-toggle="tab">Amici</a></li>
             @endif
@@ -95,6 +99,36 @@
             @if($user->isFriend() == false && App\Role::someone('movements.admin', $user->gas))
                 <div role="tabpanel" class="tab-pane" id="accounting">
                     @include('movement.targetlist', ['target' => $user])
+                </div>
+            @endif
+
+            @if($user->can('supplier.book'))
+                <div role="tabpanel" class="tab-pane list-filter" id="bookings" data-list-target="#wrapper-booking-list">
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <form class="form-horizontal" data-toggle="validator" method="GET" action="{{ url('users/searchorders') }}">
+                                @include('commons.selectobjfield', [
+                                    'obj' => null,
+                                    'name' => 'supplier_id',
+                                    'label' => _i('Fornitore'),
+                                    'mandatory' => true,
+                                    'objects' => $currentgas->suppliers,
+                                    'extra_selection' => [
+                                        '0' => _i('Tutti')
+                                    ]
+                                ])
+
+                                @include('commons.genericdaterange')
+                            </form>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12">
+                            @include('commons.orderslist', ['orders' => $booked_orders])
+                        </div>
+                    </div>
                 </div>
             @endif
 

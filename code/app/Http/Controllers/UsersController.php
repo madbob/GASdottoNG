@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use Auth;
 
+use App\Aggregate;
+
 use App\Services\UsersService;
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
@@ -49,16 +51,39 @@ class UsersController extends BackedController
         }
     }
 
+    private function getOrders($user_id, $supplier_id, $start, $end)
+    {
+        return Aggregate::whereHas('orders', function($query) use ($user_id, $supplier_id, $start, $end) {
+            $query->where('start', '>=', $start)->where('end', '<=', $end)->whereHas('bookings', function($query) use ($user_id) {
+                $query->where('user_id', $user_id);
+            });
+
+            if ($supplier_id != '0') {
+                $query->where('supplier_id', $supplier_id);
+            }
+        })->with('orders')->get();
+    }
+
     public function profile(Request $request)
     {
         try {
             $id = Auth::user()->id;
             $user = $this->service->show($id);
-            return view('pages.profile', ['user' => $user]);
+            $booked_orders = $this->getOrders($id, 0, date('Y-m-d', strtotime('-1 months')), '2100-01-01');
+            return view('pages.profile', ['user' => $user, 'booked_orders' => $booked_orders]);
         }
         catch (AuthException $e) {
             abort($e->status());
         }
+    }
+
+    public function searchOrders(Request $request)
+    {
+        $supplier_id = $request->input('supplier_id');
+        $start = decodeDate($request->input('startdate'));
+        $end = decodeDate($request->input('enddate'));
+        $orders = $this->getOrders(Auth::user()->id, $supplier_id, $start, $end);
+        return view('commons.orderslist', ['orders' => $orders, 'no_legend' => true]);
     }
 
     public function show(Request $request, $id)
