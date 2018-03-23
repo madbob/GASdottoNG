@@ -142,8 +142,9 @@ class MovementsController extends BackedController
     public function show(Request $request, $id)
     {
         try {
+            $user = Auth::user();
             $movement = $this->service->show($id);
-            return view('movement.modal', ['obj' => $movement]);
+            return view('movement.modal', ['obj' => $movement, 'editable' => $user->can('movements.admin', $user->gas)]);
         }
         catch (AuthException $e) {
             abort($e->status());

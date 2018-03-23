@@ -178,6 +178,11 @@ class MovementsKeeper extends ServiceProvider
         */
         Movement::deleting(function ($movement) {
             $metadata = $movement->type_metadata;
+
+            if (isset($metadata->callbacks['delete'])) {
+                $metadata->callbacks['delete']($movement);
+            }
+
             $movement->amount = $movement->amount * -1;
             $movement->apply();
         });

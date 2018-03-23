@@ -110,6 +110,11 @@ class MovementType extends Model
                             $sender->deposit_id = $movement->id;
                             $sender->save();
                         },
+                        'delete' => function(Movement $movement) {
+                            $sender = $movement->sender;
+                            $sender->deposit_id = 0;
+                            $sender->save();
+                        }
                     ];
 
                     break;
@@ -123,6 +128,17 @@ class MovementType extends Model
                             $target->deposit_id = 0;
                             $target->save();
                         },
+                        'delete' => function(Movement $movement) {
+                            $sender = $movement->sender;
+
+                            if ($sender->deposit_id == 0) {
+                                $payment = Movement::where('type', 'deposit-pay')->where('sender_id', $sender->id)->first();
+                                if ($payment) {
+                                    $sender->deposit_id = $payment->id;
+                                    $sender->save();
+                                }
+                            }
+                        }
                     ];
 
                     break;
@@ -136,6 +152,11 @@ class MovementType extends Model
                             $sender->fee_id = $movement->id;
                             $sender->save();
                         },
+                        'delete' => function(Movement $movement) {
+                            $sender = $movement->sender;
+                            $sender->fee_id = 0;
+                            $sender->save();
+                        }
                     ];
 
                     break;
@@ -233,6 +254,13 @@ class MovementType extends Model
                                 }
                             }
                         },
+                        'delete' => function(Movement $movement) {
+                            $target = $movement->target;
+                            if($target != null) {
+                                $target->payment_id = 0;
+                                $target->save();
+                            }
+                        }
                     ];
 
                     break;
@@ -244,6 +272,11 @@ class MovementType extends Model
                             $target->payment_id = $movement->id;
                             $target->save();
                         },
+                        'delete' => function(Movement $movement) {
+                            $target = $movement->target;
+                            $target->payment_id = 0;
+                            $target->save();
+                        }
                     ];
 
                     break;
