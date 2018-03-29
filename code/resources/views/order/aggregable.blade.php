@@ -1,7 +1,7 @@
 <?php $index = 0 ?>
 
 @foreach($orders as $order)
-    @if(($order->status == 'shipped' && count($order->orders) > 1) || $order->status != 'shipped')
+    @if(($order->status == 'shipped' && count($order->orders) > 1) || ($order->status != 'shipped' && $order->status != 'archived'))
         @if($index % 5 == 0)
             <div class="well" data-aggregate-id="new">
                 <span class="glyphicon glyphicon-fullscreen pull-right explode-aggregate" aria-hidden="true"></span>
@@ -13,13 +13,14 @@
         @endif
 
         <div class="well" data-aggregate-id="{{ $order->id }}">
-            <span class="glyphicon glyphicon-fullscreen pull-right explode-aggregate" aria-hidden="true"></span>
+            <p class="clearfix">
+                <span class="glyphicon glyphicon-fullscreen pull-right explode-aggregate" aria-hidden="true"></span>
+            </p>
 
             <ul>
                 @foreach($order->orders as $suborder)
                     <li data-order-id="{{ $suborder->id }}">
-                        {{ $suborder->printableName() }}<br/>
-                        <small>{{ $suborder->printableDates() }}</small>
+                        {!! $suborder->printableHeader() !!}<br/>
                     </li>
                 @endforeach
             </ul>
