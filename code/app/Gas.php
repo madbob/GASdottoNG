@@ -108,6 +108,10 @@ class Gas extends Model
             'currency' => [
                 'default' => '€'
             ],
+
+            'public_registrations' => [
+                'default' => '0'
+            ],
         ];
     }
 
@@ -179,6 +183,11 @@ class Gas extends Model
     public function getCurrencyAttribute()
     {
         return $this->getConfig('currency');
+    }
+
+    public function getPublicRegistrationsAttribute()
+    {
+        return $this->getConfig('public_registrations') == '1';
     }
 
     /******************************************************** AttachableTrait */

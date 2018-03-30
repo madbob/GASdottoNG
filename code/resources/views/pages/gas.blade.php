@@ -45,6 +45,33 @@
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab">
                     <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#main-configs" href="#users-config">
+                            {{ _i('Utenti') }}
+                        </a>
+                    </h4>
+                </div>
+                <div id="users-config" class="panel-collapse collapse" role="tabpanel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ route('gas.update', $gas->id) }}">
+                                <input type="hidden" name="group" value="users">
+
+                                <div class="col-md-12">
+                                    @include('commons.boolfield', ['obj' => $gas, 'name' => 'public_registrations', 'label' => _i('Abilita Registrazione Pubblica')])
+
+                                    <div class="btn-group pull-right main-form-buttons" role="group">
+                                        <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab">
+                    <h4 class="panel-title">
                         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#main-configs" href="#orders-config">
                             {{ _i('Ordini e Consegne') }}
                         </a>

@@ -25,7 +25,6 @@ class User extends Authenticatable
     use Notifiable, Authorizable, SoftDeletes, ContactableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
-    protected $table = 'users';
     protected $hidden = ['password', 'remember_token'];
     protected $dates = ['deleted_at'];
 
