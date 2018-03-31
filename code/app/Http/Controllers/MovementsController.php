@@ -196,14 +196,23 @@ class MovementsController extends BackedController
                 }
 
                 if ($subtype == 'csv') {
+                    $has_fee = ($user->gas->getConfig('annual_fee_amount') != 0);
                     $filename = _i('Crediti al %s.csv', date('d/m/Y'));
+
                     $headers = [_i('ID'), _i('Nome'), _i('E-Mail'), _i('Credito Residuo')];
-                    return output_csv($filename, $headers, $users, function($user) {
+                    if ($has_fee)
+                        $headers[] = _i('Quota Pagata');
+
+                    return output_csv($filename, $headers, $users, function($user) use ($has_fee) {
                         $row = [];
                         $row[] = $user->username;
                         $row[] = $user->printableName();
                         $row[] = $user->email;
                         $row[] = printablePrice($user->current_balance_amount, ',');
+
+                        if ($has_fee)
+                            $row[] = $user->fee != null ? _i('SI') : _i('NO');
+
                         return $row;
                     });
                 }
