@@ -230,6 +230,14 @@ Indirizzo mail di riferimento del GAS. Attenzione: viene specificato a titolo in
 
 Eventuale messaggio da visualizzare sulla pagina di autenticazione di GASdotto, utile per comunicazioni speciali verso i membri del GAS o come messaggio di benvenuto.
 
+# Valuta
+
+Simbolo della valuta in uso. Verrà usato in tutte le visualizzazioni in cui sono espressi dei prezzi
+
+# Modalità Manutenzione
+
+Se abilitato, il login sarà inibito a tutti gli utenti che non hanno il permesso "Accesso consentito anche in manutenzione"
+
 # Indirizzo
 
 Indirizzo mail da cui verranno spedite le mail.
@@ -253,6 +261,10 @@ Porta TCP da usare per connettersi al server SMTP. Consultare la documentazione 
 # Crittografia
 
 Tipo di connessione sicura usata dal proprio server SMTP. Consultare la documentazione del proprio fornitore di posta elettronica per questi dettagli.
+
+# Abilita Registrazione Pubblica
+
+Quando questa opzione è abilitata, chiunque potrà registrarsi all'istanza per mezzo dell'apposito pannello (accessibile da quello di login). Gli amministratori addetti agli utenti riceveranno una mail di notifica per ogni nuovo utente registrato.
 
 # Abilita Consegne Rapide
 
@@ -285,3 +297,23 @@ Codice identificativo erogato dalla banca, detto anche "CUC".
 # Importazione
 
 Da qui è possibile importare un file GDXP generato da un'altra istanza di GASdotto o da qualsiasi altra piattaforma che supporta il formato.
+
+## .vatrate-editor
+
+# Aliquota
+
+Percentuale dell'aliquota da applicare sui prezzi
+
+## .gas-permission-editor
+
+# Ruolo Utente non Privilegiato
+
+Questo ruolo sarà automaticamete assegnato ad ogni nuovo utente.
+
+# Ruolo Sotto-Utente
+
+Questo ruolo sarà automaticamente assegnato ad ogni "amico" degli utenti esistenti. Si consiglia di creare un ruolo dedicato, con permessi limitati alle sole prenotazioni.
+
+# Ruolo Superiore
+
+Gli utenti con assegnato un "ruolo superiore" potranno assegnare ad altri utenti questo ruolo.
