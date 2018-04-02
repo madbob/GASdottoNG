@@ -18,7 +18,7 @@ class Aggregate extends Model
 {
     use GASModel;
 
-    protected $events = [
+    protected $dispatchesEvents = [
         'created' => AttachableToGas::class
     ];
 

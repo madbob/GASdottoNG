@@ -28,7 +28,7 @@ class User extends Authenticatable
     protected $hidden = ['password', 'remember_token'];
     protected $dates = ['deleted_at'];
 
-    protected $events = [
+    protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,
     ];
 

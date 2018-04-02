@@ -15,7 +15,7 @@ class Category extends Model implements Hierarchic
 
     public $incrementing = false;
 
-    protected $events = [
+    protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,
     ];
 

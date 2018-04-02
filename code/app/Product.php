@@ -17,7 +17,7 @@ class Product extends Model
 
     public $incrementing = false;
 
-    protected $events = [
+    protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,
     ];
 
