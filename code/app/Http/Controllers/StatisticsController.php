@@ -55,7 +55,7 @@ class StatisticsController extends Controller
                 ];
 
                 foreach ($data as $supplier => $info) {
-                    $ret->expenses->labels[] = $supplier;
+                    $ret->expenses->labels[] = sprintf('%s (%s)', $supplier, printablePriceCurrency($info->value));
                     $ret->expenses->series[] = $info->value;
                     $ret->users->labels[] = $supplier;
                     $ret->users->series[0][] = count($info->users);
@@ -84,7 +84,7 @@ class StatisticsController extends Controller
                             }
 
                             $data[$name]->users[$booking->user_id] = true;
-                            $data[$name]->value += $product->final_value;
+                            $data[$name]->value += $product->final_price;
                         }
                     }
 
@@ -100,7 +100,7 @@ class StatisticsController extends Controller
                     ];
 
                     foreach ($data as $info) {
-                        $ret->expenses->labels[] = $info->name;
+                        $ret->expenses->labels[] = sprintf('%s (%s)', $info->name, printablePriceCurrency($info->value));
                         $ret->expenses->series[] = $info->value;
                         $ret->users->labels[] = $info->name;
                         $ret->users->series[0][] = count($info->users);

@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 
 use Auth;
 use Log;
-use PDF;
+use Artisan;
 use Response;
+
+use PDF;
 
 use App\User;
 use App\MovementType;
@@ -196,6 +198,12 @@ class MovementsController extends BackedController
                 }
 
                 if ($subtype == 'csv') {
+                    /*
+                        Qui effettuo un controllo extra sulle quote pagate, per
+                        aggiornare i dati che andranno nel CSV
+                    */
+                    Artisan::call('check:fees');
+
                     $has_fee = ($user->gas->getConfig('annual_fee_amount') != 0);
                     $filename = _i('Crediti al %s.csv', date('d/m/Y'));
 
