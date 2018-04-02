@@ -97,6 +97,18 @@
             <input type="hidden" name="gas_id" value="{{ currentAbsoluteGas()->id }}">
         @endif
 
+        @if (env('GASDOTTO_NET', false) == true)
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" required> Ho letto e accetto l'<a href="http://gasdotto.net/privacy" target="_blank">Informativa sulla Privacy</a>.
+                        </label>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <br>
 
         <div class="form-group">
