@@ -7,6 +7,8 @@
 
         <title>GASdotto</title>
 
+        @include('feed::links')
+
         <?php
 
         $css = [

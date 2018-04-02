@@ -6,20 +6,21 @@
     "type": "project",
     "require": {
         "php": ">=7.1",
-        "fideloper/proxy": "~4.0",
         "aws/aws-sdk-php": "^3.38",
         "barryvdh/laravel-debugbar": "^3.1",
+        "belphemur/laravel-gettext": "5.x",
         "devfactory/minify": "^1.0",
         "doctrine/dbal": "^2.5",
         "elibyy/tcpdf-laravel": "^5.4",
+        "fideloper/proxy": "~4.0",
         "laravel/framework": "5.6.*",
         "laravel/tinker": "~1.0",
         "madbob/laravel-log2rss": "^0.1.0",
         "sinergi/browser-detector": "^6.1",
+        "spatie/laravel-feed": "^2.0",
         "vespakoen/menu": "^3.0",
         "wilgucki/csv": "^0.6.2",
-        "zetacomponents/archive": "^1.5",
-        "belphemur/laravel-gettext": "5.x"
+        "zetacomponents/archive": "^1.5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
