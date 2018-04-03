@@ -8,7 +8,7 @@
         "php": ">=7.1",
         "aws/aws-sdk-php": "^3.38",
         "barryvdh/laravel-debugbar": "^3.1",
-        "belphemur/laravel-gettext": "5.x",
+        "belphemur/laravel-gettext": "7.x",
         "devfactory/minify": "^1.0",
         "doctrine/dbal": "^2.5",
         "elibyy/tcpdf-laravel": "^5.4",
