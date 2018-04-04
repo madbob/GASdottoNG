@@ -48,8 +48,10 @@ class BookingHandler extends Controller
                 $booking->delivery = date('Y-m-d');
             }
 
-            if ($request->has('notes_' . $order->id))
+            if ($request->has('notes_' . $order->id) && $request->input('notes_' . $order->id) != null)
                 $booking->notes = $request->input('notes_' . $order->id);
+            else
+                $booking->notes = '';
 
             $booking->save();
 
