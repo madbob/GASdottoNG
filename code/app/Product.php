@@ -175,7 +175,7 @@ class Product extends Model
             $details[] = _i('Massimo Consigliato: %.02f', $this->max_quantity);
         }
         if ($this->max_available != 0) {
-            $details[] = _i('Disponibile: %.02f (%.02f totale)', $this->stillAvailable($order), $this->max_available);
+            $details[] = sprintf(_i('Disponibile: %.02f (%.02f totale)'), $this->stillAvailable($order), $this->max_available);
         }
         if ($this->multiple != 0) {
             $details[] = _i('Multiplo: %.02f', $this->multiple);
