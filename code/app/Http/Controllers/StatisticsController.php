@@ -31,11 +31,12 @@ class StatisticsController extends Controller
             case 'summary':
                 $bookings = Booking::where('delivery', '!=', '0000-00-00')->where('delivery', '>=', $start)->where('delivery', '<=', $end)->toplevel()->with('order')->get();
                 foreach ($bookings as $booking) {
-                    $name = $booking->order->supplier->printableName();
+                    $name = $booking->order->supplier_id;
                     if (isset($data[$name]) == false) {
                         $data[$name] = (object) [
                             'users' => [],
                             'value' => 0,
+                            'name' => $booking->order->supplier->printableName()
                         ];
                     }
 
@@ -46,7 +47,7 @@ class StatisticsController extends Controller
                 $ret = (object) [
                     'expenses' => (object) [
                         'labels' => [],
-                        'series' => [],
+                        'series' => [[]],
                     ],
                     'users' => (object) [
                         'labels' => [],
@@ -54,10 +55,12 @@ class StatisticsController extends Controller
                     ],
                 ];
 
-                foreach ($data as $supplier => $info) {
-                    $ret->expenses->labels[] = sprintf('%s (%s)', $supplier, printablePriceCurrency($info->value));
-                    $ret->expenses->series[] = $info->value;
-                    $ret->users->labels[] = $supplier;
+                krsort($data);
+
+                foreach ($data as $info) {
+                    $ret->expenses->labels[] = sprintf('%s<br>%s', $info->name, printablePriceCurrency($info->value));
+                    $ret->expenses->series[0][] = $info->value;
+                    $ret->users->labels[] = $info->name;
                     $ret->users->series[0][] = count($info->users);
                 }
 
@@ -91,7 +94,7 @@ class StatisticsController extends Controller
                     $ret = (object) [
                         'expenses' => (object) [
                             'labels' => [],
-                            'series' => [],
+                            'series' => [[]],
                         ],
                         'users' => (object) [
                             'labels' => [],
@@ -99,9 +102,13 @@ class StatisticsController extends Controller
                         ],
                     ];
 
+                    usort($data, function($a, $b) {
+                        return ($a->name <=> $b->name) * -1;
+                    });
+
                     foreach ($data as $info) {
-                        $ret->expenses->labels[] = sprintf('%s (%s)', $info->name, printablePriceCurrency($info->value));
-                        $ret->expenses->series[] = $info->value;
+                        $ret->expenses->labels[] = sprintf('%s<br>%s', $info->name, printablePriceCurrency($info->value));
+                        $ret->expenses->series[0][] = $info->value;
                         $ret->users->labels[] = $info->name;
                         $ret->users->series[0][] = count($info->users);
                     }

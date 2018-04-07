@@ -6,10 +6,14 @@ function runSummaryStats() {
         start: start,
         end: end
     }, function(data) {
-        new Chartist.Pie('#stats-generic-expenses', data.expenses, {
-            labelDirection: 'explode',
-            labelOffset: 40,
-            chartPadding: 20,
+        new Chartist.Bar('#stats-generic-expenses', data.expenses, {
+            horizontalBars: true,
+            axisX: {
+                onlyInteger: true
+            },
+            axisY: {
+                offset: 220
+            },
         });
         new Chartist.Bar('#stats-generic-users', data.users, {
             horizontalBars: true,
@@ -33,10 +37,14 @@ function runSupplierStats() {
         end: end,
         supplier: supplier
     }, function(data) {
-        new Chartist.Pie('#stats-products-expenses', data.expenses, {
-            labelDirection: 'explode',
-            labelOffset: 40,
-            chartPadding: 20,
+        new Chartist.Bar('#stats-products-expenses', data.expenses, {
+            horizontalBars: true,
+            axisX: {
+                onlyInteger: true
+            },
+            axisY: {
+                offset: 220
+            },
         });
         new Chartist.Bar('#stats-products-users', data.users, {
             horizontalBars: true,

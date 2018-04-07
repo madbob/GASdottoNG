@@ -166,13 +166,7 @@ class Booking extends Model
     */
     public function getDeliveredAttribute()
     {
-        $sum = 0;
-
-        foreach ($this->products as $booked) {
-            $sum += $booked->final_price;
-        }
-
-        return $sum;
+        return $this->products()->sum('final_price');
     }
 
     /*
