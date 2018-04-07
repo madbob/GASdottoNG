@@ -162,10 +162,14 @@ class InvoicesController extends Controller
         $movements = new Collection();
         $movements->push($main);
 
-        $orders_grand_total = 0;
+        $orders_total_taxable = 0;
+        $orders_total_tax = 0;
+        $orders_total_transport = 0;
         foreach($invoice->orders as $order) {
             $summary = $order->calculateInvoicingSummary();
-            $orders_grand_total += $summary->total + $summary->transport;
+            $orders_total_taxable += $summary->total_taxable;
+            $orders_total_tax += $summary->total_tax;
+            $orders_total_transport += $summary->transport;
         }
 
         $alternative_types = [];
@@ -181,8 +185,9 @@ class InvoicesController extends Controller
 
         return view('invoice.movements', [
             'invoice' => $invoice,
-            'total_invoice' => $invoice_grand_total,
-            'total_orders' => $orders_grand_total,
+            'total_orders' => $orders_total_taxable,
+            'tax_orders' => $orders_total_tax,
+            'transport_orders' => $orders_total_transport,
             'movements' => $movements,
             'alternative_types' => $alternative_types
         ]);

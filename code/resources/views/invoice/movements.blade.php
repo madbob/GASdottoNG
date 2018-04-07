@@ -13,7 +13,7 @@
                                 <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Totale Fattura') }}</label>
                                 <div class="col-sm-{{ $fieldsize }}">
                                     <label class="static-label text-muted">
-                                        {{ printablePrice($total_invoice) }} {{ $currentcurrency }}
+                                        {{ printablePriceCurrency($invoice->total) }} + {{ printablePriceCurrency($invoice->total_vat) }} = {{ printablePriceCurrency($invoice->total + $invoice->total_vat) }}
                                     </label>
                                 </div>
                             </div>
@@ -22,7 +22,7 @@
                                 <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Totale Ordini') }}</label>
                                 <div class="col-sm-{{ $fieldsize }}">
                                     <label class="static-label text-muted">
-                                        {{ printablePrice($total_orders) }} {{ $currentcurrency }}
+                                        {{ printablePriceCurrency($total_orders) }} + {{ printablePriceCurrency($tax_orders) }} + {{ printablePriceCurrency($transport_orders) }} = {{ printablePriceCurrency($total_orders + $tax_orders + $transport_orders) }}
                                     </label>
                                 </div>
                             </div>
@@ -31,7 +31,7 @@
                                 <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Saldo Fornitore') }}</label>
                                 <div class="col-sm-{{ $fieldsize }}">
                                     <label class="static-label text-muted">
-                                        {{ printablePrice($invoice->supplier->current_balance_amount) }} {{ $currentcurrency }}
+                                        {{ printablePriceCurrency($invoice->supplier->current_balance_amount) }}
                                     </label>
                                 </div>
                             </div>
