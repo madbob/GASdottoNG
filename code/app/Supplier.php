@@ -20,12 +20,13 @@ use App\GASModel;
 use App\SluggableID;
 use App\Aggregate;
 use App\ContactableTrait;
+use App\SuspendableTrait;
 use App\PayableTrait;
 use App\ExportableTrait;
 
 class Supplier extends Model
 {
-    use Notifiable, SoftDeletes, AttachableTrait, ContactableTrait, CreditableTrait, PayableTrait, ExportableTrait, GASModel, SluggableID;
+    use Notifiable, SoftDeletes, AttachableTrait, ContactableTrait, CreditableTrait, PayableTrait, ExportableTrait, SuspendableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
     protected $dates = ['deleted_at'];

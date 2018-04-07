@@ -34,28 +34,9 @@
                 ])
             @endif
 
-            <div class="form-group">
-                <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Stato') }}</label>
+            @include('commons.statusfield', ['target' => $user])
 
-                <div class="col-sm-{{ ceil($fieldsize / 2) }}">
-                    <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-default {{ $user->deleted_at == null ? 'active' : '' }}">
-                            <input type="radio" name="status" value="active" {{ $user->deleted_at == null ? 'checked' : '' }}> {{ _i('Attivo') }}
-                        </label>
-                        <label class="btn btn-default {{ $user->suspended == true && $user->deleted_at != null ? 'active' : '' }}">
-                            <input type="radio" name="status" value="suspended" {{ $user->suspended == true && $user->deleted_at != null ? 'checked' : '' }}> {{ _i('Sospeso') }}
-                        </label>
-                        <label class="btn btn-default {{ $user->suspended == false && $user->deleted_at != null ? 'active' : '' }}">
-                            <input type="radio" name="status" value="deleted" {{ $user->suspended == false && $user->deleted_at != null ? 'checked' : '' }}> {{ _i('Cessato') }}
-                        </label>
-                    </div>
-                </div>
-                <div class="user-status-date col-sm-{{ floor($fieldsize / 2) }} {{ $user->deleted_at == null ? 'hidden' : '' }}">
-                    @include('commons.datefield', ['obj' => $user, 'name' => 'deleted_at', 'label' => _i('Data'), 'squeeze' => true])
-                </div>
-            </div>
-
-            @if(!empty($currentgas->rid['iban']))
+            @if(!empty($user->gas->rid['iban']))
                 <div class="form-group">
                     <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Configurazione SEPA') }}</label>
 

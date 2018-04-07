@@ -18,11 +18,12 @@ use App\Events\SluggableCreating;
 use App\GASModel;
 use App\SluggableID;
 use App\ContactableTrait;
+use App\SuspendableTrait;
 use App\PayableTrait;
 
 class User extends Authenticatable
 {
-    use Notifiable, Authorizable, SoftDeletes, ContactableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID;
+    use Notifiable, Authorizable, SoftDeletes, ContactableTrait, CreditableTrait, PayableTrait, SuspendableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
     protected $hidden = ['password', 'remember_token'];
