@@ -20,7 +20,7 @@ class MovementType extends Model
 
     public $incrementing = false;
 
-    protected $events = [
+    protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,
     ];
 
@@ -125,6 +125,11 @@ class MovementType extends Model
                             $sender->deposit_id = $movement->id;
                             $sender->save();
                         },
+                        'delete' => function(Movement $movement) {
+                            $sender = $movement->sender;
+                            $sender->deposit_id = 0;
+                            $sender->save();
+                        }
                     ];
 
                     break;
@@ -138,6 +143,17 @@ class MovementType extends Model
                             $target->deposit_id = 0;
                             $target->save();
                         },
+                        'delete' => function(Movement $movement) {
+                            $sender = $movement->sender;
+
+                            if ($sender->deposit_id == 0) {
+                                $payment = Movement::where('type', 'deposit-pay')->where('sender_id', $sender->id)->first();
+                                if ($payment) {
+                                    $sender->deposit_id = $payment->id;
+                                    $sender->save();
+                                }
+                            }
+                        }
                     ];
 
                     break;
@@ -151,6 +167,11 @@ class MovementType extends Model
                             $sender->fee_id = $movement->id;
                             $sender->save();
                         },
+                        'delete' => function(Movement $movement) {
+                            $sender = $movement->sender;
+                            $sender->fee_id = 0;
+                            $sender->save();
+                        }
                     ];
 
                     break;
@@ -166,6 +187,8 @@ class MovementType extends Model
                         */
                         'pre' => function (Movement $movement) {
                             if ($movement->target_type == 'App\Aggregate') {
+                                $debug = '';
+
                                 $total = $movement->amount;
                                 $aggregate = $movement->target;
                                 $user = $movement->sender;
@@ -180,12 +203,19 @@ class MovementType extends Model
 
                                 foreach ($aggregate->orders as $order) {
                                     $booking = $order->userBooking($user->id);
-                                    if ($booking->exists == false)
+                                    if ($booking->exists == false) {
+                                        $debug .= sprintf("Prenotazione non esistente: %s %s\n", $order->id, $user->id);
                                         continue;
+                                    }
+
+                                    $debug .= sprintf("Consegna %s %s\n", $order->id, $user->id);
 
                                     if (isset($handling_status->{$booking->id})) {
+                                        $debug .= sprintf("Informazioni prelevate dal contesto\n");
                                         $delivered = $handling_status->{$booking->id};
-                                    } else {
+                                    }
+                                    else {
+                                        $debug .= sprintf("Informazioni prelevate dalla prenotazione consegnata\n");
                                         $delivered = $booking->delivered;
                                     }
 
@@ -195,6 +225,8 @@ class MovementType extends Model
 
                                     $existing_movement = $booking->payment;
                                     if ($existing_movement == null) {
+                                        $debug .= sprintf("Creo nuovo movimento da %s euro\n", $delivered);
+
                                         $m = $movement->replicate();
                                         $m->target_id = $booking->id;
                                         $m->target_type = 'App\Booking';
@@ -208,6 +240,7 @@ class MovementType extends Model
                                         $m->load('target');
                                     }
                                     else {
+                                        $debug .= sprintf("Altero movimento esistente %s da %s a %s euro\n", $existing_movement->id, $existing_movement->amount, $delivered);
                                         $m = $existing_movement;
                                     }
 
@@ -229,6 +262,8 @@ class MovementType extends Model
                                     $m->save();
                                 }
 
+                                Log::debug($debug);
+
                                 return 2;
                             }
 
@@ -248,6 +283,13 @@ class MovementType extends Model
                                 }
                             }
                         },
+                        'delete' => function(Movement $movement) {
+                            $target = $movement->target;
+                            if($target != null) {
+                                $target->payment_id = 0;
+                                $target->save();
+                            }
+                        }
                     ];
 
                     break;
@@ -259,6 +301,11 @@ class MovementType extends Model
                             $target->payment_id = $movement->id;
                             $target->save();
                         },
+                        'delete' => function(Movement $movement) {
+                            $target = $movement->target;
+                            $target->payment_id = 0;
+                            $target->save();
+                        }
                     ];
 
                     break;

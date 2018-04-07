@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 
 use Auth;
 use Log;
-use PDF;
+use Artisan;
 use Response;
+
+use PDF;
 
 use App\User;
 use App\Invoice;
@@ -147,8 +149,9 @@ class MovementsController extends BackedController
     public function show(Request $request, $id)
     {
         try {
+            $user = Auth::user();
             $movement = $this->service->show($id);
-            return view('movement.modal', ['obj' => $movement]);
+            return view('movement.modal', ['obj' => $movement, 'editable' => $user->can('movements.admin', $user->gas)]);
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -200,14 +203,29 @@ class MovementsController extends BackedController
                 }
 
                 if ($subtype == 'csv') {
+                    /*
+                        Qui effettuo un controllo extra sulle quote pagate, per
+                        aggiornare i dati che andranno nel CSV
+                    */
+                    Artisan::call('check:fees');
+
+                    $has_fee = ($user->gas->getConfig('annual_fee_amount') != 0);
                     $filename = _i('Crediti al %s.csv', date('d/m/Y'));
+
                     $headers = [_i('ID'), _i('Nome'), _i('E-Mail'), _i('Credito Residuo')];
-                    return output_csv($filename, $headers, $users, function($user) {
+                    if ($has_fee)
+                        $headers[] = _i('Quota Pagata');
+
+                    return output_csv($filename, $headers, $users, function($user) use ($has_fee) {
                         $row = [];
                         $row[] = $user->username;
                         $row[] = $user->printableName();
                         $row[] = $user->email;
                         $row[] = printablePrice($user->current_balance_amount, ',');
+
+                        if ($has_fee)
+                            $row[] = $user->fee != null ? _i('SI') : _i('NO');
+
                         return $row;
                     });
                 }

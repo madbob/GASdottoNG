@@ -1986,6 +1986,7 @@ $(document).ready(function() {
         var form = $(this).closest('.form-filler');
         var target = $(form.attr('data-fill-target'));
         var data = form.find('input, select').serialize();
+        target.empty().append(loadingPlaceholder());
 
         $.ajax({
             method: 'GET',

@@ -93,7 +93,7 @@ if (!isset($amount_label))
                 </div>
 
                 <div class="modal-footer">
-                    @if($editable)
+                    @if($editable && $obj && $obj->exists)
                         <button type="button" class="btn btn-danger spare-modal-delete-button" data-delete-url="{{ route('movements.destroy', $obj->id) }}">{{ _i('Elimina') }}</button>
                     @endif
 

@@ -54,9 +54,17 @@ class UsersController extends BackedController
     private function getOrders($user_id, $supplier_id, $start, $end)
     {
         return Aggregate::whereHas('orders', function($query) use ($user_id, $supplier_id, $start, $end) {
-            $query->where('start', '>=', $start)->where('end', '<=', $end)->whereHas('bookings', function($query) use ($user_id) {
+            $query->whereHas('bookings', function($query) use ($user_id) {
                 $query->where('user_id', $user_id);
             });
+
+            if ($start) {
+                $query->where('start', '>=', $start);
+            }
+
+            if ($end) {
+                $query->where('end', '<=', $end);
+            }
 
             if ($supplier_id != '0') {
                 $query->where('supplier_id', $supplier_id);

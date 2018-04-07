@@ -1,4 +1,4 @@
-<div id="permissions-management" data-fetch-url="{{ route('roles.index') }}">
+<div id="permissions-management" class="gas-permission-editor" data-fetch-url="{{ route('roles.index') }}">
     <div class="page-header">
         <h3>{{ _i('Permessi') }}</h3>
     </div>

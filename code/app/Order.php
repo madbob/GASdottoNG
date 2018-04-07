@@ -25,7 +25,7 @@ class Order extends Model
 
     public $incrementing = false;
 
-    protected $events = [
+    protected $dispatchesEvents = [
         'creating' => SluggableCreating::class
     ];
 
@@ -111,7 +111,7 @@ class Order extends Model
             $ret .= '<div class="pull-right">';
 
             foreach ($icons as $i) {
-                $ret .= '<span class="glyphicototal_valuen glyphicon-'.$i.'" aria-hidden="true"></span>&nbsp;';
+                $ret .= '<span class="glyphicon glyphicon-'.$i.'" aria-hidden="true"></span>&nbsp;';
             }
 
             $ret .= '</div>';

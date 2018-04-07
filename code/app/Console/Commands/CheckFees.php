@@ -35,9 +35,14 @@ class CheckFees extends Command
 
                 DB::beginTransaction();
 
-                User::withTrashed()->whereHas('fee', function($query) use ($date_close) {
+                $users = User::withTrashed()->whereHas('fee', function($query) use ($date_close) {
                     $query->where('date', '<', $date_close);
-                })->update(['fee_id' => 0]);
+                })->get();
+
+                foreach($users as $user) {
+                    $user->fee_id = 0;
+                    $user->save();
+                }
 
                 $date_close = date('Y-m-d', strtotime($date_close . ' +1 years'));
                 $gas->setConfig('year_closing', $date_close);

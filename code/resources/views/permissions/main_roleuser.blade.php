@@ -26,7 +26,7 @@
                     <li class="list-group-item">
                         {{ $target->printableName() }}
                         <span class="pull-right">
-                            <input type="checkbox" data-toggle="toggle" data-size="mini" data-user="{{ $user->id }}" data-role="{{ $role->id }}" data-target-id="{{ $target->id }}" data-target-class="{{ get_class($target) }}" {{ $r->appliesOnly($target) ? 'checked' : '' }}>
+                            <input type="checkbox" data-toggle="toggle" data-size="mini" data-user="{{ $user->id }}" data-role="{{ $role->id }}" data-target-id="{{ $target->id }}" data-target-class="{{ get_class($target) }}" {{ $r->appliesOnly($target) ? 'checked' : '' }} {{ $user->id == $currentuser->id && $target->id == $currentgas->id ? 'disabled' : '' }}>
                         </span>
                     </li>
                 @endforeach

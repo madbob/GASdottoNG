@@ -38,7 +38,7 @@
                                     </p>
                                 @else
                                     <p>
-                                        {{ _i("Clicca e trascina gli ordini nella stessa cella per aggregarli, o nella cella vuota per disaggregarli.") }}
+                                        {{ _i("Clicca e trascina gli ordini nella stessa cella per aggregarli, o in una cella vuota per disaggregarli.") }}
                                     </p>
 
                                     <hr/>

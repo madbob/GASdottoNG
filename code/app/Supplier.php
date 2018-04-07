@@ -30,7 +30,7 @@ class Supplier extends Model
     public $incrementing = false;
     protected $dates = ['deleted_at'];
 
-    protected $events = [
+    protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,
         'created' => AttachableToGas::class,
         'deleting' => SupplierDeleting::class,

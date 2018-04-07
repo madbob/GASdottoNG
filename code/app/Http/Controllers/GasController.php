@@ -100,6 +100,10 @@ class GasController extends Controller
                 $gas->setConfig('rid', $rid_info);
                 break;
 
+            case 'users':
+                $gas->setConfig('public_registrations', $request->has('public_registrations') ? '1' : '0');
+                break;
+
             case 'orders':
                 $gas->setConfig('fast_shipping_enabled', $request->has('fast_shipping_enabled') ? '1' : '0');
                 break;
