@@ -30,7 +30,14 @@
                 @foreach($order->bookings as $po)
                     <tr>
                         <td>
-                            <label>{{ $po->user->printableName() }}</label>
+                            <label>
+                                @if($po->user->isFriend())
+                                    {{ $po->user->parent->printableName() }}<br>
+                                    <small>Amico: {{ $po->user->printableName() }}</small>
+                                @else
+                                    {{ $po->user->printableName() }}
+                                @endif
+                            </label>
                         </td>
                         <td>
                             <input type="hidden" name="booking[]" value="{{ $po->id }}" />
