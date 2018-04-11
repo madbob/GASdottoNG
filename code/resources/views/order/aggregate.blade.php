@@ -17,15 +17,13 @@ $panel_rand_wrap = rand();
 
 @if($aggregate->isRunning() == false && ($more_orders || $shippable_status))
     <div class="row gray-row">
-        <div class="col-md-4">
+        <div class="col-md-6">
             @if($shippable_status)
                 <form class="form-horizontal">
-                    <div class="form-group">
-                        <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Notifiche Mail') }}</label>
-                        <div class="col-sm-{{ $fieldsize }}">
-                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#notify-aggregate-{{ $aggregate->id }}">{{ _i('Invia Mail') }}</button>
-                            <span class="help-block">{{ _i('Ultime notifiche inviate') }}: <span class="last-date" data-updatable-name="last-notification-date-{{ $aggregate->id }}">{{ $aggregate->printableDate('last_notify') }}</span></span>
-                        </div>
+                    <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Notifiche Mail') }}</label>
+                    <div class="col-sm-{{ $fieldsize }}">
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#notify-aggregate-{{ $aggregate->id }}">{{ _i('Invia Mail') }}</button>
+                        <span class="help-block">{{ _i('Ultime notifiche inviate') }}: <span class="last-date" data-updatable-name="last-notification-date-{{ $aggregate->id }}">{{ $aggregate->printableDate('last_notify') }}</span></span>
                     </div>
                 </form>
 
@@ -59,9 +57,7 @@ $panel_rand_wrap = rand();
                 </div>
             @endif
         </div>
-        <div class="col-md-4">
-        </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
         </div>
     </div>
     <br/>
