@@ -400,8 +400,8 @@ class Order extends Model
 
             $rate = $rates[$product->vat_rate_id];
             if ($rate != null) {
-                $total_vat = ($price_delivered * $rate->percentage) / 100;
-                $total = $price_delivered - $total_vat;
+                $total = $price_delivered / (1 + ($rate->percentage / 100));
+                $total_vat = $price_delivered - $total;
             }
             else {
                 $total = $price_delivered;
