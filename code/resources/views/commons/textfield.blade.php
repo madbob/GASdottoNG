@@ -1,5 +1,14 @@
 <?php
 
+if(!isset($default_value)) {
+    $default_value = '';
+}
+
+$value = accessAttr($obj, $name, '');
+if(empty($value)) {
+    $value = $default_value;
+}
+
 $class = 'form-control';
 if (isset($extra_class)) {
     $class .= ' ' . $extra_class;
@@ -29,7 +38,7 @@ if (!isset($help_text)) {
         <input type="text"
             class="{{ $class }}"
             name="{{ $prefix . $name . $postfix }}"
-            value="{{ accessAttr($obj, $name, '') }}"
+            value="{{ $value }}"
 
             @if(isset($mandatory) && $mandatory == true)
                 required

@@ -120,6 +120,11 @@ class BookingHandler extends Controller
                                 }
                             }
                             else {
+                                if ($q == 0 && $delivering == false) {
+                                    $bpv->delete();
+                                    continue;
+                                }
+
                                 if ($bpv->$param != $q) {
                                     $bpv->$param = $q;
                                     $bpv->save();

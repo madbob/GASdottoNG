@@ -530,7 +530,7 @@ class ImportController extends Controller
 
         $archivepath = sprintf('%s/%s.gdxp', $working_dir, str_replace('/', '_', $obj->printableName()));
         $archive = ezcArchive::open('compress.zlib://' . $archivepath, ezcArchive::TAR_USTAR);
-        $archive->append($filename, '');
+        $archive->append([$filename], '');
         unlink($filename);
 
         return response()->download($archivepath)->deleteFileAfterSend(true);
@@ -595,7 +595,7 @@ class ImportController extends Controller
             }
         }
         catch(\Exception $e) {
-            Log::error(_i('Errore importando file GDXP'));
+            Log::error(_i('Errore importando file GDXP: %s', $e->getMessage()));
             return view('import.gdxperror');
         }
     }
