@@ -178,22 +178,7 @@ class UsersService extends BaseService
             }
 
             if (isset($request['status'])) {
-                $status = $request['status'];
-
-                switch($status) {
-                    case 'active':
-                        $user->suspended = false;
-                        $user->deleted_at = null;
-                        break;
-                    case 'suspended':
-                        $user->suspended = true;
-                        $user->deleted_at = date('Y-m-d');
-                        break;
-                    case 'deleted':
-                        $user->suspended = false;
-                        $user->deleted_at = !empty($request['deleted_at']) ? decodeDate($request['deleted_at']) : date('Y-m-d');
-                        break;
-                }
+                $user->setStatus($request['status'], $request['deleted_at']);
             }
 
             $user->save();

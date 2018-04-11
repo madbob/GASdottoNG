@@ -48,6 +48,10 @@ class SuppliersService extends BaseService
         $this->setIfSet($supplier, $request, 'description');
         $this->setIfSet($supplier, $request, 'payment_method');
         $this->setIfSet($supplier, $request, 'order_method');
+
+        if (isset($request['status'])) {
+            $supplier->setStatus($request['status'], $request['deleted_at']);
+        }
     }
 
     public function store(array $request)
@@ -82,7 +86,6 @@ class SuppliersService extends BaseService
         try {
             $supplier = DB::transaction(function () use ($supplier, $request) {
                 $this->setCommonAttributes($supplier, $request);
-                $supplier->restore();
                 $supplier->save();
                 $supplier->updateContacts($request);
                 return $supplier;

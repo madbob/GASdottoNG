@@ -7,9 +7,9 @@ use App\GASModel;
 use App\User;
 
 /*
-        Modello fittizio: non rappresenta nessun dato sul database, ma serve
-        ad aggregare tutte le prenotazioni di un utente fatte sugli ordini
-        inclusi in un Aggregate
+    Modello fittizio: non rappresenta nessun dato sul database, ma serve ad
+    aggregare tutte le prenotazioni di un utente fatte sugli ordini inclusi in
+    un Aggregate
 */
 
 class AggregateBooking extends Model
@@ -46,6 +46,14 @@ class AggregateBooking extends Model
             */
             if ($booking->exists && $booking->status != 'shipped') {
                 return $booking->status;
+            }
+        }
+
+        foreach ($this->bookings as $booking) {
+            foreach($booking->friends_bookings as $fbooking) {
+                if ($fbooking->exists && $fbooking->status != 'shipped') {
+                    return $fbooking->status;
+                }
             }
         }
 

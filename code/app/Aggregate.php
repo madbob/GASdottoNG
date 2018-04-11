@@ -205,7 +205,7 @@ class Aggregate extends Model implements Feedable
             if ($friends_tot == 0)
                 $message = _i('Hai ordinato %s', printablePriceCurrency($tot));
             else
-                $message = _i('Hai ordinato %s + %s', printablePriceCurrency($tot), printablePriceCurrency($friends_tot));
+                $message = _i('Hai ordinato %s + %s', [printablePriceCurrency($tot), printablePriceCurrency($friends_tot)]);
         }
 
         $ret .= '<span class="pull-right">' . $message . '</span>';
@@ -253,6 +253,40 @@ class Aggregate extends Model implements Feedable
                 }
 
                 $ret[$user_id]->add($booking);
+            }
+
+            /*
+                Dopo aver raccolto le prenotazioni degli utenti principali,
+                ripesco anche quelle degli utenti "amici" il cui utente
+                principale non ha effettuato prenotazioni.
+                In tal caso creo una prenotazione anche per l'utente
+                principale, lasciandola vuota, in modo che sia comunque
+                possibile accedere successivamente alle sotto-prenotazioni ed
+                assegnare il movimento di pagamento
+            */
+            $collected_users = array_keys($ret);
+            $recovered_master_users = [];
+
+            $bookings_by_friends = $order->bookings()->whereHas('user', function($query) use ($collected_users) {
+                $query->whereNotNull('parent_id')->whereNotIn('parent_id', $collected_users);
+            })->get();
+
+            foreach($bookings_by_friends as $booking) {
+                $user_id = $booking->user->parent_id;
+
+                if (isset($recovered_master_users[$user_id])) {
+                    continue;
+                }
+
+                if (!isset($ret[$user_id])) {
+                    $ret[$user_id] = new AggregateBooking($user_id);
+                }
+
+                $fake_booking = $order->userBooking($user_id);
+                $fake_booking->status = $booking->status;
+                $fake_booking->save();
+                $ret[$user_id]->add($fake_booking);
+                $recovered_master_users[$user_id] = true;
             }
         }
 

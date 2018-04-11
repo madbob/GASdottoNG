@@ -1,6 +1,6 @@
 <html>
     <body>
-        <h3>{{ _i('Listino %s del %s', $supplier->name, date('d/m/Y')) }}</h3>
+        <h3>{{ _i('Listino %s del %s', [$supplier->name, date('d/m/Y')]) }}</h3>
 
         <hr/>
 

@@ -126,7 +126,7 @@ class Order extends Model
     {
         $start = strtotime($this->start);
         $end = strtotime($this->end);
-        $string = _i('da %s a %s', strftime('%A %d %B %G', $start), strftime('%A %d %B %G', $end));
+        $string = _i('da %s a %s', [strftime('%A %d %B %G', $start), strftime('%A %d %B %G', $end)]);
         if ($this->shipping != null && $this->shipping != '0000-00-00') {
             $shipping = strtotime($this->shipping);
             $string .= _i(', in consegna %s', strftime('%A %d %B %G', $shipping));

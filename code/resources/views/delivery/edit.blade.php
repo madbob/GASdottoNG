@@ -35,7 +35,7 @@ $existing = false;
         <?php
 
             $o = $order->userBooking($user->id);
-            $existing = ($existing || $o->exists);
+            $existing = ($existing || $o->exists || $o->friends_bookings->isEmpty() == false);
             $now_delivered = $o->total_delivered;
             $tot_delivered[$o->id] = $now_delivered;
             $tot_amount += $now_delivered;

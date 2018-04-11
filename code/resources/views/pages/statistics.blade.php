@@ -27,9 +27,11 @@
 
 <div class="row">
     <div class="col-md-6">
-        <div class="ct-chart-pie" id="stats-generic-expenses"></div>
+        <h3>Valore Ordini</h3>
+        <div class="ct-chart-bar" id="stats-generic-expenses"></div>
     </div>
     <div class="col-md-6">
+        <h3>Utenti Coinvolti</h3>
         <div class="ct-chart-bar" id="stats-generic-users"></div>
     </div>
 </div>
@@ -64,9 +66,11 @@
 
 <div class="row">
     <div class="col-md-6">
-        <div class="ct-chart-pie" id="stats-products-expenses"></div>
+        <h3>Valore Ordini</h3>
+        <div class="ct-chart-bar" id="stats-products-expenses"></div>
     </div>
     <div class="col-md-6">
+        <h3>Utenti Coinvolti</h3>
         <div class="ct-chart-bar" id="stats-products-users"></div>
     </div>
 </div>

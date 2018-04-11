@@ -398,7 +398,7 @@ class OrdersController extends Controller
         switch ($type) {
             case 'shipping':
                 $html = view('documents.order_shipping', ['order' => $order])->render();
-                $title = _i('Dettaglio Consegne ordine %s presso %s', $order->internal_number, $order->supplier->name);
+                $title = _i('Dettaglio Consegne ordine %s presso %s', [$order->internal_number, $order->supplier->name]);
                 $filename = $title . '.pdf';
                 PDF::SetTitle($title);
                 PDF::AddPage();
@@ -422,7 +422,7 @@ class OrdersController extends Controller
                 $subtype = $request->input('format', 'pdf');
                 $required_fields = $request->input('fields', []);
                 $data = $order->formatSummary($required_fields);
-                $title = _i('Prodotti ordinati ordine %s presso %s', $order->internal_number, $order->supplier->name);
+                $title = _i('Prodotti ordinati ordine %s presso %s', [$order->internal_number, $order->supplier->name]);
                 $filename = $title . '.' . $subtype;
                 $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $filename));
 
