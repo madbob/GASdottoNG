@@ -224,10 +224,13 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
         fclose($FH);
     };
 
-    if ($out_file == null)
+    if ($out_file == null) {
         return Response::stream($callback, 200, $headers);
-    else
+    }
+    else {
+        $callback();
         return $out_file;
+    }
 }
 
 function htmlize($string)

@@ -30,6 +30,16 @@
         </div>
     </div>
 
+    @include('commons.textfield', [
+        'obj' => null,
+        'name' => 'subject_mail',
+        'label' => _i('Soggetto Mail'),
+        'default_value' => 'Documento allegato',
+        'labelsize' => 2,
+        'fieldsize' => 10,
+        'extra_wrap_class' => 'order_document_body_mail'
+    ])
+
     @include('commons.textarea', [
         'obj' => null,
         'name' => 'body_mail',

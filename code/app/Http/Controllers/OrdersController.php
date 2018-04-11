@@ -385,8 +385,9 @@ class OrdersController extends Controller
             return;
 
         $m = Mail::to($real_recipient_mails);
+        $subject_mail = $request->input('subject_mail');
         $body_mail = $request->input('body_mail');
-        $m->send(new GenericOrderShipping($temp_file_path, $body_mail));
+        $m->send(new GenericOrderShipping($temp_file_path, $subject_mail, $body_mail));
 
         @unlink($temp_file_path);
     }
