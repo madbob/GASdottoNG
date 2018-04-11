@@ -110,6 +110,8 @@ class BookingHandler extends Controller
 
                                 foreach ($values as $variant_id => $vals) {
                                     $value_id = $vals[$i];
+                                    if (empty($value_id))
+                                        continue;
                                     $bpc = new BookedProductComponent();
                                     $bpc->productvariant_id = $bpv->id;
                                     $bpc->variant_id = $variant_id;
@@ -171,22 +173,9 @@ class BookingHandler extends Controller
             }
 
             if ($delivering == false && $count_products == 0) {
-                if ($booking->friends_bookings->isEmpty())
-                    $booking->delete();
+                $booking->delete();
             }
             else {
-                /*
-                    Per convenienza, quando un utente amico sottopone una
-                    prenotazione mi accerto che anche il suo utente "padre" ne
-                    abbia una aperta per lo stesso ordine (benché vuota)
-                */
-                if ($user->isFriend()) {
-                    $parent_user = $user->parent;
-                    $super_booking = $order->userBooking($parent_user->id);
-                    if ($super_booking->exists == false)
-                        $super_booking->save();
-                }
-
                 if ($delivering) {
                     /*
                         Attenzione!!!
