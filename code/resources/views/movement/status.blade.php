@@ -84,6 +84,11 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div class="hidden alert alert-success fixed">
+                                <p>
+                                    {{ _i('Tutti i saldi risultano coerenti.') }}
+                                </p>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <a href="" class="btn btn-default hidden table_to_csv" data-target="#broken_balances">{{ _i('Esporta CSV') }}</a>

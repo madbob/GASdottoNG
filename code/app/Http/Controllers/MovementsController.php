@@ -284,7 +284,7 @@ class MovementsController extends BackedController
         try {
             $diffs = $this->service->recalculate();
 
-            if ($diffs == null) {
+            if (is_null($diffs)) {
                 return $this->errorResponse(_i('Errore'));
             }
             else {

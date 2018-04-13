@@ -1078,12 +1078,15 @@ function displayRecalculatedBalances(form, data) {
     var modal = $('#display-recalculated-balance-modal');
 
     if (data.diffs.length != 0) {
-        modal.find('a.hidden').removeClass('hidden');
+        modal.find('a.table_to_csv').removeClass('hidden');
         var table = modal.find('.broken.hidden').removeClass('hidden').find('tbody');
         for (var name in data.diffs) {
             if (data.diffs.hasOwnProperty(name))
                 table.append('<tr><td>' + name + '</td><td>' + data.diffs[name][0] + '</td><td>' + data.diffs[name][1] + '</td></tr>');
         }
+    }
+    else {
+        modal.find('.fixed.hidden').removeClass('hidden');
     }
 
     modal.modal('show');
@@ -2044,6 +2047,7 @@ $(document).ready(function() {
                         error: function() {
                             var button = form.find('button:submit');
                             inlineFeedback(button, _('ERRORE'));
+                            form.attr('data-password-protected-verified', '0');
                         }
                     });
                 }
