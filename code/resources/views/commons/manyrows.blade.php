@@ -54,7 +54,7 @@ if (isset($extra_class)) {
         </div>
     @endif
 
-    @if($contents == null || $contents->isEmpty())
+    @if(is_null($contents) || $contents->isEmpty())
         <div class="row">
             @foreach($columns as $column)
                 @if($column['type'] != 'custom')

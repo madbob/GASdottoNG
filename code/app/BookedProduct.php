@@ -125,7 +125,7 @@ class BookedProduct extends Model
     {
         $v = $this->variants()->where('id', '=', $variant->id)->first();
 
-        if ($v == null && $fallback == true) {
+        if (is_null($v) && $fallback == true) {
             $v = new BookedProductVariant();
             $v->product_id = $this->id;
         }

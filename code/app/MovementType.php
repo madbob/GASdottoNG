@@ -90,7 +90,7 @@ class MovementType extends Model
     public static function initSystemTypes($types)
     {
         $currentuser = Auth::user();
-        if($currentuser == null) {
+        if(is_null($currentuser)) {
             $currentgas = Gas::get()->first();
         }
         else {
@@ -209,7 +209,7 @@ class MovementType extends Model
                                     }
 
                                     $existing_movement = $booking->payment;
-                                    if ($existing_movement == null) {
+                                    if (is_null($existing_movement)) {
                                         $debug .= sprintf("Creo nuovo movimento da %s euro\n", $delivered);
 
                                         $m = $movement->replicate();
@@ -304,7 +304,7 @@ class MovementType extends Model
     {
         static $types = null;
 
-        if ($types == null) {
+        if (is_null($types)) {
             $query = MovementType::orderBy('name', 'asc');
             if ($with_trashed)
                 $query = $query->withTrashed();
@@ -333,7 +333,7 @@ class MovementType extends Model
             return;
         }
 
-        if ($obj == null) {
+        if (is_null($obj)) {
             Log::error(_i('Applicazione movimento su oggetto nullo: %s', $movement->id));
             return;
         }

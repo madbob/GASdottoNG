@@ -1,6 +1,6 @@
 <?php
 
-if ($obj == null)
+if (is_null($obj))
     $obj = $default;
 
 if (!isset($dom_id))

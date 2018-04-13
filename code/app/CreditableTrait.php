@@ -76,7 +76,7 @@ trait CreditableTrait
                 $now = [];
                 $cb = $obj->current_balance;
 
-                if ($cb == null) {
+                if (is_null($cb)) {
                     foreach($fields as $field => $name)
                         $now[$field] = 0;
                 }
@@ -137,7 +137,7 @@ trait CreditableTrait
 
             foreach($ids as $id => $old) {
                 $obj = $class::find($id);
-                if ($obj == null)
+                if (is_null($obj))
                     continue;
 
                 $cb = $obj->current_balance;
@@ -160,9 +160,9 @@ trait CreditableTrait
     public function getCurrentBalanceAttribute()
     {
         $balance = $this->balances()->where('current', true)->first();
-        if ($balance == null) {
+        if (is_null($balance)) {
             $balance = $this->balances()->where('current', false)->first();
-            if ($balance == null) {
+            if (is_null($balance)) {
                 $balance = $this->fixFirstBalance();
             }
             else {

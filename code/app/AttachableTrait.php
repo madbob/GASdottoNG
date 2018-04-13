@@ -28,12 +28,12 @@ trait AttachableTrait
     {
         $file = $request->file('file');
 
-        if ($file == null || $file->isValid() == false) {
+        if (is_null($file) || $file->isValid() == false) {
             return false;
         }
 
         $filepath = $this->filesPath();
-        if ($filepath == null) {
+        if (is_null($filepath)) {
             return false;
         }
 
@@ -43,7 +43,7 @@ trait AttachableTrait
             $name = $filename;
         }
 
-        if ($id == null) {
+        if (is_null($id)) {
             $attachment = new Attachment();
             $attachment->target_type = get_class($this);
             $attachment->target_id = $this->id;

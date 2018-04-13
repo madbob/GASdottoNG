@@ -102,7 +102,7 @@ class MovementsController extends BackedController
     public function create(Request $request)
     {
         $type = $request->input('type', null);
-        if ($type == null) {
+        if (is_null($type)) {
             return view('movement.create');
         }
 

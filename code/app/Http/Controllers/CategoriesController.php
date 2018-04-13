@@ -78,7 +78,7 @@ class CategoriesController extends Controller
                 $c = Category::find($category['id']);
             }
 
-            if ($c == null)
+            if (is_null($c))
                 $c = new Category();
 
             $c->name = $category['name'];

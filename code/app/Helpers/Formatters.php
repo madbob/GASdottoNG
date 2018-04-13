@@ -20,7 +20,7 @@ function printablePriceCurrency($price, $separator = '.')
 
 function printableDate($value)
 {
-    if ($value == null) {
+    if (is_null($value)) {
         return _i('Mai');
     }
     else {
@@ -65,7 +65,7 @@ function printableQuantity($quantity, $discrete, $decimals = 2, $separator = '.'
 
 function normalizePercentage($value)
 {
-    if ($value == null)
+    if (is_null($value))
         return '';
     else
         return str_replace(' ', '', $value);
@@ -204,12 +204,12 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
     ];
 
     $callback = function() use ($head, $contents, $format_callback, $out_file) {
-        if ($out_file == null)
+        if (is_null($out_file))
             $FH = fopen('php://output', 'w');
         else
             $FH = fopen($out_file, 'w');
 
-        if ($format_callback == null) {
+        if (is_null($format_callback)) {
             fwrite($FH, $contents);
         }
         else {
@@ -224,7 +224,7 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
         fclose($FH);
     };
 
-    if ($out_file == null) {
+    if (is_null($out_file)) {
         return Response::stream($callback, 200, $headers);
     }
     else {

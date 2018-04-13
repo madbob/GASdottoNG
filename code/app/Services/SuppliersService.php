@@ -58,9 +58,9 @@ class SuppliersService extends BaseService
     {
         $creator = $this->ensureAuth(['supplier.add' => 'gas']);
 
-        if (!isset($request['payment_method']) || $request['payment_method'] == null)
+        if (!isset($request['payment_method']) || is_null($request['payment_method']))
             $request['payment_method'] = '';
-        if (!isset($request['order_method']) || $request['order_method'] == null)
+        if (!isset($request['order_method']) || is_null($request['order_method']))
             $request['order_method'] = '';
 
         $supplier = new Supplier();

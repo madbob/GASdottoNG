@@ -320,7 +320,7 @@ class OrdersController extends Controller
             $booking_id = $bookings[$i];
 
             $booking = Booking::find($booking_id);
-            if ($booking == null) {
+            if (is_null($booking)) {
                 continue;
             }
 

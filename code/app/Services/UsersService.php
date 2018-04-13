@@ -37,7 +37,7 @@ class UsersService extends BaseService
     public function show($id)
     {
         $user = Auth::user();
-        if ($user == null) {
+        if (is_null($user)) {
             throw new AuthException(401);
         }
 
@@ -118,7 +118,7 @@ class UsersService extends BaseService
     public function update($id, array $request)
     {
         $user = Auth::user();
-        if ($user == null) {
+        if (is_null($user)) {
             throw new AuthException(401);
         }
 

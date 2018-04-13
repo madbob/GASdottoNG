@@ -156,7 +156,7 @@ class Product extends Model
         }
         else {
             $m = $this->measure;
-            if ($m == null) {
+            if (is_null($m)) {
                 return '';
             } else {
                 return $m->name;

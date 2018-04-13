@@ -16,7 +16,7 @@ class MovementsKeeper extends ServiceProvider
     {
         $metadata = $movement->type_metadata;
 
-        if ($metadata == null) {
+        if (is_null($metadata)) {
             Log::error('Impossibile recuperare informazioni su movimento tipo ' . $movement->type);
             return false;
         }
@@ -26,7 +26,7 @@ class MovementsKeeper extends ServiceProvider
             return false;
         }
 
-        if ($metadata->sender_type == null) {
+        if (is_null($metadata->sender_type)) {
             $movement->sender_type = null;
             $movement->sender_id = null;
         }
@@ -37,7 +37,7 @@ class MovementsKeeper extends ServiceProvider
             }
         }
 
-        if ($metadata->target_type == null) {
+        if (is_null($metadata->target_type)) {
             $movement->target_type = null;
             $movement->target_id = null;
         }
@@ -72,15 +72,15 @@ class MovementsKeeper extends ServiceProvider
     public function boot()
     {
         Movement::saving(function ($movement) {
-            if ($movement->date == null)
+            if (is_null($movement->date))
                 $movement->date = date('Y-m-d G:i:s');
-            if ($movement->registration_date == null)
+            if (is_null($movement->registration_date))
                 $movement->registration_date = date('Y-m-d G:i:s');
-            if ($movement->registerer_id == null)
+            if (is_null($movement->registerer_id))
                 $movement->registerer_id = Auth::user()->id;
-            if ($movement->identifier == null)
+            if (is_null($movement->identifier))
                 $movement->identifier = '';
-            if ($movement->notes == null)
+            if (is_null($movement->notes))
                 $movement->notes = '';
 
             if ($movement->exists == false && $movement->archived == true)

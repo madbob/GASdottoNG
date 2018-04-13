@@ -37,7 +37,7 @@ trait PayableTrait
         $id = $this->id;
         $class = get_class($this);
 
-        if ($query == null)
+        if (is_null($query))
             $query = Movement::orderBy('created_at', 'desc');
 
         switch($type) {

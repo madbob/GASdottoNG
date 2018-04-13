@@ -13,7 +13,7 @@ class BypassUserProvider extends EloquentUserProvider
         foreach($credentials as $key => $value) {
             if ($key == 'email') {
                 $contact = Contact::where('type', 'email')->where('value', $value)->first();
-                if ($contact == null)
+                if (is_null($contact))
                     return null;
                 else
                     return $contact->target;

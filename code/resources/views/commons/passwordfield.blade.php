@@ -15,7 +15,7 @@ if (isset($extra_class)) {
                 type="password"
                 class="{{ $class }}"
 
-                @if($obj == null && isset($mandatory) && $mandatory == true)
+                @if(is_null($obj) && isset($mandatory) && $mandatory == true)
                     required
                 @endif
 

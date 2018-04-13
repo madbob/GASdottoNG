@@ -12,7 +12,7 @@ class BaseService
     protected function ensureAuth($permissions = [], $or = true)
     {
         $user = Auth::user();
-        if ($user == null) {
+        if (is_null($user)) {
             Log::info('Utente non autorizzato: non autenticato');
             throw new AuthException(401);
         }

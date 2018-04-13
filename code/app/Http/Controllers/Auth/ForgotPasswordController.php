@@ -30,7 +30,7 @@ class ForgotPasswordController extends Controller
     public function sendResetLinkEmail(Request $request)
     {
         $user = User::where('username', $request->input('username'))->first();
-        if ($user == null) {
+        if (is_null($user)) {
             Session::flash('message_type', 'danger');
             Session::flash('message', 'Username non trovato');
             return redirect(url('password/reset'));
@@ -45,7 +45,7 @@ class ForgotPasswordController extends Controller
             }
         }
 
-        if ($email == null) {
+        if (is_null($email)) {
             Session::flash('message_type', 'danger');
             Session::flash('message', "L'utente indicato non ha un indirizzo mail valido");
             return redirect(url('password/reset'));

@@ -145,7 +145,7 @@ class Supplier extends Model
 
     public function queryMovements($query = null, $type = 'all')
     {
-        if ($query == null)
+        if (is_null($query))
             $query = Movement::orderBy('created_at', 'desc');
 
         $supplier = $this;
@@ -263,7 +263,7 @@ class Supplier extends Model
 
     public static function importXML($xml, $replace)
     {
-        if ($replace == null) {
+        if (is_null($replace)) {
             $supplier = new Supplier();
             $supplier->payment_method = '';
             $supplier->order_method = '';
@@ -344,12 +344,12 @@ class Supplier extends Model
                             }
                         }
 
-                        if ($product_name == null) {
+                        if (is_null($product_name)) {
                             continue;
                         }
 
                         $product = $supplier->products()->where('name', $product_name)->first();
-                        if ($product == null) {
+                        if (is_null($product)) {
                             $product = new Product();
                             $product->supplier_id = $supplier->id;
                         }
@@ -367,7 +367,7 @@ class Supplier extends Model
                                 case 'category':
                                     $name = html_entity_decode((string) $p);
                                     $category = Category::where('name', $name)->first();
-                                    if($category == null) {
+                                    if(is_null($category)) {
                                         $category = new Category();
                                         $category->name = $name;
                                         $category->save();
@@ -378,7 +378,7 @@ class Supplier extends Model
                                 case 'um':
                                     $name = html_entity_decode((string) $p);
                                     $measure = Measure::where('name', $name)->first();
-                                    if($measure == null) {
+                                    if(is_null($measure)) {
                                         $measure = new Measure();
                                         $measure->name = $name;
                                         $measure->save();

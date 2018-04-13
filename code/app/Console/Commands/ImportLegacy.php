@@ -70,7 +70,7 @@ class ImportLegacy extends Command
 
     private function appendBalance($obj, $row, $full)
     {
-        if ($this->last_balance_date == null)
+        if (is_null($this->last_balance_date))
             $this->last_balance_date = $row->last_balance_date;
 
         $balance = new Balance();

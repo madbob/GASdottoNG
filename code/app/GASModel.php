@@ -40,7 +40,7 @@ trait GASModel
 
     public function printableDate($name)
     {
-        if ($this->$name == null) {
+        if (is_null($this->$name)) {
             return 'Mai';
         }
         else {
@@ -100,7 +100,7 @@ trait GASModel
 
     public function testAndSet($request, $name, $field = null)
     {
-        if ($field == null)
+        if (is_null($field))
             $field = $name;
 
         if ($request->has($name))
@@ -145,7 +145,7 @@ trait GASModel
     {
         static $icons = null;
 
-        if ($icons == null) {
+        if (is_null($icons)) {
             $user = Auth::user();
 
             /*

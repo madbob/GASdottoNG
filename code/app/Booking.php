@@ -34,7 +34,7 @@ class Booking extends Model
         static::addGlobalScope('gas', function (Builder $builder) {
             $builder->whereHas('user', function($query) {
                 $user = Auth::user();
-                if ($user == null)
+                if (is_null($user))
                     return;
                 $query->where('gas_id', $user->gas->id);
             });
@@ -101,7 +101,7 @@ class Booking extends Model
             $query->where('id', '=', $product_id);
         })->first();
 
-        if ($p == null && $fallback == true) {
+        if (is_null($p) && $fallback == true) {
             $p = new BookedProduct();
             $p->booking_id = $this->id;
             $p->product_id = $product_id;
@@ -114,7 +114,7 @@ class Booking extends Model
     {
         $p = $this->getBooked($product);
 
-        if ($p == null)
+        if (is_null($p))
             $ret = 0;
         else
             $ret = $p->$field;
@@ -295,7 +295,7 @@ class Booking extends Model
         foreach($this->friends_bookings as $sub) {
             foreach($sub->products as $sub_p) {
                 $master_p = $products->keyBy('product_id')->get($sub_p->product_id);
-                if ($master_p == null) {
+                if (is_null($master_p)) {
                     $products->push($sub_p);
                 }
                 else {

@@ -35,7 +35,7 @@ class Order extends Model
             $builder->whereHas('aggregate', function($query) {
                 $query->whereHas('gas', function($query) {
                     $user = Auth::user();
-                    if ($user == null)
+                    if (is_null($user))
                         return;
                     $query->where('gas_id', $user->gas->id);
                 });
@@ -135,7 +135,7 @@ class Order extends Model
 
     public function userBooking($userid = null)
     {
-        if ($userid == null) {
+        if (is_null($userid)) {
             $userid = Auth::user()->id;
         }
 
@@ -143,7 +143,7 @@ class Order extends Model
             $query->where('id', '=', $userid);
         })->first();
 
-        if ($ret == null) {
+        if (is_null($ret)) {
             $ret = new Booking();
             $ret->user_id = $userid;
             $ret->order_id = $this->id;
@@ -221,7 +221,7 @@ class Order extends Model
 
         $order = $this;
 
-        if ($products == null) {
+        if (is_null($products)) {
             $products = $order->supplier->products;
             $external_products = false;
         }

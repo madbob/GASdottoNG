@@ -4,7 +4,7 @@ function currentAbsoluteGas()
 {
     static $gas = null;
 
-    if ($gas == null) {
+    if (is_null($gas)) {
         $user = Auth::user();
         if ($user != null)
             $gas = $user->gas;
@@ -36,7 +36,7 @@ function modelsUsingTrait($trait_name) {
 
 function accessAttr($obj, $name, $default = '')
 {
-    if ($obj == null)
+    if (is_null($obj))
         return $default;
 
     if (strpos($name, '->') !== false) {

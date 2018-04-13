@@ -26,7 +26,7 @@ class SlugModel
                     $test = $class::where('id', $id)->first();
                 }
 
-                if ($test == null) {
+                if (is_null($test)) {
                     break;
                 }
 

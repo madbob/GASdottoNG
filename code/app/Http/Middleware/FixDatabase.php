@@ -23,12 +23,12 @@ class FixDatabase
             amministrazione, codice da rimuovere tra qualche tempo
             Addì: 09/01/2018
         */
-        if (Measure::find('non-specificato') == null) {
+        if (is_null(Measure::find('non-specificato'))) {
             $measure = new Measure();
             $measure->name = _i('Non Specificato');
             $measure->save();
         }
-        if (Category::find('non-specificato') == null) {
+        if (is_null(Category::find('non-specificato'))) {
             $category = new Category();
             $category->name = _i('Non Specificato');
             $category->save();

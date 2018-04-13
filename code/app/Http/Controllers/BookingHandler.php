@@ -91,7 +91,7 @@ class BookingHandler extends Controller
                             $query->whereNotIn('id', $saved_variants);
                             $bpv = $query->first();
 
-                            if ($bpv == null) {
+                            if (is_null($bpv)) {
                                 if ($q == 0)
                                     continue;
 

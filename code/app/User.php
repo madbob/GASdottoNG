@@ -206,7 +206,7 @@ class User extends Authenticatable
         $role_id = normalizeId($role);
 
         $test = $this->roles()->where('roles.id', $role_id)->first();
-        if ($test == null) {
+        if (is_null($test)) {
             $this->roles()->attach($role_id);
             $test = $this->roles()->where('roles.id', $role_id)->first();
         }
@@ -220,7 +220,7 @@ class User extends Authenticatable
         $role_id = normalizeId($role);
 
         $test = $this->roles()->where('roles.id', $role_id)->first();
-        if ($test == null)
+        if (is_null($test))
             return;
 
         if ($assigned) {

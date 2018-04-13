@@ -28,14 +28,14 @@ class ImportController extends Controller
     private function guessCsvFileSeparator($path)
     {
         $contents = fopen($path, 'r');
-        if ($contents === null) {
+        if (is_null($contents)) {
             return null;
         }
 
         $separators = [',', ';', "\t"];
         $target_separator = null;
 
-        while (!feof($contents) && $target_separator == null) {
+        while (!feof($contents) && is_null($target_separator)) {
             $char = fgetc($contents);
             foreach ($separators as $del) {
                 if ($char == $del) {
@@ -54,7 +54,7 @@ class ImportController extends Controller
     {
         try {
             $f = $request->file('file', null);
-            if ($f == null || $f->isValid() == false) {
+            if (is_null($f) || $f->isValid() == false) {
                 return $this->errorResponse(_i('File non caricato correttamente, possibili problemi con la dimensione'));
             }
 
@@ -64,7 +64,7 @@ class ImportController extends Controller
             $path = $filepath.'/'.$filename;
 
             $target_separator = $this->guessCsvFileSeparator($path);
-            if ($target_separator == null) {
+            if (is_null($target_separator)) {
                 return $this->errorResponse(_i('Impossibile interpretare il file'));
             }
 
@@ -175,7 +175,7 @@ class ImportController extends Controller
                     }
 
                     $target_separator = $this->guessCsvFileSeparator($path);
-                    if ($target_separator == null) {
+                    if (is_null($target_separator)) {
                         return $this->errorResponse(_i('Impossibile interpretare il file'));
                     }
 
@@ -186,7 +186,7 @@ class ImportController extends Controller
                         try {
                             $name = $line[$name_index];
                             $p = $s->products()->where('name', '=', $name)->orderBy('id', 'desc')->first();
-                            if ($p == null) {
+                            if (is_null($p)) {
                                 $p = new Product();
                                 $p->name = $name;
                                 $p->supplier_id = $s->id;
@@ -200,7 +200,7 @@ class ImportController extends Controller
                                 } elseif ($field == 'category') {
                                     $name = $line[$index];
                                     $category = Category::where('name', '=', $name)->first();
-                                    if ($category == null) {
+                                    if (is_null($category)) {
                                         $category = new Category();
                                         $category->name = $name;
                                         $category->save();
@@ -211,7 +211,7 @@ class ImportController extends Controller
                                 } elseif ($field == 'measure') {
                                     $name = $line[$index];
                                     $measure = Measure::where('name', '=', $name)->first();
-                                    if ($measure == null) {
+                                    if (is_null($measure)) {
                                         $measure = new Measure();
                                         $measure->name = $name;
                                         $measure->save();
@@ -275,7 +275,7 @@ class ImportController extends Controller
                     }
 
                     $target_separator = $this->guessCsvFileSeparator($path);
-                    if ($target_separator == null) {
+                    if (is_null($target_separator)) {
                         return $this->errorResponse(_i('Impossibile interpretare il file'));
                     }
 
@@ -293,7 +293,7 @@ class ImportController extends Controller
                         try {
                             $login = $line[$login_index];
                             $u = User::where('username', '=', $login)->orderBy('id', 'desc')->first();
-                            if ($u == null) {
+                            if (is_null($u)) {
                                 $u = new User();
                                 $u->gas_id = $gas->id;
                                 $u->username = $login;
@@ -384,7 +384,7 @@ class ImportController extends Controller
                     $columns = $request->input('column');
 
                     $target_separator = $this->guessCsvFileSeparator($path);
-                    if ($target_separator == null) {
+                    if (is_null($target_separator)) {
                         return $this->errorResponse(_i('Impossibile interpretare il file'));
                     }
 
@@ -417,13 +417,13 @@ class ImportController extends Controller
                                     $name = trim($line[$index]);
                                     $user = User::where('username', $name)->first();
 
-                                    if ($user == null) {
+                                    if (is_null($user)) {
                                         $user = User::whereHas('contacts', function($query) use ($name) {
                                             $query->where('value', $name);
                                         })->first();
                                     }
 
-                                    if ($user == null) {
+                                    if (is_null($user)) {
                                         $save_me = false;
                                         $errors[] = implode($target_separator, $line) . '<br/>' . _i('Utente non trovato: %s', $name);
                                         continue;
