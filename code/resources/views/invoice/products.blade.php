@@ -32,15 +32,26 @@
                                 </thead>
                                 <tbody>
                                     @foreach($order->products as $product)
-                                        <tr>
-                                            <td>{{ $product->printableName() }}</td>
-                                            <td>{{ $product->vat_rate ? $product->vat_rate->printableName() : '' }}</td>
-                                            <td>{{ printablePrice($summaries[$order->id]->products[$product->id]['total']) }} {{ $currentcurrency }}</td>
-                                            <td>{{ printablePrice($summaries[$order->id]->products[$product->id]['total_vat']) }} {{ $currentcurrency }}</td>
-                                            <td>{{ printablePrice($summaries[$order->id]->products[$product->id]['total'] + $summaries[$order->id]->products[$product->id]['total_vat']) }} {{ $currentcurrency }}</td>
-                                        </tr>
+                                        @if($summaries[$order->id]->products[$product->id]['total'] > 0)
+                                            <tr>
+                                                <td>{{ $product->printableName() }}</td>
+                                                <td>{{ $product->vat_rate ? $product->vat_rate->printableName() : '' }}</td>
+                                                <td>{{ printablePriceCurrency($summaries[$order->id]->products[$product->id]['total']) }}</td>
+                                                <td>{{ printablePriceCurrency($summaries[$order->id]->products[$product->id]['total_vat']) }}</td>
+                                                <td>{{ printablePriceCurrency($summaries[$order->id]->products[$product->id]['total'] + $summaries[$order->id]->products[$product->id]['total_vat']) }}</td>
+                                            </tr>
+                                        @endif
                                     @endforeach
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>&nbsp;</th>
+                                        <th>&nbsp;</th>
+                                        <th>{{ printablePriceCurrency($summaries[$order->id]->total_taxable) }}</th>
+                                        <th>{{ printablePriceCurrency($summaries[$order->id]->total_tax) }}</th>
+                                        <th>{{ printablePriceCurrency($summaries[$order->id]->total) }}</th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     @endforeach
@@ -59,13 +70,15 @@
                                 </thead>
                                 <tbody>
                                     @foreach($global_summary as $product)
-                                        <tr>
-                                            <td>{{ $product['name'] }}</td>
-                                            <td>{{ $product['vat_rate'] }}</td>
-                                            <td>{{ printablePrice($product['total']) }} {{ $currentcurrency }}</td>
-                                            <td>{{ printablePrice($product['total_vat']) }} {{ $currentcurrency }}</td>
-                                            <td>{{ printablePrice($product['total'] + $product['total_vat']) }} {{ $currentcurrency }}</td>
-                                        </tr>
+                                        @if($product['total'] > 0)
+                                            <tr>
+                                                <td>{{ $product['name'] }}</td>
+                                                <td>{{ $product['vat_rate'] }}</td>
+                                                <td>{{ printablePriceCurrency($product['total']) }}</td>
+                                                <td>{{ printablePriceCurrency($product['total_vat']) }}</td>
+                                                <td>{{ printablePriceCurrency($product['total'] + $product['total_vat']) }}</td>
+                                            </tr>
+                                        @endif
                                     @endforeach
                                 </tbody>
                             </table>

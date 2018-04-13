@@ -35,6 +35,10 @@ if ($value == 'Mai' && $mandatory)
                     required
                 @endif
 
+                @if(isset($disabled) && $disabled == true)
+                    disabled
+                @endif
+
                 @if($squeeze == true)
                     placeholder="{{ $label }}"
                 @endif
