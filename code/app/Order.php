@@ -215,6 +215,9 @@ class Order extends Model
         $summary = (object) [
             'order' => $this->id,
             'price' => 0,
+            'price_delivered' => 0,
+            'undiscounted_price' => 0,
+            'undiscounted_price_delivered' => 0,
             'products' => [],
             'by_variant' => [],
         ];
@@ -325,8 +328,10 @@ class Order extends Model
             }
         }
 
-        $summary->price = $total_price;
-        $summary->price_delivered = $total_price_delivered;
+        $summary->undiscounted_price = $total_price;
+        $summary->undiscounted_price_delivered = $total_price_delivered;
+        $summary->price = applyPercentage($summary->undiscounted_price, $this->discount);
+        $summary->price_delivered = applyPercentage($summary->undiscounted_price_delivered, $this->discount);
 
         /*
             Il prezzo del trasporto è la somma del prezzo di trasporto di tutti

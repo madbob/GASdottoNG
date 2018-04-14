@@ -189,13 +189,25 @@
                 <th></th>
                 <th></th>
                 <th></th>
-                <th class="order-summary-order-price">{{ printablePriceCurrency($summary->price) }}</th>
+                <th>
+                    <span class="order-summary-order-price">{{ printablePriceCurrency($summary->price) }}</span>
+                    @if($order->discount != 0)
+                        <button type="button" class="btn btn-default btn-xs" data-toggle="popover" data-content="{{ printablePriceCurrency($summary->undiscounted_price) }} - Sconto {{ printablePercentage($order->discount) }}">
+                            <span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span>
+                        </button>
+                    @endif
+                </th>
                 <th class="order-summary-order-transport">{{ printablePriceCurrency($summary->transport) }}</th>
                 <th></th>
                 <th>
                     <span class="order-summary-order-price_delivered">{{ printablePriceCurrency($summary->price_delivered) }}</span>
                     @if($summary->transport_delivered)
                         +<br/><span class="order-summary-order-transport_delivered">{{ printablePriceCurrency($summary->transport_delivered) }}</span>
+                    @endif
+                    @if($order->discount != 0)
+                        <button type="button" class="btn btn-default btn-xs" data-toggle="popover" data-content="{{ printablePriceCurrency($summary->undiscounted_price_delivered) }} - Sconto {{ printablePercentage($order->discount) }}">
+                            <span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span>
+                        </button>
                     @endif
                 </th>
                 <th></th>
@@ -213,6 +225,11 @@
                     <span class="order-summary-order-price_delivered">{{ printablePriceCurrency($summary->price_delivered) }}</span>
                     @if($summary->transport_delivered)
                         +<br/><span class="order-summary-order-transport_delivered">{{ printablePriceCurrency($summary->transport_delivered) }}</span>
+                    @endif
+                    @if($order->discount != 0)
+                        <button type="button" class="btn btn-default btn-xs" data-toggle="popover" data-content="{{ printablePriceCurrency($summary->undiscounted_price_delivered) }} - Sconto {{ printablePercentage($order->discount) }}">
+                            <span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span>
+                        </button>
                     @endif
                 </th>
             @endif

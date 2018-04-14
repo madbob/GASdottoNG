@@ -134,14 +134,14 @@
                             @include('commons.textfield', [
                                 'obj' => null,
                                 'name' => 'title',
-                                'label' => 'Titolo',
+                                'label' => _i('Titolo'),
                                 'mandatory' => true,
                             ])
 
                             @include('commons.textarea', [
                                 'obj' => null,
                                 'name' => 'contents',
-                                'label' => 'Contenuto',
+                                'label' => _i('Contenuto'),
                                 'mandatory' => true,
                             ])
                         </div>
