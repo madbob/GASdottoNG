@@ -16,6 +16,7 @@ class GraphicInitServiceProvider extends ServiceProvider
                 $user = Auth::user();
                 $view->with('currentuser', $user);
                 $view->with('currentgas', $user->gas);
+                $view->with('currentcurrency', $user->gas->currency);
             }
 
             /*

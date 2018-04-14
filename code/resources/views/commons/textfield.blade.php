@@ -44,6 +44,10 @@ if (!isset($help_text)) {
                 required
             @endif
 
+            @if(isset($disabled) && $disabled == true)
+                disabled
+            @endif
+
             @if($squeeze == true)
                 placeholder="{{ $label }}"
             @endif

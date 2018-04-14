@@ -1310,8 +1310,16 @@ $(document).ready(function() {
         if (e.which >= 37 && e.which <= 40)
             return;
 
+        var allow_negative = ($(this).attr('data-allow-negative') == '1');
+
         $(this).val(function(index, value) {
-            return value.replace(/,/g, '.').replace(/[^0-9\.]/g, '');
+            var val = value.replace(/,/g, '.');
+            if (allow_negative)
+                val = val.replace(/[^\-0-9\.]/g, '');
+            else
+                val = val.replace(/[^0-9\.]/g, '');
+
+            return val;
         });
     })
     .on('focus', 'input.number', function(e) {
@@ -2509,6 +2517,33 @@ $(document).ready(function() {
         }
 
         return false;
+    });
+
+    /*
+        Contabilità
+    */
+
+    $('body').on('change', '.orders-in-invoice-candidate input:checkbox', function() {
+        var table = $(this).closest('table');
+        var total_taxable = 0;
+        var total_tax = 0;
+        var total_transport = 0;
+        var grand_total = 0;
+
+        table.find('.orders-in-invoice-candidate').each(function() {
+            if ($(this).find('input:checkbox').prop('checked')) {
+                total_taxable += parseFloatC($(this).find('.taxable label').text());
+                total_tax += parseFloatC($(this).find('.tax label').text());
+                total_transport += parseFloatC($(this).find('.transport label').text());
+                grand_total += parseFloatC($(this).find('.total label').text());
+            }
+        });
+
+        var totals_row = table.find('.orders-in-invoice-total');
+        totals_row.find('.taxable label').text(priceRound(total_taxable) + ' ' + current_currency);
+        totals_row.find('.tax label').text(priceRound(total_tax) + ' ' + current_currency);
+        totals_row.find('.transport label').text(priceRound(total_transport) + ' ' + current_currency);
+        totals_row.find('.total label').text(priceRound(grand_total) + ' ' + current_currency);
     });
 
     /*

@@ -16,10 +16,12 @@ use App\GASModel;
 use App\SluggableID;
 use App\BookedProduct;
 use App\ExportableTrait;
+use App\PayableTrait;
+use App\CreditableTrait;
 
 class Order extends Model
 {
-    use AttachableTrait, ExportableTrait, GASModel, SluggableID, PayableTrait;
+    use AttachableTrait, ExportableTrait, GASModel, SluggableID, PayableTrait, CreditableTrait;
 
     public $incrementing = false;
 
@@ -76,6 +78,11 @@ class Order extends Model
     public function payment()
     {
         return $this->belongsTo('App\Movement');
+    }
+
+    public function invoice()
+    {
+        return $this->belongsToMany('App\Invoice');
     }
 
     public function getSlugID()
@@ -225,6 +232,11 @@ class Order extends Model
         $order = $this;
 
         if (is_null($products)) {
+            /*
+                Qui considero i prodotti del fornitore, non solo dell'ordine,
+                per calcolare la situazione complessiva compresi i prodotti non
+                inclusi nell'ordine stesso
+            */
             $products = $order->supplier->products;
             $external_products = false;
         }
@@ -353,6 +365,70 @@ class Order extends Model
                 'note' => $annotated_booking->notes
             ];
         }
+
+        return $summary;
+    }
+
+    public function calculateInvoicingSummary($products = null)
+    {
+        $summary = (object) [
+            'order' => $this->id,
+            'total' => 0,
+            'total_taxable' => 0,
+            'total_tax' => 0,
+            'transport' => 0,
+            'products' => [],
+        ];
+
+        $order = $this;
+
+        if ($products == null) {
+            $products = $order->products;
+            $external_products = false;
+        }
+        else {
+            $external_products = true;
+        }
+
+        $global_total = 0;
+        $global_total_taxable = 0;
+        $global_total_tax = 0;
+        $rates = [];
+
+        foreach ($products as $product) {
+            $price_delivered = BookedProduct::with('variants')->with('booking')->where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order) {
+                $query->where('order_id', '=', $order->id);
+            })->sum('final_price');
+
+            if (isset($rates[$product->vat_rate_id]) == false)
+                $rates[$product->vat_rate_id] = $product->vat_rate;
+
+            $rate = $rates[$product->vat_rate_id];
+            if ($rate != null) {
+                $total = $price_delivered / (1 + ($rate->percentage / 100));
+                $total_vat = $price_delivered - $total;
+            }
+            else {
+                $total = $price_delivered;
+                $total_vat = 0;
+            }
+
+            $summary->products[$product->id]['total'] = printablePrice($total);
+            $summary->products[$product->id]['total_vat'] = printablePrice($total_vat);
+
+            $global_total += $price_delivered;
+            $global_total_taxable += $total;
+            $global_total_tax += $total_vat;
+        }
+
+        $summary->total = printablePrice($global_total);
+        $summary->total_taxable = printablePrice($global_total_taxable);
+        $summary->total_tax = printablePrice($global_total_tax);
+
+        $transport = 0;
+        foreach ($order->bookings()->where('status', 'shipped')->get() as $shipped_booking)
+            $transport += $shipped_booking->transport;
+        $summary->transport = $transport;
 
         return $summary;
     }
@@ -520,7 +596,7 @@ class Order extends Model
     public static function balanceFields()
     {
         return [
-            'bank' => _i('Saldo'),
+            'bank' => _i('Saldo Fornitore'),
         ];
     }
 

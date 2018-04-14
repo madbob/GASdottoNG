@@ -68,7 +68,15 @@ if ($extra_class) {
     @endif
 
     <div class="col-sm-{{ $fieldsize }}">
-        <select class="{{ $select_class }}" {{ $multiple_select ? 'multiple size="10"' : '' }} name="{{ $prefix . $name . $postfix }}">
+        <select
+            class="{{ $select_class }}" {{ $multiple_select ? 'multiple size="10"' : '' }}
+
+            @if(isset($disabled) && $disabled == true)
+                disabled
+            @endif
+
+            name="{{ $prefix . $name . $postfix }}">
+
             @if(!empty($extra_selection))
                 @foreach($extra_selection as $value => $label)
                     <option value="{{ $value }}">{{ $label }}</option>

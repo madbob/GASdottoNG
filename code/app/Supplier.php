@@ -75,7 +75,7 @@ class Supplier extends Model
 
     public function orders()
     {
-        return $this->hasMany('App\Order')->orderBy('end', 'desc');
+        return $this->hasMany('App\Order')->orderBy('end', 'asc');
     }
 
     public function bookings()

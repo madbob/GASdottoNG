@@ -13,6 +13,7 @@ use Response;
 use PDF;
 
 use App\User;
+use App\Invoice;
 use App\MovementType;
 
 use App\Services\MovementsService;
@@ -42,6 +43,8 @@ class MovementsController extends BackedController
                     Qui si finisce quando si accede alla pagina principale della
                     contabilità
                 */
+                $data['types'] = MovementType::types();
+                $data['invoices'] = Invoice::orderBy('date', 'desc')->get();
                 $data['balance'] = Auth::user()->gas->current_balance;
                 return view('pages.movements', $data);
             }
@@ -137,6 +140,8 @@ class MovementsController extends BackedController
         else {
             $data['targets'] = [];
         }
+
+        $data['allow_negative'] = $metadata->allow_negative ?? false;
 
         return view('movement.selectors', $data);
     }

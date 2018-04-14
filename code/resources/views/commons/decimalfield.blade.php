@@ -14,6 +14,14 @@ else {
     $disabled = isset($disabled) ? $disabled : false;
 }
 
+if (!isset($allow_negative)) {
+    $allow_negative = false;
+}
+
+if (!isset($help_text)) {
+    $help_text = '';
+}
+
 $class = 'form-control number';
 
 if(!isset($decimals))
@@ -59,11 +67,19 @@ $class .= ' trim-' . $decimals . '-ddigits';
                 placeholder="{{ $label }}"
             @endif
 
+            @if($allow_negative)
+                data-allow-negative="1"
+            @endif
+
             autocomplete="off">
 
         @if(isset($postlabel))
             <div class="input-group-addon">{{ $postlabel }}</div>
             </div>
+        @endif
+
+        @if(!empty($help_text))
+            <span class="help-block">{{ $help_text }}</span>
         @endif
     </div>
 </div>

@@ -303,6 +303,32 @@ trait GASModel
                         'text' => _i('Salvato'),
                     ],
                 ],
+                'Invoice' => [
+                    'time' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'pending';
+                        },
+                        'text' => _i('In Attesa'),
+                    ],
+                    'pushpin' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'to_verify';
+                        },
+                        'text' => _i('Da Verificare'),
+                    ],
+                    'search' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'verified';
+                        },
+                        'text' => _i('Verificata'),
+                    ],
+                    'ok' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->status == 'payed';
+                        },
+                        'text' => _i('Pagata'),
+                    ],
+                ],
                 'Booking' => [
                     'time' => (object) [
                         'test' => function ($obj) {

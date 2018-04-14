@@ -28,7 +28,7 @@ class VatratesController extends Controller
 
         $user = Auth::user();
         if ($user->can('gas.config', $user->gas) == false) {
-            abort(503);
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $vr = new VatRate();
@@ -56,10 +56,10 @@ class VatratesController extends Controller
 
         $user = Auth::user();
         if ($user->can('gas.config', $user->gas) == false) {
-            abort(503);
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
-        $vr = Delivery::findOrFail($id);
+        $vr = VatRate::findOrFail($id);
         $vr->name = $request->input('name');
         $vr->percentage = $request->input('percentage');
         $vr->save();

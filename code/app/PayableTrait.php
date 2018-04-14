@@ -29,7 +29,8 @@ trait PayableTrait
 
     public function deleteMovements()
     {
-        $this->movements()->delete();
+        foreach($this->movements as $mov)
+            $mov->delete();
     }
 
     public function queryMovements($query = null, $type = 'all')

@@ -3,10 +3,13 @@
 if (isset($target_update) == false) {
     $target_update = $typename.'-list';
 }
+if (isset($button_label) == false) {
+    $button_label = _i('Crea Nuovo %s', $typename_readable);
+}
 
 ?>
 
-<button type="button" class="btn btn-warning pull-right" data-toggle="modal" data-target="#create{{ ucfirst($typename) }}">{{ _i('Crea Nuovo %s', $typename_readable) }}</button>
+<button type="button" class="btn btn-warning pull-right" data-toggle="modal" data-target="#create{{ ucfirst($typename) }}">{{ $button_label }}</button>
 
 @if(isset($dynamic_url))
     <div class="modal fade dynamic-contents close-on-submit" id="create{{ ucfirst($typename) }}" tabindex="-1" role="dialog" data-contents-url="{{ $dynamic_url }}">
@@ -25,7 +28,7 @@ if (isset($target_update) == false) {
 
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">{{ _i('Crea Nuovo %s', $typename_readable) }}</h4>
+                        <h4 class="modal-title">{{ $button_label }}</h4>
                     </div>
                     <div class="modal-body">
                         @include($template, [$typename => null])
