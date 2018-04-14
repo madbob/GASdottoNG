@@ -172,7 +172,7 @@ class MovementType extends Model
                         */
                         'pre' => function (Movement $movement) {
                             if ($movement->target_type == 'App\Aggregate') {
-                                $debug = '';
+                                $debug = sprintf("Pagamento prenotazione: %s euro\n", $movement->amount);
 
                                 $total = $movement->amount;
                                 $aggregate = $movement->target;

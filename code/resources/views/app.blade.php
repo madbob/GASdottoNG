@@ -109,7 +109,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Feedback</h4>
+                        <h4 class="modal-title">{{ _i('Feedback') }}</h4>
                     </div>
                     <form class="form-horizontal inner-form" method="POST" action="http://vh.madbob.org/vh.js.php">
                         <input type="hidden" name="project" value="madbob/gasdottong">
@@ -117,11 +117,17 @@
 
                         <div class="modal-body">
                             <p>
-                                Vuoi inviare una segnalazione su GASdotto? Fallo qui!
+                                {{ _i('Vuoi inviare una segnalazione su GASdotto? Fallo qui!') }}
                             </p>
                             <p>
-                                Attenzione: per problemi sui contenuti di questo sito (fornitori, ordini, prenotazioni...) fai riferimento agli amministrazioni del tuo GAS. I dati inviati per mezzo di questo pannello saranno pubblici: non immettere informazioni e contatti personali!
+                                {{ _i('Attenzione: per problemi sui contenuti di questo sito (fornitori, ordini, prenotazioni...) fai riferimento agli amministrazioni del tuo GAS. I dati inviati per mezzo di questo pannello saranno pubblici: non immettere informazioni e contatti personali!') }}
                             </p>
+
+                            @if(currentLang() != 'it_IT')
+                                <p>
+                                    {!! _i('Se vuoi contribuire alla traduzione nella tua lingua, visita <a href="https://hosted.weblate.org/projects/gasdottong/translations/">questa pagina</a>.') !!}
+                                </p>
+                            @endif
 
                             <hr/>
 
@@ -141,8 +147,8 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
-                            <button type="submit" class="btn btn-success">Invia</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+                            <button type="submit" class="btn btn-success">{{ _i('Invia') }}</button>
                         </div>
                     </form>
                 </div>
