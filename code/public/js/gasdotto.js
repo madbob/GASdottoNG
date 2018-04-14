@@ -719,10 +719,6 @@ function updateOrderSummary(form) {
     });
 }
 
-$('body').on('keyup', '.order-summary input', function() {
-    updateOrderSummary($(this));
-});
-
 /*******************************************************************************
 	Prenotazioni / Consegne
 */
@@ -2175,6 +2171,10 @@ $(document).ready(function() {
     /*
     	Gestione ordini
     */
+
+    $('body').on('keyup', '.order-summary input', function() {
+        updateOrderSummary($(this));
+    });
 
     $('body').on('click', '.order-summary .toggle-product-abilitation', function() {
         $('.order-summary tr.product-disabled').toggle();
