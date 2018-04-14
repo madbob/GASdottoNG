@@ -112,6 +112,10 @@ class Gas extends Model
             'public_registrations' => [
                 'default' => '0'
             ],
+
+            'orders_display_columns' => [
+                'default' => ['selection', 'name', 'price', 'quantity', 'total_price', 'quantity_delivered', 'price_delivered', 'notes']
+            ]
         ];
     }
 
@@ -137,7 +141,7 @@ class Gas extends Model
 
     public function setConfig($name, $value)
     {
-        if (is_object($value))
+        if (is_object($value) || is_array($value))
             $value = json_encode($value);
 
         foreach ($this->configs as $conf) {
@@ -188,6 +192,11 @@ class Gas extends Model
     public function getPublicRegistrationsAttribute()
     {
         return $this->getConfig('public_registrations') == '1';
+    }
+
+    public function getOrdersDisplayColumnsAttribute()
+    {
+        return (array) json_decode($this->getConfig('orders_display_columns'));
     }
 
     /******************************************************** AttachableTrait */

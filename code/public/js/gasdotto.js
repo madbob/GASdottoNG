@@ -2180,6 +2180,23 @@ $(document).ready(function() {
     	Gestione ordini
     */
 
+    $('body').on('click', '.order-columns-selector a', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var table = $(this).closest('.btn-group').siblings('.order-summary').first();
+        var box = $(this).find('input:checkbox');
+        var name = box.val();
+        box.prop('checked', !box.prop('checked'));
+        var show = box.prop('checked');
+
+        if (show) {
+            table.find('.order-cell-' + name).removeClass('hidden');
+        }
+        else {
+            table.find('.order-cell-' + name).addClass('hidden');
+        }
+    });
+
     $('body').on('keyup', '.order-summary input', function() {
         updateOrderSummary($(this));
     });

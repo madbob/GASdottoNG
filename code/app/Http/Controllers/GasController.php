@@ -106,6 +106,7 @@ class GasController extends Controller
 
             case 'orders':
                 $gas->setConfig('fast_shipping_enabled', $request->has('fast_shipping_enabled') ? '1' : '0');
+                $gas->setConfig('orders_display_columns', $request->input('orders_display_columns'));
                 break;
 
             case 'roles':

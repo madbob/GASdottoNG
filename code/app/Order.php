@@ -581,6 +581,77 @@ class Order extends Model
         }
     }
 
+    public static function displayColumns()
+    {
+        return [
+            'selection' => (object) [
+                'label' => _i('Selezione'),
+                'help' => _i("Per abilitare o disabilitare prodotti del listino fornitore all'interno dell'ordine"),
+                'width' => 3
+            ],
+            'name' => (object) [
+                'label' => _i('Prodotto'),
+                'help' => _i('Nome e descrizione del prodotto'),
+                'width' => 20
+            ],
+            'price' => (object) [
+                'label' => _i('Prezzo'),
+                'help' => _i('Prezzo unitario (editabile) del prodotto'),
+                'width' => 8
+            ],
+            'transport' => (object) [
+                'label' => _i('Trasporto'),
+                'help' => _i('Prezzo di trasporto unitario (editabile) del prodotto'),
+                'width' => 8
+            ],
+            'available' => (object) [
+                'label' => _i('Disponibile'),
+                'help' => _i('Quantità disponibile (editabile) del prodotto'),
+                'width' => 8
+            ],
+            'discount' => (object) [
+                'label' => _i('Sconto'),
+                'help' => _i('Per abilitare o disabilitare lo sconto unitario del prodotto'),
+                'width' => 4
+            ],
+            'unit_measure' => (object) [
+                'label' => _i('Unità di Misura'),
+                'help' => _i('Unità di misura assegnata al prodotto'),
+                'width' => 9
+            ],
+            'quantity' => (object) [
+                'label' => _i('Quantità Prenotata'),
+                'help' => _i('Quantità complessivamente prenotata del prodotto'),
+                'width' => 9
+            ],
+            'total_price' => (object) [
+                'label' => _i('Totale Prezzo'),
+                'help' => _i('Totale prezzo della quantità prenotata'),
+                'width' => 5
+            ],
+            'total_transport' => (object) [
+                'label' => _i('Totale Trasporto'),
+                'help' => _i('Totale del prezzo di trasporto. Significativo solo quando è applicato un prezzo di trasporto unitario sul prodotto'),
+                'width' => 5
+            ],
+            'quantity_delivered' => (object) [
+                'label' => _i('Quantità Consegnata'),
+                'help' => _i('Quantità complessivamente consegnata del prodotto'),
+                'width' => 8
+            ],
+            'price_delivered' => (object) [
+                'label' => _i('Totale Consegnato'),
+                'help' => _i('Totale prezzo della quantità consegnata'),
+                'width' => 8
+            ],
+            'notes' => (object) [
+                'label' => _i('Note'),
+                'help' => _i('Pannello da cui modificare direttamente le quantità di prodotto in ogni prenotazione, ed aggiungere note per il fornitore'),
+                'width' => 7
+            ],
+        ];
+    }
+
     public function getPermissionsProxies()
     {
         return [$this->supplier];

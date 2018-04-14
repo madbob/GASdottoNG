@@ -86,6 +86,18 @@
                                 <div class="col-md-12">
                                     @include('commons.boolfield', ['obj' => $gas, 'name' => 'fast_shipping_enabled', 'label' => _i('Abilita Consegne Rapide')])
 
+                                    <div class="form-group">
+                                        <?php $columns = $currentgas->orders_display_columns ?>
+                                        <label for="order_columns" class="col-sm-{{ $labelsize }} control-label">{{ _i('Colonne Riassunto Ordini') }}</label>
+
+                                        <div class="col-sm-{{ $fieldsize }}">
+                                            @foreach(App\Order::displayColumns() as $identifier => $metadata)
+                                                <input type="checkbox" name="orders_display_columns[]" value="{{ $identifier }}" data-toggle="toggle" data-size="mini" {{ in_array($identifier, $columns) ? 'checked' : '' }}> {{ $metadata->label }}
+                                                <span class="help-block">{{ $metadata->help }}</span>
+                                            @endforeach
+                                        </div>
+                                    </div>
+
                                     <div class="btn-group pull-right main-form-buttons" role="group">
                                         <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
                                     </div>
