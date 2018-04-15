@@ -24,10 +24,11 @@
                                 <thead>
                                     <tr>
                                         <th width="20%">{{ _i('Prodotto') }}</th>
-                                        <th width="10%">{{ _i('Aliquota IVA') }}</th>
-                                        <th width="10%">{{ _i('Totale Imponibile') }}</th>
-                                        <th width="10%">{{ _i('Totale IVA') }}</th>
-                                        <th width="10%">{{ _i('Totale') }}</th>
+                                        <th width="15%">{{ _i('Aliquota IVA') }}</th>
+                                        <th width="15%">{{ _i('Quantità Consegnata') }}</th>
+                                        <th width="15%">{{ _i('Totale Imponibile') }}</th>
+                                        <th width="15%">{{ _i('Totale IVA') }}</th>
+                                        <th width="20%">{{ _i('Totale') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -36,6 +37,7 @@
                                             <tr>
                                                 <td>{{ $product->printableName() }}</td>
                                                 <td>{{ $product->vat_rate ? $product->vat_rate->printableName() : '' }}</td>
+                                                <td>{{ printableQuantity($summaries[$order->id]->products[$product->id]['delivered'], $product->measure->discrete) }} {{ $product['measure']->name }}</td>
                                                 <td>{{ printablePriceCurrency($summaries[$order->id]->products[$product->id]['total']) }}</td>
                                                 <td>{{ printablePriceCurrency($summaries[$order->id]->products[$product->id]['total_vat']) }}</td>
                                                 <td>{{ printablePriceCurrency($summaries[$order->id]->products[$product->id]['total'] + $summaries[$order->id]->products[$product->id]['total_vat']) }}</td>
@@ -45,6 +47,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
+                                        <th>&nbsp;</th>
                                         <th>&nbsp;</th>
                                         <th>&nbsp;</th>
                                         <th>{{ printablePriceCurrency($summaries[$order->id]->total_taxable) }}</th>
@@ -62,18 +65,20 @@
                                 <thead>
                                     <tr>
                                         <th width="20%">{{ _i('Prodotto') }}</th>
-                                        <th width="10%">{{ _i('Aliquota IVA') }}</th>
-                                        <th width="10%">{{ _i('Totale Imponibile') }}</th>
-                                        <th width="10%">{{ _i('Totale IVA') }}</th>
-                                        <th width="10%">{{ _i('Totale') }}</th>
+                                        <th width="15%">{{ _i('Aliquota IVA') }}</th>
+                                        <th width="15%">{{ _i('Quantità Consegnata') }}</th>
+                                        <th width="15%">{{ _i('Totale Imponibile') }}</th>
+                                        <th width="15%">{{ _i('Totale IVA') }}</th>
+                                        <th width="20%">{{ _i('Totale') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($global_summary as $product)
+                                    @foreach($global_summary->products as $product)
                                         @if($product['total'] > 0)
                                             <tr>
                                                 <td>{{ $product['name'] }}</td>
                                                 <td>{{ $product['vat_rate'] }}</td>
+                                                <td>{{ printableQuantity($product['delivered'], $product['measure']->discrete) }} {{ $product['measure']->name }}</td>
                                                 <td>{{ printablePriceCurrency($product['total']) }}</td>
                                                 <td>{{ printablePriceCurrency($product['total_vat']) }}</td>
                                                 <td>{{ printablePriceCurrency($product['total'] + $product['total_vat']) }}</td>
@@ -81,6 +86,16 @@
                                         @endif
                                     @endforeach
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>&nbsp;</th>
+                                        <th>&nbsp;</th>
+                                        <th>&nbsp;</th>
+                                        <th>{{ printablePriceCurrency($global_summary->total_taxable) }}</th>
+                                        <th>{{ printablePriceCurrency($global_summary->total_tax) }}</th>
+                                        <th>{{ printablePriceCurrency($global_summary->total) }}</th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     @endif

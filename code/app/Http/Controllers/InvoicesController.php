@@ -119,25 +119,38 @@ class InvoicesController extends Controller
 
         $invoice = Invoice::findOrFail($id);
         $summaries = [];
-        $global_summary = [];
+
+        $global_summary = (object)[
+            'products' => [],
+            'total' => 0,
+            'total_taxable' => 0,
+            'total_tax' => 0,
+        ];
 
         foreach($invoice->orders as $order) {
             $summary = $order->calculateInvoicingSummary();
             $summaries[$order->id] = $summary;
 
             foreach($order->products as $product) {
-                if (isset($global_summary[$product->id]) == false) {
-                    $global_summary[$product->id] = [
+                if (isset($global_summary->products[$product->id]) == false) {
+                    $global_summary->products[$product->id] = [
                         'name' => $product->printableName(),
                         'vat_rate' => $product->vat_rate ? $product->vat_rate->printableName() : '',
                         'total' => 0,
-                        'total_vat' => 0
+                        'total_vat' => 0,
+                        'delivered' => 0,
+                        'measure' => $product->measure
                     ];
                 }
 
-                $global_summary[$product->id]['total'] += $summary->products[$product->id]['total'];
-                $global_summary[$product->id]['total_vat'] += $summary->products[$product->id]['total_vat'];
+                $global_summary->products[$product->id]['total'] += $summary->products[$product->id]['total'];
+                $global_summary->products[$product->id]['total_vat'] += $summary->products[$product->id]['total_vat'];
+                $global_summary->products[$product->id]['delivered'] += $summary->products[$product->id]['delivered'];
             }
+
+            $global_summary->total += $summary->total;
+            $global_summary->total_taxable += $summary->total_taxable;
+            $global_summary->total_tax += $summary->total_tax;
         }
 
         return view('invoice.products', [

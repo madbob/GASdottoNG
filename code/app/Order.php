@@ -396,9 +396,12 @@ class Order extends Model
         $rates = [];
 
         foreach ($products as $product) {
-            $price_delivered = BookedProduct::with('variants')->with('booking')->where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order) {
+            $query = BookedProduct::with('variants')->with('booking')->where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order) {
                 $query->where('order_id', '=', $order->id);
-            })->sum('final_price');
+            });
+
+            $price_delivered = $query->sum('final_price');
+            $quantity_delivered = $query->sum('delivered');
 
             if (isset($rates[$product->vat_rate_id]) == false)
                 $rates[$product->vat_rate_id] = $product->vat_rate;
@@ -415,6 +418,7 @@ class Order extends Model
 
             $summary->products[$product->id]['total'] = printablePrice($total);
             $summary->products[$product->id]['total_vat'] = printablePrice($total_vat);
+            $summary->products[$product->id]['delivered'] = printableQuantity($quantity_delivered, $product->measure->discrete);
 
             $global_total += $price_delivered;
             $global_total_taxable += $total;
