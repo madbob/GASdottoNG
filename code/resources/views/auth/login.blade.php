@@ -93,4 +93,12 @@
     </p>
 </div>
 
+<nav class="navbar navbar-default navbar-fixed-bottom">
+    <div class="container">
+        <p>
+            Powered by <a href="https://www.gasdotto.net/"><img src="{{ url('images/gasdotto.jpg') }}" style="height: 24px"> GASdotto</a>.
+        </p>
+    </div>
+</nav>
+
 @endsection
