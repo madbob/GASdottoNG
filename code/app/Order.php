@@ -663,9 +663,9 @@ class Order extends Model
 
     /******************************************************** CreditableTrait */
 
-    public function alterBalance($amount, $type = 'bank')
+    public function getBalanceProxy()
     {
-        $this->supplier->alterBalance($amount, $type);
+        return $this->supplier;
     }
 
     public static function balanceFields()

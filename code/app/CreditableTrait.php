@@ -159,19 +159,26 @@ trait CreditableTrait
 
     public function getCurrentBalanceAttribute()
     {
-        $balance = $this->balances()->where('current', true)->first();
-        if (is_null($balance)) {
-            $balance = $this->balances()->where('current', false)->first();
-            if (is_null($balance)) {
-                $balance = $this->fixFirstBalance();
-            }
-            else {
-                $balance->current = true;
-                $balance->save();
-            }
-        }
+        $proxy = $this->getBalanceProxy();
 
-        return $balance;
+        if(is_null($proxy)) {
+            $balance = $this->balances()->where('current', true)->first();
+            if (is_null($balance)) {
+                $balance = $this->balances()->where('current', false)->first();
+                if (is_null($balance)) {
+                    $balance = $this->fixFirstBalance();
+                }
+                else {
+                    $balance->current = true;
+                    $balance->save();
+                }
+            }
+
+            return $balance;
+        }
+        else {
+            return $proxy->current_balance;
+        }
     }
 
     public function getCurrentBalanceAmountAttribute()
@@ -182,17 +189,35 @@ trait CreditableTrait
 
     public function alterBalance($amount, $type = 'bank')
     {
-        if (is_string($type)) {
-            $type = [$type];
+        $proxy = $this->getBalanceProxy();
+
+        if(is_null($proxy)) {
+            if (is_string($type)) {
+                $type = [$type];
+            }
+
+            $balance = $this->current_balance;
+
+            foreach ($type as $t) {
+                $balance->$t += $amount;
+            }
+
+            $balance->save();
         }
-
-        $balance = $this->current_balance;
-
-        foreach ($type as $t) {
-            $balance->$t += $amount;
+        else {
+            $proxy->alterBalance($amount, $type);
         }
+    }
 
-        $balance->save();
+    /*
+        Questa funzione è destinata ad essere sovrascritta ove opportuno
+        (laddove esistono classi che possono essere oggetti di un movimento, ma
+        di fatto rappresentano il saldo di qualcos altro. Cfr. gli ordini nei
+        confronti dei fornitori)
+    */
+    public function getBalanceProxy()
+    {
+        return null;
     }
 
     abstract public static function balanceFields();

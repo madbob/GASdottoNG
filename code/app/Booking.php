@@ -427,9 +427,9 @@ class Booking extends Model
 
     /******************************************************** CreditableTrait */
 
-    public function alterBalance($amount, $type = 'bank')
+    public function getBalanceProxy()
     {
-        $this->order->supplier->alterBalance($amount, $type);
+        return $this->order->supplier;
     }
 
     public static function balanceFields()
