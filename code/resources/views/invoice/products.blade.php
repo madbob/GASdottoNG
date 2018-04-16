@@ -9,7 +9,12 @@
             <div class="modal-body">
                 <ul class="nav nav-tabs" role="tablist">
                     @foreach($invoice->orders as $index => $order)
-                        <li role="presentation" class="{{ $index == 0 ? 'active' : '' }}"><a href="#products-{{ $invoice->id }}-{{ $index }}" role="tab" data-toggle="tab">{{ $order->printableName() }}</a></li>
+                        <li role="presentation" class="{{ $index == 0 ? 'active' : '' }}">
+                            <a href="#products-{{ $invoice->id }}-{{ $index }}" role="tab" data-toggle="tab">
+                                {{ $order->printableName() }}<br>
+                                <small>{{ _i('Consegna: %s', printableDate($order->shipping)) }}</small>
+                            </a>
+                        </li>
                     @endforeach
 
                     @if($invoice->orders->count() > 1)
