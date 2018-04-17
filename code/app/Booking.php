@@ -13,12 +13,13 @@ use Log;
 use App\Events\SluggableCreating;
 use App\Events\BookingDeleting;
 use App\GASModel;
+use App\CreditableTrait;
 use App\SluggableID;
 use App\BookedProduct;
 
 class Booking extends Model
 {
-    use GASModel, SluggableID, PayableTrait;
+    use GASModel, SluggableID, PayableTrait, CreditableTrait;
 
     public $incrementing = false;
 
