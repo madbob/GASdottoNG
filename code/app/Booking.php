@@ -202,20 +202,15 @@ class Booking extends Model
     */
     public function getCheckTransportAttribute()
     {
-        if ($this->status == 'shipped') {
-            return $this->transport;
-        }
-        else {
-            return $this->innerCache('transport', function($obj) {
-                $transport = $obj->major_transport;
+        return $this->innerCache('transport', function($obj) {
+            $transport = $obj->major_transport;
 
-                foreach($this->products as $p) {
-                    $transport += $p->transportDeliveredValue();
-                }
+            foreach($obj->products as $p) {
+                $transport += $p->transportDeliveredValue();
+            }
 
-                return $transport;
-            });
-        }
+            return $transport;
+        });
     }
 
     /*
@@ -286,7 +281,7 @@ class Booking extends Model
     */
     public function getTotalDeliveredAttribute()
     {
-        return $this->delivered + $this->transport;
+        return $this->delivered + $this->check_transport;
     }
 
     public function getProductsWithFriendsAttribute()

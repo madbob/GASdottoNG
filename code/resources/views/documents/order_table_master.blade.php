@@ -10,7 +10,7 @@
     $quantity = $booking->$get_function($product, $get_function_real, true);
     $all_products[$product->id] += $quantity;
     echo ';' . printableQuantity($quantity, $product->measure->discrete, 3, ',');
-} ?>;<?php $price = $booking->$get_total; $total_price += $price; echo printablePrice($price, ',') ?>;<?php $transport = $booking->transport; $total_transport += $transport; echo printablePrice($transport, ',') ?>;{{ $booking->user->printableName() }}
+} ?>;<?php $price = $booking->$get_total; $total_price += $price; echo printablePrice($price, ',') ?>;<?php $transport = $booking->check_transport; $total_transport += $transport; echo printablePrice($transport, ',') ?>;{{ $booking->user->printableName() }}
 @endforeach
 
 TOTALI;<?php foreach ($order->products as $product) {
