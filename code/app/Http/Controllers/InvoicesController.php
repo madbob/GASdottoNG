@@ -75,11 +75,17 @@ class InvoicesController extends Controller
         }
 
         $invoice = Invoice::findOrFail($id);
-        $invoice->supplier_id = $request->input('supplier_id');
-        $invoice->number = $request->input('number');
-        $invoice->date = decodeDate($request->input('date'));
-        $invoice->total = $request->input('total');
-        $invoice->total_vat = $request->input('total_vat');
+        if ($request->has('supplier_id'))
+            $invoice->supplier_id = $request->input('supplier_id');
+        if ($request->has('number'))
+            $invoice->number = $request->input('number');
+        if ($request->has('date'))
+            $invoice->date = decodeDate($request->input('date'));
+        if ($request->has('total'))
+            $invoice->total = $request->input('total');
+        if ($request->has('total_vat'))
+            $invoice->total_vat = $request->input('total_vat');
+
         $invoice->status = $request->input('status');
         $invoice->save();
 
