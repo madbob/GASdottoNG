@@ -44,6 +44,7 @@ Route::get('suppliers/{id}/plain_balance', 'SuppliersController@plainBalance');
 Route::get('products/ro/{id}', 'ProductsController@show_ro');
 Route::get('products/{id}/header', 'ProductsController@objhead')->name('products.objhead');
 Route::post('products/massiveupdate', 'ProductsController@massiveUpdate');
+Route::get('products/picture/{id}', 'ProductsController@picture');
 
 Route::get('vatrates/{id}/header', 'VatRatesController@objhead')->name('vatrates.objhead');
 

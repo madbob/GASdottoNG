@@ -60,6 +60,14 @@ class Product extends Model
         return sprintf('%s::%s', $this->supplier_id, str_slug($this->name));
     }
 
+    public function getPictureUrlAttribute()
+    {
+        if (empty($this->picture))
+            return '';
+        else
+            return url('products/picture/' . $this->id);
+    }
+
     public function stillAvailable($order)
     {
         if ($this->max_available == 0) {

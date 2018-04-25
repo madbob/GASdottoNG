@@ -184,11 +184,7 @@ class UsersService extends BaseService
             $user->save();
 
             if (isset($request['picture'])) {
-                $file = $request['picture'];
-                $filename = str_random(30);
-                $file->move(gas_storage_path('app'), $filename);
-                $user->picture = sprintf('app/%s', $filename);
-                $user->save();
+                saveFile($request['picture'], $user, 'picture');
             }
 
             $user->updateContacts($request);
@@ -201,15 +197,7 @@ class UsersService extends BaseService
     public function picture($id)
     {
         $user = User::findOrFail($id);
-
-        $path = gas_storage_path($user->picture);
-        if (file_exists($path)) {
-            return response()->download($path);
-        }
-        else {
-            Log::error(_i('File non trovato: %s', $path));
-            return '';
-        }
+        return downloadFile($user, 'picture');
     }
 
     public function destroy($id)

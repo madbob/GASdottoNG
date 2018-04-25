@@ -38,18 +38,7 @@ class GasController extends Controller
     public function getLogo($id)
     {
         $gas = Gas::findOrFail($id);
-        if (!empty($gas->logo)) {
-            $path = gas_storage_path($gas->logo);
-            if (file_exists($path)) {
-                return response()->download($path);
-            }
-            else {
-                $gas->logo = '';
-                $gas->save();
-            }
-        }
-
-        return '';
+        return downloadFile($gas, 'logo');
     }
 
     public function edit($id)
@@ -78,10 +67,13 @@ class GasController extends Controller
 
         switch($group) {
             case 'general':
+                if ($request->hasFile('logo')) {
+                    saveFile($request->file($field), $gas, 'logo');
+                }
+
                 $gas->name = $request->input('name');
                 $gas->email = $request->input('email');
                 $gas->message = $request->input('message');
-                $this->handleDirectFileUpload($request, 'logo', $gas);
                 $gas->setConfig('restricted', $request->has('restricted') ? '1' : '0');
                 $gas->setConfig('language', $request->input('language'));
                 $gas->setConfig('currency', $request->input('currency'));

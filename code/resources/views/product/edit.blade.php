@@ -6,6 +6,7 @@
             @include('commons.boolfield', ['obj' => $product, 'name' => 'active', 'label' => 'Ordinabile'])
         </div>
         <div class="col-md-6">
+            @include('commons.imagefield', ['obj' => $product, 'name' => 'picture', 'label' => _i('Foto'), 'valuefrom' => 'picture_url'])
             @include('commons.decimalfield', ['obj' => $product, 'name' => 'portion_quantity', 'label' => 'Pezzatura', 'decimals' => 3])
             @include('commons.boolfield', ['obj' => $product, 'name' => 'variable', 'label' => 'Variabile'])
             @include('commons.decimalfield', ['obj' => $product, 'name' => 'package_size', 'label' => 'Confezione', 'decimals' => 3])
