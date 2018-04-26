@@ -76,9 +76,10 @@ class UsersController extends BackedController
     {
         try {
             $id = Auth::user()->id;
+            $active_tab = $request->input('tab');
             $user = $this->service->show($id);
             $booked_orders = $this->getOrders($id, 0, date('Y-m-d', strtotime('-1 months')), '2100-01-01');
-            return view('pages.profile', ['user' => $user, 'booked_orders' => $booked_orders]);
+            return view('pages.profile', ['user' => $user, 'active_tab' => $active_tab, 'booked_orders' => $booked_orders]);
         }
         catch (AuthException $e) {
             abort($e->status());

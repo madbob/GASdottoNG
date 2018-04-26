@@ -21,6 +21,7 @@ trait CreditableTrait
         $balance->gas = 0;
         $balance->suppliers = 0;
         $balance->deposits = 0;
+        $balance->paypal = 0;
         $balance->current = true;
         $balance->date = date('Y-m-d');
         $balance->save();
@@ -199,6 +200,8 @@ trait CreditableTrait
             $balance = $this->current_balance;
 
             foreach ($type as $t) {
+                if (!isset($balance->$t))
+                    $balance->$t = 0;
                 $balance->$t += $amount;
             }
 

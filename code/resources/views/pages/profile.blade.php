@@ -4,24 +4,30 @@
 
 <div class="row">
     <div class="col-md-12">
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#profile" role="tab" data-toggle="tab">Anagrafica</a></li>
-
-            @if($user->isFriend() == false && App\Role::someone('movements.admin', $user->gas))
-                <li role="presentation"><a href="#accounting" role="tab" data-toggle="tab">Contabilità</a></li>
-            @endif
-
-            @if($user->can('supplier.book'))
-                <li role="presentation"><a href="#bookings" role="tab" data-toggle="tab">Prenotazioni</a></li>
-            @endif
-
-            @if($user->can('users.subusers'))
-                <li role="presentation"><a href="#friends" role="tab" data-toggle="tab">Amici</a></li>
-            @endif
-        </ul>
+        @include('commons.tabs', ['active' => $active_tab, 'tabs' => [
+            (object) [
+                'label' => _i('Anagrafica'),
+                'id' => 'profile'
+            ],
+            (object) [
+                'label' => _i('Contabilità'),
+                'id' => 'accounting',
+                'enabled' => ($user->isFriend() == false && App\Role::someone('movements.admin', $user->gas))
+            ],
+            (object) [
+                'label' => _i('Prenotazioni'),
+                'id' => 'bookings',
+                'enabled' => $user->can('supplier.book')
+            ],
+            (object) [
+                'label' => _i('Amici'),
+                'id' => 'friends',
+                'enabled' => $user->can('users.subusers')
+            ],
+        ]])
 
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="profile">
+            <div role="tabpanel" class="tab-pane {{ $active_tab == null || $active_tab == 'profile' ? 'active' : '' }}" id="profile">
                 <form class="form-horizontal inner-form user-editor" method="PUT" action="{{ route('users.update', $user->id) }}">
                     <div class="row">
                         <div class="col-md-6">
@@ -97,13 +103,52 @@
             </div>
 
             @if($user->isFriend() == false && App\Role::someone('movements.admin', $user->gas))
-                <div role="tabpanel" class="tab-pane" id="accounting">
+                <div role="tabpanel" class="tab-pane {{ $active_tab == 'accounting' ? 'active' : '' }}" id="accounting">
+                    @if(!empty($user->gas->paypal['client_id']))
+                        <button type="button" class="btn btn-warning pull-right" data-toggle="modal" data-target="#paypalCredit">{{ _i('Ricarica Credito') }}</button>
+
+                        <div class="modal fade" id="paypalCredit" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form class="form-horizontal direct-submit" method="POST" action="{{ route('payment.do') }}" data-toggle="validator">
+                                        @csrf
+
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title">{{ _i('Ricarica Credito') }}</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                                {{ _i('Da qui puoi ricaricare il tuo credito utilizzando PayPal.') }}
+                                            </p>
+                                            <p>
+                                                {{ _i('Specifica quanto vuoi versare ed eventuali note per gli amministratori, verrai rediretto sul sito PayPal dove dovrai autenticarti e confermare il versamento.') }}
+                                            </p>
+                                            <p>
+                                                {{ _i('Eventuali commissioni sulla transazione saranno a tuo carico.') }}
+                                            </p>
+
+                                            @include('commons.decimalfield', ['obj' => null, 'name' => 'amount', 'label' => _i('Valore'), 'is_price' => true, 'mandatory' => true])
+                                            @include('commons.textarea', ['obj' => null, 'name' => 'description', 'label' => _i('Descrizione')])
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+                                            <button type="submit" class="btn btn-success">{{ _i('Vai a PayPal') }}</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br>
+                    @endif
+
                     @include('movement.targetlist', ['target' => $user])
                 </div>
             @endif
 
             @if($user->can('supplier.book'))
-                <div role="tabpanel" class="tab-pane list-filter" id="bookings" data-list-target="#wrapper-booking-list">
+                <div role="tabpanel" class="tab-pane list-filter {{ $active_tab == 'bookings' ? 'active' : '' }}" id="bookings" data-list-target="#wrapper-booking-list">
                     <br>
                     <div class="row">
                         <div class="col-md-6">
@@ -133,7 +178,7 @@
             @endif
 
             @if($user->can('users.subusers'))
-                <div role="tabpanel" class="tab-pane" id="friends">
+                <div role="tabpanel" class="tab-pane {{ $active_tab == 'friends' ? 'active' : '' }}" id="friends">
                     <div class="row">
                         <div class="col-md-12">
                             @include('commons.addingbutton', [

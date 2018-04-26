@@ -16,6 +16,7 @@
         "laravel/framework": "5.6.*",
         "laravel/tinker": "~1.0",
         "madbob/laravel-log2rss": "^0.1.0",
+        "paypal/rest-api-sdk-php": "^1.13",
         "sinergi/browser-detector": "^6.1",
         "spatie/laravel-feed": "^2.0",
         "vespakoen/menu": "^3.0",

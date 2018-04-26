@@ -6,6 +6,7 @@ use Closure;
 
 use App\Measure;
 use App\Category;
+use App\MovementType;
 
 /*
     Questo middleware è destinato ad ospitare eventuali correzioni "in corsa" al
@@ -32,6 +33,43 @@ class FixDatabase
             $category = new Category();
             $category->name = _i('Non Specificato');
             $category->save();
+        }
+
+        /*
+            Questo è per creare il default per i pagamenti PayPal, introdotti
+            solo successivamente.
+            Addì: 26/04/2018
+        */
+        $types = MovementType::paymentsByType('user-credit');
+        if(!in_array('paypal', array_keys($types))) {
+            $type = MovementType::findOrFail('user-credit');
+
+            $data = json_decode($type->function);
+            $data[] = (object) [
+                'method' => 'paypal',
+                'sender' => (object) [
+                    'operations' => []
+                ],
+                'target' => (object) [
+                    'operations' => [
+                        (object) [
+                            'operation' => 'increment',
+                            'field' => 'bank'
+                        ],
+                    ]
+                ],
+                'master' => (object) [
+                    'operations' => [
+                        (object) [
+                            'operation' => 'increment',
+                            'field' => 'paypal'
+                        ],
+                    ]
+                ]
+            ];
+
+            $type->function = json_encode($data);
+            $type->save();
         }
 
         return $next($request);

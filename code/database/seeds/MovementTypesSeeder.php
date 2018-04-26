@@ -443,12 +443,6 @@ class MovementTypesSeeder extends Seeder
             $type->save();
         }
 
-        /*
-            Il comportamento di questi movimenti non è strettamente vincolati al
-            codice, ma si consiglia comunque di non modificarli se non molto
-            oculatamente
-        */
-
         if (MovementType::find('user-credit') == null) {
             $type = new MovementType();
             $type->id = 'user-credit';
@@ -457,6 +451,7 @@ class MovementTypesSeeder extends Seeder
             $type->target_type = 'App\User';
             $type->allow_negative = false;
             $type->fixed_value = null;
+            $type->system = true;
             $type->function = json_encode(
                 [
                     (object) [
@@ -502,11 +497,39 @@ class MovementTypesSeeder extends Seeder
                                 ],
                             ]
                         ]
+                    ],
+                    (object) [
+                        'method' => 'paypal',
+                        'sender' => (object) [
+                            'operations' => []
+                        ],
+                        'target' => (object) [
+                            'operations' => [
+                                (object) [
+                                    'operation' => 'increment',
+                                    'field' => 'bank'
+                                ],
+                            ]
+                        ],
+                        'master' => (object) [
+                            'operations' => [
+                                (object) [
+                                    'operation' => 'increment',
+                                    'field' => 'paypal'
+                                ],
+                            ]
+                        ]
                     ]
                 ]
             );
             $type->save();
         }
+
+        /*
+            Il comportamento di questi movimenti non è strettamente vincolati al
+            codice, ma si consiglia comunque di non modificarli se non molto
+            oculatamente
+        */
 
         if (MovementType::find('user-decredit') == null) {
             $type = new MovementType();

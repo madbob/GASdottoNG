@@ -115,6 +115,13 @@ class Gas extends Model
 
             'orders_display_columns' => [
                 'default' => ['selection', 'name', 'price', 'quantity', 'total_price', 'quantity_delivered', 'price_delivered', 'notes']
+            ],
+
+            'paypal' => [
+                'default' => (object) [
+                    'client_id' => '',
+                    'secret' => ''
+                ]
             ]
         ];
     }
@@ -199,6 +206,11 @@ class Gas extends Model
         return (array) json_decode($this->getConfig('orders_display_columns'));
     }
 
+    public function getPaypalAttribute()
+    {
+        return (array) json_decode($this->getConfig('paypal'));
+    }
+
     /******************************************************** AttachableTrait */
 
     protected function requiredAttachmentPermission()
@@ -210,12 +222,18 @@ class Gas extends Model
 
     public static function balanceFields()
     {
-        return [
+        $ret = [
             'bank' => _i('Conto Corrente'),
             'cash' => _i('Cassa Contanti'),
             'gas' => _i('GAS'),
             'suppliers' => _i('Fornitori'),
             'deposits' => _i('Cauzioni'),
         ];
+
+        $gas = currentAbsoluteGas();
+        if(!empty($gas->paypal['client_id']))
+            $ret['paypal'] = _i('PayPal');
+
+        return $ret;
     }
 }

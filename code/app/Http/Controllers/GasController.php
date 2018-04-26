@@ -90,6 +90,13 @@ class GasController extends Controller
                     'org' => $request->input('rid->org'),
                 ];
                 $gas->setConfig('rid', $rid_info);
+
+                $paypal_info = (object) [
+                    'client_id' => $request->input('paypal->client_id'),
+                    'secret' => $request->input('paypal->secret'),
+                ];
+                $gas->setConfig('paypal', $paypal_info);
+
                 break;
 
             case 'users':

@@ -16,7 +16,7 @@ function downloadFile($obj, $field)
             return response()->download($path);
         }
         else {
-            \Log::error('File non trovato: %s', $path);
+            Log::error('File non trovato: ' . $path);
             $obj->$field = '';
             $obj->save();
         }

@@ -47,6 +47,17 @@ class MovementType extends Model
             ],
         ];
 
+        $gas = currentAbsoluteGas();
+
+        if(!empty($gas->paypal['client_id'])) {
+            $ret['paypal'] = (object) [
+                'name' => _i('PayPal'),
+                'identifier' => true,
+                'icon' => 'glyphicon-cloud-download',
+                'active_for' => 'App\User'
+            ];
+        }
+
         return $ret;
     }
 
@@ -383,6 +394,8 @@ class MovementType extends Model
                 foreach($o->master->operations as $op)
                     $this->applyFunction($currentgas, $movement, $op);
             }
+
+            break;
         }
     }
 }
