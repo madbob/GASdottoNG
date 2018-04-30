@@ -31,7 +31,7 @@ class PaymentController extends Controller
 
         $this->api_context = new ApiContext(new OAuthTokenCredential($gas->paypal['client_id'], $gas->paypal['secret']));
         $this->api_context->setConfig(array(
-            'mode' => env('PAYPAL_MODE', 'sandbox'),
+            'mode' => $gas->paypal['mode'],
             'http.ConnectionTimeOut' => 30,
             'log.LogEnabled' => false,
         ));

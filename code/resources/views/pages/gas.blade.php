@@ -172,6 +172,20 @@
 
                                     @include('commons.textfield', ['obj' => $gas, 'name' => 'paypal->client_id', 'label' => 'Client ID'])
                                     @include('commons.textfield', ['obj' => $gas, 'name' => 'paypal->secret', 'label' => 'Secret'])
+                                    @include('commons.radios', [
+                                        'name' => 'paypal->mode',
+                                        'label' => 'Modalità',
+                                        'values' => [
+                                            'sandbox' => (object) [
+                                                'name' => 'Sandbox (per testing)',
+                                                'checked' => ($gas->paypal['mode'] == 'sandbox')
+                                            ],
+                                            'live' => (object) [
+                                                'name' => 'Live',
+                                                'checked' => ($gas->paypal['mode'] == 'live')
+                                            ],
+                                        ]
+                                    ])
                                 </div>
 
                                 <div class="col-md-12">

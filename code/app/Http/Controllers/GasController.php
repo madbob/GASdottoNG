@@ -94,6 +94,7 @@ class GasController extends Controller
                 $paypal_info = (object) [
                     'client_id' => $request->input('paypal->client_id'),
                     'secret' => $request->input('paypal->secret'),
+                    'mode' => $request->input('paypal->mode'),
                 ];
                 $gas->setConfig('paypal', $paypal_info);
 

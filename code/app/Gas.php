@@ -120,7 +120,8 @@ class Gas extends Model
             'paypal' => [
                 'default' => (object) [
                     'client_id' => '',
-                    'secret' => ''
+                    'secret' => '',
+                    'mode' => 'sandbox'
                 ]
             ]
         ];
