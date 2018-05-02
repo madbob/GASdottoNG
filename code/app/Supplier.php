@@ -83,6 +83,11 @@ class Supplier extends Model
         return $this->hasManyThrough('App\Booking', 'App\Order');
     }
 
+    public function invoices()
+    {
+        return $this->hasMany('App\Invoice');
+    }
+
     public function scopeFilterEnabled($query)
     {
         $user = Auth::user();
@@ -164,6 +169,8 @@ class Supplier extends Model
                             $query->where('sender_type', 'App\Order')->whereIn('sender_id', $supplier->orders()->pluck('orders.id'));
                         })->orWhere(function($query) use ($supplier) {
                             $query->where('sender_type', 'App\Booking')->whereIn('sender_id', $supplier->bookings()->pluck('bookings.id'));
+                        })->orWhere(function($query) use ($supplier) {
+                            $query->where('sender_type', 'App\Invoice')->whereIn('sender_id', $supplier->invoices()->pluck('invoices.id'));
                         });
                     })->orWhere(function($query) use ($supplier) {
                         $query->where(function($query) use ($supplier) {
@@ -172,6 +179,8 @@ class Supplier extends Model
                             $query->where('target_type', 'App\Order')->whereIn('target_id', $supplier->orders()->pluck('orders.id'));
                         })->orWhere(function($query) use ($supplier) {
                             $query->where('target_type', 'App\Booking')->whereIn('target_id', $supplier->bookings()->pluck('bookings.id'));
+                        })->orWhere(function($query) use ($supplier) {
+                            $query->where('target_type', 'App\Invoice')->whereIn('target_id', $supplier->invoices()->pluck('invoices.id'));
                         });
                     });
                 });
