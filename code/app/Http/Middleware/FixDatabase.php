@@ -40,36 +40,39 @@ class FixDatabase
             solo successivamente.
             Addì: 26/04/2018
         */
-        $types = MovementType::paymentsByType('user-credit');
-        if(!in_array('paypal', array_keys($types))) {
-            $type = MovementType::findOrFail('user-credit');
+        $gas = currentAbsoluteGas();
+        if(!empty($gas->paypal['client_id'])) {
+            $types = MovementType::paymentsByType('user-credit');
+            if(!in_array('paypal', array_keys($types))) {
+                $type = MovementType::findOrFail('user-credit');
 
-            $data = json_decode($type->function);
-            $data[] = (object) [
-                'method' => 'paypal',
-                'sender' => (object) [
-                    'operations' => []
-                ],
-                'target' => (object) [
-                    'operations' => [
-                        (object) [
-                            'operation' => 'increment',
-                            'field' => 'bank'
-                        ],
+                $data = json_decode($type->function);
+                $data[] = (object) [
+                    'method' => 'paypal',
+                    'sender' => (object) [
+                        'operations' => []
+                    ],
+                    'target' => (object) [
+                        'operations' => [
+                            (object) [
+                                'operation' => 'increment',
+                                'field' => 'bank'
+                            ],
+                        ]
+                    ],
+                    'master' => (object) [
+                        'operations' => [
+                            (object) [
+                                'operation' => 'increment',
+                                'field' => 'paypal'
+                            ],
+                        ]
                     ]
-                ],
-                'master' => (object) [
-                    'operations' => [
-                        (object) [
-                            'operation' => 'increment',
-                            'field' => 'paypal'
-                        ],
-                    ]
-                ]
-            ];
+                ];
 
-            $type->function = json_encode($data);
-            $type->save();
+                $type->function = json_encode($data);
+                $type->save();
+            }
         }
 
         return $next($request);

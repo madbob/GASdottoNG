@@ -167,7 +167,7 @@
 
                                 <div class="col-md-12">
                                     <p>
-                                        {!! _i("Popolando questi campi verranno attivati i pagamenti con PayPal, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto.") !!}
+                                        {!! _i('Popolando questi campi verranno attivati i pagamenti con PayPal, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto. Per ottenere le credenziali, <a href="https://developer.paypal.com/developer/applications/">visita questa pagina</a>.') !!}
                                     </p>
 
                                     @include('commons.textfield', ['obj' => $gas, 'name' => 'paypal->client_id', 'label' => 'Client ID'])
