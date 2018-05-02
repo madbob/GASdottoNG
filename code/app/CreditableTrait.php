@@ -8,7 +8,11 @@ trait CreditableTrait
 {
     public function balances()
     {
-        return $this->morphMany('App\Balance', 'target')->orderBy('date', 'desc');
+        $proxy = $this->getBalanceProxy();
+        if (is_null($proxy))
+            return $this->morphMany('App\Balance', 'target')->orderBy('date', 'desc');
+        else
+            return $proxy->balances();
     }
 
     private function fixFirstBalance()
@@ -64,9 +68,7 @@ trait CreditableTrait
         $classes = DB::table('balances')->select('target_type')->distinct()->get();
         foreach($classes as $c) {
             $class = $c->target_type;
-
             $current_status[$class] = [];
-            $fields = $class::balanceFields();
 
             if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
                 $objects = $class::withTrashed()->get();
@@ -74,6 +76,16 @@ trait CreditableTrait
                 $objects = $class::all();
 
             foreach($objects as $obj) {
+                $proxy = $obj->getBalanceProxy();
+                if ($proxy != null)
+                    $obj = $proxy;
+
+                $class = get_class($obj);
+                $fields = $class::balanceFields();
+
+                if (!isset($current_status[$class]))
+                    $current_status[$class] = [];
+
                 $now = [];
                 $cb = $obj->current_balance;
 
@@ -134,12 +146,20 @@ trait CreditableTrait
         $diff = [];
 
         foreach($old_balances as $class => $ids) {
-            $fields = $class::balanceFields();
-
             foreach($ids as $id => $old) {
                 $obj = $class::find($id);
                 if (is_null($obj))
                     continue;
+
+                $proxy = $obj->getBalanceProxy();
+                if ($proxy != null) {
+                    $obj = $proxy;
+                    $proxy_class = get_class($obj);
+                    $fields = $proxy_class::balanceFields();
+                }
+                else {
+                    $fields = $class::balanceFields();
+                }
 
                 $cb = $obj->current_balance;
                 foreach($fields as $field => $name) {
