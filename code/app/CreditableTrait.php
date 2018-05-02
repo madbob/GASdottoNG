@@ -86,21 +86,29 @@ trait CreditableTrait
                 if (!isset($current_status[$class]))
                     $current_status[$class] = [];
 
-                $now = [];
-                $cb = $obj->current_balance;
+                /*
+                    Attenzione: qui prendo in considerazione gli eventuali
+                    "proxy" degli elementi coinvolti nei movimenti, che
+                    all'interno di questo ciclo possono anche presentarsi più
+                    volte (e.g. diversi ordini per lo stesso fornitore).
+                    Ma il reset lo devo fare una volta sola, altrimenti cancello
+                    a ritroso i saldi salvati passati.
+                */
+                if (!isset($current_status[$class][$obj->id])) {
+                    $cb = $obj->current_balance;
 
-                if (is_null($cb)) {
-                    foreach($fields as $field => $name)
-                        $now[$field] = 0;
+                    if (is_null($cb)) {
+                        foreach($fields as $field => $name)
+                            $now[$field] = 0;
+                    }
+                    else {
+                        foreach($fields as $field => $name)
+                            $now[$field] = $cb->$field;
+                    }
+
+                    $current_status[$class][$obj->id] = $now;
+                    $obj->resetCurrentBalance();
                 }
-                else {
-                    foreach($fields as $field => $name)
-                        $now[$field] = $cb->$field;
-                }
-
-                $current_status[$class][$obj->id] = $now;
-
-                $obj->resetCurrentBalance();
             }
         }
 
