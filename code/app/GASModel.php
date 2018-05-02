@@ -175,6 +175,14 @@ trait GASModel
                         'text' => _i('Gestisci le consegne per il fornitore'),
                     ],
                 ],
+                'Attachment' => [
+                    'picture' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->isImage();
+                        },
+                        'text' => _i('Immagine'),
+                    ],
+                ],
                 'Product' => [
                     'off' => (object) [
                         'test' => function ($obj) {

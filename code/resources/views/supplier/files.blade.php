@@ -17,10 +17,48 @@
 
     <div class="clearfix"></div>
     <br />
-@endcan
-
-<div class="row">
-    <div class="col-md-12">
-        @include('commons.loadablelist', ['identifier' => 'attachment-list-' . $supplier->id, 'items' => $supplier->attachments])
+    <div class="row">
+        <div class="col-md-12">
+            @include('commons.loadablelist', [
+                'identifier' => 'attachment-list-' . $supplier->id,
+                'items' => $supplier->attachments,
+                'legend' => (object)[
+                    'class' => 'Attachment'
+                ],
+            ])
+        </div>
     </div>
-</div>
+@else
+    <?php $images = [] ?>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel-body">
+                <div class="list-group">
+                    @foreach($supplier->attachments as $attachment)
+                        @if($attachment->isImage())
+                            <?php $images[] = $attachment ?>
+                        @else
+                            <a href="{{ $attachment->download_url }}" class="list-group-item">{{ $attachment->name }}</a>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if(!empty($images))
+        <div class="row">
+            <div class="col-md-12">
+                <div class="gallery">
+                    @foreach($images as $img)
+                        <?php $size = $img->getSize() ?>
+                        <span style="--w: {{ $size[0] }}; --h: {{ $size[1] }}">
+                            <img src="{{ $img->download_url }}">
+                        </span>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    @endif
+@endcan

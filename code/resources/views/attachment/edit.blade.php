@@ -12,7 +12,11 @@
                 <label for="download" class="col-sm-{{ $labelsize }} control-label">{{ _i('Scarica')}}</label>
 
                 <div class="col-sm-{{ $fieldsize }}">
-                    <a class="btn btn-default" href="{{ $attachment->download_url }}">{{ _i('Clicca Qui') }}</a>
+                    @if($attachment->isImage())
+                        <img src="{{ $attachment->download_url }}" class="img-responsive">
+                    @else
+                        <a class="btn btn-default" href="{{ $attachment->download_url }}">{{ _i('Clicca Qui') }}</a>
+                    @endif
                 </div>
             </div>
         </div>
