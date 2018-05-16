@@ -150,7 +150,7 @@
                             'identifier' => 'invoice-list',
                             'items' => $invoices,
                             'legend' => (object)[
-                                'class' => 'Invoice'
+                                'class' => $currentgas->hasFeature('extra_invoicing') ? ['Invoice', 'Receipt'] : 'Invoice'
                             ],
                         ])
                     </div>

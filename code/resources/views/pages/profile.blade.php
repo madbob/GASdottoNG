@@ -104,7 +104,7 @@
 
             @if($user->isFriend() == false && App\Role::someone('movements.admin', $user->gas))
                 <div role="tabpanel" class="tab-pane {{ $active_tab == 'accounting' ? 'active' : '' }}" id="accounting">
-                    @if(!empty($user->gas->paypal['client_id']))
+                    @if($user->gas->hasFeature('paypal'))
                         <button type="button" class="btn btn-warning pull-right" data-toggle="modal" data-target="#paypalCredit">{{ _i('Ricarica Credito') }}</button>
 
                         <div class="modal fade" id="paypalCredit" tabindex="-1" role="dialog">

@@ -311,6 +311,14 @@ trait GASModel
                         'text' => _i('Salvato'),
                     ],
                 ],
+                'Receipt' => [
+                    'arrow-right' => (object) [
+                        'test' => function ($obj) {
+                            return true;
+                        },
+                        'text' => _i('In Uscita'),
+                    ],
+                ],
                 'Invoice' => [
                     'time' => (object) [
                         'test' => function ($obj) {
@@ -413,6 +421,21 @@ trait GASModel
                         'text' => _i('Quota non Pagata'),
                     ];
                 }
+            }
+
+            /*
+                Poiché fatture in ingresso (Invoice) e in uscita (Receipt) sono
+                visualizzate nello stesso elenco, se queste ultime sono attive
+                abilito delle icone distintive per permettere di riconoscerle
+                al volo
+            */
+            if ($user->gas->hasFeature('extra_invoicing')) {
+                $icons['Invoice']['arrow-left'] = (object) [
+                    'test' => function ($obj) {
+                        return true;
+                    },
+                    'text' => _i('In Entrata'),
+                ];
             }
 
             /*

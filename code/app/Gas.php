@@ -123,7 +123,18 @@ class Gas extends Model
                     'secret' => '',
                     'mode' => 'sandbox'
                 ]
-            ]
+            ],
+
+            'extra_invoicing' => [
+                'default' => (object) [
+                    'business_name' => '',
+                    'taxcode' => '',
+                    'vat' => '',
+                    'address' => '',
+                    'invoices_counter' => 0,
+                    'invoices_counter_year' => date('Y'),
+                ]
+            ],
         ];
     }
 
@@ -212,6 +223,48 @@ class Gas extends Model
         return (array) json_decode($this->getConfig('paypal'));
     }
 
+    public function getExtraInvoicingAttribute()
+    {
+        return (array) json_decode($this->getConfig('extra_invoicing'));
+    }
+
+    public function nextInvoiceNumber()
+    {
+        $status = $this->extra_invoicing;
+        $now = date('Y');
+        $year = $status['invoices_counter_year'];
+
+        if ($now == $year) {
+            $ret = $status['invoices_counter'] + 1;
+        }
+        else {
+            $ret = 1;
+            $status['invoices_counter_year'] = $now;
+        }
+
+        $status['invoices_counter'] = $ret;
+        $this->setConfig('extra_invoicing', $status);
+
+        return sprintf('%s/%s', $ret, $now);
+    }
+
+    public function hasFeature($name)
+    {
+        switch($name) {
+            case 'rid':
+                return !empty($this->rid['iban']);
+                break;
+            case 'paypal':
+                return !empty($this->paypal['client_id']);
+                break;
+            case 'extra_invoicing':
+                return (!empty($this->extra_invoicing['taxcode']) || !empty($this->extra_invoicing['vat']));
+                break;
+        }
+
+        return false;
+    }
+
     /******************************************************** AttachableTrait */
 
     protected function requiredAttachmentPermission()
@@ -232,7 +285,7 @@ class Gas extends Model
         ];
 
         $gas = currentAbsoluteGas();
-        if(!empty($gas->paypal['client_id']))
+        if($gas->hasFeature('paypal'))
             $ret['paypal'] = _i('PayPal');
 
         return $ret;

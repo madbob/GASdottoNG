@@ -226,20 +226,15 @@ class BookingHandler extends Controller
         }
         else {
             $subject = $aggregate->bookingBy($user_id);
+            $subject->generateReceipt();
 
-            if ($delivering) {
-                $total = $subject->total_delivered;
-                $action = 'DeliveryUserController@show';
-            }
-            else {
-                $total = $subject->total_value;
-                $action = 'BookingUserController@show';
-            }
+            $total = $subject->total_delivered;
 
             if ($total == 0) {
                 return $this->successResponse();
             }
             else {
+                $action = 'DeliveryUserController@show';
                 return $this->successResponse([
                     'id' => $subject->id,
                     'header' => $subject->printableHeader(),

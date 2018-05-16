@@ -103,6 +103,28 @@ class BookedProduct extends Model
         return $this->fixQuantity('delivered', false);
     }
 
+    /*
+        Valore complessivo di quanto consegnato, diviso tra imponibile e IVA.
+        Questa funzione opera sul valore di final_price, dunque solo su prodotti
+        che sono già stati effettivamente consegnati
+    */
+    public function deliveredTaxedValue()
+    {
+        $product = $this->product;
+
+        $rate = $product->vat_rate;
+        if ($rate != null) {
+            $total = $this->final_price / (1 + ($rate->percentage / 100));
+            $total_vat = $this->final_price - $total;
+        }
+        else {
+            $total = $this->final_price;
+            $total_vat = 0;
+        }
+
+        return [$total, $total_vat];
+    }
+
     public function transportBookedValue()
     {
         return $this->product->transport * $this->quantity;

@@ -189,6 +189,17 @@
                                 </div>
 
                                 <div class="col-md-12">
+                                    <p>
+                                        {!! _i("Popolando questi campi verrà attivata l'emissione delle fatture nei confronti degli utenti che effettuano prenotazioni. Le fatture saranno emesse al momento del salvataggio o della consegna della prenotazione.") !!}
+                                    </p>
+
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->business_name', 'label' => 'Ragione Sociale'])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->taxcode', 'label' => 'Codice Fiscale'])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->vat', 'label' => 'Partita IVA'])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->address', 'label' => 'Indirizzo'])
+                                </div>
+
+                                <div class="col-md-12">
                                     <div class="btn-group pull-right main-form-buttons" role="group">
                                         <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
                                     </div>

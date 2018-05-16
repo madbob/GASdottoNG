@@ -25,7 +25,7 @@
             <table class="table">
                 <thead>
                     <tr>
-                        @if(!empty($currentgas->rid['iban']))
+                        @if($currentgas->hasFeature('rid'))
                             <th width="50%">{{ _i('Nome') }}</th>
                             <th width="35%">{{ _i('Credito Residuo') }}</th>
                             <th width="15%">{{ _i('IBAN') }}</th>

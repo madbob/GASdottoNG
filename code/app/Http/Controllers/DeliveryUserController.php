@@ -89,6 +89,9 @@ class DeliveryUserController extends BookingHandler
             }
 
             if ($grand_total != 0) {
+                $subject = $aggregate->bookingBy($user_id);
+                $subject->generateReceipt();
+
                 $movement = new Movement();
                 $movement->type = 'booking-payment';
                 $movement->sender_type = 'App\User';

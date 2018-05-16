@@ -36,7 +36,7 @@
 
             @include('commons.statusfield', ['target' => $user])
 
-            @if(!empty($user->gas->rid['iban']))
+            @if($user->gas->hasFeature('rid'))
                 <div class="form-group">
                     <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Configurazione SEPA') }}</label>
 

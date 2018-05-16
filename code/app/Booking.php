@@ -171,6 +171,23 @@ class Booking extends Model
     }
 
     /*
+        Valore complessivo di quanto consegnato, diviso tra imponibile e IVA
+    */
+    public function getDeliveredTaxedAttribute()
+    {
+        $total = 0;
+        $total_vat = 0;
+
+        foreach($this->products_with_friends as $booked_product) {
+            list($product_total, $product_total_tax) = $booked_product->deliveredTaxedValue();
+            $total += $product_total;
+            $total_vat += $product_total_tax;
+        }
+
+        return [$total, $total_vat];
+    }
+
+    /*
         Questo ritorna solo il costo di trasporto applicato sull'ordine
         complessivo
     */

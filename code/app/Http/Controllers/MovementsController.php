@@ -14,6 +14,7 @@ use PDF;
 
 use App\User;
 use App\Invoice;
+use App\Receipt;
 use App\MovementType;
 
 use App\Services\MovementsService;
@@ -43,9 +44,19 @@ class MovementsController extends BackedController
                     Qui si finisce quando si accede alla pagina principale della
                     contabilità
                 */
+                $gas = Auth::user()->gas;
                 $data['types'] = MovementType::types();
-                $data['invoices'] = Invoice::orderBy('date', 'desc')->get();
-                $data['balance'] = Auth::user()->gas->current_balance;
+                $data['balance'] = $gas->current_balance;
+
+                $invoices = Invoice::orderBy('date', 'desc')->get();
+                if ($gas->hasFeature('extra_invoicing')) {
+                    $receipts = Receipt::orderBy('date', 'desc')->get();
+                    foreach($receipts as $r)
+                        $invoices->push($r);
+                    $invoices = $invoices->sortByDesc('date');
+                }
+                $data['invoices'] = $invoices;
+
                 return view('pages.movements', $data);
             }
             else {

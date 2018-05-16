@@ -54,6 +54,9 @@ Route::post('invoices/{id}/movements', 'InvoicesController@postMovements')->name
 Route::post('invoices/wire/{step}/{id}', 'InvoicesController@wiring');
 Route::get('invoices/{id}/header', 'InvoicesController@objhead');
 
+Route::get('receipt/{id}/header', 'ReceiptsController@objhead')->name('receipt.objhead');
+Route::get('receipt/{id}/download', 'ReceiptsController@download')->name('receipt.download');
+
 Route::get('categories/{id}/header', 'CategoriesController@objhead')->name('categories.objhead');
 
 Route::get('measures/{id}/header', 'MeasuresController@objhead')->name('measures.objhead');
@@ -119,6 +122,7 @@ Route::resource('suppliers', 'SuppliersController');
 Route::resource('products', 'ProductsController');
 Route::resource('vatrates', 'VatRatesController');
 Route::resource('invoices', 'InvoicesController');
+Route::resource('receipt', 'ReceiptsController');
 Route::resource('deliveries', 'DeliveriesController');
 Route::resource('categories', 'CategoriesController');
 Route::resource('measures', 'MeasuresController');

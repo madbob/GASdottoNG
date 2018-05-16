@@ -98,6 +98,13 @@ class GasController extends Controller
                 ];
                 $gas->setConfig('paypal', $paypal_info);
 
+                $invoicing_info = $gas->extra_invoicing;
+                $invoicing_info['business_name'] = $request->input('extra_invoicing->business_name');
+                $invoicing_info['taxcode'] = $request->input('extra_invoicing->taxcode');
+                $invoicing_info['vat'] = $request->input('extra_invoicing->vat');
+                $invoicing_info['address'] = $request->input('extra_invoicing->address');
+                $gas->setConfig('extra_invoicing', $invoicing_info);
+
                 break;
 
             case 'users':

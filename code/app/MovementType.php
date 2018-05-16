@@ -48,8 +48,7 @@ class MovementType extends Model
         ];
 
         $gas = currentAbsoluteGas();
-
-        if(!empty($gas->paypal['client_id'])) {
+        if($gas->hasFeature('paypal')) {
             $ret['paypal'] = (object) [
                 'name' => _i('PayPal'),
                 'identifier' => true,

@@ -12,6 +12,7 @@ use DB;
 use URL;
 
 use App\Events\SluggableCreating;
+
 use App\GASModel;
 use App\SluggableID;
 use App\BookedProduct;

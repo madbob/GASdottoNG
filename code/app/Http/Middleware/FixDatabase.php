@@ -41,7 +41,7 @@ class FixDatabase
             Addì: 26/04/2018
         */
         $gas = currentAbsoluteGas();
-        if(!empty($gas->paypal['client_id'])) {
+        if($gas->hasFeature('paypal')) {
             $types = MovementType::paymentsByType('user-credit');
             if(!in_array('paypal', array_keys($types))) {
                 $type = MovementType::findOrFail('user-credit');
