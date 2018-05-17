@@ -61,6 +61,7 @@
     </div>
 
     @if($currentuser->can('movements.admin', $currentgas) || $currentuser->can('movements.view', $currentgas))
+        <hr>
         @include('movement.targetlist', ['target' => $user])
     @endif
 

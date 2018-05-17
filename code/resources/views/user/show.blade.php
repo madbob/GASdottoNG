@@ -14,6 +14,11 @@
             @include('commons.permissionsviewer', ['object' => $user, 'editable' => $editable])
         </div>
     </div>
+
+    @if($currentuser->can('movements.admin', $currentgas) || $currentuser->can('movements.view', $currentgas))
+        <hr>
+        @include('movement.targetlist', ['target' => $user])
+    @endif
 </form>
 
 @stack('postponed')
