@@ -127,9 +127,26 @@
             @endcan
 
             <div role="tabpanel" class="tab-pane" id="invoices-tab">
-                @can('movements.admin', $currentgas)
-                    <div class="row">
-                        <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#invoiceSearch">{{ _i('Ricerca') }}</button>
+
+                        <div class="collapse list-filter" id="invoiceSearch" data-list-target="#wrapper-invoice-list">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="well">
+                                        <form class="form-horizontal" data-toggle="validator" method="GET" action="{{ url('invoices/search') }}">
+                                            @include('commons.genericdaterange')
+                                        </form>
+
+                                        <button class="btn btn-danger pull-right">{{ _i('Chiudi') }}</button>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @can('movements.admin', $currentgas)
                             @include('commons.addingbutton', [
                                 'template' => 'invoice.base-edit',
                                 'typename' => 'invoice',
@@ -137,12 +154,12 @@
                                 'button_label' => _i('Carica Nuova Fattura'),
                                 'targeturl' => 'invoices'
                             ])
-                        </div>
+                        @endcan
                     </div>
+                </div>
 
-                    <div class="clearfix"></div>
-                    <hr/>
-                @endcan
+                <div class="clearfix"></div>
+                <hr/>
 
                 <div class="row">
                     <div class="col-md-12">

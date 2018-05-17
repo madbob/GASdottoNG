@@ -48,9 +48,11 @@ class MovementsController extends BackedController
                 $data['types'] = MovementType::types();
                 $data['balance'] = $gas->current_balance;
 
-                $invoices = Invoice::orderBy('date', 'desc')->get();
+                $one_month_ago = date('Y-m-d', strtotime('-1 months'));
+
+                $invoices = Invoice::where('date', '>=', $one_month_ago)->orderBy('date', 'desc')->get();
                 if ($gas->hasFeature('extra_invoicing')) {
-                    $receipts = Receipt::orderBy('date', 'desc')->get();
+                    $receipts = Receipt::where('date', '>=', $one_month_ago)->orderBy('date', 'desc')->get();
                     foreach($receipts as $r)
                         $invoices->push($r);
                     $invoices = $invoices->sortByDesc('date');

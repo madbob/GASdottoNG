@@ -9,6 +9,7 @@ use DB;
 use Auth;
 
 use App\Invoice;
+use App\Receipt;
 use App\Order;
 use App\Movement;
 use App\MovementType;
@@ -312,5 +313,38 @@ class InvoicesController extends Controller
                 return $this->successResponse();
                 break;
         }
+    }
+
+    public function search(Request $request)
+    {
+        if (isset($request['startdate'])) {
+            $start = decodeDate($request['startdate']);
+        }
+        else {
+            $start = date('Y-m-d', strtotime('-1 months'));
+        }
+
+        if (isset($request['enddate'])) {
+            $end = decodeDate($request['enddate']);
+        }
+        else {
+            $end = date('Y-m-d');
+        }
+
+        $elements = Invoice::where('date', '>=', $start)->where('date', '<=', $end)->orderBy('date', 'desc')->get();
+
+        $gas = Auth::user()->gas;
+        if ($gas->hasFeature('extra_invoicing')) {
+            $receipts = Receipt::where('date', '>=', $start)->where('date', '<=', $end)->orderBy('date', 'desc')->get();
+            foreach($receipts as $r)
+                $elements->push($r);
+            $elements = $elements->sortByDesc('date');
+        }
+
+        $list_identifier = $request->input('list_identifier', 'invoice-list');
+        return view('commons.loadablelist', [
+            'identifier' => $list_identifier,
+            'items' => $elements,
+        ]);
     }
 }

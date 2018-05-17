@@ -52,6 +52,7 @@ Route::get('invoices/{id}/products', 'InvoicesController@products')->name('invoi
 Route::get('invoices/{id}/movements', 'InvoicesController@getMovements')->name('invoices.movements');
 Route::post('invoices/{id}/movements', 'InvoicesController@postMovements')->name('invoices.savemovements');
 Route::post('invoices/wire/{step}/{id}', 'InvoicesController@wiring');
+Route::get('invoices/search', 'InvoicesController@search');
 Route::get('invoices/{id}/header', 'InvoicesController@objhead');
 
 Route::get('receipt/{id}/header', 'ReceiptsController@objhead')->name('receipt.objhead');
