@@ -38,12 +38,16 @@
                 @foreach($receipt->bookings as $booking)
                     @foreach($booking->products as $product)
                         @php
+
                         list($product_total, $product_total_tax) = $product->deliveredTaxedValue();
 
-                        if (!isset($rates[$product->product->vat_rate_id]))
-                            $rates[$product->product->vat_rate_id] = 0;
+                        if ($product->product->vat_rate_id != null) {
+                            if (!isset($rates[$product->product->vat_rate_id]))
+                                $rates[$product->product->vat_rate_id] = 0;
 
-                        $rates[$product->product->vat_rate_id] += $product_total_tax;
+                            $rates[$product->product->vat_rate_id] += $product_total_tax;
+                        }
+
                         $grand_total += $product_total + $product_total_tax;
 
                         @endphp
