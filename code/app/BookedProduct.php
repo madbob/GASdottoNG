@@ -35,6 +35,14 @@ class BookedProduct extends Model
 
     public function getSlugID()
     {
+        /*
+            Versioni di MySQL precedente alla 5.7.7 permettono chiavi primarie
+            di lunghezza limitata, ma essendo gli ID dei prodotti prenotati una
+            combinazione di nome del fornitore, nome del prodotto ed altri
+            parametri, possono risultare molto lunghi.
+            Pertanto qui, se superano una certa soglia, vengono "accorciati"
+            calcolandone l'hash MD5 (almeno della parte meno significativa)
+        */
         $string = sprintf('%s::%s', $this->booking->id, $this->product->id);
         if (strlen($string) > 180)
             $string = sprintf('%s::%s', $this->booking->id, md5($this->product->id));
