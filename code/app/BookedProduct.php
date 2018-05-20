@@ -35,7 +35,10 @@ class BookedProduct extends Model
 
     public function getSlugID()
     {
-        return sprintf('%s::%s', $this->booking->id, $this->product->id);
+        $string = sprintf('%s::%s', $this->booking->id, $this->product->id);
+        if (strlen($string) > 180)
+            $string = sprintf('%s::%s', $this->booking->id, md5($this->product->id));
+        return $string;
     }
 
     private function fixQuantity($attribute, $rectify)

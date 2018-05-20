@@ -14,8 +14,8 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\CheckFees::class,
         \App\Console\Commands\CheckSystemNotifications::class,
         \App\Console\Commands\CloseOrders::class,
-        \App\Console\Commands\FixFinalPrices::class,
         \App\Console\Commands\EmptyMovements::class,
+        \App\Console\Commands\ExportSupplier::class,
     ];
 
     protected function schedule(Schedule $schedule)
