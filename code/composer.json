@@ -11,7 +11,7 @@
         "barryvdh/laravel-debugbar": "^3.1",
         "belphemur/laravel-gettext": "7.x",
         "devfactory/minify": "^1.0",
-        "doctrine/dbal": "^2.5",
+        "doctrine/dbal": "^2.7",
         "elibyy/tcpdf-laravel": "^5.4",
         "fideloper/proxy": "~4.0",
         "laravel/framework": "5.6.*",
