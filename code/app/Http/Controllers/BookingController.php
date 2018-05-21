@@ -23,6 +23,11 @@ class BookingController extends Controller
 
     public function index(Request $request)
     {
+        $user = Auth::user();
+        if ($user->can('supplier.book', null) == false) {
+            return $this->errorResponse(_i('Non autorizzato'));
+        }
+
         $orders = Aggregate::with('orders')->whereHas('orders', function($query) {
             $query->whereIn('status', ['open', 'closed']);
         })->get();

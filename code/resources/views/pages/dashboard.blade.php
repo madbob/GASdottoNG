@@ -29,36 +29,38 @@
 
 <div class="row">
     <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <p class="pull-right"><a target="_blank" href="{{ url('ordini.xml') }}"><img src="{{ asset('images/rss.png') }}"></a></p>
-                <h2 class="panel-title">{{ _i('Prenotazioni Aperte') }}</h2>
+        @if(Gate::check('supplier.book', null))
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <p class="pull-right"><a target="_blank" href="{{ url('ordini.xml') }}"><img src="{{ asset('images/rss.png') }}"></a></p>
+                    <h2 class="panel-title">{{ _i('Prenotazioni Aperte') }}</h2>
+                </div>
+                <div class="panel-body">
+                    @if(count($opened) == 0)
+                        <div class="alert alert-info" role="alert">
+                            {{ _i('Non ci sono prenotazioni aperte.') }}
+                        </div>
+                    @else
+                        @include('order.homelist', ['orders' => $opened])
+                    @endif
+                </div>
             </div>
-            <div class="panel-body">
-                @if(count($opened) == 0)
-                    <div class="alert alert-info" role="alert">
-                        {{ _i('Non ci sono prenotazioni aperte.') }}
-                    </div>
-                @else
-                    @include('order.homelist', ['orders' => $opened])
-                @endif
-            </div>
-        </div>
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h2 class="panel-title">{{ _i('Ordini in Consegna') }}</h2>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">{{ _i('Ordini in Consegna') }}</h2>
+                </div>
+                <div class="panel-body">
+                    @if(count($shipping) == 0)
+                        <div class="alert alert-info" role="alert">
+                            {{ _i('Non ci sono ordini in consegna.') }}
+                        </div>
+                    @else
+                        @include('order.homelist', ['orders' => $shipping])
+                    @endif
+                </div>
             </div>
-            <div class="panel-body">
-                @if(count($shipping) == 0)
-                    <div class="alert alert-info" role="alert">
-                        {{ _i('Non ci sono ordini in consegna.') }}
-                    </div>
-                @else
-                    @include('order.homelist', ['orders' => $shipping])
-                @endif
-            </div>
-        </div>
+        @endif
     </div>
 
     <div class="col-md-6">
