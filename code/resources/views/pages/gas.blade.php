@@ -193,10 +193,11 @@
                                         {!! _i("Popolando questi campi verrà attivata l'emissione delle fatture nei confronti degli utenti che effettuano prenotazioni. Le fatture saranno emesse al momento del salvataggio o della consegna della prenotazione.") !!}
                                     </p>
 
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->business_name', 'label' => 'Ragione Sociale'])
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->taxcode', 'label' => 'Codice Fiscale'])
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->vat', 'label' => 'Partita IVA'])
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->address', 'label' => 'Indirizzo'])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->business_name', 'label' => _i('Ragione Sociale')])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->taxcode', 'label' => _i('Codice Fiscale')])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->vat', 'label' => _i('Partita IVA')])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->address', 'label' => _i('Indirizzo')])
+                                    @include('commons.numberfield', ['obj' => $gas, 'name' => 'extra_invoicing->invoices_counter', 'label' => 'Contatore Fatture', 'help_text' => _i('Modifica questo parametro con cautela!')])
                                 </div>
 
                                 <div class="col-md-12">

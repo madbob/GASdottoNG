@@ -1,6 +1,10 @@
 <html>
     <body>
         <p>
+            @if(localFilePath($receipt->user->gas, 'logo') != null)
+                <img src="{{ localFilePath($receipt->user->gas, 'logo') }}" style="width: 150px"><br>
+            @endif
+
             <?php $gas_data = $receipt->user->gas->extra_invoicing ?>
             {{ $gas_data['business_name'] }}<br>
             @if(!empty($gas_data['address']))

@@ -1,5 +1,16 @@
 <?php
 
+function localFilePath($obj, $field)
+{
+    if (!empty($obj->$field)) {
+        $path = gas_storage_path($obj->$field);
+        if (file_exists($path)) {
+            return $path;
+        }
+    }
+    return null;
+}
+
 function saveFile($file, $obj, $field)
 {
     $filename = str_random(30);

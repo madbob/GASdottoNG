@@ -341,10 +341,39 @@ class InvoicesController extends Controller
             $elements = $elements->sortByDesc('date');
         }
 
-        $list_identifier = $request->input('list_identifier', 'invoice-list');
-        return view('commons.loadablelist', [
-            'identifier' => $list_identifier,
-            'items' => $elements,
-        ]);
+        $format = $request->input('format', 'none');
+
+        if ($format == 'none') {
+            $list_identifier = $request->input('list_identifier', 'invoice-list');
+            return view('commons.loadablelist', [
+                'identifier' => $list_identifier,
+                'items' => $elements,
+                'legend' => (object)[
+                    'class' => $gas->hasFeature('extra_invoicing') ? ['Invoice', 'Receipt'] : 'Invoice'
+                ],
+            ]);
+        }
+        else if ($format == 'csv') {
+            $filename = _i('Esportazione fatture GAS %s.csv', date('d/m/Y'));
+            $headers = [_i('Tipo'), _i('Da/A'), _i('Data'), _i('Numero'), _i('Imponibile'), _i('IVA')];
+            return output_csv($filename, $headers, $elements, function($invoice) {
+                $row = [];
+
+                if (get_class($invoice) == 'App\Invoice') {
+                    $row[] = _i('Ricevuta');
+                    $row[] = $invoice->supplier->printableName();
+                }
+                else {
+                    $row[] = _i('Inviata');
+                    $row[] = $invoice->user->printableName();
+                }
+
+                $row[] = $invoice->date;
+                $row[] = $invoice->number;
+                $row[] = $invoice->total;
+                $row[] = $invoice->total_vat;
+                return $row;
+            });
+        }
     }
 }

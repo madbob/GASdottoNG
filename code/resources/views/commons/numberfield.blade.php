@@ -1,3 +1,11 @@
+<?php
+
+if (!isset($help_text)) {
+    $help_text = '';
+}
+
+?>
+
 <div class="form-group">
     @if($squeeze == false)
         <label for="{{ $prefix . $name }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
@@ -18,5 +26,9 @@
             @endif
 
             autocomplete="off">
+
+        @if(!empty($help_text))
+            <span class="help-block">{{ $help_text }}</span>
+        @endif
     </div>
 </div>

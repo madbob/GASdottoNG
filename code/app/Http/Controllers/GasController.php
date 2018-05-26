@@ -68,7 +68,7 @@ class GasController extends Controller
         switch($group) {
             case 'general':
                 if ($request->hasFile('logo')) {
-                    saveFile($request->file($field), $gas, 'logo');
+                    saveFile($request->file('logo'), $gas, 'logo');
                 }
 
                 $gas->name = $request->input('name');
@@ -103,6 +103,11 @@ class GasController extends Controller
                 $invoicing_info['taxcode'] = $request->input('extra_invoicing->taxcode');
                 $invoicing_info['vat'] = $request->input('extra_invoicing->vat');
                 $invoicing_info['address'] = $request->input('extra_invoicing->address');
+
+                $reset_counter = $request->input('extra_invoicing->invoices_counter');
+                if (!empty($reset_counter))
+                    $invoicing_info['invoices_counter'] = $reset_counter;
+
                 $gas->setConfig('extra_invoicing', $invoicing_info);
 
                 break;

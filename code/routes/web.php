@@ -52,11 +52,11 @@ Route::get('invoices/{id}/products', 'InvoicesController@products')->name('invoi
 Route::get('invoices/{id}/movements', 'InvoicesController@getMovements')->name('invoices.movements');
 Route::post('invoices/{id}/movements', 'InvoicesController@postMovements')->name('invoices.savemovements');
 Route::post('invoices/wire/{step}/{id}', 'InvoicesController@wiring');
-Route::get('invoices/search', 'InvoicesController@search');
+Route::get('invoices/search', 'InvoicesController@search')->name('invoices.search');
 Route::get('invoices/{id}/header', 'InvoicesController@objhead');
 
-Route::get('receipt/{id}/header', 'ReceiptsController@objhead')->name('receipt.objhead');
-Route::get('receipt/{id}/download', 'ReceiptsController@download')->name('receipt.download');
+Route::get('receipts/{id}/header', 'ReceiptsController@objhead')->name('receipts.objhead');
+Route::get('receipts/{id}/download', 'ReceiptsController@download')->name('receipts.download');
 
 Route::get('categories/{id}/header', 'CategoriesController@objhead')->name('categories.objhead');
 
@@ -123,7 +123,7 @@ Route::resource('suppliers', 'SuppliersController');
 Route::resource('products', 'ProductsController');
 Route::resource('vatrates', 'VatRatesController');
 Route::resource('invoices', 'InvoicesController');
-Route::resource('receipt', 'ReceiptsController');
+Route::resource('receipts', 'ReceiptsController');
 Route::resource('deliveries', 'DeliveriesController');
 Route::resource('categories', 'CategoriesController');
 Route::resource('measures', 'MeasuresController');

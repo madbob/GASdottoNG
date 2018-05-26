@@ -24,7 +24,7 @@ foreach($aggregate->orders as $order) {
                 <a href="{{ url('booking/' . $aggregate->id . '/user/' . $user->id . '/document') }}" class="list-group-item">{{ _i('Dettaglio Consegne') }}</a>
                 @if($currentgas->hasFeature('extra_invoicing'))
                     @foreach(App\Receipt::retrieveByAggregateUser($aggregate, $user) as $receipt)
-                        <a href="{{ route('receipt.download', $receipt->id) }}" class="list-group-item">{{ _i('Fattura') }}</a>
+                        <a href="{{ route('receipts.download', $receipt->id) }}" class="list-group-item">{{ _i('Fattura') }}</a>
                     @endforeach
                 @endif
             </div>

@@ -51,6 +51,9 @@ class Receipt extends Model
                 $this->cache_value['total'] += $book[0];
                 $this->cache_value['total_tax'] += $book[1];
             }
+
+            $this->cache_value['total'] = round($this->cache_value['total'], 2);
+            $this->cache_value['total_tax'] = round($this->cache_value['total_tax'], 2);
         }
     }
 

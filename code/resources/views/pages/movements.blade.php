@@ -129,23 +129,6 @@
             <div role="tabpanel" class="tab-pane" id="invoices-tab">
                 <div class="row">
                     <div class="col-md-12">
-                        <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#invoiceSearch">{{ _i('Ricerca') }}</button>
-
-                        <div class="collapse list-filter" id="invoiceSearch" data-list-target="#wrapper-invoice-list">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="well">
-                                        <form class="form-horizontal" data-toggle="validator" method="GET" action="{{ url('invoices/search') }}">
-                                            @include('commons.genericdaterange')
-                                        </form>
-
-                                        <button class="btn btn-danger pull-right">{{ _i('Chiudi') }}</button>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         @can('movements.admin', $currentgas)
                             @include('commons.addingbutton', [
                                 'template' => 'invoice.base-edit',
@@ -156,13 +139,32 @@
                             ])
                         @endcan
                     </div>
+
+                    <div class="clearfix"></div>
+                    <hr/>
                 </div>
 
-                <div class="clearfix"></div>
-                <hr/>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-horizontal form-filler" data-action="{{ route('invoices.search') }}" data-toggle="validator" data-fill-target="#invoices-in-range">
+                            @include('commons.genericdaterange', [
+                                'start_date' => strtotime('-1 months'),
+                            ])
+
+                            <div class="form-group">
+                                <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
+                                    <button type="submit" class="btn btn-success">{{ _i('Ricerca') }}</button>
+                                    <a href="{{ route('invoices.search', ['format' => 'csv']) }}" class="btn btn-default form-filler-download">{{ _i('Esporta CSV') }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
 
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12" id="invoices-in-range">
                         @include('commons.loadablelist', [
                             'identifier' => 'invoice-list',
                             'items' => $invoices,
