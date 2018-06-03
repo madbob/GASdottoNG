@@ -317,25 +317,31 @@ class InvoicesController extends Controller
 
     public function search(Request $request)
     {
-        if (isset($request['startdate'])) {
-            $start = decodeDate($request['startdate']);
-        }
-        else {
-            $start = date('Y-m-d', strtotime('-1 months'));
-        }
+        $start = decodeDate($request->input('startdate'));
+        $end = decodeDate($request->input('enddate'));
+        $supplier_id = $request->input('supplier_id');
 
-        if (isset($request['enddate'])) {
-            $end = decodeDate($request['enddate']);
-        }
-        else {
-            $end = date('Y-m-d');
-        }
+        $query = Invoice::where('date', '>=', $start)->where('date', '<=', $end)->orderBy('date', 'desc');
 
-        $elements = Invoice::where('date', '>=', $start)->where('date', '<=', $end)->orderBy('date', 'desc')->get();
+        if ($supplier_id != '0')
+            $query->where('supplier_id', $supplier_id);
+
+        $elements = $query->get();
 
         $gas = Auth::user()->gas;
         if ($gas->hasFeature('extra_invoicing')) {
-            $receipts = Receipt::where('date', '>=', $start)->where('date', '<=', $end)->orderBy('date', 'desc')->get();
+            $query = Receipt::where('date', '>=', $start)->where('date', '<=', $end)->orderBy('date', 'desc');
+
+            if ($supplier_id != '0') {
+                $query->whereHas('bookings', function($query) use ($supplier_id) {
+                    $query->whereHas('order', function($query) use ($supplier_id) {
+                        $query->where('supplier_id', $supplier_id);
+                    });
+                });
+            }
+
+            $receipts = $query->get();
+
             foreach($receipts as $r)
                 $elements->push($r);
             $elements = $elements->sortByDesc('date');

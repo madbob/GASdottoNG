@@ -151,6 +151,16 @@
                                 'start_date' => strtotime('-1 months'),
                             ])
 
+                            @include('commons.selectobjfield', [
+                                'obj' => null,
+                                'name' => 'supplier_id',
+                                'label' => _i('Fornitore'),
+                                'objects' => $currentgas->suppliers,
+                                'extra_selection' => [
+                                    '0' => _i('Nessuno')
+                                ]
+                            ])
+
                             <div class="form-group">
                                 <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
                                     <button type="submit" class="btn btn-success">{{ _i('Ricerca') }}</button>

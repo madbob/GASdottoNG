@@ -46,7 +46,7 @@ class Invoice extends Model
 
     public function getNameAttribute()
     {
-        return sprintf('%s - %s', $this->supplier->name, $this->number);
+        return sprintf('%s - %s - %s', $this->supplier->name, $this->number, printableDate($this->date));
     }
 
     public static function statuses()

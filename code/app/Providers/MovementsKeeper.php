@@ -32,7 +32,7 @@ class MovementsKeeper extends ServiceProvider
         }
         else {
             if ($metadata->sender_type != $movement->sender_type) {
-                Log::error(_i('Movimento: sender_type non coerente (%s != %s)', [$metadata->sender_type, $movement->sender_type]));
+                Log::error(_i('Movimento %d: sender_type non coerente (%s != %s)', [$movement->id, $metadata->sender_type, $movement->sender_type]));
                 return false;
             }
         }
@@ -43,7 +43,7 @@ class MovementsKeeper extends ServiceProvider
         }
         else {
             if ($metadata->target_type != $movement->target_type) {
-                Log::error(_i('Movimento: target_type non coerente (%s != %s)', [$metadata->target_type, $movement->target_type]));
+                Log::error(_i('Movimento %d: target_type non coerente (%s != %s)', [$movement->id, $metadata->target_type, $movement->target_type]));
                 return false;
             }
         }
@@ -57,7 +57,7 @@ class MovementsKeeper extends ServiceProvider
             }
         }
         if ($found == false) {
-            Log::error(_i('Movimento: metodo ' . $movement->method . ' non permesso su tipo ' . $movement->type));
+            Log::error(_i('Movimento %d: metodo %s non permesso su tipo %s', [$movement->id, $movement->method, $movement->type]));
             return false;
         }
 
