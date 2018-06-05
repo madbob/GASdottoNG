@@ -9,7 +9,7 @@ class CreateInvoicesTable extends Migration
     public function up()
     {
         Schema::create('invoices', function (Blueprint $table) {
-            $table->increments('id');
+            $table->string('id')->primary();
             $table->timestamps();
 
             $table->string('supplier_id');
@@ -27,7 +27,7 @@ class CreateInvoicesTable extends Migration
             $table->increments('id');
             $table->timestamps();
 
-            $table->integer('invoice_id')->unsigned();
+            $table->string('invoice_id');
             $table->string('order_id');
 
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
@@ -38,7 +38,7 @@ class CreateInvoicesTable extends Migration
             $table->increments('id');
             $table->timestamps();
 
-            $table->integer('invoice_id')->unsigned();
+            $table->string('invoice_id');
             $table->integer('movement_id')->unsigned();
 
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
