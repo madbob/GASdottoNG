@@ -184,7 +184,7 @@ class MovementsService extends BaseService
         $this->ensureAuth(['movements.admin' => 'gas']);
 
         DB::transaction(function() {
-            $current_date = date('Y-m-d');
+            $current_date = date('Y-m-d H:i:s');
             $index = 0;
 
             do {

@@ -4,13 +4,21 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Events\SluggableCreating;
 use App\GASModel;
 use App\PayableTrait;
 use App\CreditableTrait;
+use App\SluggableID;
 
 class Invoice extends Model
 {
-    use GASModel, PayableTrait, CreditableTrait;
+    use GASModel, PayableTrait, CreditableTrait, SluggableID;
+
+    public $incrementing = false;
+
+    protected $dispatchesEvents = [
+        'creating' => SluggableCreating::class
+    ];
 
     public static function commonClassName()
     {
@@ -69,6 +77,13 @@ class Invoice extends Model
                 'value' => 'payed',
             ]
         ];
+    }
+
+    /************************************************************ SluggableID */
+
+    public function getSlugID()
+    {
+        return sprintf('%s::%s', $this->supplier->id, $this->number);
     }
 
     /******************************************************** CreditableTrait */

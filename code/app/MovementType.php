@@ -197,8 +197,6 @@ class MovementType extends Model
                         */
                         'pre' => function (Movement $movement) {
                             if ($movement->target_type == 'App\Aggregate') {
-                                $debug = sprintf("Pagamento prenotazione: %s euro\n", $movement->amount);
-
                                 $total = $movement->amount;
                                 $aggregate = $movement->target;
                                 $user = $movement->sender;
@@ -214,18 +212,13 @@ class MovementType extends Model
                                 foreach ($aggregate->orders as $order) {
                                     $booking = $order->userBooking($user->id);
                                     if ($booking->exists == false) {
-                                        $debug .= sprintf("Prenotazione non esistente: %s %s\n", $order->id, $user->id);
                                         continue;
                                     }
 
-                                    $debug .= sprintf("Consegna %s %s\n", $order->id, $user->id);
-
                                     if (isset($handling_status->{$booking->id})) {
-                                        $debug .= sprintf("Informazioni prelevate dal contesto\n");
                                         $delivered = $handling_status->{$booking->id};
                                     }
                                     else {
-                                        $debug .= sprintf("Informazioni prelevate dalla prenotazione consegnata\n");
                                         $delivered = $booking->delivered;
                                     }
 
@@ -235,8 +228,6 @@ class MovementType extends Model
 
                                     $existing_movement = $booking->payment;
                                     if (is_null($existing_movement)) {
-                                        $debug .= sprintf("Creo nuovo movimento da %s euro\n", $delivered);
-
                                         $m = $movement->replicate();
                                         $m->target_id = $booking->id;
                                         $m->target_type = 'App\Booking';
@@ -250,7 +241,6 @@ class MovementType extends Model
                                         $m->load('target');
                                     }
                                     else {
-                                        $debug .= sprintf("Altero movimento esistente %s da %s a %s euro\n", $existing_movement->id, $existing_movement->amount, $delivered);
                                         $m = $existing_movement;
                                     }
 
@@ -271,8 +261,6 @@ class MovementType extends Model
                                     $m->amount += $total;
                                     $m->save();
                                 }
-
-                                Log::debug($debug);
 
                                 return 2;
                             }

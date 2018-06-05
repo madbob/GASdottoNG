@@ -106,11 +106,6 @@ class User extends Authenticatable
         return $this->hasMany('App\Booking')->orderBy('created_at', 'desc');
     }
 
-    public function getSlugID()
-    {
-        return $this->username;
-    }
-
     public function scopeEnabled($query)
     {
         return $query->whereNull('deleted_at');
@@ -259,6 +254,13 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+    /************************************************************ SluggableID */
+
+    public function getSlugID()
+    {
+        return $this->username;
     }
 
     /******************************************************** CreditableTrait */
