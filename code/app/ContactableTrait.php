@@ -97,4 +97,15 @@ trait ContactableTrait
 
         return $tokens;
     }
+
+    public function getContactsByType($type)
+    {
+        $ret = [];
+
+        $contacts = $this->contacts()->where('type', $type)->get();
+        foreach($contacts as $contact)
+            $ret[] = $contact->value;
+
+        return $ret;
+    }
 }

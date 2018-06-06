@@ -256,6 +256,37 @@ class User extends Authenticatable
         $this->notify(new ResetPasswordNotification($token));
     }
 
+    public static function formattableColumns()
+    {
+        return [
+            'firstname' => (object) [
+                'name' => _i('Nome'),
+                'checked' => true,
+            ],
+            'lastname' => (object) [
+                'name' => _i('Cognome'),
+                'checked' => true,
+            ],
+            'username' => (object) [
+                'name' => _i('Username'),
+            ],
+            'email' => (object) [
+                'name' => _i('E-Mail'),
+                'checked' => true,
+            ],
+            'phone' => (object) [
+                'name' => _i('Telefono'),
+                'checked' => true,
+            ],
+            'address' => (object) [
+                'name' => _i('Indirizzo'),
+            ],
+            'taxcode' => (object) [
+                'name' => _i('Codice Fiscale'),
+            ],
+        ];
+    }
+
     /************************************************************ SluggableID */
 
     public function getSlugID()
