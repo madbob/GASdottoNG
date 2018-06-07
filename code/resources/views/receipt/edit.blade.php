@@ -27,7 +27,6 @@
     </div>
 
     @include('commons.formbuttons', [
-        'no_delete' => true,
         'left_buttons' => [
             (object)[
                 'url' => route('receipts.download', $receipt->id),

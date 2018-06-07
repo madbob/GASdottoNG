@@ -109,7 +109,7 @@ class InvoicesController extends Controller
         $invoice = Invoice::findOrFail($id);
 
         if ($invoice->payment != null)
-        $invoice->deleteMovements();
+            $invoice->deleteMovements();
         $invoice->delete();
 
         return $this->successResponse();

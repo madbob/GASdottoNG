@@ -57,6 +57,20 @@ class ReceiptsController extends Controller
         ]);
     }
 
+    public function destroy($id)
+    {
+        DB::beginTransaction();
+
+        $user = Auth::user();
+        if ($user->can('movements.admin', $user->gas) == false) {
+            return $this->errorResponse(_i('Non autorizzato'));
+        }
+
+        Receipt::findOrFail($id)->delete();
+
+        return $this->successResponse();
+    }
+
     public function download($id)
     {
         $receipt = Receipt::findOrFail($id);
