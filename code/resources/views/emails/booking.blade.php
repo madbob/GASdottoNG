@@ -15,12 +15,14 @@
 
         <tbody>
             @foreach($b->products as $product)
-                <?php $variable = $variable || $product->product->variable ?>
-                <tr>
-                    <td>{{ $product->product->printableName() }}</td>
-                    <td>{{ $product->quantity }} {{ $product->product->printableMeasure() }}</td>
-                    <td>{{ printablePriceCurrency($product->quantityValue()) }}</td>
-                </tr>
+                @if($product->quantity != 0)
+                    <?php $variable = $variable || $product->product->variable ?>
+                    <tr>
+                        <td>{{ $product->product->printableName() }}</td>
+                        <td>{{ $product->quantity }} {{ $product->product->printableMeasure() }}</td>
+                        <td>{{ printablePriceCurrency($product->quantityValue()) }}</td>
+                    </tr>
+                @endif
             @endforeach
 
             <tr>
@@ -46,12 +48,14 @@
 
                 <tbody>
                     @foreach($fb->products as $product)
-                        <?php $variable = $variable || $product->product->variable ?>
-                        <tr>
-                            <td>{{ $product->product->printableName() }}</td>
-                            <td>{{ $product->quantity }} {{ $product->product->printableMeasure() }}</td>
-                            <td>{{ printablePriceCurrency($product->quantityValue()) }}</td>
-                        </tr>
+                        @if($product->quantity != 0)
+                            <?php $variable = $variable || $product->product->variable ?>
+                            <tr>
+                                <td>{{ $product->product->printableName() }}</td>
+                                <td>{{ $product->quantity }} {{ $product->product->printableMeasure() }}</td>
+                                <td>{{ printablePriceCurrency($product->quantityValue()) }}</td>
+                            </tr>
+                        @endif
                     @endforeach
 
                     <tr>
