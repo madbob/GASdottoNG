@@ -66,13 +66,6 @@ class MovementsController extends BackedController
 
                 if ($format == 'none') {
                     if ($request->input('generic_target_id', '0') != '0') {
-                        $target_id = $request->input('generic_target_id');
-                        $target_type = $request->input('generic_target_type');
-                        $generic_target = $target_type::find($target_id);
-                        if ($generic_target) {
-                            $data['main_target'] = $generic_target;
-                        }
-
                         return view('movement.bilist', $data);
                     }
                     else {

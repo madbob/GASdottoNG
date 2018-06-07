@@ -43,7 +43,7 @@ class Movement extends Model
                 $user = Auth::user();
                 if (is_null($user))
                     return;
-                $query->where('gas_id', $user->gas->id);
+                $query->withTrashed()->where('gas_id', $user->gas->id);
             });
         });
     }

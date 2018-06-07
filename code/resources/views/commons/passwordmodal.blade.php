@@ -22,7 +22,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
-                    <button type="submit" class="btn btn-success">{{ _i('Salva') }}</button>
+                    <button type="submit" class="btn btn-success">{{ _i('Conferma') }}</button>
                 </div>
             </form>
         </div>

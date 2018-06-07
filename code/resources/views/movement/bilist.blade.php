@@ -1,17 +1,3 @@
-<?php
-
-if(isset($main_target) == false) {
-    $main_target_id = null;
-    $main_target_class = null;
-}
-else {
-    $main_target_id = $main_target->id;
-    $main_target_class = get_class($main_target);
-}
-
-
-?>
-
 @if($movements->count() == 0)
     <div class="alert alert-info" role="alert">
         {{ _i('Non ci sono elementi da visualizzare.') }}
@@ -40,24 +26,10 @@ else {
                 $reference = null;
                 $in = 0;
                 $out = 0;
-
-                /*
-                    Attenzione: qui si sceglie deliberatamente di non testare
-                    anche il target del movimento contabile, ma assumere che
-                    esso corrisponda con l'oggetto di riferimento per default.
-                    Questo per gestire in modo sommario i tipi di movimento che
-                    hanno come target un oggetto che fa riferimento ad un
-                    fornitore (ordini e prenotazioni), e far si che il tutto
-                    torni
-                */
-                if ($mov->sender_id == $main_target_id && $mov->sender_type == $main_target_class) {
-                    $out = $mov->amount;
+                $in = $mov->amount;
+                $reference = $mov->sender;
+                if ($reference == null)
                     $reference = $mov->target;
-                }
-                else {
-                    $in = $mov->amount;
-                    $reference = $mov->sender;
-                }
 
                 ?>
                 <tr>

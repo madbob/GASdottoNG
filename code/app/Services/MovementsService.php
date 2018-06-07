@@ -71,7 +71,12 @@ class MovementsService extends BaseService
         if (isset($request['generic_target_id']) && $request['generic_target_id'] != '0') {
             $target_id = $request['generic_target_id'];
             $target_type = $request['generic_target_type'];
-            $generic_target = $target_type::find($target_id);
+
+            if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($target_type)))
+                $generic_target = $target_type::where('id', $target_id)->withoutGlobalScopes()->withTrashed()->first();
+            else
+                $generic_target = $target_type::find($target_id);
+
             if ($generic_target) {
                 $query = $generic_target->queryMovements($query);
             }
