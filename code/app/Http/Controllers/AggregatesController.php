@@ -149,7 +149,8 @@ class AggregatesController extends OrdersController
                 $html = view('documents.aggregate_shipping', [
                     'aggregate' => $aggregate,
                     'bookings' => $aggregate->bookings,
-                    'products_source' => 'products_with_friends'
+                    'products_source' => 'products_with_friends',
+                    'shipping_place' => $request->input('shipping_place', 0)
                 ])->render();
 
                 $filename = sprintf('Dettaglio Consegne ordini %s.pdf', $names);

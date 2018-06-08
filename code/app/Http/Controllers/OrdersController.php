@@ -398,7 +398,17 @@ class OrdersController extends Controller
 
         switch ($type) {
             case 'shipping':
-                $html = view('documents.order_shipping', ['order' => $order])->render();
+                $shipping_place = $request->input('shipping_place', 0);
+                if ($shipping_place == 0) {
+                    $bookings = $order->bookings()->toplevel()->get();
+                }
+                else {
+                    $bookings = $order->bookings()->toplevel()->whereHas('user', function($query) use ($shipping_place) {
+                        $query->where('preferred_delivery_id', $shipping_place);
+                    })->get();
+                }
+
+                $html = view('documents.order_shipping', ['order' => $order, 'bookings' => $bookings])->render();
                 $title = _i('Dettaglio Consegne ordine %s presso %s', [$order->internal_number, $order->supplier->name]);
                 $filename = $title . '.pdf';
                 PDF::SetTitle($title);

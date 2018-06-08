@@ -13,6 +13,10 @@
                 @continue
             @endif
 
+            @if($shipping_place != 0 && $super_booking->user->preferred_delivery_id != $shipping_place)
+                @continue
+            @endif
+
             <?php $cell_value = 0 ?>
 
             <table border="1" style="width: 100%" cellpadding="5" nobr="true">

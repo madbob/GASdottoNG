@@ -4,7 +4,7 @@
 
         <hr/>
 
-        @foreach($order->bookings()->toplevel()->get() as $booking)
+        @foreach($bookings as $booking)
             <table border="1" style="width: 100%" cellpadding="5" nobr="true">
                 <tr>
                     <th colspan="3"><strong>{{ $booking->user->printableName() }}

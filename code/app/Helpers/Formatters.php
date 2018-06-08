@@ -262,6 +262,21 @@ function as_selectable($array, $value_callback, $label_callback)
     return $ret;
 }
 
+function as_choosable($array, $value_callback, $name_callback, $check_callback)
+{
+    $ret = [];
+
+    foreach($array as $i => $a) {
+        $ret[] = (object) [
+            'value' => $value_callback($i, $a),
+            'name' => $name_callback($i, $a),
+            'checked' => $check_callback($i, $a)
+        ];
+    }
+
+    return $ret;
+}
+
 function iban_split($iban, $field)
 {
     switch($field) {

@@ -106,6 +106,11 @@ class User extends Authenticatable
         return $this->hasMany('App\Booking')->orderBy('created_at', 'desc');
     }
 
+    public function shippingplace()
+    {
+        return $this->belongsTo('App\Delivery', 'preferred_delivery_id');
+    }
+
     public function scopeEnabled($query)
     {
         return $query->whereNull('deleted_at');

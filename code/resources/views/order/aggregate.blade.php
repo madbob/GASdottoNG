@@ -105,7 +105,7 @@ $panel_rand_wrap = rand();
                             </div>
                             <div class="col-md-4">
                                 <div class="list-group pull-right">
-                                    <a href="{{ url('aggregates/document/' . $aggregate->id . '/shipping') }}" class="list-group-item">{{ _i('Dettaglio Consegne Aggregato') }}</a>
+                                    <a href="#" class="list-group-item" data-toggle="modal" data-target="#shipping-products-aggregate-document-{{ $aggregate->id }}">{{ _i('Dettaglio Consegne Aggregato') }}</a>
                                 </div>
                             </div>
                         </div>
@@ -114,6 +114,47 @@ $panel_rand_wrap = rand();
                             'no_delete' => true
                         ])
                     </form>
+
+                    <div class="modal fade close-on-submit" id="shipping-products-aggregate-document-{{ $aggregate->id }}" tabindex="-1" role="dialog">
+                        <div class="modal-dialog modal-extra-lg" role="document">
+                            <div class="modal-content">
+                                <form class="form-horizontal direct-submit" method="GET" action="{{ url('aggregates/document/' . $aggregate->id . '/shipping') }}" data-toggle="validator" novalidate>
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title">{{ _i('Dettaglio Consegne Aggregato') }}</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            {{ _i("Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si trovano le informazioni relative alle singole prenotazioni di tutti gli ordini inclusi in questo aggregato.") }}
+                                        </p>
+
+                                        @if($currentgas->deliveries->isEmpty() == false)
+                                            @include('commons.radios', [
+                                                'name' => 'shipping_place',
+                                                'label' => _i('Luogo di Consegna'),
+                                                'labelsize' => 2,
+                                                'fieldsize' => 10,
+                                                'values' => array_merge(
+                                                    [(object)['value' => 0, 'name' => 'Tutti', 'checked' => true]],
+                                                    as_choosable($currentgas->deliveries, function($i, $a) {
+                                                        return $a->id;
+                                                    }, function($i, $a) {
+                                                        return $a->name;
+                                                    }, function($i, $a) {
+                                                        return false;
+                                                    })
+                                                )
+                                            ])
+                                        @endif
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+                                        <button type="submit" class="btn btn-success">{{ _i('Download') }}</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             @endif
 
