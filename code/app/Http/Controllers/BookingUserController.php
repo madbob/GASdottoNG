@@ -90,7 +90,8 @@ class BookingUserController extends BookingHandler
         $html = view('documents.aggregate_shipping', [
             'aggregate' => $aggregate,
             'bookings' => $bookings,
-            'products_source' => 'products'
+            'products_source' => 'products',
+            'shipping_place' => 0
         ])->render();
 
         $filename = sprintf('Dettaglio Consegne ordini %s.pdf', $names);
