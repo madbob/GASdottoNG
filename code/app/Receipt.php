@@ -9,6 +9,10 @@ use App\Events\SluggableCreating;
 use App\GASModel;
 use App\SluggableID;
 
+/*
+    Reminder: non dare per scontato che le fatture abbiano delle prenotazioni
+    collegate, può capitare che queste vengano rimosse
+*/
 class Receipt extends Model
 {
     use GASModel, SluggableID;
@@ -32,12 +36,22 @@ class Receipt extends Model
 
     public function getUserAttribute()
     {
-        return $this->bookings()->first()->user;
+        $first = $this->bookings()->first();
+        if ($first)
+            return $first->user;
+        else
+            return null;
     }
 
     public function getNameAttribute()
     {
-        return sprintf('%s - %s', $this->user->printableName(), $this->number);
+        $user = $this->user;
+        if ($user)
+            $user_name = $user->printableName();
+        else
+            $user_name = '???';
+
+        return sprintf('%s - %s', $user_name, $this->number);
     }
 
     private function calculateTotal()

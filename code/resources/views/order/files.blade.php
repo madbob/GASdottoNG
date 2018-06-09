@@ -30,7 +30,7 @@
                             'labelsize' => 2,
                             'fieldsize' => 10,
                             'values' => array_merge(
-                                [(object)['value' => 0, 'name' => 'Tutti', 'checked' => true]],
+                                [0 => (object)['name' => 'Tutti', 'checked' => true]],
                                 as_choosable($currentgas->deliveries, function($i, $a) {
                                     return $a->id;
                                 }, function($i, $a) {
