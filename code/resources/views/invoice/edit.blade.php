@@ -1,3 +1,7 @@
+<?php
+$rand = rand();
+?>
+
 <form class="form-horizontal main-form invoice-editor" method="PUT" action="{{ route('invoices.update', $invoice->id) }}">
     <div class="row">
         <div class="col-md-6">
@@ -89,7 +93,7 @@
 
                     @if($invoice->status != 'payed')
                         @can('movements.admin', $currentgas)
-                            <button class="btn btn-default" data-toggle="modal" data-target="#orders-invoice-{{ $invoice->id }}">{{ _i('Modifica Ordini') }}</button>
+                            <button class="btn btn-default" data-toggle="modal" data-target="#orders-invoice-{{ $rand }}">{{ _i('Modifica Ordini') }}</button>
 
                             @if($invoice->orders()->count() != 0)
                                 <button class="btn btn-default async-modal" data-target-url="{{ route('invoices.products', $invoice->id) }}">{{ _i('Verifica Contenuti') }}</button>
@@ -105,7 +109,7 @@
 </form>
 
 @can('movements.admin', $currentgas)
-    <div class="modal fade" id="orders-invoice-{{ $invoice->id }}" tabindex="-1" role="dialog">
+    <div class="modal fade" id="orders-invoice-{{ $rand }}" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-extra-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">

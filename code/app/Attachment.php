@@ -14,7 +14,10 @@ class Attachment extends Model
 
     public function attached()
     {
-        return $this->morphTo('target');
+        if ($this->target_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->target_type)))
+            return $this->morphTo('target')->withoutGlobalScopes()->withTrashed();
+        else
+            return $this->morphTo('target')->withoutGlobalScopes();
     }
 
     public function getPathAttribute()
