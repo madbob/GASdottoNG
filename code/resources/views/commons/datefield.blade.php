@@ -26,6 +26,7 @@ if ($value == 'Mai' && $mandatory)
                 class="date form-control"
                 name="{{ $prefix . $name }}"
                 value="{{ $value }}"
+                onkeydown="return false"
 
                 @if(isset($enforced_default))
                     data-default-value="{{ $enforced_default }}"

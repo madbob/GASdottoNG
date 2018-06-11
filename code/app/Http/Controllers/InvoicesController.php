@@ -38,6 +38,7 @@ class InvoicesController extends Controller
         $invoice->supplier_id = $request->input('supplier_id');
         $invoice->number = $request->input('number');
         $invoice->date = decodeDate($request->input('date'));
+        $invoice->notes = $request->input('notes');
         $invoice->total = $request->input('total');
         $invoice->total_vat = $request->input('total_vat');
         $invoice->save();
@@ -82,6 +83,8 @@ class InvoicesController extends Controller
             $invoice->number = $request->input('number');
         if ($request->has('date'))
             $invoice->date = decodeDate($request->input('date'));
+        if ($request->has('notes'))
+            $invoice->notes = $request->input('notes');
         if ($request->has('total'))
             $invoice->total = $request->input('total');
         if ($request->has('total_vat'))

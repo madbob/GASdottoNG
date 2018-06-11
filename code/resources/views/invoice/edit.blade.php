@@ -8,6 +8,12 @@ $rand = rand();
             @include('invoice.base-edit', ['invoice' => $invoice])
         </div>
         <div class="col-md-6">
+            @include('commons.textarea', [
+                'obj' => $invoice,
+                'name' => 'notes',
+                'label' => _i('Note')
+            ])
+
             @include('commons.selectenumfield', [
                 'obj' => $invoice,
                 'name' => 'status',
