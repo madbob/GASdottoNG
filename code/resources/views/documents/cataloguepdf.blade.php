@@ -14,7 +14,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($supplier->products as $product)
+                @foreach($supplier->products()->where('active', true)->get() as $product)
                 <tr>
                     <td width="40%">{{ $product->name }}</td>
                     <td width="20%">{{ $product->measure->printableName() }}</td>
