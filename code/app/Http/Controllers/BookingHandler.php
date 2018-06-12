@@ -59,6 +59,9 @@ class BookingHandler extends Controller
 
             foreach ($order->products as $product) {
                 $quantity = $request->input($product->id, 0);
+                if (empty($quantity))
+                    $quantity = 0;
+
                 $booked = $booking->getBooked($product, true);
 
                 if ($quantity != 0) {
@@ -66,7 +69,7 @@ class BookingHandler extends Controller
 
                     if ($product->variants->isEmpty() == false) {
                         $quantity = 0;
-                        $quantities = $request->input('variant_quantity_'.$product->id);
+                        $quantities = $request->input('variant_quantity_' . $product->id);
 
                         $values = [];
                         foreach ($product->variants as $variant) {

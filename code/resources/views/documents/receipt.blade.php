@@ -25,12 +25,24 @@
         </p>
 
         <p>
-            <strong>Fattura {{ $receipt->number }} del {{ date('d/m/Y', strtotime($receipt->date)) }}</strong>
+            &nbsp;
+        </p>
+
+        <p>
+            <strong>Ricevuta Fiscale {{ $receipt->number }} del {{ date('d/m/Y', strtotime($receipt->date)) }}</strong>
         </p>
 
         <hr/>
 
         <table border="1" style="width: 100%" cellpadding="5">
+            <thead>
+                <tr>
+                    <th width="55%"><strong>{{ _i('Prodotto') }}</strong></th>
+                    <th width="15%"><strong>{{ _i('Quantità') }}</strong></th>
+                    <th width="15%"><strong>{{ _i('Unità Misura') }}</strong></th>
+                    <th width="15%"><strong>{{ _i('Prezzo') }}</strong></th>
+                </tr>
+            </thead>
             <tbody>
                 @php
 
@@ -57,22 +69,32 @@
                         @endphp
 
                         <tr>
-                            <td>{{ $product->product->name }}</td>
-                            <td>{{ printablePriceCurrency($product_total) }}</td>
+                            <td width="55%">{{ $product->product->name }}</td>
+                            <td width="15%">{{ $product->true_delivered }}</td>
+                            <td width="15%">{{ $product->product->measure->printableName() }}</td>
+                            <td width="15%">{{ printablePriceCurrency($product_total) }}</td>
                         </tr>
                     @endforeach
                 @endforeach
+            </tbody>
+        </table>
 
+        <p>
+            &nbsp;
+        </p>
+
+        <table border="0" style="width: 100%" cellpadding="5">
+            <tbody>
                 @foreach($rates as $id => $total)
                     <tr>
-                        <td>{{ _i('IVA %s%%', App\VatRate::findOrFail($id)->percentage) }}</td>
-                        <td>{{ printablePriceCurrency($total) }}</td>
+                        <td width="85%">{{ _i('IVA %s%%', App\VatRate::findOrFail($id)->percentage) }}</td>
+                        <td width="15%">{{ printablePriceCurrency($total) }}</td>
                     </tr>
                 @endforeach
 
                 <tr>
-                    <td><strong>{{ _i('Totale') }}</strong></td>
-                    <td><strong>{{ printablePriceCurrency($grand_total) }}</strong></td>
+                    <td width="85%"><strong>{{ _i('Totale') }}</strong></td>
+                    <td width="15%"><strong>{{ printablePriceCurrency($grand_total) }}</strong></td>
                 </tr>
             </tbody>
         </table>
