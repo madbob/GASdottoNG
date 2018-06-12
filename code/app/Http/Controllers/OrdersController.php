@@ -268,7 +268,6 @@ class OrdersController extends Controller
         DB::beginTransaction();
 
         $order = Order::findOrFail($id);
-
         if ($request->user()->can('supplier.orders', $order->supplier) == false) {
             return $this->errorResponse(_i('Non autorizzato'));
         }
@@ -399,7 +398,7 @@ class OrdersController extends Controller
         switch ($type) {
             case 'shipping':
                 $shipping_place = $request->input('shipping_place', 0);
-                if ($shipping_place == 0) {
+                if ($shipping_place == '0') {
                     $bookings = $order->bookings()->toplevel()->get();
                 }
                 else {

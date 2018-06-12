@@ -13,7 +13,7 @@
                 @continue
             @endif
 
-            @if($shipping_place != 0 && $super_booking->user->preferred_delivery_id != $shipping_place)
+            @if($shipping_place != '0' && $super_booking->user->preferred_delivery_id != $shipping_place)
                 @continue
             @endif
 
