@@ -97,15 +97,6 @@ class Supplier extends Model
             return $query;
     }
 
-    public function getAggregatesAttribute()
-    {
-        $supplier = $this;
-
-        return Aggregate::whereHas('orders', function ($query) use ($supplier) {
-            $query->whereIn('id', $supplier->orders->pluck('id'))->orderBy('end', 'desc');
-        });
-    }
-
     public function getDisplayURL()
     {
         return Illuminate\Routing\UrlGenerator::action('SuppliersController@show');

@@ -136,7 +136,7 @@ class UsersController extends BackedController
         $start = decodeDate($request->input('startdate'));
         $end = decodeDate($request->input('enddate'));
         $orders = $this->getOrders(Auth::user()->id, $supplier_id, $start, $end);
-        return view('commons.orderslist', ['orders' => $orders, 'no_legend' => true]);
+        return view('commons.orderslist', ['orders' => $orders]);
     }
 
     public function show(Request $request, $id)

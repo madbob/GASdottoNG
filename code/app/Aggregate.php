@@ -51,6 +51,27 @@ class Aggregate extends Model implements Feedable
         return $this->hasMany('App\Order')->with('supplier')->with('products')->orderBy('end', 'desc');
     }
 
+    public function scopeSupplier($query, $supplier_id)
+    {
+        $query->whereHas('orders', function ($query) use ($supplier_id) {
+            $query->where('supplier_id', '=', $supplier_id);
+        });
+    }
+
+    public static function easyFilter($supplier, $startdate, $enddate)
+    {
+        $user = Auth::user();
+        $supplier_id = $supplier->id;
+        $everything = ($user->can('supplier.orders', $supplier) || $user->can('supplier.shippings', $supplier));
+
+        return self::whereHas('orders', function ($query) use ($supplier_id, $startdate, $enddate, $everything) {
+            $query->where('supplier_id', '=', $supplier_id)->where('start', '>=', $startdate)->where('end', '<=', $enddate);
+            if ($everything == false) {
+                $query->whereIn('status', ['open', 'shipped', 'archived']);
+            }
+        })->get();
+    }
+
     public function getStatusAttribute()
     {
         $priority = ['suspended', 'open', 'closed', 'shipped', 'archived'];

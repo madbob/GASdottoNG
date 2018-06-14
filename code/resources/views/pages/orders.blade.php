@@ -57,7 +57,7 @@
                 </div>
             </div>
 
-            <div class="collapse list-filter" id="orderSearch" data-list-target="#wrapper-order-list">
+            <div class="collapse list-filter" id="orderSearch" data-list-target="#main-order-list">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="well">
@@ -87,7 +87,7 @@
 <hr/>
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12" id="main-order-list">
         @include('commons.loadablelist', [
             'identifier' => 'order-list',
             'items' => $orders,

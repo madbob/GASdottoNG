@@ -1239,7 +1239,7 @@ $(document).ready(function() {
             dataType: 'html',
 
             success: function(data) {
-                target.replaceWith(data);
+                target.empty().append(data);
             }
         });
 
@@ -1260,19 +1260,14 @@ $(document).ready(function() {
 
         panel.collapse('hide');
 
-        var data = {};
-        form.find('.enforce_filter').each(function() {
-            data[$(this).attr('name')] = $(this).val();
-        });
-
         $.ajax({
             method: form.attr('method'),
             url: form.attr('action'),
-            data: data,
-            dataType: 'html',
+            data: {},
+            dataType: 'HTML',
 
             success: function(data) {
-                target.replaceWith(data);
+                target.empty().append(data);
             }
         });
     });

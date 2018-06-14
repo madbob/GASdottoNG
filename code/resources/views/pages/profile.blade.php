@@ -148,11 +148,11 @@
             @endif
 
             @if($user->can('supplier.book'))
-                <div role="tabpanel" class="tab-pane list-filter {{ $active_tab == 'bookings' ? 'active' : '' }}" id="bookings" data-list-target="#wrapper-booking-list">
+                <div role="tabpanel" class="tab-pane {{ $active_tab == 'bookings' ? 'active' : '' }}" id="bookings">
                     <br>
                     <div class="row">
                         <div class="col-md-6">
-                            <form class="form-horizontal" data-toggle="validator" method="GET" action="{{ url('users/searchorders') }}">
+                            <div class="form-horizontal form-filler" data-action="{{ url('users/searchorders') }}" data-toggle="validator" data-fill-target="#user-booking-list">
                                 @include('commons.selectobjfield', [
                                     'obj' => null,
                                     'name' => 'supplier_id',
@@ -165,12 +165,18 @@
                                 ])
 
                                 @include('commons.genericdaterange')
-                            </form>
+
+                                <div class="form-group">
+                                    <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
+                                        <button type="submit" class="btn btn-success">{{ _i('Ricerca') }}</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12" id="user-booking-list">
                             @include('commons.orderslist', ['orders' => $booked_orders])
                         </div>
                     </div>

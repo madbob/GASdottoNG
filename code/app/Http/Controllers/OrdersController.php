@@ -72,17 +72,16 @@ class OrdersController extends Controller
             }
         }
 
+        usort($orders, function($a, $b) {
+            return strcmp($a->shipping, $b->shipping);
+        });
+
         return $orders;
     }
 
     public function index()
     {
         $orders = $this->defaultOrders();
-
-        usort($orders, function($a, $b) {
-            return strcmp($a->shipping, $b->shipping);
-        });
-
         return view('pages.orders', ['orders' => $orders]);
     }
 
@@ -340,31 +339,32 @@ class OrdersController extends Controller
         $supplier_id = $request->input('supplier_id');
 
         if (empty($supplier_id)) {
+            $supplier = null;
             $orders = $this->defaultOrders();
         }
         else {
+            $supplier = Supplier::find($supplier_id);
+            $everything = ($request->user()->can('supplier.orders', $supplier) || $request->user()->can('supplier.shippings', $supplier));
+
             if ($request->has('startdate') && $request->has('enddate')) {
                 $startdate = decodeDate($request->input('startdate'));
                 $enddate = decodeDate($request->input('enddate'));
-
-                $supplier = Supplier::find($supplier_id);
-                $everything = ($request->user()->can('supplier.orders', $supplier) || $request->user()->can('supplier.shippings', $supplier));
-
-                $orders = Aggregate::whereHas('orders', function ($query) use ($supplier_id, $startdate, $enddate, $everything) {
-                    $query->where('supplier_id', '=', $supplier_id)->where('start', '>=', $startdate)->where('end', '<=', $enddate);
-                    if ($everything == false) {
-                        $query->whereIn('status', ['open', 'shipped', 'archived']);
-                    }
-                })->get();
             }
             else {
-                $supplier = Supplier::find($supplier_id);
-                $orders = $supplier->aggregates->take(10)->get();
+                $startdate = date('Y-m-d', strtotime('-1 months'));
+                $enddate = date('9999-12-31');
             }
+
+            $orders = Aggregate::easyFilter($supplier, $startdate, $enddate);
         }
 
-        $list_identifier = $request->input('list_identifier', 'order-list');
-        return view('commons.loadablelist', ['identifier' => $list_identifier, 'items' => $orders]);
+        return view('commons.loadablelist', [
+            'identifier' => $supplier ? 'order-list-' . $supplier->id : 'order-list',
+            'items' => $orders,
+            'legend' => (object)[
+                'class' => 'Aggregate'
+            ],
+        ]);
     }
 
     private function sendDocumentMail($request, $temp_file_path)
