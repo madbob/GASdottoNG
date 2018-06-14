@@ -45,6 +45,12 @@ class SlugModel
             */
             $id = str_replace('.', '_', $id);
 
+            /*
+                Dagli ID sopprimiamo anche gli slash, che se concatenati agli
+                URL li rompono malamente
+            */
+            $id = str_replace('/', '_', $id);
+
             $event->sluggable->id = $id;
         }
     }
