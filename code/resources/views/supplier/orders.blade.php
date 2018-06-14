@@ -26,7 +26,7 @@
     <div class="col-md-12">
         @include('commons.loadablelist', [
             'identifier' => 'order-list-' . $supplier->id,
-            'items' => $supplier->aggregates->take(10)->get(),
+            'items' => $supplier->aggregates->orderBy('id', 'desc')->take(10)->get(),
             'legend' => (object)[
                 'class' => 'Aggregate'
             ],

@@ -24,12 +24,22 @@
                 <?php
 
                 $reference = null;
-                $in = 0;
-                $out = 0;
-                $in = $mov->amount;
-                $reference = $mov->sender;
-                if ($reference == null)
+
+                $peer_type = $mov->transationRole($main_target);
+                if ($peer_type == 'target')
+                    $reference = $mov->sender;
+                else if ($peer_type == 'sender')
                     $reference = $mov->target;
+
+                $relation = $mov->transactionType($peer_type);
+                if ($relation == 'credit') {
+                    $in = $mov->amount;
+                    $out = 0;
+                }
+                else if ($relation == 'debit') {
+                    $in = 0;
+                    $out = $mov->amount;
+                }
 
                 ?>
                 <tr>

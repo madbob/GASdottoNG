@@ -385,4 +385,25 @@ class MovementType extends Model
             break;
         }
     }
+
+    public function transactionType($movement, $peer)
+    {
+        $ops = json_decode($this->function);
+
+        foreach($ops as $o) {
+            if ($o->method != $movement->method)
+                continue;
+
+            foreach($o->$peer->operations as $op) {
+                if ($op->operation == 'increment')
+                    return 'credit';
+                else
+                    return 'debit';
+            }
+
+            break;
+        }
+
+        return null;
+    }
 }

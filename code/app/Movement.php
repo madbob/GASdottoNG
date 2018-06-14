@@ -122,6 +122,46 @@ class Movement extends Model
         return '???';
     }
 
+    /*
+        $peer può essere "target" o "sender".
+        La funzione ritorna "credit" o "debit" a seconda che incida
+        positivamente o negativamente sul soggetto desiderato coinvolto nel
+        movimento
+    */
+    public function transactionType($peer)
+    {
+        return $this->type_metadata->transactionType($this, $peer);
+    }
+
+    /*
+        La funzione ritorna "target" o "sender" a seconda del ruolo dell'oggetto
+        passato come parametro all'interno della transazione.
+        Vengono presi in considerazioni i proxy contabili
+    */
+    public function transationRole($obj_peer)
+    {
+        if ($this->sender_id == $obj_peer->id)
+            return 'sender';
+        if ($this->target_id == $obj_peer->id)
+            return 'target';
+
+        $t = $this->sender;
+        if ($t != null) {
+            $t = $t->getBalanceProxy();
+            if ($t && $t->id == $obj_peer->id)
+                return 'sender';
+        }
+
+        $t = $this->target;
+        if ($t != null) {
+            $t = $t->getBalanceProxy();
+            if ($t && $t->id == $obj_peer->id)
+                return 'target';
+        }
+
+        return null;
+    }
+
     public static function generate($type, $sender, $target, $amount)
     {
         $ret = new self();
