@@ -1223,55 +1223,6 @@ $(document).ready(function() {
         $(this).toggleClass('glyphicon-eye-open').toggleClass('glyphicon-eye-close');
     });
 
-    $('body').on('submit', '.list-filter form', function(e) {
-        e.preventDefault();
-        var form = $(this);
-        var data = form.serializeArray();
-
-        var targetid = $(this).closest('.list-filter').attr('data-list-target');
-        var target = $(targetid);
-        target.empty().append(loadingPlaceholder());
-
-        $.ajax({
-            method: form.attr('method'),
-            url: form.attr('action'),
-            data: data,
-            dataType: 'html',
-
-            success: function(data) {
-                target.empty().append(data);
-            }
-        });
-
-    }).on('change', '.list-filter input, .list-filter select', function() {
-        $(this).closest('form').submit();
-
-    }).on('show.bs.collapse', '.list-filter', function() {
-        $(this).find('form').submit();
-
-    }).on('click', '.list-filter .btn-danger', function(e) {
-        e.preventDefault();
-        var panel = $(this).closest('.list-filter');
-        var form = panel.find('form');
-
-        var targetid = panel.attr('data-list-target');
-        var target = $(targetid);
-        target.empty().append(loadingPlaceholder());
-
-        panel.collapse('hide');
-
-        $.ajax({
-            method: form.attr('method'),
-            url: form.attr('action'),
-            data: {},
-            dataType: 'HTML',
-
-            success: function(data) {
-                target.empty().append(data);
-            }
-        });
-    });
-
     $('body').on('click', '[data-toggle="modal"]', function(e) {
         e.preventDefault();
     });

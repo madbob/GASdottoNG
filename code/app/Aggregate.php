@@ -58,18 +58,34 @@ class Aggregate extends Model implements Feedable
         });
     }
 
-    public static function easyFilter($supplier, $startdate, $enddate)
+    public static function easyFilter($supplier, $startdate, $enddate, $statuses = null)
     {
-        $user = Auth::user();
-        $supplier_id = $supplier->id;
-        $everything = ($user->can('supplier.orders', $supplier) || $user->can('supplier.shippings', $supplier));
+        if (is_object($supplier))
+            $supplier_id = $supplier->id;
+        else
+            $supplier_id = $supplier;
 
-        return self::whereHas('orders', function ($query) use ($supplier_id, $startdate, $enddate, $everything) {
-            $query->where('supplier_id', '=', $supplier_id)->where('start', '>=', $startdate)->where('end', '<=', $enddate);
-            if ($everything == false) {
-                $query->whereIn('status', ['open', 'shipped', 'archived']);
-            }
+        if ($statuses == null)
+            $statuses = ['open', 'closed', 'shipped', 'suspended', 'archived'];
+
+        /*
+            Questa funzione dovrebbe prendere in considerazione anche i permessi
+            dell'utente corrente, e tornare solo gli aggregati che contengono
+            ordini tipo:
+            $user->can('supplier.orders', $order->supplier) || $user->can('supplier.shippings', $order->supplier)
+        */
+
+        $orders = self::with('orders')->whereHas('orders', function ($query) use ($supplier_id, $startdate, $enddate, $statuses) {
+            if (!empty($supplier_id))
+                $query->where('supplier_id', '=', $supplier_id);
+            $query->where('start', '>=', $startdate)->where('end', '<=', $enddate)->whereIn('status', $statuses);
         })->get();
+
+        $orders->sort(function($a, $b) {
+            return strcmp($a->shipping, $b->shipping);
+        });
+
+        return $orders;
     }
 
     public function getStatusAttribute()

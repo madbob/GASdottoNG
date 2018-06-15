@@ -4,6 +4,7 @@
             @include('commons.hiddenfield', ['prefix' => 'supplier_', 'name' => 'id', 'obj' => $supplier, 'extra_class' => 'enforce_filter'])
             @include('commons.genericdaterange', [
                 'start_date' => strtotime('-1 months'),
+                'end_date' => strtotime('+1 months'),
             ])
 
             <div class="form-group">
@@ -21,7 +22,7 @@
     <div class="col-md-12" id="wrap-order-list-{{ $supplier->id }}">
         @include('commons.loadablelist', [
             'identifier' => 'order-list-' . $supplier->id,
-            'items' => App\Aggregate::easyFilter($supplier, date('Y-m-d', strtotime('-1 months')), date('9999-12-31')),
+            'items' => App\Aggregate::easyFilter($supplier, date('Y-m-d', strtotime('-6 months')), date('Y-m-d', strtotime('+6 months'))),
             'legend' => (object)[
                 'class' => 'Aggregate'
             ],

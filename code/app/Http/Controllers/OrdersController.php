@@ -43,40 +43,7 @@ class OrdersController extends Controller
 
     private function defaultOrders()
     {
-        /*
-            La selezione degli ordini da visualizzare si può forse fare con una
-            query complessa, premesso che bisogna prendere in considerazione i
-            permessi che l'utente corrente ha nei confronti dei fornitori degli
-            ordini inclusi negli aggregati
-        */
-
-        $orders = [];
-
-        $user = Auth::user();
-        $aggregates = Aggregate::whereHas('orders', function($query) {
-            $query->whereIn('status', ['open', 'closed', 'shipped', 'suspended']);
-        })->with('orders')->get();
-
-        foreach ($aggregates as $aggregate) {
-            $ok = false;
-
-            foreach ($aggregate->orders as $order) {
-                if ($user->can('supplier.orders', $order->supplier) || $user->can('supplier.shippings', $order->supplier)) {
-                    $ok = true;
-                    break;
-                }
-            }
-
-            if ($ok == true) {
-                $orders[] = $aggregate;
-            }
-        }
-
-        usort($orders, function($a, $b) {
-            return strcmp($a->shipping, $b->shipping);
-        });
-
-        return $orders;
+        return Aggregate::easyFilter(0, date('Y-m-d', strtotime('-1 years')), date('Y-m-d', strtotime('+1 years')), ['open', 'closed', 'shipped', 'suspended']);
     }
 
     public function index()
@@ -336,30 +303,14 @@ class OrdersController extends Controller
 
     public function search(Request $request)
     {
+        $startdate = decodeDate($request->input('startdate'));
+        $enddate = decodeDate($request->input('enddate'));
+        $status = $request->input('status');
         $supplier_id = $request->input('supplier_id');
-
-        if (empty($supplier_id)) {
-            $supplier = null;
-            $orders = $this->defaultOrders();
-        }
-        else {
-            $supplier = Supplier::find($supplier_id);
-            $everything = ($request->user()->can('supplier.orders', $supplier) || $request->user()->can('supplier.shippings', $supplier));
-
-            if ($request->has('startdate') && $request->has('enddate')) {
-                $startdate = decodeDate($request->input('startdate'));
-                $enddate = decodeDate($request->input('enddate'));
-            }
-            else {
-                $startdate = date('Y-m-d', strtotime('-1 months'));
-                $enddate = date('9999-12-31');
-            }
-
-            $orders = Aggregate::easyFilter($supplier, $startdate, $enddate);
-        }
+        $orders = Aggregate::easyFilter($supplier_id, $startdate, $enddate, $status);
 
         return view('commons.loadablelist', [
-            'identifier' => $supplier ? 'order-list-' . $supplier->id : 'order-list',
+            'identifier' => !empty($supplier_id) ? 'order-list-' . $supplier_id : 'order-list',
             'items' => $orders,
             'legend' => (object)[
                 'class' => 'Aggregate'
