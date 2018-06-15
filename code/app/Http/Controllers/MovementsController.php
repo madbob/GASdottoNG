@@ -50,13 +50,17 @@ class MovementsController extends BackedController
 
                 $one_month_ago = date('Y-m-d', strtotime('-1 months'));
 
-                $invoices = Invoice::where('date', '>=', $one_month_ago)->orderBy('date', 'desc')->get();
+                $invoices = Invoice::where('status', '!=', 'payed')->orWhereHas('payment', function($query) use ($one_month_ago) {
+                    $query->where('date', '>=', $one_month_ago);
+                })->orWhereDoesntHave('payment')->get();
+
                 if ($gas->hasFeature('extra_invoicing')) {
-                    $receipts = Receipt::where('date', '>=', $one_month_ago)->orderBy('date', 'desc')->get();
+                    $receipts = Receipt::where('date', '>=', $one_month_ago)->get();
                     foreach($receipts as $r)
                         $invoices->push($r);
-                    $invoices = $invoices->sortByDesc('date');
                 }
+
+                $invoices = Invoice::doSort($invoices);
                 $data['invoices'] = $invoices;
 
                 return view('pages.movements', $data);

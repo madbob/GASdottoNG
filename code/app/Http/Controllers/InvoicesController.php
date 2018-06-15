@@ -324,7 +324,11 @@ class InvoicesController extends Controller
         $end = decodeDate($request->input('enddate'));
         $supplier_id = $request->input('supplier_id');
 
-        $query = Invoice::where('date', '>=', $start)->where('date', '<=', $end)->orderBy('date', 'desc');
+        $query = Invoice::where(function($query) use($start, $end) {
+            $query->whereHas('payment', function($query) use($start, $end) {
+                $query->where('date', '>=', $start)->where('date', '<=', $end);
+            })->orWhereDoesntHave('payment');
+        });
 
         if ($supplier_id != '0')
             $query->where('supplier_id', $supplier_id);
@@ -347,8 +351,9 @@ class InvoicesController extends Controller
 
             foreach($receipts as $r)
                 $elements->push($r);
-            $elements = $elements->sortByDesc('date');
         }
+
+        $elements = Invoice::doSort($elements);
 
         $format = $request->input('format', 'none');
 
