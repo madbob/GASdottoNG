@@ -99,14 +99,19 @@ class SuppliersService extends BaseService
         return $supplier;
     }
 
-    public function catalogue($id, $format)
+    public function catalogue($id, $format, array $request)
     {
         $this->ensureAuth();
         $supplier = $this->show($id);
         $filename = sprintf('Listino %s.%s', $supplier->name, $format);
 
+        if (isset($request['printable']))
+            $products = $supplier->products()->whereIn('id', $request['printable'])->get();
+        else
+            $products = $supplier->products()->where('active', true)->get();
+
         if ($format == 'pdf') {
-            $html = view('documents.cataloguepdf', ['supplier' => $supplier])->render();
+            $html = view('documents.cataloguepdf', ['supplier' => $supplier, 'products' => $products])->render();
             PDF::SetTitle(_i('Listino %s del %s', $supplier->name, date('d/m/Y')));
             PDF::AddPage();
             PDF::writeHTML($html, true, false, true, false, '');
@@ -115,7 +120,7 @@ class SuppliersService extends BaseService
         elseif ($format == 'csv') {
             $currency = currentAbsoluteGas()->currency;
             $headers = [_i('Nome'), _i('Unità di Misura'), _i('Prezzo Unitario (%s)', $currency), _i('Trasporto (%s)', $currency)];
-            return output_csv($filename, $headers, $supplier->products()->where('active', true)->get(), function($product) {
+            return output_csv($filename, $headers, $products, function($product) {
                 $row = [];
                 $row[] = $product->name;
                 $row[] = $product->measure->printableName();

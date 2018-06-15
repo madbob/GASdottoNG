@@ -2155,6 +2155,13 @@ $(document).ready(function() {
         return false;
     });
 
+    $('body').on('click', '.export-custom-products-list', function(event) {
+        event.preventDefault();
+        var data = $(this).closest('form').find('input:checkbox').serializeArray();
+        var url = $(this).attr('data-export-url') + '?' + $.param(data);
+        window.open(url, '_blank');
+    });
+
     /*
         Gestione utenti
     */

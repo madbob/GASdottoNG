@@ -82,7 +82,7 @@ class SuppliersController extends BackedController
     public function catalogue(Request $request, $id, $format)
     {
         try {
-            return $this->service->catalogue($id, $format);
+            return $this->service->catalogue($id, $format, $request->all());
         }
         catch (AuthException $e) {
             abort($e->status());

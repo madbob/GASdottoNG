@@ -6,6 +6,7 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>{{ _i('Nome') }}</th>
                         <th>{{ _i('Unità di Misura') }}</th>
                         <th>{{ _i('Prezzo Unitario') }}</th>
@@ -17,6 +18,9 @@
                     <?php $measures = App\Measure::orderBy('name', 'asc')->get() ?>
                     @foreach($supplier->products as $product)
                         <tr>
+                            <td>
+                                <input type="checkbox" name="printable[]" value="{{ $product->id }}" {{ $product->active ? 'checked' : '' }}>
+                            </td>
                             <td>
                                 @include('commons.hiddenfield', [
                                     'obj' => $product,
@@ -82,6 +86,9 @@
 
     <div class="row">
         <div class="col-md-12">
+            <button class="btn btn-default export-custom-products-list" data-export-url="{{ url('suppliers/catalogue/' . $supplier->id . '/pdf') }}">{{ _i('Listino PDF Prodotti Selezionati') }}</button>
+            <button class="btn btn-default export-custom-products-list" data-export-url="{{ url('suppliers/catalogue/' . $supplier->id . '/csv') }}">{{ _i('Listino CSV Prodotti Selezionati') }}</button>
+
             <div class="btn-group pull-right" role="group">
                 <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
             </div>
