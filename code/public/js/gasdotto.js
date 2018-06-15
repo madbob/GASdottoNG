@@ -176,16 +176,6 @@ function generalInit() {
         });
     });
 
-    $('.collapse.dynamic-contents').on('show.bs.collapse', function(e) {
-        var contents = $(this);
-        contents.empty().append(loadingPlaceholder());
-        var url = $(this).attr('data-contents-url');
-
-        $.get(url, function(data) {
-            contents.empty().append(data);
-        });
-    });
-
     $('.measure-selector').each(function() {
         enforceMeasureDiscrete($(this));
     });
@@ -204,56 +194,6 @@ function generalInit() {
     $('.loadablelist').each(function() {
         testListsEmptiness($(this));
     });
-}
-
-function randomString(total)
-{
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for( var i = 0; i < total; i++ )
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
-}
-
-function parseFullDate(string) {
-    var components = string.split(' ');
-
-    var month = 0;
-    var months = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
-    for(month = 0; month < months.length; month++) {
-        if (components[2] == months[month]) {
-            month++;
-            break;
-        }
-    }
-
-    var date = components[3] + '-' + month + '-' + components[1];
-    return Date.parse(date);
-}
-
-function parseFloatC(value) {
-    if (typeof value === 'undefined')
-        return 0;
-
-    var ret = parseFloat(value.replace(/,/, '.'));
-    if (isNaN(ret))
-        ret = 0;
-
-    return ret;
-}
-
-function priceRound(price) {
-    return (Math.round(price * 100) / 100).toFixed(2);
-}
-
-/*
-    Il selector jQuery si lamenta quando trova un ':' ad esempio come valore di
-    un attributo, questa funzione serve ad applicare l'escape necessario
-*/
-function sanitizeId(identifier) {
-    return identifier.replace(/:/g, '\\:').replace(/\[/g, '\\[').replace(/\]/g, '\\]');
 }
 
 function voidForm(form) {
@@ -347,12 +287,7 @@ function wizardLoadPage(node, contents) {
 function testListsEmptiness(list) {
     var id = list.attr('id');
     var c = list.find('a').length;
-    var alert = $('#empty-' + id);
-
-    if (c == 0)
-        alert.removeClass('hidden');
-    else
-        alert.addClass('hidden');
+    $('#empty-' + id).toggleClass('hidden', (c != 0));
 }
 
 function afterListChanges(list) {
@@ -398,10 +333,6 @@ function completionRowsInit(node) {
 
         row.remove();
     });
-}
-
-function loadingPlaceholder() {
-    return $('<div class="progress"><div class="progress-bar progress-bar-striped active" style="width: 100%"></div></div>');
 }
 
 function refreshFilter() {
@@ -1560,10 +1491,7 @@ $(document).ready(function() {
         else {
             table.find('tr[data-filtered-' + attribute + ']').each(function() {
                 var attr = $(this).attr('data-filtered-' + attribute);
-                if (attr == value)
-                    $(this).removeClass('hidden');
-                else
-                    $(this).addClass('hidden');
+                $(this).toggleClass('hidden', (attr != value));
             });
         }
     });
@@ -1839,10 +1767,7 @@ $(document).ready(function() {
         var method_string = 'when-method-' + method;
         var modal = $(this).closest('.movement-modal');
         modal.find('[class*="when-method-"]').each(function() {
-            if ($(this).hasClass(method_string))
-                $(this).removeClass('hidden');
-            else
-                $(this).addClass('hidden');
+            $(this).toggleClass('hidden', ($(this).hasClass(method_string) == false));
         });
     })
     .on('change', '.movement-modal input[name=amount]', function() {
@@ -1889,10 +1814,7 @@ $(document).ready(function() {
                 molti tipi di movimento vanno ad incidere sui saldi globali
                 anche quando il GAS non è direttamente coinvolto
             */
-            if(type != 'App\\Gas' && type != sender && type != target)
-                $(this).addClass('hidden');
-            else
-                $(this).removeClass('hidden');
+            $(this).toggleClass('hidden', (type != 'App\\Gas' && type != sender && type != target));
         });
 
         table.find('thead input[data-active-for]').each(function() {
@@ -2118,11 +2040,7 @@ $(document).ready(function() {
     */
 
     $('body').on('change', '.user-editor input:radio[name=status], .supplier-editor input:radio[name=status]', function() {
-        var date = $(this).closest('.form-group').find('input.date').closest('.status-date');
-        if ($(this).val() == 'deleted')
-            date.removeClass('hidden');
-        else
-            date.addClass('hidden');
+        $(this).closest('.form-group').find('input.date').closest('.status-date').toggleClass('hidden', ($(this).val() != 'deleted'));
     });
 
     /*
@@ -2132,18 +2050,11 @@ $(document).ready(function() {
     $('body').on('click', '.order-columns-selector a', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        var table = $(this).closest('.btn-group').siblings('.order-summary').first();
         var box = $(this).find('input:checkbox');
         var name = box.val();
         box.prop('checked', !box.prop('checked'));
         var show = box.prop('checked');
-
-        if (show) {
-            table.find('.order-cell-' + name).removeClass('hidden');
-        }
-        else {
-            table.find('.order-cell-' + name).addClass('hidden');
-        }
+        $(this).closest('.btn-group').siblings('.order-summary').first().find('.order-cell-' + name).toggleClass('hidden', !show);
     });
 
     $('body').on('keyup', '.order-summary input', function() {
