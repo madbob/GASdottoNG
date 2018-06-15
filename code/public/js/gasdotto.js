@@ -2426,6 +2426,24 @@ $(document).ready(function() {
         return false;
     });
 
+    $('body').on('click', '.load-other-booking', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('data-booking-url');
+
+        var fill_target = $(this).closest('.other-booking');
+        fill_target.empty().append(loadingPlaceholder());
+
+        $.ajax({
+            url: url,
+            method: 'GET',
+            dataType: 'HTML',
+            success: function(data) {
+                data = $(data);
+                fill_target.empty().append(data);
+            }
+        });
+    });
+
     /*
         Multi-GAS
     */

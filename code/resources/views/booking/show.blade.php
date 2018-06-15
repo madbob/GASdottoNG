@@ -150,6 +150,8 @@ $grand_total = 0;
 
     <div class="row">
         <div class="col-md-12">
+            @include('booking.friendsbuttons', ['aggregate' => $aggregate, 'user' => $user, 'mode' => 'show'])
+
             <div class="btn-group pull-right main-form-buttons" role="group">
                 <button type="button" class="btn btn-default close-button">{{ _i('Chiudi') }}</button>
             </div>

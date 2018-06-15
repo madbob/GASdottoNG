@@ -2,15 +2,7 @@
 
 $more_orders = ($aggregate->orders->count() > 1);
 $grand_total = 0;
-
-$has_shipping = false;
-
-foreach ($aggregate->orders as $order) {
-    if ($currentuser->can('supplier.shippings', $order->supplier)) {
-        $has_shipping = true;
-        break;
-    }
-}
+$has_shipping = $aggregate->canShip();
 
 ?>
 

@@ -204,8 +204,13 @@ class BookingHandler extends Controller
             }
         }
 
+        /*
+            In contesti diversi ritorno risposte diverse, da cui dipende
+            l'header che verrà visualizzato chiudendo il pannello su cui si è
+            operato
+        */
         if ($delivering == false) {
-            if ($user_id != $user->id && $target_user->isFriend()) {
+            if ($user_id != $user->id && $target_user->isFriend() && $target_user->parent_id == $user->id) {
                 /*
                     Ho effettuato una prenotazione per un amico
                 */

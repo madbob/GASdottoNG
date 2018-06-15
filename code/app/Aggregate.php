@@ -260,6 +260,19 @@ class Aggregate extends Model implements Feedable
         return false;
     }
 
+    public function canShip()
+    {
+        $user = Auth::user();
+
+        foreach ($this->orders as $order) {
+            if ($user->can('supplier.shippings', $order->supplier)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getBookingsAttribute()
     {
         $ret = [];
