@@ -31,6 +31,9 @@
                 else if ($peer_type == 'sender')
                     $reference = $mov->target;
 
+                $in = 0;
+                $out = 0;
+
                 $relation = $mov->transactionType($peer_type);
                 if ($relation == 'credit') {
                     $in = $mov->amount;

@@ -404,6 +404,9 @@ class MovementType extends Model
             break;
         }
 
-        return null;
+        if ($peer == 'sender')
+            return 'debit';
+        else
+            return 'credit';
     }
 }
