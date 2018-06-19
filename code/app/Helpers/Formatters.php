@@ -195,14 +195,6 @@ function http_csv_headers($filename)
 */
 function output_csv($filename, $head, $contents, $format_callback, $out_file = null)
 {
-    $headers = [
-        'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-        'Content-type' => 'text/csv',
-        'Content-Disposition' => 'attachment; filename=' . str_replace(' ', '\\', $filename),
-        'Expires' => '0',
-        'Pragma' => 'public'
-    ];
-
     $callback = function() use ($head, $contents, $format_callback, $out_file) {
         if (is_null($out_file))
             $FH = fopen('php://output', 'w');
@@ -225,6 +217,14 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
     };
 
     if (is_null($out_file)) {
+        $headers = [
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename=' . str_replace(' ', '\\', $filename),
+            'Expires' => '0',
+            'Pragma' => 'public'
+        ];
+
         return Response::stream($callback, 200, $headers);
     }
     else {

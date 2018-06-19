@@ -196,7 +196,6 @@ class Movement extends Model
 
     public function apply()
     {
-        $metadata = $this->type_metadata;
-        $metadata->apply($this);
+        $this->type_metadata->apply($this);
     }
 }
