@@ -335,8 +335,12 @@ function completionRowsInit(node) {
     });
 }
 
-function refreshFilter() {
-    $('.form-filler').find('button[type=submit]').click();
+function refreshFilter(form) {
+    var target = form.find('input:hidden[name=data-refresh-target]').val();
+    if (target)
+        $('.form-filler').filter(target).find('button[type=submit]').click();
+    else
+        $('.form-filler').find('button[type=submit]').click();
 }
 
 function setupImportCsvEditor() {

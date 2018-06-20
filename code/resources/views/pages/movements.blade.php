@@ -44,7 +44,7 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-horizontal form-filler" data-action="{{ route('movements.index') }}" data-toggle="validator" data-fill-target="#movements-in-range">
+                        <div class="form-horizontal form-filler" id="movements-filter" data-action="{{ route('movements.index') }}" data-toggle="validator" data-fill-target="#movements-in-range">
                             @include('commons.genericdaterange', [
                                 'start_date' => strtotime('-1 weeks'),
                             ])

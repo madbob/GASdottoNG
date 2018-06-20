@@ -460,6 +460,8 @@ class ImportLegacy extends Command
                 $obj->payment_method = $row->paying_mode;
                 $obj->save();
 
+                $master_gas->suppliers()->attach($obj->id);
+
                 $this->handleContact('address', 'address', $row, $obj);
                 $this->handleContact('phone', 'phone', $row, $obj);
                 $this->handleContact('email', 'mail', $row, $obj);
