@@ -133,6 +133,9 @@ table .form-group {
 .booking-product .inline-calculator-trigger {
   cursor: pointer; }
 
+.booking-product .mobile-quantity-switch {
+  margin-top: 10px; }
+
 .variants-editor .variant-descr {
   margin-top: 10px; }
 

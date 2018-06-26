@@ -2312,6 +2312,24 @@ $(document).ready(function() {
         return false;
     });
 
+    $('body').on('click', '.mobile-quantity-switch button', function(e) {
+        e.preventDefault();
+
+        var input = $(this).closest('.mobile-quantity-switch').siblings('.booking-product-quantity').find('input.number');
+
+        var original = parseFloat(input.val());
+        if ($(this).hasClass('plus')) {
+            input.val(original + 1);
+        }
+        else {
+            if (original == 0)
+                return;
+            input.val(original - 1);
+        }
+
+        input.keyup();
+    });
+
     $('body').on('click', '.add-booking-product', function(e) {
         e.preventDefault();
         var table = $(this).closest('table');
