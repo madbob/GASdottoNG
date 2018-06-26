@@ -1455,6 +1455,46 @@ $(document).ready(function() {
         }
     });
 
+    $('body').on('click', '.table-icons-legend button', function() {
+        var legend = $(this).closest('.table-icons-legend');
+        var target = legend.attr('data-list-target');
+
+        if ($(this).hasClass('active')) {
+            $(this).removeClass('active');
+
+            $('.table' + target + ' tbody tr').each(function() {
+                $(this).show();
+            });
+        }
+        else {
+            /*
+                Qui devo considerare la somma di tutti i filtri che sono stati
+                attivati: se un elemento risulterebbe nascosto a fronte del
+                click su un attributo, potrebbero essercene altri che lo
+                mantengono visibile
+            */
+            legend.find('button').removeClass('active');
+            $(this).addClass('active');
+            var c = $(this).find('span.glyphicon').attr('class');
+
+            $('.table' + target + ' tbody tr').each(function() {
+                var show = false;
+
+                $(this).find('span.glyphicon').each(function() {
+                    var icons = $(this).attr('class');
+                    show = (icons == c);
+                    if (show)
+                        return false;
+                });
+
+                if (show)
+                    $(this).show();
+                else
+                    $(this).hide();
+            });
+        }
+    });
+
     $('body').on('click', '.list-filters button', function() {
         var filter = $(this).closest('.list-filters');
         var target = filter.attr('data-list-target');
@@ -1478,6 +1518,23 @@ $(document).ready(function() {
                     $(this).hide();
                 else
                     $(this).show();
+            });
+        }
+    });
+
+    $('body').on('keyup', '.table-text-filter', function() {
+        var text = $(this).val().toLowerCase();
+        var target = $(this).attr('data-list-target');
+
+        if (text == '') {
+            $('.table' + target + ' tbody tr').show();
+        }
+        else {
+            $('.table' + target + ' tbody .text-filterable-cell').each(function() {
+                if ($(this).text().toLowerCase().indexOf(text) == -1)
+                    $(this).closest('tr').hide();
+                else
+                    $(this).closest('tr').show();
             });
         }
     });
@@ -2034,8 +2091,22 @@ $(document).ready(function() {
 
     $('body').on('click', '.export-custom-products-list', function(event) {
         event.preventDefault();
-        var data = $(this).closest('form').find('input:checkbox').serializeArray();
-        var url = $(this).attr('data-export-url') + '?' + $.param(data);
+        var tab = $(this).closest('.tab-pane').find('.tab-pane.active');
+
+        var printable = new Array();
+
+        if (tab.hasClass('details-list')) {
+            tab.find('.loadablelist a:visible').each(function() {
+                printable.push($(this).attr('data-element-id'));
+            });
+        }
+        else {
+            tab.find('.table tr:visible').each(function() {
+                printable.push($(this).attr('data-element-id'));
+            });
+        }
+
+        var url = $(this).attr('data-export-url') + '?' + $.param({printable: printable});
         window.open(url, '_blank');
     });
 
