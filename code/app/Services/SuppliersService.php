@@ -120,14 +120,32 @@ class SuppliersService extends BaseService
         elseif ($format == 'csv') {
             $currency = currentAbsoluteGas()->currency;
             $headers = [_i('Nome'), _i('Unità di Misura'), _i('Prezzo Unitario (%s)', $currency), _i('Trasporto (%s)', $currency)];
-            return output_csv($filename, $headers, $products, function($product) {
-                $row = [];
-                $row[] = $product->name;
-                $row[] = $product->measure->printableName();
-                $row[] = printablePrice($product->price, ',');
-                $row[] = printablePrice($product->transport, ',');
-                return $row;
-            });
+
+            $data = [];
+
+            foreach($products as $product) {
+                if ($product->variants->isEmpty()) {
+                    $row = [];
+                    $row[] = $product->name;
+                    $row[] = $product->measure->printableName();
+                    $row[] = printablePrice($product->price, ',');
+                    $row[] = printablePrice($product->transport, ',');
+                    $data[] = $row;
+                }
+                else {
+                    $combinations = $product->variantsCombinations();
+                    foreach($combinations as $combination) {
+                        $row = [];
+                        $row[] = sprintf('%s - %s', $product->name, $combination->name);
+                        $row[] = $product->measure->printableName();
+                        $row[] = printablePrice($combination->price, ',');
+                        $row[] = printablePrice($product->transport, ',');
+                        $data[] = $row;
+                    }
+                }
+            }
+
+            return output_csv($filename, $headers, $data, null);
         }
     }
 

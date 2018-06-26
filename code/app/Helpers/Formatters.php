@@ -202,7 +202,14 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
             $FH = fopen($out_file, 'w');
 
         if (is_null($format_callback)) {
-            fwrite($FH, $contents);
+            if (is_string($contents)) {
+                fwrite($FH, $contents);
+            }
+            else if (is_array($contents)) {
+                foreach ($contents as $c) {
+                    fputcsv($FH, $c);
+                }
+            }
         }
         else {
             fputcsv($FH, $head);
