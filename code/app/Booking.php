@@ -13,12 +13,13 @@ use Log;
 use App\Events\SluggableCreating;
 use App\Events\BookingDeleting;
 use App\GASModel;
+use App\CreditableTrait;
 use App\SluggableID;
 use App\BookedProduct;
 
 class Booking extends Model
 {
-    use GASModel, SluggableID, PayableTrait;
+    use GASModel, SluggableID, PayableTrait, CreditableTrait;
 
     public $incrementing = false;
 
@@ -34,7 +35,7 @@ class Booking extends Model
         static::addGlobalScope('gas', function (Builder $builder) {
             $builder->whereHas('user', function($query) {
                 $user = Auth::user();
-                if ($user == null)
+                if (is_null($user))
                     return;
                 $query->where('gas_id', $user->gas->id);
             });
@@ -101,7 +102,7 @@ class Booking extends Model
             $query->where('id', '=', $product_id);
         })->first();
 
-        if ($p == null && $fallback == true) {
+        if (is_null($p) && $fallback == true) {
             $p = new BookedProduct();
             $p->booking_id = $this->id;
             $p->product_id = $product_id;
@@ -114,7 +115,7 @@ class Booking extends Model
     {
         $p = $this->getBooked($product);
 
-        if ($p == null)
+        if (is_null($p))
             $ret = 0;
         else
             $ret = $p->$field;
@@ -170,6 +171,23 @@ class Booking extends Model
     }
 
     /*
+        Valore complessivo di quanto consegnato, diviso tra imponibile e IVA
+    */
+    public function getDeliveredTaxedAttribute()
+    {
+        $total = 0;
+        $total_vat = 0;
+
+        foreach($this->products_with_friends as $booked_product) {
+            list($product_total, $product_total_tax) = $booked_product->deliveredTaxedValue();
+            $total += $product_total;
+            $total_vat += $product_total_tax;
+        }
+
+        return [$total, $total_vat];
+    }
+
+    /*
         Questo ritorna solo il costo di trasporto applicato sull'ordine
         complessivo
     */
@@ -201,20 +219,15 @@ class Booking extends Model
     */
     public function getCheckTransportAttribute()
     {
-        if ($this->status == 'shipped') {
-            return $this->transport;
-        }
-        else {
-            return $this->innerCache('transport', function($obj) {
-                $transport = $obj->major_transport;
+        return $this->innerCache('transport', function($obj) {
+            $transport = $obj->major_transport;
 
-                foreach($this->products as $p) {
-                    $transport += $p->transportDeliveredValue();
-                }
+            foreach($obj->products as $p) {
+                $transport += $p->transportDeliveredValue();
+            }
 
-                return $transport;
-            });
-        }
+            return $transport;
+        });
     }
 
     /*
@@ -285,7 +298,7 @@ class Booking extends Model
     */
     public function getTotalDeliveredAttribute()
     {
-        return $this->delivered + $this->transport;
+        return $this->delivered + $this->check_transport;
     }
 
     public function getProductsWithFriendsAttribute()
@@ -295,7 +308,7 @@ class Booking extends Model
         foreach($this->friends_bookings as $sub) {
             foreach($sub->products as $sub_p) {
                 $master_p = $products->keyBy('product_id')->get($sub_p->product_id);
-                if ($master_p == null) {
+                if (is_null($master_p)) {
                     $products->push($sub_p);
                 }
                 else {
@@ -427,9 +440,9 @@ class Booking extends Model
 
     /******************************************************** CreditableTrait */
 
-    public function alterBalance($amount, $type = 'bank')
+    public function getBalanceProxy()
     {
-        $this->order->supplier->alterBalance($amount, $type);
+        return $this->order->supplier;
     }
 
     public static function balanceFields()

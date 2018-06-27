@@ -16,10 +16,10 @@
     @endif
 @endforeach
 
-@if($booking->transport != 0)
+@if($booking->check_transport != 0)
     <tr>
         <td width="40%">{{ _i('Trasporto') }}</td>
         <td width="40%">&nbsp;</td>
-        <td width="20%">{{ $booking->transport }} {{ $currentgas->currency }}</td>
+        <td width="20%">{{ printablePriceCurrency($booking->check_transport) }}</td>
     </tr>
 @endif

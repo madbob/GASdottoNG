@@ -1,38 +1,40 @@
+<?php $columns = $currentgas->orders_display_columns ?>
+
+<div class="btn-group pull-right order-columns-selector">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {{ _i('Colonne') }} <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+        @foreach(App\Order::displayColumns() as $identifier => $metadata)
+            <li>
+                <a href="#">
+                    <input type="checkbox" value="{{ $identifier }}" {{ in_array($identifier, $columns) ? 'checked' : '' }}> {{ $metadata->label }}
+                </a>
+            </li>
+        @endforeach
+    </ul>
+</div>
+
 <table class="table order-summary">
     <thead>
         <tr>
-            @if($order->isActive())
-                <th class="hidden-md" width="3%"><button class="btn btn-default btn-xs toggle-product-abilitation" data-toggle="button" aria-pressed="false" autocomplete="off">{!! _i('Tutti') !!}</button></th>
-                <th width="20%">{{ _i('Prodotto') }}</th>
-                <th width="8%">{{ _i('Prezzo') }}</th>
-                <th width="8%">{{ _i('Trasporto') }}</th>
-                <th width="8%">{{ _i('Disponibile') }}</th>
-                <th class="hidden-md" width="4%">{{ _i('Sconto') }}</th>
-                <th width="9%">{{ _i('Unità di Misura') }}</th>
-                <th width="9%">{{ _i('Quantità Ordinata') }}</th>
-                <th width="5%">{{ _i('Totale Prezzo') }}</th>
-                <th width="5%">{{ _i('Totale Trasporto') }}</th>
-                <th width="8%">{{ _i('Quantità Consegnata') }}</th>
-                <th width="8%">{{ _i('Totale Consegnato') }}</th>
-                <th width="7%">{{ _i('Note') }}</th>
-            @elseif($order->status != 'archived')
-                <th width="25%">{{ _i('Prodotto') }}</th>
-                <th width="15%">{{ _i('Unità di Misura') }}</th>
-                <th width="15%">{{ _i('Quantità Ordinata') }}</th>
-                <th width="15%">{{ _i('Totale Trasporto') }}</th>
-                <th width="15%">{{ _i('Quantità Consegnata') }}</th>
-                <th width="15%">{{ _i('Totale Consegnato') }}</th>
-            @else
-                <th width="25%">{{ _i('Prodotto') }}</th>
-                <th width="15%">{{ _i('Unità di Misura') }}</th>
-                <th width="20%">{{ _i('Quantità Ordinata') }}</th>
-                <th width="20%">{{ _i('Quantità Consegnata') }}</th>
-                <th width="20%">{{ _i('Totale Consegnato') }}</th>
-            @endif
+            @foreach(App\Order::displayColumns() as $identifier => $metadata)
+                @if($identifier == 'selection')
+                    <th width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}"><button class="btn btn-default btn-xs toggle-product-abilitation" data-toggle="button" aria-pressed="false" autocomplete="off">{!! _i('Tutti') !!}</button></th>
+                @else
+                    <th width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">{{ $metadata->label }}</th>
+                @endif
+            @endforeach
         </tr>
     </thead>
 
     <tbody>
+        <!--
+            Warning: l'ordine delle colonne qui deve riflettere l'ordine degli
+            elementi restituiti da Order::displayColumns() (peraltro usata per
+            generare il menu delle colonne sopra)
+        -->
+
         @foreach($order->supplier->products as $product)
             <?php
 
@@ -48,75 +50,74 @@
                 <tr data-product-id="{{ $product->id }}">
             @endif
 
-                @if($order->isActive())
-                    <!-- Visualizza tutti -->
-                    <td class="hidden-md">
-                        <input class="enabling-toggle" type="checkbox" name="enabled[]" value="{{ $product->id }}" <?php if($enabled) echo 'checked' ?> />
-                    </td>
-                @endif
+                <!-- Visualizza tutti -->
+                <td class="order-cell-selection {{ in_array('selection', $columns) ? '' : 'hidden' }}">
+                    <input class="enabling-toggle" type="checkbox" name="enabled[]" value="{{ $product->id }}" {{ $enabled ? 'checked' : '' }} {{ $order->isActive() ? '' : 'disabled' }} />
+                </td>
 
                 <!-- Prodotto -->
-                <td>
+                <td class="order-cell-name {{ in_array('name', $columns) ? '' : 'hidden' }}">
                     <input type="hidden" name="productid[]" value="{{ $product->id }}" />
                     @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product])
                 </td>
 
-                @if($order->isActive())
-                    <!-- Prezzo -->
-                    <td>
-                        @include('commons.decimalfield', [
-                            'obj' => $product,
-                            'label' => '',
-                            'prefix' => 'product_',
-                            'name' => 'price',
-                            'postfix' => '[]',
-                            'squeeze' => true,
-                            'is_price' => true
-                        ])
-                    </td>
+                <!-- Prezzo -->
+                <td class="order-cell-price {{ in_array('price', $columns) ? '' : 'hidden' }}">
+                    @include('commons.decimalfield', [
+                        'obj' => $product,
+                        'label' => '',
+                        'prefix' => 'product_',
+                        'name' => 'price',
+                        'postfix' => '[]',
+                        'squeeze' => true,
+                        'is_price' => true,
+                        'disabled' => $order->isActive() == false
+                    ])
+                </td>
 
-                    <!-- Trasporto -->
-                    <td>
-                        {{-- Nota bene: "transport" è anche un parametro dell'ordine, qui metto un prefisso per evitare la collisione --}}
-                        @include('commons.decimalfield', [
-                            'obj' => $product,
-                            'label' => '',
-                            'prefix' => 'product_',
-                            'name' => 'transport',
-                            'postfix' => '[]',
-                            'squeeze' => true,
-                            'is_price' => true
-                        ])
-                    </td>
+                <!-- Trasporto -->
+                <td class="order-cell-transport {{ in_array('transport', $columns) ? '' : 'hidden' }}">
+                    {{-- Nota bene: "transport" è anche un parametro dell'ordine, qui metto un prefisso per evitare la collisione --}}
+                    @include('commons.decimalfield', [
+                        'obj' => $product,
+                        'label' => '',
+                        'prefix' => 'product_',
+                        'name' => 'transport',
+                        'postfix' => '[]',
+                        'squeeze' => true,
+                        'is_price' => true,
+                        'disabled' => $order->isActive() == false
+                    ])
+                </td>
 
-                    <!-- Disponibile -->
-                    <td>
-                        @include('commons.decimalfield', [
-                            'obj' => $product,
-                            'label' => '',
-                            'prefix' => 'product_',
-                            'name' => 'max_available',
-                            'postfix' => '[]',
-                            'squeeze' => true,
-                            'decimals' => 3
-                        ])
-                    </td>
+                <!-- Disponibile -->
+                <td class="order-cell-available {{ in_array('available', $columns) ? '' : 'hidden' }}">
+                    @include('commons.decimalfield', [
+                        'obj' => $product,
+                        'label' => '',
+                        'prefix' => 'product_',
+                        'name' => 'max_available',
+                        'postfix' => '[]',
+                        'squeeze' => true,
+                        'decimals' => 3,
+                        'disabled' => $order->isActive() == false
+                    ])
+                </td>
 
-                    <!-- Sconto Prodotto -->
-                    <td class="hidden-md">
-                        @if(!empty($product->discount))
-                            <input class="discount-toggle" type="checkbox" name="discounted[]" value="{{ $product->id }}" <?php if($enabled && $product->pivot->discount_enabled) echo 'checked' ?> />
-                        @endif
-                    </td>
-                @endif
+                <!-- Sconto Prodotto -->
+                <td class="order-cell-discount {{ in_array('discount', $columns) ? '' : 'hidden' }}">
+                    @if(!empty($product->discount))
+                        <input class="discount-toggle" type="checkbox" name="discounted[]" value="{{ $product->id }}" <?php if($enabled && $product->pivot->discount_enabled) echo 'checked' ?> />
+                    @endif
+                </td>
 
                 <!-- Unità di Misura -->
-                <td>
+                <td class="order-cell-unit_measure {{ in_array('unit_measure', $columns) ? '' : 'hidden' }}">
                     <label>{{ $product->printableMeasure(true) }}</label>
                 </td>
 
                 <!-- Quantità Ordinata -->
-                <td>
+                <td class="order-cell-quantity {{ in_array('quantity', $columns) ? '' : 'hidden' }}">
                     <label>
                         @if($product->portion_quantity != 0)
                             {{ sprintf('%d', $summary->products[$product->id]['quantity_pieces']) }} Pezzi /
@@ -125,33 +126,29 @@
                     </label>
                 </td>
 
-                @if($order->isActive())
-                    <!-- Totale Prezzo -->
-                    <td>
-                        <label class="order-summary-product-price">{{ $summary->products[$product->id]['price'] }} {{ $currentgas->currency }}</label>
-                    </td>
-                @endif
+                <!-- Totale Prezzo -->
+                <td class="order-cell-total_price {{ in_array('total_price', $columns) ? '' : 'hidden' }}">
+                    <label class="order-summary-product-price">{{ $summary->products[$product->id]['price'] }} {{ $currentgas->currency }}</label>
+                </td>
 
-                @if($order->status != 'archived')
-                    <!-- Totale Trasporto -->
-                    <td>
-                        <label class="order-summary-product-transport">{{ $summary->products[$product->id]['transport'] }} {{ $currentgas->currency }}</label>
-                    </td>
-                @endif
+                <!-- Totale Trasporto -->
+                <td class="order-cell-total_transport {{ in_array('total_transport', $columns) ? '' : 'hidden' }}">
+                    <label class="order-summary-product-transport">{{ $summary->products[$product->id]['transport'] }} {{ $currentgas->currency }}</label>
+                </td>
 
                 <!-- Quantità Consegnata -->
-                <td>
+                <td class="order-cell-quantity_delivered {{ in_array('quantity_delivered', $columns) ? '' : 'hidden' }}">
                     <label class="order-summary-product-delivered">{{ $summary->products[$product->id]['delivered'] }} {{ $product->measure->name }}</label>
                 </td>
 
                 <!-- Totale Consegnato -->
-                <td>
+                <td class="order-cell-price_delivered {{ in_array('price_delivered', $columns) ? '' : 'hidden' }}">
                     <label class="order-summary-product-price_delivered">{{ $summary->products[$product->id]['price_delivered'] }} {{ $currentgas->currency }}</label>
                 </td>
 
-                @if($order->isActive())
-                    <!-- Note -->
-                    <td>
+                <!-- Note -->
+                <td class="order-cell-notes {{ in_array('notes', $columns) ? '' : 'hidden' }}">
+                    @if($order->isActive())
                         <?php $random_identifier = rand(); ?>
 
                         @if($summary->products[$product->id]['notes'])
@@ -172,50 +169,45 @@
                                 </div>
                             </div>
                         @endpush
-                    </td>
-                @endif
+                    @endif
+                </td>
             </tr>
         @endforeach
     </tbody>
 
     <thead>
         <tr>
-            @if($order->isActive())
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th class="order-summary-order-price">{{ printablePriceCurrency($summary->price) }}</th>
-                <th class="order-summary-order-transport">{{ printablePriceCurrency($summary->transport) }}</th>
-                <th></th>
-                <th>
-                    <span class="order-summary-order-price_delivered">{{ printablePriceCurrency($summary->price_delivered) }}</span>
-                    @if($summary->transport_delivered)
-                        +<br/><span class="order-summary-order-transport_delivered">{{ printablePriceCurrency($summary->transport_delivered) }}</span>
-                    @endif
-                </th>
-                <th></th>
-            @else
-                <th></th>
-                <th></th>
-                <th></th>
+            @foreach(App\Order::displayColumns() as $identifier => $metadata)
+                <th class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
+                    @switch($identifier)
+                        @case('total_price')
+                            <span class="order-summary-order-price">{{ printablePriceCurrency($summary->price) }}</span>
+                            @if($order->discount != 0)
+                                <button type="button" class="btn btn-default btn-xs" data-toggle="popover" data-content="{{ printablePriceCurrency($summary->undiscounted_price) }} - Sconto {{ printablePercentage($order->discount) }}">
+                                    <span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span>
+                                </button>
+                            @endif
+                            @break
 
-                @if($order->status != 'archived')
-                    <th class="order-summary-order-transport">{{ printablePriceCurrency($summary->transport) }}</th>
-                @endif
+                        @case('total_transport')
+                            {{ printablePriceCurrency($summary->transport) }}
+                            @break
 
-                <th></th>
-                <th>
-                    <span class="order-summary-order-price_delivered">{{ printablePriceCurrency($summary->price_delivered) }}</span>
-                    @if($summary->transport_delivered)
-                        +<br/><span class="order-summary-order-transport_delivered">{{ printablePriceCurrency($summary->transport_delivered) }}</span>
-                    @endif
+                        @case('price_delivered')
+                            <span class="order-summary-order-price_delivered">{{ printablePriceCurrency($summary->price_delivered) }}</span>
+                            @if($summary->transport_delivered)
+                                + <span class="order-summary-order-transport_delivered">{{ printablePriceCurrency($summary->transport_delivered) }}</span>
+                            @endif
+                            @if($order->discount != 0)
+                                <button type="button" class="btn btn-default btn-xs" data-toggle="popover" data-content="{{ printablePriceCurrency($summary->undiscounted_price_delivered) }} - Sconto {{ printablePercentage($order->discount) }}">
+                                    <span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span>
+                                </button>
+                            @endif
+                            @break
+
+                    @endswitch
                 </th>
-            @endif
+            @endforeach
         </tr>
     </thead>
 </table>

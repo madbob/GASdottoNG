@@ -84,7 +84,7 @@ trait ContactableTrait
     public function getAddress()
     {
         $address = $this->contacts()->where('type', 'address')->first();
-        if ($address == null || empty($address->value))
+        if (is_null($address) || empty($address->value))
             return ['', '', ''];
 
         $tokens = explode(',', $address->value);
@@ -96,5 +96,16 @@ trait ContactableTrait
             $tokens[$i] = '';
 
         return $tokens;
+    }
+
+    public function getContactsByType($type)
+    {
+        $ret = [];
+
+        $contacts = $this->contacts()->where('type', $type)->get();
+        foreach($contacts as $contact)
+            $ret[] = $contact->value;
+
+        return $ret;
     }
 }

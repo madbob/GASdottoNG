@@ -44,7 +44,7 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-horizontal form-filler" data-action="{{ route('movements.index') }}" data-toggle="validator" data-fill-target="#movements-in-range">
+                        <div class="form-horizontal form-filler" id="movements-filter" data-action="{{ route('movements.index') }}" data-toggle="validator" data-fill-target="#movements-in-range">
                             @include('commons.genericdaterange', [
                                 'start_date' => strtotime('-1 weeks'),
                             ])
@@ -127,9 +127,9 @@
             @endcan
 
             <div role="tabpanel" class="tab-pane" id="invoices-tab">
-                @can('movements.admin', $currentgas)
-                    <div class="row">
-                        <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        @can('movements.admin', $currentgas)
                             @include('commons.addingbutton', [
                                 'template' => 'invoice.base-edit',
                                 'typename' => 'invoice',
@@ -137,20 +137,49 @@
                                 'button_label' => _i('Carica Nuova Fattura'),
                                 'targeturl' => 'invoices'
                             ])
-                        </div>
+                        @endcan
                     </div>
 
                     <div class="clearfix"></div>
                     <hr/>
-                @endcan
+                </div>
 
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
+                        <div class="form-horizontal form-filler" data-action="{{ route('invoices.search') }}" data-toggle="validator" data-fill-target="#invoices-in-range">
+                            @include('commons.genericdaterange', [
+                                'start_date' => strtotime('-1 months'),
+                            ])
+
+                            @include('commons.selectobjfield', [
+                                'obj' => null,
+                                'name' => 'supplier_id',
+                                'label' => _i('Fornitore'),
+                                'objects' => $currentgas->suppliers,
+                                'extra_selection' => [
+                                    '0' => _i('Nessuno')
+                                ]
+                            ])
+
+                            <div class="form-group">
+                                <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
+                                    <button type="submit" class="btn btn-success">{{ _i('Ricerca') }}</button>
+                                    <a href="{{ route('invoices.search', ['format' => 'csv']) }}" class="btn btn-default form-filler-download">{{ _i('Esporta CSV') }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row">
+                    <div class="col-md-12" id="invoices-in-range">
                         @include('commons.loadablelist', [
                             'identifier' => 'invoice-list',
                             'items' => $invoices,
                             'legend' => (object)[
-                                'class' => 'Invoice'
+                                'class' => $currentgas->hasFeature('extra_invoicing') ? ['Invoice', 'Receipt'] : 'Invoice'
                             ],
                         ])
                     </div>

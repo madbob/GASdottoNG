@@ -34,7 +34,7 @@ class Delivery extends Model
         static::addGlobalScope('gas', function (Builder $builder) {
             $builder->whereHas('gas', function($query) {
                 $user = Auth::user();
-                if ($user == null)
+                if (is_null($user))
                     return;
                 $query->where('gas_id', $user->gas->id);
             });

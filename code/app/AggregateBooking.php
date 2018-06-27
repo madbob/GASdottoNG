@@ -82,6 +82,32 @@ class AggregateBooking extends Model
         return $grand_total;
     }
 
+    public function generateReceipt()
+    {
+        if ($this->user->gas->hasFeature('extra_invoicing')) {
+            $ids = [];
+            foreach ($this->bookings as $booking)
+                $ids[] = $booking->id;
+
+            if (empty($ids)) {
+                Log::error('Tentativo di creare fattura non assegnata a nessuna prenotazione');
+                return;
+            }
+
+            $receipt = Receipt::whereHas('bookings', function($query) use ($ids) {
+                $query->whereIn('bookings.id', $ids);
+            })->first();
+
+            if ($receipt == null) {
+                $receipt = new Receipt();
+                $receipt->number = $this->user->gas->nextInvoiceNumber();
+                $receipt->date = date('Y-m-d');
+                $receipt->save();
+                $receipt->bookings()->sync($ids);
+            }
+        }
+    }
+
     public function printableHeader()
     {
         $ret = $this->user->printableName();

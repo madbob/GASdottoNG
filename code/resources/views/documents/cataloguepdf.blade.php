@@ -14,13 +14,24 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($supplier->products as $product)
-                <tr>
-                    <td width="40%">{{ $product->name }}</td>
-                    <td width="20%">{{ $product->measure->printableName() }}</td>
-                    <td width="20%">{{ printablePriceCurrency($product->price, ',') }}</td>
-                    <td width="20%">{{ printablePriceCurrency($product->transport, ',') }}</td>
-                </tr>
+                @foreach($products as $product)
+                    @if($product->variants->isEmpty())
+                        <tr>
+                            <td width="40%">{{ $product->name }}</td>
+                            <td width="20%">{{ $product->measure->printableName() }}</td>
+                            <td width="20%">{{ printablePriceCurrency($product->price, ',') }}</td>
+                            <td width="20%">{{ printablePriceCurrency($product->transport, ',') }}</td>
+                        </tr>
+                    @else
+                        @foreach($product->variantsCombinations() as $combination)
+                            <tr>
+                                <td width="40%">{{ $product->name }}<br><small>{{ $combination->name }}</small></td>
+                                <td width="20%">{{ $product->measure->printableName() }}</td>
+                                <td width="20%">{{ printablePriceCurrency($combination->price, ',') }}</td>
+                                <td width="20%">{{ printablePriceCurrency($product->transport, ',') }}</td>
+                            </tr>
+                        @endforeach
+                    @endif
                 @endforeach
             </tbody>
         </table>

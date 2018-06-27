@@ -23,8 +23,9 @@ Route::get('users/ro/{id}', 'UsersController@show_ro');
 Route::get('users/{id}/header', 'UsersController@objhead')->name('users.objhead');
 Route::get('users/search', 'UsersController@search');
 Route::get('users/searchorders', 'UsersController@searchOrders');
-Route::get('users/profile', 'UsersController@profile');
+Route::get('users/profile', 'UsersController@profile')->name('profile');
 Route::get('users/picture/{id}', 'UsersController@picture');
+Route::get('users/export', 'UsersController@export');
 
 Route::get('friends/{id}/header', 'FriendsController@objhead')->name('friends.objhead');
 
@@ -44,6 +45,7 @@ Route::get('suppliers/{id}/plain_balance', 'SuppliersController@plainBalance');
 Route::get('products/ro/{id}', 'ProductsController@show_ro');
 Route::get('products/{id}/header', 'ProductsController@objhead')->name('products.objhead');
 Route::post('products/massiveupdate', 'ProductsController@massiveUpdate');
+Route::get('products/picture/{id}', 'ProductsController@picture');
 
 Route::get('vatrates/{id}/header', 'VatRatesController@objhead')->name('vatrates.objhead');
 
@@ -51,7 +53,11 @@ Route::get('invoices/{id}/products', 'InvoicesController@products')->name('invoi
 Route::get('invoices/{id}/movements', 'InvoicesController@getMovements')->name('invoices.movements');
 Route::post('invoices/{id}/movements', 'InvoicesController@postMovements')->name('invoices.savemovements');
 Route::post('invoices/wire/{step}/{id}', 'InvoicesController@wiring');
+Route::get('invoices/search', 'InvoicesController@search')->name('invoices.search');
 Route::get('invoices/{id}/header', 'InvoicesController@objhead');
+
+Route::get('receipts/{id}/header', 'ReceiptsController@objhead')->name('receipts.objhead');
+Route::get('receipts/{id}/download', 'ReceiptsController@download')->name('receipts.download');
 
 Route::get('categories/{id}/header', 'CategoriesController@objhead')->name('categories.objhead');
 
@@ -91,6 +97,9 @@ Route::post('notifications/markread/{id}', 'NotificationsController@markread');
 Route::post('multigas/attach', 'MultiGasController@attach');
 Route::post('multigas/detach', 'MultiGasController@detach');
 
+Route::post('payment/do', 'PaymentController@doPayment')->name('payment.do');
+Route::get('payment/status', 'PaymentController@statusPayment')->name('payment.status');
+
 Route::get('movements/ro/{id}', 'MovementsController@show_ro');
 Route::get('movements/{id}/header', 'MovementsController@objhead')->name('movements.objhead');
 Route::get('movtypes/{id}/header', 'MovementTypesController@objhead')->name('movtypes.objhead');
@@ -115,6 +124,7 @@ Route::resource('suppliers', 'SuppliersController');
 Route::resource('products', 'ProductsController');
 Route::resource('vatrates', 'VatRatesController');
 Route::resource('invoices', 'InvoicesController');
+Route::resource('receipts', 'ReceiptsController');
 Route::resource('deliveries', 'DeliveriesController');
 Route::resource('categories', 'CategoriesController');
 Route::resource('measures', 'MeasuresController');

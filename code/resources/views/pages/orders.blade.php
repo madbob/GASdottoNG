@@ -2,9 +2,9 @@
 
 @section('content')
 
-<div class="row">
-    <div class="col-md-12">
-        @can('supplier.orders')
+@can('supplier.orders')
+    <div class="row">
+        <div class="col-md-12">
             @include('commons.addingbutton', [
                 'template' => 'order.base-edit',
                 'typename' => 'order',
@@ -15,7 +15,6 @@
                 ]
             ])
 
-            <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#orderSearch">{{ _i('Ricerca') }}</button>
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#orderAggregator">{{ _i('Aggrega Ordini') }}</button>
 
             <div class="modal fade" id="orderAggregator" tabindex="-1" role="dialog" aria-labelledby="orderAggregator">
@@ -56,38 +55,70 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="collapse list-filter" id="orderSearch" data-list-target="#wrapper-order-list">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="well">
-                            <form class="form-horizontal" data-toggle="validator" method="GET" action="{{ url('orders/search') }}">
-                                @include('commons.selectobjfield', [
-                                    'obj' => null,
-                                    'name' => 'supplier_id',
-                                    'label' => _i('Fornitore'),
-                                    'mandatory' => true,
-                                    'objects' => $currentgas->suppliers
-                                ])
+    <div class="clearfix"></div>
+    <hr/>
 
-                                @include('commons.genericdaterange')
-                            </form>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-horizontal form-filler" data-action="{{ url('orders/search') }}" data-toggle="validator" data-fill-target="#main-order-list">
+                @include('commons.genericdaterange', [
+                    'start_date' => strtotime('-1 years'),
+                    'end_date' => strtotime('+1 years'),
+                ])
+                @include('commons.selectobjfield', [
+                    'obj' => null,
+                    'name' => 'supplier_id',
+                    'label' => _i('Fornitore'),
+                    'objects' => $currentgas->suppliers,
+                    'extra_selection' => [
+                        '0' => _i('Tutti')
+                    ]
+                ])
+                @include('commons.checkboxes', [
+                    'name' => 'status',
+                    'label' => _i('Stato'),
+                    'values' => [
+                        'open' => (object) [
+                            'icon' => 'play',
+                            'checked' => true
+                        ],
+                        'suspended' => (object) [
+                            'icon' => 'pause',
+                            'checked' => true
+                        ],
+                        'closed' => (object) [
+                            'icon' => 'stop',
+                            'checked' => true
+                        ],
+                        'shipped' => (object) [
+                            'icon' => 'step-forward',
+                            'checked' => true
+                        ],
+                        'archived' => (object) [
+                            'icon' => 'eject',
+                            'checked' => false
+                        ],
+                    ]
+                ])
 
-                            <button class="btn btn-danger pull-right">{{ _i('Chiudi') }}</button>
-                            <div class="clearfix"></div>
-                        </div>
+                <div class="form-group">
+                    <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
+                        <button type="submit" class="btn btn-success">{{ _i('Ricerca') }}</button>
                     </div>
                 </div>
             </div>
-        @endcan
+        </div>
     </div>
-</div>
 
-<div class="clearfix"></div>
-<hr/>
+    <div class="clearfix"></div>
+    <hr/>
+@endcan
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12" id="main-order-list">
         @include('commons.loadablelist', [
             'identifier' => 'order-list',
             'items' => $orders,

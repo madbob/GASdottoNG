@@ -26,7 +26,7 @@ class SlugModel
                     $test = $class::where('id', $id)->first();
                 }
 
-                if ($test == null) {
+                if (is_null($test)) {
                     break;
                 }
 
@@ -44,6 +44,12 @@ class SlugModel
                 sostituendoli
             */
             $id = str_replace('.', '_', $id);
+
+            /*
+                Dagli ID sopprimiamo anche gli slash, che se concatenati agli
+                URL li rompono malamente
+            */
+            $id = str_replace('/', '_', $id);
 
             $event->sluggable->id = $id;
         }

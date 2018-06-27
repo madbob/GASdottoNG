@@ -40,7 +40,7 @@ trait GASModel
 
     public function printableDate($name)
     {
-        if ($this->$name == null) {
+        if (is_null($this->$name)) {
             return 'Mai';
         }
         else {
@@ -100,7 +100,7 @@ trait GASModel
 
     public function testAndSet($request, $name, $field = null)
     {
-        if ($field == null)
+        if (is_null($field))
             $field = $name;
 
         if ($request->has($name))
@@ -145,7 +145,7 @@ trait GASModel
     {
         static $icons = null;
 
-        if ($icons == null) {
+        if (is_null($icons)) {
             $user = Auth::user();
 
             /*
@@ -173,6 +173,14 @@ trait GASModel
                             return $user->can('supplier.shippings', $obj);
                         },
                         'text' => _i('Gestisci le consegne per il fornitore'),
+                    ],
+                ],
+                'Attachment' => [
+                    'picture' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->isImage();
+                        },
+                        'text' => _i('Immagine'),
                     ],
                 ],
                 'Product' => [
@@ -303,6 +311,14 @@ trait GASModel
                         'text' => _i('Salvato'),
                     ],
                 ],
+                'Receipt' => [
+                    'arrow-right' => (object) [
+                        'test' => function ($obj) {
+                            return true;
+                        },
+                        'text' => _i('In Uscita'),
+                    ],
+                ],
                 'Invoice' => [
                     'time' => (object) [
                         'test' => function ($obj) {
@@ -354,9 +370,15 @@ trait GASModel
             ];
 
             if ($user->can('supplier.add', $user->gas)) {
+                $icons['Supplier']['thumbs-down'] = (object) [
+                    'test' => function ($obj) {
+                        return $obj->suspended == true;
+                    },
+                    'text' => _i('Sospeso'),
+                ];
                 $icons['Supplier']['off'] = (object) [
                     'test' => function ($obj) {
-                        return $obj->deleted_at != null;
+                        return ($obj->suspended == false && $obj->deleted_at != null);
                     },
                     'text' => _i('Eliminato'),
                 ];
@@ -399,6 +421,21 @@ trait GASModel
                         'text' => _i('Quota non Pagata'),
                     ];
                 }
+            }
+
+            /*
+                Poiché fatture in ingresso (Invoice) e in uscita (Receipt) sono
+                visualizzate nello stesso elenco, se queste ultime sono attive
+                abilito delle icone distintive per permettere di riconoscerle
+                al volo
+            */
+            if ($user->gas->hasFeature('extra_invoicing')) {
+                $icons['Invoice']['arrow-left'] = (object) [
+                    'test' => function ($obj) {
+                        return true;
+                    },
+                    'text' => _i('In Entrata'),
+                ];
             }
 
             /*

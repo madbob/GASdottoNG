@@ -83,6 +83,11 @@ class Supplier extends Model
         return $this->hasManyThrough('App\Booking', 'App\Order');
     }
 
+    public function invoices()
+    {
+        return $this->hasMany('App\Invoice');
+    }
+
     public function scopeFilterEnabled($query)
     {
         $user = Auth::user();
@@ -90,15 +95,6 @@ class Supplier extends Model
             return $query->withTrashed();
         else
             return $query;
-    }
-
-    public function getAggregatesAttribute()
-    {
-        $supplier = $this;
-
-        return Aggregate::whereHas('orders', function ($query) use ($supplier) {
-            $query->whereIn('id', $supplier->orders->pluck('id'))->orderBy('end', 'desc');
-        });
     }
 
     public function getDisplayURL()
@@ -145,7 +141,7 @@ class Supplier extends Model
 
     public function queryMovements($query = null, $type = 'all')
     {
-        if ($query == null)
+        if (is_null($query))
             $query = Movement::orderBy('created_at', 'desc');
 
         $supplier = $this;
@@ -164,6 +160,8 @@ class Supplier extends Model
                             $query->where('sender_type', 'App\Order')->whereIn('sender_id', $supplier->orders()->pluck('orders.id'));
                         })->orWhere(function($query) use ($supplier) {
                             $query->where('sender_type', 'App\Booking')->whereIn('sender_id', $supplier->bookings()->pluck('bookings.id'));
+                        })->orWhere(function($query) use ($supplier) {
+                            $query->where('sender_type', 'App\Invoice')->whereIn('sender_id', $supplier->invoices()->pluck('invoices.id'));
                         });
                     })->orWhere(function($query) use ($supplier) {
                         $query->where(function($query) use ($supplier) {
@@ -172,6 +170,8 @@ class Supplier extends Model
                             $query->where('target_type', 'App\Order')->whereIn('target_id', $supplier->orders()->pluck('orders.id'));
                         })->orWhere(function($query) use ($supplier) {
                             $query->where('target_type', 'App\Booking')->whereIn('target_id', $supplier->bookings()->pluck('bookings.id'));
+                        })->orWhere(function($query) use ($supplier) {
+                            $query->where('target_type', 'App\Invoice')->whereIn('target_id', $supplier->invoices()->pluck('invoices.id'));
                         });
                     });
                 });
@@ -263,7 +263,7 @@ class Supplier extends Model
 
     public static function importXML($xml, $replace)
     {
-        if ($replace == null) {
+        if (is_null($replace)) {
             $supplier = new Supplier();
             $supplier->payment_method = '';
             $supplier->order_method = '';
@@ -344,12 +344,12 @@ class Supplier extends Model
                             }
                         }
 
-                        if ($product_name == null) {
+                        if (is_null($product_name)) {
                             continue;
                         }
 
                         $product = $supplier->products()->where('name', $product_name)->first();
-                        if ($product == null) {
+                        if (is_null($product)) {
                             $product = new Product();
                             $product->supplier_id = $supplier->id;
                         }
@@ -367,7 +367,7 @@ class Supplier extends Model
                                 case 'category':
                                     $name = html_entity_decode((string) $p);
                                     $category = Category::where('name', $name)->first();
-                                    if($category == null) {
+                                    if(is_null($category)) {
                                         $category = new Category();
                                         $category->name = $name;
                                         $category->save();
@@ -378,7 +378,7 @@ class Supplier extends Model
                                 case 'um':
                                     $name = html_entity_decode((string) $p);
                                     $measure = Measure::where('name', $name)->first();
-                                    if($measure == null) {
+                                    if(is_null($measure)) {
                                         $measure = new Measure();
                                         $measure->name = $name;
                                         $measure->save();

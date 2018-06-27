@@ -16,6 +16,33 @@
                 'modal_id' => 'importCSVusers',
                 'import_target' => 'users'
             ])
+
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#exportCSVusers">{{ _i('Esporta CSV') }}</button>
+            <div class="modal fade close-on-submit" id="exportCSVusers" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-extra-lg" role="document">
+                    <div class="modal-content">
+                        <form class="form-horizontal direct-submit" method="GET" action="{{ url('users/export') }}" data-toggle="validator" novalidate>
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">{{ _i('Esporta CSV') }}</h4>
+                            </div>
+                            <div class="modal-body">
+                                @include('commons.checkboxes', [
+                                    'name' => 'fields',
+                                    'label' => _i('Colonne'),
+                                    'labelsize' => 2,
+                                    'fieldsize' => 10,
+                                    'values' => App\User::formattableColumns()
+                                ])
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+                                <button type="submit" class="btn btn-success">{{ _i('Download') }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         @endcan
     </div>
 </div>

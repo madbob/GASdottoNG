@@ -106,9 +106,9 @@ class User extends Authenticatable
         return $this->hasMany('App\Booking')->orderBy('created_at', 'desc');
     }
 
-    public function getSlugID()
+    public function shippingplace()
     {
-        return $this->username;
+        return $this->belongsTo('App\Delivery', 'preferred_delivery_id');
     }
 
     public function scopeEnabled($query)
@@ -206,7 +206,7 @@ class User extends Authenticatable
         $role_id = normalizeId($role);
 
         $test = $this->roles()->where('roles.id', $role_id)->first();
-        if ($test == null) {
+        if (is_null($test)) {
             $this->roles()->attach($role_id);
             $test = $this->roles()->where('roles.id', $role_id)->first();
         }
@@ -220,7 +220,7 @@ class User extends Authenticatable
         $role_id = normalizeId($role);
 
         $test = $this->roles()->where('roles.id', $role_id)->first();
-        if ($test == null)
+        if (is_null($test))
             return;
 
         if ($assigned) {
@@ -259,6 +259,44 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+    public static function formattableColumns()
+    {
+        return [
+            'firstname' => (object) [
+                'name' => _i('Nome'),
+                'checked' => true,
+            ],
+            'lastname' => (object) [
+                'name' => _i('Cognome'),
+                'checked' => true,
+            ],
+            'username' => (object) [
+                'name' => _i('Username'),
+            ],
+            'email' => (object) [
+                'name' => _i('E-Mail'),
+                'checked' => true,
+            ],
+            'phone' => (object) [
+                'name' => _i('Telefono'),
+                'checked' => true,
+            ],
+            'address' => (object) [
+                'name' => _i('Indirizzo'),
+            ],
+            'taxcode' => (object) [
+                'name' => _i('Codice Fiscale'),
+            ],
+        ];
+    }
+
+    /************************************************************ SluggableID */
+
+    public function getSlugID()
+    {
+        return $this->username;
     }
 
     /******************************************************** CreditableTrait */

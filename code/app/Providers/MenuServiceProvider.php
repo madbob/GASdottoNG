@@ -32,7 +32,9 @@ class MenuServiceProvider extends ServiceProvider
                     $menu->add('orders', '<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> ' . _i('Ordini'));
                 }
 
-                $menu->add('bookings', '<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> ' . _i('Prenotazioni'));
+                if ($user->can('supplier.book', null)) {
+                    $menu->add('bookings', '<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> ' . _i('Prenotazioni'));
+                }
 
                 if ($user->can('movements.view', $gas) || $user->can('movements.admin', $gas)) {
                     $menu->add('movements', '<span class="glyphicon glyphicon-euro" aria-hidden="true"></span> ' . _i('Contabilità'));

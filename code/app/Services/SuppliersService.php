@@ -58,9 +58,9 @@ class SuppliersService extends BaseService
     {
         $creator = $this->ensureAuth(['supplier.add' => 'gas']);
 
-        if (!isset($request['payment_method']) || $request['payment_method'] == null)
+        if (!isset($request['payment_method']) || is_null($request['payment_method']))
             $request['payment_method'] = '';
-        if (!isset($request['order_method']) || $request['order_method'] == null)
+        if (!isset($request['order_method']) || is_null($request['order_method']))
             $request['order_method'] = '';
 
         $supplier = new Supplier();
@@ -99,14 +99,19 @@ class SuppliersService extends BaseService
         return $supplier;
     }
 
-    public function catalogue($id, $format)
+    public function catalogue($id, $format, array $request)
     {
         $this->ensureAuth();
         $supplier = $this->show($id);
         $filename = sprintf('Listino %s.%s', $supplier->name, $format);
 
+        if (isset($request['printable']))
+            $products = $supplier->products()->whereIn('id', $request['printable'])->get();
+        else
+            $products = $supplier->products()->where('active', true)->get();
+
         if ($format == 'pdf') {
-            $html = view('documents.cataloguepdf', ['supplier' => $supplier])->render();
+            $html = view('documents.cataloguepdf', ['supplier' => $supplier, 'products' => $products])->render();
             PDF::SetTitle(_i('Listino %s del %s', $supplier->name, date('d/m/Y')));
             PDF::AddPage();
             PDF::writeHTML($html, true, false, true, false, '');
@@ -115,14 +120,32 @@ class SuppliersService extends BaseService
         elseif ($format == 'csv') {
             $currency = currentAbsoluteGas()->currency;
             $headers = [_i('Nome'), _i('Unità di Misura'), _i('Prezzo Unitario (%s)', $currency), _i('Trasporto (%s)', $currency)];
-            return output_csv($filename, $headers, $supplier->products, function($product) {
-                $row = [];
-                $row[] = $product->name;
-                $row[] = $product->measure->printableName();
-                $row[] = printablePrice($product->price, ',');
-                $row[] = printablePrice($product->transport, ',');
-                return $row;
-            });
+
+            $data = [];
+
+            foreach($products as $product) {
+                if ($product->variants->isEmpty()) {
+                    $row = [];
+                    $row[] = $product->name;
+                    $row[] = $product->measure->printableName();
+                    $row[] = printablePrice($product->price, ',');
+                    $row[] = printablePrice($product->transport, ',');
+                    $data[] = $row;
+                }
+                else {
+                    $combinations = $product->variantsCombinations();
+                    foreach($combinations as $combination) {
+                        $row = [];
+                        $row[] = sprintf('%s - %s', $product->name, $combination->name);
+                        $row[] = $product->measure->printableName();
+                        $row[] = printablePrice($combination->price, ',');
+                        $row[] = printablePrice($product->transport, ',');
+                        $data[] = $row;
+                    }
+                }
+            }
+
+            return output_csv($filename, $headers, $data, null);
         }
     }
 

@@ -42,7 +42,7 @@ class LoginController extends Controller
         if ($gas->restricted == '1') {
             $username = $request->input('username');
             $user = User::where('username', $username)->first();
-            if ($user == null || $user->can('gas.access', $gas) == false) {
+            if (is_null($user) || $user->can('gas.access', $gas) == false) {
                 return redirect(url('login'));
             }
         }

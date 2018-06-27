@@ -70,8 +70,14 @@ class ImportLegacy extends Command
 
     private function appendBalance($obj, $row, $full)
     {
-        if ($this->last_balance_date == null)
-            $this->last_balance_date = $row->last_balance_date;
+        if (is_null($this->last_balance_date)) {
+            if (isset($row->last_balance_date)) {
+                $this->last_balance_date = $row->last_balance_date;
+            }
+            else {
+                $this->last_balance_date = date('Y-m-d');
+            }
+        }
 
         $balance = new Balance();
         $balance->target_id = $obj->id;
@@ -79,14 +85,14 @@ class ImportLegacy extends Command
         $balance->date = $this->last_balance_date;
 
         if ($full) {
-            $balance->bank = $row->last_bank_balance;
-            $balance->cash = $row->last_cash_balance;
+            $balance->bank = $row->last_bank_balance ?? 0;
+            $balance->cash = $row->last_cash_balance ?? 0;
             $balance->gas = 0;
-            $balance->suppliers = $row->last_orders_balance;
-            $balance->deposits = $row->last_deposit_balance;
+            $balance->suppliers = $row->last_orders_balance ?? 0;
+            $balance->deposits = $row->last_deposit_balance ?? 0;
         }
         else {
-            $balance->bank = $row->last_balance;
+            $balance->bank = $row->last_balance ?? 0;
         }
 
         $balance->save();
@@ -99,14 +105,14 @@ class ImportLegacy extends Command
             $balance->current = true;
 
             if ($full) {
-                $balance->bank = $row->current_bank_balance;
-                $balance->cash = $row->current_cash_balance;
+                $balance->bank = $row->current_bank_balance ?? 0;
+                $balance->cash = $row->current_cash_balance ?? 0;
                 $balance->gas = 0;
-                $balance->suppliers = $row->current_orders_balance;
-                $balance->deposits = $row->current_deposit_balance;
+                $balance->suppliers = $row->current_orders_balance ?? 0;
+                $balance->deposits = $row->current_deposit_balance ?? 0;
             }
             else {
-                $balance->bank = $row->current_balance;
+                $balance->bank = $row->current_balance ?? 0;
             }
 
             $balance->save();
@@ -120,8 +126,13 @@ class ImportLegacy extends Command
         else
             $table = 'Gas_files';
 
-        $query = 'SELECT * FROM ' . $table;
-        $result = $old_db->select($query);
+        try {
+            $query = 'SELECT * FROM ' . $table;
+            $result = $old_db->select($query);
+        }
+        catch(\Exception $e) {
+            return;
+        }
 
         foreach ($result as $row) {
             try {
@@ -274,9 +285,12 @@ class ImportLegacy extends Command
             $master_gas = $obj;
             $this->appendBalance($obj, $row, true);
 
-            $obj->setConfig('year_closing', $row->payment_date);
-            $obj->setConfig('annual_fee_amount', $row->default_fee);
-            $obj->setConfig('deposit_amount', $row->default_deposit);
+            if (isset($row->payment_date))
+                $obj->setConfig('year_closing', $row->payment_date);
+            if (isset($row->default_fee))
+                $obj->setConfig('annual_fee_amount', $row->default_fee);
+            if (isset($row->default_deposit))
+                $obj->setConfig('deposit_amount', $row->default_deposit);
         }
 
         $map['deliveries'] = [];
@@ -318,7 +332,7 @@ class ImportLegacy extends Command
                 $obj->password = Hash::make($row->login);
                 $obj->birthday = $row->birthday;
                 $obj->family_members = $row->family;
-                $obj->taxcode = $row->codfisc ? $row->codfisc : '';
+                $obj->taxcode = $row->codfisc ?? '';
                 $obj->member_since = $row->join_date;
                 $obj->card_number = $row->card_number;
                 $obj->last_login = $row->lastlogin;
@@ -446,6 +460,8 @@ class ImportLegacy extends Command
                 $obj->payment_method = $row->paying_mode;
                 $obj->save();
 
+                $master_gas->suppliers()->attach($obj->id);
+
                 $this->handleContact('address', 'address', $row, $obj);
                 $this->handleContact('phone', 'phone', $row, $obj);
                 $this->handleContact('email', 'mail', $row, $obj);
@@ -551,7 +567,7 @@ class ImportLegacy extends Command
                 $obj->package_size = $row->stock_size;
                 $obj->min_quantity = $row->minimum_order;
                 $obj->multiple = $row->multiple_order;
-                $obj->max_available = $row->total_max_order;
+                $obj->max_available = $row->total_max_order ?? 0;
 
                 if (isset($map['categories'][$row->category]))
                     $obj->category_id = $map['categories'][$row->category];

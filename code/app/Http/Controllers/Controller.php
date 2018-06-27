@@ -54,16 +54,6 @@ class Controller extends BaseController
         ]);
     }
 
-    protected function handleDirectFileUpload($request, $field, $obj)
-    {
-        if ($request->hasFile($field)) {
-            $file = $request->file($field);
-            $filename = str_random(30);
-            $file->move(gas_storage_path('app'), $filename);
-            $obj->$field = sprintf('app/%s', $filename);
-        }
-    }
-
     public function objhead(Request $request, $id)
     {
         $class = $this->reference_class;

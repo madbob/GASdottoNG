@@ -51,6 +51,43 @@ class Aggregate extends Model implements Feedable
         return $this->hasMany('App\Order')->with('supplier')->with('products')->orderBy('end', 'desc');
     }
 
+    public function scopeSupplier($query, $supplier_id)
+    {
+        $query->whereHas('orders', function ($query) use ($supplier_id) {
+            $query->where('supplier_id', '=', $supplier_id);
+        });
+    }
+
+    public static function easyFilter($supplier, $startdate, $enddate, $statuses = null)
+    {
+        if (is_object($supplier))
+            $supplier_id = $supplier->id;
+        else
+            $supplier_id = $supplier;
+
+        if ($statuses == null)
+            $statuses = ['open', 'closed', 'shipped', 'suspended', 'archived'];
+
+        /*
+            Questa funzione dovrebbe prendere in considerazione anche i permessi
+            dell'utente corrente, e tornare solo gli aggregati che contengono
+            ordini tipo:
+            $user->can('supplier.orders', $order->supplier) || $user->can('supplier.shippings', $order->supplier)
+        */
+
+        $orders = self::with('orders')->whereHas('orders', function ($query) use ($supplier_id, $startdate, $enddate, $statuses) {
+            if (!empty($supplier_id))
+                $query->where('supplier_id', '=', $supplier_id);
+            $query->where('start', '>=', $startdate)->where('end', '<=', $enddate)->whereIn('status', $statuses);
+        })->get();
+
+        $orders->sort(function($a, $b) {
+            return strcmp($a->shipping, $b->shipping);
+        });
+
+        return $orders;
+    }
+
     public function getStatusAttribute()
     {
         $priority = ['suspended', 'open', 'closed', 'shipped', 'archived'];
@@ -232,6 +269,19 @@ class Aggregate extends Model implements Feedable
     {
         foreach ($this->orders as $order) {
             if ($order->isRunning()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function canShip()
+    {
+        $user = Auth::user();
+
+        foreach ($this->orders as $order) {
+            if ($user->can('supplier.shippings', $order->supplier)) {
                 return true;
             }
         }

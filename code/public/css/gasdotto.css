@@ -133,6 +133,9 @@ table .form-group {
 .booking-product .inline-calculator-trigger {
   cursor: pointer; }
 
+.booking-product .mobile-quantity-switch {
+  margin-top: 10px; }
+
 .variants-editor .variant-descr {
   margin-top: 10px; }
 
@@ -221,7 +224,28 @@ table .form-group {
   font-family: 'Glyphicons Halflings'; }
 
 .img-preview img {
-  max-height: 150px; }
+  max-height: 240px; }
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap; }
+  .gallery > span {
+    --ratio: calc(var(--w) / var(--h));
+    --row-height: 35rem;
+    flex-basis: calc(var(--ratio) * var(--row-height));
+    margin: 0.25rem;
+    flex-grow: calc(var(--ratio) * 100); }
+    .gallery > span > img {
+      display: block;
+      width: 100%; }
+  .gallery::after {
+    --ratio: calc(var(--w) / var(--h));
+    --row-height: 35rem;
+    flex-basis: calc(var(--ratio) * var(--row-height));
+    --w: 2;
+    --h: 1;
+    content: '';
+    flex-grow: 100; }
 
 .address-popover {
   width: 400px;

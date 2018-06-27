@@ -37,7 +37,7 @@ class UsersService extends BaseService
     public function show($id)
     {
         $user = Auth::user();
-        if ($user == null) {
+        if (is_null($user)) {
             throw new AuthException(401);
         }
 
@@ -118,7 +118,7 @@ class UsersService extends BaseService
     public function update($id, array $request)
     {
         $user = Auth::user();
-        if ($user == null) {
+        if (is_null($user)) {
             throw new AuthException(401);
         }
 
@@ -145,9 +145,11 @@ class UsersService extends BaseService
 
             if (isset($request['card_number'])) {
                 $card_number = $request['card_number'];
-                $test = User::where('id', '!=', $user->id)->where('gas_id', $user->gas_id)->where('card_number', $card_number)->first();
-                if ($test != null) {
-                    throw new IllegalArgumentException(_i('Numero tessera già assegnato'), 'card_number');
+                if (!empty($card_number)) {
+                    $test = User::where('id', '!=', $user->id)->where('gas_id', $user->gas_id)->where('card_number', $card_number)->first();
+                    if ($test != null) {
+                        throw new IllegalArgumentException(_i('Numero tessera già assegnato'), 'card_number');
+                    }
                 }
             }
 
@@ -170,7 +172,7 @@ class UsersService extends BaseService
                 });
             }
 
-            if(!empty($user->gas->rid['iban'])) {
+            if($user->gas->hasFeature('rid')) {
                 $rid_info['iban'] = $request['rid->iban'] ?? $user->rid['iban'];
                 $rid_info['id'] = $request['rid->id'] ?? $user->rid['id'];
                 $rid_info['date'] = isset($request['rid->date']) ? decodeDate($request['rid->date']) : $user->rid['date'];
@@ -184,11 +186,7 @@ class UsersService extends BaseService
             $user->save();
 
             if (isset($request['picture'])) {
-                $file = $request['picture'];
-                $filename = str_random(30);
-                $file->move(gas_storage_path('app'), $filename);
-                $user->picture = sprintf('app/%s', $filename);
-                $user->save();
+                saveFile($request['picture'], $user, 'picture');
             }
 
             $user->updateContacts($request);
@@ -201,15 +199,7 @@ class UsersService extends BaseService
     public function picture($id)
     {
         $user = User::findOrFail($id);
-
-        $path = gas_storage_path($user->picture);
-        if (file_exists($path)) {
-            return response()->download($path);
-        }
-        else {
-            Log::error(_i('File non trovato: %s', $path));
-            return '';
-        }
+        return downloadFile($user, 'picture');
     }
 
     public function destroy($id)

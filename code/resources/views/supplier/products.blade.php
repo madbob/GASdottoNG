@@ -19,6 +19,9 @@
                     'supplier_id' => $supplier->id
                 ]
             ])
+
+            <button class="btn btn-default export-custom-products-list" data-export-url="{{ url('suppliers/catalogue/' . $supplier->id . '/pdf') }}">{{ _i('Listino PDF') }}</button>
+            <button class="btn btn-default export-custom-products-list" data-export-url="{{ url('suppliers/catalogue/' . $supplier->id . '/csv') }}">{{ _i('Listino CSV') }}</button>
         </div>
     </div>
 
@@ -37,10 +40,10 @@
     </div>
 
     <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="product-full-list-{{ $supplier->id }}">
+        <div role="tabpanel" class="tab-pane details-list active" id="product-full-list-{{ $supplier->id }}">
             @include('supplier.products_details', ['supplier' => $supplier])
         </div>
-        <div role="tabpanel" class="tab-pane" id="product-rapid-list-{{ $supplier->id }}">
+        <div role="tabpanel" class="tab-pane rapid-list" id="product-rapid-list-{{ $supplier->id }}">
         </div>
     </div>
 @else

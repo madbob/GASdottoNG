@@ -23,6 +23,25 @@
                         {{ _i("Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si trovano le informazioni relative alle singole prenotazioni.") }}
                     </p>
 
+                    @if($currentgas->deliveries->isEmpty() == false)
+                        @include('commons.radios', [
+                            'name' => 'shipping_place',
+                            'label' => _i('Luogo di Consegna'),
+                            'labelsize' => 2,
+                            'fieldsize' => 10,
+                            'values' => array_merge(
+                                [0 => (object)['name' => 'Tutti']],
+                                as_choosable($currentgas->deliveries, function($i, $a) {
+                                    return $a->id;
+                                }, function($i, $a) {
+                                    return $a->name;
+                                }, function($i, $a) {
+                                    return false;
+                                })
+                            )
+                        ])
+                    @endif
+
                     @include('order.filesmail', ['contacts' => $contacts])
                 </div>
                 <div class="modal-footer">
@@ -88,7 +107,7 @@
 </div>
 
 <div class="modal fade close-on-submit" id="all-products-document-{{ $rand }}" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form class="form-horizontal direct-submit" method="GET" action="{{ url('orders/document/' . $order->id . '/table') }}" data-toggle="validator" novalidate>
                 <div class="modal-header">

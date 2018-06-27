@@ -42,6 +42,7 @@ else {
     'name' => 'date',
     'label' => _i('Data'),
     'mandatory' => true,
+    'defaults_now' => true,
     'disabled' => ($invoice && $invoice->status == 'payed')
 ])
 

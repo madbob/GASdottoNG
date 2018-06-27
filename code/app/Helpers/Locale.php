@@ -13,7 +13,7 @@ function currentLang()
             Serve soprattutto a far funzionare gli unit test...
         */
         $gas = currentAbsoluteGas();
-        if ($gas == null)
+        if (is_null($gas))
             return 'it_IT';
         else
             $lang = currentAbsoluteGas()->getConfig('language');

@@ -8,7 +8,11 @@ trait CreditableTrait
 {
     public function balances()
     {
-        return $this->morphMany('App\Balance', 'target')->orderBy('date', 'desc');
+        $proxy = $this->getBalanceProxy();
+        if (is_null($proxy))
+            return $this->morphMany('App\Balance', 'target')->orderBy('date', 'desc');
+        else
+            return $proxy->balances();
     }
 
     private function fixFirstBalance()
@@ -21,6 +25,7 @@ trait CreditableTrait
         $balance->gas = 0;
         $balance->suppliers = 0;
         $balance->deposits = 0;
+        $balance->paypal = 0;
         $balance->current = true;
         $balance->date = date('Y-m-d');
         $balance->save();
@@ -63,9 +68,7 @@ trait CreditableTrait
         $classes = DB::table('balances')->select('target_type')->distinct()->get();
         foreach($classes as $c) {
             $class = $c->target_type;
-
             $current_status[$class] = [];
-            $fields = $class::balanceFields();
 
             if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
                 $objects = $class::withTrashed()->get();
@@ -73,21 +76,39 @@ trait CreditableTrait
                 $objects = $class::all();
 
             foreach($objects as $obj) {
-                $now = [];
-                $cb = $obj->current_balance;
+                $proxy = $obj->getBalanceProxy();
+                if ($proxy != null)
+                    $obj = $proxy;
 
-                if ($cb == null) {
-                    foreach($fields as $field => $name)
-                        $now[$field] = 0;
+                $class = get_class($obj);
+                $fields = $class::balanceFields();
+
+                if (!isset($current_status[$class]))
+                    $current_status[$class] = [];
+
+                /*
+                    Attenzione: qui prendo in considerazione gli eventuali
+                    "proxy" degli elementi coinvolti nei movimenti, che
+                    all'interno di questo ciclo possono anche presentarsi più
+                    volte (e.g. diversi ordini per lo stesso fornitore).
+                    Ma il reset lo devo fare una volta sola, altrimenti cancello
+                    a ritroso i saldi salvati passati.
+                */
+                if (!isset($current_status[$class][$obj->id])) {
+                    $cb = $obj->current_balance;
+
+                    if (is_null($cb)) {
+                        foreach($fields as $field => $name)
+                            $now[$field] = 0;
+                    }
+                    else {
+                        foreach($fields as $field => $name)
+                            $now[$field] = $cb->$field;
+                    }
+
+                    $current_status[$class][$obj->id] = $now;
+                    $obj->resetCurrentBalance();
                 }
-                else {
-                    foreach($fields as $field => $name)
-                        $now[$field] = $cb->$field;
-                }
-
-                $current_status[$class][$obj->id] = $now;
-
-                $obj->resetCurrentBalance();
             }
         }
 
@@ -133,12 +154,24 @@ trait CreditableTrait
         $diff = [];
 
         foreach($old_balances as $class => $ids) {
-            $fields = $class::balanceFields();
-
             foreach($ids as $id => $old) {
-                $obj = $class::find($id);
-                if ($obj == null)
+                if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
+                    $obj = $class::withTrashed()->find($id);
+                else
+                    $obj = $class::find($id);
+
+                if (is_null($obj))
                     continue;
+
+                $proxy = $obj->getBalanceProxy();
+                if ($proxy != null) {
+                    $obj = $proxy;
+                    $proxy_class = get_class($obj);
+                    $fields = $proxy_class::balanceFields();
+                }
+                else {
+                    $fields = $class::balanceFields();
+                }
 
                 $cb = $obj->current_balance;
                 foreach($fields as $field => $name) {
@@ -159,19 +192,26 @@ trait CreditableTrait
 
     public function getCurrentBalanceAttribute()
     {
-        $balance = $this->balances()->where('current', true)->first();
-        if ($balance == null) {
-            $balance = $this->balances()->where('current', false)->first();
-            if ($balance == null) {
-                $balance = $this->fixFirstBalance();
-            }
-            else {
-                $balance->current = true;
-                $balance->save();
-            }
-        }
+        $proxy = $this->getBalanceProxy();
 
-        return $balance;
+        if(is_null($proxy)) {
+            $balance = $this->balances()->where('current', true)->first();
+            if (is_null($balance)) {
+                $balance = $this->balances()->where('current', false)->first();
+                if (is_null($balance)) {
+                    $balance = $this->fixFirstBalance();
+                }
+                else {
+                    $balance->current = true;
+                    $balance->save();
+                }
+            }
+
+            return $balance;
+        }
+        else {
+            return $proxy->current_balance;
+        }
     }
 
     public function getCurrentBalanceAmountAttribute()
@@ -182,17 +222,37 @@ trait CreditableTrait
 
     public function alterBalance($amount, $type = 'bank')
     {
-        if (is_string($type)) {
-            $type = [$type];
+        $proxy = $this->getBalanceProxy();
+
+        if(is_null($proxy)) {
+            if (is_string($type)) {
+                $type = [$type];
+            }
+
+            $balance = $this->current_balance;
+
+            foreach ($type as $t) {
+                if (!isset($balance->$t))
+                    $balance->$t = 0;
+                $balance->$t += $amount;
+            }
+
+            $balance->save();
         }
-
-        $balance = $this->current_balance;
-
-        foreach ($type as $t) {
-            $balance->$t += $amount;
+        else {
+            $proxy->alterBalance($amount, $type);
         }
+    }
 
-        $balance->save();
+    /*
+        Questa funzione è destinata ad essere sovrascritta ove opportuno
+        (laddove esistono classi che possono essere oggetti di un movimento, ma
+        di fatto rappresentano il saldo di qualcos altro. Cfr. gli ordini nei
+        confronti dei fornitori)
+    */
+    public function getBalanceProxy()
+    {
+        return null;
     }
 
     abstract public static function balanceFields();

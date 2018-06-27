@@ -20,7 +20,7 @@ function printablePriceCurrency($price, $separator = '.')
 
 function printableDate($value)
 {
-    if ($value == null) {
+    if (is_null($value)) {
         return _i('Mai');
     }
     else {
@@ -65,7 +65,7 @@ function printableQuantity($quantity, $discrete, $decimals = 2, $separator = '.'
 
 function normalizePercentage($value)
 {
-    if ($value == null)
+    if (is_null($value))
         return '';
     else
         return str_replace(' ', '', $value);
@@ -195,22 +195,21 @@ function http_csv_headers($filename)
 */
 function output_csv($filename, $head, $contents, $format_callback, $out_file = null)
 {
-    $headers = [
-        'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-        'Content-type' => 'text/csv',
-        'Content-Disposition' => 'attachment; filename=' . str_replace(' ', '\\', $filename),
-        'Expires' => '0',
-        'Pragma' => 'public'
-    ];
-
     $callback = function() use ($head, $contents, $format_callback, $out_file) {
-        if ($out_file == null)
+        if (is_null($out_file))
             $FH = fopen('php://output', 'w');
         else
             $FH = fopen($out_file, 'w');
 
-        if ($format_callback == null) {
-            fwrite($FH, $contents);
+        if (is_null($format_callback)) {
+            if (is_string($contents)) {
+                fwrite($FH, $contents);
+            }
+            else if (is_array($contents)) {
+                foreach ($contents as $c) {
+                    fputcsv($FH, $c);
+                }
+            }
         }
         else {
             fputcsv($FH, $head);
@@ -224,7 +223,15 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
         fclose($FH);
     };
 
-    if ($out_file == null) {
+    if (is_null($out_file)) {
+        $headers = [
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename=' . str_replace(' ', '\\', $filename),
+            'Expires' => '0',
+            'Pragma' => 'public'
+        ];
+
         return Response::stream($callback, 200, $headers);
     }
     else {
@@ -256,6 +263,21 @@ function as_selectable($array, $value_callback, $label_callback)
         $ret[] = [
             'value' => $value_callback($i, $a),
             'label' => $label_callback($i, $a),
+        ];
+    }
+
+    return $ret;
+}
+
+function as_choosable($array, $value_callback, $name_callback, $check_callback)
+{
+    $ret = [];
+
+    foreach($array as $i => $a) {
+        $value = $value_callback($i, $a);
+        $ret[$value] = (object) [
+            'name' => $name_callback($i, $a),
+            'checked' => $check_callback($i, $a)
         ];
     }
 

@@ -38,18 +38,7 @@ class GasController extends Controller
     public function getLogo($id)
     {
         $gas = Gas::findOrFail($id);
-        if (!empty($gas->logo)) {
-            $path = gas_storage_path($gas->logo);
-            if (file_exists($path)) {
-                return response()->download($path);
-            }
-            else {
-                $gas->logo = '';
-                $gas->save();
-            }
-        }
-
-        return '';
+        return downloadFile($gas, 'logo');
     }
 
     public function edit($id)
@@ -78,10 +67,13 @@ class GasController extends Controller
 
         switch($group) {
             case 'general':
+                if ($request->hasFile('logo')) {
+                    saveFile($request->file('logo'), $gas, 'logo');
+                }
+
                 $gas->name = $request->input('name');
                 $gas->email = $request->input('email');
                 $gas->message = $request->input('message');
-                $this->handleDirectFileUpload($request, 'logo', $gas);
                 $gas->setConfig('restricted', $request->has('restricted') ? '1' : '0');
                 $gas->setConfig('language', $request->input('language'));
                 $gas->setConfig('currency', $request->input('currency'));
@@ -98,6 +90,26 @@ class GasController extends Controller
                     'org' => $request->input('rid->org'),
                 ];
                 $gas->setConfig('rid', $rid_info);
+
+                $paypal_info = (object) [
+                    'client_id' => $request->input('paypal->client_id'),
+                    'secret' => $request->input('paypal->secret'),
+                    'mode' => $request->input('paypal->mode'),
+                ];
+                $gas->setConfig('paypal', $paypal_info);
+
+                $invoicing_info = $gas->extra_invoicing;
+                $invoicing_info['business_name'] = $request->input('extra_invoicing->business_name');
+                $invoicing_info['taxcode'] = $request->input('extra_invoicing->taxcode');
+                $invoicing_info['vat'] = $request->input('extra_invoicing->vat');
+                $invoicing_info['address'] = $request->input('extra_invoicing->address');
+
+                $reset_counter = $request->input('extra_invoicing->invoices_counter');
+                if (!empty($reset_counter))
+                    $invoicing_info['invoices_counter'] = $reset_counter;
+
+                $gas->setConfig('extra_invoicing', $invoicing_info);
+
                 break;
 
             case 'users':
@@ -106,6 +118,7 @@ class GasController extends Controller
 
             case 'orders':
                 $gas->setConfig('fast_shipping_enabled', $request->has('fast_shipping_enabled') ? '1' : '0');
+                $gas->setConfig('orders_display_columns', $request->input('orders_display_columns'));
                 break;
 
             case 'roles':

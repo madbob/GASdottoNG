@@ -37,7 +37,7 @@ class AuthServiceProvider extends ServiceProvider
                 Gate::define($identifier, function ($user, $obj = null) use ($identifier) {
                     foreach($user->roles as $role) {
                         if ($role->enabledAction($identifier)) {
-                            if($obj == null || $role->applies($obj)) {
+                            if(is_null($obj) || $role->applies($obj)) {
                                 return true;
                             }
                         }

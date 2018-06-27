@@ -36,7 +36,7 @@
 
             @include('commons.statusfield', ['target' => $user])
 
-            @if(!empty($user->gas->rid['iban']))
+            @if($user->gas->hasFeature('rid'))
                 <div class="form-group">
                     <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Configurazione SEPA') }}</label>
 
@@ -61,6 +61,7 @@
     </div>
 
     @if($currentuser->can('movements.admin', $currentgas) || $currentuser->can('movements.view', $currentgas))
+        <hr>
         @include('movement.targetlist', ['target' => $user])
     @endif
 

@@ -59,6 +59,9 @@ class BookingHandler extends Controller
 
             foreach ($order->products as $product) {
                 $quantity = $request->input($product->id, 0);
+                if (empty($quantity))
+                    $quantity = 0;
+
                 $booked = $booking->getBooked($product, true);
 
                 if ($quantity != 0) {
@@ -66,7 +69,7 @@ class BookingHandler extends Controller
 
                     if ($product->variants->isEmpty() == false) {
                         $quantity = 0;
-                        $quantities = $request->input('variant_quantity_'.$product->id);
+                        $quantities = $request->input('variant_quantity_' . $product->id);
 
                         $values = [];
                         foreach ($product->variants as $variant) {
@@ -91,7 +94,7 @@ class BookingHandler extends Controller
                             $query->whereNotIn('id', $saved_variants);
                             $bpv = $query->first();
 
-                            if ($bpv == null) {
+                            if (is_null($bpv)) {
                                 if ($q == 0)
                                     continue;
 
@@ -182,17 +185,6 @@ class BookingHandler extends Controller
             }
             else {
                 if ($delivering) {
-                    /*
-                        Attenzione!!!
-                        Il valore restituito da $booking->check_transport
-                        dipende dallo stato della prenotazione, se è "shipped"
-                        restituisce... la stessa variabile $booking->transport
-                        che vorremmo qui settare!
-                        Dunque: prima ricalcolare il costo di trasporto,
-                        aggiornato in funzione dei prodotti consegnati (salvati
-                        sopra), dopo modificare lo stato
-                    */
-                    $booking->transport = $booking->check_transport;
                     $booking->distributeTransport();
 
                     $new_status = $request->input('action');
@@ -212,8 +204,13 @@ class BookingHandler extends Controller
             }
         }
 
+        /*
+            In contesti diversi ritorno risposte diverse, da cui dipende
+            l'header che verrà visualizzato chiudendo il pannello su cui si è
+            operato
+        */
         if ($delivering == false) {
-            if ($user_id != $user->id && $target_user->isFriend()) {
+            if ($user_id != $user->id && $target_user->isFriend() && $target_user->parent_id == $user->id) {
                 /*
                     Ho effettuato una prenotazione per un amico
                 */
@@ -237,20 +234,15 @@ class BookingHandler extends Controller
         }
         else {
             $subject = $aggregate->bookingBy($user_id);
+            $subject->generateReceipt();
 
-            if ($delivering) {
-                $total = $subject->total_delivered;
-                $action = 'DeliveryUserController@show';
-            }
-            else {
-                $total = $subject->total_value;
-                $action = 'BookingUserController@show';
-            }
+            $total = $subject->total_delivered;
 
             if ($total == 0) {
                 return $this->successResponse();
             }
             else {
+                $action = 'DeliveryUserController@show';
                 return $this->successResponse([
                     'id' => $subject->id,
                     'header' => $subject->printableHeader(),

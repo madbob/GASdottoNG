@@ -43,46 +43,12 @@ class OrdersController extends Controller
 
     private function defaultOrders()
     {
-        /*
-            La selezione degli ordini da visualizzare si può forse fare con una
-            query complessa, premesso che bisogna prendere in considerazione i
-            permessi che l'utente corrente ha nei confronti dei fornitori degli
-            ordini inclusi negli aggregati
-        */
-
-        $orders = [];
-
-        $user = Auth::user();
-        $aggregates = Aggregate::whereHas('orders', function($query) {
-            $query->whereIn('status', ['open', 'closed', 'shipped', 'suspended']);
-        })->with('orders')->get();
-
-        foreach ($aggregates as $aggregate) {
-            $ok = false;
-
-            foreach ($aggregate->orders as $order) {
-                if ($user->can('supplier.orders', $order->supplier) || $user->can('supplier.shippings', $order->supplier)) {
-                    $ok = true;
-                    break;
-                }
-            }
-
-            if ($ok == true) {
-                $orders[] = $aggregate;
-            }
-        }
-
-        return $orders;
+        return Aggregate::easyFilter(0, date('Y-m-d', strtotime('-1 years')), date('Y-m-d', strtotime('+1 years')), ['open', 'closed', 'shipped', 'suspended']);
     }
 
     public function index()
     {
         $orders = $this->defaultOrders();
-
-        usort($orders, function($a, $b) {
-            return strcmp($a->shipping, $b->shipping);
-        });
-
         return view('pages.orders', ['orders' => $orders]);
     }
 
@@ -268,7 +234,6 @@ class OrdersController extends Controller
         DB::beginTransaction();
 
         $order = Order::findOrFail($id);
-
         if ($request->user()->can('supplier.orders', $order->supplier) == false) {
             return $this->errorResponse(_i('Non autorizzato'));
         }
@@ -320,7 +285,7 @@ class OrdersController extends Controller
             $booking_id = $bookings[$i];
 
             $booking = Booking::find($booking_id);
-            if ($booking == null) {
+            if (is_null($booking)) {
                 continue;
             }
 
@@ -338,34 +303,19 @@ class OrdersController extends Controller
 
     public function search(Request $request)
     {
+        $startdate = decodeDate($request->input('startdate'));
+        $enddate = decodeDate($request->input('enddate'));
+        $status = $request->input('status');
         $supplier_id = $request->input('supplier_id');
+        $orders = Aggregate::easyFilter($supplier_id, $startdate, $enddate, $status);
 
-        if (empty($supplier_id)) {
-            $orders = $this->defaultOrders();
-        }
-        else {
-            if ($request->has('startdate') && $request->has('enddate')) {
-                $startdate = decodeDate($request->input('startdate'));
-                $enddate = decodeDate($request->input('enddate'));
-
-                $supplier = Supplier::find($supplier_id);
-                $everything = ($request->user()->can('supplier.orders', $supplier) || $request->user()->can('supplier.shippings', $supplier));
-
-                $orders = Aggregate::whereHas('orders', function ($query) use ($supplier_id, $startdate, $enddate, $everything) {
-                    $query->where('supplier_id', '=', $supplier_id)->where('start', '>=', $startdate)->where('end', '<=', $enddate);
-                    if ($everything == false) {
-                        $query->whereIn('status', ['open', 'shipped', 'archived']);
-                    }
-                })->get();
-            }
-            else {
-                $supplier = Supplier::find($supplier_id);
-                $orders = $supplier->aggregates->take(10)->get();
-            }
-        }
-
-        $list_identifier = $request->input('list_identifier', 'order-list');
-        return view('commons.loadablelist', ['identifier' => $list_identifier, 'items' => $orders]);
+        return view('commons.loadablelist', [
+            'identifier' => !empty($supplier_id) ? 'order-list-' . $supplier_id : 'order-list',
+            'items' => $orders,
+            'legend' => (object)[
+                'class' => 'Aggregate'
+            ],
+        ]);
     }
 
     private function sendDocumentMail($request, $temp_file_path)
@@ -398,7 +348,17 @@ class OrdersController extends Controller
 
         switch ($type) {
             case 'shipping':
-                $html = view('documents.order_shipping', ['order' => $order])->render();
+                $shipping_place = $request->input('shipping_place', 0);
+                if ($shipping_place == '0') {
+                    $bookings = $order->bookings()->toplevel()->get();
+                }
+                else {
+                    $bookings = $order->bookings()->toplevel()->whereHas('user', function($query) use ($shipping_place) {
+                        $query->where('preferred_delivery_id', $shipping_place);
+                    })->get();
+                }
+
+                $html = view('documents.order_shipping', ['order' => $order, 'bookings' => $bookings])->render();
                 $title = _i('Dettaglio Consegne ordine %s presso %s', [$order->internal_number, $order->supplier->name]);
                 $filename = $title . '.pdf';
                 PDF::SetTitle($title);

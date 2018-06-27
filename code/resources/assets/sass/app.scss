@@ -201,6 +201,10 @@ table {
     .inline-calculator-trigger {
         cursor: pointer;
     }
+
+    .mobile-quantity-switch {
+        margin-top: 10px;
+    }
 }
 
 .variants-editor {
@@ -292,7 +296,37 @@ table {
 
 .img-preview {
     img {
-        max-height: 150px;
+        max-height: 240px;
+    }
+}
+
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+
+    > span {
+        --ratio: calc(var(--w) / var(--h));
+        --row-height: 35rem;
+        flex-basis: calc(var(--ratio) * var(--row-height));
+
+        margin: 0.25rem;
+        flex-grow: calc(var(--ratio) * 100);
+
+        > img {
+            display: block;
+            width: 100%;
+        }
+    }
+
+    &::after {
+        --ratio: calc(var(--w) / var(--h));
+        --row-height: 35rem;
+        flex-basis: calc(var(--ratio) * var(--row-height));
+
+        --w: 2;
+        --h: 1;
+        content: '';
+        flex-grow: 100;
     }
 }
 

@@ -22,18 +22,18 @@ class OrderNumbersDispatcher
         $year = date('Y', strtotime($order->start));
 
         if (array_key_exists($year, $this->cache) == false) {
-            $this->cache[$year] = Order::where(DB::raw('YEAR(start)'), $year)->orderBy('start', 'asc')->orderBy('id', 'asc')->get();
+            $this->cache[$year] = Order::where(DB::raw('YEAR(start)'), $year)->orderBy('start', 'asc')->orderBy('id', 'asc')->pluck('start', 'id');
         }
 
         $counter = 0;
 
-        foreach($this->cache[$year] as $cached_order) {
-            if ($cached_order->start < $order->start) {
+        foreach($this->cache[$year] as $id => $start) {
+            if ($start < $order->start) {
                 $counter++;
                 continue;
             }
-            else if ($cached_order->start == $order->start) {
-                if ($cached_order->id < $order->id) {
+            else if ($start == $order->start) {
+                if ($id < $order->id) {
                     $counter++;
                     continue;
                 }

@@ -167,21 +167,7 @@ function generalInit() {
         if ($(e.target).hasClass('date'))
             return;
 
-        if ($(this).attr('data-dynamic-contents-callback-init') == 'true')
-            return;
-        $(this).attr('data-dynamic-contents-callback-init', 'true');
-
         var contents = $(this).find('.modal-content');
-        contents.empty().append(loadingPlaceholder());
-        var url = $(this).attr('data-contents-url');
-
-        $.get(url, function(data) {
-            contents.empty().append(data);
-        });
-    });
-
-    $('.collapse.dynamic-contents').on('show.bs.collapse', function(e) {
-        var contents = $(this);
         contents.empty().append(loadingPlaceholder());
         var url = $(this).attr('data-contents-url');
 
@@ -208,56 +194,6 @@ function generalInit() {
     $('.loadablelist').each(function() {
         testListsEmptiness($(this));
     });
-}
-
-function randomString(total)
-{
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for( var i = 0; i < total; i++ )
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
-}
-
-function parseFullDate(string) {
-    var components = string.split(' ');
-
-    var month = 0;
-    var months = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
-    for(month = 0; month < months.length; month++) {
-        if (components[2] == months[month]) {
-            month++;
-            break;
-        }
-    }
-
-    var date = components[3] + '-' + month + '-' + components[1];
-    return Date.parse(date);
-}
-
-function parseFloatC(value) {
-    if (typeof value === 'undefined')
-        return 0;
-
-    var ret = parseFloat(value.replace(/,/, '.'));
-    if (isNaN(ret))
-        ret = 0;
-
-    return ret;
-}
-
-function priceRound(price) {
-    return (Math.round(price * 100) / 100).toFixed(2);
-}
-
-/*
-    Il selector jQuery si lamenta quando trova un ':' ad esempio come valore di
-    un attributo, questa funzione serve ad applicare l'escape necessario
-*/
-function sanitizeId(identifier) {
-    return identifier.replace(/:/g, '\\:').replace(/\[/g, '\\[').replace(/\]/g, '\\]');
 }
 
 function voidForm(form) {
@@ -351,12 +287,7 @@ function wizardLoadPage(node, contents) {
 function testListsEmptiness(list) {
     var id = list.attr('id');
     var c = list.find('a').length;
-    var alert = $('#empty-' + id);
-
-    if (c == 0)
-        alert.removeClass('hidden');
-    else
-        alert.addClass('hidden');
+    $('#empty-' + id).toggleClass('hidden', (c != 0));
 }
 
 function afterListChanges(list) {
@@ -404,12 +335,12 @@ function completionRowsInit(node) {
     });
 }
 
-function loadingPlaceholder() {
-    return $('<div class="progress"><div class="progress-bar progress-bar-striped active" style="width: 100%"></div></div>');
-}
-
-function refreshFilter() {
-    $('.form-filler').find('button[type=submit]').click();
+function refreshFilter(form) {
+    var target = form.find('input:hidden[name=data-refresh-target]').val();
+    if (target)
+        $('.form-filler').filter(target).find('button[type=submit]').click();
+    else
+        $('.form-filler').find('button[type=submit]').click();
 }
 
 function setupImportCsvEditor() {
@@ -718,10 +649,6 @@ function updateOrderSummary(form) {
         });
     });
 }
-
-$('body').on('keyup', '.order-summary input', function() {
-    updateOrderSummary($(this));
-});
 
 /*******************************************************************************
 	Prenotazioni / Consegne
@@ -1078,12 +1005,15 @@ function displayRecalculatedBalances(form, data) {
     var modal = $('#display-recalculated-balance-modal');
 
     if (data.diffs.length != 0) {
-        modal.find('a.hidden').removeClass('hidden');
+        modal.find('a.table_to_csv').removeClass('hidden');
         var table = modal.find('.broken.hidden').removeClass('hidden').find('tbody');
         for (var name in data.diffs) {
             if (data.diffs.hasOwnProperty(name))
                 table.append('<tr><td>' + name + '</td><td>' + data.diffs[name][0] + '</td><td>' + data.diffs[name][1] + '</td></tr>');
         }
+    }
+    else {
+        modal.find('.fixed.hidden').removeClass('hidden');
     }
 
     modal.modal('show');
@@ -1226,60 +1156,6 @@ $(document).ready(function() {
             i.attr('type', 'password');
 
         $(this).toggleClass('glyphicon-eye-open').toggleClass('glyphicon-eye-close');
-    });
-
-    $('body').on('submit', '.list-filter form', function(e) {
-        e.preventDefault();
-        var form = $(this);
-        var data = form.serializeArray();
-
-        var targetid = $(this).closest('.list-filter').attr('data-list-target');
-        var target = $(targetid);
-        target.empty().append(loadingPlaceholder());
-
-        $.ajax({
-            method: form.attr('method'),
-            url: form.attr('action'),
-            data: data,
-            dataType: 'html',
-
-            success: function(data) {
-                target.replaceWith(data);
-            }
-        });
-
-    }).on('change', '.list-filter input, .list-filter select', function() {
-        $(this).closest('form').submit();
-
-    }).on('show.bs.collapse', '.list-filter', function() {
-        $(this).find('form').submit();
-
-    }).on('click', '.list-filter .btn-danger', function(e) {
-        e.preventDefault();
-        var panel = $(this).closest('.list-filter');
-        var form = panel.find('form');
-
-        var targetid = panel.attr('data-list-target');
-        var target = $(targetid);
-        target.empty().append(loadingPlaceholder());
-
-        panel.collapse('hide');
-
-        var data = {};
-        form.find('.enforce_filter').each(function() {
-            data[$(this).attr('name')] = $(this).val();
-        });
-
-        $.ajax({
-            method: form.attr('method'),
-            url: form.attr('action'),
-            data: data,
-            dataType: 'html',
-
-            success: function(data) {
-                target.replaceWith(data);
-            }
-        });
     });
 
     $('body').on('click', '[data-toggle="modal"]', function(e) {
@@ -1579,6 +1455,46 @@ $(document).ready(function() {
         }
     });
 
+    $('body').on('click', '.table-icons-legend button', function() {
+        var legend = $(this).closest('.table-icons-legend');
+        var target = legend.attr('data-list-target');
+
+        if ($(this).hasClass('active')) {
+            $(this).removeClass('active');
+
+            $('.table' + target + ' tbody tr').each(function() {
+                $(this).show();
+            });
+        }
+        else {
+            /*
+                Qui devo considerare la somma di tutti i filtri che sono stati
+                attivati: se un elemento risulterebbe nascosto a fronte del
+                click su un attributo, potrebbero essercene altri che lo
+                mantengono visibile
+            */
+            legend.find('button').removeClass('active');
+            $(this).addClass('active');
+            var c = $(this).find('span.glyphicon').attr('class');
+
+            $('.table' + target + ' tbody tr').each(function() {
+                var show = false;
+
+                $(this).find('span.glyphicon').each(function() {
+                    var icons = $(this).attr('class');
+                    show = (icons == c);
+                    if (show)
+                        return false;
+                });
+
+                if (show)
+                    $(this).show();
+                else
+                    $(this).hide();
+            });
+        }
+    });
+
     $('body').on('click', '.list-filters button', function() {
         var filter = $(this).closest('.list-filters');
         var target = filter.attr('data-list-target');
@@ -1606,6 +1522,23 @@ $(document).ready(function() {
         }
     });
 
+    $('body').on('keyup', '.table-text-filter', function() {
+        var text = $(this).val().toLowerCase();
+        var target = $(this).attr('data-list-target');
+
+        if (text == '') {
+            $('.table' + target + ' tbody tr').show();
+        }
+        else {
+            $('.table' + target + ' tbody .text-filterable-cell').each(function() {
+                if ($(this).text().toLowerCase().indexOf(text) == -1)
+                    $(this).closest('tr').hide();
+                else
+                    $(this).closest('tr').show();
+            });
+        }
+    });
+
     $('body').on('change', '.table-filters input:radio', function() {
         var filter = $(this).closest('.table-filters');
         var target = filter.attr('data-table-target');
@@ -1619,10 +1552,7 @@ $(document).ready(function() {
         else {
             table.find('tr[data-filtered-' + attribute + ']').each(function() {
                 var attr = $(this).attr('data-filtered-' + attribute);
-                if (attr == value)
-                    $(this).removeClass('hidden');
-                else
-                    $(this).addClass('hidden');
+                $(this).toggleClass('hidden', (attr != value));
             });
         }
     });
@@ -1795,7 +1725,7 @@ $(document).ready(function() {
                         <div class="col-sm-8"><input type="password" class="form-control" name="password_confirm" value="" autocomplete="off"></div>\
                     </div>\
                     <div class="form-group">\
-                        <div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Salva') + '</button></div>\
+                        <div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Conferma') + '</button></div>\
                     </div>\
                 </div>');
 
@@ -1898,10 +1828,7 @@ $(document).ready(function() {
         var method_string = 'when-method-' + method;
         var modal = $(this).closest('.movement-modal');
         modal.find('[class*="when-method-"]').each(function() {
-            if ($(this).hasClass(method_string))
-                $(this).removeClass('hidden');
-            else
-                $(this).addClass('hidden');
+            $(this).toggleClass('hidden', ($(this).hasClass(method_string) == false));
         });
     })
     .on('change', '.movement-modal input[name=amount]', function() {
@@ -1948,10 +1875,7 @@ $(document).ready(function() {
                 molti tipi di movimento vanno ad incidere sui saldi globali
                 anche quando il GAS non è direttamente coinvolto
             */
-            if(type != 'App\\Gas' && type != sender && type != target)
-                $(this).addClass('hidden');
-            else
-                $(this).removeClass('hidden');
+            $(this).toggleClass('hidden', (type != 'App\\Gas' && type != sender && type != target));
         });
 
         table.find('thead input[data-active-for]').each(function() {
@@ -2052,6 +1976,7 @@ $(document).ready(function() {
                         error: function() {
                             var button = form.find('button:submit');
                             inlineFeedback(button, _('ERRORE'));
+                            form.attr('data-password-protected-verified', '0');
                         }
                     });
                 }
@@ -2164,21 +2089,52 @@ $(document).ready(function() {
         return false;
     });
 
+    $('body').on('click', '.export-custom-products-list', function(event) {
+        event.preventDefault();
+        var tab = $(this).closest('.tab-pane').find('.tab-pane.active');
+
+        var printable = new Array();
+
+        if (tab.hasClass('details-list')) {
+            tab.find('.loadablelist a:visible').each(function() {
+                printable.push($(this).attr('data-element-id'));
+            });
+        }
+        else {
+            tab.find('.table tr:visible').each(function() {
+                printable.push($(this).attr('data-element-id'));
+            });
+        }
+
+        var url = $(this).attr('data-export-url') + '?' + $.param({printable: printable});
+        window.open(url, '_blank');
+    });
+
     /*
         Gestione utenti
     */
 
     $('body').on('change', '.user-editor input:radio[name=status], .supplier-editor input:radio[name=status]', function() {
-        var date = $(this).closest('.form-group').find('input.date').closest('.status-date');
-        if ($(this).val() == 'deleted')
-            date.removeClass('hidden');
-        else
-            date.addClass('hidden');
+        $(this).closest('.form-group').find('input.date').closest('.status-date').toggleClass('hidden', ($(this).val() != 'deleted'));
     });
 
     /*
     	Gestione ordini
     */
+
+    $('body').on('click', '.order-columns-selector a', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var box = $(this).find('input:checkbox');
+        var name = box.val();
+        box.prop('checked', !box.prop('checked'));
+        var show = box.prop('checked');
+        $(this).closest('.btn-group').siblings('.order-summary').first().find('.order-cell-' + name).toggleClass('hidden', !show);
+    });
+
+    $('body').on('keyup', '.order-summary input', function() {
+        updateOrderSummary($(this));
+    });
 
     $('body').on('click', '.order-summary .toggle-product-abilitation', function() {
         $('.order-summary tr.product-disabled').toggle();
@@ -2356,6 +2312,24 @@ $(document).ready(function() {
         return false;
     });
 
+    $('body').on('click', '.mobile-quantity-switch button', function(e) {
+        e.preventDefault();
+
+        var input = $(this).closest('.mobile-quantity-switch').siblings('.booking-product-quantity').find('input.number');
+
+        var original = parseFloat(input.val());
+        if ($(this).hasClass('plus')) {
+            input.val(original + 1);
+        }
+        else {
+            if (original == 0)
+                return;
+            input.val(original - 1);
+        }
+
+        input.keyup();
+    });
+
     $('body').on('click', '.add-booking-product', function(e) {
         e.preventDefault();
         var table = $(this).closest('table');
@@ -2405,6 +2379,24 @@ $(document).ready(function() {
         });
 
         return false;
+    });
+
+    $('body').on('click', '.load-other-booking', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('data-booking-url');
+
+        var fill_target = $(this).closest('.other-booking');
+        fill_target.empty().append(loadingPlaceholder());
+
+        $.ajax({
+            url: url,
+            method: 'GET',
+            dataType: 'HTML',
+            success: function(data) {
+                data = $(data);
+                fill_target.empty().append(data);
+            }
+        });
     });
 
     /*

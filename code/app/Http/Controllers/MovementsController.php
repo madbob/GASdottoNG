@@ -14,6 +14,7 @@ use PDF;
 
 use App\User;
 use App\Invoice;
+use App\Receipt;
 use App\MovementType;
 
 use App\Services\MovementsService;
@@ -43,9 +44,25 @@ class MovementsController extends BackedController
                     Qui si finisce quando si accede alla pagina principale della
                     contabilità
                 */
+                $gas = Auth::user()->gas;
                 $data['types'] = MovementType::types();
-                $data['invoices'] = Invoice::orderBy('date', 'desc')->get();
-                $data['balance'] = Auth::user()->gas->current_balance;
+                $data['balance'] = $gas->current_balance;
+
+                $one_month_ago = date('Y-m-d', strtotime('-1 months'));
+
+                $invoices = Invoice::where('status', '!=', 'payed')->orWhereHas('payment', function($query) use ($one_month_ago) {
+                    $query->where('date', '>=', $one_month_ago);
+                })->orWhereDoesntHave('payment')->get();
+
+                if ($gas->hasFeature('extra_invoicing')) {
+                    $receipts = Receipt::where('date', '>=', $one_month_ago)->get();
+                    foreach($receipts as $r)
+                        $invoices->push($r);
+                }
+
+                $invoices = Invoice::doSort($invoices);
+                $data['invoices'] = $invoices;
+
                 return view('pages.movements', $data);
             }
             else {
@@ -53,13 +70,6 @@ class MovementsController extends BackedController
 
                 if ($format == 'none') {
                     if ($request->input('generic_target_id', '0') != '0') {
-                        $target_id = $request->input('generic_target_id');
-                        $target_type = $request->input('generic_target_type');
-                        $generic_target = $target_type::find($target_id);
-                        if ($generic_target) {
-                            $data['main_target'] = $generic_target;
-                        }
-
                         return view('movement.bilist', $data);
                     }
                     else {
@@ -105,7 +115,7 @@ class MovementsController extends BackedController
     public function create(Request $request)
     {
         $type = $request->input('type', null);
-        if ($type == null) {
+        if (is_null($type)) {
             return view('movement.create');
         }
 
@@ -289,7 +299,7 @@ class MovementsController extends BackedController
         try {
             $diffs = $this->service->recalculate();
 
-            if ($diffs == null) {
+            if (is_null($diffs)) {
                 return $this->errorResponse(_i('Errore'));
             }
             else {

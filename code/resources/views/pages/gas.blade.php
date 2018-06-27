@@ -86,6 +86,18 @@
                                 <div class="col-md-12">
                                     @include('commons.boolfield', ['obj' => $gas, 'name' => 'fast_shipping_enabled', 'label' => _i('Abilita Consegne Rapide')])
 
+                                    <div class="form-group">
+                                        <?php $columns = $currentgas->orders_display_columns ?>
+                                        <label for="order_columns" class="col-sm-{{ $labelsize }} control-label">{{ _i('Colonne Riassunto Ordini') }}</label>
+
+                                        <div class="col-sm-{{ $fieldsize }}">
+                                            @foreach(App\Order::displayColumns() as $identifier => $metadata)
+                                                <input type="checkbox" name="orders_display_columns[]" value="{{ $identifier }}" data-toggle="toggle" data-size="mini" {{ in_array($identifier, $columns) ? 'checked' : '' }}> {{ $metadata->label }}
+                                                <span class="help-block">{{ $metadata->help }}</span>
+                                            @endforeach
+                                        </div>
+                                    </div>
+
                                     <div class="btn-group pull-right main-form-buttons" role="group">
                                         <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
                                     </div>
@@ -151,7 +163,44 @@
                                     @include('commons.textfield', ['obj' => $gas, 'name' => 'rid->iban', 'label' => _i('IBAN')])
                                     @include('commons.textfield', ['obj' => $gas, 'name' => 'rid->id', 'label' => _i('Identificativo Creditore')])
                                     @include('commons.textfield', ['obj' => $gas, 'name' => 'rid->org', 'label' => _i('Codice Univoco Azienda')])
+                                </div>
 
+                                <div class="col-md-12">
+                                    <p>
+                                        {!! _i('Popolando questi campi verranno attivati i pagamenti con PayPal, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto. Per ottenere le credenziali, <a href="https://developer.paypal.com/developer/applications/">visita questa pagina</a>.') !!}
+                                    </p>
+
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'paypal->client_id', 'label' => 'Client ID'])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'paypal->secret', 'label' => 'Secret'])
+                                    @include('commons.radios', [
+                                        'name' => 'paypal->mode',
+                                        'label' => 'Modalità',
+                                        'values' => [
+                                            'sandbox' => (object) [
+                                                'name' => 'Sandbox (per testing)',
+                                                'checked' => ($gas->paypal['mode'] == 'sandbox')
+                                            ],
+                                            'live' => (object) [
+                                                'name' => 'Live',
+                                                'checked' => ($gas->paypal['mode'] == 'live')
+                                            ],
+                                        ]
+                                    ])
+                                </div>
+
+                                <div class="col-md-12">
+                                    <p>
+                                        {!! _i("Popolando questi campi verrà attivata l'emissione delle fatture nei confronti degli utenti che effettuano prenotazioni. Le fatture saranno emesse al momento del salvataggio o della consegna della prenotazione.") !!}
+                                    </p>
+
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->business_name', 'label' => _i('Ragione Sociale')])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->taxcode', 'label' => _i('Codice Fiscale')])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->vat', 'label' => _i('Partita IVA')])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->address', 'label' => _i('Indirizzo')])
+                                    @include('commons.numberfield', ['obj' => $gas, 'name' => 'extra_invoicing->invoices_counter', 'label' => 'Contatore Fatture', 'help_text' => _i('Modifica questo parametro con cautela!')])
+                                </div>
+
+                                <div class="col-md-12">
                                     <div class="btn-group pull-right main-form-buttons" role="group">
                                         <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
                                     </div>
@@ -258,7 +307,7 @@
                                 @include('commons.loadablelist', [
                                     'identifier' => 'delivery-list',
                                     'items' => $currentgas->deliveries,
-                                    'empty_message' => _i('Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi, verrà attivata la possibilità per ogni utente di selezionare il proprio luogo di consegna preferito.')
+                                    'empty_message' => _i('Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi, verrà attivata la possibilità per ogni utente di selezionare il proprio luogo di consegna preferito e nei documenti di riassunto degli ordini le prenotazioni saranno suddivise per luogo.')
                                 ])
                             </div>
                         </div>

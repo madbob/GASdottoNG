@@ -47,4 +47,8 @@ if(!isset($while_shipping))
             @endif
         </div>
     </div>
+    <div class="mobile-quantity-switch visible-sm-inline-block visible-xs-inline-block pull-right">
+        <button class="btn btn-default plus"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+        <button class="btn btn-default minus"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
+    </div>
 @endif

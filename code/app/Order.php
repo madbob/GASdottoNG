@@ -12,6 +12,7 @@ use DB;
 use URL;
 
 use App\Events\SluggableCreating;
+
 use App\GASModel;
 use App\SluggableID;
 use App\BookedProduct;
@@ -37,7 +38,7 @@ class Order extends Model
             $builder->whereHas('aggregate', function($query) {
                 $query->whereHas('gas', function($query) {
                     $user = Auth::user();
-                    if ($user == null)
+                    if (is_null($user))
                         return;
                     $query->where('gas_id', $user->gas->id);
                 });
@@ -142,7 +143,7 @@ class Order extends Model
 
     public function userBooking($userid = null)
     {
-        if ($userid == null) {
+        if (is_null($userid)) {
             $userid = Auth::user()->id;
         }
 
@@ -150,7 +151,7 @@ class Order extends Model
             $query->where('id', '=', $userid);
         })->first();
 
-        if ($ret == null) {
+        if (is_null($ret)) {
             $ret = new Booking();
             $ret->user_id = $userid;
             $ret->order_id = $this->id;
@@ -222,13 +223,16 @@ class Order extends Model
         $summary = (object) [
             'order' => $this->id,
             'price' => 0,
+            'price_delivered' => 0,
+            'undiscounted_price' => 0,
+            'undiscounted_price_delivered' => 0,
             'products' => [],
             'by_variant' => [],
         ];
 
         $order = $this;
 
-        if ($products == null) {
+        if (is_null($products)) {
             /*
                 Qui considero i prodotti del fornitore, non solo dell'ordine,
                 per calcolare la situazione complessiva compresi i prodotti non
@@ -337,8 +341,10 @@ class Order extends Model
             }
         }
 
-        $summary->price = $total_price;
-        $summary->price_delivered = $total_price_delivered;
+        $summary->undiscounted_price = $total_price;
+        $summary->undiscounted_price_delivered = $total_price_delivered;
+        $summary->price = applyPercentage($summary->undiscounted_price, $this->discount);
+        $summary->price_delivered = applyPercentage($summary->undiscounted_price_delivered, $this->discount);
 
         /*
             Il prezzo del trasporto è la somma del prezzo di trasporto di tutti
@@ -350,7 +356,7 @@ class Order extends Model
 
         $total_transport_delivered = 0;
         foreach ($order->bookings()->where('status', 'shipped')->get() as $shipped_booking)
-            $total_transport_delivered += $shipped_booking->transport;
+            $total_transport_delivered += $shipped_booking->check_transport;
         $summary->transport_delivered = $total_transport_delivered;
 
         $summary->notes = [];
@@ -391,9 +397,12 @@ class Order extends Model
         $rates = [];
 
         foreach ($products as $product) {
-            $price_delivered = BookedProduct::with('variants')->with('booking')->where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order) {
+            $query = BookedProduct::with('variants')->with('booking')->where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order) {
                 $query->where('order_id', '=', $order->id);
-            })->sum('final_price');
+            });
+
+            $price_delivered = $query->sum('final_price');
+            $quantity_delivered = $query->sum('delivered');
 
             if (isset($rates[$product->vat_rate_id]) == false)
                 $rates[$product->vat_rate_id] = $product->vat_rate;
@@ -410,6 +419,7 @@ class Order extends Model
 
             $summary->products[$product->id]['total'] = printablePrice($total);
             $summary->products[$product->id]['total_vat'] = printablePrice($total_vat);
+            $summary->products[$product->id]['delivered'] = printableQuantity($quantity_delivered, $product->measure->discrete);
 
             $global_total += $price_delivered;
             $global_total_taxable += $total;
@@ -576,6 +586,77 @@ class Order extends Model
         }
     }
 
+    public static function displayColumns()
+    {
+        return [
+            'selection' => (object) [
+                'label' => _i('Selezione'),
+                'help' => _i("Per abilitare o disabilitare prodotti del listino fornitore all'interno dell'ordine"),
+                'width' => 3
+            ],
+            'name' => (object) [
+                'label' => _i('Prodotto'),
+                'help' => _i('Nome e descrizione del prodotto'),
+                'width' => 20
+            ],
+            'price' => (object) [
+                'label' => _i('Prezzo'),
+                'help' => _i('Prezzo unitario (editabile) del prodotto'),
+                'width' => 8
+            ],
+            'transport' => (object) [
+                'label' => _i('Trasporto'),
+                'help' => _i('Prezzo di trasporto unitario (editabile) del prodotto'),
+                'width' => 8
+            ],
+            'available' => (object) [
+                'label' => _i('Disponibile'),
+                'help' => _i('Quantità disponibile (editabile) del prodotto'),
+                'width' => 8
+            ],
+            'discount' => (object) [
+                'label' => _i('Sconto'),
+                'help' => _i('Per abilitare o disabilitare lo sconto unitario del prodotto'),
+                'width' => 4
+            ],
+            'unit_measure' => (object) [
+                'label' => _i('Unità di Misura'),
+                'help' => _i('Unità di misura assegnata al prodotto'),
+                'width' => 9
+            ],
+            'quantity' => (object) [
+                'label' => _i('Quantità Prenotata'),
+                'help' => _i('Quantità complessivamente prenotata del prodotto'),
+                'width' => 9
+            ],
+            'total_price' => (object) [
+                'label' => _i('Totale Prezzo'),
+                'help' => _i('Totale prezzo della quantità prenotata'),
+                'width' => 5
+            ],
+            'total_transport' => (object) [
+                'label' => _i('Totale Trasporto'),
+                'help' => _i('Totale del prezzo di trasporto. Significativo solo quando è applicato un prezzo di trasporto unitario sul prodotto'),
+                'width' => 5
+            ],
+            'quantity_delivered' => (object) [
+                'label' => _i('Quantità Consegnata'),
+                'help' => _i('Quantità complessivamente consegnata del prodotto'),
+                'width' => 8
+            ],
+            'price_delivered' => (object) [
+                'label' => _i('Totale Consegnato'),
+                'help' => _i('Totale prezzo della quantità consegnata'),
+                'width' => 8
+            ],
+            'notes' => (object) [
+                'label' => _i('Note'),
+                'help' => _i('Pannello da cui modificare direttamente le quantità di prodotto in ogni prenotazione, ed aggiungere note per il fornitore'),
+                'width' => 7
+            ],
+        ];
+    }
+
     public function getPermissionsProxies()
     {
         return [$this->supplier];
@@ -583,9 +664,9 @@ class Order extends Model
 
     /******************************************************** CreditableTrait */
 
-    public function alterBalance($amount, $type = 'bank')
+    public function getBalanceProxy()
     {
-        $this->supplier->alterBalance($amount, $type);
+        return $this->supplier;
     }
 
     public static function balanceFields()

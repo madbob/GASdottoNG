@@ -98,8 +98,11 @@ class ProductsService extends BaseService
             $this->transformAndSetIfSet($product, $request, 'max_quantity', 'enforceNumber');
             $this->transformAndSetIfSet($product, $request, 'max_available', 'enforceNumber');
             $product = $this->enforceMeasure($product, $request);
-
             $product->save();
+
+            if (isset($request['picture'])) {
+                saveFile($request['picture'], $product, 'picture');
+            }
         });
 
         return $product;
@@ -115,6 +118,12 @@ class ProductsService extends BaseService
         $product->name = 'Copia di ' . $product->name;
         $product->save();
         return $product;
+    }
+
+    public function picture($id)
+    {
+        $product = Product::findOrFail($id);
+        return downloadFile($product, 'picture');
     }
 
     public function destroy($id)

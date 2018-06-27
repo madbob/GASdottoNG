@@ -16,7 +16,7 @@ class MovementsKeeper extends ServiceProvider
     {
         $metadata = $movement->type_metadata;
 
-        if ($metadata == null) {
+        if (is_null($metadata)) {
             Log::error('Impossibile recuperare informazioni su movimento tipo ' . $movement->type);
             return false;
         }
@@ -26,24 +26,24 @@ class MovementsKeeper extends ServiceProvider
             return false;
         }
 
-        if ($metadata->sender_type == null) {
+        if (is_null($metadata->sender_type)) {
             $movement->sender_type = null;
             $movement->sender_id = null;
         }
         else {
             if ($metadata->sender_type != $movement->sender_type) {
-                Log::error(_i('Movimento: sender_type non coerente (%s != %s)', [$metadata->sender_type, $movement->sender_type]));
+                Log::error(_i('Movimento %d: sender_type non coerente (%s != %s)', [$movement->id, $metadata->sender_type, $movement->sender_type]));
                 return false;
             }
         }
 
-        if ($metadata->target_type == null) {
+        if (is_null($metadata->target_type)) {
             $movement->target_type = null;
             $movement->target_id = null;
         }
         else {
             if ($metadata->target_type != $movement->target_type) {
-                Log::error(_i('Movimento: target_type non coerente (%s != %s)', [$metadata->target_type, $movement->target_type]));
+                Log::error(_i('Movimento %d: target_type non coerente (%s != %s)', [$movement->id, $metadata->target_type, $movement->target_type]));
                 return false;
             }
         }
@@ -57,7 +57,7 @@ class MovementsKeeper extends ServiceProvider
             }
         }
         if ($found == false) {
-            Log::error(_i('Movimento: metodo ' . $movement->method . ' non permesso su tipo ' . $movement->type));
+            Log::error(_i('Movimento %d: metodo %s non permesso su tipo %s', [$movement->id, $movement->method, $movement->type]));
             return false;
         }
 
@@ -72,15 +72,15 @@ class MovementsKeeper extends ServiceProvider
     public function boot()
     {
         Movement::saving(function ($movement) {
-            if ($movement->date == null)
+            if (is_null($movement->date))
                 $movement->date = date('Y-m-d G:i:s');
-            if ($movement->registration_date == null)
+            if (is_null($movement->registration_date))
                 $movement->registration_date = date('Y-m-d G:i:s');
-            if ($movement->registerer_id == null)
+            if (is_null($movement->registerer_id))
                 $movement->registerer_id = Auth::user()->id;
-            if ($movement->identifier == null)
+            if (is_null($movement->identifier))
                 $movement->identifier = '';
-            if ($movement->notes == null)
+            if (is_null($movement->notes))
                 $movement->notes = '';
 
             if ($movement->exists == false && $movement->archived == true)

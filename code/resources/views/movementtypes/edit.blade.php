@@ -106,7 +106,7 @@ foreach($classes as $class => $name) {
                 <tbody>
                     @foreach($target_classes as $target_class)
                         <?php $classname = $target_class['value'] ?>
-                        @if($classname == null)
+                        @if(is_null($classname))
                             @continue
                         @endif
 

@@ -3,6 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+
+use Log;
+
 use App\GASModel;
 
 class Attachment extends Model
@@ -11,12 +14,45 @@ class Attachment extends Model
 
     public function attached()
     {
-        return $this->morphTo('target');
+        if ($this->target_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->target_type)))
+            return $this->morphTo('target')->withoutGlobalScopes()->withTrashed();
+        else
+            return $this->morphTo('target')->withoutGlobalScopes();
     }
 
     public function getPathAttribute()
     {
         return sprintf('%s/%s', $this->attached->filesPath(), $this->filename);
+    }
+
+    public function isImage()
+    {
+        $file = $this->path;
+
+        if (file_exists($file)) {
+            $mime = mime_content_type($file);
+            if (strncmp($mime, 'image/', 6) == 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    public function getSize()
+    {
+        if ($this->isImage()) {
+            $file = $this->path;
+            if (file_exists($file)) {
+                $size = getimagesize($file);
+                if ($size != null)
+                    return array_slice($size, 0, 2);
+            }
+        }
+        else {
+            Log::error('Richiesta dimensione per allegato non immagine');
+        }
+
+        return [0, 0];
     }
 
     public function getDownloadUrlAttribute()

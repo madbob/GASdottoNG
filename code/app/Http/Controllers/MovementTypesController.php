@@ -84,7 +84,7 @@ class MovementTypesController extends Controller
                         }
                     }
 
-                    if ($cell == null) {
+                    if (is_null($cell)) {
                         $cell = (object) [
                             'method' => $pay_id,
                             'is_default' => ($request->input('payment_default', null) == $pay_id),

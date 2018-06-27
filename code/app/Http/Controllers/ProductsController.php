@@ -97,4 +97,14 @@ class ProductsController extends BackedController
 
         return $this->successResponse();
     }
+
+    public function picture($id)
+    {
+        try {
+            return $this->service->picture($id);
+        }
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+    }
 }

@@ -71,6 +71,7 @@ class RegisterController extends Controller
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'email' => 'required|string|email|max:255',
+            'phone' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
             'gas_id' => 'required|string',
             'password' => 'required|string|min:6|confirmed',
@@ -99,6 +100,13 @@ class RegisterController extends Controller
         $contact->target_type = get_class($user);
         $contact->type = 'email';
         $contact->value = $data['email'];
+        $contact->save();
+
+        $contact = new Contact();
+        $contact->target_id = $user->id;
+        $contact->target_type = get_class($user);
+        $contact->type = 'phone';
+        $contact->value = $data['phone'];
         $contact->save();
 
         return $user;

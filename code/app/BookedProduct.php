@@ -35,7 +35,18 @@ class BookedProduct extends Model
 
     public function getSlugID()
     {
-        return sprintf('%s::%s', $this->booking->id, $this->product->id);
+        /*
+            Versioni di MySQL precedente alla 5.7.7 permettono chiavi primarie
+            di lunghezza limitata, ma essendo gli ID dei prodotti prenotati una
+            combinazione di nome del fornitore, nome del prodotto ed altri
+            parametri, possono risultare molto lunghi.
+            Pertanto qui, se superano una certa soglia, vengono "accorciati"
+            calcolandone l'hash MD5 (almeno della parte meno significativa)
+        */
+        $string = sprintf('%s::%s', $this->booking->id, $this->product->id);
+        if (strlen($string) > 180)
+            $string = sprintf('%s::%s', $this->booking->id, md5($this->product->id));
+        return $string;
     }
 
     private function fixQuantity($attribute, $rectify)
@@ -103,6 +114,28 @@ class BookedProduct extends Model
         return $this->fixQuantity('delivered', false);
     }
 
+    /*
+        Valore complessivo di quanto consegnato, diviso tra imponibile e IVA.
+        Questa funzione opera sul valore di final_price, dunque solo su prodotti
+        che sono già stati effettivamente consegnati
+    */
+    public function deliveredTaxedValue()
+    {
+        $product = $this->product;
+
+        $rate = $product->vat_rate;
+        if ($rate != null) {
+            $total = $this->final_price / (1 + ($rate->percentage / 100));
+            $total_vat = $this->final_price - $total;
+        }
+        else {
+            $total = $this->final_price;
+            $total_vat = 0;
+        }
+
+        return [$total, $total_vat];
+    }
+
     public function transportBookedValue()
     {
         return $this->product->transport * $this->quantity;
@@ -125,7 +158,7 @@ class BookedProduct extends Model
     {
         $v = $this->variants()->where('id', '=', $variant->id)->first();
 
-        if ($v == null && $fallback == true) {
+        if (is_null($v) && $fallback == true) {
             $v = new BookedProductVariant();
             $v->product_id = $this->id;
         }

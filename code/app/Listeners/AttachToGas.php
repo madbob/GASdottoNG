@@ -16,11 +16,11 @@ class AttachToGas
     public function handle(AttachableToGas $event)
     {
         $user = Auth::user();
-        if ($user == null)
+        if (is_null($user))
             return;
 
         $group = $event->group;
-        if ($group == null)
+        if (is_null($group))
             return;
 
         $user->gas->$group()->attach($event->attachable->id);

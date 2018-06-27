@@ -131,7 +131,7 @@ class Role extends Model
 
     public function getTargetsAttribute()
     {
-        if ($this->targets == null) {
+        if (is_null($this->targets)) {
             $this->targets = new Collection();
 
             $classes = $this->getAllClasses();
@@ -233,7 +233,7 @@ class Role extends Model
     */
     public function appliesAll($class = null)
     {
-        if ($class == null) {
+        if (is_null($class)) {
             $ret = true;
 
             $classes = $this->getAllClasses();
@@ -297,7 +297,7 @@ class Role extends Model
             $obj_id = '*';
         }
         else {
-            if ($obj == null || $this->appliesOnly($obj))
+            if (is_null($obj) || $this->appliesOnly($obj))
                 return;
 
             $obj_class = get_class($obj);
@@ -333,7 +333,7 @@ class Role extends Model
                 ->delete();
         }
         else {
-            if ($obj == null || $this->appliesOnly($obj) == false)
+            if (is_null($obj) || $this->appliesOnly($obj) == false)
                 return;
 
             DB::table('attached_role_user')
@@ -385,7 +385,7 @@ class Role extends Model
         foreach($basic_roles as $br) {
             $users = $br->users;
 
-            if ($subject == null) {
+            if (is_null($subject)) {
                 if ($users->isEmpty() == false)
                     return true;
                 else

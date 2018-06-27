@@ -140,20 +140,15 @@ class AggregatesController extends OrdersController
 
         switch ($type) {
             case 'shipping':
-                $names = [];
-                foreach($aggregate->orders as $order) {
-                    $names[] = sprintf('%s %s', $order->supplier->name, $order->internal_number);
-                }
-                $names = join(' / ', $names);
-
                 $html = view('documents.aggregate_shipping', [
                     'aggregate' => $aggregate,
                     'bookings' => $aggregate->bookings,
-                    'products_source' => 'products_with_friends'
+                    'products_source' => 'products_with_friends',
+                    'shipping_place' => $request->input('shipping_place', 0)
                 ])->render();
 
-                $filename = sprintf('Dettaglio Consegne ordini %s.pdf', $names);
-                PDF::SetTitle(sprintf('Dettaglio Consegne ordini %s', $names));
+                $filename = sprintf('Dettaglio Consegne Ordini.pdf');
+                PDF::SetTitle(sprintf('Dettaglio Consegne Ordini'));
                 PDF::AddPage();
                 PDF::writeHTML($html, true, false, true, false, '');
                 PDF::Output($filename, 'D');

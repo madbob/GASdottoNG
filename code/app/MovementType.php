@@ -47,6 +47,16 @@ class MovementType extends Model
             ],
         ];
 
+        $gas = currentAbsoluteGas();
+        if($gas->hasFeature('paypal')) {
+            $ret['paypal'] = (object) [
+                'name' => _i('PayPal'),
+                'identifier' => true,
+                'icon' => 'glyphicon-cloud-download',
+                'active_for' => 'App\User'
+            ];
+        }
+
         return $ret;
     }
 
@@ -105,7 +115,7 @@ class MovementType extends Model
     public static function initSystemTypes($types)
     {
         $currentuser = Auth::user();
-        if($currentuser == null) {
+        if(is_null($currentuser)) {
             $currentgas = Gas::get()->first();
         }
         else {
@@ -187,8 +197,6 @@ class MovementType extends Model
                         */
                         'pre' => function (Movement $movement) {
                             if ($movement->target_type == 'App\Aggregate') {
-                                $debug = '';
-
                                 $total = $movement->amount;
                                 $aggregate = $movement->target;
                                 $user = $movement->sender;
@@ -204,18 +212,13 @@ class MovementType extends Model
                                 foreach ($aggregate->orders as $order) {
                                     $booking = $order->userBooking($user->id);
                                     if ($booking->exists == false) {
-                                        $debug .= sprintf("Prenotazione non esistente: %s %s\n", $order->id, $user->id);
                                         continue;
                                     }
 
-                                    $debug .= sprintf("Consegna %s %s\n", $order->id, $user->id);
-
                                     if (isset($handling_status->{$booking->id})) {
-                                        $debug .= sprintf("Informazioni prelevate dal contesto\n");
                                         $delivered = $handling_status->{$booking->id};
                                     }
                                     else {
-                                        $debug .= sprintf("Informazioni prelevate dalla prenotazione consegnata\n");
                                         $delivered = $booking->delivered;
                                     }
 
@@ -224,9 +227,7 @@ class MovementType extends Model
                                     }
 
                                     $existing_movement = $booking->payment;
-                                    if ($existing_movement == null) {
-                                        $debug .= sprintf("Creo nuovo movimento da %s euro\n", $delivered);
-
+                                    if (is_null($existing_movement)) {
                                         $m = $movement->replicate();
                                         $m->target_id = $booking->id;
                                         $m->target_type = 'App\Booking';
@@ -240,7 +241,6 @@ class MovementType extends Model
                                         $m->load('target');
                                     }
                                     else {
-                                        $debug .= sprintf("Altero movimento esistente %s da %s a %s euro\n", $existing_movement->id, $existing_movement->amount, $delivered);
                                         $m = $existing_movement;
                                     }
 
@@ -261,8 +261,6 @@ class MovementType extends Model
                                     $m->amount += $total;
                                     $m->save();
                                 }
-
-                                Log::debug($debug);
 
                                 return 2;
                             }
@@ -319,7 +317,7 @@ class MovementType extends Model
     {
         static $types = null;
 
-        if ($types == null) {
+        if (is_null($types)) {
             $query = MovementType::orderBy('name', 'asc');
             if ($with_trashed)
                 $query = $query->withTrashed();
@@ -348,7 +346,7 @@ class MovementType extends Model
             return;
         }
 
-        if ($obj == null) {
+        if (is_null($obj)) {
             Log::error(_i('Applicazione movimento su oggetto nullo: %s', $movement->id));
             return;
         }
@@ -383,6 +381,32 @@ class MovementType extends Model
                 foreach($o->master->operations as $op)
                     $this->applyFunction($currentgas, $movement, $op);
             }
+
+            break;
         }
+    }
+
+    public function transactionType($movement, $peer)
+    {
+        $ops = json_decode($this->function);
+
+        foreach($ops as $o) {
+            if ($o->method != $movement->method)
+                continue;
+
+            foreach($o->$peer->operations as $op) {
+                if ($op->operation == 'increment')
+                    return 'credit';
+                else
+                    return 'debit';
+            }
+
+            break;
+        }
+
+        if ($peer == 'sender')
+            return 'debit';
+        else
+            return 'credit';
     }
 }

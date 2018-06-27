@@ -54,9 +54,15 @@ class AttachmentsController extends Controller
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
-        $a = $a->attached->attachByRequest($request, $a->id);
-        if ($a === false) {
-            return $this->errorResponse(_i('File non caricato correttamente'));
+        if ($request->hasFile('file')) {
+            $a = $a->attached->attachByRequest($request, $a->id);
+            if ($a === false) {
+                return $this->errorResponse(_i('File non caricato correttamente'));
+            }
+        }
+        else {
+            $a->name = $request->input('name');
+            $a->save();
         }
 
         return $this->successResponse([

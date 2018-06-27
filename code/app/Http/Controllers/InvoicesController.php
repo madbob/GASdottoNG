@@ -9,6 +9,7 @@ use DB;
 use Auth;
 
 use App\Invoice;
+use App\Receipt;
 use App\Order;
 use App\Movement;
 use App\MovementType;
@@ -37,6 +38,7 @@ class InvoicesController extends Controller
         $invoice->supplier_id = $request->input('supplier_id');
         $invoice->number = $request->input('number');
         $invoice->date = decodeDate($request->input('date'));
+        $invoice->notes = $request->input('notes');
         $invoice->total = $request->input('total');
         $invoice->total_vat = $request->input('total_vat');
         $invoice->save();
@@ -75,11 +77,19 @@ class InvoicesController extends Controller
         }
 
         $invoice = Invoice::findOrFail($id);
-        $invoice->supplier_id = $request->input('supplier_id');
-        $invoice->number = $request->input('number');
-        $invoice->date = decodeDate($request->input('date'));
-        $invoice->total = $request->input('total');
-        $invoice->total_vat = $request->input('total_vat');
+        if ($request->has('supplier_id'))
+            $invoice->supplier_id = $request->input('supplier_id');
+        if ($request->has('number'))
+            $invoice->number = $request->input('number');
+        if ($request->has('date'))
+            $invoice->date = decodeDate($request->input('date'));
+        if ($request->has('notes'))
+            $invoice->notes = $request->input('notes');
+        if ($request->has('total'))
+            $invoice->total = $request->input('total');
+        if ($request->has('total_vat'))
+            $invoice->total_vat = $request->input('total_vat');
+
         $invoice->status = $request->input('status');
         $invoice->save();
 
@@ -102,7 +112,7 @@ class InvoicesController extends Controller
         $invoice = Invoice::findOrFail($id);
 
         if ($invoice->payment != null)
-        $invoice->deleteMovements();
+            $invoice->deleteMovements();
         $invoice->delete();
 
         return $this->successResponse();
@@ -119,25 +129,38 @@ class InvoicesController extends Controller
 
         $invoice = Invoice::findOrFail($id);
         $summaries = [];
-        $global_summary = [];
+
+        $global_summary = (object)[
+            'products' => [],
+            'total' => 0,
+            'total_taxable' => 0,
+            'total_tax' => 0,
+        ];
 
         foreach($invoice->orders as $order) {
             $summary = $order->calculateInvoicingSummary();
             $summaries[$order->id] = $summary;
 
             foreach($order->products as $product) {
-                if (isset($global_summary[$product->id]) == false) {
-                    $global_summary[$product->id] = [
+                if (isset($global_summary->products[$product->id]) == false) {
+                    $global_summary->products[$product->id] = [
                         'name' => $product->printableName(),
                         'vat_rate' => $product->vat_rate ? $product->vat_rate->printableName() : '',
                         'total' => 0,
-                        'total_vat' => 0
+                        'total_vat' => 0,
+                        'delivered' => 0,
+                        'measure' => $product->measure
                     ];
                 }
 
-                $global_summary[$product->id]['total'] += $summary->products[$product->id]['total'];
-                $global_summary[$product->id]['total_vat'] += $summary->products[$product->id]['total_vat'];
+                $global_summary->products[$product->id]['total'] += $summary->products[$product->id]['total'];
+                $global_summary->products[$product->id]['total_vat'] += $summary->products[$product->id]['total_vat'];
+                $global_summary->products[$product->id]['delivered'] += $summary->products[$product->id]['delivered'];
             }
+
+            $global_summary->total += $summary->total;
+            $global_summary->total_taxable += $summary->total_taxable;
+            $global_summary->total_tax += $summary->total_tax;
         }
 
         return view('invoice.products', [
@@ -292,6 +315,79 @@ class InvoicesController extends Controller
                 $invoice->save();
                 return $this->successResponse();
                 break;
+        }
+    }
+
+    public function search(Request $request)
+    {
+        $start = decodeDate($request->input('startdate'));
+        $end = decodeDate($request->input('enddate'));
+        $supplier_id = $request->input('supplier_id');
+
+        $query = Invoice::where(function($query) use($start, $end) {
+            $query->whereHas('payment', function($query) use($start, $end) {
+                $query->where('date', '>=', $start)->where('date', '<=', $end);
+            })->orWhereDoesntHave('payment');
+        });
+
+        if ($supplier_id != '0')
+            $query->where('supplier_id', $supplier_id);
+
+        $elements = $query->get();
+
+        $gas = Auth::user()->gas;
+        if ($gas->hasFeature('extra_invoicing')) {
+            $query = Receipt::where('date', '>=', $start)->where('date', '<=', $end)->orderBy('date', 'desc');
+
+            if ($supplier_id != '0') {
+                $query->whereHas('bookings', function($query) use ($supplier_id) {
+                    $query->whereHas('order', function($query) use ($supplier_id) {
+                        $query->where('supplier_id', $supplier_id);
+                    });
+                });
+            }
+
+            $receipts = $query->get();
+
+            foreach($receipts as $r)
+                $elements->push($r);
+        }
+
+        $elements = Invoice::doSort($elements);
+
+        $format = $request->input('format', 'none');
+
+        if ($format == 'none') {
+            $list_identifier = $request->input('list_identifier', 'invoice-list');
+            return view('commons.loadablelist', [
+                'identifier' => $list_identifier,
+                'items' => $elements,
+                'legend' => (object)[
+                    'class' => $gas->hasFeature('extra_invoicing') ? ['Invoice', 'Receipt'] : 'Invoice'
+                ],
+            ]);
+        }
+        else if ($format == 'csv') {
+            $filename = _i('Esportazione fatture GAS %s.csv', date('d/m/Y'));
+            $headers = [_i('Tipo'), _i('Da/A'), _i('Data'), _i('Numero'), _i('Imponibile'), _i('IVA')];
+            return output_csv($filename, $headers, $elements, function($invoice) {
+                $row = [];
+
+                if (get_class($invoice) == 'App\Invoice') {
+                    $row[] = _i('Ricevuta');
+                    $row[] = $invoice->supplier->printableName();
+                }
+                else {
+                    $row[] = _i('Inviata');
+                    $row[] = $invoice->user->printableName();
+                }
+
+                $row[] = $invoice->date;
+                $row[] = $invoice->number;
+                $row[] = $invoice->total;
+                $row[] = $invoice->total_vat;
+                return $row;
+            });
         }
     }
 }

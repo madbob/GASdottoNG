@@ -60,6 +60,14 @@ class Product extends Model
         return sprintf('%s::%s', $this->supplier_id, str_slug($this->name));
     }
 
+    public function getPictureUrlAttribute()
+    {
+        if (empty($this->picture))
+            return '';
+        else
+            return url('products/picture/' . $this->id);
+    }
+
     public function stillAvailable($order)
     {
         if ($this->max_available == 0) {
@@ -161,7 +169,7 @@ class Product extends Model
         }
         else {
             $m = $this->measure;
-            if ($m == null) {
+            if (is_null($m)) {
                 return '';
             } else {
                 return $m->name;
@@ -187,5 +195,46 @@ class Product extends Model
         }
 
         return implode(', ', $details);
+    }
+
+    public function variantsCombinations()
+    {
+        $combinations = [];
+
+        foreach($this->variants as $variant) {
+            $offset = 0;
+            $same_price = [];
+            $sp_index = 0;
+
+            foreach($variant->values as $value) {
+                if (!isset($same_price[(string)$value->price_offset])) {
+                    $same_price[(string)$value->price_offset] = (object) [
+                        'name' => [],
+                        'price' => $this->price + $value->price_offset
+                    ];
+                }
+
+                $same_price[(string)$value->price_offset]->name[] = $value->value;
+            }
+
+            if (empty($combinations)) {
+                foreach($same_price as $sp) {
+                    $combinations[] = (object) [
+                        'name' => join(', ', $sp->name),
+                        'price' => $sp->price
+                    ];
+                }
+            }
+            else {
+                foreach($combinations as $index => $n) {
+                    foreach($same_price as $price_offset => $sp) {
+                        $combinations[$index]->name = sprintf('%s / %s', $combinations[$index]->name, join(', ', $sp->name));
+                        $combinations[$index]->price += (float) $price_offset;
+                    }
+                }
+            }
+        }
+
+        return $combinations;
     }
 }

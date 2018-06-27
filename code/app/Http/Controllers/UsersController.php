@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use Auth;
 
+use App\User;
 use App\Aggregate;
 
 use App\Services\UsersService;
@@ -51,6 +52,49 @@ class UsersController extends BackedController
         }
     }
 
+    public function export(Request $request)
+    {
+        $user = Auth::user();
+        if ($user->can('users.admin', $user->gas) == false) {
+            abort(503);
+        }
+
+        $fields = $request->input('fields', []);
+        $formattable = User::formattableColumns();
+        $headers = [];
+        foreach($fields as $f) {
+            $headers[] = $formattable[$f]->name;
+        }
+
+        $users = $this->service->list('', true);
+
+        return output_csv(_i('utenti.csv'), $headers, $users, function($user) use ($fields) {
+            $ret = [];
+
+            foreach($fields as $f) {
+                try {
+                    switch($f) {
+                        case 'email':
+                        case 'phone':
+                        case 'address':
+                            $contacts = $user->getContactsByType($f);
+                            $ret[] = join(', ', $contacts);
+                            break;
+                        default:
+                            $ret[] = $user->$f;
+                            break;
+                    }
+                }
+                catch(\Exception $e) {
+                    Log::error('Esportazione CSV, impossibile accedere al campo ' . $f . ' di utente ' . $user->id);
+                    $ret[] = '';
+                }
+            }
+
+            return $ret;
+        });
+    }
+
     private function getOrders($user_id, $supplier_id, $start, $end)
     {
         return Aggregate::whereHas('orders', function($query) use ($user_id, $supplier_id, $start, $end) {
@@ -76,9 +120,10 @@ class UsersController extends BackedController
     {
         try {
             $id = Auth::user()->id;
+            $active_tab = $request->input('tab');
             $user = $this->service->show($id);
             $booked_orders = $this->getOrders($id, 0, date('Y-m-d', strtotime('-1 months')), '2100-01-01');
-            return view('pages.profile', ['user' => $user, 'booked_orders' => $booked_orders]);
+            return view('pages.profile', ['user' => $user, 'active_tab' => $active_tab, 'booked_orders' => $booked_orders]);
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -91,7 +136,7 @@ class UsersController extends BackedController
         $start = decodeDate($request->input('startdate'));
         $end = decodeDate($request->input('enddate'));
         $orders = $this->getOrders(Auth::user()->id, $supplier_id, $start, $end);
-        return view('commons.orderslist', ['orders' => $orders, 'no_legend' => true]);
+        return view('commons.orderslist', ['orders' => $orders]);
     }
 
     public function show(Request $request, $id)

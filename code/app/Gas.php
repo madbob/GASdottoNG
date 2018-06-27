@@ -112,6 +112,29 @@ class Gas extends Model
             'public_registrations' => [
                 'default' => '0'
             ],
+
+            'orders_display_columns' => [
+                'default' => ['selection', 'name', 'price', 'quantity', 'total_price', 'quantity_delivered', 'price_delivered', 'notes']
+            ],
+
+            'paypal' => [
+                'default' => (object) [
+                    'client_id' => '',
+                    'secret' => '',
+                    'mode' => 'sandbox'
+                ]
+            ],
+
+            'extra_invoicing' => [
+                'default' => (object) [
+                    'business_name' => '',
+                    'taxcode' => '',
+                    'vat' => '',
+                    'address' => '',
+                    'invoices_counter' => 0,
+                    'invoices_counter_year' => date('Y'),
+                ]
+            ],
         ];
     }
 
@@ -137,7 +160,7 @@ class Gas extends Model
 
     public function setConfig($name, $value)
     {
-        if (is_object($value))
+        if (is_object($value) || is_array($value))
             $value = json_encode($value);
 
         foreach ($this->configs as $conf) {
@@ -190,6 +213,58 @@ class Gas extends Model
         return $this->getConfig('public_registrations') == '1';
     }
 
+    public function getOrdersDisplayColumnsAttribute()
+    {
+        return (array) json_decode($this->getConfig('orders_display_columns'));
+    }
+
+    public function getPaypalAttribute()
+    {
+        return (array) json_decode($this->getConfig('paypal'));
+    }
+
+    public function getExtraInvoicingAttribute()
+    {
+        return (array) json_decode($this->getConfig('extra_invoicing'));
+    }
+
+    public function nextInvoiceNumber()
+    {
+        $status = $this->extra_invoicing;
+        $now = date('Y');
+        $year = $status['invoices_counter_year'];
+
+        if ($now == $year) {
+            $ret = $status['invoices_counter'] + 1;
+        }
+        else {
+            $ret = 1;
+            $status['invoices_counter_year'] = $now;
+        }
+
+        $status['invoices_counter'] = $ret;
+        $this->setConfig('extra_invoicing', $status);
+
+        return sprintf('%s/%s', $ret, $now);
+    }
+
+    public function hasFeature($name)
+    {
+        switch($name) {
+            case 'rid':
+                return !empty($this->rid['iban']);
+                break;
+            case 'paypal':
+                return !empty($this->paypal['client_id']);
+                break;
+            case 'extra_invoicing':
+                return (!empty($this->extra_invoicing['taxcode']) || !empty($this->extra_invoicing['vat']));
+                break;
+        }
+
+        return false;
+    }
+
     /******************************************************** AttachableTrait */
 
     protected function requiredAttachmentPermission()
@@ -201,12 +276,18 @@ class Gas extends Model
 
     public static function balanceFields()
     {
-        return [
+        $ret = [
             'bank' => _i('Conto Corrente'),
             'cash' => _i('Cassa Contanti'),
             'gas' => _i('GAS'),
             'suppliers' => _i('Fornitori'),
             'deposits' => _i('Cauzioni'),
         ];
+
+        $gas = currentAbsoluteGas();
+        if($gas->hasFeature('paypal'))
+            $ret['paypal'] = _i('PayPal');
+
+        return $ret;
     }
 }

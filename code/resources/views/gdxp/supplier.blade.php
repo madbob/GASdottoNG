@@ -3,7 +3,7 @@
 	<supplier>
 		<taxCode>{{ $obj->taxcode }}</taxCode>
 		<vatNumber>{{ $obj->vat }}</vatNumber>
-		<name>{{ $obj->business_name }}</name>
+		<name>{{ empty($obj->business_name) ? $obj->name : $obj->business_name }}</name>
 
 		<address>
             <?php list($street, $city, $cap) = $obj->getAddress() ?>
