@@ -117,7 +117,12 @@
                                 <input type="hidden" name="reload-whole-page" value="1">
                                 {!! csrf_field() !!}
 
-                                @include('commons.datefield', ['obj' => null, 'name' => 'date', 'label' => 'Data Chiusura'])
+                                @include('commons.datefield', [
+                                    'obj' => null,
+                                    'name' => 'date',
+                                    'defaults_now' => true,
+                                    'label' => 'Data Chiusura'
+                                ])
                             </div>
 
                             <div class="modal-footer">

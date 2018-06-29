@@ -38,6 +38,7 @@ foreach ($user->roles as $role) {
     'obj' => $order,
     'name' => 'end',
     'label' => _i('Data Chiusura Prenotazioni'),
+    'defaults_now' => true,
     'mandatory' => true,
     'extras' => [
         'data-enforce-after' => '.date[name=start]'
@@ -48,6 +49,7 @@ foreach ($user->roles as $role) {
     'obj' => $order,
     'name' => 'shipping',
     'label' => _i('Data Consegna'),
+    'defaults_now' => true,
     'extras' => [
         'data-enforce-after' => '.date[name=end]'
     ]
