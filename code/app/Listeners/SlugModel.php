@@ -19,16 +19,9 @@ class SlugModel
             $index = 1;
 
             do {
-                if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class))) {
-                    $test = $class::withTrashed()->withoutGlobalScopes()->where('id', $id)->first();
-                }
-                else {
-                    $test = $class::where('id', $id)->first();
-                }
-
-                if (is_null($test)) {
+                $test = $class::tFind($id);
+                if (is_null($test))
                     break;
-                }
 
                 $id = $template . '-' . $index++;
             } while(true);

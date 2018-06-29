@@ -10,6 +10,20 @@ trait GASModel
 {
     private $inner_runtime_cache;
 
+    /*
+        Funzione di comodo, funge come find() ma se la classe è soft-deletable
+        cerca anche tra gli elementi cancellati
+    */
+    public static function tFind($id)
+    {
+        $class = get_called_class();
+
+        if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
+            return $class::where('id', $id)->withoutGlobalScopes()->withTrashed()->first();
+        else
+            return $class::find($id);
+    }
+
     public function printableName()
     {
         return $this->name;

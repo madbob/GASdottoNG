@@ -155,11 +155,7 @@ trait CreditableTrait
 
         foreach($old_balances as $class => $ids) {
             foreach($ids as $id => $old) {
-                if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
-                    $obj = $class::withTrashed()->find($id);
-                else
-                    $obj = $class::find($id);
-
+                $obj = $class::tFind($id);
                 if (is_null($obj))
                     continue;
 
