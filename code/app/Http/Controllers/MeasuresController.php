@@ -88,7 +88,7 @@ class MeasuresController extends Controller
             $saved_ids[] = $measure->id;
         }
 
-        Product::whereNotIn('measure_id', $saved_ids)->update(['measure_id' => 'non-specificato']);
+        Product::whereNotIn('measure_id', $saved_ids)->withTrashed()->update(['measure_id' => 'non-specificato']);
         Measure::whereNotIn('id', $saved_ids)->delete();
 
         return $this->successResponse();
