@@ -557,6 +557,13 @@ function currentLoadableLoaded(target)
     return currentLoadableTrigger(target).attr('data-element-id');
 }
 
+function closeAllLoadable(target)
+{
+    target.find('> a.active').each(function() {
+        $(this).removeClass('active').next().remove();
+    });
+}
+
 function reloadCurrentLoadable(listid)
 {
     var list = $(listid);
@@ -1119,11 +1126,8 @@ $(document).ready(function() {
         }
         else {
             var list = $(this).closest('.loadablelist');
-            if (list.attr('data-sorting-function') != null) {
-                list.find('> a.active').each(function() {
-                    $(this).removeClass('active').next().remove();
-                });
-            }
+            if (list.attr('data-sorting-function') != null)
+                closeAllLoadable(list);
 
             var node = $('<div>').addClass('list-group-item').addClass('loadable-contents').attr('data-random-identifier', randomString(10)).append(loadingPlaceholder());
             $(this).addClass('active').after(node);
@@ -1207,6 +1211,22 @@ $(document).ready(function() {
     .on('blur', 'input.number', function(e) {
         $(this).val(function(index, value) {
             return parseFloatC(value);
+        });
+    });
+
+    $('body').on('click', '.loadablelist-sorter a', function(e) {
+        e.preventDefault();
+        var target = $($(this).closest('.loadablelist-sorter').attr('data-list-target'));
+        closeAllLoadable(target);
+
+        var attribute = $(this).attr('data-sort-by');
+        target.find('> a').sort(function(a, b) {
+            var attr_a = $(a).attr('data-sorting-' + attribute);
+            var attr_b = $(b).attr('data-sorting-' + attribute);
+            return attr_a.localeCompare(attr_b);
+        }).each(function() {
+            $(this).remove();
+            $(this).appendTo(target);
         });
     });
 

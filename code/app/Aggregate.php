@@ -371,10 +371,24 @@ class Aggregate extends Model implements Feedable
         });
     }
 
+    public function getSupplierNameAttribute()
+    {
+        return $this->innerCache('supplier_name', function($obj) {
+            return $obj->orders()->first()->supplier->name;
+        });
+    }
+
+    public function getStartAttribute()
+    {
+        return $this->innerCache('start', function($obj) {
+            return $obj->orders()->min('start');
+        });
+    }
+
     public function getEndAttribute()
     {
         return $this->innerCache('end', function($obj) {
-            return $obj->orders->last()->end;
+            return $obj->orders()->max('end');
         });
     }
 

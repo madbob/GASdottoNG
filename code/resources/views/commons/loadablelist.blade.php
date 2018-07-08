@@ -8,6 +8,8 @@ if(isset($empty_message) == false)
     $empty_message = _i('Non ci sono elementi da visualizzare.');
 if(isset($header_function) == false)
     $header_function = 'printableHeader';
+if(isset($sorting_rules) == false)
+    $sorting_rules = [];
 
 $data = [];
 if(isset($extra_data)) {
@@ -30,13 +32,27 @@ $data = join(' ', $data);
                         @foreach($filters as $attribute => $info)
                             <button type="button" class="btn btn-default" data-filter-attribute="{{ $attribute }}"><span class="glyphicon glyphicon-{{ $info->icon }}" aria-hidden="true"></span>&nbsp;{{ $info->label }}</button>
                         @endforeach
-                    </div>
+                    </div>&nbsp;
                 @endif
 
                 @if(!is_null($legend))
                     @include('commons.iconslegend', ['class' => $legend->class, 'target' => '#' . $identifier])
                 @endif
             </div>
+            @if(!empty($sorting_rules))
+                &nbsp;<div class="btn-group loadablelist-sorter" data-list-target="#{{ $identifier }}">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        {{ _i('Ordina Per') }} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        @foreach($sorting_rules as $attribute => $info)
+                            <li>
+                                <a href="#" data-sort-by="{{ $attribute }}">{{ $info }}</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         </div>
     </div>
 @endif
@@ -48,27 +64,30 @@ $data = join(' ', $data);
 
     <div class="list-group loadablelist" id="{{ $identifier }}" {!! $data !!}>
         @foreach($items as $item)
-            @if(isset($url))
-                <?php $u = url($url.'/'.$item->id) ?>
-            @else
-                <?php $u = $item->getShowURL() ?>
-            @endif
-
             <?php
 
+            if(isset($url))
+                $u = url($url . '/' . $item->id);
+            else
+                $u = $item->getShowURL();
+
             $extra_class = '';
-            $extra_attributes = '';
+            $extra_attributes = [];
 
             foreach($filters as $attribute => $info) {
                 if($item->$attribute != $info->value) {
                     $extra_class = 'hidden';
-                    $extra_attributes = 'data-filtered-' . $attribute . '="true"';
+                    $extra_attributes[] = 'data-filtered-' . $attribute . '="true"';
                 }
+            }
+
+            foreach($sorting_rules as $attribute => $info) {
+                $extra_attributes[] = sprintf('data-sorting-%s="%s"', $attribute, $item->$attribute);
             }
 
             ?>
 
-            <a data-element-id="{{ $item->id }}" {!! $extra_attributes !!} href="{{ $u }}" class="loadable-item list-group-item {{ $extra_class }}">{!! is_callable($header_function) ? $header_function($item) : $item->$header_function() !!}</a>
+            <a data-element-id="{{ $item->id }}" {!! join(' ', $extra_attributes) !!} href="{{ $u }}" class="loadable-item list-group-item {{ $extra_class }}">{!! is_callable($header_function) ? $header_function($item) : $item->$header_function() !!}</a>
         @endforeach
     </div>
 </div>

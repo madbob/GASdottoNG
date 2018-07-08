@@ -125,6 +125,12 @@
             'legend' => (object)[
                 'class' => 'Aggregate'
             ],
+            'sorting_rules' => [
+                'supplier_name' => _i('Fornitore'),
+                'start' => _i('Data Apertura'),
+                'end' => _i('Data Chiusura'),
+                'shipping' => _i('Data Consegna'),
+            ]
         ])
     </div>
 </div>
