@@ -10,7 +10,7 @@
                 <ul class="nav nav-tabs" role="tablist">
                     @foreach($invoice->orders as $index => $order)
                         <li role="presentation" class="{{ $index == 0 ? 'active' : '' }}">
-                            <a href="#products-{{ $invoice->id }}-{{ $index }}" role="tab" data-toggle="tab">
+                            <a href="#products-{{ sanitizeId($invoice->id) }}-{{ $index }}" role="tab" data-toggle="tab">
                                 {{ $order->printableName() }}<br>
                                 <small>{{ _i('Consegna: %s', printableDate($order->shipping)) }}</small>
                             </a>
@@ -18,13 +18,13 @@
                     @endforeach
 
                     @if($invoice->orders->count() > 1)
-                        <li role="presentation"><a href="#products-{{ $invoice->id }}-all" role="tab" data-toggle="tab">{{ _i('Aggregato') }}</a></li>
+                        <li role="presentation"><a href="#products-{{ sanitizeId($invoice->id) }}-all" role="tab" data-toggle="tab">{{ _i('Aggregato') }}</a></li>
                     @endif
                 </ul>
 
                 <div class="tab-content">
                     @foreach($invoice->orders as $index => $order)
-                        <div role="tabpanel" class="tab-pane {{ $index == 0 ? 'active' : '' }}" id="products-{{ $invoice->id }}-{{ $index }}">
+                        <div role="tabpanel" class="tab-pane {{ $index == 0 ? 'active' : '' }}" id="products-{{ sanitizeId($invoice->id) }}-{{ $index }}">
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -65,7 +65,7 @@
                     @endforeach
 
                     @if($invoice->orders->count() > 1)
-                        <div role="tabpanel" class="tab-pane {{ $index == 0 ? 'active' : '' }}" id="products-{{ $invoice->id }}-all">
+                        <div role="tabpanel" class="tab-pane {{ $index == 0 ? 'active' : '' }}" id="products-{{ sanitizeId($invoice->id) }}-all">
                             <table class="table">
                                 <thead>
                                     <tr>

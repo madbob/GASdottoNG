@@ -134,6 +134,15 @@ function enforceNumber($value)
         return 0;
 }
 
+function sanitizeId($identifier)
+{
+    $identifier = str_replace(':', '-', $identifier);
+    $identifier = str_replace('[', '-', $identifier);
+    $identifier = str_replace(']', '-', $identifier);
+    $identifier = str_replace('/', '-', $identifier);
+    return $identifier;
+}
+
 function normalizeUrl($url)
 {
     $url = strtolower($url);
