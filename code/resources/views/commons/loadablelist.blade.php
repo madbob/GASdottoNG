@@ -26,6 +26,20 @@ $data = join(' ', $data);
             <div class="form-group mainflow hidden-md">
                 <input type="text" class="form-control list-text-filter" data-list-target="#{{ $identifier }}">
             </div>
+            @if(!empty($sorting_rules))
+                <div class="btn-group loadablelist-sorter" data-list-target="#{{ $identifier }}">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        {{ _i('Ordina Per') }} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        @foreach($sorting_rules as $attribute => $info)
+                            <li>
+                                <a href="#" data-sort-by="{{ $attribute }}">{{ $info }}</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>&nbsp;
+            @endif
             <div>
                 @if(!empty($filters))
                     <div class="btn-group hidden-xs hidden-sm list-filters" role="group" aria-label="Filtri" data-list-target="#{{ $identifier }}">
@@ -39,20 +53,6 @@ $data = join(' ', $data);
                     @include('commons.iconslegend', ['class' => $legend->class, 'target' => '#' . $identifier])
                 @endif
             </div>
-            @if(!empty($sorting_rules))
-                &nbsp;<div class="btn-group loadablelist-sorter" data-list-target="#{{ $identifier }}">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        {{ _i('Ordina Per') }} <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        @foreach($sorting_rules as $attribute => $info)
-                            <li>
-                                <a href="#" data-sort-by="{{ $attribute }}">{{ $info }}</a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
         </div>
     </div>
 @endif

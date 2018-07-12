@@ -325,10 +325,16 @@ class MovementType extends Model
         }
 
         if ($identifier) {
-            return $types->where('id', $identifier)->first();
-        } else {
-            return $types;
+            $ret = $types->where('id', $identifier)->first();
+            if ($ret == null) {
+                Log::error('Richiesto tipo di movimento non esistente: ' . $identifier);
+            }
         }
+        else {
+            $ret = $types;
+        }
+
+        return $ret;
     }
 
     public function hasPayment($type)
