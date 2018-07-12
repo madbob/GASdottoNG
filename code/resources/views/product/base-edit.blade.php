@@ -8,7 +8,7 @@
     'name' => 'category_id',
     'objects' => App\Category::orderBy('name', 'asc')->where('parent_id', '=', null)->get(),
     'label' => _i('Categoria'),
-    'enforced_default' => 'non-specificato'
+    'required' => ($product == null)
 ])
 
 @include('commons.selectobjfield', [

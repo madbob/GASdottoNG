@@ -60,6 +60,17 @@ if ($extra_class) {
     $select_class .= ' '.$extra_class;
 }
 
+if(!isset($extra_selection)) {
+    $extra_selection = [];
+}
+
+if(isset($required) && $required == true) {
+    $extra_selection[''] = '--';
+}
+else {
+    $required = false;
+}
+
 ?>
 
 <div class="form-group">
@@ -73,6 +84,10 @@ if ($extra_class) {
 
             @if(isset($disabled) && $disabled == true)
                 disabled
+            @endif
+
+            @if($required)
+                required
             @endif
 
             name="{{ $prefix . $name . $postfix }}">
