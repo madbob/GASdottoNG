@@ -18,7 +18,7 @@
     'extra_class' => 'measure-selector',
     'label' => _i('Unità di Misura'),
     'datafields' => ['discrete'],
-    'enforced_default' => 'non-specificato'
+    'required' => ($product == null)
 ])
 
 @include('commons.textarea', ['obj' => $product, 'name' => 'description', 'label' => _i('Descrizione')])
