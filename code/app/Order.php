@@ -244,7 +244,7 @@ class Order extends Model
         return $this->status == 'open';
     }
 
-    public function calculateSummary($products = null)
+    public function calculateSummary($products = null, $shipping_place = null)
     {
         $summary = (object) [
             'order' => $this->id,
@@ -276,8 +276,13 @@ class Order extends Model
         $total_transport = 0;
 
         foreach ($products as $product) {
-            $q = BookedProduct::with('variants')->with('booking')->where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order) {
+            $q = BookedProduct::with('variants')->with('booking')->where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order, $shipping_place) {
                 $query->where('order_id', '=', $order->id);
+                if ($shipping_place != null) {
+                    $query->whereHas('user', function($subquery) use ($shipping_place) {
+                        $subquery->where('preferred_delivery_id', $shipping_place);
+                    });
+                }
             });
 
             $quantity = $q->sum('quantity');
@@ -464,14 +469,14 @@ class Order extends Model
         return $summary;
     }
 
-    public function formatSummary($fields)
+    public function formatSummary($fields, $shipping_place)
     {
         $ret = (object) [
             'header' => [],
             'contents' => []
         ];
 
-        $summary = $this->calculateSummary();
+        $summary = $this->calculateSummary(null, $shipping_place);
         $formattable = self::formattableColumns('summary');
 
         foreach($fields as $f) {

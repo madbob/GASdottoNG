@@ -342,6 +342,22 @@ class OrdersController extends Controller
         @unlink($temp_file_path);
     }
 
+    private function orderTopBookingsByShipping($order, $shipping_place, $status = null)
+    {
+        $bookings = $order->topLevelBookings($status);
+        if ($shipping_place != '0') {
+            $tmp_bookings = [];
+
+            foreach($bookings as $booking)
+                if ($booking->user->preferred_delivery_id == $shipping_place)
+                    $tmp_bookings[] = $booking;
+
+            $bookings = $tmp_bookings;
+        }
+
+        return $bookings;
+    }
+
     public function document(Request $request, $id, $type)
     {
         $order = Order::findOrFail($id);
@@ -349,16 +365,7 @@ class OrdersController extends Controller
         switch ($type) {
             case 'shipping':
                 $shipping_place = $request->input('shipping_place', 0);
-                $bookings = $order->topLevelBookings();
-                if ($shipping_place != '0') {
-                    $tmp_bookings = [];
-
-                    foreach($bookings as $booking)
-                        if ($booking->user->preferred_delivery_id == $shipping_place)
-                            $tmp_bookings[] = $booking;
-
-                    $bookings = $tmp_bookings;
-                }
+                $bookings = self::orderTopBookingsByShipping($order, $shipping_place);
 
                 $html = view('documents.order_shipping', ['order' => $order, 'bookings' => $bookings])->render();
                 $title = _i('Dettaglio Consegne ordine %s presso %s', [$order->internal_number, $order->supplier->name]);
@@ -381,10 +388,15 @@ class OrdersController extends Controller
 
             case 'summary':
                 $send_mail = $request->has('send_mail');
-
                 $subtype = $request->input('format', 'pdf');
                 $required_fields = $request->input('fields', []);
-                $data = $order->formatSummary($required_fields);
+
+                $shipping_place = $request->input('shipping_place', 0);
+                if ($shipping_place == '0')
+                    $data = $order->formatSummary($required_fields, null);
+                else
+                    $data = $order->formatSummary($required_fields, $shipping_place);
+
                 $title = _i('Prodotti ordinati ordine %s presso %s', [$order->internal_number, $order->supplier->name]);
                 $filename = $title . '.' . $subtype;
                 $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $filename));
@@ -423,12 +435,20 @@ class OrdersController extends Controller
 
             case 'table':
                 $status = $request->input('status', 'booked');
-                if ($status == 'booked')
-                    $contents = view('documents.order_table_booked', ['order' => $order])->render();
-                else if ($status == 'delivered')
-                    $contents = view('documents.order_table_delivered', ['order' => $order])->render();
-                else if ($status == 'saved')
-                    $contents = view('documents.order_table_saved', ['order' => $order])->render();
+                $shipping_place = $request->input('shipping_place', 0);
+
+                if ($status == 'booked') {
+                    $bookings = self::orderTopBookingsByShipping($order, $shipping_place);
+                    $contents = view('documents.order_table_booked', ['order' => $order, 'bookings' => $bookings])->render();
+                }
+                else if ($status == 'delivered') {
+                    $bookings = self::orderTopBookingsByShipping($order, $shipping_place);
+                    $contents = view('documents.order_table_delivered', ['order' => $order, 'bookings' => $bookings])->render();
+                }
+                else if ($status == 'saved') {
+                    $bookings = self::orderTopBookingsByShipping($order, $shipping_place, 'saved');
+                    $contents = view('documents.order_table_saved', ['order' => $order, 'bookings' => $bookings])->render();
+                }
 
                 $filename = sprintf('Tabella Ordine %s presso %s.csv', $order->internal_number, $order->supplier->name);
                 return output_csv($filename, null, $contents, null, null);
