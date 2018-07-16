@@ -163,6 +163,32 @@ class Order extends Model
         return $ret;
     }
 
+    public function topLevelBookings($status = null)
+    {
+        $ret = [];
+
+        if ($status == null)
+            $bookings = $this->bookings;
+        else
+            $bookings = $this->bookings()->where('status', $status)->get();
+
+        foreach($this->bookings as $booking) {
+            if ($booking->user->isFriend()) {
+                if (!isset($ret[$booking->user->parent_id])) {
+                    $placeholder = new Booking();
+                    $placeholder->user_id = $booking->user->parent_id;
+                    $placeholder->order_id = $this->id;
+                    $ret[$booking->user->parent_id] = $placeholder;
+                }
+            }
+            else {
+                $ret[$booking->user->id] = $booking;
+            }
+        }
+
+        return $ret;
+    }
+
     public function getInternalNumberAttribute()
     {
         return App::make('OrderNumbersDispatcher')->getNumber($this);

@@ -294,7 +294,7 @@ class Aggregate extends Model implements Feedable
         $ret = [];
 
         foreach ($this->orders as $order) {
-            foreach ($order->bookings()->toplevel()->get() as $booking) {
+            foreach ($order->topLevelBookings() as $booking) {
                 $booking->setRelation('order', $order);
                 $user_id = $booking->user->id;
 

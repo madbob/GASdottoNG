@@ -349,13 +349,15 @@ class OrdersController extends Controller
         switch ($type) {
             case 'shipping':
                 $shipping_place = $request->input('shipping_place', 0);
-                if ($shipping_place == '0') {
-                    $bookings = $order->bookings()->toplevel()->get();
-                }
-                else {
-                    $bookings = $order->bookings()->toplevel()->whereHas('user', function($query) use ($shipping_place) {
-                        $query->where('preferred_delivery_id', $shipping_place);
-                    })->get();
+                $bookings = $order->topLevelBookings();
+                if ($shipping_place != '0') {
+                    $tmp_bookings = [];
+
+                    foreach($bookings as $booking)
+                        if ($booking->user->preferred_delivery_id == $shipping_place)
+                            $tmp_bookings[] = $booking;
+
+                    $bookings = $tmp_bookings;
                 }
 
                 $html = view('documents.order_shipping', ['order' => $order, 'bookings' => $bookings])->render();

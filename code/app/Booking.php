@@ -85,13 +85,6 @@ class Booking extends Model
         return $query->orderByRaw(DB::raw("FIELD(user_id, $sorted_users)"));
     }
 
-    public function scopeToplevel($query)
-    {
-        $query->whereHas('user', function($query) {
-            $query->where('parent_id', null);
-        });
-    }
-
     public function getBooked($product_id, $fallback = false)
     {
         if (is_object($product_id)) {
