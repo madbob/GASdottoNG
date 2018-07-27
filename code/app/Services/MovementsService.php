@@ -259,6 +259,7 @@ class MovementsService extends BaseService
                         $m->save();
                     }
 
+                    unset($movements);
                     $index++;
 
                 } while(true);

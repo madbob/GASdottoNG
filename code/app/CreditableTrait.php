@@ -120,7 +120,12 @@ trait CreditableTrait
         $classes = DB::table('balances')->select('target_type')->distinct()->get();
         foreach($classes as $c) {
             $class = $c->target_type;
-            $objects = $class::all();
+
+            if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
+                $objects = $class::withTrashed()->get();
+            else
+                $objects = $class::all();
+
             foreach($objects as $obj) {
                 $latest = $obj->current_balance;
                 $new = $latest->replicate();
