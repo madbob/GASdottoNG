@@ -243,7 +243,9 @@ class MovementsController extends BackedController
                     });
                 }
                 else if ($subtype == 'rid') {
-                    $filename = _i('SEPA del %s.xml', date('d/m/Y'));
+                    $date = decodeDate($request->input('date'));
+                    $body = strtoupper($request->input('body'));
+                    $filename = _i('SEPA del %s.xml', date('d/m/Y', strtotime($date)));
 
                     $headers = [
                         'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
@@ -254,9 +256,15 @@ class MovementsController extends BackedController
                         'Pragma' => 'no-cache'
                     ];
 
-                    return Response::stream(function() use ($users) {
+                    return Response::stream(function() use ($users, $date, $body) {
                         $FH = fopen('php://output', 'w');
-                        $contents = view('documents.credits_rid', ['users' => $users])->render();
+
+                        $contents = view('documents.credits_rid', [
+                            'users' => $users,
+                            'date' => $date,
+                            'body' => $body,
+                        ])->render();
+
                         fwrite($FH, $contents);
                         fclose($FH);
                     }, 200, $headers);

@@ -25,11 +25,11 @@ $count_total = $count_total * -1;
         <urn:CBISDDReqLogMsg>
             <urn1:GrpHdr xmlns:urn1="urn:CBI:xsd:CBISDDReqLogMsg.00.01.00">
                 <urn1:MsgId>{{ str_random(20) }}</urn1:MsgId>
-                <urn1:CreDtTm>{{ date('Y-m-d\TH:i:s.000') }}</urn1:CreDtTm>
+                <urn1:CreDtTm>{{ $date . date('\TH:i:s.000') }}</urn1:CreDtTm>
                 <urn1:NbOfTxs>{{ $count_rows }}</urn1:NbOfTxs>
                 <urn1:CtrlSum>{{ $count_total }}</urn1:CtrlSum>
                 <urn1:InitgPty>
-                    <urn1:Nm>GRUPPO DI ACQUISTO SOLIDALE</urn1:Nm>
+                    <urn1:Nm>{{ _i('GRUPPO DI ACQUISTO SOLIDALE') }}</urn1:Nm>
                     <urn1:Id>
                         <urn1:OrgId>
                             <urn1:Othr>
@@ -52,7 +52,7 @@ $count_total = $count_total * -1;
                     </urn1:LclInstrm>
                     <urn1:SeqTp>RCUR</urn1:SeqTp>
                 </urn1:PmtTpInf>
-                <urn1:ReqdColltnDt>{{ date('Y-m-d', strtotime('+5 days')) }}</urn1:ReqdColltnDt>
+                <urn1:ReqdColltnDt>{{ date('Y-m-d', strtotime($date . ' +5 days')) }}</urn1:ReqdColltnDt>
                 <urn1:Cdtr>
                     <urn1:Nm>GRUPPO DI ACQUISTO {{ strtoupper($currentgas->name) }}</urn1:Nm>
                 </urn1:Cdtr>
@@ -100,7 +100,7 @@ $count_total = $count_total * -1;
                                 </urn1:Id>
                             </urn1:DbtrAcct>
                             <urn1:RmtInf>
-                                <urn1:Ustrd>VERSAMENTO GAS</urn1:Ustrd>
+                                <urn1:Ustrd>{{ $body }}</urn1:Ustrd>
                             </urn1:RmtInf>
                         </urn1:DrctDbtTxInf>
                     @endif

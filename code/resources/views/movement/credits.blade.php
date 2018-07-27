@@ -62,5 +62,30 @@
 <div class="modal-footer">
     <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
     <a id="csv_credits_download" href="{{ url('movements/document/credits/csv?credit=all') }}" class="btn btn-success">{{ _i('Esporta CSV') }}</a>
-    <a href="{{ url('movements/document/credits/rid') }}" class="btn btn-success">{{ _i('Esporta RID') }}</a>
+
+    <a type="button" class="btn btn-success" data-toggle="collapse" href="#exportRID">
+        {{ _i('Esporta RID') }}
+        <span class="caret"></span>
+    </a>
+
+    <div class="collapse well" id="exportRID">
+        <form class="form-horizontal form-filler" method="GET" action="">
+            @include('commons.datefield', [
+                'obj' => null,
+                'name' => 'date',
+                'label' => _i('Data'),
+                'mandatory' => true,
+                'defaults_now' => true
+            ])
+
+            @include('commons.textfield', [
+                'obj' => null,
+                'name' => 'body',
+                'label' => _i('Causale'),
+                'default_value' => _i('VERSAMENTO GAS')
+            ])
+
+            <a href="{{ url('movements/document/credits/rid?download=1') }}" class="btn btn-success form-filler-download">{{ _i('Esporta RID') }}</a>
+        </form>
+    </div>
 </div>
