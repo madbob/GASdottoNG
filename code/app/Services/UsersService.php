@@ -15,7 +15,7 @@ use App\Role;
 
 class UsersService extends BaseService
 {
-    public function list($term = '', $all = false)
+    public function list($term = '', $all = false, $involved = null)
     {
         $user = $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
         $gas_id = $user->gas['id'];
@@ -27,8 +27,14 @@ class UsersService extends BaseService
             });
         }
 
-        if ($all)
+        if (is_null($involved) == false) {
             $query->filterEnabled();
+            $query->whereIn('id', $involved);
+        }
+        else {
+            if ($all)
+                $query->filterEnabled();
+        }
 
         $users = $query->orderBy('lastname', 'asc')->get();
         return $users;

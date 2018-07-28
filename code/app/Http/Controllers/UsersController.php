@@ -60,13 +60,14 @@ class UsersController extends BackedController
         }
 
         $fields = $request->input('fields', []);
+        $printable = $request->input('printable', []);
         $formattable = User::formattableColumns();
         $headers = [];
         foreach($fields as $f) {
             $headers[] = $formattable[$f]->name;
         }
 
-        $users = $this->service->list('', true);
+        $users = $this->service->list('', true, $printable);
 
         return output_csv(_i('utenti.csv'), $headers, $users, function($user) use ($fields) {
             $ret = [];

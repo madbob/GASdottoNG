@@ -2109,24 +2109,50 @@ $(document).ready(function() {
         return false;
     });
 
-    $('body').on('click', '.export-custom-products-list', function(event) {
+    $('body').on('click', '.export-custom-list', function(event) {
         event.preventDefault();
-        var tab = $(this).closest('.tab-pane').find('.tab-pane.active');
 
         var printable = new Array();
 
-        if (tab.hasClass('details-list')) {
-            tab.find('.loadablelist a:visible').each(function() {
+        var explicit_target = $(this).attr('data-target');
+        if (explicit_target) {
+            $(explicit_target).find('a:visible').each(function() {
                 printable.push($(this).attr('data-element-id'));
             });
         }
         else {
-            tab.find('.table tr:visible').each(function() {
-                printable.push($(this).attr('data-element-id'));
-            });
+            /*
+                Questo è per gestire il caso speciale dell'esportazione dei
+                prodotti di un fornitore, i quali potrebbero essere visualizzati
+                (e dunque filtrati) in una .loadablelist o nella tabella di
+                modifica rapida
+            */
+            var tab = $(this).closest('.tab-pane').find('.tab-pane.active');
+
+            if (tab.hasClass('details-list')) {
+                tab.find('.loadablelist a:visible').each(function() {
+                    printable.push($(this).attr('data-element-id'));
+                });
+            }
+            else {
+                tab.find('.table tr:visible').each(function() {
+                    printable.push($(this).attr('data-element-id'));
+                });
+            }
         }
 
-        var url = $(this).attr('data-export-url') + '?' + $.param({printable: printable});
+        var data = {};
+        var parent_form = $(this).closest('form');
+        if (parent_form.length != 0) {
+            data = parent_form.serializeArray();
+            for (var i = 0; i < printable.length; i++)
+                data.push({name: 'printable[]', value: printable[i]});
+        }
+        else {
+            data = {printable: printable};
+        }
+
+        var url = $(this).attr('data-export-url') + '?' + $.param(data);
         window.open(url, '_blank');
     });
 

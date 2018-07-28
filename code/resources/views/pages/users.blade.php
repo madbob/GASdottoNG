@@ -21,12 +21,21 @@
             <div class="modal fade close-on-submit" id="exportCSVusers" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-extra-lg" role="document">
                     <div class="modal-content">
-                        <form class="form-horizontal direct-submit" method="GET" action="{{ url('users/export') }}" data-toggle="validator" novalidate>
+                        <form class="form-horizontal" method="GET" data-toggle="validator" novalidate>
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                 <h4 class="modal-title">{{ _i('Esporta CSV') }}</h4>
                             </div>
                             <div class="modal-body">
+                                <p>
+                                    {{ _i("Verranno esportati gli utenti attualmente filtrati nella lista principale, in funzione del loro stato e del loro ruolo.") }}
+                                </p>
+                                <p>
+                                    {!! _i("Per la consultazione e l'elaborazione dei files in formato CSV (<i>Comma-Separated Values</i>) si consiglia l'uso di <a target=\"_blank\" href=\"http://it.libreoffice.org/\">LibreOffice</a>.") !!}
+                                </p>
+
+                                <hr/>
+
                                 @include('commons.checkboxes', [
                                     'name' => 'fields',
                                     'label' => _i('Colonne'),
@@ -37,7 +46,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
-                                <button type="submit" class="btn btn-success">{{ _i('Download') }}</button>
+                                <button class="btn btn-success export-custom-list" data-export-url="{{ url('users/export') }}" data-target="#user-list">{{ _i('Download') }}</button>
                             </div>
                         </form>
                     </div>
