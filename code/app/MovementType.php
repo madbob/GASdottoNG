@@ -326,7 +326,7 @@ class MovementType extends Model
 
         if ($identifier) {
             $ret = $types->where('id', $identifier)->first();
-            if ($ret == null) {
+            if (is_null($ret)) {
                 Log::error('Richiesto tipo di movimento non esistente: ' . $identifier);
             }
         }

@@ -108,7 +108,11 @@ class Movement extends Model
 
     public function printableType()
     {
-        return $this->type_metadata->name;
+        $type = $this->type_metadata;
+        if (is_null($type))
+            return '???';
+        else
+            return $type->name;
     }
 
     public function printablePayment()

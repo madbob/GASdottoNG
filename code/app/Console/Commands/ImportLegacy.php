@@ -57,10 +57,18 @@ class ImportLegacy extends Command
         $c = new Contact();
         $c->type = $type;
 
-        if ($type == 'address')
-            $c->value = $this->addressTranslate($source->$external_name);
-        else
+        if ($type == 'address') {
+            $test = $this->addressTranslate($source->$external_name);
+            $test = str_replace(' ', '', $test);
+            $test = str_replace(',', '', $test);
+            if (empty($test))
+                return;
+
+            $c->value = $test;
+        }
+        else {
             $c->value = $source->$external_name;
+        }
 
         $c->target_id = $obj->id;
         $c->target_type = get_class($obj);
@@ -235,7 +243,6 @@ class ImportLegacy extends Command
         DB::table('bookings')->delete();
         DB::table('booked_products')->delete();
         DB::table('booked_product_variants')->delete();
-        DB::table('movement_types')->delete();
         DB::table('movements')->delete();
         DB::table('contacts')->delete();
         DB::table('comments')->delete();
