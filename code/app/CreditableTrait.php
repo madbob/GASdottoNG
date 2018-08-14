@@ -137,8 +137,10 @@ trait CreditableTrait
 
             foreach($objects as $obj) {
                 $proxy = $obj->getBalanceProxy();
-                if ($proxy != null)
+                if ($proxy != null) {
                     $obj = $proxy;
+                    $class = get_class($obj);
+                }
 
                 if (!isset($current_status[$class]))
                     $current_status[$class] = [];
@@ -150,6 +152,7 @@ trait CreditableTrait
                     $latest->date = $latest_date;
                     $latest->current = false;
                     $latest->save();
+                    $new->current = true;
                     $new->save();
 
                     $current_status[$class][$obj->id] = true;
