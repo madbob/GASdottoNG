@@ -3,6 +3,7 @@
 namespace App;
 
 use DB;
+use Log;
 
 trait CreditableTrait
 {
@@ -17,9 +18,15 @@ trait CreditableTrait
 
     private function fixFirstBalance()
     {
+        Log::debug('Fix bilancio per ' . $this->id . ' ' . get_class($this));
+
+        $proxy = $this->getBalanceProxy();
+        if (is_null($proxy))
+            $proxy = $this;
+
         $balance = new Balance();
-        $balance->target_id = $this->id;
-        $balance->target_type = get_class($this);
+        $balance->target_id = $proxy->id;
+        $balance->target_type = get_class($proxy);
         $balance->bank = 0;
         $balance->cash = 0;
         $balance->gas = 0;
@@ -117,6 +124,8 @@ trait CreditableTrait
 
     public static function duplicateAllCurrentBalances($latest_date)
     {
+        $current_status = [];
+
         $classes = DB::table('balances')->select('target_type')->distinct()->get();
         foreach($classes as $c) {
             $class = $c->target_type;
@@ -127,12 +136,24 @@ trait CreditableTrait
                 $objects = $class::all();
 
             foreach($objects as $obj) {
-                $latest = $obj->current_balance;
-                $new = $latest->replicate();
-                $latest->date = $latest_date;
-                $latest->current = false;
-                $latest->save();
-                $new->save();
+                $proxy = $obj->getBalanceProxy();
+                if ($proxy != null)
+                    $obj = $proxy;
+
+                if (!isset($current_status[$class]))
+                    $current_status[$class] = [];
+
+                if (!isset($current_status[$class][$obj->id])) {
+                    $latest = $obj->current_balance;
+                    $new = $latest->replicate();
+
+                    $latest->date = $latest_date;
+                    $latest->current = false;
+                    $latest->save();
+                    $new->save();
+
+                    $current_status[$class][$obj->id] = true;
+                }
             }
         }
     }
