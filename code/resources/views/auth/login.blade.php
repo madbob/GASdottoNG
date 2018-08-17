@@ -25,8 +25,8 @@
     <?php $browser_name = strtolower((new Sinergi\BrowserDetector\Browser())->getName()) ?>
     @if ($browser_name != 'firefox' && $browser_name != 'chrome')
         <div class="alert alert-warning">
-            GASdotto è testato con Firefox e Chrome/Chromium, ti consigliamo di usare uno di questi!<br>
-            <a href="https://www.mozilla.org/it/firefox/new/">Clicca qui per scaricare ed installare Firefox.</a>
+            {{ _i('GASdotto è testato con Firefox e Chrome/Chromium, ti consigliamo di usare uno di questi!') }}<br>
+            <a href="https://www.mozilla.org/it/firefox/new/">{{ _i('Clicca qui per scaricare ed installare Firefox.') }}</a>
         </div>
         <br>
     @endif
@@ -92,6 +92,12 @@
         <a class="pull-right" href="{{ route('password.request') }}">{{ _i('Recupero Password') }}</a>
     </p>
 </div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
 
 <nav class="navbar navbar-default navbar-fixed-bottom">
     <div class="container">
