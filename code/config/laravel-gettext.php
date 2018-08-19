@@ -31,7 +31,8 @@ return [
         'it_IT',
         'en_EN',
         'de_DE',
-        'nl_NL'
+        'nl_NL',
+        'nb_NO',
     ],
 
     /**
