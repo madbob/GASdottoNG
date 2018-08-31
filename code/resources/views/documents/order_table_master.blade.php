@@ -2,7 +2,7 @@
     $total_price = 0;
     $total_transport = 0;
     $all_products[$product->id] = 0;
-    echo $product->printableName() . ';';
+    echo sprintf('%s (%s);', $product->printableName(), printablePriceCurrency($product->price, ','));
 } ?>{{ _i('Totale Prezzo') }};{{ _i('Trasporto') }};{{ _i('Utente') }}
 
 @foreach($selected_bookings as $booking)
