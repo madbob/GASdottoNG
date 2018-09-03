@@ -33,13 +33,17 @@
                         <div class="col-md-6">
                             @if($currentuser->can('users.self', $currentgas))
                                 @include('user.base-edit', ['user' => $user])
+                                @include('commons.datefield', ['obj' => $user, 'name' => 'birthday', 'label' => _i('Data di Nascita')])
+                                @include('commons.textfield', ['obj' => $user, 'name' => 'taxcode', 'label' => _i('Codice Fiscale')])
+                                @include('commons.textfield', ['obj' => $user, 'name' => 'family_members', 'label' => _i('Persone in Famiglia')])
                                 @include('commons.contactswidget', ['obj' => $user])
                             @else
-                                @include('commons.staticstringfield', ['obj' => $user, 'name' => 'username', 'label' => _i('Username'), 'mandatory' => true])
-                                @include('commons.staticstringfield', ['obj' => $user, 'name' => 'firstname', 'label' => _i('Nome'), 'mandatory' => true])
-                                @include('commons.staticstringfield', ['obj' => $user, 'name' => 'lastname', 'label' => _i('Cognome'), 'mandatory' => true])
-                                @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => _i('Password'), 'mandatory' => true, 'extra_class' => 'password-changer'])
+                                @include('commons.staticstringfield', ['obj' => $user, 'name' => 'username', 'label' => _i('Username')])
+                                @include('commons.staticstringfield', ['obj' => $user, 'name' => 'firstname', 'label' => _i('Nome')])
+                                @include('commons.staticstringfield', ['obj' => $user, 'name' => 'lastname', 'label' => _i('Cognome')])
+                                @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => _i('Password'), 'extra_class' => 'password-changer'])
                                 @include('commons.staticdatefield', ['obj' => $user, 'name' => 'birthday', 'label' => _i('Data di Nascita')])
+                                @include('commons.staticstringfield', ['obj' => $user, 'name' => 'taxcode', 'label' => _i('Codice Fiscale')])
                                 @include('commons.staticcontactswidget', ['obj' => $user])
                             @endif
                         </div>
