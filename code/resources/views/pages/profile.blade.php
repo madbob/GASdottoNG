@@ -109,13 +109,15 @@
             @if($user->isFriend() == false && App\Role::someone('movements.admin', $user->gas))
                 <div role="tabpanel" class="tab-pane {{ $active_tab == 'accounting' ? 'active' : '' }}" id="accounting">
                     @if($user->gas->hasFeature('paypal'))
-                        <button type="button" class="btn btn-warning pull-right" data-toggle="modal" data-target="#paypalCredit">{{ _i('Ricarica Credito') }}</button>
+                        <button type="button" class="btn btn-warning pull-right" data-toggle="modal" data-target="#paypalCredit">{{ _i('Ricarica Credito con PayPal') }}</button>
 
                         <div class="modal fade" id="paypalCredit" tabindex="-1" role="dialog">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <form class="form-horizontal direct-submit" method="POST" action="{{ route('payment.do') }}" data-toggle="validator">
                                         @csrf
+
+                                        <input type="hidden" name="type" value="paypal">
 
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -138,6 +140,48 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
                                             <button type="submit" class="btn btn-success">{{ _i('Vai a PayPal') }}</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br>
+                    @endif
+
+                    @if($user->gas->hasFeature('satispay'))
+                        <button type="button" class="btn btn-warning pull-right" data-toggle="modal" data-target="#satispayCredit">{{ _i('Ricarica Credito con Satispay') }}</button>
+
+                        <div class="modal fade" id="satispayCredit" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form class="form-horizontal direct-submit" method="POST" action="{{ route('payment.do') }}" data-toggle="validator">
+                                        @csrf
+
+                                        <input type="hidden" name="type" value="satispay">
+
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title">{{ _i('Ricarica Credito') }}</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                                {{ _i('Da qui puoi ricaricare il tuo credito utilizzando Satispay.') }}
+                                            </p>
+                                            <p>
+                                                {{ _i('Specifica quanto vuoi versare ed eventuali note per gli amministratori, verrai rediretto sul sito PayPal dove dovrai autenticarti e confermare il versamento.') }}
+                                            </p>
+                                            <p>
+                                                {{ _i('Eventuali commissioni sulla transazione saranno a tuo carico.') }}
+                                            </p>
+
+                                            @include('commons.textfield', ['obj' => $currentuser, 'name' => 'mobile', 'label' => _i('Numero di Telefono')])
+                                            @include('commons.decimalfield', ['obj' => null, 'name' => 'amount', 'label' => _i('Valore'), 'is_price' => true, 'mandatory' => true])
+                                            @include('commons.textarea', ['obj' => null, 'name' => 'description', 'label' => _i('Descrizione')])
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+                                            <button type="submit" class="btn btn-success">{{ _i('Conferma con Satispay') }}</button>
                                         </div>
                                     </form>
                                 </div>

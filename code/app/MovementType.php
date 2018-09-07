@@ -56,18 +56,26 @@ class MovementType extends Model
                 'active_for' => 'App\User'
             ];
         }
+        if($gas->hasFeature('satispay')) {
+            $ret['satispay'] = (object) [
+                'name' => _i('Satispay'),
+                'identifier' => true,
+                'icon' => 'glyphicon-cloud-download',
+                'active_for' => 'App\User'
+            ];
+        }
 
         return $ret;
     }
 
     public static function paymentsByType($type)
     {
+        $function = null;
+
         if ($type != null) {
             $metadata = self::types($type);
-            $function = json_decode($metadata->function);
-        }
-        else {
-            $function = null;
+            if ($metadata)
+                $function = json_decode($metadata->function);
         }
 
         $movement_methods = MovementType::payments();

@@ -33,6 +33,7 @@ trait CreditableTrait
         $balance->suppliers = 0;
         $balance->deposits = 0;
         $balance->paypal = 0;
+        $balance->satispay = 0;
         $balance->current = true;
         $balance->date = date('Y-m-d');
         $balance->save();

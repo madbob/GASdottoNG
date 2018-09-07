@@ -125,6 +125,12 @@ class Gas extends Model
                 ]
             ],
 
+            'satispay' => [
+                'default' => (object) [
+                    'secret' => ''
+                ]
+            ],
+
             'extra_invoicing' => [
                 'default' => (object) [
                     'business_name' => '',
@@ -223,6 +229,11 @@ class Gas extends Model
         return (array) json_decode($this->getConfig('paypal'));
     }
 
+    public function getSatispayAttribute()
+    {
+        return (array) json_decode($this->getConfig('satispay'));
+    }
+
     public function getExtraInvoicingAttribute()
     {
         return (array) json_decode($this->getConfig('extra_invoicing'));
@@ -257,6 +268,9 @@ class Gas extends Model
             case 'paypal':
                 return !empty($this->paypal['client_id']);
                 break;
+            case 'satispay':
+                return !empty($this->satispay['secret']);
+                break;
             case 'extra_invoicing':
                 return (!empty($this->extra_invoicing['taxcode']) || !empty($this->extra_invoicing['vat']));
                 break;
@@ -287,6 +301,8 @@ class Gas extends Model
         $gas = currentAbsoluteGas();
         if($gas->hasFeature('paypal'))
             $ret['paypal'] = _i('PayPal');
+        if($gas->hasFeature('satispay'))
+            $ret['satispay'] = _i('Satispay');
 
         return $ret;
     }

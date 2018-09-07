@@ -81,6 +81,15 @@ trait ContactableTrait
             return '';
     }
 
+    public function getMobileAttribute()
+    {
+        $contact = $this->contacts()->where('type', 'mobile')->first();
+        if ($contact != null)
+            return $contact->value;
+        else
+            return '';
+    }
+
     public function getAddress()
     {
         $address = $this->contacts()->where('type', 'address')->first();

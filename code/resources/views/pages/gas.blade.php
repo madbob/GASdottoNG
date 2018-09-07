@@ -190,6 +190,14 @@
 
                                 <div class="col-md-12">
                                     <p>
+                                        {!! _i('Popolando questi campi verranno attivati i pagamenti con Satispay, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto. Per ottenere le credenziali, <a href="https://business.satispay.com/login">registra un account "Business" su Satispay</a>.') !!}
+                                    </p>
+
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'satispay->secret', 'label' => 'Security Bearer'])
+                                </div>
+
+                                <div class="col-md-12">
+                                    <p>
                                         {!! _i("Popolando questi campi verrà attivata l'emissione delle fatture nei confronti degli utenti che effettuano prenotazioni. Le fatture saranno emesse al momento del salvataggio o della consegna della prenotazione.") !!}
                                     </p>
 

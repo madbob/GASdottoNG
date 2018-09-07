@@ -98,6 +98,11 @@ class GasController extends Controller
                 ];
                 $gas->setConfig('paypal', $paypal_info);
 
+                $satispay_info = (object) [
+                    'secret' => $request->input('satispay->secret')
+                ];
+                $gas->setConfig('satispay', $satispay_info);
+
                 $invoicing_info = $gas->extra_invoicing;
                 $invoicing_info['business_name'] = $request->input('extra_invoicing->business_name');
                 $invoicing_info['taxcode'] = $request->input('extra_invoicing->taxcode');

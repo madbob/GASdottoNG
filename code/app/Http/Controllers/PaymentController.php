@@ -17,6 +17,7 @@ use PayPal\Api\Transaction;
 use PayPal\Exception\PPConnectionException;
 
 use Session;
+use Cache;
 use Auth;
 use Log;
 
@@ -41,54 +42,116 @@ class PaymentController extends Controller
 
     public function doPayment(Request $request)
     {
-        $user = $this->initContext();
-        $gas = $user->gas;
+        $type = $request->input('type');
 
-        $payer = new Payer();
-        $payer->setPaymentMethod('paypal');
+        if ($type == 'paypal') {
+            $user = $this->initContext();
+            $gas = $user->gas;
 
-        $item_1 = new Item();
-        $item_1->setName(_i('Credito Utente %s', $gas->name))->setCurrency('EUR')->setQuantity(1)->setPrice($request->input('amount'));
+            $payer = new Payer();
+            $payer->setPaymentMethod('paypal');
 
-        $item_list = new ItemList();
-        $item_list->setItems(array($item_1));
+            $item_1 = new Item();
+            $item_1->setName(_i('Credito Utente %s', $gas->name))->setCurrency('EUR')->setQuantity(1)->setPrice($request->input('amount'));
 
-        $amount = new Amount();
-        $amount->setCurrency('EUR')->setTotal($request->input('amount'));
+            $item_list = new ItemList();
+            $item_list->setItems(array($item_1));
 
-        $transaction = new Transaction();
-        $transaction->setAmount($amount)->setItemList($item_list)->setDescription($request->input('description'));
+            $amount = new Amount();
+            $amount->setCurrency('EUR')->setTotal($request->input('amount'));
 
-        $redirect_urls = new RedirectUrls();
-        $redirect_urls->setReturnUrl(route('payment.status'))->setCancelUrl(route('payment.status'));
+            $transaction = new Transaction();
+            $transaction->setAmount($amount)->setItemList($item_list)->setDescription($request->input('description'));
 
-        $payment = new Payment();
-        $payment->setIntent('Sale')->setPayer($payer)->setRedirectUrls($redirect_urls)->setTransactions(array($transaction));
+            $redirect_urls = new RedirectUrls();
+            $redirect_urls->setReturnUrl(route('payment.status_paypal'))->setCancelUrl(route('payment.status_paypal'));
 
-        try {
-            $payment->create($this->api_context);
+            $payment = new Payment();
+            $payment->setIntent('Sale')->setPayer($payer)->setRedirectUrls($redirect_urls)->setTransactions(array($transaction));
+
+            try {
+                $payment->create($this->api_context);
+            }
+            catch (PPConnectionException $e) {
+                Log::error('Errore in connessione per transazione PayPal: ' . $e->getMessage());
+            }
+
+            foreach ($payment->getLinks() as $link) {
+                if ($link->getRel() == 'approval_url') {
+                    $redirect_url = $link->getHref();
+                    break;
+                }
+            }
+
+            Session::put('paypal_payment_id', $payment->getId());
+
+            if (isset($redirect_url)) {
+                return redirect()->away($redirect_url);
+            }
+
+            Log::error('Errore sconosciuto in transazione PayPal');
         }
-        catch (PPConnectionException $e) {
-            Log::error('Errore in connessione per transazione PayPal: ' . $e->getMessage());
-        }
+        else if ($type == 'satispay') {
+            $user = Auth::user();
+            $gas = $user->gas;
 
-        foreach ($payment->getLinks() as $link) {
-            if ($link->getRel() == 'approval_url') {
-                $redirect_url = $link->getHref();
-                break;
+            $charge = null;
+
+            $amount = $request->input('amount');
+            $notes = $request->input('description');
+
+            $phone = $request->input('mobile');
+            $phone = str_replace('+', '00', $phone);
+            $phone = preg_replace('/^[^0-9]$/', '', $phone);
+            if (substr($phone, 0, 4) != '0039')
+                $phone = '0039' . $phone;
+
+            try {
+                \SatispayOnline\Api::setSecurityBearer($gas->satispay['secret']);
+                \SatispayOnline\Api::setSandbox(true);
+
+                $user = \SatispayOnline\User::create([
+                    'phone_number' => $phone
+                ]);
+
+                $charge = \SatispayOnline\Charge::create([
+                    'user_id' => $user->id,
+                    'currency' => 'EUR',
+                    'amount' => $amount * 100,
+                    'description' => $notes,
+                    'callback_url' => route('payment.status_satispay')
+                ]);
+            }
+            catch(\Exception $e) {
+                Log::error();
+                $charge = null;
+            }
+
+            /*
+                Se la richiesta di pagamento va a buon fine, creo il relativo
+                movimento contabile e lo parcheggio in cache. Quando ricevo la
+                conferma da parte di Satispay, lo prelevo e lo salvo sul DB.
+                cfr. self::statusPaymentSatispay()
+            */
+            if ($charge != null) {
+                $movement = new Movement();
+                $movement->identifier = $charge->uuid;
+                $movement->type = 'user-credit';
+                $movement->target_type = get_class($user);
+                $movement->target_id = $user->id;
+                $movement->amount = $amount;
+                $movement->date = date('Y-m-d');
+                $movement->notes = $notes;
+                $movement->method = 'satispay';
+
+                Cache::put('satispay_movement_' . $charge->uuid, $movement, 16);
             }
         }
 
-        Session::put('paypal_payment_id', $payment->getId());
-
-        if (isset($redirect_url)) {
-            return redirect()->away($redirect_url);
-        }
-
-        Log::error('Errore sconosciuto in transazione PayPal');
+        return redirect()->route('profile', ['tab' => 'accounting']);
     }
 
-    public function statusPayment(Request $request)
+    public function statusPaymentPaypal(Request $request)
     {
         $user = $this->initContext();
 
@@ -145,5 +208,15 @@ class PaymentController extends Controller
         }
 
         return redirect()->route('profile', ['tab' => 'accounting']);
+    }
+
+    public function statusPaymentSatispay(Request $request)
+    {
+        $charge_id = $request->input('charge_id');
+        $movement = Cache::pull('satispay_movement_' . $charge_id);
+        if ($movement != null) {
+            Log::debug('Conferma Satispay, salvo movimento');
+            $movement->save();
+        }
     }
 }

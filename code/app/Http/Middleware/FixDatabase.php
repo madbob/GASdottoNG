@@ -35,43 +35,85 @@ class FixDatabase
             $category->save();
         }
 
+        $gas = currentAbsoluteGas();
+
         /*
             Questo è per creare il default per i pagamenti PayPal, introdotti
             solo successivamente.
             Addì: 26/04/2018
         */
-        $gas = currentAbsoluteGas();
         if($gas->hasFeature('paypal')) {
             $types = MovementType::paymentsByType('user-credit');
             if(!in_array('paypal', array_keys($types))) {
                 $type = MovementType::findOrFail('user-credit');
-
-                $data = json_decode($type->function);
-                $data[] = (object) [
-                    'method' => 'paypal',
-                    'sender' => (object) [
-                        'operations' => []
-                    ],
-                    'target' => (object) [
-                        'operations' => [
-                            (object) [
-                                'operation' => 'increment',
-                                'field' => 'bank'
-                            ],
+                if ($type) {
+                    $data = json_decode($type->function);
+                    $data[] = (object) [
+                        'method' => 'paypal',
+                        'sender' => (object) [
+                            'operations' => []
+                        ],
+                        'target' => (object) [
+                            'operations' => [
+                                (object) [
+                                    'operation' => 'increment',
+                                    'field' => 'bank'
+                                ],
+                            ]
+                        ],
+                        'master' => (object) [
+                            'operations' => [
+                                (object) [
+                                    'operation' => 'increment',
+                                    'field' => 'paypal'
+                                ],
+                            ]
                         ]
-                    ],
-                    'master' => (object) [
-                        'operations' => [
-                            (object) [
-                                'operation' => 'increment',
-                                'field' => 'paypal'
-                            ],
-                        ]
-                    ]
-                ];
+                    ];
 
-                $type->function = json_encode($data);
-                $type->save();
+                    $type->function = json_encode($data);
+                    $type->save();
+                }
+            }
+        }
+
+        /*
+            Questo è per creare il default per i pagamenti Satispay, introdotti
+            solo successivamente.
+            Addì: 07/09/2018
+        */
+        if($gas->hasFeature('satispay')) {
+            $types = MovementType::paymentsByType('user-credit');
+            if(!in_array('satispay', array_keys($types))) {
+                $type = MovementType::findOrFail('user-credit');
+                if ($type) {
+                    $data = json_decode($type->function);
+                    $data[] = (object) [
+                        'method' => 'satispay',
+                        'sender' => (object) [
+                            'operations' => []
+                        ],
+                        'target' => (object) [
+                            'operations' => [
+                                (object) [
+                                    'operation' => 'increment',
+                                    'field' => 'bank'
+                                ],
+                            ]
+                        ],
+                        'master' => (object) [
+                            'operations' => [
+                                (object) [
+                                    'operation' => 'increment',
+                                    'field' => 'satispay'
+                                ],
+                            ]
+                        ]
+                    ];
+
+                    $type->function = json_encode($data);
+                    $type->save();
+                }
             }
         }
 

@@ -98,7 +98,8 @@ Route::post('multigas/attach', 'MultiGasController@attach');
 Route::post('multigas/detach', 'MultiGasController@detach');
 
 Route::post('payment/do', 'PaymentController@doPayment')->name('payment.do');
-Route::get('payment/status', 'PaymentController@statusPayment')->name('payment.status');
+Route::get('payment/status/paypal', 'PaymentController@statusPaymentPaypal')->name('payment.status_paypal');
+Route::get('payment/status/satispay', 'PaymentController@statusPaymentSatispay')->name('payment.status_satispay');
 
 Route::get('movements/ro/{id}', 'MovementsController@show_ro');
 Route::get('movements/{id}/header', 'MovementsController@objhead')->name('movements.objhead');
