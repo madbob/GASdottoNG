@@ -12,3 +12,10 @@ mv resources/lang/i18n/it_IT/LC_MESSAGES/javascript.js public/js/lang/it-IT.js
 ```
 
 L'utility `po2js.py` è reperibile [qui](https://github.com/fileformat/lptools/blob/master/po2js.py).
+
+Per sincronizzare le traduzioni da Weblate:
+
+```
+git remote update weblate
+git merge weblate/master
+```
