@@ -13,7 +13,7 @@
         if (level == 2)
             container = $(text);
         else if (level == 1)
-            nodes = container.find(':contains(' + text + ')').last();
+            nodes = container.find('label:contains(' + text + ')');
     };
     helpRenderer.paragraph = function(text, level) {
         if (inner_text != '')
@@ -71,12 +71,14 @@
 
     function helpFillNode(nodes, text) {
         if (nodes != null) {
-            nodes.parent().addClass('help-sensitive').popover({
-                content: text,
-                placement: 'auto right',
-                container: 'body',
-                html: true,
-                trigger: 'hover'
+            nodes.each(function() {
+                $(this).parent().addClass('help-sensitive').popover({
+                    content: text,
+                    placement: 'auto right',
+                    container: 'body',
+                    html: true,
+                    trigger: 'hover'
+                });
             });
         }
 

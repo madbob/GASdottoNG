@@ -168,6 +168,12 @@ Se diverso da 0, questa è la quantità massima di prodotto che complessivamente
 
 Ogni prodotto può avere delle varianti, ad esempio la taglia o il colore per i capi di abbigliamento. In fase di prenotazione, gli utenti potranno indicare quantità diverse per ogni combinazione di varianti. Le varianti possono inoltre avere un proprio prezzo, da specificare in funzione del prezzo unitario del prodotto (ad esempio: +1 euro o -0.8 euro).
 
+## .order-extras
+
+# Notifiche Mail
+
+Invia a tutti gli utenti che hanno partecipato all'ordine una mail riassuntiva della propria prenotazione. È possibile aggiungere un messaggio da allegare a tutti, per eventuali segnalazioni addizionali.
+
 ## .order-editor, #createOrder
 
 # Fornitore
@@ -270,6 +276,10 @@ Quando questa opzione è abilitata, chiunque potrà registrarsi all'istanza per 
 
 Quando questa opzione è abilitata, nel pannello dell'ordine viene attivato il tab "Consegne Rapide" (accanto a "Consegne") che permette di marcare più prenotazioni come consegnate in un'unica operazione.
 
+# Colonne Riassunto Ordini
+
+Colonne visualizzate di default nella griglia di riassunto degli ordini. È comunque sempre possibile modificare la visualizzazione dall'interno della griglia stessa per mezzo del selettore posto in alto a destra.
+
 # Inizio Anno Sociale
 
 In questa data le quote di iscrizione verranno automaticamente fatte scadere e dovranno essere rinnovate.
@@ -282,6 +292,11 @@ Se non configurato (valore = 0) non verranno gestite le quote di iscrizione.
 
 Se non configurato (valore = 0) non verranno gestite le cauzioni da parte dei nuovi soci.
 
+# Abilita SEPA
+
+Abilitando questa opzione e popolando i relativi campi verrà attivata l'esportazione dei files SEPA, con cui automatizzare le transazioni bancarie. I files saranno generabili da <strong>Contabilità -> Stato Crediti -> Esporta SEPA</strong>.
+Dopo aver compilato questo form, per ogni utente dovrai specificare alcuni parametri.
+
 # IBAN
 
 IBAN su cui dovranno avvenire i versamenti generati per mezzo dei RID.
@@ -293,6 +308,18 @@ Codice identificativo erogato dalla banca.
 # Codice Univoco Azienda
 
 Codice identificativo erogato dalla banca, detto anche "CUC".
+
+# Abilita PayPal
+
+Abilitando questa opzione e popolando i relativi campi verranno attivati i pagamenti con PayPal, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto. Per ottenere le credenziali visita https://developer.paypal.com/
+
+# Abilita Satispay
+
+Abilitando questa opzione e popolando i relativi campi verranno attivati i pagamenti con Satispay, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto. Per ottenere le credenziali visita https://business.satispay.com/
+
+# Abilita Emissione Fatture
+
+Abilitando questa opzione e popolando i relativi campi verrà attivata l'emissione delle fatture nei confronti degli utenti che effettuano prenotazioni. Le fatture saranno emesse al momento del salvataggio o della consegna della prenotazione, e saranno accessibili da <strong>Contabilità -> Fatture</strong>.
 
 # Importazione
 
@@ -317,3 +344,27 @@ Questo ruolo sarà automaticamente assegnato ad ogni "amico" degli utenti esiste
 # Ruolo Superiore
 
 Gli utenti con assegnato un "ruolo superiore" potranno assegnare ad altri utenti questo ruolo.
+
+## .movement-type-editor, #createMovementtype
+
+# Accetta Valori Negativi
+
+Se "Off", impedisce di immettere un ammontare negativo per il movimento contabile.
+
+# Valore Fisso
+
+Se diverso da 0, non sarà possibile modificare il valore dei nuovi movimenti di questo tipo.
+
+# Pagante
+
+Il tipo di entità che effettua il pagamento. Se selezionato, sarà possibile selezionare l'entità all'interno del pannello di creazione di un nuovo movimento.
+
+# Pagato
+
+Il tipo di entità che riceve il pagamento. Se selezionato, sarà possibile selezionare l'entità all'interno del pannello di creazione di un nuovo movimento.
+
+## .invoice-editor
+
+# Ordini Coinvolti
+
+Seleziona gli ordini che sono coinvolti in questa fattura. Quando la fatturà sarà marcata come "pagata", ad essi sarà aggiunto il riferimento al movimento contabile di pagamento e saranno automaticamente archiviati.

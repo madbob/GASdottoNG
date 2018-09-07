@@ -64,7 +64,7 @@
     <a id="csv_credits_download" href="{{ url('movements/document/credits/csv?credit=all') }}" class="btn btn-success">{{ _i('Esporta CSV') }}</a>
 
     <a type="button" class="btn btn-success" data-toggle="collapse" href="#exportRID">
-        {{ _i('Esporta RID') }}
+        {{ _i('Esporta SEPA') }}
         <span class="caret"></span>
     </a>
 
@@ -85,7 +85,7 @@
                 'default_value' => _i('VERSAMENTO GAS')
             ])
 
-            <a href="{{ url('movements/document/credits/rid?download=1') }}" class="btn btn-success form-filler-download">{{ _i('Esporta RID') }}</a>
+            <a href="{{ url('movements/document/credits/rid?download=1') }}" class="btn btn-success form-filler-download">{{ _i('Esporta SEPA') }}</a>
         </form>
     </div>
 </div>

@@ -121,7 +121,7 @@ class DatabaseSeeder extends Seeder
 
         $notification = Notification::create([
             'creator_id' => $admin->id,
-            'content' => 'Benvenuto in GASdotto!',
+            'content' => "Benvenuto in GASdotto!\n\nClicca l'icona in alto a destra col punto interrogativo per attivare l'help in linea: le etichette all'interno dei diversi pannelli diventeranno blu e mostreranno un messaggio di spiegazione passandoci sopra il mouse.\nPer ulteriore assistenza puoi rivolgerti alla mailing list degli utenti su https://groups.google.com/forum/#!forum/gasdotto-dev",
             'mailed' => false,
             'start_date' => date('Y-m-d'),
             'end_date' => date('Y-m-d', strtotime('+1 day')),

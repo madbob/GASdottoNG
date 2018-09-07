@@ -16,7 +16,7 @@ $panel_rand_wrap = rand();
 ?>
 
 @if($aggregate->isRunning() == false && ($more_orders || $shippable_status))
-    <div class="row gray-row">
+    <div class="row gray-row order-extras">
         <div class="col-md-6">
             @if($shippable_status)
                 <form class="form-horizontal">

@@ -77,7 +77,7 @@
 
                             <div class="form-group">
                                 <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
-                                    <button type="submit" class="btn btn-success">{{ _i('Ricerca') }}</button>
+                                    <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
                                     <a href="{{ url('movements?format=csv') }}" class="btn btn-default form-filler-download">{{ _i('Esporta CSV') }}</a>
                                     <a href="{{ url('movements?format=pdf') }}" class="btn btn-default form-filler-download">{{ _i('Esporta PDF') }}</a>
                                 </div>
@@ -163,7 +163,7 @@
 
                             <div class="form-group">
                                 <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
-                                    <button type="submit" class="btn btn-success">{{ _i('Ricerca') }}</button>
+                                    <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
                                     <a href="{{ route('invoices.search', ['format' => 'csv']) }}" class="btn btn-default form-filler-download">{{ _i('Esporta CSV') }}</a>
                                 </div>
                             </div>
