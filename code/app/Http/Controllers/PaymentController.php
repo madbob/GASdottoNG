@@ -25,7 +25,7 @@ use App\Movement;
 
 class PaymentController extends Controller
 {
-    private function initContext()
+    private function initPayPalContext()
     {
         $user = Auth::user();
         $gas = $user->gas;
@@ -40,12 +40,26 @@ class PaymentController extends Controller
         return $user;
     }
 
+    private function initSatispayContext()
+    {
+        $user = Auth::user();
+        if ($user == null)
+            $gas = currentAbsoluteGas();
+        else
+            $gas = $user->gas;
+
+        \SatispayOnline\Api::setSecurityBearer($gas->satispay['secret']);
+        \SatispayOnline\Api::setSandbox(true);
+
+        return $user;
+    }
+
     public function doPayment(Request $request)
     {
         $type = $request->input('type');
 
         if ($type == 'paypal') {
-            $user = $this->initContext();
+            $user = $this->initPayPalContext();
             $gas = $user->gas;
 
             $payer = new Payer();
@@ -92,8 +106,7 @@ class PaymentController extends Controller
             Log::error('Errore sconosciuto in transazione PayPal');
         }
         else if ($type == 'satispay') {
-            $user = Auth::user();
-            $gas = $user->gas;
+            $user = self::initSatispayContext();
 
             $charge = null;
 
@@ -105,11 +118,9 @@ class PaymentController extends Controller
             $phone = preg_replace('/^[^0-9]$/', '', $phone);
             if (substr($phone, 0, 4) != '0039')
                 $phone = '0039' . $phone;
+            $phone = preg_replace('/^0039/', '+39', $phone);
 
             try {
-                \SatispayOnline\Api::setSecurityBearer($gas->satispay['secret']);
-                \SatispayOnline\Api::setSandbox(true);
-
                 $user = \SatispayOnline\User::create([
                     'phone_number' => $phone
                 ]);
@@ -119,11 +130,11 @@ class PaymentController extends Controller
                     'currency' => 'EUR',
                     'amount' => $amount * 100,
                     'description' => $notes,
-                    'callback_url' => route('payment.status_satispay')
+                    'callback_url' => urldecode(route('payment.status_satispay'. ['charge_id' => '{uuid}']))
                 ]);
             }
             catch(\Exception $e) {
-                Log::error();
+                Log::error('Errore richiesta Satispay: ' . $e->getMessage());
                 $charge = null;
             }
 
@@ -139,6 +150,7 @@ class PaymentController extends Controller
                 $movement->type = 'user-credit';
                 $movement->target_type = get_class($user);
                 $movement->target_id = $user->id;
+                $movement->registerer_id = $user->id;
                 $movement->amount = $amount;
                 $movement->date = date('Y-m-d');
                 $movement->notes = $notes;
@@ -153,7 +165,7 @@ class PaymentController extends Controller
 
     public function statusPaymentPaypal(Request $request)
     {
-        $user = $this->initContext();
+        $user = $this->initPayPalContext();
 
         $payment_id = Session::get('paypal_payment_id');
         Session::forget('paypal_payment_id');
@@ -212,11 +224,19 @@ class PaymentController extends Controller
 
     public function statusPaymentSatispay(Request $request)
     {
+        self::initSatispayContext();
+
         $charge_id = $request->input('charge_id');
-        $movement = Cache::pull('satispay_movement_' . $charge_id);
-        if ($movement != null) {
-            Log::debug('Conferma Satispay, salvo movimento');
-            $movement->save();
+        $charge = \SatispayOnline\Charge::get($charge_id);
+
+        if ($charge->status == 'SUCCESS') {
+            $movement = Cache::pull('satispay_movement_' . $charge_id);
+            if ($movement != null) {
+                $movement->save();
+            }
+            else {
+                Log::error('Richiesta Satispay non trovata in cache: ' . $charge_id);
+            }
         }
     }
 }
