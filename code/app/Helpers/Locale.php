@@ -46,6 +46,10 @@ function getLanguages()
             'value' => 'de_DE',
             'label' => 'Deutsch'
         ],
+        [
+            'value' => 'nb_NO',
+            'label' => 'Norwegian Bokmål'
+        ],
     ];
 }
 
