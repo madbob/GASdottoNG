@@ -155,57 +155,105 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
-                                    <p>
-                                        {!! _i("Popolando questi campi verrà attivata l'esportazione dei files SEPA, con cui automatizzare le transazioni bancarie.<br>I files saranno generabili da <strong>Contabilità -> Stato Crediti -> Esporta RID</strong><br>Dopo aver compilato questo form, per ogni utente dovrai specificare alcuni parametri.") !!}
-                                    </p>
+                                @include('commons.boolfield', [
+                                    'obj' => null,
+                                    'name' => 'enable_rid',
+                                    'label' => _i('Abilita SEPA'),
+                                    'extra_class' => 'collapse_trigger',
+                                    'default_checked' => $gas->hasFeature('rid')
+                                ])
 
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'rid->iban', 'label' => _i('IBAN')])
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'rid->id', 'label' => _i('Identificativo Creditore')])
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'rid->org', 'label' => _i('Codice Univoco Azienda')])
+                                <div class="collapse {{ $gas->hasFeature('rid') ? 'in' : '' }}" data-triggerable="enable_rid">
+                                    <div class="col-md-12">
+                                        <div class="well">
+                                            <p>
+                                                {!! _i("Popolando questi campi verrà attivata l'esportazione dei files SEPA, con cui automatizzare le transazioni bancarie.<br>I files saranno generabili da <strong>Contabilità -> Stato Crediti -> Esporta RID</strong><br>Dopo aver compilato questo form, per ogni utente dovrai specificare alcuni parametri.") !!}
+                                            </p>
+
+                                            @include('commons.textfield', ['obj' => $gas, 'name' => 'rid->iban', 'label' => _i('IBAN')])
+                                            @include('commons.textfield', ['obj' => $gas, 'name' => 'rid->id', 'label' => _i('Identificativo Creditore')])
+                                            @include('commons.textfield', ['obj' => $gas, 'name' => 'rid->org', 'label' => _i('Codice Univoco Azienda')])
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="col-md-12">
-                                    <p>
-                                        {!! _i('Popolando questi campi verranno attivati i pagamenti con PayPal, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto. Per ottenere le credenziali, <a href="https://developer.paypal.com/developer/applications/">visita questa pagina</a>.') !!}
-                                    </p>
+                                @include('commons.boolfield', [
+                                    'obj' => null,
+                                    'name' => 'enable_paypal',
+                                    'label' => _i('Abilita PayPal'),
+                                    'extra_class' => 'collapse_trigger',
+                                    'default_checked' => $gas->hasFeature('paypal')
+                                ])
 
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'paypal->client_id', 'label' => 'Client ID'])
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'paypal->secret', 'label' => 'Secret'])
-                                    @include('commons.radios', [
-                                        'name' => 'paypal->mode',
-                                        'label' => 'Modalità',
-                                        'values' => [
-                                            'sandbox' => (object) [
-                                                'name' => 'Sandbox (per testing)',
-                                                'checked' => ($gas->paypal['mode'] == 'sandbox')
-                                            ],
-                                            'live' => (object) [
-                                                'name' => 'Live',
-                                                'checked' => ($gas->paypal['mode'] == 'live')
-                                            ],
-                                        ]
-                                    ])
+                                <div class="collapse {{ $gas->hasFeature('paypal') ? 'in' : '' }}" data-triggerable="enable_paypal">
+                                    <div class="col-md-12">
+                                        <div class="well">
+                                            <p>
+                                                {!! _i('Popolando questi campi verranno attivati i pagamenti con PayPal, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto. Per ottenere le credenziali, <a href="https://developer.paypal.com/developer/applications/">visita questa pagina</a>.') !!}
+                                            </p>
+
+                                            @include('commons.textfield', ['obj' => $gas, 'name' => 'paypal->client_id', 'label' => 'Client ID'])
+                                            @include('commons.textfield', ['obj' => $gas, 'name' => 'paypal->secret', 'label' => 'Secret'])
+                                            @include('commons.radios', [
+                                                'name' => 'paypal->mode',
+                                                'label' => 'Modalità',
+                                                'values' => [
+                                                    'sandbox' => (object) [
+                                                        'name' => 'Sandbox (per testing)',
+                                                        'checked' => ($gas->paypal['mode'] == 'sandbox')
+                                                    ],
+                                                    'live' => (object) [
+                                                        'name' => 'Live',
+                                                        'checked' => ($gas->paypal['mode'] == 'live')
+                                                    ],
+                                                ]
+                                            ])
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="col-md-12">
-                                    <p>
-                                        {!! _i('Popolando questi campi verranno attivati i pagamenti con Satispay, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto. Per ottenere le credenziali, <a href="https://business.satispay.com/login">registra un account "Business" su Satispay</a>.') !!}
-                                    </p>
+                                @include('commons.boolfield', [
+                                    'obj' => null,
+                                    'name' => 'enable_satispay',
+                                    'label' => _i('Abilita Satispay'),
+                                    'extra_class' => 'collapse_trigger',
+                                    'default_checked' => $gas->hasFeature('satispay')
+                                ])
 
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'satispay->secret', 'label' => 'Security Bearer'])
+                                <div class="collapse {{ $gas->hasFeature('satispay') ? 'in' : '' }}" data-triggerable="enable_satispay">
+                                    <div class="col-md-12">
+                                        <div class="well">
+                                            <p>
+                                                {!! _i('Popolando questi campi verranno attivati i pagamenti con Satispay, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto. Per ottenere le credenziali, <a href="https://business.satispay.com/login">registra un account "Business" su Satispay</a>.') !!}
+                                            </p>
+
+                                            @include('commons.textfield', ['obj' => $gas, 'name' => 'satispay->secret', 'label' => 'Security Bearer'])
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="col-md-12">
-                                    <p>
-                                        {!! _i("Popolando questi campi verrà attivata l'emissione delle fatture nei confronti degli utenti che effettuano prenotazioni. Le fatture saranno emesse al momento del salvataggio o della consegna della prenotazione.") !!}
-                                    </p>
+                                @include('commons.boolfield', [
+                                    'obj' => null,
+                                    'name' => 'enable_extra_invoicing',
+                                    'label' => _i('Abilita Emissione Fatture'),
+                                    'extra_class' => 'collapse_trigger',
+                                    'default_checked' => $gas->hasFeature('extra_invoicing')
+                                ])
 
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->business_name', 'label' => _i('Ragione Sociale')])
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->taxcode', 'label' => _i('Codice Fiscale')])
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->vat', 'label' => _i('Partita IVA')])
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->address', 'label' => _i('Indirizzo')])
-                                    @include('commons.numberfield', ['obj' => $gas, 'name' => 'extra_invoicing->invoices_counter', 'label' => 'Contatore Fatture', 'help_text' => _i('Modifica questo parametro con cautela!')])
+                                <div class="collapse {{ $gas->hasFeature('extra_invoicing') ? 'in' : '' }}" data-triggerable="enable_extra_invoicing">
+                                    <div class="col-md-12">
+                                        <div class="well">
+                                            <p>
+                                                {!! _i("Popolando questi campi verrà attivata l'emissione delle fatture nei confronti degli utenti che effettuano prenotazioni. Le fatture saranno emesse al momento del salvataggio o della consegna della prenotazione.") !!}
+                                            </p>
+
+                                            @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->business_name', 'label' => _i('Ragione Sociale')])
+                                            @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->taxcode', 'label' => _i('Codice Fiscale')])
+                                            @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->vat', 'label' => _i('Partita IVA')])
+                                            @include('commons.textfield', ['obj' => $gas, 'name' => 'extra_invoicing->address', 'label' => _i('Indirizzo')])
+                                            @include('commons.numberfield', ['obj' => $gas, 'name' => 'extra_invoicing->invoices_counter', 'label' => 'Contatore Fatture', 'help_text' => _i('Modifica questo parametro con cautela!')])
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="col-md-12">

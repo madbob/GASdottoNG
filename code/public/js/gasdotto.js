@@ -2004,6 +2004,11 @@ $(document).ready(function() {
         });
     });
 
+    $('body').on('change', '.collapse_trigger', function() {
+        var name = $(this).attr('name');
+        $('.collapse[data-triggerable=' + name + ']').toggleClass('in', $(this).prop('checked'));
+    });
+
     /*
         Gestione fornitori
     */

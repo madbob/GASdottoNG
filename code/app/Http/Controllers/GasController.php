@@ -84,35 +84,70 @@ class GasController extends Controller
                 $gas->setConfig('annual_fee_amount', $request->input('annual_fee_amount', 0));
                 $gas->setConfig('deposit_amount', $request->input('deposit_amount', 0));
 
-                $rid_info = (object) [
-                    'iban' => $request->input('rid->iban'),
-                    'id' => $request->input('rid->id'),
-                    'org' => $request->input('rid->org'),
-                ];
+                if ($request->has('enable_rid')) {
+                    $rid_info = (object) [
+                        'iban' => $request->input('rid->iban'),
+                        'id' => $request->input('rid->id'),
+                        'org' => $request->input('rid->org'),
+                    ];
+                }
+                else {
+                    $rid_info = (object) [
+                        'iban' => '',
+                        'id' => '',
+                        'org' => '',
+                    ];
+                }
                 $gas->setConfig('rid', $rid_info);
 
-                $paypal_info = (object) [
-                    'client_id' => $request->input('paypal->client_id'),
-                    'secret' => $request->input('paypal->secret'),
-                    'mode' => $request->input('paypal->mode'),
-                ];
+                if ($request->has('enable_paypal')) {
+                    $paypal_info = (object) [
+                        'client_id' => $request->input('paypal->client_id'),
+                        'secret' => $request->input('paypal->secret'),
+                        'mode' => $request->input('paypal->mode'),
+                    ];
+                }
+                else {
+                    $paypal_info = (object) [
+                        'client_id' => '',
+                        'secret' => '',
+                        'mode' => 'sandbox',
+                    ];
+                }
                 $gas->setConfig('paypal', $paypal_info);
 
-                $satispay_info = (object) [
-                    'secret' => $request->input('satispay->secret')
-                ];
+                if ($request->has('enable_satispay')) {
+                    $satispay_info = (object) [
+                        'secret' => $request->input('satispay->secret')
+                    ];
+                }
+                else {
+                    $satispay_info = (object) [
+                        'secret' => ''
+                    ];
+                }
                 $gas->setConfig('satispay', $satispay_info);
 
-                $invoicing_info = $gas->extra_invoicing;
-                $invoicing_info['business_name'] = $request->input('extra_invoicing->business_name');
-                $invoicing_info['taxcode'] = $request->input('extra_invoicing->taxcode');
-                $invoicing_info['vat'] = $request->input('extra_invoicing->vat');
-                $invoicing_info['address'] = $request->input('extra_invoicing->address');
+                if ($request->has('enable_extra_invoicing')) {
+                    $invoicing_info = $gas->extra_invoicing;
+                    $invoicing_info['business_name'] = $request->input('extra_invoicing->business_name');
+                    $invoicing_info['taxcode'] = $request->input('extra_invoicing->taxcode');
+                    $invoicing_info['vat'] = $request->input('extra_invoicing->vat');
+                    $invoicing_info['address'] = $request->input('extra_invoicing->address');
 
-                $reset_counter = $request->input('extra_invoicing->invoices_counter');
-                if (!empty($reset_counter))
-                    $invoicing_info['invoices_counter'] = $reset_counter;
-
+                    $reset_counter = $request->input('extra_invoicing->invoices_counter');
+                    if (!empty($reset_counter))
+                        $invoicing_info['invoices_counter'] = $reset_counter;
+                }
+                else {
+                    $invoicing_info = [
+                        'business_name' => '',
+                        'taxcode' => '',
+                        'vat' => '',
+                        'address' => '',
+                        'invoices_counter' => 0
+                    ];
+                }
                 $gas->setConfig('extra_invoicing', $invoicing_info);
 
                 break;

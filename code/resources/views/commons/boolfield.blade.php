@@ -4,8 +4,20 @@ if (!isset($help_text)) {
     $help_text = '';
 }
 
+if(!isset($default_checked)) {
+    $checked = ($obj && $obj->$name);
+}
+else {
+    $checked = $default_checked;
+}
+
 if (isset($valuefrom) == false) {
     $valuefrom = null;
+}
+
+$class = 'checkbox';
+if (isset($extra_class)) {
+    $class .= ' ' . $extra_class;
 }
 
 ?>
@@ -17,10 +29,10 @@ if (isset($valuefrom) == false) {
     <div class="col-sm-{{ $fieldsize }}">
         <input type="checkbox"
             name="{{ $prefix . $name . $postfix }}"
-            class="checkbox"
+            class="{{ $class }}"
             data-toggle="toggle"
 
-            @if ($obj && $obj->$name == true)
+            @if ($checked)
                 checked="checked"
             @endif
 
