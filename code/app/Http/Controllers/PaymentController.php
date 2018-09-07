@@ -49,7 +49,6 @@ class PaymentController extends Controller
             $gas = $user->gas;
 
         \SatispayOnline\Api::setSecurityBearer($gas->satispay['secret']);
-        \SatispayOnline\Api::setSandbox(true);
 
         return $user;
     }
@@ -130,7 +129,7 @@ class PaymentController extends Controller
                     'currency' => 'EUR',
                     'amount' => $amount * 100,
                     'description' => $notes,
-                    'callback_url' => urldecode(route('payment.status_satispay'm ['charge_id' => '{uuid}']))
+                    'callback_url' => urldecode(route('payment.status_satispay', ['charge_id' => '{uuid}']))
                 ]);
             }
             catch(\Exception $e) {

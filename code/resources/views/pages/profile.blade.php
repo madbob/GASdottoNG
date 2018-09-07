@@ -169,10 +169,7 @@
                                                 {{ _i('Da qui puoi ricaricare il tuo credito utilizzando Satispay.') }}
                                             </p>
                                             <p>
-                                                {{ _i('Specifica quanto vuoi versare ed eventuali note per gli amministratori, verrai rediretto sul sito PayPal dove dovrai autenticarti e confermare il versamento.') }}
-                                            </p>
-                                            <p>
-                                                {{ _i('Eventuali commissioni sulla transazione saranno a tuo carico.') }}
+                                                {{ _i('Specifica quanto vuoi versare ed eventuali note per gli amministratori; riceverai una notifica sul tuo smartphone per confermare, entro 15 minuti, il versamento.') }}
                                             </p>
 
                                             @include('commons.textfield', ['obj' => $currentuser, 'name' => 'mobile', 'label' => _i('Numero di Telefono')])
