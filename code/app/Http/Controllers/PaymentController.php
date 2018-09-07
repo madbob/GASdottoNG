@@ -121,16 +121,16 @@ class PaymentController extends Controller
             $phone = preg_replace('/^0039/', '+39', $phone);
 
             try {
-                $user = \SatispayOnline\User::create([
+                $satispay_user = \SatispayOnline\User::create([
                     'phone_number' => $phone
                 ]);
 
                 $charge = \SatispayOnline\Charge::create([
-                    'user_id' => $user->id,
+                    'user_id' => $satispay_user->id,
                     'currency' => 'EUR',
                     'amount' => $amount * 100,
                     'description' => $notes,
-                    'callback_url' => urldecode(route('payment.status_satispay'. ['charge_id' => '{uuid}']))
+                    'callback_url' => urldecode(route('payment.status_satispay'm ['charge_id' => '{uuid}']))
                 ]);
             }
             catch(\Exception $e) {
