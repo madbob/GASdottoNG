@@ -47,10 +47,11 @@ class AggregatesController extends OrdersController
                 $id = $a->id;
             }
 
-            foreach ($a->orders as $o) {
+            foreach ($a->orders as $index => $o) {
                 $order = Order::find($o);
-                if ($order && $order->aggregate_id != $id) {
+                if ($order) {
                     $order->aggregate_id = $id;
+                    $order->aggregate_sorting = $index;
                     $order->save();
                 }
             }
@@ -66,7 +67,6 @@ class AggregatesController extends OrdersController
     public function show(Request $request, $id)
     {
         $a = Aggregate::findOrFail($id);
-
         return view('order.aggregate', ['aggregate' => $a]);
     }
 

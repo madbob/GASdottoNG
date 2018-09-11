@@ -48,7 +48,7 @@ class Aggregate extends Model implements Feedable
 
     public function orders()
     {
-        return $this->hasMany('App\Order')->with('supplier')->with('products')->orderBy('end', 'desc');
+        return $this->hasMany('App\Order')->with('supplier')->with('products')->orderBy('aggregate_sorting', 'asc');
     }
 
     public function scopeSupplier($query, $supplier_id)
