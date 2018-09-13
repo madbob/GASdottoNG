@@ -86,7 +86,7 @@ trait AttachableTrait
     {
         $path = gas_storage_path($this->name);
         if (file_exists($path) == false) {
-            if (mkdir($path) == false) {
+            if (@mkdir($path, 0750, true) == false) {
                 return null;
             }
         }
