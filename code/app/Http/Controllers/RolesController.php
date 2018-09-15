@@ -110,7 +110,7 @@ class RolesController extends Controller
     public function formBySupplier(Request $request, $supplier_id)
     {
         $user = Auth::user();
-        $supplier = Supplier::find($supplier_id);
+        $supplier = Supplier::findOrFail($supplier_id);
 
         if ($user->can('gas.permissions', $user->gas) == false && $user->can('supplier.modify', $supplier) == false) {
             abort(503);
