@@ -36,7 +36,11 @@
 
     <div class="row">
         <div class="col-md-12">
-            <button class="btn btn-danger remove-role" data-role="{{ $role->id }}" data-user="{{ $user->id }}">{{ _i('Revoca Ruolo') }} {{ $role->name }} a {{ $user->printableName() }}</button>
+            @if($role->enabledAction('gas.permissions') && $user->id == $currentuser->id)
+                <div class="alert alert-info">Non puoi auto-revocarti questo ruolo amministrativo</div>
+            @else
+                <button class="btn btn-danger remove-role" data-role="{{ $role->id }}" data-user="{{ $user->id }}">{{ _i('Revoca Ruolo') }} {{ $role->name }} a {{ $user->printableName() }}</button>
+            @endif
         </div>
     </div>
 </div>

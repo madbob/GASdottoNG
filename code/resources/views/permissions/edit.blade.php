@@ -69,7 +69,12 @@
         </div>
     </div>
 
-    @include('commons.formbuttons')
+    {{--
+        I ruoli adibiti alla modifica dei permessi non possono essere rimossi.
+        Questo per evitare che vengano cancellati per sbaglio ruoli
+        indispensabili al funzionamento!
+    --}}
+    @include('commons.formbuttons', ['no_delete' => $role->enabledAction('gas.permissions')])
 </form>
 
 @stack('postponed')
