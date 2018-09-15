@@ -30,11 +30,52 @@ class NotificationsController extends Controller
         $user = Auth::user();
         if ($user->can('notifications.admin', $user->gas) == true) {
             $data['notifications'] = Notification::orderBy('start_date', 'desc')->take(20)->get();
-        } else {
+        }
+        else {
             $data['notifications'] = $user->allnotifications;
         }
 
         return view('pages.notifications', $data);
+    }
+
+    private function syncUsers($notification, $request)
+    {
+        $users = $request->input('users', []);
+        if (empty($users)) {
+            $us = User::get();
+            foreach ($us as $u) {
+                $users[] = $u->id;
+            }
+        }
+        else {
+            $map = [];
+
+            foreach ($users as $u) {
+                if (strrpos($u, 'special::', -strlen($u)) !== false) {
+                    if ($u == 'special::referrers') {
+                        $us = User::get();
+                        foreach ($us as $u) {
+                            if ($u->can('supplier.add', $u->gas) || $u->can('supplier.modify')) {
+                                $map[] = $u->id;
+                            }
+                        }
+                    }
+                    elseif (strrpos($u, 'special::order::', -strlen($u)) !== false) {
+                        $order_id = substr($u, strlen('special::order::'));
+                        $order = Order::findOrFail($order_id);
+                        foreach ($order->bookings as $booking) {
+                            $map[] = $booking->user->id;
+                        }
+                    }
+                } else {
+                    $map[] = $u;
+                }
+            }
+
+            $users = $map;
+        }
+
+        $notification->users()->sync($users, ['done' => false]);
     }
 
     public function store(Request $request)
@@ -60,40 +101,7 @@ class NotificationsController extends Controller
         $n->end_date = decodeDate($request->input('end_date'));
         $n->save();
 
-        $users = $request->input('users', []);
-        if (empty($users)) {
-            $us = User::get();
-            foreach ($us as $u) {
-                $users[] = $u->id;
-            }
-        } else {
-            $map = [];
-
-            foreach ($users as $u) {
-                if (strrpos($u, 'special::', -strlen($u)) !== false) {
-                    if ($u == 'special::referrers') {
-                        $us = User::get();
-                        foreach ($us as $u) {
-                            if ($u->can('supplier.add', $u->gas) || $u->can('supplier.modify')) {
-                                $map[] = $u->id;
-                            }
-                        }
-                    } elseif (strrpos($u, 'special::order::', -strlen($u)) !== false) {
-                        $order_id = substr($u, strlen('special::order::'));
-                        $order = Order::findOrFail($order_id);
-                        foreach ($order->bookings as $booking) {
-                            $map[] = $booking->user->id;
-                        }
-                    }
-                } else {
-                    $map[] = $u;
-                }
-            }
-
-            $users = $map;
-        }
-
-        $n->users()->sync($users, ['done' => false]);
+        self::syncUsers($n, $request);
         $n->sendMail();
 
         return $this->commonSuccessResponse($n);
@@ -102,13 +110,37 @@ class NotificationsController extends Controller
     public function show($id)
     {
         $n = Notification::findOrFail($id);
-
         $user = Auth::user();
-        if ($user->can('notifications.admin', $user->gas) == false && $n->hasUser($user) == false) {
+
+        if ($user->can('notifications.admin', $user->gas)) {
+            return view('notification.edit', ['notification' => $n]);
+        }
+        else if ($n->hasUser($user) == false) {
+            return view('notification.show', ['notification' => $n]);
+        }
+        else {
             return $this->errorResponse(_i('Non autorizzato'));
         }
+    }
 
-        return view('notification.show', ['notification' => $n]);
+    public function update(Request $request, $id)
+    {
+        $user = Auth::user();
+        if ($user->can('notifications.admin', $user->gas) == false)
+            return $this->errorResponse(_i('Non autorizzato'));
+
+        $n = Notification::findOrFail($id);
+        $n->creator_id = $user->id;
+        $n->content = $request->input('content');
+        $n->mailed = $request->has('mailed');
+        $n->start_date = decodeDate($request->input('start_date'));
+        $n->end_date = decodeDate($request->input('end_date'));
+        $n->save();
+
+        self::syncUsers($n, $request);
+        $n->sendMail();
+
+        return $this->commonSuccessResponse($n);
     }
 
     public function markread($id)
@@ -120,9 +152,9 @@ class NotificationsController extends Controller
 
         if ($n->hasUser($user)) {
             $n->users()->where('user_id', '=', $user->id)->withPivot('done')->update(['done' => true]);
-
             return $this->successResponse();
-        } else {
+        }
+        else {
             return $this->errorResponse(_i('Non autorizzato'));
         }
     }

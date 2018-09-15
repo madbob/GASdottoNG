@@ -1,7 +1,13 @@
 @include('commons.textarea', ['obj' => $notification, 'name' => 'content', 'label' => _i('Contenuto'), 'mandatory' => true])
 @include('commons.datefield', ['obj' => $notification, 'name' => 'start_date', 'label' => _i('Inizio'), 'defaults_now' => true, 'mandatory' => true])
 @include('commons.datefield', ['obj' => $notification, 'name' => 'end_date', 'label' => _i('Scadenza'), 'defaults_now' => true, 'mandatory' => true])
-@include('commons.boolfield', ['obj' => $notification, 'name' => 'mailed', 'label' => _i('Invia Mail')])
+
+@include('commons.boolfield', [
+    'obj' => $notification,
+    'name' => 'mailed',
+    'label' => _i('Invia Mail'),
+    'help_text' => $notification && $notification->mailed ? _i('Questa notifica è già stata inoltrata via mail. Salvandola mantenendo questo flag attivo verrà inviata una nuova mail.') : ''
+])
 
 <?php
 

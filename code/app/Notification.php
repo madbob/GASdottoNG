@@ -36,7 +36,7 @@ class Notification extends Model
 
     public function users()
     {
-        return $this->belongsToMany('App\User');
+        return $this->belongsToMany('App\User')->withPivot('done');
     }
 
     public function creator()

@@ -34,7 +34,7 @@ class CommonsController extends Controller
         Artisan::call('check:orders');
         Artisan::call('check:system_notices');
 
-        $data['notifications'] = $user->notifications;
+        $data['notifications'] = $user->notifications()->where('start_date', '<=', date('Y-m-d'))->where('end_date', '>=', date('Y-m-d'))->get();
 
         $opened = Aggregate::getByStatus('open');
         $opened = $opened->sort(function($a, $b) {
