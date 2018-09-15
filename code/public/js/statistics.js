@@ -1,3 +1,5 @@
+var graphGrownFactor = 35;
+
 function runSummaryStats() {
     var start = $('#stats-summary-form input[name=startdate]').val();
     var end = $('#stats-summary-form input[name=enddate]').val();
@@ -6,6 +8,7 @@ function runSummaryStats() {
         start: start,
         end: end
     }, function(data) {
+        $('#stats-generic-expenses').css('height', data.expenses.labels.length * graphGrownFactor);
         new Chartist.Bar('#stats-generic-expenses', data.expenses, {
             horizontalBars: true,
             axisX: {
@@ -15,6 +18,7 @@ function runSummaryStats() {
                 offset: 220
             },
         });
+        $('#stats-generic-users').css('height', data.users.labels.length * graphGrownFactor);
         new Chartist.Bar('#stats-generic-users', data.users, {
             horizontalBars: true,
             axisX: {
@@ -37,6 +41,7 @@ function runSupplierStats() {
         end: end,
         supplier: supplier
     }, function(data) {
+        $('#stats-products-expenses').css('height', data.expenses.labels.length * graphGrownFactor);
         new Chartist.Bar('#stats-products-expenses', data.expenses, {
             horizontalBars: true,
             axisX: {
@@ -46,6 +51,7 @@ function runSupplierStats() {
                 offset: 220
             },
         });
+        $('#stats-products-users').css('height', data.users.labels.length * graphGrownFactor);
         new Chartist.Bar('#stats-products-users', data.users, {
             horizontalBars: true,
             axisX: {
