@@ -1207,7 +1207,7 @@ msgstr "He ordered %s"
 #: ../storage/framework/messages/fb85be87b701a2e1f72d6003d8a46620c0d049c8.php.php:3
 #: User.php:272
 msgid "Cognome"
-msgstr "Suername"
+msgstr "Surname"
 
 #: ../storage/framework/messages/228f140cb7ecb9766e9c37c4923bb778f5838499.php.php:276
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:36
