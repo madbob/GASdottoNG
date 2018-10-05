@@ -46,12 +46,19 @@ class Controller extends BaseController
 
     protected function commonSuccessResponse($obj)
     {
-        return $this->successResponse([
-            'id' => $obj->id,
-            'name' => $obj->printableName(),
-            'header' => $obj->printableHeader(),
-            'url' => $obj->exists ? $obj->getShowURL() : ''
-        ]);
+        if ($obj) {
+            $response = [
+                'id' => $obj->id,
+                'name' => $obj->printableName(),
+                'header' => $obj->printableHeader(),
+                'url' => $obj->exists ? $obj->getShowURL() : ''
+            ];
+        }
+        else {
+            $response = [];
+        }
+
+        return $this->successResponse($response);
     }
 
     public function objhead(Request $request, $id)

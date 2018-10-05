@@ -131,6 +131,7 @@ Route::resource('categories', 'CategoriesController');
 Route::resource('measures', 'MeasuresController');
 Route::resource('variants', 'VariantsController');
 Route::resource('orders', 'OrdersController');
+Route::resource('dates', 'DatesController');
 Route::resource('aggregates', 'AggregatesController');
 Route::resource('attachments', 'AttachmentsController');
 Route::resource('booking.user', 'BookingUserController');
