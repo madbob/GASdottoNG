@@ -220,7 +220,18 @@ class MovementType extends Model
                                 foreach ($aggregate->orders as $order) {
                                     $booking = $order->userBooking($user->id);
                                     if ($booking->exists == false) {
-                                        continue;
+                                        /*
+                                            Quando un utente non ha fatto nessuna prenotazione, ma
+                                            i suoi amici si, non ho un soggetto cui agganciare il
+                                            pagamento. Dunque lo creo qui al volo.
+                                            Tanto comunque sarebbe creato, dopo, da
+                                            DeliveryUserController::update() (quando marcato come
+                                            consegnato), dunque tanto vale farlo subito
+                                        */
+                                        if ($booking->friends_bookings->isEmpty())
+                                            continue;
+                                        else
+                                            $booking->save();
                                     }
 
                                     if (isset($handling_status->{$booking->id})) {
