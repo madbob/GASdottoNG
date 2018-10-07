@@ -24,7 +24,7 @@ msgstr ""
 #: ../storage/framework/messages/af9efe5829cab54b632c8fa7b5e8ac476cb60ffb.php.php:7
 #, php-format
 msgid "Crea Nuovo %s"
-msgstr ""
+msgstr "Lag ny %s"
 
 #: ../resources/views/commons/loadablelist.blade.php:8,
 #: ../storage/framework/messages/03dd95d4d49a247e64c02851a45ac3ba90c116d9.php.php:8,
@@ -33,17 +33,17 @@ msgstr ""
 #: ../storage/framework/messages/5ec30665b3114e6137babf75150ae220b1b20c48.php.php:31,
 #: ../storage/framework/messages/9f2213d0aa81a42a6fe04424e2eeb78498eb2ba7.php.php:23
 msgid "Non ci sono elementi da visualizzare."
-msgstr ""
+msgstr "Ingenting å vise"
 
 #: ../resources/views/commons/manyrows.blade.php:21,
 #: ../storage/framework/messages/dc26853b7a83045f7e1d3273bcf00618330b9d3e.php.php:21
 msgid "Aggiungi Nuovo"
-msgstr ""
+msgstr "Legg til ny"
 
 #: ../resources/views/commons/selectmovementtypefield.blade.php:9,
 #: ../storage/framework/messages/919d554cb8d1c88ba562af6e93818c86cd7a6312.php.php:9
 msgid "Seleziona un Tipo"
-msgstr ""
+msgstr "Velg en type"
 
 #: ../resources/views/commons/staticdatefield.blade.php:9,
 #: ../storage/framework/messages/7d9afef4455849383f88277ed93e77e9b3410af4.php.php:24,
@@ -53,7 +53,7 @@ msgstr ""
 #: Helpers/Formatters.php:24,
 #: Helpers/Formatters.php:160
 msgid "Mai"
-msgstr ""
+msgstr "Aldri"
 
 #: ../resources/views/commons/staticenumfield.blade.php:4,
 #: ../resources/views/movementtypes/base-edit.blade.php:8,
@@ -73,7 +73,7 @@ msgstr ""
 #: ../storage/framework/messages/dfdf5cfb42be60b1ef09507782c064d34e5f4037.php.php:4,
 #: ../storage/framework/messages/e236757f5a10863f3866601bdbb99ee72f99060e.php.php:9
 msgid "Nessuno"
-msgstr ""
+msgstr "Ingen"
 
 #: ../resources/views/invoice/base-edit.blade.php:13,
 #: ../resources/views/invoice/base-edit.blade.php:14,
@@ -81,33 +81,33 @@ msgstr ""
 #: ../storage/framework/messages/59e9ced7f015b018612175a472c9ad654a2f7f91.php.php:14
 #, php-format
 msgid "Ordini Coinvolti: %s"
-msgstr ""
+msgstr "Involvert ordrer"
 
 #: ../resources/views/notification/base-edit.blade.php:8,
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:8
 msgid "Tutti i Referenti"
-msgstr ""
+msgstr "Alle referanser"
 
 #: ../resources/views/notification/base-edit.blade.php:12,
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:12
 #, php-format
 msgid "Tutti i Partecipanti all'ordine %s %s"
-msgstr ""
+msgstr "Alle deltakerne av bestilling %s %s"
 
 #: ../storage/framework/messages/011e39d68f39ddd07dc8b80ff0d7659141956607.php.php:4
 #, php-format
 msgid "Prodotti ordinati ordine %s presso %s del %s"
-msgstr ""
+msgstr "Sorterte produkter fra bestilling %s ved %s av %s"
 
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:7
 msgid "Inoltra Mail"
-msgstr ""
+msgstr "Videresend epost"
 
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:13,
 #: ../storage/framework/messages/1d6011afdabf8af4ba1fcf2fc2e04f2fcb11e11c.php.php:4,
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:23
 msgid "Destinatari"
-msgstr ""
+msgstr "Mottakere"
 
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:20,
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:132,
@@ -122,19 +122,19 @@ msgstr ""
 #: ../storage/framework/messages/f8840bff7b1daae6ad3d30d665caae168fc3e4c7.php.php:76,
 #: Http/Controllers/MovementsController.php:88
 msgid "Valore"
-msgstr ""
+msgstr "Verdi"
 
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:36
 msgid "Soggetto Mail"
-msgstr ""
+msgstr "Emme"
 
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:46
 msgid "Testo Mail"
-msgstr ""
+msgstr "Mail innehold"
 
 #: ../storage/framework/messages/03dd95d4d49a247e64c02851a45ac3ba90c116d9.php.php:32
 msgid "Ordina Per"
-msgstr ""
+msgstr "Ordne etter"
 
 #: ../storage/framework/messages/03fe6cae2ede501c06dab5b92f4dbd9960b195d1.php.php:1,
 #: ../storage/framework/messages/05926aebff9f8ea2b72c2b65c54ee9c4e852eeef.php.php:1,
@@ -181,7 +181,7 @@ msgstr "Navn"
 #: ../storage/framework/messages/ce8e28c6c53c5bf8df34a17e43697f3ad2be3a72.php.php:80,
 #: ../storage/framework/messages/f796dafdee82b09381216fb50e2ba2e5fad4fb8b.php.php:31
 msgid "Prezzo Unitario"
-msgstr "Stykkpris"
+msgstr "Enhetspris"
 
 #: ../storage/framework/messages/03fe6cae2ede501c06dab5b92f4dbd9960b195d1.php.php:3,
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:599,
@@ -190,7 +190,7 @@ msgstr "Stykkpris"
 #: ../storage/framework/messages/ce8e28c6c53c5bf8df34a17e43697f3ad2be3a72.php.php:91,
 #: Order.php:599
 msgid "Prezzo Trasporto"
-msgstr "Fraktkostnad"
+msgstr "Leveringskostnad"
 
 #: ../storage/framework/messages/03fe6cae2ede501c06dab5b92f4dbd9960b195d1.php.php:4,
 #: ../storage/framework/messages/47a7dc8de105e7a903e7f944b5ba60c7af395b42.php.php:184,
@@ -231,22 +231,22 @@ msgstr "Beskrivelse"
 #: ../storage/framework/messages/8139e910f1cd1660eff1fb5ccc6b977b0c798096.php.php:32,
 #: ../storage/framework/messages/8139e910f1cd1660eff1fb5ccc6b977b0c798096.php.php:73
 msgid "Aliquota IVA"
-msgstr ""
+msgstr "MVA"
 
 #: ../storage/framework/messages/03fe6cae2ede501c06dab5b92f4dbd9960b195d1.php.php:32
 msgid "Nessuna"
-msgstr ""
+msgstr "Ingen"
 
 #: ../storage/framework/messages/05926aebff9f8ea2b72c2b65c54ee9c4e852eeef.php.php:2,
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:343,
 #: ../storage/framework/messages/16bbba79f90d8be5e11379edad35ca3fdcb368f5.php.php:8
 msgid "File"
-msgstr "Fil"
+msgstr "File"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:58,
 #: Http/Controllers/ImportController.php:58
 msgid "File non caricato correttamente, possibili problemi con la dimensione"
-msgstr ""
+msgstr "Filen ble ikke lastet opp, muligens alt for stor"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:68,
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:179,
@@ -257,18 +257,18 @@ msgstr ""
 #: Http/Controllers/ImportController.php:279,
 #: Http/Controllers/ImportController.php:388
 msgid "Impossibile interpretare il file"
-msgstr ""
+msgstr "Feil ved åpning av fil"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:80,
 #: Http/Controllers/ImportController.php:80
 msgid "Errore nel salvataggio del file"
-msgstr ""
+msgstr "Feil ved lagring til fil"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:95,
 #: Http/Controllers/ImportController.php:95
 #, php-format
 msgid "Il file di configurazione non è stato trovato in %s"
-msgstr ""
+msgstr "Konfigurasjonsfilen finnes ikke i %s"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:124,
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:374,
@@ -355,66 +355,66 @@ msgstr ""
 #: Http/Controllers/VatRatesController.php:59,
 #: Http/Controllers/VatRatesController.php:76
 msgid "Non autorizzato"
-msgstr ""
+msgstr "Ikke autorisert"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:157,
 #: Http/Controllers/ImportController.php:157
 msgid "Colonna obbligatoria non specificata: nome del prodotto"
-msgstr ""
+msgstr "Obligatorisk kolonne ikke spesifisert: produktnavnet"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:160,
 #: Http/Controllers/ImportController.php:160
 msgid "Colonna obbligatoria non specificata: categoria"
-msgstr ""
+msgstr "Obligatorisk kolonne ikke spesifisert: kategori"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:163,
 #: Http/Controllers/ImportController.php:163
 msgid "Colonna obbligatoria non specificata: unità di misura"
-msgstr ""
+msgstr "Obligatorisk kolonne ikke spesifisert: måleenhet"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:168,
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:241,
 #: Http/Controllers/ImportController.php:168,
 #: Http/Controllers/ImportController.php:241
 msgid "Prodotti importati"
-msgstr ""
+msgstr "Importerte produkter"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:274,
 #: Http/Controllers/ImportController.php:274
 msgid "Colonna obbligatoria non specificata"
-msgstr ""
+msgstr "Obligatorisk kolonne ikke spesifisert"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:360,
 #: Http/Controllers/ImportController.php:360
 msgid "Utenti importati"
-msgstr ""
+msgstr "Importerte brukere"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:428,
 #: Http/Controllers/ImportController.php:428
 #, php-format
 msgid "Utente non trovato: %s"
-msgstr ""
+msgstr "Bruker ikke funnet: %s"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:507,
 #: Http/Controllers/ImportController.php:507
 msgid "Movimenti importati"
-msgstr ""
+msgstr "Importerte transaksjoner"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:516,
 #: Http/Controllers/ImportController.php:516
 #, php-format
 msgid "Comando %s/%s non valido"
-msgstr "Ugyldig kommando %s/%s"
+msgstr "Kommando %s/%s er ikke gyldig"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:598,
 #: Http/Controllers/ImportController.php:598
 #, php-format
 msgid "Errore importando file GDXP: %s"
-msgstr ""
+msgstr "Feil ved import av GDXP fil: %s"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:10
 msgid "Configurazioni Generali"
-msgstr ""
+msgstr "Generell konfigurasjon"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:24,
 #: ../storage/framework/messages/228f140cb7ecb9766e9c37c4923bb778f5838499.php.php:279,
@@ -426,15 +426,15 @@ msgstr ""
 #: Http/Controllers/MovementsController.php:228,
 #: User.php:279
 msgid "E-Mail"
-msgstr "E-post"
+msgstr "Epost"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:25
 msgid "Logo Homepage"
-msgstr "Hjemmeside-logo"
+msgstr "Hjemmeside logo"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:26
 msgid "Messaggio Homepage"
-msgstr ""
+msgstr "Hjemmeside beskjed"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:27,
 #: ../storage/framework/messages/ace24bd531b0877d2aeef32ad4301a81f681ca83.php.php:55
@@ -447,7 +447,7 @@ msgstr "Valuta"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:31
 msgid "Modalità Manutenzione"
-msgstr ""
+msgstr "Vedlikeholdsmodus"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:35,
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:63,
@@ -472,29 +472,29 @@ msgstr ""
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:136,
 #: ../storage/framework/messages/f8840bff7b1daae6ad3d30d665caae168fc3e4c7.php.php:99
 msgid "Salva"
-msgstr ""
+msgstr "Lagre"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:48,
 #: ../storage/framework/messages/16625428e55dc6096c12d7f4cf360d893b8788ff.php.php:26,
 #: Providers/MenuServiceProvider.php:26
 msgid "Utenti"
-msgstr "Bruker"
+msgstr "Brukere"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:60
 msgid "Abilita Registrazione Pubblica"
-msgstr ""
+msgstr "Aktiver offentlig registrering"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:76
 msgid "Ordini e Consegne"
-msgstr ""
+msgstr "Bestillinger og levering"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:88
 msgid "Abilita Consegne Rapide"
-msgstr ""
+msgstr "Aktiver Rask leveranse"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:92
 msgid "Colonne Riassunto Ordini"
-msgstr ""
+msgstr "Oppsummering av ordrekolonnene"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:117,
 #: ../storage/framework/messages/16625428e55dc6096c12d7f4cf360d893b8788ff.php.php:40,
@@ -503,19 +503,19 @@ msgstr ""
 #: ../storage/framework/messages/83b05e2efb9228c90f403f23ab561850e7024b94.php.php:7,
 #: Providers/MenuServiceProvider.php:40
 msgid "Contabilità"
-msgstr ""
+msgstr "Regnskap"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:130
 msgid "Inizio Anno Sociale"
-msgstr ""
+msgstr "Års startpunkten"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:141
 msgid "Quota Annuale"
-msgstr ""
+msgstr "Årsavgift"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:151
 msgid "Cauzione"
-msgstr ""
+msgstr "Innskudd"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:163
 msgid ""
@@ -533,11 +533,11 @@ msgstr "IBAN"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:168
 msgid "Identificativo Creditore"
-msgstr ""
+msgstr "Kreditorsdata"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:169
 msgid "Codice Univoco Azienda"
-msgstr ""
+msgstr "Bedriftskode"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:174
 msgid ""
@@ -567,13 +567,13 @@ msgstr "Firmanavn"
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:6,
 #: User.php:290
 msgid "Codice Fiscale"
-msgstr ""
+msgstr "Skattekode"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:204,
 #: ../storage/framework/messages/404f04d71b5441b1ae50be6eb1e3ca1df4c1033a.php.php:10,
 #: ../storage/framework/messages/a4cdcea55a523a711c537c1509bd0ed1cd3d4613.php.php:5
 msgid "Partita IVA"
-msgstr ""
+msgstr "ORG-nummer"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:205,
 #: ../storage/framework/messages/228f140cb7ecb9766e9c37c4923bb778f5838499.php.php:287,
@@ -586,7 +586,7 @@ msgstr "Adresse"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:206
 msgid "Modifica questo parametro con cautela!"
-msgstr ""
+msgstr "Vær forsiktig med å endre følgende parametre"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:224,
 #: ../storage/framework/messages/54512d4708486210b9e7afcc164e0ecb833a5c7e.php.php:43
@@ -595,12 +595,12 @@ msgstr "Importer"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:234
 msgid "Importazione"
-msgstr ""
+msgstr "Import"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:236,
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:243
 msgid "Importa GDXP"
-msgstr ""
+msgstr "Import GDXP"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:249
 msgid ""
@@ -611,7 +611,7 @@ msgstr ""
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:258,
 #: ../storage/framework/messages/1100052a84dc8abdd6b6f432a723e49b308f7a52.php.php:49
 msgid "File da Caricare"
-msgstr ""
+msgstr "Fil å laste opp"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:269,
 #: ../storage/framework/messages/0c713b2be1917f40417f287c6b12b256cb166621.php.php:103,
@@ -644,7 +644,7 @@ msgstr ""
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:135,
 #: ../storage/framework/messages/f8840bff7b1daae6ad3d30d665caae168fc3e4c7.php.php:98
 msgid "Annulla"
-msgstr ""
+msgstr "Avbryt"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:270,
 #: ../storage/framework/messages/1100052a84dc8abdd6b6f432a723e49b308f7a52.php.php:62,
@@ -654,11 +654,11 @@ msgstr ""
 #: ../storage/framework/messages/939678dcfaab8b8718bb2f71649e4484a2db059b.php.php:54,
 #: ../storage/framework/messages/d254fda5dae36c46c9680ba877316129b9d88515.php.php:48
 msgid "Avanti"
-msgstr ""
+msgstr "Neste"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:294
 msgid "Luoghi di Consegna"
-msgstr ""
+msgstr "Leveringssteder"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:305,
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:79,
@@ -670,7 +670,7 @@ msgstr ""
 #: ../storage/framework/messages/d0b8c10ea243e4cfa9467ff788da66e473fed739.php.php:1,
 #: ../storage/framework/messages/d0b8c10ea243e4cfa9467ff788da66e473fed739.php.php:22
 msgid "Luogo di Consegna"
-msgstr ""
+msgstr "Leveringsstedet"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:319
 msgid ""
@@ -683,15 +683,15 @@ msgstr ""
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:331,
 #: ../storage/framework/messages/8213b2de42a57b8769b9deb8aaed6d84d10a486c.php.php:104
 msgid "File Condivisi"
-msgstr ""
+msgstr "Delte filer"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:371
 msgid "Aliquote IVA"
-msgstr ""
+msgstr "MVA marginalskatt"
 
 #: ../storage/framework/messages/0c713b2be1917f40417f287c6b12b256cb166621.php.php:36
 msgid "Modifica Movimento"
-msgstr ""
+msgstr "Rediger transaksjonen"
 
 #: ../storage/framework/messages/0c713b2be1917f40417f287c6b12b256cb166621.php.php:73,
 #: ../storage/framework/messages/54512d4708486210b9e7afcc164e0ecb833a5c7e.php.php:66,
@@ -699,7 +699,7 @@ msgstr ""
 #: ../storage/framework/messages/ca9924efcb403a0f0f8b6ade8f1bcf218597d207.php.php:41,
 #: ../storage/framework/messages/f8840bff7b1daae6ad3d30d665caae168fc3e4c7.php.php:59
 msgid "Metodo"
-msgstr ""
+msgstr "Transaksjonen"
 
 #: ../storage/framework/messages/0c713b2be1917f40417f287c6b12b256cb166621.php.php:80,
 #: ../storage/framework/messages/1b2ebc5f0122179fff7f7e61b883e643b3b22962.php.php:372,
@@ -744,7 +744,7 @@ msgstr "Merknad"
 #: ../storage/framework/messages/6c1728e747271ad2042f96137f03aac8aa9cd22b.php.php:10,
 #: ../storage/framework/messages/cac23c1f807d35ed3aefa09946d6973937a89c57.php.php:36
 msgid "Elimina"
-msgstr ""
+msgstr "Slett"
 
 #: ../storage/framework/messages/0cbdf7ee912546fdeeac58d075e6ff74107e0262.php.php:4,
 #: ../storage/framework/messages/2385fa1e23dacbe099eebbc866adbd6bc615943c.php.php:17,
@@ -761,7 +761,7 @@ msgstr ""
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:8,
 #: Supplier.php:63
 msgid "Fornitore"
-msgstr ""
+msgstr "Leverandør"
 
 #: ../storage/framework/messages/0cbdf7ee912546fdeeac58d075e6ff74107e0262.php.php:5,
 #: ../storage/framework/messages/2385fa1e23dacbe099eebbc866adbd6bc615943c.php.php:10,
@@ -769,7 +769,7 @@ msgstr ""
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:13,
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:35
 msgid "Data Apertura"
-msgstr "Åpningsdato"
+msgstr "Startdato"
 
 #: ../storage/framework/messages/0cbdf7ee912546fdeeac58d075e6ff74107e0262.php.php:6,
 #: ../storage/framework/messages/2385fa1e23dacbe099eebbc866adbd6bc615943c.php.php:11,
@@ -777,7 +777,7 @@ msgstr "Åpningsdato"
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:18,
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:36
 msgid "Data Chiusura"
-msgstr "Lukkingsdato"
+msgstr "Sluttdato"
 
 #: ../storage/framework/messages/0cbdf7ee912546fdeeac58d075e6ff74107e0262.php.php:7,
 #: ../storage/framework/messages/5ec30665b3114e6137babf75150ae220b1b20c48.php.php:133,
@@ -785,28 +785,28 @@ msgstr "Lukkingsdato"
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:28,
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:37
 msgid "Data Consegna"
-msgstr ""
+msgstr "Leveringsdato"
 
 #: ../storage/framework/messages/0cbdf7ee912546fdeeac58d075e6ff74107e0262.php.php:12,
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:44,
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:47
 msgid "Sconto Globale"
-msgstr ""
+msgstr "Total rabatt"
 
 #: ../storage/framework/messages/0cbdf7ee912546fdeeac58d075e6ff74107e0262.php.php:13,
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:45,
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:48
 msgid "Spese Trasporto"
-msgstr "Fraktkostnad"
+msgstr "Fraktkostnader"
 
 #: ../storage/framework/messages/1084f7eadc9d88dc17442865eea41d59861c0605.php.php:12
 msgid "Calcola Quantità"
-msgstr "Beregnet mengde"
+msgstr "Beregn mengde"
 
 #: ../storage/framework/messages/1100052a84dc8abdd6b6f432a723e49b308f7a52.php.php:8,
 #: ../storage/framework/messages/1100052a84dc8abdd6b6f432a723e49b308f7a52.php.php:14
 msgid "Importa CSV"
-msgstr "Importer CSV"
+msgstr "Import CSV"
 
 #: ../storage/framework/messages/1100052a84dc8abdd6b6f432a723e49b308f7a52.php.php:24
 msgid ""
@@ -826,7 +826,7 @@ msgstr ""
 #: ../storage/framework/messages/1110385cf656f827fc8ac9a6fc5216bb67844802.php.php:108,
 #: Product.php:108
 msgid "(prodotto a prezzo variabile)"
-msgstr "(produkt med variabel pris)"
+msgstr "(variabelkostnadsprodukt)"
 
 #: ../storage/framework/messages/1110385cf656f827fc8ac9a6fc5216bb67844802.php.php:108,
 #: Product.php:108
