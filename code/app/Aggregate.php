@@ -173,7 +173,7 @@ class Aggregate extends Model implements Feedable
             }
         }
 
-        return [implode(' | ', $names), implode(' / ', $dates)];
+        return [implode(' | ', $names), implode(' / ', array_unique($dates))];
     }
 
     public function printableName()
@@ -220,7 +220,7 @@ class Aggregate extends Model implements Feedable
         return $ret;
     }
 
-    public function printableUserHeader()
+    public function printableUserHeader($with_progress = false)
     {
         $ret = $this->printableHeader();
 
@@ -236,15 +236,18 @@ class Aggregate extends Model implements Feedable
 
         if($tot == 0 && $friends_tot == 0) {
             $message = _i("Non hai partecipato a quest'ordine");
+            $extra_class = 'text-more-muted';
         }
         else {
             if ($friends_tot == 0)
                 $message = _i('Hai ordinato %s', printablePriceCurrency($tot));
             else
                 $message = _i('Hai ordinato %s + %s', [printablePriceCurrency($tot), printablePriceCurrency($friends_tot)]);
+
+            $extra_class = '';
         }
 
-        $ret .= '<span class="pull-right">' . $message . '</span>';
+        $ret .= '<span class="appended-loadable-message ' . $extra_class . '">' . $message . '</span>';
         return $ret;
     }
 

@@ -50,8 +50,6 @@ class BookingHandler extends Controller
 
             if ($request->has('notes_' . $order->id) && $request->input('notes_' . $order->id) != null)
                 $booking->notes = $request->input('notes_' . $order->id);
-            else
-                $booking->notes = '';
 
             $booking->save();
 

@@ -44,7 +44,9 @@ class CommonsController extends Controller
 
         $shipping = Aggregate::whereHas('orders', function ($query) use ($user) {
             $query->where('status', 'closed')->whereHas('bookings', function($query) use ($user) {
-                $query->where('user_id', $user->id)->where('status', '!=', 'shipped');
+                $query->where('status', '!=', 'shipped')->where(function($query) use ($user) {
+                    $query->where('user_id', $user->id)->orWhereIn('user_id', $user->friends()->pluck('id'));
+                });
             });
         })->get();
 

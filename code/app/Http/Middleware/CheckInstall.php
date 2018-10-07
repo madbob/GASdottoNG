@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App;
+use Log;
 use Closure;
 use Artisan;
 
@@ -17,11 +18,7 @@ class CheckInstall
         */
 
         if (config('app.key') == 'base64:weJMCPc0SVAurD1YEeN7AmGoUuIH2P4qpbgv2zE1sUQ=') {
-            Artisan::call('key:generate', ['--force' => true, '--show' => true]);
-            $output = Artisan::output();
-            $conf = sprintf("\nAPP_KEY=%s\n", $output);
-            file_put_contents(base_path() . '/' . env_file(), $conf, FILE_APPEND);
-
+            Artisan::call('key:generate', ['--force' => true]);
             Artisan::call('migrate', ['--force' => true]);
             Artisan::call('db:seed', ['--force' => true]);
             Artisan::call('db:seed', ['--force' => true, '--class' => 'FirstInstallSeed']);

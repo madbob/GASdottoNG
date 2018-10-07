@@ -19,72 +19,72 @@ msgstr ""
 
 #: public/js/gasdotto.js:146
 msgid "Questa prenotazione esiste già e non può essere ricreata."
-msgstr ""
+msgstr "Denne reservasjonen finnes allerede og kan ikke gjenopprettes"
 
 #: public/js/gasdotto.js:973
 msgid "Sei sicuro di voler revocare questo ruolo?"
-msgstr ""
+msgstr "Vil du virkelig tilbakekalle denne rollen?"
 
 #: public/js/gasdotto.js:1420
 msgid "Sei sicuro di voler eliminare questo elemento?"
-msgstr ""
+msgstr "Vil du slette denne rollen?"
 
 #: public/js/gasdotto.js:1619 public/js/jquery.dynamictree.js:73
 msgid "Salvato!"
-msgstr ""
+msgstr "Lagret!"
 
 #: public/js/gasdotto.js:1721
 msgid "bilanci_ricalcolati.csv"
-msgstr ""
+msgstr "beregnet_balanser.csv"
 
 #: public/js/gasdotto.js:1740
 msgid "Nuova Password"
-msgstr ""
+msgstr "Nytt passord"
 
 #: public/js/gasdotto.js:1744
 msgid "Conferma Password"
-msgstr ""
+msgstr "Bekreft passord"
 
 #: public/js/gasdotto.js:1748 public/js/gasdotto.js:1800
 msgid "Annulla"
-msgstr ""
+msgstr "Avbryt"
 
 #: public/js/gasdotto.js:1748
 msgid "Conferma"
-msgstr ""
+msgstr "Bekreft"
 
 #: public/js/gasdotto.js:1788
 msgid "Indirizzo"
-msgstr ""
+msgstr "Adresse"
 
 #: public/js/gasdotto.js:1792
 msgid "Città"
-msgstr ""
+msgstr "By"
 
 #: public/js/gasdotto.js:1796
 msgid "CAP"
-msgstr ""
+msgstr "Postnummer"
 
 #: public/js/gasdotto.js:1800
 msgid "Salva"
-msgstr ""
+msgstr "Lagre"
 
 #: public/js/gasdotto.js:1998
 msgid "ERRORE"
-msgstr ""
+msgstr "FEIL"
 
 #: public/js/gasdotto.js:2214
 msgid "Invia Mail"
-msgstr ""
+msgstr "Send e-post"
 
 #: public/js/gasdotto.js:2220
 msgid "Download"
-msgstr ""
+msgstr "Last ned"
 
 #: public/js/gasdotto.js:2495
 msgid "Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?"
-msgstr ""
+msgstr "Det finnes null leverte enheter! Vil du fortsette?"
 
 #: public/js/gasdotto.js:2531
 msgid "Sei sicuro di voler annullare questa prenotazione?"
-msgstr ""
+msgstr "Er du sikker på at du vil avbryte denne reservasjonen?"
