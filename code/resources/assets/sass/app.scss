@@ -51,6 +51,10 @@ body {
 	padding-top: 10px;
 }
 
+.text-more-muted {
+    color: #BBB;
+}
+
 .middle-tabs {
     text-align: center;
 
@@ -382,6 +386,12 @@ table {
 .list-group-item {
     float: left;
     width: 100%;
+
+    .appended-loadable-message {
+        float: right;
+        width: 100%;
+        text-align: right;
+    }
 }
 
 .gray-row {

@@ -36,6 +36,9 @@ body {
 .tab-pane {
   padding-top: 10px; }
 
+.text-more-muted {
+  color: #BBB; }
+
 .middle-tabs {
   text-align: center; }
   .middle-tabs hr {
@@ -218,6 +221,1016 @@ table .form-group {
 .glyphicon-king9:before {
   content: "\e211"; }
 
+.inner-progress-1 {
+  background: linear-gradient(90deg, #5bc0de 1%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-2 {
+  background: linear-gradient(90deg, #5bc0de 2%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-3 {
+  background: linear-gradient(90deg, #5bc0de 3%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-4 {
+  background: linear-gradient(90deg, #5bc0de 4%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-5 {
+  background: linear-gradient(90deg, #5bc0de 5%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-6 {
+  background: linear-gradient(90deg, #5bc0de 6%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-7 {
+  background: linear-gradient(90deg, #5bc0de 7%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-8 {
+  background: linear-gradient(90deg, #5bc0de 8%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-9 {
+  background: linear-gradient(90deg, #5bc0de 9%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-10 {
+  background: linear-gradient(90deg, #5bc0de 10%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-11 {
+  background: linear-gradient(90deg, #5bc0de 11%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-12 {
+  background: linear-gradient(90deg, #5bc0de 12%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-13 {
+  background: linear-gradient(90deg, #5bc0de 13%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-14 {
+  background: linear-gradient(90deg, #5bc0de 14%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-15 {
+  background: linear-gradient(90deg, #5bc0de 15%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-16 {
+  background: linear-gradient(90deg, #5bc0de 16%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-17 {
+  background: linear-gradient(90deg, #5bc0de 17%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-18 {
+  background: linear-gradient(90deg, #5bc0de 18%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-19 {
+  background: linear-gradient(90deg, #5bc0de 19%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-20 {
+  background: linear-gradient(90deg, #5bc0de 20%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-21 {
+  background: linear-gradient(90deg, #5bc0de 21%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-22 {
+  background: linear-gradient(90deg, #5bc0de 22%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-23 {
+  background: linear-gradient(90deg, #5bc0de 23%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-24 {
+  background: linear-gradient(90deg, #5bc0de 24%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-25 {
+  background: linear-gradient(90deg, #5bc0de 25%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-26 {
+  background: linear-gradient(90deg, #5bc0de 26%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-27 {
+  background: linear-gradient(90deg, #5bc0de 27%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-28 {
+  background: linear-gradient(90deg, #5bc0de 28%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-29 {
+  background: linear-gradient(90deg, #5bc0de 29%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-30 {
+  background: linear-gradient(90deg, #5bc0de 30%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-31 {
+  background: linear-gradient(90deg, #5bc0de 31%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-32 {
+  background: linear-gradient(90deg, #5bc0de 32%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-33 {
+  background: linear-gradient(90deg, #5bc0de 33%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-34 {
+  background: linear-gradient(90deg, #5bc0de 34%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-35 {
+  background: linear-gradient(90deg, #5bc0de 35%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-36 {
+  background: linear-gradient(90deg, #5bc0de 36%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-37 {
+  background: linear-gradient(90deg, #5bc0de 37%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-38 {
+  background: linear-gradient(90deg, #5bc0de 38%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-39 {
+  background: linear-gradient(90deg, #5bc0de 39%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-40 {
+  background: linear-gradient(90deg, #5bc0de 40%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-41 {
+  background: linear-gradient(90deg, #5bc0de 41%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-42 {
+  background: linear-gradient(90deg, #5bc0de 42%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-43 {
+  background: linear-gradient(90deg, #5bc0de 43%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-44 {
+  background: linear-gradient(90deg, #5bc0de 44%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-45 {
+  background: linear-gradient(90deg, #5bc0de 45%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-46 {
+  background: linear-gradient(90deg, #5bc0de 46%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-47 {
+  background: linear-gradient(90deg, #5bc0de 47%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-48 {
+  background: linear-gradient(90deg, #5bc0de 48%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-49 {
+  background: linear-gradient(90deg, #5bc0de 49%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-50 {
+  background: linear-gradient(90deg, #5bc0de 50%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-51 {
+  background: linear-gradient(90deg, #5bc0de 51%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-52 {
+  background: linear-gradient(90deg, #5bc0de 52%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-53 {
+  background: linear-gradient(90deg, #5bc0de 53%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-54 {
+  background: linear-gradient(90deg, #5bc0de 54%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-55 {
+  background: linear-gradient(90deg, #5bc0de 55%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-56 {
+  background: linear-gradient(90deg, #5bc0de 56%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-57 {
+  background: linear-gradient(90deg, #5bc0de 57%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-58 {
+  background: linear-gradient(90deg, #5bc0de 58%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-59 {
+  background: linear-gradient(90deg, #5bc0de 59%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-60 {
+  background: linear-gradient(90deg, #5bc0de 60%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-61 {
+  background: linear-gradient(90deg, #5bc0de 61%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-62 {
+  background: linear-gradient(90deg, #5bc0de 62%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-63 {
+  background: linear-gradient(90deg, #5bc0de 63%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-64 {
+  background: linear-gradient(90deg, #5bc0de 64%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-65 {
+  background: linear-gradient(90deg, #5bc0de 65%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-66 {
+  background: linear-gradient(90deg, #5bc0de 66%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-67 {
+  background: linear-gradient(90deg, #5bc0de 67%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-68 {
+  background: linear-gradient(90deg, #5bc0de 68%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-69 {
+  background: linear-gradient(90deg, #5bc0de 69%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-70 {
+  background: linear-gradient(90deg, #5bc0de 70%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-71 {
+  background: linear-gradient(90deg, #5bc0de 71%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-72 {
+  background: linear-gradient(90deg, #5bc0de 72%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-73 {
+  background: linear-gradient(90deg, #5bc0de 73%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-74 {
+  background: linear-gradient(90deg, #5bc0de 74%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-75 {
+  background: linear-gradient(90deg, #5bc0de 75%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-76 {
+  background: linear-gradient(90deg, #5bc0de 76%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-77 {
+  background: linear-gradient(90deg, #5bc0de 77%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-78 {
+  background: linear-gradient(90deg, #5bc0de 78%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-79 {
+  background: linear-gradient(90deg, #5bc0de 79%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-80 {
+  background: linear-gradient(90deg, #5bc0de 80%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-81 {
+  background: linear-gradient(90deg, #5bc0de 81%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-82 {
+  background: linear-gradient(90deg, #5bc0de 82%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-83 {
+  background: linear-gradient(90deg, #5bc0de 83%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-84 {
+  background: linear-gradient(90deg, #5bc0de 84%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-85 {
+  background: linear-gradient(90deg, #5bc0de 85%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-86 {
+  background: linear-gradient(90deg, #5bc0de 86%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-87 {
+  background: linear-gradient(90deg, #5bc0de 87%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-88 {
+  background: linear-gradient(90deg, #5bc0de 88%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-89 {
+  background: linear-gradient(90deg, #5bc0de 89%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-90 {
+  background: linear-gradient(90deg, #5bc0de 90%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-91 {
+  background: linear-gradient(90deg, #5bc0de 91%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-92 {
+  background: linear-gradient(90deg, #5bc0de 92%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-93 {
+  background: linear-gradient(90deg, #5bc0de 93%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-94 {
+  background: linear-gradient(90deg, #5bc0de 94%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-95 {
+  background: linear-gradient(90deg, #5bc0de 95%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-96 {
+  background: linear-gradient(90deg, #5bc0de 96%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-97 {
+  background: linear-gradient(90deg, #5bc0de 97%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-98 {
+  background: linear-gradient(90deg, #5bc0de 98%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-99 {
+  background: linear-gradient(90deg, #5bc0de 99%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-100 {
+  background: linear-gradient(90deg, #5bc0de 100%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.inner-progress-red {
+  background: linear-gradient(90deg, #F00 100%, rgba(255, 255, 255, 0) 0%);
+  width: 100%;
+  height: 4px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
 .btn-group label.btn.active:after {
   content: '\e067';
   font-size: 10px;
@@ -283,6 +1296,10 @@ table .form-group {
 .list-group-item {
   float: left;
   width: 100%; }
+  .list-group-item .appended-loadable-message {
+    float: right;
+    width: 100%;
+    text-align: right; }
 
 .gray-row {
   background-color: #F6F6F6;
