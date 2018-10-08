@@ -2,14 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2018-08-19 20:44+0000\n"
-"PO-Revision-Date: 2018-08-19 20:44+0000\n"
-"Last-Translator: Roberto Guido <bob@linux.it>\n"
-"Language-Team: Roberto Guido <bob@linux.it>\n"
+"PO-Revision-Date: 2018-10-09 09:27+0000\n"
+"Last-Translator: Gianni Stillavato <stillavato@hotmail.it>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/gasdottong/"
+"translations/nl/>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.2.1\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -49,7 +51,7 @@ msgstr ""
 #: ../storage/framework/messages/c6690694d0930121b646dca06ac11dbb38c07cf1.php.php:22
 #: Helpers/Formatters.php:24 Helpers/Formatters.php:151
 msgid "Mai"
-msgstr ""
+msgstr "Nooit"
 
 #: ../resources/views/commons/staticenumfield.blade.php:4
 #: ../resources/views/movementtypes/base-edit.blade.php:8
@@ -68,7 +70,7 @@ msgstr ""
 #: ../storage/framework/messages/dfdf5cfb42be60b1ef09507782c064d34e5f4037.php.php:4
 #: ../storage/framework/messages/e236757f5a10863f3866601bdbb99ee72f99060e.php.php:9
 msgid "Nessuno"
-msgstr ""
+msgstr "Niemand"
 
 #: ../resources/views/invoice/base-edit.blade.php:13
 #: ../resources/views/invoice/base-edit.blade.php:14
@@ -102,7 +104,7 @@ msgstr ""
 #: ../storage/framework/messages/1d6011afdabf8af4ba1fcf2fc2e04f2fcb11e11c.php.php:4
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:23
 msgid "Destinatari"
-msgstr ""
+msgstr "Ontvangers"
 
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:20
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:132
@@ -159,7 +161,7 @@ msgstr ""
 #: Http/Controllers/MovementsController.php:215
 #: Services/SuppliersService.php:117
 msgid "Nome"
-msgstr ""
+msgstr "Naam"
 
 #: ../storage/framework/messages/03fe6cae2ede501c06dab5b92f4dbd9960b195d1.php.php:2
 #: ../storage/framework/messages/939678dcfaab8b8718bb2f71649e4484a2db059b.php.php:38
@@ -184,7 +186,7 @@ msgstr ""
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:617
 #: Order.php:617
 msgid "Sconto"
-msgstr ""
+msgstr "Korting"
 
 #: ../storage/framework/messages/03fe6cae2ede501c06dab5b92f4dbd9960b195d1.php.php:10
 #: ../storage/framework/messages/939678dcfaab8b8718bb2f71649e4484a2db059b.php.php:40
@@ -201,7 +203,7 @@ msgstr ""
 #: ../storage/framework/messages/ce8e28c6c53c5bf8df34a17e43697f3ad2be3a72.php.php:42
 #: Order.php:547 Order.php:622 Services/SuppliersService.php:117
 msgid "Unità di Misura"
-msgstr ""
+msgstr "Maateenheid"
 
 #: ../storage/framework/messages/03fe6cae2ede501c06dab5b92f4dbd9960b195d1.php.php:24
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:133
@@ -209,7 +211,7 @@ msgstr ""
 #: ../storage/framework/messages/939678dcfaab8b8718bb2f71649e4484a2db059b.php.php:37
 #: ../storage/framework/messages/a4cdcea55a523a711c537c1509bd0ed1cd3d4613.php.php:3
 msgid "Descrizione"
-msgstr ""
+msgstr "Beschrijving"
 
 #: ../storage/framework/messages/03fe6cae2ede501c06dab5b92f4dbd9960b195d1.php.php:30
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:369
