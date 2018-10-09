@@ -18,6 +18,7 @@
             '/css/bootstrap-table.css',
             '/css/bootstrap-toggle.css',
             '/css/bootstrap.vertical-tabs.css',
+            '/css/fullcalendar.css',
             '/css/jquery-ui.css',
             '/css/chartist.css',
             '/css/gasdotto.css'
@@ -174,6 +175,8 @@
             '/js/marked.min.js',
             '/js/chartist.js',
             '/js/jquery.TableCSVExport.js',
+            '/js/moment.min.js',
+            '/js/fullcalendar.js',
 
             '/js/utils.js',
             '/js/inline-help.js',
@@ -196,6 +199,7 @@
 
         <script type="application/javascript" src="{{ asset('/js/lang/bootstrap-datepicker.' . htmlLang() . '.min.js') }}"></script>
         <script type="application/javascript" src="{{ asset('/js/lang/bootstrap-table-' . htmlLang() . '.js') }}"></script>
+        <script type="application/javascript" src="{{ asset('/js/lang/fullcalendar-' . htmlLang() . '.js') }}"></script>
         <script type="application/javascript" src="{{ asset('/js/lang/' . htmlLang() . '.js') }}"></script>
 
         <!-- Piwik -->

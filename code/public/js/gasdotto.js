@@ -94,7 +94,10 @@ function generalInit() {
         });
     });
 
-    $('.many-rows').manyrows();
+    $('.many-rows').manyrows().bind('row-added', function(e, row) {
+        generalInit();
+    });
+
     $('.dynamic-tree-box').dynamictree();
     $('#orderAggregator').aggregator();
 
@@ -1089,6 +1092,12 @@ $(document).ready(function() {
                 top: $(document).height() - 1
             });
     });
+
+    if ($('#dates-calendar').length != 0) {
+        $('#dates-calendar').fullCalendar({
+            events: dates_events
+        });
+    }
 
     generalInit();
 

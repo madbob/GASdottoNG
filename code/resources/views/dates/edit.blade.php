@@ -1,4 +1,6 @@
-<form class="form-horizontal" method="PUT" action="{{ route('dates.update', 0) }}">
+<form class="form-horizontal inner-form" method="PUT" action="{{ route('dates.update', 0) }}">
+    <input type="hidden" name="close-modal" value="1">
+
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">
@@ -32,13 +34,16 @@
                             'label' => _i('Data'),
                             'field' => 'date',
                             'type' => 'date',
-                            'width' => 2,
+                            'width' => 3,
+                            'extra' => [
+                                'defaults_now' => true
+                            ]
                         ],
                         [
                             'label' => _i('Descrizione'),
                             'field' => 'description',
                             'type' => 'text',
-                            'width' => 3,
+                            'width' => 2,
                         ],
                         [
                             'label' => _i('Tipo'),

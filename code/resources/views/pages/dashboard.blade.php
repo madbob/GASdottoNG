@@ -61,6 +61,21 @@
                 </div>
             </div>
         @endif
+
+        @if($currentgas->attachments->isEmpty() == false)
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">{{ _i('File Condivisi') }}</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="list-group">
+                        @foreach($currentgas->attachments as $attachment)
+                            <a href="{{ $attachment->download_url }}" class="list-group-item">{{ $attachment->name }}</a>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 
     <div class="col-md-6">
@@ -97,20 +112,33 @@
                 </div>
             </div>
 
-            @if($currentgas->attachments->isEmpty() == false)
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h2 class="panel-title">{{ _i('File Condivisi') }}</h2>
-                    </div>
-                    <div class="panel-body">
-                        <div class="list-group">
-                            @foreach($currentgas->attachments as $attachment)
-                                <a href="{{ $attachment->download_url }}" class="list-group-item">{{ $attachment->name }}</a>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <script>
+                        var dates_events = [
+                            @foreach(App\Aggregate::easyFilter(null, null, null, ['open', 'closed']) as $a)
+                                @if($a->shipping)
+                                    {
+                                        title: '{{ $a->printableName() }}',
+                                        start: '{{ $a->shipping }}',
+                                        className: 'calendar-shipping'
+                                    },
+                                @endif
                             @endforeach
-                        </div>
-                    </div>
+
+                            @foreach(App\Date::all() as $d)
+                                {
+                                    title: '{{ $d->description }}',
+                                    start: '{{ $d->date }}',
+                                    className: 'calendar-date-{{ $d->type }}'
+                                },
+                            @endforeach
+                        ];
+                    </script>
+
+                    <div id="dates-calendar"></div>
                 </div>
-            @endif
+            </div>
         @endif
     </div>
 </div>

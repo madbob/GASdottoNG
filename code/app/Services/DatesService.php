@@ -19,7 +19,7 @@ class DatesService extends BaseService
         return Date::orderBy('date', 'asc')->get();
     }
 
-    public function update(array $request)
+    public function update($useless, array $request)
     {
         $this->ensureAuth(['supplier.orders' => null]);
 
@@ -39,7 +39,7 @@ class DatesService extends BaseService
 
             $date->target_type = 'App\Supplier';
             $date->target_id = $targets[$index];
-            $date->date = readDate($dates[$index]);
+            $date->date = decodeDate($dates[$index]);
             $date->description = $descriptions[$index];
             $date->type = $types[$index];
             $date->save();

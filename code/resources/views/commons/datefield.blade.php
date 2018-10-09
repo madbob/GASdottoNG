@@ -17,14 +17,14 @@ if ($value == 'Mai' && $mandatory)
 
 <div class="form-group">
     @if($squeeze == false)
-        <label for="{{ $prefix . $name }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
+        <label for="{{ $prefix . $name . $postfix }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
     @endif
 
     <div class="col-sm-{{ $fieldsize }}">
         <div class="input-group">
             <input type="text"
                 class="date form-control"
-                name="{{ $prefix . $name }}"
+                name="{{ $prefix . $name . $postfix }}"
                 value="{{ $value }}"
                 onkeydown="return false"
 

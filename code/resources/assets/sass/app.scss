@@ -96,6 +96,20 @@ table {
 	}
 }
 
+#dates-calendar {
+    .calendar-shipping {
+        background-color: green;
+    }
+
+    .calendar-date-confirmed {
+        background-color: blue;
+    }
+
+    .calendar-date-temp {
+        background-color: red;
+    }
+}
+
 .loadablelist {
 	.loadablelist {
 		.list-group-item.active {
