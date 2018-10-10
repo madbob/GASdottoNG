@@ -55,4 +55,10 @@ foreach ($user->roles as $role) {
     ]
 ])
 
+@if(empty($suppliers) == false)
+    <div class="supplier-future-dates">
+        @include('dates.list', ['dates' => array_values($suppliers)[0]->dates])
+    </div>
+@endif
+
 @include('commons.orderstatus', ['order' => $order])

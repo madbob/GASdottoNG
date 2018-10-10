@@ -13,10 +13,15 @@ use App\Date;
 
 class DatesService extends BaseService
 {
-    public function list()
+    public function list($target = null)
     {
         $this->ensureAuth(['supplier.orders' => null]);
-        return Date::orderBy('date', 'asc')->get();
+        $query = Date::orderBy('date', 'asc');
+
+        if ($target != null)
+            $query->where('target_type', get_class($target))->where('target_id', $target->id);
+
+        return $query->get();
     }
 
     public function update($useless, array $request)

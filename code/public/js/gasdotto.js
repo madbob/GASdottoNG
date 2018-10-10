@@ -2236,6 +2236,20 @@ $(document).ready(function() {
         }
     });
 
+    $('body').on('change', '#createOrder select[name=supplier_id]', function() {
+        $.ajax({
+            url: absolute_url + '/dates/query',
+            method: 'GET',
+            data: {
+                supplier_id: $(this).val()
+            },
+            dataType: 'HTML',
+            success: function(data) {
+                $('#createOrder .supplier-future-dates').empty().append(data);
+            }
+        });
+    });
+
     /*
     	Interazioni dinamiche sul pannello prenotazioni
     */

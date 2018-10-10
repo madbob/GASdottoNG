@@ -14,6 +14,7 @@ use App\Supplier;
 use App\Product;
 use App\Order;
 use App\Aggregate;
+use App\Date;
 use App\Booking;
 use App\BookedProduct;
 use App\Notifications\GenericOrderShipping;
@@ -68,14 +69,8 @@ class OrdersController extends Controller
         $o->comment = $request->input('comment');
         $o->start = decodeDate($request->input('start'));
         $o->end = decodeDate($request->input('end'));
+        $o->shipping = decodeDate($request->input('shipping'));
         $o->status = $request->input('status');
-
-        $s = $request->input('shipping');
-        if ($s != '') {
-            $o->shipping = decodeDate($s);
-        } else {
-            $o->shipping = null;
-        }
 
         $a = new Aggregate();
         $a->save();
@@ -84,6 +79,9 @@ class OrdersController extends Controller
         $o->save();
 
         $o->products()->sync($supplier->products()->where('active', '=', true)->get());
+
+        if ($o->shipping)
+            Date::where('target_type', 'App\Supplier')->where('target_id', $o->supplier_id)->where('date', '<=', $o->shipping)->delete();
 
         return $this->commonSuccessResponse($a);
     }
@@ -140,18 +138,12 @@ class OrdersController extends Controller
             $order->start = decodeDate($request->input('start'));
         if ($request->has('end'))
             $order->end = decodeDate($request->input('end'));
+        if ($request->has('shipping'))
+            $order->shipping = decodeDate($request->input('shipping'));
         if ($request->has('discount'))
             $order->discount = savingPercentage($request, 'discount');
         if ($request->has('transport'))
             $order->transport = savingPercentage($request, 'transport');
-
-        if ($request->has('shipping')) {
-            $s = $request->input('shipping');
-            if ($s != '')
-                $order->shipping = decodeDate($s);
-            else
-                $order->shipping = null;
-        }
 
         /*
             Se un ordine viene riaperto, modifico artificiosamente la sua data
@@ -225,6 +217,9 @@ class OrdersController extends Controller
                 $order->products()->updateExistingPivot($product->id, ['discount_enabled' => $dis]);
             }
         }
+
+        if ($order->shipping)
+            Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('date', '<=', $order->shipping)->delete();
 
         return $this->commonSuccessResponse($order->aggregate);
     }
