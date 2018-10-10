@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2018-08-19 20:44+0000\n"
-"PO-Revision-Date: 2018-10-10 13:25+0000\n"
+"PO-Revision-Date: 2018-10-11 08:12+0000\n"
 "Last-Translator: Gianni Stillavato <stillavato@hotmail.it>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/gasdottong/"
 "translations/nl/>\n"
@@ -636,7 +636,7 @@ msgstr ""
 #: ../storage/framework/messages/7d6d90fff440f91810272b447cdc195b3176adfb.php.php:6
 #: ../storage/framework/messages/b4be0d366702616ec01bba3af2c0e90dfa23d968.php.php:21
 msgid "Data"
-msgstr ""
+msgstr "Datum"
 
 #: ../storage/framework/messages/0c713b2be1917f40417f287c6b12b256cb166621.php.php:86
 #: ../storage/framework/messages/3b4210d78cce01393cdb8ee86cbd5a0b3d4a1088.php.php:37
@@ -663,7 +663,7 @@ msgstr ""
 #: ../storage/framework/messages/6c1728e747271ad2042f96137f03aac8aa9cd22b.php.php:10
 #: ../storage/framework/messages/cac23c1f807d35ed3aefa09946d6973937a89c57.php.php:36
 msgid "Elimina"
-msgstr ""
+msgstr "Verwijderen"
 
 #: ../storage/framework/messages/0cbdf7ee912546fdeeac58d075e6ff74107e0262.php.php:4
 #: ../storage/framework/messages/2385fa1e23dacbe099eebbc866adbd6bc615943c.php.php:17
@@ -711,16 +711,16 @@ msgstr ""
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:45
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:48
 msgid "Spese Trasporto"
-msgstr ""
+msgstr "Transportkosten"
 
 #: ../storage/framework/messages/1084f7eadc9d88dc17442865eea41d59861c0605.php.php:12
 msgid "Calcola Quantità"
-msgstr ""
+msgstr "Bereken Hoeveelheid"
 
 #: ../storage/framework/messages/1100052a84dc8abdd6b6f432a723e49b308f7a52.php.php:8
 #: ../storage/framework/messages/1100052a84dc8abdd6b6f432a723e49b308f7a52.php.php:14
 msgid "Importa CSV"
-msgstr ""
+msgstr "Importeren CSV"
 
 #: ../storage/framework/messages/1100052a84dc8abdd6b6f432a723e49b308f7a52.php.php:24
 msgid ""
@@ -784,7 +784,7 @@ msgstr ""
 #: ../storage/framework/messages/f796dafdee82b09381216fb50e2ba2e5fad4fb8b.php.php:28
 #: Order.php:597
 msgid "Prodotto"
-msgstr ""
+msgstr "Artikel"
 
 #: ../storage/framework/messages/120626ca6d2919eadea9eb47de0a4818ee0e4d52.php.php:13
 #: ../storage/framework/messages/120626ca6d2919eadea9eb47de0a4818ee0e4d52.php.php:44
@@ -796,7 +796,7 @@ msgstr ""
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:602
 #: Order.php:602
 msgid "Prezzo"
-msgstr ""
+msgstr "Prijs"
 
 #: ../storage/framework/messages/120626ca6d2919eadea9eb47de0a4818ee0e4d52.php.php:28
 #: ../storage/framework/messages/120626ca6d2919eadea9eb47de0a4818ee0e4d52.php.php:59
@@ -807,7 +807,7 @@ msgstr ""
 #: ../storage/framework/messages/c97bc241fa9fd8c512d89e87fa3a73ad695bf9f0.php.php:34
 #: ../storage/framework/messages/f796dafdee82b09381216fb50e2ba2e5fad4fb8b.php.php:130
 msgid "Totale"
-msgstr ""
+msgstr "Totaal"
 
 #: ../storage/framework/messages/120626ca6d2919eadea9eb47de0a4818ee0e4d52.php.php:36
 msgid "Gli ordini dei tuoi amici"
@@ -1577,7 +1577,7 @@ msgstr ""
 
 #: ../storage/framework/messages/47a7dc8de105e7a903e7f944b5ba60c7af395b42.php.php:153
 msgid "Seleziona un Prodotto"
-msgstr ""
+msgstr "Kies een Product"
 
 #: ../storage/framework/messages/47a7dc8de105e7a903e7f944b5ba60c7af395b42.php.php:172
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:607
@@ -1588,7 +1588,7 @@ msgstr ""
 #: ../storage/framework/messages/f82bb728ad1ad5e07d98ed28b6fb9bd8a4d1908a.php.php:21
 #: Order.php:607
 msgid "Trasporto"
-msgstr ""
+msgstr "Vervoer"
 
 #: ../storage/framework/messages/47a7dc8de105e7a903e7f944b5ba60c7af395b42.php.php:199
 msgid "Aggiungi Prodotto"
@@ -2194,7 +2194,7 @@ msgstr ""
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:12
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:34
 msgid "Commento"
-msgstr ""
+msgstr "Aanmerking"
 
 #: ../storage/framework/messages/83a30b09d0868b32ce3d0ee0d9e37124c9d0a760.php.php:32
 msgid "Data Apertura Prenotazioni"
@@ -2488,11 +2488,11 @@ msgstr ""
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:143
 msgid "Titolo"
-msgstr ""
+msgstr "Titel"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:157
 msgid "Invia"
-msgstr ""
+msgstr "Verzenden"
 
 #: ../storage/framework/messages/b98be77f28236fceb70dd1893b5d896319fdb2a5.php.php:137
 #: Supplier.php:137
@@ -2516,7 +2516,7 @@ msgstr ""
 #: ../storage/framework/messages/c1b33311ba6de01dcbce567d75919a18dd35519b.php.php:12
 #: Notifications/WelcomeMessage.php:12
 msgid "Benvenuto!"
-msgstr ""
+msgstr "Welkom!"
 
 #: ../storage/framework/messages/c4f8815ff3cf5214c4bbe15ca9a0c585608364f9.php.php:19
 #: Notifications/NewUserNotification.php:19
@@ -2543,11 +2543,11 @@ msgstr ""
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:79
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:99
 msgid "Esporta CSV"
-msgstr ""
+msgstr "Exporteren CSV"
 
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:68
 msgid "Esporta RID"
-msgstr ""
+msgstr "Exporteren RID"
 
 #: ../storage/framework/messages/c75efb2a6f8978964f746614656ee9e33c9ce446.php.php:22
 #: Notifications/GenericNotificationWrapper.php:22
@@ -2573,11 +2573,11 @@ msgstr ""
 
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:2
 msgid "Inizio"
-msgstr ""
+msgstr "Begin"
 
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:3
 msgid "Scadenza"
-msgstr ""
+msgstr "Termijn"
 
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:24
 msgid ""
