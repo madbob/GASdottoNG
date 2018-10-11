@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2018-08-19 20:44+0000\n"
 "PO-Revision-Date: 2018-10-13 10:26+0000\n"
-"Last-Translator: Ariane Kremer <akremer@virgilio.it>\n"
+"Last-Translator: Gianni Stillavato <stillavato@hotmail.it>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/gasdottong/"
 "translations/nl/>\n"
 "Language: nl_NL\n"
@@ -885,7 +885,7 @@ msgstr "Gecontroleerd"
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:337
 #: GASModel.php:337 Invoice.php:68
 msgid "Pagata"
-msgstr ""
+msgstr "Betaald"
 
 #: ../storage/framework/messages/1428c7abefd077017aa5a5247be3dc4220eee828.php.php:84
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:674
@@ -912,16 +912,16 @@ msgstr "Rollen configureren voor %s"
 #: ../storage/framework/messages/e236757f5a10863f3866601bdbb99ee72f99060e.php.php:21
 #: ../storage/framework/messages/f796dafdee82b09381216fb50e2ba2e5fad4fb8b.php.php:164
 msgid "Chiudi"
-msgstr ""
+msgstr "Sluiten"
 
 #: ../storage/framework/messages/16613e399b373b37cd592b41372f53cd5131ae8c.php.php:19
 msgid "Nessuna Immagine"
-msgstr ""
+msgstr "Geen afbeelding"
 
 #: ../storage/framework/messages/16625428e55dc6096c12d7f4cf360d893b8788ff.php.php:22
 #: Providers/MenuServiceProvider.php:22
 msgid "Home"
-msgstr ""
+msgstr "Home"
 
 #: ../storage/framework/messages/16625428e55dc6096c12d7f4cf360d893b8788ff.php.php:29
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:230
@@ -969,13 +969,13 @@ msgstr "Meldingen"
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:227
 #: Http/Controllers/MovementsController.php:227
 msgid "SI"
-msgstr ""
+msgstr "JA"
 
 #: ../storage/framework/messages/192161b44d3e547ee30cc8c04968bd9f431916ef.php.php:9
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:227
 #: Http/Controllers/MovementsController.php:227
 msgid "NO"
-msgstr ""
+msgstr "NEE"
 
 #: ../storage/framework/messages/195f4ecae049b92c418b8beed1d93ff444a55353.php.php:6
 msgid "Note e Quantità"
@@ -1021,12 +1021,12 @@ msgstr "Type verrichting niet herkend tijdens de opslag van de factuur"
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:150
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:1
 msgid "Contenuto"
-msgstr ""
+msgstr "Inhoud"
 
 #: ../storage/framework/messages/1e479f119edc22cbec0eae765433b32584f72384.php.php:7
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:119
 msgid "Conferma Operazione"
-msgstr ""
+msgstr "Bevestig Operatie"
 
 #: ../storage/framework/messages/1e479f119edc22cbec0eae765433b32584f72384.php.php:11
 msgid "Per confermare questa operazione devi immettere la tua password utente"
@@ -1036,12 +1036,12 @@ msgstr ""
 #: ../storage/framework/messages/2095cf78f4acf98539297d8529208c2bac0fba65.php.php:5
 #: ../storage/framework/messages/398b3604d638b256cf9fce8787422cf7a24962b5.php.php:12
 msgid "Scarica"
-msgstr ""
+msgstr "Downloaden"
 
 #: ../storage/framework/messages/2095cf78f4acf98539297d8529208c2bac0fba65.php.php:8
 #: ../storage/framework/messages/398b3604d638b256cf9fce8787422cf7a24962b5.php.php:18
 msgid "Clicca Qui"
-msgstr ""
+msgstr "Klik Hier"
 
 #: ../storage/framework/messages/228f140cb7ecb9766e9c37c4923bb778f5838499.php.php:56
 #: ../storage/framework/messages/54512d4708486210b9e7afcc164e0ecb833a5c7e.php.php:45
@@ -1054,7 +1054,7 @@ msgstr ""
 #: ../storage/framework/messages/d0b8c10ea243e4cfa9467ff788da66e473fed739.php.php:24
 #: User.php:56
 msgid "Utente"
-msgstr ""
+msgstr "Gebruiker"
 
 #: ../storage/framework/messages/228f140cb7ecb9766e9c37c4923bb778f5838499.php.php:181
 #: User.php:181
@@ -1113,7 +1113,7 @@ msgstr "In het bestand zijn er %s producten."
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:56
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:78
 msgid "Ricerca"
-msgstr ""
+msgstr "Zoeken"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:7
 msgid "Anagrafica"
@@ -1121,7 +1121,7 @@ msgstr "Persoonsgegevens"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:21
 msgid "Amici"
-msgstr ""
+msgstr "Vrienden"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:36
 #: ../storage/framework/messages/5bd18c3a51962b35efc4e7d97e540bea61113183.php.php:1
@@ -1130,7 +1130,7 @@ msgstr ""
 #: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:63
 #: ../storage/framework/messages/fb85be87b701a2e1f72d6003d8a46620c0d049c8.php.php:1
 msgid "Username"
-msgstr ""
+msgstr "Username"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:38
 #: ../storage/framework/messages/5bd18c3a51962b35efc4e7d97e540bea61113183.php.php:3
@@ -1140,7 +1140,7 @@ msgstr ""
 #: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:22
 #: ../storage/framework/messages/fb85be87b701a2e1f72d6003d8a46620c0d049c8.php.php:3
 msgid "Cognome"
-msgstr ""
+msgstr "Achternaam"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:39
 #: ../storage/framework/messages/5bd18c3a51962b35efc4e7d97e540bea61113183.php.php:4
@@ -1149,13 +1149,13 @@ msgstr ""
 #: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:76
 #: ../storage/framework/messages/fb85be87b701a2e1f72d6003d8a46620c0d049c8.php.php:4
 msgid "Password"
-msgstr ""
+msgstr "Wachtwoord"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:40
 #: ../storage/framework/messages/83332bb756d338628e1ab04852a727ac35729a9c.php.php:6
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:5
 msgid "Data di Nascita"
-msgstr ""
+msgstr "Geboortedatum"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:47
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:49
@@ -1165,7 +1165,7 @@ msgstr ""
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:16
 #: ../storage/framework/messages/d95bc159f611fdf21dcfaf74d681be21214d72f6.php.php:15
 msgid "Foto"
-msgstr ""
+msgstr "Foto"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:52
 #: ../storage/framework/messages/83332bb756d338628e1ab04852a727ac35729a9c.php.php:11
@@ -1179,7 +1179,7 @@ msgstr "Lid sinds"
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:14
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:18
 msgid "Numero Tessera"
-msgstr ""
+msgstr "Kaartnummer"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:59
 #: ../storage/framework/messages/a896755ced7ca4f0aebec7ef77c80f22f205ea26.php.php:7
@@ -1227,11 +1227,11 @@ msgstr "Ga naar PayPal"
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:53
 #: ../storage/framework/messages/d9da9680f882d257f8cb22d7fc339948c7e741ba.php.php:24
 msgid "Tutti"
-msgstr ""
+msgstr "Alle"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:189
 msgid "Amico"
-msgstr ""
+msgstr "Vriend"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:202
 msgid ""
@@ -1271,7 +1271,7 @@ msgstr "Betaler"
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:75
 #: Http/Controllers/MovementsController.php:75
 msgid "Pagato"
-msgstr ""
+msgstr "Betaald"
 
 #: ../storage/framework/messages/2da70aefdfc8b82969d7cfe3143ff6e3b09f44eb.php.php:25
 #: ../storage/framework/messages/3b4210d78cce01393cdb8ee86cbd5a0b3d4a1088.php.php:21
@@ -1390,7 +1390,7 @@ msgstr ""
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:68
 msgid "Formato"
-msgstr ""
+msgstr "Formaat"
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:103
 msgid ""
@@ -1767,7 +1767,7 @@ msgstr ""
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:183
 #: GASModel.php:183
 msgid "Immagine"
-msgstr ""
+msgstr "Afbeelding"
 
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:191
 #: GASModel.php:191
@@ -1778,7 +1778,7 @@ msgstr ""
 #: ../storage/framework/messages/b4be0d366702616ec01bba3af2c0e90dfa23d968.php.php:7
 #: GASModel.php:197
 msgid "Attivo"
-msgstr ""
+msgstr "Actief"
 
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:203
 #: GASModel.php:203
@@ -1788,7 +1788,7 @@ msgstr ""
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:211
 #: GASModel.php:211
 msgid "Puoi modificare"
-msgstr ""
+msgstr "Je kunt bewerken"
 
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:217
 #: GASModel.php:217
@@ -1829,7 +1829,7 @@ msgstr ""
 #: ../storage/framework/messages/f796dafdee82b09381216fb50e2ba2e5fad4fb8b.php.php:30
 #: GASModel.php:241 GASModel.php:285 GASModel.php:305 GASModel.php:351
 msgid "Consegnato"
-msgstr ""
+msgstr "Geleverd"
 
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:247
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:291
@@ -2298,7 +2298,7 @@ msgstr ""
 #: ../storage/framework/messages/d55b2fef47655d682f027c1cbd41eecac71151a8.php.php:11
 #: Contact.php:45
 msgid "Indirizzo"
-msgstr ""
+msgstr "Adres"
 
 #: ../storage/framework/messages/97fcd8734ec055c583fb78ae7ef7279f49c7c4d3.php.php:49
 #: Contact.php:49
@@ -2310,22 +2310,22 @@ msgstr ""
 #: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:49
 #: Contact.php:57
 msgid "Telefono"
-msgstr ""
+msgstr "Telefoonnummer"
 
 #: ../storage/framework/messages/97fcd8734ec055c583fb78ae7ef7279f49c7c4d3.php.php:61
 #: Contact.php:61
 msgid "Cellulare"
-msgstr ""
+msgstr "Mobiel"
 
 #: ../storage/framework/messages/97fcd8734ec055c583fb78ae7ef7279f49c7c4d3.php.php:65
 #: Contact.php:65
 msgid "Fax"
-msgstr ""
+msgstr "Fax"
 
 #: ../storage/framework/messages/97fcd8734ec055c583fb78ae7ef7279f49c7c4d3.php.php:69
 #: Contact.php:69
 msgid "Sito Web"
-msgstr ""
+msgstr "Website"
 
 #: ../storage/framework/messages/9869469812674c41a1612a26bdeeb6891dbf5787.php.php:402
 #: Http/Controllers/OrdersController.php:402
@@ -2366,7 +2366,7 @@ msgstr ""
 
 #: ../storage/framework/messages/99ccd6ff0f973a84f2edf338acc68fcd61f4ac45.php.php:52
 msgid "Crea"
-msgstr ""
+msgstr "Nieuwe"
 
 #: ../storage/framework/messages/99ff6674e92fcea16bac171e999456b505e98189.php.php:4
 msgid "Errore nel caricamento o nella lettura del file."
@@ -2381,12 +2381,12 @@ msgstr ""
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:23
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:39
 msgid "Notifiche Mail"
-msgstr ""
+msgstr "Email Meldingen"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:25
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:4
 msgid "Invia Mail"
-msgstr ""
+msgstr "Stuur Mail"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:26
 msgid "Ultime notifiche inviate"
@@ -2557,7 +2557,7 @@ msgstr ""
 
 #: ../storage/framework/messages/bbe4dde397821dca7657d4326d621ce84eefc02e.php.php:12
 msgid "Cordiali saluti"
-msgstr ""
+msgstr "Vriendelijke groeten"
 
 #: ../storage/framework/messages/c1b33311ba6de01dcbce567d75919a18dd35519b.php.php:12
 #: Notifications/WelcomeMessage.php:12
@@ -2567,7 +2567,7 @@ msgstr "Welkom!"
 #: ../storage/framework/messages/c4f8815ff3cf5214c4bbe15ca9a0c585608364f9.php.php:19
 #: Notifications/NewUserNotification.php:19
 msgid "Nuovo utente registrato"
-msgstr ""
+msgstr "Nieuwe gebruiker geregistreerd"
 
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:3
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:29
