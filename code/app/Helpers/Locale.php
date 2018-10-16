@@ -47,6 +47,10 @@ function getLanguages()
             'label' => 'Deutsch'
         ],
         [
+            'value' => 'nl_NL',
+            'label' => 'Nederlands'
+        ],
+        [
             'value' => 'nb_NO',
             'label' => 'Norwegian Bokmål'
         ],
@@ -107,6 +111,40 @@ function localeMonths()
                 'october' => 'oktober',
                 'november' => 'november',
                 'december' => 'dezember',
+            ];
+            break;
+
+        case 'nb_NO':
+            $months = [
+                'january' => 'januar',
+                'february' => 'februar',
+                'march' => 'märs',
+                'april' => 'april',
+                'may' => 'mai',
+                'june' => 'juni',
+                'july' => 'juli',
+                'august' => 'august',
+                'september' => 'september',
+                'october' => 'oktober',
+                'november' => 'november',
+                'december' => 'desember',
+            ];
+            break;
+
+        case 'nl_NL':
+            $months = [
+                'january' => 'januari',
+                'february' => 'februari',
+                'march' => 'maart',
+                'april' => 'april',
+                'may' => 'mei',
+                'june' => 'juni',
+                'july' => 'juli',
+                'august' => 'augustus',
+                'september' => 'september',
+                'october' => 'oktober',
+                'november' => 'november',
+                'december' => 'december',
             ];
             break;
     }

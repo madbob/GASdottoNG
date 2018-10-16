@@ -21,8 +21,8 @@
                                 <input type="hidden" name="group" value="general">
 
                                 <div class="col-md-12">
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'name', 'label' => _i('Nome'), 'mandatory' => true])
-                                    @include('commons.emailfield', ['obj' => $gas, 'name' => 'email', 'label' => _i('E-Mail'), 'mandatory' => true])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'name', 'label' => _i('Nome del GAS'), 'mandatory' => true])
+                                    @include('commons.emailfield', ['obj' => $gas, 'name' => 'email', 'label' => _i('E-Mail di Riferimento'), 'mandatory' => true])
                                     @include('commons.imagefield', ['obj' => $gas, 'name' => 'logo', 'label' => _i('Logo Homepage'), 'valuefrom' => 'logo_url'])
                                     @include('commons.textarea', ['obj' => $gas, 'name' => 'message', 'label' => _i('Messaggio Homepage')])
                                     @include('commons.selectenumfield', ['obj' => $gas, 'name' => 'language', 'label' => _i('Lingua'), 'values' => getLanguages()])

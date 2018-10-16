@@ -1,4 +1,13 @@
 @if($contacts->isEmpty() == false)
+    <?php
+
+    if (!isset($default_subject))
+        $default_subject = _i('Documento allegato');
+    if (!isset($default_text))
+        $default_text = '';
+
+    ?>
+
     <hr/>
 
     @include('commons.boolfield', [
@@ -34,7 +43,7 @@
         'obj' => null,
         'name' => 'subject_mail',
         'label' => _i('Soggetto Mail'),
-        'default_value' => 'Documento allegato',
+        'default_value' => $default_subject,
         'labelsize' => 2,
         'fieldsize' => 10,
         'extra_wrap_class' => 'order_document_body_mail'
@@ -44,6 +53,7 @@
         'obj' => null,
         'name' => 'body_mail',
         'label' => _i('Testo Mail'),
+        'default_value' => $default_text,
         'labelsize' => 2,
         'fieldsize' => 10,
         'extra_wrap_class' => 'order_document_body_mail'

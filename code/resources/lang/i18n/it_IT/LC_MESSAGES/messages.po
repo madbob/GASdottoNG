@@ -1,21 +1,21 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
-"POT-Creation-Date: 2018-08-19 20:44+0000\n"
-"PO-Revision-Date: 2018-08-19 20:44+0000\n"
+"POT-Creation-Date: 2018-10-17 00:17+0200\n"
+"PO-Revision-Date: 2018-10-17 00:18+0200\n"
 "Last-Translator: Roberto Guido <bob@linux.it>\n"
 "Language-Team: Roberto Guido <bob@linux.it>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 2.1.1\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: ../resources/views\n"
-"X-Poedit-SearchPath-2: ../storage/framework/messages/\n"
+"X-Poedit-SearchPath-2: ../storage/framework/messages\n"
 
 #: ../resources/views/commons/addingbutton.blade.php:7
 #: ../storage/framework/messages/af9efe5829cab54b632c8fa7b5e8ac476cb60ffb.php.php:7
@@ -54,7 +54,7 @@ msgstr "Mai"
 #: ../resources/views/commons/staticenumfield.blade.php:4
 #: ../resources/views/movementtypes/base-edit.blade.php:8
 #: ../resources/views/movementtypes/edit.blade.php:12
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:81
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:85
 #: ../storage/framework/messages/2982b90f6cfcaf4cb0c27c14b07650ad2a9c8b52.php.php:8
 #: ../storage/framework/messages/2cadc470546b67f2755aafe63a579b17538335eb.php.php:29
 #: ../storage/framework/messages/3c52fa94bfdb515df0896a915aecfd948faf1fff.php.php:24
@@ -79,34 +79,40 @@ msgstr "Nessuno"
 msgid "Ordini Coinvolti: %s"
 msgstr "Ordini Coinvolti: %s"
 
-#: ../resources/views/notification/base-edit.blade.php:8
-#: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:8
+#: ../resources/views/notification/base-edit.blade.php:22
+#: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:22
 msgid "Tutti i Referenti"
 msgstr "Tutti i Referenti"
 
-#: ../resources/views/notification/base-edit.blade.php:12
-#: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:12
+#: ../resources/views/notification/base-edit.blade.php:26
+#: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:26
 #, php-format
 msgid "Tutti i Partecipanti all'ordine %s %s"
 msgstr "Tutti i Partecipanti all'ordine %s %s"
+
+#: ../resources/views/order/filesmail.blade.php:5
+#: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:5
+msgid "Documento allegato"
+msgstr "Documento allegato"
 
 #: ../storage/framework/messages/011e39d68f39ddd07dc8b80ff0d7659141956607.php.php:4
 #, php-format
 msgid "Prodotti ordinati ordine %s presso %s del %s"
 msgstr "Prodotti ordinati ordine %s presso %s del %s"
 
-#: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:7
+#: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:16
 msgid "Inoltra Mail"
 msgstr "Inoltra Mail"
 
-#: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:13
+#: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:22
 #: ../storage/framework/messages/1d6011afdabf8af4ba1fcf2fc2e04f2fcb11e11c.php.php:4
-#: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:23
+#: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:37
 msgid "Destinatari"
 msgstr "Destinatari"
 
-#: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:20
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:132
+#: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:29
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:138
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:179
 #: ../storage/framework/messages/3b4210d78cce01393cdb8ee86cbd5a0b3d4a1088.php.php:27
 #: ../storage/framework/messages/54512d4708486210b9e7afcc164e0ecb833a5c7e.php.php:75
 #: ../storage/framework/messages/56c44eb9f4b1cf472b74adcbeed0d4b5032cc04e.php.php:36
@@ -120,11 +126,11 @@ msgstr "Destinatari"
 msgid "Valore"
 msgstr "Valore"
 
-#: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:36
+#: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:45
 msgid "Soggetto Mail"
 msgstr "Soggetto Mail"
 
-#: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:46
+#: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:55
 msgid "Testo Mail"
 msgstr "Testo Mail"
 
@@ -134,10 +140,9 @@ msgstr "Ordina Per"
 
 #: ../storage/framework/messages/03fe6cae2ede501c06dab5b92f4dbd9960b195d1.php.php:1
 #: ../storage/framework/messages/05926aebff9f8ea2b72c2b65c54ee9c4e852eeef.php.php:1
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:23
 #: ../storage/framework/messages/132e7c13216c738c1c435e454372a7a23dd0a237.php.php:1
 #: ../storage/framework/messages/228f140cb7ecb9766e9c37c4923bb778f5838499.php.php:268
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:37
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:40
 #: ../storage/framework/messages/2982b90f6cfcaf4cb0c27c14b07650ad2a9c8b52.php.php:20
 #: ../storage/framework/messages/30fc88b034fce8e5805eff35fa55ff66010fd8f1.php.php:122
 #: ../storage/framework/messages/398b3604d638b256cf9fce8787422cf7a24962b5.php.php:5
@@ -155,8 +160,8 @@ msgstr "Ordina Per"
 #: ../storage/framework/messages/a5322b2f2be8f8da4bcecea6ac1924410a2b1fd9.php.php:24
 #: ../storage/framework/messages/aafab70db3d231a41f00b6d79e72ed9590b37bcf.php.php:10
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:44
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:32
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:36
+#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:33
+#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:37
 #: ../storage/framework/messages/ce8e28c6c53c5bf8df34a17e43697f3ad2be3a72.php.php:37
 #: ../storage/framework/messages/ce8e28c6c53c5bf8df34a17e43697f3ad2be3a72.php.php:60
 #: ../storage/framework/messages/d254fda5dae36c46c9680ba877316129b9d88515.php.php:31
@@ -212,7 +217,8 @@ msgid "Unità di Misura"
 msgstr "Unità di Misura"
 
 #: ../storage/framework/messages/03fe6cae2ede501c06dab5b92f4dbd9960b195d1.php.php:24
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:133
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:139
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:180
 #: ../storage/framework/messages/404f04d71b5441b1ae50be6eb1e3ca1df4c1033a.php.php:8
 #: ../storage/framework/messages/939678dcfaab8b8718bb2f71649e4484a2db059b.php.php:37
 #: ../storage/framework/messages/a4cdcea55a523a711c537c1509bd0ed1cd3d4613.php.php:3
@@ -220,7 +226,7 @@ msgid "Descrizione"
 msgstr "Descrizione"
 
 #: ../storage/framework/messages/03fe6cae2ede501c06dab5b92f4dbd9960b195d1.php.php:30
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:382
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:419
 #: ../storage/framework/messages/8139e910f1cd1660eff1fb5ccc6b977b0c798096.php.php:32
 #: ../storage/framework/messages/8139e910f1cd1660eff1fb5ccc6b977b0c798096.php.php:73
 msgid "Aliquota IVA"
@@ -231,7 +237,7 @@ msgid "Nessuna"
 msgstr "Nessuna"
 
 #: ../storage/framework/messages/05926aebff9f8ea2b72c2b65c54ee9c4e852eeef.php.php:2
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:343
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:380
 #: ../storage/framework/messages/16bbba79f90d8be5e11379edad35ca3fdcb368f5.php.php:8
 msgid "File"
 msgstr "File"
@@ -274,9 +280,10 @@ msgstr "Il file di configurazione non è stato trovato in %s"
 #: ../storage/framework/messages/1b2ebc5f0122179fff7f7e61b883e643b3b22962.php.php:305
 #: ../storage/framework/messages/1ca9a75cbc5368fbe5795d57d6fbd4b542d7fee0.php.php:29
 #: ../storage/framework/messages/1ca9a75cbc5368fbe5795d57d6fbd4b542d7fee0.php.php:122
-#: ../storage/framework/messages/26c3d3b363b9efb133a03c19e5b36d23990f2b91.php.php:46
-#: ../storage/framework/messages/26c3d3b363b9efb133a03c19e5b36d23990f2b91.php.php:108
-#: ../storage/framework/messages/26c3d3b363b9efb133a03c19e5b36d23990f2b91.php.php:126
+#: ../storage/framework/messages/26c3d3b363b9efb133a03c19e5b36d23990f2b91.php.php:87
+#: ../storage/framework/messages/26c3d3b363b9efb133a03c19e5b36d23990f2b91.php.php:122
+#: ../storage/framework/messages/26c3d3b363b9efb133a03c19e5b36d23990f2b91.php.php:130
+#: ../storage/framework/messages/26c3d3b363b9efb133a03c19e5b36d23990f2b91.php.php:158
 #: ../storage/framework/messages/42db837952a9e89c8369b58acb2663fad94f2ca7.php.php:63
 #: ../storage/framework/messages/63c2c175f3441eba78ffff9597a13cc531707f46.php.php:30
 #: ../storage/framework/messages/63c2c175f3441eba78ffff9597a13cc531707f46.php.php:40
@@ -286,8 +293,8 @@ msgstr "Il file di configurazione non è stato trovato in %s"
 #: ../storage/framework/messages/63c2c175f3441eba78ffff9597a13cc531707f46.php.php:175
 #: ../storage/framework/messages/7489340b0407edf5307bfb890eeedcccb33ccf5b.php.php:28
 #: ../storage/framework/messages/7f86a9b39759f84adcce15b33c4eb6a3c2aa48ca.php.php:89
-#: ../storage/framework/messages/846dddbf226d13640e09d3ab392930b577aabff6.php.php:46
-#: ../storage/framework/messages/846dddbf226d13640e09d3ab392930b577aabff6.php.php:66
+#: ../storage/framework/messages/846dddbf226d13640e09d3ab392930b577aabff6.php.php:48
+#: ../storage/framework/messages/846dddbf226d13640e09d3ab392930b577aabff6.php.php:68
 #: ../storage/framework/messages/9869469812674c41a1612a26bdeeb6891dbf5787.php.php:61
 #: ../storage/framework/messages/9869469812674c41a1612a26bdeeb6891dbf5787.php.php:134
 #: ../storage/framework/messages/9869469812674c41a1612a26bdeeb6891dbf5787.php.php:238
@@ -325,17 +332,18 @@ msgstr "Il file di configurazione non è stato trovato in %s"
 #: Http/Controllers/MeasuresController.php:41
 #: Http/Controllers/MeasuresController.php:62
 #: Http/Controllers/MovementsController.php:280
-#: Http/Controllers/NotificationsController.php:46
-#: Http/Controllers/NotificationsController.php:108
-#: Http/Controllers/NotificationsController.php:126
+#: Http/Controllers/NotificationsController.php:87
+#: Http/Controllers/NotificationsController.php:122
+#: Http/Controllers/NotificationsController.php:130
+#: Http/Controllers/NotificationsController.php:158
 #: Http/Controllers/OrdersController.php:61
 #: Http/Controllers/OrdersController.php:134
 #: Http/Controllers/OrdersController.php:238
 #: Http/Controllers/OrdersController.php:258
 #: Http/Controllers/OrdersController.php:274
 #: Http/Controllers/OrdersController.php:293
-#: Http/Controllers/ReceiptsController.php:46
-#: Http/Controllers/ReceiptsController.php:66
+#: Http/Controllers/ReceiptsController.php:48
+#: Http/Controllers/ReceiptsController.php:68
 #: Http/Controllers/RolesController.php:30
 #: Http/Controllers/RolesController.php:40
 #: Http/Controllers/RolesController.php:72
@@ -409,15 +417,14 @@ msgstr "Errore importando file GDXP: %s"
 msgid "Configurazioni Generali"
 msgstr "Configurazioni Generali"
 
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:23
+msgid "Nome del GAS"
+msgstr "Nome del GAS"
+
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:24
-#: ../storage/framework/messages/228f140cb7ecb9766e9c37c4923bb778f5838499.php.php:279
-#: ../storage/framework/messages/97fcd8734ec055c583fb78ae7ef7279f49c7c4d3.php.php:53
-#: ../storage/framework/messages/d254fda5dae36c46c9680ba877316129b9d88515.php.php:34
-#: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:228
-#: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:35
-#: Contact.php:53 Http/Controllers/MovementsController.php:228 User.php:279
-msgid "E-Mail"
-msgstr "E-Mail"
+#| msgid "Riferimento"
+msgid "E-Mail di Riferimento"
+msgstr "E-Mail di Riferimento"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:25
 msgid "Logo Homepage"
@@ -443,11 +450,11 @@ msgstr "Modalità Manutenzione"
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:35
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:63
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:104
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:211
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:248
 #: ../storage/framework/messages/0c713b2be1917f40417f287c6b12b256cb166621.php.php:104
 #: ../storage/framework/messages/1084f7eadc9d88dc17442865eea41d59861c0605.php.php:29
 #: ../storage/framework/messages/195f4ecae049b92c418b8beed1d93ff444a55353.php.php:59
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:96
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:100
 #: ../storage/framework/messages/3d0ebd3932009f77b3b17f7a643ac124f236adda.php.php:15
 #: ../storage/framework/messages/3f3da659f67d6f09b148696de4816ff19cb2e8fd.php.php:100
 #: ../storage/framework/messages/409c9ed96e29b8276d7b64fd6b6352c7708bbf1f.php.php:203
@@ -508,62 +515,47 @@ msgstr "Quota Annuale"
 msgid "Cauzione"
 msgstr "Cauzione"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:163
-msgid ""
-"Popolando questi campi verrà attivata l'esportazione dei files SEPA, con cui "
-"automatizzare le transazioni bancarie.<br>I files saranno generabili da "
-"<strong>Contabilità -> Stato Crediti -> Esporta RID</strong><br>Dopo aver "
-"compilato questo form, per ogni utente dovrai specificare alcuni parametri."
-msgstr ""
-"Popolando questi campi verrà attivata l'esportazione dei files SEPA, con cui "
-"automatizzare le transazioni bancarie.<br>I files saranno generabili da "
-"<strong>Contabilità -> Stato Crediti -> Esporta RID</strong><br>Dopo aver "
-"compilato questo form, per ogni utente dovrai specificare alcuni parametri."
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:164
+msgid "Abilita SEPA"
+msgstr "Abilita SEPA"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:167
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:34
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:172
+#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:35
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:44
 msgid "IBAN"
 msgstr "IBAN"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:168
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:173
 msgid "Identificativo Creditore"
 msgstr "Identificativo Creditore"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:169
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:174
 msgid "Codice Univoco Azienda"
 msgstr "Codice Univoco Azienda"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:174
-msgid ""
-"Popolando questi campi verranno attivati i pagamenti con PayPal, con cui gli "
-"utenti potranno autonomamente ricaricare il proprio credito direttamente da "
-"GASdotto. Per ottenere le credenziali, <a href=\"https://developer.paypal."
-"com/developer/applications/\">visita questa pagina</a>."
-msgstr ""
-"Popolando questi campi verranno attivati i pagamenti con PayPal, con cui gli "
-"utenti potranno autonomamente ricaricare il proprio credito direttamente da "
-"GASdotto. Per ottenere le credenziali, <a href=\"https://developer.paypal."
-"com/developer/applications/\">visita questa pagina</a>."
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:182
+#| msgid "Vai a PayPal"
+msgid "Abilita PayPal"
+msgstr "Abilita PayPal"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:198
-msgid ""
-"Popolando questi campi verrà attivata l'emissione delle fatture nei "
-"confronti degli utenti che effettuano prenotazioni. Le fatture saranno "
-"emesse al momento del salvataggio o della consegna della prenotazione."
-msgstr ""
-"Popolando questi campi verrà attivata l'emissione delle fatture nei "
-"confronti degli utenti che effettuano prenotazioni. Le fatture saranno "
-"emesse al momento del salvataggio o della consegna della prenotazione."
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:213
+msgid "Abilita Satispay"
+msgstr "Abilita Satispay"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:202
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:229
+msgid "Abilita Emissione Fatture"
+msgstr "Abilita Emissione Fatture"
+
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:237
 #: ../storage/framework/messages/404f04d71b5441b1ae50be6eb1e3ca1df4c1033a.php.php:7
 #: ../storage/framework/messages/a4cdcea55a523a711c537c1509bd0ed1cd3d4613.php.php:2
 msgid "Ragione Sociale"
 msgstr "Ragione Sociale"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:203
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:238
 #: ../storage/framework/messages/228f140cb7ecb9766e9c37c4923bb778f5838499.php.php:290
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:35
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:44
 #: ../storage/framework/messages/404f04d71b5441b1ae50be6eb1e3ca1df4c1033a.php.php:9
 #: ../storage/framework/messages/a4cdcea55a523a711c537c1509bd0ed1cd3d4613.php.php:4
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:6
@@ -571,13 +563,13 @@ msgstr "Ragione Sociale"
 msgid "Codice Fiscale"
 msgstr "Codice Fiscale"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:204
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:239
 #: ../storage/framework/messages/404f04d71b5441b1ae50be6eb1e3ca1df4c1033a.php.php:10
 #: ../storage/framework/messages/a4cdcea55a523a711c537c1509bd0ed1cd3d4613.php.php:5
 msgid "Partita IVA"
 msgstr "Partita IVA"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:205
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:240
 #: ../storage/framework/messages/228f140cb7ecb9766e9c37c4923bb778f5838499.php.php:287
 #: ../storage/framework/messages/97fcd8734ec055c583fb78ae7ef7279f49c7c4d3.php.php:45
 #: ../storage/framework/messages/d55b2fef47655d682f027c1cbd41eecac71151a8.php.php:11
@@ -585,25 +577,25 @@ msgstr "Partita IVA"
 msgid "Indirizzo"
 msgstr "Indirizzo"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:206
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:241
 msgid "Modifica questo parametro con cautela!"
 msgstr "Modifica questo parametro con cautela!"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:224
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:261
 #: ../storage/framework/messages/54512d4708486210b9e7afcc164e0ecb833a5c7e.php.php:43
 msgid "Importa"
 msgstr "Importa"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:234
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:271
 msgid "Importazione"
 msgstr "Importazione"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:236
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:243
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:273
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:280
 msgid "Importa GDXP"
 msgstr "Importa GDXP"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:249
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:286
 msgid ""
 "GDXP è un formato interoperabile per scambiare listini e ordini tra diversi "
 "gestionali. Da qui puoi importare un file in tale formato."
@@ -611,19 +603,20 @@ msgstr ""
 "GDXP è un formato interoperabile per scambiare listini e ordini tra diversi "
 "gestionali. Da qui puoi importare un file in tale formato."
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:258
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:295
 #: ../storage/framework/messages/1100052a84dc8abdd6b6f432a723e49b308f7a52.php.php:49
 msgid "File da Caricare"
 msgstr "File da Caricare"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:269
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:306
 #: ../storage/framework/messages/0c713b2be1917f40417f287c6b12b256cb166621.php.php:103
 #: ../storage/framework/messages/1084f7eadc9d88dc17442865eea41d59861c0605.php.php:28
 #: ../storage/framework/messages/1100052a84dc8abdd6b6f432a723e49b308f7a52.php.php:61
 #: ../storage/framework/messages/195f4ecae049b92c418b8beed1d93ff444a55353.php.php:58
 #: ../storage/framework/messages/1e479f119edc22cbec0eae765433b32584f72384.php.php:25
 #: ../storage/framework/messages/2385fa1e23dacbe099eebbc866adbd6bc615943c.php.php:56
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:136
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:142
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:183
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:49
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:123
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:190
@@ -640,16 +633,16 @@ msgstr "File da Caricare"
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:152
 #: ../storage/framework/messages/a5322b2f2be8f8da4bcecea6ac1924410a2b1fd9.php.php:56
 #: ../storage/framework/messages/af9efe5829cab54b632c8fa7b5e8ac476cb60ffb.php.php:37
+#: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:59
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:73
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:156
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:66
 #: ../storage/framework/messages/d254fda5dae36c46c9680ba877316129b9d88515.php.php:47
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:135
 #: ../storage/framework/messages/f8840bff7b1daae6ad3d30d665caae168fc3e4c7.php.php:98
 msgid "Annulla"
 msgstr "Annulla"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:270
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:307
 #: ../storage/framework/messages/1100052a84dc8abdd6b6f432a723e49b308f7a52.php.php:62
 #: ../storage/framework/messages/2385fa1e23dacbe099eebbc866adbd6bc615943c.php.php:57
 #: ../storage/framework/messages/54512d4708486210b9e7afcc164e0ecb833a5c7e.php.php:137
@@ -659,12 +652,12 @@ msgstr "Annulla"
 msgid "Avanti"
 msgstr "Avanti"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:294
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:331
 msgid "Luoghi di Consegna"
 msgstr "Luoghi di Consegna"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:305
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:79
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:342
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:83
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:30
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:80
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:154
@@ -675,7 +668,7 @@ msgstr "Luoghi di Consegna"
 msgid "Luogo di Consegna"
 msgstr "Luogo di Consegna"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:319
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:356
 msgid ""
 "Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi, verrà "
 "attivata la possibilità per ogni utente di selezionare il proprio luogo di "
@@ -687,12 +680,12 @@ msgstr ""
 "consegna preferito e nei documenti di riassunto degli ordini le prenotazioni "
 "saranno suddivise per luogo."
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:331
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:368
 #: ../storage/framework/messages/8213b2de42a57b8769b9deb8aaed6d84d10a486c.php.php:104
 msgid "File Condivisi"
 msgstr "File Condivisi"
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:371
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:408
 msgid "Aliquote IVA"
 msgstr "Aliquote IVA"
 
@@ -718,7 +711,7 @@ msgstr "Metodo"
 #: ../storage/framework/messages/7d6d90fff440f91810272b447cdc195b3176adfb.php.php:6
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:6
 #: ../storage/framework/messages/b4be0d366702616ec01bba3af2c0e90dfa23d968.php.php:21
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:80
+#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:83
 #: ../storage/framework/messages/f0d8388990de9779bae078c14f11fa56be8ab204.php.php:6
 #: Http/Controllers/InvoicesController.php:372
 msgid "Data"
@@ -754,7 +747,7 @@ msgstr "Elimina"
 
 #: ../storage/framework/messages/0cbdf7ee912546fdeeac58d075e6ff74107e0262.php.php:4
 #: ../storage/framework/messages/2385fa1e23dacbe099eebbc866adbd6bc615943c.php.php:17
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:160
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:207
 #: ../storage/framework/messages/59e9ced7f015b018612175a472c9ad654a2f7f91.php.php:26
 #: ../storage/framework/messages/5ec30665b3114e6137babf75150ae220b1b20c48.php.php:75
 #: ../storage/framework/messages/5ec30665b3114e6137babf75150ae220b1b20c48.php.php:130
@@ -942,26 +935,26 @@ msgid "Fattura"
 msgstr "Fattura"
 
 #: ../storage/framework/messages/1428c7abefd077017aa5a5247be3dc4220eee828.php.php:64
-#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:341
-#: GASModel.php:341 Invoice.php:64
+#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:347
+#: GASModel.php:347 Invoice.php:64
 msgid "In Attesa"
 msgstr "In Attesa"
 
 #: ../storage/framework/messages/1428c7abefd077017aa5a5247be3dc4220eee828.php.php:68
-#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:347
-#: GASModel.php:347 Invoice.php:68
+#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:353
+#: GASModel.php:353 Invoice.php:68
 msgid "Da Verificare"
 msgstr "Da Verificare"
 
 #: ../storage/framework/messages/1428c7abefd077017aa5a5247be3dc4220eee828.php.php:72
-#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:353
-#: GASModel.php:353 Invoice.php:72
+#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:359
+#: GASModel.php:359 Invoice.php:72
 msgid "Verificata"
 msgstr "Verificata"
 
 #: ../storage/framework/messages/1428c7abefd077017aa5a5247be3dc4220eee828.php.php:76
-#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:359
-#: GASModel.php:359 Invoice.php:76
+#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:365
+#: GASModel.php:365 Invoice.php:76
 msgid "Pagata"
 msgstr "Pagata"
 
@@ -1000,8 +993,8 @@ msgid "Home"
 msgstr "Home"
 
 #: ../storage/framework/messages/16625428e55dc6096c12d7f4cf360d893b8788ff.php.php:29
-#: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:283
-#: Gas.php:283 Providers/MenuServiceProvider.php:29
+#: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:297
+#: Gas.php:297 Providers/MenuServiceProvider.php:29
 msgid "Fornitori"
 msgstr "Fornitori"
 
@@ -1148,7 +1141,7 @@ msgstr "Inviata"
 
 #: ../storage/framework/messages/1d6011afdabf8af4ba1fcf2fc2e04f2fcb11e11c.php.php:3
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:150
-#: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:1
+#: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:8
 msgid "Contenuto"
 msgstr "Contenuto"
 
@@ -1168,7 +1161,6 @@ msgstr "Conferma"
 
 #: ../storage/framework/messages/2095cf78f4acf98539297d8529208c2bac0fba65.php.php:5
 #: ../storage/framework/messages/398b3604d638b256cf9fce8787422cf7a24962b5.php.php:12
-#: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:35
 #: ../storage/framework/messages/f0d8388990de9779bae078c14f11fa56be8ab204.php.php:37
 msgid "Scarica"
 msgstr "Scarica"
@@ -1200,7 +1192,7 @@ msgid "Ha ordinato %s"
 msgstr "Ha ordinato %s"
 
 #: ../storage/framework/messages/228f140cb7ecb9766e9c37c4923bb778f5838499.php.php:272
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:38
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:41
 #: ../storage/framework/messages/5bd18c3a51962b35efc4e7d97e540bea61113183.php.php:3
 #: ../storage/framework/messages/83332bb756d338628e1ab04852a727ac35729a9c.php.php:5
 #: ../storage/framework/messages/9c3d6dbd3c59d16601e989725afa2b5be11a028f.php.php:8
@@ -1212,7 +1204,7 @@ msgid "Cognome"
 msgstr "Cognome"
 
 #: ../storage/framework/messages/228f140cb7ecb9766e9c37c4923bb778f5838499.php.php:276
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:36
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:39
 #: ../storage/framework/messages/5bd18c3a51962b35efc4e7d97e540bea61113183.php.php:1
 #: ../storage/framework/messages/9c3d6dbd3c59d16601e989725afa2b5be11a028f.php.php:6
 #: ../storage/framework/messages/ace24bd531b0877d2aeef32ad4301a81f681ca83.php.php:38
@@ -1221,6 +1213,15 @@ msgstr "Cognome"
 #: User.php:276
 msgid "Username"
 msgstr "Username"
+
+#: ../storage/framework/messages/228f140cb7ecb9766e9c37c4923bb778f5838499.php.php:279
+#: ../storage/framework/messages/97fcd8734ec055c583fb78ae7ef7279f49c7c4d3.php.php:53
+#: ../storage/framework/messages/d254fda5dae36c46c9680ba877316129b9d88515.php.php:34
+#: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:228
+#: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:35
+#: Contact.php:53 Http/Controllers/MovementsController.php:228 User.php:279
+msgid "E-Mail"
+msgstr "E-Mail"
 
 #: ../storage/framework/messages/228f140cb7ecb9766e9c37c4923bb778f5838499.php.php:283
 #: ../storage/framework/messages/97fcd8734ec055c583fb78ae7ef7279f49c7c4d3.php.php:57
@@ -1275,7 +1276,7 @@ msgid "Nel file ci sono %s prodotti."
 msgstr "Nel file ci sono %s prodotti."
 
 #: ../storage/framework/messages/273acfcdbccc681599384cd69abb547c1304667d.php.php:12
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:172
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:219
 #: ../storage/framework/messages/37885099f095a24dea43be51499d6d2b21364405.php.php:20
 #: ../storage/framework/messages/5ec30665b3114e6137babf75150ae220b1b20c48.php.php:110
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:17
@@ -1293,7 +1294,19 @@ msgstr "Anagrafica"
 msgid "Amici"
 msgstr "Amici"
 
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:39
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:34
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:43
+#: ../storage/framework/messages/83332bb756d338628e1ab04852a727ac35729a9c.php.php:6
+#: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:5
+msgid "Data di Nascita"
+msgstr "Data di Nascita"
+
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:36
+#: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:7
+msgid "Persone in Famiglia"
+msgstr "Persone in Famiglia"
+
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:42
 #: ../storage/framework/messages/5bd18c3a51962b35efc4e7d97e540bea61113183.php.php:4
 #: ../storage/framework/messages/9c3d6dbd3c59d16601e989725afa2b5be11a028f.php.php:9
 #: ../storage/framework/messages/ace24bd531b0877d2aeef32ad4301a81f681ca83.php.php:45
@@ -1302,14 +1315,8 @@ msgstr "Amici"
 msgid "Password"
 msgstr "Password"
 
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:40
-#: ../storage/framework/messages/83332bb756d338628e1ab04852a727ac35729a9c.php.php:6
-#: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:5
-msgid "Data di Nascita"
-msgstr "Data di Nascita"
-
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:47
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:49
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:51
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:53
 #: ../storage/framework/messages/83332bb756d338628e1ab04852a727ac35729a9c.php.php:10
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:9
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:12
@@ -1318,7 +1325,7 @@ msgstr "Data di Nascita"
 msgid "Foto"
 msgstr "Foto"
 
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:52
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:56
 #: ../storage/framework/messages/83332bb756d338628e1ab04852a727ac35729a9c.php.php:11
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:13
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:17
@@ -1326,34 +1333,39 @@ msgstr "Foto"
 msgid "Membro da"
 msgstr "Membro da"
 
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:53
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:57
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:14
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:18
 msgid "Numero Tessera"
 msgstr "Numero Tessera"
 
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:59
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:63
 #: ../storage/framework/messages/a896755ced7ca4f0aebec7ef77c80f22f205ea26.php.php:7
 #: ../storage/framework/messages/a896755ced7ca4f0aebec7ef77c80f22f205ea26.php.php:14
 msgid "Quota Associativa"
 msgstr "Quota Associativa"
 
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:68
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:72
 #: ../storage/framework/messages/a896755ced7ca4f0aebec7ef77c80f22f205ea26.php.php:25
 #: ../storage/framework/messages/a896755ced7ca4f0aebec7ef77c80f22f205ea26.php.php:32
 msgid "Deposito"
 msgstr "Deposito"
 
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:106
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:116
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:110
+#| msgid "Ricarica Credito"
+msgid "Ricarica Credito con PayPal"
+msgstr "Ricarica Credito con PayPal"
+
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:122
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:166
 msgid "Ricarica Credito"
 msgstr "Ricarica Credito"
 
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:120
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:126
 msgid "Da qui puoi ricaricare il tuo credito utilizzando PayPal."
 msgstr "Da qui puoi ricaricare il tuo credito utilizzando PayPal."
 
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:124
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:130
 msgid ""
 "Specifica quanto vuoi versare ed eventuali note per gli amministratori, "
 "verrai rediretto sul sito PayPal dove dovrai autenticarti e confermare il "
@@ -1363,27 +1375,59 @@ msgstr ""
 "verrai rediretto sul sito PayPal dove dovrai autenticarti e confermare il "
 "versamento."
 
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:128
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:134
 msgid "Eventuali commissioni sulla transazione saranno a tuo carico."
 msgstr "Eventuali commissioni sulla transazione saranno a tuo carico."
 
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:137
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:143
 msgid "Vai a PayPal"
 msgstr "Vai a PayPal"
 
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:164
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:154
+#| msgid "Ricarica Credito"
+msgid "Ricarica Credito con Satispay"
+msgstr "Ricarica Credito con Satispay"
+
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:170
+#| msgid "Da qui puoi ricaricare il tuo credito utilizzando PayPal."
+msgid "Da qui puoi ricaricare il tuo credito utilizzando Satispay."
+msgstr "Da qui puoi ricaricare il tuo credito utilizzando Satispay."
+
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:174
+#| msgid ""
+#| "Specifica quanto vuoi versare ed eventuali note per gli amministratori, "
+#| "verrai rediretto sul sito PayPal dove dovrai autenticarti e confermare il "
+#| "versamento."
+msgid ""
+"Specifica quanto vuoi versare ed eventuali note per gli amministratori; "
+"riceverai una notifica sul tuo smartphone per confermare, entro 15 minuti, "
+"il versamento."
+msgstr ""
+"Specifica quanto vuoi versare ed eventuali note per gli amministratori; "
+"riceverai una notifica sul tuo smartphone per confermare, entro 15 minuti, "
+"il versamento."
+
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:178
+#| msgid "Numero Tessera"
+msgid "Numero di Telefono"
+msgstr "Numero di Telefono"
+
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:184
+msgid "Conferma con Satispay"
+msgstr "Conferma con Satispay"
+
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:211
 #: ../storage/framework/messages/5ec30665b3114e6137babf75150ae220b1b20c48.php.php:78
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:11
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:53
 #: ../storage/framework/messages/d9da9680f882d257f8cb22d7fc339948c7e741ba.php.php:24
 msgid "Tutti"
 msgstr "Tutti"
 
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:195
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:242
 msgid "Amico"
 msgstr "Amico"
 
-#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:208
+#: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:255
 msgid ""
 "Aggiungi le informazioni relative agli amici per i quali vuoi creare delle "
 "sotto-prenotazioni. Ogni singola prenotazione sarà autonoma, ma trattata "
@@ -1512,6 +1556,7 @@ msgstr ""
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:191
 #: ../storage/framework/messages/68cc982484900028f621c29dab5160d563b5c628.php.php:49
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:153
+#: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:60
 msgid "Download"
 msgstr "Download"
 
@@ -1727,6 +1772,7 @@ msgid "Annulla Prenotazione"
 msgstr "Annulla Prenotazione"
 
 #: ../storage/framework/messages/3fd51cddbee49a981239a9f5ceec46b00c971787.php.php:9
+#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:104
 msgid "Notifica"
 msgstr "Notifica"
 
@@ -1961,11 +2007,11 @@ msgstr "Prenotazioni Chiuse"
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:255
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:299
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:319
-#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:373
+#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:379
 #: ../storage/framework/messages/f5974edcd79a5ad220dfbbdb77a0a8635cc5ed1e.php.php:16
 #: ../storage/framework/messages/f5974edcd79a5ad220dfbbdb77a0a8635cc5ed1e.php.php:44
 #: ../storage/framework/messages/f796dafdee82b09381216fb50e2ba2e5fad4fb8b.php.php:30
-#: GASModel.php:255 GASModel.php:299 GASModel.php:319 GASModel.php:373
+#: GASModel.php:255 GASModel.php:299 GASModel.php:319 GASModel.php:379
 msgid "Consegnato"
 msgstr "Consegnato"
 
@@ -1988,14 +2034,14 @@ msgid "Gestisci le consegne per l'ordine"
 msgstr "Gestisci le consegne per l'ordine"
 
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:313
-#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:367
-#: GASModel.php:313 GASModel.php:367
+#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:373
+#: GASModel.php:313 GASModel.php:373
 msgid "Da consegnare"
 msgstr "Da consegnare"
 
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:325
-#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:379
-#: GASModel.php:325 GASModel.php:379
+#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:385
+#: GASModel.php:325 GASModel.php:385
 msgid "Salvato"
 msgstr "Salvato"
 
@@ -2004,37 +2050,42 @@ msgstr "Salvato"
 msgid "In Uscita"
 msgstr "In Uscita"
 
-#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:391
-#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:406
+#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:339
+#: GASModel.php:339
+#| msgid "Inoltra Mail"
+msgid "Inoltrata"
+msgstr "Inoltrata"
+
+#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:397
+#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:412
 #: ../storage/framework/messages/b4be0d366702616ec01bba3af2c0e90dfa23d968.php.php:11
-#: GASModel.php:391 GASModel.php:406
+#: GASModel.php:397 GASModel.php:412
 msgid "Sospeso"
 msgstr "Sospeso"
 
-#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:397
-#: GASModel.php:397
+#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:403
+#: GASModel.php:403
 msgid "Eliminato"
 msgstr "Eliminato"
 
-#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:413
+#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:419
 #: ../storage/framework/messages/b4be0d366702616ec01bba3af2c0e90dfa23d968.php.php:15
-#: GASModel.php:413
+#: GASModel.php:419
 msgid "Cessato"
 msgstr "Cessato"
 
-#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:422
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:15
-#: GASModel.php:422
+#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:428
+#: GASModel.php:428
 msgid "Credito < 0"
 msgstr "Credito < 0"
 
-#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:435
-#: GASModel.php:435
+#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:441
+#: GASModel.php:441
 msgid "Quota non Pagata"
 msgstr "Quota non Pagata"
 
-#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:451
-#: GASModel.php:451
+#: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:457
+#: GASModel.php:457
 msgid "In Entrata"
 msgstr "In Entrata"
 
@@ -2054,13 +2105,19 @@ msgid "Credito Utente"
 msgstr "Credito Utente"
 
 #: ../storage/framework/messages/5db2a38f9e470b3feb9a627cc9f39980763b545d.php.php:53
-#: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:289
-#: Gas.php:289 MovementType.php:53
+#: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:303
+#: Gas.php:303 MovementType.php:53
 msgid "PayPal"
 msgstr "PayPal"
 
-#: ../storage/framework/messages/5db2a38f9e470b3feb9a627cc9f39980763b545d.php.php:356
-#: MovementType.php:356
+#: ../storage/framework/messages/5db2a38f9e470b3feb9a627cc9f39980763b545d.php.php:61
+#: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:305
+#: Gas.php:305 MovementType.php:61
+msgid "Satispay"
+msgstr "Satispay"
+
+#: ../storage/framework/messages/5db2a38f9e470b3feb9a627cc9f39980763b545d.php.php:375
+#: MovementType.php:375
 #, php-format
 msgid "Applicazione movimento su oggetto nullo: %s"
 msgstr "Applicazione movimento su oggetto nullo: %s"
@@ -2274,15 +2331,15 @@ msgid "Non hai partecipato a quest'ordine"
 msgstr "Non hai partecipato a quest'ordine"
 
 #: ../storage/framework/messages/662512e6723d9f6ca3ef15d15e16df54c796fbb7.php.php:420
-#: ../storage/framework/messages/e86b7d84d02bf5f1c489215f5c62081e651580ab.php.php:242
-#: Aggregate.php:242 Booking.php:420
+#: ../storage/framework/messages/e86b7d84d02bf5f1c489215f5c62081e651580ab.php.php:243
+#: Aggregate.php:243 Booking.php:420
 #, php-format
 msgid "Hai ordinato %s"
 msgstr "Hai ordinato %s"
 
 #: ../storage/framework/messages/662512e6723d9f6ca3ef15d15e16df54c796fbb7.php.php:422
-#: ../storage/framework/messages/e86b7d84d02bf5f1c489215f5c62081e651580ab.php.php:244
-#: Aggregate.php:244 Booking.php:422
+#: ../storage/framework/messages/e86b7d84d02bf5f1c489215f5c62081e651580ab.php.php:245
+#: Aggregate.php:245 Booking.php:422
 #, php-format
 msgid "Hai ordinato %s + %s"
 msgstr "Hai ordinato %s + %s"
@@ -2294,7 +2351,7 @@ msgstr "Saldo"
 
 #: ../storage/framework/messages/68cc982484900028f621c29dab5160d563b5c628.php.php:18
 #: ../storage/framework/messages/68cc982484900028f621c29dab5160d563b5c628.php.php:25
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:67
+#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:74
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:79
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:165
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:99
@@ -2444,8 +2501,8 @@ msgstr "Data Apertura Prenotazioni"
 msgid "Data Chiusura Prenotazioni"
 msgstr "Data Chiusura Prenotazioni"
 
-#: ../storage/framework/messages/846dddbf226d13640e09d3ab392930b577aabff6.php.php:81
-#: Http/Controllers/ReceiptsController.php:81
+#: ../storage/framework/messages/846dddbf226d13640e09d3ab392930b577aabff6.php.php:83
+#: Http/Controllers/ReceiptsController.php:83
 #, php-format
 msgid "Fattura %s"
 msgstr "Fattura %s"
@@ -2547,14 +2604,20 @@ msgstr "Dettaglio Consegne ordine %s presso %s"
 msgid "Prodotti ordinati ordine %s presso %s"
 msgstr "Prodotti ordinati ordine %s presso %s"
 
-#: ../storage/framework/messages/9956a6eaabc17602b343fb4e9f5f1fa0ba5c2b72.php.php:51
-#: Http/Controllers/PaymentController.php:51
+#: ../storage/framework/messages/9944b53a19bb073e61f78b0f98af09cb85071bda.php.php:3
+#: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:55
+#, php-format
+msgid "In allegato l'ultima fattura da %s."
+msgstr "In allegato l'ultima fattura da %s."
+
+#: ../storage/framework/messages/9956a6eaabc17602b343fb4e9f5f1fa0ba5c2b72.php.php:68
+#: Http/Controllers/PaymentController.php:68
 #, php-format
 msgid "Credito Utente %s"
 msgstr "Credito Utente %s"
 
-#: ../storage/framework/messages/9956a6eaabc17602b343fb4e9f5f1fa0ba5c2b72.php.php:133
-#: Http/Controllers/PaymentController.php:133
+#: ../storage/framework/messages/9956a6eaabc17602b343fb4e9f5f1fa0ba5c2b72.php.php:207
+#: Http/Controllers/PaymentController.php:207
 #, php-format
 msgid "Commissioni PayPal: %s"
 msgstr "Commissioni PayPal: %s"
@@ -2595,7 +2658,7 @@ msgid "Notifiche Mail"
 msgstr "Notifiche Mail"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:25
-#: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:4
+#: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:15
 msgid "Invia Mail"
 msgstr "Invia Mail"
 
@@ -2699,6 +2762,18 @@ msgstr ""
 "Modalità Manutenzione: Accesso Temporaneamente Ristretto ai soli "
 "Amministratori"
 
+#: ../storage/framework/messages/ace24bd531b0877d2aeef32ad4301a81f681ca83.php.php:28
+msgid ""
+"GASdotto è testato con Firefox e Chrome/Chromium, ti consigliamo di usare "
+"uno di questi!"
+msgstr ""
+"GASdotto è testato con Firefox e Chrome/Chromium, ti consigliamo di usare "
+"uno di questi!"
+
+#: ../storage/framework/messages/ace24bd531b0877d2aeef32ad4301a81f681ca83.php.php:29
+msgid "Clicca qui per scaricare ed installare Firefox."
+msgstr "Clicca qui per scaricare ed installare Firefox."
+
 #: ../storage/framework/messages/ace24bd531b0877d2aeef32ad4301a81f681ca83.php.php:70
 msgid "Ricordami"
 msgstr "Ricordami"
@@ -2718,6 +2793,21 @@ msgstr "Registrati"
 #: ../storage/framework/messages/f0d8388990de9779bae078c14f11fa56be8ab204.php.php:12
 msgid "Prenotazioni Coinvolte"
 msgstr "Prenotazioni Coinvolte"
+
+#: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:30
+#: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:44
+msgid "Scarica o Inoltra"
+msgstr "Scarica o Inoltra"
+
+#: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:48
+msgid "Scarica la fattura generata, o inoltrala via email."
+msgstr "Scarica la fattura generata, o inoltrala via email."
+
+#: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:54
+#, php-format
+#| msgid "Fattura %s"
+msgid "Nuova fattura da %s"
+msgstr "Nuova fattura da %s"
 
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:6
 #: ../storage/framework/messages/ce8e28c6c53c5bf8df34a17e43697f3ad2be3a72.php.php:41
@@ -2766,30 +2856,30 @@ msgstr "Differenza Prezzo"
 msgid "Valori"
 msgstr "Valori"
 
-#: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:151
-#: Gas.php:151
+#: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:157
+#: Gas.php:157
 msgid "Configurazione GAS non prevista"
 msgstr "Configurazione GAS non prevista"
 
-#: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:280
-#: Gas.php:280
+#: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:294
+#: Gas.php:294
 msgid "Conto Corrente"
 msgstr "Conto Corrente"
 
-#: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:281
-#: Gas.php:281
+#: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:295
+#: Gas.php:295
 msgid "Cassa Contanti"
 msgstr "Cassa Contanti"
 
-#: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:282
+#: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:296
 #: ../storage/framework/messages/d25bf6a6da0df10748753d99aa3e2af4d1b06a2e.php.php:8
 #: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:99
-#: Gas.php:282
+#: Gas.php:296
 msgid "GAS"
 msgstr "GAS"
 
-#: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:284
-#: Gas.php:284
+#: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:298
+#: Gas.php:298
 msgid "Cauzioni"
 msgstr "Cauzioni"
 
@@ -2865,27 +2955,41 @@ msgstr "Nuovo utente registrato"
 msgid "Stato Crediti"
 msgstr "Stato Crediti"
 
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:19
-msgid "Credito >= 0"
-msgstr "Credito >= 0"
+#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:13
+msgid "Minore di"
+msgstr "Minore di"
 
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:33
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:37
+#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:17
+msgid "Maggiore di"
+msgstr "Maggiore di"
+
+#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:21
+#| msgid "Ricarica Credito"
+msgid "Filtra Credito"
+msgstr "Filtra Credito"
+
+#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:34
+#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:38
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:228
 #: Http/Controllers/MovementsController.php:228
 msgid "Credito Residuo"
 msgstr "Credito Residuo"
 
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:70
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:92
-msgid "Esporta RID"
-msgstr "Esporta RID"
+#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:75
+#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:95
+#| msgid "Esporta CSV"
+msgid "Esporta SEPA"
+msgstr "Esporta SEPA"
 
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:88
+#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:76
+msgid "Notifica Utente Visualizzati"
+msgstr "Notifica Utente Visualizzati"
+
+#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:91
 msgid "Causale"
 msgstr "Causale"
 
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:89
+#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:92
 msgid "VERSAMENTO GAS"
 msgstr "VERSAMENTO GAS"
 
@@ -2911,25 +3015,29 @@ msgstr "Dettaglio Consegne Ordine %s presso %s del %s"
 msgid "Elimina Definitivamente"
 msgstr "Elimina Definitivamente"
 
-#: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:2
+#: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:9
 msgid "Inizio"
 msgstr "Inizio"
 
-#: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:3
+#: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:10
 msgid "Scadenza"
 msgstr "Scadenza"
 
-#: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:24
+#: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:16
+msgid ""
+"Questa notifica è già stata inoltrata via mail. Salvandola mantenendo questo "
+"flag attivo verrà inviata una nuova mail."
+msgstr ""
+"Questa notifica è già stata inoltrata via mail. Salvandola mantenendo questo "
+"flag attivo verrà inviata una nuova mail."
+
+#: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:38
 msgid ""
 "Tenere premuto Ctrl per selezionare più utenti. Se nessun utente viene "
 "selezionato, la notifica sarà destinata a tutti."
 msgstr ""
 "Tenere premuto Ctrl per selezionare più utenti. Se nessun utente viene "
 "selezionato, la notifica sarà destinata a tutti."
-
-#: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:7
-msgid "Persone in Famiglia"
-msgstr "Persone in Famiglia"
 
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:41
 msgid "Configurazione SEPA"
@@ -3064,7 +3172,7 @@ msgstr ""
 "(presenti e futuri) e permette di agire su tutti, benché l'utente "
 "assegnatario non sarà esplicitamente visibile dagli altri."
 
-#: ../storage/framework/messages/e4726fcc20394bcabca158db8f5dafed00dbe843.php.php:41
+#: ../storage/framework/messages/e4726fcc20394bcabca158db8f5dafed00dbe843.php.php:44
 msgid "Revoca Ruolo"
 msgstr "Revoca Ruolo"
 
@@ -3187,3 +3295,42 @@ msgstr "Totale Fattura"
 #: ../storage/framework/messages/f8840bff7b1daae6ad3d30d665caae168fc3e4c7.php.php:23
 msgid "Totale Ordini"
 msgstr "Totale Ordini"
+
+#~ msgid ""
+#~ "Popolando questi campi verrà attivata l'esportazione dei files SEPA, con "
+#~ "cui automatizzare le transazioni bancarie.<br>I files saranno generabili "
+#~ "da <strong>Contabilità -> Stato Crediti -> Esporta RID</strong><br>Dopo "
+#~ "aver compilato questo form, per ogni utente dovrai specificare alcuni "
+#~ "parametri."
+#~ msgstr ""
+#~ "Popolando questi campi verrà attivata l'esportazione dei files SEPA, con "
+#~ "cui automatizzare le transazioni bancarie.<br>I files saranno generabili "
+#~ "da <strong>Contabilità -> Stato Crediti -> Esporta RID</strong><br>Dopo "
+#~ "aver compilato questo form, per ogni utente dovrai specificare alcuni "
+#~ "parametri."
+
+#~ msgid ""
+#~ "Popolando questi campi verranno attivati i pagamenti con PayPal, con cui "
+#~ "gli utenti potranno autonomamente ricaricare il proprio credito "
+#~ "direttamente da GASdotto. Per ottenere le credenziali, <a href=\"https://"
+#~ "developer.paypal.com/developer/applications/\">visita questa pagina</a>."
+#~ msgstr ""
+#~ "Popolando questi campi verranno attivati i pagamenti con PayPal, con cui "
+#~ "gli utenti potranno autonomamente ricaricare il proprio credito "
+#~ "direttamente da GASdotto. Per ottenere le credenziali, <a href=\"https://"
+#~ "developer.paypal.com/developer/applications/\">visita questa pagina</a>."
+
+#~ msgid ""
+#~ "Popolando questi campi verrà attivata l'emissione delle fatture nei "
+#~ "confronti degli utenti che effettuano prenotazioni. Le fatture saranno "
+#~ "emesse al momento del salvataggio o della consegna della prenotazione."
+#~ msgstr ""
+#~ "Popolando questi campi verrà attivata l'emissione delle fatture nei "
+#~ "confronti degli utenti che effettuano prenotazioni. Le fatture saranno "
+#~ "emesse al momento del salvataggio o della consegna della prenotazione."
+
+#~ msgid "Credito >= 0"
+#~ msgstr "Credito >= 0"
+
+#~ msgid "Esporta RID"
+#~ msgstr "Esporta RID"

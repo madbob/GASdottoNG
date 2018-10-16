@@ -332,6 +332,12 @@ trait GASModel
                         },
                         'text' => _i('In Uscita'),
                     ],
+                    'envelope' => (object) [
+                        'test' => function ($obj) {
+                            return $obj->mailed;
+                        },
+                        'text' => _i('Inoltrata'),
+                    ],
                 ],
                 'Invoice' => [
                     'time' => (object) [

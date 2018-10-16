@@ -1044,6 +1044,13 @@ function refreshBalanceView() {
     });
 }
 
+function collectFilteredUsers(form) {
+    $('#credits_status_table tbody tr:visible').each(function() {
+        var user_id = $(this).find('input[name^=user_id]').val();
+        form.append('<input type="hidden" name="users[]" value="' + user_id + '">');
+    });
+}
+
 /*******************************************************************************
 	Core
 */
@@ -1568,6 +1575,29 @@ $(document).ready(function() {
         }
     });
 
+    $('body').on('keyup', '.table-number-filter', function() {
+        var text = $(this).val().toLowerCase();
+        var target = $(this).attr('data-list-target');
+        var mode = $(this).closest('.input-group').find('input[name=filter_mode]:checked').val();
+
+        if (text == '') {
+            $('.table' + target + ' tbody tr').show();
+        }
+        else {
+            var number = parseFloat(text);
+
+            $('.table' + target + ' tbody .text-filterable-cell').each(function() {
+                var val = parseFloat($(this).text());
+                if (mode == 'min' && val <= number)
+                    $(this).closest('tr').show();
+                else if (mode == 'max' && val >= number)
+                    $(this).closest('tr').show();
+                else
+                    $(this).closest('tr').hide();
+            });
+        }
+    });
+
     $('body').on('change', '.table-filters input:radio', function() {
         var filter = $(this).closest('.table-filters');
         var target = filter.attr('data-table-target');
@@ -1605,6 +1635,15 @@ $(document).ready(function() {
     $('body').on('submit', '.inner-form', function(event) {
         event.preventDefault();
         var form = $(this);
+
+        var test = form.find('input[name^=pre-saved-function]');
+        if (test.length != 0) {
+            test.each(function() {
+                var fn = window[$(this).val()];
+                if (typeof fn === 'function')
+                    fn(form);
+            });
+        }
 
         var data = new FormData(this);
         var method = form.attr('method').toUpperCase();
