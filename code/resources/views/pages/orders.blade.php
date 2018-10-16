@@ -6,10 +6,11 @@
     <div class="row">
         <div class="col-md-12">
             @include('commons.addingbutton', [
-                'template' => 'order.base-edit',
+                'template' => 'order.create',
                 'typename' => 'order',
                 'typename_readable' => _i('Ordine'),
                 'targeturl' => 'orders',
+                'extra_size' => true,
                 'extra' => [
                     'post-saved-refetch' => '#aggregable-list'
                 ]

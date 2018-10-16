@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Date extends Model
 {
+    public function target()
+    {
+        return $this->morphTo();
+    }
+
     public static function types()
     {
         return [
@@ -14,7 +19,7 @@ class Date extends Model
                 'value' => 'confirmed'
             ],
             [
-                'label' => _i('Temporaneo'),
+                'label' => _i('Provvisorio'),
                 'value' => 'temp'
             ],
         ];
