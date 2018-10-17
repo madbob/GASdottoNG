@@ -1,5 +1,5 @@
 @if($dates->isEmpty() == false)
-    <div class="form-group">
+    <div class="form-group suggested-dates">
         <div class="col-sm-offset-{{ $labelsize }} col-sm-{{ $fieldsize }}">
             <p>
                 {{ _i('Prossime date in calendario:') }}

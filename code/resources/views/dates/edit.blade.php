@@ -27,7 +27,7 @@
                             'type' => 'selectobj',
                             'width' => 3,
                             'extra' => [
-                                'objects' => App\Supplier::orderBy('name', 'asc')->get()
+                                'objects' => $currentuser->targetsByAction('supplier.orders')
                             ]
                         ],
                         [

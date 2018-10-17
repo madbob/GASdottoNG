@@ -5,7 +5,7 @@
                 {
                     title: '{{ $a->printableName() }}',
                     start: '{{ $a->shipping }}',
-                    className: 'calendar-shipping'
+                    className: 'calendar-shipping-{{ $a->status }}'
                 },
             @endif
         @endforeach

@@ -97,7 +97,11 @@ table {
 }
 
 #dates-calendar {
-    .calendar-shipping {
+    .calendar-shipping-open {
+        background-color: red;
+    }
+
+    .calendar-shipping-closed {
         background-color: green;
     }
 
@@ -106,7 +110,14 @@ table {
     }
 
     .calendar-date-temp {
-        background-color: red;
+        background-color: orange;
+    }
+}
+
+.suggested-dates {
+    li {
+        cursor: pointer;
+        cursor: hand;
     }
 }
 

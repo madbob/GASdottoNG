@@ -2289,6 +2289,11 @@ $(document).ready(function() {
         });
     });
 
+    $('body').on('click', '.suggested-dates li', function() {
+        var date = $(this).text();
+        $(this).closest('#createOrder').find('input[name=shipping]').val(date);
+    });
+
     /*
     	Interazioni dinamiche sul pannello prenotazioni
     */

@@ -66,14 +66,21 @@ table label {
   margin-bottom: 0;
   font-weight: normal; }
 
-#dates-calendar .calendar-shipping {
+#dates-calendar .calendar-shipping-open {
+  background-color: red; }
+
+#dates-calendar .calendar-shipping-closed {
   background-color: green; }
 
 #dates-calendar .calendar-date-confirmed {
   background-color: blue; }
 
 #dates-calendar .calendar-date-temp {
-  background-color: red; }
+  background-color: orange; }
+
+.suggested-dates li {
+  cursor: pointer;
+  cursor: hand; }
 
 .loadablelist .loadablelist .list-group-item.active {
   color: #31708F;
