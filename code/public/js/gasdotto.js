@@ -1998,6 +1998,44 @@ $(document).ready(function() {
         window.open(url, '_blank');
     });
 
+    $('body').on('click', '.manyrows-dates-filter button[type=submit]', function(event) {
+        event.preventDefault();
+        var form = $(this).closest('.manyrows-dates-filter');
+
+        var startdate = form.find('[name=startdate]').datepicker('getDate');
+        if (startdate != null)
+            startdate = startdate.getTime();
+        var enddate = form.find('[name=enddate]').datepicker('getDate');
+        if (enddate != null)
+            enddate = enddate.getTime();
+
+        var target_id = form.find('[name=target_id] option:selected').val();
+        var type = form.find('[name=type]:checked').val();
+
+        $('#dates-in-range .row:not(.many-rows-header)').each(function() {
+            var show = true;
+
+            if (target_id != 0 && $(this).find('[name^=target_id] option:selected').val() != target_id)
+                show = false;
+
+            if (type != 'all' && $(this).find('[name^=type] option:selected').val() != type)
+                show = false;
+
+            if (startdate != null || enddate != null) {
+                var local_date = $(this).find('[name^=date]').datepicker('getDate').getTime();
+                if (startdate != null && local_date < startdate)
+                    show = false;
+                if (enddate != null && local_date > enddate)
+                    show = false;
+            }
+
+            if (show == false)
+                $(this).hide();
+            else
+                $(this).show();
+        });
+    });
+
     $('body').on('submit', '.password-protected', function(event) {
         if ($(this).attr('data-password-protected-verified') != '1') {
             event.preventDefault();

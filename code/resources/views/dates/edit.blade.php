@@ -10,7 +10,44 @@
 
     <div class="modal-body">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
+                <div class="form-horizontal manyrows-dates-filter">
+                    @include('commons.genericdaterange', [
+                        'start_date' => '',
+                        'end_date' => ''
+                    ])
+                    @include('commons.selectobjfield', [
+                        'obj' => null,
+                        'name' => 'target_id',
+                        'label' => _i('Fornitore'),
+                        'objects' => $currentuser->targetsByAction('supplier.orders'),
+                        'extra_selection' => [
+                            '0' => _i('Nessuno')
+                        ]
+                    ])
+                    @include('commons.radios', [
+                        'name' => 'type',
+                        'label' => _i('Tipo'),
+                        'values' => [
+                            'all' => (object)['name' => _i('Tutti'), 'checked' => true],
+                            'confirmed' => (object)['name' => _i('Confermato')],
+                            'temp' => (object)['name' => _i('Provvisorio')]
+                        ]
+                    ])
+
+                    <div class="form-group">
+                        <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
+                            <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-md-12" id="dates-in-range">
                 @include('commons.manyrows', [
                     'contents' => $dates,
                     'show_columns' => true,
