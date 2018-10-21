@@ -127,7 +127,7 @@ msgid "Valore"
 msgstr "Value"
 
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:45
-msgid "Soggetto Mail"
+msgid "Oggetto Mail"
 msgstr "Mail Subject"
 
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:55
