@@ -66,7 +66,7 @@ class DatabaseSeeder extends Seeder
 
         $referrer_role = Role::create([
             'name' => 'Referente',
-            'actions' => 'supplier.modify,supplier.orders,supplier.shippings',
+            'actions' => 'supplier.modify,supplier.orders,supplier.shippings,supplier.movements',
             'parent_id' => $admin_role->id
         ]);
 
