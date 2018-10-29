@@ -23,4 +23,11 @@
     </form>
 </div>
 
+<div class="col-md-6 col-md-offset-3">
+    <hr/>
+    <p>
+        <a href="{{ route('login') }}">{{ _i('Login') }}</a>
+    </p>
+</div>
+
 @endsection

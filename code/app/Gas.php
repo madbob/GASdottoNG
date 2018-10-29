@@ -110,7 +110,11 @@ class Gas extends Model
             ],
 
             'public_registrations' => [
-                'default' => '0'
+                'default' => (object) [
+                    'enabled' => false,
+                    'privacy_link' => '',
+                    'mandatory_fields' => ['firstname', 'lastname', 'email', 'phone']
+                ]
             ],
 
             'orders_display_columns' => [
@@ -216,7 +220,7 @@ class Gas extends Model
 
     public function getPublicRegistrationsAttribute()
     {
-        return $this->getConfig('public_registrations') == '1';
+        return (array) json_decode($this->getConfig('public_registrations'));
     }
 
     public function getOrdersDisplayColumnsAttribute()
@@ -273,6 +277,9 @@ class Gas extends Model
                 break;
             case 'extra_invoicing':
                 return (!empty($this->extra_invoicing['taxcode']) || !empty($this->extra_invoicing['vat']));
+                break;
+            case 'public_registrations':
+                return $this->public_registrations['enabled'];
                 break;
         }
 

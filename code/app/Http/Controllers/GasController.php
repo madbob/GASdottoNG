@@ -153,7 +153,21 @@ class GasController extends Controller
                 break;
 
             case 'users':
-                $gas->setConfig('public_registrations', $request->has('public_registrations') ? '1' : '0');
+                if ($request->has('enable_public_registrations')) {
+                    $registrations_info = (object) [
+                        'enabled' => true,
+                        'privacy_link' => $request->input('public_registrations->privacy_link'),
+                        'mandatory_fields' => $request->input('public_registrations->mandatory_fields'),
+                    ];
+                }
+                else {
+                    $registrations_info = (object) [
+                        'enabled' => false,
+                        'privacy_link' => '',
+                        'mandatory_fields' => ['firstname', 'lastname', 'email', 'phone'],
+                    ];
+                }
+                $gas->setConfig('public_registrations', $registrations_info);
                 break;
 
             case 'orders':
