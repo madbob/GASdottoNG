@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 
 use App\User;
+use App\Order;
 use App\Role;
 use App\Delivery;
 
@@ -22,6 +23,19 @@ class AppServiceProvider extends ServiceProvider
             if ($fallback_delivery != null) {
                 $user->preferred_delivery_id = $fallback_delivery->id;
                 $user->save();
+            }
+        });
+
+        Order::created(function($order) {
+            if ($order->status == 'open')
+                $order->sendNotificationMail();
+        });
+
+        Order::updating(function($order) {
+            if ($order->status == 'open') {
+                $old = Order::find($order->id);
+                if ($old->status != 'open')
+                    $order->sendNotificationMail();
             }
         });
     }

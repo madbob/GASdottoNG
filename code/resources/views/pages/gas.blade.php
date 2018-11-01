@@ -68,7 +68,12 @@
                                     <div class="collapse {{ $gas->hasFeature('public_registrations') ? 'in' : '' }}" data-triggerable="enable_public_registrations">
                                         <div class="col-md-12">
                                             <div class="well">
-                                                @include('commons.textfield', ['obj' => $gas, 'name' => 'public_registrations->privacy_link', 'label' => _i('Link Privacy Policy')])
+                                                @include('commons.textfield', [
+                                                    'obj' => $gas,
+                                                    'name' => 'public_registrations->privacy_link',
+                                                    'label' => _i('Link Privacy Policy'),
+                                                    'help_text' => env('GASDOTTO_NET', false) ? 'Se non specificato, viene usata la privacy policy di default su https://www.gasdotto.net/' : ''
+                                                ])
                                                 @include('commons.checkboxes', [
                                                     'name' => 'public_registrations->mandatory_fields',
                                                     'label' => _i('Campi Obbligatori'),

@@ -26,6 +26,7 @@ Route::get('users/searchorders', 'UsersController@searchOrders');
 Route::get('users/profile', 'UsersController@profile')->name('profile');
 Route::get('users/picture/{id}', 'UsersController@picture');
 Route::get('users/export', 'UsersController@export');
+Route::post('users/notifications', 'UsersController@notifications')->name('users.notifications');
 
 Route::get('friends/{id}/header', 'FriendsController@objhead')->name('friends.objhead');
 
