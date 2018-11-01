@@ -14,6 +14,7 @@ use Mail;
 use Hash;
 use Log;
 
+use App\Gas;
 use App\User;
 use App\Contact;
 use App\Role;
