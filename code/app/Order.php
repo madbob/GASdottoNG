@@ -21,6 +21,7 @@ use App\BookedProduct;
 use App\ExportableTrait;
 use App\PayableTrait;
 use App\CreditableTrait;
+use App\Notifications\NewOrderNotification;
 
 class Order extends Model
 {
