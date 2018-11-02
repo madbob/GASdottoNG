@@ -2652,7 +2652,7 @@ msgstr "Error in file upload or reading."
 
 #: ../storage/framework/messages/99ff6674e92fcea16bac171e999456b505e98189.php.php:8
 msgid ""
-"Si prega di riprovare o di sottoporre il problema agli sviluppatori di "
+"Si prega di riprovare, o di sottoporre il problema agli sviluppatori di "
 "GASdotto: info@gasdotto.net"
 msgstr ""
 "Please try again or submit a bug to GASdotto developers: info@gasdotto.net"
