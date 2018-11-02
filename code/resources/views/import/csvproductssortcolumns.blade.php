@@ -37,6 +37,7 @@
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="transport" />{{ _i('Prezzo Trasporto') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="category" />{{ _i('Categoria') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="measure" />{{ _i('Unità di Misura') }}</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="supplier_code" />{{ _i('Codice Fornitore') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="package_size" />{{ _i('Dimensione Confezione') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="min_quantity" />{{ _i('Ordine Minimo') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="multiple" />{{ _i('Ordinabile per Multipli') }}</li>
