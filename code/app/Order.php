@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Collection;
 use App;
 use Auth;
 use DB;
+use Mail;
 use URL;
+use Log;
 
 use App\Events\SluggableCreating;
 
@@ -167,7 +169,7 @@ class Order extends Model
     {
         $ret = [];
 
-        if ($status == null)
+        if (is_null($status))
             $bookings = $this->bookings;
         else
             $bookings = $this->bookings()->where('status', $status)->get();
@@ -232,6 +234,30 @@ class Order extends Model
         }
 
         return false;
+    }
+
+    public function sendNotificationMail()
+    {
+        if (is_null($this->first_notify) == false)
+            return;
+
+        $order = $this;
+
+        $users = User::whereHas('suppliers', function($query) use ($order) {
+            $query->where('suppliers.id', $order->supplier->id);
+        })->get();
+
+        foreach($users as $user) {
+            try {
+                $user->notify(new NewOrderNotification($order));
+            }
+            catch(\Exception $e) {
+                Log::error('Impossibile inoltrare mail di notifica apertura ordine: ' . $e->getMessage());
+            }
+        }
+
+        $this->first_notify = date('Y-m-d');
+        $this->save();
     }
 
     public function isActive()
@@ -414,7 +440,7 @@ class Order extends Model
 
         $order = $this;
 
-        if ($products == null) {
+        if (is_null($products)) {
             $products = $order->products;
             $external_products = false;
         }

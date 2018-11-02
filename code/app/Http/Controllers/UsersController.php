@@ -190,4 +190,11 @@ class UsersController extends BackedController
         }
         return $ret;
     }
+
+    public function notifications(Request $request)
+    {
+        $suppliers = $request->input('suppliers');
+        $request->user()->suppliers()->sync($suppliers);
+        return $this->successResponse();
+    }
 }

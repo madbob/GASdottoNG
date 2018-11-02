@@ -9,7 +9,7 @@
         <div class="form-group{{ $errors->has('firstname') ? ' has-error' : '' }}">
             <label for="firstname" class="col-md-4 control-label">{{ _i('Nome') }}</label>
             <div class="col-md-6">
-                <input id="firstname" type="text" class="form-control" name="firstname" value="{{ old('firstname') }}" required autofocus>
+                <input id="firstname" type="text" class="form-control" name="firstname" value="{{ old('firstname') }}" {{ in_array('firstname', currentAbsoluteGas()->public_registrations['mandatory_fields']) ? 'required' : '' }} autofocus>
 
                 @if ($errors->has('firstname'))
                     <span class="help-block">
@@ -22,7 +22,7 @@
         <div class="form-group{{ $errors->has('lastname') ? ' has-error' : '' }}">
             <label for="lastname" class="col-md-4 control-label">{{ _i('Cognome') }}</label>
             <div class="col-md-6">
-                <input id="lastname" type="text" class="form-control" name="lastname" value="{{ old('lastname') }}" required>
+                <input id="lastname" type="text" class="form-control" name="lastname" value="{{ old('lastname') }}" {{ in_array('lastname', currentAbsoluteGas()->public_registrations['mandatory_fields']) ? 'required' : '' }}>
 
                 @if ($errors->has('lastname'))
                     <span class="help-block">
@@ -36,7 +36,7 @@
             <label for="email" class="col-md-4 control-label">{{ _i('E-Mail') }}</label>
 
             <div class="col-md-6">
-                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
+                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" {{ in_array('email', currentAbsoluteGas()->public_registrations['mandatory_fields']) ? 'required' : '' }}>
 
                 @if ($errors->has('email'))
                     <span class="help-block">
@@ -50,7 +50,7 @@
             <label for="phone" class="col-md-4 control-label">{{ _i('Telefono') }}</label>
 
             <div class="col-md-6">
-                <input id="phone" type="text" class="form-control" name="phone" value="{{ old('phone') }}" required>
+                <input id="phone" type="text" class="form-control" name="phone" value="{{ old('phone') }}" {{ in_array('phone', currentAbsoluteGas()->public_registrations['mandatory_fields']) ? 'required' : '' }}>
 
                 @if ($errors->has('phone'))
                     <span class="help-block">
@@ -111,12 +111,12 @@
             <input type="hidden" name="gas_id" value="{{ currentAbsoluteGas()->id }}">
         @endif
 
-        @if (env('GASDOTTO_NET', false) == true)
+        @if (!empty(currentAbsoluteGas()->public_registrations['privacy_link']) || env('GASDOTTO_NET', false) == true)
             <div class="form-group">
                 <div class="col-sm-offset-4 col-sm-6">
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" required> Ho letto e accetto l'<a href="http://gasdotto.net/privacy" target="_blank">Informativa sulla Privacy</a>.
+                            <input type="checkbox" required> {!! _i("Ho letto e accetto l'<a href=\"%s\" target=\"_blank\">Informativa sulla Privacy</a>.", [empty(currentAbsoluteGas()->public_registrations['privacy_link']) ? 'http://gasdotto.net/privacy' : currentAbsoluteGas()->public_registrations['privacy_link']]) !!}
                         </label>
                     </div>
                 </div>

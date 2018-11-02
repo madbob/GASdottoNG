@@ -86,6 +86,11 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Notification')->withPivot('done')->where('notification_user.done', '=', false)->orderBy('start_date', 'desc');
     }
 
+    public function suppliers()
+    {
+        return $this->belongsToMany('App\Supplier');
+    }
+
     public function allnotifications()
     {
         return $this->belongsToMany('App\Notification')->orderBy('start_date', 'desc');
@@ -211,8 +216,13 @@ class User extends Authenticatable
             $test = $this->roles()->where('roles.id', $role_id)->first();
         }
 
-        if ($assigned)
-            $test->attachApplication($assigned);
+        if (is_null($test)) {
+            Log::error('Impossibile aggiungere ruolo ' . $role_id . ' a utente ' . $this->id);
+        }
+        else {
+            if ($assigned)
+                $test->attachApplication($assigned);
+        }
     }
 
     public function removeRole($role, $assigned)

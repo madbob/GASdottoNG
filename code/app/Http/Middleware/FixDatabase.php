@@ -117,6 +117,17 @@ class FixDatabase
             }
         }
 
+        $public_registrations = $gas->getConfig('public_registrations');
+        if (is_numeric($public_registrations)) {
+            $new_conf = (object) [
+                'enabled' => $public_registrations,
+                'privacy_link' => '',
+                'mandatory_fields' => ['firstname', 'lastname', 'email', 'phone']
+            ];
+
+            $gas->setConfig('public_registrations', $new_conf);
+        }
+
         return $next($request);
     }
 }

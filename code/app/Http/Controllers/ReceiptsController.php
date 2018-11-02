@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use Auth;
 use DB;
 use PDF;
+use Mail;
 
 use App\Receipt;
+use App\Notifications\ReceiptForward;
 
 class ReceiptsController extends Controller
 {
@@ -71,7 +73,7 @@ class ReceiptsController extends Controller
         return $this->successResponse();
     }
 
-    public function download($id)
+    public function download(Request $request, $id)
     {
         $receipt = Receipt::findOrFail($id);
         $user = Auth::user();
@@ -83,7 +85,39 @@ class ReceiptsController extends Controller
             PDF::SetTitle($title);
             PDF::AddPage();
             PDF::writeHTML($html, true, false, true, false, '');
-            PDF::Output($filename, 'D');
+
+            $send_mail = $request->has('send_mail');
+            if ($send_mail) {
+                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $filename));
+                PDF::Output($temp_file_path, 'F');
+
+                $recipient_mails = $request->input('recipient_mail_value', []);
+                if (empty($recipient_mails))
+                    return;
+
+                $real_recipient_mails = [];
+                foreach($recipient_mails as $rm) {
+                    if (empty($rm))
+                        continue;
+                    $real_recipient_mails[] = (object) ['email' => $rm];
+                }
+
+                if (empty($real_recipient_mails))
+                    return;
+
+                $m = Mail::to($real_recipient_mails);
+                $subject_mail = $request->input('subject_mail');
+                $body_mail = $request->input('body_mail');
+                $m->send(new ReceiptForward($temp_file_path, $subject_mail, $body_mail));
+
+                @unlink($temp_file_path);
+
+                $receipt->mailed = true;
+                $receipt->save();
+            }
+            else {
+                PDF::Output($filename, 'D');
+            }
         }
         else {
             abort(503);

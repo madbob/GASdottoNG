@@ -11,6 +11,18 @@
         <div class="col-md-4">
             @include('commons.staticpercentagefield', ['obj' => $order, 'name' => 'discount', 'label' => _i('Sconto Globale')])
             @include('commons.staticpercentagefield', ['obj' => $order, 'name' => 'transport', 'label' => _i('Spese Trasporto')])
+
+            @if(Gate::check('movements.admin', $currentgas) || Gate::check('supplier.movements', $order->supplier))
+                @include('commons.movementfield', [
+                    'obj' => $order->payment,
+                    'name' => 'payment_id',
+                    'label' => _i('Pagamento'),
+                    'default' => \App\Movement::generate('order-payment', $currentgas, $order, $summary->price_delivered + $summary->transport_delivered),
+                    'to_modal' => [
+                        'amount_editable' => true
+                    ]
+                ])
+            @endif
         </div>
 
         <div class="col-md-4">

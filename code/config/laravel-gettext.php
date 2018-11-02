@@ -31,6 +31,7 @@ return [
         'it_IT',
         'en_EN',
         'de_DE',
+        'fr_FR',
         'nl_NL',
         'nb_NO',
     ],

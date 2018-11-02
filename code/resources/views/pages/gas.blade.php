@@ -21,8 +21,8 @@
                                 <input type="hidden" name="group" value="general">
 
                                 <div class="col-md-12">
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'name', 'label' => _i('Nome'), 'mandatory' => true])
-                                    @include('commons.emailfield', ['obj' => $gas, 'name' => 'email', 'label' => _i('E-Mail'), 'mandatory' => true])
+                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'name', 'label' => _i('Nome del GAS'), 'mandatory' => true])
+                                    @include('commons.emailfield', ['obj' => $gas, 'name' => 'email', 'label' => _i('E-Mail di Riferimento'), 'mandatory' => true])
                                     @include('commons.imagefield', ['obj' => $gas, 'name' => 'logo', 'label' => _i('Logo Homepage'), 'valuefrom' => 'logo_url'])
                                     @include('commons.textarea', ['obj' => $gas, 'name' => 'message', 'label' => _i('Messaggio Homepage')])
                                     @include('commons.selectenumfield', ['obj' => $gas, 'name' => 'language', 'label' => _i('Lingua'), 'values' => getLanguages()])
@@ -57,7 +57,48 @@
                                 <input type="hidden" name="group" value="users">
 
                                 <div class="col-md-12">
-                                    @include('commons.boolfield', ['obj' => $gas, 'name' => 'public_registrations', 'label' => _i('Abilita Registrazione Pubblica')])
+                                    @include('commons.boolfield', [
+                                        'obj' => null,
+                                        'name' => 'enable_public_registrations',
+                                        'label' => _i('Abilita Registrazione Pubblica'),
+                                        'extra_class' => 'collapse_trigger',
+                                        'default_checked' => $gas->hasFeature('public_registrations')
+                                    ])
+
+                                    <div class="collapse {{ $gas->hasFeature('public_registrations') ? 'in' : '' }}" data-triggerable="enable_public_registrations">
+                                        <div class="col-md-12">
+                                            <div class="well">
+                                                @include('commons.textfield', [
+                                                    'obj' => $gas,
+                                                    'name' => 'public_registrations->privacy_link',
+                                                    'label' => _i('Link Privacy Policy'),
+                                                    'help_text' => env('GASDOTTO_NET', false) ? 'Se non specificato, viene usata la privacy policy di default su https://www.gasdotto.net/' : ''
+                                                ])
+                                                @include('commons.checkboxes', [
+                                                    'name' => 'public_registrations->mandatory_fields',
+                                                    'label' => _i('Campi Obbligatori'),
+                                                    'values' => [
+                                                        'firstname' => (object) [
+                                                            'name' => _i('Nome'),
+                                                            'checked' => (in_array('firstname', $gas->public_registrations['mandatory_fields']))
+                                                        ],
+                                                        'lastname' => (object) [
+                                                            'name' => _i('Cognome'),
+                                                            'checked' => (in_array('lastname', $gas->public_registrations['mandatory_fields']))
+                                                        ],
+                                                        'email' => (object) [
+                                                            'name' => _i('E-Mail'),
+                                                            'checked' => (in_array('email', $gas->public_registrations['mandatory_fields']))
+                                                        ],
+                                                        'phone' => (object) [
+                                                            'name' => _i('Telefono'),
+                                                            'checked' => (in_array('phone', $gas->public_registrations['mandatory_fields']))
+                                                        ],
+                                                    ]
+                                                ])
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <div class="btn-group pull-right main-form-buttons" role="group">
                                         <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>

@@ -14,6 +14,7 @@ use Mail;
 use Hash;
 use Log;
 
+use App\Gas;
 use App\User;
 use App\Contact;
 use App\Role;
@@ -53,7 +54,7 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         $gas = currentAbsoluteGas();
-        if($gas->public_registrations == false)
+        if($gas->hasFeature('public_registrations') == false)
             return redirect()->route('login');
         else
             return view('auth.register');
@@ -67,15 +68,30 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
-            'firstname' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255',
-            'phone' => 'required|string|max:255',
+        $gas = Gas::find($data['gas_id']);
+        if ($gas == null)
+            return false;
+
+        $mandatory = $gas->public_registrations['mandatory_fields'];
+
+        $options = [
             'username' => 'required|string|max:255|unique:users',
-            'gas_id' => 'required|string',
             'password' => 'required|string|min:6|confirmed',
-        ]);
+        ];
+
+        if (in_array('firstname', $mandatory))
+            $options['firstname'] = 'required|string|max:255';
+
+        if (in_array('lastname', $mandatory))
+            $options['lastname'] = 'required|string|max:255';
+
+        if (in_array('email', $mandatory))
+            $options['email'] = 'required|string|email|max:255';
+
+        if (in_array('phone', $mandatory))
+            $options['phone'] = 'required|string|max:255';
+
+        return Validator::make($data, $options);
     }
 
     /**
@@ -95,19 +111,23 @@ class RegisterController extends Controller
         $user->password = Hash::make($data['password']);
         $user->save();
 
-        $contact = new Contact();
-        $contact->target_id = $user->id;
-        $contact->target_type = get_class($user);
-        $contact->type = 'email';
-        $contact->value = $data['email'];
-        $contact->save();
+        if (!empty($data['email'])) {
+            $contact = new Contact();
+            $contact->target_id = $user->id;
+            $contact->target_type = get_class($user);
+            $contact->type = 'email';
+            $contact->value = $data['email'];
+            $contact->save();
+        }
 
-        $contact = new Contact();
-        $contact->target_id = $user->id;
-        $contact->target_type = get_class($user);
-        $contact->type = 'phone';
-        $contact->value = $data['phone'];
-        $contact->save();
+        if (!empty($data['phone'])) {
+            $contact = new Contact();
+            $contact->target_id = $user->id;
+            $contact->target_type = get_class($user);
+            $contact->type = 'phone';
+            $contact->value = $data['phone'];
+            $contact->save();
+        }
 
         return $user;
     }

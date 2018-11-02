@@ -6,22 +6,22 @@
             @endif
 
             <?php $gas_data = $receipt->user->gas->extra_invoicing ?>
-            {{ $gas_data['business_name'] }}<br>
+            {{ trim($gas_data['business_name']) }}<br>
             @if(!empty($gas_data['address']))
-                {{ $gas_data['address'] }}<br>
+                {{ trim($gas_data['address']) }}<br>
             @endif
             @if(!empty($gas_data['taxcode']))
-                {{ _i('C.F. %s', $gas_data['taxcode']) }}<br>
+                {{ _i('C.F. %s', trim($gas_data['taxcode'])) }}<br>
             @endif
             @if(!empty($gas_data['vat']))
-                {{ _i('P.IVA %s', $gas_data['vat']) }}
+                {{ _i('P.IVA %s', trim($gas_data['vat'])) }}
             @endif
         </p>
 
         <p style="text-align: right">
-            {{ $receipt->user->printableName() }}<br>
-            {{ join(', ', $receipt->user->getAddress()) }}<br>
-            {{ $receipt->user->taxcode }}
+            {{ trim($receipt->user->printableName()) }}<br>
+            {{ trim(join(', ', $receipt->user->getAddress())) }}<br>
+            {{ trim($receipt->user->taxcode) }}
         </p>
 
         <p>

@@ -86,7 +86,7 @@
 <div class="col-md-6 col-md-offset-3">
     <hr/>
     <p>
-        @if($gas->public_registrations)
+        @if($gas->hasFeature('public_registrations'))
             <a href="{{ route('register') }}">{{ _i('Registrati') }}</a>
         @endif
         <a class="pull-right" href="{{ route('password.request') }}">{{ _i('Recupero Password') }}</a>

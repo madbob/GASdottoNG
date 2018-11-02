@@ -3,5 +3,5 @@
 </p>
 
 <p>
-    <a href="{{ $url }}">Clicca qui per aggiornare la tua password</a>, o ignora la mail se non hai chiesto tu questa operazione.
+    {!! _i('<a href="%s">Clicca qui per aggiornare la tua password</a>, o ignora la mail se non hai chiesto tu questa operazione.', [$url]) !!}
 </p>

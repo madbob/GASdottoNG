@@ -45,5 +45,9 @@ else
                 >{{ $v['label'] }}</option>
             @endforeach
         </select>
+
+        @if(!empty($help_text))
+            <span class="help-block">{{ $help_text }}</span>
+        @endif
     </div>
 </div>

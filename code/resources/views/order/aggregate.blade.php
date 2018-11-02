@@ -20,7 +20,7 @@ $panel_rand_wrap = rand();
         <div class="col-md-6">
             @if($shippable_status)
                 <form class="form-horizontal">
-                    <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Notifiche Mail') }}</label>
+                    <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Invia Riepiloghi Prenotazioni') }}</label>
                     <div class="col-sm-{{ $fieldsize }}">
                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#notify-aggregate-{{ $aggregate->id }}">{{ _i('Invia Mail') }}</button>
                         <span class="help-block">{{ _i('Ultime notifiche inviate') }}: <span class="last-date" data-updatable-name="last-notification-date-{{ $aggregate->id }}">{{ $aggregate->printableDate('last_notify') }}</span></span>

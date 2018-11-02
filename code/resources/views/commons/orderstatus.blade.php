@@ -24,7 +24,8 @@
                 'label' => _i('In Sospeso'),
                 'value' => 'suspended',
             ],
-        ]
+        ],
+        'help_text' => $order == null ? _i("All'apertura dell'ordine, saranno inviate mail di annuncio a tutti gli utenti che hanno abilitato le notifiche per il fornitore selezionato.") : ''
     ])
 @else
     @include('commons.staticenumfield', [
