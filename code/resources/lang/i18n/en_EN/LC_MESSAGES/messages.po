@@ -21,7 +21,7 @@ msgstr ""
 #: ../storage/framework/messages/af9efe5829cab54b632c8fa7b5e8ac476cb60ffb.php.php:7
 #, php-format
 msgid "Crea Nuovo %s"
-msgstr "Add New %s"
+msgstr "Create New %s"
 
 #: ../resources/views/commons/loadablelist.blade.php:8
 #: ../storage/framework/messages/03dd95d4d49a247e64c02851a45ac3ba90c116d9.php.php:8
@@ -88,7 +88,7 @@ msgstr "All Referents"
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:26
 #, php-format
 msgid "Tutti i Partecipanti all'ordine %s %s"
-msgstr "All Participants to order %s %s"
+msgstr "All Participants to the order %s %s"
 
 #: ../resources/views/order/filesmail.blade.php:5
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:5
@@ -191,7 +191,7 @@ msgstr "Unit Price"
 #: ../storage/framework/messages/ce8e28c6c53c5bf8df34a17e43697f3ad2be3a72.php.php:91
 #: Order.php:625
 msgid "Prezzo Trasporto"
-msgstr "Shipment Cost"
+msgstr "Shipping Cost"
 
 #: ../storage/framework/messages/03fe6cae2ede501c06dab5b92f4dbd9960b195d1.php.php:4
 #: ../storage/framework/messages/47a7dc8de105e7a903e7f944b5ba60c7af395b42.php.php:184
@@ -379,7 +379,7 @@ msgstr "Mandatory column not specified: measure unit"
 #: Http/Controllers/ImportController.php:168
 #: Http/Controllers/ImportController.php:241
 msgid "Prodotti importati"
-msgstr "Products imported"
+msgstr "Imported products"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:274
 #: Http/Controllers/ImportController.php:274
@@ -389,7 +389,7 @@ msgstr "Mandatory column not specified"
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:360
 #: Http/Controllers/ImportController.php:360
 msgid "Utenti importati"
-msgstr "Users imported"
+msgstr "Imported users"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:428
 #: Http/Controllers/ImportController.php:428
@@ -400,7 +400,7 @@ msgstr "User not found: %s"
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:507
 #: Http/Controllers/ImportController.php:507
 msgid "Movimenti importati"
-msgstr "Transaction imported"
+msgstr "Imported transactions"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:516
 #: Http/Controllers/ImportController.php:516
@@ -619,7 +619,7 @@ msgstr "Address"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:282
 msgid "Modifica questo parametro con cautela!"
-msgstr "Be careful changing those parameters!"
+msgstr "Be careful changing this parameter!"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:302
 #: ../storage/framework/messages/54512d4708486210b9e7afcc164e0ecb833a5c7e.php.php:43
@@ -694,7 +694,7 @@ msgstr "Next"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:372
 msgid "Luoghi di Consegna"
-msgstr "Shipment Places"
+msgstr "Delivery places"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:383
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:87
@@ -706,7 +706,7 @@ msgstr "Shipment Places"
 #: ../storage/framework/messages/d0b8c10ea243e4cfa9467ff788da66e473fed739.php.php:1
 #: ../storage/framework/messages/d0b8c10ea243e4cfa9467ff788da66e473fed739.php.php:22
 msgid "Luogo di Consegna"
-msgstr "Shipment Place"
+msgstr "Place of delivery"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:397
 msgid ""
@@ -807,7 +807,7 @@ msgstr "Supplier"
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:13
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:35
 msgid "Data Apertura"
-msgstr "Start Date"
+msgstr "Opening Date"
 
 #: ../storage/framework/messages/0cbdf7ee912546fdeeac58d075e6ff74107e0262.php.php:6
 #: ../storage/framework/messages/2385fa1e23dacbe099eebbc866adbd6bc615943c.php.php:11
@@ -865,9 +865,9 @@ msgid ""
 "soggetto. Eventuali prezzi e somme vanno espresse senza includere il simbolo "
 "dell'euro."
 msgstr ""
-"Only CSV are allowed. It is recommended to format your table in a "
+"Only CSV files are allowed. It is recommended to format your table in a "
 "homogeneous way, with no merged cells, empty cells, headers: each row must "
-"contain all informations about single a subject. Prices and sums must be "
+"contain all informations about the subject. Prices and sums must be "
 "expressed without the euro symbol."
 
 #: ../storage/framework/messages/1100052a84dc8abdd6b6f432a723e49b308f7a52.php.php:28
@@ -875,18 +875,18 @@ msgid ""
 "Una volta caricato il file sarà possibile specificare quale attributo "
 "rappresenta ogni colonna trovata nel documento."
 msgstr ""
-"Once the file will be uploaded, it will be possible to explicit the meaning "
-"attribute for each column found in the document."
+"Once the file will be uploaded, it will be possible to to specify which "
+"attribute represents each column found in the document."
 
 #: ../storage/framework/messages/1110385cf656f827fc8ac9a6fc5216bb67844802.php.php:108
 #: Product.php:108
 msgid "(prodotto a prezzo variabile)"
-msgstr "(floating price product)"
+msgstr "(variable price product)"
 
 #: ../storage/framework/messages/1110385cf656f827fc8ac9a6fc5216bb67844802.php.php:108
 #: Product.php:108
 msgid "(variabile)"
-msgstr "(floating)"
+msgstr "(variable)"
 
 #: ../storage/framework/messages/1110385cf656f827fc8ac9a6fc5216bb67844802.php.php:185
 #: Product.php:185
@@ -904,7 +904,7 @@ msgstr "Suggested Max: %.02f"
 #: Product.php:191
 #, php-format
 msgid "Disponibile: %.02f (%.02f totale)"
-msgstr "Availability: %.02f (%.02f total)"
+msgstr "Available: %.02f (%.02f total)"
 
 #: ../storage/framework/messages/1110385cf656f827fc8ac9a6fc5216bb67844802.php.php:194
 #: Product.php:194
@@ -964,7 +964,7 @@ msgid ""
 "consegnati; il totale qui riportato è solo indicativo."
 msgstr ""
 "The actual amount of this order depends on the actual weight of the products "
-"delivered; the total shown here is only indicative."
+"delivered; the total here shown is only indicative."
 
 #: ../storage/framework/messages/120626ca6d2919eadea9eb47de0a4818ee0e4d52.php.php:82
 #, php-format
@@ -1113,7 +1113,7 @@ msgid ""
 "Da qui è possibile modificare la quantità prenotata di questo prodotto per "
 "ogni prenotazione, ma nessun utente ha ancora partecipato all'ordine."
 msgstr ""
-"Here you can change the reserved quantity of this product for each "
+"Here you can change the reserved quantity for this product for each "
 "reservation, but no user has already participated to the order."
 
 #: ../storage/framework/messages/1a7fcba13ea5c13c0675a8432644a62e5dcb25cb.php.php:8
@@ -1138,7 +1138,7 @@ msgstr "Unrecognized movement type while saving invoice"
 #: Http/Controllers/InvoicesController.php:371
 #, php-format
 msgid "Esportazione fatture GAS %s.csv"
-msgstr "Export invoices %s.csv"
+msgstr "Export GAS invoices %s.csv"
 
 #: ../storage/framework/messages/1b2ebc5f0122179fff7f7e61b883e643b3b22962.php.php:372
 #: ../storage/framework/messages/2da70aefdfc8b82969d7cfe3143ff6e3b09f44eb.php.php:11
@@ -1239,7 +1239,7 @@ msgstr "User"
 #: User.php:186
 #, php-format
 msgid "Ha ordinato %s"
-msgstr "He ordered %s"
+msgstr "Has ordered %s"
 
 #: ../storage/framework/messages/228f140cb7ecb9766e9c37c4923bb778f5838499.php.php:286
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:43
@@ -1260,7 +1260,7 @@ msgstr "Credit"
 
 #: ../storage/framework/messages/2385fa1e23dacbe099eebbc866adbd6bc615943c.php.php:22
 msgid "Crea nuovo"
-msgstr "Add new"
+msgstr "Create new"
 
 #: ../storage/framework/messages/2385fa1e23dacbe099eebbc866adbd6bc615943c.php.php:23
 msgid "Verrà generato un nuovo fornitore con il listino allegato."
@@ -1280,7 +1280,7 @@ msgid ""
 "presenti nel file. Eventuali ordini aperti continueranno a fare riferimento "
 "ai prodotti archiviati."
 msgstr ""
-"All the supplier's products will be archived and substitute with those in "
+"All the supplier's products will be archived and substituted with those in the"
 "file. Any open order will continue to refer to the archived products."
 
 #: ../storage/framework/messages/2385fa1e23dacbe099eebbc866adbd6bc615943c.php.php:42
@@ -1396,7 +1396,7 @@ msgstr ""
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:138
 msgid "Eventuali commissioni sulla transazione saranno a tuo carico."
-msgstr "Any commissions on the transaction will be at your charge."
+msgstr "Any commissions on the transaction will be charged at your expense."
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:147
 msgid "Vai a PayPal"
@@ -1463,7 +1463,7 @@ msgstr ""
 #: ../storage/framework/messages/2982b90f6cfcaf4cb0c27c14b07650ad2a9c8b52.php.php:21
 #: ../storage/framework/messages/5dbdf19ef533ccf35a7d42c8c53f16d436cc1df2.php.php:29
 msgid "Accetta Valori Negativi"
-msgstr "Allow Negative Value"
+msgstr "Allow Negative Values"
 
 #: ../storage/framework/messages/2982b90f6cfcaf4cb0c27c14b07650ad2a9c8b52.php.php:22
 #: ../storage/framework/messages/5dbdf19ef533ccf35a7d42c8c53f16d436cc1df2.php.php:31
@@ -1578,7 +1578,7 @@ msgid ""
 "\"http://it.libreoffice.org/\">LibreOffice</a>."
 msgstr ""
 "To view and process CSV files (<i>Comma-Separated Values</i>)  we suggest "
-"the use of  <a target=\"_blank\" href=\"http://www.libreoffice.org/"
+"the use of <a target=\"_blank\" href=\"http://www.libreoffice.org/"
 "\">LibreOffice</a>."
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:98
@@ -1586,7 +1586,7 @@ msgstr ""
 #: ../storage/framework/messages/d9da9680f882d257f8cb22d7fc339948c7e741ba.php.php:5
 #: ../storage/framework/messages/fb2596140bdca13096d7fa498c1fdf0584b8d658.php.php:5
 msgid "Colonne"
-msgstr "Column"
+msgstr "Columns"
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:106
 msgid "Formato"
@@ -1889,8 +1889,8 @@ msgid ""
 "Clicca e trascina gli attributi dalla colonna di destra alla colonna "
 "centrale, per assegnare ad ogni colonna del tuo file un significato."
 msgstr ""
-"Click and drag the attributes frm the right column to the central one to "
-"assign at each column in your file a meaning."
+"Click and drag the attributes from the right column to the central one to "
+"assign a meaning to each column in your file."
 
 #: ../storage/framework/messages/56c44eb9f4b1cf472b74adcbeed0d4b5032cc04e.php.php:11
 msgid ""
@@ -1945,7 +1945,7 @@ msgstr "Find a User"
 #: ../storage/framework/messages/59fa04d2da43a558b1305db67d9cea4dbf7ca16c.php.php:47
 #: ../storage/framework/messages/9dae3857c24094113357221503b88a5b50125214.php.php:71
 msgid "Questo pannello sarà attivo quando le prenotazioni saranno chiuse"
-msgstr "This panel will be active when the reservations close"
+msgstr "This panel will be active when all reservations will be closed"
 
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:177
 #: GASModel.php:177
@@ -1955,17 +1955,17 @@ msgstr "You could change suppliers"
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:183
 #: GASModel.php:183
 msgid "Puoi aprire nuovi ordini per il fornitore"
-msgstr "You could open new order for the supplier"
+msgstr "You could open new orders for the supplier"
 
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:189
 #: GASModel.php:189
 msgid "Gestisci le consegne per il fornitore"
-msgstr "Delivery handling for the supplier"
+msgstr "Handle deliveries for the supplier"
 
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:197
 #: GASModel.php:197
 msgid "Immagine"
-msgstr "image"
+msgstr "Image"
 
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:205
 #: GASModel.php:205
@@ -2179,7 +2179,7 @@ msgstr "form %s to %s"
 #: Order.php:135
 #, php-format
 msgid ", in consegna %s"
-msgstr ", to deliver on %s"
+msgstr ", to be delivered %s"
 
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:558
 #: ../storage/framework/messages/939678dcfaab8b8718bb2f71649e4484a2db059b.php.php:36
@@ -2326,7 +2326,7 @@ msgid ""
 "Pannello da cui modificare direttamente le quantità di prodotto in ogni "
 "prenotazione, ed aggiungere note per il fornitore"
 msgstr ""
-"Panel from which change quantity of the product in each single booking, and "
+"From this panel youc an modify the quantity of a product for any reservation, and "
 "add notes for the supplier"
 
 #: ../storage/framework/messages/63c2c175f3441eba78ffff9597a13cc531707f46.php.php:164
@@ -2338,7 +2338,7 @@ msgstr "Missing parameters"
 #: ../storage/framework/messages/e86b7d84d02bf5f1c489215f5c62081e651580ab.php.php:238
 #: Aggregate.php:238 Booking.php:416
 msgid "Non hai partecipato a quest'ordine"
-msgstr "You did not participate in this order"
+msgstr "You did not participate to this order"
 
 #: ../storage/framework/messages/662512e6723d9f6ca3ef15d15e16df54c796fbb7.php.php:420
 #: ../storage/framework/messages/e86b7d84d02bf5f1c489215f5c62081e651580ab.php.php:243
@@ -2446,7 +2446,7 @@ msgid ""
 "una prenotazione accertati che i quantitativi totali desiderati non siano "
 "già stati comunicati al fornitore o che possano comunque essere modificati."
 msgstr ""
-"Attention: this order is closed, before adding or editing a reservation be "
+"Attention: this order has been closed, before adding or editing a reservation be "
 "sure that the totals have not already been communicated to the supplier or "
 "they can be modified anyway."
 
@@ -2454,7 +2454,7 @@ msgstr ""
 #: ../storage/framework/messages/7eb84c3e67a12f74304aeef8589583c04c9df39b.php.php:34
 #: Http/Middleware/FixDatabase.php:29 Http/Middleware/FixDatabase.php:34
 msgid "Non Specificato"
-msgstr "Unspecified"
+msgstr "Not specified"
 
 #: ../storage/framework/messages/8139e910f1cd1660eff1fb5ccc6b977b0c798096.php.php:15
 #, php-format
@@ -2627,7 +2627,7 @@ msgstr "User Credit: %s"
 #: Http/Controllers/PaymentController.php:207
 #, php-format
 msgid "Commissioni PayPal: %s"
-msgstr "PayPal Fee: %s"
+msgstr "PayPal Fees: %s"
 
 #: ../storage/framework/messages/99ccd6ff0f973a84f2edf338acc68fcd61f4ac45.php.php:23
 msgid "Modifica Categorie"
@@ -2636,7 +2636,7 @@ msgstr "Edit Categories"
 #: ../storage/framework/messages/99ccd6ff0f973a84f2edf338acc68fcd61f4ac45.php.php:30
 msgid ""
 "Clicca e trascina le categorie nell'elenco per ordinarle gerarchicamente."
-msgstr "Click and Drag the category in the list to order hierarchically."
+msgstr "Click and Drag the categories in the list to order them hierarchically."
 
 #: ../storage/framework/messages/99ccd6ff0f973a84f2edf338acc68fcd61f4ac45.php.php:49
 msgid "Crea Nuova Categoria"
@@ -2652,7 +2652,7 @@ msgstr "Error in file upload or reading."
 
 #: ../storage/framework/messages/99ff6674e92fcea16bac171e999456b505e98189.php.php:8
 msgid ""
-"Si prega di riprovare, o di sottoporre il problema agli sviluppatori di "
+"Si prega di riprovare o di sottoporre il problema agli sviluppatori di "
 "GASdotto: info@gasdotto.net"
 msgstr ""
 "Please try again or submit a bug to GASdotto developers: info@gasdotto.net"
@@ -3102,7 +3102,7 @@ msgstr "Ceased (true/false)"
 #: ../storage/framework/messages/d289165d78ca5dc8f1e5fa643538a93952da0df8.php.php:177
 #: Services/MovementsService.php:162 Services/MovementsService.php:177
 msgid "Salvataggio fallito"
-msgstr "Failed saving"
+msgstr "Failed to save"
 
 #: ../storage/framework/messages/d289165d78ca5dc8f1e5fa643538a93952da0df8.php.php:224
 #: ../storage/framework/messages/d289165d78ca5dc8f1e5fa643538a93952da0df8.php.php:289
