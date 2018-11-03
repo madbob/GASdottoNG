@@ -21,15 +21,18 @@ var userBlood = new Bloodhound({
 
 userBlood.initialize();
 
-function generalInit() {
-    $('input.date').datepicker({
+function generalInit(container) {
+    if (container == null)
+        container = $('body');
+
+    $('input.date', container).datepicker({
         format: 'DD dd MM yyyy',
         autoclose: true,
         language: 'it',
         clearBtn: true,
     });
 
-    $('input.date-to-month').datepicker({
+    $('input.date-to-month', container).datepicker({
         format: 'dd MM',
         autoclose: true,
         language: 'it',
@@ -37,13 +40,13 @@ function generalInit() {
         maxViewMode: 'months'
     });
 
-    $('.addicted-table').bootstrapTable();
-    $('#help-trigger').helperTrigger();
+    $('.addicted-table', container).bootstrapTable();
+    $('#help-trigger', container).helperTrigger();
 
     /*
         https://stackoverflow.com/questions/15989591/how-can-i-keep-bootstrap-popover-alive-while-the-popover-is-being-hovered
     */
-    $('[data-toggle="popover"]').popover({
+    $('[data-toggle="popover"]', container).popover({
         trigger: "manual",
         html: true,
         animation:false
@@ -63,7 +66,7 @@ function generalInit() {
         }, 300);
     });
 
-    $('.contacts-selection .row').each(function() {
+    $('.contacts-selection .row', container).each(function() {
         var input = $(this).find('input:text');
         var typeclass = $(this).find('select option:selected').val();
         input.attr('class', '').addClass('form-control').addClass(typeclass);
@@ -78,12 +81,12 @@ function generalInit() {
     }
     setupCheckboxes();
 
-    $('.nav-tabs a').click(function(e) {
+    $('.nav-tabs a', container).click(function(e) {
         e.preventDefault();
         $(this).tab('show');
     });
 
-    $('input:file.immediate-run').each(function() {
+    $('input:file.immediate-run', container).each(function() {
         var i = $(this);
         i.fileupload({
             done: function(e, data) {
@@ -94,15 +97,15 @@ function generalInit() {
         });
     });
 
-    $('.many-rows').manyrows();
-    $('.dynamic-tree-box').dynamictree();
-    $('#orderAggregator').aggregator();
+    $('.many-rows', container).manyrows();
+    $('.dynamic-tree-box', container).dynamictree();
+    $('#orderAggregator', container).aggregator();
 
-    $('.completion-rows').each(function() {
+    $('.completion-rows', container).each(function() {
         completionRowsInit($(this));
     });
 
-    $('.bookingSearch').each(function() {
+    $('.bookingSearch', container).each(function() {
         if ($(this).hasClass('tt-hint') == true) {
             return;
         }
@@ -154,11 +157,11 @@ function generalInit() {
         }
     });
 
-    $('.modal').draggable({
+    $('.modal', container).draggable({
         handle: '.modal-header'
     });
 
-    $('.modal.dynamic-contents').on('show.bs.modal', function(e) {
+    $('.modal.dynamic-contents', container).on('show.bs.modal', function(e) {
         /*
             La callback viene chiamata anche quando mostro il popover di
             selezione di una data: questo è per evitare di ricaricare tutto un
@@ -176,22 +179,33 @@ function generalInit() {
         });
     });
 
-    $('.measure-selector').each(function() {
+    $('.measure-selector', container).each(function() {
         enforceMeasureDiscrete($(this));
     });
 
-    $('.postponed').appendTo('#postponed').removeClass('postponed');
+    $('.postponed', container).appendTo('#postponed').removeClass('postponed');
 
-    $('ul[role=tablist]').each(function() {
+    $('ul[role=tablist]', container).each(function() {
         if ($(this).find('li.active').length == 0) {
             $(this).find('li a').first().tab('show');
         }
     });
 
+    $('.date[data-enforce-after]', container).each(function() {
+        var current = $(this);
+        var select = current.attr('data-enforce-after');
+        var target = current.closest('form').find(select).datepicker().on('changeDate', function() {
+            var current_start = current.datepicker('getDate');
+            var current_ref = target.datepicker('getDate');
+            if (current_start < current_ref)
+                current.datepicker('setDate', current_ref);
+        });
+    });
+
     setupImportCsvEditor();
     setupPermissionsEditor();
 
-    $('.loadablelist').each(function() {
+    $('.loadablelist', container).each(function() {
         testListsEmptiness($(this));
     });
 }
@@ -1063,7 +1077,7 @@ $(document).ready(function() {
     });
 
     $(document).ajaxSuccess(function(event) {
-        generalInit();
+        generalInit(null);
     });
 
     $(document).ajaxError(function(event, jqXHR) {
@@ -1097,7 +1111,7 @@ $(document).ready(function() {
             });
     });
 
-    generalInit();
+    generalInit($('body'));
 
     $('#home-notifications .alert').on('closed.bs.alert', function() {
         var id = $(this).find('input:hidden[name=notification_id]').val();
@@ -1744,7 +1758,7 @@ $(document).ready(function() {
             dataType: 'html',
             success: function(data) {
                 $(data).modal().on('shown.bs.modal', function() {
-                    generalInit();
+                    generalInit($(this));
                 }).on('hidden.bs.modal', function() {
                     $(this).remove();
                 });
