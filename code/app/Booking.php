@@ -296,7 +296,14 @@ class Booking extends Model
 
     public function getProductsWithFriendsAttribute()
     {
-        $products = $this->products;
+        /*
+            Questa funzione può modificare l'array dei prodotti, finendo col
+            sovrascrivere la struttura dati originale. E finisce col sommare più
+            e più volte i prodotti degli amici. Sicché cloniamo la collezione
+            originale, la elaboriamo e ne torniamo una copia opportunamente
+            taroccata
+        */
+        $products = clone $this->products;
 
         foreach($this->friends_bookings as $sub) {
             foreach($sub->products as $sub_p) {
