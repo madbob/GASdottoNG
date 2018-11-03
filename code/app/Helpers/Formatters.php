@@ -109,7 +109,7 @@ function savingPercentage($request, $name)
         return $value;
 }
 
-function applyPercentage($original, $percentage)
+function applyPercentage($original, $percentage, $op = '-')
 {
     if (empty($percentage)) {
         return $original;
@@ -119,10 +119,20 @@ function applyPercentage($original, $percentage)
     $o = (float)$original;
 
     if (strpos($percentage, '%') !== false) {
-        return $o - (($o * $p) / 100);
+        if ($op == '-')
+            return $o - (($o * $p) / 100);
+        else if ($op == '+')
+            return $o + (($o * $p) / 100);
+        else if ($op == '=')
+            return ($o * $p) / 100;
     }
     else {
-        return $o - $p;
+        if ($op == '-')
+            return $o - $p;
+        else if ($op == '+')
+            return $o + $p;
+        else if ($op == '=')
+            return $p;
     }
 }
 

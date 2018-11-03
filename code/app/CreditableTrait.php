@@ -18,8 +18,6 @@ trait CreditableTrait
 
     private function fixFirstBalance()
     {
-        Log::debug('Fix bilancio per ' . $this->id . ' ' . get_class($this));
-
         $proxy = $this->getBalanceProxy();
         if (is_null($proxy))
             $proxy = $this;

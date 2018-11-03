@@ -410,7 +410,7 @@ class Order extends Model
             Solitamente solo uno dei due è valorizzato, ma per buona misura li
             metto insieme
         */
-        $summary->transport = $total_transport + $order->transport;
+        $summary->transport = $total_transport + applyPercentage($summary->price, $order->transport, '=');
 
         $total_transport_delivered = 0;
         foreach ($order->bookings()->where('status', 'shipped')->get() as $shipped_booking)

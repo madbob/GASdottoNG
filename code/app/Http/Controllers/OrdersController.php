@@ -242,6 +242,9 @@ class OrdersController extends Controller
             $booking->deleteMovements();
         $order->deleteMovements();
 
+        if ($order->aggregate->orders()->count() <= 1)
+            $order->aggregate->delete();
+
         $order->delete();
 
         return $this->successResponse();
