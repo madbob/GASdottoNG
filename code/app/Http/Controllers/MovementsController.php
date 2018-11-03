@@ -201,7 +201,7 @@ class MovementsController extends BackedController
 
         switch ($type) {
             case 'credits':
-                $users = User::sorted()->get();
+                $users = User::sorted()->topLevel()->get();
 
                 $group = $request->input('credit', 'all');
                 if ($group == 'minor') {

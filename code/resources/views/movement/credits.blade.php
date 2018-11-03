@@ -38,7 +38,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($currentgas->users as $user)
+                    @foreach($currentgas->users()->topLevel()->get() as $user)
                         <tr>
                             <td>
                                 <input type="hidden" name="user_id[]" value="{{ $user->id }}">

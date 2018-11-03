@@ -135,6 +135,11 @@ class User extends Authenticatable
         return $query->orderBy('lastname', 'asc')->orderBy('firstname', 'asc');
     }
 
+    public function scopeTopLevel($query)
+    {
+        return $query->where('parent_id', null);
+    }
+
     public function printableName()
     {
         $ret = $this->lastname . ' ' . $this->firstname;
