@@ -52,6 +52,10 @@ if (!isset($help_text)) {
                 placeholder="{{ $label }}"
             @endif
 
+            @if(isset($max_length) && $max_length != null)
+                maxlength="{{ $max_length }}"
+            @endif
+
             @if(isset($enforced_default))
                 data-default-value="{{ $enforced_default }}"
             @endif

@@ -19,7 +19,7 @@ class NewOrderNotification extends ManyMailNotification
     {
         $user = Auth::user();
         $message = $this->initMailMessage($notifiable, $user);
-        $message->subject(_i('Nuovo Ordine Aperto per %s', [$this->order->supplier->name]))->view('emails.new_order', ['order' => $this->order]);
+        $message->subject(_i('Nuovo Ordine Aperto per %s', [$this->order->supplier->name]))->view('emails.new_order', ['order' => $this->order, 'user' => $notifiable]);
         return $message;
     }
 }
