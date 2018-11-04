@@ -161,12 +161,42 @@ table {
 }
 
 .dynamic-tree {
+    > li {
+        > div > input {
+            margin-left: 10%;
+        }
+
+        > ul .badge.pull-left {
+            display: none;
+        }
+    }
+
     input {
         width: 80%;
     }
 
     .dynamic-tree-add-row {
         margin-top: 20px;
+    }
+
+    .mjs-nestedSortable-branch ul {
+        margin-top: 10px;
+    }
+
+    .mjs-nestedSortable-expanded {
+        .expanding-icon::before {
+            content: "\e252";
+        }
+    }
+
+    .mjs-nestedSortable-collapsed {
+        ul {
+            display: none;
+        }
+
+        .expanding-icon::before {
+            content: "\e250";
+        }
     }
 }
 

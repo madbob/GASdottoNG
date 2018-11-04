@@ -1,16 +1,19 @@
 <?php
 
-function descent($category)
+function categoryDescent($category, $toplevel)
 {
     echo '<li class="list-group-item" id="' . $category->id . '"><div>';
 
     if ($category->id != 1)
         echo '<span class="badge pull-right"><span class="glyphicon glyphicon-remove dynamic-tree-remove"></span></span>';
 
+    if ($toplevel)
+        echo '<span class="badge pull-left"><span class="glyphicon expanding-icon dynamic-tree-expand"></span></span>';
+
     echo '<input type="text" class="form-control" value="' . $category->name . '" required></div><ul>';
 
     foreach($category->children as $c)
-        echo descent($c);
+        echo categoryDescent($c, false);
 
     echo '</ul></li>';
 }
@@ -36,7 +39,7 @@ function descent($category)
                 <div id="categories-editor">
                     <ul class="list-group dynamic-tree">
                         @foreach($categories as $cat)
-                            <?php descent($cat) ?>
+                            <?php categoryDescent($cat, true) ?>
                         @endforeach
                     </ul>
                 </div>
