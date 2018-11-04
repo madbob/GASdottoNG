@@ -1823,6 +1823,10 @@ $(document).ready(function() {
                     input.popover('destroy');
                 });
 
+                setTimeout(function() {
+                    ret.find('input[name=password]').focus();
+                }, 200);
+
                 return ret;
             },
             template: '<div class="popover password-popover" role="tooltip"><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
@@ -1884,6 +1888,10 @@ $(document).ready(function() {
                     e.stopPropagation();
                     input.popover('destroy');
                 });
+
+                setTimeout(function() {
+                    ret.find('input[name=street]').focus();
+                }, 200);
 
                 return ret;
             },

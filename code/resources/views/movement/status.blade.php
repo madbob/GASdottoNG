@@ -9,7 +9,7 @@
 
 <div class="pull-right">
     <div class="form-inline iblock inner-form">
-        <button class="btn btn-default" data-toggle="modal" data-target="#movements-history-{{ $obj->id }}">{{ _i('Storico Saldi') }}</button>
+        <button class="btn btn-default" data-toggle="modal" data-target="#movements-history-{{ $obj->id }}">{{ _i('Storico Saldi') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
 
         <div class="modal fade" id="movements-history-{{ $obj->id }}" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-lg" role="document">
@@ -53,7 +53,7 @@
             <div class="form-group">
                 {!! csrf_field() !!}
                 <input type="hidden" name="post-saved-function" value="displayRecalculatedBalances">
-                <button type="submit" class="btn btn-danger">{{ _i('Ricalcola Saldi') }}</button>
+                <button type="submit" class="btn btn-danger">{{ _i('Ricalcola Saldi') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
             </div>
 
             <div class="modal fade" id="display-recalculated-balance-modal" tabindex="-1" role="dialog">
@@ -91,7 +91,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <a href="" class="btn btn-default hidden table_to_csv" data-target="#broken_balances">{{ _i('Esporta CSV') }}</a>
+                            <a href="" class="btn btn-default hidden table_to_csv" data-target="#broken_balances">{{ _i('Esporta CSV') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
                             <a href="" class="btn btn-success">{{ _i('Ricarica la Pagina') }}</a>
                         </div>
                     </div>
@@ -100,7 +100,7 @@
         </form>
         <div class="iblock">
             <div class="form-group">
-                <button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#close-balance-modal">{{ _i('Archivia Saldi') }}</button>
+                <button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#close-balance-modal">{{ _i('Archivia Saldi') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
             </div>
 
             <div class="modal fade" id="close-balance-modal" tabindex="-1" role="dialog">

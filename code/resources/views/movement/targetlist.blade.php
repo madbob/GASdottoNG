@@ -27,6 +27,8 @@ $domid = str_random(10);
             </div>
         </div>
 
+        <hr>
+
         <div class="row">
             <div class="col-md-12" id="movements-in-range-{{ $domid }}">
                 <?php

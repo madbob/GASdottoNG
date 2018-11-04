@@ -15,7 +15,7 @@
                     @if($attachment->isImage())
                         <img src="{{ $attachment->download_url }}" class="img-responsive">
                     @else
-                        <a class="btn btn-default" href="{{ $attachment->download_url }}">{{ _i('Clicca Qui') }}</a>
+                        <a class="btn btn-default" href="{{ $attachment->download_url }}">{{ _i('Clicca Qui') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
                     @endif
                 </div>
             </div>

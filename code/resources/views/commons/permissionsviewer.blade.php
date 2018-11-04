@@ -27,7 +27,7 @@
 @endforeach
 
 @if($editable && (Gate::check('users.admin', $currentgas) || Gate::check('gas.permissions', $currentgas)))
-    <button class="btn btn-default pull-right async-modal" data-target-url="{{ url('/roles/user/' . $object->id) }}">{{ _i('Edita Ruoli') }}</button>
+    <button class="btn btn-default pull-right async-modal" data-target-url="{{ url('/roles/user/' . $object->id) }}">{{ _i('Edita Ruoli') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
 @endif
 
 <div class="clearfix"></div>

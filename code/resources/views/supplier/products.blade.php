@@ -20,8 +20,8 @@
                 ]
             ])
 
-            <button class="btn btn-default export-custom-list" data-export-url="{{ url('suppliers/catalogue/' . $supplier->id . '/pdf') }}">{{ _i('Listino PDF') }}</button>
-            <button class="btn btn-default export-custom-list" data-export-url="{{ url('suppliers/catalogue/' . $supplier->id . '/csv') }}">{{ _i('Listino CSV') }}</button>
+            <button class="btn btn-default export-custom-list" data-export-url="{{ url('suppliers/catalogue/' . $supplier->id . '/pdf') }}">{{ _i('Listino PDF') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></button>
+            <button class="btn btn-default export-custom-list" data-export-url="{{ url('suppliers/catalogue/' . $supplier->id . '/csv') }}">{{ _i('Listino CSV') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></button>
         </div>
     </div>
 

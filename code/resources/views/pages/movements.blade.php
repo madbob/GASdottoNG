@@ -28,7 +28,7 @@
                                 'import_target' => 'movements'
                             ])
 
-                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#creditsStatus">{{ _i('Stato Crediti') }}</button>
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#creditsStatus">{{ _i('Stato Crediti') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
                             <div class="modal fade dynamic-contents" id="creditsStatus" tabindex="-1" data-contents-url="{{ url('movements/showcredits') }}">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
@@ -78,8 +78,8 @@
                             <div class="form-group">
                                 <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
                                     <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
-                                    <a href="{{ url('movements?format=csv') }}" class="btn btn-default form-filler-download">{{ _i('Esporta CSV') }}</a>
-                                    <a href="{{ url('movements?format=pdf') }}" class="btn btn-default form-filler-download">{{ _i('Esporta PDF') }}</a>
+                                    <a href="{{ url('movements?format=csv') }}" class="btn btn-default form-filler-download">{{ _i('Esporta CSV') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
+                                    <a href="{{ url('movements?format=pdf') }}" class="btn btn-default form-filler-download">{{ _i('Esporta PDF') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
                                 </div>
                             </div>
                         </div>
@@ -164,7 +164,7 @@
                             <div class="form-group">
                                 <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
                                     <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
-                                    <a href="{{ route('invoices.search', ['format' => 'csv']) }}" class="btn btn-default form-filler-download">{{ _i('Esporta CSV') }}</a>
+                                    <a href="{{ route('invoices.search', ['format' => 'csv']) }}" class="btn btn-default form-filler-download">{{ _i('Esporta CSV') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
                                 </div>
                             </div>
                         </div>

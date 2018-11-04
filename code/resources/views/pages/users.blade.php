@@ -17,7 +17,7 @@
                 'import_target' => 'users'
             ])
 
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#exportCSVusers">{{ _i('Esporta CSV') }}</button>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#exportCSVusers">{{ _i('Esporta CSV') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
             <div class="modal fade close-on-submit" id="exportCSVusers" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-extra-lg" role="document">
                     <div class="modal-content">

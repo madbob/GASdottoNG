@@ -14,7 +14,7 @@
         @endcan
 
         @can('categories.admin', $currentgas)
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleCategories">{{ _i('Amministra Categorie') }}</button>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleCategories">{{ _i('Amministra Categorie') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
             <div class="modal fade dynamic-contents close-on-submit" id="handleCategories" tabindex="-1" role="dialog" aria-labelledby="handleCategories" data-contents-url="{{ route('categories.index') }}">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -24,7 +24,7 @@
         @endcan
 
         @can('measures.admin', $currentgas)
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleMeasures">{{ _i('Amministra Unità di Misura') }}</button>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleMeasures">{{ _i('Amministra Unità di Misura') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
             <div class="modal fade dynamic-contents close-on-submit" id="handleMeasures" tabindex="-1" role="dialog" data-contents-url="{{ route('measures.index') }}">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">

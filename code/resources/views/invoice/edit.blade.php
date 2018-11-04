@@ -74,7 +74,7 @@ $rand = rand();
                     @endif
 
                     @if($invoice->status != 'payed')
-                        <button class="btn btn-default async-modal" data-target-url="{{ route('invoices.movements', $invoice->id) }}">{{ _i('Registra Pagamento') }}</button>
+                        <button class="btn btn-default async-modal" data-target-url="{{ route('invoices.movements', $invoice->id) }}">{{ _i('Registra Pagamento') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
                     @endif
                 </div>
             </div>
@@ -99,10 +99,10 @@ $rand = rand();
 
                     @if($invoice->status != 'payed')
                         @can('movements.admin', $currentgas)
-                            <button class="btn btn-default" data-toggle="modal" data-target="#orders-invoice-{{ $rand }}">{{ _i('Modifica Ordini') }}</button>
+                            <button class="btn btn-default" data-toggle="modal" data-target="#orders-invoice-{{ $rand }}">{{ _i('Modifica Ordini') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
 
                             @if($invoice->orders()->count() != 0)
-                                <button class="btn btn-default async-modal" data-target-url="{{ route('invoices.products', $invoice->id) }}">{{ _i('Verifica Contenuti') }}</button>
+                                <button class="btn btn-default async-modal" data-target-url="{{ route('invoices.products', $invoice->id) }}">{{ _i('Verifica Contenuti') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
                             @endif
                         @endcan
                     @endif

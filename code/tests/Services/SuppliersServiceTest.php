@@ -164,6 +164,7 @@ class SuppliersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithReferrerPerms);
         $supplier = $this->suppliersService->destroy($this->supplier->id);
+        $this->assertNotEquals(null, $supplier->deleted_at);
 
         $this->actingAs($this->userWithAdminPerm);
         $supplier = $this->suppliersService->destroy($this->supplier->id);

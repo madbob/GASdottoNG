@@ -22,7 +22,7 @@ $panel_rand_wrap = rand();
                 <form class="form-horizontal">
                     <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Invia Riepiloghi Prenotazioni') }}</label>
                     <div class="col-sm-{{ $fieldsize }}">
-                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#notify-aggregate-{{ $aggregate->id }}">{{ _i('Invia Mail') }}</button>
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#notify-aggregate-{{ $aggregate->id }}">{{ _i('Invia Mail') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
                         <span class="help-block">{{ _i('Ultime notifiche inviate') }}: <span class="last-date" data-updatable-name="last-notification-date-{{ $aggregate->id }}">{{ $aggregate->printableDate('last_notify') }}</span></span>
                     </div>
                 </form>

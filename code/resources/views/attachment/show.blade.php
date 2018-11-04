@@ -5,7 +5,7 @@
                 <label for="download" class="col-sm-{{ $labelsize }} control-label">{{ _i('Scarica') }}</label>
 
                 <div class="col-sm-{{ $fieldsize }}">
-                    <a class="btn btn-default" href="{{ url('attachments/download/' . $attachment->id) }}">{{ _i('Clicca Qui') }}</a>
+                    <a class="btn btn-default" href="{{ url('attachments/download/' . $attachment->id) }}">{{ _i('Clicca Qui') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
                 </div>
             </div>
         </div>

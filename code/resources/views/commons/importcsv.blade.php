@@ -5,7 +5,7 @@ if (!isset($modal_extras))
 
 ?>
 
-<button type="button" class="btn btn-default" data-toggle="modal" data-target="#{{ $modal_id }}">{{ _i('Importa CSV') }}</button>
+<button type="button" class="btn btn-default" data-toggle="modal" data-target="#{{ $modal_id }}">{{ _i('Importa CSV') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
 <div class="modal fade wizard" id="{{ $modal_id }}" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-extra-lg" role="document">
         <div class="modal-content">

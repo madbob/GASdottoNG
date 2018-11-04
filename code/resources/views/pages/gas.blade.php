@@ -307,7 +307,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Importazione') }}</label>
                                     <div class="col-sm-{{ $fieldsize }}">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importGDXP">{{ _i('Importa GDXP') }}</button>
+                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importGDXP">{{ _i('Importa GDXP') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
                                         @push('postponed')
                                             <div class="modal fade wizard" id="importGDXP" tabindex="-1" role="dialog">
                                                 <div class="modal-dialog modal-lg" role="document">

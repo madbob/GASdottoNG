@@ -15,7 +15,7 @@
                 ]
             ])
 
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#orderAggregator">{{ _i('Aggrega Ordini') }}</button>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#orderAggregator">{{ _i('Aggrega Ordini') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
 
             <div class="modal fade" id="orderAggregator" tabindex="-1" role="dialog" aria-labelledby="orderAggregator">
                 <div class="modal-dialog" role="document">
