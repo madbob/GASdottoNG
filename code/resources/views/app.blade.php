@@ -39,7 +39,7 @@
     </head>
     <body>
         <div id="preloader">
-            <img src="{{ asset('images/loading.svg') }}">
+            <img src="{{ asset('images/loading.svg') }}" alt="{{ _i('Caricamento in corso') }}">
         </div>
 
         <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
@@ -51,7 +51,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand hidden-md" href="{{ route('dashboard') }}">GASdotto</a>
+                    <a class="navbar-brand hidden-md hidden-sm" href="{{ route('dashboard') }}">GASdotto</a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

@@ -76,7 +76,7 @@
                             @include('commons.decimalfield', ['obj' => null, 'name' => 'amountend', 'label' => _i('Importo Massimo'), 'is_price' => true])
 
                             <div class="form-group">
-                                <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
+                                <div class="col-md-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
                                     <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
                                     <a href="{{ url('movements?format=csv') }}" class="btn btn-default form-filler-download">{{ _i('Esporta CSV') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
                                     <a href="{{ url('movements?format=pdf') }}" class="btn btn-default form-filler-download">{{ _i('Esporta PDF') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
@@ -162,7 +162,7 @@
                             ])
 
                             <div class="form-group">
-                                <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
+                                <div class="col-md-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
                                     <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
                                     <a href="{{ route('invoices.search', ['format' => 'csv']) }}" class="btn btn-default form-filler-download">{{ _i('Esporta CSV') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
                                 </div>

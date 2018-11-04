@@ -32,7 +32,7 @@
         @if(Gate::check('supplier.book', null))
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <p class="pull-right"><a target="_blank" href="{{ url('ordini.xml') }}"><img src="{{ asset('images/rss.png') }}"></a></p>
+                    <p class="pull-right"><a target="_blank" href="{{ url('ordini.xml') }}"><img src="{{ asset('images/rss.png') }}" alt="{{ _i('Clicca qui per il feed RSS') }}"></a></p>
                     <h2 class="panel-title">{{ _i('Prenotazioni Aperte') }}</h2>
                 </div>
                 <div class="panel-body">

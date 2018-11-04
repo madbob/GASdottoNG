@@ -16,7 +16,7 @@ $domid = str_random(10);
                     <input type="hidden" name="generic_target_type" value="{{ get_class($target) }}">
 
                     <div class="form-group">
-                        <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
+                        <div class="col-md-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
                             <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
                         </div>
                     </div>

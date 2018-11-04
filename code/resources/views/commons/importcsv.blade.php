@@ -27,7 +27,7 @@ if (!isset($modal_extras))
                             {{ _i('Una volta caricato il file sarà possibile specificare quale attributo rappresenta ogni colonna trovata nel documento.') }}
                         </p>
                         <p class="text-center">
-                            <img src="{{ url('images/csv_explain.png') }}">
+                            <img src="{{ url('images/csv_explain.png') }}" alt="{{ _i('Sono ammessi solo files in formato CSV. Si raccomanda di formattare la propria tabella in modo omogeneo, senza usare celle unite, celle vuote, intestazioni: ogni riga deve contenere tutte le informazioni relative al soggetto. Eventuali prezzi e somme vanno espresse senza includere il simbolo dell\'euro.') }}">
                         </p>
 
                         <hr/>
