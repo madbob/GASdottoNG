@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group hidden-md">
-                <div class="input-group">
+                <div class="input-group table-number-filters">
                     <div class="input-group-addon">
                         <label class="radio-inline">
                             <input type="radio" name="filter_mode" value="min" checked> {{ _i('Minore di') }}

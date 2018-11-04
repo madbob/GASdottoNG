@@ -1580,7 +1580,7 @@ $(document).ready(function() {
         }
     });
 
-    $('body').on('keyup', '.table-number-filter', function() {
+    $('body').on('keyup', '.table-number-filters input.table-number-filter', function() {
         var text = $(this).val().toLowerCase();
         var target = $(this).attr('data-list-target');
         var mode = $(this).closest('.input-group').find('input[name=filter_mode]:checked').val();
@@ -1601,6 +1601,10 @@ $(document).ready(function() {
                     $(this).closest('tr').hide();
             });
         }
+    });
+
+    $('body').on('change', '.table-number-filters input[name=filter_mode]', function() {
+        $(this).closest('.input-group').find('input.table-number-filter').keyup();
     });
 
     $('body').on('change', '.table-filters input:radio', function() {
