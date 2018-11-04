@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2018-10-17 00:24+0200\n"
-"PO-Revision-Date: 2018-11-04 21:23+0000\n"
-"Last-Translator: jendo <jendo.berlin@gmx.de>\n"
+"PO-Revision-Date: 2018-11-06 14:01+0000\n"
+"Last-Translator: Luigi <luiginog@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
 "translations/de/>\n"
 "Language: de_DE\n"
@@ -1372,23 +1372,25 @@ msgid ""
 "verrai rediretto sul sito PayPal dove dovrai autenticarti e confermare il "
 "versamento."
 msgstr ""
+"Sag wie viel du überweisen willst und ev. Noten für die Verwalter, folgt "
+"eine neue Zugriff zu Paypal wo du deine Authentifizierung machen und die "
+"Überweisung bestätigen sollst."
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:134
 msgid "Eventuali commissioni sulla transazione saranno a tuo carico."
-msgstr ""
+msgstr "Eventuelle kosten für die Überweisungs werden von dir getragen ."
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:143
 msgid "Vai a PayPal"
 msgstr "Gehe zu PayPal"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:154
-#| msgid "Credito"
 msgid "Ricarica Credito con Satispay"
-msgstr ""
+msgstr "Kreditaufladung mit Satispay"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:170
 msgid "Da qui puoi ricaricare il tuo credito utilizzando Satispay."
-msgstr ""
+msgstr "Von hier kannst du deinen Kredit mit Satispay wieder aufladen."
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:174
 msgid ""
@@ -1396,6 +1398,8 @@ msgid ""
 "riceverai una notifica sul tuo smartphone per confermare, entro 15 minuti, "
 "il versamento."
 msgstr ""
+"Sag wie viel du überweisen willst und ev. Noten für die Verwalter; dir wird "
+"eine Bestätigung auf dem Smartphone, innerhalb 15 min. geschickt."
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:178
 msgid "Numero di Telefono"
@@ -1773,9 +1777,8 @@ msgid "Registra Pagamento"
 msgstr "Bezahlung verbuchen"
 
 #: ../storage/framework/messages/409c9ed96e29b8276d7b64fd6b6352c7708bbf1f.php.php:85
-#| msgid "Ordine Minimo"
 msgid "Ordini Coinvolti"
-msgstr ""
+msgstr "beinhaltete Bestellungen"
 
 #: ../storage/framework/messages/409c9ed96e29b8276d7b64fd6b6352c7708bbf1f.php.php:105
 #: ../storage/framework/messages/409c9ed96e29b8276d7b64fd6b6352c7708bbf1f.php.php:126
@@ -1891,18 +1894,16 @@ msgstr "[Ignorieren]"
 #: ../storage/framework/messages/8139e910f1cd1660eff1fb5ccc6b977b0c798096.php.php:75
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:7
 #: ../storage/framework/messages/f0d8388990de9779bae078c14f11fa56be8ab204.php.php:7
-#| msgid "Totale Complessivo"
 msgid "Totale Imponibile"
-msgstr ""
+msgstr "gesamt Besteuerbar"
 
 #: ../storage/framework/messages/59e9ced7f015b018612175a472c9ad654a2f7f91.php.php:62
 #: ../storage/framework/messages/8139e910f1cd1660eff1fb5ccc6b977b0c798096.php.php:35
 #: ../storage/framework/messages/8139e910f1cd1660eff1fb5ccc6b977b0c798096.php.php:76
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:8
 #: ../storage/framework/messages/f0d8388990de9779bae078c14f11fa56be8ab204.php.php:8
-#| msgid "Totale"
 msgid "Totale IVA"
-msgstr ""
+msgstr "Gesamt MWSt"
 
 #: ../storage/framework/messages/59fa04d2da43a558b1305db67d9cea4dbf7ca16c.php.php:5
 #: ../storage/framework/messages/59fa04d2da43a558b1305db67d9cea4dbf7ca16c.php.php:11
@@ -2036,13 +2037,12 @@ msgstr "Gespeichert"
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:333
 #: GASModel.php:333
 msgid "In Uscita"
-msgstr ""
+msgstr "Im Ausgang"
 
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:339
 #: GASModel.php:339
-#| msgid "Inoltra Mail"
 msgid "Inoltrata"
-msgstr ""
+msgstr "Eingereicht"
 
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:397
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:412
@@ -2075,7 +2075,7 @@ msgstr "Beitrag nicht bezahlt"
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:457
 #: GASModel.php:457
 msgid "In Entrata"
-msgstr ""
+msgstr "Im Eingang"
 
 #: ../storage/framework/messages/5db2a38f9e470b3feb9a627cc9f39980763b545d.php.php:31
 #: MovementType.php:31
@@ -2138,13 +2138,12 @@ msgstr ""
 "geliefert werden, zu vereinfachen."
 
 #: ../storage/framework/messages/5ec30665b3114e6137babf75150ae220b1b20c48.php.php:40
-#| msgid ""
-#| "Clicca e trascina gli ordini nella stessa cella per aggregarli, o nella "
-#| "cella vuota per disaggregarli."
 msgid ""
 "Clicca e trascina gli ordini nella stessa cella per aggregarli, o in una "
 "cella vuota per disaggregarli."
 msgstr ""
+"Klick und nimm die Bestellungen in der gleiche Zelle um sie zusammen zu "
+"stellen, oder in eine lehre Zelle um sie zu trennen."
 
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:130
 #: Order.php:130
@@ -2201,6 +2200,8 @@ msgid ""
 "Per abilitare o disabilitare prodotti del listino fornitore all'interno "
 "dell'ordine"
 msgstr ""
+"Um Produkte aus der Lieferanten-liste innerhalb der Bestellung zu aktivieren "
+"oder desaktivieren"
 
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:630
 #: Order.php:630
@@ -2210,12 +2211,12 @@ msgstr "Name und Beschreibung des Produktes"
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:635
 #: Order.php:635
 msgid "Prezzo unitario (editabile) del prodotto"
-msgstr ""
+msgstr "Einheitspreis ( zu Veröffentlichen) vom Produkt"
 
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:640
 #: Order.php:640
 msgid "Prezzo di trasporto unitario (editabile) del prodotto"
-msgstr ""
+msgstr "Einheit Transports-preis für den Produkt (zu veröffentlichen)"
 
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:644
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:16
@@ -2226,12 +2227,12 @@ msgstr "Verfügbar"
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:645
 #: Order.php:645
 msgid "Quantità disponibile (editabile) del prodotto"
-msgstr ""
+msgstr "Produktmengen Zur Verfügung (zu veröffentlichen)"
 
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:650
 #: Order.php:650
 msgid "Per abilitare o disabilitare lo sconto unitario del prodotto"
-msgstr ""
+msgstr "Um den Einheit-Rabatt zu aktivieren oder desaktivieren"
 
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:655
 #: Order.php:655
@@ -2350,6 +2351,8 @@ msgid ""
 "Verranno esportati gli utenti attualmente filtrati nella lista principale, "
 "in funzione del loro stato e del loro ruolo."
 msgstr ""
+"werden die Kunden exportiert, die gerade aus der Hauptliste gesiebt worden "
+"sind, je nach Status und Rolle."
 
 #: ../storage/framework/messages/68cc982484900028f621c29dab5160d563b5c628.php.php:74
 #: ../storage/framework/messages/8a721d563bd9179ed74877ba63ed9c655b9118b9.php.php:58
