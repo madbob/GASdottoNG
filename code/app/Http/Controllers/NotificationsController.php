@@ -143,6 +143,21 @@ class NotificationsController extends Controller
         return $this->commonSuccessResponse($n);
     }
 
+    public function destroy(Request $request, $id)
+    {
+        $user = Auth::user();
+        if ($user->can('notifications.admin', $user->gas) == false)
+            return $this->errorResponse(_i('Non autorizzato'));
+
+        DB::beginTransaction();
+
+        $n = Notification::findOrFail($id);
+        $n->users()->sync([]);
+        $n->delete();
+
+        return $this->successResponse();
+    }
+
     public function markread($id)
     {
         DB::beginTransaction();
