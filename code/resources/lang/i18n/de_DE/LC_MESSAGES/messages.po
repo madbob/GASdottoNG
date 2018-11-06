@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2018-10-17 00:24+0200\n"
-"PO-Revision-Date: 2018-11-06 14:01+0000\n"
-"Last-Translator: Luigi <luiginog@gmail.com>\n"
+"PO-Revision-Date: 2018-11-08 18:07+0000\n"
+"Last-Translator: Uli Orangen <reiterulr@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
 "translations/de/>\n"
 "Language: de_DE\n"
@@ -104,7 +104,7 @@ msgstr "Bestellte Produkte der Bestellung %s bei %s vom %s"
 
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:16
 msgid "Inoltra Mail"
-msgstr "Email weiterleiten"
+msgstr "E-mail weiterleiten"
 
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:22
 #: ../storage/framework/messages/1d6011afdabf8af4ba1fcf2fc2e04f2fcb11e11c.php.php:4
@@ -138,7 +138,7 @@ msgstr "Text E-mail"
 
 #: ../storage/framework/messages/03dd95d4d49a247e64c02851a45ac3ba90c116d9.php.php:32
 msgid "Ordina Per"
-msgstr "Bestellen"
+msgstr "Sortiert nach"
 
 #: ../storage/framework/messages/03fe6cae2ede501c06dab5b92f4dbd9960b195d1.php.php:1
 #: ../storage/framework/messages/05926aebff9f8ea2b72c2b65c54ee9c4e852eeef.php.php:1
@@ -422,7 +422,7 @@ msgstr "Allgemeine Einstellungen"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:23
 msgid "Nome del GAS"
-msgstr "Name Einkaufsgemeinschaft"
+msgstr "Name der Bestellgemeinschaft"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:24
 msgid "E-Mail di Riferimento"
@@ -656,7 +656,7 @@ msgstr "Fortfahren"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:331
 msgid "Luoghi di Consegna"
-msgstr "Lieferungsorte"
+msgstr "Lieferorte"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:342
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:83
@@ -827,8 +827,8 @@ msgid ""
 "Una volta caricato il file sarà possibile specificare quale attributo "
 "rappresenta ogni colonna trovata nel documento."
 msgstr ""
-"Sobald der File aufgeladen ist, wird möglich sein deren Attribut für jede "
-"Spalten in Dokument zu spezifizieren."
+"Sobald die Datei hochgeladen ist, wird es möglich sein die Attribute für "
+"jede Spalte im Dokument zu spezifizieren."
 
 #: ../storage/framework/messages/1110385cf656f827fc8ac9a6fc5216bb67844802.php.php:108
 #: Product.php:108
@@ -908,7 +908,7 @@ msgstr "Gesamtbetrag"
 
 #: ../storage/framework/messages/120626ca6d2919eadea9eb47de0a4818ee0e4d52.php.php:38
 msgid "Gli ordini dei tuoi amici"
-msgstr "Die Bestellungen deine Freunde"
+msgstr "Bestellungen deiner Freunde"
 
 #: ../storage/framework/messages/120626ca6d2919eadea9eb47de0a4818ee0e4d52.php.php:74
 msgid ""
@@ -921,7 +921,7 @@ msgstr ""
 #: ../storage/framework/messages/120626ca6d2919eadea9eb47de0a4818ee0e4d52.php.php:82
 #, php-format
 msgid "La consegna avverrà %s."
-msgstr "Lieferung am %s."
+msgstr "Geplante Lieferung am %s."
 
 #: ../storage/framework/messages/132e7c13216c738c1c435e454372a7a23dd0a237.php.php:2
 msgid "Aliquota"
@@ -1026,7 +1026,7 @@ msgstr "Einstellungen"
 #: ../storage/framework/messages/16625428e55dc6096c12d7f4cf360d893b8788ff.php.php:52
 #: Providers/MenuServiceProvider.php:52
 msgid "Multi-GAS"
-msgstr "Multi-Ini"
+msgstr "Multi-Bestellgemeinschaft"
 
 #: ../storage/framework/messages/16625428e55dc6096c12d7f4cf360d893b8788ff.php.php:56
 #: ../storage/framework/messages/8213b2de42a57b8769b9deb8aaed6d84d10a486c.php.php:8
@@ -1090,7 +1090,7 @@ msgstr "Bewegung nicht anerkannt bei der Speicherung der Rechnung"
 #: Http/Controllers/InvoicesController.php:371
 #, php-format
 msgid "Esportazione fatture GAS %s.csv"
-msgstr "GAS-Rechnungen Export %s.csv"
+msgstr "Rechnungen Export %s.csv"
 
 #: ../storage/framework/messages/1b2ebc5f0122179fff7f7e61b883e643b3b22962.php.php:372
 #: ../storage/framework/messages/2da70aefdfc8b82969d7cfe3143ff6e3b09f44eb.php.php:11
@@ -1360,11 +1360,11 @@ msgstr "Kredit Aufladung durch PayPal"
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:122
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:166
 msgid "Ricarica Credito"
-msgstr "Kredit Aufladung"
+msgstr "Kontostand Aufladung"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:126
 msgid "Da qui puoi ricaricare il tuo credito utilizzando PayPal."
-msgstr "Von hier kannst du deinen Kredit mit PayPal aufladen."
+msgstr "Von hier kannst du deinen Kontostand mit PayPal aufladen."
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:130
 msgid ""
@@ -1390,7 +1390,7 @@ msgstr "Kreditaufladung mit Satispay"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:170
 msgid "Da qui puoi ricaricare il tuo credito utilizzando Satispay."
-msgstr "Von hier kannst du deinen Kredit mit Satispay wieder aufladen."
+msgstr "Von hier kannst du deinen Kontostand mit Satispay aufladen."
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:174
 msgid ""
@@ -1428,6 +1428,11 @@ msgid ""
 "credenziali di accesso, per entrare in GASdotto e popolare da sé le proprie "
 "prenotazioni."
 msgstr ""
+"Füge die Informationen bezüglich deiner Freunde hinzu, für die du eine Unter-"
+"Bestellung anlegen willst. Jede einzelne Bestellung ist dann autonom, wird "
+"aber behandelt als eine in der Phase der Lieferung. Jeder Freund kann auch "
+"eigene Zugangsdaten haben um sich bei GASdotto anzumelden und seine eigenen "
+"Bestellungen zu verwalten."
 
 #: ../storage/framework/messages/2982b90f6cfcaf4cb0c27c14b07650ad2a9c8b52.php.php:21
 #: ../storage/framework/messages/5dbdf19ef533ccf35a7d42c8c53f16d436cc1df2.php.php:29
@@ -1536,8 +1541,8 @@ msgid ""
 "Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si "
 "trovano le informazioni relative alle singole prenotazioni."
 msgstr ""
-"Hier kannst du eine drückbereite PDF-Datei in der Informationen über die "
-"individuellen Lieferungen vorhanden sind."
+"Hier kannst du eine PDF-Datei zum Ausdrucken erstellen, in der Informationen "
+"zu den einzelnen Bestellungen aufgelistet sind."
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:50
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:124
@@ -1556,9 +1561,9 @@ msgid ""
 "Separated Values</i>) si consiglia l'uso di <a target=\"_blank\" href="
 "\"http://it.libreoffice.org/\">LibreOffice</a>."
 msgstr ""
-"Um CSV-Dateien (<i>Comma-Separated Values</i>) zu öffnen und zu verarbeiten "
-"wird <a target=\"_blank\" href=\"http://it.libreoffice.org/\">LibreOffice</"
-"a> empfehlt."
+"Um CSV-Dateien (<i>Comma-Separated Values</i>) zu öffnen und zu bearbeiten "
+"wird <a target=\"_blank\" href=\"http://it.libreoffice.org/\">LibreOffice</a>"
+" empfohlen."
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:98
 #: ../storage/framework/messages/68cc982484900028f621c29dab5160d563b5c628.php.php:41
@@ -1576,7 +1581,7 @@ msgid ""
 "Da qui puoi ottenere un documento CSV coi dettagli di tutti i prodotti "
 "prenotati in quest'ordine."
 msgstr ""
-"Hier kannst du eine CSV-Detei erhalten, in der Details zu allen "
+"Hier kannst du eine CSV-Datei erhalten, in der Details zu allen "
 "vorbestellten Produkten vorhanden sind."
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:172
@@ -1606,7 +1611,7 @@ msgid ""
 "In futuro potrai accedere usando il link qui sotto, lo username \"%s\" e la "
 "password da te scelta."
 msgstr ""
-"In Zukunft kannst du dich anmelden über folgenden Link mit deinem "
+"In Zukunft kannst du dich über folgenden Link anmelden mit deinem "
 "Nutzernamen \"%s“ und dem gewählten Passwort."
 
 #: ../storage/framework/messages/38e6c97568452c5cac123d5e080434d8cfdd3ad1.php.php:13
@@ -1626,7 +1631,7 @@ msgstr "Alle Erlaubnisse ändern"
 #: ../storage/framework/messages/3938b5a29ee4fcba7a54b33debb586a987960ef9.php.php:427
 #: Role.php:427
 msgid "Modificare le configurazioni del GAS"
-msgstr "Einstellungen der GAS ändern"
+msgstr "Einstellungen der Bestellgemeinschaft ändern"
 
 #: ../storage/framework/messages/3938b5a29ee4fcba7a54b33debb586a987960ef9.php.php:428
 #: Role.php:428
@@ -1656,7 +1661,7 @@ msgstr "Alle Benutzer ansehen"
 #: ../storage/framework/messages/3938b5a29ee4fcba7a54b33debb586a987960ef9.php.php:433
 #: Role.php:433
 msgid "Avere sotto-utenti con funzioni limitate"
-msgstr ""
+msgstr "Sub-Benutzer haben mit eingeschränkten Rechten"
 
 #: ../storage/framework/messages/3938b5a29ee4fcba7a54b33debb586a987960ef9.php.php:434
 #: Role.php:434
@@ -1701,7 +1706,7 @@ msgstr "Benachrichtigungen verwalten"
 #: ../storage/framework/messages/3938b5a29ee4fcba7a54b33debb586a987960ef9.php.php:442
 #: Role.php:442
 msgid "Amministrare i GAS su questa istanza"
-msgstr ""
+msgstr "Bestellgruppen administrieren auf dieser Instanz"
 
 #: ../storage/framework/messages/3938b5a29ee4fcba7a54b33debb586a987960ef9.php.php:445
 #: Role.php:445
@@ -1728,12 +1733,12 @@ msgstr "Eingetragen am"
 
 #: ../storage/framework/messages/3b4210d78cce01393cdb8ee86cbd5a0b3d4a1088.php.php:54
 msgid "Registrato Da"
-msgstr "Eingetragen von"
+msgstr "Registriert von"
 
 #: ../storage/framework/messages/3bdd2530c5e43e31dce8c7a7bcdef0b261b175c9.php.php:24
 #: Notifications/BookingNotification.php:24
 msgid "Riassunto prenotazione del GAS"
-msgstr "Zusammenfassung Vorbestellungen der GAS"
+msgstr "Zusammenfassung Bestellungen der Gruppe"
 
 #: ../storage/framework/messages/3c52fa94bfdb515df0896a915aecfd948faf1fff.php.php:14
 #: ../storage/framework/messages/9d4bd9714ec2a6669dd1cae6f1a66edf15eb3217.php.php:13
@@ -1863,8 +1868,8 @@ msgid ""
 "Clicca e trascina gli attributi dalla colonna di destra alla colonna "
 "centrale, per assegnare ad ogni colonna del tuo file un significato."
 msgstr ""
-"Die Zuweisung eine Bedeutung jeder Spalte ihrer Datei ist möglich durch "
-"Ziehen und Ablegen der Symbolen von der rechten Seiten zur mittleren Seiten"
+"Klicken und Ziehen sie die Attribute von der rechten zur mittleren Spalte, "
+"um jeder Spalte ihrer Datei eine Überschrift zuzuweisen."
 
 #: ../storage/framework/messages/56c44eb9f4b1cf472b74adcbeed0d4b5032cc04e.php.php:11
 msgid ""
@@ -2149,13 +2154,13 @@ msgstr ""
 #: Order.php:130
 #, php-format
 msgid "da %s a %s"
-msgstr "von %s bis %s Uhr"
+msgstr "von %s bis %s"
 
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:133
 #: Order.php:133
 #, php-format
 msgid ", in consegna %s"
-msgstr ", bei der Auslieferung %s"
+msgstr ", für die Auslieferung am %s"
 
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:532
 #: ../storage/framework/messages/939678dcfaab8b8718bb2f71649e4484a2db059b.php.php:36
@@ -2414,6 +2419,10 @@ msgid ""
 "mantenere separate le informazioni. Popola la tua lista di amici dalla "
 "pagina del tuo profilo."
 msgstr ""
+"Hier kannst du Unter-Bestellungen hinzufügen für deine Freunde. Diese werden "
+"Teil deiner Bestellung sein, aber du kannst die Informationen trotzdem "
+"getrennt voneinander verwalten. Die Liste deiner Freunde kannst du auf der "
+"Seite deines Profils verwalten."
 
 #: ../storage/framework/messages/7e217d580df832ff5663372f02cb826f06c6b4b4.php.php:73
 msgid ""
@@ -2468,7 +2477,7 @@ msgstr "von"
 
 #: ../storage/framework/messages/8227bb95fdab589ba8bd6971faa6f37d987f2ea8.php.php:32
 msgid "GRUPPO DI ACQUISTO SOLIDALE"
-msgstr "Solidarische Einkaufsgemeinschaft (GAS)"
+msgstr "Solidarische Bestellgemeinschaft (GAS)"
 
 #: ../storage/framework/messages/83a30b09d0868b32ce3d0ee0d9e37124c9d0a760.php.php:26
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:102
@@ -2661,19 +2670,18 @@ msgstr "Schnelle Lieferungen"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:108
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:124
-#| msgid "Dettaglio Consegne"
 msgid "Dettaglio Consegne Aggregato"
-msgstr ""
+msgstr "Detail der zusammengelegten Lieferungen"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:128
-#| msgid ""
-#| "Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si "
-#| "trovano le informazioni relative alle singole prenotazioni."
 msgid ""
 "Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si "
 "trovano le informazioni relative alle singole prenotazioni di tutti gli "
 "ordini inclusi in questo aggregato."
 msgstr ""
+"Hier kannst du ein pdf-Dokument zum Ausdrucken erhalten, in dem sich alle "
+"Informationen finden bezüglich der einzelnen Bestellungen aller, die an "
+"dieser Teil-Bestellung teilgenommen haben."
 
 #: ../storage/framework/messages/9d578db58eee2c1942366f2e8ea3dd6638c63c47.php.php:72
 #: Http/Controllers/UsersController.php:72
@@ -2702,9 +2710,8 @@ msgid "Modalità Pagamento"
 msgstr "Bezahlmodus"
 
 #: ../storage/framework/messages/a4cdcea55a523a711c537c1509bd0ed1cd3d4613.php.php:7
-#| msgid "Modalià Avanzamento Ordini"
 msgid "Modalità Avanzamento Ordini"
-msgstr ""
+msgstr "Fortschritt der Bestellungen"
 
 #: ../storage/framework/messages/a5322b2f2be8f8da4bcecea6ac1924410a2b1fd9.php.php:5
 msgid "Modifica Unità di Misura"
@@ -2767,15 +2774,13 @@ msgstr "Einloggen"
 
 #: ../storage/framework/messages/ace24bd531b0877d2aeef32ad4301a81f681ca83.php.php:91
 #: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:129
-#| msgid "Registrato Il"
 msgid "Registrati"
-msgstr ""
+msgstr "Registrieren"
 
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:12
 #: ../storage/framework/messages/f0d8388990de9779bae078c14f11fa56be8ab204.php.php:12
-#| msgid "Prenotazioni Chiuse"
 msgid "Prenotazioni Coinvolte"
-msgstr ""
+msgstr "Beteiligte Bestellungen"
 
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:30
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:44
@@ -2798,57 +2803,50 @@ msgid "Ordinabile"
 msgstr "Bestellbar"
 
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:10
-#| msgid "Data Apertura"
 msgid "Pezzatura"
-msgstr ""
+msgstr "Stückgröße"
 
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:11
-#| msgid "(variabile)"
 msgid "Variabile"
-msgstr ""
+msgstr "veränderbar"
 
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:12
 msgid "Confezione"
 msgstr "Verpackung"
 
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:13
-#| msgid "Multiplo: %.02f"
 msgid "Multiplo"
-msgstr ""
+msgstr "Vielfaches"
 
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:14
-#| msgid "Minimo: %.02f"
 msgid "Minimo"
-msgstr ""
+msgstr "Minimum"
 
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:15
-#| msgid "Massimo Consigliato: %.02f"
 msgid "Massimo Consigliato"
-msgstr ""
+msgstr "Empfohlenes Maximum"
 
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:24
 msgid "Duplica"
-msgstr ""
+msgstr "duplizieren"
 
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:41
-#| msgid "Modifica Categorie"
 msgid "Crea/Modifica Variante"
-msgstr ""
+msgstr "Variante hinzufügen/verändern"
 
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:45
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:60
 msgid "Differenza Prezzo"
-msgstr ""
+msgstr "Preisdifferenz"
 
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:48
-#| msgid "Valore"
 msgid "Valori"
-msgstr ""
+msgstr "Werte"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:157
 #: Gas.php:157
 msgid "Configurazione GAS non prevista"
-msgstr "Ungültige GAS-Einstellung"
+msgstr "Ungültige Einstellung der Bestellgruppe"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:294
 #: Gas.php:294
@@ -2858,14 +2856,14 @@ msgstr "Girokonto"
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:295
 #: Gas.php:295
 msgid "Cassa Contanti"
-msgstr "GAS-Kasse"
+msgstr "Kasse"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:296
 #: ../storage/framework/messages/d25bf6a6da0df10748753d99aa3e2af4d1b06a2e.php.php:8
 #: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:99
 #: Gas.php:296
 msgid "GAS"
-msgstr "GAS"
+msgstr "Bestellgemeinschaft"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:298
 #: Gas.php:298
@@ -2890,7 +2888,7 @@ msgid ""
 msgstr ""
 "Beachte: bei Problemen mit den Inhalten dieser Seite (Lieferant, "
 "(Vor-)Bestellung...) kontaktiere die Administratoren deiner "
-"Einkaufsgemeinschaft (GAS, FoodCoop, Solawi...). Die über dieses Formular "
+"Bestellgemeinschaft (GAS, FoodCoop, Solawi...). Die über dieses Formular "
 "verschickten Daten sind öffentlich: übermittle keine sensiblen persönlichen "
 "Daten und Adressen!"
 
@@ -2906,7 +2904,7 @@ msgstr ""
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:143
 msgid "Titolo"
-msgstr ""
+msgstr "Betreff"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:157
 msgid "Invia"
@@ -2967,9 +2965,8 @@ msgstr "Restkredit"
 
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:75
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:95
-#| msgid "Esporta CSV"
 msgid "Esporta SEPA"
-msgstr ""
+msgstr "SEPA exportieren"
 
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:76
 msgid "Notifica Utente Visualizzati"
@@ -2981,12 +2978,12 @@ msgstr "Verwendungszweck"
 
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:92
 msgid "VERSAMENTO GAS"
-msgstr "EINZAHLUNG Einkaufsgemeinschaft"
+msgstr "EINZAHLUNG Bestellgruppe"
 
 #: ../storage/framework/messages/c75efb2a6f8978964f746614656ee9e33c9ce446.php.php:22
 #: Notifications/GenericNotificationWrapper.php:22
 msgid "Nuova notifica dal GAS"
-msgstr "Neue Benachrichtigung von der GAS"
+msgstr "Neue Benachrichtigung von der Bestell-Initiative"
 
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:7
 msgid "Statistiche Generali"
@@ -3018,6 +3015,8 @@ msgid ""
 "Questa notifica è già stata inoltrata via mail. Salvandola mantenendo questo "
 "flag attivo verrà inviata una nuova mail."
 msgstr ""
+"Diese Nachricht wurde schon per E-Mail verschickt. Wenn du speichert und die "
+"Markierung bleibt aktiv, dann wird eine neue E-Mail verschickt."
 
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:38
 msgid ""
@@ -3040,14 +3039,12 @@ msgid "Data Mandato SEPA"
 msgstr "SEPA-Bewegung Datum"
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:6
-#| msgid "Movimento"
 msgid "Movimenti"
-msgstr ""
+msgstr "Aktionen"
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:8
-#| msgid "Tipo Movimento"
 msgid "Tipi Movimenti"
-msgstr ""
+msgstr "Aktionstypen"
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:10
 msgid "Fatture"
@@ -3134,7 +3131,7 @@ msgstr "Nacher"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:93
 msgid "Tutti i saldi risultano coerenti."
-msgstr ""
+msgstr "Alle Salden erweisen sich als kohärent."
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:100
 msgid "Ricarica la Pagina"
@@ -3222,13 +3219,13 @@ msgstr "Bewegung: Sperichern von pre-callback nicht erlaubt"
 #: Http/Controllers/MovementsController.php:87
 #, php-format
 msgid "Esportazione movimenti GAS %s.csv"
-msgstr "Exportierung Bewegungen GAS %s.csv"
+msgstr "Export Bewegungen der Bestellgruppe %s.csv"
 
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:104
 #: Http/Controllers/MovementsController.php:104
 #, php-format
 msgid "Esportazione movimenti GAS %s"
-msgstr "Exportierung Bewegungen GAS %s"
+msgstr "Export Bewegungen der Bestellgemeinschaft %s"
 
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:226
 #: Http/Controllers/MovementsController.php:226
