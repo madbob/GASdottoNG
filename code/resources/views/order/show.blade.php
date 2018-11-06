@@ -1,3 +1,5 @@
+<?php $summary = $order->calculateSummary() ?>
+
 <form class="form-horizontal main-form">
     <div class="row">
         <div class="col-md-4">
