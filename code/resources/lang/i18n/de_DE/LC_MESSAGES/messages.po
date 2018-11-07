@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2018-10-17 00:24+0200\n"
 "PO-Revision-Date: 2018-11-08 18:07+0000\n"
-"Last-Translator: Uli Orangen <reiterulr@gmail.com>\n"
+"Last-Translator: jendo <jendo.berlin@gmx.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
 "translations/de/>\n"
 "Language: de_DE\n"
@@ -259,7 +259,7 @@ msgstr ""
 #: Http/Controllers/ImportController.php:279
 #: Http/Controllers/ImportController.php:388
 msgid "Impossibile interpretare il file"
-msgstr "Die Datai kann nicht gelesen werden"
+msgstr "Die Datei kann nicht gelesen werden"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:80
 #: Http/Controllers/ImportController.php:80
@@ -2456,7 +2456,7 @@ msgstr "Es gibt keine offenen Vorbestellungen."
 
 #: ../storage/framework/messages/8213b2de42a57b8769b9deb8aaed6d84d10a486c.php.php:51
 msgid "Ordini in Consegna"
-msgstr "Bestellungen bei der Auslieferung"
+msgstr "Geschlossene Bestellungen"
 
 #: ../storage/framework/messages/8213b2de42a57b8769b9deb8aaed6d84d10a486c.php.php:56
 msgid "Non ci sono ordini in consegna."
