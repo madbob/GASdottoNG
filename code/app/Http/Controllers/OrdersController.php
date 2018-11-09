@@ -242,10 +242,13 @@ class OrdersController extends Controller
             $booking->deleteMovements();
         $order->deleteMovements();
 
-        if ($order->aggregate->orders()->count() <= 1)
-            $order->aggregate->delete();
+        $aggregate_id = $order->aggregate_id;
 
         $order->delete();
+
+        $aggregate = Aggregate::find($aggregate_id);
+        if ($aggregate->orders()->count() <= 0)
+            $aggregate->delete();
 
         return $this->successResponse();
     }
