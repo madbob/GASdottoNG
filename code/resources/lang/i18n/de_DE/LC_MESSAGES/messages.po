@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2018-10-17 00:24+0200\n"
-"PO-Revision-Date: 2018-11-08 18:07+0000\n"
-"Last-Translator: jendo <jendo.berlin@gmx.de>\n"
+"PO-Revision-Date: 2018-11-11 20:01+0000\n"
+"Last-Translator: Uli Orangen <reiterulr@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
 "translations/de/>\n"
 "Language: de_DE\n"
@@ -726,7 +726,7 @@ msgstr ""
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:409
 #: ../storage/framework/messages/8213b2de42a57b8769b9deb8aaed6d84d10a486c.php.php:104
 msgid "File Condivisi"
-msgstr "Geteilte Dateien"
+msgstr "Dateien und Infos"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:449
 msgid "Aliquote IVA"
@@ -1117,7 +1117,7 @@ msgid ""
 "Da qui è possibile modificare la quantità prenotata di questo prodotto per "
 "ogni prenotazione, ma nessun utente ha ancora partecipato all'ordine."
 msgstr ""
-"Hier ist es möglich die vorbestellte Quantität dieses Produkts in jeder "
+"Hier ist es möglich die vorbestellte Menge dieses Produkts in jeder "
 "Lieferung zu ändern, aber noch kein Benutzer hat an dieser Bestellung "
 "teilgenommen."
 
@@ -1269,15 +1269,15 @@ msgstr "Neu"
 
 #: ../storage/framework/messages/2385fa1e23dacbe099eebbc866adbd6bc615943c.php.php:23
 msgid "Verrà generato un nuovo fornitore con il listino allegato."
-msgstr "Ein neuer Lieferant wird mit der anliegenden Preisliste erstellt."
+msgstr "Ein neuer Lieferant wird mit der beiliegenden Preisliste erstellt."
 
 #: ../storage/framework/messages/2385fa1e23dacbe099eebbc866adbd6bc615943c.php.php:29
 msgid "Aggiorna fornitore esistente"
-msgstr "Vorhandener Lieferant ändern"
+msgstr "Vorhandenen Lieferant ändern"
 
 #: ../storage/framework/messages/2385fa1e23dacbe099eebbc866adbd6bc615943c.php.php:30
 msgid "Seleziona un fornitore"
-msgstr "einen Lieferant auswählen"
+msgstr "Einen Lieferant auswählen"
 
 #: ../storage/framework/messages/2385fa1e23dacbe099eebbc866adbd6bc615943c.php.php:35
 msgid ""
@@ -1314,7 +1314,7 @@ msgstr "Suche"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:7
 msgid "Anagrafica"
-msgstr "Register"
+msgstr "Profil"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:21
 msgid "Amici"
@@ -1492,7 +1492,7 @@ msgstr "Bezahlt"
 
 #: ../storage/framework/messages/2da70aefdfc8b82969d7cfe3143ff6e3b09f44eb.php.php:13
 msgid "Riferimento"
-msgstr "Referenznummer"
+msgstr "Referenz Bestellung"
 
 #: ../storage/framework/messages/2da70aefdfc8b82969d7cfe3143ff6e3b09f44eb.php.php:15
 msgid "Debito"
@@ -1544,7 +1544,7 @@ msgstr "Es gibt keine Produkte"
 #: ../storage/framework/messages/46d9784474c42e976aa9bfe9f6a022a0a335614a.php.php:3
 #: ../storage/framework/messages/8e8da6b25d0be2b64ca9545c5f75480c31e494bf.php.php:24
 msgid "Dettaglio Consegne"
-msgstr "Lieferungsdetail"
+msgstr "Bestellübersicht (pdf)"
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:5
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:63
@@ -1606,7 +1606,7 @@ msgstr ""
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:172
 msgid "Stato Prenotazioni"
-msgstr "Zustand der Vorbestellungen"
+msgstr "Status der Vorbestellungen"
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:177
 msgid "Prenotate"
@@ -1623,7 +1623,7 @@ msgstr "Gespeichert"
 #: ../storage/framework/messages/38e6c97568452c5cac123d5e080434d8cfdd3ad1.php.php:2
 #, php-format
 msgid "Benvenuto in %s!"
-msgstr "Willkommen in %s!"
+msgstr "Willkommen bei %s!"
 
 #: ../storage/framework/messages/38e6c97568452c5cac123d5e080434d8cfdd3ad1.php.php:6
 #, php-format
@@ -1636,7 +1636,7 @@ msgstr ""
 
 #: ../storage/framework/messages/38e6c97568452c5cac123d5e080434d8cfdd3ad1.php.php:13
 msgid "Una mail di notifica è stata inviata agli amministratori."
-msgstr "Eine Bestätigungsmail wurde an die Administratoren geschickt."
+msgstr "Eine Benachrichtigungsmail wurde an die Administrator*innen geschickt."
 
 #: ../storage/framework/messages/3938b5a29ee4fcba7a54b33debb586a987960ef9.php.php:425
 #: Role.php:425
@@ -1681,7 +1681,7 @@ msgstr "Alle Benutzer ansehen"
 #: ../storage/framework/messages/3938b5a29ee4fcba7a54b33debb586a987960ef9.php.php:433
 #: Role.php:433
 msgid "Avere sotto-utenti con funzioni limitate"
-msgstr "Sub-Benutzer haben mit eingeschränkten Rechten"
+msgstr "Mitbenutzer (Freunde) haben mit eingeschränkten Rechten"
 
 #: ../storage/framework/messages/3938b5a29ee4fcba7a54b33debb586a987960ef9.php.php:434
 #: Role.php:434
@@ -1755,7 +1755,7 @@ msgstr "Datei ersetzen"
 
 #: ../storage/framework/messages/3b4210d78cce01393cdb8ee86cbd5a0b3d4a1088.php.php:49
 msgid "Registrato Il"
-msgstr "Eingetragen am"
+msgstr "Registriert am"
 
 #: ../storage/framework/messages/3b4210d78cce01393cdb8ee86cbd5a0b3d4a1088.php.php:54
 msgid "Registrato Da"
@@ -1764,7 +1764,7 @@ msgstr "Registriert von"
 #: ../storage/framework/messages/3bdd2530c5e43e31dce8c7a7bcdef0b261b175c9.php.php:24
 #: Notifications/BookingNotification.php:24
 msgid "Riassunto prenotazione del GAS"
-msgstr "Zusammenfassung Bestellungen der Gruppe"
+msgstr "Zusammenfassung deiner Vorbestellungen"
 
 #: ../storage/framework/messages/3c52fa94bfdb515df0896a915aecfd948faf1fff.php.php:14
 #: ../storage/framework/messages/9d4bd9714ec2a6669dd1cae6f1a66edf15eb3217.php.php:13
@@ -1860,7 +1860,7 @@ msgstr "Lieferung"
 
 #: ../storage/framework/messages/47a7dc8de105e7a903e7f944b5ba60c7af395b42.php.php:259
 msgid "Importo da Pagare"
-msgstr "Restbetrag"
+msgstr "Offener Betrag"
 
 #: ../storage/framework/messages/4b37c5c7878bdb0601a2dad99e01ec2526263efc.php.php:2
 #: ../storage/framework/messages/753e31fcd0e6bd9592171211b3f88d0409a2f3e9.php.php:34
@@ -1961,7 +1961,7 @@ msgstr "Änderungen des Lieferanten sind jetzt möglich"
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:183
 #: GASModel.php:183
 msgid "Puoi aprire nuovi ordini per il fornitore"
-msgstr "Sie dürfen neue Bestellungen für den Lieferant erstellen"
+msgstr "Sie dürfen neue Bestellungen eröffnen für den Lieferant"
 
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:189
 #: GASModel.php:189
@@ -2006,7 +2006,7 @@ msgstr "Lieferungen verwalten"
 #: ../storage/framework/messages/f5974edcd79a5ad220dfbbdb77a0a8635cc5ed1e.php.php:37
 #: GASModel.php:237 GASModel.php:281
 msgid "Prenotazioni Aperte"
-msgstr "Offene Vorbestellungen"
+msgstr "Aktuell laufende Bestellungen"
 
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:243
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:287
@@ -2022,7 +2022,7 @@ msgstr "In der Schwebe"
 #: ../storage/framework/messages/f5974edcd79a5ad220dfbbdb77a0a8635cc5ed1e.php.php:41
 #: GASModel.php:249 GASModel.php:293
 msgid "Prenotazioni Chiuse"
-msgstr "Geschlossene Vorbestellungen"
+msgstr "Abgeschlossene Bestellungen"
 
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:255
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:299
@@ -2203,7 +2203,7 @@ msgstr "ID Lieferant"
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:580
 #: Order.php:580
 msgid "Quantità Totale"
-msgstr "Gesamte Quantität"
+msgstr "Gesamtmenge"
 
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:590
 #: Order.php:590
@@ -2231,8 +2231,8 @@ msgid ""
 "Per abilitare o disabilitare prodotti del listino fornitore all'interno "
 "dell'ordine"
 msgstr ""
-"Um Produkte aus der Lieferanten-liste innerhalb der Bestellung zu aktivieren "
-"oder desaktivieren"
+"Um Produkte aus der Liste des Lieferanten innerhalb der Bestellung zu "
+"aktivieren oder deaktivieren"
 
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:630
 #: Order.php:630
@@ -2416,7 +2416,7 @@ msgstr "Rolle Benutzer ohne Sonderrechte"
 
 #: ../storage/framework/messages/7ba73af808111d787a2216cbb5d7b697f42d3c68.php.php:22
 msgid "Ruolo Sotto-Utente"
-msgstr "Rolle sub-user"
+msgstr "Rolle Mitbenutzer (Freunde)"
 
 #: ../storage/framework/messages/7ba73af808111d787a2216cbb5d7b697f42d3c68.php.php:35
 msgid "Ruolo"
@@ -2482,11 +2482,13 @@ msgstr "Es gibt keine offenen Vorbestellungen."
 
 #: ../storage/framework/messages/8213b2de42a57b8769b9deb8aaed6d84d10a486c.php.php:51
 msgid "Ordini in Consegna"
-msgstr "Geschlossene Bestellungen"
+msgstr "Abgeschlossene Bestellungen - Lieferung ausstehend"
 
 #: ../storage/framework/messages/8213b2de42a57b8769b9deb8aaed6d84d10a486c.php.php:56
 msgid "Non ci sono ordini in consegna."
-msgstr "Es gibt keine offenen Bestellungen."
+msgstr ""
+"Es gibt keine abgeschlossenen Bestellungen, für die eine Auslieferung "
+"ansteht."
 
 #: ../storage/framework/messages/8213b2de42a57b8769b9deb8aaed6d84d10a486c.php.php:88
 #: ../storage/framework/messages/d254fda5dae36c46c9680ba877316129b9d88515.php.php:38
@@ -2514,11 +2516,11 @@ msgstr "Bemerkung"
 
 #: ../storage/framework/messages/83a30b09d0868b32ce3d0ee0d9e37124c9d0a760.php.php:32
 msgid "Data Apertura Prenotazioni"
-msgstr "Öffnungdatum Vorbestellungen"
+msgstr "Beginn Vorbestellungen"
 
 #: ../storage/framework/messages/83a30b09d0868b32ce3d0ee0d9e37124c9d0a760.php.php:40
 msgid "Data Chiusura Prenotazioni"
-msgstr "Schlussdatum Vorbestellungen"
+msgstr "Ende Vorbestellungen"
 
 #: ../storage/framework/messages/846dddbf226d13640e09d3ab392930b577aabff6.php.php:83
 #: Http/Controllers/ReceiptsController.php:83
@@ -2613,7 +2615,7 @@ msgstr "Webseite"
 #: Http/Controllers/OrdersController.php:371
 #, php-format
 msgid "Dettaglio Consegne ordine %s presso %s"
-msgstr "Lieferungsdetail %s bei %s"
+msgstr "Bestellübersicht %s bei %s"
 
 #: ../storage/framework/messages/9869469812674c41a1612a26bdeeb6891dbf5787.php.php:400
 #: Http/Controllers/OrdersController.php:400
@@ -2701,7 +2703,7 @@ msgstr "Schnelle Lieferungen"
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:108
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:124
 msgid "Dettaglio Consegne Aggregato"
-msgstr "Detail der zusammengelegten Lieferungen"
+msgstr "Bestellübersicht der zusammengelegten Lieferungen"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:128
 msgid ""
@@ -2766,7 +2768,7 @@ msgid ""
 msgstr ""
 "Diskrete Einheiten sind nicht teilbar: für die Produkte, den eine diskrete "
 "Einheit zugewiesen ist, ist es nicht möglich Eigenschaften wie \"Variabler "
-"Preis\" und \"Stückgröße\" freizuschalten"
+"Preis\" und \"Gebindegröße\" freizuschalten"
 
 #: ../storage/framework/messages/ac266e2b39658093bf28f564bab5906f02092422.php.php:19
 #: ../storage/framework/messages/ace24bd531b0877d2aeef32ad4301a81f681ca83.php.php:93
@@ -2831,7 +2833,7 @@ msgstr "Lade die erstellte Rechnung herunter oder verschicke sie als E-Mail."
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:54
 #, php-format
 msgid "Nuova fattura da %s"
-msgstr "Neue Rechnung vom %s"
+msgstr "Neue Rechnung von %s"
 
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:6
 #: ../storage/framework/messages/ce8e28c6c53c5bf8df34a17e43697f3ad2be3a72.php.php:41
@@ -2841,7 +2843,7 @@ msgstr "Bestellbar"
 
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:10
 msgid "Pezzatura"
-msgstr "Stückgröße"
+msgstr "Gebindegröße"
 
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:11
 msgid "Variabile"
@@ -2900,7 +2902,7 @@ msgstr "Kasse"
 #: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:99
 #: Gas.php:303
 msgid "GAS"
-msgstr "Bestellgemeinschaft"
+msgstr "Solidarische Bestellgemeinschaft"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:305
 #: Gas.php:305
@@ -2908,7 +2910,6 @@ msgid "Cauzioni"
 msgstr "Kaution"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:115
-#, fuzzy
 msgid "Feedback"
 msgstr "Feedback"
 
@@ -3020,7 +3021,7 @@ msgstr "EINZAHLUNG Bestellgruppe"
 #: ../storage/framework/messages/c75efb2a6f8978964f746614656ee9e33c9ce446.php.php:22
 #: Notifications/GenericNotificationWrapper.php:22
 msgid "Nuova notifica dal GAS"
-msgstr "Neue Benachrichtigung von der Bestell-Initiative"
+msgstr "Neue Benachrichtigung von der solidarischen Bestellgemeinschaft (GAS)"
 
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:7
 msgid "Statistiche Generali"
@@ -3028,12 +3029,12 @@ msgstr "Allgemeine Statistiken"
 
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:38
 msgid "Statistiche per Fornitore"
-msgstr "Statistiken bei Lieferant"
+msgstr "Statistiken nach Lieferant"
 
 #: ../storage/framework/messages/c97bc241fa9fd8c512d89e87fa3a73ad695bf9f0.php.php:3
 #, php-format
 msgid "Dettaglio Consegne Ordine %s presso %s del %s"
-msgstr "Lieferungsdetail %s beim Lieferant %s am %s"
+msgstr "Bestellübersichtl %s beim Lieferant %s am %s"
 
 #: ../storage/framework/messages/cac23c1f807d35ed3aefa09946d6973937a89c57.php.php:34
 msgid "Elimina Definitivamente"
@@ -3257,7 +3258,7 @@ msgstr "Bewegung: negative Nummer nicht erlaubt"
 #: ../storage/framework/messages/e8ee286fded7417333635effb318fb9231fc6d51.php.php:103
 #: Providers/MovementsKeeper.php:103
 msgid "Movimento: salvataggio negato da pre-callback"
-msgstr "Bewegung: Sperichern von pre-callback nicht erlaubt"
+msgstr "Bewegung: Speichern von pre-callback nicht erlaubt"
 
 #: ../storage/framework/messages/f09df145fef6941ab41adc6213877e2a6dcd58c0.php.php:2
 #, php-format
