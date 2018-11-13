@@ -18,13 +18,23 @@ class SuppliersService extends BaseService
 {
     public function list($term = '', $all = false)
     {
-        $this->ensureAuth();
+        $user = $this->ensureAuth();
+
         $query = Supplier::orderBy('name', 'asc');
 
         if (!empty($term)) {
             $query->where(function ($query) use ($term) {
                 $query->where('name', 'LIKE', "%$term%");
             });
+        }
+
+        if ($user->can('supplier.view', $user->gas) == false) {
+            $suppliers_id = [];
+
+            foreach($user->relatedObjectsByPermission('supplier.modify') as $supplier)
+                $suppliers_id[] = $supplier->id;
+
+            $query->whereIn('id', $suppliers_id);
         }
 
         if ($all)

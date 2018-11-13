@@ -2,9 +2,9 @@
 
 @section('content')
 
-<div class="row">
-    <div class="col-md-12">
-        @can('users.admin', $currentgas)
+@can('users.admin', $currentgas)
+    <div class="row">
+        <div class="col-md-12">
             @include('commons.addingbutton', [
                 'template' => 'user.base-edit',
                 'typename' => 'user',
@@ -52,12 +52,12 @@
                     </div>
                 </div>
             </div>
-        @endcan
+        </div>
     </div>
-</div>
 
-<div class="clearfix"></div>
-<hr/>
+    <div class="clearfix"></div>
+    <hr/>
+@endcan
 
 <div class="row">
     <div class="col-md-12">

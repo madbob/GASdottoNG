@@ -249,6 +249,22 @@ class User extends Authenticatable
         }
     }
 
+    public function relatedObjectsByPermission($permission)
+    {
+        $class = Role::classByRule($permission);
+
+        $objects = [];
+
+        foreach ($this->roles as $role) {
+            if ($role->enabledAction($permission))
+                foreach($role->applications(true) as $app)
+                    if (get_class($app) == $class)
+                        $objects[$app->id] = $app;
+        }
+
+        return $objects;
+    }
+
     public function getPendingBalanceAttribute()
     {
         $bookings = $this->bookings()->where('status', 'pending')->whereHas('order', function($query) {

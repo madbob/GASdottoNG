@@ -54,12 +54,12 @@ class DatabaseSeeder extends Seeder
 
         $admin_role = Role::create([
             'name' => 'Amministratore',
-            'actions' => 'gas.access,gas.permissions,gas.config,supplier.add,users.admin,users.movements,movements.admin,movements.types,categories.admin,measures.admin,gas.statistics,notifications.admin'
+            'actions' => 'gas.access,gas.permissions,gas.config,supplier.view,supplier.add,users.admin,users.movements,movements.admin,movements.types,categories.admin,measures.admin,gas.statistics,notifications.admin'
         ]);
 
         $user_role = Role::create([
             'name' => 'Utente',
-            'actions' => 'users.self,users.view,supplier.book',
+            'actions' => 'users.self,users.view,supplier.view,supplier.book',
             'always' => true,
             'parent_id' => $admin_role->id
         ]);
