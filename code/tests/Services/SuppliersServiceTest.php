@@ -34,13 +34,22 @@ class SuppliersServiceTest extends TestCase
         $this->userWithAdminPerm->addRole($admin_role, $this->gas);
 
         $referrer_role = \App\Role::create([
-            'name' => 'Admin',
+            'name' => 'Referrer',
             'actions' => 'supplier.modify'
         ]);
         $this->userWithReferrerPerms = factory(\App\User::class)->create([
             'gas_id' => $this->gas->id
         ]);
         $this->userWithReferrerPerms->addRole($referrer_role, $this->supplier);
+
+        $user_role = \App\Role::create([
+            'name' => 'User',
+            'actions' => 'supplier.view'
+        ]);
+        $this->userWithNormalPerms = factory(\App\User::class)->create([
+            'gas_id' => $this->gas->id
+        ]);
+        $this->userWithNormalPerms->addRole($user_role, $this->gas);
 
         $this->userWithNoPerms = factory(\App\User::class)->create([
             'gas_id' => $this->gas->id
@@ -78,9 +87,17 @@ class SuppliersServiceTest extends TestCase
         $this->assertEquals(0, $supplier->current_balance_amount);
     }
 
-    public function testList()
+    public function testNoList()
     {
         $this->actingAs($this->userWithNoPerms);
+
+        $suppliers = $this->suppliersService->list();
+        $this->assertCount(0, $suppliers);
+    }
+
+    public function testList()
+    {
+        $this->actingAs($this->userWithNormalPerms);
 
         $suppliers = $this->suppliersService->list();
         $this->assertCount(1, $suppliers);
@@ -141,7 +158,7 @@ class SuppliersServiceTest extends TestCase
 
     public function testShow()
     {
-        $this->actingAs($this->userWithNoPerms);
+        $this->actingAs($this->userWithNormalPerms);
 
         $supplier = $this->suppliersService->show($this->supplier->id);
 
