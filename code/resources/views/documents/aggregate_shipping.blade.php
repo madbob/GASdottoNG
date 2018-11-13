@@ -13,17 +13,19 @@
                 @continue
             @endif
 
-            @if($shipping_place != '0' && $super_booking->user->preferred_delivery_id != $shipping_place)
-                @continue
-            @endif
-
             <?php $cell_value = 0 ?>
 
             <table border="1" style="width: 100%" cellpadding="5" nobr="true">
                 <tr>
-                    <th colspan="3"><strong>{{ $super_booking->user->printableName() }}
-
+                    <th colspan="3">
                         <?php
+
+                        $head = '';
+
+                        if($shipping_mode == 'all_by_place')
+                            $head .= ($super_booking->user->shippingplace ? $super_booking->user->shippingplace->name : _i('[Luogo non Specificato]')) . ' - ';
+
+                        $head .= $super_booking->user->printableName();
 
                         $contacts = [];
 
@@ -33,9 +35,11 @@
                         }
 
                         if (!empty($contacts))
-                            echo ' - ' . join(', ', $contacts);
+                            $head .= ' - ' . join(', ', $contacts);
 
-                    ?></strong></th>
+                        ?>
+                        <strong>{{ $head }}</strong>
+                    </th>
                 </tr>
 
                 @foreach($super_booking->bookings as $booking)

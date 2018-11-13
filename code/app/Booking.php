@@ -400,9 +400,44 @@ class Booking extends Model
         return $ret;
     }
 
-    public function getSlugID()
+    public static function sortByShippingPlace($bookings, $shipping_place)
     {
-        return sprintf('%s::%s', $this->order->id, $this->user->id);
+        if ($shipping_place == 'all_by_name') {
+            /* dummy */
+        }
+        else if ($shipping_place == 'all_by_place') {
+            usort($bookings, function($a, $b) {
+                $a_place = $a->user->shippingplace;
+                $b_place = $b->user->shippingplace;
+
+                if (is_null($a_place) && is_null($b_place)) {
+                    return $a->user->printableName() <=> $b->user->printableName();
+                }
+                else if (is_null($a_place)) {
+                    return -1;
+                }
+                else if (is_null($b_place)) {
+                    return 1;
+                }
+                else {
+                    if ($a_place->id != $b_place->id)
+                        return $a_place <=> $b_place;
+                    else
+                        return $a->user->printableName() <=> $b->user->printableName();
+                }
+            });
+        }
+        else {
+            $tmp_bookings = [];
+
+            foreach($bookings as $booking)
+                if ($booking->user->preferred_delivery_id == $shipping_place)
+                    $tmp_bookings[] = $booking;
+
+            $bookings = $tmp_bookings;
+        }
+
+        return $bookings;
     }
 
     public function printableName()
@@ -436,6 +471,13 @@ class Booking extends Model
     public function getShowURL()
     {
         return route('booking.user.show', ['booking' => $this->order->aggregate_id, 'user' => $this->user_id]);
+    }
+
+    /************************************************************ SluggableID */
+
+    public function getSlugID()
+    {
+        return sprintf('%s::%s', $this->order->id, $this->user->id);
     }
 
     /******************************************************** CreditableTrait */

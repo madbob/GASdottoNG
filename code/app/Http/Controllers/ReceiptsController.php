@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Auth;
 use DB;
 use PDF;
+use Log;
 use Mail;
 
 use App\Receipt;
@@ -105,14 +106,19 @@ class ReceiptsController extends Controller
                 if (empty($real_recipient_mails))
                     return;
 
-                $m = Mail::to($real_recipient_mails);
-                $subject_mail = $request->input('subject_mail');
-                $body_mail = $request->input('body_mail');
-                $m->send(new ReceiptForward($temp_file_path, $subject_mail, $body_mail));
+                try {
+                    $m = Mail::to($real_recipient_mails);
+                    $subject_mail = $request->input('subject_mail');
+                    $body_mail = $request->input('body_mail');
+                    $m->send(new ReceiptForward($temp_file_path, $subject_mail, $body_mail));
+
+                    $receipt->mailed = true;
+                }
+                catch(\Exception $e) {
+                    Log::error('Impossibile inoltrare fattura: ' . $e->getMessage());
+                }
 
                 @unlink($temp_file_path);
-
-                $receipt->mailed = true;
                 $receipt->save();
             }
             else {

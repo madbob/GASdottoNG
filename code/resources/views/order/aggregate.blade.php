@@ -135,7 +135,8 @@ $panel_rand_wrap = rand();
                                                 'labelsize' => 2,
                                                 'fieldsize' => 10,
                                                 'values' => array_merge(
-                                                    [0 => (object)['name' => 'Tutti', 'checked' => true]],
+                                                    ['all_by_name' => (object)['name' => _i('Tutti (ordinati per utente)')]],
+                                                    ['all_by_place' => (object)['name' => _i('Tutti (ordinati per luogo)')]],
                                                     as_choosable($currentgas->deliveries, function($i, $a) {
                                                         return $a->id;
                                                     }, function($i, $a) {

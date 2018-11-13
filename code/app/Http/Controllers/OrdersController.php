@@ -351,17 +351,7 @@ class OrdersController extends Controller
     private function orderTopBookingsByShipping($order, $shipping_place, $status = null)
     {
         $bookings = $order->topLevelBookings($status);
-        if ($shipping_place != '0') {
-            $tmp_bookings = [];
-
-            foreach($bookings as $booking)
-                if ($booking->user->preferred_delivery_id == $shipping_place)
-                    $tmp_bookings[] = $booking;
-
-            $bookings = $tmp_bookings;
-        }
-
-        return $bookings;
+        return Booking::sortByShippingPlace($bookings, $shipping_place);
     }
 
     public function document(Request $request, $id, $type)
@@ -370,10 +360,10 @@ class OrdersController extends Controller
 
         switch ($type) {
             case 'shipping':
-                $shipping_place = $request->input('shipping_place', 0);
+                $shipping_place = $request->input('shipping_place', 'all_by_name');
                 $bookings = self::orderTopBookingsByShipping($order, $shipping_place);
 
-                $html = view('documents.order_shipping', ['order' => $order, 'bookings' => $bookings])->render();
+                $html = view('documents.order_shipping', ['order' => $order, 'bookings' => $bookings, 'shipping_mode' => $shipping_place])->render();
                 $title = _i('Dettaglio Consegne ordine %s presso %s', [$order->internal_number, $order->supplier->name]);
                 $filename = $title . '.pdf';
                 PDF::SetTitle($title);

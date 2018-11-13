@@ -12,6 +12,7 @@ use Log;
 
 use App\Aggregate;
 use App\Order;
+use App\Booking;
 
 class AggregatesController extends OrdersController
 {
@@ -138,13 +139,17 @@ class AggregatesController extends OrdersController
     {
         $aggregate = Aggregate::findOrFail($id);
 
+        $shipping_place = $request->input('shipping_place', 'all_by_name');
+        $bookings = $aggregate->bookings;
+        Booking::sortByShippingPlace($bookings, $shipping_place);
+
         switch ($type) {
             case 'shipping':
                 $html = view('documents.aggregate_shipping', [
                     'aggregate' => $aggregate,
-                    'bookings' => $aggregate->bookings,
+                    'bookings' => $bookings,
                     'products_source' => 'products_with_friends',
-                    'shipping_place' => $request->input('shipping_place', 0)
+                    'shipping_mode' => $shipping_place
                 ])->render();
 
                 $filename = sprintf('Dettaglio Consegne Ordini.pdf');
