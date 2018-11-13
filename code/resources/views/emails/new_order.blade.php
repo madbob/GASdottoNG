@@ -8,5 +8,5 @@
     {{ $order->getBookingURL() }}
 </p>
 <p>
-    {{ _i('Le prenotazioni verranno chiuse %s.', printableDate($order->enddate)) }}
+    {{ _i('Le prenotazioni verranno chiuse %s.', printableDate($order->end)) }}
 </p>

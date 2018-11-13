@@ -54,13 +54,7 @@ trait GASModel
 
     public function printableDate($name)
     {
-        if (is_null($this->$name)) {
-            return 'Mai';
-        }
-        else {
-            $t = strtotime($this->$name);
-            return ucwords(strftime('%A %d %B %G', $t));
-        }
+        return printableDate($this->$name);
     }
 
     protected function innerCache($name, $function)
