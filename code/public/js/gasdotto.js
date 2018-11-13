@@ -1208,9 +1208,11 @@ $(document).ready(function() {
         }
     });
 
-    $('body').on('keyup', 'input.number', function(e) {
-        if (e.which >= 37 && e.which <= 40)
+    $('body').on('keydown', 'input.number', function(e) {
+        if (e.which == 13) {
+            e.preventDefault();
             return;
+        }
 
         var allow_negative = ($(this).attr('data-allow-negative') == '1');
 
@@ -2333,7 +2335,7 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('keyup', '.booking-product-quantity input', function() {
+    $('body').on('keyup', '.booking-product-quantity input', function(e) {
         var booked = parseFloatC($(this).val());
         var row = $(this).closest('.booking-product');
         var wrong = false;

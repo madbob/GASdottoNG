@@ -1,14 +1,7 @@
 <?php
 
 $user = Auth::user();
-$suppliers = [];
-
-foreach ($user->roles as $role) {
-    if ($role->enabledAction('supplier.orders'))
-        foreach($role->applications(true) as $app)
-            if (get_class($app) == 'App\Supplier')
-                $suppliers[$app->id] = $app;
-}
+$suppliers = $user->relatedObjectsByPermission('supplier.orders')
 
 ?>
 
