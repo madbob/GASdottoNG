@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2018-10-17 00:24+0200\n"
-"PO-Revision-Date: 2018-11-11 20:01+0000\n"
+"PO-Revision-Date: 2018-11-13 08:07+0000\n"
 "Last-Translator: Uli Orangen <reiterulr@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
 "translations/de/>\n"
@@ -10,7 +10,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.1.1\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.3-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -397,7 +398,7 @@ msgstr "Importierte Nutzer"
 #: Http/Controllers/ImportController.php:428
 #, php-format
 msgid "Utente non trovato: %s"
-msgstr ""
+msgstr "Benutzer nicht gefunden: %s"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:507
 #: Http/Controllers/ImportController.php:507
@@ -487,11 +488,11 @@ msgstr "öffentliche Registrierung zugelassen"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:74
 msgid "Link Privacy Policy"
-msgstr ""
+msgstr "Link Datenschutz"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:79
 msgid "Campi Obbligatori"
-msgstr ""
+msgstr "Pflichtfelder"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:86
 #: ../storage/framework/messages/228f140cb7ecb9766e9c37c4923bb778f5838499.php.php:282
@@ -1463,6 +1464,8 @@ msgid ""
 "Seleziona i fornitori per i quali vuoi ricevere una notifica all'apertura di "
 "nuovi ordini."
 msgstr ""
+"Wähle die Lieferanten aus für die du eine Benachrichtigung erhalten möchtest "
+"bei Eröffnung einer neuen Bestellung."
 
 #: ../storage/framework/messages/2982b90f6cfcaf4cb0c27c14b07650ad2a9c8b52.php.php:21
 #: ../storage/framework/messages/5dbdf19ef533ccf35a7d42c8c53f16d436cc1df2.php.php:29
@@ -1745,9 +1748,8 @@ msgstr "Lieferungen eintragen"
 
 #: ../storage/framework/messages/3938b5a29ee4fcba7a54b33debb586a987960ef9.php.php:448
 #: Role.php:448
-#| msgid "Amministrare tutti i movimenti contabili"
 msgid "Amministrare i movimenti contabili"
-msgstr ""
+msgstr "Buchungen administrieren"
 
 #: ../storage/framework/messages/398b3604d638b256cf9fce8787422cf7a24962b5.php.php:6
 msgid "Sostituisci File"
@@ -2671,9 +2673,8 @@ msgstr ""
 "Verbindung zu setzen: info@gasdotto.net"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:23
-#| msgid "Stato Prenotazioni"
 msgid "Invia Riepiloghi Prenotazioni"
-msgstr ""
+msgstr "Zusammenfassungen der Vorbestellungen verschicken"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:25
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:15
@@ -2814,7 +2815,7 @@ msgstr "Registrieren"
 #: Notifications/NewOrderNotification.php:22
 #, php-format
 msgid "Nuovo Ordine Aperto per %s"
-msgstr ""
+msgstr "Neue Bestellung eröffnet für %s"
 
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:12
 #: ../storage/framework/messages/f0d8388990de9779bae078c14f11fa56be8ab204.php.php:12
@@ -3211,6 +3212,8 @@ msgid ""
 "<a href=\"%s\">Clicca qui per aggiornare la tua password</a>, o ignora la "
 "mail se non hai chiesto tu questa operazione."
 msgstr ""
+"<a href=\"%s\">Klick hier um dein Passwort zu aktualisieren</a>, oder "
+"ignoriere diese Mail, falls du diese Aktion nicht angefordert hast."
 
 #: ../storage/framework/messages/e8b3a964af84cfa9bdb41b7a7faef7f6ff0b830f.php.php:37
 #: ../storage/framework/messages/e8b3a964af84cfa9bdb41b7a7faef7f6ff0b830f.php.php:60
@@ -3262,19 +3265,17 @@ msgstr "Bewegung: Speichern von pre-callback nicht erlaubt"
 
 #: ../storage/framework/messages/f09df145fef6941ab41adc6213877e2a6dcd58c0.php.php:2
 #, php-format
-#| msgid "Puoi aprire nuovi ordini per il fornitore"
 msgid "È stato aperto da %s un nuovo ordine per il fornitore %s."
-msgstr ""
+msgstr "Eine neue Bestellung wurde eröffnet von %s für den Lieferanten %s."
 
 #: ../storage/framework/messages/f09df145fef6941ab41adc6213877e2a6dcd58c0.php.php:6
 msgid "Per partecipare, accedi al seguente indirizzo:"
-msgstr ""
+msgstr "Um daran teilzunehmen, melde dich über folgenden Link an:"
 
 #: ../storage/framework/messages/f09df145fef6941ab41adc6213877e2a6dcd58c0.php.php:14
 #, php-format
-#| msgid "Prenotazioni Chiuse"
 msgid "Le prenotazioni verranno chiuse %s."
-msgstr ""
+msgstr "Die Vorbestellung wird geschlossen am %s."
 
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:87
 #: Http/Controllers/MovementsController.php:87
@@ -3330,12 +3331,17 @@ msgid ""
 "Ho letto e accetto l'<a href=\"%s\" target=\"_blank\">Informativa sulla "
 "Privacy</a>."
 msgstr ""
+"Ich habe die <a href=\"%s\" target=\"_blank\">Datenschutzhinweise</a> "
+"gelesen und akzeptiere sie."
 
 #: ../storage/framework/messages/f5974edcd79a5ad220dfbbdb77a0a8635cc5ed1e.php.php:28
 msgid ""
 "All'apertura dell'ordine, saranno inviate mail di annuncio a tutti gli "
 "utenti che hanno abilitato le notifiche per il fornitore selezionato."
 msgstr ""
+"Bei der Eröffnung einer Bestellung werden Ankündigungsmails verschickt an "
+"alle Nutzer, die die Benachrichtigungsfunktion für den ausgewählten "
+"Lieferanten aktiviert haben."
 
 #: ../storage/framework/messages/f796dafdee82b09381216fb50e2ba2e5fad4fb8b.php.php:20
 msgid "Non hai partecipato a quest'ordine."
