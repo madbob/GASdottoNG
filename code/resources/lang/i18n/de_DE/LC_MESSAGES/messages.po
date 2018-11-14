@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2018-10-17 00:24+0200\n"
-"PO-Revision-Date: 2018-11-13 08:07+0000\n"
+"PO-Revision-Date: 2018-11-15 15:07+0000\n"
 "Last-Translator: Uli Orangen <reiterulr@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
 "translations/de/>\n"
@@ -2503,7 +2503,7 @@ msgstr "Zu bezahlen"
 
 #: ../storage/framework/messages/8213b2de42a57b8769b9deb8aaed6d84d10a486c.php.php:92
 msgid "di cui"
-msgstr "von"
+msgstr "wovon"
 
 #: ../storage/framework/messages/8227bb95fdab589ba8bd6971faa6f37d987f2ea8.php.php:32
 msgid "GRUPPO DI ACQUISTO SOLIDALE"
