@@ -1,79 +1,94 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: GASdotto\n"
-"POT-Creation-Date: 2018-01-19 17:37+0100\n"
-"PO-Revision-Date: 2018-01-19 17:38+0100\n"
-"Last-Translator: Roberto Guido <bob@linux.it>\n"
-"Language-Team: Roberto Guido <bob@linux.it>\n"
-"Language: fr_FR\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-11-17 11:19+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: public/js/gasdotto.js:145
+#: public/js/gasdotto.js:145 public/js/gasdotto.js:149
 msgid "Questa prenotazione esiste già e non può essere ricreata."
 msgstr "Cette réservation existe déjà et ne peut pas être recréée."
 
-#: public/js/gasdotto.js:1122
+#: public/js/gasdotto.js:1122 public/js/gasdotto.js:987
 msgid "Sei sicuro di voler revocare questo ruolo?"
 msgstr "Êtes-vous sûr de vouloir révoquer ce rôle ?"
 
-#: public/js/gasdotto.js:1599
+#: public/js/gasdotto.js:1599 public/js/gasdotto.js:1443
 msgid "Sei sicuro di voler eliminare questo elemento?"
 msgstr "Êtes-vous sûr de vouloir supprimer cet élément ?"
 
 #: public/js/gasdotto.js:1732 public/js/jquery.dynamictree.js:73
+#: public/js/gasdotto.js:1678 public/js/jquery.dynamictree.js:81
 msgid "Salvato!"
 msgstr "Sauvegardé!"
 
-#: public/js/gasdotto.js:1810
+#: public/js/gasdotto.js:1810 public/js/gasdotto.js:1780
 msgid "bilanci_ricalcolati.csv"
 msgstr "recalculated_balances.csv"
 
-#: public/js/gasdotto.js:1829
+#: public/js/gasdotto.js:1829 public/js/gasdotto.js:1799
 msgid "Nuova Password"
 msgstr "Nouveau Mot De Passe"
 
-#: public/js/gasdotto.js:1833
+#: public/js/gasdotto.js:1833 public/js/gasdotto.js:1803
 msgid "Conferma Password"
 msgstr "Confirmer Mot De Passe"
 
 #: public/js/gasdotto.js:1837 public/js/gasdotto.js:1889
+#: public/js/gasdotto.js:1807 public/js/gasdotto.js:1863
 msgid "Annulla"
 msgstr "Annuler"
 
 #: public/js/gasdotto.js:1837 public/js/gasdotto.js:1889
+#: public/js/gasdotto.js:1863
 msgid "Salva"
 msgstr "Sauvegarder"
 
-#: public/js/gasdotto.js:1877
+#: public/js/gasdotto.js:1877 public/js/gasdotto.js:1851
 msgid "Indirizzo"
 msgstr "Adresse"
 
-#: public/js/gasdotto.js:1881
+#: public/js/gasdotto.js:1881 public/js/gasdotto.js:1855
 msgid "Città"
 msgstr "Ville"
 
-#: public/js/gasdotto.js:1885
+#: public/js/gasdotto.js:1885 public/js/gasdotto.js:1859
 msgid "CAP"
 msgstr "Code postal"
 
-#: public/js/gasdotto.js:2092
+#: public/js/gasdotto.js:2092 public/js/gasdotto.js:2065
 msgid "ERRORE"
 msgstr "ERREUR"
 
-#: public/js/gasdotto.js:2170
+#: public/js/gasdotto.js:2170 public/js/gasdotto.js:2286
 msgid "Invia Mail"
 msgstr "Envoyer Email"
 
-#: public/js/gasdotto.js:2176
+#: public/js/gasdotto.js:2176 public/js/gasdotto.js:2292
 msgid "Download"
 msgstr "Télécharger"
 
-#: public/js/gasdotto.js:2390
+#: public/js/gasdotto.js:2390 public/js/gasdotto.js:2567
 msgid "Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?"
-msgstr "Toutes les quantitées sont remises à zéro ! Voulez-vous vraiment le faire ?"
+msgstr ""
+"Toutes les quantitées sont remises à zéro ! Voulez-vous vraiment le faire ?"
 
-#: public/js/gasdotto.js:2426
+#: public/js/gasdotto.js:2426 public/js/gasdotto.js:2603
 msgid "Sei sicuro di voler annullare questa prenotazione?"
 msgstr "Êtes-vous sûr de vouloir annuler cette réservation ?"
+
+#: public/js/gasdotto.js:1807
+msgid "Conferma"
+msgstr ""

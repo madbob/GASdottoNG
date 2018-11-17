@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-19 22:45+0200\n"
+"POT-Creation-Date: 2018-11-17 11:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,74 +17,76 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: public/js/gasdotto.js:146
+#: public/js/gasdotto.js:146 public/js/gasdotto.js:149
 msgid "Questa prenotazione esiste già e non può essere ricreata."
 msgstr "Denne reservasjonen finnes allerede og kan ikke gjenopprettes"
 
-#: public/js/gasdotto.js:973
+#: public/js/gasdotto.js:973 public/js/gasdotto.js:987
 msgid "Sei sicuro di voler revocare questo ruolo?"
 msgstr "Vil du virkelig tilbakekalle denne rollen?"
 
-#: public/js/gasdotto.js:1420
+#: public/js/gasdotto.js:1420 public/js/gasdotto.js:1443
 msgid "Sei sicuro di voler eliminare questo elemento?"
 msgstr "Vil du slette denne rollen?"
 
 #: public/js/gasdotto.js:1619 public/js/jquery.dynamictree.js:73
+#: public/js/gasdotto.js:1678 public/js/jquery.dynamictree.js:81
 msgid "Salvato!"
 msgstr "Lagret!"
 
-#: public/js/gasdotto.js:1721
+#: public/js/gasdotto.js:1721 public/js/gasdotto.js:1780
 msgid "bilanci_ricalcolati.csv"
 msgstr "beregnet_balanser.csv"
 
-#: public/js/gasdotto.js:1740
+#: public/js/gasdotto.js:1740 public/js/gasdotto.js:1799
 msgid "Nuova Password"
 msgstr "Nytt passord"
 
-#: public/js/gasdotto.js:1744
+#: public/js/gasdotto.js:1744 public/js/gasdotto.js:1803
 msgid "Conferma Password"
 msgstr "Bekreft passord"
 
 #: public/js/gasdotto.js:1748 public/js/gasdotto.js:1800
+#: public/js/gasdotto.js:1807 public/js/gasdotto.js:1863
 msgid "Annulla"
 msgstr "Avbryt"
 
-#: public/js/gasdotto.js:1748
+#: public/js/gasdotto.js:1748 public/js/gasdotto.js:1807
 msgid "Conferma"
 msgstr "Bekreft"
 
-#: public/js/gasdotto.js:1788
+#: public/js/gasdotto.js:1788 public/js/gasdotto.js:1851
 msgid "Indirizzo"
 msgstr "Adresse"
 
-#: public/js/gasdotto.js:1792
+#: public/js/gasdotto.js:1792 public/js/gasdotto.js:1855
 msgid "Città"
 msgstr "By"
 
-#: public/js/gasdotto.js:1796
+#: public/js/gasdotto.js:1796 public/js/gasdotto.js:1859
 msgid "CAP"
 msgstr "Postnummer"
 
-#: public/js/gasdotto.js:1800
+#: public/js/gasdotto.js:1800 public/js/gasdotto.js:1863
 msgid "Salva"
 msgstr "Lagre"
 
-#: public/js/gasdotto.js:1998
+#: public/js/gasdotto.js:1998 public/js/gasdotto.js:2065
 msgid "ERRORE"
 msgstr "FEIL"
 
-#: public/js/gasdotto.js:2214
+#: public/js/gasdotto.js:2214 public/js/gasdotto.js:2286
 msgid "Invia Mail"
 msgstr "Send e-post"
 
-#: public/js/gasdotto.js:2220
+#: public/js/gasdotto.js:2220 public/js/gasdotto.js:2292
 msgid "Download"
 msgstr "Last ned"
 
-#: public/js/gasdotto.js:2495
+#: public/js/gasdotto.js:2495 public/js/gasdotto.js:2567
 msgid "Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?"
 msgstr "Det finnes null leverte enheter! Vil du fortsette?"
 
-#: public/js/gasdotto.js:2531
+#: public/js/gasdotto.js:2531 public/js/gasdotto.js:2603
 msgid "Sei sicuro di voler annullare questa prenotazione?"
 msgstr "Er du sikker på at du vil avbryte denne reservasjonen?"

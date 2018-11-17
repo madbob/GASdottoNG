@@ -3,88 +3,88 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-15 21:29+0200\n"
-"PO-Revision-Date: 2018-08-19 23:00+0200\n"
-"Language: it_IT\n"
+"POT-Creation-Date: 2018-11-17 11:19+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"X-Generator: Poedit 2.1.1\n"
 
-#: public/js/gasdotto.js:146
+#: public/js/gasdotto.js:149
 msgid "Questa prenotazione esiste già e non può essere ricreata."
-msgstr "Questa prenotazione esiste già e non può essere ricreata."
+msgstr ""
 
-#: public/js/gasdotto.js:973
+#: public/js/gasdotto.js:987
 msgid "Sei sicuro di voler revocare questo ruolo?"
-msgstr "Sei sicuro di voler revocare questo ruolo?"
+msgstr ""
 
-#: public/js/gasdotto.js:1420
+#: public/js/gasdotto.js:1443
 msgid "Sei sicuro di voler eliminare questo elemento?"
-msgstr "Sei sicuro di voler eliminare questo elemento?"
+msgstr ""
 
-#: public/js/gasdotto.js:1619 public/js/jquery.dynamictree.js:73
+#: public/js/gasdotto.js:1678 public/js/jquery.dynamictree.js:81
 msgid "Salvato!"
-msgstr "Salvato!"
+msgstr ""
 
-#: public/js/gasdotto.js:1721
+#: public/js/gasdotto.js:1780
 msgid "bilanci_ricalcolati.csv"
-msgstr "bilanci_ricalcolati.csv"
+msgstr ""
 
-#: public/js/gasdotto.js:1740
+#: public/js/gasdotto.js:1799
 msgid "Nuova Password"
-msgstr "Nuova Password"
+msgstr ""
 
-#: public/js/gasdotto.js:1744
+#: public/js/gasdotto.js:1803
 msgid "Conferma Password"
-msgstr "Conferma Password"
+msgstr ""
 
-#: public/js/gasdotto.js:1748 public/js/gasdotto.js:1800
+#: public/js/gasdotto.js:1807 public/js/gasdotto.js:1863
 msgid "Annulla"
-msgstr "Annulla"
+msgstr ""
 
-#: public/js/gasdotto.js:1748
+#: public/js/gasdotto.js:1807
 msgid "Conferma"
-msgstr "Conferma"
+msgstr ""
 
-#: public/js/gasdotto.js:1788
+#: public/js/gasdotto.js:1851
 msgid "Indirizzo"
-msgstr "Indirizzo"
+msgstr ""
 
-#: public/js/gasdotto.js:1792
+#: public/js/gasdotto.js:1855
 msgid "Città"
-msgstr "Città"
+msgstr ""
 
-#: public/js/gasdotto.js:1796
+#: public/js/gasdotto.js:1859
 msgid "CAP"
-msgstr "CAP"
+msgstr ""
 
-#: public/js/gasdotto.js:1800
+#: public/js/gasdotto.js:1863
 msgid "Salva"
-msgstr "Salva"
+msgstr ""
 
-#: public/js/gasdotto.js:1998
+#: public/js/gasdotto.js:2065
 msgid "ERRORE"
-msgstr "ERRORE"
+msgstr ""
 
-#: public/js/gasdotto.js:2214
+#: public/js/gasdotto.js:2286
 msgid "Invia Mail"
-msgstr "Invia Mail"
+msgstr ""
 
-#: public/js/gasdotto.js:2220
+#: public/js/gasdotto.js:2292
 msgid "Download"
-msgstr "Download"
+msgstr ""
 
-#: public/js/gasdotto.js:2495
+#: public/js/gasdotto.js:2567
 msgid "Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?"
-msgstr "Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?"
+msgstr ""
 
-#: public/js/gasdotto.js:2531
+#: public/js/gasdotto.js:2603
 msgid "Sei sicuro di voler annullare questa prenotazione?"
-msgstr "Sei sicuro di voler annullare questa prenotazione?"
+msgstr ""
