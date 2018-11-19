@@ -392,7 +392,7 @@ class Order extends Model
                     $test = round($product->portion_quantity * $product->package_size, 2);
                 }
 
-                $test = round($quantity % $test);
+                $test = round(fmod($quantity, $test));
                 if ($test != 0) {
                     $summary->products[$product->id]['notes'] = true;
                 }
