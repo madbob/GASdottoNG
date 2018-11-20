@@ -141,7 +141,7 @@ class AggregatesController extends OrdersController
 
         $shipping_place = $request->input('shipping_place', 'all_by_name');
         $bookings = $aggregate->bookings;
-        Booking::sortByShippingPlace($bookings, $shipping_place);
+        $bookings = Booking::sortByShippingPlace($bookings, $shipping_place);
 
         switch ($type) {
             case 'shipping':
