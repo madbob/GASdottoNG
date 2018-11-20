@@ -9,12 +9,9 @@
         }
         else {
             $(this).each(function() {
-                if ($(this).attr('data-manyrow-inited') == null) {
-                    $(this).attr('data-manyrow-inited', '1');
-                    $(this).off('click', '.delete-many-rows', removeRow).on('click', '.delete-many-rows', removeRow);
-                    $(this).off('click', '.add-many-rows', appendRow).on('click', '.add-many-rows', appendRow);
-                    addDeleteButtons($(this));
-                }
+                $(this).off('click', '.delete-many-rows', removeRow).on('click', '.delete-many-rows', removeRow);
+                $(this).off('click', '.add-many-rows', appendRow).on('click', '.add-many-rows', appendRow);
+                addDeleteButtons($(this));
             });
         }
 
