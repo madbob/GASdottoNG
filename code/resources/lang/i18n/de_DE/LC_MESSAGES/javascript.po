@@ -19,75 +19,75 @@ msgstr ""
 
 #: public/js/gasdotto.js:145 public/js/gasdotto.js:149
 msgid "Questa prenotazione esiste già e non può essere ricreata."
-msgstr ""
+msgstr "Diese Vorbestellung existiert schon und kann nicht wiederhergestellt werden."
 
 #: public/js/gasdotto.js:1122 public/js/gasdotto.js:987
 msgid "Sei sicuro di voler revocare questo ruolo?"
-msgstr ""
+msgstr "Bist du sicher, dass du diese Rolle widerrufen möchtest?"
 
 #: public/js/gasdotto.js:1599 public/js/gasdotto.js:1443
 msgid "Sei sicuro di voler eliminare questo elemento?"
-msgstr ""
+msgstr "Bist du sicher, dass du dieses Element löschen möchtest?"
 
 #: public/js/gasdotto.js:1732 public/js/jquery.dynamictree.js:73
 #: public/js/gasdotto.js:1678 public/js/jquery.dynamictree.js:81
 msgid "Salvato!"
-msgstr ""
+msgstr "Gespeichert!"
 
 #: public/js/gasdotto.js:1810 public/js/gasdotto.js:1780
 msgid "bilanci_ricalcolati.csv"
-msgstr ""
+msgstr "bilanzen_neuberechnet.csv"
 
 #: public/js/gasdotto.js:1829 public/js/gasdotto.js:1799
 msgid "Nuova Password"
-msgstr ""
+msgstr "Neues Passwort"
 
 #: public/js/gasdotto.js:1833 public/js/gasdotto.js:1803
 msgid "Conferma Password"
-msgstr ""
+msgstr "Passwort bestätigen"
 
 #: public/js/gasdotto.js:1837 public/js/gasdotto.js:1889
 #: public/js/gasdotto.js:1807 public/js/gasdotto.js:1863
 msgid "Annulla"
-msgstr ""
+msgstr "Löschen"
 
 #: public/js/gasdotto.js:1837 public/js/gasdotto.js:1889
 #: public/js/gasdotto.js:1863
 msgid "Salva"
-msgstr ""
+msgstr "Speichern"
 
 #: public/js/gasdotto.js:1877 public/js/gasdotto.js:1851
 msgid "Indirizzo"
-msgstr ""
+msgstr "Adresse"
 
 #: public/js/gasdotto.js:1881 public/js/gasdotto.js:1855
 msgid "Città"
-msgstr ""
+msgstr "Stadt"
 
 #: public/js/gasdotto.js:1885 public/js/gasdotto.js:1859
 msgid "CAP"
-msgstr ""
+msgstr "PLZ"
 
 #: public/js/gasdotto.js:2092 public/js/gasdotto.js:2065
 msgid "ERRORE"
-msgstr ""
+msgstr "FEHLER"
 
 #: public/js/gasdotto.js:2170 public/js/gasdotto.js:2286
 msgid "Invia Mail"
-msgstr ""
+msgstr "Mail verschicken"
 
 #: public/js/gasdotto.js:2176 public/js/gasdotto.js:2292
 msgid "Download"
-msgstr ""
+msgstr "Herunterladen"
 
 #: public/js/gasdotto.js:2390 public/js/gasdotto.js:2567
 msgid "Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?"
-msgstr ""
+msgstr "Alle Bestellmengen sind auf Null! Willst du wirklich fortfahren?"
 
 #: public/js/gasdotto.js:2426 public/js/gasdotto.js:2603
 msgid "Sei sicuro di voler annullare questa prenotazione?"
-msgstr ""
+msgstr "Bist du sicher, dass du diese Vorbestellung löschen möchtest?"
 
 #: public/js/gasdotto.js:1807
 msgid "Conferma"
-msgstr ""
+msgstr "Bestätigen"
