@@ -109,6 +109,8 @@ class BookingHandler extends Controller
 
                                 $bpv->save();
 
+                                $no_components = true;
+
                                 foreach ($values as $variant_id => $vals) {
                                     $value_id = $vals[$i];
                                     if (empty($value_id))
@@ -118,7 +120,11 @@ class BookingHandler extends Controller
                                     $bpc->variant_id = $variant_id;
                                     $bpc->value_id = $value_id;
                                     $bpc->save();
+                                    $no_components = false;
                                 }
+
+                                if ($no_components)
+                                    $bpv->delete();
                             }
                             else {
                                 if ($q == 0 && $delivering == false) {
