@@ -103,6 +103,21 @@
                 <div role="tabpanel" class="tab-pane" id="movements-types-tab">
                     <div class="row">
                         <div class="col-md-12">
+                            <div class="alert alert-danger">
+                                <p>
+                                    {{ _i('Attenzione! Modifica i comportamenti dei tipi di movimento contabile con molta cautela!') }}
+                                </p>
+                                <p>
+                                    {{ _i('Prima di modificare il comportamento di un tipo esistente, e magari già assegnato a qualche movimento contabile registrato, si raccomanda di usare la funzione "Archivia Saldi" in modo che i movimenti precedentemente contabilizzati non vengano rielaborati usando il nuovo comportamento (producendo saldi completamente diversi da quelli attuali).') }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+
+                    <div class="row">
+                        <div class="col-md-12">
                             @include('commons.addingbutton', [
                                 'template' => 'movementtypes.base-edit',
                                 'typename' => 'movementtype',
