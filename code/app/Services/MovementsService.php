@@ -54,7 +54,7 @@ class MovementsService extends BaseService
             $query->where('method', $request['method']);
         }
 
-        if (isset($request['user_id']) && $request['user_id'] != '0') {
+        if (isset($request['user_id']) && !empty($request['user_id']) && $request['user_id'] != '0') {
             $user_id = $request['user_id'];
             $generic_target = User::find($user_id);
             if ($generic_target)
