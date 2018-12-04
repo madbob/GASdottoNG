@@ -25,8 +25,11 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="list-group pull-right">
-                <a href="#" class="list-group-item" data-toggle="modal" data-target="#receipt-document-{{ $receipt->id }}">{{ _i('Scarica o Inoltra') }}</a>
+            <div class="list-group">
+                <a href="#" class="list-group-item" data-toggle="modal" data-target="#receipt-document-{{ $receipt->id }}">
+                    {{ _i('Scarica o Inoltra') }}
+                    <span class="glyphicon glyphicon-modal-window pull-right" aria-hidden="true"></span>
+                </a>
             </div>
         </div>
     </div>

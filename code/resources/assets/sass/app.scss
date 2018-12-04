@@ -416,9 +416,15 @@ table {
 }
 
 .list-group {
-    float: left;
-    width: 100%;
     margin-bottom: 11px;
+
+    .list-group-item {
+        .appended-loadable-message {
+            width: 100%;
+            text-align: right;
+            display: block;
+        }
+    }
 }
 
 .dense-list {
@@ -435,17 +441,6 @@ table {
     .list-group-item {
         padding-top: 5px;
         padding-bottom: 5px;
-    }
-}
-
-.list-group-item {
-    float: left;
-    width: 100%;
-
-    .appended-loadable-message {
-        float: right;
-        width: 100%;
-        text-align: right;
     }
 }
 

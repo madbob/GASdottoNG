@@ -57,7 +57,7 @@
                 </div>
             </div>
 
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#orderDates">{{ _i('Gestione Date') }}</button>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#orderDates">{{ _i('Gestione Date') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
 
             <div class="modal fade dynamic-contents" id="orderDates" tabindex="-1" role="dialog" data-contents-url="{{ route('dates.index') }}">
                 <div class="modal-dialog modal-extra-lg" role="document">

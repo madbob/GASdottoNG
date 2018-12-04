@@ -301,9 +301,11 @@ table .form-group {
   border-left: 1px solid #ddd; }
 
 .list-group {
-  float: left;
-  width: 100%;
   margin-bottom: 11px; }
+  .list-group .list-group-item .appended-loadable-message {
+    width: 100%;
+    text-align: right;
+    display: block; }
 
 .dense-list ul {
   height: 930px;
@@ -316,14 +318,6 @@ table .form-group {
 .dense-list .list-group-item {
   padding-top: 5px;
   padding-bottom: 5px; }
-
-.list-group-item {
-  float: left;
-  width: 100%; }
-  .list-group-item .appended-loadable-message {
-    float: right;
-    width: 100%;
-    text-align: right; }
 
 .gray-row {
   background-color: #F6F6F6;

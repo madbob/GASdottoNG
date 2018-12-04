@@ -104,8 +104,11 @@ $panel_rand_wrap = rand();
                             <div class="col-md-4">
                             </div>
                             <div class="col-md-4">
-                                <div class="list-group pull-right">
-                                    <a href="#" class="list-group-item" data-toggle="modal" data-target="#shipping-products-aggregate-document-{{ $aggregate->id }}">{{ _i('Dettaglio Consegne Aggregato') }}</a>
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item" data-toggle="modal" data-target="#shipping-products-aggregate-document-{{ $aggregate->id }}">
+                                        {{ _i('Dettaglio Consegne Aggregato') }}
+                                        <span class="glyphicon glyphicon-modal-window pull-right" aria-hidden="true"></span>
+                                    </a>
                                 </div>
                             </div>
                         </div>

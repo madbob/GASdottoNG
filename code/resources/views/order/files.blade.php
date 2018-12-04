@@ -1,9 +1,18 @@
 <?php $rand = rand() ?>
 
-<div class="list-group pull-right">
-    <a href="#" class="list-group-item" data-toggle="modal" data-target="#shipping-products-document-{{ $rand }}">{{ _i('Dettaglio Consegne') }}</a>
-    <a href="#" class="list-group-item" data-toggle="modal" data-target="#summary-products-document-{{ $rand }}">{{ _i('Riassunto Prodotti Ordinati') }}</a>
-    <a href="#" class="list-group-item" data-toggle="modal" data-target="#all-products-document-{{ $rand }}">{{ _i('Tabella Complessiva Prodotti') }}</a>
+<div class="list-group">
+    <a href="#" class="list-group-item" data-toggle="modal" data-target="#shipping-products-document-{{ $rand }}">
+        {{ _i('Dettaglio Consegne') }}
+        <span class="glyphicon glyphicon-modal-window pull-right" aria-hidden="true"></span>
+    </a>
+    <a href="#" class="list-group-item" data-toggle="modal" data-target="#summary-products-document-{{ $rand }}">
+        {{ _i('Riassunto Prodotti Ordinati') }}
+        <span class="glyphicon glyphicon-modal-window pull-right" aria-hidden="true"></span>
+    </a>
+    <a href="#" class="list-group-item" data-toggle="modal" data-target="#all-products-document-{{ $rand }}">
+        {{ _i('Tabella Complessiva Prodotti') }}
+        <span class="glyphicon glyphicon-modal-window pull-right" aria-hidden="true"></span>
+    </a>
 </div>
 
 @push('postponed')

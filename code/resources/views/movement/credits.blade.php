@@ -70,7 +70,7 @@
     <form class="form-inline iblock inner-form" action="{{ url('movements/document/credits/csv?dummy=1') }}" method="GET">
         <input type="hidden" name="pre-saved-function" value="collectFilteredUsers">
         <input type="hidden" name="pre-saved-function" value="formToDownload">
-        <button type="submit" class="btn btn-success">{{ _i('Esporta CSV') }}</button>
+        <button type="submit" class="btn btn-success">{{ _i('Esporta CSV') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></button>
     </form>
 
     @if($currentgas->hasFeature('rid'))

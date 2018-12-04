@@ -35,30 +35,30 @@
                     <p class="pull-right"><a target="_blank" href="{{ url('ordini.xml') }}"><img src="{{ asset('images/rss.png') }}" alt="{{ _i('Clicca qui per il feed RSS') }}"></a></p>
                     <h2 class="panel-title">{{ _i('Prenotazioni Aperte') }}</h2>
                 </div>
-                <div class="panel-body">
-                    @if(count($opened) == 0)
+                @if(count($opened) == 0)
+                    <div class="panel-body">
                         <div class="alert alert-info" role="alert">
                             {{ _i('Non ci sono prenotazioni aperte.') }}
                         </div>
-                    @else
-                        @include('order.homelist', ['orders' => $opened])
-                    @endif
-                </div>
+                    </div>
+                @else
+                    @include('order.homelist', ['orders' => $opened])
+                @endif
             </div>
 
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h2 class="panel-title">{{ _i('Ordini in Consegna') }}</h2>
                 </div>
-                <div class="panel-body">
-                    @if(count($shipping) == 0)
+                @if(count($shipping) == 0)
+                    <div class="panel-body">
                         <div class="alert alert-info" role="alert">
                             {{ _i('Non ci sono ordini in consegna.') }}
                         </div>
-                    @else
-                        @include('order.homelist', ['orders' => $shipping])
-                    @endif
-                </div>
+                    </div>
+                @else
+                    @include('order.homelist', ['orders' => $shipping])
+                @endif
             </div>
         @endif
 
@@ -67,12 +67,13 @@
                 <div class="panel-heading">
                     <h2 class="panel-title">{{ _i('File Condivisi') }}</h2>
                 </div>
-                <div class="panel-body">
-                    <div class="list-group">
-                        @foreach($currentgas->attachments as $attachment)
-                            <a href="{{ $attachment->download_url }}" class="list-group-item">{{ $attachment->name }}</a>
-                        @endforeach
-                    </div>
+                <div class="list-group">
+                    @foreach($currentgas->attachments as $attachment)
+                        <a href="{{ $attachment->download_url }}" class="list-group-item">
+                            {{ $attachment->name }}
+                            <span class="glyphicon glyphicon-download pull-right" aria-hidden="true"></span>
+                        </a>
+                    @endforeach
                 </div>
             </div>
         @endif
@@ -96,21 +97,19 @@
 
             ?>
 
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <div class="alert {{ $current_balance >= $to_pay ? 'alert-success' : 'alert-danger' }} text-right">
-                        <p class="lead">{{ _i('Credito Attuale') }}: {{ printablePriceCurrency($current_balance) }}</p>
-                        <br>
-                        <p class="lead">{{ _i('Da Pagare') }}: {{ printablePriceCurrency($to_pay) }}</p>
-                        @if(!empty($to_pay_friend))
-                            <p>{{ _i('di cui') }}</p>
-                            @foreach($to_pay_friend as $friend_name => $friend_amount)
-                                <p>{{ $friend_name }} {{ $friend_amount }} {{ $currentgas->currency }}</p>
-                            @endforeach
-                        @endif
-                    </div>
-                </div>
+            <div class="alert {{ $current_balance >= $to_pay ? 'alert-success' : 'alert-danger' }} text-right">
+                <p class="lead">{{ _i('Credito Attuale') }}: {{ printablePriceCurrency($current_balance) }}</p>
+                <br>
+                <p class="lead">{{ _i('Da Pagare') }}: {{ printablePriceCurrency($to_pay) }}</p>
+                @if(!empty($to_pay_friend))
+                    <p>{{ _i('di cui') }}</p>
+                    @foreach($to_pay_friend as $friend_name => $friend_amount)
+                        <p>{{ $friend_name }} {{ $friend_amount }} {{ $currentgas->currency }}</p>
+                    @endforeach
+                @endif
             </div>
+
+            <br>
 
             <div class="panel panel-default">
                 <div class="panel-body">
