@@ -19,7 +19,9 @@ if(!isset($select_users))
 @if($select_users)
     <?php
 
-    $extras['special::referrers'] = _i('Tutti i Referenti');
+    foreach(App\Role::orderBy('name', 'asc')->get() as $role) {
+        $extras['special::role::' . $role->id] = _i('Tutti gli utenti con ruolo "%s"', [$role->name]);
+    }
 
     foreach ($currentgas->aggregates as $aggregate) {
         foreach($aggregate->orders()->where('status', '!=', 'closed')->where('status', '!=', 'archived')->get() as $order)

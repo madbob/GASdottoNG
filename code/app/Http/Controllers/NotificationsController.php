@@ -52,18 +52,17 @@ class NotificationsController extends Controller
 
             foreach ($users as $u) {
                 if (strrpos($u, 'special::', -strlen($u)) !== false) {
-                    if ($u == 'special::referrers') {
-                        $us = User::get();
-                        foreach ($us as $u) {
-                            if ($u->can('supplier.add', $u->gas) || $u->can('supplier.modify')) {
-                                $map[] = $u->id;
-                            }
+                    if (strrpos($u, 'special::role::', -strlen($u)) !== false) {
+                        $role_id = substr($u, strlen('special::role::'));
+                        $role = Role::find($role_id);
+                        foreach ($role->users as $u) {
+                            $map[] = $u->id;
                         }
                     }
                     elseif (strrpos($u, 'special::order::', -strlen($u)) !== false) {
                         $order_id = substr($u, strlen('special::order::'));
                         $order = Order::findOrFail($order_id);
-                        foreach ($order->bookings as $booking) {
+                        foreach ($order->topLevelBookings() as $booking) {
                             $map[] = $booking->user->id;
                         }
                     }
@@ -72,7 +71,7 @@ class NotificationsController extends Controller
                 }
             }
 
-            $users = $map;
+            $users = array_unique($map);
         }
 
         $notification->users()->sync($users, ['done' => false]);
