@@ -67,30 +67,42 @@
 </div>
 
 <div class="modal-footer">
-    <a href="{{ url('movements/document/credits/csv?credit=all') }}" class="btn btn-success">{{ _i('Esporta CSV') }}</a>
-    <a type="button" class="btn btn-success" data-toggle="collapse" href="#exportRID">{{ _i('Esporta SEPA') }}<span class="caret"></span></a>
+    <form class="form-inline iblock inner-form" action="{{ url('movements/document/credits/csv?dummy=1') }}" method="GET">
+        <input type="hidden" name="pre-saved-function" value="collectFilteredUsers">
+        <input type="hidden" name="pre-saved-function" value="formToDownload">
+        <button type="submit" class="btn btn-success">{{ _i('Esporta CSV') }}</button>
+    </form>
+
+    @if($currentgas->hasFeature('rid'))
+        <a type="button" class="btn btn-success" data-toggle="collapse" href="#exportRID">{{ _i('Esporta SEPA') }}<span class="caret"></span></a>
+    @endif
+
     <a type="button" class="btn btn-success" data-toggle="collapse" href="#sendCreditsMail">{{ _i('Notifica Utente Visualizzati') }}<span class="caret"></span></a>
 
-    <div class="collapse well" id="exportRID">
-        <form class="form-horizontal form-filler" method="GET" action="">
-            @include('commons.datefield', [
-                'obj' => null,
-                'name' => 'date',
-                'label' => _i('Data'),
-                'mandatory' => true,
-                'defaults_now' => true
-            ])
+    @if($currentgas->hasFeature('rid'))
+        <div class="collapse well" id="exportRID">
+            <form class="form-horizontal inner-form" action="{{ url('movements/document/credits/rid?download=1') }}" method="GET">
+                <input type="hidden" name="pre-saved-function" value="formToDownload">
 
-            @include('commons.textfield', [
-                'obj' => null,
-                'name' => 'body',
-                'label' => _i('Causale'),
-                'default_value' => _i('VERSAMENTO GAS')
-            ])
+                @include('commons.datefield', [
+                    'obj' => null,
+                    'name' => 'date',
+                    'label' => _i('Data'),
+                    'mandatory' => true,
+                    'defaults_now' => true
+                ])
 
-            <a href="{{ url('movements/document/credits/rid?download=1') }}" class="btn btn-success form-filler-download">{{ _i('Esporta SEPA') }}</a>
-        </form>
-    </div>
+                @include('commons.textfield', [
+                    'obj' => null,
+                    'name' => 'body',
+                    'label' => _i('Causale'),
+                    'default_value' => _i('VERSAMENTO GAS')
+                ])
+
+                <button type="submit" class="btn btn-success">{{ _i('Esporta SEPA') }}</button>
+            </form>
+        </div>
+    @endif
 
     <div class="collapse well" id="sendCreditsMail">
         <form class="form-horizontal inner-form" method="POST" action="{{ route('notifications.store') }}">

@@ -1062,6 +1062,13 @@ function collectFilteredUsers(form) {
     });
 }
 
+function formToDownload(form) {
+    var data = form.find('input, select').serializeArray();
+    var url = form.attr('action') + '&' + $.param(data);
+    window.open(url, '_blank');
+    throw "Done!";
+}
+
 /*******************************************************************************
 	Core
 */
@@ -1627,18 +1634,6 @@ $(document).ready(function() {
         }
     });
 
-    $('body').on('change', '.link-filters input:radio', function() {
-        var filter = $(this).closest('.table-filters');
-        var target = filter.attr('data-link-target');
-        var link = $(target);
-        var attribute = $(this).attr('name');
-        var value = $(this).val();
-
-        var parsed = new URL(link.attr('href'));
-        var url = parsed.protocol + '//' + parsed.host + parsed.pathname + '?' + attribute + '=' + value;
-        link.attr('href', url);
-    });
-
     $('body').on('change', '.img-preview input:file', function() {
         previewImage(this);
     });
@@ -1647,14 +1642,29 @@ $(document).ready(function() {
         event.preventDefault();
         var form = $(this);
 
+        var proceed = true;
+
         var test = form.find('input[name^=pre-saved-function]');
         if (test.length != 0) {
             test.each(function() {
                 var fn = window[$(this).val()];
-                if (typeof fn === 'function')
-                    fn(form);
+                if (typeof fn === 'function') {
+                    /*
+                        Se una pre-saved-function solleva una eccezione, il form
+                        non viene effettivamente eseguito
+                    */
+                    try {
+                        fn(form);
+                    }
+                    catch(error) {
+                        proceed = false;
+                    }
+                }
             });
         }
+
+        if (proceed == false)
+            return;
 
         var data = new FormData(this);
         var method = form.attr('method').toUpperCase();

@@ -203,16 +203,26 @@ class MovementsController extends BackedController
             case 'credits':
                 $users = User::sorted()->topLevel()->get();
 
-                $group = $request->input('credit', 'all');
-                if ($group == 'minor') {
-                    $users = $users->filter(function($u) {
-                        return $u->current_balance_amount < 0;
+                $filtered_users = $request->input('users', []);
+                if (!empty($filtered_users)) {
+                    $users = $users->filter(function($u) use ($filtered_users) {
+                        return in_array($u->id, $filtered_users);
                     });
                 }
-                else if ($group == 'major') {
-                    $users = $users->filter(function($u) {
-                        return $u->current_balance_amount >= 0;
-                    });
+                else {
+                    $group = $request->input('credit', 'all');
+                    $threeshold = $request->input('amount', 0);
+
+                    if ($group == 'minor') {
+                        $users = $users->filter(function($u) use ($threeshold) {
+                            return $u->current_balance_amount <= $threeshold;
+                        });
+                    }
+                    else if ($group == 'major') {
+                        $users = $users->filter(function($u) use ($threeshold) {
+                            return $u->current_balance_amount >= $threeshold;
+                        });
+                    }
                 }
 
                 if ($subtype == 'csv') {
