@@ -249,20 +249,19 @@ class User extends Authenticatable
         }
     }
 
-    public function relatedObjectsByPermission($permission)
+    public function targetsByAction($action)
     {
-        $class = Role::classByRule($permission);
-
-        $objects = [];
+        $targets = [];
+        $class = Role::classByRule($action);
 
         foreach ($this->roles as $role) {
-            if ($role->enabledAction($permission))
+            if ($role->enabledAction($action))
                 foreach($role->applications(true) as $app)
-                    if (get_class($app) == $class)
-                        $objects[$app->id] = $app;
+                    if ($class == null || get_class($app) == $class)
+                        $targets[$app->id] = $app;
         }
 
-        return $objects;
+        return $targets;
     }
 
     public function getPendingBalanceAttribute()

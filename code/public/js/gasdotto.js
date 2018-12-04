@@ -97,7 +97,10 @@ function generalInit(container) {
         });
     });
 
-    $('.many-rows', container).manyrows();
+    $('.many-rows', container).manyrows().bind('row-added', function(e, row) {
+        generalInit(row);
+    });
+
     $('.dynamic-tree-box', container).dynamictree();
     $('#orderAggregator', container).aggregator();
 
@@ -1118,6 +1121,12 @@ $(document).ready(function() {
             });
     });
 
+    if ($('#dates-calendar').length != 0) {
+        $('#dates-calendar').fullCalendar({
+            events: dates_events
+        });
+    }
+
     generalInit($('body'));
 
     $('#home-notifications .alert').on('closed.bs.alert', function() {
@@ -2027,6 +2036,44 @@ $(document).ready(function() {
         window.open(url, '_blank');
     });
 
+    $('body').on('click', '.manyrows-dates-filter button[type=submit]', function(event) {
+        event.preventDefault();
+        var form = $(this).closest('.manyrows-dates-filter');
+
+        var startdate = form.find('[name=startdate]').datepicker('getDate');
+        if (startdate != null)
+            startdate = startdate.getTime();
+        var enddate = form.find('[name=enddate]').datepicker('getDate');
+        if (enddate != null)
+            enddate = enddate.getTime();
+
+        var target_id = form.find('[name=target_id] option:selected').val();
+        var type = form.find('[name=type]:checked').val();
+
+        $('#dates-in-range .row:not(.many-rows-header)').each(function() {
+            var show = true;
+
+            if (target_id != 0 && $(this).find('[name^=target_id] option:selected').val() != target_id)
+                show = false;
+
+            if (type != 'all' && $(this).find('[name^=type] option:selected').val() != type)
+                show = false;
+
+            if (startdate != null || enddate != null) {
+                var local_date = $(this).find('[name^=date]').datepicker('getDate').getTime();
+                if (startdate != null && local_date < startdate)
+                    show = false;
+                if (enddate != null && local_date > enddate)
+                    show = false;
+            }
+
+            if (show == false)
+                $(this).hide();
+            else
+                $(this).show();
+        });
+    });
+
     $('body').on('submit', '.password-protected', function(event) {
         if ($(this).attr('data-password-protected-verified') != '1') {
             event.preventDefault();
@@ -2302,6 +2349,25 @@ $(document).ready(function() {
             submit.text(_('Download'));
             form.addClass('direct-submit');
         }
+    });
+
+    $('body').on('change', '#createOrder select[name=supplier_id]', function() {
+        $.ajax({
+            url: absolute_url + '/dates/query',
+            method: 'GET',
+            data: {
+                supplier_id: $(this).val()
+            },
+            dataType: 'HTML',
+            success: function(data) {
+                $('#createOrder .supplier-future-dates').empty().append(data);
+            }
+        });
+    });
+
+    $('body').on('click', '.suggested-dates li', function() {
+        var date = $(this).text();
+        $(this).closest('#createOrder').find('input[name=shipping]').val(date);
     });
 
     /*

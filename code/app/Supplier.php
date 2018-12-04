@@ -88,6 +88,11 @@ class Supplier extends Model
         return $this->hasMany('App\Invoice');
     }
 
+    public function dates()
+    {
+        return $this->morphMany('App\Date', 'target')->orderBy('date', 'desc');
+    }
+
     public function scopeFilterEnabled($query)
     {
         $user = Auth::user();

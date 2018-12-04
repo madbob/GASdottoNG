@@ -61,6 +61,21 @@
                 </div>
             </div>
         @endif
+
+        @if($currentgas->attachments->isEmpty() == false)
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">{{ _i('File Condivisi') }}</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="list-group">
+                        @foreach($currentgas->attachments as $attachment)
+                            <a href="{{ $attachment->download_url }}" class="list-group-item">{{ $attachment->name }}</a>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 
     <div class="col-md-6">
@@ -97,20 +112,11 @@
                 </div>
             </div>
 
-            @if($currentgas->attachments->isEmpty() == false)
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h2 class="panel-title">{{ _i('File Condivisi') }}</h2>
-                    </div>
-                    <div class="panel-body">
-                        <div class="list-group">
-                            @foreach($currentgas->attachments as $attachment)
-                                <a href="{{ $attachment->download_url }}" class="list-group-item">{{ $attachment->name }}</a>
-                            @endforeach
-                        </div>
-                    </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @include('dates.calendar')
                 </div>
-            @endif
+            </div>
         @endif
     </div>
 </div>

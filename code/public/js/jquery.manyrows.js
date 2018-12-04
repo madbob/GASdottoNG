@@ -13,6 +13,8 @@
                 $(this).off('click', '.add-many-rows', appendRow).on('click', '.add-many-rows', appendRow);
                 addDeleteButtons($(this));
             });
+
+            return $(this);
         }
 
         function removeRow(event) {
@@ -30,7 +32,7 @@
             var container = button.closest('.many-rows');
             var row = container.find('.row:not(.many-rows-header)').first().clone();
             container.find('.add-many-rows').before(row);
-            initRow(row, true);
+            initRow(container, row, true);
             addDeleteButtons(container);
             return false;
         }
@@ -49,10 +51,11 @@
             }
         }
 
-        function initRow(row, fresh) {
+        function initRow(container, row, fresh) {
             if (fresh) {
                 row.find('input').val('');
                 row.find('.customized-cell').empty();
+                container.trigger('row-added', row);
             }
         }
     };

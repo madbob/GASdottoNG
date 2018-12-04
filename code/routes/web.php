@@ -74,6 +74,8 @@ Route::get('orders/fixes/{id}/{product_id}', 'OrdersController@getFixes');
 Route::post('orders/fixes/{id}', 'OrdersController@postFixes');
 Route::get('orders/document/{id}/{type}', 'OrdersController@document');
 
+Route::get('dates/query', 'DatesController@query');
+
 Route::get('aggregates/{id}/header', 'AggregatesController@objhead')->name('aggregates.objhead');
 Route::get('aggregates/notify/test/{id}', 'AggregatesController@testNotify');
 Route::post('aggregates/notify/{id}', 'AggregatesController@notify');
@@ -132,6 +134,7 @@ Route::resource('categories', 'CategoriesController');
 Route::resource('measures', 'MeasuresController');
 Route::resource('variants', 'VariantsController');
 Route::resource('orders', 'OrdersController');
+Route::resource('dates', 'DatesController');
 Route::resource('aggregates', 'AggregatesController');
 Route::resource('attachments', 'AttachmentsController');
 Route::resource('booking.user', 'BookingUserController');

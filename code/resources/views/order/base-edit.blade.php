@@ -1,9 +1,4 @@
-<?php
-
-$user = Auth::user();
-$suppliers = $user->relatedObjectsByPermission('supplier.orders')
-
-?>
+<?php $suppliers = $currentuser->targetsByAction('supplier.orders') ?>
 
 @include('commons.selectobjfield', [
     'obj' => $order,
@@ -47,5 +42,11 @@ $suppliers = $user->relatedObjectsByPermission('supplier.orders')
         'data-enforce-after' => '.date[name=end]'
     ]
 ])
+
+@if(empty($suppliers) == false)
+    <div class="supplier-future-dates">
+        @include('dates.list', ['dates' => array_values($suppliers)[0]->dates])
+    </div>
+@endif
 
 @include('commons.orderstatus', ['order' => $order])

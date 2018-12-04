@@ -96,6 +96,31 @@ table {
 	}
 }
 
+#dates-calendar {
+    .calendar-shipping-open {
+        background-color: red;
+    }
+
+    .calendar-shipping-closed {
+        background-color: green;
+    }
+
+    .calendar-date-confirmed {
+        background-color: blue;
+    }
+
+    .calendar-date-temp {
+        background-color: orange;
+    }
+}
+
+.suggested-dates {
+    li {
+        cursor: pointer;
+        cursor: hand;
+    }
+}
+
 .loadablelist {
 	.loadablelist {
 		.list-group-item.active {
