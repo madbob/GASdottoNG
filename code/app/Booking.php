@@ -403,7 +403,9 @@ class Booking extends Model
     public static function sortByShippingPlace($bookings, $shipping_place)
     {
         if ($shipping_place == 'all_by_name') {
-            /* dummy */
+            usort($bookings, function($a, $b) {
+                return $a->user->printableName() <=> $b->user->printableName();
+            });
         }
         else if ($shipping_place == 'all_by_place') {
             usort($bookings, function($a, $b) {
