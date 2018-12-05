@@ -47,6 +47,24 @@ class OrdersController extends Controller
         return Aggregate::easyFilter(0, date('Y-m-d', strtotime('-1 years')), date('Y-m-d', strtotime('+1 years')), ['open', 'closed', 'shipped', 'suspended']);
     }
 
+    public function ical()
+    {
+        $calendar = new \Eluceo\iCal\Component\Calendar('www.example.com');
+
+        $orders = $this->defaultOrders();
+        foreach($orders as $o) {
+            if ($o->start && $o->end) {
+                $event = new \Eluceo\iCal\Component\Event();
+                $event->setDtStart(new \DateTime($o->start))->setDtEnd(new \DateTime($o->end))->setNoTime(true)->setSummary($o->printableName());
+                $calendar->addComponent($event);
+            }
+        }
+
+        header('Content-Type: text/calendar; charset=utf-8');
+        header('Content-Disposition: attachment; filename="ordini.ics"');
+        echo $calendar->render();
+    }
+
     public function index()
     {
         $orders = $this->defaultOrders();

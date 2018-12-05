@@ -12,6 +12,7 @@ Route::get('/home', function () {
 
 Route::get(substr(env('APP_KEY'), -5) . '/logs', '\MadBob\LaravelLog2Rss\Log2RssController@index');
 Route::feeds();
+Route::get('ordini.ics', 'OrdersController@ical');
 
 Route::get('dashboard', 'CommonsController@getIndex');
 Route::post('dashboard/verify', 'CommonsController@postVerify');

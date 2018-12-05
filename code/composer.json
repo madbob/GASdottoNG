@@ -13,6 +13,7 @@
         "devfactory/minify": "^1.0",
         "doctrine/dbal": "^2.8",
         "elibyy/tcpdf-laravel": "^5.7",
+        "eluceo/ical": "^0.14.0",
         "fideloper/proxy": "~4.0",
         "laravel/framework": "5.7.*",
         "laravel/tinker": "~1.0",
