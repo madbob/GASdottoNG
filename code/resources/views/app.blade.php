@@ -43,7 +43,7 @@
             <img src="{{ asset('images/loading.svg') }}" alt="{{ _i('Caricamento in corso') }}">
         </div>
 
-        <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+        <nav class="navbar navbar-default navbar-static-top navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
