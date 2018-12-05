@@ -313,11 +313,11 @@ class Order extends Model
             });
 
             $quantity = $q->sum('quantity');
-            if(!$quantity)
+            if(empty($quantity))
                 $quantity = 0;
 
             $delivered = $q->sum('delivered');
-            if(!$delivered)
+            if(empty($delivered))
                 $delivered = 0;
 
             $transport = $quantity * $product->transport;
