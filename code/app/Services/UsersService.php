@@ -64,7 +64,7 @@ class UsersService extends BaseService
         $creator = $this->ensureAuth(['users.admin' => 'gas', 'gas.multi' => 'gas']);
 
         $username = $request['username'];
-        $test = User::where('username', $username)->first();
+        $test = User::withTrashed()->where('username', $username)->first();
         if ($test != null) {
             throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
         }
@@ -144,7 +144,7 @@ class UsersService extends BaseService
 
             if (isset($request['username'])) {
                 $username = $request['username'];
-                $test = User::where('id', '!=', $user->id)->where('username', $username)->first();
+                $test = User::withTrashed()->where('id', '!=', $user->id)->where('username', $username)->first();
                 if ($test != null) {
                     throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
                 }
