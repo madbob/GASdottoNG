@@ -27,6 +27,7 @@ if ($extra_class) {
                 @endforeach
             @endif
 
+            data-max-size="{{ serverMaxUpload() }}"
             autocomplete="off">
     </div>
 </div>

@@ -14,6 +14,14 @@ if (isset($extra_class)) {
     $class .= ' ' . $extra_class;
 }
 
+if (!isset($max_length)) {
+    /*
+        Assumo che la lunghezza massima per le stringe semplici sia la lunghezza
+        massima dei campi "string" sul database
+    */
+    $max_length = Illuminate\Database\Schema\Builder::$defaultStringLength - 1;
+}
+
 $wrap_class = 'form-group';
 if (isset($extra_wrap_class)) {
     $wrap_class .= ' ' . $extra_wrap_class;
@@ -39,6 +47,7 @@ if (!isset($help_text)) {
             class="{{ $class }}"
             name="{{ $prefix . $name . $postfix }}"
             value="{{ $value }}"
+            maxlength="{{ $max_length }}"
 
             @if(isset($mandatory) && $mandatory == true)
                 required
@@ -50,10 +59,6 @@ if (!isset($help_text)) {
 
             @if($squeeze == true)
                 placeholder="{{ $label }}"
-            @endif
-
-            @if(isset($max_length) && $max_length != null)
-                maxlength="{{ $max_length }}"
             @endif
 
             @if(isset($enforced_default))

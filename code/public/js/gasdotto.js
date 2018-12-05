@@ -529,12 +529,22 @@ function miscInnerCallbacks(form, data) {
     locker = false;
 }
 
+function setInputErrorText(input, message) {
+    if (message == null) {
+        input.closest('.form-group').removeClass('has-error');
+        input.closest('div').find('.help-block.error-message').remove();
+    }
+    else {
+        input.closest('.form-group').addClass('has-error');
+        input.closest('div').append('<span class="help-block error-message">' + message + '</span>');
+    }
+}
+
 function displayServerError(form, data) {
     if (data.target != '') {
         inlineFeedback(form.find('.main-form-buttons button[type=submit]'), 'Errore!');
         var input = form.find('[name=' + data.target + ']');
-        input.closest('.form-group').addClass('has-error');
-        input.closest('div').append('<span class="help-block error-message">' + data.message + '</span>');
+        setInputErrorText(input, data.message);
     }
 }
 
@@ -1640,6 +1650,22 @@ $(document).ready(function() {
                 var attr = $(this).attr('data-filtered-' + attribute);
                 $(this).toggleClass('hidden', (attr != value));
             });
+        }
+    });
+
+    $('body').on('change', 'input:file[data-max-size]', function() {
+        if (this.files && this.files[0]) {
+            var max = $(this).attr('data-max-size');
+            var file = this.files[0].size;
+            if (file > max) {
+                $(this).val('');
+                setInputErrorText($(this), _('Il file è troppo grande!'));
+                return false;
+            }
+            else {
+                setInputErrorText($(this), null);
+                return true;
+            }
         }
     });
 

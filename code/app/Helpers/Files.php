@@ -35,3 +35,8 @@ function downloadFile($obj, $field)
 
     return '';
 }
+
+function serverMaxUpload()
+{
+    return min(humanSizeToBytes(ini_get('post_max_size')), humanSizeToBytes(ini_get('upload_max_filesize')));
+}

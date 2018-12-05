@@ -335,3 +335,29 @@ function iban_split($iban, $field)
     $iban = str_replace(' ', '', strtoupper($iban));
     return substr($iban, $start, $length);
 }
+
+function humanSizeToBytes($size)
+{
+    $suffix = strtoupper(substr($size, -1));
+    if (!in_array($suffix, array('P','T','G','M','K'))) {
+        return (int)$size;
+    }
+
+    $val = substr($size, 0, -1);
+
+    switch ($suffix) {
+        case 'P':
+            $val *= 1024;
+        case 'T':
+            $val *= 1024;
+        case 'G':
+            $val *= 1024;
+        case 'M':
+            $val *= 1024;
+        case 'K':
+            $val *= 1024;
+            break;
+    }
+
+    return (int)$val;
+}

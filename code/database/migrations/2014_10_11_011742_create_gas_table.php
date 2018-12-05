@@ -11,9 +11,9 @@ class CreateGasTable extends Migration
             $table->string('id')->primary();
             $table->timestamps();
 
-            $table->string('name', 100)->unique();
-            $table->string('email', 100)->nullable();
-            $table->string('logo', 100)->nullable();
+            $table->string('name', 20)->unique();
+            $table->string('email')->nullable();
+            $table->string('logo')->nullable();
             $table->text('message')->nullable();
         });
     }
