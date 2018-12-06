@@ -12,7 +12,7 @@
 
         @foreach(App\Date::all() as $d)
             {
-                title: '{{ sprintf('%s: %s', $d->target->name, $d->description) }}',
+                title: '{{ empty($d->description) ? $d->target->name : sprintf('%s: %s', $d->target->name, $d->description) }}',
                 start: '{{ $d->date }}',
                 className: 'calendar-date-{{ $d->type }}'
             },

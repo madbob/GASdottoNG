@@ -1,51 +1,53 @@
-<form class="form-horizontal inner-form" method="PUT" action="{{ route('dates.update', 0) }}">
-    <input type="hidden" name="close-modal" value="1">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">
+        {{ _i('Gestione Date') }}
+    </h4>
+</div>
 
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">
-            {{ _i('Gestione Date') }}
-        </h4>
-    </div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-horizontal manyrows-dates-filter">
+                @include('commons.genericdaterange', [
+                    'start_date' => '',
+                    'end_date' => ''
+                ])
+                @include('commons.selectobjfield', [
+                    'obj' => null,
+                    'name' => 'target_id',
+                    'label' => _i('Fornitore'),
+                    'objects' => $currentuser->targetsByAction('supplier.orders'),
+                    'extra_selection' => [
+                        '0' => _i('Nessuno')
+                    ]
+                ])
+                @include('commons.radios', [
+                    'name' => 'type',
+                    'label' => _i('Tipo'),
+                    'values' => [
+                        'all' => (object)['name' => _i('Tutti'), 'checked' => true],
+                        'confirmed' => (object)['name' => _i('Confermato')],
+                        'temp' => (object)['name' => _i('Provvisorio')]
+                    ]
+                ])
 
-    <div class="modal-body">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-horizontal manyrows-dates-filter">
-                    @include('commons.genericdaterange', [
-                        'start_date' => '',
-                        'end_date' => ''
-                    ])
-                    @include('commons.selectobjfield', [
-                        'obj' => null,
-                        'name' => 'target_id',
-                        'label' => _i('Fornitore'),
-                        'objects' => $currentuser->targetsByAction('supplier.orders'),
-                        'extra_selection' => [
-                            '0' => _i('Nessuno')
-                        ]
-                    ])
-                    @include('commons.radios', [
-                        'name' => 'type',
-                        'label' => _i('Tipo'),
-                        'values' => [
-                            'all' => (object)['name' => _i('Tutti'), 'checked' => true],
-                            'confirmed' => (object)['name' => _i('Confermato')],
-                            'temp' => (object)['name' => _i('Provvisorio')]
-                        ]
-                    ])
-
-                    <div class="form-group">
-                        <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
-                            <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
-                        </div>
+                <div class="form-group">
+                    <div class="col-sm-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
+                        <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
-        <hr>
+<hr>
 
+<form class="form-horizontal inner-form" method="PUT" action="{{ route('dates.update', 0) }}">
+    <input type="hidden" name="close-modal" value="1">
+
+    <div class="modal-body">
         <div class="row">
             <div class="col-md-12" id="dates-in-range">
                 @include('commons.manyrows', [
