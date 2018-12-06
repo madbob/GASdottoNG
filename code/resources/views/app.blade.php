@@ -184,7 +184,8 @@
             '/js/aggregation.js',
             '/js/jquery.manyrows.js',
             '/js/jquery.dynamictree.js',
-            '/js/gasdotto.js'
+            '/js/gasdotto.js',
+            '/js/gasdotto.navbar.js'
         ];
 
         ?>
