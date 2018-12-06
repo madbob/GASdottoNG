@@ -3,7 +3,7 @@
         @foreach(App\Aggregate::easyFilter(null, null, null, ['open', 'closed']) as $a)
             @if($a->shipping)
                 {
-                    title: '{{ $a->printableName() }}',
+                    title: '{!! join(', ', $a->orders->reduce(function($carry, $item) { $carry[] = addslashes($item->supplier->name); return $carry; }, [])) !!}',
                     start: '{{ $a->shipping }}',
                     className: 'calendar-shipping-{{ $a->status }}'
                 },
