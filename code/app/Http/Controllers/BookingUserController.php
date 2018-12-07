@@ -69,6 +69,10 @@ class BookingUserController extends BookingHandler
         return $this->successResponse();
     }
 
+    /*
+        Questa funzione genera il "Dettaglio Consegne" per la prenotazione di
+        uno specifico utente
+    */
     public function document(Request $request, $aggregate_id, $user_id)
     {
         $aggregate = Aggregate::findOrFail($aggregate_id);
@@ -87,11 +91,9 @@ class BookingUserController extends BookingHandler
         }
         $names = join(' / ', $names);
 
-        $html = view('documents.aggregate_shipping', [
+        $html = view('documents.personal_aggregate_shipping', [
             'aggregate' => $aggregate,
             'bookings' => $bookings,
-            'products_source' => 'products',
-            'shipping_mode' => 'all_by_name'
         ])->render();
 
         $filename = sprintf('Dettaglio Consegne ordini %s.pdf', $names);

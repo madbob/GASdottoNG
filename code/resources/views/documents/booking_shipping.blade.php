@@ -20,6 +20,6 @@
     <tr>
         <td width="40%">{{ _i('Trasporto') }}</td>
         <td width="40%">&nbsp;</td>
-        <td width="20%">{{ printablePriceCurrency($booking->check_transport) }}</td>
+        <td width="20%">{{ printablePriceCurrency($booking->check_transport, ',') }}</td>
     </tr>
 @endif
