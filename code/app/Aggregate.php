@@ -373,14 +373,26 @@ class Aggregate extends Model implements Feedable
     public function getLastNotifyAttribute()
     {
         return $this->innerCache('last_notify', function($obj) {
-            return $obj->orders()->first()->last_notify;
+            if ($obj->orders()->count() != 0) {
+                return $obj->orders()->first()->last_notify;
+            }
+            else {
+                Log::error('Aggregato senza ordini inclusi: ' . $this->id);
+                return null;
+            }
         });
     }
 
     public function getSupplierNameAttribute()
     {
         return $this->innerCache('supplier_name', function($obj) {
-            return $obj->orders()->first()->supplier->name;
+            if ($obj->orders()->count() != 0) {
+                return $obj->orders()->first()->supplier->name;
+            }
+            else {
+                Log::error('Aggregato senza ordini inclusi: ' . $this->id);
+                return '';
+            }
         });
     }
 
