@@ -72,12 +72,34 @@ class ProductsService extends BaseService
 
         $product = new Product();
         $product->supplier_id = $supplier->id;
-        $product->active = true;
+
+        if (!isset($request['duplicating_from'])) {
+            $product->active = true;
+        }
 
         DB::transaction(function () use ($product, $request) {
             $this->setCommonAttributes($product, $request);
             $product->save();
         });
+
+        if (isset($request['duplicating_from'])) {
+            $original_product_id = $request['duplicating_from'];
+            $original_product = Product::find($original_product_id);
+
+            foreach($original_product->variants as $old_variant) {
+                $new_variant = $old_variant->replicate();
+                $new_variant->id = '';
+                $new_variant->product_id = $product->id;
+                $new_variant->save();
+
+                foreach($old_variant->values as $old_value) {
+                    $new_value = $old_value->replicate();
+                    $new_value->id = '';
+                    $new_value->variant_id = $new_variant->id;
+                    $new_value->save();
+                }
+            }
+        }
 
         return $product;
     }
@@ -105,18 +127,6 @@ class ProductsService extends BaseService
             }
         });
 
-        return $product;
-    }
-
-    public function duplicate($id)
-    {
-        $original = $this->show($id);
-        $this->ensureAuth(['supplier.modify' => $original->supplier]);
-
-        $product = $original->replicate();
-        $product->id = '';
-        $product->name = 'Copia di ' . $product->name;
-        $product->save();
         return $product;
     }
 

@@ -45,6 +45,7 @@ Route::get('suppliers/{id}/products_grid', 'SuppliersController@productsGrid');
 Route::get('suppliers/{id}/plain_balance', 'SuppliersController@plainBalance');
 
 Route::get('products/ro/{id}', 'ProductsController@show_ro');
+Route::get('products/duplicate/{id}', 'ProductsController@duplicate')->name('products.duplicate');
 Route::get('products/{id}/header', 'ProductsController@objhead')->name('products.objhead');
 Route::post('products/massiveupdate', 'ProductsController@massiveUpdate');
 Route::get('products/picture/{id}', 'ProductsController@picture');

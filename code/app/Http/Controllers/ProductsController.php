@@ -59,17 +59,16 @@ class ProductsController extends BackedController
         return view('product.show', ['product' => $product]);
     }
 
+    public function duplicate(Request $request, $id)
+    {
+        $product = $this->service->show($id);
+        return view('product.duplicate', ['product' => $product]);
+    }
+
     public function store(Request $request)
     {
         try {
-            $duplicate = $request->input('duplicate_id', null);
-            if ($duplicate) {
-                $product = $this->service->duplicate($duplicate);
-            }
-            else {
-                $product = $this->service->store($request->all());
-            }
-
+            $product = $this->service->store($request->all());
             return $this->commonSuccessResponse($product);
         }
         catch (AuthException $e) {

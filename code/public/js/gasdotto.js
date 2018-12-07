@@ -1181,7 +1181,11 @@ $(document).ready(function() {
 
             $('html, body').animate({
                 scrollTop: node.offset().top - 120
-            }, 300);
+            }, 600);
+
+            node.animate({
+                height: '500px'
+            }, 600);
 
             $.ajax({
                 method: 'GET',
@@ -1189,9 +1193,11 @@ $(document).ready(function() {
 
                 success: function(data) {
                     node.empty().append(data);
+                    node.stop().css('height', 'auto');
                 },
                 error: function() {
                     node.empty();
+                    node.stop().css('height', 'auto');
                 }
             });
         }
@@ -1803,8 +1809,15 @@ $(document).ready(function() {
     $('body').on('click', '.async-modal', function(event) {
         event.preventDefault();
 
+        var url = $(this).attr('data-target-url');
+        if (url == null) {
+            url = $(this).attr('href');
+            if (url == null)
+                return;
+        }
+
         $.ajax({
-            url: $(this).attr('data-target-url'),
+            url: url,
             method: 'GET',
             dataType: 'html',
             success: function(data) {
@@ -2162,27 +2175,6 @@ $(document).ready(function() {
     /*
         Gestione fornitori
     */
-
-    $('body').on('click', '.product-editor .duplicate-product', function(e) {
-        e.preventDefault();
-        var id = currentLoadableLoaded(this);
-        var list = $(this).closest('.loadablelist');
-        var original = currentLoadableTrigger(this);
-        $.ajax({
-            url: absolute_url + '/products',
-            method: 'POST',
-            dataType: 'JSON',
-            data: {
-                duplicate_id: id
-            },
-            success: function(data) {
-                original.click();
-                setTimeout(function() {
-                    appendToLoadableList(list, data, true);
-                }, 200);
-            }
-        });
-    });
 
     $('body').on('click', '.variants-editor .delete-variant', function() {
         var editor = $(this).closest('.variants-editor');
