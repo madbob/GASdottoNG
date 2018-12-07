@@ -20,4 +20,15 @@
     ];
 </script>
 
-<div id="dates-calendar"></div>
+<div id="dates-calendar">
+    <div class="row">
+        <div class="col-md-3">
+            <span class="fc-event calendar-shipping-open">{{ _i('Ordini Aperti') }}</span>
+            <span class="fc-event calendar-shipping-closed">{{ _i('Ordini Chiusi') }}</span>
+            @if(App\Date::count())
+                <span class="fc-event calendar-date-confirmed">{{ _i('Date Confermate') }}</span>
+                <span class="fc-event calendar-date-temp">{{ _i('Date Temporanee') }}</span>
+            @endif
+        </div>
+    </div>
+</div>
