@@ -11,11 +11,7 @@ function printablePrice($price, $separator = '.')
 
 function printablePriceCurrency($price, $separator = '.')
 {
-    $ret = sprintf('%.02f %s', $price, currentAbsoluteGas()->currency);
-    if ($separator != '.')
-        $ret = str_replace('.', $separator, $ret);
-
-    return $ret;
+    return sprintf('%s %s', printablePrice($price), currentAbsoluteGas()->currency);
 }
 
 function printableDate($value)
