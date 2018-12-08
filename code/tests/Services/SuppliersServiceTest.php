@@ -128,7 +128,7 @@ class SuppliersServiceTest extends TestCase
      */
     public function testFailsToUpdateBecauseNoUserWithID()
     {
-        $this->actingAs($this->userWithAdminPerm);
+        $this->actingAs($this->userWithNormalPerms);
 
         $this->suppliersService->update('id', array());
     }
@@ -151,7 +151,7 @@ class SuppliersServiceTest extends TestCase
      */
     public function testFailsToShowInexistent()
     {
-        $this->actingAs($this->userWithNoPerms);
+        $this->actingAs($this->userWithNormalPerms);
 
         $this->suppliersService->show('random');
     }

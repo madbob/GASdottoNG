@@ -28,7 +28,7 @@ class SuppliersService extends BaseService
             });
         }
 
-        if ($user->can('supplier.view', $user->gas) == false) {
+        if ($user->can('supplier.view', $user->gas) == false && $user->can('supplier.add', $user->gas) == false) {
             $suppliers_id = [];
 
             foreach($user->targetsByAction('supplier.modify') as $supplier)
@@ -54,7 +54,7 @@ class SuppliersService extends BaseService
     {
         $user = $this->ensureAuth();
 
-        if ($user->can('supplier.view', $user->gas) == false) {
+        if ($user->can('supplier.view', $user->gas) == false && $user->can('supplier.add', $user->gas) == false) {
             $found = false;
 
             foreach(['supplier.modify', 'supplier.orders', 'supplier.shippings'] as $action) {
