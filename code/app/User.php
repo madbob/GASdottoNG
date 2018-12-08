@@ -155,17 +155,7 @@ class User extends Authenticatable
         $ret = $this->printableName();
 
         if ($this->isFriend() == false) {
-            $icons = $this->icons();
-
-            if (!empty($icons)) {
-                $ret .= '<div class="pull-right">';
-
-                foreach ($icons as $i) {
-                    $ret .= '<span class="glyphicon glyphicon-'.$i.'" aria-hidden="true"></span>&nbsp;';
-                }
-
-                $ret .= '</div>';
-            }
+            $ret .= $this->headerIcons();
         }
 
         return $ret;

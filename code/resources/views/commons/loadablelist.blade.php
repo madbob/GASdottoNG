@@ -50,7 +50,7 @@ $data = join(' ', $data);
                 @endif
 
                 @if(!is_null($legend))
-                    @include('commons.iconslegend', ['class' => $legend->class, 'target' => '#' . $identifier])
+                    @include('commons.iconslegend', ['class' => $legend->class, 'target' => '#' . $identifier, 'contents' => $items])
                 @endif
             </div>
         </div>

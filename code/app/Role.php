@@ -80,17 +80,7 @@ class Role extends Model
             $step = $parent;
         }
 
-        $icons = $this->icons();
-
-        if (!empty($icons)) {
-            $ret .= '<div class="pull-right">';
-
-            foreach ($icons as $i) {
-                $ret .= '<span class="glyphicon glyphicon-'.$i.'" aria-hidden="true"></span>&nbsp;';
-            }
-
-            $ret .= '</div>';
-        }
+        $ret .= $this->headerIcons();
 
         return $ret;
     }

@@ -568,6 +568,61 @@ function creatingFormCallback(form, data) {
     }
 }
 
+function iconsLegendTrigger(node, legend_class) {
+    if (node.hasClass('dropdown-toggle'))
+        return;
+
+    var legend = node.closest(legend_class);
+    var target = legend.attr('data-list-target');
+
+    var iter_selector = '';
+    if (legend_class == '.icons-legend')
+        iter_selector = '.loadablelist' + target + ' a';
+    else
+        iter_selector = '.table' + target + ' tbody tr';
+
+    if (node.hasClass('active')) {
+        node.removeClass('active');
+        if (node.is('a'))
+            node.closest('.dropdown-menu').siblings('.dropdown-toggle').removeClass('active');
+
+        $(iter_selector).each(function() {
+            $(this).show().next('li').show();
+        });
+    }
+    else {
+        /*
+            Qui devo considerare la somma di tutti i filtri che sono stati
+            attivati: se un elemento risulterebbe nascosto a fronte del
+            click su un attributo, potrebbero essercene altri che lo
+            mantengono visibile
+        */
+        legend.find('button, a').removeClass('active');
+
+        node.addClass('active');
+        if (node.is('a'))
+            node.closest('.dropdown-menu').siblings('.dropdown-toggle').addClass('active');
+
+        var c = node.find('span.glyphicon').attr('class');
+
+        $(iter_selector).each(function() {
+            var show = false;
+
+            $(this).find('span.glyphicon').each(function() {
+                var icons = $(this).attr('class');
+                show = (icons == c);
+                if (show)
+                    return false;
+            });
+
+            if (show)
+                $(this).show().next('li').show();
+            else
+                $(this).hide().next('li').hide();
+        });
+    }
+}
+
 function currentLoadableUniqueSelector(target)
 {
     var identifier = $(target).closest('div.list-group-item').attr('data-random-identifier');
@@ -1490,84 +1545,14 @@ $(document).ready(function() {
         }
     });
 
-    $('body').on('click', '.icons-legend button', function() {
-        var legend = $(this).closest('.icons-legend');
-        var target = legend.attr('data-list-target');
-
-        if ($(this).hasClass('active')) {
-            $(this).removeClass('active');
-
-            $('.loadablelist' + target + ' a').each(function() {
-                $(this).show().next('li').show();
-            });
-        }
-        else {
-            /*
-                Qui devo considerare la somma di tutti i filtri che sono stati
-                attivati: se un elemento risulterebbe nascosto a fronte del
-                click su un attributo, potrebbero essercene altri che lo
-                mantengono visibile
-            */
-            legend.find('button').removeClass('active');
-            $(this).addClass('active');
-            var c = $(this).find('span.glyphicon').attr('class');
-
-            $('.loadablelist' + target + ' a').each(function() {
-                var show = false;
-
-                $(this).find('span.glyphicon').each(function() {
-                    var icons = $(this).attr('class');
-                    show = (icons == c);
-                    if (show)
-                        return false;
-                });
-
-                if (show)
-                    $(this).show().next('li').show();
-                else
-                    $(this).hide().next('li').hide();
-            });
-        }
+    $('body').on('click', '.icons-legend button, .icons-legend a', function(e) {
+        e.preventDefault();
+        iconsLegendTrigger($(this), '.icons-legend');
     });
 
-    $('body').on('click', '.table-icons-legend button', function() {
-        var legend = $(this).closest('.table-icons-legend');
-        var target = legend.attr('data-list-target');
-
-        if ($(this).hasClass('active')) {
-            $(this).removeClass('active');
-
-            $('.table' + target + ' tbody tr').each(function() {
-                $(this).show();
-            });
-        }
-        else {
-            /*
-                Qui devo considerare la somma di tutti i filtri che sono stati
-                attivati: se un elemento risulterebbe nascosto a fronte del
-                click su un attributo, potrebbero essercene altri che lo
-                mantengono visibile
-            */
-            legend.find('button').removeClass('active');
-            $(this).addClass('active');
-            var c = $(this).find('span.glyphicon').attr('class');
-
-            $('.table' + target + ' tbody tr').each(function() {
-                var show = false;
-
-                $(this).find('span.glyphicon').each(function() {
-                    var icons = $(this).attr('class');
-                    show = (icons == c);
-                    if (show)
-                        return false;
-                });
-
-                if (show)
-                    $(this).show();
-                else
-                    $(this).hide();
-            });
-        }
+    $('body').on('click', '.table-icons-legend button, .table-icons-legend a', function(e) {
+        e.preventDefault();
+        iconsLegendTrigger($(this), '.table-icons-legend');
     });
 
     $('body').on('click', '.list-filters button', function() {

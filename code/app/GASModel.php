@@ -34,22 +34,29 @@ trait GASModel
         return $this->printableName();
     }
 
-    public function printableHeader()
+    protected function headerIcons()
     {
-        $ret = $this->printableName();
+        $ret = '';
         $icons = $this->icons();
 
         if (!empty($icons)) {
             $ret .= '<div class="pull-right">';
 
             foreach ($icons as $i) {
-                $ret .= '<span class="glyphicon glyphicon-'.$i.'" aria-hidden="true"></span>&nbsp;';
+                $ret .= '<span class="glyphicon glyphicon-'.$i.'" aria-hidden="true"></span>';
+                if (substr($i, 0, 6) != 'hidden')
+                    $ret .= '&nbsp;';
             }
 
             $ret .= '</div>';
         }
 
         return $ret;
+    }
+
+    public function printableHeader()
+    {
+        return $this->printableName() . $this->headerIcons();
     }
 
     public function printableDate($name)
@@ -158,9 +165,9 @@ trait GASModel
 
             /*
                 La chiave di ogni array interno è il nome dell'icona FontAwesome
-                da usare per la relativa icona. Usare un nome non esistente per
-                avere il filtro ma non l'icona (lasciare un punto '.' davanti
-                per indicare che è una azione deliberata)
+                da usare per la relativa icona.
+                Per avere il filtro ma non l'icona aggiungere il prefisso
+                "hidden-" al nome
             */
             $icons = [
                 'Supplier' => [
@@ -198,7 +205,7 @@ trait GASModel
                         },
                         'text' => _i('Disabilitato'),
                     ],
-                    '.on' => (object) [
+                    'hidden-on' => (object) [
                         'test' => function ($obj) {
                             return $obj->active == true;
                         },
@@ -209,7 +216,7 @@ trait GASModel
                             return !empty($obj->discount) && $obj->discount != 0;
                         },
                         'text' => _i('Scontato'),
-                    ],
+                    ]
                 ],
                 'Aggregate' => [
                     'th-list' => (object) [
@@ -451,22 +458,55 @@ trait GASModel
                     'text' => _i('In Entrata'),
                 ];
             }
+        }
 
-            /*
-                Questo è per generare le icone dei ruoli degli utenti comuni
-            */
-            $roles = Role::where('id', '!=', $user->gas->roles['user'])->where('id', '!=', $user->gas->roles['friend'])->get();
-            foreach($roles as $index => $role) {
-                $icons['User']['king' . $index] = (object) [
-                    'test' => function($obj) use ($role) {
-                        foreach($obj->roles as $r)
-                            if ($r->id == $role->id)
-                                return true;
-                        return false;
-                    },
-                    'text' => $role->name
-                ];
-            }
+        return $icons;
+    }
+
+    private static function selectiveIconsMap()
+    {
+        static $icons = null;
+
+        if (is_null($icons)) {
+            $icons = [
+                'Product' => [
+                    'th' => (object) [
+                        'text' => _i('Categoria'),
+                        'assign' => function ($obj) {
+                            return ['hidden-cat-' . $obj->category_id];
+                        },
+                        'options' => function($objs) {
+                            $categories = $objs->pluck('category_id')->toArray();
+                            $categories = array_unique($categories);
+                            sort($categories);
+
+                            return Category::whereIn('id', $categories)->get()->reduce(function($carry, $item) {
+                                $carry['hidden-cat-' . $item->id] = $item->name;
+                                return $carry;
+                            }, []);
+                        }
+                    ]
+                ],
+                'User' => [
+                    'king' => (object) [
+                        'text' => _i('Ruolo'),
+                        'assign' => function ($obj) {
+                            $ret = [];
+                            foreach($obj->roles as $r)
+                                $ret[] = 'hidden-king-' . $r->id;
+                            return $ret;
+                        },
+                        'options' => function($objs) {
+                            $user = Auth::user();
+
+                            return Role::whereNotIn('id', [$user->gas->roles['user'], $user->gas->roles['friend']])->get()->reduce(function($carry, $item) {
+                                $carry['hidden-king-' . $item->id] = $item->name;
+                                return $carry;
+                            }, []);
+                        }
+                    ]
+                ]
+            ];
         }
 
         return $icons;
@@ -489,10 +529,19 @@ trait GASModel
             }
         }
 
+        $map = self::selectiveIconsMap();
+
+        if (isset($map[$class])) {
+            foreach ($map[$class] as $icon => $condition) {
+                $assign = $condition->assign;
+                $ret = array_merge($ret, $assign($this));
+            }
+        }
+
         return $ret;
     }
 
-    public static function iconsLegend($class)
+    public static function iconsLegend($class, $contents = null)
     {
         $map = self::iconsMap();
         $ret = [];
@@ -500,6 +549,24 @@ trait GASModel
         if (isset($map[$class])) {
             foreach ($map[$class] as $icon => $condition) {
                 $ret[$icon] = $condition->text;
+            }
+        }
+
+        if ($contents != null) {
+            $map = self::selectiveIconsMap();
+
+            if (isset($map[$class])) {
+                foreach ($map[$class] as $icon => $condition) {
+                    $options = $condition->options;
+                    $options = $options($contents);
+                    if (!empty($options)) {
+                        $description = (object) [
+                            'label' => $condition->text,
+                            'items' => $options
+                        ];
+                        $ret[$icon] = $description;
+                    }
+                }
             }
         }
 

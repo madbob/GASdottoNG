@@ -1,8 +1,13 @@
-<?php $columns = $currentgas->orders_display_columns ?>
+<?php
 
-<div class="btn-group pull-right order-columns-selector">
-    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        {{ _i('Colonne') }} <span class="caret"></span>
+$columns = $currentgas->orders_display_columns;
+$table_identifier = 'summary-' . sanitizeId($order->id);
+
+?>
+
+<div class="btn-group pull-right hidden-sm hidden-xs order-columns-selector">
+    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span>&nbsp;{{ _i('Colonne') }} <span class="caret"></span>
     </button>
     <ul class="dropdown-menu">
         @foreach(App\Order::displayColumns() as $identifier => $metadata)
@@ -15,7 +20,15 @@
     </ul>
 </div>
 
-<table class="table order-summary">
+@include('commons.iconslegend', [
+    'class' => 'Product',
+    'target' => '#' . $table_identifier,
+    'table_filter' => true,
+    'limit_to' => ['th'],
+    'contents' => $order->supplier->products
+])
+
+<table class="table order-summary" id="{{ $table_identifier }}">
     <thead>
         <tr>
             @foreach(App\Order::displayColumns() as $identifier => $metadata)
@@ -53,6 +66,12 @@
                 <!-- Visualizza tutti -->
                 <td class="order-cell-selection {{ in_array('selection', $columns) ? '' : 'hidden' }}">
                     <input class="enabling-toggle" type="checkbox" name="enabled[]" value="{{ $product->id }}" {{ $enabled ? 'checked' : '' }} {{ $order->isActive() ? '' : 'disabled' }} />
+
+                    <div class="hidden">
+                        @foreach($product->icons() as $icon)
+                            <span class="glyphicon glyphicon-{{ $icon }}" aria-hidden="true"></span>
+                        @endforeach
+                    </div>
                 </td>
 
                 <!-- Prodotto -->

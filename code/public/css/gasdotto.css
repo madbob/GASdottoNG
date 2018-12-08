@@ -194,6 +194,16 @@ table .form-group {
 
 .icons-legend {
   margin-bottom: 10px; }
+  .icons-legend .dropdown-menu a.active {
+    background-color: #31B0D5;
+    color: #FFF; }
+
+.table-icons-legend .dropdown-menu a.active {
+  background-color: #31B0D5;
+  color: #FFF; }
+
+.order-columns-selector {
+  margin-left: 10px; }
 
 .main-form-buttons .btn-default {
   background-color: #FFF;
@@ -253,6 +263,36 @@ table .form-group {
   content: "\e211"; }
 
 .glyphicon-king9:before {
+  content: "\e211"; }
+
+.glyphicon-king10:before {
+  content: "\e211"; }
+
+.glyphicon-king11:before {
+  content: "\e211"; }
+
+.glyphicon-king12:before {
+  content: "\e211"; }
+
+.glyphicon-king13:before {
+  content: "\e211"; }
+
+.glyphicon-king14:before {
+  content: "\e211"; }
+
+.glyphicon-king15:before {
+  content: "\e211"; }
+
+.glyphicon-king16:before {
+  content: "\e211"; }
+
+.glyphicon-king17:before {
+  content: "\e211"; }
+
+.glyphicon-king18:before {
+  content: "\e211"; }
+
+.glyphicon-king19:before {
   content: "\e211"; }
 
 .btn-group label.btn.active:after {

@@ -19,7 +19,8 @@
             @include('commons.iconslegend', [
                 'class' => 'Product',
                 'target' => '#' . $identifier,
-                'table_filter' => true
+                'table_filter' => true,
+                'contents' => $supplier->products
             ])
         </div>
     </div>

@@ -206,22 +206,7 @@ class Aggregate extends Model implements Feedable
 
     public function printableHeader()
     {
-        $ret = $this->printableName();
-        $icons = $this->icons();
-
-        if (!empty($icons)) {
-            $ret .= '<div class="pull-right">';
-
-            foreach ($icons as $i) {
-                $ret .= '<span class="glyphicon glyphicon-'.$i.'" aria-hidden="true"></span>&nbsp;';
-            }
-
-            $ret .= '</div>';
-        }
-
-        $ret .= sprintf('<br/><small>%s</small>', $this->printableDates());
-
-        return $ret;
+        return $this->printableName() . $this->headerIcons() . sprintf('<br/><small>%s</small>', $this->printableDates());
     }
 
     public function printableUserHeader($with_progress = false)

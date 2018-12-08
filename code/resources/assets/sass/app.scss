@@ -294,6 +294,26 @@ table {
 
 .icons-legend {
 	margin-bottom: 10px;
+
+    .dropdown-menu {
+        a.active {
+            background-color: #31B0D5;
+            color: #FFF;
+        }
+    }
+}
+
+.table-icons-legend {
+    .dropdown-menu {
+        a.active {
+            background-color: #31B0D5;
+            color: #FFF;
+        }
+    }
+}
+
+.order-columns-selector {
+    margin-left: 10px;
 }
 
 .main-form-buttons {
@@ -339,7 +359,7 @@ table {
     ruolo una diversa icona (o, almeno, una diversa classe) senza sapere a
     priori quanti sono. Cfr. GASModel::iconsMap()
 */
-@for $i from 0 to 10 {
+@for $i from 0 to 20 {
     .glyphicon-king#{$i}:before {
         content: "\e211";
     }
