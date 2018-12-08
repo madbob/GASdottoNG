@@ -42,16 +42,33 @@ class OrdersController extends Controller
         ]);
     }
 
-    private function defaultOrders()
+    private function defaultOrders($mine)
     {
-        return Aggregate::easyFilter(0, date('Y-m-d', strtotime('-1 years')), date('Y-m-d', strtotime('+1 years')), ['open', 'closed', 'shipped', 'suspended']);
+        if ($mine) {
+            $user = Auth::user();
+            $supplier_id = [];
+
+            foreach($user->targetsByAction('supplier.modify') as $supplier)
+                $supplier_id[] = $supplier->id;
+            foreach($user->targetsByAction('supplier.orders') as $supplier)
+                $supplier_id[] = $supplier->id;
+            foreach($user->targetsByAction('supplier.shippings') as $supplier)
+                $supplier_id[] = $supplier->id;
+
+            $supplier_id = array_unique($supplier_id);
+        }
+        else {
+            $supplier_id = 0;
+        }
+
+        return Aggregate::easyFilter($supplier_id, date('Y-m-d', strtotime('-1 years')), date('Y-m-d', strtotime('+1 years')), ['open', 'closed', 'shipped', 'suspended']);
     }
 
     public function ical()
     {
         $calendar = new \Eluceo\iCal\Component\Calendar('www.example.com');
 
-        $orders = $this->defaultOrders();
+        $orders = $this->defaultOrders(false);
         foreach($orders as $o) {
             if ($o->start && $o->end) {
                 $event = new \Eluceo\iCal\Component\Event();
@@ -67,7 +84,7 @@ class OrdersController extends Controller
 
     public function index()
     {
-        $orders = $this->defaultOrders();
+        $orders = $this->defaultOrders(true);
         return view('pages.orders', ['orders' => $orders]);
     }
 

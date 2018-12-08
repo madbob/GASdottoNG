@@ -76,12 +76,19 @@ class Aggregate extends Model implements Feedable
         */
 
         $orders = self::with('orders')->whereHas('orders', function ($query) use ($supplier_id, $startdate, $enddate, $statuses) {
-            if (!empty($supplier_id))
-                $query->where('supplier_id', '=', $supplier_id);
+            if (!empty($supplier_id)) {
+                if (is_array($supplier_id))
+                    $query->whereIn('supplier_id', $supplier_id);
+                else
+                    $query->where('supplier_id', $supplier_id);
+            }
+
             if (!empty($startdate))
                 $query->where('start', '>=', $startdate);
+
             if (!empty($enddate))
                 $query->where('end', '<=', $enddate);
+
             $query->whereIn('status', $statuses);
         })->get();
 
