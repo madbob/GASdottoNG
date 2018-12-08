@@ -3,14 +3,9 @@
 namespace App\Http\Controllers\REST;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-
-use Response;
 
 use App\Services\ProductsService;
 use App\Http\Controllers\REST\BackedController;
-use App\Exceptions\AuthException;
-use App\Exceptions\IllegalArgumentException;
 
 class ProductsController extends BackedController
 {

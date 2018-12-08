@@ -126,7 +126,11 @@ class Role extends Model
 
             $classes = $this->getAllClasses();
             foreach($classes as $class) {
-                $all = $class::orderBy('name', 'asc')->get();
+                if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
+                    $all = $class::withTrashed()->orderBy('name', 'asc')->get();
+                else
+                    $all = $class::orderBy('name', 'asc')->get();
+
                 $this->targets = $this->targets->merge($all);
             }
         }
@@ -259,7 +263,11 @@ class Role extends Model
         $ret = new Collection();
 
         foreach($this->$cache_type as $class => $ids) {
-            $objs = $class::whereIn('id', $ids)->get();
+            if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
+                $objs = $class::withTrashed()->whereIn('id', $ids)->get();
+            else
+                $objs = $class::whereIn('id', $ids)->get();
+
             $ret = $ret->merge($objs);
         }
 
@@ -447,7 +455,11 @@ class Role extends Model
 
         $permissions = self::allPermissions();
         foreach ($permissions as $class => $types) {
-            $all = $class::orderBy('name', 'asc')->get();
+            if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
+                $all = $class::withTrashed()->orderBy('name', 'asc')->get();
+            else
+                $all = $class::orderBy('name', 'asc')->get();
+
             foreach ($all as $subject) {
                 $targets[] = $subject;
             }

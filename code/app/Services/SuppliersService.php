@@ -34,7 +34,13 @@ class SuppliersService extends BaseService
             foreach($user->targetsByAction('supplier.modify') as $supplier)
                 $suppliers_id[] = $supplier->id;
 
-            $query->whereIn('id', $suppliers_id);
+            foreach($user->targetsByAction('supplier.orders') as $supplier)
+                $suppliers_id[] = $supplier->id;
+
+            foreach($user->targetsByAction('supplier.shippings') as $supplier)
+                $suppliers_id[] = $supplier->id;
+
+            $query->whereIn('id', array_unique($suppliers_id));
         }
 
         if ($all)
@@ -46,6 +52,24 @@ class SuppliersService extends BaseService
 
     public function show($id)
     {
+        $user = $this->ensureAuth();
+
+        if ($user->can('supplier.view', $user->gas) == false) {
+            $found = false;
+
+            foreach(['supplier.modify', 'supplier.orders', 'supplier.shippings'] as $action) {
+                foreach($user->targetsByAction($action) as $supplier) {
+                    if ($supplier->id == $id) {
+                        $found = true;
+                        break;
+                    }
+                }
+            }
+
+            if ($found == false)
+                throw new AuthException(401);
+        }
+
         return Supplier::withTrashed()->findOrFail($id);
     }
 
@@ -80,6 +104,16 @@ class SuppliersService extends BaseService
             $supplier->save();
 
             $roles = Role::havingAction('supplier.modify');
+            foreach($roles as $r) {
+                $creator->addRole($r, $supplier);
+            }
+
+            $roles = Role::havingAction('supplier.orders');
+            foreach($roles as $r) {
+                $creator->addRole($r, $supplier);
+            }
+
+            $roles = Role::havingAction('supplier.shippings');
             foreach($roles as $r) {
                 $creator->addRole($r, $supplier);
             }

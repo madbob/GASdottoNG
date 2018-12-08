@@ -14,14 +14,19 @@ trait GASModel
         Funzione di comodo, funge come find() ma se la classe è soft-deletable
         cerca anche tra gli elementi cancellati
     */
-    public static function tFind($id)
+    public static function tFind($id, $fail = false)
     {
         $class = get_called_class();
 
         if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
-            return $class::where('id', $id)->withoutGlobalScopes()->withTrashed()->first();
+            $ret = $class::where('id', $id)->withoutGlobalScopes()->withTrashed()->first();
         else
-            return $class::find($id);
+            $ret = $class::find($id);
+
+        if ($ret == null && $fail == true)
+            abort(404);
+
+        return $ret;
     }
 
     public function printableName()

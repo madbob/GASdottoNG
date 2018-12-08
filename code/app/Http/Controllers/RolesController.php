@@ -133,7 +133,7 @@ class RolesController extends Controller
 
         if ($request->has('user')) {
             $user_id = $request->input('user');
-            $u = User::findOrFail($user_id);
+            $u = User::tFind($user_id, true);
 
             if ($request->has('target_id')) {
                 $target_id = $request->input('target_id');
@@ -142,7 +142,7 @@ class RolesController extends Controller
                 if ($target_id == '*')
                     $target = $target_class;
                 else
-                    $target = $target_class::findOrFail($target_id);
+                    $target = $target_class::tFind($target_id, true);
 
                 $u->addRole($r, $target);
                 return $this->successResponse();
@@ -186,14 +186,14 @@ class RolesController extends Controller
                 if ($target_id == '*')
                     $target = $target_class;
                 else
-                    $target = $target_class::findOrFail($target_id);
+                    $target = $target_class::tFind($target_id, true);
             }
             else {
                 $target = null;
             }
 
             $user_id = $request->input('user');
-            $u = User::findOrFail($user_id);
+            $u = User::tFind($user_id, true);
             $u->removeRole($r, $target);
         }
         else {
