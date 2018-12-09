@@ -388,7 +388,7 @@
                                 @include('commons.loadablelist', [
                                     'identifier' => 'delivery-list',
                                     'items' => $currentgas->deliveries,
-                                    'empty_message' => _i('Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi, verrà attivata la possibilità per ogni utente di selezionare il proprio luogo di consegna preferito e nei documenti di riassunto degli ordini le prenotazioni saranno suddivise per luogo.')
+                                    'empty_message' => _i('Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi, verrà attivata la possibilità per ogni utente di selezionare il proprio luogo di consegna preferito e nei documenti di riassunto degli ordini le prenotazioni saranno suddivise per luogo: utile per GAS distribuiti sul territorio.')
                                 ])
                             </div>
                         </div>
@@ -428,7 +428,8 @@
                             <div class="col-md-12">
                                 @include('commons.loadablelist', [
                                     'identifier' => 'attachment-list-' . $gas->id,
-                                    'items' => $gas->attachments
+                                    'items' => $gas->attachments,
+                                    'empty_message' => _i('Non ci sono elementi da visualizzare.<br/>I files qui aggiunti saranno accessibili a tutti gli utenti dalla dashboard: utile per condividere documenti di interesse comune.')
                                 ])
                             </div>
                         </div>
@@ -462,7 +463,8 @@
                             <div class="col-md-12">
                                 @include('commons.loadablelist', [
                                     'identifier' => 'vatrate-list',
-                                    'items' => App\VatRate::orderBy('name', 'asc')->get()
+                                    'items' => App\VatRate::orderBy('name', 'asc')->get(),
+                                    'empty_message' => _i("Non ci sono elementi da visualizzare.<br/>Le aliquote potranno essere assegnate ai diversi prodotti nei listini dei fornitori, e vengono usate per scorporare automaticamente l'IVA dai totali delle fatture caricate in <strong>Contabilità -> Fatture</strong>.")
                                 ])
                             </div>
                         </div>
