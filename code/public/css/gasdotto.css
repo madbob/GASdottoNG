@@ -94,7 +94,11 @@ table label {
   border: 2px solid #000; }
 
 .help-sensitive {
-  color: #31708F; }
+  color: #31708F;
+  font-weight: normal;
+  font-size: 0%;
+  text-align: left;
+  display: block; }
 
 .twitter-typeahead {
   width: 100%; }
