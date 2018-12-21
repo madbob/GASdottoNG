@@ -21,7 +21,15 @@ $grand_total = 0;
             </div>
             <br/>
         @else
-            <table class="table table-striped booking-editor">
+            @include('commons.iconslegend', [
+                'class' => 'Product',
+                'target' => '#booking_' . sanitizeId($order->id),
+                'table_filter' => true,
+                'limit_to' => ['th'],
+                'contents' => $order->products
+            ])
+
+            <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}">
                 <thead>
                     <tr>
                         <th width="50%">{{ _i('Prodotto') }}</th>
@@ -37,6 +45,12 @@ $grand_total = 0;
                             <tr>
                                 <td>
                                     @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product->product])
+
+                                    <div class="hidden">
+                                        @foreach($product->product->icons() as $icon)
+                                            <span class="glyphicon glyphicon-{{ $icon }}" aria-hidden="true"></span>
+                                        @endforeach
+                                    </div>
                                 </td>
 
                                 <td>

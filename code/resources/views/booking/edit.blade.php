@@ -18,7 +18,15 @@ $has_shipping = $aggregate->canShip();
 
         <?php $o = $order->userBooking($user->id) ?>
 
-        <table class="table table-striped booking-editor">
+        @include('commons.iconslegend', [
+            'class' => 'Product',
+            'target' => '#booking_' . sanitizeId($order->id),
+            'table_filter' => true,
+            'limit_to' => ['th'],
+            'contents' => $order->products
+        ])
+
+        <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}">
             <thead>
                 <tr>
                     <th width="40%"></th>
@@ -35,6 +43,12 @@ $has_shipping = $aggregate->canShip();
                     <tr class="booking-product">
                         <td>
                             @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product])
+
+                            <div class="hidden">
+                                @foreach($product->product->icons() as $icon)
+                                    <span class="glyphicon glyphicon-{{ $icon }}" aria-hidden="true"></span>
+                                @endforeach
+                            </div>
                         </td>
 
                         <td>
