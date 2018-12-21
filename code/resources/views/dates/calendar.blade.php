@@ -5,7 +5,8 @@
                 {
                     title: '{!! join(', ', $a->orders->reduce(function($carry, $item) { $carry[] = addslashes($item->supplier->name); return $carry; }, [])) !!}',
                     start: '{{ $a->shipping }}',
-                    className: 'calendar-shipping-{{ $a->status }}'
+                    className: 'calendar-shipping-{{ $a->status }}',
+                    url: '{{ $a->getBookingURL() }}'
                 },
             @endif
         @endforeach

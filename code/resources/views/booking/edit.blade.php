@@ -45,7 +45,7 @@ $has_shipping = $aggregate->canShip();
                             @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product])
 
                             <div class="hidden">
-                                @foreach($product->product->icons() as $icon)
+                                @foreach($product->icons() as $icon)
                                     <span class="glyphicon glyphicon-{{ $icon }}" aria-hidden="true"></span>
                                 @endforeach
                             </div>
