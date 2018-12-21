@@ -2318,7 +2318,19 @@ $(document).ready(function() {
         $('.order-summary tr.product-disabled').toggle();
     })
     .on('change', '.order-summary tr .enabling-toggle', function() {
-        $(this).closest('tr').toggleClass('product-disabled');
+        var row = $(this).closest('tr');
+
+        if ($(this).prop('checked') == false) {
+            var quantity = parseFloatC(row.find('.order-summary-product-price').text());
+            if (quantity != 0) {
+                if (confirm(_('Ci sono prenotazioni attive per questo prodotto. Sei sicuro di volerlo disabilitare?')) == false) {
+                    $(this).prop('checked', true);
+                    return;
+                }
+            }
+        }
+
+        row.toggleClass('product-disabled');
     })
     .on('change', '.order-summary tr .discount-toggle', function() {
         var p = $(this).closest('tr').find('.product-price');
