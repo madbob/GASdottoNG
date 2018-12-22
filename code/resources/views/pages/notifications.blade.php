@@ -6,7 +6,7 @@
     <div class="col-md-12">
         @can('notifications.admin', $currentgas)
             @include('commons.addingbutton', [
-                'template' => 'notification.base-edit',
+                'template' => 'notification.create',
                 'typename' => 'notification',
                 'typename_readable' => _i('Notifica'),
                 'targeturl' => 'notifications'
@@ -20,7 +20,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        @include('commons.loadablelist', ['identifier' => 'notification-list', 'items' => $notifications, 'url' => url('notifications/')])
+        @include('commons.loadablelist', ['identifier' => 'notification-list', 'items' => $notifications])
     </div>
 </div>
 

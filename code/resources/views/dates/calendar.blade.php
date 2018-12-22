@@ -13,7 +13,7 @@
 
         @foreach(App\Date::all() as $d)
             {
-                title: '{{ empty($d->description) ? $d->target->name : sprintf('%s: %s', $d->target->name, $d->description) }}',
+                title: '{{ $d->calendar_string }}',
                 start: '{{ $d->date }}',
                 className: 'calendar-date-{{ $d->type }}'
             },
@@ -29,6 +29,7 @@
             @if(App\Date::count())
                 <span class="fc-event calendar-date-confirmed">{{ _i('Date Confermate') }}</span>
                 <span class="fc-event calendar-date-temp">{{ _i('Date Temporanee') }}</span>
+                <span class="fc-event calendar-date-internal">{{ _i('Appuntamenti') }}</span>
             @endif
         </div>
     </div>

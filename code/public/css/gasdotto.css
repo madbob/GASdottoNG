@@ -78,6 +78,9 @@ table label {
 #dates-calendar .calendar-date-temp {
   background-color: orange; }
 
+#dates-calendar .calendar-date-internal {
+  background-color: black; }
+
 .suggested-dates li {
   cursor: pointer;
   cursor: hand; }

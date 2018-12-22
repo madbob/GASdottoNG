@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use Auth;
 
+use App\Date;
 use App\Supplier;
 
 use App\Services\DatesService;
@@ -29,7 +30,7 @@ class DatesController extends BackedController
     {
         try {
             $dates = $this->service->list();
-            return view('dates.edit', ['dates' => $dates]);
+            return view('dates.table', ['dates' => $dates]);
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -46,6 +47,22 @@ class DatesController extends BackedController
 
             $dates = $supplier->dates;
             return view('dates.list', ['dates' => $dates]);
+        }
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+    }
+
+    public function show(Request $request, $id)
+    {
+        try {
+            $date = $this->service->show($id);
+            $user = $request->user();
+
+            if ($user->can('notifications.admin', $user->gas))
+                return view('dates.edit', ['date' => $date]);
+            else
+                return view('dates.show', ['date' => $date]);
         }
         catch (AuthException $e) {
             abort($e->status());

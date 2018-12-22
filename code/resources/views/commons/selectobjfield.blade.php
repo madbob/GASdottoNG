@@ -80,7 +80,7 @@ else {
 
     <div class="col-sm-{{ $fieldsize }}">
         <select
-            class="{{ $select_class }}" {{ $multiple_select ? 'multiple size="10"' : '' }}
+            class="{{ $select_class }}" {!! $multiple_select ? 'multiple size="10"' : '' !!}
 
             @if(isset($disabled) && $disabled == true)
                 disabled

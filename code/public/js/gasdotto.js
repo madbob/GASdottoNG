@@ -2744,6 +2744,20 @@ $(document).ready(function() {
     });
 
     /*
+        Notifiche
+    */
+
+    $('body').on('change', '.notification-type-switch input', function() {
+        if ($(this).prop('checked') == false)
+            return;
+
+        var form = $(this).closest('form');
+        form.find('[name^=users]').closest('.form-group').toggle();
+        form.find('[name=end_date]').closest('.form-group').toggle();
+        form.find('[name=mailed]').closest('.form-group').toggle();
+    });
+
+    /*
     	Widget generico wizard
     */
 

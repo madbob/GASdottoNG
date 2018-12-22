@@ -1,4 +1,13 @@
-<div class="form-group">
+<?php
+
+$wrap_class = 'form-group';
+if (isset($extra_wrap_class)) {
+    $wrap_class .= ' ' . $extra_wrap_class;
+}
+
+?>
+
+<div class="{{ $wrap_class }}">
     @if($squeeze == false)
         <label for="{{ $prefix . $name }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
     @endif

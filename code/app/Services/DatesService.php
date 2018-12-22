@@ -24,35 +24,62 @@ class DatesService extends BaseService
         return $query->get();
     }
 
-    public function update($useless, array $request)
+    public function show($id)
     {
-        $this->ensureAuth(['supplier.orders' => null]);
+        return Date::findOrFail($id);
+    }
 
-        $ids = $request['id'];
-        $targets = $request['target_id'];
-        $dates = $request['date'];
-        $descriptions = $request['description'];
-        $types = $request['type'];
+    public function update($id, array $request)
+    {
+        if ($id == 0) {
+            $this->ensureAuth(['supplier.orders' => null]);
 
-        $saved_ids = [];
+            $ids = $request['id'];
+            $targets = $request['target_id'];
+            $dates = $request['date'];
+            $descriptions = $request['description'];
+            $types = $request['type'];
 
-        foreach($ids as $index => $id) {
-            if (empty($id))
-                $date = new Date();
-            else
-                $date = Date::find($id);
+            $saved_ids = [];
 
-            $date->target_type = 'App\Supplier';
-            $date->target_id = $targets[$index];
-            $date->date = decodeDate($dates[$index]);
-            $date->description = $descriptions[$index];
-            $date->type = $types[$index];
-            $date->save();
+            foreach($ids as $index => $id) {
+                if (empty($id))
+                    $date = new Date();
+                else
+                    $date = Date::find($id);
 
-            $saved_ids[] = $date->id;
+                $date->target_type = 'App\Supplier';
+                $date->target_id = $targets[$index];
+                $date->date = decodeDate($dates[$index]);
+                $date->description = $descriptions[$index];
+                $date->type = $types[$index];
+                $date->save();
+
+                $saved_ids[] = $date->id;
+            }
+
+            Date::whereNotIn('id', $saved_ids)->delete();
+            return null;
         }
+        else {
+            $this->ensureAuth(['notifications.admin' => 'gas']);
+            $date = Date::findOrFail($id);
+            $date->date = decodeDate($request['date']);
+            $date->description = $request['description'];
+            $date->save();
+            return $date;
+        }
+    }
 
-        Date::whereNotIn('id', $saved_ids)->delete();
-        return null;
+    public function destroy($id)
+    {
+        $date = DB::transaction(function() use ($id) {
+            $date = $this->show($id);
+            $this->ensureAuth(['notifications.admin' => 'gas']);
+            $date->delete();
+            return $date;
+        });
+
+        return $date;
     }
 }

@@ -10,6 +10,7 @@ use Auth;
 use Log;
 
 use App\Notification;
+use App\Date;
 use App\User;
 use App\Order;
 use App\Role;
@@ -29,7 +30,24 @@ class NotificationsController extends Controller
     {
         $user = Auth::user();
         if ($user->can('notifications.admin', $user->gas) == true) {
-            $data['notifications'] = Notification::orderBy('start_date', 'desc')->take(20)->get();
+            $notifications = Notification::where('end_date', '>', date('Y-m-d'))->get();
+            $dates = Date::where('type', 'internal')->where('date', '>', date('Y-m-d'))->get();
+
+            $all = $notifications->merge($dates)->sort(function($a, $b) {
+                if (is_a($a, 'App\Notification'))
+                    $a_date = $a->start_date;
+                else
+                    $a_date = $a->date;
+
+                if (is_a($b, 'App\Notification'))
+                    $b_date = $b->start_date;
+                else
+                    $b_date = $b->date;
+
+                return $b_date <=> $a_date;
+            });
+
+            $data['notifications'] = $all;
         }
         else {
             $data['notifications'] = $user->allnotifications;
@@ -86,22 +104,27 @@ class NotificationsController extends Controller
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
-        /*
-            TODO: gran parte di questo codice dovrà essere spostato
-            direttamente nel modello Notification, o in un comando
-            dedicato, per essere facilmente riutilizzato altrove
-            (e.g. creando le notifiche di riepilogo ordini)
-        */
-        $n = new Notification();
-        $n->creator_id = $user->id;
-        $n->content = $request->input('content');
-        $n->mailed = $request->has('mailed');
-        $n->start_date = decodeDate($request->input('start_date'));
-        $n->end_date = decodeDate($request->input('end_date'));
-        $n->save();
+        if ($request->input('type') == 'date') {
+            $n = new Date();
+            $n->target_type = 'App\Gas';
+            $n->target_id = $user->gas->id;
+            $n->description = $request->input('content');
+            $n->type = 'internal';
+            $n->date = decodeDate($request->input('start_date'));
+            $n->save();
+        }
+        else {
+            $n = new Notification();
+            $n->creator_id = $user->id;
+            $n->content = $request->input('content');
+            $n->mailed = $request->has('mailed');
+            $n->start_date = decodeDate($request->input('start_date'));
+            $n->end_date = decodeDate($request->input('end_date'));
+            $n->save();
 
-        self::syncUsers($n, $request);
-        $n->sendMail();
+            self::syncUsers($n, $request);
+            $n->sendMail();
+        }
 
         return $this->commonSuccessResponse($n);
     }

@@ -13,11 +13,6 @@ use Log;
 
 use App\GASModel;
 
-/*
-    TODO In una futura versione, questo sarà da rimpiazzare col meccanismo delle
-    notifiche nativo di Laravel
-*/
-
 class Notification extends Model
 {
     use GASModel;
@@ -91,6 +86,6 @@ class Notification extends Model
 
     public function printableHeader()
     {
-        return $this->printableDate('start_date').' / '.$this->printableName();
+        return $this->printableDate('start_date') . ' - ' . $this->printableName() . ' - ' . substr($this->content, 0, 100) . '...';
     }
 }
