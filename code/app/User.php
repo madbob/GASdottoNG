@@ -239,14 +239,14 @@ class User extends Authenticatable
         }
     }
 
-    public function targetsByAction($action)
+    public function targetsByAction($action, $exclude_trashed = true)
     {
         $targets = [];
         $class = Role::classByRule($action);
 
         foreach ($this->roles as $role) {
             if ($role->enabledAction($action))
-                foreach($role->applications(true) as $app)
+                foreach($role->applications(true, $exclude_trashed) as $app)
                     if ($class == null || get_class($app) == $class)
                         $targets[$app->id] = $app;
         }

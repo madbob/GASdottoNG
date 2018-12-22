@@ -1,3 +1,9 @@
+<?php
+
+$suppliers = $currentuser->targetsByAction('supplier.orders');
+
+?>
+
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     <h4 class="modal-title">
@@ -25,7 +31,7 @@
                     'obj' => null,
                     'name' => 'target_id',
                     'label' => _i('Fornitore'),
-                    'objects' => $currentuser->targetsByAction('supplier.orders'),
+                    'objects' => $suppliers,
                     'extra_selection' => [
                         '0' => _i('Nessuno')
                     ]
@@ -74,7 +80,7 @@
                             'type' => 'selectobj',
                             'width' => 3,
                             'extra' => [
-                                'objects' => $currentuser->targetsByAction('supplier.orders')
+                                'objects' => $suppliers
                             ]
                         ],
                         [

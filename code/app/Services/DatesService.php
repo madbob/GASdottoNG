@@ -16,7 +16,7 @@ class DatesService extends BaseService
     public function list($target = null)
     {
         $this->ensureAuth(['supplier.orders' => null]);
-        $query = Date::orderBy('date', 'asc');
+        $query = Date::where('type', '!=', 'internal')->orderBy('date', 'asc');
 
         if ($target != null)
             $query->where('target_type', get_class($target))->where('target_id', $target->id);
@@ -29,6 +29,11 @@ class DatesService extends BaseService
         return Date::findOrFail($id);
     }
 
+    /*
+        Questa funzione gestisce sia l'aggiornamento collettivo delle date
+        relative ai fornitori che l'aggiornamento di una singola data "interna"
+        editata dal pannello delle notifiche
+    */
     public function update($id, array $request)
     {
         if ($id == 0) {
@@ -58,7 +63,7 @@ class DatesService extends BaseService
                 $saved_ids[] = $date->id;
             }
 
-            Date::whereNotIn('id', $saved_ids)->delete();
+            Date::where('type', '!=', 'internal')->whereNotIn('id', $saved_ids)->delete();
             return null;
         }
         else {

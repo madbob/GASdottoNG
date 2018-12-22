@@ -31,13 +31,13 @@ class SuppliersService extends BaseService
         if ($user->can('supplier.view', $user->gas) == false && $user->can('supplier.add', $user->gas) == false) {
             $suppliers_id = [];
 
-            foreach($user->targetsByAction('supplier.modify') as $supplier)
+            foreach($user->targetsByAction('supplier.modify', false) as $supplier)
                 $suppliers_id[] = $supplier->id;
 
-            foreach($user->targetsByAction('supplier.orders') as $supplier)
+            foreach($user->targetsByAction('supplier.orders', false) as $supplier)
                 $suppliers_id[] = $supplier->id;
 
-            foreach($user->targetsByAction('supplier.shippings') as $supplier)
+            foreach($user->targetsByAction('supplier.shippings', false) as $supplier)
                 $suppliers_id[] = $supplier->id;
 
             $query->whereIn('id', array_unique($suppliers_id));
@@ -58,7 +58,7 @@ class SuppliersService extends BaseService
             $found = false;
 
             foreach(['supplier.modify', 'supplier.orders', 'supplier.shippings'] as $action) {
-                foreach($user->targetsByAction($action) as $supplier) {
+                foreach($user->targetsByAction($action, false) as $supplier) {
                     if ($supplier->id == $id) {
                         $found = true;
                         break;

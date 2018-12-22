@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Log;
+
 use App\GASModel;
 
 class Date extends Model
@@ -31,10 +33,21 @@ class Date extends Model
 
     public function getCalendarStringAttribute()
     {
-        if($this->type == 'internal')
+        if($this->type == 'internal') {
             return $this->description;
-        else
-            return empty($this->description) ? $this->target->name : sprintf('%s: %s', $this->target->name, $this->description);
+        }
+        else {
+            $target = $this->target;
+            if ($target) {
+                $name = $this->target->name;
+            }
+            else {
+                Log::error('Impossibile recuperare nome del fornitore assegnato alla data ' . $this->id);
+                $name = '???';
+            }
+
+            return empty($this->description) ? $name : sprintf('%s: %s', $name, $this->description);
+        }
     }
 
     public function printableName()

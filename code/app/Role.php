@@ -251,7 +251,7 @@ class Role extends Model
         User::roles(), in quanto si applica solo sull'istanza del ruolo
         assegnata ad uno specifico utente
     */
-    public function applications($all = false)
+    public function applications($all = false, $exclude_trashed = false)
     {
         $this->appliesCache();
 
@@ -263,7 +263,7 @@ class Role extends Model
         $ret = new Collection();
 
         foreach($this->$cache_type as $class => $ids) {
-            if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
+            if ($exclude_trashed == false && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
                 $objs = $class::withTrashed()->whereIn('id', $ids)->get();
             else
                 $objs = $class::whereIn('id', $ids)->get();
