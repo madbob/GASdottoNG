@@ -75,4 +75,10 @@
     </div>
 </div>
 
+<div class="hidden" id="templates">
+    <div class="alert alert-info">
+        {{ _i('Non ci sono dati da visualizzare') }}
+    </div>
+</div>
+
 @endsection
