@@ -84,7 +84,7 @@ class MovementsController extends BackedController
                     }
                 }
                 else if ($format == 'csv') {
-                    $filename = _i('Esportazione movimenti GAS %s.csv', date('d/m/Y'));
+                    $filename = sanitizeFilename(_i('Esportazione movimenti GAS %s.csv', date('d/m/Y')));
                     $headers = [_i('Data Registrazione'), _i('Data Movimento'), _i('Tipo'), _i('Pagamento'), _i('Pagante'), _i('Pagato'), _i('Valore'), _i('Note')];
                     return output_csv($filename, $headers, $data['movements'], function($mov) {
                         $row = [];
@@ -102,7 +102,7 @@ class MovementsController extends BackedController
                 else if ($format == 'pdf') {
                     $html = view('documents.movements_pdf', ['movements' => $data['movements']])->render();
                     $title = _i('Esportazione movimenti GAS %s', date('d/m/Y'));
-                    $filename = $title . '.pdf';
+                    $filename = sanitizeFilename($title . '.pdf');
                     PDF::SetTitle($title);
                     PDF::AddPage('L');
                     PDF::writeHTML($html, true, false, true, false, '');
@@ -233,7 +233,7 @@ class MovementsController extends BackedController
                     Artisan::call('check:fees');
 
                     $has_fee = ($user->gas->getConfig('annual_fee_amount') != 0);
-                    $filename = _i('Crediti al %s.csv', date('d/m/Y'));
+                    $filename = sanitizeFilename(_i('Crediti al %s.csv', date('d/m/Y')));
 
                     $headers = [_i('ID'), _i('Nome'), _i('E-Mail'), _i('Credito Residuo')];
                     if ($has_fee)
@@ -255,7 +255,7 @@ class MovementsController extends BackedController
                 else if ($subtype == 'rid') {
                     $date = decodeDate($request->input('date'));
                     $body = strtoupper($request->input('body'));
-                    $filename = _i('SEPA del %s.xml', date('d/m/Y', strtotime($date)));
+                    $filename = sanitizeFilename(_i('SEPA del %s.xml', date('d/m/Y', strtotime($date))));
 
                     $headers = [
                         'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',

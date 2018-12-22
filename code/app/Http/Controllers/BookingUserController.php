@@ -96,7 +96,7 @@ class BookingUserController extends BookingHandler
             'bookings' => $bookings,
         ])->render();
 
-        $filename = sprintf('Dettaglio Consegne ordini %s.pdf', $names);
+        $filename = sanitizeFilename(_i('Dettaglio Consegne ordini %s.pdf', [$names]));
         PDF::SetTitle(sprintf('Dettaglio Consegne ordini %s', $names));
         PDF::AddPage();
         PDF::writeHTML($html, true, false, true, false, '');

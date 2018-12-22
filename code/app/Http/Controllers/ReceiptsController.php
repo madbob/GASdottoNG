@@ -82,14 +82,14 @@ class ReceiptsController extends Controller
         if ($user->can('movements.admin', $user->gas) || $user->can('movements.view', $user->gas) || $receipt->user_id == $user->id) {
             $html = view('documents.receipt', ['receipt' => $receipt])->render();
             $title = _i('Fattura %s', [$receipt->number]);
-            $filename = $title . '.pdf';
+            $filename = sanitizeFilename($title . '.pdf');
             PDF::SetTitle($title);
             PDF::AddPage();
             PDF::writeHTML($html, true, false, true, false, '');
 
             $send_mail = $request->has('send_mail');
             if ($send_mail) {
-                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $filename));
+                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
                 PDF::Output($temp_file_path, 'F');
 
                 $recipient_mails = $request->input('recipient_mail_value', []);

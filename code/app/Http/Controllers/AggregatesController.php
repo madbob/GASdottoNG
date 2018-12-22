@@ -152,8 +152,9 @@ class AggregatesController extends OrdersController
                     'shipping_mode' => $shipping_place
                 ])->render();
 
-                $filename = sprintf('Dettaglio Consegne Ordini.pdf');
-                PDF::SetTitle(sprintf('Dettaglio Consegne Ordini'));
+                $title = _i('Dettaglio Consegne Ordini');
+                $filename = sanitizeFilename($title . '.pdf');
+                PDF::SetTitle($title);
                 PDF::AddPage();
                 PDF::writeHTML($html, true, false, true, false, '');
                 PDF::Output($filename, 'D');

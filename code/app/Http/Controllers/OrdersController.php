@@ -395,14 +395,14 @@ class OrdersController extends Controller
 
                 $html = view('documents.order_shipping', ['order' => $order, 'bookings' => $bookings, 'shipping_mode' => $shipping_place])->render();
                 $title = _i('Dettaglio Consegne ordine %s presso %s', [$order->internal_number, $order->supplier->name]);
-                $filename = $title . '.pdf';
+                $filename = sanitizeFilename($title . '.pdf');
                 PDF::SetTitle($title);
                 PDF::AddPage();
                 PDF::writeHTML($html, true, false, true, false, '');
 
                 $send_mail = $request->has('send_mail');
                 if ($send_mail) {
-                    $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $filename));
+                    $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
                     PDF::Output($temp_file_path, 'F');
                     $this->sendDocumentMail($request, $temp_file_path);
                 }
@@ -424,8 +424,8 @@ class OrdersController extends Controller
                     $data = $order->formatSummary($required_fields, $shipping_place);
 
                 $title = _i('Prodotti ordinati ordine %s presso %s', [$order->internal_number, $order->supplier->name]);
-                $filename = $title . '.' . $subtype;
-                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $filename));
+                $filename = sanitizeFilename($title . '.' . $subtype);
+                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
 
                 if ($subtype == 'pdf') {
                     $html = view('documents.order_summary_pdf', ['order' => $order, 'data' => $data])->render();
@@ -476,7 +476,7 @@ class OrdersController extends Controller
                     $contents = view('documents.order_table_saved', ['order' => $order, 'bookings' => $bookings])->render();
                 }
 
-                $filename = sprintf('Tabella Ordine %s presso %s.csv', $order->internal_number, $order->supplier->name);
+                $filename = sanitizeFilename(_i('Tabella Ordine %s presso %s.csv', [$order->internal_number, $order->supplier->name]));
                 return output_csv($filename, null, $contents, null, null);
                 break;
         }

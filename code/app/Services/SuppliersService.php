@@ -147,7 +147,7 @@ class SuppliersService extends BaseService
     {
         $this->ensureAuth();
         $supplier = $this->show($id);
-        $filename = sprintf('Listino %s.%s', $supplier->name, $format);
+        $filename = sanitizeFilename(_i('Listino %s.%s', [$supplier->name, $format]));
 
         if (isset($request['printable']))
             $products = $supplier->products()->whereIn('id', $request['printable'])->get();
@@ -156,7 +156,7 @@ class SuppliersService extends BaseService
 
         if ($format == 'pdf') {
             $html = view('documents.cataloguepdf', ['supplier' => $supplier, 'products' => $products])->render();
-            PDF::SetTitle(_i('Listino %s del %s', $supplier->name, date('d/m/Y')));
+            PDF::SetTitle(_i('Listino %s del %s', [$supplier->name, date('d/m/Y')]));
             PDF::AddPage();
             PDF::writeHTML($html, true, false, true, false, '');
             PDF::Output($filename, 'D');

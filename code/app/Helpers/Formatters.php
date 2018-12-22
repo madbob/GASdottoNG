@@ -149,6 +149,11 @@ function sanitizeId($identifier)
     return $identifier;
 }
 
+function sanitizeFilename($filename)
+{
+    return preg_replace('/[^0-9a-zA-Z \.]/', '-', $filename);
+}
+
 function normalizeUrl($url)
 {
     $url = strtolower($url);
