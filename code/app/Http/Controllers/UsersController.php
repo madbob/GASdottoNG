@@ -197,4 +197,11 @@ class UsersController extends BackedController
         $request->user()->suppliers()->sync($suppliers);
         return $this->successResponse();
     }
+
+    public function changePassword(Request $request)
+    {
+        if ($request->user()->enforce_password_change == false)
+            return redirect()->route('dashboard');
+        return view('user.change_password');
+    }
 }

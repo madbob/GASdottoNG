@@ -53,7 +53,7 @@ class MultiGasController extends Controller
 
         try {
             $user_service = new UsersService();
-            $admin = $user_service->store($request->only('username', 'firstname', 'lastname', 'password'));
+            $admin = $user_service->store($request->only('username', 'firstname', 'lastname', 'password', 'enforce_password_change'));
 
             $gas = new Gas();
             $gas->name = $request->input('name');

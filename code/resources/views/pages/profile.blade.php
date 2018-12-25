@@ -45,7 +45,7 @@
                                 @include('commons.staticstringfield', ['obj' => $user, 'name' => 'username', 'label' => _i('Username')])
                                 @include('commons.staticstringfield', ['obj' => $user, 'name' => 'firstname', 'label' => _i('Nome')])
                                 @include('commons.staticstringfield', ['obj' => $user, 'name' => 'lastname', 'label' => _i('Cognome')])
-                                @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => _i('Password'), 'extra_class' => 'password-changer'])
+                                @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => _i('Password')])
                                 @include('commons.staticdatefield', ['obj' => $user, 'name' => 'birthday', 'label' => _i('Data di Nascita')])
                                 @include('commons.staticstringfield', ['obj' => $user, 'name' => 'taxcode', 'label' => _i('Codice Fiscale')])
                                 @include('commons.staticcontactswidget', ['obj' => $user])

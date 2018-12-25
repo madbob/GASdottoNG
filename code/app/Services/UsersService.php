@@ -76,6 +76,10 @@ class UsersService extends BaseService
         $user->firstname = $request['firstname'];
         $user->lastname = $request['lastname'];
         $user->password = Hash::make($request['password']);
+        $user->notifications = '';
+
+        if (isset($request['enforce_password_change']) && $request['enforce_password_change'] == 'true')
+            $user->enforce_password_change = true;
 
         DB::transaction(function () use ($user) {
             $user->save();
@@ -102,6 +106,10 @@ class UsersService extends BaseService
         $user->firstname = $request['firstname'];
         $user->lastname = $request['lastname'];
         $user->password = Hash::make($request['password']);
+        $user->notifications = '';
+
+        if (isset($request['enforce_password_change']) && $request['enforce_password_change'] == 'true')
+            $user->enforce_password_change = true;
 
         DB::transaction(function () use ($user, $creator) {
             $user->save();
@@ -169,8 +177,22 @@ class UsersService extends BaseService
             $this->setIfSet($user, $request, 'preferred_delivery_id');
 
             if ($type == 1) {
+                if (isset($request['enforce_password_change']) && $request['enforce_password_change'] == 'true') {
+                    $user->enforce_password_change = true;
+                }
+                else {
+                    $user->enforce_password_change = false;
+                }
+
+                if (isset($request['status'])) {
+                    $user->setStatus($request['status'], $request['deleted_at']);
+                }
+
                 $this->transformAndSetIfSet($user, $request, 'member_since', "decodeDate");
                 $this->setIfSet($user, $request, 'card_number');
+            }
+            else {
+                $user->enforce_password_change = false;
             }
 
             if(isset($request['password']) && !empty($request['password'])) {
@@ -184,10 +206,6 @@ class UsersService extends BaseService
                 $rid_info['id'] = $request['rid->id'] ?? $user->rid['id'];
                 $rid_info['date'] = isset($request['rid->date']) ? decodeDate($request['rid->date']) : $user->rid['date'];
                 $user->rid = $rid_info;
-            }
-
-            if (isset($request['status'])) {
-                $user->setStatus($request['status'], $request['deleted_at']);
             }
 
             $user->save();

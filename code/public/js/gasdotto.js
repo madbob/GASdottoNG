@@ -1261,7 +1261,7 @@ $(document).ready(function() {
     });
 
     $('body').on('click', '.password-field .glyphicon', function() {
-        var i = $(this).closest('.password-field').find('input');
+        var i = $(this).closest('.password-field').find('input[type!=hidden]');
         if (i.attr('type') == 'password')
             i.attr('type', 'text');
         else
@@ -1833,23 +1833,24 @@ $(document).ready(function() {
     });
 
     $('body').on('focus', 'input.password-changer', function() {
+        if ($(this).closest('.modal').length != 0)
+            return;
+
         $(this).popover({
             content: function() {
                 var input = $(this);
 
-                var ret = $('<div>\
-                    <div class="form-group">\
-                        <label for="password" class="col-sm-4 control-label">' + _('Nuova Password') + '</label>\
-                        <div class="col-sm-8"><input type="password" class="form-control" name="password" value="" autocomplete="off"></div>\
-                    </div>\
-                    <div class="form-group">\
-                        <label for="password_confirm" class="col-sm-4 control-label">' + _('Conferma Password') + '</label>\
-                        <div class="col-sm-8"><input type="password" class="form-control" name="password_confirm" value="" autocomplete="off"></div>\
-                    </div>\
-                    <div class="form-group">\
-                        <div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Conferma') + '</button></div>\
-                    </div>\
-                </div>');
+                var ret = '<div>\
+                    <div class="form-group"><label for="password" class="col-sm-4 control-label">' + _('Nuova Password') + '</label><div class="col-sm-8"><input type="password" class="form-control" name="password" value="" autocomplete="off"></div></div>\
+                    <div class="form-group"><label for="password_confirm" class="col-sm-4 control-label">' + _('Conferma Password') + '</label><div class="col-sm-8"><input type="password" class="form-control" name="password_confirm" value="" autocomplete="off"></div></div>';
+
+                if (input.hasClass('enforcable_change')) {
+                    ret += '<div class="checkbox"><label><input type="checkbox" name="enforce_change"> ' + _('Forza cambio password al prossimo login') + '</label></div><br>';
+                }
+
+                ret += '<div class="form-group"><div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Conferma') + '</button></div></div></div>';
+
+                ret = $(ret);
 
                 ret.find('button.btn-success').click(function(e) {
                     e.preventDefault();
@@ -1858,6 +1859,11 @@ $(document).ready(function() {
                     var confirm = ret.find('input[name=password_confirm]').val();
 
                     if (password == confirm) {
+                        if (ret.find('input[name=enforce_change]').length != 0) {
+                            var enforce = ret.find('input[name=enforce_change]').prop('checked') ? 'true' : 'false';
+                            input.closest('.form-group').find('input[name=enforce_password_change]').val(enforce);
+                        }
+
                         input.val(password);
                         input.popover('destroy');
                     }

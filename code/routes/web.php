@@ -33,6 +33,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('users/picture/{id}', 'UsersController@picture');
     Route::get('users/export', 'UsersController@export');
     Route::post('users/notifications', 'UsersController@notifications')->name('users.notifications');
+    Route::get('users/password', 'UsersController@changePassword')->name('users.password');
 
     Route::get('friends/{id}/header', 'FriendsController@objhead')->name('friends.objhead');
 

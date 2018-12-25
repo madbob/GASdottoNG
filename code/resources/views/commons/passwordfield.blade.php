@@ -1,8 +1,9 @@
 <?php
 
-$class = 'form-control';
-if (isset($extra_class)) {
-    $class .= ' ' . $extra_class;
+if (!isset($enforcable_change)) {
+    $enforcable_change = false;
+    if ($obj == null || $obj->id != $currentuser->id)
+        $enforcable_change = true;
 }
 
 ?>
@@ -13,13 +14,13 @@ if (isset($extra_class)) {
         <div class="input-group">
             <input
                 type="password"
-                class="{{ $class }}"
+                class="form-control password-changer {{ $enforcable_change ? 'enforcable_change' : '' }}"
 
                 @if(is_null($obj) && isset($mandatory) && $mandatory == true)
                     required
                 @endif
 
-                @if($obj != null)
+                @if(is_null($obj) == false)
                     placeholder="{{ _i('Lascia vuoto per non modificare la password') }}"
                 @endif
 
@@ -28,6 +29,10 @@ if (isset($extra_class)) {
                 <div class="input-group-addon">
                     <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
                 </div>
+
+                @if($enforcable_change)
+                    <input type="hidden" name="enforce_password_change" value="false">
+                @endif
             </div>
     </div>
 </div>
