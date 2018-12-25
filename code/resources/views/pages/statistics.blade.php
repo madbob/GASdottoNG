@@ -26,13 +26,17 @@
 <hr/>
 
 <div class="row">
-    <div class="col-md-6">
-        <h3>Valore Ordini</h3>
+    <div class="col-md-4">
+        <h3>{{ _i('Valore Ordini') }}</h3>
         <div class="ct-chart-bar" id="stats-generic-expenses"></div>
     </div>
-    <div class="col-md-6">
-        <h3>Utenti Coinvolti</h3>
+    <div class="col-md-4">
+        <h3>{{ _i('Utenti Coinvolti') }}</h3>
         <div class="ct-chart-bar" id="stats-generic-users"></div>
+    </div>
+    <div class="col-md-4">
+        <h3>{{ _i('Categorie') }}</h3>
+        <div class="ct-chart-bar" id="stats-generic-categories"></div>
     </div>
 </div>
 
@@ -65,13 +69,17 @@
 <hr/>
 
 <div class="row">
-    <div class="col-md-6">
-        <h3>Valore Ordini</h3>
+    <div class="col-md-4">
+        <h3>{{ _i('Valore Ordini') }}</h3>
         <div class="ct-chart-bar" id="stats-products-expenses"></div>
     </div>
-    <div class="col-md-6">
-        <h3>Utenti Coinvolti</h3>
+    <div class="col-md-4">
+        <h3>{{ _i('Utenti Coinvolti') }}</h3>
         <div class="ct-chart-bar" id="stats-products-users"></div>
+    </div>
+    <div class="col-md-4">
+        <h3>{{ _i('Categorie') }}</h3>
+        <div class="ct-chart-bar" id="stats-products-categories"></div>
     </div>
 </div>
 

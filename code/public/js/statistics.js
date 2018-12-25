@@ -1,4 +1,4 @@
-var graphGrownFactor = 35;
+var graphGrownFactor = 40;
 
 function doEmpty(target) {
     $(target).empty().css('height', 'auto').append($('#templates .alert').clone());
@@ -43,6 +43,22 @@ function runSummaryStats() {
                 },
             });
         }
+
+        if (data.categories.labels.length == 0) {
+            doEmpty('#stats-generic-categories');
+        }
+        else {
+            $('#stats-generic-categories').empty().css('height', data.categories.labels.length * graphGrownFactor);
+            new Chartist.Bar('#stats-generic-categories', data.categories, {
+                horizontalBars: true,
+                axisX: {
+                    onlyInteger: true
+                },
+                axisY: {
+                    offset: 210
+                },
+            });
+        }
     });
 }
 
@@ -67,7 +83,7 @@ function runSupplierStats() {
                     onlyInteger: true
                 },
                 axisY: {
-                    offset: 220
+                    offset: 210
                 },
             });
         }
@@ -83,7 +99,23 @@ function runSupplierStats() {
                     onlyInteger: true
                 },
                 axisY: {
-                    offset: 220
+                    offset: 210
+                },
+            });
+        }
+
+        if (data.categories.labels.length == 0) {
+            doEmpty('#stats-products-categories');
+        }
+        else {
+            $('#stats-products-categories').empty().css('height', data.categories.labels.length * graphGrownFactor);
+            new Chartist.Bar('#stats-products-categories', data.categories, {
+                horizontalBars: true,
+                axisX: {
+                    onlyInteger: true
+                },
+                axisY: {
+                    offset: 210
                 },
             });
         }
