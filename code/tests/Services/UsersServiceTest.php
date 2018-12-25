@@ -25,13 +25,9 @@ class UsersServiceTest extends TestCase
 
         $view_role = \App\Role::create([
             'name' => 'Viewer',
-            'actions' => 'users.view'
+            'actions' => 'users.view,users.subusers'
         ]);
-
-        $this->userWithViewPerm = factory(\App\User::class)->create([
-            'gas_id' => $this->gas->id
-        ]);
-
+        $this->userWithViewPerm = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
         $this->userWithViewPerm->addRole($view_role, $this->gas);
 
         $admin_role = \App\Role::create([
@@ -39,10 +35,7 @@ class UsersServiceTest extends TestCase
             'actions' => 'users.admin'
         ]);
 
-        $this->userWithAdminPerm = factory(\App\User::class)->create([
-            'gas_id' => $this->gas->id
-        ]);
-
+        $this->userWithAdminPerm = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
         $this->userWithAdminPerm->addRole($admin_role, $this->gas);
 
         $treasure_role = \App\Role::create([
@@ -50,24 +43,15 @@ class UsersServiceTest extends TestCase
             'actions' => 'movements.admin'
         ]);
 
-        $this->userWithMovementPerm = factory(\App\User::class)->create([
-            'gas_id' => $this->gas->id
-        ]);
-
+        $this->userWithMovementPerm = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
         $this->userWithMovementPerm->addRole($treasure_role, $this->gas);
 
-        $this->userWithNoPerms = factory(\App\User::class)->create([
-            'gas_id' => $this->gas->id
-        ]);
+        $this->userWithNoPerms = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
 
-        factory(\App\User::class, 3)->create([
-            'gas_id' => $this->gas->id
-        ]);
+        factory(\App\User::class, 3)->create(['gas_id' => $this->gas->id]);
 
         $otherGas = factory(\App\Gas::class)->create();
-        factory(\App\User::class, 3)->create([
-            'gas_id' => $otherGas->id
-        ]);
+        factory(\App\User::class, 3)->create(['gas_id' => $otherGas->id]);
 
         Model::reguard();
 
@@ -152,6 +136,24 @@ class UsersServiceTest extends TestCase
         ));
 
         $this->assertEquals('test user', $newUser->username);
+        $this->assertTrue(\Hash::check('password', $newUser->password));
+        $this->assertEquals('rossi mario', $newUser->printableName());
+        $this->assertEquals(0, $newUser->pending_balance);
+    }
+
+    public function testStoreFriend()
+    {
+        $this->actingAs($this->userWithViewPerm);
+
+        $newUser = $this->usersService->storeFriend(array(
+            'username' => 'test friend user',
+            'firstname' => 'mario',
+            'lastname' => 'rossi',
+            'password' => 'password'
+        ));
+
+        $this->assertEquals('test friend user', $newUser->username);
+        $this->assertEquals($this->userWithViewPerm->id, $newUser->parent_id);
         $this->assertTrue(\Hash::check('password', $newUser->password));
         $this->assertEquals('rossi mario', $newUser->printableName());
         $this->assertEquals(0, $newUser->pending_balance);

@@ -76,7 +76,6 @@ class UsersService extends BaseService
         $user->firstname = $request['firstname'];
         $user->lastname = $request['lastname'];
         $user->password = Hash::make($request['password']);
-        $user->notifications = '';
 
         if (isset($request['enforce_password_change']) && $request['enforce_password_change'] == 'true')
             $user->enforce_password_change = true;
@@ -106,7 +105,6 @@ class UsersService extends BaseService
         $user->firstname = $request['firstname'];
         $user->lastname = $request['lastname'];
         $user->password = Hash::make($request['password']);
-        $user->notifications = '';
 
         if (isset($request['enforce_password_change']) && $request['enforce_password_change'] == 'true')
             $user->enforce_password_change = true;
