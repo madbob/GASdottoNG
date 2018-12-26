@@ -52,7 +52,9 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand hidden-md hidden-sm" href="{{ route('dashboard') }}">GASdotto</a>
+                    @if(!isset($menu))
+                        <a class="navbar-brand hidden-md hidden-sm" href="{{ route('dashboard') }}">GASdotto</a>
+                    @endif
                 </div>
 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

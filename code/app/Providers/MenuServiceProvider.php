@@ -46,16 +46,16 @@ class MenuServiceProvider extends ServiceProvider
                     $menu->add('stats', '<span class="glyphicon glyphicon-stats" aria-hidden="true"></span> ' . _i('Statistiche'));
                 }
 
+                if ($user->can('notifications.admin', $gas)) {
+                    $menu->add('notifications', '<span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> ' . _i('Notifiche'));
+                }
+
                 if ($user->can('gas.config', $gas)) {
                     $menu->add('gas/'.$gas->id.'/edit', '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ' . _i('Configurazioni'));
                 }
 
                 if ($user->can('gas.multi', $gas)) {
                     $menu->add('multigas', '<span class="glyphicon glyphicon-globe" aria-hidden="true"></span> ' . _i('Multi-GAS'));
-                }
-
-                if ($user->can('notifications.admin', $gas)) {
-                    $menu->add('notifications', '<span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> ' . _i('Notifiche'));
                 }
 
                 $menu->addClass('nav navbar-nav')->getItemsByContentType(Menu\Items\Contents\Link::class)->map(function ($item) {
