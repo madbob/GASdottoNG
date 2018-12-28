@@ -35,7 +35,7 @@ class MenuServiceProvider extends ServiceProvider
                 }
 
                 if ($user->can('supplier.book', null)) {
-                    $menu->add('bookings', '<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> ' . _i('Prenotazioni'));
+                    $menu->add('bookings', '<span class="glyphicon glyphicon-bookmark" aria-hidden="true"></span> ' . _i('Prenotazioni'));
                 }
 
                 if ($user->can('movements.view', $gas) || $user->can('movements.admin', $gas)) {

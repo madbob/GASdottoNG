@@ -174,25 +174,6 @@ table {
     }
 }
 
-.tt-menu {
-	background-color: #FFF;
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(102, 175, 233, 0.6);
-	padding: 10px;
-	width: 100%;
-
-	.tt-dataset {
-		.tt-selectable {
-			padding: 4px;
-			cursor: pointer;
-			cursor: hand;
-
-			&:hover {
-				background-color: #EEE;
-			}
-		}
-	}
-}
-
 .dynamic-tree {
     > li {
         > div > input {
@@ -479,4 +460,12 @@ table {
 
 .ct-chart-bar, .ct-chart-pie {
     height: 400px;
+}
+
+.nav {
+    > li {
+        > a {
+            padding: 14px 10px;
+        }
+    }
 }

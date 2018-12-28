@@ -64,7 +64,7 @@
 
                     @if(Auth::check())
                         <ul class="nav navbar-nav navbar-right">
-                            <li>
+                            <li class="hidden-xs">
                                 <a href="#" data-toggle="modal" data-target="#feedback-modal"><span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span></a>
                             </li>
                             <li id="help-trigger" class="hidden-xs">
