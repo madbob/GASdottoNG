@@ -27,7 +27,7 @@ Route::middleware(['auth'])->group(function() {
 
     Route::get('users/ro/{id}', 'UsersController@show_ro');
     Route::get('users/{id}/header', 'UsersController@objhead')->name('users.objhead');
-    Route::get('users/search', 'UsersController@search');
+    Route::get('users/search', 'UsersController@search')->name('users.search');
     Route::get('users/searchorders', 'UsersController@searchOrders');
     Route::get('users/profile', 'UsersController@profile')->name('profile');
     Route::get('users/picture/{id}', 'UsersController@picture');

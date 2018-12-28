@@ -169,7 +169,6 @@
             '/js/bootstrap-multiselect.js',
             '/js/jquery.mjs.nestedSortable.js',
             '/js/translate.js',
-            '/js/typeahead.bundle.js',
             '/js/validator.min.js',
             '/js/jquery.fileupload.js',
             '/js/bootstrap-table.js',

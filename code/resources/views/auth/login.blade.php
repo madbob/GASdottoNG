@@ -19,8 +19,12 @@
 
     @if(!empty($gas->logo))
         <img class="img-responsive" src="{{ $gas->logo_url }}" alt="{{ $gas->name }}">
-        <br/>
+    @else
+        <h2 class="text-center">{{ $gas->name }}</h2>
+        <hr>
     @endif
+
+    <br/>
 
     <?php $browser_name = strtolower((new Sinergi\BrowserDetector\Browser())->getName()) ?>
     @if ($browser_name != 'firefox' && $browser_name != 'chrome')

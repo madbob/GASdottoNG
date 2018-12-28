@@ -10,17 +10,6 @@ $.fn.tagName = function() {
     return this.prop("tagName").toLowerCase();
 };
 
-var userBlood = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-    queryTokenizer: Bloodhound.tokenizers.whitespace,
-    remote: {
-        url: absolute_url + '/users/search?term=%QUERY',
-        wildcard: '%QUERY'
-    }
-});
-
-userBlood.initialize();
-
 function generalInit(container) {
     if (container == null)
         container = $('body');
@@ -114,48 +103,47 @@ function generalInit(container) {
         }
 
         if ($(this).hasClass('tt-input') == false) {
-            $(this).typeahead(null, {
-                name: 'users',
-                displayKey: 'value',
-                source: userBlood.ttAdapter()
-            }).on('typeahead:selected', function(obj, result, name) {
-                var aggregate_id = $(this).attr('data-aggregate');
-                var while_shipping = ($(this).closest('.modal.add-booking-while-shipping').length != 0);
-                var fill_target = $(this).closest('.fillable-booking-space').find('.other-booking');
-                fill_target.empty().append(loadingPlaceholder());
+            $(this).autocomplete({
+                source: absolute_url + '/users/search',
+                select: function(event, ui) {
+                    var aggregate_id = $(this).attr('data-aggregate');
+                    var while_shipping = ($(this).closest('.modal.add-booking-while-shipping').length != 0);
+                    var fill_target = $(this).closest('.fillable-booking-space').find('.other-booking');
+                    fill_target.empty().append(loadingPlaceholder());
 
-                var data = {};
-                var mode = $(this).attr('data-enforce-booking-mode');
-                if (mode != null)
-                    data.enforce = mode;
+                    var data = {};
+                    var mode = $(this).attr('data-enforce-booking-mode');
+                    if (mode != null)
+                        data.enforce = mode;
 
-                var url = '';
+                    var url = '';
 
-                if (while_shipping) {
-                    url = absolute_url + '/delivery/' + aggregate_id + '/user/' + result.id;
-                }
-                else {
-                    url = absolute_url + '/booking/' + aggregate_id + '/user/' + result.id;
-                }
-
-                $.ajax({
-                    url: url,
-                    method: 'GET',
-                    data: data,
-                    dataType: 'HTML',
-                    success: function(data) {
-                        data = $(data);
-
-                        if (while_shipping) {
-                            var test = data.find('.booking-product:not(.fit-add-product)');
-                            if (test.length != 0) {
-                                data = $('<div class="alert alert-danger">' + _('Questa prenotazione esiste già e non può essere ricreata.') + '</div>');
-                            }
-                        }
-
-                        fill_target.empty().append(data);
+                    if (while_shipping) {
+                        url = absolute_url + '/delivery/' + aggregate_id + '/user/' + ui.item.id;
                     }
-                });
+                    else {
+                        url = absolute_url + '/booking/' + aggregate_id + '/user/' + ui.item.id;
+                    }
+
+                    $.ajax({
+                        url: url,
+                        method: 'GET',
+                        data: data,
+                        dataType: 'HTML',
+                        success: function(data) {
+                            data = $(data);
+
+                            if (while_shipping) {
+                                var test = data.find('.booking-product:not(.fit-add-product)');
+                                if (test.length != 0) {
+                                    data = $('<div class="alert alert-danger">' + _('Questa prenotazione esiste già e non può essere ricreata.') + '</div>');
+                                }
+                            }
+
+                            fill_target.empty().append(data);
+                        }
+                    });
+                }
             });
         }
     });
@@ -317,27 +305,25 @@ function afterListChanges(list) {
 
 function completionRowsInit(node) {
     $(node).find('input:text').each(function() {
-        if ($(this).hasClass('tt-hint') == true) {
+        if ($(this).hasClass('ui-autocomplete-input') == true) {
             return;
         }
 
-        if ($(this).hasClass('tt-input') == false) {
-            var source = $(this).closest('.completion-rows').attr('data-completion-source');
+        var source = $(this).closest('.completion-rows').attr('data-completion-source');
 
-            $(this).typeahead(null, {
-                name: 'users',
-                displayKey: 'value',
-                source: window[source].ttAdapter()
-            }).on('typeahead:selected', function(obj, result, name) {
+        $(this).autocomplete({
+            source: source,
+            appendTo: $(this).closest('.completion-rows'),
+            select: function(event, ui) {
                 var row = $(this).closest('li');
-                row.before('<li class="list-group-item" data-object-id="' + result.id + '">' + result.label + '<div class="btn btn-xs btn-danger pull-right"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div></li>');
+                row.before('<li class="list-group-item" data-object-id="' + ui.item.id + '">' + ui.item.label + '<div class="btn btn-xs btn-danger pull-right"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div></li>');
 
                 var container = row.closest('.completion-rows');
                 var fn = window[container.attr('data-callback-add')];
                 if (typeof fn === 'function')
-                    fn(container, result.id);
-            });
-        }
+                    fn(container, ui.item.id);
+            }
+        });
     });
 
     $(node).on('click', '.btn-danger', function() {
@@ -979,29 +965,28 @@ function setupPermissionsEditor() {
         }
 
         if ($(this).hasClass('tt-input') == false) {
-            $(this).typeahead(null, {
-                name: 'users',
-                displayKey: 'value',
-                source: userBlood.ttAdapter()
-            }).on('typeahead:selected', function(obj, result, name) {
-                var text = $(this);
-                var role_id = currentLoadableLoaded(this);
-                var selector = currentLoadableUniqueSelector(this);
+            $(this).autocomplete({
+                source: absolute_url + '/users/search',
+                select: function(event, ui) {
+                    var text = $(this);
+                    var role_id = currentLoadableLoaded(this);
+                    var selector = currentLoadableUniqueSelector(this);
 
-                var label = result.label;
-                $.ajax({
-                    method: 'POST',
-                    url: absolute_url + '/roles/attach',
-                    dataType: 'HTML',
-                    data: {
-                        role: role_id,
-                        user: result.id,
-                    },
-                    success: function(data) {
-                        addPanelToTabs(selector + ' .role-users', $(data), label);
-                        text.val('');
-                    }
-                });
+                    var label = ui.item.label;
+                    $.ajax({
+                        method: 'POST',
+                        url: absolute_url + '/roles/attach',
+                        dataType: 'HTML',
+                        data: {
+                            role: role_id,
+                            user: ui.item.id,
+                        },
+                        success: function(data) {
+                            addPanelToTabs(selector + ' .role-users', $(data), label);
+                            text.val('');
+                        }
+                    });
+                }
             });
         }
     });

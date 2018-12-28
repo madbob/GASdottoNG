@@ -16,7 +16,7 @@
                             <div class="row">
                                 @include('commons.completionrows', [
                                     'objects' => $role->usersByTarget($supplier),
-                                    'source' => 'userBlood',
+                                    'source' => route('users.search'),
                                     'adding_label' => _i('Aggiungi Nuovo Utente'),
                                     'add_callback' => 'supplierAttachUser',
                                     'remove_callback' => 'supplierDetachUser',
