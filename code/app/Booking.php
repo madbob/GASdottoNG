@@ -296,65 +296,61 @@ class Booking extends Model
 
     public function getProductsWithFriendsAttribute()
     {
-        /*
-            Questa funzione può modificare l'array dei prodotti, finendo col
-            sovrascrivere la struttura dati originale. E finisce col sommare più
-            e più volte i prodotti degli amici. Sicché cloniamo la collezione
-            originale, la elaboriamo e ne torniamo una copia opportunamente
-            taroccata
-        */
-        $products = clone $this->products;
+        return $this->innerCache('friends_products', function($obj) {
+            $products = $this->products;
+            $friends = $this->friends_bookings;
 
-        foreach($this->friends_bookings as $sub) {
-            foreach($sub->products as $sub_p) {
-                $master_p = $products->keyBy('product_id')->get($sub_p->product_id);
-                if (is_null($master_p)) {
-                    $products->push($sub_p);
-                }
-                else {
-                    $master_p->quantity += $sub_p->quantity;
-                    $master_p->delivered += $sub_p->delivered;
+            foreach($friends as $sub) {
+                foreach($sub->products as $sub_p) {
+                    $master_p = $products->keyBy('product_id')->get($sub_p->product_id);
+                    if (is_null($master_p)) {
+                        $products->push($sub_p);
+                    }
+                    else {
+                        $master_p->quantity += $sub_p->quantity;
+                        $master_p->delivered += $sub_p->delivered;
 
-                    if($master_p->product->variants->isEmpty() == false) {
-                        foreach($sub_p->variants as $sub_variant) {
-                            $counter = 0;
-
-                            foreach($master_p->variants as $master_variant) {
+                        if($master_p->product->variants->isEmpty() == false) {
+                            foreach($sub_p->variants as $sub_variant) {
                                 $counter = 0;
 
-                                foreach($sub_variant->components as $sub_component) {
-                                    $counter++;
+                                foreach($master_p->variants as $master_variant) {
+                                    $counter = 0;
 
-                                    foreach($master_variant->components as $master_component) {
-                                        if($master_component->variant_id == $sub_component->variant_id && $master_component->value_id == $sub_component->value_id) {
-                                            $counter--;
-                                            break;
+                                    foreach($sub_variant->components as $sub_component) {
+                                        $counter++;
+
+                                        foreach($master_variant->components as $master_component) {
+                                            if($master_component->variant_id == $sub_component->variant_id && $master_component->value_id == $sub_component->value_id) {
+                                                $counter--;
+                                                break;
+                                            }
                                         }
                                     }
+
+                                    if ($counter == 0)
+                                        break;
                                 }
 
-                                if ($counter == 0)
-                                    break;
-                            }
-
-                            if ($counter == 0) {
-                                $master_variant->quantity += $sub_variant->quantity;
-                                $master_variant->delivered += $sub_variant->delivered;
-                            }
-                            else {
-                                $master_p->variants->push($sub_variant);
+                                if ($counter == 0) {
+                                    $master_variant->quantity += $sub_variant->quantity;
+                                    $master_variant->delivered += $sub_variant->delivered;
+                                }
+                                else {
+                                    $master_p->variants->push($sub_variant);
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        $products = $products->sort(function($a, $b) {
-            return $a->product->name <=> $b->product->name;
+            $products = $products->sort(function($a, $b) {
+                return $a->product->name <=> $b->product->name;
+            });
+
+            return $products;
         });
-
-        return $products;
     }
 
     public function getFriendsBookingsAttribute()
