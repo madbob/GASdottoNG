@@ -12,14 +12,15 @@ Per riferimenti:
 
 ### Installazione
 
+Requisiti:
+ * un web server
+ * un database (testato con MariaDB, compatibile con MySQL, PostgreSQL)
+ * PHP >= 7.2
+ * composer
+
 ```bash
-# per installare Composer, package manager PHP
-curl -sS https://getcomposer.org/installer | php
-mv composer.phar /usr/local/bin/composer
-# per clonare il repository ed inizializzare l'ambiente
 git clone https://github.com/madbob/GASdottoNG.git
 cd GASdottoNG/code
-# per installare le dipendenze PHP
 composer install
 # nel file .env vanno specificati i propri parametri di connessione al database e l'invio delle mail
 cp .env.example .env
@@ -27,6 +28,17 @@ nano .env
 ```
 
 Al primo accesso verranno eseguiti il popolamento del database e la configurazione iniziale, che permette anche l'importazione dei contenuti da una vecchia istanza di GASdotto.
+
+Per aggiornare una istanza esistente:
+
+```bash
+cd GASdottoNG/
+git pull
+cd code/
+php artisan migrate
+composer update
+composer install
+```
 
 ### Configurazioni Avanzate
 
