@@ -108,7 +108,7 @@ class VariantsController extends Controller
 
         DB::commit();
 
-        return view('product.variantseditor', ['product' => $product]);
+        return view('product.variantseditor', ['product' => $product, 'duplicate' => false]);
     }
 
     public function destroy(Request $request, $id)
@@ -127,6 +127,6 @@ class VariantsController extends Controller
 
         DB::commit();
 
-        return view('product.variantseditor', ['product' => $product]);
+        return view('product.variantseditor', ['product' => $product, 'duplicate' => false]);
     }
 }
