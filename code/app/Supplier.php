@@ -90,7 +90,7 @@ class Supplier extends Model
 
     public function dates()
     {
-        return $this->morphMany('App\Date', 'target')->orderBy('date', 'desc');
+        return $this->morphMany('App\Date', 'target')->orderBy('date', 'asc');
     }
 
     public function scopeFilterEnabled($query)
