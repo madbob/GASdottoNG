@@ -544,6 +544,22 @@ class Order extends Model
             }
         }
 
+        if (in_array('price', $fields) || in_array('transport', $fields)) {
+            $row = array_fill(0, count($fields), '');
+
+            $row[0] = _i('Totale');
+
+            $price_offset = array_search('price', $fields);
+            if ($price_offset !== false)
+                $row[$price_offset] = printablePrice($summary->price, ',');
+
+            $transport_offset = array_search('transport', $fields);
+            if ($transport_offset !== false)
+                $row[$transport_offset] = printablePrice($summary->transport, ',');
+
+            $ret->contents[] = $row;
+        }
+
         return $ret;
     }
 
