@@ -8,6 +8,7 @@ use DB;
 use App\Product;
 use App\Variant;
 use App\VariantValue;
+use App\BookedProductVariant;
 
 class VariantsController extends Controller
 {
@@ -16,6 +17,25 @@ class VariantsController extends Controller
         $this->commonInit([
             'reference_class' => 'App\\Variant'
         ]);
+    }
+
+    private function removeFromBooked($type, $id)
+    {
+        $booked = BookedProductVariant::whereHas('components', function($query) use ($type, $id) {
+            $query->where($type, $id);
+        })->with('components')->get();
+
+        foreach($booked as $b) {
+            if ($b->components->count() == 1) {
+                $b->components->first()->delete();
+                $b->delete();
+            }
+            else {
+                foreach($b->components as $component)
+                    if ($component->$type == $id)
+                        $component->delete();
+            }
+        }
     }
 
     public function store(Request $request)
@@ -85,7 +105,11 @@ class VariantsController extends Controller
             }
         }
 
-        VariantValue::where('variant_id', '=', $variant->id)->whereNotIn('id', $matching_values)->delete();
+        $values_to_remove = VariantValue::where('variant_id', '=', $variant->id)->whereNotIn('id', $matching_values)->get();
+        foreach($values_to_remove as $vtr) {
+            $this->removeFromBooked('value_id', $vtr->id);
+            $vtr->delete();
+        }
 
         /*
             Solo una singola variante per prodotto può avere la
@@ -122,6 +146,7 @@ class VariantsController extends Controller
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
+        $this->removeFromBooked('variant_id', $variant->id);
         $variant->values()->delete();
         $variant->delete();
 
