@@ -29,7 +29,7 @@ class DatesController extends BackedController
     public function index()
     {
         try {
-            $dates = $this->service->list();
+            $dates = $this->service->list(null, true);
             return view('dates.table', ['dates' => $dates]);
         }
         catch (AuthException $e) {

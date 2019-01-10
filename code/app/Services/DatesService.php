@@ -13,13 +13,19 @@ use App\Date;
 
 class DatesService extends BaseService
 {
-    public function list($target = null)
+    public function list($target = null, $editable = false)
     {
-        $this->ensureAuth(['supplier.orders' => null]);
+        $user = $this->ensureAuth(['supplier.orders' => null]);
         $query = Date::where('type', '!=', 'internal')->orderBy('date', 'asc');
 
-        if ($target != null)
+        if ($target != null) {
             $query->where('target_type', get_class($target))->where('target_id', $target->id);
+        }
+
+        if ($editable == true) {
+            $suppliers = $user->targetsByAction('supplier.orders');
+            $query->where('target_type', 'App\Supplier')->whereIn('target_id', array_keys($suppliers));
+        }
 
         return $query->get();
     }
@@ -37,7 +43,8 @@ class DatesService extends BaseService
     public function update($id, array $request)
     {
         if ($id == 0) {
-            $this->ensureAuth(['supplier.orders' => null]);
+            $user = $this->ensureAuth(['supplier.orders' => null]);
+            $suppliers = array_keys($user->targetsByAction('supplier.orders'));
 
             $ids = $request['id'];
             $targets = $request['target_id'];
@@ -48,6 +55,9 @@ class DatesService extends BaseService
             $saved_ids = [];
 
             foreach($ids as $index => $id) {
+                if (in_array($targets[$index], $suppliers) == false)
+                    continue;
+
                 if (empty($id))
                     $date = new Date();
                 else
@@ -63,7 +73,7 @@ class DatesService extends BaseService
                 $saved_ids[] = $date->id;
             }
 
-            Date::where('type', '!=', 'internal')->whereNotIn('id', $saved_ids)->delete();
+            Date::where('type', '!=', 'internal')->whereIn('target_id', $suppliers)->whereNotIn('id', $saved_ids)->delete();
             return null;
         }
         else {
