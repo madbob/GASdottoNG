@@ -266,6 +266,9 @@ class Gas extends Model
     public function hasFeature($name)
     {
         switch($name) {
+            case 'shipping_places':
+                return ($this->deliveries->isEmpty() == false);
+                break;
             case 'rid':
                 return !empty($this->rid['iban']);
                 break;

@@ -81,6 +81,13 @@ class UsersController extends BackedController
                             $contacts = $user->getContactsByType($f);
                             $ret[] = join(', ', $contacts);
                             break;
+                        case 'shipping_place':
+                            $sp = $user->shippingplace;
+                            if ($sp)
+                                $ret[] = $sp->name;
+                            else
+                                $ret[] = _i('Nessuno');
+                            break;
                         default:
                             $ret[] = $user->$f;
                             break;

@@ -22,7 +22,7 @@
 
             @include('commons.staticdatefield', ['obj' => $user, 'name' => 'last_login', 'label' => _i('Ultimo Accesso')])
 
-            @if($currentgas->deliveries->isEmpty() == false)
+            @if($currentgas->hasFeature('shipping_places'))
                 @include('commons.selectobjfield', [
                     'obj' => $user,
                     'name' => 'preferred_delivery_id',

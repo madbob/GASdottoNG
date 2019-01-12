@@ -32,7 +32,7 @@
                         {{ _i("Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si trovano le informazioni relative alle singole prenotazioni.") }}
                     </p>
 
-                    @if($currentgas->deliveries->isEmpty() == false)
+                    @if($currentgas->hasFeature('shipping_places'))
                         @include('commons.radios', [
                             'name' => 'shipping_place',
                             'label' => _i('Luogo di Consegna'),
@@ -81,7 +81,7 @@
 
                     <hr/>
 
-                    @if($currentgas->deliveries->isEmpty() == false)
+                    @if($currentgas->hasFeature('shipping_places'))
                         @include('commons.radios', [
                             'name' => 'shipping_place',
                             'label' => _i('Luogo di Consegna'),
@@ -153,7 +153,7 @@
 
                     <hr/>
 
-                    @if($currentgas->deliveries->isEmpty() == false)
+                    @if($currentgas->hasFeature('shipping_places'))
                         @include('commons.radios', [
                             'name' => 'shipping_place',
                             'label' => _i('Luogo di Consegna'),

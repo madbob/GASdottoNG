@@ -131,7 +131,7 @@ $panel_rand_wrap = rand();
                                             {{ _i("Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si trovano le informazioni relative alle singole prenotazioni di tutti gli ordini inclusi in questo aggregato.") }}
                                         </p>
 
-                                        @if($currentgas->deliveries->isEmpty() == false)
+                                        @if($currentgas->hasFeature('shipping_places'))
                                             @include('commons.radios', [
                                                 'name' => 'shipping_place',
                                                 'label' => _i('Luogo di Consegna'),

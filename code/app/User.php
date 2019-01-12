@@ -283,7 +283,7 @@ class User extends Authenticatable
 
     public static function formattableColumns()
     {
-        return [
+        $ret = [
             'firstname' => (object) [
                 'name' => _i('Nome'),
                 'checked' => true,
@@ -310,6 +310,14 @@ class User extends Authenticatable
                 'name' => _i('Codice Fiscale'),
             ],
         ];
+
+        if (currentAbsoluteGas()->hasFeature('shipping_places')) {
+            $ret['shipping_place'] = (object) [
+                'name' => _i('Luogo di Consegna')
+            ];
+        }
+
+        return $ret;
     }
 
     /************************************************************ SluggableID */
