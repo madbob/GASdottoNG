@@ -292,7 +292,9 @@ class Order extends Model
                 $query->where('order_id', '=', $order->id);
                 if ($shipping_place != null) {
                     $query->whereHas('user', function($subquery) use ($shipping_place) {
-                        $subquery->where('preferred_delivery_id', $shipping_place);
+                        $subquery->where('preferred_delivery_id', $shipping_place)->orWhereHas('parent', function($subsubquery) use ($shipping_place) {
+                            $subsubquery->where('preferred_delivery_id', $shipping_place);
+                        });
                     });
                 }
             });
