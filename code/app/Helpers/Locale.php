@@ -47,6 +47,10 @@ function getLanguages()
             'label' => 'Deutsch'
         ],
         [
+            'value' => 'fr_FR',
+            'label' => 'Français'
+        ],
+        [
             'value' => 'nl_NL',
             'label' => 'Nederlands'
         ],
@@ -111,6 +115,23 @@ function localeMonths()
                 'october' => 'oktober',
                 'november' => 'november',
                 'december' => 'dezember',
+            ];
+            break;
+
+        case 'fr_FR':
+            $months = [
+                'january' => 'janvier',
+                'february' => 'février',
+                'march' => 'mars',
+                'april' => 'avril',
+                'may' => 'mai',
+                'june' => 'juin',
+                'july' => 'juillet',
+                'august' => 'août',
+                'september' => 'septembre',
+                'october' => 'octobre',
+                'november' => 'novembre',
+                'december' => 'décembre',
             ];
             break;
 
