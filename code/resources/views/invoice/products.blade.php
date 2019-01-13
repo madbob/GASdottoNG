@@ -49,6 +49,17 @@
                                             </tr>
                                         @endif
                                     @endforeach
+
+                                    @if($summaries[$order->id]->transport != 0)
+                                        <tr>
+                                            <td>{{ _i('Trasporto') }}</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>{{ printablePriceCurrency($summaries[$order->id]->transport) }}</td>
+                                        </tr>
+                                    @endif
                                 </tbody>
                                 <tfoot>
                                     <tr>
@@ -90,6 +101,17 @@
                                             </tr>
                                         @endif
                                     @endforeach
+
+                                    @if($global_summary->transport != 0)
+                                        <tr>
+                                            <td>{{ _i('Trasporto') }}</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>{{ printablePriceCurrency($global_summary->transport) }}</td>
+                                        </tr>
+                                    @endif
                                 </tbody>
                                 <tfoot>
                                     <tr>

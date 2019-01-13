@@ -164,6 +164,14 @@ class Booking extends Model
     }
 
     /*
+        Trasporto complessivo di quanto consegnato
+    */
+    public function getTransportedAttribute()
+    {
+        return $this->products()->sum('final_transport');
+    }
+
+    /*
         Valore complessivo di quanto consegnato, diviso tra imponibile e IVA
     */
     public function getDeliveredTaxedAttribute()

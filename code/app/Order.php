@@ -412,7 +412,7 @@ class Order extends Model
 
         $total_transport_delivered = 0;
         foreach ($order->bookings()->where('status', 'shipped')->get() as $shipped_booking)
-            $total_transport_delivered += $shipped_booking->check_transport;
+            $total_transport_delivered += $shipped_booking->transported;
         $summary->transport_delivered = $total_transport_delivered;
 
         $summary->notes = [];
@@ -482,14 +482,14 @@ class Order extends Model
             $global_total_tax += $total_vat;
         }
 
-        $summary->total = printablePrice($global_total);
-        $summary->total_taxable = printablePrice($global_total_taxable);
-        $summary->total_tax = printablePrice($global_total_tax);
-
         $transport = 0;
         foreach ($order->bookings()->where('status', 'shipped')->get() as $shipped_booking)
-            $transport += $shipped_booking->transport;
+            $transport += $shipped_booking->transported;
+
         $summary->transport = $transport;
+        $summary->total = printablePrice($global_total + $summary->transport);
+        $summary->total_taxable = printablePrice($global_total_taxable);
+        $summary->total_tax = printablePrice($global_total_tax);
 
         return $summary;
     }
