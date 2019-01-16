@@ -142,11 +142,7 @@ function enforceNumber($value)
 
 function sanitizeId($identifier)
 {
-    $identifier = str_replace(':', '-', $identifier);
-    $identifier = str_replace('[', '-', $identifier);
-    $identifier = str_replace(']', '-', $identifier);
-    $identifier = str_replace('/', '-', $identifier);
-    return $identifier;
+    return preg_replace('/[^a-zA-Z0-9_\-]/', '-', $identifier);
 }
 
 function sanitizeFilename($filename)

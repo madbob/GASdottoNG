@@ -1,4 +1,4 @@
-<div role="tabpanel" class="tab-pane" id="permissions-{{ $user->id }}-{{ $role->id }}">
+<div role="tabpanel" class="tab-pane" id="permissions-{{ sanitizeId($user->id) }}-{{ $role->id }}">
     <div class="row">
         <div class="col-md-12">
             <ul class="list-group">

@@ -48,7 +48,7 @@
             <ul class="nav nav-tabs tabs-left role-users" role="tablist">
                 @foreach($role->users as $user)
                     <li class="presentation" data-user="{{ $user->id }}">
-                        <a href="#permissions-{{ $user->id }}-{{ $role->id }}" aria-controls="#permissions-{{ $user->id }}-{{ $role->id }}" role="tab" data-toggle="tab">
+                        <a href="#permissions-{{ sanitizeId($user->id) }}-{{ $role->id }}" aria-controls="#permissions-{{ sanitizeId($user->id) }}-{{ $role->id }}" role="tab" data-toggle="tab">
                             {{ $user->printableName() }}
                         </a>
                     </li>
