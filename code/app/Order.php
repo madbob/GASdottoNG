@@ -320,6 +320,7 @@ class Order extends Model
             $booked = $q->get();
             $price = 0;
             $price_delivered = 0;
+            $variants_quantity = 0;
 
             foreach ($booked as $b) {
                 /*
@@ -338,15 +339,6 @@ class Order extends Model
                 $price_delivered += $b->final_price;
 
                 if($b->variants->isEmpty() == false) {
-                    /*
-                        In presenza di varianti, ricalcolo la quantità totale
-                        come somma delle loro effettive quantità. Questo per
-                        evitare discrepanze tra la quantità salvata nel prodotto
-                        ordinato di riferimento e, appunto, le varianti
-                        collegate
-                    */
-                    $quantity = 0;
-
                     if(isset($summary->by_variant[$product->id]) == false)
                         $summary->by_variant[$product->id] = [];
 
@@ -362,10 +354,19 @@ class Order extends Model
                         $summary->by_variant[$product->id][$name]['quantity'] += $v->quantity;
                         $summary->by_variant[$product->id][$name]['price'] += $v->quantityValue();
 
-                        $quantity += $v->quantity;
+                        $variants_quantity += $v->quantity;
                     }
                 }
             }
+
+            /*
+                In presenza di varianti, ricalcolo la quantità totale come somma
+                delle loro effettive quantità. Questo per evitare discrepanze
+                tra la quantità salvata nel prodotto ordinato di riferimento e,
+                appunto, le varianti collegate
+            */
+            if ($variants_quantity != 0)
+                $quantity = $variants_quantity;
 
             if ($product->portion_quantity > 0) {
                 $quantity_pieces = $quantity;
