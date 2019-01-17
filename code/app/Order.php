@@ -291,8 +291,16 @@ class Order extends Model
             $q = BookedProduct::with('variants')->with('booking')->where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order, $shipping_place) {
                 $query->where('order_id', '=', $order->id);
                 if ($shipping_place != null) {
+                    /*
+                        Questa query è formulata per considerare solo il luogo
+                        di consegna preferenziale degli utenti "principali", mai
+                        degli amici. Ai quali, per qualche motivo, potrebbe
+                        essere assegnato un luogo di consegna sbagliato
+                    */
                     $query->whereHas('user', function($subquery) use ($shipping_place) {
-                        $subquery->where('preferred_delivery_id', $shipping_place)->orWhereHas('parent', function($subsubquery) use ($shipping_place) {
+                        $subquery->where(function($subsubquery) use ($shipping_place) {
+                            $subsubquery->where('preferred_delivery_id', $shipping_place)->whereNull('parent_id');
+                        })->orWhereHas('parent', function($subsubquery) use ($shipping_place) {
                             $subsubquery->where('preferred_delivery_id', $shipping_place);
                         });
                     });
