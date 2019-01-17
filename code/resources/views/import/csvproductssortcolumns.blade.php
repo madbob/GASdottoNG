@@ -31,12 +31,12 @@
                 <div class="col-md-4">
                     <ul class="list-group">
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="none" />{{ _i('[Ignora]') }}</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="name" />{{ _i('Nome Prodotto') }}</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="name" />{{ _i('Nome Prodotto') }} {{ _i('(obbligatorio)') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="description" />{{ _i('Descrizione') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="price" />{{ _i('Prezzo Unitario') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="transport" />{{ _i('Prezzo Trasporto') }}</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="category" />{{ _i('Categoria') }}</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="measure" />{{ _i('Unità di Misura') }}</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="category" />{{ _i('Categoria') }} {{ _i('(obbligatorio)') }}</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="measure" />{{ _i('Unità di Misura') }} {{ _i('(obbligatorio)') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="supplier_code" />{{ _i('Codice Fornitore') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="package_size" />{{ _i('Dimensione Confezione') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="min_quantity" />{{ _i('Ordine Minimo') }}</li>

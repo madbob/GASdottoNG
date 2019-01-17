@@ -29,7 +29,7 @@
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="none" />{{ _i('[Ignora]') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="firstname" />{{ _i('Nome') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="lastname" />{{ _i('Cognome') }}</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="username" />{{ _i('Login') }}</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="username" />{{ _i('Login') }} {{ _i('(obbligatorio)') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="email" />{{ _i('E-Mail') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="phone" />{{ _i('Telefono') }}</li>
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="member_since" />{{ _i('Membro da') }}</li>
