@@ -170,12 +170,9 @@ function decodeDate($date)
 
     $months = localeMonths();
     list($weekday, $day, $month, $year) = explode(' ', $date);
-    $month = strtolower($month);
-    if (in_array($month, $months)) {
-        $month = array_search($month, $months);
-    }
-
+    $month = $months[strtolower($month)];
     $en_date = sprintf('%s %s %s', $day, $month, $year);
+    Log::debug("$date = $en_date");
     return date('Y-m-d', strtotime($en_date));
 }
 
@@ -187,11 +184,7 @@ function decodeDateMonth($date)
 
     $months = localeMonths();
     list($day, $month) = explode(' ', $date);
-    $month = strtolower($month);
-    if (in_array($month, $months)) {
-        $month = array_search($month, $months);
-    }
-
+    $month = $months[strtolower($month)];
     $en_date = sprintf('%s %s %s', $day, $month, date('Y'));
     return date('Y-m-d', strtotime($en_date));
 }

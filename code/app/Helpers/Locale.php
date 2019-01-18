@@ -103,67 +103,67 @@ function localeMonths()
 
         case 'de_DE':
             $months = [
-                'january' => 'januar',
-                'february' => 'februar',
-                'march' => 'märz',
+                'januar' => 'january',
+                'februar' => 'february',
+                'märz' => 'march',
                 'april' => 'april',
-                'may' => 'mai',
-                'june' => 'juni',
-                'july' => 'juli',
+                'mai' => 'may',
+                'juni' => 'june',
+                'juli' => 'july',
                 'august' => 'august',
                 'september' => 'september',
-                'october' => 'oktober',
+                'oktober' => 'october',
                 'november' => 'november',
-                'december' => 'dezember',
+                'dezember' => 'december',
             ];
             break;
 
         case 'fr_FR':
             $months = [
-                'january' => 'janvier',
-                'february' => 'février',
-                'march' => 'mars',
-                'april' => 'avril',
-                'may' => 'mai',
-                'june' => 'juin',
-                'july' => 'juillet',
-                'august' => 'août',
-                'september' => 'septembre',
-                'october' => 'octobre',
-                'november' => 'novembre',
-                'december' => 'décembre',
+                'janvier' => 'january',
+                'février' => 'february',
+                'mars' => 'march',
+                'avril' => 'april',
+                'mai' => 'may',
+                'juin' => 'june',
+                'juillet' => 'july',
+                'août' => 'august',
+                'septembre' => 'september',
+                'octobre' => 'october',
+                'novembre' => 'november',
+                'décembre' => 'december',
             ];
             break;
 
         case 'nb_NO':
             $months = [
-                'january' => 'januar',
-                'february' => 'februar',
-                'march' => 'märs',
+                'januar' => 'january',
+                'februar' => 'february',
+                'märs' => 'march',
                 'april' => 'april',
-                'may' => 'mai',
-                'june' => 'juni',
-                'july' => 'juli',
+                'mai' => 'may',
+                'juni' => 'june',
+                'juli' => 'july',
                 'august' => 'august',
                 'september' => 'september',
-                'october' => 'oktober',
+                'oktober' => 'october',
                 'november' => 'november',
-                'december' => 'desember',
+                'desember' => 'december',
             ];
             break;
 
         case 'nl_NL':
             $months = [
-                'january' => 'januari',
-                'february' => 'februari',
-                'march' => 'maart',
+                'januari' => 'january',
+                'februari' => 'february',
+                'maart' => 'march',
                 'april' => 'april',
-                'may' => 'mei',
-                'june' => 'juni',
-                'july' => 'juli',
-                'august' => 'augustus',
+                'mei' => 'may',
+                'juni' => 'june',
+                'juli' => 'july',
+                'augustus' => 'august',
                 'september' => 'september',
-                'october' => 'oktober',
+                'oktober' => 'october',
                 'november' => 'november',
                 'december' => 'december',
             ];
