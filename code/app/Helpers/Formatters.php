@@ -171,8 +171,8 @@ function decodeDate($date)
     $months = localeMonths();
     list($weekday, $day, $month, $year) = explode(' ', $date);
     $month = strtolower($month);
-    if (!in_array($month, array_values($months))) {
-        $month = $months[strtolower($month)];
+    if (in_array($month, $months)) {
+        $month = array_search($month, $months);
     }
 
     $en_date = sprintf('%s %s %s', $day, $month, $year);
@@ -188,8 +188,8 @@ function decodeDateMonth($date)
     $months = localeMonths();
     list($day, $month) = explode(' ', $date);
     $month = strtolower($month);
-    if (!in_array($month, array_values($months))) {
-        $month = $months[strtolower($month)];
+    if (in_array($month, $months)) {
+        $month = array_search($month, $months);
     }
 
     $en_date = sprintf('%s %s %s', $day, $month, date('Y'));

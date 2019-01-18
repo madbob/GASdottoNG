@@ -5,6 +5,7 @@
 var locker = false;
 var absolute_url = $('meta[name=absolute_url]').attr('content');
 var current_currency = $('meta[name=current_currency]').attr('content');
+var current_language = $('html').attr('lang').split('-')[0];
 
 $.fn.tagName = function() {
     return this.prop("tagName").toLowerCase();
@@ -17,14 +18,14 @@ function generalInit(container) {
     $('input.date', container).datepicker({
         format: 'DD dd MM yyyy',
         autoclose: true,
-        language: 'it',
+        language: current_language,
         clearBtn: true,
     });
 
     $('input.date-to-month', container).datepicker({
         format: 'dd MM',
         autoclose: true,
-        language: 'it',
+        language: current_language,
         clearBtn: false,
         maxViewMode: 'months'
     });
