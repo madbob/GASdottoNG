@@ -169,10 +169,16 @@ function decodeDate($date)
     }
 
     $months = localeMonths();
-    list($weekday, $day, $month, $year) = explode(' ', $date);
+
+    $tokens = explode(' ', $date);
+    if (count($tokens) != 4) {
+        Log::error('Undecodable date: ' . $date);
+        return null;
+    }
+
+    list($weekday, $day, $month, $year) = $tokens;
     $month = $months[strtolower($month)];
     $en_date = sprintf('%s %s %s', $day, $month, $year);
-    Log::debug("$date = $en_date");
     return date('Y-m-d', strtotime($en_date));
 }
 

@@ -67,7 +67,10 @@ class BookingHandler extends Controller
 
                     if ($product->variants->isEmpty() == false) {
                         $quantity = 0;
+
                         $quantities = $request->input('variant_quantity_' . $product->id);
+                        if (empty($quantities))
+                            continue;
 
                         $values = [];
                         foreach ($product->variants as $variant) {
