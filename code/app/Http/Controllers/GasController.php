@@ -175,6 +175,18 @@ class GasController extends Controller
                 $gas->setConfig('orders_display_columns', $request->input('orders_display_columns'));
                 break;
 
+            case 'mails':
+                $custom_mails_info = (object) [];
+
+                foreach($gas->custom_mails as $identifier => $metadata) {
+                    $metadata->subject = $request->input("custom_mails_${identifier}_subject");
+                    $metadata->body = $request->input("custom_mails_${identifier}_body");
+                    $custom_mails_info->$identifier = $metadata;
+                }
+
+                $gas->setConfig('custom_mails', $custom_mails_info);
+                break;
+
             case 'roles':
                 $conf = (object) [
                     'user' => $request->input('roles->user'),

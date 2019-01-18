@@ -2,34 +2,26 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
-
 use Auth;
 
-class ReceiptForward extends Mailable
+use App\Notifications\ManyMailNotification;
+use App\Notifications\MailFormatter;
+
+class ReceiptForward extends ManyMailNotification
 {
-    use Queueable, SerializesModels;
+    use MailFormatter;
 
     private $temp_file = null;
-    private $custom_subject = null;
-    private $message = null;
 
-    public function __construct($temp_file, $subject, $message)
+    public function __construct($temp_file)
     {
         $this->temp_file = $temp_file;
-        $this->custom_subject = $subject;
-        $this->message = $message;
     }
 
     public function build()
     {
-        $message = $this->subject($this->custom_subject)->attach($this->temp_file)->view('emails.receipt', ['txt_message' => $this->message]);
-
-        if (!empty($user->gas->email))
-            $message->replyTo($user->gas->email);
-
-        return $message;
+        $user = Auth::user();
+        $message = $this->initMailMessage($notifiable, $user->gas);
+        return $this->formatMail($message, 'receipt')->attach($this->temp_file);
     }
 }

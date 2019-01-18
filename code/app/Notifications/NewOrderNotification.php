@@ -5,9 +5,12 @@ namespace App\Notifications;
 use Auth;
 
 use App\Notifications\ManyMailNotification;
+use App\Notifications\MailFormatter;
 
 class NewOrderNotification extends ManyMailNotification
 {
+    use MailFormatter;
+
     private $order;
 
     public function __construct($order)
@@ -19,7 +22,11 @@ class NewOrderNotification extends ManyMailNotification
     {
         $user = Auth::user();
         $message = $this->initMailMessage($notifiable, $user);
-        $message->subject(_i('Nuovo Ordine Aperto per %s', [$this->order->supplier->name]))->view('emails.new_order', ['order' => $this->order, 'user' => $notifiable]);
-        return $message;
+
+        return $this->formatMail($message, 'password_reset', [
+            'supplier_name' => $this->order->supplier->name,
+            'gas_booking_link' => $this->order->getBookingURL(),
+            'closing_date' => printableDate($this->order->end)
+        ]);
     }
 }

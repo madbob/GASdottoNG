@@ -92,31 +92,8 @@ class ReceiptsController extends Controller
                 $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
                 PDF::Output($temp_file_path, 'F');
 
-                $recipient_mails = $request->input('recipient_mail_value', []);
-                if (empty($recipient_mails))
-                    return;
-
-                $real_recipient_mails = [];
-                foreach($recipient_mails as $rm) {
-                    if (empty($rm))
-                        continue;
-                    $real_recipient_mails[] = (object) ['email' => $rm];
-                }
-
-                if (empty($real_recipient_mails))
-                    return;
-
-                try {
-                    $m = Mail::to($real_recipient_mails);
-                    $subject_mail = $request->input('subject_mail');
-                    $body_mail = $request->input('body_mail');
-                    $m->send(new ReceiptForward($temp_file_path, $subject_mail, $body_mail));
-
-                    $receipt->mailed = true;
-                }
-                catch(\Exception $e) {
-                    Log::error('Impossibile inoltrare fattura: ' . $e->getMessage());
-                }
+                $receipt->user->notify(new ReceiptForward($temp_file_path));
+                $receipt->mailed = true;
 
                 @unlink($temp_file_path);
                 $receipt->save();

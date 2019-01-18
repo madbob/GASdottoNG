@@ -3,13 +3,19 @@
 namespace App\Notifications;
 
 use App\Notifications\ManyMailNotification;
+use App\Notifications\MailFormatter;
 
 class WelcomeMessage extends ManyMailNotification
 {
+    use MailFormatter;
+
     public function toMail($notifiable)
     {
         $message = $this->initMailMessage($notifiable);
-        $message->subject(_i('Benvenuto!'))->view('emails.welcome', ['user' => $notifiable]);
-        return $message;
+
+        return $this->formatMail($message, 'welcome', [
+            'username' => $notifiable->username,
+            'gas_login_link' => route('login')
+        ]);
     }
 }

@@ -295,6 +295,82 @@
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab">
                     <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#main-configs" href="#custom-mails-config">
+                            {{ _i('Testi Messaggi Mail') }}
+                        </a>
+                    </h4>
+                </div>
+                <div id="custom-mails-config" class="panel-collapse collapse" role="tabpanel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ route('gas.update', $gas->id) }}">
+                                <input type="hidden" name="group" value="mails">
+
+                                <div class="col-md-12">
+                                    <p>
+                                        {{ _i('Da qui puoi modificare i testi delle mail in uscita da GASdotto. Per ogni tipologia sono previsti dei placeholders, che saranno sostituiti con gli opportuni valori al momento della generazione: per aggiungerli nei testi, usare la sintassi %[nome_placeholder]') }}
+                                    </p>
+                                    <p>
+                                        {{ _i('Placeholder globali, che possono essere usati in tutti i messaggi:') }}
+                                    </p>
+                                    <ul>
+                                        <li>gas_name: {{ _i('Nome del GAS') }}</li>
+                                    </ul>
+
+                                    <hr>
+
+                                    @foreach($gas->custom_mails as $identifier => $metadata)
+                                        <?php
+
+                                        /*
+                                        if ($identifier == 'welcome' && $gas->hasFeature('public_registrations') == false) {
+                                            continue;
+                                        }
+                                        if ($identifier == 'receipt' && $gas->hasFeature('extra_invoicing') == false) {
+                                            continue;
+                                        }
+                                        */
+
+                                        $mail_help = '';
+                                        if (isset($metadata->params)) {
+                                            $mail_params = [];
+                                            foreach($metadata->params as $placeholder => $placeholder_description) {
+                                                $mail_params[] = sprintf('%s: %s', $placeholder, $placeholder_description);
+                                            }
+                                            $mail_help = join('<br>', $mail_params);
+                                        }
+
+                                        ?>
+
+                                        @include('commons.textfield', [
+                                            'obj' => $gas,
+                                            'name' => "custom_mails_${identifier}_subject",
+                                            'default_value' => $metadata->subject,
+                                            'label' => _i('Soggetto')
+                                        ])
+                                        @include('commons.textarea', [
+                                            'obj' => $gas,
+                                            'name' => "custom_mails_${identifier}_body",
+                                            'default_value' => $metadata->body,
+                                            'label' => _i('Testo'),
+                                            'help_text' => $mail_help
+                                        ])
+                                        <hr>
+                                    @endforeach
+
+                                    <div class="btn-group pull-right main-form-buttons" role="group">
+                                        <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab">
+                    <h4 class="panel-title">
                         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#main-configs" href="#import-config">
                             {{ _i('Importa') }}
                         </a>

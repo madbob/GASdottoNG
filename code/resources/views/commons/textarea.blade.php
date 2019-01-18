@@ -1,15 +1,21 @@
 <?php
 
-if(!isset($default_value))
+if(!isset($default_value)) {
     $default_value = '';
+}
 
 $value = ($obj ? $obj->$name : '');
-if(empty($value))
+if(empty($value)) {
     $value = $default_value;
+}
 
 $wrap_class = 'form-group';
 if (isset($extra_wrap_class)) {
     $wrap_class .= ' ' . $extra_wrap_class;
+}
+
+if (!isset($help_text)) {
+    $help_text = '';
 }
 
 ?>
@@ -38,5 +44,9 @@ if (isset($extra_wrap_class)) {
             @endif
 
             autocomplete="off">{{ $value }}</textarea>
+
+        @if(!empty($help_text))
+            <span class="help-block">{!! $help_text !!}</span>
+        @endif
     </div>
 </div>

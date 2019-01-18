@@ -50,10 +50,14 @@
                         {{ _i("Scarica la fattura generata, o inoltrala via email.") }}
                     </p>
 
-                    @include('order.filesmail', [
-                        'contacts' => $receipt->user->contacts()->where('type', 'email')->get(),
-                        'default_subject' => _i('Nuova fattura da %s', [$currentgas->name]),
-                        'default_text' => _i("In allegato l'ultima fattura da %s.", [$currentgas->name])
+                    <hr/>
+
+                    @include('commons.boolfield', [
+                        'obj' => null,
+                        'name' => 'send_mail',
+                        'label' => _i('Inoltra Mail'),
+                        'labelsize' => 2,
+                        'fieldsize' => 10
                     ])
                 </div>
                 <div class="modal-footer">

@@ -3,9 +3,12 @@
 namespace App\Notifications;
 
 use App\Notifications\ManyMailNotification;
+use App\Notifications\MailFormatter;
 
 class ResetPasswordNotification extends ManyMailNotification
 {
+    use MailFormatter;
+
     private $reset_token = null;
 
     public function __construct($token)
@@ -16,7 +19,9 @@ class ResetPasswordNotification extends ManyMailNotification
     public function toMail($notifiable)
     {
         $message = $this->initMailMessage($notifiable);
-        $message->subject(_i('Recupero Password'))->view('emails.resetpassword', ['url' => url('password/reset/' . $this->reset_token)]);
-        return $message;
+
+        return $this->formatMail($message, 'password_reset', [
+            'gas_reset_link' => url('password/reset/' . $this->reset_token)
+        ]);
     }
 }
