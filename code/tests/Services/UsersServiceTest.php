@@ -189,7 +189,7 @@ class UsersServiceTest extends TestCase
 
         $updatedUser = $this->usersService->update($user->id, array(
             'password' => 'new password',
-            'birthday' => 'Thursday 01 December 2016',
+            'birthday' => 'Giovedi 01 Dicembre 2016',
         ));
 
         $this->assertNotEquals($user->birthday, $updatedUser->birthday);
