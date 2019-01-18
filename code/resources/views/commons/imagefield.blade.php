@@ -14,7 +14,7 @@ $url = $obj && $valuefrom ? $obj->$valuefrom : '';
     @endif
     <div class="col-sm-{{ $fieldsize }}">
         <div class="img-preview">
-            <input type="file" name="{{ $name }}">
+            <input type="file" name="{{ $prefix . $name . $postfix }}" data-max-size="{{ serverMaxUpload() }}">
             @if(!empty($url))
                 <img src="{{ $url }}">
             @endif
