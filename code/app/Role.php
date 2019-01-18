@@ -355,6 +355,21 @@ class Role extends Model
         if ($this->enabledAction($action) == false) {
             $this->actions .= ',' . $action;
             $this->save();
+
+            /*
+                Se attivo un permesso che ha un solo target (di solito: il GAS),
+                attacco quest'ultimo direttamente a tutti gli utenti coinvolti
+            */
+            $class = self::classByRule($action);
+            if ($class::count() == 1) {
+                $only_target = $class::first();
+
+                foreach($this->users as $user) {
+                    $urole = $user->roles()->where('roles.id', $this->id)->first();
+                    if ($urole)
+                        $urole->attachApplication($only_target);
+                }
+            }
         }
     }
 
