@@ -46,6 +46,14 @@ class UsersServiceTest extends TestCase
         $this->userWithMovementPerm = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
         $this->userWithMovementPerm->addRole($treasure_role, $this->gas);
 
+        $base_role = \App\Role::create([
+            'name' => 'User',
+            'actions' => 'users.self'
+        ]);
+
+        $this->userWithBasePerm = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
+        $this->userWithBasePerm->addRole($base_role, $this->gas);
+
         $this->userWithNoPerms = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
 
         factory(\App\User::class, 3)->create(['gas_id' => $this->gas->id]);
@@ -73,7 +81,7 @@ class UsersServiceTest extends TestCase
         $this->actingAs($this->userWithViewPerm);
 
         $users = $this->usersService->list();
-        $this->assertCount(7, $users);
+        $this->assertCount(8, $users);
         foreach ($users as $user) {
             $this->assertEquals($this->gas->id, $user->gas_id);
         }
@@ -194,6 +202,42 @@ class UsersServiceTest extends TestCase
 
         $this->assertNotEquals($user->birthday, $updatedUser->birthday);
         $this->assertEquals(0, $updatedUser->pending_balance);
+    }
+
+    /**
+     * @expectedException \App\Exceptions\AuthException
+     */
+    public function testFailsToSelfUpdate()
+    {
+        $this->actingAs($this->userWithNoPerms);
+
+        $this->usersService->update($this->userWithNoPerms, array(
+            'password' => 'new password',
+            'birthday' => 'Giovedi 01 Dicembre 2016',
+        ));
+    }
+
+    public function testSelfUpdate()
+    {
+        $this->actingAs($this->userWithBasePerm);
+
+        $this->usersService->update($this->userWithBasePerm, array(
+            'password' => 'new password',
+            'birthday' => 'Giovedi 01 Dicembre 2016',
+        ));
+    }
+
+    public function testLimitedSelfUpdate()
+    {
+        /*
+            Un utente senza permessi deve comunque poter modificare la propria
+            password
+        */
+        $this->actingAs($this->userWithNoPerms);
+
+        $this->usersService->update($this->userWithNoPerms, array(
+            'password' => 'new password',
+        ));
     }
 
     /**

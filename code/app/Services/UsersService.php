@@ -138,7 +138,27 @@ class UsersService extends BaseService
         if ($user->can('users.admin', $user->gas)) {
             $type = 1;
         }
-        else if ($user->id == $id && $user->can('users.self', $user->gas)) {
+        else if ($user->id == $id) {
+            /*
+                Anche laddove non sia concesso agli utenti il permesso di
+                cambiare la propria anagrafica, devono comunque poter cambiare
+                la propria password. Se quello è il solo parametro passato, la
+                nuova password viene salvata e la funzione ritorna
+                correttamente, altrimenti si testa il suddetto permesso
+            */
+            if(isset($request['password']) && !empty($request['password']) && count($request) == 1) {
+                $this->transformAndSetIfSet($user, $request, 'password', function ($password) {
+                    return Hash::make($password);
+                });
+
+                $user->save();
+                return $user;
+            }
+
+            if ($user->can('users.self', $user->gas) == false) {
+                throw new AuthException(403);
+            }
+
             $type = 2;
         }
         else {
