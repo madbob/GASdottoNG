@@ -211,20 +211,24 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithNoPerms);
 
-        $this->usersService->update($this->userWithNoPerms, array(
+        $user = $this->usersService->update($this->userWithNoPerms->id, array(
             'password' => 'new password',
             'birthday' => 'Giovedi 01 Dicembre 2016',
         ));
+
+        $this->assertEquals($this->userWithNoPerms->id, $user->id);
     }
 
     public function testSelfUpdate()
     {
         $this->actingAs($this->userWithBasePerm);
 
-        $this->usersService->update($this->userWithBasePerm, array(
+        $user = $this->usersService->update($this->userWithBasePerm->id, array(
             'password' => 'new password',
             'birthday' => 'Giovedi 01 Dicembre 2016',
         ));
+
+        $this->assertEquals($this->userWithBasePerm->id, $user->id);
     }
 
     public function testLimitedSelfUpdate()
@@ -235,9 +239,11 @@ class UsersServiceTest extends TestCase
         */
         $this->actingAs($this->userWithNoPerms);
 
-        $this->usersService->update($this->userWithNoPerms, array(
+        $user = $this->usersService->update($this->userWithNoPerms->id, array(
             'password' => 'new password',
         ));
+
+        $this->assertEquals($this->userWithNoPerms->id, $user->id);
     }
 
     /**

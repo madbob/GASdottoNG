@@ -147,6 +147,8 @@ class UsersService extends BaseService
                 correttamente, altrimenti si testa il suddetto permesso
             */
             if(isset($request['password']) && !empty($request['password']) && count($request) == 1) {
+                $user = $this->show($id);
+
                 $this->transformAndSetIfSet($user, $request, 'password', function ($password) {
                     return Hash::make($password);
                 });
