@@ -19,11 +19,17 @@ class AppServiceProvider extends ServiceProvider
                 $user->addRole($dr, $user->gas);
             }
 
-            $fallback_delivery = Delivery::where('default', true)->first();
-            if ($fallback_delivery != null) {
-                $user->preferred_delivery_id = $fallback_delivery->id;
-                $user->save();
+            if ($user->isFriend()) {
+                $user->preferred_delivery_id = '';
             }
+            else {
+                $fallback_delivery = Delivery::where('default', true)->first();
+                if ($fallback_delivery != null) {
+                    $user->preferred_delivery_id = $fallback_delivery->id;
+                }
+            }
+
+            $user->save();
         });
 
         Order::created(function($order) {
