@@ -1128,6 +1128,14 @@ function formToDownload(form) {
 */
 
 $(document).ready(function() {
+    /*
+        Poiché l'altezza della navbar è estremamente variabile, a seconda delle
+        funzioni abilitate, calcolo lo spazio da lasciare sopra al body in modo
+        dinamico
+    */
+    var navbar = $('.navbar-default').first();
+    $('body').css('padding-top', (navbar.height() + parseInt(navbar.css('margin-bottom'))) + 'px');
+
     $('#preloader').remove();
 
     $.ajaxSetup({
