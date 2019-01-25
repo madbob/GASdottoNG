@@ -1,14 +1,35 @@
+<?php
+
+if (!isset($next_step)) {
+    $next_step = 'run';
+}
+
+if (!isset($extra_fields)) {
+    $extra_fields = [];
+}
+
+if (!isset($extra_description)) {
+    $extra_description = [];
+}
+
+?>
+
 <div class="wizard_page">
-    <form class="form-horizontal" method="POST" action="{{ url('import/csv?type=movements&step=select') }}" data-toggle="validator">
+    <form class="form-horizontal" method="POST" action="{{ url('import/csv?type=' . $type . '&step=' . $next_step) }}" data-toggle="validator">
         <input type="hidden" class="wizard_field" name="path" value="{{ $path }}" />
+
+        @foreach($extra_fields as $name => $value)
+            <input type="hidden" class="wizard_field" name="{{ $name }}" value="{{ $value }}" />
+        @endforeach
 
         <div class="modal-body">
             <p>
                 {{ _i('Clicca e trascina gli attributi dalla colonna di destra alla colonna centrale, per assegnare ad ogni colonna del tuo file un significato.') }}
             </p>
-            <p>
-                {{ _i('Gli utenti sono identificati per username o indirizzo mail (che deve essere univoco!).') }}
-            </p>
+
+            @foreach($extra_description as $ed)
+                <p>{{ $ed }}</p>
+            @endforeach
 
             <hr/>
 
@@ -16,7 +37,7 @@
                 <div class="col-md-4">
                     <ul class="list-group">
                         @foreach($columns as $column)
-                            <li class="list-group-item">{{ $column }}</li>
+                            <li class="list-group-item">{{ empty($column) ? '&nbsp;' : $column }}</li>
                         @endforeach
                     </ul>
                 </div>
@@ -30,10 +51,9 @@
                 <div class="col-md-4">
                     <ul class="list-group">
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="none" />{{ _i('[Ignora]') }}</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="date" />{{ _i('Data') }}</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="amount" />{{ _i('Valore') }}</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="notes" />{{ _i('Note') }}</li>
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="user" />{{ _i('Utente') }}</li>
+                        @foreach($sorting_fields as $name => $label)
+                            <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="{{ $name }}" />{{ $label }}</li>
+                        @endforeach
                     </ul>
                 </div>
             </div>

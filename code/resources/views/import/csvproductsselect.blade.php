@@ -1,0 +1,172 @@
+<?php
+
+$original_products = $supplier->products;
+$categories = App\Category::orderBy('name', 'asc')->where('parent_id', '=', null)->get();
+$measures = App\Measure::orderBy('name', 'asc')->get();
+
+?>
+
+<div class="wizard_page">
+    <form class="form-horizontal" method="POST" action="{{ url('import/csv?type=products&step=run') }}" data-toggle="validator">
+        <input type="hidden" name="supplier_id" value="{{ $supplier->id }}">
+
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6">
+                    @include('commons.boolfield', [
+                        'obj' => null,
+                        'name' => 'reset_list',
+                        'label' => _i("Disattiva prodotti di questo fornitore non inclusi nell'elenco"),
+                        'default_checked' => false
+                    ])
+                </div>
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th width="3%">{{ _i('Importa') }}</th>
+                        <th width="15%">{{ _i('Nome') }}</th>
+                        <th width="15%">{{ _i('Descrizione') }}</th>
+                        <th width="6%">{{ _i('Prezzo Unitario') }}</th>
+                        <th width="6%">{{ _i('Prezzo Trasporto') }}</th>
+                        <th width="10%">{{ _i('Categoria') }}</th>
+                        <th width="10%">{{ _i('Unità di Misura') }}</th>
+                        <th width="10%">{{ _i('Codice Fornitore') }}</th>
+                        <th width="5%">{{ _i('Dimensione Confezione') }}</th>
+                        <th width="5%">{{ _i('Ordine Minimo') }}</th>
+                        <th width="5%">{{ _i('Ordinabile per Multipli') }}</th>
+                        <th width="10%">{{ _i('Aggiorna') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($products as $index => $product)
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="import[]" value="{{ $index }}" checked>
+                            </td>
+                            <td>
+                                @include('commons.textfield', [
+                                    'obj' => $product,
+                                    'name' => 'name',
+                                    'label' => '',
+                                    'postfix' => '[]',
+                                    'squeeze' => true
+                                ])
+                            </td>
+                            <td>
+                                @include('commons.textfield', [
+                                    'obj' => $product,
+                                    'name' => 'description',
+                                    'label' => '',
+                                    'postfix' => '[]',
+                                    'squeeze' => true
+                                ])
+                            </td>
+                            <td>
+                                @include('commons.decimalfield', [
+                                    'obj' => $product,
+                                    'name' => 'price',
+                                    'label' => '',
+                                    'postfix' => '[]',
+                                    'squeeze' => true,
+                                ])
+                            </td>
+                            <td>
+                                @include('commons.decimalfield', [
+                                    'obj' => $product,
+                                    'name' => 'transport',
+                                    'label' => '',
+                                    'postfix' => '[]',
+                                    'squeeze' => true,
+                                ])
+                            </td>
+                            <td>
+                                @include('commons.selectobjfield', [
+                                    'obj' => $product,
+                                    'name' => 'category_id',
+                                    'postfix' => '[]',
+                                    'squeeze' => true,
+                                    'objects' => $categories,
+                                    'extra_selection' => (isset($product->category_name) ? ['new:' . $product->category_name => $product->category_name] : [])
+                                ])
+                            </td>
+                            <td>
+                                @include('commons.selectobjfield', [
+                                    'obj' => $product,
+                                    'name' => 'measure_id',
+                                    'postfix' => '[]',
+                                    'squeeze' => true,
+                                    'objects' => $measures,
+                                    'extra_selection' => (isset($product->measure_name) ? ['new:' . $product->measure_name => $product->measure_name] : [])
+                                ])
+                            </td>
+                            <td>
+                                @include('commons.textfield', [
+                                    'obj' => $product,
+                                    'name' => 'supplier_code',
+                                    'label' => '',
+                                    'postfix' => '[]',
+                                    'squeeze' => true
+                                ])
+                            </td>
+                            <td>
+                                @include('commons.decimalfield', [
+                                    'obj' => $product,
+                                    'name' => 'package_size',
+                                    'label' => '',
+                                    'postfix' => '[]',
+                                    'squeeze' => true,
+                                    'decimals' => 3
+                                ])
+                            </td>
+                            <td>
+                                @include('commons.decimalfield', [
+                                    'obj' => $product,
+                                    'name' => 'min_quantity',
+                                    'label' => '',
+                                    'postfix' => '[]',
+                                    'squeeze' => true,
+                                    'decimals' => 3
+                                ])
+                            </td>
+                            <td>
+                                @include('commons.decimalfield', [
+                                    'obj' => $product,
+                                    'name' => 'multiple',
+                                    'label' => '',
+                                    'postfix' => '[]',
+                                    'squeeze' => true,
+                                    'decimals' => 3
+                                ])
+                            </td>
+
+                            <td>
+                                @if($original_products->isEmpty() == false)
+                                    @include('commons.selectobjfield', [
+                                        'obj' => $product,
+                                        'name' => 'want_replace',
+                                        'postfix' => '[]',
+                                        'squeeze' => true,
+                                        'objects' => $original_products,
+                                        'extra_selection' => [
+                                            '-1' => _i('Nessuno')
+                                        ]
+                                    ])
+                                @else
+                                    {{ _i('Nessun Prodotto Aggiornabile') }}
+                                    <input type="hidden" name="want_replace[]" value="-1">
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+            <button type="submit" class="btn btn-success">{{ _i('Avanti') }}</button>
+        </div>
+    </form>
+</div>

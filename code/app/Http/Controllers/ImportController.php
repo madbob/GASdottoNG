@@ -50,7 +50,7 @@ class ImportController extends Controller
         return $target_separator;
     }
 
-    private function storeUploadedFile(Request $request, $response, $parameters)
+    private function storeUploadedFile(Request $request, $parameters)
     {
         try {
             $f = $request->file('file', null);
@@ -74,7 +74,7 @@ class ImportController extends Controller
             $parameters['path'] = $path;
             $parameters['columns'] = $sample_line;
 
-            return view($response, $parameters);
+            return view('import.csvsortcolumns', $parameters);
 
         } catch (\Exception $e) {
             return $this->errorResponse(_i('Errore nel salvataggio del file'));
@@ -130,37 +130,47 @@ class ImportController extends Controller
 
             switch ($step) {
                 case 'guess':
-                    return $this->storeUploadedFile($request, 'import.csvproductssortcolumns', ['supplier' => $s]);
+                    return $this->storeUploadedFile($request, [
+                        'type' => 'products',
+                        'next_step' => 'select',
+                        'extra_fields' => [
+                            'supplier_id' => $s->id
+                        ],
+                        'extra_description' => [
+                            _i('Le categorie e le unità di misura il cui nome non sarà trovato tra quelle esistenti saranno create.')
+                        ],
+                        'sorting_fields' => [
+                            'name' => _i('Nome Prodotto (obbligatorio)'),
+                            'description' => _i('Descrizione'),
+                            'price' => _i('Prezzo Unitario'),
+                            'transport' => _i('Prezzo Trasporto'),
+                            'category' => _i('Categoria'),
+                            'measure' => _i('Unità di Misura'),
+                            'supplier_code' => _i('Codice Fornitore'),
+                            'package_size' => _i('Dimensione Confezione'),
+                            'min_quantity' => _i('Ordine Minimo'),
+                            'multiple' => _i('Ordinabile per Multipli')
+                        ]
+                    ]);
                     break;
 
-                case 'run':
-                    DB::beginTransaction();
-
+                case 'select':
                     $path = $request->input('path');
                     $columns = $request->input('column');
 
                     $errors = [];
                     $name_index = -1;
-                    $category_index = -1;
-                    $measure_index = -1;
+                    $supplier_code_index = -1;
 
                     foreach ($columns as $index => $field) {
                         if ($field == 'name')
                             $name_index = $index;
-                        else if ($field == 'category')
-                            $category_index = $index;
-                        else if ($field == 'measure')
-                            $measure_index = $index;
+                        if ($field == 'supplier_code')
+                            $supplier_code_index = $index;
                     }
 
                     if ($name_index == -1) {
                         $errors[] = _i('Colonna obbligatoria non specificata: nome del prodotto');
-                    }
-                    if ($category_index == -1) {
-                        $errors[] = _i('Colonna obbligatoria non specificata: categoria');
-                    }
-                    if ($measure_index == -1) {
-                        $errors[] = _i('Colonna obbligatoria non specificata: unità di misura');
                     }
 
                     if (!empty($errors)) {
@@ -185,54 +195,137 @@ class ImportController extends Controller
                     while (($line = $reader->readLine()) !== false) {
                         try {
                             $name = $line[$name_index];
-                            $p = $s->products()->where('name', '=', $name)->orderBy('id', 'desc')->first();
-                            if (is_null($p)) {
-                                $p = new Product();
-                                $p->name = $name;
-                                $p->supplier_id = $s->id;
+
+                            $p = new Product();
+                            $p->name = $name;
+                            $p->category_id = 'non-specificato';
+                            $p->measure_id = 'non-specificato';
+
+                            if ($supplier_code_index == -1) {
+                                $test = $s->products()->where('name', $name)->orderBy('id', 'desc')->first();
+                            }
+                            else {
+                                $test = $s->products()->where('name', $name)->orWhere('supplier_code', $line[$supplier_code_index])->orderBy('id', 'desc')->first();
                             }
 
-                            $p->active = true;
+                            if (is_null($test) == false) {
+                                $p->want_replace = $test->id;
+                            }
+                            else {
+                                $p->want_replace = -1;
+                            }
 
                             foreach ($columns as $index => $field) {
+                                $value = trim($line[$index]);
+
                                 if ($field == 'none') {
                                     continue;
-                                } elseif ($field == 'category') {
-                                    $name = $line[$index];
-                                    $category = Category::where('name', '=', $name)->first();
-                                    if (is_null($category)) {
-                                        $category = new Category();
-                                        $category->name = $name;
-                                        $category->save();
+                                }
+                                elseif ($field == 'category') {
+                                    $test_category = Category::where('name', $value)->first();
+                                    if (is_null($test_category)) {
+                                        $field = 'category_name';
+                                        $p->category_id = -1;
                                     }
-
-                                    $field = 'category_id';
-                                    $value = $category->id;
-                                } elseif ($field == 'measure') {
-                                    $name = $line[$index];
-                                    $measure = Measure::where('name', '=', $name)->first();
-                                    if (is_null($measure)) {
-                                        $measure = new Measure();
-                                        $measure->name = $name;
-                                        $measure->save();
+                                    else {
+                                        $p->category_id = $test_category->id;
                                     }
-
-                                    $field = 'measure_id';
-                                    $value = $measure->id;
-                                } elseif ($field == 'price' || $field == 'transport') {
+                                }
+                                elseif ($field == 'measure') {
+                                    $test_measure = Measure::where('name', $value)->first();
+                                    if (is_null($test_measure)) {
+                                        $field = 'measure_name';
+                                        $p->measure_id = -1;
+                                    }
+                                    else {
+                                        $p->measure_id = $test_measure->id;
+                                    }
+                                }
+                                elseif ($field == 'price' || $field == 'transport') {
                                     $value = str_replace(',', '.', $line[$index]);
-                                } else {
-                                    $value = $line[$index];
                                 }
 
                                 $p->$field = $value;
                             }
 
+                            $products[] = $p;
+                        }
+                        catch (\Exception $e) {
+                            $products[] = implode($target_separator, $line).'<br/>'.$e->getMessage();
+                        }
+                    }
+
+                    return view('import.csvproductsselect', ['products' => $products, 'supplier' => $s, 'errors' => $errors]);
+                    break;
+
+                case 'run':
+                    DB::beginTransaction();
+
+                    $imports = $request->input('import');
+                    $names = $request->input('name');
+                    $descriptions = $request->input('description');
+                    $prices = $request->input('price');
+                    $transports = $request->input('transport');
+                    $categories = $request->input('category_id');
+                    $measures = $request->input('measure_id');
+                    $codes = $request->input('supplier_code');
+                    $sizes = $request->input('package_size');
+                    $mins = $request->input('min_quantity');
+                    $multiples = $request->input('multiple');
+                    $replaces = $request->input('want_replace');
+
+                    $errors = [];
+                    $products = [];
+                    $products_ids = [];
+
+                    foreach($imports as $index) {
+                        try {
+                            if ($replaces[$index] != -1) {
+                                $p = Product::find($replaces[$index]);
+                            }
+                            else {
+                                $p = new Product();
+                                $p->supplier_id = $s->id;
+                            }
+
+                            $p->active = true;
+
+                            $p->name = $names[$index];
+                            $p->description = $descriptions[$index];
+                            $p->price = $prices[$index];
+                            $p->transport = $transports[$index];
+                            $p->supplier_code = $codes[$index];
+                            $p->package_size = $sizes[$index];
+                            $p->min_quantity = $mins[$index];
+                            $p->multiple = $multiples[$index];
+
+                            if (starts_with($categories[$index], 'new:')) {
+                                $category = new Category();
+                                $category->name = str_after($categories[$index], 'new:');
+                                $category->save();
+                                $categories[$index] = $category->id;
+                            }
+                            $p->category_id = $categories[$index];
+
+                            if (starts_with($measures[$index], 'new:')) {
+                                $measure = new Measure();
+                                $measure->name = str_after($measures[$index], 'new:');
+                                $measure->save();
+                                $categories[$index] = $measure->id;
+                            }
+                            $p->measure_id = $measures[$index];
+
                             $p->save();
                             $products[] = $p;
-                        } catch (\Exception $e) {
-                            $errors[] = implode($target_separator, $line).'<br/>'.$e->getMessage();
+                            $products_ids[] = $p->id;
                         }
+                        catch (\Exception $e) {
+                            $errors[] = $index . '<br/>' . $e->getMessage();
+                        }
+                    }
+
+                    if ($request->has('reset_list')) {
+                        $s->products()->whereNotIn('id', $products_ids)->update(['active' => false]);
                     }
 
                     DB::commit();
@@ -252,7 +345,19 @@ class ImportController extends Controller
         else if ($type == 'users') {
             switch ($step) {
                 case 'guess':
-                    return $this->storeUploadedFile($request, 'import.csvuserssortcolumns', []);
+                    return $this->storeUploadedFile($request, [
+                        'type' => 'users',
+                        'sorting_fields' => [
+                            'firstname' => _i('Nome'),
+                            'lastname' => _i('Cognome'),
+                            'username' => _i('Login (obbligatorio)'),
+                            'email' => _i('E-Mail'),
+                            'phone' => _i('Telefono'),
+                            'member_since' => _i('Membro da'),
+                            'ceased' => _i('Cessato (true/false)'),
+                            'credit' => _i('Credito Attuale')
+                        ]
+                    ]);
                     break;
 
                 case 'run':
@@ -376,7 +481,19 @@ class ImportController extends Controller
 
             switch ($step) {
                 case 'guess':
-                    return $this->storeUploadedFile($request, 'import.csvmovementssortcolumns', []);
+                    return $this->storeUploadedFile($request, [
+                        'type' => 'movements',
+                        'next_step' => 'select',
+                        'extra_description' => [
+                            _i('Gli utenti sono identificati per username o indirizzo mail (che deve essere univoco!).')
+                        ],
+                        'sorting_fields' => [
+                            'date' => _i('Data'),
+                            'amount' => _i('Valore'),
+                            'notes' => _i('Note'),
+                            'user' => _i('Utente')
+                        ]
+                    ]);
                     break;
 
                 case 'select':
