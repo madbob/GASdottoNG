@@ -26,34 +26,66 @@ class NotificationsController extends Controller
         ]);
     }
 
-    public function index()
+    private function getNotifications($startdate, $enddate)
     {
         $user = Auth::user();
-        if ($user->can('notifications.admin', $user->gas) == true) {
-            $notifications = Notification::where('end_date', '>', date('Y-m-d'))->get();
-            $dates = Date::where('type', 'internal')->where('date', '>', date('Y-m-d'))->get();
 
-            $all = $notifications->merge($dates)->sort(function($a, $b) {
-                if (is_a($a, 'App\Notification'))
-                    $a_date = $a->start_date;
-                else
-                    $a_date = $a->date;
+        $notifications_query = Notification::orderBy('start_date', 'desc');
 
-                if (is_a($b, 'App\Notification'))
-                    $b_date = $b->start_date;
-                else
-                    $b_date = $b->date;
+        if (!is_null($startdate))
+            $notifications_query->where('end_date', '>=', $startdate);
+        if (!is_null($enddate))
+            $notifications_query->where('start_date', '<=', $enddate);
 
-                return $b_date <=> $a_date;
+        if ($user->can('notifications.admin', $user->gas) == false) {
+            $notifications_query->whereHas('users', function($query) use ($user) {
+                $query->where('users.id', $user->id);
             });
-
-            $data['notifications'] = $all;
-        }
-        else {
-            $data['notifications'] = $user->allnotifications;
         }
 
-        return view('pages.notifications', $data);
+        $notifications = $notifications_query->get();
+
+        $dates_query = Date::where('type', 'internal');
+        if (!is_null($startdate))
+            $dates_query->where('date', '>=', $startdate);
+        if (!is_null($enddate))
+            $dates_query->where('date', '<=', $enddate);
+        $dates = $dates_query->get();
+
+        $all = $notifications->merge($dates)->sort(function($a, $b) {
+            if (is_a($a, 'App\Notification'))
+                $a_date = $a->start_date;
+            else
+                $a_date = $a->date;
+
+            if (is_a($b, 'App\Notification'))
+                $b_date = $b->start_date;
+            else
+                $b_date = $b->date;
+
+            return $b_date <=> $a_date;
+        });
+
+        return $all;
+    }
+
+    public function index()
+    {
+        $notifications = $this->getNotifications(date('Y-m-d', strtotime('-1 years')), null);
+        return view('pages.notifications', ['notifications' => $notifications]);
+    }
+
+    public function search(Request $request)
+    {
+        $startdate = decodeDate($request->input('startdate'));
+        $enddate = decodeDate($request->input('enddate'));
+
+        $notifications = $this->getNotifications($startdate, $enddate);
+
+        return view('commons.loadablelist', [
+            'identifier' => 'notification-list',
+            'items' => $notifications,
+        ]);
     }
 
     private function syncUsers($notification, $request)
@@ -137,7 +169,7 @@ class NotificationsController extends Controller
         if ($user->can('notifications.admin', $user->gas)) {
             return view('notification.edit', ['notification' => $n]);
         }
-        else if ($n->hasUser($user) == false) {
+        else if ($n->hasUser($user)) {
             return view('notification.show', ['notification' => $n]);
         }
         else {

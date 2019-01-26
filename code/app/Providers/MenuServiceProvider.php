@@ -46,9 +46,7 @@ class MenuServiceProvider extends ServiceProvider
                     $menu->add('stats', '<span class="glyphicon glyphicon-stats" aria-hidden="true"></span> ' . _i('Statistiche'));
                 }
 
-                if ($user->can('notifications.admin', $gas)) {
-                    $menu->add('notifications', '<span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> ' . _i('Notifiche'));
-                }
+                $menu->add('notifications', '<span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> ' . _i('Notifiche'));
 
                 if ($user->can('gas.config', $gas)) {
                     $menu->add('gas/'.$gas->id.'/edit', '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ' . _i('Configurazioni'));

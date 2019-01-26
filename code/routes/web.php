@@ -103,6 +103,7 @@ Route::middleware(['auth'])->group(function() {
     Route::post('deliveries/{aggregate_id}/fast', 'DeliveryUserController@postFastShipping');
 
     Route::get('notifications/{id}/header', 'NotificationsController@objhead')->name('notifications.objhead');
+    Route::get('notificatios/search', 'NotificationsController@search')->name('notifications.search');
     Route::post('notifications/markread/{id}', 'NotificationsController@markread');
 
     Route::post('multigas/attach', 'MultiGasController@attach');
