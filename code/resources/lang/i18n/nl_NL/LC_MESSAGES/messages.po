@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2018-12-25 17:05+0100\n"
-"PO-Revision-Date: 2019-01-08 11:06+0000\n"
+"PO-Revision-Date: 2019-02-10 17:09+0000\n"
 "Last-Translator: Ariane Kremer <akremer@virgilio.it>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/gasdottong/"
 "translations/nl/>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"X-Generator: Weblate 3.5-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -497,9 +497,8 @@ msgid "Abilita Registrazione Pubblica"
 msgstr "Publieke registratie activeren"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:74
-#, fuzzy
 msgid "Link Privacy Policy"
-msgstr "Link Privacy Policy"
+msgstr "Link privacybeleid"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:79
 msgid "Campi Obbligatori"
@@ -577,7 +576,6 @@ msgstr "SEPA activeren"
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:213
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:35
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:44
-#, fuzzy
 msgid "IBAN"
 msgstr "IBAN"
 
@@ -1428,7 +1426,6 @@ msgstr "Ledenbijdrage"
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:76
 #: ../storage/framework/messages/a896755ced7ca4f0aebec7ef77c80f22f205ea26.php.php:25
 #: ../storage/framework/messages/a896755ced7ca4f0aebec7ef77c80f22f205ea26.php.php:32
-#, fuzzy
 msgid "Deposito"
 msgstr "Deposito"
 
@@ -1869,7 +1866,7 @@ msgstr "Standaard geactiveerd"
 #: ../storage/framework/messages/3c52fa94bfdb515df0896a915aecfd948faf1fff.php.php:22
 #: ../storage/framework/messages/9d4bd9714ec2a6669dd1cae6f1a66edf15eb3217.php.php:20
 msgid "Ruolo Superiore"
-msgstr ""
+msgstr "Rol superieur"
 
 #: ../storage/framework/messages/3c52fa94bfdb515df0896a915aecfd948faf1fff.php.php:60
 #: ../storage/framework/messages/a47129da04f06655a8ad6caa5f733682b53de4df.php.php:20
@@ -2981,129 +2978,128 @@ msgstr ""
 
 #: ../storage/framework/messages/ace24bd531b0877d2aeef32ad4301a81f681ca83.php.php:29
 msgid "Clicca qui per scaricare ed installare Firefox."
-msgstr ""
+msgstr "Klik hier om Firefox te downloaden en te installeren."
 
 #: ../storage/framework/messages/ace24bd531b0877d2aeef32ad4301a81f681ca83.php.php:70
 msgid "Ricordami"
-msgstr ""
+msgstr "Onthoud mij"
 
 #: ../storage/framework/messages/ace24bd531b0877d2aeef32ad4301a81f681ca83.php.php:81
 #: ../storage/framework/messages/d254fda5dae36c46c9680ba877316129b9d88515.php.php:33
 #: ../storage/framework/messages/e7abcf2c78ce46e6b4b7e33c5511932a21e4a065.php.php:28
 #: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:139
+#, fuzzy
 msgid "Login"
-msgstr ""
+msgstr "Login"
 
 #: ../storage/framework/messages/ace24bd531b0877d2aeef32ad4301a81f681ca83.php.php:91
 #: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:130
 msgid "Registrati"
-msgstr ""
+msgstr "Registreer je"
 
 #: ../storage/framework/messages/adf02c5dc1129239ca0a00a1e56614e8c305c259.php.php:22
 #: Notifications/NewOrderNotification.php:22
 #, php-format
 msgid "Nuovo Ordine Aperto per %s"
-msgstr ""
+msgstr "Nieuwe bestelling open voor %s"
 
 #: ../storage/framework/messages/adfea93ae4fd18c192e41ba08e17d46aca9a5f1f.php.php:99
 #: Http/Controllers/BookingUserController.php:99
 #, php-format
-#| msgid "Dettaglio Consegne ordine %s presso %s"
 msgid "Dettaglio Consegne ordini %s.pdf"
-msgstr ""
+msgstr "Detail leveringen bestellingen %s.pdf"
 
 #: ../storage/framework/messages/ae2f65107fa813637a4341731982c490953f791e.php.php:27
-#| msgid "Ordina Per"
 msgid "Ordini Aperti"
-msgstr ""
+msgstr "Open bestellingen"
 
 #: ../storage/framework/messages/ae2f65107fa813637a4341731982c490953f791e.php.php:28
-#| msgid "Ordini Coinvolti"
 msgid "Ordini Chiusi"
-msgstr ""
+msgstr "Gesloten bestellingen"
 
 #: ../storage/framework/messages/ae2f65107fa813637a4341731982c490953f791e.php.php:30
-#| msgid "Confermato"
 msgid "Date Confermate"
-msgstr ""
+msgstr "Bevestigde data"
 
 #: ../storage/framework/messages/ae2f65107fa813637a4341731982c490953f791e.php.php:31
 msgid "Date Temporanee"
-msgstr ""
+msgstr "Tijdelijke data"
 
 #: ../storage/framework/messages/ae2f65107fa813637a4341731982c490953f791e.php.php:32
 msgid "Appuntamenti"
-msgstr ""
+msgstr "Afspraken"
 
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:12
 #: ../storage/framework/messages/f0d8388990de9779bae078c14f11fa56be8ab204.php.php:12
 msgid "Prenotazioni Coinvolte"
-msgstr ""
+msgstr "Betrokken reserveringen"
 
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:31
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:48
 msgid "Scarica o Inoltra"
-msgstr ""
+msgstr "Downloaden of Doorsturen"
 
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:52
 msgid "Scarica la fattura generata, o inoltrala via email."
-msgstr ""
+msgstr "Download de gegenereerde factuur, of stuur deze door per e-mail."
 
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:58
 #, php-format
 msgid "Nuova fattura da %s"
-msgstr ""
+msgstr "Nieuwe factuur van %s"
 
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:7
 msgid "Duplica"
-msgstr ""
+msgstr "Dupliceren"
 
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:24
 msgid "Crea/Modifica Variante"
-msgstr ""
+msgstr "Variant aanmaken/wijzigen"
 
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:31
 msgid "Valori"
-msgstr ""
+msgstr "Waarden"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:161
 #: Gas.php:161
 msgid "Configurazione GAS non prevista"
-msgstr ""
+msgstr "GAS-configuratie niet voorzien"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:301
 #: Gas.php:301
 msgid "Conto Corrente"
-msgstr ""
+msgstr "Rekening-courant"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:302
 #: Gas.php:302
 msgid "Cassa Contanti"
-msgstr ""
+msgstr "Kas contanten"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:303
 #: ../storage/framework/messages/d25bf6a6da0df10748753d99aa3e2af4d1b06a2e.php.php:8
 #: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:99
 #: Gas.php:303
+#, fuzzy
 msgid "GAS"
-msgstr ""
+msgstr "GAS"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:305
 #: Gas.php:305
 msgid "Cauzioni"
-msgstr ""
+msgstr "Borgsommen"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:44
 msgid "Caricamento in corso"
-msgstr ""
+msgstr "Laden bezig"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:116
+#, fuzzy
 msgid "Feedback"
-msgstr ""
+msgstr "Feedback"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:124
 msgid "Vuoi inviare una segnalazione su GASdotto? Fallo qui!"
-msgstr ""
+msgstr "Wil je een melding over GASdotto sturen? Doe dat hier!"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:128
 msgid ""
@@ -3112,6 +3108,10 @@ msgid ""
 "inviati per mezzo di questo pannello saranno pubblici: non immettere "
 "informazioni e contatti personali!"
 msgstr ""
+"Opgelet: voor problemen met de inhoud van deze site (leveranciers, "
+"bestellingen, reserveringen....) verwijzen wij u naar de administraties van "
+"uw GAS. De gegevens die via dit paneel worden verzonden zijn openbaar: voer "
+"geen persoonlijke informatie en contacten in!"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:134
 msgid ""
@@ -3119,6 +3119,9 @@ msgid ""
 "\"https://hosted.weblate.org/projects/gasdottong/translations/\">questa "
 "pagina</a>."
 msgstr ""
+"Als je wilt bijdragen aan de vertaling in jouw taal, bezoek dan <a href=\""
+"https://hosted.weblate.org/projects/gasdottong/translations/\">deze "
+"pagina</a>."
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:144
 msgid "Titolo"
@@ -3131,17 +3134,17 @@ msgstr "Verzenden"
 #: ../storage/framework/messages/b98be77f28236fceb70dd1893b5d896319fdb2a5.php.php:133
 #: Supplier.php:133
 msgid "Listino PDF (autogenerato)"
-msgstr ""
+msgstr "PDF-lijst (automatisch gegenereerd)"
 
 #: ../storage/framework/messages/b98be77f28236fceb70dd1893b5d896319fdb2a5.php.php:138
 #: Supplier.php:138
 msgid "Listino CSV (autogenerato)"
-msgstr ""
+msgstr "CSV-lijst (automatisch gegenereerd)"
 
 #: ../storage/framework/messages/bbe4dde397821dca7657d4326d621ce84eefc02e.php.php:8
 #, php-format
 msgid "In allegato il file per l'ordine di %s."
-msgstr ""
+msgstr "Bijgevoegd is het bestand voor de bestelling van %s."
 
 #: ../storage/framework/messages/bbe4dde397821dca7657d4326d621ce84eefc02e.php.php:12
 msgid "Cordiali saluti"
@@ -3159,6 +3162,10 @@ msgid ""
 "facilitare il coordinamento di diversi referenti all'interno del GAS e "
 "pianificare le attività a lungo termine."
 msgstr ""
+"Vanaf hier kun je willekeurige data toevoegen aan je leveringskalender, "
+"zelfs voor bestellingen die nog niet bestaan. Deze functie wordt aanbevolen "
+"om de coördinatie van de verschillende contacten binnen de GAS te "
+"vergemakkelijken en om activiteiten op lange termijn te plannen."
 
 #: ../storage/framework/messages/c4f8815ff3cf5214c4bbe15ca9a0c585608364f9.php.php:19
 #: Notifications/NewUserNotification.php:19
@@ -3168,94 +3175,92 @@ msgstr "Nieuwe gebruiker geregistreerd"
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:3
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:29
 msgid "Stato Crediti"
-msgstr ""
+msgstr "Status tegoeden"
 
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:13
 msgid "Minore di"
-msgstr ""
+msgstr "Kleiner dan"
 
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:17
 msgid "Maggiore di"
-msgstr ""
+msgstr "Groter dan"
 
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:21
 msgid "Filtra Credito"
-msgstr ""
+msgstr "Tegoed filteren"
 
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:34
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:38
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:238
 #: Http/Controllers/MovementsController.php:238
 msgid "Credito Residuo"
-msgstr ""
+msgstr "Resterend tegoed"
 
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:81
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:106
 msgid "Esporta SEPA"
-msgstr ""
+msgstr "SEPA exporteren"
 
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:84
 msgid "Notifica Utente Visualizzati"
-msgstr ""
+msgstr "Melding gebruiker weergegeven"
 
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:102
 msgid "Causale"
-msgstr ""
+msgstr "Betalingskenmerk"
 
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:103
 msgid "VERSAMENTO GAS"
-msgstr ""
+msgstr "OVERMAKING GAS"
 
 #: ../storage/framework/messages/c75efb2a6f8978964f746614656ee9e33c9ce446.php.php:22
 #: Notifications/GenericNotificationWrapper.php:22
 msgid "Nuova notifica dal GAS"
-msgstr ""
+msgstr "Nieuwe melding van GAs"
 
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:7
 msgid "Statistiche Generali"
-msgstr ""
+msgstr "Algemene statistieken"
 
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:28
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:71
-#| msgid "Aggrega Ordini"
 msgid "Valore Ordini"
-msgstr ""
+msgstr "Waarde bestellingen"
 
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:32
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:75
-#| msgid "Ordini Coinvolti"
 msgid "Utenti Coinvolti"
-msgstr ""
+msgstr "Betrokken gebruikers"
 
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:36
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:79
-#| msgid "Categoria"
 msgid "Categorie"
-msgstr ""
+msgstr "Categorieën"
 
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:42
 msgid "Statistiche per Fornitore"
-msgstr ""
+msgstr "Statistieken per leverancier"
 
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:86
-#| msgid "Non ci sono elementi da visualizzare."
 msgid "Non ci sono dati da visualizzare"
-msgstr ""
+msgstr "Er zijn geen gegevens weer te geven"
 
 #: ../storage/framework/messages/c97bc241fa9fd8c512d89e87fa3a73ad695bf9f0.php.php:3
 #, php-format
 msgid "Dettaglio Consegne Ordine %s presso %s del %s"
-msgstr ""
+msgstr "Detail leveringen bestelling %s bij %s van %s"
 
 #: ../storage/framework/messages/cac23c1f807d35ed3aefa09946d6973937a89c57.php.php:34
 msgid "Elimina Definitivamente"
-msgstr ""
+msgstr "Definitief verwijderen"
 
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:29
 msgid ""
 "Tenere premuto Ctrl per selezionare più utenti. Se nessun utente viene "
 "selezionato, la notifica sarà destinata a tutti."
 msgstr ""
+"Houd Ctrl ingedrukt om meerdere gebruikers te selecteren. Als er geen "
+"gebruikers zijn geselecteerd, geldt de melding voor alle gebruikers."
 
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:40
 msgid "Inizio"
@@ -3270,52 +3275,56 @@ msgid ""
 "Questa notifica è già stata inoltrata via mail. Salvandola mantenendo questo "
 "flag attivo verrà inviata una nuova mail."
 msgstr ""
+"Deze melding is al per e-mail verzonden. Het opslaan van deze melding "
+"terwijl deze flag actief blijft, zorgt voor verzending van een nieuwe e-mail."
 
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:41
 msgid "Configurazione SEPA"
-msgstr ""
+msgstr "Configuratie SEPA"
 
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:48
 msgid "Identificativo Mandato SEPA"
-msgstr ""
+msgstr "ID van SEPA-opdracht"
 
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:51
 msgid "Data Mandato SEPA"
-msgstr ""
+msgstr "Datum SEPA-opdracht"
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:6
 msgid "Movimenti"
-msgstr ""
+msgstr "Transacties"
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:8
 msgid "Tipi Movimenti"
-msgstr ""
+msgstr "Types transacties"
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:10
 msgid "Fatture"
-msgstr ""
+msgstr "Facturen"
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:20
 msgid "Movimento"
-msgstr ""
+msgstr "Transactie"
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:73
 msgid "Importo Minimo"
-msgstr ""
+msgstr "Minimum bedrag"
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:74
 msgid "Importo Massimo"
-msgstr ""
+msgstr "Maximum bedrag"
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:80
 msgid "Esporta PDF"
-msgstr ""
+msgstr "PDF exporteren"
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:106
 msgid ""
 "Attenzione! Modifica i comportamenti dei tipi di movimento contabile con "
 "molta cautela!"
 msgstr ""
+"Opgelet! Verander het gedrag van de soorten boekhoudtransacties met grote "
+"voorzichtigheid!"
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:110
 msgid ""
@@ -3325,97 +3334,103 @@ msgid ""
 "contabilizzati non vengano rielaborati usando il nuovo comportamento "
 "(producendo saldi completamente diversi da quelli attuali)."
 msgstr ""
+"Alvorens het gedrag van een bestaand type te veranderen, en dat misschien al "
+"toegewezen is aan een aantal geregistreerde boekhoudtransacties, is het aan "
+"te raden om de functie \"Saldo's archiveren\" te gebruiken zodat de eerder "
+"geboekte transacties niet worden herwerkt met het nieuwe gedrag (waardoor "
+"saldo's worden geproduceerd die volledig van de huidige saldo's verschillen)."
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:124
 #: ../storage/framework/messages/ddbd8cf6b3bd2bf37b3e0ad9446845ae0da5350e.php.php:7
 msgid "Tipo Movimento"
-msgstr ""
+msgstr "Type transactie"
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:152
 msgid "Carica Nuova Fattura"
-msgstr ""
+msgstr "Nieuwe factuur laden"
 
 #: ../storage/framework/messages/d254fda5dae36c46c9680ba877316129b9d88515.php.php:37
 msgid "Cessato (true/false)"
-msgstr ""
+msgstr "Gestopt (true/false)"
 
 #: ../storage/framework/messages/d289165d78ca5dc8f1e5fa643538a93952da0df8.php.php:162
 #: ../storage/framework/messages/d289165d78ca5dc8f1e5fa643538a93952da0df8.php.php:177
 #: Services/MovementsService.php:162 Services/MovementsService.php:177
 msgid "Salvataggio fallito"
-msgstr ""
+msgstr "Opslag mislukt"
 
 #: ../storage/framework/messages/d289165d78ca5dc8f1e5fa643538a93952da0df8.php.php:224
 #: ../storage/framework/messages/d289165d78ca5dc8f1e5fa643538a93952da0df8.php.php:289
 #: Services/MovementsService.php:224 Services/MovementsService.php:289
 #, php-format
 msgid "Errore nel ricalcolo saldi: %s"
-msgstr ""
+msgstr "Fout in herberekening saldo's: %s"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:13
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:20
 msgid "Storico Saldi"
-msgstr ""
+msgstr "Saldo-historiek"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:35
 msgid "Saldo Corrente"
-msgstr ""
+msgstr "Huidige saldo"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:58
 msgid "Ricalcola Saldi"
-msgstr ""
+msgstr "Saldo's herberekenen"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:66
 msgid "Bilanci Ricalcolati"
-msgstr ""
+msgstr "Herberekende balansen"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:70
 msgid "Operazione conclusa."
-msgstr ""
+msgstr "Transactie beëindigd."
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:75
 msgid "I seguenti saldi sono risultati diversi al termine del ricalcolo."
-msgstr ""
+msgstr "De volgende saldo's zijn anders gebleken na herberekening."
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:82
 msgid "Soggetto"
-msgstr ""
+msgstr "Onderwerp"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:83
 msgid "Prima"
-msgstr ""
+msgstr "Voor"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:84
 msgid "Dopo"
-msgstr ""
+msgstr "Na"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:93
 msgid "Tutti i saldi risultano coerenti."
-msgstr ""
+msgstr "Alla saldo's blijken coherent."
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:100
 msgid "Ricarica la Pagina"
-msgstr ""
+msgstr "De pagina opnieuw laden"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:108
 msgid "Archivia Saldi"
-msgstr ""
+msgstr "Saldo's archiveren"
 
 #: ../storage/framework/messages/d3ff01348e530d31dcfec89ce903767d4fe33ed5.php.php:5
 msgid "Per procedere devi settare una nuova password per il tuo profilo."
 msgstr ""
+"Om door te gaan moet je een nieuw wachtwoord voor jouw profiel instellen."
 
 #: ../storage/framework/messages/d3ff01348e530d31dcfec89ce903767d4fe33ed5.php.php:17
 msgid "Salva e Procedi"
-msgstr ""
+msgstr "Opslaan en doorgaan"
 
 #: ../storage/framework/messages/d9a90fb40960eac3cd06ae2cf170ddde20929be0.php.php:24
 msgid "Lascia vuoto per non modificare la password"
-msgstr ""
+msgstr "Leeg laten om het wachtwoord niet te wijzigen"
 
 #: ../storage/framework/messages/e236757f5a10863f3866601bdbb99ee72f99060e.php.php:4
 msgid "Fornitori importati"
-msgstr ""
+msgstr "Geïmporteerde leveranciers"
 
 #: ../storage/framework/messages/e4726fcc20394bcabca158db8f5dafed00dbe843.php.php:18
 msgid ""
@@ -3423,14 +3438,17 @@ msgid ""
 "(presenti e futuri) e permette di agire su tutti, benché l'utente "
 "assegnatario non sarà esplicitamente visibile dagli altri."
 msgstr ""
+"Deze speciale toestemming geldt automatisch voor alle onderwerpen (huidig en "
+"toekomstig) en stelt in staat om op alles in te werken, hoewel de aangewezen "
+"gebruiker niet expliciet zichtbaar voor anderen zal zijn."
 
 #: ../storage/framework/messages/e4726fcc20394bcabca158db8f5dafed00dbe843.php.php:44
 msgid "Revoca Ruolo"
-msgstr ""
+msgstr "Rol herroepen"
 
 #: ../storage/framework/messages/e78789e9f06bc9651bd8152add709d7e3c3a4dba.php.php:2
 msgid "È stato chiesto l'aggiornamento della tua password su GASdotto."
-msgstr ""
+msgstr "Je bent gevraagd om je wachtwoord op GASdotto bij te werken."
 
 #: ../storage/framework/messages/e78789e9f06bc9651bd8152add709d7e3c3a4dba.php.php:7
 #, php-format
@@ -3438,102 +3456,105 @@ msgid ""
 "<a href=\"%s\">Clicca qui per aggiornare la tua password</a>, o ignora la "
 "mail se non hai chiesto tu questa operazione."
 msgstr ""
+"<a href=\"%s\">Klik hier om je wachtwoord bij te werken</a>, of negeer de "
+"mail als je deze bewerking niet hebt gevraagd."
 
 #: ../storage/framework/messages/e8b3a964af84cfa9bdb41b7a7faef7f6ff0b830f.php.php:37
 #: ../storage/framework/messages/e8b3a964af84cfa9bdb41b7a7faef7f6ff0b830f.php.php:60
 #: Http/Controllers/AttachmentsController.php:37
 #: Http/Controllers/AttachmentsController.php:60
 msgid "File non caricato correttamente"
-msgstr ""
+msgstr "Bestand niet juist geladen"
 
 #: ../storage/framework/messages/e8b3a964af84cfa9bdb41b7a7faef7f6ff0b830f.php.php:97
 #: Http/Controllers/AttachmentsController.php:97
 #, php-format
 msgid "File non trovato: %s"
-msgstr ""
+msgstr "Bestand niet gevonden: %s"
 
 #: ../storage/framework/messages/e8ee286fded7417333635effb318fb9231fc6d51.php.php:25
 #: Providers/MovementsKeeper.php:25
 msgid ""
 "Movimento: tentata modifica di movimento già storicizzato in bilancio passato"
 msgstr ""
+"Transactie: poging tot wijziging van de transactie die al in eerdere balans "
+"is gehistoriseerd"
 
 #: ../storage/framework/messages/e8ee286fded7417333635effb318fb9231fc6d51.php.php:35
 #: Providers/MovementsKeeper.php:35
 #, php-format
 msgid "Movimento %d: sender_type non coerente (%s != %s)"
-msgstr ""
+msgstr "Transactie %d: sender_type niet coherent (%s != %s)"
 
 #: ../storage/framework/messages/e8ee286fded7417333635effb318fb9231fc6d51.php.php:46
 #: Providers/MovementsKeeper.php:46
 #, php-format
 msgid "Movimento %d: target_type non coerente (%s != %s)"
-msgstr ""
+msgstr "Transactie %d: target_type niet coherent (%s != %s)"
 
 #: ../storage/framework/messages/e8ee286fded7417333635effb318fb9231fc6d51.php.php:60
 #: Providers/MovementsKeeper.php:60
 #, php-format
 msgid "Movimento %d: metodo %s non permesso su tipo %s"
-msgstr ""
+msgstr "Transactie %d: methode %s niet toegestaan op type %s"
 
 #: ../storage/framework/messages/e8ee286fded7417333635effb318fb9231fc6d51.php.php:65
 #: Providers/MovementsKeeper.php:65
 msgid "Movimento: ammontare negativo non permesso"
-msgstr ""
+msgstr "Transactie: negatief bedrag niet toegestaan"
 
 #: ../storage/framework/messages/e8ee286fded7417333635effb318fb9231fc6d51.php.php:103
 #: Providers/MovementsKeeper.php:103
 msgid "Movimento: salvataggio negato da pre-callback"
-msgstr ""
+msgstr "Transactie: opslag geweigerd door pre-callback"
 
 #: ../storage/framework/messages/f09df145fef6941ab41adc6213877e2a6dcd58c0.php.php:2
 #, php-format
 msgid "È stato aperto da %s un nuovo ordine per il fornitore %s."
-msgstr ""
+msgstr "Er is door %s een nieuw bestelling geopend voor de leverancier %s."
 
 #: ../storage/framework/messages/f09df145fef6941ab41adc6213877e2a6dcd58c0.php.php:6
 msgid "Per partecipare, accedi al seguente indirizzo:"
-msgstr ""
+msgstr "Ga, om deel te nemen, naar het volgende adres:"
 
 #: ../storage/framework/messages/f09df145fef6941ab41adc6213877e2a6dcd58c0.php.php:14
 #, php-format
 msgid "Le prenotazioni verranno chiuse %s."
-msgstr ""
+msgstr "De reserveringen zullen gesloten worden %s."
 
 #: ../storage/framework/messages/f1904fcbf2616dbfc331ce7dff95a2bffad58c7e.php.php:155
 #: Http/Controllers/AggregatesController.php:155
-#| msgid "Dettaglio Consegne"
 msgid "Dettaglio Consegne Ordini"
-msgstr ""
+msgstr "Detail leveringen bestellingen"
 
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:87
 #: Http/Controllers/MovementsController.php:87
 #, php-format
 msgid "Esportazione movimenti GAS %s.csv"
-msgstr ""
+msgstr "Export transacties GAS %s.csv"
 
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:104
 #: Http/Controllers/MovementsController.php:104
 #, php-format
 msgid "Esportazione movimenti GAS %s"
-msgstr ""
+msgstr "Export transacties GAS %s"
 
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:236
 #: Http/Controllers/MovementsController.php:236
 #, php-format
 msgid "Crediti al %s.csv"
-msgstr ""
+msgstr "Tegoeden tot %s.csv"
 
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:240
 #: Http/Controllers/MovementsController.php:240
 msgid "Quota Pagata"
-msgstr ""
+msgstr "Betaalde aandeel"
 
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:258
 #: Http/Controllers/MovementsController.php:258
 #, php-format
 msgid "SEPA del %s.xml"
-msgstr ""
+msgstr "SEPA van %s.xml"
 
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:314
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:324
@@ -3544,15 +3565,15 @@ msgstr ""
 #: Http/Controllers/MovementsController.php:336
 #: Http/Controllers/MovementsController.php:350
 msgid "Errore"
-msgstr ""
+msgstr "Fout"
 
 #: ../storage/framework/messages/f39578d8daa2af4cb123f5a8aa2456cbf2df0367.php.php:3
 msgid "Contatti"
-msgstr ""
+msgstr "Contactgegevens"
 
 #: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:90
 msgid "Conferma Password"
-msgstr ""
+msgstr "Wachtwoord bevestigen"
 
 #: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:118
 #, php-format
@@ -3560,32 +3581,37 @@ msgid ""
 "Ho letto e accetto l'<a href=\"%s\" target=\"_blank\">Informativa sulla "
 "Privacy</a>."
 msgstr ""
+"Ik heb de <a href=\"%s\" target=\"_blank\">Privacyverklaring</a> gelezen en "
+"geaccepteerd."
 
 #: ../storage/framework/messages/f5974edcd79a5ad220dfbbdb77a0a8635cc5ed1e.php.php:28
 msgid ""
 "All'apertura dell'ordine, saranno inviate mail di annuncio a tutti gli "
 "utenti che hanno abilitato le notifiche per il fornitore selezionato."
 msgstr ""
+"Wanneer de bestelling wordt geopend, worden er aankondigingsmails verstuurd "
+"naar alle gebruikers die meldingen voor de geselecteerde leverancier hebben "
+"ingeschakeld."
 
 #: ../storage/framework/messages/f796dafdee82b09381216fb50e2ba2e5fad4fb8b.php.php:20
 msgid "Non hai partecipato a quest'ordine."
-msgstr ""
+msgstr "Je hebt niet deelgenomen aan deze bestelling."
 
 #: ../storage/framework/messages/f796dafdee82b09381216fb50e2ba2e5fad4fb8b.php.php:37
 msgid "Ordinato"
-msgstr ""
+msgstr "Besteld"
 
 #: ../storage/framework/messages/f8840bff7b1daae6ad3d30d665caae168fc3e4c7.php.php:6
 msgid "Paga Fattura"
-msgstr ""
+msgstr "Factuur betalen"
 
 #: ../storage/framework/messages/f8840bff7b1daae6ad3d30d665caae168fc3e4c7.php.php:13
 msgid "Totale Fattura"
-msgstr ""
+msgstr "Totaal factuur"
 
 #: ../storage/framework/messages/f8840bff7b1daae6ad3d30d665caae168fc3e4c7.php.php:23
 msgid "Totale Ordini"
-msgstr ""
+msgstr "Totaal bestellingen"
 
 #~ msgid "Tutti i Referenti"
 #~ msgstr "Alle contactpersonen"
