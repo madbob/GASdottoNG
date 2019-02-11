@@ -13,6 +13,7 @@ Route::get('payment/status/satispay', 'PaymentController@statusPaymentSatispay')
 
 Route::middleware(['auth'])->group(function() {
     Route::get('/', function () {
+        Session::reflash();
         return Redirect::to('/dashboard');
     });
 

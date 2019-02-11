@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 
+use Session;
+use Auth;
+
 use LaravelGettext;
 
 use App\User;
@@ -32,15 +35,15 @@ class LoginController extends Controller
     public function showLoginForm()
     {
         $gas = Gas::first();
-
         return view('auth.login', ['gas' => $gas]);
     }
 
     public function login(Request $request)
     {
+        $username = $request->input('username');
+
         $gas = Gas::first();
         if ($gas->restricted == '1') {
-            $username = $request->input('username');
             $user = User::where('username', $username)->first();
             if (is_null($user) || $user->can('gas.access', $gas) == false) {
                 return redirect(url('login'));
@@ -48,6 +51,15 @@ class LoginController extends Controller
         }
 
         LaravelGettext::setLocale($request->input('language'));
-        return $this->realLogin($request);
+
+        $ret = $this->realLogin($request);
+
+        if (Auth::check()) {
+            $password = $request->input('password');
+            if ($username == $password)
+                Session::flash('prompt_message', _i('La password è uguale allo username! Cambiala il prima possibile dal tuo <a href="' . route('profile') . '">pannello utente</a>!'));
+        }
+
+        return $ret;
     }
 }

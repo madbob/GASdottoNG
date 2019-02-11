@@ -1188,6 +1188,8 @@ $(document).ready(function() {
 
     generalInit($('body'));
 
+    $('#prompt-message-modal').modal('show');
+
     $('#home-notifications .alert').on('closed.bs.alert', function() {
         var id = $(this).find('input:hidden[name=notification_id]').val();
         $.post('notifications/markread/' + id);

@@ -158,6 +158,28 @@
             </div>
         </div>
 
+        @if(Session::has('prompt_message'))
+            <div class="modal fade" id="prompt-message-modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">{{ _i('Attenzione') }}</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                {!! Session::get('prompt_message') !!}
+                            </p>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Chiudi') }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <?php
 
         $scripts = [
