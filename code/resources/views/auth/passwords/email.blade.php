@@ -7,7 +7,7 @@
         {{ csrf_field() }}
 
         <div class="form-group">
-            <label class="col-sm-2 control-label">Username</label>
+            <label class="col-sm-2 control-label">{{ _i('Username o Indirizzo E-Mail') }}</label>
             <div class="col-sm-10">
                 <input class="form-control" type="text" name="username" value="{{ old('username') }}">
             </div>

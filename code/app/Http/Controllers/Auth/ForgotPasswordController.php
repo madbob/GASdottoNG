@@ -29,10 +29,15 @@ class ForgotPasswordController extends Controller
 
     public function sendResetLinkEmail(Request $request)
     {
-        $user = User::where('username', $request->input('username'))->first();
+        $identifier = $request->input('username');
+
+        $user = User::where('username', $identifier)->orWhereHas('contacts', function($query) use ($identifier) {
+            $query->where('type', 'email')->where('value', $identifier);
+        })->first();
+
         if (is_null($user)) {
             Session::flash('message_type', 'danger');
-            Session::flash('message', 'Username non trovato');
+            Session::flash('message', _i('Username o indirizzo e-mail non trovato'));
             return redirect(url('password/reset'));
         }
 
@@ -47,14 +52,14 @@ class ForgotPasswordController extends Controller
 
         if (is_null($email)) {
             Session::flash('message_type', 'danger');
-            Session::flash('message', "L'utente indicato non ha un indirizzo mail valido");
+            Session::flash('message', _i("L'utente indicato non ha un indirizzo mail valido"));
             return redirect(url('password/reset'));
         }
 
         $request->merge(['email' => $email]);
         $this->realSendResetLinkEmail($request);
 
-        Session::flash('message', 'Ti è stata inviata una mail col link per procedere all\'aggiornamento della password');
+        Session::flash('message', _i("Ti è stata inviata una mail col link per procedere all'aggiornamento della password"));
         return redirect(url('password/reset'));
     }
 
