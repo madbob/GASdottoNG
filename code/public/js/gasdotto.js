@@ -104,8 +104,14 @@ function generalInit(container) {
         }
 
         if ($(this).hasClass('tt-input') == false) {
+            var appendTo = 'body';
+            if ($(this).closest('.modal').length != 0) {
+                appendTo = '#' + $(this).closest('.modal').attr('id');
+            }
+
             $(this).autocomplete({
                 source: absolute_url + '/users/search',
+                appendTo: appendTo,
                 select: function(event, ui) {
                     var aggregate_id = $(this).attr('data-aggregate');
                     var while_shipping = ($(this).closest('.modal.add-booking-while-shipping').length != 0);
