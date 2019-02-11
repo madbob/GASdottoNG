@@ -8,7 +8,7 @@
             <form class="form-horizontal" method="POST" action="{{ route('invoices.savemovements', $invoice->id) }}" data-toggle="validator">
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Totale Fattura') }}</label>
                                 <div class="col-sm-{{ $fieldsize }}">
@@ -38,7 +38,14 @@
 
                             <hr>
                         </div>
+                        <div class="col-md-6">
+                            @if(!empty($invoice->supplier->payment_method))
+                                @include('commons.staticstringfield', ['obj' => $invoice->supplier, 'name' => 'payment_method', 'label' => _i('Modalità Pagamento')])
+                            @endif
+                        </div>
+                    </div>
 
+                    <div class="row">
                         <div class="col-md-12">
                             @include('commons.manyrows', [
                                 'contents' => $movements,
