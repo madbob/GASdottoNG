@@ -33,9 +33,8 @@ $grand_total = 0;
                 <thead>
                     <tr>
                         <th width="50%">{{ _i('Prodotto') }}</th>
-                        <th width="15%">{{ _i('Ordinato') }}</th>
-                        <th width="15%">{{ _i('Consegnato') }}</th>
-                        <th width="10%">{{ _i('Prezzo Unitario') }}</th>
+                        <th width="20%">{{ _i('Ordinato') }}</th>
+                        <th width="20%">{{ _i('Consegnato') }}</th>
                         <th width="10%" class="text-right">{{ _i('Totale Prezzo') }}</th>
                     </tr>
                 </thead>
@@ -59,12 +58,6 @@ $grand_total = 0;
 
                                 <td>
                                     {{ printableQuantity($product->delivered, $product->product->measure->discrete, 3) }} {{ $product->product->measure->name }}
-                                </td>
-
-                                <td>
-                                    <label class="static-label">
-                                        {!! $product->product->printablePrice($order) !!}
-                                    </label>
                                 </td>
 
                                 <td>
@@ -97,12 +90,6 @@ $grand_total = 0;
                                     </td>
 
                                     <td>
-                                        <label class="static-label">
-                                            {!! $product->product->printablePrice($order) !!}
-                                        </label>
-                                    </td>
-
-                                    <td>
                                         <label class="static-label booking-product-price pull-right">
                                             {{ printablePriceCurrency($o->status == 'shipped' ? $var->final_price : $var->quantityValue()) }}
                                         </label>
@@ -118,7 +105,6 @@ $grand_total = 0;
                         </td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td>&nbsp;</td>
                         <td>
                             <input type="hidden" name="global-transport-price" value="{{ $o->major_transport }}" class="skip-on-submit" />
                             <label class="static-label booking-transport-price pull-right"><span>{{ printablePrice($o->check_transport) }}</span> {{ $currentgas->currency }}</label>
@@ -130,8 +116,7 @@ $grand_total = 0;
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th></th>
-                        <th class="text-right">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($o->total_value) }}</span> {{ $currentgas->currency }}</th>
+                        <th class="text-right">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($o->status == 'shipped' ? $o->total_delivered : $o->total_value) }}</span> {{ $currentgas->currency }}</th>
                     </tr>
                 </tfoot>
             </table>
@@ -144,7 +129,7 @@ $grand_total = 0;
                 </div>
             @endif
 
-            <?php $grand_total += $o->value ?>
+            <?php $grand_total += ($o->status == 'shipped' ? $o->total_delivered : $o->total_value) ?>
         @endif
     @endforeach
 
