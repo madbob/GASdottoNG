@@ -347,7 +347,8 @@ class Order extends Model
                         if(isset($summary->by_variant[$product->id][$name]) == false) {
                             $summary->by_variant[$product->id][$name] = [
                                 'quantity' => 0,
-                                'price' => 0
+                                'price' => 0,
+                                'unit_price' => $v->unitPrice()
                             ];
                         }
 
@@ -633,6 +634,16 @@ class Order extends Model
                     },
                     'format_variant' => function($product, $summary, $name, $variant) {
                         return $product->printableMeasure(true);
+                    }
+                ],
+                'unit_price' => (object) [
+                    'name' => _i('Prezzo Unitario'),
+                    'checked' => false,
+                    'format_product' => function($product, $summary) {
+                        return printablePrice($product->price, ',');
+                    },
+                    'format_variant' => function($product, $summary, $name, $variant) {
+                        return printablePrice($variant['unit_price'], ',');
                     }
                 ],
                 'price' => (object) [

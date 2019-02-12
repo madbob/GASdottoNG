@@ -32,7 +32,7 @@ class BookedProductVariant extends Model
         return false;
     }
 
-    private function fixQuantity($attribute, $rectify)
+    public function unitPrice($rectify = true)
     {
         $base_price = $this->product->basePrice($rectify);
         $price = $base_price;
@@ -41,7 +41,12 @@ class BookedProductVariant extends Model
             $price += $c->value->price_offset;
         }
 
-        return $price * $this->$attribute;
+        return $price;
+    }
+
+    private function fixQuantity($attribute, $rectify)
+    {
+        return $this->unitPrice($rectify) * $this->$attribute;
     }
 
     public function quantityValue()
