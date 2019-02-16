@@ -353,7 +353,14 @@ class ImportController extends Controller
                             'username' => _i('Login (obbligatorio)'),
                             'email' => _i('E-Mail'),
                             'phone' => _i('Telefono'),
+                            'mobile' => _i('Cellulare'),
+                            'address_street' => _i('Indirizzo (Via)'),
+                            'address_zip' => _i('Indirizzo (CAP)'),
+                            'address_city' => _i('Indirizzo (Città)'),
+                            'birthday' => _i('Data di Nascita'),
+                            'taxcode' => _i('Codice Fiscale'),
                             'member_since' => _i('Membro da'),
+                            'last_login' => _i('Ultimo Accesso'),
                             'ceased' => _i('Cessato (true/false)'),
                             'credit' => _i('Credito Attuale')
                         ]
@@ -408,6 +415,7 @@ class ImportController extends Controller
 
                             $contacts = [];
                             $credit = null;
+                            $address = [];
 
                             foreach ($columns as $index => $field) {
                                 $value = (string)$line[$index];
@@ -415,14 +423,14 @@ class ImportController extends Controller
                                 if ($field == 'none') {
                                     continue;
                                 }
-                                else if ($field == 'phone' || $field == 'email') {
+                                else if ($field == 'phone' || $field == 'email' || $field == 'mobile') {
                                     $c = new Contact();
                                     $c->type = $field;
                                     $c->value = $value;
                                     $contacts[] = $c;
                                     continue;
                                 }
-                                else if ($field == 'member_since') {
+                                else if ($field == 'birthday' || $field == 'member_since' || $field == 'last_login') {
                                     $u->$field = date('Y-m-d', strtotime($value));
                                 }
                                 else if ($field == 'credit') {
@@ -433,6 +441,15 @@ class ImportController extends Controller
                                 else if ($field == 'ceased') {
                                     if (strtolower($value) == 'true' || strtolower($value) == 'vero' || $value == '1')
                                         $u->deleted_at = date('Y-m-d');
+                                }
+                                else if ($field == 'address_street') {
+                                    $address[0] = $value;
+                                }
+                                else if ($field == 'address_cap') {
+                                    $address[1] = $value;
+                                }
+                                else if ($field == 'address_city') {
+                                    $address[2] = $value;
                                 }
                                 else {
                                     $u->$field = $value;
@@ -448,6 +465,15 @@ class ImportController extends Controller
                                     $c->target_type = get_class($u);
                                     $c->save();
                                 }
+                            }
+
+                            if (!empty($address)) {
+                                $c = new Contact();
+                                $c->type = 'address';
+                                $c->value = join(',', $address);
+                                $c->target_id = $u->id;
+                                $c->target_type = get_class($u);
+                                $c->save();
                             }
 
                             if ($credit != null) {
