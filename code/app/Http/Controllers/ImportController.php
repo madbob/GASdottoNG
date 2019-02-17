@@ -445,7 +445,7 @@ class ImportController extends Controller
                                 else if ($field == 'address_street') {
                                     $address[0] = $value;
                                 }
-                                else if ($field == 'address_cap') {
+                                else if ($field == 'address_zip') {
                                     $address[1] = $value;
                                 }
                                 else if ($field == 'address_city') {
