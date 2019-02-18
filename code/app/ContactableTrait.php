@@ -36,16 +36,25 @@ trait ContactableTrait
             if (empty($values[$index]))
                 continue;
 
-            if (empty($id))
+            if (empty($id)) {
                 $contact = new Contact();
-            else
+
+                $test_existing = $this->contacts()->where('type', $types[$index])->where('value', $values[$index])->first();
+                if (is_null($test_existing) == false) {
+                    $contacts[] = $test_existing->id;
+                    continue;
+                }
+            }
+            else {
                 $contact = Contact::find($id);
+            }
 
             $contact->target_id = $this->id;
             $contact->target_type = get_class($this);
             $contact->type = $types[$index];
             $contact->value = $values[$index];
             $contact->save();
+
             $contacts[] = $contact->id;
         }
 

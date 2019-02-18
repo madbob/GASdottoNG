@@ -413,7 +413,11 @@ class ImportController extends Controller
                                 $u->member_since = date('Y-m-d');
                             }
 
-                            $contacts = [];
+                            $contacts = [
+                                'contact_id' => [],
+                                'contact_type' => [],
+                                'contact_value' => []
+                            ];
                             $credit = null;
                             $address = [];
 
@@ -424,10 +428,9 @@ class ImportController extends Controller
                                     continue;
                                 }
                                 else if ($field == 'phone' || $field == 'email' || $field == 'mobile') {
-                                    $c = new Contact();
-                                    $c->type = $field;
-                                    $c->value = $value;
-                                    $contacts[] = $c;
+                                    $contacts['contact_id'][] = '';
+                                    $contacts['contact_type'][] = $field;
+                                    $contacts['contact_value'][] = $value;
                                     continue;
                                 }
                                 else if ($field == 'birthday' || $field == 'member_since' || $field == 'last_login') {
@@ -459,22 +462,13 @@ class ImportController extends Controller
                             $u->save();
                             $users[] = $u;
 
-                            if (!empty($contacts)) {
-                                foreach($contacts as $c) {
-                                    $c->target_id = $u->id;
-                                    $c->target_type = get_class($u);
-                                    $c->save();
-                                }
+                            if (!empty($address)) {
+                                $contacts['contact_id'][] = '';
+                                $contacts['contact_type'][] = 'address';
+                                $contacts['contact_value'][] = join(',', $address);;
                             }
 
-                            if (!empty($address)) {
-                                $c = new Contact();
-                                $c->type = 'address';
-                                $c->value = join(',', $address);
-                                $c->target_id = $u->id;
-                                $c->target_type = get_class($u);
-                                $c->save();
-                            }
+                            $u->updateContacts($contacts);
 
                             if ($credit != null) {
                                 $u->alterBalance($credit);
@@ -491,9 +485,6 @@ class ImportController extends Controller
                         'title' => _i('Utenti importati'),
                         'objects' => $users,
                         'errors' => $errors,
-                        'extra_closing_attributes' => [
-                            'data-reload-target' => '#user-list'
-                        ]
                     ]);
 
                     break;
