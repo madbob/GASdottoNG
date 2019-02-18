@@ -46,22 +46,26 @@
                         @foreach($booking->products as $product)
                             @if($product->variants->isEmpty() == false)
                                 @foreach($product->variants as $variant)
-                                    <tr>
-                                        <td>{{ $product->product->printableName() }}</td>
-                                        <td>{{ printableQuantity($variant->quantity, $product->product->measure->discrete, 2, ',') }} {{ $variant->printableName() }}</td>
-                                        <td>{{ printablePriceCurrency($variant->quantityValue(), ',') }}</td>
-                                        <td>{{ printableQuantity($variant->delivered, $product->product->measure->discrete, 2, ',') }} {{ $variant->printableName() }}</td>
-                                        <td>{{ printablePriceCurrency($variant->deliveredValue(), ',') }}</td>
-                                    </tr>
+                                    @if(!empty($variant->quantity) || !empty($variant->delivered))
+                                        <tr>
+                                            <td>{{ $product->product->printableName() }}</td>
+                                            <td>{{ printableQuantity($variant->quantity, $product->product->measure->discrete, 2, ',') }} {{ $variant->printableName() }}</td>
+                                            <td>{{ printablePriceCurrency($variant->quantityValue(), ',') }}</td>
+                                            <td>{{ printableQuantity($variant->delivered, $product->product->measure->discrete, 2, ',') }} {{ $variant->printableName() }}</td>
+                                            <td>{{ printablePriceCurrency($variant->deliveredValue(), ',') }}</td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                             @else
-                                <tr>
-                                    <td>{{ $product->product->printableName() }}</td>
-                                    <td>{{ printableQuantity($product->quantity, $product->product->measure->discrete, 2, ',') }}</td>
-                                    <td>{{ printablePriceCurrency($product->quantityValue(), ',') }}</td>
-                                    <td>{{ printableQuantity($product->delivered, $product->product->measure->discrete, 2, ',') }}</td>
-                                    <td>{{ printablePriceCurrency($product->deliveredValue(), ',') }}</td>
-                                </tr>
+                                @if(!empty($product->quantity) || !empty($product->delivered))
+                                    <tr>
+                                        <td>{{ $product->product->printableName() }}</td>
+                                        <td>{{ printableQuantity($product->quantity, $product->product->measure->discrete, 2, ',') }}</td>
+                                        <td>{{ printablePriceCurrency($product->quantityValue(), ',') }}</td>
+                                        <td>{{ printableQuantity($product->delivered, $product->product->measure->discrete, 2, ',') }}</td>
+                                        <td>{{ printablePriceCurrency($product->deliveredValue(), ',') }}</td>
+                                    </tr>
+                                @endif
                             @endif
                         @endforeach
                     @endif
