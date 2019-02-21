@@ -77,6 +77,7 @@ class UsersController extends BackedController
                     switch($f) {
                         case 'email':
                         case 'phone':
+                        case 'mobile':
                         case 'address':
                             $contacts = $user->getContactsByType($f);
                             $ret[] = join(', ', $contacts);

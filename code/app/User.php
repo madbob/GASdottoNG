@@ -303,6 +303,10 @@ class User extends Authenticatable
                 'name' => _i('Telefono'),
                 'checked' => true,
             ],
+            'mobile' => (object) [
+                'name' => _i('Cellulare'),
+                'checked' => true,
+            ],
             'address' => (object) [
                 'name' => _i('Indirizzo'),
             ],
