@@ -21,6 +21,7 @@
             @include('user.movements', ['editable' => true])
 
             @include('commons.staticdatefield', ['obj' => $user, 'name' => 'last_login', 'label' => _i('Ultimo Accesso')])
+            @include('commons.staticdatefield', ['obj' => $user, 'name' => 'last_booking', 'label' => _i('Ultima Prenotazione')])
 
             @if($currentgas->hasFeature('shipping_places'))
                 @include('commons.selectobjfield', [

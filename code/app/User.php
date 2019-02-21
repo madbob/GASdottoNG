@@ -150,6 +150,15 @@ class User extends Authenticatable
         return $ret;
     }
 
+    public function getLastBookingAttribute()
+    {
+        $last = $this->bookings()->first();
+        if ($last == null)
+            return null;
+        else
+            return $last->created_at;
+    }
+
     public function printableHeader()
     {
         $ret = $this->printableName();
