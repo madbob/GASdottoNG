@@ -50,6 +50,14 @@ class Date extends Model
         }
     }
 
+    public function getDatesAttribute()
+    {
+        if (empty($this->recurring))
+            return [$this->date];
+        else
+            return unrollPeriodic(json_decode($this->recurring));
+    }
+
     public function printableName()
     {
         return $this->printableDate('date');

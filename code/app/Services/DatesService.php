@@ -49,6 +49,7 @@ class DatesService extends BaseService
             $ids = $request['id'];
             $targets = $request['target_id'];
             $dates = $request['date'];
+            $recurrings = $request['recurring'];
             $descriptions = $request['description'];
             $types = $request['type'];
 
@@ -65,7 +66,14 @@ class DatesService extends BaseService
 
                 $date->target_type = 'App\Supplier';
                 $date->target_id = $targets[$index];
-                $date->date = decodeDate($dates[$index]);
+                $date->date = null;
+                $date->recurring = '';
+
+                if (!empty($dates[$index]))
+                    $date->date = decodeDate($dates[$index]);
+                else
+                    $date->recurring = json_encode(decodePeriodic($recurrings[$index]));
+
                 $date->description = $descriptions[$index];
                 $date->type = $types[$index];
                 $date->save();

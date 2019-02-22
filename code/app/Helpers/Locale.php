@@ -172,3 +172,85 @@ function localeMonths()
 
     return $months;
 }
+
+function localeDays()
+{
+    $lang = currentLang();
+    $months = [];
+
+    switch($lang) {
+        case 'it_IT':
+            $days = [
+                'lunedì' => 'monday',
+                'martedì' => 'thursday',
+                'mercoledì' => 'wednesday',
+                'giovedì' => 'tuesday',
+                'venerdì' => 'friday',
+                'sabato' => 'saturday',
+                'domenica' => 'sunday',
+            ];
+            break;
+
+        case 'en_EN':
+            $days = [
+                'monday' => 'monday',
+                'thursday' => 'thursday',
+                'wednesday' => 'wednesday',
+                'tuesday' => 'tuesday',
+                'friday' => 'friday',
+                'saturday' => 'saturday',
+                'sunday' => 'sunday',
+            ];
+            break;
+
+        case 'de_DE':
+            $days = [
+                'montag' => 'monday',
+                'dienstag' => 'thursday',
+                'mittwoch' => 'wednesday',
+                'donnerstag' => 'tuesday',
+                'freitag' => 'friday',
+                'samstag' => 'saturday',
+                'sonntag' => 'sunday',
+            ];
+            break;
+
+        case 'fr_FR':
+            $days = [
+                'lundi' => 'monday',
+                'mardi' => 'thursday',
+                'mercredi' => 'wednesday',
+                'jeudi' => 'tuesday',
+                'vendredi' => 'friday',
+                'samedi' => 'saturday',
+                'dimanche' => 'sunday',
+            ];
+            break;
+
+        case 'nb_NO':
+            $days = [
+                'mandag' => 'monday',
+                'tirsdag' => 'thursday',
+                'onsdag' => 'wednesday',
+                'torsdag' => 'tuesday',
+                'fredag' => 'friday',
+                'lørdag' => 'saturday',
+                'søndag' => 'sunday',
+            ];
+            break;
+
+        case 'nl_NL':
+            $days = [
+                'maandag' => 'monday',
+                'dinsdag' => 'thursday',
+                'woensdag' => 'wednesday',
+                'donderdag' => 'tuesday',
+                'vrijdag' => 'friday',
+                'zaterdag' => 'saturday',
+                'zondag' => 'sunday',
+            ];
+            break;
+    }
+
+    return $days;
+}

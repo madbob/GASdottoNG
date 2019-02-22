@@ -23,10 +23,6 @@ $suppliers = $currentuser->targetsByAction('supplier.orders');
     <div class="row">
         <div class="col-md-6">
             <div class="form-horizontal manyrows-dates-filter">
-                @include('commons.genericdaterange', [
-                    'start_date' => '',
-                    'end_date' => ''
-                ])
                 @include('commons.selectobjfield', [
                     'obj' => null,
                     'name' => 'target_id',
@@ -78,7 +74,7 @@ $suppliers = $currentuser->targetsByAction('supplier.orders');
                             'label' => _i('Fornitore'),
                             'field' => 'target_id',
                             'type' => 'selectobj',
-                            'width' => 3,
+                            'width' => 2,
                             'extra' => [
                                 'objects' => $suppliers
                             ]
@@ -87,10 +83,16 @@ $suppliers = $currentuser->targetsByAction('supplier.orders');
                             'label' => _i('Data'),
                             'field' => 'date',
                             'type' => 'date',
-                            'width' => 3,
+                            'width' => 2,
                             'extra' => [
                                 'defaults_now' => true
                             ]
+                        ],
+                        [
+                            'label' => _i('Ricorrenza'),
+                            'field' => 'recurring',
+                            'type' => 'periodic',
+                            'width' => 3,
                         ],
                         [
                             'label' => _i('Descrizione'),
@@ -102,7 +104,7 @@ $suppliers = $currentuser->targetsByAction('supplier.orders');
                             'label' => _i('Tipo'),
                             'field' => 'type',
                             'type' => 'selectenum',
-                            'width' => 2,
+                            'width' => 1,
                             'extra' => [
                                 'values' => App\Date::types()
                             ]

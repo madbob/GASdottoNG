@@ -46,6 +46,136 @@ function readDate($date)
     return strtotime($date);
 }
 
+function periodicCycling()
+{
+    return [
+        'all' => _i('Tutti'),
+        'biweekly' => _i('Ogni due Settimane'),
+        'month_first' => _i('Primo del Mese'),
+        'month_second' => _i('Secondo del Mese'),
+        'month_third' => _i('Terzo del Mese'),
+        'month_fourth' => _i('Quarto del Mese'),
+        'month_last' => _i('Ultimo del Mese'),
+    ];
+}
+
+function printablePeriodic($value)
+{
+    if (empty($value))
+        return '';
+
+    $value = json_decode($value);
+
+    $days = localeDays();
+    foreach($days as $locale => $english) {
+        if ($value->day == $english) {
+            $day = ucwords($locale);
+            break;
+        }
+    }
+
+    $cycles = periodicCycling();
+    $cycle = $cycles[$value->cycle];
+
+    return sprintf('%s - %s - %s - %s', $day, $cycle, printableDate($value->from), printableDate($value->to));
+}
+
+function decodePeriodic($value)
+{
+    if (empty($value))
+        return '';
+
+    $values = explode(' - ', $value);
+    if (count($values) < 4)
+        return '';
+
+    $ret = (object) [
+        'day' => '',
+        'cycle' => '',
+        'from' => '',
+        'to' => ''
+    ];
+
+    $day = strtolower($values[0]);
+    $days = localeDays();
+    $ret->day = $days[$day];
+
+    $cycles = periodicCycling();
+    foreach($cycles as $identifier => $string) {
+        if ($values[1] == $string) {
+            $ret->cycle = $identifier;
+            break;
+        }
+    }
+
+    $ret->from = decodeDate($values[2]);
+    $ret->to = decodeDate($values[3]);
+
+    return $ret;
+}
+
+function unrollPeriodic($value)
+{
+    $start = new \DateTime($value->from);
+    $end = new \DateTime($value->to);
+    $end = $end->modify('+1 days');
+
+    $days = [];
+    $all_days = new \DatePeriod($start, new \DateInterval('P1D'), $end);
+
+    $week_offset = 1;
+    $validity_start = 1;
+    $validity_end = 31;
+
+    switch($value->cycle) {
+        case 'all':
+            break;
+        case 'biweekly':
+            $week_offset = 2;
+            break;
+        case 'month_first':
+            $validity_start = 1;
+            $validity_end = 7;
+            break;
+        case 'month_second':
+            $validity_start = 8;
+            $validity_end = 14;
+            break;
+        case 'month_third':
+            $validity_start = 15;
+            $validity_end = 21;
+            break;
+        case 'month_fourth':
+            $validity_start = 22;
+            $validity_end = 28;
+            break;
+        case 'month_last':
+            $validity_start = 25;
+            $validity_end = 31;
+            break;
+        default:
+            Log::error('Tipo ciclicità non identificato: ' . $cycle);
+            break;
+    }
+
+    $week_index = 0;
+
+    foreach($all_days as $d) {
+        $week_index++;
+        if ($week_offset != 1 && $week_index % $week_offset == 0)
+            continue;
+
+        $d_day = $d->format('d');
+        if ($d_day < $validity_start || $d_day > $validity_end)
+            continue;
+
+        if (strtolower($d->format('l')) == $value->day)
+            $days[] = $d->format('Y-m-d');
+    }
+
+    return $days;
+}
+
 function printableQuantity($quantity, $discrete, $decimals = 2, $separator = '.')
 {
     if ($discrete)

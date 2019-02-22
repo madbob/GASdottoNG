@@ -1958,6 +1958,107 @@ $(document).ready(function() {
         });
     });
 
+    $('body').on('focus', 'input.periodic', function() {
+        $(this).popover({
+            content: function() {
+                var input = $(this);
+
+                var ret = $('<div>\
+                    <div class="form-group">\
+                        <label for="day" class="col-sm-4 control-label">' + _('Giorno') + '</label>\
+                        <div class="col-sm-8">\
+                            <select class="form-control" name="day" value="" autocomplete="off">\
+                                <option value="monday">' + _('Lunedì') + '</option>\
+                                <option value="thursday">' + _('Martedì') + '</option>\
+                                <option value="wednesday">' + _('Mercoledì') + '</option>\
+                                <option value="thursday">' + _('Giovedì') + '</option>\
+                                <option value="friday">' + _('Venerdì') + '</option>\
+                                <option value="saturday">' + _('Sabato') + '</option>\
+                                <option value="sunday">' + _('Domenica') + '</option>\
+                            </select>\
+                        </div>\
+                    </div>\
+                    <div class="form-group">\
+                        <label for="cycle" class="col-sm-4 control-label">' + _('Periodicità') + '</label>\
+                        <div class="col-sm-8">\
+                            <select class="form-control" name="cycle" value="" autocomplete="off">\
+                                <option value="all">' + _('Tutti') + '</option>\
+                                <option value="biweekly">' + _('Ogni due Settimane') + '</option>\
+                                <option value="month_first">' + _('Primo del Mese') + '</option>\
+                                <option value="month_second">' + _('Secondo del Mese') + '</option>\
+                                <option value="month_third">' + _('Terzo del Mese') + '</option>\
+                                <option value="month_fourth">' + _('Quarto del Mese') + '</option>\
+                                <option value="month_last">' + _('Ultimo del Mese') + '</option>\
+                            </select>\
+                        </div>\
+                    </div>\
+                    <div class="form-group">\
+                        <label for="day" class="col-sm-4 control-label">' + _('Dal') + '</label>\
+                        <div class="col-sm-8"><input type="text" class="date form-control" name="from" value="" autocomplete="off"></div>\
+                    </div>\
+                    <div class="form-group">\
+                        <label for="day" class="col-sm-4 control-label">' + _('Al') + '</label>\
+                        <div class="col-sm-8"><input type="text" class="date form-control" name="to" value="" autocomplete="off"></div>\
+                    </div>\
+                    <div class="form-group">\
+                        <div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Salva') + '</button></div>\
+                    </div>\
+                </div>');
+
+                $('input.date', ret).datepicker({
+                    format: 'DD dd MM yyyy',
+                    autoclose: true,
+                    language: current_language,
+                    clearBtn: true,
+                });
+
+                var value = $(this).val();
+                if (value != '') {
+                    var values = value.split(' - ');
+                    for(var i = values.length; i < 4; i++)
+                        values[i] = '';
+
+                    ret.find('select[name=day] option').filter(function() {
+                        return $(this).html() == values[0];
+                    }).prop('selected', true);
+
+                    ret.find('select[name=cycle] option').filter(function() {
+                        return $(this).html() == values[1];
+                    }).prop('selected', true);
+
+                    ret.find('input[name=from]').val(values[2].trim());
+                    ret.find('input[name=to]').val(values[3].trim());
+                }
+
+                ret.find('button.btn-success').click(function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var day = ret.find('select[name=day] option:selected').text();
+                    var cycle = ret.find('select[name=cycle] option:selected').text();
+                    var from = ret.find('input[name=from]').val().trim().replace(',', '');
+                    var to = ret.find('input[name=to]').val().trim().replace(',', '');
+                    input.val(day + ' - ' + cycle + ' - ' + from + ' - ' + to).change();
+                    input.popover('destroy');
+                });
+
+                ret.find('button.btn-default').click(function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    input.popover('destroy');
+                });
+
+                setTimeout(function() {
+                    ret.find('select[name=day]').focus();
+                }, 200);
+
+                return ret;
+            },
+            template: '<div class="popover periodic-popover" role="tooltip"><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
+            placement: 'left',
+            html: true,
+        });
+    });
+
     $('body').on('change', '.movement-modal input[name=method]', function() {
         if ($(this).prop('checked') == false)
             return;
@@ -2068,16 +2169,20 @@ $(document).ready(function() {
         window.open(url, '_blank');
     });
 
+    $('body').on('change', '#dates-in-range input.date, #dates-in-range input.periodic', function() {
+        if ($(this).val() == '')
+            return;
+
+        var row = $(this).closest('.row');
+        if ($(this).hasClass('date'))
+            row.find('.periodic').val('');
+        else
+            row.find('.date').val('');
+    });
+
     $('body').on('click', '.manyrows-dates-filter button[type=submit]', function(event) {
         event.preventDefault();
         var form = $(this).closest('.manyrows-dates-filter');
-
-        var startdate = form.find('[name=startdate]').datepicker('getDate');
-        if (startdate != null)
-            startdate = startdate.getTime();
-        var enddate = form.find('[name=enddate]').datepicker('getDate');
-        if (enddate != null)
-            enddate = enddate.getTime();
 
         var target_id = form.find('[name=target_id] option:selected').val();
         var type = form.find('[name=type]:checked').val();
@@ -2090,14 +2195,6 @@ $(document).ready(function() {
 
             if (type != 'all' && $(this).find('[name^=type] option:selected').val() != type)
                 show = false;
-
-            if (startdate != null || enddate != null) {
-                var local_date = $(this).find('[name^=date]').datepicker('getDate').getTime();
-                if (startdate != null && local_date < startdate)
-                    show = false;
-                if (enddate != null && local_date > enddate)
-                    show = false;
-            }
 
             if (show == false)
                 $(this).hide();

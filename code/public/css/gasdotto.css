@@ -319,6 +319,11 @@ table .form-group {
   max-width: 400px;
   margin-left: 300px !important; }
 
+.periodic-popover {
+  width: 400px;
+  max-width: 400px;
+  margin-left: 300px !important; }
+
 .password-popover {
   width: 400px;
   max-width: 400px;

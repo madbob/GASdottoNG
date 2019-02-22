@@ -1,17 +1,7 @@
 <?php
 
-if (isset($defaults_now) == false) {
-    $defaults_now = false;
-}
-else {
-    $enforced_default = ucwords(strftime('%A %d %B %G', time()));
-}
-
 $mandatory = (isset($mandatory) && $mandatory == true);
-
-$value = printableDate(accessAttr($obj, $name, $defaults_now ? date('Y-m-d G:i:s') : ''));
-if ($value == _i('Mai') && $mandatory)
-    $value = '';
+$value = printablePeriodic(accessAttr($obj, $name));
 
 ?>
 
@@ -23,14 +13,10 @@ if ($value == _i('Mai') && $mandatory)
     <div class="col-sm-{{ $fieldsize }}">
         <div class="input-group">
             <input type="text"
-                class="date form-control"
+                class="periodic form-control"
                 name="{{ $prefix . $name . $postfix }}"
                 value="{{ $value }}"
                 onkeydown="return false"
-
-                @if(isset($enforced_default))
-                    data-default-value="{{ $enforced_default }}"
-                @endif
 
                 @if($mandatory)
                     required

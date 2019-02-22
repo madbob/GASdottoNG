@@ -12,11 +12,13 @@
         @endforeach
 
         @foreach(App\Date::all() as $d)
-            {
-                title: '{{ $d->calendar_string }}',
-                start: '{{ $d->date }}',
-                className: 'calendar-date-{{ $d->type }}'
-            },
+            @foreach($d->dates as $dat)
+                {
+                    title: '{{ $d->calendar_string }}',
+                    start: '{{ $dat }}',
+                    className: 'calendar-date-{{ $d->type }}'
+                },
+            @endforeach
         @endforeach
     ];
 </script>
