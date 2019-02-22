@@ -9,7 +9,7 @@ class RecurringDates extends Migration
     public function up()
     {
         Schema::table('dates', function (Blueprint $table) {
-            $table->text('recurring');
+            $table->text('recurring')->nullable();
             $table->date('date')->nullable()->change();
         });
     }
