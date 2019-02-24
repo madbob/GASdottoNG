@@ -57,7 +57,7 @@ class LoginController extends Controller
         if (Auth::check()) {
             $password = $request->input('password');
             if ($username == $password)
-                Session::flash('prompt_message', _i('La password è uguale allo username! Cambiala il prima possibile dal tuo <a href="' . route('profile') . '">pannello utente</a>!'));
+                Session::flash('prompt_message', _i('La password è uguale allo username! Cambiala il prima possibile dal tuo <a href="%s">pannello utente</a>!', [route('profile')]));
         }
 
         return $ret;
