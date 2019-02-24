@@ -160,7 +160,7 @@ class Order extends Model
         else
             $bookings = $this->bookings()->where('status', $status)->get();
 
-        foreach($this->bookings as $booking) {
+        foreach($bookings as $booking) {
             if ($booking->user->isFriend()) {
                 if (!isset($ret[$booking->user->parent_id])) {
                     $placeholder = new Booking();
