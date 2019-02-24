@@ -199,10 +199,10 @@ class Booking extends Model
                 $total_value = $obj->order->total_value;
                 if ($total_value != 0) {
                     if (is_numeric($obj->order->transport)) {
-                        return round($obj->value * $obj->order->transport / $total_value, 2);
+                        return round($obj->value_with_friends * $obj->order->transport / $total_value, 2);
                     }
                     else {
-                        return $obj->value - applyPercentage($obj->value, $obj->order->transport);
+                        return $obj->value_with_friends - applyPercentage($obj->value_with_friends, $obj->order->transport);
                     }
                 }
             }
@@ -275,10 +275,10 @@ class Booking extends Model
             $total_value = $this->order->total_value;
             if ($total_value != 0) {
                 if (is_numeric($this->order->discount)) {
-                    return round($this->value * $this->order->discount / $total_value, 2);
+                    return round($this->value_with_friends * $this->order->discount / $total_value, 2);
                 }
                 else {
-                    return $this->value - applyPercentage($this->value, $this->order->discount);
+                    return $this->value_with_friends - applyPercentage($this->value_with_friends, $this->order->discount);
                 }
             }
         }
@@ -376,12 +376,14 @@ class Booking extends Model
 
     public function getValueWithFriendsAttribute()
     {
-        $ret = $this->value;
+        return $this->innerCache('value_with_friends', function($obj) {
+            $ret = $obj->value;
 
-        foreach($this->friends_bookings as $sub)
-            $ret += $sub->value;
+            foreach($obj->friends_bookings as $sub)
+                $ret += $sub->value;
 
-        return $ret;
+            return $ret;
+        });
     }
 
     public function getDeliveredWithFriendsAttribute()
