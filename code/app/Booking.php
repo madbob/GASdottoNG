@@ -156,11 +156,29 @@ class Booking extends Model
     }
 
     /*
-        Valore complessivo di quanto consegnato
+        Valore complessivo di quanto consegnato.
+        Se la prenotazione è stata effettivamente consegnata somma i prezzi
+        finali salvati sul database, altrimenti (e.g. la prenotazione è stata
+        salvata, ma non ancora consegnata) li ricalcola usando la quantità
+        consegnata come riferimento.
     */
     public function getDeliveredAttribute()
     {
-        return $this->products()->sum('final_price');
+        return $this->innerCache('delivered', function($obj) {
+            if ($obj->status == 'shipped') {
+                return $obj->products()->sum('final_price');
+            }
+            else {
+                $value = 0;
+
+                foreach ($obj->products as $booked) {
+                    $booked->setRelation('booking', $this);
+                    $value += $booked->deliveredValue();
+                }
+
+                return $value;
+            }
+        });
     }
 
     /*

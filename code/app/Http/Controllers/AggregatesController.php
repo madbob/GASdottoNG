@@ -91,8 +91,15 @@ class AggregatesController extends OrdersController
         $aggregate = Aggregate::findOrFail($id);
         $message = $request->input('message', '');
 
+        if ($aggregate->isActive()) {
+            $status = ['pending', 'saved'];
+        }
+        else {
+            $status = ['shipped'];
+        }
+
         foreach($aggregate->bookings as $booking) {
-            if ($booking->status != 'shipped') {
+            if (in_array($booking->status, $status)) {
                 try {
                     $booking->user->notify(new BookingNotification($booking, $message));
                     usleep(200000);

@@ -1,26 +1,34 @@
 <?php
 
 $shippable_status = false;
+$controllable = false;
 
 foreach ($aggregate->orders as $order) {
     if ($currentuser->can('supplier.shippings', $order->supplier)) {
-        $shippable_status = true;
+        $controllable = true;
         break;
     }
 }
 
-$shippable_status = ($shippable_status && $aggregate->isActive() && $aggregate->isRunning() == false);
+$shippable_status = ($controllable && $aggregate->isActive() && $aggregate->isRunning() == false);
+$shipped_status = ($controllable && $aggregate->isActive() == false && $aggregate->isRunning() == false);
 $more_orders = ($aggregate->orders->count() > 1);
 $panel_rand_wrap = rand();
 
 ?>
 
-@if($aggregate->isRunning() == false && ($more_orders || $shippable_status))
+@if($aggregate->isRunning() == false && ($more_orders || $controllable))
     <div class="row gray-row order-extras">
         <div class="col-md-6">
-            @if($shippable_status)
+            @if($shippable_status || $shipped_status)
                 <form class="form-horizontal">
-                    <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Invia Riepiloghi Prenotazioni') }}</label>
+                    <label class="col-sm-{{ $labelsize }} control-label">
+                        @if($shippable_status)
+                            {{ _i('Invia Riepiloghi Prenotazioni') }}
+                        @else
+                            {{ _i('Invia Riepiloghi Consegne') }}
+                        @endif
+                    </label>
                     <div class="col-sm-{{ $fieldsize }}">
                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#notify-aggregate-{{ $aggregate->id }}">{{ _i('Invia Mail') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
                         <span class="help-block">{{ _i('Ultime notifiche inviate') }}: <span class="last-date" data-updatable-name="last-notification-date-{{ $aggregate->id }}">{{ $aggregate->printableDate('last_notify') }}</span></span>
