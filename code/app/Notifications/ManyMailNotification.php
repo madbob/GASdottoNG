@@ -31,10 +31,13 @@ class ManyMailNotification extends Notification
             $notifiable->messageAll($message);
 
         if ($replyTo != null) {
-            if (is_string($replyTo))
+            if (is_string($replyTo)) {
                 $message->replyTo($replyTo);
-            else
-                $message->replyTo($replyTo->email);
+            }
+            else {
+                if (!empty($replyTo->email))
+                    $message->replyTo($replyTo->email);
+            }
         }
 
         return $message;

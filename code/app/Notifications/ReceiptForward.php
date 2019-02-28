@@ -18,7 +18,7 @@ class ReceiptForward extends ManyMailNotification
         $this->temp_file = $temp_file;
     }
 
-    public function build()
+    public function toMail($notifiable)
     {
         $user = Auth::user();
         $message = $this->initMailMessage($notifiable, $user->gas);
