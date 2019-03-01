@@ -30,7 +30,7 @@ class ManyMailNotification extends Notification
         if (class_uses(get_class($notifiable), 'App\ContactableTrait'))
             $notifiable->messageAll($message);
 
-        if ($replyTo != null) {
+        if (!empty($replyTo)) {
             if (is_string($replyTo)) {
                 $message->replyTo($replyTo);
             }
