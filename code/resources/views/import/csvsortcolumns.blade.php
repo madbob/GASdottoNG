@@ -51,8 +51,18 @@ if (!isset($extra_description)) {
                 <div class="col-md-4">
                     <ul class="list-group">
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="none" />{{ _i('[Ignora]') }}</li>
-                        @foreach($sorting_fields as $name => $label)
-                            <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="{{ $name }}" />{{ $label }}</li>
+                        @foreach($sorting_fields as $name => $metadata)
+                            <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="{{ $name }}" />
+                                {{ $metadata->label }}
+
+                                @if(isset($metadata->mandatory) && $metadata->mandatory)
+                                    <strong class="text-danger"> *</strong>
+                                @endif
+
+                                @if(isset($metadata->explain))
+                                    <br><small>{{ $metadata->explain }}</small>
+                                @endif
+                            </li>
                         @endforeach
                     </ul>
                 </div>

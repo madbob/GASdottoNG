@@ -3,6 +3,7 @@
 $original_products = $supplier->products;
 $categories = App\Category::orderBy('name', 'asc')->where('parent_id', '=', null)->get();
 $measures = App\Measure::orderBy('name', 'asc')->get();
+$vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
 
 ?>
 
@@ -28,11 +29,12 @@ $measures = App\Measure::orderBy('name', 'asc')->get();
                         <th width="3%">{{ _i('Importa') }}</th>
                         <th width="15%">{{ _i('Nome') }}</th>
                         <th width="15%">{{ _i('Descrizione') }}</th>
-                        <th width="6%">{{ _i('Prezzo Unitario') }}</th>
-                        <th width="6%">{{ _i('Prezzo Trasporto') }}</th>
-                        <th width="10%">{{ _i('Categoria') }}</th>
-                        <th width="10%">{{ _i('Unità di Misura') }}</th>
-                        <th width="10%">{{ _i('Codice Fornitore') }}</th>
+                        <th width="7%">{{ _i('Prezzo Unitario') }}</th>
+                        <th width="7%">{{ _i('Prezzo Trasporto') }}</th>
+                        <th width="7%">{{ _i('Categoria') }}</th>
+                        <th width="7%">{{ _i('Unità di Misura') }}</th>
+                        <th width="7%">{{ _i('Aliquota IVA') }}</th>
+                        <th width="7%">{{ _i('Codice Fornitore') }}</th>
                         <th width="5%">{{ _i('Dimensione Confezione') }}</th>
                         <th width="5%">{{ _i('Ordine Minimo') }}</th>
                         <th width="5%">{{ _i('Ordinabile per Multipli') }}</th>
@@ -99,6 +101,16 @@ $measures = App\Measure::orderBy('name', 'asc')->get();
                                     'squeeze' => true,
                                     'objects' => $measures,
                                     'extra_selection' => (isset($product->measure_name) ? ['new:' . $product->measure_name => $product->measure_name] : [])
+                                ])
+                            </td>
+                            <td>
+                                @include('commons.selectobjfield', [
+                                    'obj' => $product,
+                                    'name' => 'vat_rate_id',
+                                    'postfix' => '[]',
+                                    'squeeze' => true,
+                                    'objects' => $vat_rates,
+                                    'extra_selection' => (isset($product->vat_rate_name) ? ['new:' . $product->vat_rate_name => $product->vat_rate_name] : [])
                                 ])
                             </td>
                             <td>

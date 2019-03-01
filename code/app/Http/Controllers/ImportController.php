@@ -20,6 +20,7 @@ use App\Supplier;
 use App\Product;
 use App\Category;
 use App\Measure;
+use App\VatRate;
 use App\Movement;
 use App\MovementType;
 
@@ -140,16 +141,48 @@ class ImportController extends Controller
                             _i('Le categorie e le unità di misura il cui nome non sarà trovato tra quelle esistenti saranno create.')
                         ],
                         'sorting_fields' => [
-                            'name' => _i('Nome Prodotto (obbligatorio)'),
-                            'description' => _i('Descrizione'),
-                            'price' => _i('Prezzo Unitario'),
-                            'transport' => _i('Prezzo Trasporto'),
-                            'category' => _i('Categoria'),
-                            'measure' => _i('Unità di Misura'),
-                            'supplier_code' => _i('Codice Fornitore'),
-                            'package_size' => _i('Dimensione Confezione'),
-                            'min_quantity' => _i('Ordine Minimo'),
-                            'multiple' => _i('Ordinabile per Multipli')
+                            'name' => (object) [
+                                'label' => _i('Nome'),
+                                'mandatory' => true
+                            ],
+                            'description' => (object) [
+                                'label' => _i('Descrizione')
+                            ],
+                            'price' => (object) [
+                                'label' => _i('Prezzo Unitario'),
+                            ],
+                            'price_without_vat' => (object) [
+                                'label' => _i('Prezzo Unitario (senza IVA)'),
+                                'explain' => _i('Da usare in combinazione con Aliquota IVA')
+                            ],
+                            'vat' => (object) [
+                                'label' => _i('Aliquota IVA'),
+                            ],
+                            'transport' => (object) [
+                                'label' => _i('Prezzo Trasporto'),
+                            ],
+                            'category' => (object) [
+                                'label' => _i('Categoria'),
+                            ],
+                            'measure' => (object) [
+                                'label' => _i('Unità di Misura'),
+                            ],
+                            'supplier_code' => (object) [
+                                'label' => _i('Codice Fornitore'),
+                            ],
+                            'package_size' => (object) [
+                                'label' => _i('Dimensione Confezione'),
+                            ],
+                            'package_price' => (object) [
+                                'label' => _i('Prezzo Confezione'),
+                                'explain' => _i('Se specificato, il prezzo unitario viene calcolato come Prezzo Confezione / Dimensione Confezione')
+                            ],
+                            'min_quantity' => (object) [
+                                'label' => _i('Ordine Minimo'),
+                            ],
+                            'multiple' => (object) [
+                                'label' => _i('Ordinabile per Multipli')
+                            ],
                         ]
                     ]);
                     break;
@@ -215,6 +248,10 @@ class ImportController extends Controller
                                 $p->want_replace = -1;
                             }
 
+                            $price_without_vat = null;
+                            $vat_rate = null;
+                            $package_price = null;
+
                             foreach ($columns as $index => $field) {
                                 $value = trim($line[$index]);
 
@@ -242,10 +279,39 @@ class ImportController extends Controller
                                     }
                                 }
                                 elseif ($field == 'price' || $field == 'transport') {
-                                    $value = str_replace(',', '.', $line[$index]);
+                                    $value = str_replace(',', '.', $value);
+                                }
+                                elseif ($field == 'price_without_vat') {
+                                    $price_without_vat = str_replace(',', '.', $value);
+                                    continue;
+                                }
+                                elseif ($field == 'vat') {
+                                    $value = str_replace(',', '.', $value);
+                                    $vat_rate = $value = (float) $value;
+
+                                    $test_vat = VatRate::where('percentage', $value)->first();
+                                    if (is_null($test_vat)) {
+                                        $field = 'vat_rate_name';
+                                        $p->vat_rate_id = -1;
+                                    }
+                                    else {
+                                        $p->vat_rate_id = $test_vat->id;
+                                    }
+                                }
+                                elseif ($field == 'package_price') {
+                                    $package_price = str_replace(',', '.', $value);
+                                    continue;
                                 }
 
                                 $p->$field = $value;
+                            }
+
+                            if (!empty($package_price) && !empty($p->package_size) && empty($p->price)) {
+                                $p->price = $package_price / $p->package_size;
+                            }
+
+                            if (!empty($price_without_vat) && !empty($vat_rate)) {
+                                $p->price = $price_without_vat + (($price_without_vat * $vat_rate) / 100);
                             }
 
                             $products[] = $p;
@@ -268,6 +334,7 @@ class ImportController extends Controller
                     $transports = $request->input('transport');
                     $categories = $request->input('category_id');
                     $measures = $request->input('measure_id');
+                    $vat_rates = $request->input('vat_rate_id');
                     $codes = $request->input('supplier_code');
                     $sizes = $request->input('package_size');
                     $mins = $request->input('min_quantity');
@@ -311,9 +378,20 @@ class ImportController extends Controller
                                 $measure = new Measure();
                                 $measure->name = str_after($measures[$index], 'new:');
                                 $measure->save();
-                                $categories[$index] = $measure->id;
+                                $measures[$index] = $measure->id;
                             }
                             $p->measure_id = $measures[$index];
+
+                            if (starts_with($vat_rates[$index], 'new:')) {
+                                $vat = new VatRate();
+                                $vat->percentage = str_after($vat_rates[$index], 'new:');
+                                $vat->name = sprintf('%f %', $vat->percentage);
+                                $vat->save();
+                                $vat_rates[$index] = $vat->id;
+                            }
+
+                            if (!empty($vat_rates[$index]))
+                                $p->vat_rate_id = $vat_rates[$index];
 
                             $p->save();
                             $products[] = $p;
@@ -348,21 +426,56 @@ class ImportController extends Controller
                     return $this->storeUploadedFile($request, [
                         'type' => 'users',
                         'sorting_fields' => [
-                            'firstname' => _i('Nome'),
-                            'lastname' => _i('Cognome'),
-                            'username' => _i('Login (obbligatorio)'),
-                            'email' => _i('E-Mail'),
-                            'phone' => _i('Telefono'),
-                            'mobile' => _i('Cellulare'),
-                            'address_street' => _i('Indirizzo (Via)'),
-                            'address_zip' => _i('Indirizzo (CAP)'),
-                            'address_city' => _i('Indirizzo (Città)'),
-                            'birthday' => _i('Data di Nascita'),
-                            'taxcode' => _i('Codice Fiscale'),
-                            'member_since' => _i('Membro da'),
-                            'last_login' => _i('Ultimo Accesso'),
-                            'ceased' => _i('Cessato (true/false)'),
-                            'credit' => _i('Credito Attuale')
+                            'firstname' => (object) [
+                                'label' => _i('Nome'),
+                            ],
+                            'lastname' => (object) [
+                                'label' => _i('Cognome'),
+                            ],
+                            'username' => (object) [
+                                'label' => _i('Login'),
+                                'mandatory' => true
+                            ],
+                            'email' => (object) [
+                                'label' => _i('E-Mail'),
+                            ],
+                            'phone' => (object) [
+                                'label' => _i('Telefono'),
+                            ],
+                            'mobile' => (object) [
+                                'label' => _i('Cellulare'),
+                            ],
+                            'address_street' => (object) [
+                                'label' => _i('Indirizzo (Via)'),
+                            ],
+                            'address_zip' => (object) [
+                                'label' => _i('Indirizzo (CAP)'),
+                            ],
+                            'address_city' => (object) [
+                                'label' => _i('Indirizzo (Città)'),
+                            ],
+                            'birthday' => (object) [
+                                'label' => _i('Data di Nascita'),
+                                'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')])
+                            ],
+                            'taxcode' => (object) [
+                                'label' => _i('Codice Fiscale'),
+                            ],
+                            'member_since' => (object) [
+                                'label' => _i('Membro da'),
+                                'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')])
+                            ],
+                            'last_login' => (object) [
+                                'label' => _i('Ultimo Accesso'),
+                                'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')])
+                            ],
+                            'ceased' => (object) [
+                                'label' => _i('Cessato'),
+                                'explain' => _i('Indicare "true" o "false"')
+                            ],
+                            'credit' => (object) [
+                                'label' => _i('Credito Attuale')
+                            ]
                         ]
                     ]);
                     break;
@@ -505,10 +618,20 @@ class ImportController extends Controller
                             _i('Gli utenti sono identificati per username o indirizzo mail (che deve essere univoco!).')
                         ],
                         'sorting_fields' => [
-                            'date' => _i('Data'),
-                            'amount' => _i('Valore'),
-                            'notes' => _i('Note'),
-                            'user' => _i('Utente')
+                            'date' => (object) [
+                                'label' => _i('Data'),
+                                'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')])
+                            ],
+                            'amount' => (object) [
+                                'label' => _i('Valore'),
+                            ],
+                            'notes' => (object) [
+                                'label' => _i('Note'),
+                            ],
+                            'user' => (object) [
+                                'label' => _i('Utente'),
+                                'explain' => _i('Username o indirizzo e-mail')
+                            ]
                         ]
                     ]);
                     break;
