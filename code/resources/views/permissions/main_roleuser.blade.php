@@ -13,13 +13,14 @@
                     @if ($targets->count() > 1 && $last_class != get_class($target))
                         <?php $last_class = get_class($target) ?>
                         <li class="list-group-item list-group-item-danger">
-                            Tutti ({{ $last_class::commonClassName() }})<br/>
+                            {{ _i('Tutti (%s)', [$last_class::commonClassName()]) }}<br/>
                             <small>
                                 {{ _i("Questo permesso speciale si applica automaticamente a tutti i soggetti (presenti e futuri) e permette di agire su tutti, benché l'utente assegnatario non sarà esplicitamente visibile dagli altri.") }}
                             </small>
                             <span class="pull-right">
                                 <input type="checkbox" class="all-{{ $user->id }}-{{ $role->id }}" data-toggle="toggle" data-size="mini" data-user="{{ $user->id }}" data-role="{{ $role->id }}" data-target-id="*" data-target-class="{{ $last_class }}" {{ $r->appliesAll($last_class) ? 'checked' : '' }}>
                             </span>
+                            <p class="clearfix"></p>
                         </li>
                     @endif
 
@@ -37,7 +38,7 @@
     <div class="row">
         <div class="col-md-12">
             @if($role->enabledAction('gas.permissions') && $user->id == $currentuser->id)
-                <div class="alert alert-info">Non puoi auto-revocarti questo ruolo amministrativo</div>
+                <div class="alert alert-info">{{ _i('Non puoi auto-revocarti questo ruolo amministrativo') }}</div>
             @else
                 <button class="btn btn-danger remove-role" data-role="{{ $role->id }}" data-user="{{ $user->id }}">{{ _i('Revoca Ruolo') }} {{ $role->name }} a {{ $user->printableName() }}</button>
             @endif

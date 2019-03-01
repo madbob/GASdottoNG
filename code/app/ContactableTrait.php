@@ -40,7 +40,7 @@ trait ContactableTrait
                 $contact = new Contact();
 
                 $test_existing = $this->contacts()->where('type', $types[$index])->where('value', $values[$index])->first();
-                if (is_null($test_existing) == false) {
+                if (!empty($test_existing)) {
                     $contacts[] = $test_existing->id;
                     continue;
                 }

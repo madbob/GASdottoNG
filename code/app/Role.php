@@ -70,14 +70,25 @@ class Role extends Model
         $ret = $this->printableName();
 
         $step = $this;
+        $iterated = [$step->id];
+
         while(true) {
             $parent = $step->parent;
-            if ($parent)
+
+            if ($parent) {
+                if (in_array($parent->id, $iterated)) {
+                    Log::error('Recursive roles hierarchy');
+                    break;
+                }
+
                 $ret = '&nbsp;&nbsp;&nbsp;&nbsp;' . $ret;
-            else
+            }
+            else {
                 break;
+            }
 
             $step = $parent;
+            $iterated[] = $step->id;
         }
 
         $ret .= $this->headerIcons();

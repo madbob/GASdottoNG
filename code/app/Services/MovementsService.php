@@ -35,7 +35,8 @@ class MovementsService extends BaseService
             $start = date('Y-m-d', strtotime('-1 weeks'));
         }
 
-        $query->where('date', '>=', $start);
+        if (!empty($start))
+            $query->where('date', '>=', $start);
 
         if (isset($request['enddate'])) {
             $end = decodeDate($request['enddate']);
@@ -44,7 +45,8 @@ class MovementsService extends BaseService
             $end = date('Y-m-d');
         }
 
-        $query->where('date', '<=', $end);
+        if (!empty($end))
+            $query->where('date', '<=', $end);
 
         if (isset($request['type']) && $request['type'] != 'none') {
             $query->where('type', $request['type']);
