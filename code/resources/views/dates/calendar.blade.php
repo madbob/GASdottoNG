@@ -17,6 +17,10 @@
                     title: '{{ $d->calendar_string }}',
                     start: '{{ $dat }}',
                     className: 'calendar-date-{{ $d->type }}'
+
+                    @if($d->type == 'internal')
+                        , url: '{{ route('notifications.index') . '#' . $d->id }}'
+                    @endif
                 },
             @endforeach
         @endforeach

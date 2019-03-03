@@ -121,10 +121,10 @@ class DatabaseSeeder extends Seeder
 
         $notification = Notification::create([
             'creator_id' => $admin->id,
-            'content' => "Benvenuto in GASdotto!\n\nClicca l'icona in alto a destra col punto interrogativo per attivare l'help in linea, ed ottenere una breve descrizione dei campi editabili.\nPer ulteriore assistenza puoi rivolgerti alla mailing list degli utenti su https://groups.google.com/forum/#!forum/gasdotto-dev",
+            'content' => "Benvenuto in GASdotto!\n\nClicca l'icona in alto a destra col punto interrogativo per attivare l'help in linea, ed ottenere una breve descrizione dei campi editabili.\nPer ulteriore assistenza puoi rivolgerti alla mailing list degli utenti su https://groups.google.com/forum/#!forum/gasdotto-dev o all'indirizzo mail info@gasdotto.net",
             'mailed' => false,
             'start_date' => date('Y-m-d'),
-            'end_date' => date('Y-m-d', strtotime('+1 day')),
+            'end_date' => date('Y-m-d', strtotime('+7 days')),
         ]);
 
         $notification->users()->attach($admin->id, ['done' => false]);
