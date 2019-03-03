@@ -319,17 +319,15 @@
 
                                     <hr>
 
-                                    @foreach($gas->custom_mails as $identifier => $metadata)
+                                    @foreach($gas->customMailTypes() as $identifier => $metadata)
                                         <?php
 
-                                        /*
                                         if ($identifier == 'welcome' && $gas->hasFeature('public_registrations') == false) {
                                             continue;
                                         }
                                         if ($identifier == 'receipt' && $gas->hasFeature('extra_invoicing') == false) {
                                             continue;
                                         }
-                                        */
 
                                         $mail_help = '';
                                         if (isset($metadata->params)) {
@@ -342,16 +340,20 @@
 
                                         ?>
 
+                                        <p>
+                                            {{ $metadata->description }}
+                                        </p>
+
                                         @include('commons.textfield', [
                                             'obj' => $gas,
                                             'name' => "custom_mails_${identifier}_subject",
-                                            'default_value' => $metadata->subject,
+                                            'default_value' => $gas->getConfig("mail_${identifier}_subject"),
                                             'label' => _i('Soggetto')
                                         ])
                                         @include('commons.textarea', [
                                             'obj' => $gas,
                                             'name' => "custom_mails_${identifier}_body",
-                                            'default_value' => $metadata->body,
+                                            'default_value' => $gas->getConfig("mail_${identifier}_body"),
                                             'label' => _i('Testo'),
                                             'help_text' => $mail_help
                                         ])

@@ -26,6 +26,9 @@ switch($booking->status) {
         break;
 }
 
+$global_total = 0;
+$bookings_tot = 0;
+
 ?>
 
 <p>
@@ -56,10 +59,18 @@ switch($booking->status) {
                 @endif
             @endforeach
 
+            <?php
+
+            $bookings_tot++;
+            $tot = $b->$total_function;
+            $global_total += $tot;
+
+            ?>
+
             <tr>
                 <td><strong>{{ _i('Totale') }}</strong></td>
                 <td>&nbsp;</td>
-                <td>{{ printablePriceCurrency($b->$total_function) }}</td>
+                <td>{{ printablePriceCurrency($tot) }}</td>
             </tr>
         </tbody>
     </table>
@@ -89,10 +100,18 @@ switch($booking->status) {
                         @endif
                     @endforeach
 
+                    <?php
+
+                    $bookings_tot++;
+                    $tot = $fb->$total_function;
+                    $global_total += $tot;
+
+                    ?>
+
                     <tr>
                         <td><strong>{{ _i('Totale') }}</strong></td>
                         <td>&nbsp;</td>
-                        <td>{{ printablePriceCurrency($fb->$total_function) }}</td>
+                        <td>{{ printablePriceCurrency($tot) }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -105,6 +124,12 @@ switch($booking->status) {
         </p>
     @endif
 @endforeach
+
+@if($bookings_tot > 1)
+    <p>
+        {{ _i('Totale da pagare: %s', [printablePriceCurrency($global_total)]) }}
+    </p>
+@endif
 
 @if($display_shipping_date && $b && $b->order->shipping != null)
     <p>

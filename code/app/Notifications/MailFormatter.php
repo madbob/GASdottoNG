@@ -19,16 +19,9 @@ trait MailFormatter
     public function formatMail($message, $config_name, $params = [])
     {
         $gas = currentAbsoluteGas();
-        $configurations = $gas->custom_mails;
 
-        if (!isset($configurations[$config_name])) {
-            Log::error('Custom mail configuration not found: ' . $config_name);
-            return null;
-        }
-
-        $subject = $this->formatText($configurations[$config_name]->subject, $gas, $params);
-        $body = $this->formatText($configurations[$config_name]->body, $gas, $params);
-
+        $subject = $this->formatText($gas->getConfig("mail_${$config_name}_subject"), $gas, $params);
+        $body = $this->formatText($gas->getConfig("mail_${$config_name}_body"), $gas, $params);
         $message->subject($subject)->view('emails.empty', ['content' => $body]);
 
         return $message;

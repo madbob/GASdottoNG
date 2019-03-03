@@ -176,15 +176,12 @@ class GasController extends Controller
                 break;
 
             case 'mails':
-                $custom_mails_info = (object) [];
-
-                foreach($gas->custom_mails as $identifier => $metadata) {
-                    $metadata->subject = $request->input("custom_mails_${identifier}_subject");
-                    $metadata->body = $request->input("custom_mails_${identifier}_body");
-                    $custom_mails_info->$identifier = $metadata;
+                foreach($gas->customMailTypes() as $identifier => $metadata) {
+                    $subject = $request->input("custom_mails_${identifier}_subject");
+                    $gas->setConfig("mail_${identifier}_subject", $subject);
+                    $body = $request->input("custom_mails_${identifier}_body");
+                    $gas->setConfig("mail_${identifier}_body", $body);
                 }
-
-                $gas->setConfig('custom_mails', $custom_mails_info);
                 break;
 
             case 'roles':

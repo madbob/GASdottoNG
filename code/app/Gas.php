@@ -146,38 +146,69 @@ class Gas extends Model
                 ]
             ],
 
-            'custom_mails' => [
-                'default' => (object) [
-                    'welcome' => (object) [
-                        'subject' => _i("Benvenuto!"),
-                        'body' => _i("Benvenuto in %[gas_name]!\nIn futuro potrai accedere usando il link qui sotto, lo username \"%[username]\" e la password da te scelta.\n%[gas_login_link]\nUna mail di notifica è stata inviata agli amministratori."),
-                        'params' => [
-                            'username' => _i("Username assegnato al nuovo utente"),
-                            'gas_login_link' => _i("Link della pagina di login")
-                        ]
-                    ],
-                    'password_reset' => (object) [
-                        'subject' => _i("Recupero Password"),
-                        'body' => _i("È stato chiesto l'aggiornamento della tua password su GASdotto.\nClicca il link qui sotto per aggiornare la tua password, o ignora la mail se non hai chiesto tu questa operazione.\n%[gas_reset_link]"),
-                        'params' => [
-                            'gas_reset_link' => _i("Link per il reset della password")
-                        ]
-                    ],
-                    'new_order' => (object) [
-                        'subject' => _i("Nuovo Ordine Aperto per %[supplier_name]"),
-                        'body' => _i("È stato aperto da %[gas_name] un nuovo ordine per il fornitore %[supplier_name].\nPer partecipare, accedi al seguente indirizzo:\n%[gas_booking_link]\nLe prenotazioni verranno chiuse %[closing_date]"),
-                        'params' => [
-                            'supplier_name' => _i("Il nome del fornitore"),
-                            'gas_booking_link' => _i("Link per le prenotazioni"),
-                            'closing_date' => _i("Data di chiusura dell'ordine")
-                        ]
-                    ],
-                    'receipt' => (object) [
-                        'subject' => _i("Nuova fattura da %[gas_name]"),
-                        'body' => _i("In allegato l'ultima fattura da %[gas_name]")
-                    ],
+            'mail_welcome_subject' => [
+                'default' => _i("Benvenuto!"),
+            ],
+            'mail_welcome_body' => [
+                'default' => _i("Benvenuto in %[gas_name]!\nIn futuro potrai accedere usando il link qui sotto, lo username \"%[username]\" e la password da te scelta.\n%[gas_login_link]\nUna mail di notifica è stata inviata agli amministratori."),
+            ],
+            'mail_password_reset_subject' => [
+                'default' => _i("Recupero Password"),
+            ],
+            'mail_password_reset_body' => [
+                'default' => _i("È stato chiesto l'aggiornamento della tua password su GASdotto.\nClicca il link qui sotto per aggiornare la tua password, o ignora la mail se non hai chiesto tu questa operazione.\n%[gas_reset_link]"),
+            ],
+            'mail_new_order_subject' => [
+                'default' => _i("Nuovo Ordine Aperto per %[supplier_name]"),
+            ],
+            'mail_new_order_body' => [
+                'default' => _i("È stato aperto da %[gas_name] un nuovo ordine per il fornitore %[supplier_name].\nPer partecipare, accedi al seguente indirizzo:\n%[gas_booking_link]\nLe prenotazioni verranno chiuse %[closing_date]"),
+            ],
+            'mail_new_order_subject' => [
+                'default' => _i("Nuova fattura da %[gas_name]"),
+            ],
+            'mail_new_order_body' => [
+                'default' => _i("In allegato l'ultima fattura da %[gas_name]")
+            ],
+        ];
+    }
+
+    public static function customMailTypes()
+    {
+        /*
+            Nota bene: quando si aggiunge un nuovo parametro qui, è opportuno
+            definire anche i valori
+            - mail_identificativo_subject
+            - mail_identificativo_body
+            tra le configurazioni di default in self::handlingConfigs()
+        */
+        return [
+            'welcome' => (object) [
+                'description' => _i('Messaggio inviato ai nuovi iscritti sulla piattaforma.'),
+                'params' => [
+                    'username' => _i("Username assegnato al nuovo utente"),
+                    'gas_login_link' => _i("Link della pagina di login")
                 ]
-            ]
+            ],
+            'password_reset' => (object) [
+                'description' => _i('Messaggio per il ripristino della password.'),
+                'params' => [
+                    'gas_reset_link' => _i("Link per il reset della password")
+                ]
+            ],
+            'new_order' => (object) [
+                'description' => _i('Notifica per i nuovi ordini aperti (inviato agli utenti che hanno esplicitamente abilitato le notifiche per il fornitore).'),
+                'params' => [
+                    'supplier_name' => _i("Il nome del fornitore"),
+                    'gas_booking_link' => _i("Link per le prenotazioni"),
+                    'closing_date' => _i("Data di chiusura dell'ordine")
+                ]
+            ],
+            'receipt' => (object) [
+                'description' => _i('Mail di accompagnamento per le ricevute.'),
+                'params' => [
+                ]
+            ],
         ];
     }
 
@@ -229,11 +260,6 @@ class Gas extends Model
     public function getRolesAttribute()
     {
         return (array) json_decode($this->getConfig('roles'));
-    }
-
-    public function getCustomMailsAttribute()
-    {
-        return (array) json_decode($this->getConfig('custom_mails'));
     }
 
     public function getFastShippingEnabledAttribute()
