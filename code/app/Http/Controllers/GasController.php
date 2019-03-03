@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Auth;
 use DB;
 
+use App\Config;
 use App\Role;
 use App\Gas;
 use App\User;
@@ -176,11 +177,13 @@ class GasController extends Controller
                 break;
 
             case 'mails':
-                foreach($gas->customMailTypes() as $identifier => $metadata) {
-                    $subject = $request->input("custom_mails_${identifier}_subject");
-                    $gas->setConfig("mail_${identifier}_subject", $subject);
-                    $body = $request->input("custom_mails_${identifier}_body");
-                    $gas->setConfig("mail_${identifier}_body", $body);
+                foreach(Config::customMailTypes() as $identifier => $metadata) {
+                    if ($request->has("custom_mails_${identifier}_subject")) {
+                        $subject = $request->input("custom_mails_${identifier}_subject");
+                        $gas->setConfig("mail_${identifier}_subject", $subject);
+                        $body = $request->input("custom_mails_${identifier}_body");
+                        $gas->setConfig("mail_${identifier}_body", $body);
+                    }
                 }
                 break;
 

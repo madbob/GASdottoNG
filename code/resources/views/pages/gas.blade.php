@@ -319,7 +319,7 @@
 
                                     <hr>
 
-                                    @foreach($gas->customMailTypes() as $identifier => $metadata)
+                                    @foreach(App\Config::customMailTypes() as $identifier => $metadata)
                                         <?php
 
                                         if ($identifier == 'welcome' && $gas->hasFeature('public_registrations') == false) {
