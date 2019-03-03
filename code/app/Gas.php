@@ -164,10 +164,10 @@ class Gas extends Model
             'mail_new_order_body' => [
                 'default' => _i("È stato aperto da %[gas_name] un nuovo ordine per il fornitore %[supplier_name].\nPer partecipare, accedi al seguente indirizzo:\n%[gas_booking_link]\nLe prenotazioni verranno chiuse %[closing_date]"),
             ],
-            'mail_new_order_subject' => [
+            'mail_receipt_subject' => [
                 'default' => _i("Nuova fattura da %[gas_name]"),
             ],
-            'mail_new_order_body' => [
+            'mail_receipt_body' => [
                 'default' => _i("In allegato l'ultima fattura da %[gas_name]")
             ],
         ];
