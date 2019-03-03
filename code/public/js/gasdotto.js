@@ -2868,6 +2868,7 @@ $(document).ready(function() {
 
     $('body').on('show.bs.modal', '.modal.wizard', function(e) {
         $(this).find('.wizard_page:not(:first)').hide();
+        $(this).find('.wizard_page:first').show();
 
     }).on('submit', '.wizard_page form', function(e) {
         e.preventDefault();
