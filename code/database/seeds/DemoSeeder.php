@@ -59,6 +59,8 @@ class DemoSeeder extends Seeder
                 'payment_method' => ''
             ]);
 
+            $gas->suppliers()->attach($s->id);
+
             foreach ($products as $p_name) {
                 Product::create([
                     'id' => str_slug($p_name),
