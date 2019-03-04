@@ -71,8 +71,11 @@ class DatesService extends BaseService
 
                 if (!empty($dates[$index]))
                     $date->date = decodeDate($dates[$index]);
-                else
+                else if (!empty($recurrings[$index]))
                     $date->recurring = json_encode(decodePeriodic($recurrings[$index]));
+
+                if (empty($date->date) && empty($date->recurring))
+                    continue;
 
                 $date->description = $descriptions[$index];
                 $date->type = $types[$index];
