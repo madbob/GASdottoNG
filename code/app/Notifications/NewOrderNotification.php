@@ -23,7 +23,7 @@ class NewOrderNotification extends ManyMailNotification
         $user = Auth::user();
         $message = $this->initMailMessage($notifiable, $user);
 
-        return $this->formatMail($message, 'password_reset', [
+        return $this->formatMail($message, 'new_order', [
             'supplier_name' => $this->order->supplier->name,
             'gas_booking_link' => $this->order->getBookingURL(),
             'closing_date' => printableDate($this->order->end)
