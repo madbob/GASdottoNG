@@ -20,8 +20,8 @@ trait MailFormatter
     {
         $gas = currentAbsoluteGas();
 
-        $subject = $this->formatText($gas->getConfig("mail_${$config_name}_subject"), $gas, $params);
-        $body = $this->formatText($gas->getConfig("mail_${$config_name}_body"), $gas, $params);
+        $subject = $this->formatText($gas->getConfig("mail_${config_name}_subject"), $gas, $params);
+        $body = $this->formatText($gas->getConfig("mail_${config_name}_body"), $gas, $params);
         $message->subject($subject)->view('emails.empty', ['content' => $body]);
 
         return $message;
