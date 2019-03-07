@@ -2,14 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2018-12-25 17:04+0100\n"
-"PO-Revision-Date: 2018-12-25 17:04+0100\n"
-"Last-Translator: Roberto Guido <bob@linux.it>\n"
-"Language-Team: Roberto Guido <bob@linux.it>\n"
+"PO-Revision-Date: 2019-03-08 18:03+0000\n"
+"Last-Translator: jendo <jendo.berlin@gmx.de>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
+"translations/de/>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.5.1-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -77,7 +79,7 @@ msgstr "Kein"
 #: ../storage/framework/messages/46d9784474c42e976aa9bfe9f6a022a0a335614a.php.php:26
 #: ../storage/framework/messages/c97bc241fa9fd8c512d89e87fa3a73ad695bf9f0.php.php:16
 msgid "[Luogo non Specificato]"
-msgstr ""
+msgstr "Lieferort nicht ausgewählt"
 
 #: ../resources/views/invoice/base-edit.blade.php:13
 #: ../resources/views/invoice/base-edit.blade.php:14
@@ -91,7 +93,7 @@ msgstr "Enthaltene Bestellungen %s"
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:12
 #, php-format
 msgid "Tutti gli utenti con ruolo \"%s\""
-msgstr ""
+msgstr "Alle Nutzer mit der Rolle \"%s\""
 
 #: ../resources/views/notification/base-edit.blade.php:17
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:17
@@ -724,17 +726,17 @@ msgid "Luogo di Consegna"
 msgstr "Lieferort"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:397
-#| msgid ""
-#| "Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi, verrà "
-#| "attivata la possibilità per ogni utente di selezionare il proprio luogo "
-#| "di consegna preferito e nei documenti di riassunto degli ordini le "
-#| "prenotazioni saranno suddivise per luogo."
 msgid ""
 "Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi, verrà "
 "attivata la possibilità per ogni utente di selezionare il proprio luogo di "
 "consegna preferito e nei documenti di riassunto degli ordini le prenotazioni "
 "saranno suddivise per luogo: utile per GAS distribuiti sul territorio."
 msgstr ""
+"Es gibt keine Elemente, die angezeigt werden können.<br/>Wenn man Elemente "
+"hinzufügt, wird dadurch jedem Nutzer die Möglichkeit gegeben, den "
+"bevorzugten Lieferort auszuwählen und bei der Zusammenfassung der "
+"Bestellungen werden diese je nach Lieferort sortiert. Nützlich für "
+"Bestellgemeinschaften mit verschiedenen Liefer- oder Abholorten."
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:409
 #: ../storage/framework/messages/8213b2de42a57b8769b9deb8aaed6d84d10a486c.php.php:72
@@ -747,6 +749,9 @@ msgid ""
 "accessibili a tutti gli utenti dalla dashboard: utile per condividere "
 "documenti di interesse comune."
 msgstr ""
+"Es gibt derzeit keine Elemente, die angezeigt werden können.<br/>Wenn "
+"Dateien hinzugefügt werden, sind sie für alle Nutzer auf dem Dashboard "
+"zugänglich. Nützlich, um Dokumente im allgemeinen Interesse zu teilen."
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:450
 msgid "Aliquote IVA"
@@ -759,6 +764,11 @@ msgid ""
 "scorporare automaticamente l'IVA dai totali delle fatture caricate in "
 "<strong>Contabilità -> Fatture</strong>."
 msgstr ""
+"Es gibt derzeit keine Elemente, die angezeigt werden können.<br/>Die "
+"Steuersätze können den diversen Produkten zugeordnet werden; dieses Feld "
+"wird benötigt, um automatisch die Mehrwertsteuer für die Rechnungssumme zu "
+"kalkulieren und in <strong>'Buchhaltung -> Rechnungen'</strong> zu "
+"übertragen."
 
 #: ../storage/framework/messages/0c713b2be1917f40417f287c6b12b256cb166621.php.php:36
 msgid "Modifica Movimento"
@@ -1562,9 +1572,8 @@ msgstr "Mitgliedsnummer schon gebraucht"
 #: ../storage/framework/messages/30fc88b034fce8e5805eff35fa55ff66010fd8f1.php.php:150
 #: Services/SuppliersService.php:150
 #, php-format
-#| msgid "Listino %s del %s"
 msgid "Listino %s.%s"
-msgstr ""
+msgstr "Liste %s.%s"
 
 #: ../storage/framework/messages/30fc88b034fce8e5805eff35fa55ff66010fd8f1.php.php:159
 #: ../storage/framework/messages/aafab70db3d231a41f00b6d79e72ed9590b37bcf.php.php:3
@@ -1618,12 +1627,12 @@ msgstr ""
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:46
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:143
 msgid "Tutti (ordinati per utente)"
-msgstr ""
+msgstr "Alle (nach Nutzer*innen)"
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:47
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:144
 msgid "Tutti (ordinati per luogo)"
-msgstr ""
+msgstr "Alle (nach Lieferort)"
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:63
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:137
@@ -1685,13 +1694,13 @@ msgstr "Gespeichert"
 #: ../storage/framework/messages/c4652b192f85ead50be5a9e63b109416991d8177.php.php:46
 #: Date.php:24
 msgid "Confermato"
-msgstr ""
+msgstr "Bestätigt"
 
 #: ../storage/framework/messages/3525319804d8404c950231717deb64dceb5a7936.php.php:28
 #: ../storage/framework/messages/c4652b192f85ead50be5a9e63b109416991d8177.php.php:47
 #: Date.php:28
 msgid "Provvisorio"
-msgstr ""
+msgstr "Geplant"
 
 #: ../storage/framework/messages/38e6c97568452c5cac123d5e080434d8cfdd3ad1.php.php:2
 #, php-format
@@ -1739,7 +1748,7 @@ msgstr "Bestellen"
 #: ../storage/framework/messages/3938b5a29ee4fcba7a54b33debb586a987960ef9.php.php:428
 #: Role.php:428
 msgid "Vedere tutti i fornitori"
-msgstr ""
+msgstr "Alle Lieferanten anzeigen"
 
 #: ../storage/framework/messages/3938b5a29ee4fcba7a54b33debb586a987960ef9.php.php:429
 #: Role.php:429
@@ -1963,7 +1972,7 @@ msgstr "Zu bezahlende Bestellungen"
 
 #: ../storage/framework/messages/52d79b4ba0c701300d266ccddd4cbf00d3643f78.php.php:40
 msgid "Prenotato"
-msgstr ""
+msgstr "Bestellt"
 
 #: ../storage/framework/messages/52d79b4ba0c701300d266ccddd4cbf00d3643f78.php.php:42
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:261
@@ -1979,13 +1988,13 @@ msgstr "Geliefert"
 
 #: ../storage/framework/messages/52d79b4ba0c701300d266ccddd4cbf00d3643f78.php.php:77
 msgid "Totale Prenotato"
-msgstr ""
+msgstr "Gesamtbetrag Vorbestellung"
 
 #: ../storage/framework/messages/52d79b4ba0c701300d266ccddd4cbf00d3643f78.php.php:80
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:691
 #: Order.php:691
 msgid "Totale Consegnato"
-msgstr "Gelieferter Total"
+msgstr "Gesamtbetrag Lieferung"
 
 #: ../storage/framework/messages/54512d4708486210b9e7afcc164e0ecb833a5c7e.php.php:28
 #: ../storage/framework/messages/55fae791168b02c584268dded82b08621244e6ba.php.php:21
@@ -1999,16 +2008,16 @@ msgid ""
 "Clicca e trascina gli attributi dalla colonna di destra alla colonna "
 "centrale, per assegnare ad ogni colonna del tuo file un significato."
 msgstr ""
-"Klicken und Ziehen sie die Attribute von der rechten zur mittleren Spalte, "
-"um jeder Spalte ihrer Datei eine Überschrift zuzuweisen."
+"Klicke und ziehe die Attribute von der rechten in die mittlere Spalte, um "
+"jeder Spalte deiner Datei eine Überschrift zuzuweisen."
 
 #: ../storage/framework/messages/56c44eb9f4b1cf472b74adcbeed0d4b5032cc04e.php.php:11
 msgid ""
 "Gli utenti sono identificati per username o indirizzo mail (che deve essere "
 "univoco!)."
 msgstr ""
-"Benutzer wurden durch den Benutzernamen oder Emailadresse identifiziert (die "
-"eindeutig sein müssen!)."
+"Benutzer werden durch den Benutzernamen oder Emailadresse identifiziert ("
+"diese müssen eindeutig sein!)."
 
 #: ../storage/framework/messages/56c44eb9f4b1cf472b74adcbeed0d4b5032cc04e.php.php:28
 #: ../storage/framework/messages/939678dcfaab8b8718bb2f71649e4484a2db059b.php.php:29
@@ -2063,14 +2072,17 @@ msgid ""
 "Il prodotto duplicato avrà una copia delle varianti del prodotto originario. "
 "Potranno essere modificate dopo il salvataggio del duplicato."
 msgstr ""
+"Mit dem Duplizieren eines Produkts werden auch die Varianten des "
+"Originalprodukts kopiert bzw. dupliziert. Nach dem Speichern des Duplikats "
+"können die Varianten verändert werden."
 
 #: ../storage/framework/messages/5a5dd17200a02df698aa6e94abffa77db00114ae.php.php:9
 msgid "Non ci sono varianti da duplicare"
-msgstr ""
+msgstr "Es gibt keine Varianten zum Duplizieren"
 
 #: ../storage/framework/messages/5a5dd17200a02df698aa6e94abffa77db00114ae.php.php:13
 msgid "Crea Nuova Variante"
-msgstr ""
+msgstr "Eine neue Variante hinzufügen"
 
 #: ../storage/framework/messages/5a5dd17200a02df698aa6e94abffa77db00114ae.php.php:46
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:28
@@ -2300,7 +2312,7 @@ msgstr ""
 #: ../storage/framework/messages/5ec30665b3114e6137babf75150ae220b1b20c48.php.php:65
 #: ../storage/framework/messages/c4652b192f85ead50be5a9e63b109416991d8177.php.php:10
 msgid "Gestione Date"
-msgstr ""
+msgstr "Kalender verwalten"
 
 #: ../storage/framework/messages/6062cb64d2a9ec2b6a763995e64c4547dc4e9d17.php.php:113
 #: Order.php:113
@@ -2514,7 +2526,7 @@ msgstr "Gesperrt und gelöscht"
 
 #: ../storage/framework/messages/6b83dc5cf8a62d19a43cc398f11e4dc8c0345158.php.php:6
 msgid "Data sul Calendario"
-msgstr ""
+msgstr "Kalenderdatum"
 
 #: ../storage/framework/messages/6c1728e747271ad2042f96137f03aac8aa9cd22b.php.php:14
 msgid "Sei sicuro di voler eliminare questo elemento?"
@@ -2778,9 +2790,8 @@ msgstr "Bestellte Produkte Bestellung %s bei %s"
 #: ../storage/framework/messages/9869469812674c41a1612a26bdeeb6891dbf5787.php.php:479
 #: Http/Controllers/OrdersController.php:479
 #, php-format
-#| msgid "Dettaglio Consegne ordine %s presso %s"
 msgid "Tabella Ordine %s presso %s.csv"
-msgstr ""
+msgstr "Gesamttabelle Bestellung %s bei %s.csv"
 
 #: ../storage/framework/messages/9944b53a19bb073e61f78b0f98af09cb85071bda.php.php:3
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:59
@@ -2897,7 +2908,7 @@ msgstr "Neuer Benutzer registriert %s:"
 
 #: ../storage/framework/messages/a27197c6cc0d11664170d4aeb50270cd9e64ef89.php.php:5
 msgid "Prossime date in calendario:"
-msgstr ""
+msgstr "Nächste Daten im Kalender:"
 
 #: ../storage/framework/messages/a4cdcea55a523a711c537c1509bd0ed1cd3d4613.php.php:6
 msgid "Modalità Pagamento"
@@ -2935,7 +2946,7 @@ msgstr ""
 
 #: ../storage/framework/messages/aaadb106104cee30cd3172e4400a1f91934933e4.php.php:7
 msgid "Duplica Prodotto"
-msgstr ""
+msgstr "Dupliziere Produkt"
 
 #: ../storage/framework/messages/ac266e2b39658093bf28f564bab5906f02092422.php.php:19
 #: ../storage/framework/messages/ace24bd531b0877d2aeef32ad4301a81f681ca83.php.php:93
@@ -2987,32 +2998,28 @@ msgstr "Neue Bestellung eröffnet für %s"
 #: ../storage/framework/messages/adfea93ae4fd18c192e41ba08e17d46aca9a5f1f.php.php:99
 #: Http/Controllers/BookingUserController.php:99
 #, php-format
-#| msgid "Dettaglio Consegne Ordini"
 msgid "Dettaglio Consegne ordini %s.pdf"
-msgstr ""
+msgstr "Bestell-und Lieferuebersicht %s.pdf"
 
 #: ../storage/framework/messages/ae2f65107fa813637a4341731982c490953f791e.php.php:27
-#| msgid "Ordina Per"
 msgid "Ordini Aperti"
-msgstr ""
+msgstr "Offene Bestellungen"
 
 #: ../storage/framework/messages/ae2f65107fa813637a4341731982c490953f791e.php.php:28
-#| msgid "Ordini Coinvolti"
 msgid "Ordini Chiusi"
-msgstr ""
+msgstr "Abgeschlossene Bestellungen"
 
 #: ../storage/framework/messages/ae2f65107fa813637a4341731982c490953f791e.php.php:30
-#| msgid "Conferma"
 msgid "Date Confermate"
-msgstr ""
+msgstr "Bestätigte Termine"
 
 #: ../storage/framework/messages/ae2f65107fa813637a4341731982c490953f791e.php.php:31
 msgid "Date Temporanee"
-msgstr ""
+msgstr "Vorläufige Termine"
 
 #: ../storage/framework/messages/ae2f65107fa813637a4341731982c490953f791e.php.php:32
 msgid "Appuntamenti"
-msgstr ""
+msgstr "Vereinbarte Termine"
 
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:12
 #: ../storage/framework/messages/f0d8388990de9779bae078c14f11fa56be8ab204.php.php:12
@@ -3073,8 +3080,9 @@ msgid "Cauzioni"
 msgstr "Kaution"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:44
+#, fuzzy
 msgid "Caricamento in corso"
-msgstr ""
+msgstr "Im Beladevorgang"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:116
 msgid "Feedback"
@@ -3146,6 +3154,11 @@ msgid ""
 "facilitare il coordinamento di diversi referenti all'interno del GAS e "
 "pianificare le attività a lungo termine."
 msgstr ""
+"Von hier aus ist es möglich, beliebige Termine in den Lieferkalender "
+"einzutragen, auch für noch nicht vorhandene, zukünftige Bestellungen. Diese "
+"Funktion wird empfohlen, um die Koordination zwischen den verschiedenen "
+"Verantwortlichen innerhalb der Bestellgemeinschaft zu erleichtern und die "
+"Aktivitäten langfristig zu planen."
 
 #: ../storage/framework/messages/c4f8815ff3cf5214c4bbe15ca9a0c585608364f9.php.php:19
 #: Notifications/NewUserNotification.php:19
@@ -3204,30 +3217,28 @@ msgstr "Allgemeine Statistiken"
 
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:28
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:71
-#| msgid "Totale Ordini"
 msgid "Valore Ordini"
-msgstr ""
+msgstr "Bestellwert"
 
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:32
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:75
+#, fuzzy
 #| msgid "Ordini Coinvolti"
 msgid "Utenti Coinvolti"
-msgstr ""
+msgstr "Involvierte Nutzer"
 
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:36
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:79
-#| msgid "Categoria"
 msgid "Categorie"
-msgstr ""
+msgstr "Kategorien"
 
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:42
 msgid "Statistiche per Fornitore"
 msgstr "Statistiken nach Lieferant"
 
 #: ../storage/framework/messages/c7dea40c99fae6a06dcfe3a4b2d76c8ac2685948.php.php:86
-#| msgid "Non ci sono elementi da visualizzare."
 msgid "Non ci sono dati da visualizzare"
-msgstr ""
+msgstr "Es gibt keine Daten, die angezeigt werden können"
 
 #: ../storage/framework/messages/c97bc241fa9fd8c512d89e87fa3a73ad695bf9f0.php.php:3
 #, php-format
@@ -3307,6 +3318,8 @@ msgid ""
 "Attenzione! Modifica i comportamenti dei tipi di movimento contabile con "
 "molta cautela!"
 msgstr ""
+"Achtung! Verändere das Verhalten der Aktionstypen für die Buchhaltung mit "
+"großer Vorsicht!"
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:110
 msgid ""
@@ -3316,6 +3329,12 @@ msgid ""
 "contabilizzati non vengano rielaborati usando il nuovo comportamento "
 "(producendo saldi completamente diversi da quelli attuali)."
 msgstr ""
+"Bevor du das Verhalten eines bereits existierenden Aktionstyps oder sogar "
+"eines Typs veränderst, dem bereits ein Buchhaltungsvorgang zugeordnet ist, "
+"empfielt es sich die Funktion \"Kontostände archivieren\" so zu nutzen, dass "
+"die vorherigen Buchungsbewegungen nicht neu verarbeitet werden, während das "
+"neue Verhalten in Kraft tritt (was Kontostände produzieren würde, die "
+"komplett von den aktuellen abweichen)."
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:124
 #: ../storage/framework/messages/ddbd8cf6b3bd2bf37b3e0ad9446845ae0da5350e.php.php:7
@@ -3395,10 +3414,11 @@ msgstr "Kontostände archivieren"
 #: ../storage/framework/messages/d3ff01348e530d31dcfec89ce903767d4fe33ed5.php.php:5
 msgid "Per procedere devi settare una nuova password per il tuo profilo."
 msgstr ""
+"Um fortzufahren musst du ein neues Passwort für deinen Account erstellen."
 
 #: ../storage/framework/messages/d3ff01348e530d31dcfec89ce903767d4fe33ed5.php.php:17
 msgid "Salva e Procedi"
-msgstr ""
+msgstr "Speichern und fortfahren"
 
 #: ../storage/framework/messages/d9a90fb40960eac3cd06ae2cf170ddde20929be0.php.php:24
 msgid "Lascia vuoto per non modificare la password"
