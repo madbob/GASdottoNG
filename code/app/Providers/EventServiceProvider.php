@@ -17,6 +17,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\SupplierDeleting' => [
             'App\Listeners\DetachSupplierRole',
         ],
+        'Illuminate\Log\Events\MessageLogged' => [
+            'App\Listeners\HarvestLogs',
+        ],
     ];
 
     public function boot()

@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use DB;
 use Auth;
 use Log;
+use App;
 use Hash;
 use CsvReader;
 use ezcArchive;
@@ -721,6 +722,8 @@ class ImportController extends Controller
                     DB::beginTransaction();
 
                     foreach($imports as $index) {
+                        App::make('LogHarvester')->reset();
+
                         try {
                             $m = new Movement();
                             $m->date = $dates[$index];
@@ -751,7 +754,11 @@ class ImportController extends Controller
                             }
 
                             $m->save();
-                            $movements[] = $m;
+
+                            if ($m->exists)
+                                $movements[] = $m;
+                            else
+                                $errors[] = $index . '<br/>' . App::make('LogHarvester')->last();
                         }
                         catch (\Exception $e) {
                             $errors[] = $index . '<br/>' . $e->getMessage();
