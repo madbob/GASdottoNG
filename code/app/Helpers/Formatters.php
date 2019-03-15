@@ -116,6 +116,10 @@ function decodePeriodic($value)
 
 function unrollPeriodic($value)
 {
+    if (!isset($value->from) || !isset($value->to)) {
+        return [];
+    }
+
     $start = new \DateTime($value->from);
     $end = new \DateTime($value->to);
     $end = $end->modify('+1 days');
