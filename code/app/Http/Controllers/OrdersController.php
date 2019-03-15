@@ -330,8 +330,13 @@ class OrdersController extends Controller
             }
 
             $product = $booking->getBooked($product_id, true);
-            $product->quantity = $quantities[$i];
-            $product->save();
+            if ($product->exists && empty($quantities[$i])) {
+                $product->delete();
+            }
+            else if (!empty($quantities[$i])) {
+                $product->quantity = $quantities[$i];
+                $product->save();
+            }
         }
 
         return $this->successResponse();
