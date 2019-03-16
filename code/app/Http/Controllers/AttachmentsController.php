@@ -94,7 +94,7 @@ class AttachmentsController extends Controller
                 return response()->download($a->path);
             }
             else {
-                Log::error(_i('File non trovato: %s', $a->path));
+                Log::error('File non trovato: ' . $a->path);
                 return '';
             }
         }

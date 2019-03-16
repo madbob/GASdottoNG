@@ -44,6 +44,8 @@ class SlugModel
             */
             $id = str_replace('/', '_', $id);
 
+            $id = str_replace("'", '_', $id);
+
             $event->sluggable->id = $id;
         }
     }

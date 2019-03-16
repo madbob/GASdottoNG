@@ -14,7 +14,8 @@ if(!isset($select_users))
 
     foreach ($currentgas->aggregates()->with('orders')->whereHas('orders', function($query) { $query->where('status', '!=', 'archived'); })->get() as $aggregate) {
         foreach($aggregate->orders as $order)
-            $extras['special::order::'.$order->id] = _i("Tutti i Partecipanti all'ordine %s %s", $order->supplier->name, $order->internal_number);
+            if ($order->status != 'archived')
+                $extras['special::order::'.$order->id] = _i("Tutti i Partecipanti all'ordine %s %s", $order->supplier->name, $order->internal_number);
     }
 
     ?>

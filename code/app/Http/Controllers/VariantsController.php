@@ -72,6 +72,10 @@ class VariantsController extends Controller
                 continue;
 
             $offset = $new_offsets[$i];
+            if (empty($offset)) {
+                $offset = 0;
+            }
+
             $value_found = false;
 
             foreach ($existing_values as $evalue) {
