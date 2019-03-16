@@ -23,7 +23,7 @@ if(!isset($select_users))
     @include('commons.selectobjfield', [
         'obj' => $notification,
         'name' => 'users',
-        'objects' => $currentgas->users,
+        'objects' => $currentgas->users()->whereNull('parent_id')->get(),
         'extra_selection' => $extras,
         'multiple_select' => true,
         'label' => _i('Destinatari'),

@@ -92,7 +92,7 @@ class NotificationsController extends Controller
     {
         $users = $request->input('users', []);
         if (empty($users)) {
-            $us = User::get();
+            $us = User::whereNull('parent_id')->get();
             foreach ($us as $u) {
                 $users[] = $u->id;
             }
