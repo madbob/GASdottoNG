@@ -36,7 +36,7 @@
                         if (!empty($contacts))
                             $head .= ' - ' . join(', ', $contacts);
 
-                        $booking_total = $booking->total_value;
+                        $booking_total = $booking->total_value_with_friends;
                         $total += $booking_total;
                         $total_transport += $booking->check_transport;
 

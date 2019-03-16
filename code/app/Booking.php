@@ -404,6 +404,11 @@ class Booking extends Model
         });
     }
 
+    public function getTotalValueWithFriendsAttribute()
+    {
+        return $this->value_with_friends + $this->check_transport - $this->major_discount;
+    }
+
     public function getDeliveredWithFriendsAttribute()
     {
         $ret = $this->delivered;
