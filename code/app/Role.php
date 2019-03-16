@@ -407,9 +407,8 @@ class Role extends Model
     {
         $basic_roles = self::havingAction($permission);
         foreach($basic_roles as $br) {
-            $users = $br->users;
-
             if (is_null($subject)) {
+                $users = $br->users;
                 if ($users->isEmpty() == false)
                     return true;
                 else

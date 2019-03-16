@@ -4,7 +4,10 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
+use App\Notifications\ClosedOrderNotification;
+
 use App\Order;
+use App\Role;
 
 class CloseOrders extends Command
 {
@@ -18,6 +21,21 @@ class CloseOrders extends Command
 
     public function handle()
     {
-        Order::where('status', 'open')->where('end', '<', date('Y-m-d'))->update(['status' => 'closed']);
+        $orders = Order::where('status', 'open')->where('end', '<', date('Y-m-d'))->get();
+
+        foreach($orders as $order) {
+            try {
+                $order->status = 'closed';
+                $order->save();
+
+                $users = Role::everybodyCan('supplier.orders', $order->supplier);
+                foreach($users as $u) {
+                    $u->notify(new ClosedOrderNotification($order));
+                }
+            }
+            catch(\Exception $e) {
+                Log::error('Errore in chiusura automatica ordine: ' . $e->getMessage());
+            }
+        }
     }
 }
