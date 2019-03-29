@@ -1969,7 +1969,7 @@ $(document).ready(function() {
                         <div class="col-sm-8">\
                             <select class="form-control" name="day" value="" autocomplete="off">\
                                 <option value="monday">' + _('Lunedì') + '</option>\
-                                <option value="thursday">' + _('Martedì') + '</option>\
+                                <option value="tuesday">' + _('Martedì') + '</option>\
                                 <option value="wednesday">' + _('Mercoledì') + '</option>\
                                 <option value="thursday">' + _('Giovedì') + '</option>\
                                 <option value="friday">' + _('Venerdì') + '</option>\

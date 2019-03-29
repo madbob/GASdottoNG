@@ -182,9 +182,9 @@ function localeDays()
         case 'it_IT':
             $days = [
                 'lunedì' => 'monday',
-                'martedì' => 'thursday',
+                'martedì' => 'tuesday',
                 'mercoledì' => 'wednesday',
-                'giovedì' => 'tuesday',
+                'giovedì' => 'thursday',
                 'venerdì' => 'friday',
                 'sabato' => 'saturday',
                 'domenica' => 'sunday',
@@ -194,9 +194,9 @@ function localeDays()
         case 'en_EN':
             $days = [
                 'monday' => 'monday',
-                'thursday' => 'thursday',
-                'wednesday' => 'wednesday',
                 'tuesday' => 'tuesday',
+                'wednesday' => 'wednesday',
+                'thursday' => 'thursday',
                 'friday' => 'friday',
                 'saturday' => 'saturday',
                 'sunday' => 'sunday',
@@ -206,9 +206,9 @@ function localeDays()
         case 'de_DE':
             $days = [
                 'montag' => 'monday',
-                'dienstag' => 'thursday',
+                'dienstag' => 'tuesday',
                 'mittwoch' => 'wednesday',
-                'donnerstag' => 'tuesday',
+                'donnerstag' => 'thursday',
                 'freitag' => 'friday',
                 'samstag' => 'saturday',
                 'sonntag' => 'sunday',
@@ -218,9 +218,9 @@ function localeDays()
         case 'fr_FR':
             $days = [
                 'lundi' => 'monday',
-                'mardi' => 'thursday',
+                'mardi' => 'tuesday',
                 'mercredi' => 'wednesday',
-                'jeudi' => 'tuesday',
+                'jeudi' => 'thursday',
                 'vendredi' => 'friday',
                 'samedi' => 'saturday',
                 'dimanche' => 'sunday',
@@ -230,9 +230,9 @@ function localeDays()
         case 'nb_NO':
             $days = [
                 'mandag' => 'monday',
-                'tirsdag' => 'thursday',
+                'tirsdag' => 'tuesday',
                 'onsdag' => 'wednesday',
-                'torsdag' => 'tuesday',
+                'torsdag' => 'thursday',
                 'fredag' => 'friday',
                 'lørdag' => 'saturday',
                 'søndag' => 'sunday',
@@ -242,9 +242,9 @@ function localeDays()
         case 'nl_NL':
             $days = [
                 'maandag' => 'monday',
-                'dinsdag' => 'thursday',
+                'dinsdag' => 'tuesday',
                 'woensdag' => 'wednesday',
-                'donderdag' => 'tuesday',
+                'donderdag' => 'thursday',
                 'vrijdag' => 'friday',
                 'zaterdag' => 'saturday',
                 'zondag' => 'sunday',

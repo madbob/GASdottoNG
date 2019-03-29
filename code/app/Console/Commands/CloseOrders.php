@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 
 use App\Notifications\ClosedOrderNotification;
 
+use Log;
+
 use App\Order;
 use App\Role;
 
