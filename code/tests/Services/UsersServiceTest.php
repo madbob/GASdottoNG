@@ -93,12 +93,12 @@ class UsersServiceTest extends TestCase
 
         $user1 = factory(\App\User::class)->create([
             'gas_id' => $this->gas->id,
-            'firstname' => 'supermario'
+            'firstname' => 'pippo'
         ]);
 
         $user2 = factory(\App\User::class)->create([
             'gas_id' => $this->gas->id,
-            'lastname' => 'mariobros'
+            'lastname' => 'super pippo'
         ]);
 
         factory(\App\User::class)->create([
@@ -106,7 +106,7 @@ class UsersServiceTest extends TestCase
             'firstname' => 'luigi'
         ]);
 
-        $users = $this->usersService->list('mario');
+        $users = $this->usersService->list('pippo');
         $this->assertCount(2, $users);
         foreach ($users as $user) {
             $this->assertEquals($this->gas->id, $user->gas_id);
