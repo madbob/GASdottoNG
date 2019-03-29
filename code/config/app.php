@@ -161,10 +161,10 @@ return [
 
         Menu\MenuServiceProvider::class,
         Wilgucki\Csv\CsvServiceProvider::class,
-        Elibyy\TCPDF\ServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Devfactory\Minify\MinifyServiceProvider::class,
         Xinax\LaravelGettext\LaravelGettextServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
         App\Providers\SingletonsProvider::class,
         App\Providers\GraphicInitServiceProvider::class,
@@ -222,7 +222,7 @@ return [
         'Menu'      => Menu\Menu::class,
         'CsvReader' => Wilgucki\Csv\Facades\Reader::class,
         'CsvWriter' => Wilgucki\Csv\Facades\Writer::class,
-        'PDF'       => Elibyy\TCPDF\Facades\TCPDF::class,
+        'PDF'       => Barryvdh\DomPDF\Facade::class,
         'Minify'    => Devfactory\Minify\Facades\MinifyFacade::class,
     ],
 

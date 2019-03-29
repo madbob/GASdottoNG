@@ -1,4 +1,13 @@
 <html>
+    <head>
+        <style>
+            table {
+                border-spacing: 0;
+                border-collapse: collapse;
+            }
+        </style>
+    </head>
+
     <body>
         <h3>{{ _i('Listino %s del %s', [$supplier->name, date('d/m/Y')]) }}</h3>
 

@@ -155,11 +155,8 @@ class SuppliersService extends BaseService
             $products = $supplier->products()->where('active', true)->get();
 
         if ($format == 'pdf') {
-            $html = view('documents.cataloguepdf', ['supplier' => $supplier, 'products' => $products])->render();
-            PDF::SetTitle(_i('Listino %s del %s', [$supplier->name, date('d/m/Y')]));
-            PDF::AddPage();
-            PDF::writeHTML($html, true, false, true, false, '');
-            PDF::Output($filename, 'D');
+            $pdf = PDF::loadView('documents.cataloguepdf', ['supplier' => $supplier, 'products' => $products]);
+            return $pdf->download($filename);
         }
         elseif ($format == 'csv') {
             $currency = currentAbsoluteGas()->currency;

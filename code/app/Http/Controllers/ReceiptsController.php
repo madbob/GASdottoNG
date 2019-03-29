@@ -80,17 +80,14 @@ class ReceiptsController extends Controller
         $user = Auth::user();
 
         if ($user->can('movements.admin', $user->gas) || $user->can('movements.view', $user->gas) || $receipt->user_id == $user->id) {
-            $html = view('documents.receipt', ['receipt' => $receipt])->render();
+            $pdf = PDF::loadView('documents.receipt', ['receipt' => $receipt]);
             $title = _i('Fattura %s', [$receipt->number]);
             $filename = sanitizeFilename($title . '.pdf');
-            PDF::SetTitle($title);
-            PDF::AddPage();
-            PDF::writeHTML($html, true, false, true, false, '');
 
             $send_mail = $request->has('send_mail');
             if ($send_mail) {
                 $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
-                PDF::Output($temp_file_path, 'F');
+                $pdf->save($temp_file_path);
 
                 $receipt->user->notify(new ReceiptForward($temp_file_path));
                 $receipt->mailed = true;
@@ -99,7 +96,7 @@ class ReceiptsController extends Controller
                 $receipt->save();
             }
             else {
-                PDF::Output($filename, 'D');
+                return $pdf->download($filename);
             }
         }
         else {

@@ -1,4 +1,13 @@
 <html>
+    <head>
+        <style>
+            table {
+                border-spacing: 0;
+                border-collapse: collapse;
+            }
+        </style>
+    </head>
+
     <body>
         <h3>{{ _i('Dettaglio Consegne') }}<br/>
             @if($aggregate->orders()->count() <= App\Aggregate::aggregatesConvenienceLimit())
@@ -18,7 +27,7 @@
             <table border="1" style="width: 100%" cellpadding="5" nobr="true">
                 <thead>
                     <tr>
-                        <th colspan="3">
+                        <th colspan="5">
                             <strong>{{ $super_booking->user->printableName() }}</strong>
                         </th>
                     </tr>

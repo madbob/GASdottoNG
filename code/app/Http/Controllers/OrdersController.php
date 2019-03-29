@@ -398,21 +398,18 @@ class OrdersController extends Controller
                 $shipping_place = $request->input('shipping_place', 'all_by_name');
                 $bookings = self::orderTopBookingsByShipping($order, $shipping_place);
 
-                $html = view('documents.order_shipping', ['order' => $order, 'bookings' => $bookings, 'shipping_mode' => $shipping_place])->render();
+                $pdf = PDF::loadView('documents.order_shipping', ['order' => $order, 'bookings' => $bookings, 'shipping_mode' => $shipping_place]);
                 $title = _i('Dettaglio Consegne ordine %s presso %s', [$order->internal_number, $order->supplier->name]);
                 $filename = sanitizeFilename($title . '.pdf');
-                PDF::SetTitle($title);
-                PDF::AddPage();
-                PDF::writeHTML($html, true, false, true, false, '');
 
                 $send_mail = $request->has('send_mail');
                 if ($send_mail) {
                     $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
-                    PDF::Output($temp_file_path, 'F');
+                    $pdf->save($temp_file_path);
                     $this->sendDocumentMail($request, $temp_file_path);
                 }
                 else {
-                    PDF::Output($filename, 'D');
+                    return $pdf->download($filename);
                 }
 
                 break;
@@ -433,16 +430,13 @@ class OrdersController extends Controller
                 $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
 
                 if ($subtype == 'pdf') {
-                    $html = view('documents.order_summary_pdf', ['order' => $order, 'data' => $data])->render();
-                    PDF::SetTitle($title);
-                    PDF::AddPage('L');
-                    PDF::writeHTML($html, true, false, true, false, '');
+                    $pdf = PDF::loadView('documents.order_summary_pdf', ['order' => $order, 'data' => $data]);
 
                     if ($send_mail) {
-                        PDF::Output($temp_file_path, 'F');
+                        $pdf->save($temp_file_path);
                     }
                     else {
-                        PDF::Output($filename, 'D');
+                        return $pdf->download($filename);
                     }
                 }
                 else if ($subtype == 'csv') {

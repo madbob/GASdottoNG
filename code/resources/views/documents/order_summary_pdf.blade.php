@@ -1,5 +1,14 @@
 <?php $cellsize = round(100 / count($data->headers), 3) ?>
 <html>
+    <head>
+        <style>
+            table {
+                border-spacing: 0;
+                border-collapse: collapse;
+            }
+        </style>
+    </head>
+
     <body>
         <h3>{{ _i('Prodotti ordinati ordine %s presso %s del %s', [$order->internal_number, $order->supplier->printableName(), $order->shipping ? date('d/m/Y', strtotime($order->shipping)) : date('d/m/Y')]) }}</h3>
 

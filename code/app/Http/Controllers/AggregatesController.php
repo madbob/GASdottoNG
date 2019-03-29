@@ -152,19 +152,16 @@ class AggregatesController extends OrdersController
 
         switch ($type) {
             case 'shipping':
-                $html = view('documents.aggregate_shipping', [
+                $pdf = PDF::loadView('documents.aggregate_shipping', [
                     'aggregate' => $aggregate,
                     'bookings' => $bookings,
                     'products_source' => 'products_with_friends',
                     'shipping_mode' => $shipping_place
-                ])->render();
+                ]);
 
                 $title = _i('Dettaglio Consegne Ordini');
                 $filename = sanitizeFilename($title . '.pdf');
-                PDF::SetTitle($title);
-                PDF::AddPage();
-                PDF::writeHTML($html, true, false, true, false, '');
-                PDF::Output($filename, 'D');
+                return $pdf->download($filename);
                 break;
         }
     }

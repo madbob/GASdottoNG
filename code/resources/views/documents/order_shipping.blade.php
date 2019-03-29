@@ -1,4 +1,13 @@
 <html>
+    <head>
+        <style>
+            table {
+                border-spacing: 0;
+                border-collapse: collapse;
+            }
+        </style>
+    </head>
+
     <body>
         <h3>{{ _i('Dettaglio Consegne Ordine %s presso %s del %s', [$order->internal_number, $order->supplier->printableName(), $order->shipping ? date('d/m/Y', strtotime($order->shipping)) : date('d/m/Y')]) }}</h3>
 

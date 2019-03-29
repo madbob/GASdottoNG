@@ -89,18 +89,16 @@ class BookingUserController extends BookingHandler
         foreach($aggregate->orders as $order) {
             $names[] = sprintf('%s %s', $order->supplier->name, $order->internal_number);
         }
-        $names = join(' / ', $names);
 
-        $html = view('documents.personal_aggregate_shipping', [
+        $names = join(' / ', $names);
+        $filename = sanitizeFilename(_i('Dettaglio Consegne ordini %s.pdf', [$names]));
+
+        $pdf = PDF::loadView('documents.personal_aggregate_shipping', [
             'aggregate' => $aggregate,
             'bookings' => $bookings,
-        ])->render();
+        ]);
 
-        $filename = sanitizeFilename(_i('Dettaglio Consegne ordini %s.pdf', [$names]));
-        PDF::SetTitle(sprintf('Dettaglio Consegne ordini %s', $names));
-        PDF::AddPage();
-        PDF::writeHTML($html, true, false, true, false, '');
-        PDF::Output($filename, 'D');
+        return $pdf->download($filename);
     }
 
     /*

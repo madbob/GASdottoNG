@@ -100,13 +100,10 @@ class MovementsController extends BackedController
                     });
                 }
                 else if ($format == 'pdf') {
-                    $html = view('documents.movements_pdf', ['movements' => $data['movements']])->render();
                     $title = _i('Esportazione movimenti GAS %s', date('d/m/Y'));
                     $filename = sanitizeFilename($title . '.pdf');
-                    PDF::SetTitle($title);
-                    PDF::AddPage('L');
-                    PDF::writeHTML($html, true, false, true, false, '');
-                    PDF::Output($filename, 'D');
+                    $pdf = PDF::loadView('documents.movements_pdf', ['movements' => $data['movements']]);
+                    return $pdf->download($filename);
                 }
             }
         }
