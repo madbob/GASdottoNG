@@ -97,11 +97,9 @@
     </p>
 </div>
 
-<br>
-<br>
-<br>
-<br>
-<br>
+<p class="clearfix">&nbsp;</p>
+<p class="clearfix">&nbsp;</p>
+<p class="clearfix">&nbsp;</p>
 
 <nav class="navbar navbar-default navbar-fixed-bottom">
     <div class="container">
