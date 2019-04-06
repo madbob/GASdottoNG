@@ -45,5 +45,5 @@ if(!isset($select_users))
     'obj' => $notification,
     'name' => 'mailed',
     'label' => _i('Invia Mail'),
-    'help_text' => $notification && $notification->mailed ? _i('Questa notifica è già stata inoltrata via mail. Salvandola mantenendo questo flag attivo verrà inviata una nuova mail.') : ''
+    'help_text' => $notification && $notification->mailed ? _i('Questa notifica è già stata inoltrata via mail. Salvandola mantenendo questo flag attivo verrà inviata una nuova mail.') : _i('Se abiliti questa opzione la notifica sarà subito inoltrata via mail. Se intendi modificarla prima di inoltrarla, attiva questa opzione solo dopo aver salvato e modificato la notifica.')
 ])
