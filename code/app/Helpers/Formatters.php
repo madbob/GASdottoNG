@@ -201,12 +201,17 @@ function normalizePercentage($value)
         return str_replace(' ', '', $value);
 }
 
+function isPercentage($value)
+{
+    return (strpos($value, '%') !== false);
+}
+
 function printablePercentage($value)
 {
     if (empty($value))
         return printablePriceCurrency(0);
 
-    if (strpos($value, '%') !== false)
+    if (isPercentage($value))
         return $value;
     else
         return printablePriceCurrency($value);
@@ -217,7 +222,7 @@ function readPercentage($value)
     if (empty($value))
         return [printablePrice(0), false];
 
-    if (strpos($value, '%') !== false)
+    if (isPercentage($value))
         return [(float) $value, true];
     else
         return [printablePrice($value), false];
@@ -248,7 +253,7 @@ function applyPercentage($original, $percentage, $op = '-')
     $p = (float)$percentage;
     $o = (float)$original;
 
-    if (strpos($percentage, '%') !== false) {
+    if (isPercentage($percentage)) {
         if ($op == '-')
             return $o - (($o * $p) / 100);
         else if ($op == '+')

@@ -48,6 +48,17 @@ function parseFloatC(value) {
     return ret;
 }
 
+function applyPercentage(value, percentage) {
+    if (percentage.endsWith('%')) {
+        var p = parseFloatC(percentage);
+        var pvalue = (p * value) / 100;
+        return [value - pvalue, pvalue];
+    }
+    else {
+        return [value, 0];
+    }
+}
+
 function priceRound(price) {
     return (Math.round(price * 100) / 100).toFixed(2);
 }

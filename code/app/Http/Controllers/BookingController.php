@@ -43,7 +43,7 @@ class BookingController extends Controller
     {
         $aggregate = Aggregate::findOrFail($id);
         $user = Auth::user();
-        return view('booking.editwrap', ['aggregate' => $aggregate, 'user' => $user]);
+        return view('booking.editwrap', ['aggregate' => $aggregate, 'user' => $user, 'standalone' => false]);
     }
 
     public function update(Request $request, $id)

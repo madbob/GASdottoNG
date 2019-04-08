@@ -42,7 +42,22 @@ class BookingUserController extends BookingHandler
             $required_mode = $aggregate->isRunning() ? 'edit' : 'show';
         }
 
-        return view('booking.' . $required_mode, ['aggregate' => $aggregate, 'user' => $user]);
+        $extended = $request->input('extended', 'false');
+
+        /*
+            $extended == true quando sto aprendo la prenotazione di un altro
+            utente dall'apposito pannello, e devo rendere visibili sia la
+            prenotazione dell'utente stesso che quelle degli amici
+        */
+        if ($extended == 'true' && $user->can('users.subusers')) {
+            return view('booking.editwrap', ['aggregate' => $aggregate, 'user' => $user, 'standalone' => true]);
+        }
+        else {
+            /*
+                booking.edit o booking.show
+            */
+            return view('booking.' . $required_mode, ['aggregate' => $aggregate, 'user' => $user]);
+        }
     }
 
     public function update(Request $request, $aggregate_id, $user_id)

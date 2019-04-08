@@ -129,7 +129,7 @@ function generalInit(container) {
                         url = absolute_url + '/delivery/' + aggregate_id + '/user/' + ui.item.id;
                     }
                     else {
-                        url = absolute_url + '/booking/' + aggregate_id + '/user/' + ui.item.id;
+                        url = absolute_url + '/booking/' + aggregate_id + '/user/' + ui.item.id + '?extended=true';
                     }
 
                     $.ajax({
@@ -774,11 +774,6 @@ function bookingTotal(editor) {
     if (total_transport_tag.length != 0)
         total_transport = parseFloatC(total_transport_tag.val());
 
-    var total_discount_tag = editor.find('input:hidden[name=global-discount]');
-    var total_discount = 0;
-    if (total_discount_tag.length != 0)
-        total_discount = parseFloatC(total_discount_tag.val());
-
     editor.find('.booking-product').each(function() {
         if ($(this).hasClass('hidden'))
             return true;
@@ -828,10 +823,17 @@ function bookingTotal(editor) {
         total_transport += row_t;
     });
 
+	var discount = editor.find('input[name=global-discount-value]');
+	if (discount.length != 0) {
+		var discount_value = discount.val();
+		var calculated_discount = applyPercentage(total_price, discount_value);
+		total_price = calculated_discount[0];
+		editor.find('.booking-discount .booking-discount-value span').text(priceRound(calculated_discount[1]));
+	}
+
     editor.find('.booking-transport .booking-transport-price span').text(priceRound(total_transport));
 
     total_price += total_transport;
-    total_price += total_discount;
     editor.find('.booking-total').text(priceRound(total_price));
 
     var form = editor.closest('form');
@@ -2700,7 +2702,7 @@ $(document).ready(function() {
         var url = $(this).attr('data-booking-url');
 
         var fill_target = $(this).closest('.other-booking');
-        fill_target.empty().append(loadingPlaceholder());
+	    fill_target.empty().append(loadingPlaceholder());
 
         $.ajax({
             url: url,

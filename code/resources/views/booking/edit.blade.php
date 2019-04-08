@@ -68,6 +68,30 @@ $has_shipping = $aggregate->canShip();
                         </td>
                     </tr>
                 @endforeach
+
+                @if(!empty($order->discount) && $order->discount != 0)
+                    <tr class="booking-discount">
+                        <td>
+                            <label class="static-label">{{ _i('Sconto') }} {{ printablePercentage($order->discount) }}</label>
+                        </td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+
+                        @if(isPercentage($order->discount))
+                            <td>&nbsp;</td>
+                            <td>
+                                <input type="hidden" name="global-discount-value" value="{{ $order->discount }}">
+                                <label class="static-label booking-discount-value pull-right">
+                                    <span>{{ printablePrice($o->major_discount) }}</span> {{ $currentgas->currency }}
+                                </label>
+                            </td>
+                        @else
+                            <td colspan="2">
+                                {{ _i("Il valore dello sconto sarà applicato sulla tua prenotazione alla chiusura dell'ordine") }}
+                            </td>
+                        @endif
+                    </tr>
+                @endif
             </tbody>
             <tfoot>
                 <tr>
@@ -75,7 +99,7 @@ $has_shipping = $aggregate->canShip();
                     <th></th>
                     <th></th>
                     <th></th>
-                    <th class="text-right">Totale: <span class="booking-total">{{ printablePrice($o->value) }}</span> {{ $currentgas->currency }}</th>
+                    <th class="text-right">Totale: <span class="booking-total">{{ printablePrice($o->total_value) }}</span> {{ $currentgas->currency }}</th>
                 </tr>
             </tfoot>
         </table>
@@ -86,7 +110,7 @@ $has_shipping = $aggregate->canShip();
             </div>
         </div>
 
-        <?php $grand_total += $o->value ?>
+        <?php $grand_total += $o->total_value ?>
     @endforeach
 
     @if($more_orders)
@@ -105,10 +129,6 @@ $has_shipping = $aggregate->canShip();
 
     <div class="row">
         <div class="col-md-12">
-            @if($has_shipping)
-                @include('booking.friendsbuttons', ['aggregate' => $aggregate, 'user' => $user, 'mode' => 'edit'])
-            @endif
-
             <div class="btn-group pull-right main-form-buttons" role="group">
                 <button type="button" class="btn btn-danger delete-booking">{{ _i('Annulla Prenotazione') }}</button>
                 <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>

@@ -284,24 +284,31 @@ class Booking extends Model
         }
     }
 
-    /*
-        Questo ritorna solo lo sconto applicato sull'ordine complessivo
-    */
-    public function getMajorDiscountAttribute()
+    private function getDiscount($value_field)
     {
         if(!empty($this->order->discount) && $this->order->discount != 0) {
             $total_value = $this->order->total_value;
             if ($total_value != 0) {
                 if (is_numeric($this->order->discount)) {
-                    return round($this->value_with_friends * $this->order->discount / $total_value, 2);
+                    return round($this->$value_field * $this->order->discount / $total_value, 2);
                 }
                 else {
-                    return $this->value_with_friends - applyPercentage($this->value_with_friends, $this->order->discount);
+                    return applyPercentage($this->$value_field, $this->order->discount, '=');
                 }
             }
         }
 
         return 0;
+    }
+
+    public function getMajorDiscountWithFriendsAttribute()
+    {
+        return $this->getDiscount('value_with_friends');
+    }
+
+    public function getMajorDiscountAttribute()
+    {
+        return $this->getDiscount('value');
     }
 
     /*
@@ -406,7 +413,7 @@ class Booking extends Model
 
     public function getTotalValueWithFriendsAttribute()
     {
-        return $this->value_with_friends + $this->check_transport - $this->major_discount;
+        return $this->value_with_friends + $this->check_transport - $this->major_discount_with_friends;
     }
 
     public function getDeliveredWithFriendsAttribute()

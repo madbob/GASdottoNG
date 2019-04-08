@@ -175,19 +175,23 @@ $existing = false;
                             <td>&nbsp;</td>
                             <td>
                                 <input type="hidden" name="global-transport-price" value="{{ $o->major_transport }}" class="skip-on-submit" />
-                                <label class="static-label booking-transport-price pull-right"><span>{{ printablePrice($o->check_transport) }}</span> {{ $currentgas->currency }}</label>
+                                <label class="static-label booking-transport-price pull-right">
+                                    <span>{{ printablePrice($o->check_transport) }}</span> {{ $currentgas->currency }}
+                                </label>
                             </td>
                         </tr>
 
-                        <tr class="booking-transport">
+                        <tr class="booking-discount">
                             <td>
-                                <label class="static-label">{{ _i('Sconto') }}</label>
+                                <label class="static-label">{{ _i('Sconto') }} {{ printablePercentage($order->discount) }}</label>
                             </td>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                             <td>
-                                <input type="hidden" name="global-discount" value="{{ $o->major_discount * -1 }}" class="skip-on-submit" />
-                                <label class="static-label booking-discount pull-right"><span>{{ printablePrice($o->major_discount * -1) }}</span> {{ $currentgas->currency }}</label>
+                                <input type="hidden" name="global-discount-value" value="{{ $order->discount }}">
+                                <label class="static-label booking-discount-value pull-right">
+                                    <span>{{ printablePrice($o->major_discount_with_friends) }}</span> {{ $currentgas->currency }}
+                                </label>
                             </td>
                         </tr>
                     </tbody>
