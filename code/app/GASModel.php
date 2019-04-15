@@ -202,6 +202,12 @@ trait GASModel
                         },
                         'text' => _i('Immagine'),
                     ],
+                    'remove-sign' => (object) [
+                        'test' => function ($obj) {
+                            return ($obj->users()->count() != 0);
+                        },
+                        'text' => _i('Accesso limitato'),
+                    ],
                 ],
                 'Product' => [
                     'off' => (object) [

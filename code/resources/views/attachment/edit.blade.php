@@ -8,6 +8,8 @@
                 @include('commons.staticstringfield', ['obj' => $attachment, 'name' => 'name', 'label' => _i('Nome')])
             @endif
 
+            @include('commons.multipleusers', ['obj' => $attachment, 'name' => 'users', 'label' => _i('Destinatari')])
+
             <div class="form-group">
                 <label for="download" class="col-sm-{{ $labelsize }} control-label">{{ _i('Scarica')}}</label>
 

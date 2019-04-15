@@ -4,6 +4,8 @@ namespace App;
 
 use Auth;
 
+use App\User;
+
 trait AttachableTrait
 {
     public function attachments()
@@ -19,6 +21,14 @@ trait AttachableTrait
                 $e->save();
                 $relation->save($e);
             }
+        }
+
+        if ($this->attachmentPermissionGranted() == false) {
+            $relation->where(function($query) {
+                $query->whereDoesntHave('users')->orWhereHas('users', function($query) {
+                    $query->where('users.id', Auth::user()->id);
+                });
+            });
         }
 
         return $relation;
@@ -59,6 +69,10 @@ trait AttachableTrait
         $attachment->filename = $filename;
         $attachment->save();
 
+        $users = $request->input('users');
+        $users = User::unrollSpecialSelectors($users);
+        $attachment->users()->sync($users);
+
         return $attachment;
     }
 
@@ -97,7 +111,6 @@ trait AttachableTrait
     public function attachmentPermissionGranted()
     {
         $required = $this->requiredAttachmentPermission();
-
         if ($required != null) {
             $user = Auth::user();
             return $user->can($required, $this);

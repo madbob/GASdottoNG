@@ -9,6 +9,7 @@ use DB;
 use Log;
 
 use App\Attachment;
+use App\User;
 
 class AttachmentsController extends Controller
 {
@@ -63,6 +64,10 @@ class AttachmentsController extends Controller
         else {
             $a->name = $request->input('name');
             $a->save();
+
+            $users = $request->input('users');
+            $users = User::unrollSpecialSelectors($users);
+            $a->users()->sync($users);
         }
 
         return $this->successResponse([

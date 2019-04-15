@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 use Log;
+use Auth;
 
 use App\GASModel;
 
@@ -18,6 +19,24 @@ class Attachment extends Model
             return $this->morphTo('target')->withoutGlobalScopes()->withTrashed();
         else
             return $this->morphTo('target')->withoutGlobalScopes();
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany('App\User', 'attachments_access');
+    }
+
+    public function hasAccess($user = null)
+    {
+        if ($this->users->isEmpty()) {
+            return true;
+        }
+
+        if (is_null($user)) {
+            $user = Auth::user();
+        }
+
+        return ($this->users()->where('users.id', $user->id)->count() != 0);
     }
 
     public function getPathAttribute()

@@ -6,29 +6,7 @@ if(!isset($select_users))
 ?>
 
 @if($select_users)
-    <?php
-
-    foreach(App\Role::orderBy('name', 'asc')->get() as $role) {
-        $extras['special::role::' . $role->id] = _i('Tutti gli utenti con ruolo "%s"', [$role->name]);
-    }
-
-    foreach ($currentgas->aggregates()->with('orders')->whereHas('orders', function($query) { $query->where('status', '!=', 'archived'); })->get() as $aggregate) {
-        foreach($aggregate->orders as $order)
-            if ($order->status != 'archived')
-                $extras['special::order::'.$order->id] = _i("Tutti i Partecipanti all'ordine %s %s", $order->supplier->name, $order->internal_number);
-    }
-
-    ?>
-
-    @include('commons.selectobjfield', [
-        'obj' => $notification,
-        'name' => 'users',
-        'objects' => $currentgas->users()->whereNull('parent_id')->get(),
-        'extra_selection' => $extras,
-        'multiple_select' => true,
-        'label' => _i('Destinatari'),
-        'help_text' => _i('Tenere premuto Ctrl per selezionare più utenti. Se nessun utente viene selezionato, la notifica sarà destinata a tutti.')
-    ])
+    @include('commons.multipleusers', ['obj' => $notification, 'name' => 'users', 'label' => _i('Destinatari')])
 @else
     @if($notification)
         @foreach($notification->users as $user)

@@ -15,11 +15,14 @@ use Auth;
 use URL;
 
 use App\Events\SluggableCreating;
+
 use App\GASModel;
 use App\SluggableID;
 use App\ContactableTrait;
 use App\SuspendableTrait;
 use App\PayableTrait;
+use App\Role;
+use App\Order;
 
 class User extends Authenticatable
 {
@@ -331,6 +334,34 @@ class User extends Authenticatable
         }
 
         return $ret;
+    }
+
+    public static function unrollSpecialSelectors($users)
+    {
+        $map = [];
+
+        foreach ($users as $u) {
+            if (strrpos($u, 'special::', -strlen($u)) !== false) {
+                if (strrpos($u, 'special::role::', -strlen($u)) !== false) {
+                    $role_id = substr($u, strlen('special::role::'));
+                    $role = Role::find($role_id);
+                    foreach ($role->users as $u) {
+                        $map[] = $u->id;
+                    }
+                }
+                elseif (strrpos($u, 'special::order::', -strlen($u)) !== false) {
+                    $order_id = substr($u, strlen('special::order::'));
+                    $order = Order::findOrFail($order_id);
+                    foreach ($order->topLevelBookings() as $booking) {
+                        $map[] = $booking->user->id;
+                    }
+                }
+            } else {
+                $map[] = $u;
+            }
+        }
+
+        return array_unique($map);
     }
 
     /************************************************************ SluggableID */
