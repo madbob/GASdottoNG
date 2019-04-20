@@ -187,7 +187,7 @@ class User extends Authenticatable
 
         $tot = 0;
         foreach($aggregate->orders as $order)
-            $tot += $order->userBooking($this->id)->total_value;
+            $tot += $order->userBooking($this->id)->getValue('effective', false);
 
         if ($tot != 0)
             $ret .= '<div class="pull-right">' . _i('Ha ordinato %s', printablePriceCurrency($tot)) . '</div>';
@@ -275,7 +275,7 @@ class User extends Authenticatable
         $value = 0;
 
         foreach($bookings as $b)
-            $value += $b->total_value;
+            $value += $b->getValue('effective', true);
 
         return $value;
     }

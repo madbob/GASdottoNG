@@ -76,20 +76,13 @@ $has_shipping = $aggregate->canShip();
                         </td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-
-                        @if(isPercentage($order->discount))
-                            <td>&nbsp;</td>
-                            <td>
-                                <input type="hidden" name="global-discount-value" value="{{ $order->discount }}">
-                                <label class="static-label booking-discount-value pull-right">
-                                    <span>{{ printablePrice($o->major_discount) }}</span> {{ $currentgas->currency }}
-                                </label>
-                            </td>
-                        @else
-                            <td colspan="2">
-                                {{ _i("Il valore dello sconto sarà applicato sulla tua prenotazione alla chiusura dell'ordine") }}
-                            </td>
-                        @endif
+                        <td>&nbsp;</td>
+                        <td>
+                            <input type="hidden" name="global-discount-value" value="{{ $order->discount }}">
+                            <label class="static-label booking-discount-value pull-right">
+                                <span>{{ printablePrice($o->getValue('discount', false)) }}</span> {{ $currentgas->currency }}
+                            </label>
+                        </td>
                     </tr>
                 @endif
             </tbody>
@@ -99,7 +92,7 @@ $has_shipping = $aggregate->canShip();
                     <th></th>
                     <th></th>
                     <th></th>
-                    <th class="text-right">Totale: <span class="booking-total">{{ printablePrice($o->total_value) }}</span> {{ $currentgas->currency }}</th>
+                    <th class="text-right">Totale: <span class="booking-total">{{ printablePrice($o->getValue('effective', false)) }}</span> {{ $currentgas->currency }}</th>
                 </tr>
             </tfoot>
         </table>
@@ -110,7 +103,7 @@ $has_shipping = $aggregate->canShip();
             </div>
         </div>
 
-        <?php $grand_total += $o->total_value ?>
+        <?php $grand_total += $o->getValue('effective', false) ?>
     @endforeach
 
     @if($more_orders)

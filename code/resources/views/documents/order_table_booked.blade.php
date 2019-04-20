@@ -2,6 +2,7 @@
     'order' => $order,
     'selected_bookings' => $bookings,
     'get_function' => 'getBookedQuantity',
-    'get_total' => 'value_with_friends',
+    'get_total' => 'booked',
+    'with_friends' => true,
     'get_function_real' => true
 ])

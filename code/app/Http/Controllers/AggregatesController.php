@@ -155,7 +155,6 @@ class AggregatesController extends OrdersController
                 $pdf = PDF::loadView('documents.aggregate_shipping', [
                     'aggregate' => $aggregate,
                     'bookings' => $bookings,
-                    'products_source' => 'products_with_friends',
                     'shipping_mode' => $shipping_place
                 ]);
 

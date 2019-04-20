@@ -85,6 +85,119 @@ class Booking extends Model
         return $query->orderByRaw(DB::raw("FIELD(user_id, $sorted_users)"));
     }
 
+    /*
+        Funzione unica per ottenere i diversi valori della prenotazione: se non
+        è ancora stata consegnata calcola al volo i numeri, altrimenti preleva i
+        campi salvati sul database al momento della consegna.
+    */
+    public function getValue($type, $with_friends, $force_recalculate = false)
+    {
+        $key = sprintf('%s_%s', $type, $with_friends ? 'friends' : 'nofriends');
+
+        if ($force_recalculate) {
+            $this->emptyInnerCache($key);
+        }
+
+        return $this->innerCache($key, function($obj) use ($type, $with_friends) {
+            $value = 0;
+
+            /*
+                Il totale di quanto prenotato non cambia a seconda che la
+                prenotazione sia consegnata o meno
+            */
+            if ($type == 'booked') {
+                foreach ($obj->products as $booked) {
+                    $booked->setRelation('booking', $obj);
+                    $value += $booked->quantityValue();
+                }
+
+                if ($with_friends) {
+                    foreach($obj->friends_bookings as $sub) {
+                        $value += $sub->getValue($type, true);
+                    }
+                }
+            }
+            else {
+                if ($obj->status == 'shipped') {
+                    switch($type) {
+                        case 'effective':
+                            return $obj->getValue('delivered', $with_friends) + $obj->getValue('transport', $with_friends) - $obj->getValue('discount', $with_friends);
+                            break;
+
+                        case 'delivered':
+                            $value = $obj->products()->sum('final_price');
+                            break;
+
+                        case 'transport':
+                            $value = $obj->products()->sum('final_transport');
+                            break;
+
+                        case 'discount':
+                            $value = $obj->products()->sum('final_discount');
+                            break;
+                    }
+
+                    if ($with_friends) {
+                        foreach($obj->friends_bookings as $sub) {
+                            $value += $sub->getValue($type, $with_friends);
+                        }
+                    }
+                }
+                else {
+                    switch($type) {
+                        case 'effective':
+                            return $obj->getValue('booked', $with_friends) + $obj->getValue('transport', $with_friends) - $obj->getValue('discount', $with_friends);
+                            break;
+
+                        /*
+                            Se la prenotazione non è consegnata, implicitamente il
+                            valore di quanto consegnato è 0
+                        */
+                        case 'delivered':
+                            $value = 0;
+                            break;
+
+                        case 'transport':
+                            if($obj->order->transport > 0) {
+                                $booking_value = $obj->getValue('booked', $with_friends);
+
+                                if (is_numeric($obj->order->transport)) {
+                                    $total_value = $obj->order->total_value;
+                                    if ($total_value != 0) {
+                                        $value = round($booking_value * $obj->order->transport / $total_value, 2);
+                                    }
+                                }
+                                else {
+                                    $value = applyPercentage($booking_value, $obj->order->transport, '=');
+                                }
+                            }
+
+                            break;
+
+                        case 'discount':
+                            if (!empty($obj->order->discount) && $obj->order->discount != 0) {
+                                $booking_value = $obj->getValue('booked', $with_friends);
+
+                                if (is_numeric($obj->order->discount)) {
+                                    $total_value = $obj->order->total_value;
+                                    if ($total_value != 0) {
+                                        $value = round($booking_value * $obj->order->discount / $total_value, 2);
+                                    }
+                                }
+                                else {
+                                    $value = applyPercentage($booking_value, $obj->order->discount, '=');
+                                }
+                            }
+
+                            break;
+                    }
+                }
+            }
+
+            return $value;
+        });
+    }
+
     public function getBooked($product_id, $fallback = false)
     {
         if (is_object($product_id)) {
@@ -143,50 +256,7 @@ class Booking extends Model
     */
     public function getValueAttribute()
     {
-        return $this->innerCache('value', function($obj) {
-            $value = 0;
-
-            foreach ($obj->products as $booked) {
-                $booked->setRelation('booking', $this);
-                $value += $booked->quantityValue();
-            }
-
-            return $value;
-        });
-    }
-
-    /*
-        Valore complessivo di quanto consegnato.
-        Se la prenotazione è stata effettivamente consegnata somma i prezzi
-        finali salvati sul database, altrimenti (e.g. la prenotazione è stata
-        salvata, ma non ancora consegnata) li ricalcola usando la quantità
-        consegnata come riferimento.
-    */
-    public function getDeliveredAttribute()
-    {
-        return $this->innerCache('delivered', function($obj) {
-            if ($obj->status == 'shipped') {
-                return $obj->products()->sum('final_price');
-            }
-            else {
-                $value = 0;
-
-                foreach ($obj->products as $booked) {
-                    $booked->setRelation('booking', $this);
-                    $value += $booked->deliveredValue();
-                }
-
-                return $value;
-            }
-        });
-    }
-
-    /*
-        Trasporto complessivo di quanto consegnato
-    */
-    public function getTransportedAttribute()
-    {
-        return $this->products()->sum('final_transport');
+        return $this->getValue('booked', false);
     }
 
     /*
@@ -207,54 +277,6 @@ class Booking extends Model
     }
 
     /*
-        Questo ritorna solo il costo di trasporto applicato sull'ordine
-        complessivo
-    */
-    public function getMajorTransportAttribute()
-    {
-        return $this->innerCache('major_transport', function($obj) {
-            if($obj->order->transport > 0) {
-                $total_value = $obj->order->total_value;
-                if ($total_value != 0) {
-                    if (is_numeric($obj->order->transport)) {
-                        return round($obj->value_with_friends * $obj->order->transport / $total_value, 2);
-                    }
-                    else {
-                        return $obj->value_with_friends - applyPercentage($obj->value_with_friends, $obj->order->transport);
-                    }
-                }
-            }
-
-            return 0;
-        });
-    }
-
-    /*
-        Se la prenotazione non è ancora stata consegnata, restituisce il costo
-        di trasporto sull'ordine complessivo (cfr. getMajorTransportAttribute())
-        sommato alla somma di trasporto dei singoli prodotti già consegnati.
-        Se la prenotazione è stata consegnata, restituisce il valore salvato sul
-        database
-    */
-    public function getCheckTransportAttribute()
-    {
-        return $this->innerCache('transport', function($obj) {
-            $transport = $obj->major_transport;
-
-            if ($obj->status == 'shipped') {
-                $transport += $obj->products()->sum('final_transport');
-            }
-            else {
-                foreach($obj->products as $p) {
-                    $transport += $p->transportDeliveredValue();
-                }
-            }
-
-            return $transport;
-        });
-    }
-
-    /*
         Questa funzione serve a spalmare il costo di trasporto globale applicato
         all'ordine (e, dunque, alla prenotazione) su tutti i prodotti coinvolti,
         in modo proporzionale.
@@ -265,8 +287,8 @@ class Booking extends Model
     {
         $this->load('products');
 
-        $global_transport = $this->major_transport;
-        $booking_value = $this->delivered;
+        $global_transport = $this->getValue('transport', false);
+        $booking_value = $this->getValue('delivered', false);
         $distributed_amount = 0;
         $last_product = null;
 
@@ -289,38 +311,6 @@ class Booking extends Model
         }
     }
 
-    private function getDiscount($value_field)
-    {
-        if (!empty($this->order->discount) && $this->order->discount != 0) {
-            if (is_numeric($this->order->discount)) {
-                $total_value = $this->order->total_value;
-                if ($total_value != 0) {
-                    return round($this->$value_field * $this->order->discount / $total_value, 2);
-                }
-            }
-            else {
-                return applyPercentage($this->$value_field, $this->order->discount, '=');
-            }
-        }
-
-        return 0;
-    }
-
-    public function getMajorDiscountWithFriendsAttribute()
-    {
-        return $this->getDiscount('value_with_friends');
-    }
-
-    public function getMajorDiscountAttribute()
-    {
-        if ($obj->status == 'shipped') {
-            return $obj->products()->sum('final_discount');
-        }
-        else {
-            return $this->getDiscount('value');
-        }
-    }
-
     /*
         Questa funzione serve a spalmare lo sconto globale applicato all'ordine
         (e, dunque, alla prenotazione) su tutti i prodotti coinvolti, o in modo
@@ -337,8 +327,8 @@ class Booking extends Model
                 $total_value = $this->order->total_value;
                 if ($total_value != 0) {
                     $distributed_amount = 0;
-                    $global_discount = $this->major_discount;
-                    $global_value = $this->value;
+                    $global_discount = $this->getValue('discount', false);
+                    $global_value = $this->getValue('delivered', false);
 
                     foreach($this->products as $p) {
                         $p->final_discount = round($p->final_price * $global_discount / $global_value, 3);
@@ -361,22 +351,6 @@ class Booking extends Model
                 }
             }
         }
-    }
-
-    /*
-        Valore complessivo di quanto ordinato + spedizione globale
-    */
-    public function getTotalValueAttribute()
-    {
-        return $this->value + $this->check_transport - $this->major_discount;
-    }
-
-    /*
-        Valore complessivo di quanto consegnato + spedizione globale
-    */
-    public function getTotalDeliveredAttribute()
-    {
-        return $this->delivered + $this->check_transport;
     }
 
     public function getProductsWithFriendsAttribute()
@@ -454,39 +428,12 @@ class Booking extends Model
         });
     }
 
-    public function getValueWithFriendsAttribute()
-    {
-        return $this->innerCache('value_with_friends', function($obj) {
-            $ret = $obj->value;
-
-            foreach($obj->friends_bookings as $sub)
-                $ret += $sub->value;
-
-            return $ret;
-        });
-    }
-
-    public function getTotalValueWithFriendsAttribute()
-    {
-        return $this->value_with_friends + $this->check_transport - $this->major_discount_with_friends;
-    }
-
-    public function getDeliveredWithFriendsAttribute()
-    {
-        $ret = $this->delivered;
-
-        foreach($this->friends_bookings as $sub)
-            $ret += $sub->delivered;
-
-        return $ret;
-    }
-
     public function getTotalFriendsValueAttribute()
     {
         $ret = 0;
 
         foreach($this->friends_bookings as $sub)
-            $ret += $sub->total_value;
+            $ret += $sub->getValue('effective', false);
 
         return $ret;
     }
@@ -544,7 +491,7 @@ class Booking extends Model
 
         $user = Auth::user();
 
-        $tot = $this->total_value;
+        $tot = $this->getValue('booked', false);
         $friends_tot = $this->total_friends_value;
 
         if($tot == 0 && $friends_tot == 0) {

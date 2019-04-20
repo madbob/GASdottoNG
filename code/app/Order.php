@@ -422,7 +422,7 @@ class Order extends Model
 
         $total_transport_delivered = 0;
         foreach ($order->bookings()->where('status', 'shipped')->get() as $shipped_booking)
-            $total_transport_delivered += $shipped_booking->transported;
+            $total_transport_delivered += $shipped_booking->getValue('transport', true);
         $summary->transport_delivered = $total_transport_delivered;
 
         $summary->notes = [];

@@ -71,7 +71,7 @@ class DeliveryUserController extends BookingHandler
         $booking->distributeDiscount();
 
         $booking->load('products');
-        return $booking->total_value;
+        return $booking->getValue('effective', false, true);
     }
 
     public function postFastShipping(Request $request, $aggregate_id)

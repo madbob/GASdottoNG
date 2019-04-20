@@ -81,6 +81,14 @@ trait GASModel
         $this->inner_runtime_cache[$name] = $value;
     }
 
+    protected function emptyInnerCache($name = null)
+    {
+        if (is_null($name))
+            $this->inner_runtime_cache = [];
+        else
+            unset($this->inner_runtime_cache[$name]);
+    }
+
     private function relatedController()
     {
         $class = get_class($this);

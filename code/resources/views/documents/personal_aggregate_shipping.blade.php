@@ -38,8 +38,8 @@
                         @if($booking->products->isEmpty() == false)
                             <?php
 
-                            $booked_cell_value += $booking->total_value;
-                            $delivered_cell_value += $booking->total_delivered;
+                            $booked_cell_value += $booking->getValue('booked', false);
+                            $delivered_cell_value += $booking->getValue('delivered', false);
 
                             ?>
 
@@ -83,9 +83,9 @@
                         @endif
                     @endforeach
 
-                    @if($booking->check_transport != 0)
+                    @if(($transport = $booking->getValue('transport', false)) != 0)
                         <tr>
-                            <th colspan="5"><strong>{{ _i('Trasporto') }}: {{ printablePriceCurrency($booking->check_transport, ',') }}</th>
+                            <th colspan="5"><strong>{{ _i('Trasporto') }}: {{ printablePriceCurrency($transport, ',') }}</th>
                         </tr>
                     @endif
 
@@ -95,6 +95,12 @@
                     <tr>
                         <th colspan="5"><strong>{{ _i('Totale Consegnato') }}: {{ printablePriceCurrency($delivered_cell_value, ',') }}</strong></th>
                     </tr>
+
+                    @if(($discount = $booking->getValue('discount', false)) != 0)
+                        <tr>
+                            <th colspan="5"><strong>{{ _i('Sconto') }}: {{ printablePriceCurrency($discount, ',') }}</th>
+                        </tr>
+                    @endif
                 </tbody>
             </table>
 

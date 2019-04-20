@@ -226,7 +226,7 @@ class Aggregate extends Model implements Feedable
 
         foreach($this->orders as $o) {
             $b = $o->userBooking($user->id);
-            $tot += $b->total_value;
+            $tot += $b->getValue('effective', false);
             $friends_tot += $b->total_friends_value;
         }
 

@@ -1,3 +1,12 @@
+<?php
+
+if ($with_friends == true)
+    $products_source = 'products_with_friends';
+else
+    $products_source = 'products';
+
+?>
+
 @foreach($booking->$products_source as $product)
     @if($product->variants->isEmpty() == false)
         @foreach($product->variants as $variant)
@@ -20,10 +29,10 @@
     @endif
 @endforeach
 
-@if($booking->check_transport != 0)
+@if($booking->getValue('transport', $with_friends) != 0)
     <tr>
         <td width="40%">{{ _i('Trasporto') }}</td>
         <td width="40%">&nbsp;</td>
-        <td width="20%">{{ printablePriceCurrency($booking->check_transport, ',') }}</td>
+        <td width="20%">{{ printablePriceCurrency($booking->getValue('transport', $with_friends), ',') }}</td>
     </tr>
 @endif

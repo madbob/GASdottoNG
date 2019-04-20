@@ -36,7 +36,12 @@ $existing = false;
 
             $o = $order->userBooking($user->id);
             $existing = ($existing || $o->exists || $o->friends_bookings->isEmpty() == false);
-            $now_delivered = $o->total_delivered;
+
+            if ($o->status == 'pending')
+                $now_delivered = 0;
+            else
+                $now_delivered = $o->getValue('delivered', true) + $o->getValue('transport', true) - $o->getValue('discount', true);
+
             $tot_delivered[$o->id] = $now_delivered;
             $tot_amount += $now_delivered;
 
@@ -167,19 +172,21 @@ $existing = false;
                             </tr>
                         @endif
 
-                        <tr class="booking-transport">
-                            <td>
-                                <label class="static-label">{{ _i('Trasporto') }}</label>
-                            </td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>
-                                <input type="hidden" name="global-transport-price" value="{{ $o->major_transport }}" class="skip-on-submit" />
-                                <label class="static-label booking-transport-price pull-right">
-                                    <span>{{ printablePrice($o->check_transport) }}</span> {{ $currentgas->currency }}
-                                </label>
-                            </td>
-                        </tr>
+                        @if(($transport = $o->getValue('transport', true)) != 0)
+                            <tr class="booking-transport">
+                                <td>
+                                    <label class="static-label">{{ _i('Trasporto') }}</label>
+                                </td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>
+                                    <input type="hidden" name="global-transport-price" value="{{ $transport }}" class="skip-on-submit" />
+                                    <label class="static-label booking-transport-price pull-right">
+                                        <span>{{ printablePrice($transport) }}</span> {{ $currentgas->currency }}
+                                    </label>
+                                </td>
+                            </tr>
+                        @endif
 
                         <tr class="booking-discount">
                             <td>
@@ -190,7 +197,7 @@ $existing = false;
                             <td>
                                 <input type="hidden" name="global-discount-value" value="{{ $order->discount }}">
                                 <label class="static-label booking-discount-value pull-right">
-                                    <span>{{ printablePrice($o->major_discount_with_friends) }}</span> {{ $currentgas->currency }}
+                                    <span>{{ printablePrice($o->status == 'pending' ? 0 : $o->getValue('discount', true)) }}</span> {{ $currentgas->currency }}
                                 </label>
                             </td>
                         </tr>

@@ -65,8 +65,7 @@ class AggregateBooking extends Model
         $grand_total = 0;
 
         foreach ($this->bookings as $booking) {
-            $grand_total += $booking->total_value;
-            $grand_total += $booking->total_friends_value;
+            $grand_total += $booking->getValue('effective', true);
         }
 
         return $grand_total;
@@ -76,8 +75,9 @@ class AggregateBooking extends Model
     {
         $grand_total = 0;
 
-        foreach ($this->bookings as $booking)
-            $grand_total += $booking->total_delivered;
+        foreach ($this->bookings as $booking) {
+            $grand_total += $booking->getValue('delivered', true);
+        }
 
         return $grand_total;
     }

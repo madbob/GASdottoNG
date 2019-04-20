@@ -238,7 +238,7 @@ class MovementType extends Model
                                         $delivered = $handling_status->{$booking->id};
                                     }
                                     else {
-                                        $delivered = $booking->delivered;
+                                        $delivered = $booking->getValue('effective', true, true);
                                     }
 
                                     if ($total < $delivered) {

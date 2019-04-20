@@ -50,14 +50,14 @@
                 </tr>
 
                 @foreach($super_booking->bookings as $booking)
-                    @if($booking->$products_source->isEmpty() == false)
+                    @if($booking->products_with_friends->isEmpty() == false)
                         <tr>
                             <td colspan="3"><strong>{{ $booking->order->supplier->printableName() }}</strong></td>
                         </tr>
 
                         @include('documents.booking_shipping', [
                             'booking' => $booking,
-                            'products_source' => $products_source
+                            'with_friends' => true
                         ])
                     @endif
                 @endforeach

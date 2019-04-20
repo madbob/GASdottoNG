@@ -45,9 +45,11 @@
                         if (!empty($contacts))
                             $head .= ' - ' . join(', ', $contacts);
 
-                        $booking_total = $booking->total_value_with_friends;
+                        $discount = $booking->getValue('discount', true);
+                        $booking_total = $booking->getValue('booked', true) - $discount;
                         $total += $booking_total;
-                        $total_transport += $booking->check_transport;
+                        $transport = $booking->getValue('transport', true);
+                        $total_transport += $transport;
 
                         ?>
                         <strong>{{ $head }}</strong>
@@ -56,8 +58,20 @@
 
                 @include('documents.booking_shipping', [
                     'booking' => $booking,
-                    'products_source' => 'products_with_friends'
+                    'with_friends' => true
                 ])
+
+                @if($transport != 0)
+                    <tr>
+                        <th colspan="3"><strong>{{ _i('Trasporto') }}: {{ printablePriceCurrency($transport, ',') }}</strong></th>
+                    </tr>
+                @endif
+
+                @if($discount != 0)
+                    <tr>
+                        <th colspan="3"><strong>{{ _i('Sconto') }}: {{ printablePriceCurrency($discount, ',') }}</strong></th>
+                    </tr>
+                @endif
 
                 <tr>
                     <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($booking_total, ',') }}</strong></th>

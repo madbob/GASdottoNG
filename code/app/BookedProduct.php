@@ -127,14 +127,15 @@ class BookedProduct extends Model
     public function deliveredTaxedValue()
     {
         $product = $this->product;
+        $net_final_price = $this->final_price - $this->final_discount;
 
         $rate = $product->vat_rate;
         if ($rate != null) {
-            $total = $this->final_price / (1 + ($rate->percentage / 100));
-            $total_vat = $this->final_price - $total;
+            $total = $net_final_price / (1 + ($rate->percentage / 100));
+            $total_vat = $net_final_price - $total;
         }
         else {
-            $total = $this->final_price;
+            $total = $net_final_price;
             $total_vat = 0;
         }
 

@@ -99,24 +99,40 @@ $grand_total = 0;
                         @endif
                     @endforeach
 
-                    <tr class="booking-transport">
-                        <td>
-                            <label class="static-label">{{ _i('Trasporto') }}</label>
-                        </td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>
-                            <input type="hidden" name="global-transport-price" value="{{ $o->major_transport }}" class="skip-on-submit" />
-                            <label class="static-label booking-transport-price pull-right"><span>{{ printablePrice($o->check_transport) }}</span> {{ $currentgas->currency }}</label>
-                        </td>
-                    </tr>
+                    @if(($transport = $o->getValue('transport', false)) != 0)
+                        <tr class="booking-transport">
+                            <td>
+                                <label class="static-label">{{ _i('Trasporto') }}</label>
+                            </td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>
+                                <input type="hidden" name="global-transport-price" value="{{ $o->getValue('transport', false) }}" class="skip-on-submit" />
+                                <label class="static-label booking-transport-price pull-right"><span>{{ printablePrice($transport) }}</span> {{ $currentgas->currency }}</label>
+                            </td>
+                        </tr>
+                    @endif
+
+                    @if(($discount = $o->getValue('discount', false)) != 0)
+                        <tr class="booking-discount">
+                            <td>
+                                <label class="static-label">{{ _i('Sconto') }}</label>
+                            </td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>
+                                <input type="hidden" name="global-discount-price" value="{{ $o->getValue('discount', false) }}" class="skip-on-submit" />
+                                <label class="static-label booking-discount-price pull-right"><span>{{ printablePrice($discount) }}</span> {{ $currentgas->currency }}</label>
+                            </td>
+                        </tr>
+                    @endif
                 </tbody>
                 <tfoot>
                     <tr>
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th class="text-right">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($o->status == 'shipped' ? $o->total_delivered : $o->total_value) }}</span> {{ $currentgas->currency }}</th>
+                        <th class="text-right">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($o->getValue('effective', false)) }}</span> {{ $currentgas->currency }}</th>
                     </tr>
                 </tfoot>
             </table>
@@ -129,7 +145,7 @@ $grand_total = 0;
                 </div>
             @endif
 
-            <?php $grand_total += ($o->status == 'shipped' ? $o->total_delivered : $o->total_value) ?>
+            <?php $grand_total += $o->getValue('effective', false) ?>
         @endif
     @endforeach
 
