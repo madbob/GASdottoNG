@@ -64,20 +64,24 @@ function printablePeriodic($value)
     if (empty($value))
         return '';
 
-    $value = json_decode($value);
+    $value_obj = json_decode($value);
+    if (empty($value_obj)) {
+        Log::error('Data periodica non riconosciuta: ' . $value);
+        return '';
+    }
 
     $days = localeDays();
     foreach($days as $locale => $english) {
-        if ($value->day == $english) {
+        if ($value_obj->day == $english) {
             $day = ucwords($locale);
             break;
         }
     }
 
     $cycles = periodicCycling();
-    $cycle = $cycles[$value->cycle];
+    $cycle = $cycles[$value_obj->cycle];
 
-    return sprintf('%s - %s - %s - %s', $day, $cycle, printableDate($value->from), printableDate($value->to));
+    return sprintf('%s - %s - %s - %s', $day, $cycle, printableDate($value_obj->from), printableDate($value_obj->to));
 }
 
 function decodePeriodic($value)

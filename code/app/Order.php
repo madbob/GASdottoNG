@@ -636,6 +636,16 @@ class Order extends Model
                         return $product->printableMeasure(true);
                     }
                 ],
+                'category' => (object) [
+                    'name' => _i('Categoria'),
+                    'checked' => false,
+                    'format_product' => function($product, $summary) {
+                        return $product->category ? $product->category->name : '';
+                    },
+                    'format_variant' => function($product, $summary, $name, $variant) {
+                        return $product->category ? $product->category->name : '';
+                    }
+                ],
                 'unit_price' => (object) [
                     'name' => _i('Prezzo Unitario'),
                     'checked' => false,
