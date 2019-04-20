@@ -193,6 +193,7 @@ class BookingHandler extends Controller
             else {
                 if ($delivering) {
                     $booking->distributeTransport();
+                    $booking->distributeDiscount();
 
                     $new_status = $request->input('action');
                     if ($new_status == 'saved' && $booking->payment != null) {

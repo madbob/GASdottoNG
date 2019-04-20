@@ -241,8 +241,13 @@ class Booking extends Model
         return $this->innerCache('transport', function($obj) {
             $transport = $obj->major_transport;
 
-            foreach($obj->products as $p) {
-                $transport += $p->transportDeliveredValue();
+            if ($obj->status == 'shipped') {
+                $transport += $obj->products()->sum('final_transport');
+            }
+            else {
+                foreach($obj->products as $p) {
+                    $transport += $p->transportDeliveredValue();
+                }
             }
 
             return $transport;
@@ -286,15 +291,15 @@ class Booking extends Model
 
     private function getDiscount($value_field)
     {
-        if(!empty($this->order->discount) && $this->order->discount != 0) {
-            $total_value = $this->order->total_value;
-            if ($total_value != 0) {
-                if (is_numeric($this->order->discount)) {
+        if (!empty($this->order->discount) && $this->order->discount != 0) {
+            if (is_numeric($this->order->discount)) {
+                $total_value = $this->order->total_value;
+                if ($total_value != 0) {
                     return round($this->$value_field * $this->order->discount / $total_value, 2);
                 }
-                else {
-                    return applyPercentage($this->$value_field, $this->order->discount, '=');
-                }
+            }
+            else {
+                return applyPercentage($this->$value_field, $this->order->discount, '=');
             }
         }
 
@@ -308,7 +313,54 @@ class Booking extends Model
 
     public function getMajorDiscountAttribute()
     {
-        return $this->getDiscount('value');
+        if ($obj->status == 'shipped') {
+            return $obj->products()->sum('final_discount');
+        }
+        else {
+            return $this->getDiscount('value');
+        }
+    }
+
+    /*
+        Questa funzione serve a spalmare lo sconto globale applicato all'ordine
+        (e, dunque, alla prenotazione) su tutti i prodotti coinvolti, o in modo
+        proporzionale (se lo sconto è assoluto) o in modo percentuale.
+        Da applicare solo dopo aver fissato il final_price dei prodotti
+        consegnati
+    */
+    public function distributeDiscount()
+    {
+        if(!empty($this->order->discount) && $this->order->discount != 0) {
+            $this->load('products');
+
+            if (is_numeric($this->order->discount)) {
+                $total_value = $this->order->total_value;
+                if ($total_value != 0) {
+                    $distributed_amount = 0;
+                    $global_discount = $this->major_discount;
+                    $global_value = $this->value;
+
+                    foreach($this->products as $p) {
+                        $p->final_discount = round($p->final_price * $global_discount / $global_value, 3);
+                        $p->save();
+                        $distributed_amount += $p->final_discount;
+                        $last_product = $p;
+                    }
+
+                    if ($distributed_amount != $global_discount && $last_product != null) {
+                        Log::debug('Arrotondo sconto su ultimo prodotto, ' . ($global_discount - $distributed_amount));
+                        $last_product->final_discount += ($global_discount - $distributed_amount);
+                        $last_product->save();
+                    }
+                }
+            }
+            else {
+                foreach($this->products as $p) {
+                    $p->final_discount = applyPercentage($p->final_price, $this->order->discount, '=');
+                    $p->save();
+                }
+            }
+        }
     }
 
     /*
@@ -342,6 +394,9 @@ class Booking extends Model
                     else {
                         $master_p->quantity += $sub_p->quantity;
                         $master_p->delivered += $sub_p->delivered;
+                        $master_p->final_price += $sub_p->final_price;
+                        $master_p->final_transport += $sub_p->final_transport;
+                        $master_p->final_discount += $sub_p->final_discount;
 
                         if($master_p->product->variants->isEmpty() == false) {
                             foreach($sub_p->variants as $sub_variant) {

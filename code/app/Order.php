@@ -460,6 +460,7 @@ class Order extends Model
         $global_total = 0;
         $global_total_taxable = 0;
         $global_total_tax = 0;
+        $transport = 0;
         $rates = [];
 
         foreach ($products as $product) {
@@ -467,7 +468,8 @@ class Order extends Model
                 $query->where('order_id', '=', $order->id);
             });
 
-            $price_delivered = $query->sum('final_price');
+            $price_delivered = $query->sum('final_price') - $query->sum('final_discount');
+            $transport += $query->sum('final_transport');
             $quantity_delivered = $query->sum('delivered');
 
             if (isset($rates[$product->vat_rate_id]) == false)
@@ -491,10 +493,6 @@ class Order extends Model
             $global_total_taxable += $total;
             $global_total_tax += $total_vat;
         }
-
-        $transport = 0;
-        foreach ($order->bookings()->where('status', 'shipped')->get() as $shipped_booking)
-            $transport += $shipped_booking->transported;
 
         $summary->transport = $transport;
         $summary->total = printablePrice($global_total + $summary->transport);

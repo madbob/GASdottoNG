@@ -44,6 +44,36 @@ class DeliveryUserController extends BookingHandler
         return view('booking.table', ['aggregate' => $aggregate]);
     }
 
+    private function fastShipBooking($deliverer, $booking)
+    {
+        $booking->deliverer_id = $deliverer->id;
+        $booking->delivery = date('Y-m-d');
+
+        foreach ($booking->products as $booked) {
+            if ($booked->variants->isEmpty() == false) {
+                foreach($booked->variants as $bpv) {
+                    $bpv->delivered = $bpv->quantity;
+                    $bpv->save();
+                }
+            }
+            else {
+                $booked->delivered = $booked->quantity;
+            }
+
+            $booked->final_price = $booked->deliveredValue();
+            $booked->save();
+        }
+
+        $booking->status = 'shipped';
+        $booking->save();
+
+        $booking->distributeTransport();
+        $booking->distributeDiscount();
+
+        $booking->load('products');
+        return $booking->total_value;
+    }
+
     public function postFastShipping(Request $request, $aggregate_id)
     {
         $user = Auth::user();
@@ -63,29 +93,9 @@ class DeliveryUserController extends BookingHandler
 
             foreach ($aggregate->orders as $order) {
                 $booking = $order->userBooking($user_id);
-                $booking->deliverer_id = $user->id;
-                $booking->delivery = date('Y-m-d');
-
-                foreach ($booking->products as $booked) {
-                    if ($booked->variants->isEmpty() == false) {
-                        foreach($booked->variants as $bpv) {
-                            $bpv->delivered = $bpv->quantity;
-                            $bpv->save();
-                        }
-                    }
-                    else {
-                        $booked->delivered = $booked->quantity;
-                    }
-
-                    $booked->final_price = $booked->deliveredValue();
-                    $booked->save();
-                }
-
-                $booking->status = 'shipped';
-                $booking->save();
-
-                $booking->load('products');
-                $grand_total += $booking->total_value;
+                $grand_total += $this->fastShipBooking($user, $booking);
+                foreach($booking->friends_bookings as $bf)
+                    $grand_total += $this->fastShipBooking($user, $bf);
             }
 
             if ($grand_total != 0) {
