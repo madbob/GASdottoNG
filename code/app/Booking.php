@@ -349,7 +349,12 @@ class Booking extends Model
                     $booking_value = $this->getValue('delivered', false);
 
                     foreach($this->products as $p) {
-                        $p->final_discount = round($p->final_price * $global_discount / $booking_value, 3);
+                        if ($booking_value != 0)
+                            $per_product = round($p->final_price * $global_discount / $booking_value, 3);
+                        else
+                            $per_product = 0;
+
+                        $p->final_discount = $p->discountDeliveredValue() + $per_product;
                         $p->save();
                         $distributed_amount += $p->final_discount;
                         $last_product = $p;

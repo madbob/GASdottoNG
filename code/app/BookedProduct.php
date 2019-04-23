@@ -160,6 +160,16 @@ class BookedProduct extends Model
         return $this->product->transport * $this->delivered;
     }
 
+    public function discountDeliveredValue()
+    {
+        if (isPercentage($this->product->discount)) {
+            return applyPercentage($this->final_price, $this->product->discount, '=');
+        }
+        else {
+            return $this->product->discount * $this->delivered;
+        }
+    }
+
     public function getBookedVariant($variant, $fallback = false)
     {
         $v = $this->variants()->where('id', '=', $variant->id)->first();

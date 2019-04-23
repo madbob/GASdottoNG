@@ -192,9 +192,6 @@ class BookingHandler extends Controller
             }
             else {
                 if ($delivering) {
-                    $booking->distributeTransport();
-                    $booking->distributeDiscount();
-
                     $new_status = $request->input('action');
                     if ($new_status == 'saved' && $booking->payment != null) {
                         $booking->payment->delete();
@@ -202,6 +199,14 @@ class BookingHandler extends Controller
                     }
 
                     $booking->status = $new_status;
+
+                    /*
+                        È indispensabile settare lo stato della prenotazione
+                        prima di distribuire i costi di trasporto e gli sconti
+                    */
+                    $booking->distributeTransport();
+                    $booking->distributeDiscount();
+
                     $booking->save();
 
                     foreach($booking->friends_bookings as $friend_booking) {

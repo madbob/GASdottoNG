@@ -768,13 +768,13 @@ function afterBookingSaved(form, data) {
 
 function bookingTotal(editor) {
     var total_price = 0;
-
-    var total_transport_tag = editor.find('input:hidden[name=global-transport-price]');
     var total_transport = 0;
-    if (total_transport_tag.length != 0)
-        total_transport = parseFloatC(total_transport_tag.val());
+	var total_discount = 0;
 
     editor.find('.booking-product').each(function() {
+		var transport = 0;
+		var discount = 0;
+
         if ($(this).hasClass('hidden'))
             return true;
 
@@ -790,13 +790,21 @@ function bookingTotal(editor) {
             transport = 0;
         }
         else {
-            var transport = product_transport.val();
-            transport = parseFloatC(transport);
+            transport = parseFloatC(product_transport.val());
+        }
+
+		var product_discount = $(this).find('input:hidden[name=product-discount]');
+        if (product_discount.length == 0) {
+            discount = 0;
+        }
+        else {
+            discount = product_transport.val();
         }
 
         var quantity = 0;
         var row_p = 0;
         var row_t = 0;
+		var row_d = 0;
 
         $(this).find('.booking-product-quantity').each(function() {
             var input = $(this).find('input');
@@ -816,31 +824,39 @@ function bookingTotal(editor) {
 
             row_p += current_price * q;
             row_t += transport * q;
+
+			if (discount.endsWith('%')) {
+				var calculated_discount = applyPercentage(row_p, discount, '-');
+				row_d += calculated_discount[1];
+			}
+			else {
+				row_d += discount * q;
+			}
         });
 
         $(this).closest('tr').find('.booking-product-price').text(priceRound(row_p) + ' ' + current_currency);
         total_price += row_p;
         total_transport += row_t;
+		total_discount += row_d;
     });
-
-	var discount = editor.find('input[name=global-discount-value]');
-	if (discount.length != 0) {
-		var discount_value = discount.val();
-		var calculated_discount = applyPercentage(total_price, discount_value, '-');
-		total_price = calculated_discount[0];
-		editor.find('.booking-discount .booking-discount-value span').text(priceRound(calculated_discount[1]));
-	}
 
 	var transport = editor.find('input[name=global-transport-value]');
 	if (transport.length != 0) {
 		var transport_value = transport.val();
 		var calculated_transport = applyPercentage(total_price, transport_value, '+');
-		total_price = calculated_transport[0];
 		total_transport += calculated_transport[1];
 	}
-    editor.find('.booking-transport .booking-transport-value span').text(priceRound(total_transport));
+	editor.find('.booking-transport .booking-transport-value span').text(priceRound(total_transport));
 
-    total_price += total_transport;
+	var discount = editor.find('input[name=global-discount-value]');
+	if (discount.length != 0) {
+		var discount_value = discount.val();
+		var calculated_discount = applyPercentage(total_price, discount_value, '-');
+		total_discount += calculated_discount[1];
+	}
+	editor.find('.booking-discount .booking-discount-value span').text(priceRound(total_discount));
+
+    total_price = total_price - total_discount + total_transport;
     editor.find('.booking-total').text(priceRound(total_price));
 
     var form = editor.closest('form');

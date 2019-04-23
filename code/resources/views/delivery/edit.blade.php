@@ -81,6 +81,7 @@ $existing = false;
                                         <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($product->true_quantity, $discrete_quantity) }}" class="skip-on-submit" />
                                         <input type="hidden" name="product-price" value="{{ $product->product->contextualPrice($order, false) }}" class="skip-on-submit" />
                                         <input type="hidden" name="product-transport" value="{{ $product->product->transport }}" class="skip-on-submit" />
+                                        <input type="hidden" name="product-discount" value="{{ $product->product->discount }}" class="skip-on-submit" />
                                         <label class="static-label">{{ $product->product->name }}</label>
                                     </td>
 
@@ -120,6 +121,7 @@ $existing = false;
                                             <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($var->true_quantity, $discrete_quantity) }}" class="skip-on-submit" />
                                             <input type="hidden" name="product-price" value="{{ $price }}" class="skip-on-submit" />
                                             <input type="hidden" name="product-transport" value="{{ $product->product->transport }}" class="skip-on-submit" />
+                                            <input type="hidden" name="product-discount" value="{{ $product->product->discount }}" class="skip-on-submit" />
 
                                             <label class="static-label">{{ $product->product->name }}: {{ $var->printableName() }}</label>
 
