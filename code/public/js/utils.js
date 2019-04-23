@@ -48,15 +48,21 @@ function parseFloatC(value) {
     return ret;
 }
 
-function applyPercentage(value, percentage) {
+function applyPercentage(value, percentage, operator) {
+    var pvalue = 0;
+
     if (percentage.endsWith('%')) {
         var p = parseFloatC(percentage);
-        var pvalue = (p * value) / 100;
-        return [value - pvalue, pvalue];
+        pvalue = (p * value) / 100;
     }
     else {
-        return [value, 0];
+        pvalue = parseFloatC(percentage);
     }
+
+    if (operator == '-')
+        return [value - pvalue, pvalue];
+    else if (operator == '+')
+        return [value + pvalue, pvalue];
 }
 
 function priceRound(price) {

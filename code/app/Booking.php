@@ -85,6 +85,48 @@ class Booking extends Model
         return $query->orderByRaw(DB::raw("FIELD(user_id, $sorted_users)"));
     }
 
+    private function dynamicTransportCost($with_friends)
+    {
+        $value = 0;
+
+        if($this->order->transport > 0) {
+            $booking_value = $this->getValue('booked', $with_friends);
+
+            if (is_numeric($this->order->transport)) {
+                $total_value = $this->order->total_value;
+                if ($total_value != 0) {
+                    $value = round($booking_value * $this->order->transport / $total_value, 2);
+                }
+            }
+            else {
+                $value = applyPercentage($booking_value, $this->order->transport, '=');
+            }
+        }
+
+        return $value;
+    }
+
+    private function dynamicDiscount($with_friends)
+    {
+        $value = 0;
+
+        if (!empty($this->order->discount) && $this->order->discount != 0) {
+            $booking_value = $this->getValue('booked', $with_friends);
+
+            if (is_numeric($this->order->discount)) {
+                $total_value = $this->order->total_value;
+                if ($total_value != 0) {
+                    $value = round($booking_value * $this->order->discount / $total_value, 2);
+                }
+            }
+            else {
+                $value = applyPercentage($booking_value, $this->order->discount, '=');
+            }
+        }
+
+        return $value;
+    }
+
     /*
         Funzione unica per ottenere i diversi valori della prenotazione: se non
         è ancora stata consegnata calcola al volo i numeri, altrimenti preleva i
@@ -158,37 +200,11 @@ class Booking extends Model
                             break;
 
                         case 'transport':
-                            if($obj->order->transport > 0) {
-                                $booking_value = $obj->getValue('booked', $with_friends);
-
-                                if (is_numeric($obj->order->transport)) {
-                                    $total_value = $obj->order->total_value;
-                                    if ($total_value != 0) {
-                                        $value = round($booking_value * $obj->order->transport / $total_value, 2);
-                                    }
-                                }
-                                else {
-                                    $value = applyPercentage($booking_value, $obj->order->transport, '=');
-                                }
-                            }
-
+                            $value = $obj->dynamicTransportCost($with_friends);
                             break;
 
                         case 'discount':
-                            if (!empty($obj->order->discount) && $obj->order->discount != 0) {
-                                $booking_value = $obj->getValue('booked', $with_friends);
-
-                                if (is_numeric($obj->order->discount)) {
-                                    $total_value = $obj->order->total_value;
-                                    if ($total_value != 0) {
-                                        $value = round($booking_value * $obj->order->discount / $total_value, 2);
-                                    }
-                                }
-                                else {
-                                    $value = applyPercentage($booking_value, $obj->order->discount, '=');
-                                }
-                            }
-
+                            $value = $obj->dynamicDiscount($with_friends);
                             break;
                     }
                 }
@@ -285,29 +301,31 @@ class Booking extends Model
     */
     public function distributeTransport()
     {
-        $this->load('products');
+        if(!empty($this->order->transport) && $this->order->transport != 0) {
+            $this->load('products');
 
-        $global_transport = $this->getValue('transport', false);
-        $booking_value = $this->getValue('delivered', false);
-        $distributed_amount = 0;
-        $last_product = null;
+            $global_transport = $obj->dynamicTransportCost(false);
+            $booking_value = $this->getValue('delivered', false);
+            $distributed_amount = 0;
+            $last_product = null;
 
-        foreach($this->products as $p) {
-            if ($booking_value != 0)
-                $per_product = round(($global_transport * $p->final_price) / $booking_value, 2);
-            else
-                $per_product = 0;
+            foreach($this->products as $p) {
+                if ($booking_value != 0)
+                    $per_product = round(($global_transport * $p->final_price) / $booking_value, 2);
+                else
+                    $per_product = 0;
 
-            $p->final_transport = $p->transportDeliveredValue() + $per_product;
-            $p->save();
-            $distributed_amount += $per_product;
-            $last_product = $p;
-        }
+                $p->final_transport = $p->transportDeliveredValue() + $per_product;
+                $p->save();
+                $distributed_amount += $per_product;
+                $last_product = $p;
+            }
 
-        if ($distributed_amount != $global_transport && $last_product != null) {
-            Log::debug('Arrotondo prezzo di trasporto su ultimo prodotto, ' . ($global_transport - $distributed_amount));
-            $last_product->final_transport += ($global_transport - $distributed_amount);
-            $last_product->save();
+            if ($distributed_amount != $global_transport && $last_product != null) {
+                Log::debug('Arrotondo prezzo di trasporto su ultimo prodotto, ' . ($global_transport - $distributed_amount));
+                $last_product->final_transport += ($global_transport - $distributed_amount);
+                $last_product->save();
+            }
         }
     }
 
@@ -327,11 +345,11 @@ class Booking extends Model
                 $total_value = $this->order->total_value;
                 if ($total_value != 0) {
                     $distributed_amount = 0;
-                    $global_discount = $this->getValue('discount', false);
-                    $global_value = $this->getValue('delivered', false);
+                    $global_discount = $this->dynamicDiscount(false);
+                    $booking_value = $this->getValue('delivered', false);
 
                     foreach($this->products as $p) {
-                        $p->final_discount = round($p->final_price * $global_discount / $global_value, 3);
+                        $p->final_discount = round($p->final_price * $global_discount / $booking_value, 3);
                         $p->save();
                         $distributed_amount += $p->final_discount;
                         $last_product = $p;

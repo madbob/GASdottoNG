@@ -172,35 +172,15 @@ $existing = false;
                             </tr>
                         @endif
 
-                        @if(($transport = $o->getValue('transport', true)) != 0)
-                            <tr class="booking-transport">
-                                <td>
-                                    <label class="static-label">{{ _i('Trasporto') }}</label>
-                                </td>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td>
-                                    <input type="hidden" name="global-transport-price" value="{{ $transport }}" class="skip-on-submit" />
-                                    <label class="static-label booking-transport-price pull-right">
-                                        <span>{{ printablePrice($transport) }}</span> {{ $currentgas->currency }}
-                                    </label>
-                                </td>
-                            </tr>
-                        @endif
+                        @include('delivery.dynamicrow', [
+                            'identifier' => 'transport',
+                            'label' => _i('Trasporto')
+                        ])
 
-                        <tr class="booking-discount">
-                            <td>
-                                <label class="static-label">{{ _i('Sconto') }} {{ printablePercentage($order->discount) }}</label>
-                            </td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>
-                                <input type="hidden" name="global-discount-value" value="{{ $order->discount }}">
-                                <label class="static-label booking-discount-value pull-right">
-                                    <span>{{ printablePrice($o->status == 'pending' ? 0 : $o->getValue('discount', true)) }}</span> {{ $currentgas->currency }}
-                                </label>
-                            </td>
-                        </tr>
+                        @include('delivery.dynamicrow', [
+                            'identifier' => 'discount',
+                            'label' => _i('Sconto')
+                        ])
                     </tbody>
 
                     <tfoot>
