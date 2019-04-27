@@ -347,12 +347,14 @@ class Order extends Model
                         if(isset($summary->by_variant[$product->id][$name]) == false) {
                             $summary->by_variant[$product->id][$name] = [
                                 'quantity' => 0,
+                                'delivered' => 0,
                                 'price' => 0,
                                 'unit_price' => $v->unitPrice()
                             ];
                         }
 
                         $summary->by_variant[$product->id][$name]['quantity'] += $v->quantity;
+                        $summary->by_variant[$product->id][$name]['delivered'] += $v->delivered;
                         $summary->by_variant[$product->id][$name]['price'] += $v->quantityValue();
 
                         $variants_quantity += $v->quantity;
@@ -502,12 +504,25 @@ class Order extends Model
         return $summary;
     }
 
-    public function formatSummary($fields, $shipping_place)
+    public function formatSummary($fields, $status, $shipping_place)
     {
         $ret = (object) [
             'header' => [],
             'contents' => []
         ];
+
+        if ($status == 'delivered') {
+            $internal_offsets = (object)[
+                'by_variant' => 'quantity',
+                'by_product' => 'quantity_pieces'
+            ];
+        }
+        else {
+            $internal_offsets = (object)[
+                'by_variant' => 'delivered',
+                'by_product' => 'delivered_pieces'
+            ];
+        }
 
         $summary = $this->calculateSummary(null, $shipping_place);
         $formattable = self::formattableColumns('summary');
@@ -524,7 +539,7 @@ class Order extends Model
                 $variants_rows = [];
 
                 foreach ($summary->by_variant[$product->id] as $name => $variant) {
-                    if ($variant['quantity'] == 0)
+                    if ($variant[$internal_offsets->by_variant] == 0)
                         continue;
 
                     $row = [];
@@ -542,7 +557,7 @@ class Order extends Model
                 $ret->contents = array_merge($ret->contents, $variants_rows);
             }
             else {
-                if ($summary->products[$product->id]['quantity_pieces'] == 0)
+                if ($summary->products[$product->id][$internal_offsets->by_product] == 0)
                     continue;
 
                 $row = [];
@@ -558,14 +573,31 @@ class Order extends Model
             $row = array_fill(0, count($fields), '');
 
             $row[0] = _i('Totale');
-
             $price_offset = array_search('price', $fields);
-            if ($price_offset !== false)
-                $row[$price_offset] = printablePrice($summary->price, ',');
-
             $transport_offset = array_search('transport', $fields);
-            if ($transport_offset !== false)
-                $row[$transport_offset] = printablePrice($summary->transport, ',');
+
+            if ($status == 'delivered') {
+                $order = $this;
+
+                if ($price_offset !== false) {
+                    $row[$price_offset] = BookedProduct::whereHas('booking', function($query) use ($order) {
+                        $query->where('order_id', $order->id);
+                    })->sum('final_price');
+                }
+
+                if ($transport_offset !== false) {
+                    $row[$transport_offset] = BookedProduct::whereHas('booking', function($query) use ($order) {
+                        $query->where('order_id', $order->id);
+                    })->sum('final_transport');
+                }
+            }
+            else {
+                if ($price_offset !== false)
+                    $row[$price_offset] = printablePrice($summary->price, ',');
+
+                if ($transport_offset !== false)
+                    $row[$transport_offset] = printablePrice($summary->transport, ',');
+            }
 
             $ret->contents[] = $row;
         }

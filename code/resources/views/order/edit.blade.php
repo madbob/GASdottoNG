@@ -4,7 +4,7 @@
     <input type="hidden" name="order_id" value="{{ $order->id }}" />
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6 col-lg-4">
             @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => _i('Fornitore')])
             @include('commons.staticstringfield', ['obj' => $order, 'name' => 'internal_number', 'label' => _i('Numero')])
 
@@ -39,7 +39,7 @@
 
             @include('commons.orderstatus', ['order' => $order])
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6 col-lg-4">
             @if(in_array($order->status, ['suspended', 'open', 'closed']))
                 @include('commons.percentagefield', [
                     'obj' => $order,
@@ -75,7 +75,7 @@
                 ])
             @endif
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6 col-lg-4">
             @include('order.files', ['order' => $order])
         </div>
     </div>

@@ -10,7 +10,7 @@
     </head>
 
     <body>
-        <h3>{{ _i('Prodotti ordinati ordine %s presso %s del %s', [$order->internal_number, $order->supplier->printableName(), $order->shipping ? date('d/m/Y', strtotime($order->shipping)) : date('d/m/Y')]) }}</h3>
+        <h3>{{ _i('Prodotti ordine %s presso %s del %s', [$order->internal_number, $order->supplier->printableName(), $order->shipping ? date('d/m/Y', strtotime($order->shipping)) : date('d/m/Y')]) }}</h3>
 
         <hr/>
 

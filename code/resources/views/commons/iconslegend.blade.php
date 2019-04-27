@@ -19,15 +19,18 @@ foreach($class as $c) {
 ?>
 
 @if(!empty($icons))
-    <div class="btn-group pull-right hidden-xs hidden-sm {{ $table_filter ? 'table-' : '' }}icons-legend" role="group" data-list-target="{{ $target }}">
+    <div class="btn-group pull-right {{ $table_filter ? 'table-' : '' }}icons-legend" role="group" data-list-target="{{ $target }}">
         @foreach($icons as $icon => $label)
             @if($limit_to == null || in_array($icon, $limit_to))
                 @if(is_string($label))
-                    <button type="button" class="btn btn-info"><span class="glyphicon glyphicon-{{ $icon }}" aria-hidden="true"></span>&nbsp;{{ $label }}</button>
+                    <button type="button" class="btn btn-info">
+                        <span class="glyphicon glyphicon-{{ $icon }}" aria-hidden="true"></span>&nbsp;
+                        <span class="hidden-xs hidden-sm">{{ $label }}</span>
+                    </button>
                 @else
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
-                            <span class="glyphicon glyphicon-{{ $icon }}" aria-hidden="true"></span>&nbsp;{{ $label->label }} <span class="caret"></span>
+                            <span class="glyphicon glyphicon-{{ $icon }}" aria-hidden="true"></span>&nbsp;<span class="hidden-xs hidden-sm">{{ $label->label }}</span> <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
                             @foreach($label->items as $subicon => $sublabel)

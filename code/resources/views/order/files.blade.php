@@ -6,7 +6,7 @@
         <span class="glyphicon glyphicon-modal-window pull-right" aria-hidden="true"></span>
     </a>
     <a href="#" class="list-group-item" data-toggle="modal" data-target="#summary-products-document-{{ $rand }}">
-        {{ _i('Riassunto Prodotti Ordinati') }}
+        {{ _i('Riassunto Prodotti') }}
         <span class="glyphicon glyphicon-modal-window pull-right" aria-hidden="true"></span>
     </a>
     <a href="#" class="list-group-item" data-toggle="modal" data-target="#all-products-document-{{ $rand }}">
@@ -29,7 +29,7 @@
                 </div>
                 <div class="modal-body">
                     <p>
-                        {{ _i("Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si trovano le informazioni relative alle singole prenotazioni.") }}
+                        {{ _i("Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si trovano le informazioni relative alle singole prenotazioni. Utile da consultare mentre si effettuano le consegne.") }}
                     </p>
 
                     @if($currentgas->hasFeature('shipping_places'))
@@ -69,7 +69,7 @@
             <form class="form-horizontal direct-submit" method="GET" action="{{ url('orders/document/' . $order->id . '/summary') }}" data-toggle="validator" novalidate>
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">{{ _i('Riassunto Prodotti Ordinati') }}</h4>
+                    <h4 class="modal-title">{{ _i('Riassunto Prodotti') }}</h4>
                 </div>
                 <div class="modal-body">
                     <p>
@@ -106,6 +106,22 @@
                         'labelsize' => 2,
                         'fieldsize' => 10,
                         'values' => App\Order::formattableColumns('summary')
+                    ])
+
+                    @include('commons.radios', [
+                        'name' => 'status',
+                        'label' => _i('Stato Prenotazioni'),
+                        'labelsize' => 2,
+                        'fieldsize' => 10,
+                        'values' => [
+                            'booked' => (object) [
+                                'name' => _i('Prenotate'),
+                                'checked' => true
+                            ],
+                            'delivered' => (object) [
+                                'name' => _i('Consegnate')
+                            ],
+                        ]
                     ])
 
                     @include('commons.radios', [

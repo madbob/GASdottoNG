@@ -75,7 +75,7 @@
     <hr/>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12 col-lg-6">
             <div class="form-horizontal form-filler" data-action="{{ url('orders/search') }}" data-toggle="validator" data-fill-target="#main-order-list">
                 @include('commons.genericdaterange', [
                     'start_date' => strtotime('-6 months'),
@@ -118,7 +118,7 @@
                 ])
 
                 <div class="form-group">
-                    <div class="col-md-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
+                    <div class="col-sm-{{ $fieldsize }} col-sm-offset-{{ $labelsize }}">
                         <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
                     </div>
                 </div>
