@@ -65,26 +65,23 @@ $has_shipping = $aggregate->canShip();
 
                         <td>
                             <label class="static-label booking-product-price pull-right">{{ printablePriceCurrency($p ? $p->quantityValue() : 0) }}</label>
+                            <input type="hidden" name="product-transport" value="{{ $product->transport }}" class="skip-on-submit" />
+                            <input type="hidden" name="product-discount" value="{{ $product->discount }}" class="skip-on-submit" />
                         </td>
                     </tr>
                 @endforeach
 
-                @if(!empty($order->discount) && $order->discount != 0)
-                    <tr class="booking-discount">
-                        <td>
-                            <label class="static-label">{{ _i('Sconto') }} {{ printablePercentage($order->discount) }}</label>
-                        </td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>
-                            <input type="hidden" name="global-discount-value" value="{{ $order->discount }}">
-                            <label class="static-label booking-discount-value pull-right">
-                                <span>{{ printablePrice($o->getValue('discount', false)) }}</span> {{ $currentgas->currency }}
-                            </label>
-                        </td>
-                    </tr>
-                @endif
+                @include('delivery.dynamicrow', [
+                    'identifier' => 'transport',
+                    'label' => _i('Trasporto'),
+                    'skip_cells' => 3
+                ])
+
+                @include('delivery.dynamicrow', [
+                    'identifier' => 'discount',
+                    'label' => _i('Sconto'),
+                    'skip_cells' => 3
+                ])
             </tbody>
             <tfoot>
                 <tr>

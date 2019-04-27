@@ -778,14 +778,14 @@ function bookingTotal(editor) {
         if ($(this).hasClass('hidden'))
             return true;
 
-        var product_price = $(this).find('input:hidden[name=product-price]');
+        var product_price = $(this).find('input:hidden[name="product-price"]');
         if (product_price.length == 0)
             return true;
 
         var price = product_price.val();
         price = parseFloatC(price);
 
-        var product_transport = $(this).find('input:hidden[name=product-transport]');
+        var product_transport = $(this).find('input:hidden[name="product-transport"]');
         if (product_transport.length == 0) {
             transport = 0;
         }
@@ -793,12 +793,12 @@ function bookingTotal(editor) {
             transport = parseFloatC(product_transport.val());
         }
 
-		var product_discount = $(this).find('input:hidden[name=product-discount]');
+		var product_discount = $(this).find('input:hidden[name="product-discount"]');
         if (product_discount.length == 0) {
-            discount = 0;
+            discount = '';
         }
         else {
-            discount = product_transport.val();
+            discount = product_discount.val();
         }
 
         var quantity = 0;

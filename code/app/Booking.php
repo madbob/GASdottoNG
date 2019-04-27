@@ -103,6 +103,19 @@ class Booking extends Model
             }
         }
 
+        $transported = $this->products()->whereHas('product', function($query) {
+            $query->where('transport', '!=', 0);
+        })->with('product')->get();
+
+        foreach($transported as $t) {
+            if (is_numeric($t->product->transport)) {
+                $value += $t->quantity * $t->product->transport;
+            }
+            else {
+                $value += applyPercentage($t->quantityValue(), $t->product->transport, '=');
+            }
+        }
+
         return $value;
     }
 
@@ -121,6 +134,19 @@ class Booking extends Model
             }
             else {
                 $value = applyPercentage($booking_value, $this->order->discount, '=');
+            }
+        }
+
+        $discounted = $this->products()->whereHas('product', function($query) {
+            $query->where('discount', '!=', 0);
+        })->with('product')->get();
+
+        foreach($discounted as $d) {
+            if (is_numeric($d->product->discount)) {
+                $value += $d->quantity * $d->product->discount;
+            }
+            else {
+                $value += applyPercentage($d->quantityValue(), $d->product->discount, '=');
             }
         }
 
@@ -514,7 +540,7 @@ class Booking extends Model
 
         $user = Auth::user();
 
-        $tot = $this->getValue('booked', false);
+        $tot = $this->getValue('effective', false);
         $friends_tot = $this->total_friends_value;
 
         if($tot == 0 && $friends_tot == 0) {

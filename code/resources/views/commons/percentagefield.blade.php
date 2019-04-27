@@ -1,4 +1,12 @@
-<?php list($value, $is_percentage) = readPercentage($obj ? $obj->$name : '') ?>
+<?php
+
+list($value, $is_percentage) = readPercentage($obj ? $obj->$name : '');
+
+if (!isset($help_text)) {
+    $help_text = '';
+}
+
+?>
 
 <div class="form-group">
     @if($squeeze == false)
@@ -31,5 +39,9 @@
                 </label>
             </div>
         </div>
+
+        @if(!empty($help_text))
+            <span class="help-block">{!! $help_text !!}</span>
+        @endif
     </div>
 </div>
