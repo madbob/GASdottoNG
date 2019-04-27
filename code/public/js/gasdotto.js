@@ -660,8 +660,24 @@ function enforceMeasureDiscrete(node) {
     var form = node.closest('form');
     var discrete = node.find('option:selected').attr('data-discrete');
     var disabled = (discrete == '1');
-    form.find('input[name=portion_quantity]').prop('disabled', disabled);
-    form.find('input[name=variable]').prop('disabled', disabled);
+
+    form.find('input[name=portion_quantity]').val('0.00').prop('disabled', disabled);
+	var multiple_widget = form.find('input[name=multiple]');
+
+	if (disabled) {
+		form.find('input[name=variable]').bootstrapToggle('off').bootstrapToggle('disable');
+
+		multiple_widget.attr('data-enforce-minimum', 1);
+		multiple_widget.attr('data-enforce-integer', 1);
+
+		multiple_widget.val(parseInt(multiple_widget.val()));
+		if (multiple_widget.val() < 1)
+			multiple_widget.val('1.000');
+	}
+	else {
+		form.find('input[name=variable]').bootstrapToggle('enable');
+		multiple_widget.removeAttr('data-enforce-minimum').removeAttr('data-enforce-integer');
+	}
 }
 
 /*******************************************************************************
@@ -1328,7 +1344,14 @@ $(document).ready(function() {
             return;
         }
 
+		var integer = $(this).attr('data-enforce-integer');
+		if (integer && (e.key == '.' || e.key == ',')) {
+			e.preventDefault();
+			return;
+		}
+
         var allow_negative = ($(this).attr('data-allow-negative') == '1');
+		var minimum = $(this).attr('data-enforce-minimum');
 
         $(this).val(function(index, value) {
             var val = value.replace(/,/g, '.');
@@ -1337,17 +1360,31 @@ $(document).ready(function() {
             else
                 val = val.replace(/[^0-9\.]/g, '');
 
+			if (val != '' && minimum && val < minimum)
+				val = minimum;
+
             return val;
         });
     })
     .on('focus', 'input.number', function(e) {
         var v = parseFloatC($(this).val());
-        if (v == 0)
-            $(this).val('0');
+        if (v == 0) {
+			var minimum = $(this).attr('data-enforce-minimum');
+			if (minimum)
+				$(this).val(minimum);
+			else
+				$(this).val('0');
+		}
     })
     .on('blur', 'input.number', function(e) {
         $(this).val(function(index, value) {
-            return parseFloatC(value);
+			var v = parseFloatC(value);
+
+			var minimum = $(this).attr('data-enforce-minimum');
+			if (minimum && v < minimum)
+				return minimum;
+			else
+				return v;
         });
     });
 
