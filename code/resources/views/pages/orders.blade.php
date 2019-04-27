@@ -78,8 +78,8 @@
         <div class="col-md-6">
             <div class="form-horizontal form-filler" data-action="{{ url('orders/search') }}" data-toggle="validator" data-fill-target="#main-order-list">
                 @include('commons.genericdaterange', [
-                    'start_date' => strtotime('-1 years'),
-                    'end_date' => strtotime('+1 years'),
+                    'start_date' => strtotime('-6 months'),
+                    'end_date' => strtotime('+6 months'),
                 ])
                 @include('commons.selectobjfield', [
                     'obj' => null,
