@@ -162,6 +162,10 @@ class BookedProduct extends Model
 
     public function discountDeliveredValue()
     {
+        if (empty($this->product->discount)) {
+            return 0;
+        }
+
         if (isPercentage($this->product->discount)) {
             return applyPercentage($this->final_price, $this->product->discount, '=');
         }
