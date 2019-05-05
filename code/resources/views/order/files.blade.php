@@ -110,7 +110,7 @@
 
                     @include('commons.radios', [
                         'name' => 'status',
-                        'label' => _i('Stato Prenotazioni'),
+                        'label' => _i('Quantità'),
                         'labelsize' => 2,
                         'fieldsize' => 10,
                         'values' => [

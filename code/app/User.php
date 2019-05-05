@@ -230,6 +230,8 @@ class User extends Authenticatable
             if ($assigned)
                 $test->attachApplication($assigned);
         }
+
+        return $test;
     }
 
     public function removeRole($role, $assigned)

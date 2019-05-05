@@ -148,7 +148,13 @@ class RolesController extends Controller
                 return $this->successResponse();
             }
             else {
-                $u->addRole($r, null);
+                $attached = $u->addRole($r, null);
+
+                foreach($r->getAllClasses() as $target_class) {
+                    $available_targets = Role::targetsByClass($target_class);
+                    if ($available_targets->count() == 1)
+                        $attached->attachApplication($available_targets->get(0));
+                }
 
                 DB::commit();
                 return view('permissions.main_roleuser', ['role' => $r, 'user' => $u]);

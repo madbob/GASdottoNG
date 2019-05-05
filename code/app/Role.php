@@ -111,14 +111,12 @@ class Role extends Model
         return User::whereIn('id', $user_ids)->get();
     }
 
-    private function getAllClasses()
+    public function getAllClasses()
     {
         $ret = [];
         $permissions = self::allPermissions();
 
         foreach ($permissions as $class => $types) {
-            $found = false;
-
             foreach($types as $t => $label) {
                 if ($this->enabledAction($t)) {
                     $ret[] = $class;
@@ -130,6 +128,14 @@ class Role extends Model
         return $ret;
     }
 
+    public static function targetsByClass($class)
+    {
+        if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
+            return $class::withTrashed()->orderBy('name', 'asc')->get();
+        else
+            return $class::orderBy('name', 'asc')->get();
+    }
+
     public function getTargetsAttribute()
     {
         if (is_null($this->targets)) {
@@ -137,12 +143,7 @@ class Role extends Model
 
             $classes = $this->getAllClasses();
             foreach($classes as $class) {
-                if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
-                    $all = $class::withTrashed()->orderBy('name', 'asc')->get();
-                else
-                    $all = $class::orderBy('name', 'asc')->get();
-
-                $this->targets = $this->targets->merge($all);
+                $this->targets = $this->targets->merge(self::targetsByClass($class));
             }
         }
 
