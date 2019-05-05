@@ -86,6 +86,10 @@ class Gas extends Model
                 'default' => '0'
             ],
 
+            'pending_packages_enabled' => [
+                'default' => '0'
+            ],
+
             'rid' => [
                 'default' => (object) [
                     'iban' => '',
@@ -226,6 +230,11 @@ class Gas extends Model
     public function getFastShippingEnabledAttribute()
     {
         return $this->getConfig('fast_shipping_enabled') == '1';
+    }
+
+    public function getPendingPackagesEnabledAttribute()
+    {
+        return $this->getConfig('pending_packages_enabled') == '1';
     }
 
     public function getRestrictedAttribute()

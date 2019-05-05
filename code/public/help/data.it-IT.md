@@ -276,6 +276,10 @@ Quando questa opzione è abilitata, chiunque potrà registrarsi all'istanza per 
 
 Quando questa opzione è abilitata, nel pannello dell'ordine viene attivato il tab "Consegne Rapide" (accanto a "Consegne") che permette di marcare più prenotazioni come consegnate in un'unica operazione.
 
+# Prenotazioni per Completare Confezioni
+
+Quando questa opzione è abilitata, se gli ordini includono prodotti divisi in "Confezioni" ed il totale delle quantità prenotate non è un multiplo di queste, è possibile avanzare altre prenotazioni anche dopo la chiusura dell'ordine stesso (ma solo sui prodotti con confezioni da completare).
+
 # Colonne Riassunto Ordini
 
 Colonne visualizzate di default nella griglia di riassunto degli ordini. È comunque sempre possibile modificare la visualizzazione dall'interno della griglia stessa per mezzo del selettore posto in alto a destra.

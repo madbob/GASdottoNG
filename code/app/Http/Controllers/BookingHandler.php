@@ -55,7 +55,12 @@ class BookingHandler extends Controller
 
             $count_products = 0;
 
-            foreach ($order->products as $product) {
+            if (currentAbsoluteGas()->pending_packages_enabled)
+                $products = $order->status == 'open' ? $order->products : $order->pendingPackages();
+            else
+                $products = $order->products;
+
+            foreach ($products as $product) {
                 $quantity = $request->input($product->id, 0);
                 if (empty($quantity))
                     $quantity = 0;

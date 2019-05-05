@@ -89,11 +89,6 @@ class Order extends Model
         return $this->belongsToMany('App\Invoice');
     }
 
-    public function getSlugID()
-    {
-        return sprintf('%s::%s', $this->supplier->id, str_slug(strftime('%d %B %G', strtotime($this->start))));
-    }
-
     public function printableName()
     {
         $ret = $this->supplier->name;
@@ -253,7 +248,38 @@ class Order extends Model
 
     public function isRunning()
     {
-        return $this->status == 'open';
+        return (($this->status == 'open') || ($this->status == 'closed' && currentAbsoluteGas()->pending_packages_enabled && $this->pendingPackages()->isEmpty() == false));
+    }
+
+    public function pendingPackages()
+    {
+        $ret = new Collection();
+
+        if ($this->products->where('package_size', '!=', 0)->count() != 0) {
+            $summary = $this->calculateSummary();
+            foreach($summary->products as $product_id => $meta)
+                if ($meta['notes'] == true) {
+                    /*
+                        Se devo completare delle confezioni, altero la quantità
+                        massima disponibile a runtime per fare in modo di
+                        forzare il raggiungimento della quantità desiderata
+                    */
+
+                    $p = Product::find($product_id);
+                    $test = $p->fixed_package_size;
+
+                    $fake_max_available = 0;
+                    while($fake_max_available < $meta['quantity']) {
+                        $fake_max_available += $test;
+                    }
+
+                    $p->max_available = $fake_max_available;
+
+                    $ret->push($p);
+                }
+        }
+
+        return $ret;
     }
 
     public function calculateSummary($products = null, $shipping_place = null)
@@ -396,13 +422,7 @@ class Order extends Model
 
             $summary->products[$product->id]['notes'] = false;
             if ($product->package_size != 0 && $quantity != 0) {
-                if ($product->portion_quantity <= 0) {
-                    $test = $product->package_size;
-                } else {
-                    $test = round($product->portion_quantity * $product->package_size, 2);
-                }
-
-                $test = round(fmod($quantity, $test));
+                $test = round(fmod($quantity, $product->fixed_package_size));
                 if ($test != 0) {
                     $summary->products[$product->id]['notes'] = true;
                 }
@@ -792,6 +812,13 @@ class Order extends Model
     public function getPermissionsProxies()
     {
         return [$this->supplier];
+    }
+
+    /************************************************************ SluggableID */
+
+    public function getSlugID()
+    {
+        return sprintf('%s::%s', $this->supplier->id, str_slug(strftime('%d %B %G', strtotime($this->start))));
     }
 
     /******************************************************** CreditableTrait */

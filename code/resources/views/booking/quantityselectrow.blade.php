@@ -3,6 +3,8 @@
 if(!isset($while_shipping))
     $while_shipping = false;
 
+$booked_quantity = $o->getBookedQuantity($product);
+
 ?>
 
 @if($while_shipping == false)
@@ -14,7 +16,7 @@ if(!isset($while_shipping))
     <input type="hidden" name="product-partitioning" value="{{ $product->portion_quantity }}" class="skip-on-submit" />
 
     @if($product->max_available != 0)
-        <input type="hidden" name="product-available" value="{{ $product->stillAvailable($order) }}" class="skip-on-submit" />
+        <input type="hidden" name="product-available" value="{{ $product->stillAvailable($order) + $booked_quantity }}" class="skip-on-submit" />
     @endif
 @else
     <input type="hidden" name="product-price" value="{{ $product->contextualPrice($order, !$while_shipping) }}" class="skip-on-submit" />
@@ -38,7 +40,7 @@ if(!isset($while_shipping))
     </div>
 @else
     <div class="input-group booking-product-quantity">
-        <input type="text" class="form-control number" name="{{ $product->id }}" value="{{ $populate ? $o->getBookedQuantity($product) : '' }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
+        <input type="text" class="form-control number" name="{{ $product->id }}" value="{{ $populate ? $booked_quantity : '' }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
         <div class="input-group-addon">
             @if($while_shipping)
                 {{ $product->measure->name }}

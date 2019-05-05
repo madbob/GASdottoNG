@@ -126,6 +126,7 @@
 
                                 <div class="col-md-12">
                                     @include('commons.boolfield', ['obj' => $gas, 'name' => 'fast_shipping_enabled', 'label' => _i('Abilita Consegne Rapide')])
+                                    @include('commons.boolfield', ['obj' => $gas, 'name' => 'pending_packages_enabled', 'label' => _i('Prenotazioni per Completare Confezioni')])
 
                                     <div class="form-group">
                                         <?php $columns = $currentgas->orders_display_columns ?>

@@ -16,14 +16,39 @@ $has_shipping = $aggregate->canShip();
             <h3>{{ $order->printableName() }}</h3>
         @endif
 
-        <?php $o = $order->userBooking($user->id) ?>
+        <?php
+
+        $notice = null;
+
+        $o = $order->userBooking($user->id);
+        if ($currentgas->pending_packages_enabled) {
+            if ($order->status == 'open') {
+                $products = $order->products;
+            }
+            else {
+                $products = $order->pendingPackages();
+                $notice = _i("Attenzione: quest'ordine è chiuso, ma è possibile prenotare ancora alcuni prodotti per completare le confezioni da consegnare.");
+            }
+        }
+        else {
+            $products = $order->products;
+        }
+
+        ?>
+
+        @if(!is_null($notice))
+            <div class="alert alert-info">
+                {{ $notice }}
+            </div>
+            <br>
+        @endif
 
         @include('commons.iconslegend', [
             'class' => 'Product',
             'target' => '#booking_' . sanitizeId($order->id),
             'table_filter' => true,
             'limit_to' => ['th'],
-            'contents' => $order->products
+            'contents' => $products
         ])
 
         <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}">
@@ -37,7 +62,7 @@ $has_shipping = $aggregate->canShip();
                 </tr>
             </thead>
             <tbody>
-                @foreach($order->products as $product)
+                @foreach($products as $product)
                     <?php $p = $o->getBooked($product->id) ?>
 
                     <tr class="booking-product">

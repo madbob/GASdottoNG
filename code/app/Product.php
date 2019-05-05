@@ -68,6 +68,16 @@ class Product extends Model
             return url('products/picture/' . $this->id);
     }
 
+    public function getFixedPackageSizeAttribute()
+    {
+        if ($this->portion_quantity <= 0) {
+            return $this->package_size;
+        }
+        else {
+            return round($this->portion_quantity * $this->package_size, 2);
+        }
+    }
+
     public function stillAvailable($order)
     {
         if ($this->max_available == 0) {
