@@ -1633,15 +1633,22 @@ $(document).ready(function() {
         var text = $(this).val().toLowerCase();
         var target = $(this).attr('data-list-target');
 
+		/*
+			Usando qui show() al posto di css('display','block') talvolta agli
+			elementi nascosti viene applicato un display:inline, che spacca il
+			layout quando vengono visualizzati. Forzando l'uso di display:block
+			mantengo intatta la lista
+		*/
+
         if (text == '') {
-            $('.loadablelist' + target + ' .loadable-item').show();
+            $('.loadablelist' + target + ' .loadable-item').css('display', 'block');
         }
         else {
             $('.loadablelist' + target + ' .loadable-item').each(function() {
                 if ($(this).text().toLowerCase().indexOf(text) == -1)
-                    $(this).hide();
+                    $(this).css('display', 'none');
                 else
-                    $(this).show();
+                    $(this).css('display', 'block');
             });
         }
     });
