@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2019-03-14 11:32+0100\n"
-"PO-Revision-Date: 2019-03-14 11:34+0100\n"
+"PO-Revision-Date: 2019-03-23 19:38+0000\n"
 "Last-Translator: jendo <jendo.berlin@gmx.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
 "translations/de/>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Weblate 3.6-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -89,14 +89,14 @@ msgid "[Luogo non Specificato]"
 msgstr "Lieferort nicht ausgewählt"
 
 #: ../resources/views/emails/booking.blade.php:7
-#| msgid "Di seguito il riassunto dei prodotti che hai ordinato:"
 msgid "Di seguito il riassunto dei prodotti che ti sono stati consegnati:"
 msgstr ""
+"Im Folgenden die Zusammenfassung der Produkte, die dir geliefert wurden:"
 
 #: ../resources/views/emails/booking.blade.php:15
-#| msgid "Di seguito il riassunto dei prodotti che hai ordinato:"
 msgid "Di seguito il riassunto dei prodotti che ti saranno consegnati:"
 msgstr ""
+"Im Folgenden die Zusammenfassung der Produkte, die dir geliefert werden:"
 
 #: ../resources/views/emails/booking.blade.php:22
 #: ../storage/framework/messages/120626ca6d2919eadea9eb47de0a4818ee0e4d52.php.php:2
@@ -415,7 +415,7 @@ msgstr "Nicht aufgelistete Kategorien und Maßeinheiten werden erstellt."
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:143
 msgid "Nome Prodotto (obbligatorio)"
-msgstr ""
+msgstr "Name des Produkts (erforderlich)"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:149
 #: ../storage/framework/messages/33b8621008ec6ac5433277c5e356893e7713f8ff.php.php:35
@@ -430,7 +430,7 @@ msgstr "ID Lieferant"
 #: ../storage/framework/messages/33b8621008ec6ac5433277c5e356893e7713f8ff.php.php:36
 #: Http/Controllers/ImportController.php:175
 msgid "Dimensione Confezione"
-msgstr "Packungsdimension"
+msgstr "Packungsmaße"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:151
 #: ../storage/framework/messages/33b8621008ec6ac5433277c5e356893e7713f8ff.php.php:37
@@ -471,7 +471,7 @@ msgstr "Nachname"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:353
 msgid "Login (obbligatorio)"
-msgstr ""
+msgstr "Login (erforderlich)"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:354
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:90
@@ -503,17 +503,17 @@ msgstr "Handy"
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:357
 #: Http/Controllers/ImportController.php:450
 msgid "Indirizzo (Via)"
-msgstr ""
+msgstr "Adresse (Straße)"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:358
 #: Http/Controllers/ImportController.php:453
 msgid "Indirizzo (CAP)"
-msgstr ""
+msgstr "Adresse (PLZ)"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:359
 #: Http/Controllers/ImportController.php:456
 msgid "Indirizzo (Città)"
-msgstr ""
+msgstr "Adresse (Stadt)"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:360
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:38
@@ -578,6 +578,8 @@ msgid ""
 "Gli utenti sono identificati per username o indirizzo mail (che deve essere "
 "univoco!)."
 msgstr ""
+"Die Benutzer werden über den Nutzernamen oder die Emailadresse identifiziert "
+"(letztere muss eindeutig sein!)."
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:508
 #: ../storage/framework/messages/0c713b2be1917f40417f287c6b12b256cb166621.php.php:80
@@ -823,7 +825,7 @@ msgstr "Diesen Parameter mit Vorsicht ändern!"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:302
 msgid "Testi Messaggi Mail"
-msgstr ""
+msgstr "Texte der Emailbenachrichtigungen"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:315
 msgid ""
@@ -832,10 +834,16 @@ msgid ""
 "opportuni valori al momento della generazione: per aggiungerli nei testi, "
 "usare la sintassi %[nome_placeholder]"
 msgstr ""
+"Hier kannst du die Texte der Emails verändern, die durch GASdotto verschickt "
+"werden. Für jeden Typ sind Platzhalter vorgesehen, die im Moment der "
+"Erstellung durch die entsprechenden Werte ersetzt werden: um die Texte "
+"einzufügen, nutze die Syntax %[name_placeholder]"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:319
 msgid "Placeholder globali, che possono essere usati in tutti i messaggi:"
 msgstr ""
+"Allgemeine Platzhalter, die in allen Benachrichtigungen genutzt werden "
+"können:"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:355
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:82
@@ -844,7 +852,7 @@ msgstr "Subject"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:361
 msgid "Testo"
-msgstr ""
+msgstr "Text"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:381
 #: ../storage/framework/messages/33b8621008ec6ac5433277c5e356893e7713f8ff.php.php:28
@@ -1752,14 +1760,16 @@ msgstr "Es gibt keine Produkte"
 #: ../storage/framework/messages/33b8621008ec6ac5433277c5e356893e7713f8ff.php.php:19
 msgid "Disattiva prodotti di questo fornitore non inclusi nell'elenco"
 msgstr ""
+"Deaktiviere Produkte dieses Lieferanten, die nicht in der Liste aufgeführt "
+"sind"
 
 #: ../storage/framework/messages/33b8621008ec6ac5433277c5e356893e7713f8ff.php.php:39
 msgid "Aggiorna"
-msgstr ""
+msgstr "Aktualisiere"
 
 #: ../storage/framework/messages/33b8621008ec6ac5433277c5e356893e7713f8ff.php.php:157
 msgid "Nessun Prodotto Aggiornabile"
-msgstr ""
+msgstr "Kein Produkt aktualisierbar"
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:5
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:31
@@ -2033,7 +2043,7 @@ msgstr "Benachrichtigung"
 #: ../storage/framework/messages/f5974edcd79a5ad220dfbbdb77a0a8635cc5ed1e.php.php:5
 #: ../storage/framework/messages/f5974edcd79a5ad220dfbbdb77a0a8635cc5ed1e.php.php:34
 msgid "Stato"
-msgstr "Zustand"
+msgstr "Status"
 
 #: ../storage/framework/messages/409c9ed96e29b8276d7b64fd6b6352c7708bbf1f.php.php:79
 msgid "Registra Pagamento"
@@ -2665,32 +2675,32 @@ msgstr "Rolle Mitbenutzer (Freunde)"
 #: ../storage/framework/messages/7d9afef4455849383f88277ed93e77e9b3410af4.php.php:53
 #: Helpers/Formatters.php:53
 msgid "Ogni due Settimane"
-msgstr ""
+msgstr "Alle zwei Wochen"
 
 #: ../storage/framework/messages/7d9afef4455849383f88277ed93e77e9b3410af4.php.php:54
 #: Helpers/Formatters.php:54
 msgid "Primo del Mese"
-msgstr ""
+msgstr "Erster des Monats"
 
 #: ../storage/framework/messages/7d9afef4455849383f88277ed93e77e9b3410af4.php.php:55
 #: Helpers/Formatters.php:55
 msgid "Secondo del Mese"
-msgstr ""
+msgstr "Zweiter des Monats"
 
 #: ../storage/framework/messages/7d9afef4455849383f88277ed93e77e9b3410af4.php.php:56
 #: Helpers/Formatters.php:56
 msgid "Terzo del Mese"
-msgstr ""
+msgstr "Dritter des Monats"
 
 #: ../storage/framework/messages/7d9afef4455849383f88277ed93e77e9b3410af4.php.php:57
 #: Helpers/Formatters.php:57
 msgid "Quarto del Mese"
-msgstr ""
+msgstr "Vierter des Monats"
 
 #: ../storage/framework/messages/7d9afef4455849383f88277ed93e77e9b3410af4.php.php:58
 #: Helpers/Formatters.php:58
 msgid "Ultimo del Mese"
-msgstr ""
+msgstr "Letzter Tag des Monats"
 
 #: ../storage/framework/messages/7e217d580df832ff5663372f02cb826f06c6b4b4.php.php:12
 msgid "La Mia Prenotazione"
@@ -3162,16 +3172,23 @@ msgid ""
 "%[gas_login_link]\n"
 "Una mail di notifica è stata inviata agli amministratori."
 msgstr ""
+"Willkommen im Bestellsystem von %[gas_name]!\n"
+"\n"
+"In Zukunft kannst du dich über folgenden Link mit deinem Nutzernamen \""
+"%[username]\" und dem von dir gewählten Passwort anmelden.\n"
+"%[gas_login_link]\n"
+"\n"
+"Eine Benachrichtigungsmail wurde an die Administrator*innen geschickt."
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:155
 #: Config.php:27
 msgid "Username assegnato al nuovo utente"
-msgstr ""
+msgstr "Benutzername des neuen Nutzers"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:156
 #: Config.php:28
 msgid "Link della pagina di login"
-msgstr ""
+msgstr "Link zur Loginseite"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:161
 #: Gas.php:159
@@ -3181,16 +3198,23 @@ msgid ""
 "non hai chiesto tu questa operazione.\n"
 "%[gas_reset_link]"
 msgstr ""
+"Es wurde eine Anfrage zur Aktualisierung deines GASdotto-Passwortes gestellt."
+"\n"
+"\n"
+"Klicke unten auf den Link, um das Passwort zu aktualisieren. Falls du das "
+"Neusetzen des Passwortes nicht angefragt hast, ignoriere diese Email.\n"
+"\n"
+"%[gas_reset_link]"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:163
 #: Config.php:34
 msgid "Link per il reset della password"
-msgstr ""
+msgstr "Link zur Zurücksetzung des Passwortes"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:167
 #: Gas.php:162
 msgid "Nuovo Ordine Aperto per %[supplier_name]"
-msgstr ""
+msgstr "Neue Bestellung eröffnet für %[supplier_name]"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:168
 #: Gas.php:165
@@ -3201,31 +3225,38 @@ msgid ""
 "%[gas_booking_link]\n"
 "Le prenotazioni verranno chiuse %[closing_date]"
 msgstr ""
+"Eine neue Bestellung wurde eröffnet von der %[gas_name] für den Lieferanten "
+"%[supplier_name].\n"
+"\n"
+"Um daran teilzunehmen, melde dich über folgenden Link an: \n"
+"%[gas_booking_link]\n"
+"\n"
+"Die Bestellfrist endet am %[closing_date]"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:170
 #: Config.php:40
 msgid "Il nome del fornitore"
-msgstr ""
+msgstr "Name des Lieferanten"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:171
 #: Config.php:41
 msgid "Link per le prenotazioni"
-msgstr ""
+msgstr "Link zu den Bestellungen"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:172
 #: Config.php:42
 msgid "Data di chiusura dell'ordine"
-msgstr ""
+msgstr "Ende der Bestellfrist"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:176
 #: Gas.php:168
 msgid "Nuova fattura da %[gas_name]"
-msgstr ""
+msgstr "Neue Rechnung von %[gas_name]"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:177
 #: Gas.php:171
 msgid "In allegato l'ultima fattura da %[gas_name]"
-msgstr ""
+msgstr "Im Anhang die letzte Rechnung von %[gas_name]"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:194
 #: Gas.php:186
@@ -3256,7 +3287,7 @@ msgstr "Kaution"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:44
 msgid "Caricamento in corso"
-msgstr ""
+msgstr "Ladevorgang"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:118
 msgid "Feedback"
@@ -3299,7 +3330,7 @@ msgstr "Abschicken"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:173
 msgid "Attenzione"
-msgstr ""
+msgstr "Achtung"
 
 #: ../storage/framework/messages/b98be77f28236fceb70dd1893b5d896319fdb2a5.php.php:133
 #: Supplier.php:133
@@ -3323,12 +3354,12 @@ msgstr "Mit freundlichen Grüßen"
 #: ../storage/framework/messages/c26987771b0c0c4fdb76731b7e28856bd9123670.php.php:40
 #: Http/Controllers/Auth/ForgotPasswordController.php:40
 msgid "Username o indirizzo e-mail non trovato"
-msgstr ""
+msgstr "Benutzername oder Emailadresse nicht gefunden"
 
 #: ../storage/framework/messages/c26987771b0c0c4fdb76731b7e28856bd9123670.php.php:55
 #: Http/Controllers/Auth/ForgotPasswordController.php:55
 msgid "L'utente indicato non ha un indirizzo mail valido"
-msgstr ""
+msgstr "Der angegebene Nutzer hat keine gültige Emailadresse"
 
 #: ../storage/framework/messages/c26987771b0c0c4fdb76731b7e28856bd9123670.php.php:62
 #: Http/Controllers/Auth/ForgotPasswordController.php:62
@@ -3336,6 +3367,8 @@ msgid ""
 "Ti è stata inviata una mail col link per procedere all'aggiornamento della "
 "password"
 msgstr ""
+"Du hast eine Email mit einem Link zur Aktualisierung deines Passwortes "
+"erhalten"
 
 #: ../storage/framework/messages/c4652b192f85ead50be5a9e63b109416991d8177.php.php:18
 msgid ""
@@ -3352,7 +3385,7 @@ msgstr ""
 
 #: ../storage/framework/messages/c4652b192f85ead50be5a9e63b109416991d8177.php.php:94
 msgid "Ricorrenza"
-msgstr ""
+msgstr "Wiederholung"
 
 #: ../storage/framework/messages/c4f8815ff3cf5214c4bbe15ca9a0c585608364f9.php.php:19
 #: Notifications/NewUserNotification.php:19
@@ -3459,7 +3492,7 @@ msgstr ""
 
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:24
 msgid "Ultima Prenotazione"
-msgstr ""
+msgstr "Letzte Bestellung"
 
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:42
 msgid "Configurazione SEPA"
@@ -3607,6 +3640,8 @@ msgid ""
 "La password è uguale allo username! Cambiala il prima possibile dal tuo <a "
 "href=\"%s\">pannello utente</a>!"
 msgstr ""
+"Das Passwort ist identisch mit dem Benutzernamen! Ändere es, sobald wie "
+"möglich, in deinem  <a href=\"%s\">Nutzerprofil</a>!"
 
 #: ../storage/framework/messages/d9a90fb40960eac3cd06ae2cf170ddde20929be0.php.php:24
 msgid "Lascia vuoto per non modificare la password"
@@ -3632,13 +3667,15 @@ msgstr "Rolle wiederrufen"
 
 #: ../storage/framework/messages/e7abcf2c78ce46e6b4b7e33c5511932a21e4a065.php.php:9
 msgid "Username o Indirizzo E-Mail"
-msgstr ""
+msgstr "Benutzername oder Emailadresse"
 
 #: ../storage/framework/messages/e87ae80e77dc769211036a553e845beed56ba28d.php.php:27
 msgid ""
 "Clicca e trascina gli attributi dalla colonna di destra alla colonna "
 "centrale, per assegnare ad ogni colonna del tuo file un significato."
 msgstr ""
+"Klicke und ziehe die Attribute aus der rechten Spalte in die mittlere, um "
+"jeder Spalte deiner Datei eine Bedeutung bzw. Überschrift zuzuweisen."
 
 #: ../storage/framework/messages/e87ae80e77dc769211036a553e845beed56ba28d.php.php:48
 msgid "Colonna"
@@ -3791,43 +3828,48 @@ msgstr "Gesamtbestellungen"
 #: Config.php:25
 msgid "Messaggio inviato ai nuovi iscritti sulla piattaforma."
 msgstr ""
+"Benachrichtigung, die an neu registrierte Nutzer des Bestellsystems "
+"verschickt wird."
 
 #: Config.php:32
 msgid "Messaggio per il ripristino della password."
-msgstr ""
+msgstr "Benachrichtigung zum Neusetzen des Passwortes."
 
 #: Config.php:38
-#| msgid ""
-#| "All'apertura dell'ordine, saranno inviate mail di annuncio a tutti gli "
-#| "utenti che hanno abilitato le notifiche per il fornitore selezionato."
 msgid ""
 "Notifica per i nuovi ordini aperti (inviato agli utenti che hanno "
 "esplicitamente abilitato le notifiche per il fornitore)."
 msgstr ""
+"Benachrichtigung über neue offene Bestellungen (versandt an die Nutzer, die "
+"ausdrücklich die Benachrichtigungsfunktion bezüglich des Lieferanten in "
+"ihrem Profil aktiviert haben)."
 
 #: Config.php:46
 msgid "Mail di accompagnamento per le ricevute."
-msgstr ""
+msgstr "Begleitmail für Quittungen."
 
 #: Http/Controllers/ImportController.php:156
-#| msgid "Prezzo Unitario (%s)"
 msgid "Prezzo Unitario (senza IVA)"
-msgstr ""
+msgstr "Einzelpreis (ohne Mwst.)"
 
 #: Http/Controllers/ImportController.php:157
 msgid "Da usare in combinazione con Aliquota IVA"
-msgstr ""
+msgstr "Zu benutzen in Kombination mit dem jeweiligen Mehrwertsteuersatz"
 
 #: Http/Controllers/ImportController.php:178
+#, fuzzy
 #| msgid "Confezione"
 msgid "Prezzo Confezione"
-msgstr ""
+msgstr "Verpackungskosten"
 
 #: Http/Controllers/ImportController.php:179
+#, fuzzy
 msgid ""
 "Se specificato, il prezzo unitario viene calcolato come Prezzo Confezione / "
 "Dimensione Confezione"
 msgstr ""
+"Wenn es einzeln ausgewiesen ist, wird der Einzelpreis berechnet nach den "
+"Kosten der Verpackung / des Verpackungsmaßes"
 
 #: Http/Controllers/ImportController.php:460
 #: Http/Controllers/ImportController.php:467
@@ -3835,15 +3877,15 @@ msgstr ""
 #: Http/Controllers/ImportController.php:624
 #, php-format
 msgid "Preferibilmente in formato YYYY-MM-DD (e.g. %s)"
-msgstr ""
+msgstr "Bevorzugt im Format YYYY-MM-DD (e.g. %s)"
 
 #: Http/Controllers/ImportController.php:475
 msgid "Indicare \"true\" o \"false\""
-msgstr ""
+msgstr "Anzeigen \"true\" oder \"false\""
 
 #: Http/Controllers/ImportController.php:634
 msgid "Username o indirizzo e-mail"
-msgstr ""
+msgstr "Benutzername oder Emailadresse"
 
 #~ msgid "Colonna obbligatoria non specificata: categoria"
 #~ msgstr "Unbestimmte Pflichtspalte: Kategorie"
