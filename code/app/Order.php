@@ -533,14 +533,14 @@ class Order extends Model
 
         if ($status == 'delivered') {
             $internal_offsets = (object)[
-                'by_variant' => 'quantity',
-                'by_product' => 'quantity_pieces'
+                'by_variant' => 'delivered',
+                'by_product' => 'delivered_pieces'
             ];
         }
         else {
             $internal_offsets = (object)[
-                'by_variant' => 'delivered',
-                'by_product' => 'delivered_pieces'
+                'by_variant' => 'quantity',
+                'by_product' => 'quantity_pieces'
             ];
         }
 
