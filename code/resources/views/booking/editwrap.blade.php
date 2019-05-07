@@ -13,10 +13,10 @@ if (!isset($required_mode)) {
 <div class="row">
     <div class="col-md-12">
         <ul class="nav nav-tabs hidden-xs" role="tablist">
-            <li role="presentation"><a href="#myself-{{ $user->id }}-{{ $aggregate->id }}" role="tab" data-toggle="tab">{{ _i('La Mia Prenotazione') }}</a></li>
+            <li role="presentation"><a href="#myself-{{ sanitizeId($user->id) }}-{{ $aggregate->id }}" role="tab" data-toggle="tab">{{ _i('La Mia Prenotazione') }}</a></li>
 
             @if($user->can('users.subusers'))
-                <li role="presentation"><a href="#friends-{{ $user->id }}-{{ $aggregate->id }}" role="tab" data-toggle="tab">{{ _i('Prenotazioni per gli Amici') }}</a></li>
+                <li role="presentation"><a href="#friends-{{ sanitizeId($user->id) }}-{{ $aggregate->id }}" role="tab" data-toggle="tab">{{ _i('Prenotazioni per gli Amici') }}</a></li>
             @endif
 
             @if($standalone == false && $has_shipping && $aggregate->isActive())
@@ -29,7 +29,7 @@ if (!isset($required_mode)) {
         </ul>
 
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane" id="myself-{{ $user->id }}-{{ $aggregate->id }}">
+            <div role="tabpanel" class="tab-pane" id="myself-{{ sanitizeId($user->id) }}-{{ $aggregate->id }}">
                 @if($required_mode == 'edit')
                     @include('booking.edit', ['aggregate' => $aggregate, 'user' => $user])
                 @else
@@ -38,7 +38,7 @@ if (!isset($required_mode)) {
             </div>
 
             @if($user->can('users.subusers'))
-                <div role="tabpanel" class="tab-pane" id="friends-{{ $user->id }}-{{ $aggregate->id }}">
+                <div role="tabpanel" class="tab-pane" id="friends-{{ sanitizeId($user->id) }}-{{ $aggregate->id }}">
                     <div class="row">
                         <div class="col-md-12">
                             @include('commons.loadablelist', [
