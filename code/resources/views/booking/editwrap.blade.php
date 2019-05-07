@@ -4,6 +4,10 @@ $more_orders = ($aggregate->orders->count() > 1);
 $grand_total = 0;
 $has_shipping = $aggregate->canShip();
 
+if (!isset($required_mode)) {
+    $required_mode = $aggregate->isRunning() ? 'edit' : 'show';
+}
+
 ?>
 
 <div class="row">
@@ -26,7 +30,7 @@ $has_shipping = $aggregate->canShip();
 
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane" id="myself-{{ $user->id }}-{{ $aggregate->id }}">
-                @if($aggregate->isRunning())
+                @if($required_mode == 'edit')
                     @include('booking.edit', ['aggregate' => $aggregate, 'user' => $user])
                 @else
                     @include('booking.show', ['aggregate' => $aggregate, 'user' => $user])

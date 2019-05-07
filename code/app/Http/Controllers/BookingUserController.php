@@ -50,7 +50,7 @@ class BookingUserController extends BookingHandler
             prenotazione dell'utente stesso che quelle degli amici
         */
         if ($extended == 'true' && $user->can('users.subusers')) {
-            return view('booking.editwrap', ['aggregate' => $aggregate, 'user' => $user, 'standalone' => true]);
+            return view('booking.editwrap', ['aggregate' => $aggregate, 'user' => $user, 'standalone' => true, 'required_mode' => $required_mode]);
         }
         else {
             /*
