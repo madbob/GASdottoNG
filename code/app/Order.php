@@ -253,34 +253,36 @@ class Order extends Model
 
     public function pendingPackages()
     {
-        $ret = new Collection();
-        $products = $this->products()->where('package_size', '!=', 0)->get();
+        return $this->innerCache('pending_packages', function($obj) {
+            $ret = new Collection();
+            $products = $obj->products()->where('package_size', '!=', 0)->with('measure')->get();
 
-        if ($products->isEmpty() == false) {
-            $summary = $this->calculateSummary($products);
-            foreach($summary->products as $product_id => $meta)
-                if ($meta['notes'] == true) {
-                    /*
-                        Se devo completare delle confezioni, altero la quantità
-                        massima disponibile a runtime per fare in modo di
-                        forzare il raggiungimento della quantità desiderata
-                    */
+            if ($products->isEmpty() == false) {
+                $summary = $obj->calculateSummary($products);
+                foreach($summary->products as $product_id => $meta)
+                    if ($meta['notes'] == true) {
+                        /*
+                            Se devo completare delle confezioni, altero la quantità
+                            massima disponibile a runtime per fare in modo di
+                            forzare il raggiungimento della quantità desiderata
+                        */
 
-                    $p = $meta['product_obj'];
-                    $test = $p->fixed_package_size;
+                        $p = $meta['product_obj'];
+                        $test = $p->fixed_package_size;
 
-                    $fake_max_available = 0;
-                    while($fake_max_available < $meta['quantity']) {
-                        $fake_max_available += $test;
+                        $fake_max_available = 0;
+                        while($fake_max_available < $meta['quantity']) {
+                            $fake_max_available += $test;
+                        }
+
+                        $p->max_available = $fake_max_available;
+
+                        $ret->push($p);
                     }
+            }
 
-                    $p->max_available = $fake_max_available;
-
-                    $ret->push($p);
-                }
-        }
-
-        return $ret;
+            return $ret;
+        });
     }
 
     public function calculateSummary($products = null, $shipping_place = null)
@@ -303,7 +305,7 @@ class Order extends Model
                 per calcolare la situazione complessiva compresi i prodotti non
                 inclusi nell'ordine stesso
             */
-            $products = $order->supplier->products;
+            $products = $order->supplier->products()->with('measure')->get();
             $external_products = false;
         }
         else {
