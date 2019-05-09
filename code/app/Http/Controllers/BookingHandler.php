@@ -48,14 +48,25 @@ class BookingHandler extends Controller
                 $booking->delivery = date('Y-m-d');
             }
 
-            if ($request->has('notes_' . $order->id) && $request->input('notes_' . $order->id) != null)
+            if ($request->has('notes_' . $order->id) && $request->input('notes_' . $order->id) != null) {
                 $booking->notes = $request->input('notes_' . $order->id);
+            }
 
             $booking->save();
 
             $count_products = 0;
 
-            if (currentAbsoluteGas()->pending_packages_enabled)
+            /*
+                In caso di ordini chiusi ma con confezioni da completare, ci
+                sono un paio di casi speciali...
+                O sto prenotando tra i prodotti da completare, e dunque devo
+                intervenire solo su di essi (nel form booking.edit viene
+                aggiunto un campo nascosto "limited") senza intaccare le
+                quantità già prenotate degli altri, oppure sono un
+                amministratore e sto intervenendo sull'intera prenotazione
+                (dunque posso potenzialmente modificare tutto).
+            */
+            if (currentAbsoluteGas()->pending_packages_enabled && $request->has('limited'))
                 $products = $order->status == 'open' ? $order->products : $order->pendingPackages();
             else
                 $products = $order->products;

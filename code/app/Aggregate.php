@@ -125,9 +125,41 @@ class Aggregate extends Model implements Feedable
             $operator = '!=';
         }
 
-        return self::whereHas('orders', function ($query) use ($status, $operator) {
-            $query->where('status', $operator, $status);
-        })->get();
+        /*
+            Se cerco gli ordini aperti ed è stata abilitata la funzione per
+            gestire gli ordini incompleti, devo considerare anche quelli chiusi ma
+            con confezioni da completare
+        */
+        if (currentAbsoluteGas()->pending_packages_enabled && $status == 'open' && !$inverse) {
+            $ret = new Collection();
+
+            $aggregates = self::whereHas('orders', function ($query) use ($status, $operator) {
+                $query->whereIn('status', ['open', 'closed']);
+            })->get();
+
+            foreach($aggregates as $a) {
+                if ($a->status == 'open' || $a->hasPendingPackages()) {
+                    $ret->push($a);
+                }
+            }
+
+            return $ret;
+        }
+        else {
+            return self::whereHas('orders', function ($query) use ($status, $operator) {
+                $query->where('status', $operator, $status);
+            })->get();
+        }
+    }
+
+    public function hasPendingPackages()
+    {
+        foreach($this->orders as $o) {
+            if ($o->status == 'closed' && $o->pendingPackages()->isEmpty() == false)
+                return true;
+        }
+
+        return false;
     }
 
     /*
@@ -455,6 +487,6 @@ class Aggregate extends Model implements Feedable
 
     public static function getFeedItems()
     {
-        return Aggregate::getByStatus('open');
+        return self::getByStatus('open');
     }
 }

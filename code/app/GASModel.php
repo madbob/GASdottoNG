@@ -463,6 +463,21 @@ trait GASModel
                 }
             }
 
+            if (currentAbsoluteGas()->pending_packages_enabled) {
+                $icons['Aggregate']['plus-sign'] = (object) [
+                    'test' => function ($obj) {
+                        return ($obj->status == 'closed' && $obj->hasPendingPackages());
+                    },
+                    'text' => _i('Confezioni Da Completare'),
+                ];
+                $icons['Order']['plus-sign'] = (object) [
+                    'test' => function ($obj) {
+                        return ($obj->status == 'closed' && $obj->pendingPackages()->isEmpty() == false);
+                    },
+                    'text' => _i('Confezioni Da Completare'),
+                ];
+            }
+
             /*
                 Poiché fatture in ingresso (Invoice) e in uscita (Receipt) sono
                 visualizzate nello stesso elenco, se queste ultime sono attive

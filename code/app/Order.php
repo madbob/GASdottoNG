@@ -254,9 +254,10 @@ class Order extends Model
     public function pendingPackages()
     {
         $ret = new Collection();
+        $products = $this->products()->where('package_size', '!=', 0)->get();
 
-        if ($this->products->where('package_size', '!=', 0)->count() != 0) {
-            $summary = $this->calculateSummary();
+        if ($products->isEmpty() == false) {
+            $summary = $this->calculateSummary($products);
             foreach($summary->products as $product_id => $meta)
                 if ($meta['notes'] == true) {
                     /*
@@ -265,7 +266,7 @@ class Order extends Model
                         forzare il raggiungimento della quantità desiderata
                     */
 
-                    $p = Product::find($product_id);
+                    $p = $meta['product_obj'];
                     $test = $p->fixed_package_size;
 
                     $fake_max_available = 0;
@@ -408,6 +409,7 @@ class Order extends Model
                 $delivered_pieces = $delivered;
             }
 
+            $summary->products[$product->id]['product_obj'] = $product;
             $summary->products[$product->id]['quantity'] = printableQuantity($quantity, $product->measure->discrete);
             $summary->products[$product->id]['quantity_pieces'] = $quantity_pieces;
             $summary->products[$product->id]['price'] = printablePrice($price);

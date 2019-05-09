@@ -3,6 +3,7 @@
 $more_orders = ($aggregate->orders->count() > 1);
 $grand_total = 0;
 $has_shipping = $aggregate->canShip();
+$enforced = $enforced ?? false;
 
 ?>
 
@@ -21,7 +22,7 @@ $has_shipping = $aggregate->canShip();
         $notice = null;
 
         $o = $order->userBooking($user->id);
-        if ($currentgas->pending_packages_enabled) {
+        if ($currentgas->pending_packages_enabled && $enforced == false) {
             if ($order->status == 'open') {
                 $products = $order->products;
             }
@@ -38,6 +39,7 @@ $has_shipping = $aggregate->canShip();
 
         @if(!is_null($notice))
             <div class="alert alert-info">
+                <input type="hidden" name="limited" value="1">
                 {{ $notice }}
             </div>
             <br>
