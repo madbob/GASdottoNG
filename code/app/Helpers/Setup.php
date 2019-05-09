@@ -30,3 +30,27 @@ function global_multi_installation()
 {
     return false;
 }
+
+function get_instances()
+{
+    $ret = [];
+
+    $path = base_path('.env.*');
+    $files = glob($path);
+
+    foreach($files as $file) {
+        $config = file($file);
+
+        foreach($config as $c) {
+            $c = trim($c);
+
+            if (strncmp($c, 'DB_DATABASE', strlen('DB_DATABASE')) == 0) {
+                list($useless, $dbname) = explode('=', $c);
+                $ret[] = $dbname;
+                break;
+            }
+        }
+    }
+
+    return $ret;
+}
