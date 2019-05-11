@@ -13,12 +13,12 @@ class VerifyCsrfToken extends BaseVerifier
      * @var array
      */
     protected $except = [
-        //
+        'mail/status'
     ];
 
     public function handle($request, Closure $next)
     {
-        if ($this->isReading($request) || $this->tokensMatch($request)) {
+        if ($this->isReading($request) || $this->inExceptArray($request) || $this->tokensMatch($request)) {
             return $this->addCookieToResponse($request, $next($request));
         }
 
