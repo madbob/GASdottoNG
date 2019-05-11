@@ -3,7 +3,7 @@
 if(!isset($while_shipping))
     $while_shipping = false;
 
-$booked_quantity = $o->getBookedQuantity($product);
+$booked_quantity = (isset($o) ? $o->getBookedQuantity($product) : 0);
 
 ?>
 
