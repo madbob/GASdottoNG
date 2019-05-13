@@ -349,6 +349,7 @@ class Order extends Model
             $booked = $q->get();
             $price = 0;
             $price_delivered = 0;
+            $transport_delivered = 0;
             $variants_quantity = 0;
 
             foreach ($booked as $b) {
@@ -366,6 +367,7 @@ class Order extends Model
 
                 $price += $b->quantityValue();
                 $price_delivered += $b->final_price;
+                $transport_delivered += $b->final_transport;
 
                 if($b->variants->isEmpty() == false) {
                     if(isset($summary->by_variant[$product->id]) == false)
@@ -419,6 +421,7 @@ class Order extends Model
             $summary->products[$product->id]['delivered'] = printableQuantity($delivered, $product->measure->discrete, 3);
             $summary->products[$product->id]['delivered_pieces'] = $delivered_pieces;
             $summary->products[$product->id]['price_delivered'] = printablePrice($price_delivered);
+            $summary->products[$product->id]['transport_delivered'] = printablePrice($transport_delivered);
 
             $total_price += $price;
             $total_price_delivered += $price_delivered;
@@ -540,12 +543,14 @@ class Order extends Model
                 'by_variant' => 'delivered',
                 'by_product' => 'delivered_pieces'
             ];
+            $alternate = true;
         }
         else {
             $internal_offsets = (object)[
                 'by_variant' => 'quantity',
                 'by_product' => 'quantity_pieces'
             ];
+            $alternate = false;
         }
 
         $summary = $this->calculateSummary(null, $shipping_place);
@@ -568,7 +573,7 @@ class Order extends Model
 
                     $row = [];
                     foreach($fields as $f) {
-                        $row[] = call_user_func($formattable[$f]->format_variant, $product, $summary, $name, $variant);
+                        $row[] = call_user_func($formattable[$f]->format_variant, $product, $summary, $name, $variant, $alternate);
                     }
 
                     $variants_rows[] = $row;
@@ -586,7 +591,7 @@ class Order extends Model
 
                 $row = [];
                 foreach($fields as $f) {
-                    $row[] = call_user_func($formattable[$f]->format_product, $product, $summary);
+                    $row[] = call_user_func($formattable[$f]->format_product, $product, $summary, $alternate);
                 }
 
                 $ret->contents[] = $row;
@@ -658,36 +663,72 @@ class Order extends Model
                 'quantity' => (object) [
                     'name' => _i('Quantità Totale'),
                     'checked' => true,
-                    'format_product' => function($product, $summary) {
-                        return printableQuantity($summary->products[$product->id]['quantity_pieces'], $product->measure->discrete, 2, ',');
+                    'format_product' => function($product, $summary, $alternate = false) {
+                        if ($alternate == false)
+                            return printableQuantity($summary->products[$product->id]['quantity_pieces'], $product->measure->discrete, 2, ',');
+                        else
+                            return printableQuantity($summary->products[$product->id]['delivered_pieces'], $product->measure->discrete, 2, ',');
                     },
-                    'format_variant' => function($product, $summary, $name, $variant) {
-                        return printableQuantity($variant['quantity'], $product->measure->discrete, 2, ',');
+                    'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
+                        if ($alternate == false)
+                            return printableQuantity($variant['quantity'], $product->measure->discrete, 2, ',');
+                        else
+                            return printableQuantity($variant['delivered'], $product->measure->discrete, 2, ',');
                     }
                 ],
                 'boxes' => (object) [
                     'name' => _i('Numero Confezioni'),
-                    'format_product' => function($product, $summary) {
-                        if ($product->package_size != 0)
-                            return $summary->products[$product->id]['quantity_pieces'] / $product->package_size;
-                        else
+                    'format_product' => function($product, $summary, $alternate = false) {
+                        if ($product->package_size != 0) {
+                            if ($alternate == false)
+                                return $summary->products[$product->id]['quantity_pieces'] / $product->package_size;
+                            else
+                                return $summary->products[$product->id]['delivered_pieces'] / $product->package_size;
+                        }
+                        else {
                             return '';
+                        }
                     },
-                    'format_variant' => function($product, $summary, $name, $variant) {
-                        if ($product->package_size != 0)
-                            return $variant['quantity'] / $product->package_size;
-                        else
+                    'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
+                        if ($product->package_size != 0) {
+                            if ($alternate == false)
+                                return $variant['quantity'] / $product->package_size;
+                            else
+                                return $variant['delivered'] / $product->package_size;
+                        }
+                        else {
                             return '';
+                        }
                     }
                 ],
                 'measure' => (object) [
                     'name' => _i('Unità di Misura'),
                     'checked' => true,
-                    'format_product' => function($product, $summary) {
-                        return $product->printableMeasure(true);
+                    'format_product' => function($product, $summary, $alternate = false) {
+                        if ($alternate == false) {
+                            return $product->printableMeasure(true);
+                        }
+                        else {
+                            if ($product->portion_quantity != 0) {
+                                return $product->measure->name;
+                            }
+                            else {
+                                return $product->printableMeasure(true);
+                            }
+                        }
                     },
-                    'format_variant' => function($product, $summary, $name, $variant) {
-                        return $product->printableMeasure(true);
+                    'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
+                        if ($alternate == false) {
+                            return $product->printableMeasure(true);
+                        }
+                        else {
+                            if ($product->portion_quantity != 0) {
+                                return $product->measure->name;
+                            }
+                            else {
+                                return $product->printableMeasure(true);
+                            }
+                        }
                     }
                 ],
                 'category' => (object) [
@@ -713,20 +754,32 @@ class Order extends Model
                 'price' => (object) [
                     'name' => _i('Prezzo Totale'),
                     'checked' => true,
-                    'format_product' => function($product, $summary) {
-                        return printablePrice($summary->products[$product->id]['price'], ',');
+                    'format_product' => function($product, $summary, $alternate = false) {
+                        if ($alternate == false)
+                            return printablePrice($summary->products[$product->id]['price'], ',');
+                        else
+                            return printablePrice($summary->products[$product->id]['price_delivered'], ',');
                     },
-                    'format_variant' => function($product, $summary, $name, $variant) {
-                        return printablePrice($variant['price'], ',');
+                    'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
+                        if ($alternate == false)
+                            return printablePrice($variant['price'], ',');
+                        else
+                            return 0;
                     }
                 ],
                 'transport' => (object) [
                     'name' => _i('Prezzo Trasporto'),
-                    'format_product' => function($product, $summary) {
-                        return printablePrice($summary->products[$product->id]['transport'], ',');
+                    'format_product' => function($product, $summary, $alternate = false) {
+                        if ($alternate == false)
+                            return printablePrice($summary->products[$product->id]['transport'], ',');
+                        else
+                            return printablePrice($summary->products[$product->id]['transport_delivered'], ',');
                     },
-                    'format_variant' => function($product, $summary, $name, $variant) {
-                        return printablePrice($summary->products[$product->id]['transport'], ',');
+                    'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
+                        if ($alternate == false)
+                            return printablePrice($summary->products[$product->id]['transport'], ',');
+                        else
+                            return 0;
                     }
                 ],
                 'notes' => (object) [
