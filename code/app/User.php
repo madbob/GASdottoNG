@@ -342,6 +342,10 @@ class User extends Authenticatable
     {
         $map = [];
 
+        if(!is_array($users)) {
+            return $map;
+        }
+
         foreach ($users as $u) {
             if (strrpos($u, 'special::', -strlen($u)) !== false) {
                 if (strrpos($u, 'special::role::', -strlen($u)) !== false) {

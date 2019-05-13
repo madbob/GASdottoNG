@@ -69,7 +69,7 @@ trait AttachableTrait
         $attachment->filename = $filename;
         $attachment->save();
 
-        $users = $request->input('users');
+        $users = $request->input('users', []);
         $users = User::unrollSpecialSelectors($users);
         $attachment->users()->sync($users);
 
