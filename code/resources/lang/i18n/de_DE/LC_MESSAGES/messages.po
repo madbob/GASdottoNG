@@ -2,14 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2019-05-07 13:19+0200\n"
-"PO-Revision-Date: 2019-05-07 13:21+0200\n"
-"Last-Translator: Roberto Guido <bob@linux.it>\n"
-"Language-Team: Roberto Guido <bob@linux.it>\n"
+"PO-Revision-Date: 2019-05-20 05:49+0000\n"
+"Last-Translator: jendo <jendo.berlin@gmx.de>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
+"translations/de/>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.7-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -23,6 +25,9 @@ msgid ""
 "Attenzione: quest'ordine è chiuso, ma è possibile prenotare ancora alcuni "
 "prodotti per completare le confezioni da consegnare."
 msgstr ""
+"Achtung: diese Bestellung ist geschlossen, aber es ist möglich, einige "
+"Produkte noch vorzubestellen, um die bereits bestellten Packeinheiten zu "
+"vervollständigen."
 
 #: ../resources/views/commons/addingbutton.blade.php:7
 #: ../storage/framework/messages/af9efe5829cab54b632c8fa7b5e8ac476cb60ffb.php.php:7
@@ -136,10 +141,9 @@ msgid "Documento allegato"
 msgstr "Datei im Anhang"
 
 #: ../storage/framework/messages/011e39d68f39ddd07dc8b80ff0d7659141956607.php.php:13
-#, fuzzy, php-format
-#| msgid "Prodotti ordinati ordine %s presso %s del %s"
+#, php-format
 msgid "Prodotti ordine %s presso %s del %s"
-msgstr "Bestellte Produkte der Bestellung %s bei %s vom %s"
+msgstr "Produkte der Bestellung %s bei %s vom %s"
 
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:16
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:61
@@ -449,7 +453,7 @@ msgstr "Zu benutzen in Kombination mit dem jeweiligen Mehrwertsteuersatz"
 #: ../storage/framework/messages/834c975661512aee67bee8704f29d3f990e96605.php.php:11
 #: Http/Controllers/ImportController.php:172 Order.php:643
 msgid "Codice Fornitore"
-msgstr "ID Lieferant"
+msgstr "Artikelnummer Lieferant"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:175
 #: ../storage/framework/messages/195f4ecae049b92c418b8beed1d93ff444a55353.php.php:11
@@ -460,9 +464,8 @@ msgstr "Packungsmaße"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:178
 #: Http/Controllers/ImportController.php:178
-#| msgid "Confezione"
 msgid "Prezzo Confezione"
-msgstr ""
+msgstr "Preis der Verpackungseinheit"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:179
 #: Http/Controllers/ImportController.php:179
@@ -470,6 +473,8 @@ msgid ""
 "Se specificato, il prezzo unitario viene calcolato come Prezzo Confezione / "
 "Dimensione Confezione"
 msgstr ""
+"Wenn genauer angegeben, wird der Einheitspreis als Preis für die "
+"Verpackungseinheit / Gebindegröße berechnet"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:182
 #: ../storage/framework/messages/33b8621008ec6ac5433277c5e356893e7713f8ff.php.php:39
@@ -612,7 +617,7 @@ msgstr "Letzter Zugang"
 #: ../storage/framework/messages/b4be0d366702616ec01bba3af2c0e90dfa23d968.php.php:15
 #: GASModel.php:439 Http/Controllers/ImportController.php:474
 msgid "Cessato"
-msgstr "Gelöscht"
+msgstr "Beendet"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:475
 #: Http/Controllers/ImportController.php:475
@@ -814,9 +819,8 @@ msgid "Abilita Consegne Rapide"
 msgstr "Schnelle Lieferung zulassen"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:130
-#| msgid "Prenotazioni per Altri"
 msgid "Prenotazioni per Completare Confezioni"
-msgstr ""
+msgstr "Bestellung zur Komplettierung von Gebinden"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:134
 msgid "Colonne Riassunto Ordini"
@@ -936,7 +940,7 @@ msgstr "Importieren"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:395
 msgid "Importazione"
-msgstr "Importierung"
+msgstr "Import"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:397
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:404
@@ -1278,7 +1282,7 @@ msgstr ""
 #: ../storage/framework/messages/120626ca6d2919eadea9eb47de0a4818ee0e4d52.php.php:132
 #, php-format
 msgid "Totale da pagare: %s"
-msgstr ""
+msgstr "Gesamtpreis: %s"
 
 #: ../storage/framework/messages/120626ca6d2919eadea9eb47de0a4818ee0e4d52.php.php:139
 #, php-format
@@ -1286,16 +1290,12 @@ msgid "La consegna avverrà %s."
 msgstr "Geplante Lieferung am %s."
 
 #: ../storage/framework/messages/127c4a33014836683b260bd7aadb4f1895d4d0e8.php.php:22
-#, fuzzy
-#| msgid ""
-#| "Tenere premuto Ctrl per selezionare più utenti. Se nessun utente viene "
-#| "selezionato, la notifica sarà destinata a tutti."
 msgid ""
 "Tenere premuto Ctrl per selezionare più utenti. Se nessun utente viene "
 "selezionato, l'elemento sarà visibile a tutti."
 msgstr ""
-"Strg/Ctrl Taste drücken um mehrere Benutzer auszuwählen. Falls kein Benutzer "
-"ausgewählt ist, wird die Nachricht an alle geschickt."
+"Strg/Ctrl Taste gedrückt halten, um mehrere Benutzer auszuwählen. Falls kein "
+"Benutzer ausgewählt ist, wird das Element für alle sichtbar."
 
 #: ../storage/framework/messages/132e7c13216c738c1c435e454372a7a23dd0a237.php.php:2
 msgid "Aliquota"
@@ -1413,7 +1413,7 @@ msgstr "Multi-Bestellgemeinschaft"
 #: ../storage/framework/messages/186910b808622b5ae7a05051ae8810dad3ffe834.php.php:2
 #, php-format
 msgid "L'ordine %s è stato automaticamente chiuso."
-msgstr ""
+msgstr "Die Bestellung %s wurde automatisch geschlossen."
 
 #: ../storage/framework/messages/192161b44d3e547ee30cc8c04968bd9f431916ef.php.php:6
 #: ../storage/framework/messages/f2c737773e40e188bdeafe0b74aa998bc1e2dd5b.php.php:250
@@ -1873,9 +1873,8 @@ msgstr "Bestellübersicht (pdf)"
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:10
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:76
-#| msgid "Riassunto Prodotti Ordinati"
 msgid "Riassunto Prodotti"
-msgstr ""
+msgstr "Zusammenfassung der bestellten Produkte"
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:15
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:166
@@ -1883,17 +1882,14 @@ msgid "Tabella Complessiva Prodotti"
 msgstr "Gesamttabelle der Produkte"
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:35
-#, fuzzy
-#| msgid ""
-#| "Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si "
-#| "trovano le informazioni relative alle singole prenotazioni."
 msgid ""
 "Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si "
 "trovano le informazioni relative alle singole prenotazioni. Utile da "
 "consultare mentre si effettuano le consegne."
 msgstr ""
 "Hier kannst du eine PDF-Datei zum Ausdrucken erstellen, in der Informationen "
-"zu den einzelnen Bestellungen aufgelistet sind."
+"zu den einzelnen Bestellungen aufgelistet sind. Nützlich für die Überprüfung "
+"bei der Anlieferung."
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:46
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:153
@@ -2340,7 +2336,7 @@ msgstr "Bild"
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:217
 #: GASModel.php:217
 msgid "Accesso limitato"
-msgstr ""
+msgstr "Begrenzter Zugriff"
 
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:225
 #: GASModel.php:225
@@ -2833,9 +2829,8 @@ msgstr ""
 "Seite deines Profils verwalten."
 
 #: ../storage/framework/messages/7e217d580df832ff5663372f02cb826f06c6b4b4.php.php:50
-#| msgid "Non ci sono prenotazioni aperte."
 msgid "Non ci sono amici registrati per questo utente."
-msgstr ""
+msgstr "Für diesen Nutzer sind keine 'Freunde' registriert."
 
 #: ../storage/framework/messages/7e217d580df832ff5663372f02cb826f06c6b4b4.php.php:77
 msgid ""
@@ -3012,10 +3007,9 @@ msgstr "Bestellübersicht %s bei %s"
 
 #: ../storage/framework/messages/9869469812674c41a1612a26bdeeb6891dbf5787.php.php:429
 #: Http/Controllers/OrdersController.php:429
-#, fuzzy, php-format
-#| msgid "Prodotti ordinati ordine %s presso %s"
+#, php-format
 msgid "Prodotti ordine %s presso %s"
-msgstr "Bestellte Produkte Bestellung %s bei %s"
+msgstr "Produkte der Bestellung %s bei %s"
 
 #: ../storage/framework/messages/9869469812674c41a1612a26bdeeb6891dbf5787.php.php:479
 #: Http/Controllers/OrdersController.php:479
@@ -3069,9 +3063,8 @@ msgid "Invia Riepiloghi Prenotazioni"
 msgstr "Zusammenfassungen der Vorbestellungen verschicken"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:30
-#| msgid "Invia Riepiloghi Prenotazioni"
 msgid "Invia Riepiloghi Consegne"
-msgstr ""
+msgstr "Verschicke Zusammenfassungen der Lieferungen"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:35
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:25
@@ -3454,7 +3447,7 @@ msgstr ""
 #: ../storage/framework/messages/c3de1fc29a37823dc9538b4f97e29307984c0d4f.php.php:21
 #: Notifications/ClosedOrderNotification.php:21
 msgid "Ordine chiuso automaticamente"
-msgstr ""
+msgstr "Automatisch geschlossene Bestellung"
 
 #: ../storage/framework/messages/c4652b192f85ead50be5a9e63b109416991d8177.php.php:18
 msgid ""
@@ -3574,6 +3567,9 @@ msgid ""
 "intendi modificarla prima di inoltrarla, attiva questa opzione solo dopo "
 "aver salvato e modificato la notifica."
 msgstr ""
+"Wenn du diese Option aktivierst, wird die Nachricht sofort per Email "
+"weitergeleitet. Wenn du beabsichtigst, sie vor der Weiterleitung zu ändern, "
+"nutze diese Option nur nach der Speicherung und Änderung der Nachricht."
 
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:24
 msgid "Ultima Prenotazione"
@@ -3810,7 +3806,7 @@ msgstr ""
 
 #: ../storage/framework/messages/e4726fcc20394bcabca158db8f5dafed00dbe843.php.php:43
 msgid "Non puoi auto-revocarti questo ruolo amministrativo"
-msgstr ""
+msgstr "Du kannst den Status als Administrator nicht eigenständig aufheben"
 
 #: ../storage/framework/messages/e4726fcc20394bcabca158db8f5dafed00dbe843.php.php:45
 msgid "Revoca Ruolo"
@@ -3884,12 +3880,16 @@ msgid ""
 "Alcuni prodotti in questo ordine hanno un proprio sconto, che verrà sommato "
 "allo sconto globale."
 msgstr ""
+"Einige Produkte dieser Bestellung haben einen eigenen Rabatt, der bei der "
+"Berechnung dem allgemeinen Rabatt hinzugefügt wird."
 
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:54
 msgid ""
 "Alcuni prodotti in questo ordine hanno un proprio costo di trasporto, che "
 "verrà sommato al costo di trasporto globale."
 msgstr ""
+"Für einige Produkte dieser Bestellung fallen eigene Transportkosten an, die "
+"bei der Berechnung zu den Gesamttransportkosten hinzukommen."
 
 #: ../storage/framework/messages/f1904fcbf2616dbfc331ce7dff95a2bffad58c7e.php.php:161
 #: Http/Controllers/AggregatesController.php:161
