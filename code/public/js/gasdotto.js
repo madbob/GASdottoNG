@@ -192,7 +192,7 @@ function generalInit(container) {
     $('.date[data-enforce-after]', container).each(function() {
         var current = $(this);
         var select = current.attr('data-enforce-after');
-        var target = current.closest('form').find(select).datepicker().on('changeDate', function() {
+        var target = current.closest('.form-group').find(select).datepicker().on('changeDate', function() {
             var current_start = current.datepicker('getDate');
             var current_ref = target.datepicker('getDate');
             if (current_start < current_ref)
