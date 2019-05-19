@@ -47,12 +47,16 @@ trait CreditableTrait
         }
         else {
             $latest = $this->balances()->where('current', false)->first();
-            $new = $latest->replicate();
-
-            $new->date = date('Y-m-d G:i:s');
-            $new->current = true;
-            $new->save();
-            return $new;
+            if (is_null($latest)) {
+                return $this->fixFirstBalance();
+            }
+            else {
+                $new = $latest->replicate();
+                $new->date = date('Y-m-d G:i:s');
+                $new->current = true;
+                $new->save();
+                return $new;
+            }
         }
     }
 
