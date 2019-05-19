@@ -192,7 +192,11 @@ function generalInit(container) {
     $('.date[data-enforce-after]', container).each(function() {
         var current = $(this);
         var select = current.attr('data-enforce-after');
-        var target = current.closest('.form-group').find(select).datepicker().on('changeDate', function() {
+        var target = current.closest('.form-group').find(select);
+		if (target.length == 0)
+			target = current.closest('form').find(select);
+
+		target.datepicker().on('changeDate', function() {
             var current_start = current.datepicker('getDate');
             var current_ref = target.datepicker('getDate');
             if (current_start < current_ref)
@@ -1491,6 +1495,8 @@ $(document).ready(function() {
     $('body').on('focus', '.date[data-enforce-after]', function() {
         var select = $(this).attr('data-enforce-after');
         var target = $(this).closest('.form-group').find(select);
+		if (target.length == 0)
+			target = $(this).closest('form').find(select);
 
         /*
             Problema: cercando di navigare tra i mesi all'interno del datepicker
