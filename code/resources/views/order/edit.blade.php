@@ -86,6 +86,7 @@
     @include('order.annotations', ['order' => $order, 'summary' => $summary])
 
     @include('commons.formbuttons', [
+        'no_delete' => $order->isActive() == false,
         'left_buttons' => [
             (object) [
                 'label' => _i('Esporta'),
