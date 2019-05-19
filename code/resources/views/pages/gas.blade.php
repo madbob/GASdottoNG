@@ -515,6 +515,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab">
                     <h4 class="panel-title">
@@ -550,6 +551,37 @@
                     </div>
                 </div>
             </div>
+
+            @if(env('GASDOTTO_NET', false))
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab">
+                        <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#list-configs" href="#email-logs">
+                            {{ _i('Log E-Mail') }}
+                        </a>
+                    </div>
+                    <div id="email-logs" class="panel-collapse collapse" role="tabpanel">
+                        <div class="panel-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th width="20%">{{ _i('Data') }}</th>
+                                        <th width="80%">{{ _i('Messaggio') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach(App\InnerLog::where('type', 'mail')->orderBy('created_at', 'desc')->take(50)->get() as $log)
+                                        <tr>
+                                            <td>{{ printableDate($log->created_at) }}</td>
+                                            <td>{{ $log->message }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 </div>
