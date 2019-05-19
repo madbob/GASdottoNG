@@ -553,6 +553,7 @@
             </div>
 
             @if(env('GASDOTTO_NET', false))
+                <?php $logs = App\InnerLog::where('type', 'mail')->orderBy('created_at', 'desc')->take(50)->get() ?>
                 <div class="panel panel-default">
                     <div class="panel-heading" role="tab">
                         <h4 class="panel-title">
@@ -562,22 +563,28 @@
                     </div>
                     <div id="email-logs" class="panel-collapse collapse" role="tabpanel">
                         <div class="panel-body">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th width="20%">{{ _i('Data') }}</th>
-                                        <th width="80%">{{ _i('Messaggio') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach(App\InnerLog::where('type', 'mail')->orderBy('created_at', 'desc')->take(50)->get() as $log)
+                            @if($logs->isEmpty())
+                                <div class="alert alert-info">
+                                    {{ _i('Non ci sono log relativi alle email.') }}
+                                </div>
+                            @else
+                                <table class="table">
+                                    <thead>
                                         <tr>
-                                            <td>{{ printableDate($log->created_at) }}</td>
-                                            <td>{{ $log->message }}</td>
+                                            <th width="20%">{{ _i('Data') }}</th>
+                                            <th width="80%">{{ _i('Messaggio') }}</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($logs as $log)
+                                            <tr>
+                                                <td>{{ printableDate($log->created_at) }}</td>
+                                                <td>{{ $log->message }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @endif
                         </div>
                     </div>
                 </div>
