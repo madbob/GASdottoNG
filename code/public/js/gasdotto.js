@@ -1490,7 +1490,7 @@ $(document).ready(function() {
 
     $('body').on('focus', '.date[data-enforce-after]', function() {
         var select = $(this).attr('data-enforce-after');
-        var target = $(this).closest('form').find(select);
+        var target = $(this).closest('.form-group').find(select);
 
         /*
             Problema: cercando di navigare tra i mesi all'interno del datepicker
