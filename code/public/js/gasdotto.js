@@ -665,10 +665,11 @@ function enforceMeasureDiscrete(node) {
     var discrete = node.find('option:selected').attr('data-discrete');
     var disabled = (discrete == '1');
 
-    form.find('input[name=portion_quantity]').val('0.00').prop('disabled', disabled);
+    form.find('input[name=portion_quantity]').prop('disabled', disabled);
 	var multiple_widget = form.find('input[name=multiple]');
 
 	if (disabled) {
+		form.find('input[name=portion_quantity]').val('0.000');
 		form.find('input[name=variable]').bootstrapToggle('off').bootstrapToggle('disable');
 
 		multiple_widget.attr('data-enforce-minimum', 1);
