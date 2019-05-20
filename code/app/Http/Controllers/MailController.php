@@ -40,6 +40,7 @@ class MailController extends Controller
                     $email = $data->bounce->bouncedRecipients[0]->emailAddress;
                     $message = $data->bounce->bouncedRecipients[0]->diagnosticCode;
                     $message = sprintf(_i('Impossibile inoltrare mail a %s: %s', $email, $message));
+                    $message = addslashes($message);
 
                     if (global_multi_installation()) {
                         $instances = get_instances();
@@ -57,7 +58,7 @@ class MailController extends Controller
                     }
                 }
                 catch(\Exception $e) {
-                    Log::error('Notifica SNS illeggibile: ' . print_r($data, true));
+                    Log::error('Notifica SNS illeggibile: ' . $e->getMessage() . ' - ' . print_r($data, true));
                 }
             }
         }
