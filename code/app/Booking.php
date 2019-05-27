@@ -330,7 +330,7 @@ class Booking extends Model
         if(!empty($this->order->transport) && $this->order->transport != 0) {
             $this->load('products');
 
-            $global_transport = $obj->dynamicTransportCost(false);
+            $global_transport = $this->dynamicTransportCost(false);
             $booking_value = $this->getValue('delivered', false);
             $distributed_amount = 0;
             $last_product = null;
