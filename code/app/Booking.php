@@ -186,7 +186,7 @@ class Booking extends Model
                 }
             }
             else {
-                if ($obj->status == 'shipped') {
+                if ($obj->status == 'shipped' || $obj->status == 'saved') {
                     switch($type) {
                         case 'effective':
                             return $obj->getValue('delivered', $with_friends) + $obj->getValue('transport', $with_friends) - $obj->getValue('discount', $with_friends);
