@@ -2,36 +2,61 @@
 
 $columns = $currentgas->orders_display_columns;
 $table_identifier = 'summary-' . sanitizeId($order->id);
+$display_columns = App\Order::displayColumns();
+
+$categories = $order->supplier->products()->pluck('category_id')->toArray();
+$categories = array_unique($categories);
+$categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->get()->pluck('name')->toArray();
 
 ?>
 
-<div class="btn-group pull-right hidden-sm hidden-xs order-columns-selector">
-    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span>&nbsp;{{ _i('Colonne') }} <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu">
-        @foreach(App\Order::displayColumns() as $identifier => $metadata)
+<div class="flowbox">
+    <div class="mainflow hidden-md">
+        <input type="text" class="form-control table-text-filter" data-list-target="#{{ $table_identifier }}">
+    </div>
+
+    <div class="btn-group table-sorter" data-table-target="#{{ $table_identifier }}">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            {{ _i('Ordina Per') }} <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
             <li>
-                <a href="#">
-                    <input type="checkbox" value="{{ $identifier }}" {{ in_array($identifier, $columns) ? 'checked' : '' }}> {{ $metadata->label }}
-                </a>
+                <a href="#" data-sort-by="name">{{ _i('Nome') }}</a>
+                <a href="#" data-sort-by="category_name">{{ _i('Categoria') }}</a>
             </li>
-        @endforeach
-    </ul>
+        </ul>
+    </div>&nbsp;
+
+    <div class="btn-group hidden-sm hidden-xs order-columns-selector">
+        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span>&nbsp;{{ _i('Colonne') }} <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            @foreach($display_columns as $identifier => $metadata)
+                <li>
+                    <a href="#">
+                        <input type="checkbox" value="{{ $identifier }}" {{ in_array($identifier, $columns) ? 'checked' : '' }}> {{ $metadata->label }}
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+    </div>&nbsp;
+
+    @include('commons.iconslegend', [
+        'class' => 'Product',
+        'target' => '#' . $table_identifier,
+        'table_filter' => true,
+        'limit_to' => ['th'],
+        'contents' => $order->supplier->products
+    ])
 </div>
 
-@include('commons.iconslegend', [
-    'class' => 'Product',
-    'target' => '#' . $table_identifier,
-    'table_filter' => true,
-    'limit_to' => ['th'],
-    'contents' => $order->supplier->products
-])
+<hr>
 
 <table class="table order-summary" id="{{ $table_identifier }}">
     <thead>
         <tr>
-            @foreach(App\Order::displayColumns() as $identifier => $metadata)
+            @foreach($display_columns as $identifier => $metadata)
                 @if($identifier == 'selection')
                     <th width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}"><button class="btn btn-default btn-xs toggle-product-abilitation" data-toggle="button" aria-pressed="false" autocomplete="off">{!! _i('Tutti') !!}</button></th>
                 @else
@@ -42,6 +67,14 @@ $table_identifier = 'summary-' . sanitizeId($order->id);
     </thead>
 
     <tbody>
+        @foreach($categories as $cat)
+            <tr class="table-sorting-header hidden" data-sorting-category_name="{{ $cat }}">
+                <td colspan="{{ count($display_columns) }}">
+                    {{ $cat }}
+                </td>
+            </tr>
+        @endforeach
+
         <!--
             Warning: l'ordine delle colonne qui deve riflettere l'ordine degli
             elementi restituiti da Order::displayColumns() (peraltro usata per
@@ -58,9 +91,9 @@ $table_identifier = 'summary-' . sanitizeId($order->id);
             ?>
 
             @if($enabled == false)
-                <tr class="product-disabled hidden-sm hidden-xs" data-product-id="{{ $product->id }}">
+                <tr class="product-disabled do-not-filter hidden-sm hidden-xs" data-product-id="{{ $product->id }}" data-sorting-name="{{ $product->name }}" data-sorting-category_name="{{ $product->category_name }}">
             @else
-                <tr data-product-id="{{ $product->id }}">
+                <tr data-product-id="{{ $product->id }}" data-sorting-name="{{ $product->name }}" data-sorting-category_name="{{ $product->category_name }}">
             @endif
 
                 <!-- Visualizza tutti -->
@@ -77,7 +110,7 @@ $table_identifier = 'summary-' . sanitizeId($order->id);
                 <!-- Prodotto -->
                 <td class="order-cell-name {{ in_array('name', $columns) ? '' : 'hidden' }}">
                     <input type="hidden" name="productid[]" value="{{ $product->id }}" />
-                    @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product])
+                    @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product, 'extra_class' => 'text-filterable-cell'])
                 </td>
 
                 <!-- Prezzo -->
@@ -196,7 +229,7 @@ $table_identifier = 'summary-' . sanitizeId($order->id);
 
     <thead>
         <tr>
-            @foreach(App\Order::displayColumns() as $identifier => $metadata)
+            @foreach($display_columns as $identifier => $metadata)
                 <th class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
                     @switch($identifier)
                         @case('total_price')

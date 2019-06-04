@@ -12,7 +12,7 @@ if (!isset($skip_cells)) {
 
 ?>
 
-<tr class="booking-{{ $identifier }}">
+<tr class="booking-{{ $identifier }} do-not-sort">
     <td>
         <label class="static-label">{{ $label }} {{ isPercentage($order->$identifier) ? printablePercentage($order->$identifier) : '' }}</label>
     </td>

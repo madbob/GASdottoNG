@@ -18,6 +18,21 @@ if(isset($extra_data)) {
 }
 $data = join(' ', $data);
 
+$injected_items = [];
+
+foreach($sorting_rules as $attribute => $info) {
+    if (is_object($info)) {
+        $get_headers = $info->get_headers;
+
+        foreach($get_headers($items) as $c) {
+            $injected_items[] = (object) [
+                'label' => $c,
+                'related_sorting' => $attribute
+            ];
+        }
+    }
+}
+
 ?>
 
 @if(!empty($filters) || !is_null($legend))
@@ -34,7 +49,11 @@ $data = join(' ', $data);
                     <ul class="dropdown-menu">
                         @foreach($sorting_rules as $attribute => $info)
                             <li>
-                                <a href="#" data-sort-by="{{ $attribute }}">{{ $info }}</a>
+                                @if(is_object($info))
+                                    <a href="#" data-sort-by="{{ $attribute }}">{{ $info->label }}</a>
+                                @else
+                                    <a href="#" data-sort-by="{{ $attribute }}">{{ $info }}</a>
+                                @endif
                             </li>
                         @endforeach
                     </ul>
@@ -63,6 +82,10 @@ $data = join(' ', $data);
     </div>
 
     <div class="list-group loadablelist" id="{{ $identifier }}" {!! $data !!}>
+        @foreach($injected_items as $item)
+            <a class="loadable-sorting-header list-group-item hidden" data-sorting-{{ $item->related_sorting }}="{{ $item->label }}">{{ $item->label }}</a>
+        @endforeach
+
         @foreach($items as $item)
             <?php
 

@@ -88,6 +88,10 @@ table label {
 .loadablelist .list-group-item.active {
   border: 2px solid #000; }
 
+.loadablelist .loadable-sorting-header {
+  background-color: #DDD;
+  color: #000; }
+
 .loadablelist .loadable-contents {
   border: 2px solid #000; }
 
@@ -141,6 +145,10 @@ table label {
 
 table .form-group {
   margin-bottom: 0; }
+
+table .table-sorting-header {
+  background-color: #DDD !important;
+  color: #000 !important; }
 
 .table-striped > tbody > tr:nth-of-type(even) {
   background-color: #FFF; }

@@ -130,6 +130,11 @@ table {
 		border: 2px solid #000;
 	}
 
+    .loadable-sorting-header {
+        background-color: #DDD;
+        color: #000;
+    }
+
 	.loadable-contents {
 		border: 2px solid #000;
 	}
@@ -214,6 +219,11 @@ table {
 table {
     .form-group {
         margin-bottom: 0;
+    }
+
+    .table-sorting-header {
+        background-color: #DDD !important;
+        color: #000 !important;
     }
 }
 

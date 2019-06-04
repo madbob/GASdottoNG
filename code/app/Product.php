@@ -78,6 +78,15 @@ class Product extends Model
         }
     }
 
+    public function getCategoryNameAttribute()
+    {
+        $cat = $this->category;
+        if ($cat)
+            return $cat->name;
+        else
+            return '';
+    }
+
     public function stillAvailable($order)
     {
         if ($this->max_available == 0) {

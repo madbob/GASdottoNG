@@ -35,6 +35,10 @@ $enforced = $enforced ?? false;
             $products = $order->products;
         }
 
+        $categories = $products->pluck('category_id')->toArray();
+        $categories = array_unique($categories);
+        $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->get()->pluck('name')->toArray();
+
         ?>
 
         @if(!is_null($notice))
@@ -45,13 +49,31 @@ $enforced = $enforced ?? false;
             <br>
         @endif
 
-        @include('commons.iconslegend', [
-            'class' => 'Product',
-            'target' => '#booking_' . sanitizeId($order->id),
-            'table_filter' => true,
-            'limit_to' => ['th'],
-            'contents' => $products
-        ])
+        <div class="flowbox">
+            <div class="mainflow hidden-md">
+                <input type="text" class="form-control table-text-filter" data-list-target="#booking_{{ sanitizeId($order->id) }}">
+            </div>
+
+            <div class="btn-group table-sorter" data-table-target="#booking_{{ sanitizeId($order->id) }}">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    {{ _i('Ordina Per') }} <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="#" data-sort-by="name">{{ _i('Nome') }}</a>
+                        <a href="#" data-sort-by="category_name">{{ _i('Categoria') }}</a>
+                    </li>
+                </ul>
+            </div>&nbsp;
+
+            @include('commons.iconslegend', [
+                'class' => 'Product',
+                'target' => '#booking_' . sanitizeId($order->id),
+                'table_filter' => true,
+                'limit_to' => ['th'],
+                'contents' => $products
+            ])
+        </div>
 
         <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}">
             <thead>
@@ -64,12 +86,20 @@ $enforced = $enforced ?? false;
                 </tr>
             </thead>
             <tbody>
+                @foreach($categories as $cat)
+                    <tr class="table-sorting-header hidden" data-sorting-category_name="{{ $cat }}">
+                        <td colspan="5">
+                            {{ $cat }}
+                        </td>
+                    </tr>
+                @endforeach
+
                 @foreach($products as $product)
                     <?php $p = $o->getBooked($product->id) ?>
 
-                    <tr class="booking-product">
+                    <tr class="booking-product" data-sorting-name="{{ $product->name }}" data-sorting-category_name="{{ $product->category_name }}">
                         <td>
-                            @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product])
+                            @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product, 'extra_class' => 'text-filterable-cell'])
 
                             <div class="hidden">
                                 @foreach($product->icons() as $icon)

@@ -509,9 +509,8 @@ trait GASModel
                         'options' => function($objs) {
                             $categories = $objs->pluck('category_id')->toArray();
                             $categories = array_unique($categories);
-                            sort($categories);
 
-                            return Category::whereIn('id', $categories)->get()->reduce(function($carry, $item) {
+                            return Category::whereIn('id', $categories)->orderBy('name', 'asc')->get()->reduce(function($carry, $item) {
                                 $carry['hidden-cat-' . $item->id] = $item->name;
                                 return $carry;
                             }, []);

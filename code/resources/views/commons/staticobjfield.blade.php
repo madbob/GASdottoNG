@@ -7,6 +7,11 @@ else if (isset($target_obj))
 else
     $target_obj = null;
 
+$class = 'static-label text-muted';
+if (isset($extra_class)) {
+    $class .= ' ' . $extra_class;
+}
+
 ?>
 
 <div class="form-group">
@@ -16,7 +21,7 @@ else
 
     <div class="col-sm-{{ $fieldsize }}">
         @if($target_obj != null)
-            <label class="static-label text-muted">
+            <label class="{{ $class }}">
                 {{ $target_obj->printableName() }}
             </label>
 
@@ -24,7 +29,7 @@ else
                 @include('commons.detailsbutton', ['obj' => $target_obj])
             </div>
         @else
-            <label class="static-label text-muted">
+            <label class="{{ $class }}">
                 {{ _i('Nessuno') }}
             </label>
         @endif

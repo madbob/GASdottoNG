@@ -1399,7 +1399,10 @@ $(document).ready(function() {
         closeAllLoadable(target);
 
         var attribute = $(this).attr('data-sort-by');
-        target.find('> a').sort(function(a, b) {
+
+		target.find('> .loadable-sorting-header').addClass('hidden').filter('[data-sorting-' + attribute + ']').removeClass('hidden');
+
+        target.find('> a:visible').sort(function(a, b) {
             var attr_a = $(a).attr('data-sorting-' + attribute);
             var attr_b = $(b).attr('data-sorting-' + attribute);
             return attr_a.localeCompare(attr_b);
@@ -1408,6 +1411,29 @@ $(document).ready(function() {
             $(this).appendTo(target);
         });
     });
+
+	$('body').on('click', '.table-sorter a', function(e) {
+		e.preventDefault();
+		var target = $($(this).closest('.table-sorter').attr('data-table-target'));
+		var attribute = $(this).attr('data-sort-by');
+		var target_body = target.find('tbody');
+
+		target_body.find('> .table-sorting-header').addClass('hidden').filter('[data-sorting-' + attribute + ']').removeClass('hidden');
+
+		target_body.find('> tr[data-sorting-' + attribute + ']').sort(function(a, b) {
+			var attr_a = $(a).attr('data-sorting-' + attribute);
+			var attr_b = $(b).attr('data-sorting-' + attribute);
+			return attr_a.localeCompare(attr_b);
+		}).each(function() {
+			$(this).remove();
+			$(this).appendTo(target_body);
+		});
+
+		target_body.find('> tr.do-not-sort').each(function() {
+			$(this).remove();
+			$(this).appendTo(target_body);
+		});
+	});
 
     $('body').on('blur', '.trim-2-ddigits', function() {
         $(this).val(function(index, value) {
@@ -1665,10 +1691,10 @@ $(document).ready(function() {
         var target = $(this).attr('data-list-target');
 
         if (text == '') {
-            $('.table' + target + ' tbody tr').show();
+            $('.table' + target + ' tbody tr:not(.do-not-filter)').show();
         }
         else {
-            $('.table' + target + ' tbody .text-filterable-cell').each(function() {
+            $('.table' + target + ' tbody tr:not(.do-not-filter) .text-filterable-cell').each(function() {
                 if ($(this).text().toLowerCase().indexOf(text) == -1)
                     $(this).closest('tr').hide();
                 else
