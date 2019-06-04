@@ -248,7 +248,7 @@ class Order extends Model
 
     public function isRunning()
     {
-        return (($this->status == 'open') || ($this->status == 'closed' && currentAbsoluteGas()->pending_packages_enabled && $this->pendingPackages()->isEmpty() == false));
+        return (($this->status == 'open') || ($this->status == 'closed' && $this->keep_open_packages && $this->pendingPackages()->isEmpty() == false));
     }
 
     public function pendingPackages()

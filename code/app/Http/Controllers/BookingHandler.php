@@ -66,7 +66,7 @@ class BookingHandler extends Controller
                 amministratore e sto intervenendo sull'intera prenotazione
                 (dunque posso potenzialmente modificare tutto).
             */
-            if (currentAbsoluteGas()->pending_packages_enabled && $request->has('limited'))
+            if ($request->has('limited'))
                 $products = $order->status == 'open' ? $order->products : $order->pendingPackages();
             else
                 $products = $order->products;

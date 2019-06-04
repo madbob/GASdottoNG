@@ -106,6 +106,7 @@ class OrdersController extends Controller
         $o->end = decodeDate($request->input('end'));
         $o->shipping = decodeDate($request->input('shipping'));
         $o->status = $request->input('status');
+        $o->keep_open_packages = $request->has('keep_open_packages') ? true : false;
 
         $a = new Aggregate();
         $a->save();
@@ -193,6 +194,8 @@ class OrdersController extends Controller
 
             $order->status = $status;
         }
+
+        $order->keep_open_packages = $request->has('keep_open_packages') ? true : false;
 
         $order->save();
 

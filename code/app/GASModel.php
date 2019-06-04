@@ -280,6 +280,12 @@ trait GASModel
                         },
                         'text' => _i('Archiviato'),
                     ],
+                    'plus-sign' => (object) [
+                        'test' => function ($obj) {
+                            return ($obj->status == 'closed' && $obj->hasPendingPackages());
+                        },
+                        'text' => _i('Confezioni Da Completare'),
+                    ]
                 ],
                 'Order' => [
                     'th-list' => (object) [
@@ -324,6 +330,12 @@ trait GASModel
                         },
                         'text' => _i('Archiviato'),
                     ],
+                    'plus-sign' => (object) [
+                        'test' => function ($obj) {
+                            return ($obj->keep_open_packages && $obj->status == 'closed' && $obj->pendingPackages()->isEmpty() == false);
+                        },
+                        'text' => _i('Confezioni Da Completare'),
+                    ]
                 ],
                 'AggregateBooking' => [
                     'time' => (object) [
@@ -461,21 +473,6 @@ trait GASModel
                         'text' => _i('Quota non Pagata'),
                     ];
                 }
-            }
-
-            if (currentAbsoluteGas()->pending_packages_enabled) {
-                $icons['Aggregate']['plus-sign'] = (object) [
-                    'test' => function ($obj) {
-                        return ($obj->status == 'closed' && $obj->hasPendingPackages());
-                    },
-                    'text' => _i('Confezioni Da Completare'),
-                ];
-                $icons['Order']['plus-sign'] = (object) [
-                    'test' => function ($obj) {
-                        return ($obj->status == 'closed' && $obj->pendingPackages()->isEmpty() == false);
-                    },
-                    'text' => _i('Confezioni Da Completare'),
-                ];
             }
 
             /*

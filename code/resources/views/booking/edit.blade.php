@@ -22,7 +22,7 @@ $enforced = $enforced ?? false;
         $notice = null;
 
         $o = $order->userBooking($user->id);
-        if ($currentgas->pending_packages_enabled && $enforced == false) {
+        if ($order->keep_open_packages && $enforced == false) {
             if ($order->status == 'open') {
                 $products = $order->products;
             }
