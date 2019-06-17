@@ -510,7 +510,7 @@ class Booking extends Model
                 }
                 else {
                     if ($a_place->id != $b_place->id)
-                        return $a_place <=> $b_place;
+                        return $a_place->name <=> $b_place->name;
                     else
                         return $a->user->printableName() <=> $b->user->printableName();
                 }
