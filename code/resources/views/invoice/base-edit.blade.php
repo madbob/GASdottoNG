@@ -25,7 +25,7 @@ else {
     'name' => 'supplier_id',
     'label' => _i('Fornitore'),
     'mandatory' => true,
-    'objects' => App\Supplier::orderBy('name', 'asc')->get(),
+    'objects' => App\Supplier::orderBy('name', 'asc')->withTrashed()->get(),
     'disabled' => ($invoice && $invoice->status == 'payed')
 ])
 
