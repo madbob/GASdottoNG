@@ -225,17 +225,18 @@ $existing = false;
                         <button type="submit" class="btn btn-info info-button">{{ _i('Salva Informazioni') }}</button>
                     @endif
 
-                    @if($handling_movements)
-                        <button type="button" class="btn btn-success saving-button" data-toggle="modal" data-target="#editMovement-{{ $rand }}">{{ _i('Consegna') }}</button>
-                    @else
-                        <button type="submit" class="btn btn-success saving-button">{{ _i('Consegna') }}</button>
-                    @endif
+                    <button type="submit" class="btn btn-success saving-button">{{ _i('Consegna') }}</button>
                 </div>
             </div>
         </div>
     @endif
 
+    <input type="hidden" name="pre-saved-function" value="submitDeliveryForm">
     <input type="hidden" name="post-saved-function" value="updateOrderSummary">
+
+    @if($handling_movements)
+        <input type="hidden" name="post-saved-function" value="triggerPayment">
+    @endif
 
     @if($existing)
         <input type="hidden" name="post-saved-function" value="closeMainForm">
@@ -251,7 +252,6 @@ $existing = false;
         'default' => \App\Movement::generate('booking-payment', $user, $aggregate, $tot_amount),
         'amount_label' => _i('Importo da Pagare'),
         'extra' => [
-            'post-saved-function' => 'submitDeliveryForm',
             'delivering-status' => json_encode($tot_delivered)
         ],
     ])

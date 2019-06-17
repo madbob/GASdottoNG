@@ -942,28 +942,29 @@ function sortShippingBookings(list) {
 }
 
 function submitDeliveryForm(form) {
-    var id = form.closest('.modal').attr('id');
-    var mainform = $('form[data-reference-modal=' + id + ']');
-
     /*
         Questo è per condensare eventuali nuovi prodotti aggiunti ma già
         presenti nella prenotazione.
     */
-    mainform.find('.fit-add-product').not('.hidden').each(function() {
+    form.find('.fit-add-product').not('.hidden').each(function() {
         var i = $(this).find('.booking-product-quantity input:text.number');
         if (i.length == 0)
             return;
 
         var product = sanitizeId(i.attr('name'));
         var added_value = parseFloatC(i.val());
-        var existing = mainform.find('tr.booking-product').not('.fit-add-product').find('input:text.number[name=' + product + ']');
+        var existing = form.find('tr.booking-product').not('.fit-add-product').find('input:text.number[name=' + product + ']');
         if (existing.length != 0) {
             existing.val(parseFloatC(existing.val()) + added_value);
             i.remove();
         }
     });
+}
 
-    mainform.submit();
+function triggerPayment(form)
+{
+	var payment_modal = form.attr('data-reference-modal');
+	$('#' + payment_modal).appendTo('body').modal('show');
 }
 
 /*******************************************************************************
