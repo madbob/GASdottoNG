@@ -83,7 +83,7 @@ class StatisticsController extends Controller
                     }
 
                     $data[$name]->users[$booking->user_id] = true;
-                    $data[$name]->value += $booking->delivered;
+                    $data[$name]->value += $booking->getValue('delivered', true);
                 }
 
                 $products_cache = [];
