@@ -34,15 +34,22 @@ class BookingUserController extends BookingHandler
         $user = User::findOrFail($user_id);
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
-        if ($user->testUserAccess() == false && $request->user()->can('supplier.shippings', $aggregate) == false)
+        if ($user->testUserAccess() == false && $request->user()->can('supplier.shippings', $aggregate) == false) {
             abort(503);
-
-        $required_mode = $request->input('enforce', '');
-        if (empty($required_mode)) {
-            $required_mode = $aggregate->isRunning() ? 'edit' : 'show';
         }
 
-        $extended = $request->input('extended', 'false');
+        if (!is_null($request->user()->suspended)) {
+            $required_mode = 'show';
+            $extended = 'false';
+        }
+        else {
+            $required_mode = $request->input('enforce', '');
+            if (empty($required_mode)) {
+                $required_mode = $aggregate->isRunning() ? 'edit' : 'show';
+            }
+
+            $extended = $request->input('extended', 'false');
+        }
 
         /*
             $extended == true quando sto aprendo la prenotazione di un altro

@@ -1,20 +1,39 @@
+<?php
+
+if ($target) {
+    if (!is_null($target->deleted_at))
+        $status = 'deleted';
+    else if (!is_null($target->suspended_at))
+        $status = 'suspended';
+    else
+        $status = 'active';
+}
+else {
+    $status = 'active';
+}
+
+?>
+
 <div class="form-group">
     <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Stato') }}</label>
 
     <div class="col-sm-{{ $fieldsize }}">
         <div class="btn-group" data-toggle="buttons">
-            <label class="btn btn-default {{ is_null($target->deleted_at) ? 'active' : '' }}">
-                <input type="radio" name="status" value="active" {{ is_null($target->deleted_at) ? 'checked' : '' }}> {{ _i('Attivo') }}
+            <label class="btn btn-default {{ $status == 'active' ? 'active' : '' }}">
+                <input type="radio" name="status" value="active" {{ $status == 'active' ? 'checked' : '' }}> {{ _i('Attivo') }}
             </label>
-            <label class="btn btn-default {{ $target->suspended == true && $target->deleted_at != null ? 'active' : '' }}">
-                <input type="radio" name="status" value="suspended" {{ $target->suspended == true && $target->deleted_at != null ? 'checked' : '' }}> {{ _i('Sospeso') }}
+            <label class="btn btn-default {{ $status == 'suspended' ? 'active' : '' }}">
+                <input type="radio" name="status" value="suspended" {{ $status == 'suspended' ? 'checked' : '' }}> {{ _i('Sospeso') }}
             </label>
-            <label class="btn btn-default {{ $target->suspended == false && $target->deleted_at != null ? 'active' : '' }}">
-                <input type="radio" name="status" value="deleted" {{ $target->suspended == false && $target->deleted_at != null ? 'checked' : '' }}> {{ _i('Cessato') }}
+            <label class="btn btn-default {{ $status == 'deleted' ? 'active' : '' }}">
+                <input type="radio" name="status" value="deleted" {{ $status == 'deleted' ? 'checked' : '' }}> {{ _i('Cessato') }}
             </label>
         </div>
     </div>
-    <div class="status-date col-sm-offset-{{ $labelsize }} col-sm-{{ $fieldsize }} {{ is_null($target->deleted_at) ? 'hidden' : '' }}">
+    <div class="status-date-deleted col-sm-offset-{{ $labelsize }} col-sm-{{ $fieldsize }} {{ $status != 'deleted' ? 'hidden' : '' }}">
         @include('commons.datefield', ['obj' => $target, 'name' => 'deleted_at', 'label' => _i('Data'), 'squeeze' => true])
+    </div>
+    <div class="status-date-suspended col-sm-offset-{{ $labelsize }} col-sm-{{ $fieldsize }} {{ $status != 'suspended' ? 'hidden' : '' }}">
+        @include('commons.datefield', ['obj' => $target, 'name' => 'suspended_at', 'label' => _i('Data'), 'squeeze' => true])
     </div>
 </div>

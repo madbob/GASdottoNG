@@ -2501,7 +2501,9 @@ $(document).ready(function() {
     */
 
     $('body').on('change', '.user-editor input:radio[name=status], .supplier-editor input:radio[name=status]', function() {
-        $(this).closest('.form-group').find('input.date').closest('.status-date').toggleClass('hidden', ($(this).val() != 'deleted'));
+        var field = $(this).closest('.form-group');
+        field.find('.status-date-deleted').toggleClass('hidden', ($(this).val() != 'deleted'));
+        field.find('.status-date-suspended').toggleClass('hidden', ($(this).val() != 'suspended'));
     });
 
     /*

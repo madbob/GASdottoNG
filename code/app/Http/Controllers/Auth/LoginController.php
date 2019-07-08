@@ -56,8 +56,14 @@ class LoginController extends Controller
 
         if (Auth::check()) {
             $password = $request->input('password');
-            if ($username == $password)
+            if ($username == $password) {
                 Session::flash('prompt_message', _i('La password è uguale allo username! Cambiala il prima possibile dal tuo <a href="%s">pannello utente</a>!', [route('profile')]));
+            }
+            else {
+                $user = User::where('username', $username)->first();
+                if (!is_null($user->suspended_at))
+                    Session::flash('prompt_message', _i('Il tuo account è stato sospeso, e non puoi effettuare prenotazioni. Verifica lo stato dei tuoi pagamenti e del tuo credito o eventuali notifiche inviate dagli amministratori.'));
+            }
         }
 
         return $ret;

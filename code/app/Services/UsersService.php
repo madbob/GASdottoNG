@@ -205,7 +205,7 @@ class UsersService extends BaseService
                 }
 
                 if (isset($request['status'])) {
-                    $user->setStatus($request['status'], $request['deleted_at']);
+                    $user->setStatus($request['status'], $request['deleted_at'], $request['suspended_at']);
                 }
 
                 $this->transformAndSetIfSet($user, $request, 'member_since', "decodeDate");

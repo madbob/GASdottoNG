@@ -84,7 +84,7 @@ class SuppliersService extends BaseService
         $this->setIfSet($supplier, $request, 'order_method');
 
         if (isset($request['status'])) {
-            $supplier->setStatus($request['status'], $request['deleted_at']);
+            $supplier->setStatus($request['status'], $request['deleted_at'], $request['suspended_at']);
         }
     }
 

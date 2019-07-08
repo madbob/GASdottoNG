@@ -424,13 +424,13 @@ trait GASModel
             if ($user->can('supplier.add', $user->gas)) {
                 $icons['Supplier']['thumbs-down'] = (object) [
                     'test' => function ($obj) {
-                        return $obj->suspended == true;
+                        return !is_null($obj->suspended_at);
                     },
                     'text' => _i('Sospeso'),
                 ];
                 $icons['Supplier']['off'] = (object) [
                     'test' => function ($obj) {
-                        return ($obj->suspended == false && $obj->deleted_at != null);
+                        return !is_null($obj->deleted_at);
                     },
                     'text' => _i('Eliminato'),
                 ];
@@ -439,14 +439,14 @@ trait GASModel
             if ($user->can('users.admin', $user->gas)) {
                 $icons['User']['thumbs-down'] = (object) [
                     'test' => function ($obj) {
-                        return $obj->suspended == true;
+                        return !is_null($obj->suspended_at);
                     },
                     'text' => _i('Sospeso'),
                 ];
 
                 $icons['User']['off'] = (object) [
                     'test' => function ($obj) {
-                        return ($obj->suspended == false && $obj->deleted_at != null);
+                        return !is_null($obj->deleted_at);
                     },
                     'text' => _i('Cessato'),
                 ];
