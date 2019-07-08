@@ -15,8 +15,10 @@ class SuspendedSuppliers extends Migration
 
     public function down()
     {
-        Schema::table('suppliers', function (Blueprint $table) {
-            $table->dropColumn('suspended');
-        });
+        if (Schema::hasColumn('suppliers', 'suspended')) {
+            Schema::table('suppliers', function (Blueprint $table) {
+                $table->dropColumn('suspended');
+            });
+        }
     }
 }
