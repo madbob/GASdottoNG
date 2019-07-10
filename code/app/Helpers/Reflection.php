@@ -27,7 +27,7 @@ function modelsUsingTrait($trait_name) {
             continue;
 
         $classname = 'App\\' . substr($result, 0, -4);
-        if (in_array($trait_name, class_uses($classname)))
+        if (class_exists($classname) && in_array($trait_name, class_uses($classname)))
             $out[$classname] = $classname::commonClassName();
     }
 
