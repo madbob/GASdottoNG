@@ -64,6 +64,26 @@ class OrdersController extends Controller
         return Aggregate::easyFilter($supplier_id, date('Y-m-d', strtotime('-1 years')), date('Y-m-d', strtotime('+1 years')), ['open', 'closed', 'shipped', 'suspended']);
     }
 
+    private function resetOlderDates($order)
+    {
+        $last_date = $order->shipping ? $order->shipping : $order->end;
+
+        Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('date', '<=', $last_date)->delete();
+
+        $recurrings = Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('recurring', '!=', '')->get();
+        foreach($recurrings as $d) {
+            $data = json_decode($d->recurring);
+            $data->from = date('Y-m-d', strtotime($last_date . ' +1 days'));
+            if ($data->to <= $data->from) {
+                $d->delete();
+            }
+            else {
+                $d->recurring = json_encode($data);
+                $d->save();
+            }
+        }
+    }
+
     public function ical()
     {
         $calendar = new \Eluceo\iCal\Component\Calendar('www.example.com');
@@ -116,8 +136,7 @@ class OrdersController extends Controller
 
         $o->products()->sync($supplier->products()->where('active', '=', true)->get());
 
-        if ($o->shipping)
-            Date::where('target_type', 'App\Supplier')->where('target_id', $o->supplier_id)->where('date', '<=', $o->shipping)->delete();
+        $this->resetOlderDates($o);
 
         return $this->commonSuccessResponse($a);
     }
