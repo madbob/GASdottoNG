@@ -17,6 +17,8 @@
             @endif
         </h3>
 
+        <?php $total_booked = $total_delivered = 0 ?>
+
         @foreach($bookings as $super_booking)
             @if($super_booking->total_value == 0 && $super_booking->total_delivered == 0)
                 @continue
@@ -90,9 +92,11 @@
                     @endif
 
                     <tr>
+                        <?php $total_booked += $booked_cell_value ?>
                         <th colspan="5"><strong>{{ _i('Totale Prenotato') }}: {{ printablePriceCurrency($booked_cell_value, ',') }}</strong></th>
                     </tr>
                     <tr>
+                        <?php $total_delivered += $delivered_cell_value ?>
                         <th colspan="5"><strong>{{ _i('Totale Consegnato') }}: {{ printablePriceCurrency($delivered_cell_value, ',') }}</strong></th>
                     </tr>
 
@@ -106,5 +110,16 @@
 
             <p>&nbsp;</p>
         @endforeach
+
+        <table border="1" style="width: 100%" cellpadding="5" nobr="true">
+            <tbody>
+                <tr>
+                    <th colspan="5"><strong>{{ _i('Totale Complessivo Prenotato') }}: {{ printablePriceCurrency($total_booked, ',') }}</strong></th>
+                </tr>
+                <tr>
+                    <th colspan="5"><strong>{{ _i('Totale Complessivo Consegnato') }}: {{ printablePriceCurrency($total_delivered, ',') }}</strong></th>
+                </tr>
+            </tbody>
+        </table>
     </body>
 </html>
