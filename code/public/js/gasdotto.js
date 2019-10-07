@@ -892,6 +892,12 @@ function bookingTotal(editor) {
 
     form.find('.all-bookings-total').text(priceRound(grand_total));
 
+	var max_bookable = form.find('input:hidden[name="max-bookable"]');
+	if (max_bookable.length != 0) {
+		max_bookable = parseFloat(max_bookable.val());
+		form.find('button[type=submit]').prop('disabled', grand_total > max_bookable);
+	}
+
     /*
     	Qui aggiorno il valore totale della prenotazione nel (eventuale)
     	modale per il pagamento

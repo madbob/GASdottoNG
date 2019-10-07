@@ -86,6 +86,10 @@ class Gas extends Model
                 'default' => '0'
             ],
 
+            'restrict_booking_to_credit' => [
+                'default' => '0'
+            ],
+
             'rid' => [
                 'default' => (object) [
                     'iban' => '',
@@ -226,6 +230,11 @@ class Gas extends Model
     public function getFastShippingEnabledAttribute()
     {
         return $this->getConfig('fast_shipping_enabled') == '1';
+    }
+
+    public function getRestrictBookingToCreditAttribute()
+    {
+        return $this->getConfig('restrict_booking_to_credit') == '1';
     }
 
     public function getRestrictedAttribute()

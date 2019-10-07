@@ -12,6 +12,10 @@ $enforced = $enforced ?? false;
 <form class="form-horizontal inner-form booking-form" method="PUT" action="{{ url('booking/' . $aggregate->id . '/user/' . $user->id) }}">
     <input type="hidden" name="post-saved-function" value="afterBookingSaved">
 
+    @if($user->gas->restrict_booking_to_credit)
+        <input type="hidden" name="max-bookable" value="{{ $user->activeBalance() }}">
+    @endif
+
     @foreach($aggregate->orders as $order)
         @if($more_orders)
             <h3>{{ $order->printableName() }}</h3>
@@ -139,6 +143,16 @@ $enforced = $enforced ?? false;
                     'label' => _i('Sconto'),
                     'skip_cells' => 3
                 ])
+
+                @if($user->gas->restrict_booking_to_credit)
+                    <tr class="do-not-sort">
+                        <td><label class="static-label">{{ _i('Credito Disponibile') }}</label></td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td><label class="static-label pull-right">{{ printablePriceCurrency($user->activeBalance()) }}</label></td>
+                    </tr>
+                @endif
             </tbody>
             <tfoot>
                 <tr>
@@ -178,7 +192,7 @@ $enforced = $enforced ?? false;
         <div class="col-md-12">
             <div class="btn-group pull-right main-form-buttons" role="group">
                 <button type="button" class="btn btn-danger delete-booking">{{ _i('Annulla Prenotazione') }}</button>
-                <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
+                <button type="submit" class="btn btn-success saving-button" {{ $user->canBook() ? '' : 'disabled' }}>{{ _i('Salva') }}</button>
             </div>
         </div>
     </div>

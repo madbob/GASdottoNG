@@ -162,6 +162,21 @@ class User extends Authenticatable
             return $last->created_at;
     }
 
+    public function canBook()
+    {
+        if ($this->gas->restrict_booking_to_credit) {
+            if ($this->isFriend()) {
+                return $this->parent->canBook();
+            }
+            else {
+                return $this->activeBalance() > 0;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+
     public function printableHeader()
     {
         $ret = $this->printableName();
@@ -276,10 +291,29 @@ class User extends Authenticatable
 
         $value = 0;
 
-        foreach($bookings as $b)
+        foreach($bookings as $b) {
             $value += $b->getValue('effective', true);
+        }
 
         return $value;
+    }
+
+    public function activeBalance()
+    {
+        if ($this->isFriend()) {
+            return $this->parent->activeBalance();
+        }
+        else {
+            $current_balance = $this->current_balance_amount;
+            $to_pay = $this->pending_balance;
+
+            foreach($this->friends as $friend) {
+                $tpf = $friend->pending_balance;
+                $to_pay += $tpf;
+            }
+
+            return $current_balance - $to_pay;
+        }
     }
 
     public function getPictureUrlAttribute()

@@ -17,6 +17,13 @@ else {
 
 <div class="row">
     <div class="col-md-12">
+        @if($required_mode == 'edit' && $user->canBook() == false)
+            <div class="alert alert-danger">
+                {{ _i('Attenzione: il tuo credito è insuffiente per effettuare nuove prenotazioni.') }}
+            </div>
+            <br>
+        @endif
+
         <ul class="nav nav-tabs hidden-xs" role="tablist">
             <li role="presentation"><a href="#myself-{{ $rand }}" role="tab" data-toggle="tab">{{ _i('La Mia Prenotazione') }}</a></li>
 
