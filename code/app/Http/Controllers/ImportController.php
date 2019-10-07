@@ -386,13 +386,14 @@ class ImportController extends Controller
                             if (starts_with($vat_rates[$index], 'new:')) {
                                 $vat = new VatRate();
                                 $vat->percentage = str_after($vat_rates[$index], 'new:');
-                                $vat->name = sprintf('%f %', $vat->percentage);
+                                $vat->name = sprintf('%f %%', $vat->percentage);
                                 $vat->save();
                                 $vat_rates[$index] = $vat->id;
                             }
 
-                            if (!empty($vat_rates[$index]))
+                            if (!empty($vat_rates[$index])) {
                                 $p->vat_rate_id = $vat_rates[$index];
+                            }
 
                             $p->save();
                             $products[] = $p;
