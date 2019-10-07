@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use DB;
 use Auth;
+use Log;
 
 use App\Gas;
 use App\Supplier;
@@ -135,6 +136,23 @@ class MultiGasController extends Controller
         if ($user->can('gas.multi', $gas) == false) {
             abort(503);
         }
+
+        /*
+            Il modello User ha uno scope globale per manipolare solo gli utenti
+            del GAS locale, ma qui serve fare esattamente il contrario (ovvero:
+            manipolare solo gli utenti del GAS selezionato)
+        */
+        foreach($gas->users()->withoutGlobalScopes()->withTrashed()->get() as $u) {
+            $u->forceDelete();
+        }
+
+        foreach($gas->configs as $c) {
+            $c->delete();
+        }
+
+        $gas->suppliers()->sync([]);
+        $gas->aggregates()->sync([]);
+        $gas->deliveries()->sync([]);
 
         $gas->delete();
         return $this->successResponse();
