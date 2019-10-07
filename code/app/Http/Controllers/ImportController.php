@@ -262,7 +262,7 @@ class ImportController extends Controller
                                 elseif ($field == 'category') {
                                     $test_category = Category::where('name', $value)->first();
                                     if (is_null($test_category)) {
-                                        $field = 'category_name';
+                                        $field = 'temp_category_name';
                                         $p->category_id = -1;
                                     }
                                     else {
@@ -272,7 +272,7 @@ class ImportController extends Controller
                                 elseif ($field == 'measure') {
                                     $test_measure = Measure::where('name', $value)->first();
                                     if (is_null($test_measure)) {
-                                        $field = 'measure_name';
+                                        $field = 'temp_measure_name';
                                         $p->measure_id = -1;
                                     }
                                     else {
@@ -292,7 +292,7 @@ class ImportController extends Controller
 
                                     $test_vat = VatRate::where('percentage', $value)->first();
                                     if (is_null($test_vat)) {
-                                        $field = 'vat_rate_name';
+                                        $field = 'temp_vat_rate_name';
                                         $p->vat_rate_id = -1;
                                     }
                                     else {
@@ -345,6 +345,9 @@ class ImportController extends Controller
                     $errors = [];
                     $products = [];
                     $products_ids = [];
+                    $new_categories = [];
+                    $new_measures = [];
+                    $new_vats = [];
 
                     foreach($imports as $index) {
                         try {
@@ -368,26 +371,62 @@ class ImportController extends Controller
                             $p->multiple = $multiples[$index];
 
                             if (starts_with($categories[$index], 'new:')) {
-                                $category = new Category();
-                                $category->name = str_after($categories[$index], 'new:');
-                                $category->save();
+                                $category_name = str_after($categories[$index], 'new:');
+                                if (!empty($category_name)) {
+                                    if (isset($new_categories[$category_name])) {
+                                        $category = $new_categories[$category_name];
+                                    }
+                                    else {
+                                        $category = new Category();
+                                        $category->name = $category_name;
+                                        $category->save();
+                                        $new_categories[$category_name] = $category;
+                                    }
+                                }
+                                else {
+                                    $category = Category::find('non-specificato');
+                                }
+
                                 $categories[$index] = $category->id;
                             }
                             $p->category_id = $categories[$index];
 
                             if (starts_with($measures[$index], 'new:')) {
-                                $measure = new Measure();
-                                $measure->name = str_after($measures[$index], 'new:');
-                                $measure->save();
+                                $measure_name = str_after($measures[$index], 'new:');
+                                if (!empty($measure_name)) {
+                                    if (isset($new_measures[$measure_name])) {
+                                        $category = $new_measures[$measure_name];
+                                    }
+                                    else {
+                                        $measure = new Measure();
+                                        $measure->name = $measure_name;
+                                        $measure->save();
+                                        $new_measures[$measure_name] = $measure;
+                                    }
+                                }
+                                else {
+                                    $measure = Measure::find('non-specificato');
+                                }
+
                                 $measures[$index] = $measure->id;
                             }
                             $p->measure_id = $measures[$index];
 
                             if (starts_with($vat_rates[$index], 'new:')) {
-                                $vat = new VatRate();
-                                $vat->percentage = str_after($vat_rates[$index], 'new:');
-                                $vat->name = sprintf('%f %%', $vat->percentage);
-                                $vat->save();
+                                $vat_name = (float) str_after($vat_rates[$index], 'new:');
+                                if (!empty($vat_name)) {
+                                    if (isset($new_vats[$vat_name])) {
+                                        $vat = $new_vats[$vat_name];
+                                    }
+                                    else {
+                                        $vat = new VatRate();
+                                        $vat->percentage = $vat_name;
+                                        $vat->name = sprintf('%f %%', round($vat_name, 2));
+                                        $vat->save();
+                                        $new_vats[$vat_name] = $vat;
+                                    }
+                                }
+
                                 $vat_rates[$index] = $vat->id;
                             }
 

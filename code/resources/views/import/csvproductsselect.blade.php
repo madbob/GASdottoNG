@@ -90,7 +90,7 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                                     'postfix' => '[]',
                                     'squeeze' => true,
                                     'objects' => $categories,
-                                    'extra_selection' => (isset($product->category_name) ? ['new:' . $product->category_name => $product->category_name] : [])
+                                    'extra_selection' => (isset($product->temp_category_name) ? ['new:' . $product->temp_category_name => $product->temp_category_name] : [])
                                 ])
                             </td>
                             <td>
@@ -100,7 +100,7 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                                     'postfix' => '[]',
                                     'squeeze' => true,
                                     'objects' => $measures,
-                                    'extra_selection' => (isset($product->measure_name) ? ['new:' . $product->measure_name => $product->measure_name] : [])
+                                    'extra_selection' => (isset($product->temp_measure_name) ? ['new:' . $product->temp_measure_name => $product->temp_measure_name] : [])
                                 ])
                             </td>
                             <td>
@@ -110,7 +110,7 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                                     'postfix' => '[]',
                                     'squeeze' => true,
                                     'objects' => $vat_rates,
-                                    'extra_selection' => (isset($product->vat_rate_name) ? ['new:' . $product->vat_rate_name => $product->vat_rate_name] : [])
+                                    'extra_selection' => (isset($product->temp_vat_rate_name) ? ['new:' . $product->temp_vat_rate_name => $product->temp_vat_rate_name] : [])
                                 ])
                             </td>
                             <td>
