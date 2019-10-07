@@ -95,6 +95,20 @@
             </div>
         </div>
 
+        <div class="form-group">
+            <label for="verify" class="col-md-4 control-label">{{ $captcha }}</label>
+
+            <div class="col-md-6">
+                <input id="verify" type="text" class="form-control" name="verify" required>
+
+                @if ($errors->has('verify'))
+                    <span class="help-block">
+                        <strong>{{ $errors->first('verify') }}</strong>
+                    </span>
+                @endif
+            </div>
+        </div>
+
         @if(App\Gas::count() > 1)
             <div class="form-group">
                 <label for="gas_id" class="col-md-4 control-label">{{ _i('GAS') }}</label>

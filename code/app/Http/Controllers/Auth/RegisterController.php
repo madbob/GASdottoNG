@@ -7,10 +7,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
+use App\Rules\Captcha;
 use App\Notifications\WelcomeMessage;
 use App\Notifications\NewUserNotification;
 
 use Mail;
+use Session;
 use Hash;
 use Log;
 
@@ -54,10 +56,16 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         $gas = currentAbsoluteGas();
-        if($gas->hasFeature('public_registrations') == false)
+        if($gas->hasFeature('public_registrations') == false) {
             return redirect()->route('login');
-        else
-            return view('auth.register');
+        }
+        else {
+            $first = rand(1, 20);
+            $second = rand(1, 20);
+            $captcha = sprintf('%s + %s =', $first, $second);
+            Session::put('captcha_solution', $first + $second);
+            return view('auth.register', ['captcha' => $captcha]);
+        }
     }
 
     /**
@@ -69,15 +77,18 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         $gas = Gas::find($data['gas_id']);
-        if ($gas == null)
+        if ($gas == null) {
+            Log::error('Nessun GAS specificato in fase di registrazione');
             return false;
-
-        $mandatory = $gas->public_registrations['mandatory_fields'];
+        }
 
         $options = [
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'verify' => [new Captcha()]
         ];
+
+        $mandatory = $gas->public_registrations['mandatory_fields'];
 
         if (in_array('firstname', $mandatory))
             $options['firstname'] = 'required|string|max:255';
@@ -134,6 +145,7 @@ class RegisterController extends Controller
 
     protected function registered(Request $request, $user)
     {
+        Session::forget('captcha_solution');
         $user->notify(new WelcomeMessage());
 
         $admins = Role::everybodyCan('users.admin', $user->gas);
