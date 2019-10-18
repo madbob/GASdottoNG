@@ -157,8 +157,8 @@ class GasController extends Controller
                 if ($request->has('enable_public_registrations')) {
                     $registrations_info = (object) [
                         'enabled' => true,
-                        'privacy_link' => $request->input('public_registrations->privacy_link'),
-                        'mandatory_fields' => $request->input('public_registrations->mandatory_fields'),
+                        'privacy_link' => $request->input('public_registrations->privacy_link', ''),
+                        'mandatory_fields' => $request->input('public_registrations->mandatory_fields', []),
                     ];
                 }
                 else {
