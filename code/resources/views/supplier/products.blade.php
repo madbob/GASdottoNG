@@ -27,6 +27,15 @@
 
     <div class="clearfix"></div>
 
+    @if($supplier->orders()->whereNotIn('status', ['shipped', 'archived'])->count() != 0)
+        <br>
+        <div class="alert alert-danger">
+            {{ _i('Attenzione: ci sono ordini non ancora consegnati ed archiviati per questo fornitore, eventuali modifiche ai prodotti saranno applicate anche a tali ordini.') }}
+        </div>
+        <br>
+        <div class="clearfix"></div>
+    @endif
+
     <div class="middle-tabs">
         <hr/>
         <ul class="nav nav-pills" role="tablist">
