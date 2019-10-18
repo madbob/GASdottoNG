@@ -8,21 +8,18 @@ switch($booking->status) {
         $display_shipping_date = false;
         $attribute = 'delivered';
         $function = 'deliveredValue';
-        $total_function = 'delivered';
         break;
 
     case 'saved':
         $intro_text = _i('Di seguito il riassunto dei prodotti che ti saranno consegnati:');
         $attribute = 'delivered';
         $function = 'deliveredValue';
-        $total_function = 'delivered';
         break;
 
     case 'pending':
         $intro_text = _i('Di seguito il riassunto dei prodotti che hai ordinato:');
         $attribute = 'quantity';
         $function = 'quantityValue';
-        $total_function = 'value';
         break;
 }
 
@@ -62,11 +59,21 @@ $bookings_tot = 0;
             <?php
 
             $bookings_tot++;
-            $tot = $b->$total_function;
+            $tot = $b->getValue('effective', false);
             $global_total += $tot;
 
             ?>
 
+            <tr>
+                <td><strong>{{ _i('Trasporto') }}</strong></td>
+                <td>&nbsp;</td>
+                <td>{{ printablePriceCurrency($b->getValue('transport', false)) }}</td>
+            </tr>
+            <tr>
+                <td><strong>{{ _i('Sconto') }}</strong></td>
+                <td>&nbsp;</td>
+                <td>{{ printablePriceCurrency($b->getValue('discount', false)) }}</td>
+            </tr>
             <tr>
                 <td><strong>{{ _i('Totale') }}</strong></td>
                 <td>&nbsp;</td>
@@ -103,11 +110,21 @@ $bookings_tot = 0;
                     <?php
 
                     $bookings_tot++;
-                    $tot = $fb->$total_function;
+                    $tot = $fb->getValue('effective', false);
                     $global_total += $tot;
 
                     ?>
 
+                    <tr>
+                        <td><strong>{{ _i('Trasporto') }}</strong></td>
+                        <td>&nbsp;</td>
+                        <td>{{ printablePriceCurrency($fb->getValue('transport', false)) }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{{ _i('Sconto') }}</strong></td>
+                        <td>&nbsp;</td>
+                        <td>{{ printablePriceCurrency($fb->getValue('discount', false)) }}</td>
+                    </tr>
                     <tr>
                         <td><strong>{{ _i('Totale') }}</strong></td>
                         <td>&nbsp;</td>
