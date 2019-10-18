@@ -47,9 +47,10 @@ class MailController extends Controller
                         $now = date('Y-m-d G:i:s');
 
                         foreach($instances as $i) {
-                            $db_emails = DB::table($i . '.contacts')->where('type', 'email')->where('value', $email)->count();
-                            if ($db_emails != 0) {
-                                DB::insert("INSERT INTO ${i}.inner_logs (level, type, message, created_at, updated_at) VALUES ('error', 'mail', '$message', '$now', '$now')");
+                            $db = get_instance_db($i);
+                            $db_emails = $db->select("SELECT COUNT(*) as count FROM contacts WHERE type = 'email' and value = '$email'");
+                            if ($db_emails[0]['count'] != 0) {
+                                $db->insert("INSERT INTO inner_logs (level, type, message, created_at, updated_at) VALUES ('error', 'mail', '$message', '$now', '$now')");
                             }
                         }
                     }

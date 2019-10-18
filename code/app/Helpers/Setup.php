@@ -54,3 +54,32 @@ function get_instances()
 
     return $ret;
 }
+
+function get_instance_db($name)
+{
+    $path = base_path('.env.' . $name);
+    $config = file($path);
+    $params = [];
+
+    foreach($config as $c) {
+        $c = trim($c);
+        if (!empty($c)) {
+            list($name, $value) = explode('=', $c);
+            $params[$name] = $value;
+        }
+    }
+
+    $db_config = [
+        'driver' => $params['DB_CONNECTION'],
+        'host' => $params['DB_HOST'],
+        'username' => $params['DB_USERNAME'],
+        'password' => $params['DB_PASSWORD'],
+        'database' => $params['DB_DATABASE'],
+        'charset' => 'utf8',
+        'collation' => 'utf8_unicode_ci',
+        'prefix' => '',
+        'strict' => false,
+    ];
+
+    return $factory->make($db_config);
+}
