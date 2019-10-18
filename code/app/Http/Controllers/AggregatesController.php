@@ -79,6 +79,11 @@ class AggregatesController extends OrdersController
         $a->comment = $request->input('comment', '');
         $a->save();
 
+        $status = $request->input('status', 'no');
+        if ($status != 'no') {
+            $a->orders()->update(['status' => $status]);
+        }
+
         return $this->successResponse([
             'id' => $a->id,
             'header' => $a->printableHeader(),

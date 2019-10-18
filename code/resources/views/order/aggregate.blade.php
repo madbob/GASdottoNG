@@ -107,6 +107,39 @@ $panel_rand_wrap = rand();
                     <form class="form-horizontal main-form" method="PUT" action="{{ route('aggregates.update', $aggregate->id) }}">
                         <div class="row">
                             <div class="col-md-4">
+                                @include('commons.selectenumfield', [
+                                    'obj' => null,
+                                    'name' => 'status',
+                                    'label' => _i('Stato'),
+                                    'enforced_default' => 'no',
+                                    'values' => [
+                                        [
+                                            'label' => _i('Invariato'),
+                                            'value' => 'no',
+                                        ],
+                                        [
+                                            'label' => _i('Prenotazioni Aperte'),
+                                            'value' => 'open',
+                                        ],
+                                        [
+                                            'label' => _i('Prenotazioni Chiuse'),
+                                            'value' => 'closed',
+                                        ],
+                                        [
+                                            'label' => _i('Consegnato'),
+                                            'value' => 'shipped',
+                                        ],
+                                        [
+                                            'label' => _i('Archiviato'),
+                                            'value' => 'archived',
+                                        ],
+                                        [
+                                            'label' => _i('In Sospeso'),
+                                            'value' => 'suspended',
+                                        ],
+                                    ],
+                                ])
+
                                 @include('commons.textfield', ['obj' => $aggregate, 'name' => 'comment', 'label' => _i('Commento')])
                             </div>
                             <div class="col-md-4">
