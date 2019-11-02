@@ -33,6 +33,7 @@ return [
         'de_DE',
         'fr_FR',
         'nl_NL',
+        'cs_CZ',
         'nb_NO',
     ],
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
-"POT-Creation-Date: 2019-10-18 15:35+0200\n"
-"PO-Revision-Date: 2019-10-18 15:36+0200\n"
+"POT-Creation-Date: 2019-11-02 14:10+0100\n"
+"PO-Revision-Date: 2019-11-02 14:10+0100\n"
 "Last-Translator: Roberto Guido <bob@linux.it>\n"
 "Language-Team: Roberto Guido <bob@linux.it>\n"
 "Language: nb_NO\n"
@@ -2176,7 +2176,7 @@ msgid "Importo da Pagare"
 msgstr ""
 
 #: ../storage/framework/messages/4b37c5c7878bdb0601a2dad99e01ec2526263efc.php.php:2
-#: ../storage/framework/messages/753e31fcd0e6bd9592171211b3f88d0409a2f3e9.php.php:34
+#: ../storage/framework/messages/753e31fcd0e6bd9592171211b3f88d0409a2f3e9.php.php:44
 #: ../storage/framework/messages/83b05e2efb9228c90f403f23ab561850e7024b94.php.php:2
 msgid "Dettagli"
 msgstr ""
@@ -2726,7 +2726,14 @@ msgstr ""
 msgid "Listino CSV"
 msgstr ""
 
-#: ../storage/framework/messages/753e31fcd0e6bd9592171211b3f88d0409a2f3e9.php.php:37
+#: ../storage/framework/messages/753e31fcd0e6bd9592171211b3f88d0409a2f3e9.php.php:33
+msgid ""
+"Attenzione: ci sono ordini non ancora consegnati ed archiviati per questo "
+"fornitore, eventuali modifiche ai prodotti saranno applicate anche a tali "
+"ordini."
+msgstr ""
+
+#: ../storage/framework/messages/753e31fcd0e6bd9592171211b3f88d0409a2f3e9.php.php:47
 msgid "Modifica Rapida"
 msgstr ""
 
