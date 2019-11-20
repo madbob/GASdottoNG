@@ -28,11 +28,3 @@ else
         @endif
     @endif
 @endforeach
-
-@if($booking->getValue('transport', $with_friends) != 0)
-    <tr>
-        <td width="40%">{{ _i('Trasporto') }}</td>
-        <td width="40%">&nbsp;</td>
-        <td width="20%">{{ printablePriceCurrency($booking->getValue('transport', $with_friends), ',') }}</td>
-    </tr>
-@endif

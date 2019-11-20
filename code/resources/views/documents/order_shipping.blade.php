@@ -46,7 +46,7 @@
                             $head .= ' - ' . join(', ', $contacts);
 
                         $discount = $booking->getValue('discount', true);
-                        $booking_total = $booking->getValue('booked', true) - $discount;
+                        $booking_total = $booking->getValue('effective', true) - $discount;
                         $total += $booking_total;
                         $transport = $booking->getValue('transport', true);
                         $total_transport += $transport;
