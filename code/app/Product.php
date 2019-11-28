@@ -168,14 +168,16 @@ class Product extends Model
 
         if ($enabled && $product->pivot->discount_enabled) {
             $price = applyPercentage($this->price, $this->discount);
-        } else {
+        }
+        else {
             $price = $this->price;
         }
 
-        if ($rectify && $product->portion_quantity != 0)
+        if ($rectify && $product->portion_quantity != 0) {
             $price = $price * $product->portion_quantity;
+        }
 
-        return $price;
+        return (float) $price;
     }
 
     public function printableMeasure($verbose = false)

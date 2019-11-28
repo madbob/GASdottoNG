@@ -81,5 +81,6 @@ function get_instance_db($name)
         'strict' => false,
     ];
 
+    $factory = App::make('db.factory');
     return $factory->make($db_config);
 }
