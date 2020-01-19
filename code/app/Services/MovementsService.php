@@ -13,6 +13,7 @@ use Log;
 use App\Movement;
 use App\CreditableTrait;
 use App\User;
+use App\Balance;
 use App\Supplier;
 
 class MovementsService extends BaseService
@@ -292,6 +293,14 @@ class MovementsService extends BaseService
             $hub->setRecalculating(false);
             return false;
         }
+    }
+
+    public function deleteBalance($id)
+    {
+        $this->ensureAuth(['movements.admin' => 'gas']);
+        $balance = Balance::find($id);
+        $balance->delete();
+        return true;
     }
 
     public function destroy($id)

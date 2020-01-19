@@ -353,4 +353,18 @@ class MovementsController extends BackedController
             return $this->errorResponse(_i('Errore'));
         }
     }
+
+    public function deleteBalance(Request $request, $id)
+    {
+        try {
+            $this->service->deleteBalance($id);
+            return $this->successResponse();
+        }
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+        catch (\Exception $e) {
+            return $this->errorResponse(_i('Errore'));
+        }
+    }
 }

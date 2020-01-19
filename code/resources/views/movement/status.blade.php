@@ -35,6 +35,38 @@
                                         @foreach($obj->balanceFields() as $identifier => $name)
                                             <td class="{{ $index == 0 ? $identifier : '' }}"><span>{{ $bal->$identifier }}</span> {{ $currentgas->currency }}</td>
                                         @endforeach
+                                        <td>
+                                            @if($index != 0)
+                                                <button class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-delete-balance-{{ $index }}"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+
+                                                <div class="modal fade" id="modal-delete-balance-{{ $index }}" tabindex="-1" role="dialog">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                <h4 class="modal-title">{{ _i('Elimina Saldo Passato') }}</h4>
+                                                            </div>
+                                                            <form class="form-inline iblock password-protected" id="delete-balance-{{ $index }}" method="POST" action="{{ route('movements.deletebalance', $bal->id) }}">
+                                                                {!! csrf_field() !!}
+                                                                <input type="hidden" name="reload-whole-page" value="1">
+
+                                                                <div class="modal-body">
+                                                                    <div class="alert alert-danger">
+                                                                        <p>
+                                                                            {{ _i("Attenzione! I saldi passati possono essere rimossi ma con prudenza, l'operazione non è reversibile, e non sarà più possibile ricalcolare questi valori in nessun modo!") }}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+                                                                    <button type="submit" class="btn btn-danger">{{ _i('Ho capito') }}</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

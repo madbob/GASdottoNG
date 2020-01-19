@@ -121,6 +121,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('movements/balance', 'MovementsController@getBalance');
     Route::post('movements/recalculate', 'MovementsController@recalculate');
     Route::post('movements/close', 'MovementsController@closeBalance');
+    Route::post('movements/deletebalance/{id}', 'MovementsController@deleteBalance')->name('movements.deletebalance');
     Route::get('movements/document/{type}/{subtype?}', 'MovementsController@document');
 
     Route::post('import/csv', 'ImportController@postCsv');
