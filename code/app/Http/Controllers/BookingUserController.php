@@ -38,7 +38,7 @@ class BookingUserController extends BookingHandler
             abort(503);
         }
 
-        if (!is_null($request->user()->suspended)) {
+        if (!is_null($request->user()->suspended_at)) {
             $required_mode = 'show';
             $extended = 'false';
         }

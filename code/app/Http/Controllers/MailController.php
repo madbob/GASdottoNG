@@ -47,10 +47,15 @@ class MailController extends Controller
                         $now = date('Y-m-d G:i:s');
 
                         foreach($instances as $i) {
-                            $db = get_instance_db($i);
-                            $db_emails = $db->select("SELECT COUNT(*) as count FROM contacts WHERE type = 'email' and value = '$email'");
-                            if ($db_emails[0]->count != 0) {
-                                $db->insert("INSERT INTO inner_logs (level, type, message, created_at, updated_at) VALUES ('error', 'mail', '$message', '$now', '$now')");
+                            try {
+                                $db = get_instance_db($i);
+                                $db_emails = $db->select("SELECT COUNT(*) as count FROM contacts WHERE type = 'email' and value = '$email'");
+                                if ($db_emails[0]->count != 0) {
+                                    $db->insert("INSERT INTO inner_logs (level, type, message, created_at, updated_at) VALUES ('error', 'mail', '$message', '$now', '$now')");
+                                }
+                            }
+                            catch(\Exception $e) {
+                                Log::error('Impossibile accedere a istanza per controllo SNS: ' . $e->getMessage());
                             }
                         }
                     }
