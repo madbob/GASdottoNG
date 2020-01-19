@@ -969,8 +969,17 @@ function submitDeliveryForm(form) {
 
 function triggerPayment(form)
 {
-	var payment_modal = form.attr('data-reference-modal');
-	$('#' + payment_modal).appendTo('body').modal('show');
+	/*
+		Il valore di "action" viene impostato di default nel form di consegna a
+		"shipped", ma può essere alterato dal pulsante di salvataggio delle
+		informazioni. In tal caso, non occorre visualizzare il modale di
+		pagamento.
+	*/
+	var action = form.find('input:hidden[name=action]').val();
+	if (action == 'shipped') {
+		var payment_modal = form.attr('data-reference-modal');
+		$('#' + payment_modal).appendTo('body').modal('show');
+	}
 }
 
 /*******************************************************************************
@@ -2870,8 +2879,9 @@ $(document).ready(function() {
                     test = (test || (total != 0));
                 });
 
-                if (test == false)
+                if (test == false) {
                     test = confirm(_('Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?'));
+				}
 
                 if (test == true) {
                     $(this).data('total-checked', 1);
