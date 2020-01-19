@@ -46,6 +46,15 @@ class DeliveryUserController extends BookingHandler
 
     private function fastShipBooking($deliverer, $booking)
     {
+        /*
+            Se la prenotazione in oggetto non esiste, salto tutto il resto.
+            Altrimenti rischio di creare una prenotazione vuota e salvarla sul
+            DB, con tutto quel che ne consegue.
+        */
+        if ($booking->exists == false) {
+            return 0;
+        }
+
         $booking->deliverer_id = $deliverer->id;
         $booking->delivery = date('Y-m-d');
 
