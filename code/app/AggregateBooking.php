@@ -84,29 +84,37 @@ class AggregateBooking extends Model
         return $grand_total;
     }
 
-    /*
-        Questa funzione genera una stringa con l'elenco dei fornitori coinvolti
-        nella prenotazione aggregata. Se sono troppi, l'elenco viene accorciato
-        per convenienza.
-    */
-    public function getConvenientSuppliersListAttribute()
+    public function getConvenientStringsAttribute()
     {
         $suppliers = [];
+        $shipping_date = PHP_INT_MAX;
 
         foreach ($this->bookings as $booking) {
-            $suppliers[$booking->order->supplier->printableName()] = true;
+            $order = $booking->order;
+
+            $suppliers[$order->supplier->printableName()] = true;
+
+            if ($order->shipping != null && $order->shipping != '0000-00-00') {
+                $this_shipping = strtotime($order->shipping);
+                if ($this_shipping < $shipping_date) {
+                    $shipping_date = $this_shipping;
+                }
+            }
         }
 
         $suppliers = array_keys($suppliers);
         sort($suppliers);
-        $limit = Aggregate::aggregatesConvenienceLimit();
 
+        $limit = Aggregate::aggregatesConvenienceLimit();
         if (count($suppliers) > $limit) {
             $suppliers = array_slice($suppliers, 0, $limit);
             $suppliers[] = _i('e altri');
         }
 
-        return join(', ', $suppliers);
+        return [
+            'suppliers' => join(', ', $suppliers),
+            'shipping' => $shipping_date == PHP_INT_MAX ? _i('indefinita') : strftime('%A %d %B %G', $shipping_date);
+        ];
     }
 
     public function generateReceipt()

@@ -184,7 +184,7 @@ class Aggregate extends Model implements Feedable
         if ($orders->count() > Aggregate::aggregatesConvenienceLimit()) {
             $start_date = PHP_INT_MAX;
             $end_date = 0;
-            $shipping_date = 0;
+            $shipping_date = PHP_INT_MAX;
 
             foreach ($orders as $order) {
                 $names[] = $order->printableName();
@@ -197,15 +197,16 @@ class Aggregate extends Model implements Feedable
                 if ($this_end > $end_date)
                     $end_date = $this_end;
 
-                if ($this->shipping != null && $this->shipping != '0000-00-00') {
+                if ($order->shipping != null && $order->shipping != '0000-00-00') {
                     $this_shipping = strtotime($order->shipping);
-                    if ($this_shipping > $shipping_date)
+                    if ($this_shipping < $shipping_date) {
                         $shipping_date = $this_shipping;
+                    }
                 }
             }
 
             $date_string = sprintf('da %s a %s', strftime('%A %d %B %G', $start_date), strftime('%A %d %B %G', $end_date));
-            if ($shipping_date != 0)
+            if ($shipping_date != PHP_INT_MAX)
                 $date_string .= sprintf(', in consegna %s', strftime('%A %d %B %G', $shipping_date));
             $dates[] = $date_string;
         }

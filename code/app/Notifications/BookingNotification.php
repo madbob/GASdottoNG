@@ -21,7 +21,8 @@ class BookingNotification extends ManyMailNotification
     {
         $user = Auth::user();
         $message = $this->initMailMessage($notifiable, $user);
-        $message->subject(_i('Riassunto prenotazione del GAS: ' . $this->booking->convenient_suppliers_list))->view('emails.booking', ['booking' => $this->booking, 'txt_message' => $this->message]);
+        $strings = $this->booking->convenient_strings;
+        $message->subject(_i('Riassunto prenotazione del GAS: %s - consegna %s', [$strings['suppliers'], $strings['shipping']]))->view('emails.booking', ['booking' => $this->booking, 'txt_message' => $this->message]);
         return $message;
     }
 }
