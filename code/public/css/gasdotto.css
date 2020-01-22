@@ -61,6 +61,36 @@ table label {
   margin-bottom: 0;
   font-weight: normal; }
 
+#dates-calendar .continuous-calendar {
+  table-layout: fixed; }
+  #dates-calendar .continuous-calendar td {
+    width: calc(100% / 8);
+    max-width: calc(100% / 8);
+    height: 120px; }
+    #dates-calendar .continuous-calendar td.currentmonth {
+      color: #777; }
+    #dates-calendar .continuous-calendar td.day-in-month-0 {
+      background-color: #FFFFFF; }
+    #dates-calendar .continuous-calendar td.day-in-month-1 {
+      background-color: #F5F5F5; }
+    #dates-calendar .continuous-calendar td span {
+      font-size: small;
+      color: #777; }
+    #dates-calendar .continuous-calendar td a {
+      cursor: pointer; }
+
+#dates-calendar a {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #FFF;
+  display: block;
+  font-size: small;
+  padding: 2px;
+  margin-bottom: 2px;
+  text-decoration: none; }
+
 #dates-calendar .calendar-shipping-open {
   background-color: red; }
 

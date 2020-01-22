@@ -199,7 +199,7 @@
             '/js/chartist.js',
             '/js/jquery.TableCSVExport.js',
             '/js/moment.min.js',
-            '/js/fullcalendar.js',
+            '/js/cc.js',
 
             '/js/utils.js',
             '/js/inline-help.js',
@@ -222,7 +222,6 @@
 
         <script type="application/javascript" src="{{ asset('/js/lang/bootstrap-datepicker.' . htmlLang() . '.min.js') }}"></script>
         <script type="application/javascript" src="{{ asset('/js/lang/bootstrap-table-' . htmlLang() . '.js') }}"></script>
-        <script type="application/javascript" src="{{ asset('/js/lang/fullcalendar-' . htmlLang() . '.js') }}"></script>
         <script type="application/javascript" src="{{ asset('/js/lang/' . htmlLang() . '.js') }}"></script>
 
         <!-- Piwik -->

@@ -1248,8 +1248,11 @@ $(document).ready(function() {
             });
     });
 
-    if ($('#dates-calendar').length != 0) {
-        $('#dates-calendar').fullCalendar({
+    if ($('#actual-calendar').length != 0) {
+        $('#actual-calendar').ContinuousCalendar({
+			days: translated_days,
+			months: translated_months,
+			rows: 4,
             events: dates_events
         });
     }

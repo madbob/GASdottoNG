@@ -4,7 +4,7 @@
             @if($a->shipping)
                 {
                     title: '{!! join(', ', $a->orders->reduce(function($carry, $item) { $carry[] = addslashes($item->supplier->name); return $carry; }, [])) !!}',
-                    start: '{{ $a->shipping }}',
+                    date: '{{ $a->shipping }}',
                     className: 'calendar-shipping-{{ $a->status }}',
                     url: '{{ $a->getBookingURL() }}'
                 },
@@ -15,7 +15,7 @@
             @foreach($d->dates as $dat)
                 {
                     title: '{{ $d->calendar_string }}',
-                    start: '{{ $dat }}',
+                    date: '{{ $dat }}',
                     className: 'calendar-date-{{ $d->type }}'
 
                     @if($d->type == 'internal')
@@ -25,17 +25,31 @@
             @endforeach
         @endforeach
     ];
+
+    var translated_days = [
+        @foreach(localeDays() as $day => $offset)
+            '{{ ucwords(substr($day, 0, 3)) }}',
+        @endforeach
+    ];
+
+    var translated_months = [
+        @foreach(localeMonths() as $month => $offset)
+            '{{ ucwords(substr($month, 0, 3)) }}',
+        @endforeach
+    ];
 </script>
 
 <div id="dates-calendar">
+    <div id="actual-calendar"></div>
+
     <div class="row">
         <div class="col-md-3">
-            <span class="fc-event calendar-shipping-open">{{ _i('Ordini Aperti') }}</span>
-            <span class="fc-event calendar-shipping-closed">{{ _i('Ordini Chiusi') }}</span>
+            <a class="calendar-shipping-open">{{ _i('Ordini Aperti') }}</a>
+            <a class="calendar-shipping-closed">{{ _i('Ordini Chiusi') }}</a>
             @if(App\Date::count())
-                <span class="fc-event calendar-date-confirmed">{{ _i('Date Confermate') }}</span>
-                <span class="fc-event calendar-date-temp">{{ _i('Date Temporanee') }}</span>
-                <span class="fc-event calendar-date-internal">{{ _i('Appuntamenti') }}</span>
+                <a class="calendar-date-confirmed">{{ _i('Date Confermate') }}</a>
+                <a class="calendar-date-temp">{{ _i('Date Temporanee') }}</a>
+                <a class="calendar-date-internal">{{ _i('Appuntamenti') }}</a>
             @endif
         </div>
     </div>

@@ -89,6 +89,50 @@ table {
 }
 
 #dates-calendar {
+    .continuous-calendar {
+        table-layout: fixed;
+
+        td {
+            width: calc(100% / 8);
+            max-width: calc(100% / 8);
+            height: 120px;
+
+            &.currentmonth {
+                color: #777;
+            }
+
+            &.day-in-month-0 {
+                background-color: #FFFFFF;
+            }
+
+            &.day-in-month-1 {
+                background-color: #F5F5F5;
+            }
+
+            span {
+                font-size: small;
+                color: #777;
+            }
+
+            a {
+                cursor: pointer;
+            }
+        }
+    }
+
+    a {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        color: #FFF;
+        display: block;
+        font-size: small;
+        padding: 2px;
+        margin-bottom: 2px;
+        text-decoration: none;
+    }
+
     .calendar-shipping-open {
         background-color: red;
     }
