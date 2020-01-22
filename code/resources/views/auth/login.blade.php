@@ -37,7 +37,6 @@
 
     <form class="form-horizontal" method="POST" action="{{ route('login') }}">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-        <input type="hidden" name="remember" value="1">
 
         <div class="form-group">
             <label class="col-sm-2 control-label">{{ _i('Username') }}</label>
@@ -67,6 +66,16 @@
                 </div>
             </div>
         @endif
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="remember" checked> {{ _i('Ricordami') }}	
+                    </label>
+                </div>
+            </div>
+        </div>
 
         <br>
 
