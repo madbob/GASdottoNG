@@ -28,6 +28,14 @@ $bookings_tot = 0;
 
 ?>
 
+@if(!empty($txt_message))
+    <p>
+        {!! nl2br($txt_message) !!}
+    </p>
+
+    <hr/>
+@endif
+
 <p>
     {{ $intro_text }}
 </p>
@@ -151,12 +159,5 @@ $bookings_tot = 0;
 @if($display_shipping_date && $b && $b->order->shipping != null)
     <p>
         {{ _i('La consegna avverrà %s.', [$b->order->printableDate('shipping')]) }}
-    </p>
-@endif
-
-@if(!empty($txt_message))
-    <hr/>
-    <p>
-        {!! nl2br($txt_message) !!}
     </p>
 @endif

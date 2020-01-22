@@ -3,7 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+
 use App\GASModel;
+use App\Aggregate;
 use App\User;
 
 /*
@@ -80,6 +82,31 @@ class AggregateBooking extends Model
         }
 
         return $grand_total;
+    }
+
+    /*
+        Questa funzione genera una stringa con l'elenco dei fornitori coinvolti
+        nella prenotazione aggregata. Se sono troppi, l'elenco viene accorciato
+        per convenienza.
+    */
+    public function getConvenientSuppliersListAttribute()
+    {
+        $suppliers = [];
+
+        foreach ($this->bookings as $booking) {
+            $suppliers[$booking->order->supplier->printableName()] = true;
+        }
+
+        $suppliers = array_keys($suppliers);
+        sort($suppliers);
+        $limit = Aggregate::aggregatesConvenienceLimit();
+
+        if (count($suppliers) > $limit) {
+            $suppliers = array_slice($suppliers, 0, $limit);
+            $suppliers[] = _i('e altri');
+        }
+
+        return join(', ', $suppliers);
     }
 
     public function generateReceipt()
