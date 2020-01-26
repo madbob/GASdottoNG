@@ -113,7 +113,7 @@ class AggregateBooking extends Model
 
         return [
             'suppliers' => join(', ', $suppliers),
-            'shipping' => $shipping_date == PHP_INT_MAX ? _i('indefinita') : strftime('%A %d %B %G', $shipping_date);
+            'shipping' => $shipping_date == PHP_INT_MAX ? _i('indefinita') : strftime('%A %d %B %G', $shipping_date)
         ];
     }
 
