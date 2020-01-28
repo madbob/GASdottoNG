@@ -51,6 +51,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('suppliers/catalogue/{id}/{format}', 'SuppliersController@catalogue');
     Route::get('suppliers/{id}/products', 'SuppliersController@productsDetails');
     Route::get('suppliers/{id}/products_grid', 'SuppliersController@productsGrid');
+    Route::get('suppliers/{id}/invoicedata', 'SuppliersController@invoiceData')->name('suppliers.invoicedata');
     Route::get('suppliers/{id}/plain_balance', 'SuppliersController@plainBalance');
 
     Route::get('products/ro/{id}', 'ProductsController@show_ro');

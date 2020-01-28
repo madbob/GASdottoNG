@@ -1560,17 +1560,18 @@ $(document).ready(function() {
     });
 
     $('body').on('change', '.select-fetcher', function(event) {
-        var url = $(this).find('option:selected').val();
         var targetid = $(this).attr('data-fetcher-target');
-        var target = $(this).parent().find('.' + targetid);
+        var target = $(this).parent().find(targetid);
         target.empty();
 
-        if (url != 'none') {
-            target.append(loadingPlaceholder());
-            $.get(url, function(data) {
-                target.empty().append(data);
-            });
-        }
+		var id = $(this).find('option:selected').attr('data-id');
+		var url = $(this).attr('data-fetcher-url');
+		url = url.replace('XXX', id);
+
+        target.append(loadingPlaceholder());
+        $.get(url, function(data) {
+            target.empty().append(data);
+        });
     });
 
     $('body').on('click', '.object-details', function() {
@@ -1890,6 +1891,15 @@ $(document).ready(function() {
 
         disabled.attr('disabled', 'disabled');
     });
+
+	$('body').on('change', '.simple-sum', function() {
+		var sum = 0;
+		var container = $(this).closest('.simple-sum-container');
+		container.find('.simple-sum').each(function() {
+			sum += parseFloatC($(this).val());
+		});
+		container.find('.simple-sum-result').val(sum);
+	});
 
     $('body').on('click', '.spare-delete-button', function(event) {
         event.preventDefault();

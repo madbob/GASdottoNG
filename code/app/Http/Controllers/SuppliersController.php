@@ -92,6 +92,20 @@ class SuppliersController extends BackedController
         }
     }
 
+    public function invoiceData(Request $request, $id)
+    {
+        try {
+            $supplier = $this->service->show($id);
+            return view('supplier.invoicedata', ['supplier' => $supplier]);
+        }
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+        catch (IllegalArgumentException $e) {
+            return $this->errorResponse($e->getMessage(), $e->getArgument());
+        }
+    }
+
     public function plainBalance(Request $request, $id)
     {
         try {

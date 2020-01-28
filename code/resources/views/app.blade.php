@@ -18,7 +18,6 @@
             '/css/bootstrap-table.css',
             '/css/bootstrap-toggle.css',
             '/css/bootstrap.vertical-tabs.css',
-            '/css/fullcalendar.css',
             '/css/jquery-ui.css',
             '/css/chartist.css',
             '/css/gasdotto.css'

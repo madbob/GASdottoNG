@@ -90,6 +90,12 @@ else {
                 required
             @endif
 
+            @if(!empty($extras))
+                @foreach ($extras as $extra_key => $extra_value)
+                    {{ $extra_key }}='{{ $extra_value }}'
+                @endforeach
+            @endif
+
             name="{{ $prefix . $name . $postfix }}">
 
             @if(!empty($extra_selection))
@@ -102,7 +108,7 @@ else {
         </select>
 
         @if(!empty($help_text))
-            <span class="help-block">{{ $help_text }}</span>
+            <span class="help-block">{!! $help_text !!}</span>
         @endif
     </div>
 </div>

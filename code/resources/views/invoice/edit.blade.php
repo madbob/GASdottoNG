@@ -5,7 +5,183 @@ $rand = rand();
 <form class="form-horizontal main-form invoice-editor" method="PUT" action="{{ route('invoices.update', $invoice->id) }}">
     <div class="row">
         <div class="col-md-6">
-            @include('invoice.base-edit', ['invoice' => $invoice])
+            @include('commons.selectobjfield', [
+                'obj' => $invoice,
+                'name' => 'supplier_id',
+                'label' => _i('Fornitore'),
+                'extra_class' => 'select-fetcher',
+                'mandatory' => true,
+                'objects' => App\Supplier::orderBy('name', 'asc')->withTrashed()->get(),
+                'disabled' => ($invoice && $invoice->status == 'payed'),
+                'help_text' => view('supplier.invoicedata', ['supplier' => $invoice->supplier])->render(),
+                'datafields' => [
+                    'id'
+                ],
+                'extras' => [
+                    'data-fetcher-target' => '.help-block',
+                    'data-fetcher-url' => route('suppliers.invoicedata', 'XXX')
+                ],
+            ])
+
+            @include('commons.textfield', [
+                'obj' => $invoice,
+                'name' => 'number',
+                'label' => _i('Numero'),
+                'mandatory' => true,
+                'disabled' => ($invoice && $invoice->status == 'payed')
+            ])
+
+            @include('commons.datefield', [
+                'obj' => $invoice,
+                'name' => 'date',
+                'label' => _i('Data'),
+                'mandatory' => true,
+                'defaults_now' => true,
+                'disabled' => ($invoice && $invoice->status == 'payed')
+            ])
+
+            <hr>
+
+            <div class="form-group">
+                <label for="orders" class="col-sm-{{ $labelsize }} control-label">{{ _i('Ordini Coinvolti') }}</label>
+
+                <div class="col-sm-{{ $fieldsize }}">
+                    @if($invoice->orders->count() > 0)
+                        @foreach($invoice->orders as $o)
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="static-label text-muted">
+                                        {{ $o->printableName() }}
+                                    </label>
+                                </div>
+                            </div>
+                        @endforeach
+
+                        <br>
+                    @endif
+
+                    @if($invoice->status != 'payed')
+                        @can('movements.admin', $currentgas)
+                            <button class="btn btn-default" data-toggle="modal" data-target="#orders-invoice-{{ $rand }}">{{ _i('Modifica Ordini') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
+
+                            @if($invoice->orders()->count() != 0)
+                                <button class="btn btn-default async-modal" data-target-url="{{ route('invoices.products', $invoice->id) }}">{{ _i('Verifica Contenuti') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
+                            @endif
+                        @endcan
+                    @endif
+                </div>
+            </div>
+
+            <hr>
+
+            <?php
+
+            $orders_total_taxable = 0;
+            $orders_total_tax = 0;
+            $orders_total = 0;
+
+            foreach($invoice->orders as $o) {
+                $summary = $o->calculateInvoicingSummary();
+                $orders_total_taxable += $summary->total_taxable;
+                $orders_total_tax += $summary->total_tax;
+                $orders_total = $orders_total_taxable + $orders_total_tax;
+            }
+
+            ?>
+
+            <div class="simple-sum-container">
+                <div class="form-group">
+                    <label class="col-sm-{{ $labelsize }} control-label"></label>
+                    <div class="col-sm-{{ $fieldsize / 2 }}">{{ _i('Fattura') }}</div>
+                    <div class="col-sm-{{ $fieldsize / 2 }}">{{ _i('Ordini Coinvolti') }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Totale Imponibile') }}</label>
+
+                    <div class="col-sm-{{ $fieldsize / 2 }}">
+                        <div class="input-group">
+                            <input type="text"
+                                class="form-control number trim-2-ddigits simple-sum"
+                                name="total"
+                                value="{{ printablePrice($invoice->total) }}"
+                                required
+                                autocomplete="off">
+
+                            <div class="input-group-addon">{{ $currentgas->currency }}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-{{ $fieldsize / 2 }}">
+                        <div class="input-group">
+                            <input type="text"
+                                class="form-control number trim-2-ddigits"
+                                value="{{ printablePrice($orders_total_taxable) }}"
+                                disabled
+                                autocomplete="off">
+
+                            <div class="input-group-addon">{{ $currentgas->currency }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Totale IVA') }}</label>
+
+                    <div class="col-sm-{{ $fieldsize / 2 }}">
+                        <div class="input-group">
+                            <input type="text"
+                                class="form-control number trim-2-ddigits simple-sum"
+                                name="total_vat"
+                                value="{{ printablePrice($invoice->total_vat) }}"
+                                required
+                                autocomplete="off">
+
+                            <div class="input-group-addon">{{ $currentgas->currency }}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-{{ $fieldsize / 2 }}">
+                        <div class="input-group">
+                            <input type="text"
+                                class="form-control number trim-2-ddigits"
+                                value="{{ printablePrice($orders_total_tax) }}"
+                                disabled
+                                autocomplete="off">
+
+                            <div class="input-group-addon">{{ $currentgas->currency }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="total" class="col-sm-{{ $labelsize }} control-label">{{ _i('Totale') }}</label>
+
+                    <div class="col-sm-{{ $fieldsize / 2 }}">
+                        <div class="input-group">
+                            <input type="text"
+                                class="form-control number trim-2-ddigits simple-sum-result"
+                                value="{{ printablePrice($invoice->total + $invoice->total_vat) }}"
+                                disabled
+                                autocomplete="off">
+
+                            <div class="input-group-addon">{{ $currentgas->currency }}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-{{ $fieldsize / 2 }}">
+                        <div class="input-group">
+                            <input type="text"
+                                class="form-control number trim-2-ddigits"
+                                value="{{ printablePrice($orders_total) }}"
+                                disabled
+                                autocomplete="off">
+
+                            <div class="input-group-addon">{{ $currentgas->currency }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
             @include('commons.textarea', [
@@ -75,36 +251,6 @@ $rand = rand();
 
                     @if($invoice->status != 'payed')
                         <button class="btn btn-default async-modal" data-target-url="{{ route('invoices.movements', $invoice->id) }}">{{ _i('Registra Pagamento') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
-                    @endif
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="orders" class="col-sm-{{ $labelsize }} control-label">{{ _i('Ordini Coinvolti') }}</label>
-
-                <div class="col-sm-{{ $fieldsize }}">
-                    @if($invoice->orders->count() > 0)
-                        @foreach($invoice->orders as $o)
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label class="static-label text-muted">
-                                        {{ $o->printableName() }}
-                                    </label>
-                                </div>
-                            </div>
-                        @endforeach
-
-                        <br>
-                    @endif
-
-                    @if($invoice->status != 'payed')
-                        @can('movements.admin', $currentgas)
-                            <button class="btn btn-default" data-toggle="modal" data-target="#orders-invoice-{{ $rand }}">{{ _i('Modifica Ordini') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
-
-                            @if($invoice->orders()->count() != 0)
-                                <button class="btn btn-default async-modal" data-target-url="{{ route('invoices.products', $invoice->id) }}">{{ _i('Verifica Contenuti') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
-                            @endif
-                        @endcan
                     @endif
                 </div>
             </div>
