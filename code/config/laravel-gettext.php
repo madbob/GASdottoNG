@@ -35,6 +35,7 @@ return [
         'nl_NL',
         'cs_CZ',
         'nb_NO',
+        'es_ES',
     ],
 
     /**
