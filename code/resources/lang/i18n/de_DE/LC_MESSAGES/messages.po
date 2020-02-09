@@ -3,13 +3,15 @@ msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2020-02-09 23:45+0100\n"
 "PO-Revision-Date: 2020-02-09 23:46+0100\n"
-"Last-Translator: Roberto Guido <bob@linux.it>\n"
-"Language-Team: Roberto Guido <bob@linux.it>\n"
+"Last-Translator: jendo <jendo.berlin@gmx.de>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
+"translations/de/>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.11-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -830,7 +832,7 @@ msgstr "Schnelle Lieferung zulassen"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:130
 msgid "Permetti solo prenotazioni entro il credito disponibile"
-msgstr ""
+msgstr "Erlaube Vorbestellungen nur bei verfügbarem Guthaben"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:134
 msgid "Colonne Riassunto Ordini"
@@ -1081,14 +1083,12 @@ msgstr ""
 "übertragen."
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:573
-#| msgid "E-Mail"
 msgid "Log E-Mail"
 msgstr ""
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:581
-#| msgid "Non ci sono prenotazioni aperte."
 msgid "Non ci sono log relativi alle email."
-msgstr ""
+msgstr "Keine Email-Protokolle vorhanden."
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:589
 msgid "Messaggio"
@@ -1685,7 +1685,7 @@ msgstr "Suche"
 #: ../storage/framework/messages/285c74ed4b7d4f0de60117508121f6b0746b8f85.php.php:18
 #: Rules/Captcha.php:18
 msgid "Il codice di controllo è sbagliato"
-msgstr ""
+msgstr "Die Prüfziffern sind falsch"
 
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:7
 msgid "Anagrafica"
@@ -2181,9 +2181,8 @@ msgid "Crea Nuovo Movimento"
 msgstr "Neue Bewegung erstellen"
 
 #: ../storage/framework/messages/3f3da659f67d6f09b148696de4816ff19cb2e8fd.php.php:151
-#| msgid "Disponibile"
 msgid "Credito Disponibile"
-msgstr ""
+msgstr "Verfügbares Guthaben"
 
 #: ../storage/framework/messages/3f3da659f67d6f09b148696de4816ff19cb2e8fd.php.php:196
 msgid "Annulla Prenotazione"
@@ -2293,9 +2292,8 @@ msgstr "Zu bezahlende Bestellungen"
 #: ../storage/framework/messages/4de97d0edb3c6c93eb47e7c54bbbee8d8321b439.php.php:42
 #: Http/Controllers/MailController.php:42
 #, php-format
-#| msgid "Impossibile interpretare il file"
 msgid "Impossibile inoltrare mail a %s: %s"
-msgstr ""
+msgstr "Es war nicht möglich, die Email an %s: %s weiterzuleiten"
 
 #: ../storage/framework/messages/52d79b4ba0c701300d266ccddd4cbf00d3643f78.php.php:55
 #: ../storage/framework/messages/52d79b4ba0c701300d266ccddd4cbf00d3643f78.php.php:146
@@ -2465,7 +2463,7 @@ msgstr "Archiviert"
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:337
 #: GASModel.php:287 GASModel.php:337
 msgid "Confezioni Da Completare"
-msgstr ""
+msgstr "Zu komplettierende Gebinde"
 
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:295
 #: GASModel.php:295
@@ -2805,8 +2803,6 @@ msgstr ""
 
 #: ../storage/framework/messages/68cc982484900028f621c29dab5160d563b5c628.php.php:74
 #: ../storage/framework/messages/8a721d563bd9179ed74877ba63ed9c655b9118b9.php.php:60
-#, fuzzy
-#| msgid "Cessato"
 msgid "Cessati"
 msgstr "Beendet"
 
@@ -2832,6 +2828,9 @@ msgid ""
 "fornitore, eventuali modifiche ai prodotti saranno applicate anche a tali "
 "ordini."
 msgstr ""
+"Achtung: es gibt Bestellungen für diesen Lieferanten, die noch nicht "
+"geliefert und archiviert wurden; eventuelle Veränderungen bezüglich der "
+"Produkte werden auch auf diese Bestellungen angewandt."
 
 #: ../storage/framework/messages/753e31fcd0e6bd9592171211b3f88d0409a2f3e9.php.php:47
 msgid "Modifica Rapida"
@@ -2883,6 +2882,7 @@ msgstr "Letzter Tag des Monats"
 msgid ""
 "Attenzione: il tuo credito è insuffiente per effettuare nuove prenotazioni."
 msgstr ""
+"Achtung: dein Guthaben reicht nicht aus, um neue Bestellungen vorzunehmen."
 
 #: ../storage/framework/messages/7e217d580df832ff5663372f02cb826f06c6b4b4.php.php:29
 msgid "La Mia Prenotazione"
@@ -3187,7 +3187,7 @@ msgstr "Schnelle Lieferungen"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:119
 msgid "Invariato"
-msgstr ""
+msgstr "unverändert"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:152
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:171
@@ -3902,6 +3902,9 @@ msgid ""
 "lo stato dei tuoi pagamenti e del tuo credito o eventuali notifiche inviate "
 "dagli amministratori."
 msgstr ""
+"Dein Account wurde gesperrt und du kannst keine Bestellungen mehr vornehmen. "
+"Überprüfe den Status deiner Zahlungen und deines Guthabens oder die von den "
+"Administrator*innen gesendeten Benachrichtigungen."
 
 #: ../storage/framework/messages/d9a90fb40960eac3cd06ae2cf170ddde20929be0.php.php:24
 msgid "Lascia vuoto per non modificare la password"
@@ -3999,9 +4002,8 @@ msgstr "Bewegung: Speichern von pre-callback nicht erlaubt"
 
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:35
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:44
-#| msgid "Prenotazioni per Completare Confezioni"
 msgid "Forza completamento confezioni"
-msgstr ""
+msgstr "Vervollständige Gebinde"
 
 #: ../storage/framework/messages/e99f375a17b51488c60cf90416bf92e6bbb8ffd2.php.php:56
 msgid ""
