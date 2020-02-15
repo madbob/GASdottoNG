@@ -3,22 +3,38 @@
 list($street, $city, $cap) = $obj->getAddress();
 
 $json_object = (object) [
-    "protocolVersion" => "1.0",
-    "creationDate" => date('Y-m-d'),
-    "applicationSignature" => "GASdotto",
-    "blocks" => [
+    'protocolVersion' => '1.0',
+    'creationDate' => date('Y-m-d'),
+    'applicationSignature' => 'GASdotto',
+    'subject' => (object) [
+        'name' => $currentgas->name,
+        'taxCode' => '',
+        'vatNumber' => '',
+        'address' => (object) [
+            'street' => '',
+            'locality' => '',
+            'zipCode' => '',
+        ],
+        'contacts' => [
+            (object) [
+                'type' => 'emailAddress',
+                'value' => $currentgas->email,
+            ]
+        ]
+    ],
+    'blocks' => [
         (object) [
-            "supplier" => (object) [
-                "name" => empty($obj->business_name) ? $obj->name : $obj->business_name,
-                "taxCode" => $obj->taxcode,
-                "vatNumber" => $obj->vat,
-                "address" => (object) [
-                    "street" => $street,
-                    "locality" => $city,
-                    "zipCode" => $cap,
+            'supplier' => (object) [
+                'name' => empty($obj->business_name) ? $obj->name : $obj->business_name,
+                'taxCode' => $obj->taxcode,
+                'vatNumber' => $obj->vat,
+                'address' => (object) [
+                    'street' => $street,
+                    'locality' => $city,
+                    'zipCode' => $cap,
                 ],
-                "contacts" => [],
-                "products" => [],
+                'contacts' => [],
+                'products' => [],
             ]
         ]
     ]
@@ -53,21 +69,21 @@ foreach($obj->contacts as $contact) {
 
 foreach($obj->products as $product) {
     $p = (object) [
-        "name" => $product->name,
-        "um" => $product->measure->name,
-        "sku" => $product->supplier_code,
-        "category" => $product->category->name,
-        "description" => $product->description,
-        "orderInfo" => (object) [
-            "packageQty" => (integer) $product->package_size > 1 ? $product->package_size : 1,
-            "maxQty" => (float) $product->max_quantity,
-            "minQty" => (float) $product->min_quantity,
-            "mulQty" => (float) $product->multiple,
-            "availableQty" => (float) $product->max_available,
-            "umPrice" => (float) $product->price,
-            "shippingCost" => (float) $product->transport,
+        'name' => $product->name,
+        'um' => $product->measure->name,
+        'sku' => $product->supplier_code,
+        'category' => $product->category->name,
+        'description' => $product->description,
+        'orderInfo' => (object) [
+            'packageQty' => (integer) $product->package_size > 1 ? $product->package_size : 1,
+            'maxQty' => (float) $product->max_quantity,
+            'minQty' => (float) $product->min_quantity,
+            'mulQty' => (float) $product->multiple,
+            'availableQty' => (float) $product->max_available,
+            'umPrice' => (float) $product->price,
+            'shippingCost' => (float) $product->transport,
         ],
-        "active" => $product->active,
+        'active' => $product->active,
     ];
 
     if ($product->vat_rate) {
