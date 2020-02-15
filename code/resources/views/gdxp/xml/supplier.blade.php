@@ -37,12 +37,12 @@
             @if(isset($orders))
                 @foreach($orders as $order)
                     @foreach($order->products as $product)
-                        @include('gdxp.product', ['obj' => $product])
+                        @include('gdxp.xml.product', ['obj' => $product])
                     @endforeach
                 @endforeach
             @else
                 @foreach($obj->products as $product)
-                    @include('gdxp.product', ['obj' => $product])
+                    @include('gdxp.xml.product', ['obj' => $product])
                 @endforeach
             @endif
 		</products>
@@ -50,7 +50,7 @@
         @if(isset($orders))
             <orders>
                 @foreach($orders as $order)
-                    @include('gdxp.order', ['obj' => $order])
+                    @include('gdxp.xml.order', ['obj' => $order])
                 @endforeach
             </orders>
         @endif

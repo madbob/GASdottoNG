@@ -279,10 +279,15 @@ class ImportLegacy extends Command
         $master_gas = null;
 
         $map['gas'] = [];
-        $query = 'SELECT * FROM GAS';
+        $query = 'SELECT * FROM GAS ORDER BY id ASC';
         $result = $old->select($query);
+        $existing_gas = [];
 
         foreach ($result as $row) {
+            if (in_array($row->name, $existing_gas)) {
+                continue;
+            }
+
             $obj = new Gas();
             $obj->name = $row->name;
             $obj->email = $row->mail;
@@ -298,6 +303,8 @@ class ImportLegacy extends Command
                 $obj->setConfig('annual_fee_amount', $row->default_fee);
             if (isset($row->default_deposit))
                 $obj->setConfig('deposit_amount', $row->default_deposit);
+
+            $existing_gas[] = $row->name;
         }
 
         $map['deliveries'] = [];

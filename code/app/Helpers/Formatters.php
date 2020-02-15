@@ -500,3 +500,11 @@ function humanSizeToBytes($size)
 
     return (int)$val;
 }
+
+function normalizeAddress($street, $city, $cap)
+{
+    $street = str_replace(',', '', trim($street));
+    $city = str_replace(',', '', trim($city));
+    $cap = str_replace(',', '', trim($cap));
+    return sprintf('%s, %s, %s', $street, $city, $cap);
+}

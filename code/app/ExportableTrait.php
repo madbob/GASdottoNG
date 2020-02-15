@@ -13,4 +13,6 @@ trait ExportableTrait
 
     abstract public static function exportXML();
     abstract public static function readXML($xml);
+    abstract public static function exportJSON();
+    abstract public static function readJSON($json);
 }

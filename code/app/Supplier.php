@@ -13,16 +13,6 @@ use Auth;
 use App\Events\SluggableCreating;
 use App\Events\AttachableToGas;
 use App\Events\SupplierDeleting;
-use App\Role;
-use App\AttachableTrait;
-use App\Attachment;
-use App\GASModel;
-use App\SluggableID;
-use App\Aggregate;
-use App\ContactableTrait;
-use App\SuspendableTrait;
-use App\PayableTrait;
-use App\ExportableTrait;
 
 class Supplier extends Model
 {
@@ -223,7 +213,7 @@ class Supplier extends Model
 
     public function exportXML()
     {
-        return view('gdxp.supplier', ['obj' => $this])->render();
+        return view('gdxp.xml.supplier', ['obj' => $this])->render();
     }
 
     public static function readXML($xml)
@@ -463,6 +453,151 @@ class Supplier extends Model
                     }
                     break;
             }
+        }
+
+        return $supplier;
+    }
+
+    public function exportJSON()
+    {
+        return view('gdxp.json.supplier', ['obj' => $this])->render();
+    }
+
+    public static function readJSON($json)
+    {
+        $supplier = new Supplier();
+
+        $supplier->name = $json->name;
+
+        $supplier->products = new Collection();
+        foreach($json->products as $a) {
+            $product = new Product();
+            $product->name = $a->name;
+            $supplier->products->push($product);
+        }
+
+        $supplier->orders = new Collection();
+        if (isset($json->order)) {
+            $order = Order::readJSON($json->order);
+            $supplier->orders->push($order);
+        }
+
+        return $supplier;
+    }
+
+    public static function importJSON($json, $replace)
+    {
+        if (is_null($replace)) {
+            $supplier = new Supplier();
+            $supplier->payment_method = '';
+            $supplier->order_method = '';
+        }
+        else {
+            $supplier = Supplier::findOrFail($replace);
+            $supplier->contacts()->delete();
+        }
+
+        $product_ids = [];
+
+        $supplier->name = $json->name;
+        $supplier->taxcode = $json->taxCode ?? '';
+        $supplier->vat = $json->vatNumber ?? '';
+        $supplier->save();
+
+        foreach($json->contacts as $c) {
+            if (empty($c->value)) {
+                continue;
+            }
+
+            $contact = new Contact();
+
+            switch($c->type) {
+                case 'phoneNumber':
+                    $contact->type = 'phone';
+                    break;
+                case 'faxNumber':
+                    $contact->type = 'fax';
+                    break;
+                case 'emailAddress':
+                    $contact->type = 'email';
+                    break;
+                case 'webSite':
+                    $contact->type = 'website';
+                    break;
+            }
+
+            $contact->value = $c->value;
+
+            $contact->target_id = $supplier->id;
+            $contact->target_type = get_class($supplier);
+            $contact->save();
+        }
+
+        $contact = new Contact();
+        $contact->type = 'address';
+        $contact->value = normalizeAddress($json->address->street, $json->address->locality, $json->address->zipCode);
+        $contact->target_id = $supplier->id;
+        $contact->target_type = get_class($supplier);
+        $contact->save();
+
+        $product_ids = [];
+
+        foreach($json->products as $json_product) {
+            $product = $supplier->products()->where('name', $json_product->name)->first();
+            if (is_null($product)) {
+                $product = new Product();
+                $product->supplier_id = $supplier->id;
+            }
+
+            $product->name = $json_product->name;
+            $product->supplier_code = $json_product->sku ?? '';
+            $product->description = $json_product->description ?? '';
+            $product->active = $json_product->active ?? true;
+            $product->price = (float) $json_product->orderInfo->umPrice ?? 0;
+            $product->package_size = (float) $json_product->orderInfo->packageQty ?? 0;
+            $product->min_quantity = (float) $json_product->orderInfo->minQty ?? 0;
+            $product->max_quantity = (float) $json_product->orderInfo->maxQty ?? 0;
+            $product->multiple = (float) $json_product->orderInfo->mulQty ?? 0;
+            $product->transport = (float) $json_product->orderInfo->shippingCost ?? 0;
+            $product->max_available = (float) $json_product->orderInfo->availableQty ?? 0;
+
+            $name = $json_product->category ?? '';
+            if (!empty($name)) {
+                $category = Category::where('name', $name)->first();
+                if(is_null($category)) {
+                    $category = new Category();
+                    $category->name = $name;
+                    $category->save();
+                }
+                $product->category_id = $category->id;
+            }
+
+            $name = $json_product->um ?? '';
+            if (!empty($name)) {
+                $measure = Measure::where('name', $name)->first();
+                if(is_null($measure)) {
+                    $measure = new Measure();
+                    $measure->name = $name;
+                    $measure->save();
+                }
+                $product->measure_id = $measure->id;
+            }
+
+            $name = (float) $json_product->vatRate ?? null;
+            if (!is_null($name)) {
+                $vat_rate = VatRate::where('percentage', $name)->first();
+                if(is_null($vat_rate)) {
+                    $vat_rate = new VatRate();
+                    $vat_rate->name = sprintf('%s%%', $name);
+                    $vat_rate->percentage = $name;
+                    $vat_rate->save();
+                }
+                $product->category_id = $category->id;
+            }
+
+            $product->save();
+
+            $product_ids[] = $product->id;
         }
 
         return $supplier;

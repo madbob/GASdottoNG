@@ -896,7 +896,7 @@ class Order extends Model
 
     public function exportXML()
     {
-        return view('gdxp.supplier', ['obj' => $this->supplier, 'orders' => [$this]])->render();
+        return view('gdxp.xml.supplier', ['obj' => $this->supplier, 'orders' => [$this]])->render();
     }
 
     public static function readXML($xml)
@@ -929,6 +929,21 @@ class Order extends Model
             }
         }
 
+        return $order;
+    }
+
+    public function exportJSON()
+    {
+        return view('gdxp.json.supplier', ['obj' => $this->supplier, 'orders' => [$this]])->render();
+    }
+
+    public static function readJSON($json)
+    {
+        $order = new Order();
+        $order->start = $json->openDate;
+        $order->end = $json->closeDate;
+        $order->shipping = $json->deliveryDate ?? null;
+        $order->transport = $json->shippingCost ?? 0;
         return $order;
     }
 }

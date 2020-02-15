@@ -825,19 +825,31 @@ class ImportController extends Controller
         $classname = $request->input('classname');
         $id = $request->input('id');
         $obj = $classname::findOrFail($id);
-        $xml = $obj->exportXML();
 
         $working_dir = sys_get_temp_dir();
-        chdir($working_dir);
-        $filename = md5($xml);
-        file_put_contents($filename, $xml);
 
-        $archivepath = sprintf('%s/%s.gdxp', $working_dir, str_replace('/', '_', $obj->printableName()));
-        $archive = ezcArchive::open('compress.zlib://' . $archivepath, ezcArchive::TAR_USTAR);
-        $archive->append([$filename], '');
-        unlink($filename);
+        switch($request->input('format', 'json')) {
+            case 'xml':
+                $xml = $obj->exportXML();
 
-        return response()->download($archivepath)->deleteFileAfterSend(true);
+                chdir($working_dir);
+                $filename = md5($xml);
+                file_put_contents($filename, $xml);
+
+                $downloadable = sprintf('%s/%s.gdxp', $working_dir, str_replace('/', '_', $obj->printableName()));
+                $archive = ezcArchive::open('compress.zlib://' . $downloadable, ezcArchive::TAR_USTAR);
+                $archive->append([$filename], '');
+                unlink($filename);
+                break;
+
+            case 'json':
+                $json = $obj->exportJSON();
+                $downloadable = sprintf('%s/%s.json', $working_dir, str_replace('/', '_', $obj->printableName()));
+                file_put_contents($downloadable, $json);
+                break;
+        }
+
+        return response()->download($downloadable)->deleteFileAfterSend(true);
     }
 
     private function readGdxpFile($path, $execute, $supplier_replace)
@@ -845,23 +857,40 @@ class ImportController extends Controller
         $working_dir = sys_get_temp_dir();
 
         $data = [];
-        $archive = ezcArchive::open('compress.zlib://' . $path);
-        while($archive->valid()) {
-            $entry = $archive->current();
-            $archive->extractCurrent($working_dir);
-            $filepath = sprintf('%s/%s', $working_dir, $entry->getPath());
-            $contents = file_get_contents($filepath);
-            $contents = simplexml_load_string($contents);
+        $type = mime_content_type($path);
 
-            foreach($contents->children() as $c) {
-                if ($execute)
-                    $data[] = Supplier::importXML($c, $supplier_replace);
-                else
-                    $data[] = Supplier::readXML($c);
+        if (in_array($type, ['text/plain', 'application/json'])) {
+            $info = json_decode(file_get_contents($path));
+            foreach($info->blocks as $c) {
+                if ($execute) {
+                    $data[] = Supplier::importJSON($c->supplier, $supplier_replace);
+                }
+                else {
+                    $data[] = Supplier::readJSON($c->supplier);
+                }
             }
+        }
+        else {
+            $archive = ezcArchive::open('compress.zlib://' . $path);
+            while($archive->valid()) {
+                $entry = $archive->current();
+                $archive->extractCurrent($working_dir);
+                $filepath = sprintf('%s/%s', $working_dir, $entry->getPath());
+                $contents = file_get_contents($filepath);
+                $contents = simplexml_load_string($contents);
 
-            unlink($filepath);
-            $archive->next();
+                foreach($contents->children() as $c) {
+                    if ($execute) {
+                        $data[] = Supplier::importXML($c, $supplier_replace);
+                    }
+                    else {
+                        $data[] = Supplier::readXML($c);
+                    }
+                }
+
+                unlink($filepath);
+                $archive->next();
+            }
         }
 
         return $data;
@@ -887,10 +916,12 @@ class ImportController extends Controller
                 DB::beginTransaction();
 
                 $archivepath = $request->input('path');
-                if ($request->input('supplier_source') == 'new')
+                if ($request->input('supplier_source') == 'new') {
                     $data = $this->readGdxpFile($archivepath, true, null);
-                else
+                }
+                else {
                     $data = $this->readGdxpFile($archivepath, true, $request->input('supplier_update'));
+                }
 
                 unlink($archivepath);
                 DB::commit();
