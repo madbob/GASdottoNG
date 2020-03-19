@@ -152,6 +152,12 @@ table {
     .calendar-date-internal {
         background-color: black;
     }
+
+    .prev, .next {
+        color: #000;
+        display: inline-block;
+        width: 50%;
+    }
 }
 
 .suggested-dates {

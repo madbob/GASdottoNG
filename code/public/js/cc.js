@@ -75,6 +75,18 @@
 		}
 	}
 
+	function goBack(subject)
+	{
+		subject.startDate.setDate(subject.startDate.getDate() - 7);
+		renderCurrentGrid(subject);
+	}
+
+	function goForward(subject)
+	{
+		subject.startDate.setDate(subject.startDate.getDate() + 7);
+		renderCurrentGrid(subject);
+	}
+
 	Date.prototype.isSameDateAs = function(d) {
 		return (
 			this.getFullYear() === d.getFullYear() &&
@@ -106,8 +118,27 @@
 		table.addClass(this.ContinuousCalendar_options.tableClass);
 		this.append(table);
 
+		var subject = this;
+
 		var header = $('<tr>');
-		header.append('<th>');
+
+		var prev = $('<a href="#" class="prev">&lt;</a>');
+		prev.click(function(e) {
+			e.preventDefault();
+			goBack(subject);
+		});
+
+		var next = $('<a href="#" class="next">&gt;</a>');
+		next.click(function(e) {
+			e.preventDefault();
+			goForward(subject);
+		});
+
+		var nav_cell = $('<th>');
+		nav_cell.append(prev);
+		nav_cell.append(next);
+		header.append(nav_cell);
+
 		this.ContinuousCalendar_options.days.forEach(function(item, index) {
 			header.append('<th>' + item + '</th>');
 		});
@@ -122,25 +153,20 @@
 		this.startDate = new Date();
 		this.startDate.setDate(this.startDate.getDate() - (this.startDate.getDay() + 6) % 7);
 
-		renderCurrentGrid(this);
-
-		var subject = this;
+		renderCurrentGrid(subject);
 
 		this.bind('wheel', function(e) {
 			e.preventDefault();
 			e.stopPropagation();
 
 			if (e.originalEvent.deltaY / 120 > 0) {
-				subject.startDate.setDate(subject.startDate.getDate() - 7);
+				goBack(subject);
 			}
 			else {
-				subject.startDate.setDate(subject.startDate.getDate() + 7);
+				goForward(subject);
 			}
-
-			renderCurrentGrid(subject);
 		});
 
 		return this;
 	};
 }(jQuery));
-
