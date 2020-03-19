@@ -71,9 +71,9 @@ foreach($obj->products as $product) {
     $p = (object) [
         'name' => $product->name,
         'um' => $product->measure->name,
-        'sku' => $product->supplier_code,
+        'sku' => $product->supplier_code ?? '',
         'category' => $product->category->name,
-        'description' => $product->description,
+        'description' => $product->description ?? '',
         'orderInfo' => (object) [
             'packageQty' => (integer) $product->package_size > 1 ? $product->package_size : 1,
             'maxQty' => (float) $product->max_quantity,
@@ -87,7 +87,7 @@ foreach($obj->products as $product) {
     ];
 
     if ($product->vat_rate) {
-        $p->vatRate = $product->vat_rate->percentage;
+        $p->orderInfo->vatRate = $product->vat_rate->percentage;
     }
 
     $json_object->blocks[0]->supplier->products[] = $p;
