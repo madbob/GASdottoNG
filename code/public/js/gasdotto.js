@@ -1362,6 +1362,22 @@ $(document).ready(function() {
         }
     });
 
+	$('.remember-checkbox').each(function() {
+		var attr = $(this).attr('data-attribute');
+		var value = Cookies.get(attr);
+
+		if (typeof value !== 'undefined') {
+			$(this).prop('checked', value == 'true');
+		}
+		else {
+			$(this).prop('checked', $(this).attr('data-attribute-default') == 'true');
+		}
+	}).change(function() {
+		var attr = $(this).attr('data-attribute');
+		var value = $(this).prop('checked') ? 'true' : 'false';
+		Cookies.set(attr, value);
+	});
+
     $('body').on('keydown', 'input.number', function(e) {
         if (e.which == 13) {
             e.preventDefault();

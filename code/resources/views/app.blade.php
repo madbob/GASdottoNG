@@ -196,6 +196,7 @@
             '/js/bootstrap-toggle.js',
             '/js/marked.min.js',
             '/js/chartist.js',
+            '/js/js.cookie.js',
             '/js/jquery.TableCSVExport.js',
             '/js/moment.min.js',
             '/js/cc.js',

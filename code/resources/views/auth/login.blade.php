@@ -71,7 +71,7 @@
             <div class="col-sm-offset-2 col-sm-10">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" name="remember" checked> {{ _i('Ricordami') }}	
+                        <input type="checkbox" name="remember" class="remember-checkbox" data-attribute="remember_me" data-attribute-default="true" checked> {{ _i('Ricordami') }}	
                     </label>
                 </div>
             </div>
