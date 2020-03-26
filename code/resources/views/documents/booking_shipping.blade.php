@@ -5,6 +5,8 @@ if ($with_friends == true)
 else
     $products_source = 'products';
 
+$transport = $booking->getValue('transport', true);
+
 ?>
 
 @foreach($booking->$products_source as $product)
@@ -28,3 +30,11 @@ else
         @endif
     @endif
 @endforeach
+
+@if($transport > 0)
+    <tr>
+        <td width="40%">{{ _('Trasporto') }}</td>
+        <td width="40%">&nbsp;</td>
+        <td width="20%">{{ printablePriceCurrency($transport, ',') }}</td>
+    </tr>
+@endif
