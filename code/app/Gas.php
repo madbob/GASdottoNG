@@ -91,6 +91,10 @@ class Gas extends Model
                 'default' => '0'
             ],
 
+            'notify_all_new_orders' => [
+                'default' => '0'
+            ],
+
             'rid' => [
                 'default' => (object) [
                     'iban' => '',
@@ -236,6 +240,11 @@ class Gas extends Model
     public function getRestrictBookingToCreditAttribute()
     {
         return $this->getConfig('restrict_booking_to_credit') == '1';
+    }
+
+    public function getNotifyAllNewOrdersAttribute()
+    {
+        return $this->getConfig('notify_all_new_orders') == '1';
     }
 
     public function getRestrictedAttribute()

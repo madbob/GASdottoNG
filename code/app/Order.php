@@ -219,14 +219,20 @@ class Order extends Model
 
     public function sendNotificationMail()
     {
-        if (is_null($this->first_notify) == false)
+        if (is_null($this->first_notify) == false) {
             return;
+        }
 
         $order = $this;
 
-        $users = User::whereHas('suppliers', function($query) use ($order) {
-            $query->where('suppliers.id', $order->supplier->id);
-        })->get();
+        if (currentAbsoluteGas()->getConfig('notify_all_new_orders')) {
+            $users = User::all();
+        }
+        else {
+            $users = User::whereHas('suppliers', function($query) use ($order) {
+                $query->where('suppliers.id', $order->supplier->id);
+            })->get();
+        }
 
         foreach($users as $user) {
             try {

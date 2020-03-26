@@ -27,6 +27,7 @@
             (object) [
                 'label' => _i('Notifiche'),
                 'id' => 'notifications',
+                'enabled' => ($currentgas->getConfig('notify_all_new_orders') == false)
             ],
         ]])
 
@@ -261,35 +262,37 @@
                 </div>
             @endif
 
-            <div role="tabpanel" class="tab-pane {{ $active_tab == 'notifications' ? 'active' : '' }}" id="notifications">
-                <form class="form-horizontal inner-form" method="POST" action="{{ route('users.notifications') }}">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <p>
-                                {{ _i("Seleziona i fornitori per i quali vuoi ricevere una notifica all'apertura di nuovi ordini.") }}
-                            </p>
-                            <ul class="list-group">
-                                @foreach(App\Supplier::orderBy('name', 'asc')->get() as $supplier)
-                                    <li class="list-group-item">
-                                        {{ $supplier->name }}
-                                        <span class="pull-right">
-                                            <input name="suppliers[]" type="checkbox" value="{{ $supplier->id }}" data-toggle="toggle" data-size="mini" {{ $user->suppliers->where('id', $supplier->id)->first() != null ? 'checked' : '' }}>
-                                        </span>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="btn-group pull-right main-form-buttons" role="group">
-                                <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
+            @if($currentgas->getConfig('notify_all_new_orders') == false)
+                <div role="tabpanel" class="tab-pane {{ $active_tab == 'notifications' ? 'active' : '' }}" id="notifications">
+                    <form class="form-horizontal inner-form" method="POST" action="{{ route('users.notifications') }}">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p>
+                                    {{ _i("Seleziona i fornitori per i quali vuoi ricevere una notifica all'apertura di nuovi ordini.") }}
+                                </p>
+                                <ul class="list-group">
+                                    @foreach(App\Supplier::orderBy('name', 'asc')->get() as $supplier)
+                                        <li class="list-group-item">
+                                            {{ $supplier->name }}
+                                            <span class="pull-right">
+                                                <input name="suppliers[]" type="checkbox" value="{{ $supplier->id }}" data-toggle="toggle" data-size="mini" {{ $user->suppliers->where('id', $supplier->id)->first() != null ? 'checked' : '' }}>
+                                            </span>
+                                        </li>
+                                    @endforeach
+                                </ul>
                             </div>
                         </div>
-                    </div>
-                </form>
-            </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="btn-group pull-right main-form-buttons" role="group">
+                                    <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            @endif
         </div>
     </div>
 </div>

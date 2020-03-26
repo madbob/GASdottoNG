@@ -178,6 +178,8 @@ class GasController extends Controller
                 break;
 
             case 'mails':
+                $gas->setConfig('notify_all_new_orders', $request->has('notify_all_new_orders') ? '1' : '0');
+
                 foreach(Config::customMailTypes() as $identifier => $metadata) {
                     if ($request->has("custom_mails_${identifier}_subject")) {
                         $subject = $request->input("custom_mails_${identifier}_subject");
@@ -186,6 +188,7 @@ class GasController extends Controller
                         $gas->setConfig("mail_${identifier}_body", $body);
                     }
                 }
+
                 break;
 
             case 'roles':

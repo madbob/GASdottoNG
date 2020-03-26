@@ -297,7 +297,7 @@
                 <div class="panel-heading" role="tab">
                     <h4 class="panel-title">
                         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#main-configs" href="#custom-mails-config">
-                            {{ _i('Testi Messaggi Mail') }}
+                            {{ _i('E-Mail') }}
                         </a>
                     </h4>
                 </div>
@@ -306,6 +306,10 @@
                         <div class="row">
                             <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ route('gas.update', $gas->id) }}">
                                 <input type="hidden" name="group" value="mails">
+
+                                <div class="col-md-12">
+                                    @include('commons.boolfield', ['obj' => $gas, 'name' => 'notify_all_new_orders', 'label' => _i('Tutte le notifiche per i nuovi ordini')])
+                                </div>
 
                                 <div class="col-md-12">
                                     <p>
