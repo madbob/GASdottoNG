@@ -361,6 +361,9 @@ class User extends Authenticatable
             'taxcode' => (object) [
                 'name' => _i('Codice Fiscale'),
             ],
+            'card_number' => (object) [
+                'name' => _i('Numero Tessera'),
+            ],
         ];
 
         if (currentAbsoluteGas()->hasFeature('shipping_places')) {
