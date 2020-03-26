@@ -35,16 +35,6 @@
 
                         $head .= $booking->user->printableName();
 
-                        $contacts = [];
-
-                        foreach($booking->user->contacts as $contact) {
-                            if ($contact->type == 'phone' || $contact->type == 'mobile')
-                                $contacts[] = $contact->value;
-                        }
-
-                        if (!empty($contacts))
-                            $head .= ' - ' . join(', ', $contacts);
-
                         $discount = $booking->getValue('discount', true);
                         $booking_total = $booking->getValue('effective', true) - $discount;
                         $total += $booking_total;
