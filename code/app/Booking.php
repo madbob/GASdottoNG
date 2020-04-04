@@ -124,7 +124,12 @@ class Booking extends Model
         $value = 0;
 
         if (!empty($this->order->discount) && $this->order->discount != 0) {
-            $booking_value = $this->getValue('booked', $with_friends);
+            if ($obj->status == 'shipped' || $obj->status == 'saved') {
+                $booking_value = $this->getValue('delivered', $with_friends);
+            }
+            else {
+                $booking_value = $this->getValue('booked', $with_friends);
+            }
 
             if (is_numeric($this->order->discount)) {
                 $total_value = $this->order->total_value;
@@ -360,7 +365,8 @@ class Booking extends Model
         (e, dunque, alla prenotazione) su tutti i prodotti coinvolti, o in modo
         proporzionale (se lo sconto è assoluto) o in modo percentuale.
         Da applicare solo dopo aver fissato il final_price dei prodotti
-        consegnati
+        consegnati e lo stato della prenotazione, in quanto varia il
+        comportamento di dynamicDiscount()
     */
     public function distributeDiscount()
     {
