@@ -90,7 +90,12 @@ class Booking extends Model
         $value = 0;
 
         if($this->order->transport > 0) {
-            $booking_value = $this->getValue('booked', $with_friends);
+            if ($obj->status == 'shipped' || $obj->status == 'saved') {
+                $booking_value = $this->getValue('delivered', $with_friends);
+            }
+            else {
+                $booking_value = $this->getValue('booked', $with_friends);
+            }
 
             if (is_numeric($this->order->transport)) {
                 $total_value = $this->order->total_value;
