@@ -48,12 +48,27 @@ function parseFloatC(value) {
     return ret;
 }
 
+/*
+    I valori dinamici possono essere espressi come:
+
+    10%     calcola la percentuale del valore e la somma/sottrae
+
+    50:10   rappresenta la proporzione di cui fare la somma/sottrazione.
+            Ad esempio: il totale di un ordine sono 50 euro, il trasporto sono
+            10 euro, il trasporto di questa prenotazione è value * 10 / 50
+
+    10      fa una mera somma/sottrazione della cifra rispetto al valore
+*/
 function applyPercentage(value, percentage, operator) {
     var pvalue = 0;
 
     if (percentage.endsWith('%')) {
         var p = parseFloatC(percentage);
         pvalue = (p * value) / 100;
+    }
+    else if (percentage.indexOf(':') !== -1) {
+        var order_values = percentage.split(':');
+        pvalue = (value * order_values[1]) / order_values[0];
     }
     else {
         pvalue = parseFloatC(percentage);

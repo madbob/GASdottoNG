@@ -1,9 +1,3 @@
-{{--
-    Ratio: se il valore di riferimento è percentuale, esso verrà applicato
-    dinamicamente al valore totale di quanto consegnato. Altrimenti tengo per
-    buoni i valori assoluti calcolati sul prenotato.
---}}
-
 <?php
 
 if (!isset($skip_cells)) {
@@ -28,9 +22,9 @@ if (!isset($skip_cells)) {
                 <span>{{ printablePrice($o->status == 'pending' ? 0 : $o->getValue($identifier, true)) }}</span> {{ $currentgas->currency }}
             </label>
         @else
-            <input type="hidden" name="global-{{ $identifier }}-value" value="{{ $o->getValue($identifier, true) }}">
+            <input type="hidden" name="global-{{ $identifier }}-value" value="{{ $order->total_value . ':' . $order->$identifier }}">
             <label class="static-label booking-{{ $identifier }}-value pull-right">
-                <span>{{ printablePrice($o->getValue($identifier, true)) }}</span> {{ $currentgas->currency }}
+                <span>{{ printablePrice($o->status == 'pending' ? 0 : $o->getValue($identifier, true)) }}</span> {{ $currentgas->currency }}
             </label>
         @endif
     </td>

@@ -90,7 +90,7 @@ class Booking extends Model
         $value = 0;
 
         if($this->order->transport > 0) {
-            if ($obj->status == 'shipped' || $obj->status == 'saved') {
+            if ($this->status == 'shipped' || $this->status == 'saved') {
                 $booking_value = $this->getValue('delivered', $with_friends);
             }
             else {
@@ -129,7 +129,7 @@ class Booking extends Model
         $value = 0;
 
         if (!empty($this->order->discount) && $this->order->discount != 0) {
-            if ($obj->status == 'shipped' || $obj->status == 'saved') {
+            if ($this->status == 'shipped' || $this->status == 'saved') {
                 $booking_value = $this->getValue('delivered', $with_friends);
             }
             else {
