@@ -42,6 +42,7 @@ class BookingHandler extends Controller
 
         foreach ($aggregate->orders as $order) {
             $booking = $order->userBooking($user_id);
+            $existing_booking = $booking->exists;
 
             if ($delivering == true) {
                 $booking->deliverer_id = Auth::user()->id;
@@ -204,6 +205,21 @@ class BookingHandler extends Controller
             }
 
             if ($delivering == false && $count_products == 0) {
+                /*
+                    Questo succede quando ho eliminato tutti i prodotti da una
+                    prenotazione esistente e, di fatto, elimino tutta la
+                    prenotazione
+                */
+                $booking->delete();
+            }
+            else if ($delivering == true && $existing_booking == false && $count_products == 0) {
+                /*
+                    Soprattutto quando sto consegnando un ordine aggregato, ma
+                    l'utente non ha partecipato all'ordine: in testa alla
+                    funzione creo la prenotazione, se ci sono dei prodotti
+                    aggiunti in fase di consegna la lascio, altrimenti qui
+                    alla fine la elimino
+                */
                 $booking->delete();
             }
             else {
