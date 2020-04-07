@@ -668,46 +668,45 @@ class Order extends Model
     public function formatShipping($fields, $status, $shipping_place)
     {
         $ret = (object) [
-            'header' => [],
-            'contents' => []
+            'headers' => $fields->headers,
+            'contents' => [],
         ];
 
-        $internal_offsets = $this->offsetsByStatus($status);
-
-        $formattable_user = User::formattableColumns();
         $formattable_product = self::formattableColumns('shipping');
-        $user_columns = [];
-        $product_columns = [];
-
-        foreach($fields as $f) {
-            if (isset($formattable_user[$f])) {
-                $user_columns[] = $f;
-                $ret->headers[] = $formattable_user[$f]->name;
-            }
-            else {
-                $product_columns[] = $f;
-                $ret->headers[] = $formattable_product[$f]->name;
-            }
-        }
+        $internal_offsets = $this->offsetsByStatus($status);
 
         $bookings = $this->topLevelBookings(null);
         $bookings = Booking::sortByShippingPlace($bookings, $shipping_place);
+        $listed_products = [];
 
         foreach ($bookings as $booking) {
             $obj = (object) [
-                'user' => $booking->user->formattedFields($user_columns),
+                'user_id' => $booking->user->id,
+                'user' => $booking->user->formattedFields($fields->user_columns),
                 'products' => [],
                 'totals' => [],
             ];
 
             foreach($booking->products_with_friends as $booked) {
-                $product = $booked->product;
+                if (isset($listed_products[$booked->product_id])) {
+                    $product = $listed_products[$booked->product_id];
+                    $booked->setRelation('product', $product);
+                }
+                else {
+                    $product = $booked->product;
+                    $listed_products[$booked->product_id] = $product;
+                }
+
                 $summary = $booked->as_summary;
 
-                $row = $this->formatProduct($fields, $formattable_product, $summary, $product, $internal_offsets);
+                $row = $this->formatProduct($fields->product_columns, $formattable_product, $summary, $product, $internal_offsets);
                 if (!empty($row)) {
                     $obj->products = array_merge($obj->products, $row);
                 }
+            }
+
+            if (empty($obj->products)) {
+                continue;
             }
 
             $obj->totals['total'] = $booking->getValue($internal_offsets->by_booking, true);
@@ -722,163 +721,177 @@ class Order extends Model
 
     public static function formattableColumns($type)
     {
-        if ($type == 'summary' || $type == 'shipping') {
-            return [
-                'name' => (object) [
-                    'name' => _i('Nome Prodotto'),
-                    'checked' => true,
-                    'format_product' => function($product, $summary) {
-                        return $product->printableName();
-                    },
-                    'format_variant' => function($product, $summary, $name, $variant) {
-                        return $product->printableName() . ' - ' . $name;
-                    }
-                ],
-                'code' => (object) [
-                    'name' => _i('Codice Fornitore'),
-                    'format_product' => function($product, $summary) {
-                        return $product->supplier_code;
-                    },
-                    'format_variant' => function($product, $summary, $name, $variant) {
-                        /*
-                            TODO: le varianti hanno un loro proprio codice?
-                        */
-                        return $product->supplier_code;
-                    }
-                ],
-                'quantity' => (object) [
-                    'name' => _i('Quantità'),
-                    'checked' => true,
-                    'format_product' => function($product, $summary, $alternate = false) {
+        $ret = [
+            'name' => (object) [
+                'name' => _i('Nome Prodotto'),
+                'checked' => true,
+                'format_product' => function($product, $summary) {
+                    return $product->printableName();
+                },
+                'format_variant' => function($product, $summary, $name, $variant) {
+                    return $product->printableName() . ' - ' . $name;
+                }
+            ],
+            'supplier' => (object) [
+                'name' => _i('Fornitore'),
+                'checked' => false,
+                'format_product' => function($product, $summary) {
+                    return $product->supplier->printableName();
+                },
+                'format_variant' => function($product, $summary, $name, $variant) {
+                    return $product->supplier->printableName();
+                }
+            ],
+            'code' => (object) [
+                'name' => _i('Codice Fornitore'),
+                'format_product' => function($product, $summary) {
+                    return $product->supplier_code;
+                },
+                'format_variant' => function($product, $summary, $name, $variant) {
+                    /*
+                        TODO: le varianti hanno un loro proprio codice?
+                    */
+                    return $product->supplier_code;
+                }
+            ],
+            'quantity' => (object) [
+                'name' => _i('Quantità'),
+                'checked' => true,
+                'format_product' => function($product, $summary, $alternate = false) {
+                    if ($alternate == false)
+                        return printableQuantity($summary->products[$product->id]['quantity_pieces'], $product->measure->discrete, 2, ',');
+                    else
+                        return printableQuantity($summary->products[$product->id]['delivered_pieces'], $product->measure->discrete, 2, ',');
+                },
+                'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
+                    if ($alternate == false)
+                        return printableQuantity($variant['quantity'], $product->measure->discrete, 2, ',');
+                    else
+                        return printableQuantity($variant['delivered'], $product->measure->discrete, 2, ',');
+                }
+            ],
+            'boxes' => (object) [
+                'name' => _i('Numero Confezioni'),
+                'format_product' => function($product, $summary, $alternate = false) {
+                    if ($product->package_size != 0) {
                         if ($alternate == false)
-                            return printableQuantity($summary->products[$product->id]['quantity_pieces'], $product->measure->discrete, 2, ',');
+                            return $summary->products[$product->id]['quantity_pieces'] / $product->package_size;
                         else
-                            return printableQuantity($summary->products[$product->id]['delivered_pieces'], $product->measure->discrete, 2, ',');
-                    },
-                    'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
-                        if ($alternate == false)
-                            return printableQuantity($variant['quantity'], $product->measure->discrete, 2, ',');
-                        else
-                            return printableQuantity($variant['delivered'], $product->measure->discrete, 2, ',');
+                            return $summary->products[$product->id]['delivered_pieces'] / $product->package_size;
                     }
-                ],
-                'boxes' => (object) [
-                    'name' => _i('Numero Confezioni'),
-                    'format_product' => function($product, $summary, $alternate = false) {
-                        if ($product->package_size != 0) {
-                            if ($alternate == false)
-                                return $summary->products[$product->id]['quantity_pieces'] / $product->package_size;
-                            else
-                                return $summary->products[$product->id]['delivered_pieces'] / $product->package_size;
+                    else {
+                        return '';
+                    }
+                },
+                'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
+                    if ($product->package_size != 0) {
+                        if ($alternate == false)
+                            return $variant['quantity'] / $product->package_size;
+                        else
+                            return $variant['delivered'] / $product->package_size;
+                    }
+                    else {
+                        return '';
+                    }
+                }
+            ],
+            'measure' => (object) [
+                'name' => _i('Unità di Misura'),
+                'checked' => true,
+                'format_product' => function($product, $summary, $alternate = false) {
+                    if ($alternate == false) {
+                        return $product->printableMeasure(true);
+                    }
+                    else {
+                        if ($product->portion_quantity != 0) {
+                            return $product->measure->name;
                         }
                         else {
-                            return '';
-                        }
-                    },
-                    'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
-                        if ($product->package_size != 0) {
-                            if ($alternate == false)
-                                return $variant['quantity'] / $product->package_size;
-                            else
-                                return $variant['delivered'] / $product->package_size;
-                        }
-                        else {
-                            return '';
-                        }
-                    }
-                ],
-                'measure' => (object) [
-                    'name' => _i('Unità di Misura'),
-                    'checked' => true,
-                    'format_product' => function($product, $summary, $alternate = false) {
-                        if ($alternate == false) {
                             return $product->printableMeasure(true);
                         }
-                        else {
-                            if ($product->portion_quantity != 0) {
-                                return $product->measure->name;
-                            }
-                            else {
-                                return $product->printableMeasure(true);
-                            }
+                    }
+                },
+                'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
+                    if ($alternate == false) {
+                        return $product->printableMeasure(true);
+                    }
+                    else {
+                        if ($product->portion_quantity != 0) {
+                            return $product->measure->name;
                         }
-                    },
-                    'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
-                        if ($alternate == false) {
+                        else {
                             return $product->printableMeasure(true);
                         }
-                        else {
-                            if ($product->portion_quantity != 0) {
-                                return $product->measure->name;
-                            }
-                            else {
-                                return $product->printableMeasure(true);
-                            }
-                        }
                     }
-                ],
-                'category' => (object) [
-                    'name' => _i('Categoria'),
-                    'checked' => false,
-                    'format_product' => function($product, $summary) {
-                        return $product->category ? $product->category->name : '';
-                    },
-                    'format_variant' => function($product, $summary, $name, $variant) {
-                        return $product->category ? $product->category->name : '';
-                    }
-                ],
-                'unit_price' => (object) [
-                    'name' => _i('Prezzo Unitario'),
-                    'checked' => false,
-                    'format_product' => function($product, $summary) {
-                        return printablePrice($product->price, ',');
-                    },
-                    'format_variant' => function($product, $summary, $name, $variant) {
-                        return printablePrice($variant['unit_price'], ',');
-                    }
-                ],
-                'price' => (object) [
-                    'name' => _i('Prezzo'),
-                    'checked' => true,
-                    'format_product' => function($product, $summary, $alternate = false) {
-                        if ($alternate == false)
-                            return printablePrice($summary->products[$product->id]['price'], ',');
-                        else
-                            return printablePrice($summary->products[$product->id]['price_delivered'], ',');
-                    },
-                    'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
-                        if ($alternate == false)
-                            return printablePrice($variant['price'], ',');
-                        else
-                            return 0;
-                    }
-                ],
-                'transport' => (object) [
-                    'name' => _i('Prezzo Trasporto'),
-                    'format_product' => function($product, $summary, $alternate = false) {
-                        if ($alternate == false)
-                            return printablePrice($summary->products[$product->id]['transport'], ',');
-                        else
-                            return printablePrice($summary->products[$product->id]['transport_delivered'], ',');
-                    },
-                    'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
-                        if ($alternate == false)
-                            return printablePrice($summary->products[$product->id]['transport'], ',');
-                        else
-                            return 0;
-                    }
-                ],
-                'notes' => (object) [
-                    'name' => _i('Note Prodotto'),
-                    'format_product' => function($product, $summary) {
-                        return $product->pivot->notes;
-                    },
-                    'format_variant' => function($product, $summary, $name, $variant) {
-                        return $product->pivot->notes;
-                    }
-                ],
+                }
+            ],
+            'category' => (object) [
+                'name' => _i('Categoria'),
+                'checked' => false,
+                'format_product' => function($product, $summary) {
+                    return $product->category ? $product->category->name : '';
+                },
+                'format_variant' => function($product, $summary, $name, $variant) {
+                    return $product->category ? $product->category->name : '';
+                }
+            ],
+            'unit_price' => (object) [
+                'name' => _i('Prezzo Unitario'),
+                'checked' => false,
+                'format_product' => function($product, $summary) {
+                    return printablePrice($product->price, ',');
+                },
+                'format_variant' => function($product, $summary, $name, $variant) {
+                    return printablePrice($variant['unit_price'], ',');
+                }
+            ],
+            'price' => (object) [
+                'name' => _i('Prezzo'),
+                'checked' => true,
+                'format_product' => function($product, $summary, $alternate = false) {
+                    if ($alternate == false)
+                        return printablePrice($summary->products[$product->id]['price'], ',');
+                    else
+                        return printablePrice($summary->products[$product->id]['price_delivered'], ',');
+                },
+                'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
+                    if ($alternate == false)
+                        return printablePrice($variant['price'], ',');
+                    else
+                        return 0;
+                }
+            ],
+        ];
+
+        if ($type == 'summary') {
+            $ret['transport'] = (object) [
+                'name' => _i('Prezzo Trasporto'),
+                'format_product' => function($product, $summary, $alternate = false) {
+                    if ($alternate == false)
+                        return printablePrice($summary->products[$product->id]['transport'], ',');
+                    else
+                        return printablePrice($summary->products[$product->id]['transport_delivered'], ',');
+                },
+                'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
+                    if ($alternate == false)
+                        return printablePrice($summary->products[$product->id]['transport'], ',');
+                    else
+                        return 0;
+                }
+            ];
+
+            $ret['notes'] = (object) [
+                'name' => _i('Note Prodotto'),
+                'format_product' => function($product, $summary) {
+                    return $product->pivot->notes;
+                },
+                'format_variant' => function($product, $summary, $name, $variant) {
+                    return $product->pivot->notes;
+                }
             ];
         }
+
+        return $ret;
     }
 
     public static function displayColumns()

@@ -151,22 +151,76 @@ class AggregatesController extends OrdersController
     {
         $aggregate = Aggregate::findOrFail($id);
 
-        $shipping_place = $request->input('shipping_place', 'all_by_name');
-        $bookings = $aggregate->bookings;
-        $bookings = Booking::sortByShippingPlace($bookings, $shipping_place);
-
         switch ($type) {
             case 'shipping':
-                $pdf = PDF::loadView('documents.aggregate_shipping', [
-                    'aggregate' => $aggregate,
-                    'bookings' => $bookings,
-                    'shipping_mode' => $shipping_place
-                ]);
+                $subtype = $request->input('format', 'pdf');
+                $required_fields = $request->input('fields', []);
+                $fields = splitFields($required_fields);
+                $status = 'booked';
+
+                $shipping_place = $request->input('shipping_place', 'all_by_name');
+
+                $temp_data = [];
+                foreach($aggregate->orders as $order) {
+                    $temp_data[] = $order->formatShipping($fields, $status, $shipping_place);
+                }
+
+                if (empty($temp_data)) {
+                    $data = (object) [
+                        'headers' => [],
+                        'contents' => []
+                    ];
+                }
+                else {
+                    $data = (object) [
+                        'headers' => $temp_data[0]->headers,
+                        'contents' => []
+                    ];
+
+                    foreach($temp_data as $td_row) {
+                        foreach($td_row->contents as $td) {
+                            $found = false;
+
+                            foreach($data->contents as $d) {
+                                if ($d->user_id == $td->user_id) {
+                                    $d->products = array_merge($d->products, $td->products);
+                                    foreach($d->totals as $index => $t) {
+                                        $d->totals[$index] += $td->totals[$index];
+                                    }
+
+                                    $found = true;
+                                    break;
+                                }
+                            }
+
+                            if ($found == false) {
+                                $data->contents[] = $td;
+                            }
+                        }
+                    }
+                }
 
                 $title = _i('Dettaglio Consegne Ordini');
-                $filename = sanitizeFilename($title . '.pdf');
-                return $pdf->download($filename);
-                break;
+                $filename = sanitizeFilename($title . '.' . $subtype);
+                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
+
+                if ($subtype == 'pdf') {
+                    $pdf = PDF::loadView('documents.order_shipping_pdf', ['fields' => $fields, 'aggregate' => $aggregate, 'data' => $data]);
+                    return $pdf->download($filename);
+                }
+                else if ($subtype == 'csv') {
+                    $flat_contents = [];
+
+                    foreach($data->contents as $c) {
+                        foreach($c->products as $p) {
+                            $flat_contents[] = array_merge($c->user, $p);
+                        }
+                    }
+
+                    return output_csv($filename, $data->headers, $flat_contents, function($row) {
+                        return $row;
+                    });
+                }
         }
     }
 }

@@ -9,7 +9,36 @@
     </head>
 
     <body>
-        <h3>{{ _i('Dettaglio Consegne Ordine %s presso %s del %s', [$order->internal_number, $order->supplier->printableName(), $order->shipping ? date('d/m/Y', strtotime($order->shipping)) : date('d/m/Y')]) }}</h3>
+        @if(isset($order))
+            <h3>{{ _i('Dettaglio Consegne Ordine %s a %s del %s', [$order->internal_number, $order->supplier->printableName(), $order->shipping ? date('d/m/Y', strtotime($order->shipping)) : date('d/m/Y')]) }}</h3>
+        @else
+            <h3>
+                {{ _i('Dettaglio Consegne') }}<br/>
+                @if($aggregate->orders()->count() <= App\Aggregate::aggregatesConvenienceLimit())
+                    @foreach($aggregate->orders as $order)
+                        {{ $order->supplier->name }} {{ $order->internal_number }}<br/>
+                    @endforeach
+                @endif
+            </h3>
+        @endif
+
+        <br/>
+        <hr>
+        <br/>
+
+        <table border="1" style="width: 100%" cellpadding="5" nobr="true">
+            <tr>
+                <th colspan="{{ count($fields->product_columns) }}">
+                    {!! join('<br>', $fields->user_columns_names) !!}
+                </th>
+            </tr>
+
+            <tr>
+                @foreach($fields->product_columns_names as $h)
+                    <th>{{ $h }}</th>
+                @endforeach
+            </tr>
+        </table>
 
         <br/>
         <hr>
@@ -20,7 +49,7 @@
         @foreach($data->contents as $d)
             <table border="1" style="width: 100%" cellpadding="5" nobr="true">
                 <tr>
-                    <th colspan="{{ $columns_count }}">
+                    <th colspan="{{ count($fields->product_columns) }}">
                         {!! join('<br>', array_filter($d->user)) !!}
 
                         <?php
@@ -46,18 +75,18 @@
 
                 @if($transport != 0)
                     <tr>
-                        <th colspan="{{ $columns_count }}"><strong>{{ _i('Trasporto') }}: {{ printablePriceCurrency($transport, ',') }}</strong></th>
+                        <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Trasporto') }}: {{ printablePriceCurrency($transport, ',') }}</strong></th>
                     </tr>
                 @endif
 
                 @if($discount != 0)
                     <tr>
-                        <th colspan="{{ $columns_count }}"><strong>{{ _i('Sconto') }}: {{ printablePriceCurrency($discount, ',') }}</strong></th>
+                        <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Sconto') }}: {{ printablePriceCurrency($discount, ',') }}</strong></th>
                     </tr>
                 @endif
 
                 <tr>
-                    <th colspan="{{ $columns_count }}"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($booking_total, ',') }}</strong></th>
+                    <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($booking_total, ',') }}</strong></th>
                 </tr>
             </table>
 

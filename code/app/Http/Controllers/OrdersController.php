@@ -420,25 +420,18 @@ class OrdersController extends Controller
                 $send_mail = $request->has('send_mail');
                 $subtype = $request->input('format', 'pdf');
                 $required_fields = $request->input('fields', []);
+                $fields = splitFields($required_fields);
                 $status = 'booked';
 
                 $shipping_place = $request->input('shipping_place', 'all_by_name');
-                $data = $order->formatShipping($required_fields, $status, $shipping_place);
+                $data = $order->formatShipping($fields, $status, $shipping_place);
 
                 $title = _i('Dettaglio Consegne ordine %s presso %s', [$order->internal_number, $order->supplier->name]);
                 $filename = sanitizeFilename($title . '.' . $subtype);
                 $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
 
                 if ($subtype == 'pdf') {
-                    $columns_count = 0;
-                    $formattable_product = Order::formattableColumns('shipping');
-                    foreach($required_fields as $f) {
-                        if (isset($formattable_product[$f])) {
-                            $columns_count++;
-                        }
-                    }
-
-                    $pdf = PDF::loadView('documents.order_shipping_pdf', ['order' => $order, 'data' => $data, 'columns_count' => $columns_count]);
+                    $pdf = PDF::loadView('documents.order_shipping_pdf', ['fields' => $fields, 'order' => $order, 'data' => $data]);
 
                     if ($send_mail) {
                         $pdf->save($temp_file_path);

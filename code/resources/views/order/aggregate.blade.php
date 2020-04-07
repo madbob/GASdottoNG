@@ -172,6 +172,8 @@ $panel_rand_wrap = rand();
                                             {{ _i("Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si trovano le informazioni relative alle singole prenotazioni di tutti gli ordini inclusi in questo aggregato.") }}
                                         </p>
 
+                                        <hr>
+
                                         @if($currentgas->hasFeature('shipping_places'))
                                             @include('commons.radios', [
                                                 'name' => 'shipping_place',
@@ -191,6 +193,38 @@ $panel_rand_wrap = rand();
                                                 )
                                             ])
                                         @endif
+
+                                        @include('commons.checkboxes', [
+                                            'name' => 'fields',
+                                            'label' => _i('Dati Utenti'),
+                                            'labelsize' => 2,
+                                            'fieldsize' => 10,
+                                            'values' => App\User::formattableColumns()
+                                        ])
+
+                                        @include('commons.checkboxes', [
+                                            'name' => 'fields',
+                                            'label' => _i('Colonne Prodotti'),
+                                            'labelsize' => 2,
+                                            'fieldsize' => 10,
+                                            'values' => App\Order::formattableColumns('shipping')
+                                        ])
+
+                                        @include('commons.radios', [
+                                            'name' => 'format',
+                                            'label' => _i('Formato'),
+                                            'labelsize' => 2,
+                                            'fieldsize' => 10,
+                                            'values' => [
+                                                'pdf' => (object) [
+                                                    'name' => 'PDF',
+                                                    'checked' => true
+                                                ],
+                                                'csv' => (object) [
+                                                    'name' => 'CSV'
+                                                ],
+                                            ]
+                                        ])
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>

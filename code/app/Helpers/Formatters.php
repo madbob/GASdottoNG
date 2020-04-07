@@ -508,3 +508,36 @@ function normalizeAddress($street, $city, $cap)
     $cap = str_replace(',', '', trim($cap));
     return sprintf('%s, %s, %s', $street, $city, $cap);
 }
+
+/*
+    Questo serve a separare le colonne per utenti e prodotti quando si generano
+    i Dettagli Consegne che contengono tutto
+*/
+function splitFields($fields)
+{
+    $formattable_user = App\User::formattableColumns();
+    $formattable_product = App\Order::formattableColumns('shipping');
+
+    $ret = (object) [
+        'headers' => [],
+        'user_columns' => [],
+        'product_columns' => [],
+        'user_columns_names' => [],
+        'product_columns_names' => [],
+    ];
+
+    foreach($fields as $f) {
+        if (isset($formattable_user[$f])) {
+            $ret->user_columns[] = $f;
+            $ret->user_columns_names[] = $formattable_user[$f]->name;
+            $ret->headers[] = $formattable_user[$f]->name;
+        }
+        else {
+            $ret->product_columns[] = $f;
+            $ret->product_columns_names[] = $formattable_product[$f]->name;
+            $ret->headers[] = $formattable_product[$f]->name;
+        }
+    }
+
+    return $ret;
+}
