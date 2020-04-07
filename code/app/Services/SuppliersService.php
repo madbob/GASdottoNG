@@ -205,8 +205,9 @@ class SuppliersService extends BaseService
             if ($supplier->trashed()) {
                 $this->ensureAuth(['supplier.add' => 'gas']);
 
-                foreach($supplier->products as $product)
+                foreach($supplier->products as $product) {
                     $product->forceDelete();
+                }
 
                 $supplier->forceDelete();
             }
