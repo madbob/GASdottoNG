@@ -113,46 +113,25 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title">{{ _i('Feedback') }}</h4>
                     </div>
-                    <form class="form-horizontal inner-form" method="POST" action="http://vh.madbob.org/vh.js.php">
-                        <input type="hidden" name="project" value="madbob/gasdottong">
-                        <input type="hidden" name="close-modal" value="1">
 
-                        <div class="modal-body">
+                    <div class="modal-body">
+                        <p>
+                            {{ _i('GASdotto è sviluppato con modello open source: puoi contribuire mandando una segnalazione o una richiesta:') }}
+                        </p>
+                        <p>
+                            <a href="https://github.com/madbob/GASdottoNG/" target="_blank">https://github.com/madbob/GASdottoNG/</a><br>
+                            <a href="mailto:info@gasdotto.net">info@gasdotto.net</a>
+                        </p>
+                        <p>
+                            {{ _i('Attenzione: per problemi sui contenuti di questo sito (fornitori, ordini, prenotazioni...) fai riferimento agli amministrazioni del tuo GAS.') }}
+                        </p>
+
+                        @if(currentLang() != 'it_IT')
                             <p>
-                                {{ _i('Vuoi inviare una segnalazione su GASdotto? Fallo qui!') }}
+                                {!! _i('Se vuoi contribuire alla traduzione nella tua lingua, visita <a href="https://hosted.weblate.org/projects/gasdottong/translations/">questa pagina</a>.') !!}
                             </p>
-                            <p>
-                                {{ _i('Attenzione: per problemi sui contenuti di questo sito (fornitori, ordini, prenotazioni...) fai riferimento agli amministrazioni del tuo GAS. I dati inviati per mezzo di questo pannello saranno pubblici: non immettere informazioni e contatti personali!') }}
-                            </p>
-
-                            @if(currentLang() != 'it_IT')
-                                <p>
-                                    {!! _i('Se vuoi contribuire alla traduzione nella tua lingua, visita <a href="https://hosted.weblate.org/projects/gasdottong/translations/">questa pagina</a>.') !!}
-                                </p>
-                            @endif
-
-                            <hr/>
-
-                            @include('commons.textfield', [
-                                'obj' => null,
-                                'name' => 'title',
-                                'label' => _i('Titolo'),
-                                'mandatory' => true,
-                            ])
-
-                            @include('commons.textarea', [
-                                'obj' => null,
-                                'name' => 'contents',
-                                'label' => _i('Contenuto'),
-                                'mandatory' => true,
-                            ])
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
-                            <button type="submit" class="btn btn-success">{{ _i('Invia') }}</button>
-                        </div>
-                    </form>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
