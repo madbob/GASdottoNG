@@ -31,7 +31,7 @@ class MenuServiceProvider extends ServiceProvider
                         $menu->add('suppliers', '<span class="glyphicon glyphicon-tags" aria-hidden="true"></span> ' . _i('Fornitori'));
                     }
 
-                    if ($user->can('supplier.orders', null) || $user->can('supplier.shippings', null)) {
+                    if ($user->can('supplier.orders', null) || $user->can('supplier.shippings', null) || $user->can('order.view', $gas)) {
                         $menu->add('orders', '<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> ' . _i('Ordini'));
                     }
 

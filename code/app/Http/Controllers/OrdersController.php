@@ -102,9 +102,10 @@ class OrdersController extends Controller
         echo $calendar->render();
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $orders = $this->defaultOrders(true);
+        $user = $request->user();
+        $orders = $this->defaultOrders(!$user->can('order.view', $user->gas));
         return view('pages.orders', ['orders' => $orders]);
     }
 

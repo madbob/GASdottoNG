@@ -38,5 +38,13 @@
 
     <?php $summary = $order->calculateSummary() ?>
     @include('order.summary_ro', ['order' => $order, 'summary' => $summary])
-    @include('order.annotations', ['order' => $order, 'summary' => $summary])
+
+    @can('supplier.shippings', $order->supplier)
+        @include('order.annotations', ['order' => $order, 'summary' => $summary])
+    @endcan
+
+    @include('commons.formbuttons', [
+        'no_delete' => true,
+        'no_save' => true,
+    ])
 </form>

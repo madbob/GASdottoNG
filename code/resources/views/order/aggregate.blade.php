@@ -17,53 +17,51 @@ $panel_rand_wrap = rand();
 
 ?>
 
-@if($aggregate->isRunning() == false && ($more_orders || $controllable))
+@if($controllable && ($shippable_status || $shipped_status))
     <div class="row gray-row order-extras">
         <div class="col-md-6">
-            @if($shippable_status || $shipped_status)
-                <form class="form-horizontal">
-                    <label class="col-sm-{{ $labelsize }} control-label">
-                        @if($shippable_status)
-                            {{ _i('Invia Riepiloghi Prenotazioni') }}
-                        @else
-                            {{ _i('Invia Riepiloghi Consegne') }}
-                        @endif
-                    </label>
-                    <div class="col-sm-{{ $fieldsize }}">
-                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#notify-aggregate-{{ $aggregate->id }}">{{ _i('Invia Mail') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
-                        <span class="help-block">{{ _i('Ultime notifiche inviate') }}: <span class="last-date" data-updatable-name="last-notification-date-{{ $aggregate->id }}">{{ $aggregate->printableDate('last_notify') }}</span></span>
-                    </div>
-                </form>
+            <form class="form-horizontal">
+                <label class="col-sm-{{ $labelsize }} control-label">
+                    @if($shippable_status)
+                        {{ _i('Invia Riepiloghi Prenotazioni') }}
+                    @else
+                        {{ _i('Invia Riepiloghi Consegne') }}
+                    @endif
+                </label>
+                <div class="col-sm-{{ $fieldsize }}">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#notify-aggregate-{{ $aggregate->id }}">{{ _i('Invia Mail') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
+                    <span class="help-block">{{ _i('Ultime notifiche inviate') }}: <span class="last-date" data-updatable-name="last-notification-date-{{ $aggregate->id }}">{{ $aggregate->printableDate('last_notify') }}</span></span>
+                </div>
+            </form>
 
-                <div class="modal fade" tabindex="-1" role="dialog" id="notify-aggregate-{{ $aggregate->id }}">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <form class="form-horizontal inner-form" method="POST" action="{{ url('aggregates/notify/' . $aggregate->id) }}">
-                                <input type="hidden" name="update-field" value="last-notification-date-{{ $aggregate->id }}">
-                                <input type="hidden" name="close-modal" value="1">
+            <div class="modal fade" tabindex="-1" role="dialog" id="notify-aggregate-{{ $aggregate->id }}">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form class="form-horizontal inner-form" method="POST" action="{{ url('aggregates/notify/' . $aggregate->id) }}">
+                            <input type="hidden" name="update-field" value="last-notification-date-{{ $aggregate->id }}">
+                            <input type="hidden" name="close-modal" value="1">
 
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">{{ _i('Notifiche Mail') }}</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label">{{ _i('Messaggio (Opzionale)') }}</label>
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">{{ _i('Notifiche Mail') }}</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">{{ _i('Messaggio (Opzionale)') }}</label>
 
-                                        <div class="col-sm-{{ $fieldsize }}">
-                                            <textarea class="form-control" name="message" rows="5"></textarea>
-                                        </div>
+                                    <div class="col-sm-{{ $fieldsize }}">
+                                        <textarea class="form-control" name="message" rows="5"></textarea>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
-                                    <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
-                                </div>
-                            </form>
-                        </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+                                <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-            @endif
+            </div>
         </div>
         <div class="col-md-6">
         </div>
@@ -78,7 +76,7 @@ $panel_rand_wrap = rand();
                 <li role="presentation" class="{{ $index == 0 ? 'active' : '' }}"><a href="#order-{{ $panel_rand_wrap }}-{{ $index }}" role="tab" data-toggle="tab">{{ $order->printableName() }}</a></li>
             @endforeach
 
-            @if($more_orders)
+            @if($controllable && $more_orders)
                 <li role="presentation"><a href="#aggregate-metadata-{{ $aggregate->id }}" role="tab" data-toggle="tab">{{ _i('Aggregato') }}</a></li>
             @endif
 
@@ -102,7 +100,7 @@ $panel_rand_wrap = rand();
                 </div>
             @endforeach
 
-            @if($more_orders)
+            @if($controllable && $more_orders)
                 <div role="tabpanel" class="tab-pane" id="aggregate-metadata-{{ $aggregate->id }}">
                     <form class="form-horizontal main-form" method="PUT" action="{{ route('aggregates.update', $aggregate->id) }}">
                         <div class="row">
