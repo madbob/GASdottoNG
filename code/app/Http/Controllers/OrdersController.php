@@ -417,21 +417,59 @@ class OrdersController extends Controller
 
         switch ($type) {
             case 'shipping':
-                $shipping_place = $request->input('shipping_place', 'all_by_name');
-                $bookings = self::orderTopBookingsByShipping($order, $shipping_place);
-
-                $pdf = PDF::loadView('documents.order_shipping', ['order' => $order, 'bookings' => $bookings, 'shipping_mode' => $shipping_place]);
-                $title = _i('Dettaglio Consegne ordine %s presso %s', [$order->internal_number, $order->supplier->name]);
-                $filename = sanitizeFilename($title . '.pdf');
-
                 $send_mail = $request->has('send_mail');
-                if ($send_mail) {
-                    $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
-                    $pdf->save($temp_file_path);
-                    $this->sendDocumentMail($request, $temp_file_path);
+                $subtype = $request->input('format', 'pdf');
+                $required_fields = $request->input('fields', []);
+                $status = 'booked';
+
+                $shipping_place = $request->input('shipping_place', 'all_by_name');
+                $data = $order->formatShipping($required_fields, $status, $shipping_place);
+
+                $title = _i('Dettaglio Consegne ordine %s presso %s', [$order->internal_number, $order->supplier->name]);
+                $filename = sanitizeFilename($title . '.' . $subtype);
+                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
+
+                if ($subtype == 'pdf') {
+                    $columns_count = 0;
+                    $formattable_product = Order::formattableColumns('shipping');
+                    foreach($required_fields as $f) {
+                        if (isset($formattable_product[$f])) {
+                            $columns_count++;
+                        }
+                    }
+
+                    $pdf = PDF::loadView('documents.order_shipping_pdf', ['order' => $order, 'data' => $data, 'columns_count' => $columns_count]);
+
+                    if ($send_mail) {
+                        $pdf->save($temp_file_path);
+                    }
+                    else {
+                        return $pdf->download($filename);
+                    }
                 }
-                else {
-                    return $pdf->download($filename);
+                else if ($subtype == 'csv') {
+                    $flat_contents = [];
+
+                    foreach($data->contents as $c) {
+                        foreach($c->products as $p) {
+                            $flat_contents[] = array_merge($c->user, $p);
+                        }
+                    }
+
+                    if ($send_mail) {
+                        output_csv($filename, $data->headers, $flat_contents, function($row) {
+                            return $row;
+                        }, $temp_file_path);
+                    }
+                    else {
+                        return output_csv($filename, $data->headers, $flat_contents, function($row) {
+                            return $row;
+                        });
+                    }
+                }
+
+                if ($send_mail) {
+                    $this->sendDocumentMail($request, $temp_file_path);
                 }
 
                 break;

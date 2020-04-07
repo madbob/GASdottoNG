@@ -70,37 +70,7 @@ class UsersController extends BackedController
         $users = $this->service->list('', true, $printable);
 
         return output_csv(_i('utenti.csv'), $headers, $users, function($user) use ($fields) {
-            $ret = [];
-
-            foreach($fields as $f) {
-                try {
-                    switch($f) {
-                        case 'email':
-                        case 'phone':
-                        case 'mobile':
-                        case 'address':
-                            $contacts = $user->getContactsByType($f);
-                            $ret[] = join(', ', $contacts);
-                            break;
-                        case 'shipping_place':
-                            $sp = $user->shippingplace;
-                            if ($sp)
-                                $ret[] = $sp->name;
-                            else
-                                $ret[] = _i('Nessuno');
-                            break;
-                        default:
-                            $ret[] = $user->$f;
-                            break;
-                    }
-                }
-                catch(\Exception $e) {
-                    Log::error('Esportazione CSV, impossibile accedere al campo ' . $f . ' di utente ' . $user->id);
-                    $ret[] = '';
-                }
-            }
-
-            return $ret;
+            return $user->formattedFields($fields);
         });
     }
 

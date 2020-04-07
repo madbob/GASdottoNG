@@ -187,6 +187,59 @@ class BookedProduct extends Model
         return $v;
     }
 
+    /*
+        Questa funzione serve a generare un oggetto simile a quello prodotto da
+        Order::calculateSummary() ma relativo solo a questo prodotto.
+        Usato per essere dato in input alle callback di formattazione di
+        Order::formattableColumns()
+    */
+    public function getAsSummaryAttribute()
+    {
+        $faked_index = $this->product->id;
+
+        $summary = (object) [
+            'products' => [
+                $faked_index => [
+                    'product_obj' => $this->product,
+                    'quantity' => $this->quantity,
+                    'quantity_pieces' => $this->product->portion_quantity > 0 ? $this->quantity * $this->product->portion_quantity : $this->quantity,
+                    'price' => $this->quantityValue(),
+                    'transport' => $this->quantity * $this->product->transport,
+                    'delivered' => $this->delivered,
+                    'delivered_pieces' => $this->product->portion_quantity > 0 ? $this->delivered * $this->product->portion_quantity : $this->delivered,
+                    'price_delivered' => $this->deliveredValue(),
+                    'transport_delivered' => $this->final_transport,
+                ]
+            ],
+            'by_variant' => []
+        ];
+
+        $variants_quantity = 0;
+
+        foreach($this->variants as $v) {
+            $name = $v->printableName();
+            if(isset($summary->by_variant[$faked_index][$name]) == false) {
+                $summary->by_variant[$faked_index][$name] = [
+                    'quantity' => 0,
+                    'delivered' => 0,
+                    'price' => 0,
+                    'unit_price' => $v->unitPrice()
+                ];
+            }
+
+            $summary->by_variant[$faked_index][$name]['quantity'] += $v->quantity;
+            $summary->by_variant[$faked_index][$name]['delivered'] += $v->delivered;
+            $summary->by_variant[$faked_index][$name]['price'] += $v->quantityValue();
+
+            $variants_quantity += $v->quantity;
+        }
+
+        if ($variants_quantity != 0)
+            $summary->products[$faked_index]['quantity'] = $variants_quantity;
+
+        return $summary;
+    }
+
     private function normalizeQuantity($attribute)
     {
         $product = $this->product;

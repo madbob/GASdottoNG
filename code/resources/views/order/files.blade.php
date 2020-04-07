@@ -31,6 +31,11 @@
                     <p>
                         {{ _i("Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si trovano le informazioni relative alle singole prenotazioni. Utile da consultare mentre si effettuano le consegne.") }}
                     </p>
+                    <p>
+                        {!! _i("Per la consultazione e l'elaborazione dei files in formato CSV (<i>Comma-Separated Values</i>) si consiglia l'uso di <a target=\"_blank\" href=\"http://it.libreoffice.org/\">LibreOffice</a>.") !!}
+                    </p>
+
+                    <hr/>
 
                     @if($currentgas->hasFeature('shipping_places'))
                         @include('commons.radios', [
@@ -51,6 +56,38 @@
                             )
                         ])
                     @endif
+
+                    @include('commons.checkboxes', [
+                        'name' => 'fields',
+                        'label' => _i('Dati Utenti'),
+                        'labelsize' => 2,
+                        'fieldsize' => 10,
+                        'values' => App\User::formattableColumns()
+                    ])
+
+                    @include('commons.checkboxes', [
+                        'name' => 'fields',
+                        'label' => _i('Colonne Prodotti'),
+                        'labelsize' => 2,
+                        'fieldsize' => 10,
+                        'values' => App\Order::formattableColumns('shipping')
+                    ])
+
+                    @include('commons.radios', [
+                        'name' => 'format',
+                        'label' => _i('Formato'),
+                        'labelsize' => 2,
+                        'fieldsize' => 10,
+                        'values' => [
+                            'pdf' => (object) [
+                                'name' => 'PDF',
+                                'checked' => true
+                            ],
+                            'csv' => (object) [
+                                'name' => 'CSV'
+                            ],
+                        ]
+                    ])
 
                     @include('order.filesmail', ['contacts' => $contacts])
                 </div>

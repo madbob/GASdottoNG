@@ -332,12 +332,12 @@ class User extends Authenticatable
     public static function formattableColumns()
     {
         $ret = [
-            'firstname' => (object) [
-                'name' => _i('Nome'),
-                'checked' => true,
-            ],
             'lastname' => (object) [
                 'name' => _i('Cognome'),
+                'checked' => true,
+            ],
+            'firstname' => (object) [
+                'name' => _i('Nome'),
                 'checked' => true,
             ],
             'username' => (object) [
@@ -368,8 +368,51 @@ class User extends Authenticatable
 
         if (currentAbsoluteGas()->hasFeature('shipping_places')) {
             $ret['shipping_place'] = (object) [
-                'name' => _i('Luogo di Consegna')
+                'name' => _i('Luogo di Consegna'),
+                'checked' => true,
             ];
+        }
+
+        if (currentAbsoluteGas()->hasFeature('rid')) {
+            $ret['rid->iban'] = (object) [
+                'name' => _i('IBAN'),
+                'checked' => true,
+            ];
+        }
+
+        return $ret;
+    }
+
+    public function formattedFields($fields)
+    {
+        $ret = [];
+
+        foreach($fields as $f) {
+            try {
+                switch($f) {
+                    case 'email':
+                    case 'phone':
+                    case 'mobile':
+                    case 'address':
+                        $contacts = $this->getContactsByType($f);
+                        $ret[] = join(', ', $contacts);
+                        break;
+                    case 'shipping_place':
+                        $sp = $this->shippingplace;
+                        if ($sp)
+                            $ret[] = $sp->name;
+                        else
+                            $ret[] = _i('Nessuno');
+                        break;
+                    default:
+                        $ret[] = accessAttr($this, $f);
+                        break;
+                }
+            }
+            catch(\Exception $e) {
+                Log::error('Esportazione CSV, impossibile accedere al campo ' . $f . ' di utente ' . $this->id);
+                $ret[] = '';
+            }
         }
 
         return $ret;

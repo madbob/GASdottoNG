@@ -537,6 +537,73 @@ class Order extends Model
         return $summary;
     }
 
+    private function formatProduct($fields, $formattable, $summary, $product, $internal_offsets)
+    {
+        if(isset($summary->by_variant[$product->id])) {
+            $variants_rows = [];
+
+            foreach ($summary->by_variant[$product->id] as $name => $variant) {
+                if ($variant[$internal_offsets->by_variant] == 0) {
+                    continue;
+                }
+
+                $row = [];
+                foreach($fields as $f) {
+                    if (isset($formattable[$f])) {
+                        $row[] = call_user_func($formattable[$f]->format_variant, $product, $summary, $name, $variant, $internal_offsets->alternate);
+                    }
+                }
+
+                $variants_rows[] = $row;
+            }
+
+            usort($variants_rows, function($a, $b) {
+                return $a[0] <=> $b[0];
+            });
+
+            return $variants_rows;
+        }
+        else {
+            if ($summary->products[$product->id][$internal_offsets->by_product] == 0) {
+                return [];
+            }
+
+            $row = [];
+            foreach($fields as $f) {
+                if (isset($formattable[$f])) {
+                    $row[] = call_user_func($formattable[$f]->format_product, $product, $summary, $internal_offsets->alternate);
+                }
+            }
+
+            return [$row];
+        }
+    }
+
+    /*
+        Questo serve a determinare quali valori prendere da prodotti e
+        prenotazioni a seconda che siano state chieste delle quantità prenotato
+        o consegnate
+    */
+    private function offsetsByStatus($status)
+    {
+        if ($status == 'delivered') {
+            return (object)[
+                'alternate' => true,
+                'by_variant' => 'delivered',
+                'by_product' => 'delivered_pieces',
+                'by_booking' => 'delivered',
+            ];
+        }
+        else {
+            return (object)[
+                'alternate' => false,
+                'by_variant' => 'quantity',
+                'by_product' => 'quantity_pieces',
+                'by_booking' => 'booked',
+            ];
+        }
+    }
+
     public function formatSummary($fields, $status, $shipping_place)
     {
         $ret = (object) [
@@ -544,21 +611,7 @@ class Order extends Model
             'contents' => []
         ];
 
-        if ($status == 'delivered') {
-            $internal_offsets = (object)[
-                'by_variant' => 'delivered',
-                'by_product' => 'delivered_pieces'
-            ];
-            $alternate = true;
-        }
-        else {
-            $internal_offsets = (object)[
-                'by_variant' => 'quantity',
-                'by_product' => 'quantity_pieces'
-            ];
-            $alternate = false;
-        }
-
+        $internal_offsets = $this->offsetsByStatus($status);
         $summary = $this->calculateSummary(null, $shipping_place);
         $formattable = self::formattableColumns('summary');
 
@@ -570,37 +623,9 @@ class Order extends Model
             if($this->hasProduct($product) == false)
                 continue;
 
-            if(isset($summary->by_variant[$product->id])) {
-                $variants_rows = [];
-
-                foreach ($summary->by_variant[$product->id] as $name => $variant) {
-                    if ($variant[$internal_offsets->by_variant] == 0)
-                        continue;
-
-                    $row = [];
-                    foreach($fields as $f) {
-                        $row[] = call_user_func($formattable[$f]->format_variant, $product, $summary, $name, $variant, $alternate);
-                    }
-
-                    $variants_rows[] = $row;
-                }
-
-                usort($variants_rows, function($a, $b) {
-                    return $a[0] <=> $b[0];
-                });
-
-                $ret->contents = array_merge($ret->contents, $variants_rows);
-            }
-            else {
-                if ($summary->products[$product->id][$internal_offsets->by_product] == 0)
-                    continue;
-
-                $row = [];
-                foreach($fields as $f) {
-                    $row[] = call_user_func($formattable[$f]->format_product, $product, $summary, $alternate);
-                }
-
-                $ret->contents[] = $row;
+            $row = $this->formatProduct($fields, $formattable, $summary, $product, $internal_offsets);
+            if (!empty($row)) {
+                $ret->contents = array_merge($ret->contents, $row);
             }
         }
 
@@ -640,9 +665,64 @@ class Order extends Model
         return $ret;
     }
 
+    public function formatShipping($fields, $status, $shipping_place)
+    {
+        $ret = (object) [
+            'header' => [],
+            'contents' => []
+        ];
+
+        $internal_offsets = $this->offsetsByStatus($status);
+
+        $formattable_user = User::formattableColumns();
+        $formattable_product = self::formattableColumns('shipping');
+        $user_columns = [];
+        $product_columns = [];
+
+        foreach($fields as $f) {
+            if (isset($formattable_user[$f])) {
+                $user_columns[] = $f;
+                $ret->headers[] = $formattable_user[$f]->name;
+            }
+            else {
+                $product_columns[] = $f;
+                $ret->headers[] = $formattable_product[$f]->name;
+            }
+        }
+
+        $bookings = $this->topLevelBookings(null);
+        $bookings = Booking::sortByShippingPlace($bookings, $shipping_place);
+
+        foreach ($bookings as $booking) {
+            $obj = (object) [
+                'user' => $booking->user->formattedFields($user_columns),
+                'products' => [],
+                'totals' => [],
+            ];
+
+            foreach($booking->products_with_friends as $booked) {
+                $product = $booked->product;
+                $summary = $booked->as_summary;
+
+                $row = $this->formatProduct($fields, $formattable_product, $summary, $product, $internal_offsets);
+                if (!empty($row)) {
+                    $obj->products = array_merge($obj->products, $row);
+                }
+            }
+
+            $obj->totals['total'] = $booking->getValue($internal_offsets->by_booking, true);
+            $obj->totals['transport'] = $booking->getValue('transport', true);
+            $obj->totals['discount'] = $booking->getValue('discount', true);
+
+            $ret->contents[] = $obj;
+        }
+
+        return $ret;
+    }
+
     public static function formattableColumns($type)
     {
-        if ($type == 'summary') {
+        if ($type == 'summary' || $type == 'shipping') {
             return [
                 'name' => (object) [
                     'name' => _i('Nome Prodotto'),
@@ -667,7 +747,7 @@ class Order extends Model
                     }
                 ],
                 'quantity' => (object) [
-                    'name' => _i('Quantità Totale'),
+                    'name' => _i('Quantità'),
                     'checked' => true,
                     'format_product' => function($product, $summary, $alternate = false) {
                         if ($alternate == false)
@@ -758,7 +838,7 @@ class Order extends Model
                     }
                 ],
                 'price' => (object) [
-                    'name' => _i('Prezzo Totale'),
+                    'name' => _i('Prezzo'),
                     'checked' => true,
                     'format_product' => function($product, $summary, $alternate = false) {
                         if ($alternate == false)
