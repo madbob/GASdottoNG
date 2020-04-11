@@ -13,7 +13,7 @@
             <h3>{{ _i('Dettaglio Consegne Ordine %s a %s del %s', [$order->internal_number, $order->supplier->printableName(), $order->shipping ? date('d/m/Y', strtotime($order->shipping)) : date('d/m/Y')]) }}</h3>
         @else
             <h3>
-                {{ _i('Dettaglio Consegne') }}<br/>
+                {{ _i('Dettaglio Consegne del %s', [$aggregate->shipping ? date('d/m/Y', strtotime($aggregate->shipping)) : date('d/m/Y')]) }}<br/>
                 @if($aggregate->orders()->count() <= App\Aggregate::aggregatesConvenienceLimit())
                     @foreach($aggregate->orders as $order)
                         {{ $order->supplier->name }} {{ $order->internal_number }}<br/>
