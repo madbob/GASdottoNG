@@ -25,13 +25,14 @@ class Config extends Model
                 'description' => _i('Messaggio inviato ai nuovi iscritti sulla piattaforma.'),
                 'params' => [
                     'username' => _i("Username assegnato al nuovo utente"),
-                    'gas_login_link' => _i("Link della pagina di login")
+                    'gas_login_link' => _i("Link della pagina di login"),
                 ]
             ],
             'password_reset' => (object) [
                 'description' => _i('Messaggio per il ripristino della password.'),
                 'params' => [
-                    'gas_reset_link' => _i("Link per il reset della password")
+                    'username' => _i("Username dell'utente"),
+                    'gas_reset_link' => _i("Link per il reset della password"),
                 ]
             ],
             'new_order' => (object) [
