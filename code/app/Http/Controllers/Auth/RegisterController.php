@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
 use App\Rules\Captcha;
+use App\Rules\EMail;
 use App\Notifications\WelcomeMessage;
 use App\Notifications\NewUserNotification;
 
@@ -97,7 +98,7 @@ class RegisterController extends Controller
             $options['lastname'] = 'required|string|max:255';
 
         if (in_array('email', $mandatory))
-            $options['email'] = 'required|string|email|max:255';
+            $options['email'] = ['required', 'string', 'email', 'max:255', new EMail()];
 
         if (in_array('phone', $mandatory))
             $options['phone'] = 'required|string|max:255';
@@ -146,7 +147,13 @@ class RegisterController extends Controller
     protected function registered(Request $request, $user)
     {
         Session::forget('captcha_solution');
-        $user->notify(new WelcomeMessage());
+
+        try {
+            $user->notify(new WelcomeMessage());
+        }
+        catch(\Exception $e) {
+            Log::error('Impossibile inviare mail di verifica a nuovo utente: ' . $e->getMessage());
+        }
 
         $admins = Role::everybodyCan('users.admin', $user->gas);
         foreach($admins as $ad) {
