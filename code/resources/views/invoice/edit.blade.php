@@ -42,46 +42,50 @@ $rand = rand();
 
             <hr>
 
-            <div class="form-group">
-                <label for="orders" class="col-sm-{{ $labelsize }} control-label">{{ _i('Ordini Coinvolti') }}</label>
+            @if($invoice->orders->count() > 0 || $invoice->status != 'payed')
+                <div class="form-group">
+                    <label for="orders" class="col-sm-{{ $labelsize }} control-label">{{ _i('Ordini Coinvolti') }}</label>
 
-                <div class="col-sm-{{ $fieldsize }}">
-                    @if($invoice->orders->count() > 0)
-                        @foreach($invoice->orders as $o)
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label class="static-label text-muted">
-                                        {{ $o->printableName() }}
-                                    </label>
+                    <div class="col-sm-{{ $fieldsize }}">
+                        @if($invoice->orders->count() > 0)
+                            @foreach($invoice->orders as $o)
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="static-label text-muted">
+                                            {{ $o->printableName() }}
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
-                        @endforeach
+                            @endforeach
 
-                        <br>
-                    @endif
+                            <br>
+                        @endif
 
-                    @if($invoice->status != 'payed')
-                        @can('movements.admin', $currentgas)
-                            <button class="btn btn-default" data-toggle="modal" data-target="#orders-invoice-{{ $rand }}">{{ _i('Modifica Ordini') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
+                        @if($invoice->status != 'payed')
+                            @can('movements.admin', $currentgas)
+                                <button class="btn btn-default" data-toggle="modal" data-target="#orders-invoice-{{ $rand }}">{{ _i('Modifica Ordini') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
 
-                            @if($invoice->orders()->count() != 0)
-                                <button class="btn btn-default async-modal" data-target-url="{{ route('invoices.products', $invoice->id) }}">{{ _i('Verifica Contenuti') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
-                            @endif
-                        @endcan
-                    @endif
+                                @if($invoice->orders()->count() != 0)
+                                    <button class="btn btn-default async-modal" data-target-url="{{ route('invoices.products', $invoice->id) }}">{{ _i('Verifica Contenuti') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
+                                @endif
+                            @endcan
+                        @endif
+                    </div>
                 </div>
-            </div>
 
-            <hr>
+                <hr>
+            @endif
 
             <?php
 
             $orders_total_taxable = 0;
             $orders_total_tax = 0;
             $orders_total = 0;
+            $calculated_summaries = [];
 
             foreach($invoice->orders as $o) {
                 $summary = $o->calculateInvoicingSummary();
+                $calculated_summaries[$o->id] = $summary;
                 $orders_total_taxable += $summary->total_taxable;
                 $orders_total_tax += $summary->total_tax;
                 $orders_total = $orders_total_taxable + $orders_total_tax;
@@ -283,7 +287,7 @@ $rand = rand();
                             </thead>
                             <tbody>
                                 @foreach($invoice->ordersCandidates() as $o)
-                                    <?php $summary = $o->calculateInvoicingSummary() ?>
+                                    <?php $summary = $calculated_summaries[$o->id] ?? $o->calculateInvoicingSummary() ?>
                                     <tr class="orders-in-invoice-candidate">
                                         <td><input type="checkbox" name="order_id[]" value="{{ $o->id }}"></td>
                                         <td>

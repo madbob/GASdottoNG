@@ -47,9 +47,9 @@ class Invoice extends Model
 
     public function ordersCandidates()
     {
-        return $this->supplier->orders()->where('status', 'shipped')->whereDoesntHave('invoice', function($query) {
+        return $this->supplier->orders()->whereIn('status', ['shipped', 'archived'])->whereDoesntHave('invoice', function($query) {
             $query->whereIn('invoices.status', ['verified', 'payed']);
-        })->get();
+        })->where('end', '>', date('Y-m-d G:i:s', strtotime('-1 years')))->get();
     }
 
     public function getNameAttribute()
