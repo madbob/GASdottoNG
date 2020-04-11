@@ -861,11 +861,8 @@ class Order extends Model
                         return 0;
                 }
             ],
-        ];
-
-        if ($type == 'summary') {
-            $ret['transport'] = (object) [
-                'name' => _i('Prezzo Trasporto'),
+            'transport' => (object) [
+                'name' => _i('Spese Trasporto'),
                 'format_product' => function($product, $summary, $alternate = false) {
                     if ($alternate == false)
                         return printablePrice($summary->products[$product->id]['transport'], ',');
@@ -878,8 +875,10 @@ class Order extends Model
                     else
                         return 0;
                 }
-            ];
+            ],
+        ];
 
+        if ($type == 'summary') {
             $ret['notes'] = (object) [
                 'name' => _i('Note Prodotto'),
                 'format_product' => function($product, $summary) {

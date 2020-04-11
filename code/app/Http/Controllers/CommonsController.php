@@ -48,7 +48,7 @@ class CommonsController extends Controller
                     $query->where('user_id', $user->id)->orWhereIn('user_id', $user->friends()->pluck('id'));
                 });
             });
-        })->get();
+        })->with(['orders'])->get();
 
         $shipping = $shipping->sort(function($a, $b) {
             return strcmp($a->shipping, $b->shipping);

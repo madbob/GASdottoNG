@@ -48,7 +48,7 @@ class Aggregate extends Model implements Feedable
 
     public function orders()
     {
-        return $this->hasMany('App\Order')->with('supplier')->with('products')->orderBy('aggregate_sorting', 'asc');
+        return $this->hasMany('App\Order')->with(['supplier', 'products'])->orderBy('aggregate_sorting', 'asc');
     }
 
     public function scopeSupplier($query, $supplier_id)
@@ -135,7 +135,7 @@ class Aggregate extends Model implements Feedable
 
             $aggregates = self::whereHas('orders', function ($query) use ($status, $operator) {
                 $query->whereIn('status', ['open', 'closed']);
-            })->get();
+            })->with(['orders'])->get();
 
             foreach($aggregates as $a) {
                 if ($a->status == 'open' || $a->hasPendingPackages()) {
@@ -148,18 +148,20 @@ class Aggregate extends Model implements Feedable
         else {
             return self::whereHas('orders', function ($query) use ($status, $operator) {
                 $query->where('status', $operator, $status);
-            })->get();
+            })->with(['orders'])->get();
         }
     }
 
     public function hasPendingPackages()
     {
-        foreach($this->orders as $o) {
-            if ($o->keep_open_packages && $o->status == 'closed' && $o->pendingPackages()->isEmpty() == false)
-                return true;
-        }
+        return $this->innerCache('pending_packages', function($obj) {
+            foreach($this->orders as $o) {
+                if ($o->keep_open_packages && $o->status == 'closed' && $o->pendingPackages()->isEmpty() == false)
+                    return true;
+            }
 
-        return false;
+            return false;
+        });
     }
 
     /*

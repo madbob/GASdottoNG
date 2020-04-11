@@ -187,6 +187,19 @@ class BookedProduct extends Model
         return $v;
     }
 
+    private function dynamicTransportCost()
+    {
+        $global_transport = $this->booking->dynamicTransportCost(true, false);
+        $booking_value = $this->booking->getValue('booked', true);
+
+        if ($booking_value != 0)
+            $per_product = round(($global_transport * $this->quantityValue()) / $booking_value, 2);
+        else
+            $per_product = 0;
+
+        return $this->transportBookedValue() + $per_product;
+    }
+
     /*
         Questa funzione serve a generare un oggetto simile a quello prodotto da
         Order::calculateSummary() ma relativo solo a questo prodotto.
@@ -204,7 +217,7 @@ class BookedProduct extends Model
                     'quantity' => $this->quantity,
                     'quantity_pieces' => $this->product->portion_quantity > 0 ? $this->quantity * $this->product->portion_quantity : $this->quantity,
                     'price' => $this->quantityValue(),
-                    'transport' => $this->quantity * $this->product->transport,
+                    'transport' => $this->dynamicTransportCost(),
                     'delivered' => $this->delivered,
                     'delivered_pieces' => $this->product->portion_quantity > 0 ? $this->delivered * $this->product->portion_quantity : $this->delivered,
                     'price_delivered' => $this->deliveredValue(),

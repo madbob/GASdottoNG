@@ -85,7 +85,7 @@ class Booking extends Model
         return $query->orderByRaw(DB::raw("FIELD(user_id, $sorted_users)"));
     }
 
-    private function dynamicTransportCost($with_friends)
+    public function dynamicTransportCost($with_friends, $including_products_transport = true)
     {
         $value = 0;
 
@@ -108,16 +108,18 @@ class Booking extends Model
             }
         }
 
-        $transported = $this->products()->whereHas('product', function($query) {
-            $query->where('transport', '!=', 0);
-        })->with('product')->get();
+        if ($including_products_transport) {
+            $transported = $this->products()->whereHas('product', function($query) {
+                $query->where('transport', '!=', 0);
+            })->with('product')->get();
 
-        foreach($transported as $t) {
-            if (is_numeric($t->product->transport)) {
-                $value += $t->quantity * $t->product->transport;
-            }
-            else {
-                $value += applyPercentage($t->quantityValue(), $t->product->transport, '=');
+            foreach($transported as $t) {
+                if (is_numeric($t->product->transport)) {
+                    $value += $t->quantity * $t->product->transport;
+                }
+                else {
+                    $value += applyPercentage($t->quantityValue(), $t->product->transport, '=');
+                }
             }
         }
 
