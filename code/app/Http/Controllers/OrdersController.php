@@ -474,8 +474,8 @@ class OrdersController extends Controller
                 $required_fields = $request->input('fields', []);
                 $status = $request->input('status');
 
-                $shipping_place = $request->input('shipping_place', 0);
-                if ($shipping_place == '0')
+                $shipping_place = $request->input('shipping_place', 'all_by_place');
+                if ($shipping_place == 'all_by_place')
                     $data = $order->formatSummary($required_fields, $status, null);
                 else
                     $data = $order->formatSummary($required_fields, $status, $shipping_place);
