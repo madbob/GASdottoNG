@@ -198,6 +198,14 @@ class AggregatesController extends OrdersController
                             }
                         }
                     }
+
+                    usort($data->contents, function($a, $b) use ($shipping_place) {
+                        if ($shipping_place == 'all_by_place' && $a->shipping_sorting != $b->shipping_sorting) {
+                            return $a->shipping_sorting <=> $b->shipping_sorting;
+                        }
+
+                        return $a->user_sorting <=> $b->user_sorting;
+                    });
                 }
 
                 $title = _i('Dettaglio Consegne Ordini');

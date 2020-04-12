@@ -682,6 +682,15 @@ class Order extends Model
         foreach ($bookings as $booking) {
             $obj = (object) [
                 'user_id' => $booking->user->id,
+
+                /*
+                    Questi due parametri vengono usati per riordinare le
+                    prenotazioni rastrellate da diversi ordini, quando genero il
+                    documento di Dettaglio Consegne per un aggregato
+                */
+                'user_sorting' => $booking->user->lastname,
+                'shipping_sorting' => $booking->user->shippingplace ? $booking->user->shippingplace->name : 'AAAA',
+
                 'user' => $booking->user->formattedFields($fields->user_columns),
                 'products' => [],
                 'totals' => [],

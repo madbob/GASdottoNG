@@ -537,6 +537,10 @@ class Booking extends Model
                     $tmp_bookings[] = $booking;
 
             $bookings = $tmp_bookings;
+
+            usort($bookings, function($a, $b) {
+                return $a->user->printableName() <=> $b->user->printableName();
+            });
         }
 
         return $bookings;
