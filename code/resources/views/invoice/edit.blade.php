@@ -80,6 +80,7 @@ $rand = rand();
 
             $orders_total_taxable = 0;
             $orders_total_tax = 0;
+            $orders_total_transport = 0;
             $orders_total = 0;
             $calculated_summaries = [];
 
@@ -88,7 +89,8 @@ $rand = rand();
                 $calculated_summaries[$o->id] = $summary;
                 $orders_total_taxable += $summary->total_taxable;
                 $orders_total_tax += $summary->total_tax;
-                $orders_total = $orders_total_taxable + $orders_total_tax;
+                $orders_total_transport += $summary->transport;
+                $orders_total = $orders_total_taxable + $orders_total_tax + $orders_total_transport;
             }
 
             ?>
@@ -150,6 +152,26 @@ $rand = rand();
                             <input type="text"
                                 class="form-control number trim-2-ddigits"
                                 value="{{ printablePrice($orders_total_tax) }}"
+                                disabled
+                                autocomplete="off">
+
+                            <div class="input-group-addon">{{ $currentgas->currency }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="total" class="col-sm-{{ $labelsize }} control-label">{{ _i('Trasporto') }}</label>
+
+                    <div class="col-sm-{{ $fieldsize / 2 }}">
+                        &nbsp;
+                    </div>
+
+                    <div class="col-sm-{{ $fieldsize / 2 }}">
+                        <div class="input-group">
+                            <input type="text"
+                                class="form-control number trim-2-ddigits"
+                                value="{{ printablePrice($orders_total_transport) }}"
                                 disabled
                                 autocomplete="off">
 
