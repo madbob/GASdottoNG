@@ -718,9 +718,9 @@ class Order extends Model
                 continue;
             }
 
-            $obj->totals['total'] = $booking->getValue($internal_offsets->by_booking, true);
             $obj->totals['transport'] = $booking->getValue('transport', true);
             $obj->totals['discount'] = $booking->getValue('discount', true);
+            $obj->totals['total'] = $booking->getValue($internal_offsets->by_booking, true) + $obj->totals['transport'] - $obj->totals['discount'];
 
             $ret->contents[] = $obj;
         }
