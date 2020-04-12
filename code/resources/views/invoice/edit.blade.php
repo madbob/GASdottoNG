@@ -288,25 +288,27 @@ $rand = rand();
                             <tbody>
                                 @foreach($invoice->ordersCandidates() as $o)
                                     <?php $summary = $calculated_summaries[$o->id] ?? $o->calculateInvoicingSummary() ?>
-                                    <tr class="orders-in-invoice-candidate">
-                                        <td><input type="checkbox" name="order_id[]" value="{{ $o->id }}"></td>
-                                        <td>
-                                            {{ $o->printableName() }}<br>
-                                            <small>{{ $o->printableDates() }}</small>
-                                        </td>
-                                        <td class="taxable">
-                                            @include('commons.staticpricelabel', ['value' => $summary->total_taxable])
-                                        </td>
-                                        <td class="tax">
-                                            @include('commons.staticpricelabel', ['value' => $summary->total_tax])
-                                        </td>
-                                        <td class="transport">
-                                            @include('commons.staticpricelabel', ['value' => $summary->transport])
-                                        </td>
-                                        <td class="total">
-                                            @include('commons.staticpricelabel', ['value' => $summary->total])
-                                        </td>
-                                    </tr>
+                                    @if($summary->total != 0)
+                                        <tr class="orders-in-invoice-candidate">
+                                            <td><input type="checkbox" name="order_id[]" value="{{ $o->id }}"></td>
+                                            <td>
+                                                {{ $o->printableName() }}<br>
+                                                <small>{{ $o->printableDates() }}</small>
+                                            </td>
+                                            <td class="taxable">
+                                                @include('commons.staticpricelabel', ['value' => $summary->total_taxable])
+                                            </td>
+                                            <td class="tax">
+                                                @include('commons.staticpricelabel', ['value' => $summary->total_tax])
+                                            </td>
+                                            <td class="transport">
+                                                @include('commons.staticpricelabel', ['value' => $summary->transport])
+                                            </td>
+                                            <td class="total">
+                                                @include('commons.staticpricelabel', ['value' => $summary->total])
+                                            </td>
+                                        </tr>
+                                    @endif
                                 @endforeach
 
                                 <tr class="orders-in-invoice-total">
