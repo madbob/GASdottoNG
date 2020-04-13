@@ -79,7 +79,7 @@
 
                         <tr>
                             <td width="55%">{{ $product->product->name }}</td>
-                            <td width="15%">{{ $product->delivered }}</td>
+                            <td width="15%">{{ $product->true_delivered }}</td>
                             <td width="15%">{{ $product->product->measure->printableName() }}</td>
                             <td width="15%">{{ printablePriceCurrency($product_total) }}</td>
                         </tr>
