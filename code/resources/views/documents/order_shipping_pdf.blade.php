@@ -73,6 +73,12 @@
                     </tr>
                 @endforeach
 
+                @if(!empty($d->notes))
+                    <tr>
+                        <td colspan="{{ count($fields->product_columns) }}">{!! join('<br>', $d->notes) !!}</td>
+                    </tr>
+                @endif
+
                 @if($transport != 0)
                     <tr>
                         <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Trasporto') }}: {{ printablePriceCurrency($transport, ',') }}</strong></th>

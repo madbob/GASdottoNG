@@ -694,6 +694,7 @@ class Order extends Model
                 'user' => $booking->user->formattedFields($fields->user_columns),
                 'products' => [],
                 'totals' => [],
+                'notes' => !empty($booking->notes) ? [$booking->notes] : [],
             ];
 
             foreach($booking->products_with_friends as $booked) {

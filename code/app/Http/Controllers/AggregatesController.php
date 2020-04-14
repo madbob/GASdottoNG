@@ -184,6 +184,8 @@ class AggregatesController extends OrdersController
                             foreach($data->contents as $d) {
                                 if ($d->user_id == $td->user_id) {
                                     $d->products = array_merge($d->products, $td->products);
+                                    $d->notes = array_merge($d->notes, $td->notes);
+
                                     foreach($d->totals as $index => $t) {
                                         $d->totals[$index] += $td->totals[$index];
                                     }
