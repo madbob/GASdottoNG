@@ -63,9 +63,18 @@ function generalInit(container) {
     });
 
     function setupCheckboxes() {
-        var checkboxes = $('input:checkbox[data-toggle=toggle]').slice(0, 200);
+        var checkboxes = $('input:checkbox[data-toggle=toggle]', container).slice(0, 200);
         if (checkboxes.length != 0) {
-            checkboxes.bootstrapToggle().removeAttr('data-toggle');
+			checkboxes.each(function() {
+				var t = $(this);
+				t.bootstrapToggle().removeAttr('data-toggle');
+
+				if (t.hasClass('row-untoggler')) {
+					var disabled = t.prop('checked');
+					t.closest('.row').find('[data-untoggled]').prop('disabled', disabled);
+				}
+			});
+
             setTimeout(setupCheckboxes, 100);
         }
     }
@@ -173,7 +182,9 @@ function generalInit(container) {
         var url = $(this).attr('data-contents-url');
 
         $.get(url, function(data) {
-            contents.empty().append(data);
+			var d = $(data);
+            contents.empty().append(d);
+			generalInit(d);
         });
     });
 
@@ -666,6 +677,7 @@ function enforceMeasureDiscrete(node) {
     var disabled = (discrete == '1');
 
     form.find('input[name=portion_quantity]').prop('disabled', disabled);
+	form.find('input[name=weight]').prop('disabled', !disabled);
 	var multiple_widget = form.find('input[name=multiple]');
 
 	if (disabled) {
@@ -680,6 +692,7 @@ function enforceMeasureDiscrete(node) {
 			multiple_widget.val('1.000');
 	}
 	else {
+		form.find('input[name=weight]').val('0.000');
 		form.find('input[name=variable]').bootstrapToggle('enable');
 		multiple_widget.removeAttr('data-enforce-minimum').removeAttr('data-enforce-integer');
 	}
@@ -2409,6 +2422,11 @@ $(document).ready(function() {
         $('.collapse[data-triggerable=' + name + ']').collapse($(this).prop('checked') ? 'show' : 'hide');
     });
 
+	$('body').on('change', '.row-untoggler', function() {
+		var disabled = $(this).prop('checked');
+		$(this).closest('.row').find('[data-untoggled]').prop('disabled', disabled);
+    });
+
     /*
         Gestione fornitori
     */
@@ -2561,7 +2579,7 @@ $(document).ready(function() {
         var name = box.val();
         box.prop('checked', !box.prop('checked'));
         var show = box.prop('checked');
-        $(this).closest('.btn-group').siblings('.order-summary').first().find('.order-cell-' + name).toggleClass('hidden', !show);
+        $(this).closest('.btn-group').closest('form').find('.order-summary').first().find('.order-cell-' + name).toggleClass('hidden', !show);
     });
 
     $('body').on('keyup', '.order-summary input', function() {

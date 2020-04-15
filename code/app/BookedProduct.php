@@ -271,4 +271,24 @@ class BookedProduct extends Model
     {
         return $this->normalizeQuantity('delivered');
     }
+
+    public function quantityWeight()
+    {
+        if ($this->product->measure->discrete) {
+            return $this->product->weight * $this->quantity;
+        }
+        else {
+            return $this->true_quantity;
+        }
+    }
+
+    public function deliveredWeight()
+    {
+        if ($this->product->measure->discrete) {
+            return $this->product->weight * $this->delivered;
+        }
+        else {
+            return $this->true_delivered;
+        }
+    }
 }

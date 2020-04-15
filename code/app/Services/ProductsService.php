@@ -114,6 +114,7 @@ class ProductsService extends BaseService
 
             $product->active = (isset($request['active']) && $request['active'] !== false);
             $this->setIfSet($product, $request, 'supplier_code');
+            $this->transformAndSetIfSet($product, $request, 'weight', 'enforceNumber');
             $this->transformAndSetIfSet($product, $request, 'package_size', 'enforceNumber');
             $this->transformAndSetIfSet($product, $request, 'multiple', 'enforceNumber');
             $this->transformAndSetIfSet($product, $request, 'min_quantity', 'enforceNumber');

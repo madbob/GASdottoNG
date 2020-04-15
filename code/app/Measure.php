@@ -22,4 +22,19 @@ class Measure extends Model
     {
         return $this->hasMany('App\Product')->orderBy('name', 'asc');
     }
+
+    public function normalizeWeight($weight)
+    {
+        if ($this->discrete) {
+            return $weight;
+        }
+        else {
+            if ($this->weight == 0) {
+                return $weight;
+            }
+            else {
+                return $weight * $this->weight;
+            }
+        }
+    }
 }

@@ -321,6 +321,8 @@ class Order extends Model
         $total_price = 0;
         $total_price_delivered = 0;
         $total_transport = 0;
+        $total_weight = 0;
+        $total_weight_delivered = 0;
 
         foreach ($products as $product) {
             $q = BookedProduct::with('variants')->with('booking')->where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order, $shipping_place) {
@@ -356,6 +358,8 @@ class Order extends Model
             $price = 0;
             $price_delivered = 0;
             $transport_delivered = 0;
+            $weight = 0;
+            $weight_delivered = 0;
             $variants_quantity = 0;
 
             foreach ($booked as $b) {
@@ -386,7 +390,7 @@ class Order extends Model
                                 'quantity' => 0,
                                 'delivered' => 0,
                                 'price' => 0,
-                                'unit_price' => $v->unitPrice()
+                                'unit_price' => $v->unitPrice(),
                             ];
                         }
 
@@ -405,18 +409,23 @@ class Order extends Model
                 tra la quantità salvata nel prodotto ordinato di riferimento e,
                 appunto, le varianti collegate
             */
-            if ($variants_quantity != 0)
+            if ($variants_quantity != 0) {
                 $quantity = $variants_quantity;
+            }
 
             if ($product->portion_quantity > 0) {
                 $quantity_pieces = $quantity;
                 $delivered_pieces = $delivered;
                 $quantity = $quantity * $product->portion_quantity;
                 $delivered = $delivered;
+                $weight = $quantity;
+                $weight_delivered = $delivered;
             }
             else {
                 $quantity_pieces = $quantity;
                 $delivered_pieces = $delivered;
+                $weight = $quantity * $product->weight;
+                $weight_delivered = $delivered * $product->weight;
             }
 
             $summary->products[$product->id]['product_obj'] = $product;
@@ -428,10 +437,14 @@ class Order extends Model
             $summary->products[$product->id]['delivered_pieces'] = $delivered_pieces;
             $summary->products[$product->id]['price_delivered'] = printablePrice($price_delivered);
             $summary->products[$product->id]['transport_delivered'] = printablePrice($transport_delivered);
+            $summary->products[$product->id]['weight'] = $weight;
+            $summary->products[$product->id]['weight_delivered'] = $weight_delivered;
 
             $total_price += $price;
             $total_price_delivered += $price_delivered;
             $total_transport += $transport;
+            $total_weight += $product->measure->normalizeWeight($weight);
+            $total_weight_delivered += $product->measure->normalizeWeight($weight_delivered);
 
             $summary->products[$product->id]['notes'] = false;
             if ($product->package_size != 0 && $quantity != 0) {
@@ -459,6 +472,9 @@ class Order extends Model
         foreach ($order->bookings()->where('status', 'shipped')->get() as $shipped_booking)
             $total_transport_delivered += $shipped_booking->getValue('transport', true);
         $summary->transport_delivered = $total_transport_delivered;
+
+        $summary->weight = $total_weight;
+        $summary->weight_delivered = $total_weight_delivered;
 
         $summary->notes = [];
         foreach ($order->bookings()->where('notes', '!=', '')->get() as $annotated_booking) {
@@ -944,7 +960,12 @@ class Order extends Model
             'quantity' => (object) [
                 'label' => _i('Quantità Prenotata'),
                 'help' => _i('Quantità complessivamente prenotata del prodotto'),
-                'width' => 9
+                'width' => 8
+            ],
+            'weight' => (object) [
+                'label' => _i('Peso Prenotato'),
+                'help' => _i('Peso complessivamente prenotato del prodotto'),
+                'width' => 8
             ],
             'total_price' => (object) [
                 'label' => _i('Totale Prezzo'),
@@ -959,6 +980,11 @@ class Order extends Model
             'quantity_delivered' => (object) [
                 'label' => _i('Quantità Consegnata'),
                 'help' => _i('Quantità complessivamente consegnata del prodotto'),
+                'width' => 8
+            ],
+            'weight_delivered' => (object) [
+                'label' => _i('Peso Consegnato'),
+                'help' => _i('Peso complessivamente consegnato del prodotto'),
                 'width' => 8
             ],
             'price_delivered' => (object) [
