@@ -583,8 +583,9 @@ class Supplier extends Model
                 $product->measure_id = $measure->id;
             }
 
-            $name = (float) $json_product->vatRate ?? null;
+            $name = $json_product->orderInfo->vatRate ?? null;
             if (!is_null($name)) {
+                $name = (float) $name;
                 $vat_rate = VatRate::where('percentage', $name)->first();
                 if(is_null($vat_rate)) {
                     $vat_rate = new VatRate();
