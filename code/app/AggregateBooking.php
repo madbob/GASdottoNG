@@ -121,8 +121,15 @@ class AggregateBooking extends Model
     {
         if ($this->user->gas->hasFeature('extra_invoicing')) {
             $ids = [];
-            foreach ($this->bookings as $booking)
-                $ids[] = $booking->id;
+            foreach ($this->bookings as $booking) {
+                if ($booking->exists) {
+                    $ids[] = $booking->id;
+                }
+            }
+
+            if (empty($ids)) {
+                return;
+            }
 
             if (empty($ids)) {
                 Log::error('Tentativo di creare fattura non assegnata a nessuna prenotazione');
