@@ -284,6 +284,11 @@ class User extends Authenticatable
         return $targets;
     }
 
+    /*
+        Questa funzione ritorna la cifra dovuta dall'utente per le prenotazioni
+        fatte dall'utente e non ancora pagate, ma senza considerare anche gli
+        eventuali amici
+    */
     public function getPendingBalanceAttribute()
     {
         $bookings = $this->bookings()->where('status', 'pending')->whereHas('order', function($query) {
@@ -293,7 +298,7 @@ class User extends Authenticatable
         $value = 0;
 
         foreach($bookings as $b) {
-            $value += $b->getValue('effective', true);
+            $value += $b->getValue('effective', false);
         }
 
         return $value;
