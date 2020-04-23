@@ -214,8 +214,8 @@ class BookedProduct extends Model
             'products' => [
                 $faked_index => [
                     'product_obj' => $this->product,
-                    'quantity' => $this->quantity,
-                    'quantity_pieces' => $this->product->portion_quantity > 0 ? $this->quantity * $this->product->portion_quantity : $this->quantity,
+                    'quantity' => $this->product->portion_quantity > 0 ? $this->quantity * $this->product->portion_quantity : $this->quantity,
+                    'quantity_pieces' => $this->quantity,
                     'price' => $this->quantityValue(),
                     'transport' => $this->dynamicTransportCost(),
                     'delivered' => $this->delivered,
