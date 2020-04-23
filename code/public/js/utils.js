@@ -68,7 +68,16 @@ function applyPercentage(value, percentage, operator) {
     }
     else if (percentage.indexOf(':') !== -1) {
         var order_values = percentage.split(':');
-        pvalue = (value * order_values[1]) / order_values[0];
+
+        var order_total = parseFloatC(order_values[0]);
+        var order_transport = parseFloatC(order_values[1]);
+
+        if (order_total == 0) {
+            pvalue = order_transport;
+        }
+        else {
+            pvalue = (value * order_transport) / order_total;
+        }
     }
     else {
         pvalue = parseFloatC(percentage);

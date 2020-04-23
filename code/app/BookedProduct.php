@@ -236,13 +236,17 @@ class BookedProduct extends Model
                     'quantity' => 0,
                     'delivered' => 0,
                     'price' => 0,
-                    'unit_price' => $v->unitPrice()
+                    'transport' => 0,
+                    'unit_price' => $v->unitPrice(),
                 ];
             }
 
             $summary->by_variant[$faked_index][$name]['quantity'] += $v->quantity;
             $summary->by_variant[$faked_index][$name]['delivered'] += $v->delivered;
             $summary->by_variant[$faked_index][$name]['price'] += $v->quantityValue();
+
+            $relative_transport = ($v->quantityValue() * $relative_transport = $summary->products[$faked_index]['transport']) / $summary->products[$faked_index]['price'];
+            $summary->by_variant[$faked_index][$name]['transport'] += $relative_transport;
 
             $variants_quantity += $v->quantity;
         }

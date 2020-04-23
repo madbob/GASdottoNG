@@ -896,8 +896,14 @@ class Order extends Model
                         return printablePrice($summary->products[$product->id]['transport_delivered'], ',');
                 },
                 'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
-                    if ($alternate == false)
-                        return printablePrice($summary->products[$product->id]['transport'], ',');
+                    if ($alternate == false) {
+                        if (isset($variant['transport'])) {
+                            return printablePrice($variant['transport']);
+                        }
+                        else {
+                            return printablePrice($summary->products[$product->id]['transport'], ',');
+                        }
+                    }
                     else
                         return 0;
                 }
