@@ -8,6 +8,16 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
 ?>
 
 <div class="wizard_page">
+    @if(!empty($errors))
+        <div class="alert alert-danger">
+            <ul>
+                @foreach($errors as $error)
+                    <li>{!! $error !!}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form class="form-horizontal" method="POST" action="{{ url('import/csv?type=products&step=run') }}" data-toggle="validator">
         <input type="hidden" name="supplier_id" value="{{ $supplier->id }}">
 

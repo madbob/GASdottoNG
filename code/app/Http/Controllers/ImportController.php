@@ -227,6 +227,10 @@ class ImportController extends Controller
 
                     $reader = CsvReader::open($path, $target_separator);
                     while (($line = $reader->readLine()) !== false) {
+                        if (empty($line) || (count($line) == 1 && empty($line[0]))) {
+                            continue;
+                        }
+
                         try {
                             $name = $line[$name_index];
 
@@ -318,7 +322,7 @@ class ImportController extends Controller
                             $products[] = $p;
                         }
                         catch (\Exception $e) {
-                            $products[] = implode($target_separator, $line).'<br/>'.$e->getMessage();
+                            $errors[] = join($target_separator, $line).'<br/>'.$e->getMessage();
                         }
                     }
 
