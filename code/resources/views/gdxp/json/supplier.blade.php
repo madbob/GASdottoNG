@@ -77,7 +77,7 @@ foreach($obj->products as $product) {
         'orderInfo' => (object) [
             'packageQty' => (integer) $product->package_size > 1 ? $product->package_size : 1,
             'maxQty' => (float) $product->max_quantity,
-            'minQty' => (float) $product->min_quantity,
+            'minQty' => (float) $product->min_quantity > 0 ? $product->min_quantity : 1,
             'mulQty' => (float) $product->multiple,
             'availableQty' => (float) $product->max_available,
             'umPrice' => (float) $product->price,
