@@ -49,18 +49,7 @@
         </div>
         <div class="col-md-6 col-lg-4">
             @if(in_array($order->status, ['suspended', 'open', 'closed']))
-                @include('commons.percentagefield', [
-                    'obj' => $order,
-                    'name' => 'discount',
-                    'label' => _i('Sconto Globale'),
-                    'help_text' => $order->products()->where('discount', '!=', 0)->count() ? _i('Alcuni prodotti in questo ordine hanno un proprio sconto, che verrà sommato allo sconto globale.') : ''
-                ])
-                @include('commons.percentagefield', [
-                    'obj' => $order,
-                    'name' => 'transport',
-                    'label' => _i('Spese Trasporto'),
-                    'help_text' => $order->products()->where('transport', '!=', 0)->count() ? _i('Alcuni prodotti in questo ordine hanno un proprio costo di trasporto, che verrà sommato al costo di trasporto globale.') : ''
-                ])
+                @include('commons.modifications', ['obj' => $order])
             @else
                 @include('commons.staticpercentagefield', ['obj' => $order, 'name' => 'discount', 'label' => _i('Sconto Globale')])
                 @include('commons.staticpercentagefield', ['obj' => $order, 'name' => 'transport', 'label' => _i('Spese Trasporto')])

@@ -119,7 +119,7 @@ class OrdersController extends Controller
         }
 
         $o = new Order();
-        $o->supplier_id = $request->input('supplier_id');
+        $o->supplier_id = $supplier->id;
 
         $now = date('Y-m-d');
         $o->comment = $request->input('comment');
@@ -136,6 +136,13 @@ class OrdersController extends Controller
         $o->save();
 
         $o->products()->sync($supplier->products()->where('active', '=', true)->get());
+
+        foreach($supplier->modifiers as $mod) {
+            $new_mod = $mod->replicate();
+            $new_mod->target_id = $o->id;
+            $new_mod->target_type = get_class($o);
+            $new_mod->save();
+        }
 
         $this->resetOlderDates($o);
 

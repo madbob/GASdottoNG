@@ -6,14 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Events\SluggableCreating;
-use App\GASModel;
-use App\SluggableID;
-use App\Booking;
-use App\BookedProduct;
 
 class Product extends Model
 {
-    use SoftDeletes, GASModel, SluggableID;
+    use SoftDeletes, ModifiableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
 

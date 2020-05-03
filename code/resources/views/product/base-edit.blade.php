@@ -1,7 +1,5 @@
 @include('commons.textfield', ['obj' => $product, 'name' => 'name', 'label' => _i('Nome'), 'mandatory' => true])
 @include('commons.decimalfield', ['obj' => $product, 'name' => 'price', 'label' => _i('Prezzo Unitario'), 'is_price' => true, 'mandatory' => true])
-@include('commons.decimalfield', ['obj' => $product, 'name' => 'transport', 'label' => _i('Prezzo Trasporto'), 'is_price' => true])
-@include('commons.percentagefield', ['obj' => $product, 'name' => 'discount', 'label' => _i('Sconto')])
 
 @include('commons.selectobjfield', [
     'obj' => $product,

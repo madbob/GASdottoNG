@@ -57,7 +57,11 @@ if (isset($extra_class)) {
     @if(is_null($contents) || $contents->isEmpty())
         <div class="row">
             @foreach($columns as $column)
-                @if($column['type'] != 'custom')
+                @if($column['type'] == 'custom' && $column['field'] == 'static')
+                    <div class="col-md-{{ $column['width'] }} col-xs-{{ $column['width'] }} form-control-static">
+                        {!! vsprintf($column['contents'], []) !!}
+                    </div>
+                @else
                     <?php
 
                         $attributes = [
@@ -90,32 +94,40 @@ if (isset($extra_class)) {
             <div class="row">
                 @foreach($columns as $column)
                     @if($column['type'] == 'custom')
-                        <?php
+                        @if($column['field'] == 'static')
+                            <div class="col-md-{{ $column['width'] }} col-xs-{{ $column['width'] }} form-control-static">
+                                {!! vsprintf($column['contents'], []) !!}
+                            </div>
+                        @else
+                            <?php
 
-                        /*
-                            Il tipo "custom" permette di generare un contenuto
-                            arbitrario a partire da un frammento di HTML.
-                            In "contents" si aspetta una stringa formattabile in
-                            stile sprintf, con gli opportuni marcatori piazzati
-                            in giro; in "fields" si trova un elenco, separato da
-                            virgole, dei campi dell'oggetto che vogliono essere
-                            messi nella stringa di riferimento.
+                            /*
+                                Il tipo "custom" permette di generare un contenuto
+                                arbitrario a partire da un frammento di HTML.
+                                In "contents" si aspetta una stringa formattabile in
+                                stile sprintf, con gli opportuni marcatori piazzati
+                                in giro; in "fields" si trova un elenco, separato da
+                                virgole, dei campi dell'oggetto che vogliono essere
+                                messi nella stringa di riferimento.
 
-                            E.g.
-                            $fields = 'name,id'
-                            $contents = 'oggetto %s ha id = %s'
-                        */
+                                E.g.
+                                $fields = 'name,id'
+                                $contents = 'oggetto %s ha id = %s'
+                            */
 
-                        $names = explode(',', $column['field']);
-                        $values = [];
-                        foreach($names as $n)
-                            $values[] = $content->$n;
+                            $names = explode(',', $column['field']);
+                            $values = [];
+                            foreach($names as $n)
+                                $values[] = $content->$n;
 
-                        ?>
+                                echo "ciao";
 
-                        <div class="col-md-{{ $column['width'] }} col-xs-{{ $column['width'] }} customized-cell">
-                            {!! vsprintf($column['contents'], $values) !!}
-                        </div>
+                            ?>
+
+                            <div class="col-md-{{ $column['width'] }} col-xs-{{ $column['width'] }} customized-cell form-control-static">
+                                {!! vsprintf($column['contents'], $values) !!}
+                            </div>
+                        @endif
                     @else
                         <?php
 

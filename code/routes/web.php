@@ -156,5 +156,7 @@ Route::middleware(['auth'])->group(function() {
     Route::resource('notifications', 'NotificationsController');
     Route::resource('movements', 'MovementsController');
     Route::resource('movtypes', 'MovementTypesController');
+    Route::resource('modtypes', 'ModifierTypesController');
+    Route::resource('modifiers', 'ModifiersController');
     Route::resource('stats', 'StatisticsController');
 });

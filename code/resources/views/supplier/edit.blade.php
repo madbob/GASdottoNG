@@ -16,6 +16,18 @@
             <div class="row">
                 <div class="col-md-6">
                     @include('supplier.base-edit', ['supplier' => $supplier])
+
+                    <hr>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-{{ $labelsize }} col-sm-{{ $fieldsize }} help-block">
+                            {{ _i('Questi valori saranno usati come default per tutti i nuovi ordini di questo fornitore, ma sarà comunque possibile modificarli per ciascun ordine.') }}
+                        </div>
+                    </div>
+                    @include('commons.modifications', ['obj' => $supplier])
+
+                    <hr>
+
                     @include('commons.contactswidget', ['obj' => $supplier])
                 </div>
                 <div class="col-md-6">

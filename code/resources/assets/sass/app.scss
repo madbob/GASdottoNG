@@ -406,11 +406,21 @@ table {
     }
 }
 
+.btn {
+    &.btn-wide {
+        width: 100%;
+    }
+}
+
 .btn-group {
     label.btn.active:after {
         content: '\e067';
         font-size: 10px;
         font-family: 'Glyphicons Halflings';
+    }
+
+    &.disabled {
+        pointer-events: none;
     }
 }
 

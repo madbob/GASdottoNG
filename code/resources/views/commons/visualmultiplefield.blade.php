@@ -5,6 +5,10 @@ if (isset($extra_wrap_class)) {
     $wrap_class .= ' ' . $extra_wrap_class;
 }
 
+if (!isset($disabled)) {
+    $disabled = false;
+}
+
 ?>
 
 <div class="{{ $wrap_class }}">
@@ -13,9 +17,9 @@ if (isset($extra_wrap_class)) {
     @endif
 
     <div class="col-sm-{{ $fieldsize }}">
-        <div class="btn-group" data-toggle="buttons">
+        <div class="btn-group {{ $disabled ? 'disabled' : '' }}" data-toggle="buttons">
             @foreach($values as $value => $info)
-                <label class="btn btn-default {{ isset($info->checked) && $info->checked ? 'active' : '' }}">
+                <label class="btn btn-default {{ isset($info->checked) && $info->checked ? 'active' : '' }} {{ $disabled ? 'disabled' : '' }}">
                     <input type="{{ $selection_type }}" name="{{ $name }}{{ $selection_type == 'checkbox' ? '[]' : '' }}" value="{{ $value }}" autocomplete="off" {{ isset($info->checked) && $info->checked ? 'checked' : '' }}>
                     @if(isset($info->name))
                         {{ $info->name }}

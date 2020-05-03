@@ -18,7 +18,7 @@ use App\SluggableID;
 
 class Delivery extends Model
 {
-    use GASModel, SluggableID;
+    use ModifiableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
 

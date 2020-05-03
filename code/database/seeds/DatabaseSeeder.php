@@ -8,6 +8,7 @@ use App\Notification;
 use App\User;
 use App\Role;
 use App\VatRate;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
@@ -130,5 +131,6 @@ class DatabaseSeeder extends Seeder
         $notification->users()->attach($admin->id, ['done' => false]);
 
         $this->call(MovementTypesSeeder::class);
+        $this->call(ModifierTypesSeeder::class);
     }
 }

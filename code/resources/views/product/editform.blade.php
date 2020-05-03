@@ -10,6 +10,7 @@ if (!isset($duplicate))
         @include('product.base-edit', ['product' => $product])
         @include('commons.textfield', ['obj' => $product, 'name' => 'supplier_code', 'label' => _i('Codice Fornitore')])
         @include('commons.boolfield', ['obj' => $product, 'name' => 'active', 'label' => _i('Ordinabile')])
+        @include('commons.modifications', ['obj' => $product])
     </div>
     <div class="col-md-6">
         @include('commons.imagefield', ['obj' => $product, 'name' => 'picture', 'label' => _i('Foto'), 'valuefrom' => 'picture_url'])

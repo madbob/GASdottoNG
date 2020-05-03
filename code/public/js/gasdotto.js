@@ -1926,6 +1926,7 @@ $(document).ready(function() {
             $.ajax({
                 url: $(this).attr('data-delete-url'),
                 method: 'DELETE',
+				dataType: 'json',
                 success: function(data) {
                     miscInnerCallbacks(form, data);
                 }
@@ -2539,6 +2540,29 @@ $(document).ready(function() {
         var url = $(this).attr('data-export-url') + '?' + $.param(data);
         window.open(url, '_blank');
     });
+
+	$('body').on('change', '.modifier-modal input:radio', function() {
+		/*
+			L'ordine degli elementi usati per costruire l'indice delle stringhe
+			deve combaciare con quello in modifier/edit.blade.php
+		*/
+		var container = $(this).closest('.modifier-modal');
+		var arithmetic = container.find('input:hidden[name=modifier_type]').val();
+		var value = container.find('input:radio[name=value]:checked').val();
+		var applies_target = container.find('input:radio[name=applies_target]:checked').val();
+		var applies_type = container.find('input:radio[name=applies_type]:checked').val();
+		var distribution_target = container.find('input:radio[name=distribution_target]:checked').val();
+		var key = applies_target + ',' + applies_type + ',' + arithmetic + ',' + distribution_target + ',' + value;
+		var labels = modifiers_strings[key];
+		var table = container.find('.many-rows');
+
+		table.find('.row').each(function() {
+			$(this).find('.form-control-static').eq(0).text(labels[0]);
+			$(this).find('.input-group-addon').eq(0).text(labels[1]);
+			$(this).find('.form-control-static').eq(1).text(labels[2]);
+			$(this).find('.input-group-addon').eq(1).text(labels[3]);
+		});
+	});
 
     /*
         Gestione utenti

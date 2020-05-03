@@ -16,7 +16,7 @@ use App\Events\SupplierDeleting;
 
 class Supplier extends Model
 {
-    use Notifiable, SoftDeletes, AttachableTrait, ContactableTrait, CreditableTrait, PayableTrait, ExportableTrait, SuspendableTrait, GASModel, SluggableID;
+    use Notifiable, SoftDeletes, AttachableTrait, ContactableTrait, CreditableTrait, PayableTrait, ExportableTrait, SuspendableTrait, ModifiableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
     protected $dates = ['deleted_at'];

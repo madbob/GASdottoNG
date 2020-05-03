@@ -556,6 +556,41 @@
                 </div>
             </div>
 
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab">
+                    <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#list-configs" href="#modifier-config">
+                        {{ _i('Modificatori') }}
+                    </a>
+                </div>
+                <div id="modifier-config" class="panel-collapse collapse" role="tabpanel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                @include('commons.addingbutton', [
+                                    'template' => 'modifiertype.base-edit',
+                                    'typename' => 'modtype',
+                                    'typename_readable' => _i('Modificatore'),
+                                    'targeturl' => 'modtypes'
+                                ])
+                            </div>
+                        </div>
+
+                        <div class="clearfix"></div>
+                        <br/>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                @include('commons.loadablelist', [
+                                    'identifier' => 'modtype-list',
+                                    'items' => App\ModifierType::orderBy('name', 'asc')->get(),
+                                ])
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             @if(env('GASDOTTO_NET', false))
                 <?php $logs = App\InnerLog::where('type', 'mail')->orderBy('created_at', 'desc')->take(50)->get() ?>
                 <div class="panel panel-default">

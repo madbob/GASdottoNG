@@ -13,13 +13,11 @@ use Auth;
 use URL;
 use Log;
 
-use App\GASModel;
-use App\AggregateBooking;
 use App\Events\AttachableToGas;
 
 class Aggregate extends Model implements Feedable
 {
-    use GASModel;
+    use ModifiableTrait, GASModel;
 
     protected $dispatchesEvents = [
         'created' => AttachableToGas::class
@@ -491,5 +489,12 @@ class Aggregate extends Model implements Feedable
     public static function getFeedItems()
     {
         return self::getByStatus('open');
+    }
+
+    /******************************************************** ModifiableTrait */
+
+    public function sameModificationTypes()
+    {
+        return $this->orders->first();
     }
 }

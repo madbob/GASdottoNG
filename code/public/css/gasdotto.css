@@ -328,10 +328,16 @@ table .table-sorting-header {
 .glyphicon-king19:before {
   content: "\e211"; }
 
+.btn.btn-wide {
+  width: 100%; }
+
 .btn-group label.btn.active:after {
   content: '\e067';
   font-size: 10px;
   font-family: 'Glyphicons Halflings'; }
+
+.btn-group.disabled {
+  pointer-events: none; }
 
 .img-preview img {
   max-height: 240px; }

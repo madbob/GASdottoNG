@@ -141,6 +141,7 @@ $panel_rand_wrap = rand();
                                 @include('commons.textfield', ['obj' => $aggregate, 'name' => 'comment', 'label' => _i('Commento')])
                             </div>
                             <div class="col-md-4">
+                                @include('commons.modifications', ['obj' => $aggregate])
                             </div>
                             <div class="col-md-4">
                                 <div class="list-group">

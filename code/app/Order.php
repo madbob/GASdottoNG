@@ -14,18 +14,11 @@ use URL;
 use Log;
 
 use App\Events\SluggableCreating;
-
-use App\GASModel;
-use App\SluggableID;
-use App\BookedProduct;
-use App\ExportableTrait;
-use App\PayableTrait;
-use App\CreditableTrait;
 use App\Notifications\NewOrderNotification;
 
 class Order extends Model
 {
-    use AttachableTrait, ExportableTrait, GASModel, SluggableID, PayableTrait, CreditableTrait;
+    use AttachableTrait, ExportableTrait, ModifiableTrait, PayableTrait, CreditableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
 
@@ -1059,5 +1052,12 @@ class Order extends Model
         $order->shipping = $json->deliveryDate ?? null;
         $order->transport = $json->shippingCost ?? 0;
         return $order;
+    }
+
+    /******************************************************** ModifiableTrait */
+
+    public function inheritModificationTypes()
+    {
+        return $this->supplier;
     }
 }

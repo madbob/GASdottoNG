@@ -13,7 +13,7 @@
     In fase di editing dei tipi di movimento contabile devo interagire
     contemporaneamente con bilanci e destinazioni dei movimenti contabili. Per
     far quadrare i conti, le classi visualizzate sono spesso quelle che usano
-    PayableTrait anche se le impropriamente le uso come se fossero come
+    PayableTrait anche se impropriamente le uso come se fossero come
     CreditableTrait. Questo è il motivo percui Booking o Order implementano
     funzioni di CreditableTrait pur non usando quel tratto
 */
