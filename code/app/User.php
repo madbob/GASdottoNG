@@ -17,14 +17,6 @@ use URL;
 
 use App\Events\SluggableCreating;
 
-use App\GASModel;
-use App\SluggableID;
-use App\ContactableTrait;
-use App\SuspendableTrait;
-use App\PayableTrait;
-use App\Role;
-use App\Order;
-
 class User extends Authenticatable
 {
     use Notifiable, Authorizable, CanResetPassword, SoftDeletes, ContactableTrait, CreditableTrait, PayableTrait, SuspendableTrait, GASModel, SluggableID;
@@ -142,6 +134,25 @@ class User extends Authenticatable
     public function scopeTopLevel($query)
     {
         return $query->where('parent_id', null);
+    }
+
+    public function getPaymentMethodAttribute()
+    {
+        return $this->innerCache('payment_method', function($obj) {
+            $ret = MovementType::paymentMethodByType($obj->payment_method_id);
+
+            if (!$ret) {
+                $ret = (object) [
+                    'name' => _i('Non Specificato'),
+                    'valid_config' => function($target) {
+                        return true;
+                    }
+                ];
+            }
+
+            $ret->id = $this->payment_method_id;
+            return $ret;
+        });
     }
 
     public function printableName()
@@ -370,6 +381,9 @@ class User extends Authenticatable
             'card_number' => (object) [
                 'name' => _i('Numero Tessera'),
             ],
+            'payment_method' => (object) [
+                'name' => _i('Modalità Pagamento'),
+            ],
         ];
 
         if (currentAbsoluteGas()->hasFeature('shipping_places')) {
@@ -409,6 +423,9 @@ class User extends Authenticatable
                             $ret[] = $sp->name;
                         else
                             $ret[] = _i('Nessuno');
+                        break;
+                    case 'payment_method':
+                        $ret[] = $this->payment_method->name;
                         break;
                     default:
                         $ret[] = accessAttr($this, $f);

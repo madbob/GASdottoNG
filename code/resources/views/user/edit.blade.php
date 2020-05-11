@@ -37,6 +37,23 @@
 
             @include('commons.statusfield', ['target' => $user])
 
+            <div class="form-group">
+                <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Modalità Pagamento') }}</label>
+
+                <div class="col-sm-{{ $fieldsize }}">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default {{ $user->payment_method->id == 'none' ? 'active' : '' }}">
+                            <input type="radio" name="payment_method_id" value="none" {{ $user->payment_method->id == 'none' ? 'checked' : '' }}> {{ _i('Non Specificato') }}
+                        </label>
+                        @foreach(App\MovementType::payments() as $payment_identifier => $payment_meta)
+                            <label class="btn btn-default {{ $user->payment_method->id == $payment_identifier ? 'active' : '' }}">
+                                <input type="radio" name="payment_method_id" value="{{ $payment_identifier }}" {{ $user->payment_method->id == $payment_identifier ? 'checked' : '' }}> {{ $payment_meta->name }}
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
             @if($user->gas->hasFeature('rid'))
                 <div class="form-group">
                     <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Configurazione SEPA') }}</label>

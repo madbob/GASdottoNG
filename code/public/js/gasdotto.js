@@ -1784,13 +1784,13 @@ $(document).ready(function() {
         var target = filter.attr('data-table-target');
         var attribute = $(this).attr('name');
         var value = $(this).val();
-        var table = $(target + ' table');
+        var table = $(target);
 
         if (value == 'all') {
             table.find('tr').removeClass('hidden');
         }
         else {
-            table.find('tr[data-filtered-' + attribute + ']').each(function() {
+            table.find('tbody tr[data-filtered-' + attribute + ']').each(function() {
                 var attr = $(this).attr('data-filtered-' + attribute);
                 $(this).toggleClass('hidden', (attr != value));
             });

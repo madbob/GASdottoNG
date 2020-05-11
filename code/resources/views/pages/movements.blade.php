@@ -30,7 +30,7 @@
 
                             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#creditsStatus">{{ _i('Stato Crediti') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
                             <div class="modal fade dynamic-contents" id="creditsStatus" tabindex="-1" data-contents-url="{{ url('movements/showcredits') }}">
-                                <div class="modal-dialog" role="document">
+                                <div class="modal-dialog modal-lg" role="document">
                                     <div class="modal-content">
                                     </div>
                                 </div>
