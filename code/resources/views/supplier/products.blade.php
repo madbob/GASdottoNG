@@ -22,6 +22,7 @@
 
             <button class="btn btn-default export-custom-list" data-export-url="{{ url('suppliers/catalogue/' . $supplier->id . '/pdf') }}">{{ _i('Listino PDF') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></button>
             <button class="btn btn-default export-custom-list" data-export-url="{{ url('suppliers/catalogue/' . $supplier->id . '/csv') }}">{{ _i('Listino CSV') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></button>
+            <a class="btn btn-default" href="{{ $supplier->exportableURL() }}">{{ _i('Listino GDXP') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
         </div>
     </div>
 
