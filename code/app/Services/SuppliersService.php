@@ -12,6 +12,7 @@ use PDF;
 
 use App\User;
 use App\Supplier;
+use App\Product;
 use App\Role;
 
 class SuppliersService extends BaseService
@@ -146,46 +147,43 @@ class SuppliersService extends BaseService
     public function catalogue($id, $format, array $request)
     {
         $this->ensureAuth();
+
+        /*
+            Questi sono i dati di default, da usare quando si fa il download del
+            listino come allegato al fornitore (e dunque non si passa per il
+            pannello di selezione dei campi).
+            Cfr. Supplier::defaultAttachments()
+        */
+        $format = $format ?: $request['format'];
+        $fields = $request['fields'] ?? ['name', 'measure', 'price', 'transport'];
+
         $supplier = $this->show($id);
         $filename = sanitizeFilename(_i('Listino %s.%s', [$supplier->name, $format]));
 
-        if (isset($request['printable']))
+        if (isset($request['printable'])) {
             $products = $supplier->products()->whereIn('id', $request['printable'])->get();
-        else
+        }
+        else {
             $products = $supplier->products()->where('active', true)->get();
+        }
+
+        $columns = Product::formattableColumns();
+        $headers = [];
+        foreach($fields as $field) {
+            $headers[] = $columns[$field]->name;
+        }
+
+        $data = [];
+        foreach($products as $product) {
+            $rows = $product->formattedFields($fields);
+            $data = array_merge($data, $rows);
+        }
 
         if ($format == 'pdf') {
-            $pdf = PDF::loadView('documents.cataloguepdf', ['supplier' => $supplier, 'products' => $products]);
+            $pdf = PDF::loadView('documents.cataloguepdf', ['supplier' => $supplier, 'headers' => $headers, 'data' => $data]);
             return $pdf->download($filename);
         }
         elseif ($format == 'csv') {
-            $currency = currentAbsoluteGas()->currency;
-            $headers = [_i('Nome'), _i('Unità di Misura'), _i('Prezzo Unitario (%s)', $currency), _i('Trasporto (%s)', $currency)];
-
-            $data = [];
-
-            foreach($products as $product) {
-                if ($product->variants->isEmpty()) {
-                    $row = [];
-                    $row[] = $product->name;
-                    $row[] = $product->measure->printableName();
-                    $row[] = printablePrice($product->price, ',');
-                    $row[] = printablePrice($product->transport, ',');
-                    $data[] = $row;
-                }
-                else {
-                    $combinations = $product->variantsCombinations();
-                    foreach($combinations as $combination) {
-                        $row = [];
-                        $row[] = sprintf('%s - %s', $product->name, $combination->name);
-                        $row[] = $product->measure->printableName();
-                        $row[] = printablePrice($combination->price, ',');
-                        $row[] = printablePrice($product->transport, ',');
-                        $data[] = $row;
-                    }
-                }
-            }
-
             return output_csv($filename, $headers, $data, null);
         }
     }

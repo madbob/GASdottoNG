@@ -78,6 +78,28 @@ class Product extends Model
         }
     }
 
+    public function getRelativeWeightAttribute()
+    {
+        $measure = $this->measure;
+
+        if ($measure) {
+            if ($measure->discrete) {
+                return $this->weight;
+            }
+            else {
+                if ($measure->weight == 0) {
+                    return $this->weight;
+                }
+                else {
+                    return $measure->weight;
+                }
+            }
+        }
+        else {
+            return $this->weight;
+        }
+    }
+
     public function getCategoryNameAttribute()
     {
         $cat = $this->category;
@@ -257,5 +279,94 @@ class Product extends Model
         }
 
         return $combinations;
+    }
+
+    public static function formattableColumns()
+    {
+        $ret = [
+            'name' => (object) [
+                'name' => _i('Nome'),
+                'checked' => true,
+            ],
+            'code' => (object) [
+                'name' => _i('Codice'),
+            ],
+            'measure' => (object) [
+                'name' => _i('Unità di Misura'),
+            ],
+            'category' => (object) [
+                'name' => _i('Categoria'),
+            ],
+            'price' => (object) [
+                'name' => _i('Prezzo Unitario'),
+                'checked' => true,
+            ],
+            'transport' => (object) [
+                'name' => _i('Prezzo Trasporto'),
+            ],
+            'active' => (object) [
+                'name' => _i('Ordinabile'),
+            ],
+            'portion_quantity' => (object) [
+                'name' => _i('Pezzatura'),
+            ],
+            'variable' => (object) [
+                'name' => _i('Variabile'),
+            ],
+            'package_size' => (object) [
+                'name' => _i('Confezione'),
+            ],
+            'weight' => (object) [
+                'name' => _i('Peso'),
+            ],
+            'multiple' => (object) [
+                'name' => _i('Multiplo'),
+            ],
+            'min_quantity' => (object) [
+                'name' => _i('Minimo'),
+            ],
+            'max_quantity' => (object) [
+                'name' => _i('Massimo Consigliato'),
+            ],
+            'max_available' => (object) [
+                'name' => _i('Disponibile'),
+            ],
+        ];
+
+        return $ret;
+    }
+
+    public function formattedFields($fields)
+    {
+        $ret = [];
+
+        foreach($fields as $f) {
+            try {
+                switch($f) {
+                    case 'measure':
+                        $ret[] = $this->measure->name;
+                        break;
+                    case 'category':
+                        $ret[] = $this->category_name;
+                        break;
+                    case 'active':
+                    case 'variable':
+                        $ret[] = accessAttr($this, $f) ? _i('Si') : _i('No');
+                        break;
+                    case 'weight':
+                        $ret[] = $this->relative_weight;
+                        break;
+                    default:
+                        $ret[] = accessAttr($this, $f);
+                        break;
+                }
+            }
+            catch(\Exception $e) {
+                Log::error('Esportazione CSV, impossibile accedere al campo ' . $f . ' di utente ' . $this->id);
+                $ret[] = '';
+            }
+        }
+
+        return [$ret];
     }
 }

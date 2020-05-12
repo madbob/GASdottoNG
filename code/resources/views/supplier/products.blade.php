@@ -20,8 +20,58 @@
                 ]
             ])
 
-            <button class="btn btn-default export-custom-list" data-export-url="{{ url('suppliers/catalogue/' . $supplier->id . '/pdf') }}">{{ _i('Listino PDF') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></button>
-            <button class="btn btn-default export-custom-list" data-export-url="{{ url('suppliers/catalogue/' . $supplier->id . '/csv') }}">{{ _i('Listino CSV') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></button>
+            <button class="btn btn-default" data-toggle="modal" data-target="#export_products">{{ _i('Esporta Listino') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></button>
+            <div class="modal fade close-on-submit" id="export_products" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-extra-lg" role="document">
+                    <div class="modal-content">
+                        <form class="form-horizontal" method="GET" data-toggle="validator" novalidate>
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">{{ _i('Esporta Listino') }}</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>
+                                    {{ _i("Verranno esportati i prodotti attualmente filtrati nella lista principale.") }}
+                                </p>
+                                <p>
+                                    {!! _i("Per la consultazione e l'elaborazione dei files in formato CSV (<i>Comma-Separated Values</i>) si consiglia l'uso di <a target=\"_blank\" href=\"http://it.libreoffice.org/\">LibreOffice</a>.") !!}
+                                </p>
+
+                                <hr/>
+
+                                @include('commons.checkboxes', [
+                                    'name' => 'fields',
+                                    'label' => _i('Colonne'),
+                                    'labelsize' => 2,
+                                    'fieldsize' => 10,
+                                    'values' => App\Product::formattableColumns()
+                                ])
+
+                                @include('commons.radios', [
+                                    'name' => 'format',
+                                    'label' => _i('Formato'),
+                                    'labelsize' => 2,
+                                    'fieldsize' => 10,
+                                    'values' => [
+                                        'pdf' => (object) [
+                                            'name' => 'PDF',
+                                            'checked' => true
+                                        ],
+                                        'csv' => (object) [
+                                            'name' => 'CSV'
+                                        ],
+                                    ]
+                                ])
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
+                                <button class="btn btn-success export-custom-list" data-export-url="{{ url('suppliers/catalogue/' . $supplier->id) }}">{{ _i('Download') }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
             <a class="btn btn-default" href="{{ $supplier->exportableURL() }}">{{ _i('Listino GDXP') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
         </div>
     </div>
