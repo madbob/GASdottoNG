@@ -269,11 +269,11 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                             @break
 
                         @case('weight')
-                            {{ $summary->weight }} _i('Chili')
+                            {{ $summary->weight }} {{ _i('Chili') }}
                             @break
 
                         @case('weight_delivered')
-                            {{ $summary->weight_delivered }} _i('Chili')
+                            {{ $summary->weight_delivered }} {{ _i('Chili') }}
                             @break
 
                     @endswitch

@@ -131,6 +131,7 @@ class NotificationsController extends Controller
             $n->end_date = decodeDate($request->input('end_date'));
             $n->save();
 
+            $n->attachByRequest($request);
             self::syncUsers($n, $request);
             $n->sendMail();
         }

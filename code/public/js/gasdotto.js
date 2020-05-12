@@ -3028,6 +3028,7 @@ $(document).ready(function() {
         form.find('[name^=users]').closest('.form-group').toggle();
         form.find('[name=end_date]').closest('.form-group').toggle();
         form.find('[name=mailed]').closest('.form-group').toggle();
+		form.find('[name=file]').closest('.form-group').toggle();
     });
 
     /*

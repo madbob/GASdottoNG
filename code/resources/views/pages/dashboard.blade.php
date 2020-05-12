@@ -16,7 +16,17 @@
                                 <div class="alert alert-info">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                     <input type="hidden" name="notification_id" value="{{ $notify->id }}" />
+
                                     {!! nl2br($notify->content) !!}
+
+                                    @if($notify->attachments->isEmpty() == false)
+                                        <hr>
+                                        @foreach($notify->attachments as $attachment)
+                                            <a class="btn btn-info" href="{{ $attachment->download_url }}">
+                                                {{ $attachment->name }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
+                                            </a>
+                                        @endforeach
+                                    @endif
                                 </div>
                             </li>
                         @endforeach

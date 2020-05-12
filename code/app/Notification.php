@@ -15,7 +15,7 @@ use App\GASModel;
 
 class Notification extends Model
 {
-    use GASModel;
+    use GASModel, AttachableTrait;
 
     protected static function boot()
     {
