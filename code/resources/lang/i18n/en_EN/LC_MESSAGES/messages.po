@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2020-02-09 23:43+0100\n"
-"PO-Revision-Date: 2020-03-26 21:46+0000\n"
-"Last-Translator: Jeannette L <j.lavoie@net-c.ca>\n"
+"PO-Revision-Date: 2020-05-21 17:41+0000\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: English <https://hosted.weblate.org/projects/gasdottong/"
 "translations/en/>\n"
 "Language: en_EN\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.0-dev\n"
+"X-Generator: Weblate 4.1-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -2279,7 +2279,7 @@ msgstr "Orders to be Payed"
 #: Http/Controllers/MailController.php:42
 #, php-format
 msgid "Impossibile inoltrare mail a %s: %s"
-msgstr "Impossible to forward the e-mail to %s: %s"
+msgstr "Could not forward e-mail to %s: %s"
 
 #: ../storage/framework/messages/52d79b4ba0c701300d266ccddd4cbf00d3643f78.php.php:55
 #: ../storage/framework/messages/52d79b4ba0c701300d266ccddd4cbf00d3643f78.php.php:146
