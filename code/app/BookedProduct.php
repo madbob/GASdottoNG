@@ -300,10 +300,33 @@ class BookedProduct extends Model
         return $this->normalizeQuantity('delivered');
     }
 
+    private function fixWeight($attribute)
+    {
+        $weight = $this->product->weight;
+
+        $variants = $this->variants;
+        if ($variants->isEmpty() == false) {
+            $total = 0;
+
+            foreach ($variants as $v) {
+                foreach ($v->components as $c) {
+                    $weight += $c->value->weight_offset;
+                }
+
+                $total += $weight * $v->$attribute;
+            }
+
+            return $total;
+        }
+        else {
+            return $weight * $this->$attribute;
+        }
+    }
+
     public function quantityWeight()
     {
         if ($this->product->measure->discrete) {
-            return $this->product->weight * $this->quantity;
+            return $this->fixWeight('quantity');
         }
         else {
             return $this->true_quantity;
@@ -313,7 +336,7 @@ class BookedProduct extends Model
     public function deliveredWeight()
     {
         if ($this->product->measure->discrete) {
-            return $this->product->weight * $this->delivered;
+            return $this->fixWeight('delivered');
         }
         else {
             return $this->true_delivered;

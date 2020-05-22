@@ -378,6 +378,8 @@ class Order extends Model
                 $price += $b->quantityValue();
                 $price_delivered += $b->final_price;
                 $transport_delivered += $b->final_transport;
+                $weight += $b->quantityWeight();
+                $weight_delivered += $b->deliveredWeight();
 
                 if($b->variants->isEmpty() == false) {
                     if(isset($summary->by_variant[$product->id]) == false) {
@@ -430,14 +432,10 @@ class Order extends Model
                 $delivered_pieces = $delivered;
                 $quantity = $quantity * $product->portion_quantity;
                 $delivered = $delivered;
-                $weight = $quantity;
-                $weight_delivered = $delivered;
             }
             else {
                 $quantity_pieces = $quantity;
                 $delivered_pieces = $delivered;
-                $weight = $quantity * $product->weight;
-                $weight_delivered = $delivered * $product->weight;
             }
 
             $summary->products[$product->id]['product_obj'] = $product;

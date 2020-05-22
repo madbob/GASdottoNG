@@ -62,7 +62,8 @@ class VariantsController extends Controller
         $variant->save();
 
         $new_values = $request->input('value', []);
-        $new_offsets = $request->input('price_offset', []);
+        $new_price_offsets = $request->input('price_offset', []);
+        $new_weight_offsets = $request->input('weight_offset', []);
         $existing_values = $variant->values;
         $matching_values = [];
 
@@ -71,9 +72,14 @@ class VariantsController extends Controller
             if (empty($value))
                 continue;
 
-            $offset = $new_offsets[$i];
-            if (empty($offset)) {
-                $offset = 0;
+            $price_offset = $new_price_offsets[$i];
+            if (empty($price_offset)) {
+                $price_offset = 0;
+            }
+
+            $weight_offset = $new_weight_offsets[$i];
+            if (empty($weight_offset)) {
+                $weight_offset = 0;
             }
 
             $value_found = false;
@@ -83,11 +89,14 @@ class VariantsController extends Controller
                     $value_found = true;
                     $matching_values[] = $evalue->id;
 
-                    if ($variant->has_offset == true && $evalue->price_offset != $offset) {
-                        $evalue->price_offset = $offset;
+                    if ($variant->has_offset == true && ($evalue->price_offset != $price_offset || $evalue->weight_offset != $weight_offset)) {
+                        $evalue->price_offset = $price_offset;
+                        $evalue->weight_offset = $weight_offset;
                         $evalue->save();
-                    } elseif ($variant->has_offset == false && $evalue->price_offset != 0) {
+                    }
+                    elseif ($variant->has_offset == false && ($evalue->price_offset != 0 || $evalue->weight_offset != 0)) {
                         $evalue->price_offset = 0;
+                        $evalue->weight_offset = 0;
                         $evalue->save();
                     }
                 }
@@ -98,9 +107,12 @@ class VariantsController extends Controller
                 $val->value = $value;
 
                 if ($variant->has_offset) {
-                    $val->price_offset = $offset;
-                } else {
+                    $val->price_offset = $price_offset;
+                    $val->weight_offset = $weight_offset;
+                }
+                else {
                     $val->price_offset = 0;
+                    $val->weight_offset = 0;
                 }
 
                 $val->variant_id = $variant->id;
@@ -127,7 +139,7 @@ class VariantsController extends Controller
                     if ($v->has_offset) {
                         $v->has_offset = false;
                         $v->save();
-                        $v->values()->update(['price_offset' => 0]);
+                        $v->values()->update(['price_offset' => 0, 'weight_offset' => 0]);
                         break;
                     }
                 }

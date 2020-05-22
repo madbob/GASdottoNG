@@ -2,6 +2,10 @@
 
 list($street, $city, $cap) = $obj->getAddress();
 
+if (!isset($currentgas)) {
+    $currentgas = currentAbsoluteGas();
+}
+
 $json_object = (object) [
     'protocolVersion' => '1.0',
     'creationDate' => date('Y-m-d'),

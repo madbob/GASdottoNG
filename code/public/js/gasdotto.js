@@ -2460,10 +2460,11 @@ $(document).ready(function() {
 
         if (offset == '1') {
             form.find('input[name=has_offset]').bootstrapToggle('on');
-            form.find('input[name*=price_offset]').closest('.form-group').show();
-        } else {
+            form.find('input[name*=price_offset], input[name*=weight_offset]').closest('.form-group').show();
+        }
+		else {
             form.find('input[name=has_offset]').bootstrapToggle('off');
-            form.find('input[name*=price_offset]').val('0').closest('.form-group').hide();
+            form.find('input[name*=price_offset], input[name*=weight_offset]').val('0').closest('.form-group').hide();
         }
 
         form.closest('.modal').modal('show');
@@ -2483,10 +2484,12 @@ $(document).ready(function() {
         var has = $(this).is(':checked');
         var form = $(this).closest('form');
 
-        if (has == true)
-            form.find('input[name*=price_offset]').closest('.form-group').show();
-        else
-            form.find('input[name*=price_offset]').val('0').closest('.form-group').hide();
+        if (has == true) {
+            form.find('input[name*=price_offset], input[name*=weight_offset]').closest('.form-group').show();
+		}
+        else {
+            form.find('input[name*=price_offset], input[name*=weight_offset]').val('0').closest('.form-group').hide();
+		}
 
     }).on('submit', '.creating-variant-form', function(e) {
         e.preventDefault();

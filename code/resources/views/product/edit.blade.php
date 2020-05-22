@@ -30,24 +30,41 @@
                     <div class="form-group">
                         <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Valori') }}</label>
 
+                        <?php
+
+                        $columns = [
+                            [
+                                'label' => _i('Valore'),
+                                'field' => 'value',
+                                'type' => 'text'
+                            ],
+                            [
+                                'label' => _i('Differenza Prezzo'),
+                                'field' => 'price_offset',
+                                'type' => 'decimal',
+                                'extra' => [
+                                    'is_price' => true
+                                ]
+                            ],
+                        ];
+
+                        if ($product->measure->discrete) {
+                            $columns[] = [
+                                'label' => _i('Differenza Peso'),
+                                'field' => 'weight_offset',
+                                'type' => 'decimal',
+                                'extra' => [
+                                    'postlabel' => _i('Chili')
+                                ]
+                            ];
+                        }
+
+                        ?>
+
                         <div class="col-sm-{{ $fieldsize }} values_table">
                             @include('commons.manyrows', [
                                 'contents' => null,
-                                'columns' => [
-                                    [
-                                        'label' => _i('Valore'),
-                                        'field' => 'value',
-                                        'type' => 'text'
-                                    ],
-                                    [
-                                        'label' => _i('Differenza Prezzo'),
-                                        'field' => 'price_offset',
-                                        'type' => 'decimal',
-                                        'extra' => [
-                                            'is_price' => true
-                                        ]
-                                    ]
-                                ]
+                                'columns' => $columns,
                             ])
                         </div>
                     </div>
