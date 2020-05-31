@@ -2003,8 +2003,8 @@ $(document).ready(function() {
                 var input = $(this);
 
                 var ret = '<div>\
-                    <div class="form-group"><label for="password" class="col-sm-4 control-label">' + _('Nuova Password') + '</label><div class="col-sm-8"><input type="password" class="form-control" name="password" value="" autocomplete="off"></div></div>\
-                    <div class="form-group"><label for="password_confirm" class="col-sm-4 control-label">' + _('Conferma Password') + '</label><div class="col-sm-8"><input type="password" class="form-control" name="password_confirm" value="" autocomplete="off"></div></div>';
+                    <div class="form-group"><label for="password" class="col-sm-4 control-label">' + _('Nuova Password') + '</label><div class="col-sm-8"><input type="password" class="form-control" name="password" value="" autocomplete="off" minlength="8"></div></div>\
+                    <div class="form-group"><label for="password_confirm" class="col-sm-4 control-label">' + _('Conferma Password') + '</label><div class="col-sm-8"><input type="password" class="form-control" name="password_confirm" value="" autocomplete="off" minlength="8"></div></div>';
 
                 if (input.hasClass('enforcable_change')) {
                     ret += '<div class="checkbox"><label><input type="checkbox" name="enforce_change"> ' + _('Forza cambio password al prossimo login') + '</label></div><br>';

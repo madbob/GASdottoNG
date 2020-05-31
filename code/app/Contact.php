@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 use App\Events\SluggableCreating;
 use App\GASModel;
@@ -25,7 +26,7 @@ class Contact extends Model
 
     public function getSlugID()
     {
-        return sprintf('%s::%s-%s', $this->target_id, $this->type, str_random(10));
+        return sprintf('%s::%s-%s', $this->target_id, $this->type, Str::random(10));
     }
 
     public function getTypeNameAttribute()

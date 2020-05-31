@@ -160,11 +160,6 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Menu\MenuServiceProvider::class,
-        Wilgucki\Csv\CsvServiceProvider::class,
-        Barryvdh\Debugbar\ServiceProvider::class,
-        Devfactory\Minify\MinifyServiceProvider::class,
-        Xinax\LaravelGettext\LaravelGettextServiceProvider::class,
-        Barryvdh\DomPDF\ServiceProvider::class,
 
         App\Providers\SingletonsProvider::class,
         App\Providers\GraphicInitServiceProvider::class,
@@ -220,10 +215,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Menu'      => Menu\Menu::class,
-        'CsvReader' => Wilgucki\Csv\Facades\Reader::class,
-        'CsvWriter' => Wilgucki\Csv\Facades\Writer::class,
-        'PDF'       => Barryvdh\DomPDF\Facade::class,
-        'Minify'    => Devfactory\Minify\Facades\MinifyFacade::class,
     ],
 
 ];

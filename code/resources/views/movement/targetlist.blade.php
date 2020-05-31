@@ -1,6 +1,6 @@
 <?php
 
-$domid = str_random(10);
+$domid = Illuminate\Support\Str::random(10);
 
 ?>
 

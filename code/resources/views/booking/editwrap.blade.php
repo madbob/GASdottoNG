@@ -1,6 +1,6 @@
 <?php
 
-$rand = str_random(10);
+$rand = Illuminate\Support\Str::random(10);
 $more_orders = ($aggregate->orders->count() > 1);
 $grand_total = 0;
 $has_shipping = $aggregate->canShip();
