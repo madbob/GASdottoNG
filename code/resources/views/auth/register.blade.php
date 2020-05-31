@@ -125,12 +125,24 @@
             <input type="hidden" name="gas_id" value="{{ currentAbsoluteGas()->id }}">
         @endif
 
-        @if (!empty(currentAbsoluteGas()->public_registrations['privacy_link']) || env('GASDOTTO_NET', false) == true)
+        @if (!empty(currentAbsoluteGas()->public_registrations['privacy_link']))
             <div class="form-group">
                 <div class="col-sm-offset-4 col-sm-6">
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" required> {!! _i("Ho letto e accetto l'<a href=\"%s\" target=\"_blank\">Informativa sulla Privacy</a>.", [empty(currentAbsoluteGas()->public_registrations['privacy_link']) ? 'http://gasdotto.net/privacy' : currentAbsoluteGas()->public_registrations['privacy_link']]) !!}
+                            <input type="checkbox" required> {!! _i("Ho letto e accetto l'<a href=\"%s\" target=\"_blank\">Informativa sulla Privacy</a>.", [currentAbsoluteGas()->public_registrations['privacy_link']]) !!}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        @if (!empty(currentAbsoluteGas()->public_registrations['terms_link']))
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-6">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" required> {!! _i("Ho letto e accetto le <a href=\"%s\" target=\"_blank\">Condizioni d'Uso</a>.", [currentAbsoluteGas()->public_registrations['terms_link']]) !!}
                         </label>
                     </div>
                 </div>

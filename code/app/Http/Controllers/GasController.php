@@ -158,6 +158,7 @@ class GasController extends Controller
                     $registrations_info = (object) [
                         'enabled' => true,
                         'privacy_link' => $request->input('public_registrations->privacy_link', ''),
+                        'terms_link' => $request->input('public_registrations->terms_link', ''),
                         'mandatory_fields' => $request->input('public_registrations->mandatory_fields', []),
                     ];
                 }
@@ -165,6 +166,7 @@ class GasController extends Controller
                     $registrations_info = (object) [
                         'enabled' => false,
                         'privacy_link' => '',
+                        'terms_link' => '',
                         'mandatory_fields' => ['firstname', 'lastname', 'email', 'phone'],
                     ];
                 }
