@@ -41,6 +41,22 @@ class FormattersTest extends TestCase
         $this->assertEquals('2016-12-29', decodeDate('Giovedì 29 Dicembre 2016'));
     }
 
+    public function testOutputCsv()
+    {
+        $path = sys_get_temp_dir() . '/test.csv';
+        $path = output_csv('test', ['head 1', 'head 2', 'head 3'], [
+            [1, 'first row', 'prima riga'],
+            [2, 'second row', 'seconda riga'],
+        ], null, $path);
+
+        $this->assertTrue(file_exists($path));
+        $wrote_contents = file($path);
+        $this->assertEquals(3, count($wrote_contents));
+        $this->assertEquals('"head 1","head 2","head 3"' . "\n", $wrote_contents[0]);
+        $this->assertEquals('1,"first row","prima riga"' . "\n", $wrote_contents[1]);
+        $this->assertEquals('2,"second row","seconda riga"' . "\n", $wrote_contents[2]);
+    }
+
     public function testIbanSplit()
     {
         $ibans = ['IT02L1234512345123456789012', 'IT 02 L 1234512345 123456789012'];
