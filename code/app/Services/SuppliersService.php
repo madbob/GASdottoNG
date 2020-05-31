@@ -155,7 +155,7 @@ class SuppliersService extends BaseService
             Cfr. Supplier::defaultAttachments()
         */
         $format = $format ?: $request['format'];
-        $fields = $request['fields'] ?? ['name', 'measure', 'price', 'transport'];
+        $fields = $request['fields'] ?? ['name', 'measure', 'price', 'transport', 'active'];
 
         $supplier = $this->show($id);
         $filename = sanitizeFilename(_i('Listino %s.%s', [$supplier->name, $format]));
@@ -164,7 +164,7 @@ class SuppliersService extends BaseService
             $products = $supplier->products()->whereIn('id', $request['printable'])->get();
         }
         else {
-            $products = $supplier->products()->where('active', true)->get();
+            $products = $supplier->products;
         }
 
         $columns = Product::formattableColumns();
