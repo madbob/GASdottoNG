@@ -34,7 +34,7 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
-        $gas = Gas::first();
+        $gas = currentAbsoluteGas();
         return view('auth.login', ['gas' => $gas]);
     }
 
@@ -42,12 +42,9 @@ class LoginController extends Controller
     {
         $username = $request->input('username');
 
-        $gas = Gas::first();
-        if ($gas->restricted == '1') {
-            $user = User::where('username', $username)->first();
-            if (is_null($user) || $user->can('gas.access', $gas) == false) {
-                return redirect(url('login'));
-            }
+        $user = User::where('username', $username)->first();
+        if (is_null($user) || ($user->gas->restricted == '1' && $user->can('gas.access', $gas) == false)) {
+            return redirect(url('login'));
         }
 
         LaravelGettext::setLocale($request->input('language'));
