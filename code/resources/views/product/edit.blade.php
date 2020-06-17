@@ -25,7 +25,7 @@
                 </div>
                 <div class="modal-body">
                     @include('commons.textfield', ['obj' => null, 'name' => 'name', 'label' => _i('Nome'), 'mandatory' => true])
-                    @include('commons.boolfield', ['obj' => null, 'name' => 'has_offset', 'label' => _i('Differenza Prezzo')])
+                    @include('commons.boolfield', ['obj' => null, 'name' => 'has_offset', 'label' => _i('Differenza Prezzo/Peso')])
 
                     <div class="form-group">
                         <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Valori') }}</label>

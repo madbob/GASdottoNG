@@ -14,7 +14,7 @@
         @foreach(App\Date::all() as $d)
             @foreach($d->dates as $dat)
                 {
-                    title: '{{ $d->calendar_string }}',
+                    title: '{{ str_replace("\n", " ", str_replace("\r", '', str_replace("'", "\'", $d->calendar_string))) }}',
                     date: '{{ $dat }}',
                     className: 'calendar-date-{{ $d->type }}'
 
