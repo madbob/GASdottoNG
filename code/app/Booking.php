@@ -109,9 +109,16 @@ class Booking extends Model
         }
 
         if ($including_products_transport) {
-            $transported = $this->products()->whereHas('product', function($query) {
-                $query->where('transport', '!=', 0);
-            })->with('product')->get();
+            if ($with_friends) {
+                $transported = $this->products_with_friends->filter(function($item) {
+                    return $item->product->transport != 0;
+                });
+            }
+            else {
+                $transported = $this->products()->whereHas('product', function($query) {
+                    $query->where('transport', '!=', 0);
+                })->with('product')->get();
+            }
 
             foreach($transported as $t) {
                 if (is_numeric($t->product->transport)) {
