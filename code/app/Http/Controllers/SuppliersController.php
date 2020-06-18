@@ -79,7 +79,7 @@ class SuppliersController extends BackedController
             abort();
     }
 
-    public function catalogue(Request $request, $id, $format)
+    public function catalogue(Request $request, $id, $format = null)
     {
         try {
             return $this->service->catalogue($id, $format, $request->all());

@@ -6,3 +6,6 @@ before_script:
     - composer update --no-scripts
 script:
     - ./vendor/bin/phpunit
+env:
+  global:
+    - TMPDIR=/tmp

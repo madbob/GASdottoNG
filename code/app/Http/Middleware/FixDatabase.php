@@ -17,25 +17,6 @@ class FixDatabase
 {
     public function handle($request, Closure $next)
     {
-        /*
-            Qui faccio in modo di avere sempre dei default.
-            Serve solo per sistemare le istanze già esistenti in cui questi
-            valori sono stato rimossi prima del blocco a livello di
-            amministrazione, codice da rimuovere tra qualche tempo
-            Addì: 09/01/2018
-        */
-        if (is_null(Measure::find('non-specificato'))) {
-            $measure = new Measure();
-            $measure->name = _i('Non Specificato');
-            $measure->save();
-        }
-
-        if (is_null(Category::find('non-specificato'))) {
-            $category = new Category();
-            $category->name = _i('Non Specificato');
-            $category->save();
-        }
-
         if (ModifierType::all()->isEmpty()) {
             $m = new ModifierType();
             $m->id = 'spese-trasporto';
@@ -54,6 +35,17 @@ class FixDatabase
             $m->save();
         }
 
+        $gas = currentAbsoluteGas();
+
+        /*
+            Per aggiungere il default al link dei termini d'uso
+            31/05/2020
+        */
+        $public_registrations = $gas->public_registrations;
+        if (!isset($public_registrations['terms_link'])) {
+            $public_registrations['terms_link'] = '';
+            $gas->setConfig('public_registrations', $public_registrations);
+        }
 
         return $next($request);
     }

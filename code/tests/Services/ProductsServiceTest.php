@@ -19,7 +19,7 @@ class ProductsServiceTest extends TestCase
     private $measure;
     private $productsService;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         Model::unguard();

@@ -13,6 +13,37 @@
         </div>
     </div>
 
+    <?php
+
+    $columns = [
+        [
+            'label' => _i('Valore'),
+            'field' => 'value',
+            'type' => 'text'
+        ],
+        [
+            'label' => _i('Differenza Prezzo'),
+            'field' => 'price_offset',
+            'type' => 'decimal',
+            'extra' => [
+                'is_price' => true
+            ]
+        ],
+    ];
+
+    if ($product->measure->discrete) {
+        $columns[] = [
+            'label' => _i('Differenza Peso'),
+            'field' => 'weight_offset',
+            'type' => 'decimal',
+            'extra' => [
+                'postlabel' => _i('Chili')
+            ]
+        ];
+    }
+
+    ?>
+
     @foreach ($product->variants as $variant)
         <div class="row variant-descr">
             <input type="hidden" name="variant_id" value="{{ $variant->id }}">
@@ -34,18 +65,7 @@
             <div class="hidden exploded_values">
                 @include('commons.manyrows', [
                     'contents' => $variant->values,
-                    'columns' => [
-                        [
-                            'label' => _i('Valore'),
-                            'field' => 'value',
-                            'type' => 'text'
-                        ],
-                        [
-                            'label' => _i('Differenza Prezzo'),
-                            'field' => 'price_offset',
-                            'type' => 'decimal'
-                        ]
-                    ]
+                    'columns' => $columns,
                 ])
             </div>
         </div>

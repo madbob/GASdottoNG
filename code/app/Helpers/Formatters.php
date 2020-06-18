@@ -360,6 +360,8 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
             $FH = fopen($out_file, 'w');
 
         if (is_null($format_callback)) {
+            fputcsv($FH, $head);
+
             if (is_string($contents)) {
                 fwrite($FH, $contents);
             }

@@ -155,7 +155,7 @@ class PaymentController extends Controller
                 $movement->notes = $notes;
                 $movement->method = 'satispay';
 
-                Cache::put('satispay_movement_' . $charge->uuid, $movement, 16);
+                Cache::put('satispay_movement_' . $charge->uuid, $movement, 16 * 60);
             }
         }
 

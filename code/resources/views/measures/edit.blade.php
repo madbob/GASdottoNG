@@ -33,16 +33,28 @@
                             'field' => 'discrete',
                             'help' => _i('Le unità discrete non sono frazionabili: sui prodotti cui viene assegnata una unità di misura etichettata con questo attributo non sarà possibile attivare proprietà come "Prezzo Variabile" e "Pezzatura"'),
                             'type' => 'bool',
-                            'width' => 3,
+                            'width' => 2,
                             'extra' => [
-                                'valuefrom' => 'id'
+                                'valuefrom' => 'id',
+                                'extra_class' => 'row-untoggler'
+                            ]
+                        ],
+                        [
+                            'label' => _i('Peso in Chili'),
+                            'field' => 'weight',
+                            'type' => 'decimal',
+                            'width' => 2,
+                            'extra' => [
+                                'extras' => [
+                                    'data-untoggled' => '1'
+                                ]
                             ]
                         ],
                         [
                             'label' => _i('Prodotti'),
                             'field' => 'id',
                             'type' => 'custom',
-                            'width' => 2,
+                            'width' => 1,
                             'contents' => '<button type="button" class="btn btn-default async-popover" data-contents-url="' . url('measures/list/%s') . '" data-container="body" data-toggle="popover" data-placement="right" data-content="placeholder" data-html="true" data-trigger="hover"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></button>'
                         ]
                     ]

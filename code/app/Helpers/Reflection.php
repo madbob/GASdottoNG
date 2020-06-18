@@ -9,7 +9,7 @@ function currentAbsoluteGas()
         if ($user != null)
             $gas = $user->gas;
         else
-            $gas = App\Gas::first();
+            $gas = App\Gas::orderBy('created_at', 'asc')->first();
     }
 
     return $gas;

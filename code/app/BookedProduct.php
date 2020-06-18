@@ -203,6 +203,8 @@ class BookedProduct extends Model
     /*
         Questa funzione serve a generare un oggetto simile a quello prodotto da
         Order::calculateSummary() ma relativo solo a questo prodotto.
+        In particolare, viene usato per formattare il contenuto del Dettaglio
+        Consegne (in cui ogni prodotto va gestito singolarmente, non aggregato).
         Usato per essere dato in input alle callback di formattazione di
         Order::formattableColumns()
     */
@@ -227,32 +229,54 @@ class BookedProduct extends Model
             'by_variant' => []
         ];
 
-        $variants_quantity = 0;
+        if ($this->variants->isEmpty() == false) {
+            $variants_quantity = 0;
+            $summary->by_variant[$faked_index] = [];
 
-        foreach($this->variants as $v) {
-            $name = $v->printableName();
-            if(isset($summary->by_variant[$faked_index][$name]) == false) {
-                $summary->by_variant[$faked_index][$name] = [
-                    'quantity' => 0,
-                    'delivered' => 0,
-                    'price' => 0,
-                    'transport' => 0,
-                    'unit_price' => $v->unitPrice(),
-                ];
+            foreach($this->variants as $v) {
+                $name = $v->printableName();
+                $variant_index = -1;
+
+                /*
+                    Per i prodotti con unità di misura non discreta gestisco le
+                    diverse varianti separatamente, per distinguere i singoli
+                    pezzi prenotati
+                */
+                if ($this->product->measure->discrete == true) {
+                    foreach($summary->by_variant[$faked_index] as $vindex => $var_iter) {
+                        if ($var_iter['name'] == $name) {
+                            $variant_index = $vindex;
+                            break;
+                        }
+                    }
+                }
+
+                if ($variant_index == -1) {
+                    $variant_index = count($summary->by_variant[$faked_index]);
+                    $summary->by_variant[$faked_index][$variant_index] = [
+                        'name' => $name,
+                        'quantity' => 0,
+                        'delivered' => 0,
+                        'price' => 0,
+                        'transport' => 0,
+                        'unit_price' => $v->unitPrice()
+                    ];
+                }
+
+                $summary->by_variant[$faked_index][$variant_index]['quantity'] += $v->quantity;
+                $summary->by_variant[$faked_index][$variant_index]['delivered'] += $v->delivered;
+                $summary->by_variant[$faked_index][$variant_index]['price'] += $v->quantityValue();
+
+                $relative_transport = ($v->quantityValue() * $relative_transport = $summary->products[$faked_index]['transport']) / $summary->products[$faked_index]['price'];
+                $summary->by_variant[$faked_index][$variant_index]['transport'] += $relative_transport;
+
+                $variants_quantity += $v->quantity;
             }
 
-            $summary->by_variant[$faked_index][$name]['quantity'] += $v->quantity;
-            $summary->by_variant[$faked_index][$name]['delivered'] += $v->delivered;
-            $summary->by_variant[$faked_index][$name]['price'] += $v->quantityValue();
-
-            $relative_transport = ($v->quantityValue() * $relative_transport = $summary->products[$faked_index]['transport']) / $summary->products[$faked_index]['price'];
-            $summary->by_variant[$faked_index][$name]['transport'] += $relative_transport;
-
-            $variants_quantity += $v->quantity;
+            if ($variants_quantity != 0) {
+                $summary->products[$faked_index]['quantity'] = $variants_quantity;
+            }
         }
-
-        if ($variants_quantity != 0)
-            $summary->products[$faked_index]['quantity'] = $variants_quantity;
 
         return $summary;
     }
@@ -274,5 +298,48 @@ class BookedProduct extends Model
     public function getTrueDeliveredAttribute()
     {
         return $this->normalizeQuantity('delivered');
+    }
+
+    private function fixWeight($attribute)
+    {
+        $weight = $this->product->weight;
+
+        $variants = $this->variants;
+        if ($variants->isEmpty() == false) {
+            $total = 0;
+
+            foreach ($variants as $v) {
+                foreach ($v->components as $c) {
+                    $weight += $c->value->weight_offset;
+                }
+
+                $total += $weight * $v->$attribute;
+            }
+
+            return $total;
+        }
+        else {
+            return $weight * $this->$attribute;
+        }
+    }
+
+    public function quantityWeight()
+    {
+        if ($this->product->measure->discrete) {
+            return $this->fixWeight('quantity');
+        }
+        else {
+            return $this->true_quantity;
+        }
+    }
+
+    public function deliveredWeight()
+    {
+        if ($this->product->measure->discrete) {
+            return $this->fixWeight('delivered');
+        }
+        else {
+            return $this->true_delivered;
+        }
     }
 }

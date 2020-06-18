@@ -63,9 +63,18 @@ function generalInit(container) {
     });
 
     function setupCheckboxes() {
-        var checkboxes = $('input:checkbox[data-toggle=toggle]').slice(0, 200);
+        var checkboxes = $('input:checkbox[data-toggle=toggle]', container).slice(0, 200);
         if (checkboxes.length != 0) {
-            checkboxes.bootstrapToggle().removeAttr('data-toggle');
+			checkboxes.each(function() {
+				var t = $(this);
+				t.bootstrapToggle().removeAttr('data-toggle');
+
+				if (t.hasClass('row-untoggler')) {
+					var disabled = t.prop('checked');
+					t.closest('.row').find('[data-untoggled]').prop('disabled', disabled);
+				}
+			});
+
             setTimeout(setupCheckboxes, 100);
         }
     }
@@ -173,7 +182,9 @@ function generalInit(container) {
         var url = $(this).attr('data-contents-url');
 
         $.get(url, function(data) {
-            contents.empty().append(data);
+			var d = $(data);
+            contents.empty().append(d);
+			generalInit(d);
         });
     });
 
@@ -666,6 +677,7 @@ function enforceMeasureDiscrete(node) {
     var disabled = (discrete == '1');
 
     form.find('input[name=portion_quantity]').prop('disabled', disabled);
+	form.find('input[name=weight]').prop('disabled', !disabled);
 	var multiple_widget = form.find('input[name=multiple]');
 
 	if (disabled) {
@@ -680,6 +692,7 @@ function enforceMeasureDiscrete(node) {
 			multiple_widget.val('1.000');
 	}
 	else {
+		form.find('input[name=weight]').val('0.000');
 		form.find('input[name=variable]').bootstrapToggle('enable');
 		multiple_widget.removeAttr('data-enforce-minimum').removeAttr('data-enforce-integer');
 	}
@@ -1771,13 +1784,13 @@ $(document).ready(function() {
         var target = filter.attr('data-table-target');
         var attribute = $(this).attr('name');
         var value = $(this).val();
-        var table = $(target + ' table');
+        var table = $(target);
 
         if (value == 'all') {
             table.find('tr').removeClass('hidden');
         }
         else {
-            table.find('tr[data-filtered-' + attribute + ']').each(function() {
+            table.find('tbody tr[data-filtered-' + attribute + ']').each(function() {
                 var attr = $(this).attr('data-filtered-' + attribute);
                 $(this).toggleClass('hidden', (attr != value));
             });
@@ -1991,8 +2004,8 @@ $(document).ready(function() {
                 var input = $(this);
 
                 var ret = '<div>\
-                    <div class="form-group"><label for="password" class="col-sm-4 control-label">' + _('Nuova Password') + '</label><div class="col-sm-8"><input type="password" class="form-control" name="password" value="" autocomplete="off"></div></div>\
-                    <div class="form-group"><label for="password_confirm" class="col-sm-4 control-label">' + _('Conferma Password') + '</label><div class="col-sm-8"><input type="password" class="form-control" name="password_confirm" value="" autocomplete="off"></div></div>';
+                    <div class="form-group"><label for="password" class="col-sm-4 control-label">' + _('Nuova Password') + '</label><div class="col-sm-8"><input type="password" class="form-control" name="password" value="" autocomplete="off" minlength="8"></div></div>\
+                    <div class="form-group"><label for="password_confirm" class="col-sm-4 control-label">' + _('Conferma Password') + '</label><div class="col-sm-8"><input type="password" class="form-control" name="password_confirm" value="" autocomplete="off" minlength="8"></div></div>';
 
                 if (input.hasClass('enforcable_change')) {
                     ret += '<div class="checkbox"><label><input type="checkbox" name="enforce_change"> ' + _('Forza cambio password al prossimo login') + '</label></div><br>';
@@ -2410,6 +2423,11 @@ $(document).ready(function() {
         $('.collapse[data-triggerable=' + name + ']').collapse($(this).prop('checked') ? 'show' : 'hide');
     });
 
+	$('body').on('change', '.row-untoggler', function() {
+		var disabled = $(this).prop('checked');
+		$(this).closest('.row').find('[data-untoggled]').prop('disabled', disabled);
+    });
+
     /*
         Gestione fornitori
     */
@@ -2443,10 +2461,11 @@ $(document).ready(function() {
 
         if (offset == '1') {
             form.find('input[name=has_offset]').bootstrapToggle('on');
-            form.find('input[name*=price_offset]').closest('.form-group').show();
-        } else {
+            form.find('input[name*=price_offset], input[name*=weight_offset]').closest('.form-group').show();
+        }
+		else {
             form.find('input[name=has_offset]').bootstrapToggle('off');
-            form.find('input[name*=price_offset]').val('0').closest('.form-group').hide();
+            form.find('input[name*=price_offset], input[name*=weight_offset]').val('0').closest('.form-group').hide();
         }
 
         form.closest('.modal').modal('show');
@@ -2466,10 +2485,12 @@ $(document).ready(function() {
         var has = $(this).is(':checked');
         var form = $(this).closest('form');
 
-        if (has == true)
-            form.find('input[name*=price_offset]').closest('.form-group').show();
-        else
-            form.find('input[name*=price_offset]').val('0').closest('.form-group').hide();
+        if (has == true) {
+            form.find('input[name*=price_offset], input[name*=weight_offset]').closest('.form-group').show();
+		}
+        else {
+            form.find('input[name*=price_offset], input[name*=weight_offset]').val('0').closest('.form-group').hide();
+		}
 
     }).on('submit', '.creating-variant-form', function(e) {
         e.preventDefault();
@@ -2585,7 +2606,7 @@ $(document).ready(function() {
         var name = box.val();
         box.prop('checked', !box.prop('checked'));
         var show = box.prop('checked');
-        $(this).closest('.btn-group').siblings('.order-summary').first().find('.order-cell-' + name).toggleClass('hidden', !show);
+        $(this).closest('.btn-group').closest('form').find('.order-summary').first().find('.order-cell-' + name).toggleClass('hidden', !show);
     });
 
     $('body').on('keyup', '.order-summary input', function() {
@@ -3034,6 +3055,7 @@ $(document).ready(function() {
         form.find('[name^=users]').closest('.form-group').toggle();
         form.find('[name=end_date]').closest('.form-group').toggle();
         form.find('[name=mailed]').closest('.form-group').toggle();
+		form.find('[name=file]').closest('.form-group').toggle();
     });
 
     /*

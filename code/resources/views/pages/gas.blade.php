@@ -72,7 +72,11 @@
                                                     'obj' => $gas,
                                                     'name' => 'public_registrations->privacy_link',
                                                     'label' => _i('Link Privacy Policy'),
-                                                    'help_text' => env('GASDOTTO_NET', false) ? 'Se non specificato, viene usata la privacy policy di default su https://www.gasdotto.net/' : ''
+                                                ])
+                                                @include('commons.textfield', [
+                                                    'obj' => $gas,
+                                                    'name' => 'public_registrations->terms_link',
+                                                    'label' => _i("Link Condizioni d'Uso"),
                                                 ])
                                                 @include('commons.checkboxes', [
                                                     'name' => 'public_registrations->mandatory_fields',

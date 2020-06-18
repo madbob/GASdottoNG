@@ -16,7 +16,7 @@ class SuppliersServiceTest extends TestCase
     private $supplier;
     private $suppliersService;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         Model::unguard();

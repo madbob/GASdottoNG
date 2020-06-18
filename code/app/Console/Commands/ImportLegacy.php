@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Support\Str;
 
 use DB;
 use App;
@@ -368,7 +369,7 @@ class ImportLegacy extends Command
                         echo sprintf("File non reperibile: %s\n", $old_file_path);
                     }
                     else {
-                        $filename = str_random(30);
+                        $filename = Str::random(30);
                         $obj->picture = sprintf('app/%s', $filename);
                         copy($old_file_path, gas_storage_path($obj->picture));
                     }

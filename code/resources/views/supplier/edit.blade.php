@@ -40,13 +40,6 @@
             @include('commons.formbuttons', [
                 'obj' => $supplier,
                 'no_delete' => ($currentuser->can('supplier.add', $currentgas) && $supplier->orders()->count() > 0),
-                'left_buttons' => [
-                    (object) [
-                        'label' => _i('Esporta'),
-                        'url' => $supplier->exportableURL(),
-                        'class' => ''
-                    ]
-                ]
             ])
         </form>
     </div>

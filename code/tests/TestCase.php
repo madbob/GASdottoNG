@@ -13,7 +13,7 @@ abstract class TestCase extends BaseTestCase
 
     protected $baseUrl = 'http://localhost';
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         Artisan::call('migrate');
@@ -33,7 +33,7 @@ abstract class TestCase extends BaseTestCase
         \DB::getEventDispatcher()->forget('illuminate.query');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->disableQueryDump();
 

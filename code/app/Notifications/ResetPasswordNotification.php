@@ -22,7 +22,7 @@ class ResetPasswordNotification extends ManyMailNotification
 
         return $this->formatMail($message, 'password_reset', [
             'username' => $notifiable->username,
-            'gas_reset_link' => url('password/reset/' . $this->reset_token),
+            'gas_reset_link' => route('password.reset' ['token' => $this->reset_token]),
         ]);
     }
 }

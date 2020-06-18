@@ -13,7 +13,7 @@ function localFilePath($obj, $field)
 
 function saveFile($file, $obj, $field)
 {
-    $filename = str_random(30);
+    $filename = Str::random(30);
     $file->move(gas_storage_path('app'), $filename);
     $obj->$field = sprintf('app/%s', $filename);
     $obj->save();

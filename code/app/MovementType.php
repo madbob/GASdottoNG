@@ -31,41 +31,76 @@ class MovementType extends Model
                 'name' => _i('Contanti'),
                 'identifier' => false,
                 'icon' => 'glyphicon-euro',
-                'active_for' => null
+                'active_for' => null,
+                'valid_config' => function($target) {
+                    return true;
+                }
             ],
             'bank' => (object) [
                 'name' => _i('Bonifico'),
                 'identifier' => true,
                 'icon' => 'glyphicon-link',
-                'active_for' => null
+                'active_for' => null,
+                'valid_config' => function($target) {
+                    return true;
+                }
             ],
             'credit' => (object) [
                 'name' => _i('Credito Utente'),
                 'identifier' => false,
                 'icon' => 'glyphicon-ok',
-                'active_for' => 'App\User'
+                'active_for' => 'App\User',
+                'valid_config' => function($target) {
+                    return true;
+                }
             ],
         ];
 
         $gas = currentAbsoluteGas();
+
         if($gas->hasFeature('paypal')) {
             $ret['paypal'] = (object) [
                 'name' => _i('PayPal'),
                 'identifier' => true,
                 'icon' => 'glyphicon-cloud-download',
-                'active_for' => 'App\User'
+                'active_for' => 'App\User',
+                'valid_config' => function($target) {
+                    return true;
+                }
             ];
         }
+
         if($gas->hasFeature('satispay')) {
             $ret['satispay'] = (object) [
                 'name' => _i('Satispay'),
                 'identifier' => true,
                 'icon' => 'glyphicon-cloud-download',
-                'active_for' => 'App\User'
+                'active_for' => 'App\User',
+                'valid_config' => function($target) {
+                    return true;
+                }
+            ];
+        }
+
+        if($gas->hasFeature('rid')) {
+            $ret['sepa'] = (object) [
+                'name' => _i('SEPA'),
+                'identifier' => true,
+                'icon' => 'glyphicon-cloud-download',
+                'active_for' => 'App\User',
+                'valid_config' => function($target) {
+                    return (get_class($target) == 'App\User' && !empty($target->rid['iban']));
+                }
             ];
         }
 
         return $ret;
+    }
+
+    public static function paymentMethodByType($type)
+    {
+        $movement_methods = MovementType::payments();
+        return $movement_methods[$type] ?? null;
     }
 
     public static function paymentsByType($type)

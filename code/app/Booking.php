@@ -109,9 +109,16 @@ class Booking extends Model
         }
 
         if ($including_products_transport) {
-            $transported = $this->products()->whereHas('product', function($query) {
-                $query->where('transport', '!=', 0);
-            })->with('product')->get();
+            if ($with_friends) {
+                $transported = $this->products_with_friends->filter(function($item) {
+                    return $item->product->transport != 0;
+                });
+            }
+            else {
+                $transported = $this->products()->whereHas('product', function($query) {
+                    $query->where('transport', '!=', 0);
+                })->with('product')->get();
+            }
 
             foreach($transported as $t) {
                 if (is_numeric($t->product->transport)) {
@@ -186,15 +193,16 @@ class Booking extends Model
                 prenotazione sia consegnata o meno
             */
             if ($type == 'booked') {
-                foreach ($obj->products as $booked) {
-                    $booked->setRelation('booking', $obj);
-                    $value += $booked->quantityValue();
+                if ($with_friends) {
+                    $products = $obj->products_with_friends;
+                }
+                else {
+                    $products = $obj->products;
                 }
 
-                if ($with_friends) {
-                    foreach($obj->friends_bookings as $sub) {
-                        $value += $sub->getValue($type, true);
-                    }
+                foreach ($products as $booked) {
+                    $booked->setRelation('booking', $obj);
+                    $value += $booked->quantityValue();
                 }
             }
             else {

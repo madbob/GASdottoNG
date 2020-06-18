@@ -195,6 +195,7 @@ class UsersService extends BaseService
             $this->setIfSet($user, $request, 'taxcode');
             $this->transformAndSetIfSet($user, $request, 'family_members', 'enforceNumber');
             $this->setIfSet($user, $request, 'preferred_delivery_id');
+            $this->setIfSet($user, $request, 'payment_method_id');
 
             if ($type == 1) {
                 if (isset($request['enforce_password_change']) && $request['enforce_password_change'] == 'true') {

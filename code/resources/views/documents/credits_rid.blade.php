@@ -24,7 +24,7 @@ $count_total = $count_total * -1;
     <urn:CBIEnvelSDDReqLogMsg>
         <urn:CBISDDReqLogMsg>
             <urn1:GrpHdr xmlns:urn1="urn:CBI:xsd:CBISDDReqLogMsg.00.01.00">
-                <urn1:MsgId>{{ str_random(20) }}</urn1:MsgId>
+                <urn1:MsgId>{{ Illuminate\Support\Str::random(20) }}</urn1:MsgId>
                 <urn1:CreDtTm>{{ $date . date('\TH:i:s.000') }}</urn1:CreDtTm>
                 <urn1:NbOfTxs>{{ $count_rows }}</urn1:NbOfTxs>
                 <urn1:CtrlSum>{{ $count_total }}</urn1:CtrlSum>

@@ -19,6 +19,24 @@ if(!isset($select_users))
 @include('commons.datefield', ['obj' => $notification, 'name' => 'start_date', 'label' => _i('Inizio'), 'defaults_now' => true, 'mandatory' => true])
 @include('commons.datefield', ['obj' => $notification, 'name' => 'end_date', 'label' => _i('Scadenza'), 'defaults_now' => true, 'mandatory' => true])
 
+@if($notification && $notification->attachments->isEmpty() == false)
+    <div class="form-group">
+        @if($squeeze == false)
+            <label for="file" class="col-sm-{{ $labelsize }} control-label">{{ _i('Allegato') }}</label>
+        @endif
+
+        <div class="col-sm-{{ $fieldsize }}">
+            @foreach($notification->attachments as $attachment)
+                <a class="btn btn-info" href="{{ $attachment->download_url }}">
+                    {{ $attachment->name }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
+                </a>
+            @endforeach
+        </div>
+    </div>
+@else
+    @include('commons.filefield', ['obj' => $notification, 'name' => 'file', 'label' => _i('Allegato')])
+@endif
+
 @include('commons.boolfield', [
     'obj' => $notification,
     'name' => 'mailed',

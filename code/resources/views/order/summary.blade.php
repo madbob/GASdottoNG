@@ -172,10 +172,16 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                 <td class="order-cell-quantity {{ in_array('quantity', $columns) ? '' : 'hidden' }}">
                     <label>
                         @if($product->portion_quantity != 0)
-                            {{ sprintf('%d', $summary->products[$product->id]['quantity_pieces']) }} Pezzi /
+                            <span class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity_pieces'] }}</span> Pezzi
+                        @else
+                            <span class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity'] }}</span> {{ $product->measure->name }}
                         @endif
-                        <span class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity'] }}</span> {{ $product->measure->name }}
                     </label>
+                </td>
+
+                <!-- Peso Ordinato -->
+                <td class="order-cell-weight {{ in_array('weight', $columns) ? '' : 'hidden' }}">
+                    <label class="order-summary-product-weight">{{ $summary->products[$product->id]['weight'] }} {{ $product->measure->discrete ? _i('Chili') : $product->measure->name }}</label>
                 </td>
 
                 <!-- Totale Prezzo -->
@@ -191,6 +197,11 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                 <!-- Quantità Consegnata -->
                 <td class="order-cell-quantity_delivered {{ in_array('quantity_delivered', $columns) ? '' : 'hidden' }}">
                     <label class="order-summary-product-delivered">{{ $summary->products[$product->id]['delivered'] }} {{ $product->measure->name }}</label>
+                </td>
+
+                <!-- Peso Consegnato -->
+                <td class="order-cell-weight_delivered {{ in_array('weight_delivered', $columns) ? '' : 'hidden' }}">
+                    <label class="order-summary-product-weight_delivered">{{ $summary->products[$product->id]['weight_delivered'] }} {{ $product->measure->discrete ? _i('Chili') : $product->measure->name }}</label>
                 </td>
 
                 <!-- Totale Consegnato -->
@@ -255,6 +266,14 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                                     <span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span>
                                 </button>
                             @endif
+                            @break
+
+                        @case('weight')
+                            {{ $summary->weight }} {{ _i('Chili') }}
+                            @break
+
+                        @case('weight_delivered')
+                            {{ $summary->weight_delivered }} {{ _i('Chili') }}
                             @break
 
                     @endswitch

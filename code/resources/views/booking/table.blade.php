@@ -42,10 +42,11 @@
                                 <td>{{ printablePriceCurrency($booking->total_value) }}</td>
                                 <td>
                                     @if($booking->status != 'shipped')
+                                        <?php $payment_method = ($booking->user->payment_method_id != 'none' && ($booking->user->payment_method->valid_config)($booking->user)) ? $booking->user->payment_method_id : $default_payment_method ?>
                                         <div class="btn-group pull-right" data-toggle="buttons">
                                             @foreach($payments as $method_id => $info)
-                                                <label class="btn btn-default method-select-{{ $method_id }} {{ $method_id == $default_payment_method ? 'active' : '' }}">
-                                                    <input type="radio" name="method-{{ $booking->id }}" value="{{ $method_id }}" autocomplete="off" {{ $method_id == $default_payment_method ? 'checked' : '' }}> {{ $info->name }}
+                                                <label class="btn btn-default method-select-{{ $method_id }} {{ $method_id == $payment_method ? 'active' : '' }}">
+                                                    <input type="radio" name="method-{{ $booking->id }}" value="{{ $method_id }}" autocomplete="off" {{ $method_id == $payment_method ? 'checked' : '' }}> {{ $info->name }}
                                                 </label>
                                             @endforeach
                                         </div>

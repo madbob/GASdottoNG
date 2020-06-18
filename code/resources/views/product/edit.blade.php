@@ -25,29 +25,46 @@
                 </div>
                 <div class="modal-body">
                     @include('commons.textfield', ['obj' => null, 'name' => 'name', 'label' => _i('Nome'), 'mandatory' => true])
-                    @include('commons.boolfield', ['obj' => null, 'name' => 'has_offset', 'label' => _i('Differenza Prezzo')])
+                    @include('commons.boolfield', ['obj' => null, 'name' => 'has_offset', 'label' => _i('Differenza Prezzo/Peso')])
 
                     <div class="form-group">
                         <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Valori') }}</label>
 
+                        <?php
+
+                        $columns = [
+                            [
+                                'label' => _i('Valore'),
+                                'field' => 'value',
+                                'type' => 'text'
+                            ],
+                            [
+                                'label' => _i('Differenza Prezzo'),
+                                'field' => 'price_offset',
+                                'type' => 'decimal',
+                                'extra' => [
+                                    'is_price' => true
+                                ]
+                            ],
+                        ];
+
+                        if ($product->measure->discrete) {
+                            $columns[] = [
+                                'label' => _i('Differenza Peso'),
+                                'field' => 'weight_offset',
+                                'type' => 'decimal',
+                                'extra' => [
+                                    'postlabel' => _i('Chili')
+                                ]
+                            ];
+                        }
+
+                        ?>
+
                         <div class="col-sm-{{ $fieldsize }} values_table">
                             @include('commons.manyrows', [
                                 'contents' => null,
-                                'columns' => [
-                                    [
-                                        'label' => _i('Valore'),
-                                        'field' => 'value',
-                                        'type' => 'text'
-                                    ],
-                                    [
-                                        'label' => _i('Differenza Prezzo'),
-                                        'field' => 'price_offset',
-                                        'type' => 'decimal',
-                                        'extra' => [
-                                            'is_price' => true
-                                        ]
-                                    ]
-                                ]
+                                'columns' => $columns,
                             ])
                         </div>
                     </div>

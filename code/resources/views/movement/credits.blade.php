@@ -23,23 +23,38 @@
     </div>
 
     <div class="row">
+        <div class="col-md-12">
+            <div class="form-group hidden-md">
+                <div class="btn-group table-filters" data-toggle="buttons" data-table-target="#creditsTable">
+                    <label class="btn btn-default active">
+                        <input type="radio" name="payment_method" class="active" value="all"> {{ _i('Tutti') }}
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="payment_method" value="none"> {{ _i('Non Specificato') }}
+                    </label>
+                    @foreach(App\MovementType::payments() as $payment_identifier => $payment_meta)
+                        <label class="btn btn-default">
+                            <input type="radio" name="payment_method" value="{{ $payment_identifier }}"> {{ $payment_meta->name }}
+                        </label>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-md-12" id="credits_status_table">
             <table class="table" id="creditsTable">
                 <thead>
                     <tr>
-                        @if($currentgas->hasFeature('rid'))
-                            <th width="50%">{{ _i('Nome') }}</th>
-                            <th width="35%">{{ _i('Credito Residuo') }}</th>
-                            <th width="15%">{{ _i('IBAN') }}</th>
-                        @else
-                            <th width="60%">{{ _i('Nome') }}</th>
-                            <th width="40%">{{ _i('Credito Residuo') }}</th>
-                        @endif
+                        <th width="50%">{{ _i('Nome') }}</th>
+                        <th width="25%">{{ _i('Credito Residuo') }}</th>
+                        <th width="25%">{{ _i('Modalità Pagamento') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($currentgas->users()->topLevel()->get() as $user)
-                        <tr>
+                        <tr data-filtered-payment_method="{{ $user->payment_method_id }}">
                             <td>
                                 <input type="hidden" name="user_id[]" value="{{ $user->id }}">
                                 {{ $user->printableName() }}
@@ -49,15 +64,13 @@
                                 {{ printablePriceCurrency($user->current_balance_amount) }}
                             </td>
 
-                            @if(!empty($currentgas->rid['iban']))
-                                <td>
-                                    @if(empty($user->rid['iban']))
-                                        <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
-                                    @else
-                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                                    @endif
-                                </td>
-                            @endif
+                            <td>
+                                {{ $user->payment_method->name }}
+
+                                @if(($user->payment_method->valid_config)($user) == false)
+                                    <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>

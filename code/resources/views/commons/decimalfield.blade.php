@@ -71,6 +71,12 @@ $class .= ' trim-' . $decimals . '-ddigits';
                 data-allow-negative="1"
             @endif
 
+            @if(!empty($extras))
+                @foreach ($extras as $extra_key => $extra_value)
+                    {{ $extra_key }}='{{ $extra_value }}'
+                @endforeach
+            @endif
+
             autocomplete="off">
 
         @if(isset($postlabel))

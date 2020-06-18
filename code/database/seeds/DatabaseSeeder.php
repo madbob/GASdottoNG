@@ -97,13 +97,33 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        $measures = ['Non Specificato', 'Chili', 'Litri', 'Pezzi'];
-        foreach ($measures as $name) {
-            Measure::create([
-                'id' => str_slug($name),
-                'name' => $name,
-            ]);
-        }
+        Measure::create([
+            'id' => str_slug('Non Specificato'),
+            'name' => 'Non Specificato',
+            'discrete' => true,
+            'weight' => 0,
+        ]);
+
+        Measure::create([
+            'id' => str_slug('Chili'),
+            'name' => 'Chili',
+            'discrete' => false,
+            'weight' => 1,
+        ]);
+
+        Measure::create([
+            'id' => str_slug('Litri'),
+            'name' => 'Litri',
+            'discrete' => false,
+            'weight' => 1,
+        ]);
+
+        Measure::create([
+            'id' => str_slug('Pezzi'),
+            'name' => 'Pezzi',
+            'discrete' => true,
+            'weight' => 0,
+        ]);
 
         VatRate::create([
             'name' => 'Minima',

@@ -121,7 +121,8 @@ class Gas extends Model
             'public_registrations' => [
                 'default' => (object) [
                     'enabled' => false,
-                    'privacy_link' => '',
+                    'privacy_link' => 'http://gasdotto.net/privacy',
+                    'terms_link' => '',
                     'mandatory_fields' => ['firstname', 'lastname', 'email', 'phone']
                 ]
             ],

@@ -16,7 +16,7 @@ class MovementsServiceTest extends TestCase
     private $service;
     private $sample_movement;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         Model::unguard();

@@ -314,6 +314,8 @@ class Order extends Model
         $total_price = 0;
         $total_price_delivered = 0;
         $total_transport = 0;
+        $total_weight = 0;
+        $total_weight_delivered = 0;
 
         foreach ($products as $product) {
             $q = BookedProduct::with('variants')->with('booking')->where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order, $shipping_place) {
@@ -349,6 +351,8 @@ class Order extends Model
             $price = 0;
             $price_delivered = 0;
             $transport_delivered = 0;
+            $weight = 0;
+            $weight_delivered = 0;
             $variants_quantity = 0;
 
             foreach ($booked as $b) {
@@ -367,25 +371,39 @@ class Order extends Model
                 $price += $b->quantityValue();
                 $price_delivered += $b->final_price;
                 $transport_delivered += $b->final_transport;
+                $weight += $b->quantityWeight();
+                $weight_delivered += $b->deliveredWeight();
 
                 if($b->variants->isEmpty() == false) {
-                    if(isset($summary->by_variant[$product->id]) == false)
+                    if(isset($summary->by_variant[$product->id]) == false) {
                         $summary->by_variant[$product->id] = [];
+                    }
 
                     foreach($b->variants as $v) {
                         $name = $v->printableName();
-                        if(isset($summary->by_variant[$product->id][$name]) == false) {
-                            $summary->by_variant[$product->id][$name] = [
+                        $variant_index = -1;
+
+                        foreach($summary->by_variant[$product->id] as $vindex => $var_iter) {
+                            if ($var_iter['name'] == $name) {
+                                $variant_index = $vindex;
+                                break;
+                            }
+                        }
+
+                        if ($variant_index == -1) {
+                            $variant_index = count($summary->by_variant[$product->id]);
+                            $summary->by_variant[$product->id][$variant_index] = [
+                                'name' => $name,
                                 'quantity' => 0,
                                 'delivered' => 0,
                                 'price' => 0,
-                                'unit_price' => $v->unitPrice()
+                                'unit_price' => $v->unitPrice(),
                             ];
                         }
 
-                        $summary->by_variant[$product->id][$name]['quantity'] += $v->quantity;
-                        $summary->by_variant[$product->id][$name]['delivered'] += $v->delivered;
-                        $summary->by_variant[$product->id][$name]['price'] += $v->quantityValue();
+                        $summary->by_variant[$product->id][$variant_index]['quantity'] += $v->quantity;
+                        $summary->by_variant[$product->id][$variant_index]['delivered'] += $v->delivered;
+                        $summary->by_variant[$product->id][$variant_index]['price'] += $v->quantityValue();
 
                         $variants_quantity += $v->quantity;
                     }
@@ -398,8 +416,9 @@ class Order extends Model
                 tra la quantità salvata nel prodotto ordinato di riferimento e,
                 appunto, le varianti collegate
             */
-            if ($variants_quantity != 0)
+            if ($variants_quantity != 0) {
                 $quantity = $variants_quantity;
+            }
 
             if ($product->portion_quantity > 0) {
                 $quantity_pieces = $quantity;
@@ -421,10 +440,14 @@ class Order extends Model
             $summary->products[$product->id]['delivered_pieces'] = $delivered_pieces;
             $summary->products[$product->id]['price_delivered'] = printablePrice($price_delivered);
             $summary->products[$product->id]['transport_delivered'] = printablePrice($transport_delivered);
+            $summary->products[$product->id]['weight'] = $weight;
+            $summary->products[$product->id]['weight_delivered'] = $weight_delivered;
 
             $total_price += $price;
             $total_price_delivered += $price_delivered;
             $total_transport += $transport;
+            $total_weight += $product->measure->normalizeWeight($weight);
+            $total_weight_delivered += $product->measure->normalizeWeight($weight_delivered);
 
             $summary->products[$product->id]['notes'] = false;
             if ($product->package_size != 0 && $quantity != 0) {
@@ -452,6 +475,9 @@ class Order extends Model
         foreach ($order->bookings()->where('status', 'shipped')->get() as $shipped_booking)
             $total_transport_delivered += $shipped_booking->getValue('transport', true);
         $summary->transport_delivered = $total_transport_delivered;
+
+        $summary->weight = $total_weight;
+        $summary->weight_delivered = $total_weight_delivered;
 
         $summary->notes = [];
         foreach ($order->bookings()->where('notes', '!=', '')->get() as $annotated_booking) {
@@ -535,7 +561,7 @@ class Order extends Model
         if(isset($summary->by_variant[$product->id])) {
             $variants_rows = [];
 
-            foreach ($summary->by_variant[$product->id] as $name => $variant) {
+            foreach ($summary->by_variant[$product->id] as $variant) {
                 if ($variant[$internal_offsets->by_variant] == 0) {
                     continue;
                 }
@@ -543,7 +569,7 @@ class Order extends Model
                 $row = [];
                 foreach($fields as $f) {
                     if (isset($formattable[$f])) {
-                        $row[] = call_user_func($formattable[$f]->format_variant, $product, $summary, $name, $variant, $internal_offsets->alternate);
+                        $row[] = call_user_func($formattable[$f]->format_variant, $product, $summary, $variant, $internal_offsets->alternate);
                     }
                 }
 
@@ -613,8 +639,9 @@ class Order extends Model
         }
 
         foreach ($this->supplier->products as $product) {
-            if($this->hasProduct($product) == false)
+            if($this->hasProduct($product) == false) {
                 continue;
+            }
 
             $row = $this->formatProduct($fields, $formattable, $summary, $product, $internal_offsets);
             if (!empty($row)) {
@@ -645,11 +672,13 @@ class Order extends Model
                 }
             }
             else {
-                if ($price_offset !== false)
+                if ($price_offset !== false) {
                     $row[$price_offset] = printablePrice($summary->price, ',');
+                }
 
-                if ($transport_offset !== false)
+                if ($transport_offset !== false) {
                     $row[$transport_offset] = printablePrice($summary->transport, ',');
+                }
             }
 
             $ret->contents[] = $row;
@@ -731,8 +760,8 @@ class Order extends Model
                 'format_product' => function($product, $summary) {
                     return $product->printableName();
                 },
-                'format_variant' => function($product, $summary, $name, $variant) {
-                    return $product->printableName() . ' - ' . $name;
+                'format_variant' => function($product, $summary, $variant) {
+                    return $product->printableName() . ' - ' . $variant['name'];
                 }
             ],
             'supplier' => (object) [
@@ -741,7 +770,7 @@ class Order extends Model
                 'format_product' => function($product, $summary) {
                     return $product->supplier->printableName();
                 },
-                'format_variant' => function($product, $summary, $name, $variant) {
+                'format_variant' => function($product, $summary, $variant) {
                     return $product->supplier->printableName();
                 }
             ],
@@ -750,7 +779,7 @@ class Order extends Model
                 'format_product' => function($product, $summary) {
                     return $product->supplier_code;
                 },
-                'format_variant' => function($product, $summary, $name, $variant) {
+                'format_variant' => function($product, $summary, $variant) {
                     /*
                         TODO: le varianti hanno un loro proprio codice?
                     */
@@ -766,7 +795,7 @@ class Order extends Model
                     else
                         return printableQuantity($summary->products[$product->id]['delivered_pieces'], $product->measure->discrete, 2, ',');
                 },
-                'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
+                'format_variant' => function($product, $summary, $variant, $alternate = false) {
                     if ($alternate == false)
                         return printableQuantity($variant['quantity'], $product->measure->discrete, 2, ',');
                     else
@@ -786,7 +815,7 @@ class Order extends Model
                         return '';
                     }
                 },
-                'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
+                'format_variant' => function($product, $summary, $variant, $alternate = false) {
                     if ($product->package_size != 0) {
                         if ($alternate == false)
                             return $variant['quantity'] / $product->package_size;
@@ -814,7 +843,7 @@ class Order extends Model
                         }
                     }
                 },
-                'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
+                'format_variant' => function($product, $summary, $variant, $alternate = false) {
                     if ($alternate == false) {
                         return $product->printableMeasure(true);
                     }
@@ -834,7 +863,7 @@ class Order extends Model
                 'format_product' => function($product, $summary) {
                     return $product->category ? $product->category->name : '';
                 },
-                'format_variant' => function($product, $summary, $name, $variant) {
+                'format_variant' => function($product, $summary, $variant) {
                     return $product->category ? $product->category->name : '';
                 }
             ],
@@ -844,7 +873,7 @@ class Order extends Model
                 'format_product' => function($product, $summary) {
                     return printablePrice($product->price, ',');
                 },
-                'format_variant' => function($product, $summary, $name, $variant) {
+                'format_variant' => function($product, $summary, $variant) {
                     return printablePrice($variant['unit_price'], ',');
                 }
             ],
@@ -857,7 +886,7 @@ class Order extends Model
                     else
                         return printablePrice($summary->products[$product->id]['price_delivered'], ',');
                 },
-                'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
+                'format_variant' => function($product, $summary, $variant, $alternate = false) {
                     if ($alternate == false)
                         return printablePrice($variant['price'], ',');
                     else
@@ -872,7 +901,7 @@ class Order extends Model
                     else
                         return printablePrice($summary->products[$product->id]['transport_delivered'], ',');
                 },
-                'format_variant' => function($product, $summary, $name, $variant, $alternate = false) {
+                'format_variant' => function($product, $summary, $variant, $alternate = false) {
                     if ($alternate == false) {
                         if (isset($variant['transport'])) {
                             return printablePrice($variant['transport']);
@@ -893,7 +922,7 @@ class Order extends Model
                 'format_product' => function($product, $summary) {
                     return $product->pivot->notes;
                 },
-                'format_variant' => function($product, $summary, $name, $variant) {
+                'format_variant' => function($product, $summary, $variant) {
                     return $product->pivot->notes;
                 }
             ];
@@ -943,7 +972,12 @@ class Order extends Model
             'quantity' => (object) [
                 'label' => _i('Quantità Prenotata'),
                 'help' => _i('Quantità complessivamente prenotata del prodotto'),
-                'width' => 9
+                'width' => 8
+            ],
+            'weight' => (object) [
+                'label' => _i('Peso Prenotato'),
+                'help' => _i('Peso complessivamente prenotato del prodotto'),
+                'width' => 8
             ],
             'total_price' => (object) [
                 'label' => _i('Totale Prezzo'),
@@ -958,6 +992,11 @@ class Order extends Model
             'quantity_delivered' => (object) [
                 'label' => _i('Quantità Consegnata'),
                 'help' => _i('Quantità complessivamente consegnata del prodotto'),
+                'width' => 8
+            ],
+            'weight_delivered' => (object) [
+                'label' => _i('Peso Consegnato'),
+                'help' => _i('Peso complessivamente consegnato del prodotto'),
                 'width' => 8
             ],
             'price_delivered' => (object) [
