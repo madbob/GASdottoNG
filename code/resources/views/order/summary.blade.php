@@ -156,13 +156,6 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                     ])
                 </td>
 
-                <!-- Sconto Prodotto -->
-                <td class="order-cell-discount {{ in_array('discount', $columns) ? '' : 'hidden' }}">
-                    @if(!empty($product->discount))
-                        <input class="discount-toggle" type="checkbox" name="discounted[]" value="{{ $product->id }}" <?php if($enabled && $product->pivot->discount_enabled) echo 'checked' ?> />
-                    @endif
-                </td>
-
                 <!-- Unità di Misura -->
                 <td class="order-cell-unit_measure {{ in_array('unit_measure', $columns) ? '' : 'hidden' }}">
                     <label>{{ $product->printableMeasure(true) }}</label>

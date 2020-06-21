@@ -277,10 +277,6 @@ class OrdersController extends Controller
                     break;
                 }
             }
-
-            if ($product->pivot->discount_enabled != $dis) {
-                $order->products()->updateExistingPivot($product->id, ['discount_enabled' => $dis]);
-            }
         }
 
         if ($order->shipping)

@@ -64,7 +64,7 @@ class Order extends Model
 
     public function products()
     {
-        return $this->belongsToMany('App\Product')->with(['variants', 'modifiers'])->withPivot('discount_enabled', 'notes')->withTrashed()->orderBy('name');
+        return $this->belongsToMany('App\Product')->with(['variants', 'modifiers'])->withPivot('notes')->withTrashed()->orderBy('name');
     }
 
     public function bookings()
@@ -958,11 +958,6 @@ class Order extends Model
                 'label' => _i('Disponibile'),
                 'help' => _i('Quantità disponibile (editabile) del prodotto'),
                 'width' => 8
-            ],
-            'discount' => (object) [
-                'label' => _i('Sconto'),
-                'help' => _i('Per abilitare o disabilitare lo sconto unitario del prodotto'),
-                'width' => 4
             ],
             'unit_measure' => (object) [
                 'label' => _i('Unità di Misura'),

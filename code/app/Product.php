@@ -157,37 +157,15 @@ class Product extends Model
     }
 
     /*
-        Questo è per determinare il prezzo del prodotto in un dato contesto,
-        ovvero in un ordine. Se lo sconto del singolo prodotto è stato abilitato
-        per l'ordine, viene applicato. Altrimenti resta il prezzo di
-        riferimento.
         Per i prodotti con pezzatura, ritorna già il prezzo per singola unità
         e non è dunque necessario normalizzare ulteriormente
     */
     public function contextualPrice($order, $rectify = true)
     {
-        /*
-            Attenzione: hasProduct() altera il riferimento a $product,
-            popolandolo con i dati pescati dal database in relazione all'ordine
-            desiderato.
-            Ma $this potrebbe non essere una copia genuina del prodotto, in
-            quanto i suoi parametri possono essere temporaneamente sovrascritti
-            (cfr. OrderController::recalculate), e non si vuole che essi siano
-            riletti dal database.
-            Sicché, a hasProduct passo una copia e preservo l'originale
-        */
-        $product = $this->replicate();
-        $enabled = $order->hasProduct($product);
+        $price = $this->price;
 
-        if ($enabled && $product->pivot->discount_enabled) {
-            $price = applyPercentage($this->price, $this->discount);
-        }
-        else {
-            $price = $this->price;
-        }
-
-        if ($rectify && $product->portion_quantity != 0) {
-            $price = $price * $product->portion_quantity;
+        if ($rectify && $this->portion_quantity != 0) {
+            $price = $price * $this->portion_quantity;
         }
 
         return (float) $price;
