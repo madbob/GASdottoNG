@@ -134,12 +134,7 @@ class Product extends Model
     {
         $price = $this->contextualPrice($order, false);
         $currency = currentAbsoluteGas()->currency;
-
-        if (!empty($this->transport) && $this->transport != 0) {
-            $str = sprintf('%.02f %s / %s + %.02f %s trasporto', $price, $currency, $this->measure->name, $this->transport, $currency);
-        } else {
-            $str = sprintf('%.02f %s / %s', $price, $currency, $this->measure->name);
-        }
+        $str = sprintf('%.02f %s / %s', $price, $currency, $this->measure->name);
 
         if ($this->variable) {
             $str .= '<small> <span class="visible-sm">' . _i('(prodotto a prezzo variabile)') . '</span><span class="visible-xs">' . _i('(variabile)') . '</span></small>';

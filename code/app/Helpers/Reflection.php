@@ -72,9 +72,7 @@ function describingAttributes()
         'weight',
         'quantity',
         'quantity_pieces',
-
         'price_delivered',
-        'weight_delivered',
         'delivered',
         'delivered_pieces',
     ];
@@ -87,7 +85,7 @@ function describingAttributesMerge($first, $second, $sum = true)
             $first->$attr = 0;
         }
 
-        if (!isset($second->attr)) {
+        if (!isset($second->$attr)) {
             continue;
         }
 

@@ -802,15 +802,43 @@ function afterBookingSaved(form, data) {
 
 function bookingTotal(editor) {
 	var form = $(editor).closest('form');
-	var data = form.serialize();
+	var data = form.find(':not(.skip-on-submit)').serialize();
 	var url = form.attr('data-dynamic-url');
 
 	$.ajax({
 		url: url,
 		method: 'GET',
 		data: data,
+		dataType: 'JSON',
 		success: function(data) {
-			// TODO
+			if (Object.entries(data.bookings).length == 0) {
+				$('.booking-product-price span', form).text(priceRound(0));
+				$('.booking-modifier', container).text(priceRound(0));
+				$('.booking-total', container).text(priceRound(0));
+			}
+			else {
+				for (let [booking_id, booking_data] of Object.entries(data.bookings)) {
+					var container = $('input[value="' + booking_id + '"]').closest('table');
+					$('.booking-product-price span', container).text(priceRound(0));
+
+					for (let [product_id, product_meta] of Object.entries(booking_data.products)) {
+						$('input[name="' + product_id + '"]', container).closest('tr').find('.booking-product-price span').text(priceRound(product_meta.total));
+
+						var modifiers = '';
+						for (let [modifier_id, modifier_meta] of Object.entries(product_meta.modifiers)) {
+							modifiers += '<br>' + modifier_meta.label + ': ' + priceRound(modifier_meta.amount) + current_currency;
+						}
+
+						$('input[name="' + product_id + '"]', container).closest('tr').find('.modifiers').html(modifiers);
+					}
+
+					for (let [modifier_id, modifier_meta] of Object.entries(booking_data.modifiers)) {
+						$('.modifier-' + modifier_id, container).find('span').text(priceRound(modifier_meta.amount));
+					}
+
+					$('.booking-total', container).text(priceRound(booking_data.total));
+				}
+			}
 		}
 	});
 }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use Illuminate\Support\Collection;
+
 use DB;
 use Auth;
 use Log;
@@ -41,6 +43,7 @@ class BookingHandler extends Controller
         $booking->save();
 
         $count_products = 0;
+        $booked_products = new Collection();
 
         /*
             In caso di ordini chiusi ma con confezioni da completare, ci
@@ -58,9 +61,10 @@ class BookingHandler extends Controller
             $products = $order->products;
 
         foreach ($products as $product) {
-            $quantity = $request->input($product->id, 0);
-            if (empty($quantity))
+            $quantity = (float) $request->input($product->id, 0);
+            if (empty($quantity)) {
                 $quantity = 0;
+            }
 
             $booked = $booking->getBooked($product, true);
 
@@ -178,6 +182,8 @@ class BookingHandler extends Controller
                     $booked->$param = $quantity;
                     $booked->save();
                 }
+
+                $booked_products->push($booked);
             }
         }
 
@@ -186,6 +192,7 @@ class BookingHandler extends Controller
             return null;
         }
         else {
+            $booking->setRelation('products', $booked_products);
             return $booking;
         }
     }

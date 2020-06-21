@@ -64,7 +64,7 @@ class Order extends Model
 
     public function products()
     {
-        return $this->belongsToMany('App\Product')->with(['variants'])->withPivot('discount_enabled', 'notes')->withTrashed()->orderBy('name');
+        return $this->belongsToMany('App\Product')->with(['variants', 'modifiers'])->withPivot('discount_enabled', 'notes')->withTrashed()->orderBy('name');
     }
 
     public function bookings()
@@ -368,11 +368,11 @@ class Order extends Model
                 $b->setRelation('product', $product);
                 $b->booking->setRelation('order', $order);
 
-                $price += $b->quantityValue();
+                $price += $b->getValue('booked');
                 $price_delivered += $b->final_price;
                 $transport_delivered += $b->final_transport;
-                $weight += $b->quantityWeight();
-                $weight_delivered += $b->deliveredWeight();
+                $weight += $b->getValue('weight');
+                $weight_delivered += $b->getValue('weight');
 
                 if($b->variants->isEmpty() == false) {
                     if(isset($summary->by_variant[$product->id]) == false) {

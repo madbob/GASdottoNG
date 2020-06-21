@@ -10,10 +10,10 @@ $enforced = $enforced ?? false;
 @include('booking.head', ['aggregate' => $aggregate])
 
 <form class="form-horizontal inner-form booking-form" method="PUT" action="{{ url('booking/' . $aggregate->id . '/user/' . $user->id) }}" data-dynamic-url="{{ route('booking.dynamics', ['aggregate_id' => $aggregate->id, 'user_id' => $user->id]) }}">
-    <input type="hidden" name="post-saved-function" value="afterBookingSaved">
+    <input type="hidden" name="post-saved-function" value="afterBookingSaved" class="skip-on-submit">
 
     @if($user->gas->restrict_booking_to_credit)
-        <input type="hidden" name="max-bookable" value="{{ $user->activeBalance() }}">
+        <input type="hidden" name="max-bookable" value="{{ $user->activeBalance() }}" class="skip-on-submit">
     @endif
 
     @foreach($aggregate->orders as $order)
@@ -26,6 +26,8 @@ $enforced = $enforced ?? false;
         $notice = null;
 
         $o = $order->userBooking($user->id);
+        $o->applyModifiers();
+
         if ($order->keep_open_packages && $enforced == false) {
             if ($order->status == 'open') {
                 $products = $order->products;
@@ -80,6 +82,8 @@ $enforced = $enforced ?? false;
         </div>
 
         <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}">
+            <input type="hidden" name="booking_id" value="{{ $o->id }}" class="skip-on-submit">
+
             <thead>
                 <tr>
                     <th width="40%"></th>
@@ -121,13 +125,32 @@ $enforced = $enforced ?? false;
                         </td>
 
                         <td class="text-right">
-                            <label class="static-label"><small>{!! $product->printablePrice($order) !!}</small></label>
+                            <label class="static-label">
+                                <small>{!! $product->printablePrice($order) !!}</small>
+                                <div class="modifiers">
+                                    @if($p)
+                                        @foreach($p->modifiedValues as $mod_value)
+                                            <br>
+                                            <small>{{ $mod_value->modifier->modifierType->name }}: {{ printablePriceCurrency($mod_value->amount) }}</small>
+                                        @endforeach
+                                    @endif
+                                </div>
+                            </label>
                         </td>
 
                         <td>
-                            <label class="static-label booking-product-price pull-right">{{ printablePriceCurrency($p ? $p->quantityValue() : 0) }}</label>
+                            <label class="static-label booking-product-price pull-right">
+                                <span>{{ printablePrice($p ? $p->getValue('effective') : 0) }}</span> {{ $currentgas->currency }}
+                            </label>
                         </td>
                     </tr>
+                @endforeach
+
+                @foreach($o->modifiedValues as $mod_value)
+                    @include('delivery.modifierrow', [
+                        'mod_value' => $mod_value,
+                        'skip_cells' => 3
+                    ])
                 @endforeach
 
                 @if($user->gas->restrict_booking_to_credit)

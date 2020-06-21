@@ -4,15 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Support\Str;
+
 use Log;
 
 use App\Events\SluggableCreating;
-use App\GASModel;
-use App\SluggableID;
 
 class BookedProduct extends Model
 {
-    use GASModel, SluggableID;
+    use GASModel, SluggableID, ModifiedTrait;
 
     public $incrementing = false;
 
@@ -88,36 +88,7 @@ class BookedProduct extends Model
 
     public function basePrice($rectify = true)
     {
-        $product = $this->product;
-        return $product->contextualPrice($this->booking->order, $rectify);
-    }
-
-    /*
-        In caso di prodotti con pezzatura, si prenota per pezzi e si consegna
-        per quantità.
-        E.g. prodotto distribuito in chili con pezzetura 0.4, ne ordino 2 (pezzi
-        da 0.4 chili) e ne consegno 0.8 (chili complessivi).
-        Dunque anche il calcolo dei valori deve tener presente del diverso
-        significato delle colonne quantity e delivered, premesso che il prezzo è
-        sempre espresso nell'unità di misura principale (nel caso di cui sopra:
-        prezzo al chilo)
-    */
-
-    public function quantityValue()
-    {
-        return $this->fixQuantity('quantity', true);
-    }
-
-    /*
-        Questa funzione è utile per calcolare dinamicamente il costo del
-        prodotto consegnato, il quale viene salvato sul database nell'attributo
-        final_price. Leggere tale attributo per ottenere l'informazione, salvata
-        e immutabile nel tempo (anche se il prezzo del prodotto di riferimento
-        cambia)
-    */
-    public function deliveredValue()
-    {
-        return $this->fixQuantity('delivered', false);
+        return $this->product->contextualPrice($this->booking->order, $rectify);
     }
 
     /*
@@ -128,7 +99,7 @@ class BookedProduct extends Model
     public function deliveredTaxedValue()
     {
         $product = $this->product;
-        $net_final_price = $this->final_price - $this->final_discount;
+        $net_final_price = $this->getValue('effective');
 
         $rate = $product->vat_rate;
         if ($rate != null) {
@@ -143,38 +114,6 @@ class BookedProduct extends Model
         return [$total, $total_vat];
     }
 
-    public function transportBookedValue()
-    {
-        return $this->product->transport * $this->quantity;
-    }
-
-    /*
-        Questa funzione è utile per calcolare dinamicamente il costo di
-        trasporto del prodotto consegnato, il quale viene poi salvato sul
-        database nell'attributo final_transport.
-        Leggere tale attributo per ottenere l'informazione completa, a sua volta
-        eventualmente alterata dal costo di trasporto globale dell'ordine (in
-        modo non direttamente correlato al prodotto)
-    */
-    public function transportDeliveredValue()
-    {
-        return $this->product->transport * $this->delivered;
-    }
-
-    public function discountDeliveredValue()
-    {
-        if (empty($this->product->discount)) {
-            return 0;
-        }
-
-        if (isPercentage($this->product->discount)) {
-            return applyPercentage($this->final_price, $this->product->discount, '=');
-        }
-        else {
-            return $this->product->discount * $this->delivered;
-        }
-    }
-
     public function getBookedVariant($variant, $fallback = false)
     {
         $v = $this->variants()->where('id', '=', $variant->id)->first();
@@ -185,19 +124,6 @@ class BookedProduct extends Model
         }
 
         return $v;
-    }
-
-    private function dynamicTransportCost()
-    {
-        $global_transport = $this->booking->dynamicTransportCost(true, false);
-        $booking_value = $this->booking->getValue('booked', true);
-
-        if ($booking_value != 0)
-            $per_product = round(($global_transport * $this->quantityValue()) / $booking_value, 2);
-        else
-            $per_product = 0;
-
-        return $this->transportBookedValue() + $per_product;
     }
 
     /*
@@ -218,12 +144,10 @@ class BookedProduct extends Model
                     'product_obj' => $this->product,
                     'quantity' => $this->product->portion_quantity > 0 ? $this->quantity * $this->product->portion_quantity : $this->quantity,
                     'quantity_pieces' => $this->quantity,
-                    'price' => $this->quantityValue(),
-                    'transport' => $this->dynamicTransportCost(),
+                    'price' => $this->getValue('booked'),
                     'delivered' => $this->delivered,
                     'delivered_pieces' => $this->product->portion_quantity > 0 ? $this->delivered * $this->product->portion_quantity : $this->delivered,
-                    'price_delivered' => $this->deliveredValue(),
-                    'transport_delivered' => $this->final_transport,
+                    'price_delivered' => $this->getValue('delivered'),
                 ]
             ],
             'by_variant' => []
@@ -323,24 +247,80 @@ class BookedProduct extends Model
         }
     }
 
-    public function quantityWeight()
+    public function getValue($type)
     {
-        if ($this->product->measure->discrete) {
-            return $this->fixWeight('quantity');
-        }
-        else {
-            return $this->true_quantity;
-        }
-    }
+        if (Str::startsWith($type, 'modifier:')) {
+            $id = substr($type, strlen('modifier:'));
+            if ($id == 'all') {
+                $values = $this->modifiedValues;
+            }
+            else {
+                $values = $this->modifiedValues->filter(function($i) use ($id) {
+                    return $i->id == $id;
+                });
+            }
 
-    public function deliveredWeight()
-    {
-        if ($this->product->measure->discrete) {
-            return $this->fixWeight('delivered');
+            return $values->reduce(function($carry, $item) {
+                return $carry + $item->effective_amount;
+            }, 0);
         }
         else {
-            return $this->true_delivered;
+            if ($type == 'booked') {
+                return $this->fixQuantity('quantity', true);
+            }
+            else {
+                switch($this->booking->status) {
+                    case 'pending':
+                        switch($type) {
+                            case 'delivered':
+                                return 0;
+                                break;
+
+                            case 'effective':
+                                return $this->fixQuantity('quantity', true) + $this->getValue('modifier:all');
+                                break;
+
+                            case 'weight':
+                                if ($this->product->measure->discrete) {
+                                    return $this->fixWeight('quantity');
+                                }
+                                else {
+                                    return $this->true_quantity;
+                                }
+
+                                break;
+                        }
+
+                        break;
+
+                    case 'shipped':
+                    case 'saved':
+                        switch($type) {
+                            case 'delivered':
+                                return $this->final_price;
+                                break;
+
+                            case 'effective':
+                                return $this->fixQuantity('delivered', true) + $this->getValue('modifier:all');
+                                break;
+
+                            case 'weight':
+                                if ($this->product->measure->discrete) {
+                                    return $this->fixWeight('delivered');
+                                }
+                                else {
+                                    return $this->true_delivered;
+                                }
+
+                                break;
+                        }
+
+                        break;
+                }
+            }
         }
+
+        return 0;
     }
 
     public function reduxData()
@@ -353,15 +333,15 @@ class BookedProduct extends Model
                 Refelction::describingAttributes()
             */
 
-            'price' => $this->quantityValue(),
-            'weight' => $this->quantityWeight(),
+            'price' => $this->getValue('booked'),
+            'weight' => $this->fixWeight('quantity'),
             'quantity' => $this->product->portion_quantity > 0 ? $this->quantity * $this->product->portion_quantity : $this->quantity,
             'quantity_pieces' => $this->quantity,
 
-            'price_delivered' => $this->deliveredValue(),
-            'weight_delivered' => $this->deliveredWeight(),
-            'delivered' => $this->delivered,
-            'delivered_pieces' => $this->product->portion_quantity > 0 ? $this->delivered * $this->product->portion_quantity : $this->delivered,
+            'price_delivered' => $this->getValue('delivered'),
+            'weight_delivered' => $this->fixWeight('delivered'),
+            'delivered' => $this->product->portion_quantity > 0 ? $this->delivered * $this->product->portion_quantity : $this->delivered,
+            'delivered_pieces' => $this->delivered,
         ];
     }
 }

@@ -103,6 +103,14 @@ class Modifier extends Model
 
     public function apply($booking, $aggregate_data)
     {
+        if (!isset($aggregate_data->orders[$booking->order_id])) {
+            return null;
+        }
+
+        if ($this->definitions->isEmpty()) {
+            return null;
+        }
+
         switch($this->applies_target) {
             case 'order':
                 $check_target = $aggregate_data->orders[$booking->order_id];
@@ -189,7 +197,12 @@ class Modifier extends Model
             }
         }
 
-        $modifier_value = new ModifiedValue();
+        $modifier_value = $obj_mod_target->modifiedValues->firstWhere('modifier_id', $this->id);
+        if (is_null($modifier_value)) {
+            $modifier_value = new ModifiedValue();
+            $obj_mod_target->modifiedValues->push($modifier_value);
+        }
+
         $modifier_value->modifier_id = $this->id;
         $modifier_value->amount = $altered_amount;
         $modifier_value->target_type = get_class($obj_mod_target);

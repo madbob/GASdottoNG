@@ -82,68 +82,62 @@ class BookingUserController extends BookingHandler
             abort(503);
         }
 
-        /*
-            Qui inizio una transazione sul DB e mi comporto come se stessi
-            effettivamente salvando i dati della prenotazione, e aggiornando
-            tutte le quantità, salvo poi fare un rollback alla fine e
-            distruggere tutto
-        */
         DB::beginTransaction();
 
         $bookings = [];
 
+        $ret = (object) [
+            'bookings' => [],
+        ];
+
         foreach($aggregate->orders as $order) {
             $booking = $this->readBooking($request, $order, $user->id, false);
             if ($booking) {
+                $order->setRelation('aggregate', $aggregate);
+                $booking->setRelation('order', $order);
                 $bookings[] = $booking;
             }
         }
 
-        $modified = new Collection();
-
         foreach($bookings as $booking) {
-            $modified = $modified->merge($booking->applyModifiers());
+            $modified = $booking->applyModifiers();
+
+            $ret->bookings[$booking->id] = (object) [
+                'total' => printablePrice($booking->getValue('effective', false)),
+                'modifiers' => [],
+                'products' => $booking->products->reduce(function($carry, $product) {
+                    $carry[$product->product_id] = (object) [
+                        'total' => $product->getValue('effective'),
+                        'modifiers' => [],
+                    ];
+                    return $carry;
+                }, []),
+            ];
+
+            foreach($modified as $mod) {
+                if ($mod->target_type == 'App\Booking') {
+                    if (!isset($ret->bookings[$booking->id]->modifiers[$mod->modifier_id])) {
+                        $ret->bookings[$booking->id]->modifiers[$mod->modifier_id] = (object) [
+                            'label' => $mod->modifier->modifierType->name,
+                            'amount' => 0.
+                        ];
+                    }
+
+                    $ret->bookings[$booking->id]->modifiers[$mod->modifier_id]->amount += $mod->effective_amount;
+                }
+                else {
+                    if (!isset($ret->bookings[$booking->id]->products[$mod->target->product_id]->modifiers[$mod->modifier_id])) {
+                        $ret->bookings[$booking->id]->products[$mod->target->product_id]->modifiers[$mod->modifier_id] = (object) [
+                            'label' => $mod->modifier->modifierType->name,
+                            'amount' => 0.
+                        ];
+                    }
+
+                    $ret->bookings[$booking->id]->products[$mod->target->product_id]->modifiers[$mod->modifier_id]->amount += $mod->effective_amount;
+                }
+            }
         }
 
-        $ret = (object) [
-            'booking' => [],
-            'products' => [],
-        ];
-
-        foreach($modified as $mod) {
-            if ($mod->target_type == 'App\Booking') {
-                if (!isset($ret->booking[$mod->modifier_id])) {
-                    $ret->booking[$mod->modifier_id] = (object) [
-                        'label' => $mod->modifier->modifierType->name,
-                        'amount' => 0.
-                    ];
-                }
-
-                $ret->booking[$mod->modifier_id]->amount += $mod->amount;
-            }
-            else {
-                $product_found = false;
-
-                if (!isset($ret->products[$product_id])) {
-                    $ret->products[$product_id] = [];
-                }
-
-                if (!isset($ret->products[$product_id][$mod->target_id])) {
-                    $ret->products[$product_id][$mod->target_id] = (object) [
-                        'label' => $mod->modifier->modifierType->name,
-                        'amount' => 0.
-                    ];
-                }
-
-                $ret->products[$product_id][$mod->target_id]->amount += $mod->amount;
-            }
-        }
-
-        /*
-            Qui annullo tutte le operazioni svolte sui modelli, in quanto la
-            prenotazione non è ancora stata salvata e mi servivano solo per fare
-            i conti sui valori attuali
-        */
         DB::rollback();
 
         return response()->json($ret);
