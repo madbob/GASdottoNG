@@ -100,4 +100,102 @@ class Modifier extends Model
     {
         return sprintf('%s,%s,%s,%s,%s', $this->applies_target, $this->applies_type, $this->modifierType->arithmetic, $this->distribution_target, $this->value);
     }
+
+    public function apply($booking, $aggregate_data)
+    {
+        switch($this->applies_target) {
+            case 'order':
+                $check_target = $aggregate_data->orders[$booking->order_id];
+                break;
+
+            case 'booking':
+                $check_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id];
+                break;
+
+            case 'product':
+                if (!isset($aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$this->target->id])) {
+                    return null;
+                }
+
+                $check_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$this->target->id];
+                break;
+        }
+
+        switch($this->distribution_target) {
+            case 'order':
+                $mod_target = $aggregate_data->orders[$booking->order_id];
+                $sub_mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id];
+                $obj_mod_target = $booking;
+                break;
+
+            case 'booking':
+                $mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id];
+                $obj_mod_target = $booking;
+                break;
+
+            case 'product':
+                $product_target_id = $this->target->id;
+                if (!isset($aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$product_target_id])) {
+                    return null;
+                }
+
+                $mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$product_target_id];
+                $obj_mod_target = $booking->products()->whereHas('product', function($query) use ($product_target_id) {
+                    $query->where('product_id', $product_target_id);
+                })->first();
+
+                break;
+        }
+
+        if ($booking->status == 'shipped' || $booking->status == 'saved') {
+            switch($this->applies_type) {
+                case 'quantity':
+                    $attribute = 'delivered';
+                    break;
+                case 'price':
+                    $attribute = 'price_delivered';
+                    break;
+                case 'weight':
+                    $attribute = 'weight_delivered';
+                    break;
+            }
+
+            $mod_attribute = 'price_delivered';
+        }
+        else {
+            $attribute = $this->applies_type;
+            $mod_attribute = 'price';
+        }
+
+        $check_value = $check_target->$attribute;
+        $altered_amount = $mod_target->$mod_attribute;
+
+        foreach($this->definitions as $def) {
+            if ($check_value < $def->threshold) {
+                if ($this->value == 'percentage') {
+                    $altered_amount = round((100 * $def->amount) / $altered_amount, 2);
+                }
+                else {
+                    if ($this->distribution_target == 'order') {
+                        $order_attribute = $this->applies_type;
+                        $altered_amount = $mod_target->$order_attribute == 0 ? $def->amount : round(($def->amount * $sub_mod_target->$attribute) / $mod_target->$order_attribute, 2);
+                    }
+                    else {
+                        $altered_amount = $def->amount;
+                    }
+                }
+
+                break;
+            }
+        }
+
+        $modifier_value = new ModifiedValue();
+        $modifier_value->modifier_id = $this->id;
+        $modifier_value->amount = $altered_amount;
+        $modifier_value->target_type = get_class($obj_mod_target);
+        $modifier_value->target_id = $obj_mod_target->id;
+        $modifier_value->save();
+
+        return $modifier_value;
+    }
 }

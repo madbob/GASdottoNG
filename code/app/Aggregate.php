@@ -464,6 +464,23 @@ class Aggregate extends Model implements Feedable
         return $suppliers;
     }
 
+    public function reduxData($ret = null)
+    {
+        if (is_null($ret)) {
+            $ret = (object) [
+                'orders' => [],
+            ];
+        }
+
+        foreach($this->orders as $order) {
+            $order_data = $order->reduxData($ret->orders[$order->id] ?? null);
+            $ret->orders[$order->id] = $order_data;
+            $ret = describingAttributesMerge($ret, $order_data);
+        }
+
+        return $ret;
+    }
+
     /*************************************************************** Feedable */
 
     public function toFeedItem()

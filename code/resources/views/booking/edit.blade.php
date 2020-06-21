@@ -9,7 +9,7 @@ $enforced = $enforced ?? false;
 
 @include('booking.head', ['aggregate' => $aggregate])
 
-<form class="form-horizontal inner-form booking-form" method="PUT" action="{{ url('booking/' . $aggregate->id . '/user/' . $user->id) }}">
+<form class="form-horizontal inner-form booking-form" method="PUT" action="{{ url('booking/' . $aggregate->id . '/user/' . $user->id) }}" data-dynamic-url="{{ route('booking.dynamics', ['aggregate_id' => $aggregate->id, 'user_id' => $user->id]) }}">
     <input type="hidden" name="post-saved-function" value="afterBookingSaved">
 
     @if($user->gas->restrict_booking_to_credit)
@@ -126,23 +126,9 @@ $enforced = $enforced ?? false;
 
                         <td>
                             <label class="static-label booking-product-price pull-right">{{ printablePriceCurrency($p ? $p->quantityValue() : 0) }}</label>
-                            <input type="hidden" name="product-transport" value="{{ $product->transport }}" class="skip-on-submit" />
-                            <input type="hidden" name="product-discount" value="{{ $product->discount }}" class="skip-on-submit" />
                         </td>
                     </tr>
                 @endforeach
-
-                @include('delivery.dynamicrow', [
-                    'identifier' => 'transport',
-                    'label' => _i('Trasporto'),
-                    'skip_cells' => 3
-                ])
-
-                @include('delivery.dynamicrow', [
-                    'identifier' => 'discount',
-                    'label' => _i('Sconto'),
-                    'skip_cells' => 3
-                ])
 
                 @if($user->gas->restrict_booking_to_credit)
                     <tr class="do-not-sort">

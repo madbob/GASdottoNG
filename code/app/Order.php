@@ -1017,6 +1017,36 @@ class Order extends Model
         return [$this->supplier];
     }
 
+    public function reduxData($ret = null)
+    {
+        if (is_null($ret)) {
+            $ret = (object) [
+                'bookings' => [],
+                'products' => [],
+            ];
+        }
+
+        foreach($this->bookings as $booking) {
+            if (!isset($ret->bookings[$booking->id])) {
+                $booking_data = $booking->reduxData();
+                $ret->bookings[$booking->id] = $booking_data;
+
+                foreach($booking_data->products as $product_data) {
+                    if (isset($ret->products[$product_data->product_id])) {
+                        $ret->products[$product_data->product_id] = describingAttributesMerge($ret->products[$product_data->product_id], $product_data);
+                    }
+                    else {
+                        $ret->products[$product_data->product_id] = $product_data;
+                    }
+                }
+
+                $ret = describingAttributesMerge($ret, $booking_data);
+            }
+        }
+
+        return $ret;
+    }
+
     /************************************************************ SluggableID */
 
     public function getSlugID()

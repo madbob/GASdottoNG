@@ -96,6 +96,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('attachments/{id}/header', 'AttachmentsController@objhead')->name('attachments.objhead');
     Route::get('attachments/download/{id}', 'AttachmentsController@download');
 
+    Route::get('booking/{aggregate_id}/user/{user_id}/dynamics', 'BookingUserController@dynamicModifiers')->name('booking.dynamics');
     Route::get('bookings/{id}/header', 'BookingController@objhead')->name('bookings.objhead');
     Route::get('booking/{aggregate_id}/user/{user_id}/header', 'BookingUserController@objhead2');
     Route::get('booking/{aggregate_id}/user/{user_id}/document', 'BookingUserController@document');

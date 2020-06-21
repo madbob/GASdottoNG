@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 use DB;
 use URL;
@@ -70,6 +71,82 @@ class BookingUserController extends BookingHandler
     public function update(Request $request, $aggregate_id, $user_id)
     {
         return $this->bookingUpdate($request, $aggregate_id, $user_id, false);
+    }
+
+    public function dynamicModifiers(Request $request, $aggregate_id, $user_id)
+    {
+        $user = $request->user();
+        $aggregate = Aggregate::findOrFail($aggregate_id);
+
+        if ($user->id != $user_id && $user->can('supplier.shippings', $aggregate) == false) {
+            abort(503);
+        }
+
+        /*
+            Qui inizio una transazione sul DB e mi comporto come se stessi
+            effettivamente salvando i dati della prenotazione, e aggiornando
+            tutte le quantità, salvo poi fare un rollback alla fine e
+            distruggere tutto
+        */
+        DB::beginTransaction();
+
+        $bookings = [];
+
+        foreach($aggregate->orders as $order) {
+            $booking = $this->readBooking($request, $order, $user->id, false);
+            if ($booking) {
+                $bookings[] = $booking;
+            }
+        }
+
+        $modified = new Collection();
+
+        foreach($bookings as $booking) {
+            $modified = $modified->merge($booking->applyModifiers());
+        }
+
+        $ret = (object) [
+            'booking' => [],
+            'products' => [],
+        ];
+
+        foreach($modified as $mod) {
+            if ($mod->target_type == 'App\Booking') {
+                if (!isset($ret->booking[$mod->modifier_id])) {
+                    $ret->booking[$mod->modifier_id] = (object) [
+                        'label' => $mod->modifier->modifierType->name,
+                        'amount' => 0.
+                    ];
+                }
+
+                $ret->booking[$mod->modifier_id]->amount += $mod->amount;
+            }
+            else {
+                $product_found = false;
+
+                if (!isset($ret->products[$product_id])) {
+                    $ret->products[$product_id] = [];
+                }
+
+                if (!isset($ret->products[$product_id][$mod->target_id])) {
+                    $ret->products[$product_id][$mod->target_id] = (object) [
+                        'label' => $mod->modifier->modifierType->name,
+                        'amount' => 0.
+                    ];
+                }
+
+                $ret->products[$product_id][$mod->target_id]->amount += $mod->amount;
+            }
+        }
+
+        /*
+            Qui annullo tutte le operazioni svolte sui modelli, in quanto la
+            prenotazione non è ancora stata salvata e mi servivano solo per fare
+            i conti sui valori attuali
+        */
+        DB::rollback();
+
+        return response()->json($ret);
     }
 
     public function destroy(Request $request, $aggregate_id, $user_id)

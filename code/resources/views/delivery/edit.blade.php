@@ -9,7 +9,7 @@ $existing = false;
 
 ?>
 
-<form class="form-horizontal inner-form booking-form" method="PUT" action="{{ url('delivery/' . $aggregate->id . '/user/' . $user->id) }}" data-reference-modal="editMovement-{{ $rand }}">
+<form class="form-horizontal inner-form booking-form" method="PUT" action="{{ url('delivery/' . $aggregate->id . '/user/' . $user->id) }}" data-dynamic-url="{{ route('booking.dynamics', ['aggregate_id' => $aggregate->id, 'user_id' => $user->id]) }}" data-reference-modal="editMovement-{{ $rand }}">
     <input type="hidden" name="action" value="shipped">
 
     <div class="well">
@@ -37,10 +37,15 @@ $existing = false;
             $o = $order->userBooking($user->id);
             $existing = ($existing || $o->exists || $o->friends_bookings->isEmpty() == false);
 
-            if ($o->status == 'pending')
+            if ($o->status == 'pending') {
                 $now_delivered = 0;
-            else
+            }
+            else {
+                /*
+                    TODO: recuperare modificatori
+                */
                 $now_delivered = $o->getValue('delivered', true) + $o->getValue('transport', true) - $o->getValue('discount', true);
+            }
 
             $tot_delivered[$o->id] = $now_delivered;
             $tot_amount += $now_delivered;
@@ -80,8 +85,6 @@ $existing = false;
                                     <td>
                                         <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($product->true_quantity, $discrete_quantity) }}" class="skip-on-submit" />
                                         <input type="hidden" name="product-price" value="{{ $product->product->contextualPrice($order, false) }}" class="skip-on-submit" />
-                                        <input type="hidden" name="product-transport" value="{{ $product->product->transport }}" class="skip-on-submit" />
-                                        <input type="hidden" name="product-discount" value="{{ $product->product->discount }}" class="skip-on-submit" />
                                         <label class="static-label">{{ $product->product->name }}</label>
                                     </td>
 
@@ -120,8 +123,6 @@ $existing = false;
                                         <td>
                                             <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($var->true_quantity, $discrete_quantity) }}" class="skip-on-submit" />
                                             <input type="hidden" name="product-price" value="{{ $price }}" class="skip-on-submit" />
-                                            <input type="hidden" name="product-transport" value="{{ $product->product->transport }}" class="skip-on-submit" />
-                                            <input type="hidden" name="product-discount" value="{{ $product->product->discount }}" class="skip-on-submit" />
 
                                             <label class="static-label">{{ $product->product->name }}: {{ $var->printableName() }}</label>
 
@@ -173,16 +174,6 @@ $existing = false;
                                 </td>
                             </tr>
                         @endif
-
-                        @include('delivery.dynamicrow', [
-                            'identifier' => 'transport',
-                            'label' => _i('Trasporto')
-                        ])
-
-                        @include('delivery.dynamicrow', [
-                            'identifier' => 'discount',
-                            'label' => _i('Sconto')
-                        ])
                     </tbody>
 
                     <tfoot>

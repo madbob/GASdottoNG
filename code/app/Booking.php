@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 use Auth;
 use DB;
@@ -12,10 +13,6 @@ use Log;
 
 use App\Events\SluggableCreating;
 use App\Events\BookingDeleting;
-use App\GASModel;
-use App\CreditableTrait;
-use App\SluggableID;
-use App\BookedProduct;
 
 class Booking extends Model
 {
@@ -585,6 +582,62 @@ class Booking extends Model
     public function getShowURL()
     {
         return route('booking.user.show', ['booking' => $this->order->aggregate_id, 'user' => $this->user_id]);
+    }
+
+    public function reduxData()
+    {
+        $ret = (object) [
+            'user_id' => $this->user_id,
+            'products' => [],
+        ];
+
+        foreach($this->products as $product) {
+            $product_data = $product->reduxData();
+
+            if (isset($ret->products[$product->product_id])) {
+                $ret->products[$product->product_id] = describingAttributesMerge($ret->products[$product->product_id], $product_data);
+            }
+            else {
+                $ret->products[$product->product_id] = $product_data;
+            }
+
+            $ret = describingAttributesMerge($ret, $product_data);
+        }
+
+        return $ret;
+    }
+
+    public function applyModifiers($aggregate_data = null)
+    {
+        if (is_null($aggregate_data)) {
+            $aggregate = $this->order->aggregate;
+            $aggregate_data = $aggregate->reduxData();
+        }
+
+        $modifiers = new Collection();
+
+        $modifiers = $modifiers->merge($this->order->modifiers);
+
+        foreach($this->order->products as $product) {
+            $modifiers = $modifiers->merge($product->modifiers);
+        }
+
+        if ($this->user->shipping_place) {
+            $modifiers = $modifiers->merge($this->user->shipping_place->modifiers);
+        }
+
+        $modifiers = $modifiers->sortBy('priority');
+
+        $values = new Collection();
+
+        foreach($modifiers as $modifier) {
+            $value = $modifier->apply($this, $aggregate_data);
+            if ($value) {
+                $values = $values->push($value);
+            }
+        }
+
+        return $values;
     }
 
     /************************************************************ SluggableID */

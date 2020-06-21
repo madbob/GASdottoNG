@@ -801,127 +801,18 @@ function afterBookingSaved(form, data) {
 }
 
 function bookingTotal(editor) {
-    var total_price = 0;
-    var total_transport = 0;
-	var total_discount = 0;
+	var form = $(editor).closest('form');
+	var data = form.serialize();
+	var url = form.attr('data-dynamic-url');
 
-    editor.find('.booking-product').each(function() {
-		var transport = 0;
-		var discount = 0;
-
-        if ($(this).hasClass('hidden'))
-            return true;
-
-        var product_price = $(this).find('input:hidden[name="product-price"]');
-        if (product_price.length == 0)
-            return true;
-
-        var price = product_price.val();
-        price = parseFloatC(price);
-
-        var product_transport = $(this).find('input:hidden[name="product-transport"]');
-        if (product_transport.length == 0) {
-            transport = 0;
-        }
-        else {
-            transport = parseFloatC(product_transport.val());
-        }
-
-		var product_discount = $(this).find('input:hidden[name="product-discount"]');
-        if (product_discount.length == 0) {
-            discount = '';
-        }
-        else {
-            discount = product_discount.val();
-        }
-
-        var quantity = 0;
-        var row_p = 0;
-        var row_t = 0;
-		var row_d = 0;
-
-        $(this).find('.booking-product-quantity').each(function() {
-            var input = $(this).find('input');
-
-            var q = input.val();
-            if (q == '')
-                q = 0;
-            else
-                q = parseFloatC(q);
-
-            if ($(this).hasClass('booking-variant-quantity')) {
-                var offset = $(this).closest('.inline-variant-selector').find('select option:selected').attr('data-variant-price');
-                current_price = price + parseFloatC(offset);
-            } else {
-                current_price = price;
-            }
-
-            row_p += current_price * q;
-            row_t += transport * q;
-
-			if (discount.endsWith('%')) {
-				var calculated_discount = applyPercentage(row_p, discount, '-');
-				row_d += calculated_discount[1];
-			}
-			else {
-				row_d += discount * q;
-			}
-        });
-
-        $(this).closest('tr').find('.booking-product-price').text(priceRound(row_p) + ' ' + current_currency);
-        total_price += row_p;
-        total_transport += row_t;
-		total_discount += row_d;
-    });
-
-	var transport = editor.find('input[name=global-transport-value]');
-	if (transport.length != 0) {
-		var transport_value = transport.val();
-		var calculated_transport = applyPercentage(total_price, transport_value, '+');
-		total_transport += calculated_transport[1];
-	}
-	editor.find('.booking-transport .booking-transport-value span').text(priceRound(total_transport));
-
-	var discount = editor.find('input[name=global-discount-value]');
-	if (discount.length != 0) {
-		var discount_value = discount.val();
-		var calculated_discount = applyPercentage(total_price, discount_value, '-');
-		total_discount += calculated_discount[1];
-	}
-	editor.find('.booking-discount .booking-discount-value span').text(priceRound(total_discount));
-
-    total_price = total_price - total_discount + total_transport;
-    editor.find('.booking-total').text(priceRound(total_price));
-
-    var form = editor.closest('form');
-    var grand_total = 0;
-    var status = {};
-
-    form.find('.booking-editor').each(function() {
-        var t = parseFloatC($('.booking-total', this).text());
-        grand_total += t;
-        status[$(this).attr('data-booking-id')] = t;
-    });
-
-    form.find('.all-bookings-total').text(priceRound(grand_total));
-
-	var max_bookable = form.find('input:hidden[name="max-bookable"]');
-	if (max_bookable.length != 0) {
-		max_bookable = parseFloat(max_bookable.val());
-		form.find('button[type=submit]').prop('disabled', grand_total > max_bookable);
-	}
-
-    /*
-    	Qui aggiorno il valore totale della prenotazione nel (eventuale)
-    	modale per il pagamento
-    */
-    var payment_modal_id = form.attr('data-reference-modal');
-    var payment_modal = $('#' + payment_modal_id);
-
-    if (payment_modal.length != 0) {
-        payment_modal.find('input[name=amount]').val(grand_total.toFixed(2)).change();
-        payment_modal.find('input[name=delivering-status]').val(JSON.stringify(status));
-    }
+	$.ajax({
+		url: url,
+		method: 'GET',
+		data: data,
+		success: function(data) {
+			// TODO
+		}
+	});
 }
 
 function getBookingRowStatus(row) {

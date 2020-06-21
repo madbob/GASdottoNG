@@ -18,9 +18,6 @@ $booked_quantity = (isset($o) ? $o->getBookedQuantity($product) : 0);
     @if($product->max_available != 0)
         <input type="hidden" name="product-available" value="{{ $product->stillAvailable($order) + $booked_quantity }}" class="skip-on-submit" />
     @endif
-@else
-    <input type="hidden" name="product-price" value="{{ $product->contextualPrice($order, !$while_shipping) }}" class="skip-on-submit" />
-    <input type="hidden" name="product-transport" value="{{ $product->transport }}" class="skip-on-submit" />
 @endif
 
 @if($product->variants->isEmpty() == false)

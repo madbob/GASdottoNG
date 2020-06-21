@@ -342,4 +342,26 @@ class BookedProduct extends Model
             return $this->true_delivered;
         }
     }
+
+    public function reduxData()
+    {
+        return (object) [
+            'product_id' => $this->product_id,
+
+            /*
+                Questi attributi devono essere coerenti con quelli descritti in
+                Refelction::describingAttributes()
+            */
+
+            'price' => $this->quantityValue(),
+            'weight' => $this->quantityWeight(),
+            'quantity' => $this->product->portion_quantity > 0 ? $this->quantity * $this->product->portion_quantity : $this->quantity,
+            'quantity_pieces' => $this->quantity,
+
+            'price_delivered' => $this->deliveredValue(),
+            'weight_delivered' => $this->deliveredWeight(),
+            'delivered' => $this->delivered,
+            'delivered_pieces' => $this->product->portion_quantity > 0 ? $this->delivered * $this->product->portion_quantity : $this->delivered,
+        ];
+    }
 }
