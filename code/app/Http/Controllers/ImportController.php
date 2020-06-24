@@ -11,9 +11,10 @@ use Auth;
 use Log;
 use App;
 use Hash;
-use CsvReader;
-use ezcArchive;
 use Artisan;
+
+use ezcArchive;
+use League\Csv\Reader;
 
 use App\User;
 use App\Contact;
@@ -70,15 +71,20 @@ class ImportController extends Controller
                 return $this->errorResponse(_i('Impossibile interpretare il file'));
             }
 
-            $reader = CsvReader::open($path, $target_separator);
-            $sample_line = $reader->readLine();
+            $reader = Reader::createFromPath($path, 'r');
+            $reader->setDelimiter($target_separator);
+            foreach($reader->getRecords() as $line) {
+                $sample_line = $line;
+                break;
+            }
 
             $parameters['path'] = $path;
             $parameters['columns'] = $sample_line;
 
             return view('import.csvsortcolumns', $parameters);
-
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
+            Log::error('Unable to load file to import: ' . $e->getMessage());
             return $this->errorResponse(_i('Errore nel salvataggio del file'));
         }
     }
@@ -225,8 +231,10 @@ class ImportController extends Controller
 
                     $products = [];
 
-                    $reader = CsvReader::open($path, $target_separator);
-                    while (($line = $reader->readLine()) !== false) {
+                    $reader = Reader::createFromPath($path, 'r');
+                    $reader->setDelimiter($target_separator);
+
+                    foreach($reader->getRecords() as $line) {
                         if (empty($line) || (count($line) == 1 && empty($line[0]))) {
                             continue;
                         }
@@ -558,8 +566,10 @@ class ImportController extends Controller
                         TODO: aggiornare questo per adattarlo a UsersService
                     */
 
-                    $reader = CsvReader::open($path, $target_separator);
-                    while (($line = $reader->readLine()) !== false) {
+                    $reader = Reader::createFromPath($path, 'r');
+                    $reader->setDelimiter($target_separator);
+
+                    foreach($reader->getRecords() as $line) {
                         try {
                             $login = $line[$login_index];
                             $u = User::where('username', '=', $login)->orderBy('id', 'desc')->first();
@@ -693,8 +703,10 @@ class ImportController extends Controller
                     $movements = [];
                     $errors = [];
 
-                    $reader = CsvReader::open($path, $target_separator);
-                    while (($line = $reader->readLine()) !== false) {
+                    $reader = Reader::createFromPath($path, 'r');
+                    $reader->setDelimiter($target_separator);
+
+                    foreach($reader->getRecords() as $line) {
                         try {
                             /*
                                 In questa fase, genero dei Movement

@@ -347,10 +347,6 @@ function http_csv_headers($filename)
     header('Expires: 0');
 }
 
-/*
-    Se $format_callback è null, si assume che $contents sia una stringa da
-    scrivere direttamente nel file CSV
-*/
 function output_csv($filename, $head, $contents, $format_callback, $out_file = null)
 {
     $callback = function() use ($head, $contents, $format_callback, $out_file) {
