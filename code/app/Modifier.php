@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Log;
+
 class Modifier extends Model
 {
     use GASModel;
@@ -101,6 +103,24 @@ class Modifier extends Model
         return sprintf('%s,%s,%s,%s,%s', $this->applies_target, $this->applies_type, $this->modifierType->arithmetic, $this->distribution_target, $this->value);
     }
 
+    private function applyDefinition($amount, $definition, $target, $subtarget, $attribute)
+    {
+        if ($this->value == 'percentage') {
+            $amount = round((100 * $definition->amount) / $amount, 2);
+        }
+        else {
+            if ($this->distribution_target == 'order') {
+                $order_attribute = $this->applies_type;
+                $amount = $target->$order_attribute == 0 ? $definition->amount : round(($definition->amount * $subtarget->$attribute) / $target->$order_attribute, 2);
+            }
+            else {
+                $amount = $definition->amount;
+            }
+        }
+
+        return $amount;
+    }
+
     public function apply($booking, $aggregate_data)
     {
         if (!isset($aggregate_data->orders[$booking->order_id])) {
@@ -177,24 +197,19 @@ class Modifier extends Model
 
         $check_value = $check_target->$attribute;
         $altered_amount = $mod_target->$mod_attribute;
+        $found_modifier = false;
 
         foreach($this->definitions as $def) {
             if ($check_value < $def->threshold) {
-                if ($this->value == 'percentage') {
-                    $altered_amount = round((100 * $def->amount) / $altered_amount, 2);
-                }
-                else {
-                    if ($this->distribution_target == 'order') {
-                        $order_attribute = $this->applies_type;
-                        $altered_amount = $mod_target->$order_attribute == 0 ? $def->amount : round(($def->amount * $sub_mod_target->$attribute) / $mod_target->$order_attribute, 2);
-                    }
-                    else {
-                        $altered_amount = $def->amount;
-                    }
-                }
-
+                $altered_amount = $this->applyDefinition($altered_amount, $def, $mod_target, $sub_mod_target, $attribute);
+                $found_modifier = true;
                 break;
             }
+        }
+
+        if ($found_modifier == false) {
+            $def = $this->definitions[count($this->definitions) - 1];
+            $altered_amount = $this->applyDefinition($altered_amount, $def, $mod_target, $sub_mod_target, $attribute);
         }
 
         $modifier_value = $obj_mod_target->modifiedValues->firstWhere('modifier_id', $this->id);

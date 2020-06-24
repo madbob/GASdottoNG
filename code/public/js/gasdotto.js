@@ -833,7 +833,7 @@ function bookingTotal(editor) {
 					}
 
 					for (let [modifier_id, modifier_meta] of Object.entries(booking_data.modifiers)) {
-						$('.modifier-' + modifier_id, container).find('span').text(priceRound(modifier_meta.amount));
+						$('input[name="modifier-' + modifier_id + '"]', container).parent().find('span').text(priceRound(modifier_meta.amount));
 					}
 
 					$('.booking-total', container).text(priceRound(booking_data.total));
