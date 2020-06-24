@@ -357,6 +357,10 @@ class User extends Authenticatable
                 'name' => _i('Nome'),
                 'checked' => true,
             ],
+            'fullname' => (object) [
+                'name' => _i('Nome Completo'),
+                'checked' => false,
+            ],
             'username' => (object) [
                 'name' => _i('Username'),
             ],
@@ -416,6 +420,9 @@ class User extends Authenticatable
                     case 'address':
                         $contacts = $this->getContactsByType($f);
                         $ret[] = join(', ', $contacts);
+                        break;
+                    case 'fullname':
+                        $ret[] = $this->printableName();
                         break;
                     case 'shipping_place':
                         $sp = $this->shippingplace;
