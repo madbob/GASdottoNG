@@ -421,6 +421,18 @@ class Booking extends Model
                 }
             }
         }
+        else {
+            /*
+                Questo è per annullare eventuali sconti che sono stati nel
+                frattempo rimossi dall'ordine
+            */
+            foreach($this->products as $p) {
+                if ($p->final_discount != 0) {
+                    $p->final_discount = 0;
+                    $p->save();
+                }
+            }
+        }
     }
 
     public function getProductsWithFriendsAttribute()
