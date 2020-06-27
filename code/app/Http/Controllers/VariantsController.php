@@ -77,9 +77,12 @@ class VariantsController extends Controller
                 $price_offset = 0;
             }
 
-            $weight_offset = $new_weight_offsets[$i];
-            if (empty($weight_offset)) {
-                $weight_offset = 0;
+            $weight_offset = 0;
+            if (isset($new_weight_offsets[$i])) {
+                $weight_offset = $new_weight_offsets[$i];
+                if (empty($weight_offset)) {
+                    $weight_offset = 0;
+                }
             }
 
             $value_found = false;
