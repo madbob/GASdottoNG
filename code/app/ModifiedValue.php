@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Log;
+
 class ModifiedValue extends Model
 {
     public function modifier()
@@ -24,5 +26,22 @@ class ModifiedValue extends Model
         else {
             return $this->amount * -1;
         }
+    }
+
+    public static function aggregateByType($collection)
+    {
+        return $collection->reduce(function($carry, $value) {
+            $id = $value->modifier->modifierType->id;
+
+            if (!isset($carry[$id])) {
+                $carry[$id] = (object) [
+                    'name' => $value->modifier->modifierType->name,
+                    'amount' => 0,
+                ];
+            }
+
+            $carry[$id]->amount += $value->effective_amount;
+            return $carry;
+        }, []);
     }
 }

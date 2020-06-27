@@ -105,13 +105,15 @@ class Modifier extends Model
 
     private function applyDefinition($amount, $definition, $target, $subtarget, $attribute)
     {
+        $rounding = 4;
+
         if ($this->value == 'percentage') {
-            $amount = round((100 * $definition->amount) / $amount, 2);
+            $amount = round((100 * $definition->amount) / $amount, $rounding);
         }
         else {
             if ($this->distribution_target == 'order') {
                 $order_attribute = $this->applies_type;
-                $amount = $target->$order_attribute == 0 ? $definition->amount : round(($definition->amount * $subtarget->$attribute) / $target->$order_attribute, 2);
+                $amount = $target->$order_attribute == 0 ? $definition->amount : round(($definition->amount * $subtarget->$attribute) / $target->$order_attribute, $rounding);
             }
             else {
                 $amount = $definition->amount;
@@ -196,6 +198,10 @@ class Modifier extends Model
         }
 
         $check_value = $check_target->$attribute;
+        if ($check_value == 0) {
+            return null;
+        }
+
         $altered_amount = $mod_target->$mod_attribute;
         $found_modifier = false;
 
@@ -215,6 +221,7 @@ class Modifier extends Model
         $modifier_value = $obj_mod_target->modifiedValues->firstWhere('modifier_id', $this->id);
         if (is_null($modifier_value)) {
             $modifier_value = new ModifiedValue();
+            $modifier_value->setRelation('modifier', $this);
             $obj_mod_target->modifiedValues->push($modifier_value);
         }
 

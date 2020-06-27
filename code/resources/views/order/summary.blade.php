@@ -127,21 +127,6 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                     ])
                 </td>
 
-                <!-- Trasporto -->
-                <td class="order-cell-transport {{ in_array('transport', $columns) ? '' : 'hidden' }}">
-                    {{-- Nota bene: "transport" è anche un parametro dell'ordine, qui metto un prefisso per evitare la collisione --}}
-                    @include('commons.decimalfield', [
-                        'obj' => $product,
-                        'label' => '',
-                        'prefix' => 'product_',
-                        'name' => 'transport',
-                        'postfix' => '[]',
-                        'squeeze' => true,
-                        'is_price' => true,
-                        'disabled' => $order->isActive() == false
-                    ])
-                </td>
-
                 <!-- Disponibile -->
                 <td class="order-cell-available {{ in_array('available', $columns) ? '' : 'hidden' }}">
                     @include('commons.decimalfield', [
@@ -165,41 +150,36 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                 <td class="order-cell-quantity {{ in_array('quantity', $columns) ? '' : 'hidden' }}">
                     <label>
                         @if($product->portion_quantity != 0)
-                            <span class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity_pieces'] }}</span> Pezzi
+                            <span class="order-summary-product-quantity">{{ $summary->products[$product->id]->quantity_pieces ?? 0 }}</span> Pezzi
                         @else
-                            <span class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity'] }}</span> {{ $product->measure->name }}
+                            <span class="order-summary-product-quantity">{{ $summary->products[$product->id]->quantity ?? 0 }}</span> {{ $product->measure->name }}
                         @endif
                     </label>
                 </td>
 
                 <!-- Peso Ordinato -->
                 <td class="order-cell-weight {{ in_array('weight', $columns) ? '' : 'hidden' }}">
-                    <label class="order-summary-product-weight">{{ $summary->products[$product->id]['weight'] }} {{ $product->measure->discrete ? _i('Chili') : $product->measure->name }}</label>
+                    <label class="order-summary-product-weight">{{ $summary->products[$product->id]->weight ?? 0 }} {{ $product->measure->discrete ? _i('Chili') : $product->measure->name }}</label>
                 </td>
 
                 <!-- Totale Prezzo -->
                 <td class="order-cell-total_price {{ in_array('total_price', $columns) ? '' : 'hidden' }}">
-                    <label class="order-summary-product-price">{{ $summary->products[$product->id]['price'] }} {{ $currentgas->currency }}</label>
-                </td>
-
-                <!-- Totale Trasporto -->
-                <td class="order-cell-total_transport {{ in_array('total_transport', $columns) ? '' : 'hidden' }}">
-                    <label class="order-summary-product-transport">{{ $summary->products[$product->id]['transport'] }} {{ $currentgas->currency }}</label>
+                    <label class="order-summary-product-price">{{ printablePriceCurrency($summary->products[$product->id]->price ?? 0) }}</label>
                 </td>
 
                 <!-- Quantità Consegnata -->
                 <td class="order-cell-quantity_delivered {{ in_array('quantity_delivered', $columns) ? '' : 'hidden' }}">
-                    <label class="order-summary-product-delivered">{{ $summary->products[$product->id]['delivered'] }} {{ $product->measure->name }}</label>
+                    <label class="order-summary-product-delivered">{{ $summary->products[$product->id]->delivered ?? 0 }} {{ $product->measure->name }}</label>
                 </td>
 
                 <!-- Peso Consegnato -->
                 <td class="order-cell-weight_delivered {{ in_array('weight_delivered', $columns) ? '' : 'hidden' }}">
-                    <label class="order-summary-product-weight_delivered">{{ $summary->products[$product->id]['weight_delivered'] }} {{ $product->measure->discrete ? _i('Chili') : $product->measure->name }}</label>
+                    <label class="order-summary-product-weight_delivered">{{ $summary->products[$product->id]->weight_delivered ?? 0 }} {{ $product->measure->discrete ? _i('Chili') : $product->measure->name }}</label>
                 </td>
 
                 <!-- Totale Consegnato -->
                 <td class="order-cell-price_delivered {{ in_array('price_delivered', $columns) ? '' : 'hidden' }}">
-                    <label class="order-summary-product-price_delivered">{{ $summary->products[$product->id]['price_delivered'] }} {{ $currentgas->currency }}</label>
+                    <label class="order-summary-product-price_delivered">{{ printablePriceCurrency($summary->products[$product->id]->price_delivered ?? 0) }}</label>
                 </td>
 
                 <!-- Note -->
@@ -207,7 +187,7 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                     @if($order->isActive())
                         <?php $random_identifier = rand(); ?>
 
-                        @if($summary->products[$product->id]['notes'])
+                        @if($product->package_size != 0 && isset($summary->products[$product->id]->quantity) && $summary->products[$product->id]->quantity != 0 && round(fmod($summary->products[$product->id]->quantity, $product->fixed_package_size)) != 0)
                             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#fix-{{ $random_identifier }}">
                                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                             </button>
@@ -238,27 +218,21 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                     @switch($identifier)
                         @case('total_price')
                             <span class="order-summary-order-price">{{ printablePriceCurrency($summary->price) }}</span>
-                            @if($order->discount != 0)
-                                <button type="button" class="btn btn-default btn-xs" data-toggle="popover" data-content="{{ printablePriceCurrency($summary->undiscounted_price) }} - Sconto {{ printablePercentage($order->discount) }}">
-                                    <span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span>
-                                </button>
-                            @endif
-                            @break
+                            <?php
 
-                        @case('total_transport')
-                            {{ printablePriceCurrency($summary->transport) }}
+                            $modifiers = $order->applyModifiers();
+                            $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
+
+                            ?>
+
+                            @foreach($aggregated_modifiers as $am)
+                                <p>+ {{ $am->name }}: {{ printablePrice($am->amount) }}</p>
+                            @endforeach
+
                             @break
 
                         @case('price_delivered')
                             <span class="order-summary-order-price_delivered">{{ printablePriceCurrency($summary->price_delivered) }}</span>
-                            @if($summary->transport_delivered)
-                                + <span class="order-summary-order-transport_delivered">{{ printablePriceCurrency($summary->transport_delivered) }}</span>
-                            @endif
-                            @if($order->discount != 0)
-                                <button type="button" class="btn btn-default btn-xs" data-toggle="popover" data-content="{{ printablePriceCurrency($summary->undiscounted_price_delivered) }} - Sconto {{ printablePercentage($order->discount) }}">
-                                    <span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span>
-                                </button>
-                            @endif
                             @break
 
                         @case('weight')

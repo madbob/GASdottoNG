@@ -1,4 +1,4 @@
-<?php $summary = $order->calculateSummary() ?>
+<?php $summary = $order->reduxData() ?>
 
 <form class="form-horizontal main-form">
     <div class="row">
@@ -19,7 +19,7 @@
                     'obj' => $order->payment,
                     'name' => 'payment_id',
                     'label' => _i('Pagamento'),
-                    'default' => \App\Movement::generate('order-payment', $currentgas, $order, $summary->price_delivered + $summary->transport_delivered),
+                    'default' => \App\Movement::generate('order-payment', $currentgas, $order, $summary->price_delivered),
                     'to_modal' => [
                         'amount_editable' => true
                     ]
@@ -36,11 +36,10 @@
 
     <hr/>
 
-    <?php $summary = $order->calculateSummary() ?>
     @include('order.summary_ro', ['order' => $order, 'summary' => $summary])
 
     @can('supplier.shippings', $order->supplier)
-        @include('order.annotations', ['order' => $order, 'summary' => $summary])
+        @include('order.annotations', ['order' => $order])
     @endcan
 
     @include('commons.formbuttons', [

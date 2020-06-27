@@ -149,43 +149,6 @@ class OrdersController extends Controller
         return $this->commonSuccessResponse($a);
     }
 
-    public function show(Request $request, $id)
-    {
-        $order = Order::findOrFail($id);
-        $summary = $order->calculateSummary();
-        return response()->json($summary);
-    }
-
-    public function recalculate(Request $request, $id)
-    {
-        $order = Order::findOrFail($id);
-
-        $final_products = [];
-        $enabled = $request->input('enabled', []);
-        $prices = $request->input('product_price', []);
-        $transports = $request->input('product_transport', []);
-        $availables = $request->input('product_max_available', []);
-        $products = $request->input('productid');
-
-        for ($i = 0; $i < count($products); ++$i) {
-            $id = $products[$i];
-
-            foreach ($enabled as $en) {
-                if ($en == $id) {
-                    $prod = Product::find($id);
-                    $prod->price = $prices[$i];
-                    $prod->transport = $transports[$i];
-                    $prod->max_available = $availables[$i];
-                    $final_products[] = $prod;
-                    break;
-                }
-            }
-        }
-
-        $summary = $order->calculateSummary($final_products);
-        return response()->json($summary);
-    }
-
     public function update(Request $request, $id)
     {
         DB::beginTransaction();

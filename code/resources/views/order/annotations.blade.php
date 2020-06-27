@@ -1,4 +1,6 @@
-@if(!empty($summary->notes))
+<?php $annotated_bookings = $order->bookings()->where('notes', '!=', '')->get() ?>
+
+@if($annotated_bookings->isEmpty() == false)
     <div class="row">
         <div class="col-md-12">
             <div class="well">
@@ -10,10 +12,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($summary->notes as $n)
+                        @foreach ($annotated_bookings as $annotated_booking) {
                             <tr>
-                                <td>{{ $n->user }}</td>
-                                <td>{{ $n->note }}</td>
+                                <td>{{ $annotated_booking->user->printableName() }}</td>
+                                <td>{{ $annotated_booking->notes }}</td>
                             </tr>
                         @endforeach
                     </tbody>

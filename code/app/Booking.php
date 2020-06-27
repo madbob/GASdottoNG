@@ -17,7 +17,7 @@ use App\Events\BookingDeleting;
 
 class Booking extends Model
 {
-    use GASModel, SluggableID, ModifiedTrait, PayableTrait, CreditableTrait;
+    use GASModel, SluggableID, ModifiedTrait, PayableTrait, CreditableTrait, ReducibleTrait;
 
     public $incrementing = false;
 
@@ -428,30 +428,6 @@ class Booking extends Model
         return route('booking.user.show', ['booking' => $this->order->aggregate_id, 'user' => $this->user_id]);
     }
 
-    public function reduxData()
-    {
-        $ret = (object) [
-            'user_id' => $this->user_id,
-            'products' => [],
-        ];
-
-        foreach($this->products as $product) {
-            $product->setRelation('booking', $this);
-            $product_data = $product->reduxData();
-
-            if (isset($ret->products[$product->product_id])) {
-                $ret->products[$product->product_id] = describingAttributesMerge($ret->products[$product->product_id], $product_data);
-            }
-            else {
-                $ret->products[$product->product_id] = $product_data;
-            }
-
-            $ret = describingAttributesMerge($ret, $product_data);
-        }
-
-        return $ret;
-    }
-
     public function applyModifiers($aggregate_data = null)
     {
         if (is_null($aggregate_data)) {
@@ -481,6 +457,25 @@ class Booking extends Model
         }
 
         return $values;
+    }
+
+    /********************************************************* ReducibleTrait */
+
+    protected function reduxBehaviour()
+    {
+        $ret = $this->emptyReduxBehaviour();
+
+        $ret->children = function($item, $filters) {
+            return $item->products;
+        };
+
+        $ret->optimize = function($item, $child) {
+            $child->setRelation('booking', $item);
+            return $child;
+        };
+
+        $ret->collected = 'products';
+        return $ret;
     }
 
     /************************************************************ SluggableID */

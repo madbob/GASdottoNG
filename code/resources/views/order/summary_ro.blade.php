@@ -40,10 +40,6 @@
                         {{ printablePriceCurrency($product->price) }}
                     </td>
 
-                    <td class="order-cell-transport {{ in_array('transport', $columns) ? '' : 'hidden' }}">
-                        {{ printablePriceCurrency($product->transport) }}
-                    </td>
-
                     <td class="order-cell-available {{ in_array('available', $columns) ? '' : 'hidden' }}">
                         {{ printableQuantity($product->max_available, $product->measure->discrete) }}
                     </td>
@@ -55,26 +51,22 @@
                     <td class="order-cell-quantity {{ in_array('quantity', $columns) ? '' : 'hidden' }}">
                         <label>
                             @if($product->portion_quantity != 0)
-                                {{ sprintf('%d', $summary->products[$product->id]['quantity_pieces']) }} Pezzi /
+                                {{ sprintf('%d', $summary->products[$product->id]->quantity_pieces ?? 0) }} Pezzi /
                             @endif
-                            <span class="order-summary-product-quantity">{{ $summary->products[$product->id]['quantity'] }}</span> {{ $product->measure->name }}
+                            <span class="order-summary-product-quantity">{{ $summary->products[$product->id]->quantity ?? 0 }}</span> {{ $product->measure->name }}
                         </label>
                     </td>
 
                     <td class="order-cell-total_price {{ in_array('total_price', $columns) ? '' : 'hidden' }}">
-                        <label class="order-summary-product-price">{{ $summary->products[$product->id]['price'] }} {{ $currentgas->currency }}</label>
-                    </td>
-
-                    <td class="order-cell-total_transport {{ in_array('total_transport', $columns) ? '' : 'hidden' }}">
-                        <label class="order-summary-product-transport">{{ $summary->products[$product->id]['transport'] }} {{ $currentgas->currency }}</label>
+                        <label class="order-summary-product-price">{{ printablePriceCurrency($summary->products[$product->id]->price) }}</label>
                     </td>
 
                     <td class="order-cell-quantity_delivered {{ in_array('quantity_delivered', $columns) ? '' : 'hidden' }}">
-                        <label class="order-summary-product-delivered">{{ $summary->products[$product->id]['delivered'] }} {{ $product->measure->name }}</label>
+                        <label class="order-summary-product-delivered">{{ $summary->products[$product->id]->delivered ?? 0 }} {{ $product->measure->name }}</label>
                     </td>
 
                     <td class="order-cell-price_delivered {{ in_array('price_delivered', $columns) ? '' : 'hidden' }}">
-                        <label class="order-summary-product-price_delivered">{{ $summary->products[$product->id]['price_delivered'] }} {{ $currentgas->currency }}</label>
+                        <label class="order-summary-product-price_delivered">{{ printablePriceCurrency($summary->products[$product->id]->price_delivered ?? 0) }}</label>
                     </td>
                 </tr>
             @endif
@@ -88,28 +80,22 @@
                     <th class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
                         @switch($identifier)
                             @case('total_price')
-                                <span class="order-summary-order-price">{{ printablePriceCurrency($summary->price) }}</span>
-                                @if($order->discount != 0)
-                                    <button type="button" class="btn btn-default btn-xs" data-toggle="popover" data-content="{{ printablePriceCurrency($summary->undiscounted_price) }} - Sconto {{ printablePercentage($order->discount) }}">
-                                        <span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span>
-                                    </button>
-                                @endif
-                                @break
+                                <span class="order-summary-order-price">{{ printablePriceCurrency($summary->price ?? 0) }}</span>
+                                <?php
 
-                            @case('total_transport')
-                                {{ printablePriceCurrency($summary->transport) }}
+                                $modifiers = $order->applyModifiers();
+                                $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
+
+                                ?>
+
+                                @foreach($aggregated_modifiers as $am)
+                                    <p>+ {{ $am->name }}: {{ printablePrice($am->amount) }}</p>
+                                @endforeach
+
                                 @break
 
                             @case('price_delivered')
                                 <span class="order-summary-order-price_delivered">{{ printablePriceCurrency($summary->price_delivered) }}</span>
-                                @if($summary->transport_delivered)
-                                    + <span class="order-summary-order-transport_delivered">{{ printablePriceCurrency($summary->transport_delivered) }}</span>
-                                @endif
-                                @if($order->discount != 0)
-                                    <button type="button" class="btn btn-default btn-xs" data-toggle="popover" data-content="{{ printablePriceCurrency($summary->undiscounted_price_delivered) }} - Sconto {{ printablePercentage($order->discount) }}">
-                                        <span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span>
-                                    </button>
-                                @endif
                                 @break
 
                         @endswitch

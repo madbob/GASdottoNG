@@ -81,7 +81,6 @@ Route::middleware(['auth'])->group(function() {
 
     Route::get('orders/{id}/header', 'OrdersController@objhead')->name('orders.objhead');
     Route::get('orders/search', 'OrdersController@search');
-    Route::post('orders/recalculate/{id}', 'OrdersController@recalculate');
     Route::get('orders/fixes/{id}/{product_id}', 'OrdersController@getFixes');
     Route::post('orders/fixes/{id}', 'OrdersController@postFixes');
     Route::get('orders/document/{id}/{type}', 'OrdersController@document');

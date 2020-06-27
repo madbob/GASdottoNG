@@ -17,7 +17,7 @@ use App\Events\AttachableToGas;
 
 class Aggregate extends Model implements Feedable
 {
-    use ModifiableTrait, GASModel;
+    use GASModel, ModifiableTrait, ReducibleTrait;
 
     protected $dispatchesEvents = [
         'created' => AttachableToGas::class
@@ -464,20 +464,22 @@ class Aggregate extends Model implements Feedable
         return $suppliers;
     }
 
-    public function reduxData($ret = null)
+    /********************************************************* ReducibleTrait */
+
+    protected function reduxBehaviour()
     {
-        if (is_null($ret)) {
-            $ret = (object) [
-                'orders' => [],
-            ];
-        }
+        $ret = $this->emptyReduxBehaviour();
 
-        foreach($this->orders as $order) {
-            $order_data = $order->reduxData($ret->orders[$order->id] ?? null);
-            $ret->orders[$order->id] = $order_data;
-            $ret = describingAttributesMerge($ret, $order_data);
-        }
+        $ret->children = function($item, $filters) {
+            return $item->orders;
+        };
 
+        $ret->optimize = function($item, $child) {
+            $child->setRelation('aggregate', $item);
+            return $child;
+        };
+
+        $ret->collected = 'orders';
         return $ret;
     }
 

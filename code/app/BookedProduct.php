@@ -12,7 +12,7 @@ use App\Events\SluggableCreating;
 
 class BookedProduct extends Model
 {
-    use GASModel, SluggableID, ModifiedTrait;
+    use GASModel, SluggableID, ModifiedTrait, ReducibleTrait;
 
     public $incrementing = false;
 
@@ -226,24 +226,18 @@ class BookedProduct extends Model
 
     private function fixWeight($attribute)
     {
-        $weight = $this->product->weight;
-
         $variants = $this->variants;
         if ($variants->isEmpty() == false) {
             $total = 0;
 
             foreach ($variants as $v) {
-                foreach ($v->components as $c) {
-                    $weight += $c->value->weight_offset;
-                }
-
-                $total += $weight * $v->$attribute;
+                $total += $v->fixWeight($attribute);
             }
 
             return $total;
         }
         else {
-            return $weight * $this->$attribute;
+            return $this->product->weight * $this->$attribute;
         }
     }
 
@@ -323,25 +317,51 @@ class BookedProduct extends Model
         return 0;
     }
 
-    public function reduxData()
+    /********************************************************* ReducibleTrait */
+
+    protected function reduxBehaviour()
     {
-        return (object) [
-            'product_id' => $this->product_id,
+        $ret = $this->emptyReduxBehaviour();
 
-            /*
-                Questi attributi devono essere coerenti con quelli descritti in
-                Refelction::describingAttributes()
-            */
+        $ret->children = function($item, $filters) {
+            return $this->variants;
+        };
 
-            'price' => $this->getValue('booked'),
-            'weight' => $this->fixWeight('quantity'),
-            'quantity' => $this->product->portion_quantity > 0 ? $this->quantity * $this->product->portion_quantity : $this->quantity,
-            'quantity_pieces' => $this->quantity,
+        $ret->optimize = function($item, $child) {
+            $child->setRelation('product', $item);
+            return $child;
+        };
 
-            'price_delivered' => $this->getValue('delivered'),
-            'weight_delivered' => $this->fixWeight('delivered'),
-            'delivered' => $this->product->portion_quantity > 0 ? $this->delivered * $this->product->portion_quantity : $this->delivered,
-            'delivered_pieces' => $this->delivered,
-        ];
+        $ret->collected = 'variants';
+        return $ret;
+    }
+
+    public function reduxData($ret = null, $filters = null)
+    {
+        if (is_null($ret)) {
+            $ret = (object) [
+                'id' => $this->product_id,
+                'product' => $this->product,
+                'variants' => [],
+            ];
+        }
+
+        if ($this->variants->isEmpty() == false) {
+            $ret = $this->descendReduction($ret, $filters);
+        }
+        else {
+            $ret = $this->describingAttributesMerge($ret, (object) [
+                'price' => $this->getValue('booked'),
+                'weight' => $this->fixWeight('quantity'),
+                'quantity' => $this->product->portion_quantity > 0 ? $this->quantity * $this->product->portion_quantity : $this->quantity,
+                'quantity_pieces' => $this->quantity,
+                'price_delivered' => $this->getValue('delivered'),
+                'weight_delivered' => $this->fixWeight('delivered'),
+                'delivered' => $this->product->portion_quantity > 0 ? $this->delivered * $this->product->portion_quantity : $this->delivered,
+                'delivered_pieces' => $this->delivered,
+            ]);
+        }
+
+        return $ret;
     }
 }

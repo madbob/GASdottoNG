@@ -3,11 +3,10 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\GASModel;
 
 class BookedProductVariant extends Model
 {
-    use GASModel;
+    use GASModel, ReducibleTrait;
 
     public function product()
     {
@@ -42,6 +41,17 @@ class BookedProductVariant extends Model
         }
 
         return $price;
+    }
+
+    public function fixWeight($attribute)
+    {
+        $weight = $this->product->product->weight;
+
+        foreach ($this->components as $c) {
+            $weight += $c->value->weight_offset;
+        }
+
+        $total += $weight * $v->$attribute;
     }
 
     private function fixQuantity($attribute, $rectify)
@@ -88,5 +98,29 @@ class BookedProductVariant extends Model
     public function getTrueDeliveredAttribute()
     {
         return $this->normalizeQuantity('delivered');
+    }
+
+    /********************************************************* ReducibleTrait */
+
+    public function reduxData($ret = null, $filters = null)
+    {
+        if (is_null($ret)) {
+            $ret = (object) [
+                'id' => $this->printableName(),
+                'variant' => $this,
+            ];
+        }
+
+        return $this->describingAttributesMerge($ret, (object) [
+            'price' => $v->quantityValue(),
+            'weight' => $this->fixWeight('quantity'),
+            'quantity' => $this->quantity,
+            'quantity_pieces' => $this->product->product->portion_quantity > 0 ? $this->quantity * $this->product->product->portion_quantity : $this->quantity,
+
+            'price_delivered' => $this->deliveredValue(),
+            'weight_delivered' => $this->fixWeight('delivered'),
+            'delivered' => $this->delivered,
+            'delivered_pieces' => $this->product->product->portion_quantity > 0 ? $this->delivered * $this->product->product->portion_quantity : $this->delivered,
+        ]);
     }
 }

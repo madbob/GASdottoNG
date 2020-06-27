@@ -1,4 +1,4 @@
-<?php $summary = $order->calculateSummary() ?>
+<?php $summary = $order->reduxData() ?>
 
 <form class="form-horizontal main-form order-editor" method="PUT" action="{{ route('orders.update', $order->id) }}">
     <input type="hidden" name="order_id" value="{{ $order->id }}" />
@@ -60,7 +60,7 @@
                     'obj' => $order->payment,
                     'name' => 'payment_id',
                     'label' => _i('Pagamento'),
-                    'default' => \App\Movement::generate('order-payment', $currentgas, $order, $summary->price_delivered + $summary->transport_delivered),
+                    'default' => \App\Movement::generate('order-payment', $currentgas, $order, $summary->price_delivered),
                     'to_modal' => [
                         'amount_editable' => true
                     ]
@@ -80,7 +80,7 @@
     <hr>
 
     @include('order.summary', ['order' => $order, 'summary' => $summary])
-    @include('order.annotations', ['order' => $order, 'summary' => $summary])
+    @include('order.annotations', ['order' => $order])
 
     @include('commons.formbuttons', [
         'no_delete' => $order->isActive() == false,

@@ -18,7 +18,7 @@ use App\Notifications\NewOrderNotification;
 
 class Order extends Model
 {
-    use AttachableTrait, ExportableTrait, ModifiableTrait, PayableTrait, CreditableTrait, GASModel, SluggableID;
+    use AttachableTrait, ExportableTrait, ModifiableTrait, PayableTrait, CreditableTrait, GASModel, SluggableID, ReducibleTrait;
 
     public $incrementing = false;
 
@@ -257,237 +257,28 @@ class Order extends Model
             $products = $obj->products()->where('package_size', '!=', 0)->with('measure')->get();
 
             if ($products->isEmpty() == false) {
-                $summary = $obj->calculateSummary($products);
-                foreach($summary->products as $product_id => $meta)
-                    if ($meta['notes'] == true) {
-                        /*
-                            Se devo completare delle confezioni, altero la quantità
-                            massima disponibile a runtime per fare in modo di
-                            forzare il raggiungimento della quantità desiderata
-                        */
+                $order_data = $this->reduxData();
 
-                        $p = $meta['product_obj'];
-                        $test = $p->fixed_package_size;
+                foreach($products as $p) {
+                    $quantity = $order_data->products[$p->id]->quantity ?? 0;
+                    if ($quantity != 0) {
+                        $test = round(fmod($quantity, $p->fixed_package_size));
+                        if ($test != 0) {
+                            $fake_max_available = 0;
+                            while($fake_max_available < $quantity) {
+                                $fake_max_available += $p->fixed_package_size;
+                            }
 
-                        $fake_max_available = 0;
-                        while($fake_max_available < $meta['quantity']) {
-                            $fake_max_available += $test;
+                            $p->max_available = $fake_max_available;
+
+                            $ret->push($p);
                         }
-
-                        $p->max_available = $fake_max_available;
-
-                        $ret->push($p);
                     }
+                }
             }
 
             return $ret;
         });
-    }
-
-    public function calculateSummary($products = null, $shipping_place = null)
-    {
-        $summary = (object) [
-            'order' => $this->id,
-            'price' => 0,
-            'price_delivered' => 0,
-            'undiscounted_price' => 0,
-            'undiscounted_price_delivered' => 0,
-            'products' => [],
-            'by_variant' => [],
-        ];
-
-        $order = $this;
-
-        if (is_null($products)) {
-            /*
-                Qui considero i prodotti del fornitore, non solo dell'ordine,
-                per calcolare la situazione complessiva compresi i prodotti non
-                inclusi nell'ordine stesso
-            */
-            $products = $order->supplier->products()->with('measure')->get();
-            $external_products = false;
-        }
-        else {
-            $external_products = true;
-        }
-
-        $total_price = 0;
-        $total_price_delivered = 0;
-        $total_transport = 0;
-        $total_weight = 0;
-        $total_weight_delivered = 0;
-
-        foreach ($products as $product) {
-            $q = BookedProduct::with('variants')->with('booking')->where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order, $shipping_place) {
-                $query->where('order_id', '=', $order->id);
-                if ($shipping_place != null) {
-                    /*
-                        Questa query è formulata per considerare solo il luogo
-                        di consegna preferenziale degli utenti "principali", mai
-                        degli amici. Ai quali, per qualche motivo, potrebbe
-                        essere assegnato un luogo di consegna sbagliato
-                    */
-                    $query->whereHas('user', function($subquery) use ($shipping_place) {
-                        $subquery->where(function($subsubquery) use ($shipping_place) {
-                            $subsubquery->where('preferred_delivery_id', $shipping_place)->whereNull('parent_id');
-                        })->orWhereHas('parent', function($subsubquery) use ($shipping_place) {
-                            $subsubquery->where('preferred_delivery_id', $shipping_place);
-                        });
-                    });
-                }
-            });
-
-            $quantity = $q->sum('quantity');
-            if(empty($quantity))
-                $quantity = 0;
-
-            $delivered = $q->sum('delivered');
-            if(empty($delivered))
-                $delivered = 0;
-
-            $transport = $quantity * $product->transport;
-
-            $booked = $q->get();
-            $price = 0;
-            $price_delivered = 0;
-            $transport_delivered = 0;
-            $weight = 0;
-            $weight_delivered = 0;
-            $variants_quantity = 0;
-
-            foreach ($booked as $b) {
-                /*
-                    Qui è per agganciare artificiosamente le relazioni con
-                    oggetti già caricati.
-                    Sia per evitare che vengano ricaricati più volte dal
-                    database dalle funzioni interne di calcolo, sia perché se
-                    l'array $products è stato esplicitamente passato potrebbe
-                    contenere valori (temporanei) da usare al posto di quelli
-                    presenti sul database
-                */
-                $b->setRelation('product', $product);
-                $b->booking->setRelation('order', $order);
-
-                $price += $b->getValue('booked');
-                $price_delivered += $b->final_price;
-                $transport_delivered += $b->final_transport;
-                $weight += $b->getValue('weight');
-                $weight_delivered += $b->getValue('weight');
-
-                if($b->variants->isEmpty() == false) {
-                    if(isset($summary->by_variant[$product->id]) == false) {
-                        $summary->by_variant[$product->id] = [];
-                    }
-
-                    foreach($b->variants as $v) {
-                        $name = $v->printableName();
-                        $variant_index = -1;
-
-                        foreach($summary->by_variant[$product->id] as $vindex => $var_iter) {
-                            if ($var_iter['name'] == $name) {
-                                $variant_index = $vindex;
-                                break;
-                            }
-                        }
-
-                        if ($variant_index == -1) {
-                            $variant_index = count($summary->by_variant[$product->id]);
-                            $summary->by_variant[$product->id][$variant_index] = [
-                                'name' => $name,
-                                'quantity' => 0,
-                                'delivered' => 0,
-                                'price' => 0,
-                                'unit_price' => $v->unitPrice(),
-                            ];
-                        }
-
-                        $summary->by_variant[$product->id][$variant_index]['quantity'] += $v->quantity;
-                        $summary->by_variant[$product->id][$variant_index]['delivered'] += $v->delivered;
-                        $summary->by_variant[$product->id][$variant_index]['price'] += $v->quantityValue();
-
-                        $variants_quantity += $v->quantity;
-                    }
-                }
-            }
-
-            /*
-                In presenza di varianti, ricalcolo la quantità totale come somma
-                delle loro effettive quantità. Questo per evitare discrepanze
-                tra la quantità salvata nel prodotto ordinato di riferimento e,
-                appunto, le varianti collegate
-            */
-            if ($variants_quantity != 0) {
-                $quantity = $variants_quantity;
-            }
-
-            if ($product->portion_quantity > 0) {
-                $quantity_pieces = $quantity;
-                $delivered_pieces = $delivered;
-                $quantity = $quantity * $product->portion_quantity;
-                $delivered = $delivered;
-            }
-            else {
-                $quantity_pieces = $quantity;
-                $delivered_pieces = $delivered;
-            }
-
-            $summary->products[$product->id]['product_obj'] = $product;
-            $summary->products[$product->id]['quantity'] = printableQuantity($quantity, $product->measure->discrete);
-            $summary->products[$product->id]['quantity_pieces'] = $quantity_pieces;
-            $summary->products[$product->id]['price'] = printablePrice($price);
-            $summary->products[$product->id]['transport'] = printablePrice($transport);
-            $summary->products[$product->id]['delivered'] = printableQuantity($delivered, $product->measure->discrete, 3);
-            $summary->products[$product->id]['delivered_pieces'] = $delivered_pieces;
-            $summary->products[$product->id]['price_delivered'] = printablePrice($price_delivered);
-            $summary->products[$product->id]['transport_delivered'] = printablePrice($transport_delivered);
-            $summary->products[$product->id]['weight'] = $weight;
-            $summary->products[$product->id]['weight_delivered'] = $weight_delivered;
-
-            $total_price += $price;
-            $total_price_delivered += $price_delivered;
-            $total_transport += $transport;
-            $total_weight += $product->measure->normalizeWeight($weight);
-            $total_weight_delivered += $product->measure->normalizeWeight($weight_delivered);
-
-            $summary->products[$product->id]['notes'] = false;
-            if ($product->package_size != 0 && $quantity != 0) {
-                $test = round(fmod($quantity, $product->fixed_package_size));
-                if ($test != 0) {
-                    $summary->products[$product->id]['notes'] = true;
-                }
-            }
-        }
-
-        $summary->undiscounted_price = $total_price;
-        $summary->undiscounted_price_delivered = $total_price_delivered;
-        $summary->price = applyPercentage($summary->undiscounted_price, $this->discount);
-        $summary->price_delivered = applyPercentage($summary->undiscounted_price_delivered, $this->discount);
-
-        /*
-            Il prezzo del trasporto è la somma del prezzo di trasporto di tutti
-            i prodotti con il prezzo di trasporto globale di tutto l'ordine.
-            Solitamente solo uno dei due è valorizzato, ma per buona misura li
-            metto insieme
-        */
-        $summary->transport = $total_transport + applyPercentage($summary->price, $order->transport, '=');
-
-        $total_transport_delivered = 0;
-        foreach ($order->bookings()->where('status', 'shipped')->get() as $shipped_booking)
-            $total_transport_delivered += $shipped_booking->getValue('transport', true);
-        $summary->transport_delivered = $total_transport_delivered;
-
-        $summary->weight = $total_weight;
-        $summary->weight_delivered = $total_weight_delivered;
-
-        $summary->notes = [];
-        foreach ($order->bookings()->where('notes', '!=', '')->get() as $annotated_booking) {
-            $summary->notes[] = (object) [
-                'user' => $annotated_booking->user->printableName(),
-                'note' => $annotated_booking->notes
-            ];
-        }
-
-        return $summary;
     }
 
     public function calculateInvoicingSummary($products = null)
@@ -556,20 +347,30 @@ class Order extends Model
         return $summary;
     }
 
-    private function formatProduct($fields, $formattable, $summary, $product, $internal_offsets)
+    private function formatProduct($fields, $formattable, $product_redux, $product, $internal_offsets)
     {
-        if(isset($summary->by_variant[$product->id])) {
-            $variants_rows = [];
+        if (is_null($product_redux)) {
+            return [];
+        }
 
-            foreach ($summary->by_variant[$product->id] as $variant) {
-                if ($variant[$internal_offsets->by_variant] == 0) {
+        if (!empty($product_redux->variants)) {
+            $variants_rows = [];
+            $offset = $internal_offsets->by_variant;
+
+            foreach ($product_redux->variants as $variant) {
+                if ($variant->$offset == 0) {
                     continue;
                 }
 
                 $row = [];
                 foreach($fields as $f) {
                     if (isset($formattable[$f])) {
-                        $row[] = call_user_func($formattable[$f]->format_variant, $product, $summary, $variant, $internal_offsets->alternate);
+                        if (isset($formattable[$f]->format_variant)) {
+                            $row[] = call_user_func($formattable[$f]->format_variant, $product, $variant, $internal_offsets->alternate);
+                        }
+                        else {
+                            $row[] = call_user_func($formattable[$f]->format_product, $product, $variant, $internal_offsets->alternate);
+                        }
                     }
                 }
 
@@ -583,14 +384,15 @@ class Order extends Model
             return $variants_rows;
         }
         else {
-            if ($summary->products[$product->id][$internal_offsets->by_product] == 0) {
+            $offset = $internal_offsets->by_product;
+            if ($product_redux->$offset == 0) {
                 return [];
             }
 
             $row = [];
             foreach($fields as $f) {
                 if (isset($formattable[$f])) {
-                    $row[] = call_user_func($formattable[$f]->format_product, $product, $summary, $internal_offsets->alternate);
+                    $row[] = call_user_func($formattable[$f]->format_product, $product, $product_redux, $internal_offsets->alternate);
                 }
             }
 
@@ -618,7 +420,7 @@ class Order extends Model
                 'alternate' => false,
                 'by_variant' => 'quantity',
                 'by_product' => 'quantity_pieces',
-                'by_booking' => 'booked',
+                'by_booking' => 'quantity',
             ];
         }
     }
@@ -631,7 +433,7 @@ class Order extends Model
         ];
 
         $internal_offsets = $this->offsetsByStatus($status);
-        $summary = $this->calculateSummary(null, $shipping_place);
+        $summary = $this->reduxData(null, ['shipping_place' => $shipping_place]);
         $formattable = self::formattableColumns('summary');
 
         foreach($fields as $f) {
@@ -639,46 +441,23 @@ class Order extends Model
         }
 
         foreach ($this->supplier->products as $product) {
-            if($this->hasProduct($product) == false) {
-                continue;
-            }
-
-            $row = $this->formatProduct($fields, $formattable, $summary, $product, $internal_offsets);
+            $row = $this->formatProduct($fields, $formattable, $summary->products[$product->id] ?? null, $product, $internal_offsets);
             if (!empty($row)) {
                 $ret->contents = array_merge($ret->contents, $row);
             }
         }
 
-        if (in_array('price', $fields) || in_array('transport', $fields)) {
+        if (in_array('price', $fields)) {
             $row = array_fill(0, count($fields), '');
 
             $row[0] = _i('Totale');
             $price_offset = array_search('price', $fields);
-            $transport_offset = array_search('transport', $fields);
 
             if ($status == 'delivered') {
-                $order = $this;
-
-                if ($price_offset !== false) {
-                    $row[$price_offset] = BookedProduct::whereHas('booking', function($query) use ($order) {
-                        $query->where('order_id', $order->id);
-                    })->sum('final_price');
-                }
-
-                if ($transport_offset !== false) {
-                    $row[$transport_offset] = BookedProduct::whereHas('booking', function($query) use ($order) {
-                        $query->where('order_id', $order->id);
-                    })->sum('final_transport');
-                }
+                $row[$price_offset] = printablePrice($summary->price_delivered);
             }
             else {
-                if ($price_offset !== false) {
-                    $row[$price_offset] = printablePrice($summary->price, ',');
-                }
-
-                if ($transport_offset !== false) {
-                    $row[$transport_offset] = printablePrice($summary->transport, ',');
-                }
+                $row[$price_offset] = printablePrice($summary->price);
             }
 
             $ret->contents[] = $row;
@@ -760,8 +539,8 @@ class Order extends Model
                 'format_product' => function($product, $summary) {
                     return $product->printableName();
                 },
-                'format_variant' => function($product, $summary, $variant) {
-                    return $product->printableName() . ' - ' . $variant['name'];
+                'format_variant' => function($product, $summary) {
+                    return $product->printableName() . ' - ' . $summary->variant->printableName();
                 }
             ],
             'supplier' => (object) [
@@ -770,62 +549,36 @@ class Order extends Model
                 'format_product' => function($product, $summary) {
                     return $product->supplier->printableName();
                 },
-                'format_variant' => function($product, $summary, $variant) {
-                    return $product->supplier->printableName();
-                }
             ],
             'code' => (object) [
                 'name' => _i('Codice Fornitore'),
                 'format_product' => function($product, $summary) {
                     return $product->supplier_code;
                 },
-                'format_variant' => function($product, $summary, $variant) {
-                    /*
-                        TODO: le varianti hanno un loro proprio codice?
-                    */
-                    return $product->supplier_code;
-                }
             ],
             'quantity' => (object) [
                 'name' => _i('Quantità'),
                 'checked' => true,
                 'format_product' => function($product, $summary, $alternate = false) {
                     if ($alternate == false)
-                        return printableQuantity($summary->products[$product->id]['quantity_pieces'], $product->measure->discrete, 2, ',');
+                        return printableQuantity($summary->quantity_pieces, $product->measure->discrete, 2, ',');
                     else
-                        return printableQuantity($summary->products[$product->id]['delivered_pieces'], $product->measure->discrete, 2, ',');
+                        return printableQuantity($summary->delivered_pieces, $product->measure->discrete, 2, ',');
                 },
-                'format_variant' => function($product, $summary, $variant, $alternate = false) {
-                    if ($alternate == false)
-                        return printableQuantity($variant['quantity'], $product->measure->discrete, 2, ',');
-                    else
-                        return printableQuantity($variant['delivered'], $product->measure->discrete, 2, ',');
-                }
             ],
             'boxes' => (object) [
                 'name' => _i('Numero Confezioni'),
                 'format_product' => function($product, $summary, $alternate = false) {
                     if ($product->package_size != 0) {
                         if ($alternate == false)
-                            return $summary->products[$product->id]['quantity_pieces'] / $product->package_size;
+                            return $summary->quantity_pieces / $product->package_size;
                         else
-                            return $summary->products[$product->id]['delivered_pieces'] / $product->package_size;
+                            return $summary->delivered_pieces / $product->package_size;
                     }
                     else {
                         return '';
                     }
                 },
-                'format_variant' => function($product, $summary, $variant, $alternate = false) {
-                    if ($product->package_size != 0) {
-                        if ($alternate == false)
-                            return $variant['quantity'] / $product->package_size;
-                        else
-                            return $variant['delivered'] / $product->package_size;
-                    }
-                    else {
-                        return '';
-                    }
-                }
             ],
             'measure' => (object) [
                 'name' => _i('Unità di Misura'),
@@ -843,19 +596,6 @@ class Order extends Model
                         }
                     }
                 },
-                'format_variant' => function($product, $summary, $variant, $alternate = false) {
-                    if ($alternate == false) {
-                        return $product->printableMeasure(true);
-                    }
-                    else {
-                        if ($product->portion_quantity != 0) {
-                            return $product->measure->name;
-                        }
-                        else {
-                            return $product->printableMeasure(true);
-                        }
-                    }
-                }
             ],
             'category' => (object) [
                 'name' => _i('Categoria'),
@@ -863,9 +603,6 @@ class Order extends Model
                 'format_product' => function($product, $summary) {
                     return $product->category ? $product->category->name : '';
                 },
-                'format_variant' => function($product, $summary, $variant) {
-                    return $product->category ? $product->category->name : '';
-                }
             ],
             'unit_price' => (object) [
                 'name' => _i('Prezzo Unitario'),
@@ -873,8 +610,8 @@ class Order extends Model
                 'format_product' => function($product, $summary) {
                     return printablePrice($product->price, ',');
                 },
-                'format_variant' => function($product, $summary, $variant) {
-                    return printablePrice($variant['unit_price'], ',');
+                'format_variant' => function($product, $summary) {
+                    return printablePrice($summary->variant->unitPrice(), ',');
                 }
             ],
             'price' => (object) [
@@ -882,37 +619,10 @@ class Order extends Model
                 'checked' => true,
                 'format_product' => function($product, $summary, $alternate = false) {
                     if ($alternate == false)
-                        return printablePrice($summary->products[$product->id]['price'], ',');
+                        return printablePrice($summary->price, ',');
                     else
-                        return printablePrice($summary->products[$product->id]['price_delivered'], ',');
+                        return printablePrice($summary->price_delivered, ',');
                 },
-                'format_variant' => function($product, $summary, $variant, $alternate = false) {
-                    if ($alternate == false)
-                        return printablePrice($variant['price'], ',');
-                    else
-                        return 0;
-                }
-            ],
-            'transport' => (object) [
-                'name' => _i('Spese Trasporto'),
-                'format_product' => function($product, $summary, $alternate = false) {
-                    if ($alternate == false)
-                        return printablePrice($summary->products[$product->id]['transport'], ',');
-                    else
-                        return printablePrice($summary->products[$product->id]['transport_delivered'], ',');
-                },
-                'format_variant' => function($product, $summary, $variant, $alternate = false) {
-                    if ($alternate == false) {
-                        if (isset($variant['transport'])) {
-                            return printablePrice($variant['transport']);
-                        }
-                        else {
-                            return printablePrice($summary->products[$product->id]['transport'], ',');
-                        }
-                    }
-                    else
-                        return 0;
-                }
             ],
         ];
 
@@ -922,9 +632,6 @@ class Order extends Model
                 'format_product' => function($product, $summary) {
                     return $product->pivot->notes;
                 },
-                'format_variant' => function($product, $summary, $variant) {
-                    return $product->pivot->notes;
-                }
             ];
         }
 
@@ -947,17 +654,12 @@ class Order extends Model
             'price' => (object) [
                 'label' => _i('Prezzo'),
                 'help' => _i('Prezzo unitario (editabile) del prodotto'),
-                'width' => 8
-            ],
-            'transport' => (object) [
-                'label' => _i('Trasporto'),
-                'help' => _i('Prezzo di trasporto unitario (editabile) del prodotto'),
-                'width' => 8
+                'width' => 5
             ],
             'available' => (object) [
                 'label' => _i('Disponibile'),
                 'help' => _i('Quantità disponibile (editabile) del prodotto'),
-                'width' => 8
+                'width' => 5
             ],
             'unit_measure' => (object) [
                 'label' => _i('Unità di Misura'),
@@ -977,12 +679,7 @@ class Order extends Model
             'total_price' => (object) [
                 'label' => _i('Totale Prezzo'),
                 'help' => _i('Totale prezzo della quantità prenotata'),
-                'width' => 5
-            ],
-            'total_transport' => (object) [
-                'label' => _i('Totale Trasporto'),
-                'help' => _i('Totale del prezzo di trasporto. Significativo solo quando è applicato un prezzo di trasporto unitario sul prodotto'),
-                'width' => 5
+                'width' => 8
             ],
             'quantity_delivered' => (object) [
                 'label' => _i('Quantità Consegnata'),
@@ -1002,7 +699,7 @@ class Order extends Model
             'notes' => (object) [
                 'label' => _i('Note'),
                 'help' => _i('Pannello da cui modificare direttamente le quantità di prodotto in ogni prenotazione, ed aggiungere note per il fornitore'),
-                'width' => 7
+                'width' => 3
             ],
         ];
     }
@@ -1012,33 +709,50 @@ class Order extends Model
         return [$this->supplier];
     }
 
-    public function reduxData($ret = null)
+    public function applyModifiers()
     {
-        if (is_null($ret)) {
-            $ret = (object) [
-                'bookings' => [],
-                'products' => [],
-            ];
-        }
+        DB::beginTransaction();
+
+        $modifiers = new Collection();
+        $aggregate_data = $this->aggregate->reduxData();
 
         foreach($this->bookings as $booking) {
-            if (!isset($ret->bookings[$booking->id])) {
-                $booking_data = $booking->reduxData();
-                $ret->bookings[$booking->id] = $booking_data;
-
-                foreach($booking_data->products as $product_data) {
-                    if (isset($ret->products[$product_data->product_id])) {
-                        $ret->products[$product_data->product_id] = describingAttributesMerge($ret->products[$product_data->product_id], $product_data);
-                    }
-                    else {
-                        $ret->products[$product_data->product_id] = $product_data;
-                    }
-                }
-
-                $ret = describingAttributesMerge($ret, $booking_data);
-            }
+            $booking->setRelation('order', $this);
+            $modifiers = $modifiers->merge($booking->applyModifiers($aggregate_data));
         }
 
+        DB::rollback();
+
+        return $modifiers;
+    }
+
+    /********************************************************* ReducibleTrait */
+
+    protected function reduxBehaviour()
+    {
+        $ret = $this->emptyReduxBehaviour();
+
+        $ret->children = function($item, $filters) {
+            $shipping_place = $filters['shipping_place'] ?? null;
+            if ($shipping_place) {
+                $bookings = $item->bookings()->whereHas('user', function($query) use ($shipping_place) {
+                    $query->where('preferred_delivery_id', $shipping_place);
+                });
+            }
+            else {
+                $bookings = $item->bookings;
+            }
+
+            return $bookings;
+        };
+
+        $ret->optimize = function($item, $child) {
+            $child->setRelation('order', $item);
+            return $child;
+        };
+
+        $ret->collected = 'bookings';
+        $ret->merged = ['products'];
         return $ret;
     }
 

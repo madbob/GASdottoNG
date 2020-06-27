@@ -711,61 +711,6 @@ function setCellValue(cell, value) {
     cell.text(string);
 }
 
-function updateOrderSummary(form) {
-    /*
-        Ricalcolare l'intero valore dell'ordine client-side sarebbe complesso,
-        data la quantità di fattori da considerare, sicché ad ogni modifica
-        chiedo al server di rifare i calcoli (utilizzando di fatto gli algoritmi
-        già esistenti) passandogli i valori temporanei dei prezzi dei prodotti
-    */
-    var main_form = form.parents('.loadable-contents').last();
-    main_form.find('.order-editor').each(function() {
-        var identifier = $(this).find('input[name=order_id]');
-        if (identifier.length == 0)
-            return;
-
-        var order_id = identifier.val();
-        var data = $(this).serializeArray();
-
-        $.ajax({
-            method: 'POST',
-            url: absolute_url + '/orders/recalculate/' + order_id,
-            data: data,
-            dataType: 'json',
-
-            success: function(data) {
-                var summary = main_form.find('.order-editor input[name=order_id][value="' + data.order + '"]').closest('.order-editor').find('.order-summary');
-
-                for (var info in data) {
-                    if (data.hasOwnProperty(info)) {
-                        if (info == 'products') {
-                            for (var pid in data.products) {
-                                if (data.products.hasOwnProperty(pid)) {
-                                    var row = summary.find('tr[data-product-id="' + pid + '"]');
-                                    if (row != null) {
-                                        var p = data.products[pid];
-                                        for (var attr in p) {
-                                            if (p.hasOwnProperty(attr)) {
-                                                var cell = row.find('.order-summary-product-' + attr);
-                                                if (cell != null)
-                                                    setCellValue(cell, p[attr]);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            var cell = summary.find('.order-summary-order-' + info);
-                            if (cell != null)
-                                setCellValue(cell, data[info]);
-                        }
-                    }
-                }
-            }
-        });
-    });
-}
-
 /*******************************************************************************
 	Prenotazioni / Consegne
 */
@@ -2526,10 +2471,6 @@ $(document).ready(function() {
         box.prop('checked', !box.prop('checked'));
         var show = box.prop('checked');
         $(this).closest('.btn-group').closest('form').find('.order-summary').first().find('.order-cell-' + name).toggleClass('hidden', !show);
-    });
-
-    $('body').on('keyup', '.order-summary input', function() {
-        updateOrderSummary($(this));
     });
 
     $('body').on('click', '.order-summary .toggle-product-abilitation', function() {

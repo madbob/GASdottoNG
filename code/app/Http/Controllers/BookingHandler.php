@@ -197,7 +197,7 @@ class BookingHandler extends Controller
         }
     }
 
-    public function bookingUpdate(Request $request, $order, $user_id, $delivering)
+    public function bookingUpdate(Request $request, $aggregate_id, $user_id, $delivering)
     {
         DB::beginTransaction();
 
