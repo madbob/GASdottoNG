@@ -108,7 +108,9 @@ class Modifier extends Model
         $rounding = 4;
 
         if ($this->value == 'percentage') {
-            $amount = round((100 * $definition->amount) / $amount, $rounding);
+            $original_amount = $amount;
+            $amount = round(($amount * $definition->amount) / 100, $rounding);
+            Log::debug($original_amount . ' -> ' . $amount);
         }
         else {
             if ($this->distribution_target == 'order') {
@@ -161,6 +163,7 @@ class Modifier extends Model
             case 'booking':
                 $mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id];
                 $obj_mod_target = $booking;
+                $sub_mod_target = null;
                 break;
 
             case 'product':
@@ -174,6 +177,7 @@ class Modifier extends Model
                     $query->where('product_id', $product_target_id);
                 })->first();
 
+                $sub_mod_target = null;
                 break;
         }
 

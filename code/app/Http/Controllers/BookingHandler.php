@@ -223,18 +223,7 @@ class BookingHandler extends Controller
                 }
 
                 $booking->status = $new_status;
-
-                /*
-                    TODO: spostare qui il salvataggio dei final_price
-                */
-
-                /*
-                    È indispensabile settare lo stato della prenotazione
-                    prima di distribuire i costi di trasporto e gli sconti
-                */
-                $booking->distributeTransport();
-                $booking->distributeDiscount();
-
+                $booking->applyModifiers();
                 $booking->save();
 
                 foreach($booking->friends_bookings as $friend_booking) {

@@ -115,30 +115,18 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
 
                 <!-- Prezzo -->
                 <td class="order-cell-price {{ in_array('price', $columns) ? '' : 'hidden' }}">
-                    @include('commons.decimalfield', [
-                        'obj' => $product,
-                        'label' => '',
-                        'prefix' => 'product_',
-                        'name' => 'price',
-                        'postfix' => '[]',
-                        'squeeze' => true,
-                        'is_price' => true,
-                        'disabled' => $order->isActive() == false
-                    ])
+                    <label>{{ printablePriceCurrency($product->price) }}</label>
                 </td>
 
                 <!-- Disponibile -->
                 <td class="order-cell-available {{ in_array('available', $columns) ? '' : 'hidden' }}">
-                    @include('commons.decimalfield', [
-                        'obj' => $product,
-                        'label' => '',
-                        'prefix' => 'product_',
-                        'name' => 'max_available',
-                        'postfix' => '[]',
-                        'squeeze' => true,
-                        'decimals' => 3,
-                        'disabled' => $order->isActive() == false
-                    ])
+                    <label>
+                        @if($product->portion_quantity != 0)
+                            {{ $product->max_available * $this->product->portion_quantity }} Pezzi
+                        @else
+                            {{ $product->max_available ?? 0 }} {{ $product->measure->name }}
+                        @endif
+                    </label>
                 </td>
 
                 <!-- Unità di Misura -->

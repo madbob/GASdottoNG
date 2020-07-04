@@ -74,10 +74,8 @@ class DeliveryUserController extends BookingHandler
         }
 
         $booking->status = 'shipped';
+        $booking->applyModifiers();
         $booking->save();
-
-        $booking->distributeTransport();
-        $booking->distributeDiscount();
 
         $booking->load('products');
         return $booking->getValue('effective', false, true);

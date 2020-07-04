@@ -13,7 +13,12 @@ $grand_total = 0;
             <h3>{{ $order->printableName() }}</h3>
         @endif
 
-        <?php $o = $order->userBooking($user->id) ?>
+        <?php
+
+        $o = $order->userBooking($user->id);
+        $mods = $o->applyModifiers(null, false);
+
+        ?>
 
         @if($o->products->isEmpty())
             <div class="alert alert-info">
@@ -61,8 +66,8 @@ $grand_total = 0;
                                 </td>
 
                                 <td>
-                                    <label class="static-label booking-product-price pull-right">
-                                        {{ printablePriceCurrency($o->status == 'shipped' ? $product->final_price : $product->quantityValue()) }}
+                                    <label class="pull-right">
+                                        {{ printablePriceCurrency($product->getValue('effective')) }}
                                     </label>
                                 </td>
                             </tr>
@@ -90,7 +95,7 @@ $grand_total = 0;
                                     </td>
 
                                     <td>
-                                        <label class="static-label booking-product-price pull-right">
+                                        <label class="pull-right">
                                             {{ printablePriceCurrency($o->status == 'shipped' ? $var->final_price : $var->quantityValue()) }}
                                         </label>
                                     </td>
@@ -99,33 +104,13 @@ $grand_total = 0;
                         @endif
                     @endforeach
 
-                    @if(($transport = $o->getValue('transport', false)) != 0)
-                        <tr class="booking-transport">
-                            <td>
-                                <label class="static-label">{{ _i('Trasporto') }}</label>
-                            </td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>
-                                <input type="hidden" name="global-transport-price" value="{{ $o->getValue('transport', false) }}" class="skip-on-submit" />
-                                <label class="static-label booking-transport-price pull-right"><span>{{ printablePrice($transport) }}</span> {{ $currentgas->currency }}</label>
-                            </td>
-                        </tr>
-                    @endif
-
-                    @if(($discount = $o->getValue('discount', false)) != 0)
-                        <tr class="booking-discount">
-                            <td>
-                                <label class="static-label">{{ _i('Sconto') }}</label>
-                            </td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>
-                                <input type="hidden" name="global-discount-price" value="{{ $o->getValue('discount', false) }}" class="skip-on-submit" />
-                                <label class="static-label booking-discount-price pull-right"><span>{{ printablePrice($discount) }}</span> {{ $currentgas->currency }}</label>
-                            </td>
-                        </tr>
-                    @endif
+                    @foreach($mods as $mod_value)
+                        @include('delivery.modifierrow', [
+                            'mod_value' => $mod_value,
+                            'skip_cells' => 2,
+                            'final_value' => true,
+                        ])
+                    @endforeach
                 </tbody>
                 <tfoot>
                     <tr>

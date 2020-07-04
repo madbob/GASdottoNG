@@ -26,7 +26,7 @@ $enforced = $enforced ?? false;
         $notice = null;
 
         $o = $order->userBooking($user->id);
-        $o->applyModifiers();
+        $mods = $o->applyModifiers(null, false);
 
         if ($order->keep_open_packages && $enforced == false) {
             if ($order->status == 'open') {
@@ -146,7 +146,7 @@ $enforced = $enforced ?? false;
                     </tr>
                 @endforeach
 
-                @foreach($o->modifiedValues as $mod_value)
+                @foreach($mods as $mod_value)
                     @include('delivery.modifierrow', [
                         'mod_value' => $mod_value,
                         'skip_cells' => 3

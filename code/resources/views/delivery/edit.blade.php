@@ -15,7 +15,7 @@ $existing = false;
     <div class="well">
         <div class="row">
             <div class="col-md-6">
-                @include('commons.staticobjfield', ['target_obj' => $user, 'label' => 'Prenotato Da'])
+                @include('commons.staticobjfield', ['target_obj' => $user, 'label' => _i('Prenotato Da')])
             </div>
             <div class="col-md-6">
                 @foreach($user->contacts as $contact)
@@ -35,16 +35,15 @@ $existing = false;
         <?php
 
             $o = $order->userBooking($user->id);
+            $mods = $o->applyModifiers(null, false);
+
             $existing = ($existing || $o->exists || $o->friends_bookings->isEmpty() == false);
 
             if ($o->status == 'pending') {
                 $now_delivered = 0;
             }
             else {
-                /*
-                    TODO: recuperare modificatori
-                */
-                $now_delivered = $o->getValue('delivered', true) + $o->getValue('transport', true) - $o->getValue('discount', true);
+                $now_delivered = $o->getValue('effective', true);
             }
 
             $tot_delivered[$o->id] = $now_delivered;
@@ -55,11 +54,11 @@ $existing = false;
         @if($o->status == 'shipped')
             <div class="row">
                 <div class="col-md-6">
-                    @include('commons.staticobjfield', ['obj' => $o, 'name' => 'deliverer', 'label' => 'Consegnato Da'])
-                    @include('commons.staticdatefield', ['obj' => $o, 'name' => 'delivery', 'label' => 'Data Consegna'])
+                    @include('commons.staticobjfield', ['obj' => $o, 'name' => 'deliverer', 'label' => _i('Consegnato Da')])
+                    @include('commons.staticdatefield', ['obj' => $o, 'name' => 'delivery', 'label' => _i('Data Consegna')])
                 </div>
                 <div class="col-md-6">
-                    @include('commons.staticmovementfield', ['obj' => $o->payment, 'label' => 'Pagamento', 'rand' => $rand])
+                    @include('commons.staticmovementfield', ['obj' => $o->payment, 'label' => _i('Pagamento'), 'rand' => $rand])
                 </div>
             </div>
         @endif
@@ -67,6 +66,8 @@ $existing = false;
         <div class="row">
             <div class="col-md-12">
                 <table class="table table-striped booking-editor" data-booking-id="{{ $o->id }}" data-order-id="{{ $order->id }}">
+                    <input type="hidden" name="booking_id" value="{{ $o->id }}" class="skip-on-submit">
+
                     <thead>
                         <tr>
                             <th width="25%"></th>
@@ -103,7 +104,9 @@ $existing = false;
                                     </td>
 
                                     <td>
-                                        <label class="static-label booking-product-price pull-right">{{ printablePriceCurrency($product->final_price) }}</label>
+                                        <label class="static-label booking-product-price pull-right">
+                                            <span>{{ printablePrice($product->getValue('delivered')) }}</span> {{ $currentgas->currency }}
+                                        </label>
                                     </td>
                                 </tr>
                             @else
@@ -154,6 +157,14 @@ $existing = false;
                             @endif
                         @endforeach
 
+                        @foreach($mods as $mod_value)
+                            @include('delivery.modifierrow', [
+                                'mod_value' => $mod_value,
+                                'skip_cells' => 2,
+                                'final_value' => true,
+                            ])
+                        @endforeach
+
                         @if($order->isActive())
                             <tr class="hidden booking-product fit-add-product">
                                 <td>
@@ -170,7 +181,9 @@ $existing = false;
                                 <td class="bookable-target">&nbsp;</td>
 
                                 <td>
-                                    <label class="static-label booking-product-price pull-right">0.00 {{ $currentgas->currency }}</label>
+                                    <label class="static-label booking-product-price pull-right">
+                                        <span>0.00</span> {{ $currentgas->currency }}
+                                    </label>
                                 </td>
                             </tr>
                         @endif

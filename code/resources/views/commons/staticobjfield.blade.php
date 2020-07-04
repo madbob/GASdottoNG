@@ -7,7 +7,7 @@ else if (isset($target_obj))
 else
     $target_obj = null;
 
-$class = 'static-label text-muted';
+$class = 'static-label';
 if (isset($extra_class)) {
     $class .= ' ' . $extra_class;
 }

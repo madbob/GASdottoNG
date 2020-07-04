@@ -91,7 +91,7 @@ class BookingUserController extends BookingHandler
         ];
 
         foreach($aggregate->orders as $order) {
-            $booking = $this->readBooking($request, $order, $user->id, false);
+            $booking = $this->readBooking($request, $order, $user_id, false);
             if ($booking) {
                 $order->setRelation('aggregate', $aggregate);
                 $booking->setRelation('order', $order);

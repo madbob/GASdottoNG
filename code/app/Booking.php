@@ -428,13 +428,8 @@ class Booking extends Model
         return route('booking.user.show', ['booking' => $this->order->aggregate_id, 'user' => $this->user_id]);
     }
 
-    public function applyModifiers($aggregate_data = null)
+    public function involvedModifiers()
     {
-        if (is_null($aggregate_data)) {
-            $aggregate = $this->order->aggregate;
-            $aggregate_data = $aggregate->reduxData();
-        }
-
         $modifiers = $this->order->modifiers;
 
         foreach($this->order->products as $product) {
@@ -445,15 +440,33 @@ class Booking extends Model
             $modifiers = $modifiers->merge($this->user->shipping_place->modifiers);
         }
 
-        $modifiers = $modifiers->sortBy('priority');
+        return $modifiers->sortBy('priority');
+    }
+
+    public function applyModifiers($aggregate_data = null, $real = true)
+    {
+        if (is_null($aggregate_data)) {
+            $aggregate = $this->order->aggregate;
+            $aggregate_data = $aggregate->reduxData();
+        }
+
+        $modifiers = $this->involvedModifiers();
 
         $values = new Collection();
+
+        if ($real == false) {
+            DB::beginTransaction();
+        }
 
         foreach($modifiers as $modifier) {
             $value = $modifier->apply($this, $aggregate_data);
             if ($value) {
                 $values = $values->push($value);
             }
+        }
+
+        if ($real == false) {
+            DB::rollback();
         }
 
         return $values;
