@@ -13,6 +13,11 @@ class ModifiedValue extends Model
         return $this->belongsTo('App\Modifier');
     }
 
+    public function target()
+    {
+        return $this->morphTo();
+    }
+
     public function getIsVariableAttribute()
     {
         return ($this->modifier->value == 'absolute' && $this->modifier->distribution_target == 'order');
@@ -26,6 +31,11 @@ class ModifiedValue extends Model
         else {
             return $this->amount * -1;
         }
+    }
+
+    public function getSummary()
+    {
+        return $this->target->getModifiedRelations();
     }
 
     public static function aggregateByType($collection)

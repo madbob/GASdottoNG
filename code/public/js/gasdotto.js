@@ -762,6 +762,17 @@ function bookingTotal(editor) {
 				$('.booking-total', container).text(priceRound(0));
 			}
 			else {
+				var grand_total = 0;
+
+				/*
+					Questa variabile contiene i totali di ogni prenotazione
+					coinvolta nel pannello, ed in fase di consegna viene spedita
+					al server sotto il nome di 'delivering-status'.
+					Viene usata in MovementType per gestire i movimenti
+					contabili
+				*/
+				var status = {};
+
 				for (let [booking_id, booking_data] of Object.entries(data.bookings)) {
 					var container = $('input[value="' + booking_id + '"]').closest('table');
 					$('.booking-product-price span', container).text(priceRound(0));
@@ -781,7 +792,35 @@ function bookingTotal(editor) {
 						$('input[name="modifier-' + modifier_id + '"]', container).parent().find('span').text(priceRound(modifier_meta.amount));
 					}
 
-					$('.booking-total', container).text(priceRound(booking_data.total));
+					var t = priceRound(booking_data.total);
+					$('.booking-total', container).text(t);
+					grand_total += parseFloat(t);
+					status[booking_id] = booking_data.total;
+				}
+
+				form.find('.all-bookings-total').text(priceRound(grand_total));
+
+				/*
+					Se è attivo il limite di prenotazioni sul credito, controllo
+					che non sia stato raggiunto e nel caso disabilito il
+					pulsante di invio
+				*/
+				var max_bookable = form.find('input:hidden[name="max-bookable"]');
+				if (max_bookable.length != 0) {
+					max_bookable = parseFloat(max_bookable.val());
+					form.find('button[type=submit]').prop('disabled', grand_total > max_bookable);
+				}
+
+				/*
+					Qui aggiorno il valore totale della prenotazione nel (eventuale)
+					modale per il pagamento
+				*/
+				var payment_modal_id = form.attr('data-reference-modal');
+				var payment_modal = $('#' + payment_modal_id);
+
+				if (payment_modal.length != 0) {
+					payment_modal.find('input[name=amount]').val(grand_total.toFixed(2)).change();
+					payment_modal.find('input[name=delivering-status]').val(JSON.stringify(status));
 				}
 			}
 		}

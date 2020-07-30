@@ -267,7 +267,7 @@ class BookedProduct extends Model
                     case 'pending':
                         switch($type) {
                             case 'delivered':
-                                return 0;
+                                return $this->fixQuantity('delivered', true);
                                 break;
 
                             case 'effective':
@@ -315,6 +315,16 @@ class BookedProduct extends Model
         }
 
         return 0;
+    }
+
+    /********************************************************** ModifiedTrait */
+
+    public function getModifiedRelations()
+    {
+        return (object) [
+            'supplier' => $this->booking->order->supplier,
+            'user' => $this->booking->user,
+        ];
     }
 
     /********************************************************* ReducibleTrait */

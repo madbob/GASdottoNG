@@ -10,4 +10,6 @@ trait ModifiedTrait
     {
         return $this->morphMany('App\ModifiedValue', 'target');
     }
+
+    public abstract function getModifiedRelations();
 }

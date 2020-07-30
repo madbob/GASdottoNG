@@ -85,6 +85,8 @@ Route::middleware(['auth'])->group(function() {
     Route::post('orders/fixes/{id}', 'OrdersController@postFixes');
     Route::get('orders/document/{id}/{type}', 'OrdersController@document');
 
+    Route::get('modtype/search', 'ModifierTypesController@search')->name('modtype.search');
+
     Route::get('dates/query', 'DatesController@query');
 
     Route::get('aggregates/{id}/header', 'AggregatesController@objhead')->name('aggregates.objhead');

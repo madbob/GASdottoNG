@@ -201,6 +201,7 @@ class Booking extends Model
             $this->products->push($p);
         }
 
+        $p->setRelation('booking', $this);
         return $p;
     }
 
@@ -428,6 +429,24 @@ class Booking extends Model
         return route('booking.user.show', ['booking' => $this->order->aggregate_id, 'user' => $this->user_id]);
     }
 
+    public function saveFinalPrices()
+    {
+        /*
+            Qui forzo temporaneamente lo stato della prenotazione per ottenere i
+            dati dinamici dai BookedProducts coinvolti
+        */
+
+        $keep_status = $this->status;
+        $this->status = 'pending';
+
+        foreach($this->products as $p) {
+            $p->final_price = $p->getValue('delivered');
+            $p->save();
+        }
+
+        $this->status = $keep_status;
+    }
+
     public function involvedModifiers()
     {
         $modifiers = $this->order->modifiers;
@@ -441,6 +460,17 @@ class Booking extends Model
         }
 
         return $modifiers->sortBy('priority');
+    }
+
+    public function involvedModifiedValues()
+    {
+        $modifiers = $this->modifiedValues;
+
+        foreach($this->products as $product) {
+            $modifiers = $modifiers->merge($product->modifiedValues);
+        }
+
+        return $modifiers;
     }
 
     public function applyModifiers($aggregate_data = null, $real = true)
@@ -470,6 +500,24 @@ class Booking extends Model
         }
 
         return $values;
+    }
+
+    public function deleteModifiedValues()
+    {
+        $modified = $this->involvedModifiedValues();
+        foreach($modified as $mod) {
+            $mod->delete();
+        }
+    }
+
+    /********************************************************** ModifiedTrait */
+
+    public function getModifiedRelations()
+    {
+        return (object) [
+            'supplier' => $this->order->supplier,
+            'user' => $this->user,
+        ];
     }
 
     /********************************************************* ReducibleTrait */

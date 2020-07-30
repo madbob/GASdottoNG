@@ -80,7 +80,7 @@ class BookingHandler extends Controller
 
                     $values = [];
                     foreach ($product->variants as $variant) {
-                        $values[$variant->id] = $request->input('variant_selection_'.$variant->id);
+                        $values[$variant->id] = $request->input('variant_selection_' . $variant->id);
                     }
 
                     $saved_variants = [];
@@ -223,8 +223,17 @@ class BookingHandler extends Controller
                 }
 
                 $booking->status = $new_status;
-                $booking->applyModifiers();
                 $booking->save();
+
+                $booking->saveFinalPrices();
+
+                /*
+                    Qui ripulisco i modificatori eventualmente già salvati, nel
+                    caso in cui la consegna venga modificata e salvata
+                    nuovamente
+                */
+                $booking->deleteModifiedValues();
+                $booking->applyModifiers();
 
                 foreach($booking->friends_bookings as $friend_booking) {
                     $friend_booking->status = $new_status;
