@@ -51,7 +51,7 @@ class BookedProductVariant extends Model
             $weight += $c->value->weight_offset;
         }
 
-        $total += $weight * $v->$attribute;
+        return $weight * $this->$attribute;
     }
 
     private function fixQuantity($attribute, $rectify)
@@ -112,7 +112,7 @@ class BookedProductVariant extends Model
         }
 
         return $this->describingAttributesMerge($ret, (object) [
-            'price' => $v->quantityValue(),
+            'price' => $this->quantityValue(),
             'weight' => $this->fixWeight('quantity'),
             'quantity' => $this->quantity,
             'quantity_pieces' => $this->product->product->portion_quantity > 0 ? $this->quantity * $this->product->product->portion_quantity : $this->quantity,

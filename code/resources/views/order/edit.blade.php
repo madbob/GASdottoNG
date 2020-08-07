@@ -60,7 +60,7 @@
                     'obj' => $order->payment,
                     'name' => 'payment_id',
                     'label' => _i('Pagamento'),
-                    'default' => \App\Movement::generate('order-payment', $currentgas, $order, $summary->price_delivered),
+                    'default' => \App\Movement::generate('order-payment', $currentgas, $order, $summary->price_delivered ?? 0),
                     'to_modal' => [
                         'amount_editable' => true
                     ]

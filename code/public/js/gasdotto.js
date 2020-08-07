@@ -789,7 +789,21 @@ function bookingTotal(editor) {
 					}
 
 					for (let [modifier_id, modifier_meta] of Object.entries(booking_data.modifiers)) {
-						$('input[name="modifier-' + modifier_id + '"]', container).parent().find('span').text(priceRound(modifier_meta.amount));
+						var row = $('input[name="modifier-' + modifier_id + '"]', container).parent();
+						if (row.length == 0) {
+							var template = $('.modifier-row.hidden', container);
+							var new_row = template.clone();
+
+							new_row.removeClass('hidden').find('.static-label .name').text(modifier_meta.label);
+							if (modifier_meta.variable) {
+								new_row.find('.static-label .mutable').removeClass('hidden');
+							}
+
+							row = new_row.find('input[name="modifier-0"]').attr('name', 'modifier-' + modifier_id).parent();
+							template.before(new_row);
+						}
+
+						row.find('span').text(priceRound(modifier_meta.amount));
 					}
 
 					var t = priceRound(booking_data.total);

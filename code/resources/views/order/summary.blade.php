@@ -205,7 +205,7 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                 <th class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
                     @switch($identifier)
                         @case('total_price')
-                            <span class="order-summary-order-price">{{ printablePriceCurrency($summary->price) }}</span>
+                            <span class="order-summary-order-price">{{ printablePriceCurrency($summary->price ?? 0) }}</span>
                             <?php
 
                             $modifiers = $order->applyModifiers();
@@ -220,15 +220,15 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                             @break
 
                         @case('price_delivered')
-                            <span class="order-summary-order-price_delivered">{{ printablePriceCurrency($summary->price_delivered) }}</span>
+                            <span class="order-summary-order-price_delivered">{{ printablePriceCurrency($summary->price_delivered ?? 0) }}</span>
                             @break
 
                         @case('weight')
-                            {{ $summary->weight }} {{ _i('Chili') }}
+                            {{ $summary->weight ?? 0 }} {{ _i('Chili') }}
                             @break
 
                         @case('weight_delivered')
-                            {{ $summary->weight_delivered }} {{ _i('Chili') }}
+                            {{ $summary->weight_delivered ?? 0 }} {{ _i('Chili') }}
                             @break
 
                     @endswitch

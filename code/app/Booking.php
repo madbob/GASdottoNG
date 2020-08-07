@@ -201,7 +201,10 @@ class Booking extends Model
             $this->products->push($p);
         }
 
-        $p->setRelation('booking', $this);
+        if (is_null($p) == false) {
+            $p->setRelation('booking', $this);
+        }
+
         return $p;
     }
 

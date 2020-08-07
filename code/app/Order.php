@@ -134,6 +134,7 @@ class Order extends Model
             $ret->notes = '';
             $ret->status = 'pending';
             $ret->notes = '';
+            $ret->id = $ret->getSlugID();
         }
 
         return $ret;

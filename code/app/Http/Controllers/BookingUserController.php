@@ -115,25 +115,27 @@ class BookingUserController extends BookingHandler
             ];
 
             foreach($modified as $mod) {
-                if ($mod->target_type == 'App\Booking') {
-                    if (!isset($ret->bookings[$booking->id]->modifiers[$mod->modifier_id])) {
-                        $ret->bookings[$booking->id]->modifiers[$mod->modifier_id] = (object) [
-                            'label' => $mod->modifier->modifierType->name,
-                            'amount' => 0.
-                        ];
-                    }
-
-                    $ret->bookings[$booking->id]->modifiers[$mod->modifier_id]->amount += $mod->effective_amount;
-                }
-                else {
+                if ($mod->target_type == 'App\Product') {
                     if (!isset($ret->bookings[$booking->id]->products[$mod->target->product_id]->modifiers[$mod->modifier_id])) {
                         $ret->bookings[$booking->id]->products[$mod->target->product_id]->modifiers[$mod->modifier_id] = (object) [
                             'label' => $mod->modifier->modifierType->name,
-                            'amount' => 0.
+                            'amount' => 0,
+                            'variable' => $mod->is_variable,
                         ];
                     }
 
                     $ret->bookings[$booking->id]->products[$mod->target->product_id]->modifiers[$mod->modifier_id]->amount += $mod->effective_amount;
+                }
+                else {
+                    if (!isset($ret->bookings[$booking->id]->modifiers[$mod->modifier_id])) {
+                        $ret->bookings[$booking->id]->modifiers[$mod->modifier_id] = (object) [
+                            'label' => $mod->modifier->modifierType->name,
+                            'amount' => 0,
+                            'variable' => $mod->is_variable,
+                        ];
+                    }
+
+                    $ret->bookings[$booking->id]->modifiers[$mod->modifier_id]->amount += $mod->effective_amount;
                 }
             }
         }

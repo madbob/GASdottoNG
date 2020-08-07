@@ -141,6 +141,10 @@ class Modifier extends Model
                 break;
 
             case 'booking':
+                if (!isset($aggregate_data->orders[$booking->order_id]->bookings[$booking->id])) {
+                    return null;
+                }
+
                 $check_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id];
                 break;
 
