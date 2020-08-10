@@ -19,7 +19,7 @@ class GenericNotificationWrapper extends ManyMailNotification
     {
         $user = Auth::user();
         $message = $this->initMailMessage($notifiable, $user);
-        $message->subject(_i('Nuova notifica dal GAS'))->view('emails.notification', ['notification' => $this->notification]);
+        $message->subject(_i('Nuova notifica da %s', [$user->gas->name]))->view('emails.notification', ['notification' => $this->notification]);
 
         foreach($this->notification->attachments as $attachment) {
             $message->attach($attachment->path, ['as' => $attachment->name]);
