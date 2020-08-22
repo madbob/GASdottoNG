@@ -6,8 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
         <title>{{ currentAbsoluteGas()->name }} | GASdotto</title>
-
-        @include('feed::links')
+        <link rel="alternate" type="application/rss+xml" title="{{ _i('Ordini Aperti') }}" href="{{ route('rss') }}"/>
 
         <?php
 

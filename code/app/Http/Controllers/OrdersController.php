@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use DB;
+use App;
 use Auth;
 use PDF;
 use Mail;
@@ -84,9 +85,47 @@ class OrdersController extends Controller
         }
     }
 
+    public function rss(Request $request)
+    {
+        $aggregates = Aggregate::getByStatus('open');
+
+        $feed = App::make("feed");
+        $feed->title = _i('Ordini Aperti');
+        $feed->description = _i('Ordini Aperti');
+        $feed->link = $request->url();
+        $feed->setDateFormat('datetime');
+
+        if ($aggregates->isEmpty() == false)
+            $feed->pubdate = date('Y-m-d G:i:s');
+        else
+            $feed->pubdate = '1970-01-01 00:00:00';
+
+        foreach($aggregates as $aggregate) {
+            $summary = '';
+
+            foreach($aggregate->orders as $order) {
+                $summary .= $order->printableName() . "<br>\n";
+                foreach($order->products as $product)
+                    $summary .= $product->printableName() . "<br>\n";
+                $summary .= "<br>\n";
+            }
+
+            $feed->add(
+                $aggregate->printableName(),
+                $aggregate->gas->first()->printableName(),
+                $aggregate->getBookingURL(),
+                $aggregate->updated_at,
+                nl2br($summary),
+                ''
+            );
+        }
+
+        return $feed->render('rss');
+    }
+
     public function ical()
     {
-        $calendar = new \Eluceo\iCal\Component\Calendar('www.example.com');
+        $calendar = new \Eluceo\iCal\Component\Calendar(currentAbsoluteGas()->printableName());
 
         $orders = $this->defaultOrders(false);
         foreach($orders as $o) {

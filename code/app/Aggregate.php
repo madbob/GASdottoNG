@@ -6,9 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
-use Spatie\Feed\FeedItem;
-use Spatie\Feed\Feedable;
-
 use Auth;
 use URL;
 use Log;
@@ -17,7 +14,7 @@ use App\GASModel;
 use App\AggregateBooking;
 use App\Events\AttachableToGas;
 
-class Aggregate extends Model implements Feedable
+class Aggregate extends Model
 {
     use GASModel;
 
@@ -464,32 +461,5 @@ class Aggregate extends Model implements Feedable
             $suppliers[] = $order->supplier;
 
         return $suppliers;
-    }
-
-    /*************************************************************** Feedable */
-
-    public function toFeedItem()
-    {
-        $summary = '';
-
-        foreach($this->orders as $order) {
-            $summary .= $order->printableName() . "<br>\n";
-            foreach($order->products as $product)
-                $summary .= $product->printableName() . "<br>\n";
-            $summary .= "<br>\n";
-        }
-
-        return FeedItem::create()
-            ->id($this->id)
-            ->title($this->printableName())
-            ->summary($summary)
-            ->updated($this->updated_at)
-            ->link($this->getBookingURL())
-            ->author($this->gas->first()->printableName());
-    }
-
-    public static function getFeedItems()
-    {
-        return self::getByStatus('open');
     }
 }
