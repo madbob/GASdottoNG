@@ -86,4 +86,6 @@
     @include('commons.formbuttons', ['obj' => $user, 'no_delete' => true])
 </form>
 
-@stack('postponed')
+<div class="postponed">
+    @stack('postponed')
+</div>

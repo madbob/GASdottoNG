@@ -192,6 +192,17 @@ function generalInit(container) {
         enforceMeasureDiscrete($(this));
     });
 
+	/*
+		Per ignoti motivi, capita che l'HTML che arriva in modo asincrono dal
+		server sia riformattato ed i nodi che dovrebbero stare nel nodo
+		principale siano messi dentro ad altri.
+		Questo è problematico, in particolare per i modali dotati di form che
+		vengono messi dentro ad altri form (rompendo il comportamento in fase di
+		submit).
+		Pertanto qui esplicitamente ed improrogabilmente sposto i contenuti
+		marcati come .postponed nel nodo #postponed, che sta al fondo della
+		pagina, rimettendo ordine nella gerarchia del DOM.
+	*/
     $('.postponed', container).appendTo('#postponed').removeClass('postponed');
 
     $('ul[role=tablist]', container).each(function() {
@@ -1331,6 +1342,9 @@ $(document).ready(function() {
                     node.stop().css('height', 'auto');
                 },
                 error: function() {
+                    /*
+                        TODO: visualizzare un messaggio di errore nel nodo
+                    */
                     node.empty();
                     node.stop().css('height', 'auto');
                 }
