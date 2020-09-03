@@ -3,8 +3,9 @@
 @section('content')
 
 <div class="col-md-6 col-md-offset-3">
-    <form class="form-horizontal" role="form" method="POST" action="{{ route('password.reset', ['token' => $token]) }}">
+    <form class="form-horizontal" role="form" method="POST" action="{{ route('password.update') }}">
         {{ csrf_field() }}
+        <input type="hidden" name="token" value="{{ $token }}">
 
         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
             <label for="email" class="col-md-2 control-label">E-Mail Address</label>
