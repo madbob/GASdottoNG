@@ -168,7 +168,7 @@ function generalInit(container) {
         handle: '.modal-header'
     });
 
-    $('.modal.dynamic-contents', container).on('show.bs.modal', function(e) {
+    $('.modal.dynamic-contents', container).not('.dynamic-contents-inited').on('show.bs.modal', function(e) {
         /*
             La callback viene chiamata anche quando mostro il popover di
             selezione di una data: questo è per evitare di ricaricare tutto un
@@ -176,6 +176,8 @@ function generalInit(container) {
         */
         if ($(e.target).hasClass('date'))
             return;
+
+        $(this).addClass('dynamic-contents-inited');
 
         var contents = $(this).find('.modal-content');
         contents.empty().append(loadingPlaceholder());
