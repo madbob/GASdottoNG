@@ -193,6 +193,10 @@ class GasController extends Controller
 
                 break;
 
+            case 'import':
+                $gas->setConfig('es_integration', $request->has('es_integration') ? '1' : '0');
+                break;
+
             case 'roles':
                 $conf = (object) [
                     'user' => $request->input('roles->user'),

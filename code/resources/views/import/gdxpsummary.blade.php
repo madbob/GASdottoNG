@@ -5,12 +5,8 @@
         <div class="modal-body">
             @foreach($data as $supplier)
                 @if($supplier->orders->isEmpty() == false)
-                    <h3>Importa Ordine</h3>
-
                     @include('commons.staticdatefield', ['obj' => $supplier->orders->first(), 'name' => 'start', 'label' => _i('Data Apertura')])
                     @include('commons.staticdatefield', ['obj' => $supplier->orders->first(), 'name' => 'end', 'label' => _i('Data Chiusura')])
-                @else
-                    <h3>Importa Fornitore</h3>
                 @endif
 
                 <div class="form-group">
@@ -18,22 +14,19 @@
                     <div class="col-sm-{{ $fieldsize }}">
                         <div class="radio">
                             <label>
-                                <input type="radio" name="supplier_source" value="new" checked>
-                                {{ _i('Crea nuovo') }}: {{ $supplier->name }}<br/>
-                                <small>{{ _i('Verrà generato un nuovo fornitore con il listino allegato.') }}</small>
+                                <input type="radio" name="supplier_source" value="new" checked> {{ _i('Crea nuovo') }}: {{ $supplier->name }}
                             </label>
                         </div>
                         <div class="radio">
                             <label>
-                                <input type="radio" name="supplier_source" value="update">
-                                {{ _i('Aggiorna fornitore esistente') }}: <select name="supplier_update" class="form-control">
-                                    <option value="none" selected>{{ _i('Seleziona un fornitore') }}</option>
-                                    @foreach($currentgas->suppliers as $s)
-                                        <option value="{{ $s->id }}">{{ $s->name }}</option>
-                                    @endforeach
-                                </select><br/>
-                                <small>{{ _i('Tutti i prodotti del fornitore saranno archiviati e sostituiti con quelli presenti nel file. Eventuali ordini aperti continueranno a fare riferimento ai prodotti archiviati.') }}</small>
+                                <input type="radio" name="supplier_source" value="update"> {{ _i('Aggiorna fornitore esistente') }}
                             </label>
+                            <select name="supplier_update" class="form-control">
+                                <option value="none" selected>{{ _i('Seleziona un fornitore') }}</option>
+                                @foreach($currentgas->suppliers as $s)
+                                    <option value="{{ $s->id }}">{{ $s->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>

@@ -5,7 +5,10 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 
+use App\Observers\SupplierObserver;
+
 use App\User;
+use App\Supplier;
 use App\Order;
 use App\Role;
 use App\Delivery;
@@ -47,6 +50,8 @@ class AppServiceProvider extends ServiceProvider
                     $order->sendNotificationMail();
             }
         });
+
+        Supplier::observe(SupplierObserver::class);
     }
 
     public function register()

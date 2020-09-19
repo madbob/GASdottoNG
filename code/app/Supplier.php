@@ -12,7 +12,6 @@ use Auth;
 
 use App\Events\SluggableCreating;
 use App\Events\AttachableToGas;
-use App\Events\SupplierDeleting;
 
 class Supplier extends Model
 {
@@ -24,7 +23,6 @@ class Supplier extends Model
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,
         'created' => AttachableToGas::class,
-        'deleting' => SupplierDeleting::class,
     ];
 
     protected static function boot()
@@ -533,12 +531,14 @@ class Supplier extends Model
             $contact->save();
         }
 
-        $contact = new Contact();
-        $contact->type = 'address';
-        $contact->value = normalizeAddress($json->address->street, $json->address->locality, $json->address->zipCode);
-        $contact->target_id = $supplier->id;
-        $contact->target_type = get_class($supplier);
-        $contact->save();
+        if (!empty($json->address->locality)) {
+            $contact = new Contact();
+            $contact->type = 'address';
+            $contact->value = normalizeAddress($json->address->street, $json->address->locality, $json->address->zipCode);
+            $contact->target_id = $supplier->id;
+            $contact->target_type = get_class($supplier);
+            $contact->save();
+        }
 
         $product_ids = [];
 
@@ -553,13 +553,18 @@ class Supplier extends Model
             $product->supplier_code = $json_product->sku ?? '';
             $product->description = $json_product->description ?? '';
             $product->active = $json_product->active ?? true;
-            $product->price = (float) $json_product->orderInfo->umPrice ?? 0;
-            $product->package_size = (float) $json_product->orderInfo->packageQty ?? 0;
-            $product->min_quantity = (float) $json_product->orderInfo->minQty ?? 0;
-            $product->max_quantity = (float) $json_product->orderInfo->maxQty ?? 0;
-            $product->multiple = (float) $json_product->orderInfo->mulQty ?? 0;
-            $product->transport = (float) $json_product->orderInfo->shippingCost ?? 0;
-            $product->max_available = (float) $json_product->orderInfo->availableQty ?? 0;
+            $product->price = (float) ($json_product->orderInfo->umPrice ?? 0);
+
+            $product->package_size = (float) ($json_product->orderInfo->packageQty ?? 0);
+            if ($product->package_size == 1) {
+                $product->package_size = 0;
+            }
+
+            $product->min_quantity = (float) ($json_product->orderInfo->minQty ?? 0);
+            $product->max_quantity = (float) ($json_product->orderInfo->maxQty ?? 0);
+            $product->multiple = (float) ($json_product->orderInfo->mulQty ?? 0);
+            $product->transport = (float) ($json_product->orderInfo->shippingCost ?? 0);
+            $product->max_available = (float) ($json_product->orderInfo->availableQty ?? 0);
 
             $name = $json_product->category ?? '';
             if (!empty($name)) {

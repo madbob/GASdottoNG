@@ -13,7 +13,6 @@ use PDF;
 use App\User;
 use App\Supplier;
 use App\Product;
-use App\Role;
 
 class SuppliersService extends BaseService
 {
@@ -91,7 +90,7 @@ class SuppliersService extends BaseService
 
     public function store(array $request)
     {
-        $creator = $this->ensureAuth(['supplier.add' => 'gas']);
+        $this->ensureAuth(['supplier.add' => 'gas']);
 
         if (!isset($request['payment_method']) || is_null($request['payment_method']))
             $request['payment_method'] = '';
@@ -100,25 +99,7 @@ class SuppliersService extends BaseService
 
         $supplier = new Supplier();
         $this->setCommonAttributes($supplier, $request);
-
-        DB::transaction(function () use ($supplier, $creator) {
-            $supplier->save();
-
-            $roles = Role::havingAction('supplier.modify');
-            foreach($roles as $r) {
-                $creator->addRole($r, $supplier);
-            }
-
-            $roles = Role::havingAction('supplier.orders');
-            foreach($roles as $r) {
-                $creator->addRole($r, $supplier);
-            }
-
-            $roles = Role::havingAction('supplier.shippings');
-            foreach($roles as $r) {
-                $creator->addRole($r, $supplier);
-            }
-        });
+        $supplier->save();
 
         return $supplier;
     }

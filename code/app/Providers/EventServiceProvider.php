@@ -14,9 +14,6 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\AttachableToGas' => [
             'App\Listeners\AttachToGas',
         ],
-        'App\Events\SupplierDeleting' => [
-            'App\Listeners\DetachSupplierRole',
-        ],
         'Illuminate\Log\Events\MessageLogged' => [
             'App\Listeners\HarvestLogs',
         ],

@@ -127,6 +127,10 @@ class Gas extends Model
                 ]
             ],
 
+            'es_integration' => [
+                'default' => false,
+            ],
+
             'orders_display_columns' => [
                 'default' => ['selection', 'name', 'price', 'quantity', 'total_price', 'quantity_delivered', 'price_delivered', 'notes']
             ],
@@ -266,6 +270,11 @@ class Gas extends Model
     public function getPublicRegistrationsAttribute()
     {
         return (array) json_decode($this->getConfig('public_registrations'));
+    }
+
+    public function getEsIntegrationAttribute()
+    {
+        return $this->getConfig('es_integration');
     }
 
     public function getOrdersDisplayColumnsAttribute()

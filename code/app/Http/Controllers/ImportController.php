@@ -89,6 +89,19 @@ class ImportController extends Controller
         }
     }
 
+    public function esModal()
+    {
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request('GET', 'http://hub.gasdotto.net/api/list');
+        $response = json_decode($response->getBody());
+
+        usort($response->results, function($a, $b) {
+            return $a->name <=> $b->name;
+        });
+
+        return view('import.esmodal', ['entries' => $response->results]);
+    }
+
     public function getLegacy()
     {
         return view('import.legacy-pre');
@@ -921,9 +934,17 @@ class ImportController extends Controller
 
             if ($step == 'read') {
                 $file = $request->file('file');
-                $filename = basename(tempnam($working_dir, 'import_gdxp_'));
-                $file->move($working_dir, $filename);
-                $archivepath = sprintf('%s/%s', $working_dir, $filename);
+                if (is_null($file) || $file->isValid() == false) {
+                    $url = $request->input('url');
+                    $file = file_get_contents($url);
+                    $archivepath = tempnam($working_dir, 'gdxp_remote_file');
+                    file_put_contents($archivepath, $file);
+                }
+                else {
+                    $filename = basename(tempnam($working_dir, 'import_gdxp_'));
+                    $file->move($working_dir, $filename);
+                    $archivepath = sprintf('%s/%s', $working_dir, $filename);
+                }
 
                 $data = $this->readGdxpFile($archivepath, false, null);
                 return view('import.gdxpsummary', ['data' => $data, 'path' => $archivepath]);

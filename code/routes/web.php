@@ -125,6 +125,7 @@ Route::middleware(['auth'])->group(function() {
     Route::post('movements/deletebalance/{id}', 'MovementsController@deleteBalance')->name('movements.deletebalance');
     Route::get('movements/document/{type}/{subtype?}', 'MovementsController@document');
 
+    Route::get('import/esmodal', 'ImportController@esModal')->name('import.esmodal');
     Route::post('import/csv', 'ImportController@postCsv');
     Route::get('import/gdxp', 'ImportController@getGdxp');
     Route::post('import/gdxp', 'ImportController@postGdxp');

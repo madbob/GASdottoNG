@@ -390,6 +390,22 @@
                 <div id="import-config" class="panel-collapse collapse" role="tabpanel">
                     <div class="panel-body">
                         <div class="row">
+                            <form class="form-horizontal inner-form gas-editor" method="PUT" action="{{ route('gas.update', $gas->id) }}">
+                                <input type="hidden" name="group" value="import">
+
+                                <div class="col-md-12">
+                                    @include('commons.boolfield', ['obj' => $gas, 'name' => 'es_integration', 'label' => _i('Integrazione Repository Listini')])
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="btn-group pull-right main-form-buttons" role="group">
+                                        <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <hr>
+
                             <div class="col-md-12 form-horizontal">
                                 <div class="form-group">
                                     <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Importazione') }}</label>
