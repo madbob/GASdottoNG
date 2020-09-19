@@ -42,7 +42,7 @@
             @endcan
 
             @if($currentgas->getConfig('es_integration'))
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#viewRepository">{{ _i('Cerca in Repository') }} <span class="glyphicon glyphicon-modal-window"></span></button>
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#viewRepository">{{ _i('Indice Remoto') }} <span class="glyphicon glyphicon-modal-window"></span></button>
                 <div class="modal fade wizard dynamic-contents" id="viewRepository" tabindex="-1" role="dialog" data-contents-url="{{ route('import.esmodal') }}">
                     <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">

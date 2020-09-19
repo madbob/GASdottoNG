@@ -6,7 +6,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Collection;
+
+use Illuminate\Support\Collection;
 
 use Auth;
 
@@ -483,7 +484,7 @@ class Supplier extends Model
         return $supplier;
     }
 
-    public static function importJSON($json, $replace)
+    public static function importJSON($master, $json, $replace)
     {
         if (is_null($replace)) {
             $supplier = new Supplier();
@@ -498,6 +499,7 @@ class Supplier extends Model
         $product_ids = [];
 
         $supplier->name = $json->name;
+        $supplier->remote_lastimport = $master->creationDate ?? date('Y-m-d');
         $supplier->taxcode = $json->taxCode ?? '';
         $supplier->vat = $json->vatNumber ?? '';
         $supplier->save();

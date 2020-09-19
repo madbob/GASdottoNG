@@ -1759,11 +1759,17 @@ $(document).ready(function() {
             $('.table' + target + ' tbody tr:not(.do-not-filter)').show();
         }
         else {
-            $('.table' + target + ' tbody tr:not(.do-not-filter) .text-filterable-cell').each(function() {
-                if ($(this).text().toLowerCase().indexOf(text) == -1)
-                    $(this).closest('tr').hide();
-                else
-                    $(this).closest('tr').show();
+            $('.table' + target + ' tbody tr:not(.do-not-filter)').each(function() {
+                var show_row = false;
+
+                $(this).find('.text-filterable-cell').each(function() {
+                    if ($(this).text().toLowerCase().indexOf(text) != -1) {
+                        show_row = true;
+                        return false;
+                    }
+                });
+
+                $(this).toggle(show_row);
             });
         }
     });

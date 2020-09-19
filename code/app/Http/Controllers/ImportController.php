@@ -91,15 +91,8 @@ class ImportController extends Controller
 
     public function esModal()
     {
-        $client = new \GuzzleHttp\Client();
-        $response = $client->request('GET', 'http://hub.gasdotto.net/api/list');
-        $response = json_decode($response->getBody());
-
-        usort($response->results, function($a, $b) {
-            return $a->name <=> $b->name;
-        });
-
-        return view('import.esmodal', ['entries' => $response->results]);
+        $entries = App::make('RemoteRepository')->getList();
+        return view('import.esmodal', ['entries' => $entries]);
     }
 
     public function getLegacy()
@@ -892,7 +885,7 @@ class ImportController extends Controller
             $info = json_decode(file_get_contents($path));
             foreach($info->blocks as $c) {
                 if ($execute) {
-                    $data[] = Supplier::importJSON($c->supplier, $supplier_replace);
+                    $data[] = Supplier::importJSON($info, $c->supplier, $supplier_replace);
                 }
                 else {
                     $data[] = Supplier::readJSON($c->supplier);

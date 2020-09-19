@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 
 use App\Singletons\OrderNumbersDispatcher;
 use App\Singletons\MovementsHub;
+use App\Singletons\RemoteRepository;
 use App\Singletons\LogHarvester;
 
 class SingletonsProvider extends ServiceProvider
@@ -23,6 +24,10 @@ class SingletonsProvider extends ServiceProvider
 
         $this->app->singleton('MovementsHub', function ($app) {
             return new MovementsHub();
+        });
+
+        $this->app->singleton('RemoteRepository', function ($app) {
+            return new RemoteRepository();
         });
 
         $this->app->singleton('LogHarvester', function ($app) {
