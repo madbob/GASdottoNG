@@ -467,6 +467,7 @@ class Supplier extends Model
         $supplier = new Supplier();
 
         $supplier->name = $json->name;
+        $supplier->vat = $json->vatNumber ?? '';
 
         $supplier->products = new Collection();
         foreach($json->products as $a) {
