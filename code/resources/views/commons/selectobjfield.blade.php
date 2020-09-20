@@ -48,6 +48,10 @@ if (!isset($datafields)) {
     $datafields = [];
 }
 
+if (!isset($help_block_class)) {
+    $help_block_class = '';
+}
+
 if ($obj)
     $selected_value = accessAttr($obj, $name, '');
 else if (isset($enforced_default))
@@ -108,7 +112,7 @@ else {
         </select>
 
         @if(!empty($help_text))
-            <span class="help-block">{!! $help_text !!}</span>
+            <span class="help-block {{ $help_block_class }}">{!! $help_text !!}</span>
         @endif
     </div>
 </div>
