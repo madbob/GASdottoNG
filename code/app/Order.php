@@ -421,7 +421,7 @@ class Order extends Model
                 'alternate' => false,
                 'by_variant' => 'quantity',
                 'by_product' => 'quantity_pieces',
-                'by_booking' => 'quantity',
+                'by_booking' => 'booked',
             ];
         }
     }
@@ -511,7 +511,7 @@ class Order extends Model
 
                 $summary = $booked->as_summary;
 
-                $row = $this->formatProduct($fields->product_columns, $formattable_product, $summary, $product, $internal_offsets);
+                $row = $this->formatProduct($fields->product_columns, $formattable_product, $summary->products[$booked->product->id], $product, $internal_offsets);
                 if (!empty($row)) {
                     $obj->products = array_merge($obj->products, $row);
                 }
@@ -521,9 +521,29 @@ class Order extends Model
                 continue;
             }
 
-            $obj->totals['transport'] = $booking->getValue('transport', true);
-            $obj->totals['discount'] = $booking->getValue('discount', true);
-            $obj->totals['total'] = $booking->getValue($internal_offsets->by_booking, true) + $obj->totals['transport'] - $obj->totals['discount'];
+            /*
+                All'occorrenza, qui "falsifico" temporaneamente lo stato della
+                prenotazione per far tornare i conti in fase di valutazione dei
+                modificatori
+            */
+            $original_booking_status = null;
+
+            if (($booking->status == 'shipped' || $booking->status == 'saved') && $status == 'booked') {
+                $original_booking_status = $booking->status;
+                $booking->status = 'pending';
+            }
+
+            $modifiers = $booking->applyModifiers(null, false);
+            $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
+            foreach($aggregated_modifiers as $am) {
+                $obj->totals[$am->name] = printablePrice($am->amount);
+            }
+
+            $obj->totals['total'] = $booking->getValue($internal_offsets->by_booking, true) + $booking->getValue('modifier:all', true);
+
+            if ($original_booking_status != null) {
+                $booking->status = $original_booking_status;
+            }
 
             $ret->contents[] = $obj;
         }

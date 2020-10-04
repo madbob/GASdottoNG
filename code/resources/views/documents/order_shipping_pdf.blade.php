@@ -44,7 +44,12 @@
         <hr>
         <br/>
 
-        <?php $total = $total_transport = $total_discount = 0 ?>
+        <?php
+
+        $total = 0;
+        $full_modifiers = [];
+
+        ?>
 
         @foreach($data->contents as $d)
             <table border="1" style="width: 100%" cellpadding="5" nobr="true">
@@ -54,12 +59,21 @@
 
                         <?php
 
-                        $booking_total = $d->totals['total'];
-                        $discount = $d->totals['discount'];
-                        $transport = $d->totals['transport'];
-                        $total += $booking_total;
-                        $total_transport += $transport;
-                        $total_discount += $discount;
+                        $booking_total = 0;
+                        $booking_modifiers = [];
+
+                        foreach($d->totals as $key => $value) {
+                            if ($key == 'total') {
+                                $booking_total += $value;
+                                $total += $value;
+                            }
+                            else {
+                                $booking_modifiers[$key] = $booking_modifiers[$key] ?? 0;
+                                $booking_modifiers[$key] += $value;
+                                $full_modifiers[$key] = $full_modifiers[$key] ?? 0;
+                                $full_modifiers[$key] += $value;
+                            }
+                        }
 
                         ?>
                     </th>
@@ -79,17 +93,11 @@
                     </tr>
                 @endif
 
-                @if($transport != 0)
+                @foreach($booking_modifiers as $bm_key => $bm_value)
                     <tr>
-                        <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Trasporto') }}: {{ printablePriceCurrency($transport, ',') }}</strong></th>
+                        <th colspan="{{ count($fields->product_columns) }}"><strong>{{ $bm_key }}: {{ printablePriceCurrency($bm_value, ',') }}</strong></th>
                     </tr>
-                @endif
-
-                @if($discount != 0)
-                    <tr>
-                        <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Sconto') }}: {{ printablePriceCurrency($discount, ',') }}</strong></th>
-                    </tr>
-                @endif
+                @endforeach
 
                 <tr>
                     <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($booking_total, ',') }}</strong></th>
@@ -100,17 +108,11 @@
         @endforeach
 
         <table border="1" style="width: 100%" cellpadding="5" nobr="true">
-            @if(!empty($total_transport))
+            @foreach($full_modifiers as $fm_key => $fm_value)
                 <tr>
-                    <th colspan="3"><strong>{{ _i('Trasporto') }}: {{ printablePriceCurrency($total_transport, ',') }}</strong></th>
+                    <th colspan="3"><strong>{{ $fm_key }}: {{ printablePriceCurrency($fm_value, ',') }}</strong></th>
                 </tr>
-            @endif
-
-            @if(!empty($total_discount))
-                <tr>
-                    <th colspan="3"><strong>{{ _i('Sconto') }}: {{ printablePriceCurrency($total_discount, ',') }}</strong></th>
-                </tr>
-            @endif
+            @endforeach
 
             <tr>
                 <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($total, ',') }}</strong></th>

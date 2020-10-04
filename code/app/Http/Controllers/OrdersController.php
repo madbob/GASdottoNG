@@ -425,9 +425,9 @@ class OrdersController extends Controller
             case 'shipping':
                 $send_mail = $request->has('send_mail');
                 $subtype = $request->input('format', 'pdf');
+                $status = $request->input('status');
                 $required_fields = $request->input('fields', []);
                 $fields = splitFields($required_fields);
-                $status = 'booked';
 
                 $shipping_place = $request->input('shipping_place', 'all_by_name');
                 $data = $order->formatShipping($fields, $status, $shipping_place);

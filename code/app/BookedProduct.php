@@ -140,7 +140,7 @@ class BookedProduct extends Model
 
         $summary = (object) [
             'products' => [
-                $faked_index => [
+                $faked_index => (object) [
                     'product_obj' => $this->product,
                     'quantity' => $this->product->portion_quantity > 0 ? $this->quantity * $this->product->portion_quantity : $this->quantity,
                     'quantity_pieces' => $this->quantity,
@@ -168,7 +168,7 @@ class BookedProduct extends Model
                 */
                 if ($this->product->measure->discrete == true) {
                     foreach($summary->by_variant[$faked_index] as $vindex => $var_iter) {
-                        if ($var_iter['name'] == $name) {
+                        if ($var_iter->name == $name) {
                             $variant_index = $vindex;
                             break;
                         }
@@ -177,28 +177,24 @@ class BookedProduct extends Model
 
                 if ($variant_index == -1) {
                     $variant_index = count($summary->by_variant[$faked_index]);
-                    $summary->by_variant[$faked_index][$variant_index] = [
+                    $summary->by_variant[$faked_index][$variant_index] = (object) [
                         'name' => $name,
                         'quantity' => 0,
                         'delivered' => 0,
                         'price' => 0,
-                        'transport' => 0,
                         'unit_price' => $v->unitPrice()
                     ];
                 }
 
-                $summary->by_variant[$faked_index][$variant_index]['quantity'] += $v->quantity;
-                $summary->by_variant[$faked_index][$variant_index]['delivered'] += $v->delivered;
-                $summary->by_variant[$faked_index][$variant_index]['price'] += $v->quantityValue();
-
-                $relative_transport = ($v->quantityValue() * $relative_transport = $summary->products[$faked_index]['transport']) / $summary->products[$faked_index]['price'];
-                $summary->by_variant[$faked_index][$variant_index]['transport'] += $relative_transport;
+                $summary->by_variant[$faked_index][$variant_index]->quantity += $v->quantity;
+                $summary->by_variant[$faked_index][$variant_index]->delivered += $v->delivered;
+                $summary->by_variant[$faked_index][$variant_index]->price += $v->quantityValue();
 
                 $variants_quantity += $v->quantity;
             }
 
             if ($variants_quantity != 0) {
-                $summary->products[$faked_index]['quantity'] = $variants_quantity;
+                $summary->products[$faked_index]->quantity = $variants_quantity;
             }
         }
 

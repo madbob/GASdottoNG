@@ -89,6 +89,22 @@
                         ]
                     ])
 
+                    @include('commons.radios', [
+                        'name' => 'status',
+                        'label' => _i('Stato'),
+                        'labelsize' => 2,
+                        'fieldsize' => 10,
+                        'values' => [
+                            'booked' => (object) [
+                                'name' => 'Prenotati',
+                                'checked' => true
+                            ],
+                            'delivered' => (object) [
+                                'name' => 'Consegnati'
+                            ],
+                        ]
+                    ])
+
                     @include('order.filesmail', ['contacts' => $contacts])
                 </div>
                 <div class="modal-footer">
