@@ -68,7 +68,7 @@ class MeasuresController extends Controller
         $new_weights = $request->input('weight', []);
         $saved_ids = ['non-specificato'];
 
-        for ($i = 0; $i < count($ids); ++$i) {
+        for ($i = 0, $new_weights_index = 0; $i < count($ids); ++$i) {
             $name = trim($new_names[$i]);
             if (empty($name))
                 continue;
@@ -86,7 +86,7 @@ class MeasuresController extends Controller
             $measure->name = $name;
 
             if ($measure->discrete == false) {
-                $measure->weight = $new_weights[$i];
+                $measure->weight = $new_weights[$new_weights_index++];
             }
             else {
                 $measure->weight = 0;

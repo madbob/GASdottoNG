@@ -3,7 +3,7 @@
 Auth::routes();
 
 Route::get(substr(env('APP_KEY'), -5) . '/logs', '\MadBob\LaravelLog2Rss\Log2RssController@index');
-Route::feeds();
+Route::get('ordini.xml', 'OrdersController@rss')->name('rss');
 Route::get('ordini.ics', 'OrdersController@ical');
 
 Route::get('gas/{id}/logo', 'GasController@getLogo');
@@ -121,6 +121,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('movements/{id}/header', 'MovementsController@objhead')->name('movements.objhead');
     Route::get('movtypes/{id}/header', 'MovementTypesController@objhead')->name('movtypes.objhead');
     Route::get('movements/showcredits', 'MovementsController@creditsTable');
+    Route::get('movements/showsuppliers', 'MovementsController@suppliersTable');
     Route::get('movements/balance', 'MovementsController@getBalance');
     Route::post('movements/recalculate', 'MovementsController@recalculate');
     Route::post('movements/close', 'MovementsController@closeBalance');

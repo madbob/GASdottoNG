@@ -16,7 +16,9 @@
     'extra_class' => 'measure-selector',
     'label' => _i('Unità di Misura'),
     'datafields' => ['discrete'],
-    'required' => ($product == null)
+    'required' => ($product == null),
+    'help_text' => _i('Hai selezionato una unità di misura "discreta": per questo prodotto possono essere usate solo quantità intere.'),
+    'help_block_class' => 'hidden discrete_unit_alert'
 ])
 
 @include('commons.textarea', ['obj' => $product, 'name' => 'description', 'label' => _i('Descrizione')])

@@ -19,6 +19,7 @@ if (!isset($amount_label))
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form class="form-horizontal creating-form" method="POST" action="{{ $obj->exists ? route('movements.update', $obj->id) : route('movements.store') }}" data-toggle="validator">
+                @csrf
                 <input type="hidden" name="update-field" value="movement-id-{{ $dom_id }}">
                 <input type="hidden" name="update-field" value="movement-date-{{ $dom_id }}">
                 <input type="hidden" name="close-modal" value="">

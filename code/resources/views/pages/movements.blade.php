@@ -35,6 +35,14 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#suppliersStatus">{{ _i('Stato Fornitori') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
+                            <div class="modal fade dynamic-contents" id="suppliersStatus" tabindex="-1" data-contents-url="{{ url('movements/showsuppliers') }}">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                    </div>
+                                </div>
+                            </div>
                         @endcan
                     </div>
 

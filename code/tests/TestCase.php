@@ -16,7 +16,7 @@ abstract class TestCase extends BaseTestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('migrate');
+        Artisan::call('migrate:refresh');
         Artisan::call('db:seed', ['--force' => true, '--class' => 'MovementTypesSeeder']);
     }
 
@@ -36,8 +36,6 @@ abstract class TestCase extends BaseTestCase
     public function tearDown(): void
     {
         $this->disableQueryDump();
-
-        Artisan::call('migrate:reset');
         parent::tearDown();
     }
 }

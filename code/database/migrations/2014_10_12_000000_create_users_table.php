@@ -12,7 +12,6 @@ class CreateUsersTable extends Migration
             $table->timestamps();
 
             $table->softDeletes();
-            $table->boolean('suspended')->default(false);
 
             $table->string('gas_id');
             $table->string('username')->unique();

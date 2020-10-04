@@ -168,7 +168,7 @@ function generalInit(container) {
         handle: '.modal-header'
     });
 
-    $('.modal.dynamic-contents', container).on('show.bs.modal', function(e) {
+    $('.modal.dynamic-contents', container).not('.dynamic-contents-inited').on('show.bs.modal', function(e) {
         /*
             La callback viene chiamata anche quando mostro il popover di
             selezione di una data: questo è per evitare di ricaricare tutto un
@@ -176,6 +176,8 @@ function generalInit(container) {
         */
         if ($(e.target).hasClass('date'))
             return;
+
+        $(this).addClass('dynamic-contents-inited');
 
         var contents = $(this).find('.modal-content');
         contents.empty().append(loadingPlaceholder());
@@ -192,6 +194,17 @@ function generalInit(container) {
         enforceMeasureDiscrete($(this));
     });
 
+	/*
+		Per ignoti motivi, capita che l'HTML che arriva in modo asincrono dal
+		server sia riformattato ed i nodi che dovrebbero stare nel nodo
+		principale siano messi dentro ad altri.
+		Questo è problematico, in particolare per i modali dotati di form che
+		vengono messi dentro ad altri form (rompendo il comportamento in fase di
+		submit).
+		Pertanto qui esplicitamente ed improrogabilmente sposto i contenuti
+		marcati come .postponed nel nodo #postponed, che sta al fondo della
+		pagina, rimettendo ordine nella gerarchia del DOM.
+	*/
     $('.postponed', container).appendTo('#postponed').removeClass('postponed');
 
     $('ul[role=tablist]', container).each(function() {
@@ -679,22 +692,35 @@ function enforceMeasureDiscrete(node) {
     form.find('input[name=portion_quantity]').prop('disabled', disabled);
 	form.find('input[name=weight]').prop('disabled', !disabled);
 	var multiple_widget = form.find('input[name=multiple]');
+    var min_quantity_widget = form.find('input[name=min_quantity]');
+    var max_quantity_widget = form.find('input[name=max_quantity]');
+    var max_available_widget = form.find('input[name=max_available]');
 
 	if (disabled) {
 		form.find('input[name=portion_quantity]').val('0.000');
 		form.find('input[name=variable]').bootstrapToggle('off').bootstrapToggle('disable');
+        form.find('.discrete_unit_alert').removeClass('hidden');
 
 		multiple_widget.attr('data-enforce-minimum', 1);
 		multiple_widget.attr('data-enforce-integer', 1);
 
 		multiple_widget.val(parseInt(multiple_widget.val()));
-		if (multiple_widget.val() < 1)
+		if (multiple_widget.val() < 1) {
 			multiple_widget.val('1.000');
+        }
+
+        min_quantity_widget.attr('data-enforce-integer', 1);
+        max_quantity_widget.attr('data-enforce-integer', 1);
+        max_available_widget.attr('data-enforce-integer', 1);
 	}
 	else {
 		form.find('input[name=weight]').val('0.000');
 		form.find('input[name=variable]').bootstrapToggle('enable');
+        form.find('.discrete_unit_alert').addClass('hidden');
 		multiple_widget.removeAttr('data-enforce-minimum').removeAttr('data-enforce-integer');
+        min_quantity_widget.removeAttr('data-enforce-integer');
+        max_quantity_widget.removeAttr('data-enforce-integer');
+        max_available_widget.removeAttr('data-enforce-integer');
 	}
 }
 
@@ -1248,6 +1274,9 @@ $(document).ready(function() {
                     node.stop().css('height', 'auto');
                 },
                 error: function() {
+                    /*
+                        TODO: visualizzare un messaggio di errore nel nodo
+                    */
                     node.empty();
                     node.stop().css('height', 'auto');
                 }
