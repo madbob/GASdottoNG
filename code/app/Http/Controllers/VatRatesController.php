@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Services\VatRatesService;
 use App\Exceptions\AuthException;
 
-class VatratesController extends BackedController
+class VatRatesController extends BackedController
 {
     public function __construct(VatRatesService $service)
     {
