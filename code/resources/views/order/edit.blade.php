@@ -35,7 +35,10 @@
                     @include('commons.boolfield', ['obj' => $order, 'name' => 'keep_open_packages', 'label' => _i('Forza completamento confezioni')])
                 @endif
             @else
-                @include('commons.staticstringfield', ['obj' => $order, 'name' => 'comment', 'label' => _i('Commento')])
+                @if(!empty($order->comment))
+                    @include('commons.staticstringfield', ['obj' => $order, 'name' => 'comment', 'label' => _i('Commento')])
+                @endif
+
                 @include('commons.staticdatefield', ['obj' => $order, 'name' => 'start', 'label' => _i('Data Apertura')])
                 @include('commons.staticdatefield', ['obj' => $order, 'name' => 'end', 'label' => _i('Data Chiusura')])
                 @include('commons.staticdatefield', ['obj' => $order, 'name' => 'shipping', 'label' => _i('Data Consegna')])

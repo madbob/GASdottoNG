@@ -204,6 +204,10 @@ class Aggregate extends Model
                 }
             }
 
+            if (!empty($this->comment)) {
+                $names = [];
+            }
+
             $date_string = sprintf('da %s a %s', strftime('%A %d %B %G', $start_date), strftime('%A %d %B %G', $end_date));
             if ($shipping_date != PHP_INT_MAX)
                 $date_string .= sprintf(', in consegna %s', strftime('%A %d %B %G', $shipping_date));
@@ -221,17 +225,23 @@ class Aggregate extends Model
 
     public function printableName()
     {
-        $name = $this->comment;
-        if (!empty($name))
-            $name .= ': ';
+        $all_contents = [];
 
-        $name .= $this->innerCache('names', function($obj) {
+        if (!empty($this->comment)) {
+            $all_contents[] = $this->comment;
+        }
+
+        $names = $this->innerCache('names', function($obj) {
             list($name, $date) = $this->computeStrings();
             $this->setInnerCache('dates', $date);
             return $name;
         });
 
-        return $name;
+        if (!empty($names)) {
+            $all_contents[] = $names;
+        }
+
+        return join(': ', $all_contents);
     }
 
     public function printableDates()
