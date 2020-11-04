@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2020-02-09 23:46+0100\n"
-"PO-Revision-Date: 2020-05-21 17:41+0000\n"
+"PO-Revision-Date: 2020-11-05 09:26+0000\n"
 "Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/gasdottong/"
 "translations/fr/>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.1-dev\n"
+"X-Generator: Weblate 4.3.2-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -1085,7 +1085,7 @@ msgstr "Journal des courriels"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:581
 msgid "Non ci sono log relativi alle email."
-msgstr "Aucun enregistrement relatif aux courriels."
+msgstr "Aucun journal relatif aux courriels."
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:589
 msgid "Messaggio"
@@ -3448,7 +3448,7 @@ msgstr "Chargement en cours"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:117
 msgid "Feedback"
-msgstr "Commentaires"
+msgstr "Remarques"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:125
 msgid "Vuoi inviare una segnalazione su GASdotto? Fallo qui!"
@@ -3464,7 +3464,7 @@ msgstr ""
 "Attention : les problèmes relatifs au contenu du site (fournisseurs, "
 "commandes, réservations...) sont à adresser à l'administrateur de votre "
 "groupe. Les informations transmises par ce formulaire sont publiques. Ne "
-"transmettez pas d'informations personnelles !"
+"transmettez pas d'informations personnelles !"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:135
 msgid ""
