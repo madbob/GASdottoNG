@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2020-02-09 23:45+0100\n"
-"PO-Revision-Date: 2020-05-21 17:41+0000\n"
+"PO-Revision-Date: 2020-11-14 01:28+0000\n"
 "Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
 "translations/de/>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.1-dev\n"
+"X-Generator: Weblate 4.4-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -971,7 +971,7 @@ msgstr ""
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:419
 #: ../storage/framework/messages/1100052a84dc8abdd6b6f432a723e49b308f7a52.php.php:49
 msgid "File da Caricare"
-msgstr "Datei laden"
+msgstr "Datei zum Hochladen"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:430
 #: ../storage/framework/messages/0c713b2be1917f40417f287c6b12b256cb166621.php.php:103
