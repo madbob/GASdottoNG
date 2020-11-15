@@ -31,6 +31,18 @@
                     ]
                 ])
 
+                @if($currentgas->hasFeature('shipping_places'))
+                    @include('commons.selectobjfield', [
+                        'obj' => $order,
+                        'name' => 'deliveries',
+                        'label' => _i('Luoghi di Consegna'),
+                        'mandatory' => false,
+                        'objects' => $currentgas->deliveries,
+                        'multiple_select' => true,
+                        'help_text' => _i("Tenere premuto Ctrl per selezionare più luoghi di consegna. Se nessun luogo viene selezionato, l'ordine sarà visibile a tutti.")
+                    ])
+                @endif
+
                 @if($order->products()->where('package_size', '!=', 0)->count() != 0)
                     @include('commons.boolfield', ['obj' => $order, 'name' => 'keep_open_packages', 'label' => _i('Forza completamento confezioni')])
                 @endif
@@ -42,6 +54,10 @@
                 @include('commons.staticdatefield', ['obj' => $order, 'name' => 'start', 'label' => _i('Data Apertura')])
                 @include('commons.staticdatefield', ['obj' => $order, 'name' => 'end', 'label' => _i('Data Chiusura')])
                 @include('commons.staticdatefield', ['obj' => $order, 'name' => 'shipping', 'label' => _i('Data Consegna')])
+
+                @if($order->deliveries()->count() != 0)
+                    @include('commons.staticobjectslistfield', ['obj' => $order, 'name' => 'deliveries', 'label' => _i('Luoghi di Consegna')])
+                @endif
 
                 @if($order->products()->where('package_size', '!=', 0)->count() != 0)
                     @include('commons.staticboolfield', ['obj' => $order, 'name' => 'keep_open_packages', 'label' => _i('Forza completamento confezioni')])

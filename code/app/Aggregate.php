@@ -115,37 +115,41 @@ class Aggregate extends Model
         return $priority[$index];
     }
 
-    public static function getByStatus($status, $inverse = false)
+    public static function getByStatus($user, $status)
     {
-        $operator = '=';
-        if ($inverse) {
-            $operator = '!=';
-        }
+        switch($status) {
+            /*
+                Se cerco gli ordini aperti ed è stata abilitata la funzione per
+                gestire gli ordini incompleti, devo considerare anche quelli chiusi
+                ma con confezioni da completare
+            */
+            case 'open':
+                $ret = new Collection();
 
-        /*
-            Se cerco gli ordini aperti ed è stata abilitata la funzione per
-            gestire gli ordini incompleti, devo considerare anche quelli chiusi
-            ma con confezioni da completare
-        */
-        if ($status == 'open' && !$inverse) {
-            $ret = new Collection();
+                $aggregates = self::whereHas('orders', function ($query) use ($status, $user) {
+                    $query->whereIn('status', ['open', 'closed'])->accessibleBooking();
+                })->with(['orders'])->get();
 
-            $aggregates = self::whereHas('orders', function ($query) use ($status, $operator) {
-                $query->whereIn('status', ['open', 'closed']);
-            })->with(['orders'])->get();
-
-            foreach($aggregates as $a) {
-                if ($a->status == 'open' || $a->hasPendingPackages()) {
-                    $ret->push($a);
+                foreach($aggregates as $a) {
+                    if ($a->status == 'open' || $a->hasPendingPackages()) {
+                        $ret->push($a);
+                    }
                 }
-            }
 
-            return $ret;
-        }
-        else {
-            return self::whereHas('orders', function ($query) use ($status, $operator) {
-                $query->where('status', $operator, $status);
-            })->with(['orders'])->get();
+                return $ret;
+
+            case 'closed':
+                return self::whereHas('orders', function ($query) use ($user) {
+                    $query->where('status', 'closed')->where(function($query) use ($user) {
+                        $query->whereHas('bookings', function($query) use ($user) {
+                            $query->where('status', '!=', 'shipped')->where(function($query) use ($user) {
+                                $query->where('user_id', $user->id)->orWhereIn('user_id', $user->friends()->pluck('id'));
+                            });
+                        })->orWhere(function($query) {
+                            $query->accessibleBooking();
+                        });
+                    });
+                })->with(['orders'])->get();
         }
     }
 

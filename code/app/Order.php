@@ -89,6 +89,11 @@ class Order extends Model
         return $this->belongsToMany('App\Invoice');
     }
 
+    public function deliveries()
+    {
+        return $this->belongsToMany('App\Delivery');
+    }
+
     public function printableName()
     {
         $ret = $this->supplier->name;
@@ -99,6 +104,23 @@ class Order extends Model
         $ret .= ' - ' . $this->internal_number;
 
         return $ret;
+    }
+
+    public function scopeAccessibleBooking($query)
+    {
+        $user = Auth::user();
+
+        if ($user->gas->hasFeature('shipping_places')) {
+            $query->where(function($query) use ($user) {
+                $supplier_shippings = array_keys($user->targetsByAction('supplier.shippings'));
+
+                $query->where(function($query) use ($user) {
+                    $query->doesnthave('deliveries')->orWhereHas('deliveries', function($query) use ($user) {
+                        $query->where('delivery_id', $user->preferred_delivery_id);
+                    });
+                })->orWhereIn('supplier_id', $supplier_shippings);
+            });
+        }
     }
 
     public function printableDates()
@@ -226,13 +248,20 @@ class Order extends Model
         $order = $this;
 
         if (currentAbsoluteGas()->getConfig('notify_all_new_orders')) {
-            $users = User::all();
+            $query_users = User::where('id', '>', 0);
         }
         else {
-            $users = User::whereHas('suppliers', function($query) use ($order) {
+            $query_users = User::whereHas('suppliers', function($query) use ($order) {
                 $query->where('suppliers.id', $order->supplier->id);
-            })->get();
+            });
         }
+
+        $deliveries = $order->deliveries;
+        if ($deliveries->isEmpty()) {
+            $query_users->whereIn('preferred_delivery_id', $deliveries->pluck('id'));
+        }
+
+        $users = $query_users->get();
 
         foreach($users as $user) {
             try {

@@ -87,7 +87,7 @@ class OrdersController extends Controller
 
     public function rss(Request $request)
     {
-        $aggregates = Aggregate::getByStatus('open');
+        $aggregates = Aggregate::getByStatus(null, 'open');
 
         $feed = App::make("feed");
         $feed->title = _i('Ordini Aperti');
@@ -174,6 +174,7 @@ class OrdersController extends Controller
         $o->aggregate_id = $a->id;
         $o->save();
 
+        $o->deliveries()->sync($request->input('deliveries', []));
         $o->products()->sync($supplier->products()->where('active', '=', true)->get());
 
         $this->resetOlderDates($o);
@@ -239,6 +240,8 @@ class OrdersController extends Controller
             $order->discount = savingPercentage($request, 'discount');
         if ($request->has('transport'))
             $order->transport = savingPercentage($request, 'transport');
+
+        $order->deliveries()->sync($request->input('deliveries', []));
 
         /*
             Se un ordine viene riaperto, modifico artificiosamente la sua data
