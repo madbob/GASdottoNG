@@ -139,6 +139,18 @@ $panel_rand_wrap = rand();
                                 ])
 
                                 @include('commons.textfield', ['obj' => $aggregate, 'name' => 'comment', 'label' => _i('Commento')])
+
+                                @if($currentgas->hasFeature('shipping_places'))
+                                    @include('commons.selectobjfield', [
+                                        'obj' => $order,
+                                        'name' => 'deliveries',
+                                        'label' => _i('Luoghi di Consegna'),
+                                        'mandatory' => false,
+                                        'objects' => $currentgas->deliveries,
+                                        'multiple_select' => true,
+                                        'help_text' => _i("Tenere premuto Ctrl per selezionare più luoghi di consegna. Se nessun luogo viene selezionato, l'ordine sarà visibile a tutti.")
+                                    ])
+                                @endif
                             </div>
                             <div class="col-md-4">
                             </div>

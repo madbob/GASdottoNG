@@ -31,7 +31,12 @@
                     ]
                 ])
 
-                @if($currentgas->hasFeature('shipping_places'))
+                @if($currentgas->hasFeature('shipping_places') && $order->aggregate->orders()->count() == 1)
+                    <!--
+                        Se l'ordine è aggregato ad altri, i luoghi di consegna
+                        si editano una volta per tutti direttamente nel pannello
+                        dell'aggregato
+                    -->
                     @include('commons.selectobjfield', [
                         'obj' => $order,
                         'name' => 'deliveries',
@@ -55,7 +60,7 @@
                 @include('commons.staticdatefield', ['obj' => $order, 'name' => 'end', 'label' => _i('Data Chiusura')])
                 @include('commons.staticdatefield', ['obj' => $order, 'name' => 'shipping', 'label' => _i('Data Consegna')])
 
-                @if($order->deliveries()->count() != 0)
+                @if($order->deliveries()->count() != 0 && $order->aggregate->orders()->count() == 1)
                     @include('commons.staticobjectslistfield', ['obj' => $order, 'name' => 'deliveries', 'label' => _i('Luoghi di Consegna')])
                 @endif
 

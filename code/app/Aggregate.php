@@ -115,6 +115,15 @@ class Aggregate extends Model
         return $priority[$index];
     }
 
+    public function getDeliveriesAttributes()
+    {
+        foreach ($this->orders as $order) {
+            return $order->deliveries;
+        }
+
+        return new Collection();
+    }
+
     public static function getByStatus($user, $status)
     {
         switch($status) {
