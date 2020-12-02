@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Illuminate\Support\Str;
+
 use Auth;
 
 use App\User;
@@ -96,10 +98,11 @@ trait AttachableTrait
         return [];
     }
 
-    public function filesPath()
+    public function filesPath($create = true)
     {
-        $path = gas_storage_path($this->name);
-        if (file_exists($path) == false) {
+        $prefix = Str::slug(get_class($this));
+        $path = gas_storage_path($prefix . '-' . $this->id);
+        if (file_exists($path) == false && $create) {
             if (@mkdir($path, 0750, true) == false) {
                 return null;
             }

@@ -49,4 +49,16 @@
     </div>
 @endif
 
+@if($currentgas->hasFeature('shipping_places'))
+    @include('commons.selectobjfield', [
+        'obj' => $order,
+        'name' => 'deliveries',
+        'label' => _i('Luoghi di Consegna'),
+        'mandatory' => false,
+        'objects' => $currentgas->deliveries,
+        'multiple_select' => true,
+        'help_text' => _i("Tenere premuto Ctrl per selezionare più luoghi di consegna. Se nessun luogo viene selezionato, l'ordine sarà visibile a tutti.")
+    ])
+@endif
+
 @include('commons.orderstatus', ['order' => $order])
