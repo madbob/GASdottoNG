@@ -63,7 +63,7 @@
         <div class="form-group{{ $errors->has('username') ? ' has-error' : '' }}">
             <label for="username" class="col-md-4 control-label">{{ _i('Username') }}</label>
             <div class="col-md-6">
-                <input id="username" type="text" class="form-control" name="username" value="{{ old('username') }}" required>
+                <input id="username" type="text" class="form-control" name="username" value="{{ old('username') }}" required pattern="[A-Za-z0-9_@.\-]{1,50}">
 
                 @if ($errors->has('username'))
                     <span class="help-block">
