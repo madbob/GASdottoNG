@@ -475,7 +475,7 @@
                                 @include('commons.loadablelist', [
                                     'identifier' => 'delivery-list',
                                     'items' => $currentgas->deliveries,
-                                    'empty_message' => _i('Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi, verrà attivata la possibilità per ogni utente di selezionare il proprio luogo di consegna preferito e nei documenti di riassunto degli ordini le prenotazioni saranno suddivise per luogo: utile per GAS distribuiti sul territorio.')
+                                    'empty_message' => _i('Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi verrà attivata la possibilità per ogni utente di selezionare il proprio luogo di consegna preferito, nei documenti di riassunto degli ordini le prenotazioni saranno suddivise per luogo, e sarà possibile attivare alcuni ordini solo per gli utenti afferenti a determinati luoghi di consegna: utile per GAS distribuiti sul territorio.')
                                 ])
                             </div>
                         </div>
