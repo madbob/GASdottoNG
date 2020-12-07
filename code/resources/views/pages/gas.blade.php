@@ -596,7 +596,7 @@
             </div>
 
             @if(env('GASDOTTO_NET', false))
-                <?php $logs = App\InnerLog::where('type', 'mail')->orderBy('created_at', 'desc')->take(50)->get() ?>
+                <?php $logs = App\InnerLog::where('type', 'mail')->orderBy('created_at', 'desc')->take(10)->get() ?>
                 <div class="panel panel-default">
                     <div class="panel-heading" role="tab">
                         <h4 class="panel-title">

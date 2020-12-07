@@ -5,6 +5,24 @@
 
 <div class="modal-body">
     <div class="row">
+        <div class="col-md-12">
+            <div class="form-group hidden-md">
+                <div class="input-group table-number-filters">
+                    <div class="input-group-addon">
+                        <label class="radio-inline">
+                            <input type="radio" name="filter_mode" value="min" checked> {{ _i('Minore di') }}
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="filter_mode" value="max"> {{ _i('Maggiore di') }}
+                        </label>
+                    </div>
+                    <input type="number" class="form-control table-number-filter" placeholder="{{ _i('Filtra Credito') }}" data-list-target="#suppliersTable">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-md-12" id="credits_status_table">
             <table class="table" id="suppliersTable">
                 <thead>
