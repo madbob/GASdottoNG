@@ -94,6 +94,11 @@ class Order extends Model
         return $this->belongsToMany('App\Delivery');
     }
 
+    public function users()
+    {
+        return $this->belongsToMany('App\User');
+    }
+
     public function printableName()
     {
         $ret = $this->supplier->name;
@@ -237,6 +242,33 @@ class Order extends Model
         }
 
         return false;
+    }
+
+    public function showableContacts()
+    {
+        $gas = currentAbsoluteGas();
+
+        switch($gas->booking_contacts) {
+            case 'none':
+                return new Collection();
+                break;
+
+            case 'manual':
+                return $this->users;
+                break;
+
+            default:
+                $role = Role::find($gas->booking_contacts);
+                if ($role) {
+                    return $role->usersByTarget($this->supplier);
+                }
+                else {
+                    Log::error('Role not found while displaying contacts for order: ' . $gas->booking_contacts);
+                    return new Collection();
+                }
+
+                break;
+        }
     }
 
     public function sendNotificationMail()

@@ -48,6 +48,30 @@
                     ])
                 @endif
 
+                @if($currentgas->booking_contacts == 'manual')
+                    <?php
+
+                    $contactable_users = new Illuminate\Support\Collection();
+
+                    foreach(App\Role::rolesByClass('App\Supplier') as $role) {
+                        $contactable_users = $contactable_users->merge($role->usersByTarget($order->supplier));
+                    }
+
+                    $contactable_users = $contactable_users->sortBy('surname')->unique();
+
+                    ?>
+
+                    @include('commons.selectobjfield', [
+                        'obj' => $order,
+                        'name' => 'users',
+                        'label' => _i('Contatti'),
+                        'mandatory' => false,
+                        'objects' => $contactable_users,
+                        'multiple_select' => true,
+                        'help_text' => _i("Tenere premuto Ctrl per selezionare più utenti. I contatti degli utenti selezionati saranno mostrati nel pannello delle prenotazioni.")
+                    ])
+                @endif
+
                 @if($order->products()->where('package_size', '!=', 0)->count() != 0)
                     @include('commons.boolfield', ['obj' => $order, 'name' => 'keep_open_packages', 'label' => _i('Forza completamento confezioni')])
                 @endif
