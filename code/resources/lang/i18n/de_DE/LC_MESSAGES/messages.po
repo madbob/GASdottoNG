@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2020-02-09 23:45+0100\n"
-"PO-Revision-Date: 2020-02-09 23:46+0100\n"
-"Last-Translator: jendo <jendo.berlin@gmx.de>\n"
+"PO-Revision-Date: 2020-11-14 01:28+0000\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
 "translations/de/>\n"
 "Language: de_DE\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.11-dev\n"
+"X-Generator: Weblate 4.4-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -64,7 +64,7 @@ msgstr "Hinzufügen"
 #: ../storage/framework/messages/127c4a33014836683b260bd7aadb4f1895d4d0e8.php.php:4
 #, php-format
 msgid "Tutti gli utenti con ruolo \"%s\""
-msgstr "Alle Nutzer mit der Rolle \"%s\""
+msgstr "Alle Nutzer mit der Rolle „%s“"
 
 #: ../resources/views/commons/multipleusers.blade.php:10
 #: ../storage/framework/messages/127c4a33014836683b260bd7aadb4f1895d4d0e8.php.php:10
@@ -146,7 +146,7 @@ msgstr "Produkte der Bestellung %s bei %s vom %s"
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:16
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:61
 msgid "Inoltra Mail"
-msgstr "E-mail weiterleiten"
+msgstr "E-Mail weiterleiten"
 
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:22
 #: ../storage/framework/messages/05926aebff9f8ea2b72c2b65c54ee9c4e852eeef.php.php:3
@@ -175,11 +175,11 @@ msgstr "Wert"
 
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:45
 msgid "Soggetto Mail"
-msgstr "E-Mail Empfänger"
+msgstr "E-Mail-Betreff"
 
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:55
 msgid "Testo Mail"
-msgstr "Text E-mail"
+msgstr "Text der E-Mail"
 
 #: ../storage/framework/messages/03dd95d4d49a247e64c02851a45ac3ba90c116d9.php.php:47
 #: ../storage/framework/messages/3f3da659f67d6f09b148696de4816ff19cb2e8fd.php.php:64
@@ -229,7 +229,7 @@ msgstr "Sortiert nach"
 #: Http/Controllers/MovementsController.php:236
 #: Services/SuppliersService.php:163 User.php:336
 msgid "Nome"
-msgstr "Name"
+msgstr "Vorname"
 
 #: ../storage/framework/messages/03fe6cae2ede501c06dab5b92f4dbd9960b195d1.php.php:2
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:153
@@ -528,7 +528,7 @@ msgstr "Nachname"
 #: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:153
 #: Http/Controllers/ImportController.php:477
 msgid "Login"
-msgstr "Einloggen"
+msgstr "Anmelden"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:481
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:90
@@ -539,7 +539,7 @@ msgstr "Einloggen"
 #: Contact.php:53 Http/Controllers/ImportController.php:481
 #: Http/Controllers/MovementsController.php:236 User.php:347
 msgid "E-Mail"
-msgstr "Email"
+msgstr "E-Mail"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:484
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:94
@@ -548,7 +548,7 @@ msgstr "Email"
 #: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:49
 #: Contact.php:57 Http/Controllers/ImportController.php:484 User.php:351
 msgid "Telefono"
-msgstr "Telephon"
+msgstr "Telefon"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:487
 #: ../storage/framework/messages/228f140cb7ecb9766e9c37c4923bb778f5838499.php.php:355
@@ -591,7 +591,7 @@ msgstr "Geburtsdatum"
 #: Http/Controllers/ImportController.php:664
 #, php-format
 msgid "Preferibilmente in formato YYYY-MM-DD (e.g. %s)"
-msgstr "Bevorzugt im Format YYYY-MM-DD (e.g. %s)"
+msgstr "Bevorzugt im Format JJJJ-MM-TT (z.B. %s)"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:503
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:280
@@ -655,8 +655,8 @@ msgid ""
 "Gli utenti sono identificati per username o indirizzo mail (che deve essere "
 "univoco!)."
 msgstr ""
-"Die Benutzer werden über den Nutzernamen oder die Emailadresse identifiziert "
-"(letztere muss eindeutig sein!)."
+"Die Benutzer werden über den Nutzernamen oder die E-Mail-Adresse "
+"identifiziert (letztere muss eindeutig sein!)."
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:663
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:588
@@ -716,7 +716,7 @@ msgstr "Benutzer"
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:674
 #: Http/Controllers/ImportController.php:674
 msgid "Username o indirizzo e-mail"
-msgstr "Benutzername oder Emailadresse"
+msgstr "Benutzername oder E-Mail-Adresse"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:726
 #: Http/Controllers/ImportController.php:726
@@ -915,7 +915,7 @@ msgstr "Diesen Parameter mit Vorsicht ändern!"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:303
 msgid "Testi Messaggi Mail"
-msgstr "Texte der Emailbenachrichtigungen"
+msgstr "Texte der E-Mail-Benachrichtigungen"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:316
 msgid ""
@@ -924,9 +924,9 @@ msgid ""
 "opportuni valori al momento della generazione: per aggiungerli nei testi, "
 "usare la sintassi %[nome_placeholder]"
 msgstr ""
-"Hier kannst du die Texte der Emails verändern, die durch GASdotto verschickt "
-"werden. Für jeden Typ sind Platzhalter vorgesehen, die im Moment der "
-"Erstellung durch die entsprechenden Werte ersetzt werden: um die Texte "
+"Hier kannst du die Texte der E-Mails verändern, die durch GASdotto "
+"verschickt werden. Für jeden Typ sind Platzhalter vorgesehen, die im Moment "
+"der Erstellung durch die entsprechenden Werte ersetzt werden: um die Texte "
 "einzufügen, nutze die Syntax %[name_placeholder]"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:320
@@ -971,7 +971,7 @@ msgstr ""
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:419
 #: ../storage/framework/messages/1100052a84dc8abdd6b6f432a723e49b308f7a52.php.php:49
 msgid "File da Caricare"
-msgstr "Datei laden"
+msgstr "Datei zum Hochladen"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:430
 #: ../storage/framework/messages/0c713b2be1917f40417f287c6b12b256cb166621.php.php:103
@@ -1083,12 +1083,13 @@ msgstr ""
 "übertragen."
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:573
+#, fuzzy
 msgid "Log E-Mail"
-msgstr ""
+msgstr "E-Mail-Protokoll"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:581
 msgid "Non ci sono log relativi alle email."
-msgstr "Keine Email-Protokolle vorhanden."
+msgstr "Keine E-Mail-Protokolle vorhanden."
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:589
 msgid "Messaggio"
@@ -1974,8 +1975,8 @@ msgid ""
 "\"http://it.libreoffice.org/\">LibreOffice</a>."
 msgstr ""
 "Um CSV-Dateien (<i>Comma-Separated Values</i>) zu öffnen und zu bearbeiten "
-"wird <a target=\"_blank\" href=\"http://it.libreoffice.org/\">LibreOffice</"
-"a> empfohlen."
+"wird <a target=\"_blank\" href=\"https://de.libreoffice.org/\""
+">LibreOffice</a> empfohlen."
 
 #: ../storage/framework/messages/3430af6f62262b300bf7120b1c052ac6b0929fb5.php.php:111
 #: ../storage/framework/messages/68cc982484900028f621c29dab5160d563b5c628.php.php:41
@@ -2155,10 +2156,10 @@ msgstr "Registriert von"
 
 #: ../storage/framework/messages/3bdd2530c5e43e31dce8c7a7bcdef0b261b175c9.php.php:25
 #: Notifications/BookingNotification.php:25
-#, php-format
+#, fuzzy, php-format
 #| msgid "Riassunto prenotazione del GAS"
 msgid "Riassunto prenotazione del GAS: %s - consegna %s"
-msgstr ""
+msgstr "GAS-Buchungsübersicht: %s – Lieferung %s"
 
 #: ../storage/framework/messages/3c52fa94bfdb515df0896a915aecfd948faf1fff.php.php:14
 #: ../storage/framework/messages/9d4bd9714ec2a6669dd1cae6f1a66edf15eb3217.php.php:13
@@ -2293,7 +2294,7 @@ msgstr "Zu bezahlende Bestellungen"
 #: Http/Controllers/MailController.php:42
 #, php-format
 msgid "Impossibile inoltrare mail a %s: %s"
-msgstr "Es war nicht möglich, die Email an %s: %s weiterzuleiten"
+msgstr "Es war nicht möglich, die E-Mail an %s: %s weiterzuleiten"
 
 #: ../storage/framework/messages/52d79b4ba0c701300d266ccddd4cbf00d3643f78.php.php:55
 #: ../storage/framework/messages/52d79b4ba0c701300d266ccddd4cbf00d3643f78.php.php:146
@@ -3016,12 +3017,12 @@ msgstr "Ende Vorbestellungen"
 #: ../storage/framework/messages/844191a688ad9cbcea6bdbe1f736bdd503eea018.php.php:111
 #: AggregateBooking.php:111
 msgid "e altri"
-msgstr ""
+msgstr "und andere"
 
 #: ../storage/framework/messages/844191a688ad9cbcea6bdbe1f736bdd503eea018.php.php:116
 #: AggregateBooking.php:116
 msgid "indefinita"
-msgstr ""
+msgstr "undefiniert"
 
 #: ../storage/framework/messages/846dddbf226d13640e09d3ab392930b577aabff6.php.php:84
 #: Http/Controllers/ReceiptsController.php:84
@@ -3163,7 +3164,7 @@ msgstr "Verschicke Zusammenfassungen der Lieferungen"
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:35
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:25
 msgid "Invia Mail"
-msgstr "Email senden"
+msgstr "E-Mail senden"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:36
 msgid "Ultime notifiche inviate"
@@ -3171,7 +3172,7 @@ msgstr "Letzte gesendete Benachrichtigungen"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:49
 msgid "Notifiche Mail"
-msgstr "Email Benachrichtigungen"
+msgstr "E-Mail-Benachrichtigungen"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:53
 msgid "Messaggio (Opzionale)"
@@ -3262,8 +3263,8 @@ msgid ""
 "attivare proprietà come \"Prezzo Variabile\" e \"Pezzatura\""
 msgstr ""
 "Diskrete Einheiten sind nicht teilbar: für die Produkte, den eine diskrete "
-"Einheit zugewiesen ist, ist es nicht möglich Eigenschaften wie \"Variabler "
-"Preis\" und \"Gebindegröße\" freizuschalten"
+"Einheit zugewiesen ist, ist es nicht möglich Eigenschaften wie „Variabler "
+"Preis“ und „Gebindegröße“ freizuschalten"
 
 #: ../storage/framework/messages/aaadb106104cee30cd3172e4400a1f91934933e4.php.php:7
 msgid "Duplica Prodotto"
@@ -3375,12 +3376,10 @@ msgid ""
 "Una mail di notifica è stata inviata agli amministratori."
 msgstr ""
 "Willkommen im Bestellsystem von %[gas_name]!\n"
-"\n"
 "In Zukunft kannst du dich über folgenden Link mit deinem Nutzernamen "
-"\"%[username]\" und dem von dir gewählten Passwort anmelden.\n"
+"„%[username]“ und dem von dir gewählten Passwort anmelden.\n"
 "%[gas_login_link]\n"
-"\n"
-"Eine Benachrichtigungsmail wurde an die Administrator*innen geschickt."
+"Eine Benachrichtigungs-E-Mail wurde an die Administrator*innen geschickt."
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:164
 #: Gas.php:164
@@ -3390,12 +3389,10 @@ msgid ""
 "non hai chiesto tu questa operazione.\n"
 "%[gas_reset_link]"
 msgstr ""
-"Es wurde eine Anfrage zur Aktualisierung deines GASdotto-Passwortes "
-"gestellt.\n"
+"Es wurde eine Anfrage zur Aktualisierung deines GASdotto-Passwortes gestellt."
 "\n"
 "Klicke unten auf den Link, um das Passwort zu aktualisieren. Falls du das "
-"Neusetzen des Passwortes nicht angefragt hast, ignoriere diese Email.\n"
-"\n"
+"Neusetzen des Passwortes nicht angefragt hast, ignoriere diese E-Mail.\n"
 "%[gas_reset_link]"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:167
@@ -3463,7 +3460,7 @@ msgstr "Ladevorgang"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:117
 msgid "Feedback"
-msgstr "Feedback"
+msgstr "Rückmeldung"
 
 #: ../storage/framework/messages/b626385a107c1070a69a8c91a692401f909613e3.php.php:125
 msgid "Vuoi inviare una segnalazione su GASdotto? Fallo qui!"
@@ -3526,12 +3523,12 @@ msgstr "Mit freundlichen Grüßen"
 #: ../storage/framework/messages/c26987771b0c0c4fdb76731b7e28856bd9123670.php.php:40
 #: Http/Controllers/Auth/ForgotPasswordController.php:40
 msgid "Username o indirizzo e-mail non trovato"
-msgstr "Benutzername oder Emailadresse nicht gefunden"
+msgstr "Benutzername oder E-Mail-Adresse nicht gefunden"
 
 #: ../storage/framework/messages/c26987771b0c0c4fdb76731b7e28856bd9123670.php.php:55
 #: Http/Controllers/Auth/ForgotPasswordController.php:55
 msgid "L'utente indicato non ha un indirizzo mail valido"
-msgstr "Der angegebene Nutzer hat keine gültige Emailadresse"
+msgstr "Der angegebene Nutzer hat keine gültige E-Mail-Adresse"
 
 #: ../storage/framework/messages/c26987771b0c0c4fdb76731b7e28856bd9123670.php.php:62
 #: Http/Controllers/Auth/ForgotPasswordController.php:62
@@ -3539,7 +3536,7 @@ msgid ""
 "Ti è stata inviata una mail col link per procedere all'aggiornamento della "
 "password"
 msgstr ""
-"Du hast eine Email mit einem Link zur Aktualisierung deines Passwortes "
+"Du hast eine E-Mail mit einem Link zur Aktualisierung deines Passwortes "
 "erhalten"
 
 #: ../storage/framework/messages/c3de1fc29a37823dc9538b4f97e29307984c0d4f.php.php:21
@@ -3665,7 +3662,7 @@ msgid ""
 "intendi modificarla prima di inoltrarla, attiva questa opzione solo dopo "
 "aver salvato e modificato la notifica."
 msgstr ""
-"Wenn du diese Option aktivierst, wird die Nachricht sofort per Email "
+"Wenn du diese Option aktivierst, wird die Nachricht sofort per E-Mail "
 "weitergeleitet. Wenn du beabsichtigst, sie vor der Weiterleitung zu ändern, "
 "nutze diese Option nur nach der Speicherung und Änderung der Nachricht."
 
@@ -3760,7 +3757,7 @@ msgstr "Benutzername des neuen Nutzers"
 #: ../storage/framework/messages/ceb7f4cae1837fa8a00b2d0b4240c3e168b2b699.php.php:28
 #: Config.php:28
 msgid "Link della pagina di login"
-msgstr "Link zur Loginseite"
+msgstr "Link zur Anmeldungseite"
 
 #: ../storage/framework/messages/ceb7f4cae1837fa8a00b2d0b4240c3e168b2b699.php.php:32
 #: Config.php:32
@@ -3800,7 +3797,7 @@ msgstr "Ende der Bestellfrist"
 #: ../storage/framework/messages/ceb7f4cae1837fa8a00b2d0b4240c3e168b2b699.php.php:46
 #: Config.php:46
 msgid "Mail di accompagnamento per le ricevute."
-msgstr "Begleitmail für Quittungen."
+msgstr "Begleit-E-Mail für Quittungen."
 
 #: ../storage/framework/messages/d289165d78ca5dc8f1e5fa643538a93952da0df8.php.php:165
 #: ../storage/framework/messages/d289165d78ca5dc8f1e5fa643538a93952da0df8.php.php:180
@@ -3825,9 +3822,10 @@ msgid "Saldo Corrente"
 msgstr "Aktueller Kontostand"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:48
+#, fuzzy
 #| msgid "Eliminato"
 msgid "Elimina Saldo Passato"
-msgstr ""
+msgstr "Vergangene Bilanz löschen"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:58
 msgid ""
@@ -3838,7 +3836,7 @@ msgstr ""
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:65
 msgid "Ho capito"
-msgstr ""
+msgstr "Verstanden"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:92
 msgid "Ricalcola Saldi"
@@ -3939,7 +3937,7 @@ msgstr "Rolle wiederrufen"
 
 #: ../storage/framework/messages/e7abcf2c78ce46e6b4b7e33c5511932a21e4a065.php.php:9
 msgid "Username o Indirizzo E-Mail"
-msgstr "Benutzername oder Emailadresse"
+msgstr "Benutzername oder E-Mail-Adresse"
 
 #: ../storage/framework/messages/e87ae80e77dc769211036a553e845beed56ba28d.php.php:27
 msgid ""
@@ -4090,7 +4088,7 @@ msgid ""
 "All'apertura dell'ordine, saranno inviate mail di annuncio a tutti gli "
 "utenti che hanno abilitato le notifiche per il fornitore selezionato."
 msgstr ""
-"Bei der Eröffnung einer Bestellung werden Ankündigungsmails verschickt an "
+"Bei der Eröffnung einer Bestellung werden Ankündigungs-E-Mails verschickt an "
 "alle Nutzer, die die Benachrichtigungsfunktion für den ausgewählten "
 "Lieferanten aktiviert haben."
 
