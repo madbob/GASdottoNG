@@ -48,7 +48,7 @@ class AggregatesController extends OrdersController
             }
 
             $id = $aggr->id;
-            $deliveries = $aggr->deliveries()->pluck('id');
+            $deliveries = $aggr->deliveries->pluck('id');
 
             foreach ($a->orders as $index => $o) {
                 $order = Order::find($o);
