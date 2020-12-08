@@ -419,7 +419,9 @@ class User extends Authenticatable
                     case 'mobile':
                     case 'address':
                         $contacts = $this->getContactsByType($f);
-                        $ret[] = join(', ', $contacts);
+                        if (!empty($contacts)) {
+                            $ret[] = join(', ', $contacts);
+                        }
                         break;
                     case 'fullname':
                         $ret[] = $this->printableName();

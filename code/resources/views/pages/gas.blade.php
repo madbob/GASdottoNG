@@ -132,6 +132,36 @@
                                     @include('commons.boolfield', ['obj' => $gas, 'name' => 'fast_shipping_enabled', 'label' => _i('Abilita Consegne Rapide')])
                                     @include('commons.boolfield', ['obj' => $gas, 'name' => 'restrict_booking_to_credit', 'label' => _i('Permetti solo prenotazioni entro il credito disponibile')])
 
+                                    <?php
+
+                                    $values_for_contacts = [];
+
+                                    $values_for_contacts['none'] = (object) [
+                                        'name' => _i('Nessuno'),
+                                        'checked' => ($gas->booking_contacts == 'none'),
+                                    ];
+
+                                    $supplier_roles = App\Role::rolesByClass('App\Supplier');
+                                    foreach($supplier_roles as $sr) {
+                                        $values_for_contacts[$sr->id] = (object) [
+                                            'name' => _i('Tutti %s', $sr->name),
+                                            'checked' => ($gas->booking_contacts == $sr->id),
+                                        ];
+                                    }
+
+                                    $values_for_contacts['manual'] = (object) [
+                                        'name' => _i('Selezione manuale'),
+                                        'checked' => ($gas->booking_contacts == 'manual'),
+                                    ];
+
+                                    ?>
+
+                                    @include('commons.radios', [
+                                        'name' => 'booking_contacts',
+                                        'label' => _i('Visualizza contatti in prenotazioni'),
+                                        'values' => $values_for_contacts,
+                                    ])
+
                                     <div class="form-group">
                                         <?php $columns = $currentgas->orders_display_columns ?>
                                         <label for="order_columns" class="col-sm-{{ $labelsize }} control-label">{{ _i('Colonne Riassunto Ordini') }}</label>
@@ -234,14 +264,14 @@
                                             @include('commons.textfield', ['obj' => $gas, 'name' => 'paypal->secret', 'label' => 'Secret'])
                                             @include('commons.radios', [
                                                 'name' => 'paypal->mode',
-                                                'label' => 'Modalità',
+                                                'label' => _i('Modalità'),
                                                 'values' => [
                                                     'sandbox' => (object) [
-                                                        'name' => 'Sandbox (per testing)',
+                                                        'name' => _i('Sandbox (per testing)'),
                                                         'checked' => ($gas->paypal['mode'] == 'sandbox')
                                                     ],
                                                     'live' => (object) [
-                                                        'name' => 'Live',
+                                                        'name' => _i('Live'),
                                                         'checked' => ($gas->paypal['mode'] == 'live')
                                                     ],
                                                 ]
