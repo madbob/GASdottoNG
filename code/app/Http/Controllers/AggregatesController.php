@@ -47,13 +47,12 @@ class AggregatesController extends OrdersController
                 $aggr = Aggregate::find($a->id);
             }
 
-            $id = $aggr->id;
             $deliveries = $aggr->deliveries->pluck('id');
 
             foreach ($a->orders as $index => $o) {
                 $order = Order::find($o);
                 if ($order) {
-                    $order->aggregate_id = $id;
+                    $order->aggregate_id = $aggr->id;
                     $order->aggregate_sorting = $index;
                     $order->save();
                     $order->deliveries()->sync($deliveries);

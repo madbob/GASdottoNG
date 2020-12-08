@@ -113,7 +113,7 @@ class Aggregate extends Model
         return $priority[$index];
     }
 
-    public function getDeliveriesAttributes()
+    public function getDeliveriesAttribute()
     {
         foreach ($this->orders as $order) {
             return $order->deliveries;
