@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2020-02-09 23:45+0100\n"
-"PO-Revision-Date: 2020-11-14 01:28+0000\n"
+"PO-Revision-Date: 2020-12-22 04:29+0000\n"
 "Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
 "translations/de/>\n"
@@ -1053,7 +1053,7 @@ msgstr ""
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:492
 #: ../storage/framework/messages/8213b2de42a57b8769b9deb8aaed6d84d10a486c.php.php:72
 msgid "File Condivisi"
-msgstr "Dateien und Infos"
+msgstr "Geteilte Dateien"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:522
 msgid ""
@@ -3092,7 +3092,7 @@ msgstr "Fax"
 #: ../storage/framework/messages/97fcd8734ec055c583fb78ae7ef7279f49c7c4d3.php.php:69
 #: Contact.php:69
 msgid "Sito Web"
-msgstr "Webseite"
+msgstr "Website"
 
 #: ../storage/framework/messages/9869469812674c41a1612a26bdeeb6891dbf5787.php.php:424
 #: Http/Controllers/OrdersController.php:424
@@ -3728,7 +3728,7 @@ msgid ""
 msgstr ""
 "Bevor du das Verhalten eines bereits existierenden Aktionstyps oder sogar "
 "eines Typs veränderst, dem bereits ein Buchhaltungsvorgang zugeordnet ist, "
-"empfielt es sich die Funktion \"Kontostände archivieren\" so zu nutzen, dass "
+"empfielt es sich die Funktion „Kontostände archivieren“ so zu nutzen, dass "
 "die vorherigen Buchungsbewegungen nicht neu verarbeitet werden, während das "
 "neue Verhalten in Kraft tritt (was Kontostände produzieren würde, die "
 "komplett von den aktuellen abweichen)."
@@ -3876,8 +3876,7 @@ msgstr "Kontostände archivieren"
 
 #: ../storage/framework/messages/d3ff01348e530d31dcfec89ce903767d4fe33ed5.php.php:5
 msgid "Per procedere devi settare una nuova password per il tuo profilo."
-msgstr ""
-"Um fortzufahren musst du ein neues Passwort für deinen Account erstellen."
+msgstr "Um fortzufahren musst du ein neues Passwort für dein Konto erstellen."
 
 #: ../storage/framework/messages/d3ff01348e530d31dcfec89ce903767d4fe33ed5.php.php:17
 msgid "Salva e Procedi"
@@ -3900,9 +3899,9 @@ msgid ""
 "lo stato dei tuoi pagamenti e del tuo credito o eventuali notifiche inviate "
 "dagli amministratori."
 msgstr ""
-"Dein Account wurde gesperrt und du kannst keine Bestellungen mehr vornehmen. "
+"Dein Konto wurde gesperrt und du kannst keine Bestellungen mehr vornehmen. "
 "Überprüfe den Status deiner Zahlungen und deines Guthabens oder die von den "
-"Administrator*innen gesendeten Benachrichtigungen."
+"Administrator/innen gesendeten Benachrichtigungen."
 
 #: ../storage/framework/messages/d9a90fb40960eac3cd06ae2cf170ddde20929be0.php.php:24
 msgid "Lascia vuoto per non modificare la password"
