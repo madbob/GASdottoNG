@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2020-02-09 23:45+0100\n"
-"PO-Revision-Date: 2020-12-22 04:29+0000\n"
+"PO-Revision-Date: 2020-12-24 01:29+0000\n"
 "Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
 "translations/de/>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4-dev\n"
+"X-Generator: Weblate 4.4.1-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -1083,7 +1083,6 @@ msgstr ""
 "übertragen."
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:573
-#, fuzzy
 msgid "Log E-Mail"
 msgstr "E-Mail-Protokoll"
 
@@ -2156,8 +2155,7 @@ msgstr "Registriert von"
 
 #: ../storage/framework/messages/3bdd2530c5e43e31dce8c7a7bcdef0b261b175c9.php.php:25
 #: Notifications/BookingNotification.php:25
-#, fuzzy, php-format
-#| msgid "Riassunto prenotazione del GAS"
+#, php-format
 msgid "Riassunto prenotazione del GAS: %s - consegna %s"
 msgstr "GAS-Buchungsübersicht: %s – Lieferung %s"
 
@@ -3411,10 +3409,8 @@ msgid ""
 msgstr ""
 "Eine neue Bestellung wurde eröffnet von der %[gas_name] für den Lieferanten "
 "%[supplier_name].\n"
-"\n"
 "Um daran teilzunehmen, melde dich über folgenden Link an: \n"
 "%[gas_booking_link]\n"
-"\n"
 "Die Bestellfrist endet am %[closing_date]"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:173
@@ -3822,8 +3818,6 @@ msgid "Saldo Corrente"
 msgstr "Aktueller Kontostand"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:48
-#, fuzzy
-#| msgid "Eliminato"
 msgid "Elimina Saldo Passato"
 msgstr "Vergangene Bilanz löschen"
 
@@ -3833,6 +3827,9 @@ msgid ""
 "l'operazione non è reversibile, e non sarà più possibile ricalcolare questi "
 "valori in nessun modo!"
 msgstr ""
+"Warnung! Vergangene Salden können entfernt werden, aber Vorsicht, der "
+"Vorgang ist nicht umkehrbar und es ist nicht mehr möglich, diese Werte in "
+"irgendeiner Weise neu zu berechnen!"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:65
 msgid "Ho capito"
@@ -3890,7 +3887,7 @@ msgid ""
 "href=\"%s\">pannello utente</a>!"
 msgstr ""
 "Das Passwort ist identisch mit dem Benutzernamen! Ändere es, sobald wie "
-"möglich, in deinem  <a href=\"%s\">Nutzerprofil</a>!"
+"möglich, in deinem <a href=\"%s\">Nutzerprofil</a>!"
 
 #: ../storage/framework/messages/d59b9e643df28842f92755531bb31855cafa2efc.php.php:65
 #: Http/Controllers/Auth/LoginController.php:65
