@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2020-02-09 23:43+0100\n"
-"PO-Revision-Date: 2020-12-22 04:29+0000\n"
+"PO-Revision-Date: 2020-12-24 01:29+0000\n"
 "Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: English <https://hosted.weblate.org/projects/gasdottong/"
 "translations/en/>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4-dev\n"
+"X-Generator: Weblate 4.4.1-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -107,22 +107,22 @@ msgstr "None"
 #: ../storage/framework/messages/46d9784474c42e976aa9bfe9f6a022a0a335614a.php.php:33
 #: ../storage/framework/messages/c97bc241fa9fd8c512d89e87fa3a73ad695bf9f0.php.php:34
 msgid "[Luogo non Specificato]"
-msgstr "[Place not Specified]"
+msgstr "[Place not specified]"
 
 #: ../resources/views/emails/booking.blade.php:7
 #: ../storage/framework/messages/120626ca6d2919eadea9eb47de0a4818ee0e4d52.php.php:7
 msgid "Di seguito il riassunto dei prodotti che ti sono stati consegnati:"
-msgstr "Here a summary of the delivered products:"
+msgstr "Here is a summary of the delivered products:"
 
 #: ../resources/views/emails/booking.blade.php:14
 #: ../storage/framework/messages/120626ca6d2919eadea9eb47de0a4818ee0e4d52.php.php:14
 msgid "Di seguito il riassunto dei prodotti che ti saranno consegnati:"
-msgstr "Here a summary of the reserved products:"
+msgstr "Here is a summary of the reserved products:"
 
 #: ../resources/views/emails/booking.blade.php:20
 #: ../storage/framework/messages/120626ca6d2919eadea9eb47de0a4818ee0e4d52.php.php:20
 msgid "Di seguito il riassunto dei prodotti che hai ordinato:"
-msgstr "Here a summary of the ordered products:"
+msgstr "Here is a summary of the ordered products:"
 
 #: ../resources/views/order/filesmail.blade.php:5
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:5
@@ -445,7 +445,7 @@ msgstr "Not found categories and measure units names will be created."
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:156
 #: Http/Controllers/ImportController.php:156
 msgid "Prezzo Unitario (senza IVA)"
-msgstr "Unit Price (without VAT)"
+msgstr "Unit price (without VAT)"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:157
 #: Http/Controllers/ImportController.php:157
@@ -458,19 +458,19 @@ msgstr "To be used in combination with VAT Rate"
 #: ../storage/framework/messages/834c975661512aee67bee8704f29d3f990e96605.php.php:11
 #: Http/Controllers/ImportController.php:172 Order.php:652
 msgid "Codice Fornitore"
-msgstr "Supplier Code"
+msgstr "Supplier code"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:175
 #: ../storage/framework/messages/195f4ecae049b92c418b8beed1d93ff444a55353.php.php:11
 #: ../storage/framework/messages/33b8621008ec6ac5433277c5e356893e7713f8ff.php.php:38
 #: Http/Controllers/ImportController.php:175
 msgid "Dimensione Confezione"
-msgstr "Package Size"
+msgstr "Package size"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:178
 #: Http/Controllers/ImportController.php:178
 msgid "Prezzo Confezione"
-msgstr "Package Price"
+msgstr "Package price"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:179
 #: Http/Controllers/ImportController.php:179
@@ -478,20 +478,20 @@ msgid ""
 "Se specificato, il prezzo unitario viene calcolato come Prezzo Confezione / "
 "Dimensione Confezione"
 msgstr ""
-"If specified, the unit price will be calculated as Package Price / Package "
-"Size"
+"If specified, the unit price will be calculated as package price / package "
+"size"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:182
 #: ../storage/framework/messages/33b8621008ec6ac5433277c5e356893e7713f8ff.php.php:39
 #: Http/Controllers/ImportController.php:182
 msgid "Ordine Minimo"
-msgstr "Minimum Order"
+msgstr "Minimum order"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:185
 #: ../storage/framework/messages/33b8621008ec6ac5433277c5e356893e7713f8ff.php.php:40
 #: Http/Controllers/ImportController.php:185
 msgid "Ordinabile per Multipli"
-msgstr "Can be Ordered by Multiple"
+msgstr "Can be ordered by multiple"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:207
 #: Http/Controllers/ImportController.php:207
@@ -544,7 +544,7 @@ msgstr "E-mail"
 #: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:49
 #: Contact.php:57 Http/Controllers/ImportController.php:484 User.php:351
 msgid "Telefono"
-msgstr "Phone Number"
+msgstr "Phone"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:487
 #: ../storage/framework/messages/228f140cb7ecb9766e9c37c4923bb778f5838499.php.php:355
@@ -561,7 +561,7 @@ msgstr "Address (Street)"
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:493
 #: Http/Controllers/ImportController.php:493
 msgid "Indirizzo (CAP)"
-msgstr "Address (ZIP code)"
+msgstr "Address (postal code)"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:496
 #: Http/Controllers/ImportController.php:496
@@ -599,7 +599,7 @@ msgstr "Format YYYY-MM-DD (e.g. %s) is preferred"
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:6
 #: Http/Controllers/ImportController.php:503 User.php:362
 msgid "Codice Fiscale"
-msgstr "Fiscal Code"
+msgstr "Fiscal code"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:506
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:60
@@ -615,7 +615,7 @@ msgstr "Member since"
 #: ../storage/framework/messages/cbe354dd6284a0e3a316f7feaec0cca2883ff05e.php.php:23
 #: Http/Controllers/ImportController.php:510
 msgid "Ultimo Accesso"
-msgstr "Latest Access"
+msgstr "Last access"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:514
 #: ../storage/framework/messages/5d04bc88b336145d0bb56e1441fdf68dab648317.php.php:451
@@ -633,7 +633,7 @@ msgstr "Choose ‘true’ or ‘false’"
 #: ../storage/framework/messages/8213b2de42a57b8769b9deb8aaed6d84d10a486c.php.php:106
 #: Http/Controllers/ImportController.php:518
 msgid "Credito Attuale"
-msgstr "Current Credit"
+msgstr "Current credit"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:540
 #: Http/Controllers/ImportController.php:540
@@ -1072,8 +1072,6 @@ msgstr ""
 "<strong>Accounting -> Invoices</strong>."
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:573
-#, fuzzy
-#| msgid "E-Mail"
 msgid "Log E-Mail"
 msgstr "E-mail log"
 
