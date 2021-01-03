@@ -21,7 +21,11 @@ function printableDate($value)
     }
     else {
         $t = strtotime($value);
-        return ucwords(strftime('%A %d %B %G', $t));
+        if (empty($t)) {
+            $t = $value;
+        }
+
+        return ucwords(strftime('%A %d %B %Y', $t));
     }
 }
 

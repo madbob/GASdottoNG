@@ -12,9 +12,9 @@ if (!isset($end_date))
     <div class="col-sm-{{ $fieldsize }}">
         <div class="input-group">
             <div class="input-group-addon">{{ _i('Da') }}</div>
-            <input type="text" class="date form-control" name="startdate" value="{{ $start_date ? ucwords(strftime('%A %d %B %G', $start_date)) : '' }}" required autocomplete="off">
+            <input type="text" class="date form-control" name="startdate" value="{{ $start_date ? printableDate($start_date) : '' }}" required autocomplete="off">
             <div class="input-group-addon">{{ _i('a') }}</div>
-            <input type="text" class="date form-control" name="enddate" value="{{ $end_date ? ucwords(strftime('%A %d %B %G', $end_date)) : '' }}" required autocomplete="off" data-enforce-after=".date[name=startdate]">
+            <input type="text" class="date form-control" name="enddate" value="{{ $end_date ? printableDate($end_date) : '' }}" required autocomplete="off" data-enforce-after=".date[name=startdate]">
         </div>
     </div>
 </div>

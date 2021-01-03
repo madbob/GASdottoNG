@@ -4,7 +4,7 @@ if (isset($defaults_now) == false) {
     $defaults_now = false;
 }
 else {
-    $enforced_default = ucwords(strftime('%A %d %B %G', time()));
+    $enforced_default = printableDate(time());
 }
 
 $mandatory = (isset($mandatory) && $mandatory == true);

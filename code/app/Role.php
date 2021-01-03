@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use DB;
 use Auth;
 use URL;
+use Log;
 
 use App\GASModel;
 use App\User;

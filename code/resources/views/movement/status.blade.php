@@ -31,7 +31,7 @@
                             <tbody>
                                 @foreach($obj->balances as $index => $bal)
                                     <tr class="{{ $index == 0 ? 'current-balance' : '' }}">
-                                        <td>{{ $index == 0 ? _i('Saldo Corrente') : ucwords(strftime('%d %B %G', strtotime($bal->date))) }}</td>
+                                        <td>{{ $index == 0 ? _i('Saldo Corrente') : ucwords(strftime('%d %B %Y', strtotime($bal->date))) }}</td>
                                         @foreach($obj->balanceFields() as $identifier => $name)
                                             <td class="{{ $index == 0 ? $identifier : '' }}"><span>{{ $bal->$identifier }}</span> {{ $currentgas->currency }}</td>
                                         @endforeach
