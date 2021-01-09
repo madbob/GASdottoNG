@@ -20,9 +20,14 @@ function printableDate($value)
         return _i('Mai');
     }
     else {
-        $t = strtotime($value);
-        if (empty($t)) {
+        if (is_numeric($value)) {
             $t = $value;
+        }
+        else {
+            $t = strtotime($value);
+            if (empty($t)) {
+                $t = $value;
+            }
         }
 
         return ucwords(strftime('%A %d %B %Y', $t));
