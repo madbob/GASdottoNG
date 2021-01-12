@@ -86,7 +86,7 @@ class AggregatesController extends OrdersController
             $a->orders()->update(['status' => $status]);
         }
 
-        $deliveries = $request->input('deliveries', []);
+        $deliveries = array_filter($request->input('deliveries', []));
         foreach($a->orders as $o) {
             $o->deliveries()->sync($deliveries);
         }

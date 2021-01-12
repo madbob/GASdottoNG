@@ -180,7 +180,7 @@ class OrdersController extends Controller
         $o->aggregate_id = $a->id;
         $o->save();
 
-        $o->deliveries()->sync($request->input('deliveries', []));
+        $o->deliveries()->sync(array_filter($request->input('deliveries', [])));
         $o->products()->sync($supplier->products()->where('active', '=', true)->get());
 
         $this->resetOlderDates($o);
@@ -247,7 +247,7 @@ class OrdersController extends Controller
         if ($request->has('transport'))
             $order->transport = savingPercentage($request, 'transport');
 
-        $order->deliveries()->sync($request->input('deliveries', []));
+        $order->deliveries()->sync(array_filter($request->input('deliveries', [])));
         $order->users()->sync($request->input('users', []));
 
         /*
