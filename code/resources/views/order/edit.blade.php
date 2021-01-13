@@ -44,7 +44,8 @@
                         'mandatory' => false,
                         'objects' => $currentgas->deliveries,
                         'multiple_select' => true,
-                        'help_text' => _i("Tenere premuto Ctrl per selezionare più luoghi di consegna. Se nessun luogo viene selezionato, l'ordine sarà visibile a tutti.")
+                        'extra_selection' => ['' => _i('Non limitare luogo di consegna')],
+                        'help_text' => _i("Selezionando uno o più luoghi di consegna, l'ordine sarà visibile solo agli utenti che hanno attivato quei luoghi. Se nessun luogo viene selezionato, l'ordine sarà visibile a tutti. Tenere premuto Ctrl per selezionare più voci.")
                     ])
                 @endif
 

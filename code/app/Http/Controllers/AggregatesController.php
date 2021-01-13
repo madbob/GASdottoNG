@@ -45,6 +45,9 @@ class AggregatesController extends OrdersController
             }
             else {
                 $aggr = Aggregate::find($a->id);
+                if (is_null($aggr)) {
+                    continue;
+                }
             }
 
             $deliveries = $aggr->deliveries->pluck('id');
@@ -86,7 +89,7 @@ class AggregatesController extends OrdersController
             $a->orders()->update(['status' => $status]);
         }
 
-        $deliveries = $request->input('deliveries', []);
+        $deliveries = array_filter($request->input('deliveries', []));
         foreach($a->orders as $o) {
             $o->deliveries()->sync($deliveries);
         }

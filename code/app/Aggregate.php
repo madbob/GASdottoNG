@@ -219,9 +219,9 @@ class Aggregate extends Model
                 $names = [];
             }
 
-            $date_string = sprintf('da %s a %s', strftime('%A %d %B %G', $start_date), strftime('%A %d %B %G', $end_date));
+            $date_string = sprintf('da %s a %s', printableDate($start_date), printableDate($end_date));
             if ($shipping_date != PHP_INT_MAX)
-                $date_string .= sprintf(', in consegna %s', strftime('%A %d %B %G', $shipping_date));
+                $date_string .= sprintf(', in consegna %s', printableDate($shipping_date));
             $dates[] = $date_string;
         }
         else {

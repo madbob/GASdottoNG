@@ -2,14 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2020-02-09 23:46+0100\n"
-"PO-Revision-Date: 2020-02-09 23:46+0100\n"
-"Last-Translator: Roberto Guido <bob@linux.it>\n"
-"Language-Team: Roberto Guido <bob@linux.it>\n"
+"PO-Revision-Date: 2020-05-21 17:41+0000\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/gasdottong/"
+"translations/nl/>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.1-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -141,7 +143,7 @@ msgstr "Bestelde producten bestelling %s bij %s van %s"
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:16
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:61
 msgid "Inoltra Mail"
-msgstr "Mail doorzenden"
+msgstr "E-mail doorzenden"
 
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:22
 #: ../storage/framework/messages/05926aebff9f8ea2b72c2b65c54ee9c4e852eeef.php.php:3
@@ -170,11 +172,11 @@ msgstr "Waarde"
 
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:45
 msgid "Soggetto Mail"
-msgstr "Onderwerp Mail"
+msgstr "Onderwerp van de e-mail"
 
 #: ../storage/framework/messages/022a325208ba0b97f073e8867748f02494a51936.php.php:55
 msgid "Testo Mail"
-msgstr "Tekst Mail"
+msgstr "Tekst van de e-mail"
 
 #: ../storage/framework/messages/03dd95d4d49a247e64c02851a45ac3ba90c116d9.php.php:47
 #: ../storage/framework/messages/3f3da659f67d6f09b148696de4816ff19cb2e8fd.php.php:64
@@ -522,7 +524,7 @@ msgstr "Achternaam"
 #: ../storage/framework/messages/f4e4d38540949401301bf6cbbd7f1a5a92299f3d.php.php:153
 #: Http/Controllers/ImportController.php:477
 msgid "Login"
-msgstr ""
+msgstr "Aanmelden"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:481
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:90
@@ -554,17 +556,17 @@ msgstr "Mobiel"
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:490
 #: Http/Controllers/ImportController.php:490
 msgid "Indirizzo (Via)"
-msgstr ""
+msgstr "Adres (Straat)"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:493
 #: Http/Controllers/ImportController.php:493
 msgid "Indirizzo (CAP)"
-msgstr ""
+msgstr "Adres (postcode)"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:496
 #: Http/Controllers/ImportController.php:496
 msgid "Indirizzo (Città)"
-msgstr ""
+msgstr "Adres (Stad)"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:499
 #: ../storage/framework/messages/2907dc7b5767105e73466f30d9415af17b9f1add.php.php:38
@@ -585,7 +587,7 @@ msgstr "Geboortedatum"
 #: Http/Controllers/ImportController.php:664
 #, php-format
 msgid "Preferibilmente in formato YYYY-MM-DD (e.g. %s)"
-msgstr ""
+msgstr "Bij voorkeur in JJJJ-MM-DD formaat (bijv. %s)"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:503
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:280
@@ -710,7 +712,7 @@ msgstr "Gebruiker"
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:674
 #: Http/Controllers/ImportController.php:674
 msgid "Username o indirizzo e-mail"
-msgstr ""
+msgstr "Gebruikersnaam of e-mailadres"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:726
 #: Http/Controllers/ImportController.php:726
@@ -909,7 +911,7 @@ msgstr "Bewerk deze parameter met de nodige voorzichtigheid!"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:303
 msgid "Testi Messaggi Mail"
-msgstr ""
+msgstr "Tekst van de e-mails"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:316
 msgid ""
@@ -3171,7 +3173,7 @@ msgstr ""
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:35
 #: ../storage/framework/messages/cb2d51bb0fb73fdd1f607cd706c9d233e3340919.php.php:25
 msgid "Invia Mail"
-msgstr "Stuur Mail"
+msgstr "Stuur e-mail"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:36
 msgid "Ultime notifiche inviate"
@@ -3179,7 +3181,7 @@ msgstr "Laatste verzonden meldingen"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:49
 msgid "Notifiche Mail"
-msgstr "Email Meldingen"
+msgstr "E-mailmeldingen"
 
 #: ../storage/framework/messages/9ac4c4a0700e77a68f0b51748b4c12c6aaed1b49.php.php:53
 msgid "Messaggio (Opzionale)"
@@ -3511,19 +3513,20 @@ msgstr "Vriendelijke groeten"
 #: ../storage/framework/messages/c26987771b0c0c4fdb76731b7e28856bd9123670.php.php:40
 #: Http/Controllers/Auth/ForgotPasswordController.php:40
 msgid "Username o indirizzo e-mail non trovato"
-msgstr ""
+msgstr "Gebruikersnaam of e-mailadres niet gevonden"
 
 #: ../storage/framework/messages/c26987771b0c0c4fdb76731b7e28856bd9123670.php.php:55
 #: Http/Controllers/Auth/ForgotPasswordController.php:55
 msgid "L'utente indicato non ha un indirizzo mail valido"
-msgstr ""
+msgstr "De aangegeven gebruiker heeft geen geldig e-mailadres"
 
 #: ../storage/framework/messages/c26987771b0c0c4fdb76731b7e28856bd9123670.php.php:62
 #: Http/Controllers/Auth/ForgotPasswordController.php:62
+#, fuzzy
 msgid ""
 "Ti è stata inviata una mail col link per procedere all'aggiornamento della "
 "password"
-msgstr ""
+msgstr "U heeft een e-mail ontvangen met de link om uw wachtwoord bij te werken"
 
 #: ../storage/framework/messages/c3de1fc29a37823dc9538b4f97e29307984c0d4f.php.php:21
 #: Notifications/ClosedOrderNotification.php:21
@@ -3780,7 +3783,7 @@ msgstr ""
 #: ../storage/framework/messages/ceb7f4cae1837fa8a00b2d0b4240c3e168b2b699.php.php:46
 #: Config.php:46
 msgid "Mail di accompagnamento per le ricevute."
-msgstr ""
+msgstr "Begeleidende e-mail voor ontvangstbewijzen."
 
 #: ../storage/framework/messages/d289165d78ca5dc8f1e5fa643538a93952da0df8.php.php:165
 #: ../storage/framework/messages/d289165d78ca5dc8f1e5fa643538a93952da0df8.php.php:180
@@ -3915,7 +3918,7 @@ msgstr "Rol herroepen"
 
 #: ../storage/framework/messages/e7abcf2c78ce46e6b4b7e33c5511932a21e4a065.php.php:9
 msgid "Username o Indirizzo E-Mail"
-msgstr ""
+msgstr "Gebruikersnaam of e-mailadres"
 
 #: ../storage/framework/messages/e87ae80e77dc769211036a553e845beed56ba28d.php.php:27
 msgid ""
@@ -4063,9 +4066,9 @@ msgid ""
 "All'apertura dell'ordine, saranno inviate mail di annuncio a tutti gli "
 "utenti che hanno abilitato le notifiche per il fornitore selezionato."
 msgstr ""
-"Wanneer de bestelling wordt geopend, worden er aankondigingsmails verstuurd "
-"naar alle gebruikers die meldingen voor de geselecteerde leverancier hebben "
-"ingeschakeld."
+"Wanneer de bestelling wordt geopend, worden er aankondigingse-mails "
+"verstuurd naar alle gebruikers die meldingen voor de geselecteerde "
+"leverancier hebben ingeschakeld."
 
 #: ../storage/framework/messages/f796dafdee82b09381216fb50e2ba2e5fad4fb8b.php.php:20
 msgid "Non hai partecipato a quest'ordine."

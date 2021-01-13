@@ -16,12 +16,21 @@ function printablePriceCurrency($price, $separator = '.')
 
 function printableDate($value)
 {
-    if (is_null($value)) {
+    if (is_null($value) || empty($value)) {
         return _i('Mai');
     }
     else {
-        $t = strtotime($value);
-        return ucwords(strftime('%A %d %B %G', $t));
+        if (is_numeric($value)) {
+            $t = $value;
+        }
+        else {
+            $t = strtotime($value);
+            if (empty($t)) {
+                $t = $value;
+            }
+        }
+
+        return ucwords(strftime('%A %d %B %Y', $t));
     }
 }
 

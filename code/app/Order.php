@@ -125,10 +125,10 @@ class Order extends Model
     {
         $start = strtotime($this->start);
         $end = strtotime($this->end);
-        $string = _i('da %s a %s', [strftime('%A %d %B %G', $start), strftime('%A %d %B %G', $end)]);
+        $string = _i('da %s a %s', [printableDate($start), printableDate($end)]);
         if ($this->shipping != null && $this->shipping != '0000-00-00') {
             $shipping = strtotime($this->shipping);
-            $string .= _i(', in consegna %s', strftime('%A %d %B %G', $shipping));
+            $string .= _i(', in consegna %s', printableDate($shipping));
         }
 
         return $string;
@@ -842,7 +842,7 @@ class Order extends Model
 
     public function getSlugID()
     {
-        return sprintf('%s::%s', $this->supplier->id, str_slug(strftime('%d %B %G', strtotime($this->start))));
+        return sprintf('%s::%s', $this->supplier->id, str_slug(strftime('%d %B %Y', strtotime($this->start))));
     }
 
     /******************************************************** CreditableTrait */
