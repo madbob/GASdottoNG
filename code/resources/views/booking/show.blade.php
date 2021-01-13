@@ -13,6 +13,19 @@ $grand_total = 0;
             <h3>{{ $order->printableName() }}</h3>
         @endif
 
+        <?php $contacts = $order->showableContacts() ?>
+        @if($contacts->isEmpty() == false)
+            <div class="alert alert-info">
+                {{ _i('Per segnalazioni relative a questo ordine si può contattare:') }}
+                <ul>
+                    @foreach($contacts as $contact)
+                        <li>{{ $contact->printableName() }} - {{ join(', ', $contact->formattedFields(['email', 'phone', 'mobile'])) }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            <br>
+        @endif
+
         <?php $o = $order->userBooking($user->id) ?>
 
         @if($o->products->isEmpty())
