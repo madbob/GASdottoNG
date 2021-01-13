@@ -45,6 +45,9 @@ class AggregatesController extends OrdersController
             }
             else {
                 $aggr = Aggregate::find($a->id);
+                if (is_null($aggr)) {
+                    continue;
+                }
             }
 
             $deliveries = $aggr->deliveries->pluck('id');

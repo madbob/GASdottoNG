@@ -422,6 +422,9 @@ class User extends Authenticatable
                         if (!empty($contacts)) {
                             $ret[] = join(', ', $contacts);
                         }
+                        else {
+                            $ret[] = '';
+                        }
                         break;
                     case 'fullname':
                         $ret[] = $this->printableName();
