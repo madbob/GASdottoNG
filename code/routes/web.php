@@ -31,11 +31,11 @@ Route::middleware(['auth'])->group(function() {
     Route::get('users/ro/{id}', 'UsersController@show_ro');
     Route::get('users/{id}/header', 'UsersController@objhead')->name('users.objhead');
     Route::get('users/search', 'UsersController@search')->name('users.search');
-    Route::get('users/searchorders', 'UsersController@searchOrders');
+    Route::get('users/searchorders/{id}', 'UsersController@searchOrders')->name('users.orders');
     Route::get('users/profile', 'UsersController@profile')->name('profile');
     Route::get('users/picture/{id}', 'UsersController@picture');
     Route::get('users/export', 'UsersController@export');
-    Route::post('users/notifications', 'UsersController@notifications')->name('users.notifications');
+    Route::post('users/notifications/{id}', 'UsersController@notifications')->name('users.notifications');
     Route::get('users/password', 'UsersController@changePassword')->name('users.password');
 
     Route::get('friends/{id}/header', 'FriendsController@objhead')->name('friends.objhead');
