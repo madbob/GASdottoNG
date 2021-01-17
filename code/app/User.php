@@ -202,10 +202,7 @@ class User extends Authenticatable
 
     public function getShowURL()
     {
-        if ($this->isFriend())
-            return URL::action('FriendsController@show', $this->id);
-        else
-            return URL::action('UsersController@show', $this->id);
+        return URL::action('UsersController@show', $this->id);
     }
 
     public function printableFriendHeader($aggregate)

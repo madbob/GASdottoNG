@@ -39,15 +39,4 @@ class FriendsController extends BackedController
             return $this->errorResponse($e->getMessage(), $e->getArgument());
         }
     }
-
-    public function show(Request $request, $id)
-    {
-        try {
-            $user = $this->service->show($id);
-            return view('friend.edit', ['user' => $user]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
-    }
 }
