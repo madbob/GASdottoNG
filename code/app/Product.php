@@ -288,7 +288,7 @@ class Product extends Model
                 'name' => _i('Nome'),
                 'checked' => true,
             ],
-            'code' => (object) [
+            'supplier_code' => (object) [
                 'name' => _i('Codice'),
             ],
             'measure' => (object) [

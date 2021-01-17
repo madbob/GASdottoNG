@@ -109,12 +109,12 @@ class UsersController extends BackedController
         }
     }
 
-    public function searchOrders(Request $request)
+    public function searchOrders(Request $request, $id)
     {
         $supplier_id = $request->input('supplier_id');
         $start = decodeDate($request->input('startdate'));
         $end = decodeDate($request->input('enddate'));
-        $orders = $this->getOrders(Auth::user()->id, $supplier_id, $start, $end);
+        $orders = $this->getOrders($id, $supplier_id, $start, $end);
         return view('commons.orderslist', ['orders' => $orders]);
     }
 
@@ -122,11 +122,8 @@ class UsersController extends BackedController
     {
         try {
             $user = $this->service->show($id);
-
-            if ($request->user()->can('users.admin', $user->gas))
-                return view('user.edit', ['user' => $user]);
-            else
-                return view('user.show', ['user' => $user, 'editable' => true]);
+            $booked_orders = $this->getOrders($id, 0, date('Y-m-d', strtotime('-1 months')), '2100-01-01');
+            return view('user.edit', ['user' => $user, 'booked_orders' => $booked_orders]);
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -137,7 +134,7 @@ class UsersController extends BackedController
     {
         try {
             $user = $this->service->show($id);
-            return view('user.show', ['user' => $user, 'editable' => false]);
+            return view('user.edit', ['user' => $user, 'read_only' => true]);
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -169,11 +166,15 @@ class UsersController extends BackedController
         return $ret;
     }
 
-    public function notifications(Request $request)
+    public function notifications(Request $request, $id)
     {
-        $suppliers = $request->input('suppliers');
-        $request->user()->suppliers()->sync($suppliers);
-        return $this->successResponse();
+        try {
+            $this->service->notifications($id, $request->input('suppliers'));
+            return $this->successResponse();
+        }
+        catch (AuthException $e) {
+            abort($e->status());
+        }
     }
 
     public function changePassword(Request $request)

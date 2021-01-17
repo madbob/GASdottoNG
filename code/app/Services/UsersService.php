@@ -90,6 +90,9 @@ class UsersService extends BaseService
     public function storeFriend(array $request)
     {
         $creator = $this->ensureAuth(['users.subusers' => 'gas']);
+        if (isset($request['creator_id'])) {
+            $creator = User::find($request['creator_id']);
+        }
 
         $username = $request['username'];
         $test = User::withTrashed()->withoutGlobalScopes()->where('username', $username)->first();
@@ -248,17 +251,23 @@ class UsersService extends BaseService
         return downloadFile($user, 'picture');
     }
 
+    public function notifications($id, $suppliers)
+    {
+        $user = $this->show($id);
+
+        if ($user->testUserAccess() == false) {
+            $this->ensureAuth(['users.admin' => 'gas']);
+        }
+
+        $user->suppliers()->sync($suppliers);
+    }
+
     public function destroy($id)
     {
         $user = DB::transaction(function () use ($id) {
-            /*
-                show() già si premura di verificare l'accesso all'utente
-                richiesto, qui dobbiamo solo rafforzare l'accesso da
-                amministratore se l'utente da eliminare non è un "amico"
-            */
             $user = $this->show($id);
 
-            if ($user->isFriend() == false) {
+            if ($user->testUserAccess() == false) {
                 $this->ensureAuth(['users.admin' => 'gas']);
             }
 

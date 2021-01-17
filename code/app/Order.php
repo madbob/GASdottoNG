@@ -89,6 +89,16 @@ class Order extends Model
         return $this->belongsToMany('App\Invoice');
     }
 
+    public function deliveries()
+    {
+        return $this->belongsToMany('App\Delivery');
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany('App\User');
+    }
+
     public function printableName()
     {
         $ret = $this->supplier->name;
@@ -101,14 +111,31 @@ class Order extends Model
         return $ret;
     }
 
+    public function scopeAccessibleBooking($query)
+    {
+        $user = Auth::user();
+
+        if ($user->gas->hasFeature('shipping_places')) {
+            $query->where(function($query) use ($user) {
+                $supplier_shippings = array_keys($user->targetsByAction('supplier.shippings'));
+
+                $query->where(function($query) use ($user) {
+                    $query->doesnthave('deliveries')->orWhereHas('deliveries', function($query) use ($user) {
+                        $query->where('delivery_id', $user->preferred_delivery_id);
+                    });
+                })->orWhereIn('supplier_id', $supplier_shippings);
+            });
+        }
+    }
+
     public function printableDates()
     {
         $start = strtotime($this->start);
         $end = strtotime($this->end);
-        $string = _i('da %s a %s', [strftime('%A %d %B %G', $start), strftime('%A %d %B %G', $end)]);
+        $string = _i('da %s a %s', [printableDate($start), printableDate($end)]);
         if ($this->shipping != null && $this->shipping != '0000-00-00') {
             $shipping = strtotime($this->shipping);
-            $string .= _i(', in consegna %s', strftime('%A %d %B %G', $shipping));
+            $string .= _i(', in consegna %s', printableDate($shipping));
         }
 
         return $string;
@@ -217,6 +244,33 @@ class Order extends Model
         return false;
     }
 
+    public function showableContacts()
+    {
+        $gas = currentAbsoluteGas();
+
+        switch($gas->booking_contacts) {
+            case 'none':
+                return new Collection();
+                break;
+
+            case 'manual':
+                return $this->users;
+                break;
+
+            default:
+                $role = Role::find($gas->booking_contacts);
+                if ($role) {
+                    return $role->usersByTarget($this->supplier);
+                }
+                else {
+                    Log::error('Role not found while displaying contacts for order: ' . $gas->booking_contacts);
+                    return new Collection();
+                }
+
+                break;
+        }
+    }
+
     public function sendNotificationMail()
     {
         if (is_null($this->first_notify) == false) {
@@ -226,13 +280,20 @@ class Order extends Model
         $order = $this;
 
         if (currentAbsoluteGas()->getConfig('notify_all_new_orders')) {
-            $users = User::all();
+            $query_users = User::where('id', '>', 0);
         }
         else {
-            $users = User::whereHas('suppliers', function($query) use ($order) {
+            $query_users = User::whereHas('suppliers', function($query) use ($order) {
                 $query->where('suppliers.id', $order->supplier->id);
-            })->get();
+            });
         }
+
+        $deliveries = $order->deliveries;
+        if ($deliveries->isEmpty()) {
+            $query_users->whereIn('preferred_delivery_id', $deliveries->pluck('id'));
+        }
+
+        $users = $query_users->get();
 
         foreach($users as $user) {
             try {
@@ -1028,7 +1089,7 @@ class Order extends Model
 
     public function getSlugID()
     {
-        return sprintf('%s::%s', $this->supplier->id, str_slug(strftime('%d %B %G', strtotime($this->start))));
+        return sprintf('%s::%s', $this->supplier->id, str_slug(strftime('%d %B %Y', strtotime($this->start))));
     }
 
     /******************************************************** CreditableTrait */

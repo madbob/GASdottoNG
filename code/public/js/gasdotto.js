@@ -692,22 +692,35 @@ function enforceMeasureDiscrete(node) {
     form.find('input[name=portion_quantity]').prop('disabled', disabled);
 	form.find('input[name=weight]').prop('disabled', !disabled);
 	var multiple_widget = form.find('input[name=multiple]');
+    var min_quantity_widget = form.find('input[name=min_quantity]');
+    var max_quantity_widget = form.find('input[name=max_quantity]');
+    var max_available_widget = form.find('input[name=max_available]');
 
 	if (disabled) {
 		form.find('input[name=portion_quantity]').val('0.000');
 		form.find('input[name=variable]').bootstrapToggle('off').bootstrapToggle('disable');
+        form.find('.discrete_unit_alert').removeClass('hidden');
 
 		multiple_widget.attr('data-enforce-minimum', 1);
 		multiple_widget.attr('data-enforce-integer', 1);
 
 		multiple_widget.val(parseInt(multiple_widget.val()));
-		if (multiple_widget.val() < 1)
+		if (multiple_widget.val() < 1) {
 			multiple_widget.val('1.000');
+        }
+
+        min_quantity_widget.attr('data-enforce-integer', 1);
+        max_quantity_widget.attr('data-enforce-integer', 1);
+        max_available_widget.attr('data-enforce-integer', 1);
 	}
 	else {
 		form.find('input[name=weight]').val('0.000');
 		form.find('input[name=variable]').bootstrapToggle('enable');
+        form.find('.discrete_unit_alert').addClass('hidden');
 		multiple_widget.removeAttr('data-enforce-minimum').removeAttr('data-enforce-integer');
+        min_quantity_widget.removeAttr('data-enforce-integer');
+        max_quantity_widget.removeAttr('data-enforce-integer');
+        max_available_widget.removeAttr('data-enforce-integer');
 	}
 }
 

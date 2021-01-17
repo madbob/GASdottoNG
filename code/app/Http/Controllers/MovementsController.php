@@ -189,6 +189,16 @@ class MovementsController extends BackedController
         return view('movement.credits');
     }
 
+    public function suppliersTable()
+    {
+        $user = Auth::user();
+        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
+            abort(503);
+        }
+
+        return view('movement.suppliers');
+    }
+
     public function document(Request $request, $type, $subtype = 'none')
     {
         $user = Auth::user();
@@ -282,6 +292,23 @@ class MovementsController extends BackedController
                         fclose($FH);
                     }, 200, $headers);
                 }
+                break;
+
+            case 'suppliers':
+                $suppliers = $user->gas->suppliers;
+
+                if ($subtype == 'csv') {
+                    $filename = sanitizeFilename(_i('Saldi Fornitori al %s.csv', date('d/m/Y')));
+                    $headers = [_i('Nome'), _i('Saldo')];
+
+                    return output_csv($filename, $headers, $suppliers, function($supplier) {
+                        $row = [];
+                        $row[] = $supplier->printableName();
+                        $row[] = printablePrice($supplier->current_balance_amount, ',');
+                        return $row;
+                    });
+                }
+
                 break;
         }
     }

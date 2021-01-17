@@ -31,11 +31,11 @@ Route::middleware(['auth'])->group(function() {
     Route::get('users/ro/{id}', 'UsersController@show_ro');
     Route::get('users/{id}/header', 'UsersController@objhead')->name('users.objhead');
     Route::get('users/search', 'UsersController@search')->name('users.search');
-    Route::get('users/searchorders', 'UsersController@searchOrders');
+    Route::get('users/searchorders/{id}', 'UsersController@searchOrders')->name('users.orders');
     Route::get('users/profile', 'UsersController@profile')->name('profile');
     Route::get('users/picture/{id}', 'UsersController@picture');
     Route::get('users/export', 'UsersController@export');
-    Route::post('users/notifications', 'UsersController@notifications')->name('users.notifications');
+    Route::post('users/notifications/{id}', 'UsersController@notifications')->name('users.notifications');
     Route::get('users/password', 'UsersController@changePassword')->name('users.password');
 
     Route::get('friends/{id}/header', 'FriendsController@objhead')->name('friends.objhead');
@@ -119,6 +119,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('movements/{id}/header', 'MovementsController@objhead')->name('movements.objhead');
     Route::get('movtypes/{id}/header', 'MovementTypesController@objhead')->name('movtypes.objhead');
     Route::get('movements/showcredits', 'MovementsController@creditsTable');
+    Route::get('movements/showsuppliers', 'MovementsController@suppliersTable');
     Route::get('movements/balance', 'MovementsController@getBalance');
     Route::post('movements/recalculate', 'MovementsController@recalculate');
     Route::post('movements/close', 'MovementsController@closeBalance');

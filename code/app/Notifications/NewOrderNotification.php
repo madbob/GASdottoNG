@@ -25,6 +25,7 @@ class NewOrderNotification extends ManyMailNotification
 
         return $this->formatMail($message, 'new_order', [
             'supplier_name' => $this->order->supplier->name,
+            'order_comment' => $this->order->comment ?? '',
             'gas_booking_link' => $this->order->getBookingURL(),
             'closing_date' => printableDate($this->order->end)
         ]);

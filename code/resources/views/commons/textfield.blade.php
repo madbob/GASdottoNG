@@ -53,6 +53,10 @@ if (!isset($help_text)) {
                 required
             @endif
 
+            @if(isset($pattern))
+                pattern="{{ $pattern }}"
+            @endif
+
             @if(isset($disabled) && $disabled == true)
                 disabled
             @endif

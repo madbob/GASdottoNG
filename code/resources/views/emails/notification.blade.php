@@ -2,4 +2,4 @@
     {{ _i('Nuova notifica da parte di %s', $notification->creator->printableName()) }}:
 </p>
 
-{!! $notification->content !!}
+{!! nl2br($notification->content) !!}

@@ -42,18 +42,23 @@ class AggregatesController extends OrdersController
             if ($a->id == 'new') {
                 $aggr = new Aggregate();
                 $aggr->save();
-                $id = $aggr->id;
             }
             else {
-                $id = $a->id;
+                $aggr = Aggregate::find($a->id);
+                if (is_null($aggr)) {
+                    continue;
+                }
             }
+
+            $deliveries = $aggr->deliveries->pluck('id');
 
             foreach ($a->orders as $index => $o) {
                 $order = Order::find($o);
                 if ($order) {
-                    $order->aggregate_id = $id;
+                    $order->aggregate_id = $aggr->id;
                     $order->aggregate_sorting = $index;
                     $order->save();
+                    $order->deliveries()->sync($deliveries);
                 }
             }
         }
@@ -82,6 +87,11 @@ class AggregatesController extends OrdersController
         $status = $request->input('status', 'no');
         if ($status != 'no') {
             $a->orders()->update(['status' => $status]);
+        }
+
+        $deliveries = array_filter($request->input('deliveries', []));
+        foreach($a->orders as $o) {
+            $o->deliveries()->sync($deliveries);
         }
 
         return $this->successResponse([

@@ -132,6 +132,36 @@
                                     @include('commons.boolfield', ['obj' => $gas, 'name' => 'fast_shipping_enabled', 'label' => _i('Abilita Consegne Rapide')])
                                     @include('commons.boolfield', ['obj' => $gas, 'name' => 'restrict_booking_to_credit', 'label' => _i('Permetti solo prenotazioni entro il credito disponibile')])
 
+                                    <?php
+
+                                    $values_for_contacts = [];
+
+                                    $values_for_contacts['none'] = (object) [
+                                        'name' => _i('Nessuno'),
+                                        'checked' => ($gas->booking_contacts == 'none'),
+                                    ];
+
+                                    $supplier_roles = App\Role::rolesByClass('App\Supplier');
+                                    foreach($supplier_roles as $sr) {
+                                        $values_for_contacts[$sr->id] = (object) [
+                                            'name' => _i('Tutti %s', $sr->name),
+                                            'checked' => ($gas->booking_contacts == $sr->id),
+                                        ];
+                                    }
+
+                                    $values_for_contacts['manual'] = (object) [
+                                        'name' => _i('Selezione manuale'),
+                                        'checked' => ($gas->booking_contacts == 'manual'),
+                                    ];
+
+                                    ?>
+
+                                    @include('commons.radios', [
+                                        'name' => 'booking_contacts',
+                                        'label' => _i('Visualizza contatti in prenotazioni'),
+                                        'values' => $values_for_contacts,
+                                    ])
+
                                     <div class="form-group">
                                         <?php $columns = $currentgas->orders_display_columns ?>
                                         <label for="order_columns" class="col-sm-{{ $labelsize }} control-label">{{ _i('Colonne Riassunto Ordini') }}</label>
@@ -234,14 +264,14 @@
                                             @include('commons.textfield', ['obj' => $gas, 'name' => 'paypal->secret', 'label' => 'Secret'])
                                             @include('commons.radios', [
                                                 'name' => 'paypal->mode',
-                                                'label' => 'Modalità',
+                                                'label' => _i('Modalità'),
                                                 'values' => [
                                                     'sandbox' => (object) [
-                                                        'name' => 'Sandbox (per testing)',
+                                                        'name' => _i('Sandbox (per testing)'),
                                                         'checked' => ($gas->paypal['mode'] == 'sandbox')
                                                     ],
                                                     'live' => (object) [
-                                                        'name' => 'Live',
+                                                        'name' => _i('Live'),
                                                         'checked' => ($gas->paypal['mode'] == 'live')
                                                     ],
                                                 ]
@@ -491,7 +521,7 @@
                                 @include('commons.loadablelist', [
                                     'identifier' => 'delivery-list',
                                     'items' => $currentgas->deliveries,
-                                    'empty_message' => _i('Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi, verrà attivata la possibilità per ogni utente di selezionare il proprio luogo di consegna preferito e nei documenti di riassunto degli ordini le prenotazioni saranno suddivise per luogo: utile per GAS distribuiti sul territorio.')
+                                    'empty_message' => _i('Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi verrà attivata la possibilità per ogni utente di selezionare il proprio luogo di consegna preferito, nei documenti di riassunto degli ordini le prenotazioni saranno suddivise per luogo, e sarà possibile attivare alcuni ordini solo per gli utenti afferenti a determinati luoghi di consegna: utile per GAS distribuiti sul territorio.')
                                 ])
                             </div>
                         </div>
@@ -577,7 +607,7 @@
             </div>
 
             @if(env('GASDOTTO_NET', false))
-                <?php $logs = App\InnerLog::where('type', 'mail')->orderBy('created_at', 'desc')->take(50)->get() ?>
+                <?php $logs = App\InnerLog::where('type', 'mail')->orderBy('created_at', 'desc')->take(10)->get() ?>
                 <div class="panel panel-default">
                     <div class="panel-heading" role="tab">
                         <h4 class="panel-title">

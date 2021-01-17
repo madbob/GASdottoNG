@@ -42,10 +42,15 @@ if (function_exists('recursiveOptionsSelectObj') == false) {
 
 if ($multiple_select) {
     $postfix = '[]';
+    $multiple_select_size = min(count($objects) + 1, 10);
 }
 
 if (!isset($datafields)) {
     $datafields = [];
+}
+
+if (!isset($help_block_class)) {
+    $help_block_class = '';
 }
 
 if ($obj)
@@ -80,7 +85,7 @@ else {
 
     <div class="col-sm-{{ $fieldsize }}">
         <select
-            class="{{ $select_class }}" {!! $multiple_select ? 'multiple size="10"' : '' !!}
+            class="{{ $select_class }}" {!! $multiple_select ? 'multiple size="' . $multiple_select_size . '"' : '' !!}
 
             @if(isset($disabled) && $disabled == true)
                 disabled
@@ -108,7 +113,7 @@ else {
         </select>
 
         @if(!empty($help_text))
-            <span class="help-block">{!! $help_text !!}</span>
+            <span class="help-block {{ $help_block_class }}">{!! $help_text !!}</span>
         @endif
     </div>
 </div>

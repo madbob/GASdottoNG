@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use DB;
 use Auth;
 use URL;
+use Log;
 
 use App\GASModel;
 use App\User;
@@ -359,7 +360,7 @@ class Role extends Model
     public function enabledAction($action)
     {
         $actions = explode(',', $this->actions);
-        return (array_search($action, $actions) !== false);
+        return (in_array($action, $actions));
     }
 
     public function enableAction($action)

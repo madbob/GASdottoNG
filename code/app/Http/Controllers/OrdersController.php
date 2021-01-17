@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use DB;
+use Log;
 use App;
 use Auth;
 use PDF;
@@ -74,20 +75,25 @@ class OrdersController extends Controller
         $recurrings = Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('recurring', '!=', '')->get();
         foreach($recurrings as $d) {
             $data = json_decode($d->recurring);
-            $data->from = date('Y-m-d', strtotime($last_date . ' +1 days'));
-            if ($data->to <= $data->from) {
-                $d->delete();
+            if ($data) {
+                $data->from = date('Y-m-d', strtotime($last_date . ' +1 days'));
+                if ($data->to <= $data->from) {
+                    $d->delete();
+                }
+                else {
+                    $d->recurring = json_encode($data);
+                    $d->save();
+                }
             }
             else {
-                $d->recurring = json_encode($data);
-                $d->save();
+                Log::error('Broken date description: ' . $d->recurring);
             }
         }
     }
 
     public function rss(Request $request)
     {
-        $aggregates = Aggregate::getByStatus('open');
+        $aggregates = Aggregate::getByStatus(null, 'open');
 
         $feed = App::make("feed");
         $feed->title = _i('Ordini Aperti');
@@ -174,6 +180,7 @@ class OrdersController extends Controller
         $o->aggregate_id = $a->id;
         $o->save();
 
+        $o->deliveries()->sync(array_filter($request->input('deliveries', [])));
         $o->products()->sync($supplier->products()->where('active', '=', true)->get());
 
         $this->resetOlderDates($o);
@@ -239,6 +246,9 @@ class OrdersController extends Controller
             $order->discount = savingPercentage($request, 'discount');
         if ($request->has('transport'))
             $order->transport = savingPercentage($request, 'transport');
+
+        $order->deliveries()->sync(array_filter($request->input('deliveries', [])));
+        $order->users()->sync($request->input('users', []));
 
         /*
             Se un ordine viene riaperto, modifico artificiosamente la sua data

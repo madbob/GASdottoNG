@@ -135,6 +135,10 @@ class Gas extends Model
                 'default' => ['selection', 'name', 'price', 'quantity', 'total_price', 'quantity_delivered', 'price_delivered', 'notes']
             ],
 
+            'booking_contacts' => [
+                'default' => 'none',
+            ],
+
             'paypal' => [
                 'default' => (object) [
                     'client_id' => '',
@@ -280,6 +284,11 @@ class Gas extends Model
     public function getOrdersDisplayColumnsAttribute()
     {
         return (array) json_decode($this->getConfig('orders_display_columns'));
+    }
+
+    public function getBookingContactsAttribute()
+    {
+        return $this->getConfig('booking_contacts');
     }
 
     public function getPaypalAttribute()

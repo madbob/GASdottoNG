@@ -21,12 +21,16 @@ class Notification extends Model
     {
         parent::boot();
 
-        static::addGlobalScope('gas', function (Builder $builder) {
-            $builder->whereHas('users', function($query) {
-                $user = Auth::user();
-                $query->where('gas_id', $user->gas->id);
+        $user = Auth::user();
+        if ($user != null) {
+            $gas_id = $user->gas->id;
+
+            static::addGlobalScope('gas', function (Builder $builder) use ($gas_id) {
+                $builder->whereHas('users', function($query) use ($gas_id) {
+                    $query->where('gas_id', $gas_id);
+                });
             });
-        });
+        }
     }
 
     public function users()

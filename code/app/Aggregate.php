@@ -115,37 +115,50 @@ class Aggregate extends Model
         return $priority[$index];
     }
 
-    public static function getByStatus($status, $inverse = false)
+    public function getDeliveriesAttribute()
     {
-        $operator = '=';
-        if ($inverse) {
-            $operator = '!=';
+        foreach ($this->orders as $order) {
+            return $order->deliveries;
         }
 
-        /*
-            Se cerco gli ordini aperti ed è stata abilitata la funzione per
-            gestire gli ordini incompleti, devo considerare anche quelli chiusi
-            ma con confezioni da completare
-        */
-        if ($status == 'open' && !$inverse) {
-            $ret = new Collection();
+        return new Collection();
+    }
 
-            $aggregates = self::whereHas('orders', function ($query) use ($status, $operator) {
-                $query->whereIn('status', ['open', 'closed']);
-            })->with(['orders'])->get();
+    public static function getByStatus($user, $status)
+    {
+        switch($status) {
+            /*
+                Se cerco gli ordini aperti ed è stata abilitata la funzione per
+                gestire gli ordini incompleti, devo considerare anche quelli chiusi
+                ma con confezioni da completare
+            */
+            case 'open':
+                $ret = new Collection();
 
-            foreach($aggregates as $a) {
-                if ($a->status == 'open' || $a->hasPendingPackages()) {
-                    $ret->push($a);
+                $aggregates = self::whereHas('orders', function ($query) use ($status, $user) {
+                    $query->whereIn('status', ['open', 'closed'])->accessibleBooking();
+                })->with(['orders'])->get();
+
+                foreach($aggregates as $a) {
+                    if ($a->status == 'open' || $a->hasPendingPackages()) {
+                        $ret->push($a);
+                    }
                 }
-            }
 
-            return $ret;
-        }
-        else {
-            return self::whereHas('orders', function ($query) use ($status, $operator) {
-                $query->where('status', $operator, $status);
-            })->with(['orders'])->get();
+                return $ret;
+
+            case 'closed':
+                return self::whereHas('orders', function ($query) use ($user) {
+                    $query->where('status', 'closed')->where(function($query) use ($user) {
+                        $query->whereHas('bookings', function($query) use ($user) {
+                            $query->where('status', '!=', 'shipped')->where(function($query) use ($user) {
+                                $query->where('user_id', $user->id)->orWhereIn('user_id', $user->friends()->pluck('id'));
+                            });
+                        })->orWhere(function($query) {
+                            $query->accessibleBooking();
+                        });
+                    });
+                })->with(['orders'])->get();
         }
     }
 
@@ -204,9 +217,13 @@ class Aggregate extends Model
                 }
             }
 
-            $date_string = sprintf('da %s a %s', strftime('%A %d %B %G', $start_date), strftime('%A %d %B %G', $end_date));
+            if (!empty($this->comment)) {
+                $names = [];
+            }
+
+            $date_string = sprintf('da %s a %s', printableDate($start_date), printableDate($end_date));
             if ($shipping_date != PHP_INT_MAX)
-                $date_string .= sprintf(', in consegna %s', strftime('%A %d %B %G', $shipping_date));
+                $date_string .= sprintf(', in consegna %s', printableDate($shipping_date));
             $dates[] = $date_string;
         }
         else {
@@ -221,17 +238,23 @@ class Aggregate extends Model
 
     public function printableName()
     {
-        $name = $this->comment;
-        if (!empty($name))
-            $name .= ': ';
+        $all_contents = [];
 
-        $name .= $this->innerCache('names', function($obj) {
+        if (!empty($this->comment)) {
+            $all_contents[] = $this->comment;
+        }
+
+        $names = $this->innerCache('names', function($obj) {
             list($name, $date) = $this->computeStrings();
             $this->setInnerCache('dates', $date);
             return $name;
         });
 
-        return $name;
+        if (!empty($names)) {
+            $all_contents[] = $names;
+        }
+
+        return join(': ', $all_contents);
     }
 
     public function printableDates()

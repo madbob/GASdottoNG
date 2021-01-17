@@ -31,14 +31,63 @@
                     ]
                 ])
 
+                @if($currentgas->hasFeature('shipping_places') && $order->aggregate->orders()->count() == 1)
+                    <!--
+                        Se l'ordine è aggregato ad altri, i luoghi di consegna
+                        si editano una volta per tutti direttamente nel pannello
+                        dell'aggregato
+                    -->
+                    @include('commons.selectobjfield', [
+                        'obj' => $order,
+                        'name' => 'deliveries',
+                        'label' => _i('Luoghi di Consegna'),
+                        'mandatory' => false,
+                        'objects' => $currentgas->deliveries,
+                        'multiple_select' => true,
+                        'extra_selection' => ['' => _i('Non limitare luogo di consegna')],
+                        'help_text' => _i("Selezionando uno o più luoghi di consegna, l'ordine sarà visibile solo agli utenti che hanno attivato quei luoghi. Se nessun luogo viene selezionato, l'ordine sarà visibile a tutti. Tenere premuto Ctrl per selezionare più voci.")
+                    ])
+                @endif
+
+                @if($currentgas->booking_contacts == 'manual')
+                    <?php
+
+                    $contactable_users = new Illuminate\Support\Collection();
+
+                    foreach(App\Role::rolesByClass('App\Supplier') as $role) {
+                        $contactable_users = $contactable_users->merge($role->usersByTarget($order->supplier));
+                    }
+
+                    $contactable_users = $contactable_users->sortBy('surname')->unique();
+
+                    ?>
+
+                    @include('commons.selectobjfield', [
+                        'obj' => $order,
+                        'name' => 'users',
+                        'label' => _i('Contatti'),
+                        'mandatory' => false,
+                        'objects' => $contactable_users,
+                        'multiple_select' => true,
+                        'help_text' => _i("Tenere premuto Ctrl per selezionare più utenti. I contatti degli utenti selezionati saranno mostrati nel pannello delle prenotazioni.")
+                    ])
+                @endif
+
                 @if($order->products()->where('package_size', '!=', 0)->count() != 0)
                     @include('commons.boolfield', ['obj' => $order, 'name' => 'keep_open_packages', 'label' => _i('Forza completamento confezioni')])
                 @endif
             @else
-                @include('commons.staticstringfield', ['obj' => $order, 'name' => 'comment', 'label' => _i('Commento')])
+                @if(!empty($order->comment))
+                    @include('commons.staticstringfield', ['obj' => $order, 'name' => 'comment', 'label' => _i('Commento')])
+                @endif
+
                 @include('commons.staticdatefield', ['obj' => $order, 'name' => 'start', 'label' => _i('Data Apertura')])
                 @include('commons.staticdatefield', ['obj' => $order, 'name' => 'end', 'label' => _i('Data Chiusura')])
                 @include('commons.staticdatefield', ['obj' => $order, 'name' => 'shipping', 'label' => _i('Data Consegna')])
+
+                @if($order->deliveries()->count() != 0 && $order->aggregate->orders()->count() == 1)
+                    @include('commons.staticobjectslistfield', ['obj' => $order, 'name' => 'deliveries', 'label' => _i('Luoghi di Consegna')])
+                @endif
 
                 @if($order->products()->where('package_size', '!=', 0)->count() != 0)
                     @include('commons.staticboolfield', ['obj' => $order, 'name' => 'keep_open_packages', 'label' => _i('Forza completamento confezioni')])

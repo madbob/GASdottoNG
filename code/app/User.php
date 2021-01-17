@@ -202,10 +202,7 @@ class User extends Authenticatable
 
     public function getShowURL()
     {
-        if ($this->isFriend())
-            return URL::action('FriendsController@show', $this->id);
-        else
-            return URL::action('UsersController@show', $this->id);
+        return URL::action('UsersController@show', $this->id);
     }
 
     public function printableFriendHeader($aggregate)
@@ -419,7 +416,12 @@ class User extends Authenticatable
                     case 'mobile':
                     case 'address':
                         $contacts = $this->getContactsByType($f);
-                        $ret[] = join(', ', $contacts);
+                        if (!empty($contacts)) {
+                            $ret[] = join(', ', $contacts);
+                        }
+                        else {
+                            $ret[] = '';
+                        }
                         break;
                     case 'fullname':
                         $ret[] = $this->printableName();
