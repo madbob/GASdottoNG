@@ -2,6 +2,8 @@
 
 namespace App\Singletons;
 
+use Log;
+
 class RemoteRepository
 {
     private $list = null;
@@ -11,7 +13,7 @@ class RemoteRepository
         if (is_null($this->list)) {
             try {
                 $client = new \GuzzleHttp\Client();
-                $response = $client->request('GET', 'http://hub.economiasolidale.net/api/list');
+                $response = $client->request('GET', sprintf('%s/api/list', env('HUB_URL')));
                 $response = json_decode($response->getBody());
 
                 usort($response->results, function($a, $b) {
@@ -31,6 +33,6 @@ class RemoteRepository
 
     public function getSupplierLink($vat)
     {
-        return sprintf('http://hub.economiasolidale.net/api/get/%s', $vat);
+        return sprintf('%s/api/get/%s', env('HUB_URL'), $vat);
     }
 }
