@@ -57,7 +57,7 @@ class MovementsKeeper extends ServiceProvider
             }
         }
         if ($found == false) {
-            Log::error(_i('Movimento %d: metodo %s non permesso su tipo %s', [$movement->id, $movement->method, $movement->type]));
+            Log::error(_i('Movimento %d: metodo "%s" non permesso su tipo "%s"', [$movement->id, $movement->printablePayment(), $movement->printableType()]));
             return false;
         }
 
