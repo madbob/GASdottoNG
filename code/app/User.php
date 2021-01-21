@@ -356,22 +356,18 @@ class User extends Authenticatable
             ],
             'fullname' => (object) [
                 'name' => _i('Nome Completo'),
-                'checked' => false,
             ],
             'username' => (object) [
                 'name' => _i('Username'),
             ],
             'email' => (object) [
                 'name' => _i('E-Mail'),
-                'checked' => true,
             ],
             'phone' => (object) [
                 'name' => _i('Telefono'),
-                'checked' => true,
             ],
             'mobile' => (object) [
                 'name' => _i('Cellulare'),
-                'checked' => true,
             ],
             'address' => (object) [
                 'name' => _i('Indirizzo'),
