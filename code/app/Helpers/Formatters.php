@@ -249,8 +249,15 @@ function savingPercentage($request, $name)
         specifica se il valore immesso debba essere interpretato come valore
         assoluto o come percentuale
     */
-    $value = $request->input($name);
-    $is_percentage = $request->input($name . '_percentage_type', 'euro');
+    if (is_array($request)) {
+        $value = $request[$name] ?? 0;
+        $is_percentage = $request[$name . '_percentage_type'] ?? 'euro';
+    }
+    else {
+        $value = $request->input($name);
+        $is_percentage = $request->input($name . '_percentage_type', 'euro');
+    }
+
     if ($is_percentage == 'percentage')
         return $value . '%';
     else
