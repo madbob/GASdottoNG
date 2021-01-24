@@ -24,6 +24,7 @@ if (!isset($amount_label))
                 <input type="hidden" name="update-field" value="movement-date-{{ $dom_id }}">
                 <input type="hidden" name="close-modal" value="">
                 <input type="hidden" name="post-saved-function" value="refreshFilter">
+                <input type="hidden" name="post-saved-function" value="reloadLoadableHeaders">
                 <input type="hidden" name="data-refresh-target" value="#movements-filter">
 
                 @if($obj->exists)

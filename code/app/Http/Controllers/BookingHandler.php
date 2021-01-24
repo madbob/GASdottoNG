@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Collection;
 
 use DB;
-use Auth;
 use Log;
 use URL;
 
@@ -16,6 +15,7 @@ use App\User;
 use App\Aggregate;
 use App\BookedProductVariant;
 use App\BookedProductComponent;
+use App\Role;
 
 /*
     Questa classe è destinata ad essere estesa dai Controller che maneggiano
@@ -201,7 +201,7 @@ class BookingHandler extends Controller
     {
         DB::beginTransaction();
 
-        $user = Auth::user();
+        $user = $request->user();
         $target_user = User::find($user_id);
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
@@ -213,13 +213,29 @@ class BookingHandler extends Controller
             $booking = $this->readBooking($request, $order, $user_id, $delivering);
 
             if ($booking && $delivering) {
-                $booking->deliverer_id = Auth::user()->id;
+                $booking->deliverer_id = $user->id;
                 $booking->delivery = date('Y-m-d');
 
                 $new_status = $request->input('action');
+
                 if ($new_status == 'saved' && $booking->payment != null) {
                     $booking->payment->delete();
                     $booking->payment_id = null;
+                }
+                else if (Role::someone('movements.admin', $user->gas) && $new_status == 'shipped' && $booking->payment == null) {
+                    /*
+                        Se sull'istanza locale sto gestendo i pagamenti,
+                        quando viene salvata una consegna senza pagamento la
+                        salvo come "salvata" e non "consegnata".
+                        Questo per evitare che nella fase successiva -
+                        appunto, quella del pagamento - qualcosa vada storto
+                        e la consegna continui a risultare consegnata benché
+                        senza alcun pagamento.
+                        La consegna viene effettivamente marcata come
+                        consegnata al salvataggio del relativo movimento
+                        contabile, in MovementType
+                    */
+                    $new_status = 'saved';
                 }
 
                 $booking->status = $new_status;

@@ -308,8 +308,7 @@ class MovementType extends Model
                                 }
 
                                 /*
-                                    Se avanza qualcosa, lo metto sulla fiducia nell'ultimo
-                                    movimento salvato
+                                    Se avanza qualcosa, lo metto sulla fiducia nell'ultimo movimento salvato
                                 */
                                 if ($total > 0 && $m != null) {
                                     $m->amount += $total;
@@ -324,7 +323,13 @@ class MovementType extends Model
                         'post' => function (Movement $movement) {
                             $target = $movement->target;
                             if($target != null) {
+                                /*
+                                    Salvando il movimento contabile legato ad
+                                    una consegna, ne aggiorno anche il suo stato.
+                                    cfr. BookingHandler::bookingUpdate();
+                                */
                                 $target->payment_id = $movement->id;
+                                $target->status = 'shipped';
                                 $target->save();
                             }
                         },
