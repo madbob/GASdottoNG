@@ -667,6 +667,19 @@ function closeAllLoadable(target)
     });
 }
 
+function reloadLoadableHead(item)
+{
+    $.ajax({
+        method: 'GET',
+        url: item.attr('href') + '/header',
+        dataType: 'json',
+        success: function(data) {
+            item.empty().append(data.header).attr('href', data.url);
+            afterListChanges(item.closest('.loadablelist'));
+        }
+    });
+}
+
 function reloadCurrentLoadable(listid)
 {
     var list = $(listid);
@@ -678,6 +691,25 @@ function reloadCurrentLoadable(listid)
             r.click();
         }, 600);
     });
+}
+
+/*
+    Usato al salvataggio di un movimento contabile, per ricaricare gli elementi
+    ad esso correlati (pagante e pagato) nelle eventuali liste attualmente in
+    pagina.
+    Usato primariamente per aggiornare la grafica delle consegne dopo il pagamento
+*/
+function reloadLoadableHeaders(form, data)
+{
+    var n = $('.loadablelist .loadable-item[data-element-id="' + form.find('input[name=sender_id]').val() + '"]');
+    if (n.length != 0) {
+        reloadLoadableHead(n);
+    }
+
+    var n = $('.loadablelist .loadable-item[data-element-id="' + form.find('input[name=target_id]').val() + '"]');
+    if (n.length != 0) {
+        reloadLoadableHead(n);
+    }
 }
 
 /*******************************************************************************
@@ -1313,21 +1345,9 @@ $(document).ready(function() {
 
         if ($(this).hasClass('active')) {
             var item = $(this);
-            var content = item.next();
+            reloadLoadableHead(item);
 
-            var form = content.find('.main-form').first();
-            $.ajax({
-                method: 'GET',
-                url: $(this).attr('href') + '/header',
-                dataType: 'json',
-
-                success: function(data) {
-                    item.empty().append(data.header).attr('href', data.url);
-                    afterListChanges(item.closest('.loadablelist'));
-                }
-            });
-
-            content.slideUp(200, function() {
+            item.next().slideUp(200, function() {
                 $(this).remove();
                 item.removeClass('active');
             });
