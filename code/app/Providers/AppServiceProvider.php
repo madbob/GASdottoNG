@@ -36,8 +36,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Order::created(function($order) {
-            if ($order->status == 'open')
+            if ($order->status == 'open') {
                 $order->sendNotificationMail();
+            }
         });
 
         Order::updating(function($order) {

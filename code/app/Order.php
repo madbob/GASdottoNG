@@ -280,7 +280,7 @@ class Order extends Model
         $order = $this;
 
         if (currentAbsoluteGas()->getConfig('notify_all_new_orders')) {
-            $query_users = User::where('id', '>', 0);
+            $query_users = User::where('id', '!=', '');
         }
         else {
             $query_users = User::whereHas('suppliers', function($query) use ($order) {
@@ -289,7 +289,7 @@ class Order extends Model
         }
 
         $deliveries = $order->deliveries;
-        if ($deliveries->isEmpty()) {
+        if ($deliveries->isEmpty() == false) {
             $query_users->whereIn('preferred_delivery_id', $deliveries->pluck('id'));
         }
 

@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Notifications\ResetPasswordNotification;
 
 use Auth;
+use Log;
 use URL;
 
 use App\Events\SluggableCreating;
