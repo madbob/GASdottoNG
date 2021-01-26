@@ -25,7 +25,7 @@ class ModifiedValue extends Model
 
     public function getEffectiveAmountAttribute()
     {
-        if ($this->modifier->modifierType->arithmetic == 'sum') {
+        if ($this->modifier->arithmetic == 'sum') {
             return $this->amount;
         }
         else {

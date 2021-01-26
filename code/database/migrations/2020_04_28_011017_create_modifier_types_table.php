@@ -15,7 +15,6 @@ class CreateModifierTypesTable extends Migration
             $table->string('name');
             $table->boolean('system')->default(false);
             $table->boolean('active')->default(true);
-            $table->enum('arithmetic', ['sum', 'sub'])->default('sum');
             $table->text('classes');
         });
     }

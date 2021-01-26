@@ -67,6 +67,7 @@ class ModifiersController extends Controller
         $this->testAccess($user, $modifier);
 
         $modifier->value = $request->input('value');
+        $modifier->arithmetic = $request->input('arithmetic');
         $modifier->applies_type = $request->input('applies_type');
         $modifier->applies_target = $request->input('applies_target');
         $modifier->distribution_target = $request->input('distribution_target');

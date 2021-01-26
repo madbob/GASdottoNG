@@ -2534,21 +2534,33 @@ $(document).ready(function() {
 			deve combaciare con quello in modifier/edit.blade.php
 		*/
 		var container = $(this).closest('.modifier-modal');
-		var arithmetic = container.find('input:hidden[name=modifier_type]').val();
+		var arithmetic = container.find('input:radio[name=arithmetic]:checked').val();
 		var value = container.find('input:radio[name=value]:checked').val();
-		var applies_target = container.find('input:radio[name=applies_target]:checked').val();
-		var applies_type = container.find('input:radio[name=applies_type]:checked').val();
-		var distribution_target = container.find('input:radio[name=distribution_target]:checked').val();
+        var applies_type = container.find('input:radio[name=applies_type]:checked').val();
+		var applies_target = container.find('input:radio[name=applies_target]:checked,input:hidden[name=applies_target]').first().val();
+		var distribution_target = container.find('input:radio[name=distribution_target]:checked,input:hidden[name=distribution_target]').first().val();
 		var key = applies_target + ',' + applies_type + ',' + arithmetic + ',' + distribution_target + ',' + value;
-		var labels = modifiers_strings[key];
-		var table = container.find('.many-rows');
 
-		table.find('.row').each(function() {
-			$(this).find('.form-control-static').eq(0).text(labels[0]);
-			$(this).find('.input-group-addon').eq(0).text(labels[1]);
-			$(this).find('.form-control-static').eq(1).text(labels[2]);
-			$(this).find('.input-group-addon').eq(1).text(labels[3]);
-		});
+		var labels = modifiers_strings[key];
+
+        var simplified = container.find('.simplified_input');
+        var advanced = container.find('.advanced_input');
+        simplified.toggleClass('hidden', applies_type != 'none');
+        advanced.toggleClass('hidden', applies_type == 'none');
+        container.find('.distribution_type_selection').toggleClass('hidden', distribution_target != 'order');
+
+        if (applies_type != 'none') {
+    		advanced.find('.many-rows').find('.row').each(function() {
+    			$(this).find('.form-control-static').eq(0).text(labels[0]);
+    			$(this).find('.input-group-addon').eq(0).text(labels[1]);
+    			$(this).find('.form-control-static').eq(1).text(labels[2]);
+    			$(this).find('.input-group-addon').eq(1).text(labels[3]);
+    		});
+        }
+        else {
+            simplified.find('.form-control-static').text(labels[2]);
+            simplified.find('.input-group-addon').text(labels[3]);
+        }
 	});
 
     /*

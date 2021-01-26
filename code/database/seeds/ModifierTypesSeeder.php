@@ -13,7 +13,6 @@ class ModifierTypesSeeder extends Seeder
             $m = new ModifierType();
             $m->id = 'spese-trasporto';
             $m->name = _i('Spese Trasporto');
-            $m->arithmetic = 'sum';
             $m->system = true;
             $m->classes = ['App\Product', 'App\Supplier'];
             $m->save();
@@ -23,7 +22,6 @@ class ModifierTypesSeeder extends Seeder
             $m = new ModifierType();
             $m->id = 'sconto';
             $m->name = _i('Sconto');
-            $m->arithmetic = 'sub';
             $m->system = true;
             $m->classes = ['App\Product', 'App\Supplier'];
             $m->save();

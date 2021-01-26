@@ -61,12 +61,15 @@ class Modifier extends Model
         $currency = currentAbsoluteGas()->currency;
 
         $applies_labels = [
+            'product,none' => ['', ''],
             'product,quantity' => [_i("Se la quantità di prodotto è minore di"), _i('Prodotti')],
             'product,price' => [_i("Se il prezzo del prodotto è minore di"), $currency],
             'product,weight' => [_i("Se il peso del prodotto è minore di"), _i('Chili')],
+            'booking,none' => ['', ''],
             'booking,quantity' => [_i("Se la quantità di prodotti nella prenotazione è minore di"), _i('Prodotti')],
             'booking,price' => [_i("Se il prezzo della prenotazione è minore di"), $currency],
             'booking,weight' => [_i("Se il peso della prenotazione è minore di"), _i('Chili')],
+            'order,none' => ['', ''],
             'order,quantity' => [_i("Se la quantità di prodotti nell'ordine è minore di"), _i('Prodotti')],
             'order,price' => [_i("Se il prezzo dell'ordine è minore di"), $currency],
             'order,weight' => [_i("Se il peso dell'ordine è minore di"), _i('Chili')],
@@ -100,7 +103,7 @@ class Modifier extends Model
 
     public function getDescriptionIndexAttribute()
     {
-        return sprintf('%s,%s,%s,%s,%s', $this->applies_target, $this->applies_type, $this->modifierType->arithmetic, $this->distribution_target, $this->value);
+        return sprintf('%s,%s,%s,%s,%s', $this->applies_target, $this->applies_type, $this->arithmetic, $this->distribution_target, $this->value);
     }
 
     private function applyDefinition($amount, $definition, $target, $subtarget, $attribute)

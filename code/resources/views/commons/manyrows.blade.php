@@ -120,8 +120,6 @@ if (isset($extra_class)) {
                             foreach($names as $n)
                                 $values[] = $content->$n;
 
-                                echo "ciao";
-
                             ?>
 
                             <div class="col-md-{{ $column['width'] }} col-xs-{{ $column['width'] }} customized-cell form-control-static">

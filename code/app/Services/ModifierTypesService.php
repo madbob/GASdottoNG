@@ -25,7 +25,6 @@ class ModifierTypesService extends BaseService
 
         $mt = new ModifierType();
         $this->setIfSet($mt, $request, 'name');
-        $this->setIfSet($mt, $request, 'arithmetic');
         $this->setIfSet($mt, $request, 'classes');
         $mt->save();
 
@@ -38,7 +37,6 @@ class ModifierTypesService extends BaseService
 
         $mt = ModifierType::findOrFail($id);
         $this->setIfSet($mt, $request, 'name');
-        $this->setIfSet($mt, $request, 'arithmetic');
         $this->setIfSet($mt, $request, 'classes');
         $mt->save();
 

@@ -5,22 +5,6 @@
     'disabled' => $modtype ? $modtype->system : false,
 ])
 
-@include('commons.radios', [
-    'obj' => $modtype,
-    'name' => 'arithmetic',
-    'label' => _i('Operazione'),
-    'disabled' => $modtype ? $modtype->system : false,
-    'values' => [
-        'sum' => (object) [
-            'name' => _i('Somma'),
-            'checked' => true
-        ],
-        'sub' => (object) [
-            'name' => _i('Sottrazione')
-        ],
-    ]
-])
-
 @include('commons.checkboxes', [
     'obj' => $modtype,
     'name' => 'classes',
