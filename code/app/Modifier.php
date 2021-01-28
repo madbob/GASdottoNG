@@ -61,18 +61,30 @@ class Modifier extends Model
         $currency = currentAbsoluteGas()->currency;
 
         $applies_labels = [
-            'product,none' => ['', ''],
-            'product,quantity' => [_i("Se la quantità di prodotto è minore di"), _i('Prodotti')],
-            'product,price' => [_i("Se il prezzo del prodotto è minore di"), $currency],
-            'product,weight' => [_i("Se il peso del prodotto è minore di"), _i('Chili')],
-            'booking,none' => ['', ''],
-            'booking,quantity' => [_i("Se la quantità di prodotti nella prenotazione è minore di"), _i('Prodotti')],
-            'booking,price' => [_i("Se il prezzo della prenotazione è minore di"), $currency],
-            'booking,weight' => [_i("Se il peso della prenotazione è minore di"), _i('Chili')],
-            'order,none' => ['', ''],
-            'order,quantity' => [_i("Se la quantità di prodotti nell'ordine è minore di"), _i('Prodotti')],
-            'order,price' => [_i("Se il prezzo dell'ordine è minore di"), $currency],
-            'order,weight' => [_i("Se il peso dell'ordine è minore di"), _i('Chili')],
+            'product,minor,none' => ['', ''],
+            'product,minor,quantity' => [_i("Se la quantità di prodotto è minore di"), _i('Prodotti')],
+            'product,minor,price' => [_i("Se il prezzo del prodotto è minore di"), $currency],
+            'product,minor,weight' => [_i("Se il peso del prodotto è minore di"), _i('Chili')],
+            'booking,minor,none' => ['', ''],
+            'booking,minor,quantity' => [_i("Se la quantità di prodotti nella prenotazione è minore di"), _i('Prodotti')],
+            'booking,minor,price' => [_i("Se il valore della prenotazione è minore di"), $currency],
+            'booking,minor,weight' => [_i("Se il peso della prenotazione è minore di"), _i('Chili')],
+            'order,minor,none' => ['', ''],
+            'order,minor,quantity' => [_i("Se la quantità di prodotti nell'ordine è minore di"), _i('Prodotti')],
+            'order,minor,price' => [_i("Se il valore dell'ordine è minore di"), $currency],
+            'order,minor,weight' => [_i("Se il peso dell'ordine è minore di"), _i('Chili')],
+            'product,major,none' => ['', ''],
+            'product,major,quantity' => [_i("Se la quantità di prodotto è maggiore di"), _i('Prodotti')],
+            'product,major,price' => [_i("Se il prezzo del prodotto è maggiore di"), $currency],
+            'product,major,weight' => [_i("Se il peso del prodotto è maggiore di"), _i('Chili')],
+            'booking,major,none' => ['', ''],
+            'booking,major,quantity' => [_i("Se la quantità di prodotti nella prenotazione è maggiore di"), _i('Prodotti')],
+            'booking,major,price' => [_i("Se il valore della prenotazione è maggiore di"), $currency],
+            'booking,major,weight' => [_i("Se il peso della prenotazione è maggiore di"), _i('Chili')],
+            'order,major,none' => ['', ''],
+            'order,major,quantity' => [_i("Se la quantità di prodotti nell'ordine è maggiore di"), _i('Prodotti')],
+            'order,major,price' => [_i("Se il valore dell'ordine è maggiore di"), $currency],
+            'order,major,weight' => [_i("Se il peso dell'ordine è maggiore di"), _i('Chili')],
         ];
 
         $distribution_labels = [
@@ -103,7 +115,7 @@ class Modifier extends Model
 
     public function getDescriptionIndexAttribute()
     {
-        return sprintf('%s,%s,%s,%s,%s', $this->applies_target, $this->applies_type, $this->arithmetic, $this->distribution_target, $this->value);
+        return sprintf('%s,%s,%s,%s,%s,%s', $this->applies_target, $this->scale, $this->applies_type, $this->arithmetic, $this->distribution_target, $this->value);
     }
 
     private function applyDefinition($amount, $definition, $target, $subtarget, $attribute)
@@ -118,6 +130,10 @@ class Modifier extends Model
         else {
             if ($this->distribution_target == 'order') {
                 $order_attribute = $this->applies_type;
+                if ($order_attribute == 'none') {
+                    $order_attribute = 'price';
+                }
+
                 $amount = $target->$order_attribute == 0 ? $definition->amount : round(($definition->amount * $subtarget->$attribute) / $target->$order_attribute, $rounding);
             }
             else {
@@ -205,6 +221,10 @@ class Modifier extends Model
         }
         else {
             $attribute = $this->applies_type;
+            if ($attribute == 'none') {
+                $attribute = 'price';
+            }
+
             $mod_attribute = 'price';
         }
 
@@ -214,19 +234,30 @@ class Modifier extends Model
         }
 
         $altered_amount = $mod_target->$mod_attribute;
-        $found_modifier = false;
+        $target_definition = null;
 
-        foreach($this->definitions as $def) {
-            if ($check_value < $def->threshold) {
-                $altered_amount = $this->applyDefinition($altered_amount, $def, $mod_target, $sub_mod_target, $attribute);
-                $found_modifier = true;
-                break;
+        if ($this->scale == 'minor') {
+            foreach($this->definitions as $def) {
+                if ($check_value < $def->threshold) {
+                    $target_definition = $def;
+                    break;
+                }
+            }
+        }
+        else {
+            foreach($this->definitions as $def) {
+                if ($check_value > $def->threshold) {
+                    $target_definition = $def;
+                    break;
+                }
             }
         }
 
-        if ($found_modifier == false) {
-            $def = $this->definitions[count($this->definitions) - 1];
-            $altered_amount = $this->applyDefinition($altered_amount, $def, $mod_target, $sub_mod_target, $attribute);
+        if (is_null($target_definition) == false) {
+            $altered_amount = $this->applyDefinition($altered_amount, $target_definition, $mod_target, $sub_mod_target, $attribute);
+        }
+        else {
+            Log::error('Unable to apply any threshold for modifier ' . $this->id);
         }
 
         $modifier_value = $obj_mod_target->modifiedValues->firstWhere('modifier_id', $this->id);

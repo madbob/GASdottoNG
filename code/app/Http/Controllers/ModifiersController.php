@@ -68,6 +68,7 @@ class ModifiersController extends Controller
 
         $modifier->value = $request->input('value');
         $modifier->arithmetic = $request->input('arithmetic');
+        $modifier->scale = $request->input('scale');
         $modifier->applies_type = $request->input('applies_type');
         $modifier->applies_target = $request->input('applies_target');
         $modifier->distribution_target = $request->input('distribution_target');
@@ -81,22 +82,59 @@ class ModifiersController extends Controller
             $threshold = trim($threshold);
             $amount = trim($amounts[$index]);
 
-            if (empty($threshold)) {
-                $threshold = 0;
-            }
+            if ($modifier->applies_type == 'none') {
+                if (empty($amount)) {
+                    $amount = 0;
+                }
 
-            if (empty($amount)) {
-                $amount = 0;
-            }
+                if ($amount == 0) {
+                    continue;
+                }
 
-            if ($threshold == 0 && $amount == 0) {
-                continue;
+                /*
+                    Se non ho soglie, forzo comunque la soglia dell'unico valore
+                    esistente al valore più estremo
+                */
+                if ($modifier->scale == 'minor') {
+                    $threshold = PHP_INT_MAX;
+                }
+                else {
+                    $threshold = PHP_INT_MIN;
+                }
+            }
+            else {
+                if (empty($threshold)) {
+                    $threshold = 0;
+                }
+
+                if (empty($amount)) {
+                    $amount = 0;
+                }
+
+                if ($threshold == 0 && $amount == 0) {
+                    continue;
+                }
             }
 
             $definition[] = (object) [
                 'threshold' => $threshold,
                 'amount' => $amount,
             ];
+        }
+
+        /*
+            Mantengo le soglie ordinate secondo il canone più comodo per la
+            successiva valutazione in Modifier::apply()
+        */
+        if ($modifier->scale == 'minor') {
+            usort($definition, function($a, $b) {
+                return $a->threshold <=> $b->threshold;
+            });
+        }
+        else {
+            usort($definition, function($a, $b) {
+                return ($a->threshold <=> $b->threshold) * -1;
+            });
         }
 
         $modifier->definition = json_encode($definition);

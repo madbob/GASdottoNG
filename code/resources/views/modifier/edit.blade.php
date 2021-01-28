@@ -15,31 +15,17 @@
                         <div class="col-md-12">
                             <?php
 
-                            /*
-                                Se sto elaborando il modificatore di un
-                                prodotto, soglia e distribuzione si applicano
-                                solo al prodotto stesso
-                            */
-                            if ($modifier->target_type == 'App\Product') {
-                                $modifier->applies_target = 'product';
-                                $modifier->distribution_target = 'product';
-
-                                $distribution_targets = $applies_targets = [
-                                    'product' => (object) [
-                                        'name' => _i('Singolo Prodotto'),
-                                    ],
-                                ];
-                            }
-                            else {
-                                $distribution_targets = $applies_targets = [
-                                    'booking' => (object) [
-                                        'name' => _i('Singola Prenotazione'),
-                                    ],
-                                    'order' => (object) [
-                                        'name' => _i('Ordine Complessivo'),
-                                    ],
-                                ];
-                            }
+                            $distribution_targets = $applies_targets = [
+                                'product' => (object) [
+                                    'name' => _i('Prodotto'),
+                                ],
+                                'booking' => (object) [
+                                    'name' => _i('Singola Prenotazione'),
+                                ],
+                                'order' => (object) [
+                                    'name' => _i('Ordine Complessivo'),
+                                ],
+                            ];
 
                             $labels = App\Modifier::descriptions();
                             $actual_strings_combination = $modifier->description_index;
@@ -71,7 +57,6 @@
                                 'values' => [
                                     'sum' => (object) [
                                         'name' => _i('Somma'),
-                                        'checked' => true
                                     ],
                                     'sub' => (object) [
                                         'name' => _i('Sottrazione')
@@ -100,6 +85,20 @@
                             ])
 
                             <div class="advanced_input {{ $modifier->applies_type == 'none' ? 'hidden' : '' }}">
+                                @include('commons.radios', [
+                                    'obj' => $modifier,
+                                    'name' => 'scale',
+                                    'label' => _i('Differenza'),
+                                    'values' => [
+                                        'minor' => (object) [
+                                            'name' => _i('Minore di'),
+                                        ],
+                                        'major' => (object) [
+                                            'name' => _i('Maggiore di')
+                                        ],
+                                    ]
+                                ])
+
                                 @include('commons.radios', [
                                     'obj' => $modifier,
                                     'name' => 'applies_target',
@@ -184,7 +183,8 @@
                                         <div class="form-group">
                                             <div class="col-sm-12">
                                                 <div class="input-group">
-                                                    <input type="text" class="form-control number" name="amount[]" value="" placeholder="Costo" autocomplete="off">
+                                                    <input type="hidden" name="threshold[]" value="{{ $modifier->definitions[0]->threshold ?? '' }}">
+                                                    <input type="text" class="form-control number" name="amount[]" value="{{ $modifier->definitions[0]->amount ?? 0 }}" placeholder="Costo" autocomplete="off">
                                                     <div class="input-group-addon">{{ $labels[$actual_strings_combination][3] }}</div>
                                                 </div>
                                             </div>

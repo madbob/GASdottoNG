@@ -2537,9 +2537,10 @@ $(document).ready(function() {
 		var arithmetic = container.find('input:radio[name=arithmetic]:checked').val();
 		var value = container.find('input:radio[name=value]:checked').val();
         var applies_type = container.find('input:radio[name=applies_type]:checked').val();
-		var applies_target = container.find('input:radio[name=applies_target]:checked,input:hidden[name=applies_target]').first().val();
-		var distribution_target = container.find('input:radio[name=distribution_target]:checked,input:hidden[name=distribution_target]').first().val();
-		var key = applies_target + ',' + applies_type + ',' + arithmetic + ',' + distribution_target + ',' + value;
+        var scale = container.find('input:radio[name=scale]:checked').val();
+		var applies_target = container.find('input:radio[name=applies_target]:checked').first().val();
+		var distribution_target = container.find('input:radio[name=distribution_target]:checked').first().val();
+		var key = applies_target + ',' + scale + ',' + applies_type + ',' + arithmetic + ',' + distribution_target + ',' + value;
 
 		var labels = modifiers_strings[key];
 
