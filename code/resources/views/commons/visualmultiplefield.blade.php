@@ -24,14 +24,18 @@ if (!isset($disabled)) {
         <div class="col-sm-{{ $fieldsize }}">
             <div class="btn-group {{ $disabled ? 'disabled' : '' }}" data-toggle="buttons">
                 @foreach($values as $value => $info)
-                    <label class="btn btn-default {{ isset($info->checked) && $info->checked ? 'active' : '' }} {{ $disabled ? 'disabled' : '' }}">
-                        <input type="{{ $selection_type }}" name="{{ $name }}{{ $selection_type == 'checkbox' ? '[]' : '' }}" value="{{ $value }}" autocomplete="off" {{ isset($info->checked) && $info->checked ? 'checked' : '' }}>
-                        @if(isset($info->name))
-                            {{ $info->name }}
-                        @else
-                            <span class="glyphicon glyphicon-{{ $info->icon }}" aria-hidden="true"></span>
-                        @endif
-                    </label>
+                    @if(isset($info->hidden) && $info->hidden)
+                        <input type="{{ $selection_type }}" name="{{ $name }}{{ $selection_type == 'checkbox' ? '[]' : '' }}" class="hidden" value="{{ $value }}" {{ isset($info->checked) && $info->checked ? 'checked' : '' }}>
+                    @else
+                        <label class="btn btn-default {{ isset($info->checked) && $info->checked ? 'active' : '' }} {{ ($disabled || (isset($info->disabled) && $info->disabled)) ? 'disabled' : '' }}">
+                            <input type="{{ $selection_type }}" name="{{ $name }}{{ $selection_type == 'checkbox' ? '[]' : '' }}" value="{{ $value }}" autocomplete="off" {{ isset($info->checked) && $info->checked ? 'checked' : '' }}>
+                            @if(isset($info->name))
+                                {{ $info->name }}
+                            @else
+                                <span class="glyphicon glyphicon-{{ $info->icon }}" aria-hidden="true"></span>
+                            @endif
+                        </label>
+                    @endif
                 @endforeach
             </div>
         </div>

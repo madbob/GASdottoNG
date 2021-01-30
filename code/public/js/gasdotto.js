@@ -2534,13 +2534,49 @@ $(document).ready(function() {
 			deve combaciare con quello in modifier/edit.blade.php
 		*/
 		var container = $(this).closest('.modifier-modal');
+        var model_type = container.attr('data-target-type');
 		var arithmetic = container.find('input:radio[name=arithmetic]:checked').val();
 		var value = container.find('input:radio[name=value]:checked').val();
         var applies_type = container.find('input:radio[name=applies_type]:checked').val();
         var scale = container.find('input:radio[name=scale]:checked').val();
 		var applies_target = container.find('input:radio[name=applies_target]:checked').first().val();
-		var distribution_target = container.find('input:radio[name=distribution_target]:checked').first().val();
-		var key = applies_target + ',' + scale + ',' + applies_type + ',' + arithmetic + ',' + distribution_target + ',' + value;
+        var distribution_type = container.find('input:radio[name=distribution_type]:checked').val();
+
+        if (model_type == 'product') {
+            if (applies_type == 'none') {
+                container.find('input:radio[name=applies_target][value=product]').click();
+                applies_target = 'product';
+            }
+            else {
+                if (applies_target == 'product') {
+                    container.find('input:radio[name=applies_target][value=booking]').click();
+                    applies_target = 'booking';
+                }
+            }
+        }
+
+        if (value == 'price') {
+            container.find('.arithmetic_type_selection').addClass('hidden').find('input:radio[value=apply]').click();
+            arithmetic = 'apply';
+        }
+        else {
+            container.find('.arithmetic_type_selection').removeClass('hidden');
+        }
+
+        var distribution_type_selection = container.find('.distribution_type_selection');
+        distribution_type_selection.toggleClass('hidden', value == 'price' || applies_target != 'order');
+        if (applies_target != 'order') {
+            distribution_type_selection.find('input:radio[value=none]').click();
+            distribution_type = 'none';
+        }
+        else {
+            if (distribution_type == 'none') {
+                distribution_type_selection.find('input:radio[value=quantity]').click();
+                distribution_type = 'quantity';
+            }
+        }
+
+		var key = applies_type + ',' + model_type + ',' + applies_target + ',' + scale + ',' + applies_type + ',' + arithmetic + ',' + applies_target + ',' + value + ',' + distribution_type;
 
 		var labels = modifiers_strings[key];
 
@@ -2548,17 +2584,25 @@ $(document).ready(function() {
         var advanced = container.find('.advanced_input');
         simplified.toggleClass('hidden', applies_type != 'none');
         advanced.toggleClass('hidden', applies_type == 'none');
-        container.find('.distribution_type_selection').toggleClass('hidden', distribution_target != 'order');
 
         if (applies_type != 'none') {
+            container.find('input:radio[name=value][value=price]').closest('label').removeClass('disabled');
+
     		advanced.find('.many-rows').find('.row').each(function() {
     			$(this).find('.form-control-static').eq(0).text(labels[0]);
     			$(this).find('.input-group-addon').eq(0).text(labels[1]);
     			$(this).find('.form-control-static').eq(1).text(labels[2]);
     			$(this).find('.input-group-addon').eq(1).text(labels[3]);
+                $(this).find('.form-control-static').eq(2).text(labels[4]);
     		});
         }
         else {
+            var value_price_selection = container.find('input:radio[name=value][value=price]');
+            value_price_selection.closest('label').addClass('disabled');
+            if (value_price_selection.prop('checked')) {
+                container.find('input:radio[name=value][value=absolute]').click();
+            }
+
             simplified.find('.form-control-static').text(labels[2]);
             simplified.find('.input-group-addon').text(labels[3]);
         }

@@ -422,6 +422,10 @@ table {
     &.disabled {
         pointer-events: none;
     }
+
+    .disabled {
+        pointer-events: none;
+    }
 }
 
 .img-preview {

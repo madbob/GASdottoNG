@@ -451,7 +451,9 @@ function as_choosable($array, $value_callback, $name_callback, $check_callback)
         $value = $value_callback($i, $a);
         $ret[$value] = (object) [
             'name' => $name_callback($i, $a),
-            'checked' => $check_callback($i, $a)
+            'checked' => $check_callback($i, $a),
+            'hidden' => $a->hidden ?? false,
+            'disabled' => $a->disabled ?? false,
         ];
     }
 

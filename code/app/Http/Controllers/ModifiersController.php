@@ -71,38 +71,37 @@ class ModifiersController extends Controller
         $modifier->scale = $request->input('scale');
         $modifier->applies_type = $request->input('applies_type');
         $modifier->applies_target = $request->input('applies_target');
-        $modifier->distribution_target = $request->input('distribution_target');
         $modifier->distribution_type = $request->input('distribution_type');
 
         $definition = [];
-        $thresholds = $request->input('threshold');
-        $amounts = $request->input('amount');
 
-        foreach($thresholds as $index => $threshold) {
-            $threshold = trim($threshold);
-            $amount = trim($amounts[$index]);
+        if ($modifier->applies_type == 'none') {
+            $amount = $request->input('simplified_amount');
 
-            if ($modifier->applies_type == 'none') {
-                if (empty($amount)) {
-                    $amount = 0;
-                }
-
-                if ($amount == 0) {
-                    continue;
-                }
-
-                /*
-                    Se non ho soglie, forzo comunque la soglia dell'unico valore
-                    esistente al valore più estremo
-                */
-                if ($modifier->scale == 'minor') {
-                    $threshold = PHP_INT_MAX;
-                }
-                else {
-                    $threshold = PHP_INT_MIN;
-                }
+            /*
+                Se non ho soglie, forzo comunque la soglia dell'unico valore
+                esistente al valore più estremo
+            */
+            if ($modifier->scale == 'minor') {
+                $threshold = PHP_INT_MAX;
             }
             else {
+                $threshold = PHP_INT_MIN;
+            }
+
+            $definition[] = (object) [
+                'threshold' => $threshold,
+                'amount' => $amount,
+            ];
+        }
+        else {
+            $thresholds = $request->input('threshold');
+            $amounts = $request->input('amount');
+
+            foreach($thresholds as $index => $threshold) {
+                $threshold = trim($threshold);
+                $amount = trim($amounts[$index]);
+
                 if (empty($threshold)) {
                     $threshold = 0;
                 }
@@ -114,27 +113,27 @@ class ModifiersController extends Controller
                 if ($threshold == 0 && $amount == 0) {
                     continue;
                 }
+
+                $definition[] = (object) [
+                    'threshold' => $threshold,
+                    'amount' => $amount,
+                ];
             }
 
-            $definition[] = (object) [
-                'threshold' => $threshold,
-                'amount' => $amount,
-            ];
-        }
-
-        /*
-            Mantengo le soglie ordinate secondo il canone più comodo per la
-            successiva valutazione in Modifier::apply()
-        */
-        if ($modifier->scale == 'minor') {
-            usort($definition, function($a, $b) {
-                return $a->threshold <=> $b->threshold;
-            });
-        }
-        else {
-            usort($definition, function($a, $b) {
-                return ($a->threshold <=> $b->threshold) * -1;
-            });
+            /*
+                Mantengo le soglie ordinate secondo il canone più comodo per la
+                successiva valutazione in Modifier::apply()
+            */
+            if ($modifier->scale == 'minor') {
+                usort($definition, function($a, $b) {
+                    return $a->threshold <=> $b->threshold;
+                });
+            }
+            else {
+                usort($definition, function($a, $b) {
+                    return ($a->threshold <=> $b->threshold) * -1;
+                });
+            }
         }
 
         $modifier->definition = json_encode($definition);

@@ -26,6 +26,15 @@ class Modifier extends Model
         return collect($ret ?: []);
     }
 
+    public function getModelTypeAttribute()
+    {
+        $ret = strtolower(substr(strrchr($this->target_type, '\\'), 1));
+        if ($ret == 'supplier') {
+            $ret = 'order';
+        }
+        return $ret;
+    }
+
     public function getNameAttribute()
     {
         $data = $this->definitions;
@@ -60,31 +69,35 @@ class Modifier extends Model
 
         $currency = currentAbsoluteGas()->currency;
 
-        $applies_labels = [
-            'product,minor,none' => ['', ''],
-            'product,minor,quantity' => [_i("Se la quantità di prodotto è minore di"), _i('Prodotti')],
-            'product,minor,price' => [_i("Se il prezzo del prodotto è minore di"), $currency],
-            'product,minor,weight' => [_i("Se il peso del prodotto è minore di"), _i('Chili')],
-            'booking,minor,none' => ['', ''],
-            'booking,minor,quantity' => [_i("Se la quantità di prodotti nella prenotazione è minore di"), _i('Prodotti')],
-            'booking,minor,price' => [_i("Se il valore della prenotazione è minore di"), $currency],
-            'booking,minor,weight' => [_i("Se il peso della prenotazione è minore di"), _i('Chili')],
-            'order,minor,none' => ['', ''],
-            'order,minor,quantity' => [_i("Se la quantità di prodotti nell'ordine è minore di"), _i('Prodotti')],
-            'order,minor,price' => [_i("Se il valore dell'ordine è minore di"), $currency],
-            'order,minor,weight' => [_i("Se il peso dell'ordine è minore di"), _i('Chili')],
-            'product,major,none' => ['', ''],
-            'product,major,quantity' => [_i("Se la quantità di prodotto è maggiore di"), _i('Prodotti')],
-            'product,major,price' => [_i("Se il prezzo del prodotto è maggiore di"), $currency],
-            'product,major,weight' => [_i("Se il peso del prodotto è maggiore di"), _i('Chili')],
-            'booking,major,none' => ['', ''],
-            'booking,major,quantity' => [_i("Se la quantità di prodotti nella prenotazione è maggiore di"), _i('Prodotti')],
-            'booking,major,price' => [_i("Se il valore della prenotazione è maggiore di"), $currency],
-            'booking,major,weight' => [_i("Se il peso della prenotazione è maggiore di"), _i('Chili')],
-            'order,major,none' => ['', ''],
-            'order,major,quantity' => [_i("Se la quantità di prodotti nell'ordine è maggiore di"), _i('Prodotti')],
-            'order,major,price' => [_i("Se il valore dell'ordine è maggiore di"), $currency],
-            'order,major,weight' => [_i("Se il peso dell'ordine è maggiore di"), _i('Chili')],
+        $value_labels = [
+            'none' => '',
+            'quantity' => _i('la quantità'),
+            'price' => _i('il valore'),
+            'weight' => _i('il peso'),
+        ];
+
+        $targets_labels = [
+            'product,product' => _i(''),
+            'product,booking' => _i('di prodotto nella prenotazione'),
+            'product,order' => _i("di prodotto nell'ordine"),
+            'order,product' => _i(''),
+            'order,booking' => _i('della prenotazione'),
+            'order,order' => _i("dell'ordine"),
+            'delivery,product' => _i(''),
+            'delivery,booking' => _i('della prenotazione destinata al luogo'),
+            'delivery,order' => _i("dell'ordine destinato al luogo"),
+        ];
+
+        $scale_labels = [
+            'minor' => _i('è minore di'),
+            'major' => _i('è maggiore di'),
+        ];
+
+        $value_units = [
+            'none' => '',
+            'quantity' => _i('Prodotti'),
+            'price' => $currency,
+            'weight' => _i('Chili'),
         ];
 
         $distribution_labels = [
@@ -100,13 +113,38 @@ class Modifier extends Model
             'sub,product,percentage' => [_i("sottrai al costo del prodotto"), '%'],
             'sub,booking,percentage' => [_i("sottrai al costo della prenotazione"), '%'],
             'sub,order,percentage' => [_i("sottrai al costo dell'ordine"), '%'],
+            'apply,product,price' => [_i("applica il prezzo unitario"), $currency],
+            'apply,booking,price' => [_i("applica il prezzo unitario"), $currency],
+            'apply,order,price' => [_i("applica il prezzo unitario"), $currency],
+        ];
+
+        $distribution_types = [
+            'none' => '',
+            'quantity' => _i('e distribuiscilo in base alle quantità prenotate'),
+            'price' => _i('e distribuiscilo in base al valore delle prenotazioni'),
+            'weight' => _i('e distribuiscilo in base al peso delle prenotazioni'),
         ];
 
         $labels = [];
 
-        foreach($applies_labels as $applies_id => $applies_strings) {
-            foreach($distribution_labels as $distribution_id => $distribution_strings) {
-                $labels[$applies_id . ',' . $distribution_id] = array_merge($applies_strings, $distribution_strings);
+        foreach($value_labels as $vl => $vs) {
+            foreach($targets_labels as $tl => $ts) {
+                foreach($scale_labels as $sl => $ss) {
+                    foreach($value_units as $vu => $vus) {
+                        foreach($distribution_labels as $dl => $ds) {
+                            foreach($distribution_types as $dt => $dts) {
+                                $key = sprintf('%s,%s,%s,%s,%s,%s', $vl, $tl, $sl, $vu, $dl, $dt);
+                                $labels[$key] = [
+                                    _i('Se %s %s %s', [$vs, $ts, $ss]),
+                                    $vus,
+                                    $ds[0],
+                                    $ds[1],
+                                    $dts,
+                                ];
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -115,7 +153,7 @@ class Modifier extends Model
 
     public function getDescriptionIndexAttribute()
     {
-        return sprintf('%s,%s,%s,%s,%s,%s', $this->applies_target, $this->scale, $this->applies_type, $this->arithmetic, $this->distribution_target, $this->value);
+        return sprintf('%s,%s,%s,%s,%s,%s,%s,%s,%s', $this->applies_type, $this->model_type, $this->applies_target, $this->scale, $this->applies_type, $this->arithmetic, $this->applies_target, $this->value, $this->distribution_type);
     }
 
     private function applyDefinition($amount, $definition, $target, $subtarget, $attribute)
@@ -128,7 +166,7 @@ class Modifier extends Model
             Log::debug($original_amount . ' -> ' . $amount);
         }
         else {
-            if ($this->distribution_target == 'order') {
+            if ($this->applies_target == 'order') {
                 $order_attribute = $this->applies_type;
                 if ($order_attribute == 'none') {
                     $order_attribute = 'price';
@@ -157,6 +195,9 @@ class Modifier extends Model
         switch($this->applies_target) {
             case 'order':
                 $check_target = $aggregate_data->orders[$booking->order_id];
+                $mod_target = $aggregate_data->orders[$booking->order_id];
+                $sub_mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id];
+                $obj_mod_target = $booking;
                 break;
 
             case 'booking':
@@ -165,6 +206,9 @@ class Modifier extends Model
                 }
 
                 $check_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id];
+                $mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id];
+                $obj_mod_target = $booking;
+                $sub_mod_target = null;
                 break;
 
             case 'product':
@@ -173,23 +217,6 @@ class Modifier extends Model
                 }
 
                 $check_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$this->target->id];
-                break;
-        }
-
-        switch($this->distribution_target) {
-            case 'order':
-                $mod_target = $aggregate_data->orders[$booking->order_id];
-                $sub_mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id];
-                $obj_mod_target = $booking;
-                break;
-
-            case 'booking':
-                $mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id];
-                $obj_mod_target = $booking;
-                $sub_mod_target = null;
-                break;
-
-            case 'product':
                 $product_target_id = $this->target->id;
                 if (!isset($aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$product_target_id])) {
                     return null;

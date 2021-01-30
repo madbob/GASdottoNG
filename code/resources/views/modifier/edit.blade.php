@@ -1,4 +1,4 @@
-<div class="modal fade modifier-modal" id="editModifier-{{ $modifier->id }}" tabindex="-1" role="dialog" aria-labelledby="editModifier-{{ $modifier->id }}">
+<div class="modal fade modifier-modal" id="editModifier-{{ $modifier->id }}" tabindex="-1" role="dialog" aria-labelledby="editModifier-{{ $modifier->id }}" data-target-type="{{ $modifier->model_type }}">
     <div class="modal-dialog modal-extra-lg" role="document">
         <div class="modal-content">
             <form class="form-horizontal creating-form" method="POST" action="{{ route('modifiers.update', $modifier->id) }}">
@@ -15,60 +15,21 @@
                         <div class="col-md-12">
                             <?php
 
-                            $distribution_targets = $applies_targets = [
-                                'product' => (object) [
-                                    'name' => _i('Prodotto'),
-                                ],
-                                'booking' => (object) [
-                                    'name' => _i('Singola Prenotazione'),
-                                ],
-                                'order' => (object) [
-                                    'name' => _i('Ordine Complessivo'),
-                                ],
-                            ];
-
-                            $labels = App\Modifier::descriptions();
-                            $actual_strings_combination = $modifier->description_index;
-
-                            ?>
-
-                            <script>
-                                var modifiers_strings = {!! json_encode($labels) !!};
-                            </script>
-
-                            @include('commons.radios', [
-                                'obj' => $modifier,
-                                'name' => 'value',
-                                'label' => _i('Valore'),
-                                'values' => [
+                            if ($modifier->target_type == 'App\Product') {
+                                $values = [
                                     'absolute' => (object) [
                                         'name' => _i('Assoluto'),
                                     ],
                                     'percentage' => (object) [
                                         'name' => _i('Percentuale'),
                                     ],
-                                ]
-                            ])
-
-                            @include('commons.radios', [
-                                'obj' => $modifier,
-                                'name' => 'arithmetic',
-                                'label' => _i('Operazione'),
-                                'values' => [
-                                    'sum' => (object) [
-                                        'name' => _i('Somma'),
+                                    'price' => (object) [
+                                        'name' => _i('Prezzo Unitario'),
+                                        'disabled' => $modifier->applies_type == 'none',
                                     ],
-                                    'sub' => (object) [
-                                        'name' => _i('Sottrazione')
-                                    ],
-                                ]
-                            ])
+                                ];
 
-                            @include('commons.radios', [
-                                'obj' => $modifier,
-                                'name' => 'applies_type',
-                                'label' => _i('Misura su cui applicare le soglie'),
-                                'values' => [
+                                $applies_types = [
                                     'none' => (object) [
                                         'name' => _i('Nessuna soglia'),
                                     ],
@@ -81,8 +42,103 @@
                                     'weight' => (object) [
                                         'name' => _i('Peso'),
                                     ],
-                                ]
+                                ];
+
+                                $applies_targets = [
+                                    'product' => (object) [
+                                        'name' => _i('Prodotto'),
+                                        'hidden' => true,
+                                    ],
+                                    'booking' => (object) [
+                                        'name' => _i('Singola Prenotazione'),
+                                    ],
+                                    'order' => (object) [
+                                        'name' => _i('Ordine Complessivo'),
+                                    ],
+                                ];
+
+                                if ($modifier->applies_type == 'none') {
+                                    $modifier->applies_target = 'product';
+                                }
+                            }
+                            else {
+                                $values = [
+                                    'absolute' => (object) [
+                                        'name' => _i('Assoluto'),
+                                    ],
+                                    'percentage' => (object) [
+                                        'name' => _i('Percentuale'),
+                                    ],
+                                ];
+
+                                $applies_types = [
+                                    'none' => (object) [
+                                        'name' => _i('Nessuna soglia'),
+                                    ],
+                                    'price' => (object) [
+                                        'name' => _i('Valore'),
+                                    ],
+                                    'weight' => (object) [
+                                        'name' => _i('Peso'),
+                                    ],
+                                ];
+
+                                $applies_targets = [
+                                    'booking' => (object) [
+                                        'name' => _i('Singola Prenotazione'),
+                                    ],
+                                    'order' => (object) [
+                                        'name' => _i('Ordine Complessivo'),
+                                    ],
+                                ];
+                            }
+
+                            $labels = App\Modifier::descriptions();
+                            $actual_strings_combination = $modifier->description_index;
+
+                            ?>
+
+                            <script>
+                                var modifiers_strings = {!! json_encode($labels) !!};
+                            </script>
+
+                            @include('commons.radios', [
+                                'obj' => $modifier,
+                                'name' => 'applies_type',
+                                'label' => _i('Misura su cui applicare le soglie'),
+                                'values' => $applies_types,
                             ])
+
+                            @include('commons.radios', [
+                                'obj' => $modifier,
+                                'name' => 'value',
+                                'label' => _i('Valore'),
+                                'values' => $values,
+                            ])
+
+                            <div class="arithmetic_type_selection {{ $modifier->value == 'price' ? 'hidden' : '' }}">
+                                @include('commons.radios', [
+                                    'obj' => $modifier,
+                                    'name' => 'arithmetic',
+                                    'label' => _i('Operazione'),
+                                    'values' => [
+                                        'sum' => (object) [
+                                            'name' => _i('Somma'),
+                                        ],
+                                        'sub' => (object) [
+                                            'name' => _i('Sottrazione')
+                                        ],
+                                        'apply' => (object) [
+                                            'name' => _i('Applica'),
+                                            'hidden' => true,
+                                        ],
+                                    ]
+                                ])
+                            </div>
+
+                            @if($modifier->target_type != 'App\Product')
+                                @include('modifier.modtarget')
+                            @endif
 
                             <div class="advanced_input {{ $modifier->applies_type == 'none' ? 'hidden' : '' }}">
                                 @include('commons.radios', [
@@ -99,38 +155,9 @@
                                     ]
                                 ])
 
-                                @include('commons.radios', [
-                                    'obj' => $modifier,
-                                    'name' => 'applies_target',
-                                    'label' => _i('Riferimento su cui applicare le soglie'),
-                                    'values' => $applies_targets,
-                                ])
-
-                                @include('commons.radios', [
-                                    'obj' => $modifier,
-                                    'name' => 'distribution_target',
-                                    'label' => _i('Riferimento su cui applicare il modificatore'),
-                                    'values' => $distribution_targets,
-                                ])
-
-                                <div class="distribution_type_selection {{ $modifier->distribution_target != 'order' ? 'hidden' : '' }}">
-                                    @include('commons.radios', [
-                                        'obj' => $modifier,
-                                        'name' => 'distribution_type',
-                                        'label' => _i('Distribuzione sulle prenotazioni in base a'),
-                                        'values' => [
-                                            'quantity' => (object) [
-                                                'name' => _i('Quantità'),
-                                            ],
-                                            'price' => (object) [
-                                                'name' => _i('Valore'),
-                                            ],
-                                            'weight' => (object) [
-                                                'name' => _i('Peso'),
-                                            ],
-                                        ]
-                                    ])
-                                </div>
+                                @if($modifier->target_type == 'App\Product')
+                                    @include('modifier.modtarget')
+                                @endif
 
                                 <hr>
 
@@ -141,14 +168,14 @@
                                             'label' => '',
                                             'field' => 'static',
                                             'type' => 'custom',
-                                            'width' => 4,
+                                            'width' => 3,
                                             'contents' => $labels[$actual_strings_combination][0],
                                         ],
                                         [
                                             'label' => _i('Soglia'),
                                             'field' => 'threshold',
                                             'type' => 'number',
-                                            'width' => 2,
+                                            'width' => 1,
                                             'extra' => [
                                                 'postlabel' => $labels[$actual_strings_combination][1],
                                             ]
@@ -164,10 +191,17 @@
                                             'label' => _i('Costo'),
                                             'field' => 'amount',
                                             'type' => 'number',
-                                            'width' => 2,
+                                            'width' => 1,
                                             'extra' => [
                                                 'postlabel' => $labels[$actual_strings_combination][3],
                                             ]
+                                        ],
+                                        [
+                                            'label' => '',
+                                            'field' => 'static',
+                                            'type' => 'custom',
+                                            'width' => 3,
+                                            'contents' => $labels[$actual_strings_combination][4]
                                         ],
                                     ]
                                 ])
@@ -183,8 +217,7 @@
                                         <div class="form-group">
                                             <div class="col-sm-12">
                                                 <div class="input-group">
-                                                    <input type="hidden" name="threshold[]" value="{{ $modifier->definitions[0]->threshold ?? '' }}">
-                                                    <input type="text" class="form-control number" name="amount[]" value="{{ $modifier->definitions[0]->amount ?? 0 }}" placeholder="Costo" autocomplete="off">
+                                                    <input type="text" class="form-control number" name="simplified_amount" value="{{ $modifier->definitions[0]->amount ?? 0 }}" placeholder="Costo" autocomplete="off">
                                                     <div class="input-group-addon">{{ $labels[$actual_strings_combination][3] }}</div>
                                                 </div>
                                             </div>

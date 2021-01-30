@@ -210,7 +210,7 @@ table .table-sorting-header {
   margin-top: 10px; }
 
 .product-disabled {
-  opacity: 0.2;
+  opacity: 0.4;
   display: none; }
 
 #bottom-stop {
@@ -337,6 +337,9 @@ table .table-sorting-header {
   font-family: 'Glyphicons Halflings'; }
 
 .btn-group.disabled {
+  pointer-events: none; }
+
+.btn-group .disabled {
   pointer-events: none; }
 
 .img-preview img {

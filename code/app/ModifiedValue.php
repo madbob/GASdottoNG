@@ -20,7 +20,7 @@ class ModifiedValue extends Model
 
     public function getIsVariableAttribute()
     {
-        return ($this->modifier->value == 'absolute' && $this->modifier->distribution_target == 'order');
+        return ($this->modifier->value == 'absolute' && $this->modifier->applies_target == 'order');
     }
 
     public function getEffectiveAmountAttribute()
