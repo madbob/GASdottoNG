@@ -157,7 +157,7 @@ class AggregatesController extends OrdersController
         }
     }
 
-    public function document(Request $request, $id, $type, $subtype = 'none')
+    public function document(Request $request, $id, $type)
     {
         $aggregate = Aggregate::findOrFail($id);
 
@@ -241,6 +241,56 @@ class AggregatesController extends OrdersController
                         return $row;
                     });
                 }
+
+                break;
+
+            case 'summary':
+                $subtype = $request->input('format', 'pdf');
+                $required_fields = $request->input('fields', []);
+                $status = $request->input('status');
+
+                $shipping_place = $request->input('shipping_place', 'all_by_place');
+                $data = null;
+
+                foreach($aggregate->orders as $order) {
+                    if ($shipping_place == 'all_by_place')
+                        $temp_data = $order->formatSummary($required_fields, $status, null);
+                    else
+                        $temp_data = $order->formatSummary($required_fields, $status, $shipping_place);
+
+                    if (is_null($data)) {
+                        $data = $temp_data;
+                    }
+                    else {
+                        $data->contents = array_merge($data->contents, $temp_data->contents);
+                    }
+                }
+
+                $title = _i('Prodotti Ordini');
+                $filename = sanitizeFilename($title . '.' . $subtype);
+                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
+
+                if ($subtype == 'pdf') {
+                    $pdf = PDF::loadView('documents.order_summary_pdf', ['aggregate' => $aggregate, 'data' => $data]);
+                    return $pdf->download($filename);
+                }
+                else if ($subtype == 'csv') {
+                    return output_csv($filename, $data->headers, $data->contents, function($row) {
+                        return $row;
+                    });
+                }
+
+                break;
         }
+    }
+
+    public function multiGAS(Request $request, $id)
+    {
+        $aggregate = Aggregate::findOrFail($id);
+        if ($request->user()->can('supplier.shippings', $aggregate) == false) {
+            abort(503);
+        }
+
+        return view('order.multigas', ['aggregate' => $aggregate]);
     }
 }

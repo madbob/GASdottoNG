@@ -7,10 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 
 use Auth;
 
+use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 use App\Events\AttachableToGas;
-use App\GASModel;
-use App\SluggableID;
 
 /*
     Questa classe rappresenta un luogo di consegna
@@ -30,15 +29,7 @@ class Delivery extends Model
     protected static function boot()
     {
         parent::boot();
-
-        static::addGlobalScope('gas', function (Builder $builder) {
-            $builder->whereHas('gas', function($query) {
-                $user = Auth::user();
-                if (is_null($user))
-                    return;
-                $query->where('gas_id', $user->gas->id);
-            });
-        });
+        static::addGlobalScope(new RestrictedGAS());
     }
 
     public function gas()

@@ -13,6 +13,7 @@ use Mail;
 use URL;
 use Log;
 
+use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 use App\Notifications\NewOrderNotification;
 
@@ -29,17 +30,7 @@ class Order extends Model
     protected static function boot()
     {
         parent::boot();
-
-        static::addGlobalScope('gas', function (Builder $builder) {
-            $builder->whereHas('aggregate', function($query) {
-                $query->whereHas('gas', function($query) {
-                    $user = Auth::user();
-                    if (is_null($user))
-                        return;
-                    $query->where('gas_id', $user->gas->id);
-                });
-            });
-        });
+        static::addGlobalScope(new RestrictedGAS('aggregate.gas'));
     }
 
     public static function commonClassName()
@@ -274,7 +265,7 @@ class Order extends Model
         $order = $this;
 
         if (currentAbsoluteGas()->getConfig('notify_all_new_orders')) {
-            $query_users = User::where('id', '>', 0);
+            $query_users = User::where('id', '!=', '');
         }
         else {
             $query_users = User::whereHas('suppliers', function($query) use ($order) {
@@ -283,7 +274,7 @@ class Order extends Model
         }
 
         $deliveries = $order->deliveries;
-        if ($deliveries->isEmpty()) {
+        if ($deliveries->isEmpty() == false) {
             $query_users->whereIn('preferred_delivery_id', $deliveries->pluck('id'));
         }
 
@@ -822,7 +813,17 @@ class Order extends Model
                 });
             }
             else {
-                $bookings = $item->bookings;
+                /*
+                    Attenzione: qui eseguo esplicitamente la query per
+                    recuperare le prenotazioni anziché usare $item->bookings,
+                    che è eventualmente già valorizzato.
+                    Questo per fare in modo che agendo sullo stesso ordine ma
+                    per GAS diversi sia riapplicato lo scope RestrictedGAS, ed
+                    ottenere le prenotazioni dell'ordine desiderato; altrimenti,
+                    otterrei sempre le prenotazioni del primo GAS che viene
+                    elaborato
+                */
+                $bookings = $item->bookings()->get();
             }
 
             return $bookings;

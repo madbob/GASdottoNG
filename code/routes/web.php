@@ -83,7 +83,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('orders/search', 'OrdersController@search');
     Route::get('orders/fixes/{id}/{product_id}', 'OrdersController@getFixes');
     Route::post('orders/fixes/{id}', 'OrdersController@postFixes');
-    Route::get('orders/document/{id}/{type}', 'OrdersController@document');
+    Route::get('orders/document/{id}/{type}', 'OrdersController@document')->name('orders.document');
 
     Route::get('modtype/search', 'ModifierTypesController@search')->name('modtype.search');
 
@@ -92,7 +92,8 @@ Route::middleware(['auth'])->group(function() {
     Route::get('aggregates/{id}/header', 'AggregatesController@objhead')->name('aggregates.objhead');
     Route::get('aggregates/notify/test/{id}', 'AggregatesController@testNotify');
     Route::post('aggregates/notify/{id}', 'AggregatesController@notify');
-    Route::get('aggregates/document/{id}/{type}/{subtype?}', 'AggregatesController@document');
+    Route::get('aggregates/document/{id}/{type}', 'AggregatesController@document')->name('aggregates.document');
+    Route::get('aggregates/{id}/multigas', 'AggregatesController@multiGAS')->name('aggregates.multigas');
 
     Route::get('attachments/{id}/header', 'AttachmentsController@objhead')->name('attachments.objhead');
     Route::get('attachments/download/{id}', 'AttachmentsController@download');

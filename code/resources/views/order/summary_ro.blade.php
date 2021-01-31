@@ -58,7 +58,7 @@
                     </td>
 
                     <td class="order-cell-total_price {{ in_array('total_price', $columns) ? '' : 'hidden' }}">
-                        <label class="order-summary-product-price">{{ printablePriceCurrency($summary->products[$product->id]->price) }}</label>
+                        <label class="order-summary-product-price">{{ printablePriceCurrency($summary->products[$product->id]->price ?? 0) }}</label>
                     </td>
 
                     <td class="order-cell-quantity_delivered {{ in_array('quantity_delivered', $columns) ? '' : 'hidden' }}">
