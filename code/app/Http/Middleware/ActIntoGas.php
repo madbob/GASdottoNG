@@ -31,7 +31,7 @@ class ActIntoGas
                 $managed_gas = $user->gas->id;
                 $hub->setGas($managed_gas);
             }
-            else if ($managed_gas == 0) {
+            else if ($managed_gas == '0') {
                 $hub->enable(false);
             }
             else {
