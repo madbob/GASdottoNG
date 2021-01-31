@@ -18,6 +18,7 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
         Artisan::call('migrate:refresh');
         Artisan::call('db:seed', ['--force' => true, '--class' => 'MovementTypesSeeder']);
+        Artisan::call('db:seed', ['--force' => true, '--class' => 'ModifierTypesSeeder']);
     }
 
     public function enabledQueryDump()

@@ -61,6 +61,37 @@ $factory->define(App\Permission::class, function (Faker\Generator $faker) {
     ];
 });
 
+$factory->define(App\Aggregate::class, function (Faker\Generator $faker) {
+    return [
+    ];
+});
+
+$factory->define(App\Order::class, function (Faker\Generator $faker) {
+    return [
+        'start' => date('Y-m-d'),
+        'end' => date('Y-m-d', strtotime('+5 days')),
+        'shipping' => date('Y-m-d', strtotime('+6 days')),
+        'status' => 'open',
+    ];
+});
+
+$factory->define(App\Booking::class, function (Faker\Generator $faker) {
+    return [
+        'status' => 'pending',
+        'notes' => '',
+    ];
+});
+
+$factory->define(App\BookedProduct::class, function (Faker\Generator $faker) {
+    return [
+    ];
+});
+
+$factory->define(App\Modifier::class, function (Faker\Generator $faker) {
+    return [
+    ];
+});
+
 $factory->define(App\Movement::class, function (Faker\Generator $faker) {
     return [
         'amount' => $faker->randomNumber(2)

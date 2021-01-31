@@ -70,8 +70,19 @@ class Booking extends Model
 
     public function scopeSorted($query)
     {
-        $sorted_users = "'" . join("', '", User::withTrashed()->sorted()->pluck('id')->toArray()) . "'";
-        return $query->orderByRaw(DB::raw("FIELD(user_id, $sorted_users)"));
+        /*
+            Premesso che questo metodo per ordinare le prenotazioni in base al
+            cognome dell'utente è abbastanza deleterio, non funziona neppure nei
+            test (la funzione FIELD non esiste in SQLite).
+            Dunque la ignoro quando eseguo i test.
+        */
+        if (env('APP_ENV') == 'testing') {
+            return $query;
+        }
+        else {
+            $sorted_users = "'" . join("', '", User::withTrashed()->sorted()->pluck('id')->toArray()) . "'";
+            return $query->orderByRaw(DB::raw("FIELD(user_id, $sorted_users)"));
+        }
     }
 
     private function localModifiedValues($id = null, $with_friends)
