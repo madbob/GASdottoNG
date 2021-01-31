@@ -10,7 +10,18 @@
     </head>
 
     <body>
-        <h3>{{ _i('Prodotti ordine %s presso %s del %s', [$order->internal_number, $order->supplier->printableName(), $order->shipping ? date('d/m/Y', strtotime($order->shipping)) : date('d/m/Y')]) }}</h3>
+        @if(isset($order))
+            <h3>{{ _i('Prodotti ordine %s presso %s del %s', [$order->internal_number, $order->supplier->printableName(), $order->shipping ? date('d/m/Y', strtotime($order->shipping)) : date('d/m/Y')]) }}</h3>
+        @else
+            <h3>
+                {{ _i('Prodotti') }}<br/>
+                @if($aggregate->orders()->count() <= App\Aggregate::aggregatesConvenienceLimit())
+                    @foreach($aggregate->orders as $order)
+                        {{ $order->supplier->name }} {{ $order->internal_number }}<br/>
+                    @endforeach
+                @endif
+            </h3>
+        @endif
 
         <hr/>
 

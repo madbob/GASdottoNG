@@ -10,12 +10,9 @@ use DB;
 use URL;
 use Log;
 
+use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 use App\Events\BookingDeleting;
-use App\GASModel;
-use App\CreditableTrait;
-use App\SluggableID;
-use App\BookedProduct;
 
 class Booking extends Model
 {
@@ -31,15 +28,7 @@ class Booking extends Model
     protected static function boot()
     {
         parent::boot();
-
-        static::addGlobalScope('gas', function (Builder $builder) {
-            $builder->whereHas('user', function($query) {
-                $user = Auth::user();
-                if (is_null($user))
-                    return;
-                $query->where('gas_id', $user->gas->id);
-            });
-        });
+        static::addGlobalScope(new RestrictedGAS('user'));
     }
 
     public static function commonClassName()

@@ -38,6 +38,7 @@ class Kernel extends HttpKernel
             // \Xinax\LaravelGettext\Middleware\GettextMiddleware::class,
             \App\Http\Middleware\SetLanguage::class,
             \App\Http\Middleware\EnforcePassword::class,
+            \App\Http\Middleware\ActIntoGas::class,
             \App\Http\Middleware\FixDatabase::class,
         ],
 

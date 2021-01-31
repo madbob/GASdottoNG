@@ -13,14 +13,8 @@ use Mail;
 use URL;
 use Log;
 
+use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
-
-use App\GASModel;
-use App\SluggableID;
-use App\BookedProduct;
-use App\ExportableTrait;
-use App\PayableTrait;
-use App\CreditableTrait;
 use App\Notifications\NewOrderNotification;
 
 class Order extends Model
@@ -36,17 +30,7 @@ class Order extends Model
     protected static function boot()
     {
         parent::boot();
-
-        static::addGlobalScope('gas', function (Builder $builder) {
-            $builder->whereHas('aggregate', function($query) {
-                $query->whereHas('gas', function($query) {
-                    $user = Auth::user();
-                    if (is_null($user))
-                        return;
-                    $query->where('gas_id', $user->gas->id);
-                });
-            });
-        });
+        static::addGlobalScope(new RestrictedGAS('aggregate.gas'));
     }
 
     public static function commonClassName()
@@ -352,17 +336,81 @@ class Order extends Model
         });
     }
 
-    public function calculateSummary($products = null, $shipping_place = null)
+    public static function emptySummary($order_id)
     {
-        $summary = (object) [
-            'order' => $this->id,
+        return (object) [
+            'order' => $order_id,
             'price' => 0,
             'price_delivered' => 0,
             'undiscounted_price' => 0,
             'undiscounted_price_delivered' => 0,
+            'transport' => 0,
+            'transport_delivered' => 0,
+            'weight' => 0,
+            'weight_delivered' => 0,
             'products' => [],
             'by_variant' => [],
         ];
+    }
+
+    public static function mergeSummary($first, $second)
+    {
+        $merged = self::emptySummary(0);
+        $merged->order = $first->order;
+        $merged->price = $first->price + $second->price;
+        $merged->price_delivered = $first->price_delivered + $second->price_delivered;
+        $merged->undiscounted_price = $first->undiscounted_price + $second->undiscounted_price;
+        $merged->undiscounted_price_delivered = $first->undiscounted_price_delivered + $second->undiscounted_price_delivered;
+        $merged->transport = $first->transport + $second->transport;
+        $merged->transport_delivered = $first->transport_delivered + $second->transport_delivered;
+        $merged->weight = $first->weight + $second->weight;
+        $merged->weight_delivered = $first->weight_delivered + $second->weight_delivered;
+
+        $first_products = array_keys($first->products);
+        $second_products = array_keys($second->products);
+        $all_products = array_unique(array_merge($first_products, $second_products));
+
+        foreach($all_products as $product_id) {
+            $first_product = $first->products[$product_id] ?? null;
+            $second_product = $second->products[$product_id] ?? null;
+
+            if ($first_product == null) {
+                $product = $second_product;
+            }
+            else if ($second_product == null) {
+                $product = $first_product;
+            }
+            else {
+                $product = [];
+                $product['product_obj'] = $first_product['product_obj'];
+                $product['quantity_pieces'] = $first_product['quantity_pieces'] + $second_product['quantity_pieces'];
+                $product['delivered_pieces'] = $first_product['delivered_pieces'] + $second_product['delivered_pieces'];
+                $product['weight'] = $first_product['weight'] + $second_product['weight'];
+                $product['weight_delivered'] = $first_product['weight_delivered'] + $second_product['weight_delivered'];
+
+                $product['raw_quantity'] = $first_product['raw_quantity'] + $second_product['raw_quantity'];
+                $product['quantity'] = printableQuantity($product['raw_quantity'], $first_product['product_obj']->measure->discrete);
+                $product['raw_price'] = $first_product['price'] + $second_product['price'];
+                $product['price'] = printablePrice($product['raw_price']);
+                $product['raw_transport'] = $first_product['transport'] + $second_product['transport'];
+                $product['transport'] = printablePrice($product['raw_transport']);
+                $product['raw_delivered'] = $first_product['delivered'] + $second_product['delivered'];
+                $product['delivered'] = printableQuantity($product['raw_delivered'], $first_product['product_obj']->measure->discrete, 3);
+                $product['raw_price_delivered'] = $first_product['price_delivered'] + $second_product['price_delivered'];
+                $product['price_delivered'] = printablePrice($product['raw_price_delivered']);
+                $product['raw_transport_delivered'] = $first_product['transport_delivered'] + $second_product['transport_delivered'];
+                $product['transport_delivered'] = printablePrice($product['raw_transport_delivered']);
+            }
+
+            $merged->products[$product_id] = $product;
+        }
+
+        return $merged;
+    }
+
+    public function calculateSummary($products = null, $shipping_place = null)
+    {
+        $summary = self::emptySummary($this->id);
 
         $order = $this;
 
@@ -510,6 +558,13 @@ class Order extends Model
             $summary->products[$product->id]['transport_delivered'] = printablePrice($transport_delivered);
             $summary->products[$product->id]['weight'] = $weight;
             $summary->products[$product->id]['weight_delivered'] = $weight_delivered;
+
+            $summary->products[$product->id]['raw_quantity'] = $quantity;
+            $summary->products[$product->id]['raw_price'] = $price;
+            $summary->products[$product->id]['raw_transport'] = $transport;
+            $summary->products[$product->id]['raw_delivered'] = $delivered;
+            $summary->products[$product->id]['raw_price_delivered'] = $price_delivered;
+            $summary->products[$product->id]['raw_transport_delivered'] = $transport_delivered;
 
             $total_price += $price;
             $total_price_delivered += $price_delivered;

@@ -10,12 +10,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-use App\Notifications\ResetPasswordNotification;
-
 use Auth;
 use Log;
 use URL;
 
+use App\Notifications\ResetPasswordNotification;
+use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 
 class User extends Authenticatable
@@ -37,15 +37,7 @@ class User extends Authenticatable
     protected static function boot()
     {
         parent::boot();
-
-        $user = Auth::user();
-        if ($user != null) {
-            $gas_id = $user->gas->id;
-
-            static::addGlobalScope('gas', function (Builder $builder) use ($gas_id) {
-                $builder->where('gas_id', $gas_id);
-            });
-        }
+        static::addGlobalScope(new RestrictedGAS());
     }
 
     public static function commonClassName()

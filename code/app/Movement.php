@@ -9,8 +9,7 @@ use Illuminate\Http\Request;
 use Auth;
 use Log;
 
-use App\GASModel;
-use App\MovementType;
+use App\Scopes\RestrictedGAS;
 
 class Movement extends Model
 {
@@ -37,15 +36,7 @@ class Movement extends Model
     protected static function boot()
     {
         parent::boot();
-
-        static::addGlobalScope('gas', function (Builder $builder) {
-            $builder->whereHas('registerer', function($query) {
-                $user = Auth::user();
-                if (is_null($user))
-                    return;
-                $query->withTrashed()->where('gas_id', $user->gas->id);
-            });
-        });
+        static::addGlobalScope(new RestrictedGAS('registerer', true));
     }
 
     public function sender()
