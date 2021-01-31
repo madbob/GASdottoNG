@@ -23,7 +23,7 @@ trait ReducibleTrait
     protected function describingAttributesMerge($first, $second, $sum = true)
     {
         if (is_null($first)) {
-            return $second;
+            return clone $second;
         }
 
         foreach ($this->describingAttributes() as $attr) {
@@ -56,14 +56,7 @@ trait ReducibleTrait
         foreach($children as $child) {
             $child = ($behaviours->optimize)($this, $child);
             $reduxed_child = $child->reduxData(null, $filters);
-
-            if (!isset($ret->$collected[$reduxed_child->id])) {
-                $ret->$collected[$reduxed_child->id] = $reduxed_child;
-            }
-            else {
-                $ret->$collected[$reduxed_child->id] = $this->describingAttributesMerge($ret->$collected[$reduxed_child->id], $reduxed_child);
-            }
-
+            $ret->$collected[$reduxed_child->id] = $this->describingAttributesMerge($ret->$collected[$reduxed_child->id] ?? null, $reduxed_child);
             $ret = $this->describingAttributesMerge($ret, $reduxed_child);
 
             if (isset($behaviours->merged)) {

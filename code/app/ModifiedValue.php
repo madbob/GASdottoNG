@@ -25,11 +25,13 @@ class ModifiedValue extends Model
 
     public function getEffectiveAmountAttribute()
     {
-        if ($this->modifier->arithmetic == 'sum') {
-            return $this->amount;
-        }
-        else {
-            return $this->amount * -1;
+        switch($this->modifier->arithmetic) {
+            case 'sum':
+                return $this->amount;
+
+            case 'apply':
+            case 'sub':
+                return $this->amount * -1;
         }
     }
 

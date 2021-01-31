@@ -43,11 +43,11 @@ class Modifier extends Model
             return _i('Nessun Valore');
         }
 
-        if ($this->value == 'absolute') {
-            $postfix = currentAbsoluteGas()->currency;
+        if ($this->value == 'percentage') {
+            $postfix = '%';
         }
         else {
-            $postfix = '%';
+            $postfix = currentAbsoluteGas()->currency;
         }
 
         $ret = [];
@@ -156,27 +156,23 @@ class Modifier extends Model
         return sprintf('%s,%s,%s,%s,%s,%s,%s,%s,%s', $this->applies_type, $this->model_type, $this->applies_target, $this->scale, $this->applies_type, $this->arithmetic, $this->applies_target, $this->value, $this->distribution_type);
     }
 
-    private function applyDefinition($amount, $definition, $target, $subtarget, $attribute)
+    private function applyDefinition($amount, $definition, $target)
     {
         $rounding = 4;
 
         if ($this->value == 'percentage') {
-            $original_amount = $amount;
             $amount = round(($amount * $definition->amount) / 100, $rounding);
-            Log::debug($original_amount . ' -> ' . $amount);
+        }
+        else if ($this->value == 'absolute') {
+            $amount = round($amount + $definition->amount, $rounding);
         }
         else {
-            if ($this->applies_target == 'order') {
-                $order_attribute = $this->applies_type;
-                if ($order_attribute == 'none') {
-                    $order_attribute = 'price';
-                }
-
-                $amount = $target->$order_attribute == 0 ? $definition->amount : round(($definition->amount * $subtarget->$attribute) / $target->$order_attribute, $rounding);
-            }
-            else {
-                $amount = $definition->amount;
-            }
+            /*
+                Per i modificatori che incidono sul prezzo del prodotti
+                ($this->value = 'apply') faccio la differenza tra il prezzo
+                normale ed il prezzo modificato
+            */
+            $amount = $target->price - ($target->quantity * $definition->amount);
         }
 
         return $amount;
@@ -192,47 +188,66 @@ class Modifier extends Model
             return null;
         }
 
+        if ($this->target_type == 'App\Product') {
+            $product_target_id = $this->target->id;
+
+            switch($this->applies_target) {
+                case 'order':
+                    $check_target = $aggregate_data->orders[$booking->order_id]->products[$product_target_id] ?? null;
+                    break;
+
+                default:
+                    $check_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$product_target_id] ?? null;
+                    break;
+            }
+        }
+        else {
+            switch($this->applies_target) {
+                case 'order':
+                    $check_target = $aggregate_data->orders[$booking->order_id] ?? null;
+                    break;
+
+                case 'booking':
+                    $check_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id] ?? null;
+                    break;
+
+                case 'product':
+                    $check_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$this->target->id] ?? null;
+                    break;
+            }
+        }
+
+        if (is_null($check_target)) {
+            return null;
+        }
+
         switch($this->applies_target) {
             case 'order':
-                $check_target = $aggregate_data->orders[$booking->order_id];
-                $mod_target = $aggregate_data->orders[$booking->order_id];
-                $sub_mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id];
+                $mod_target = $aggregate_data->orders[$booking->order_id] ?? null;
                 $obj_mod_target = $booking;
                 break;
 
             case 'booking':
-                if (!isset($aggregate_data->orders[$booking->order_id]->bookings[$booking->id])) {
-                    return null;
-                }
-
-                $check_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id];
-                $mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id];
+                $mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id] ?? null;
                 $obj_mod_target = $booking;
-                $sub_mod_target = null;
                 break;
 
             case 'product':
-                if (!isset($aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$this->target->id])) {
-                    return null;
-                }
-
-                $check_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$this->target->id];
                 $product_target_id = $this->target->id;
-                if (!isset($aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$product_target_id])) {
-                    return null;
-                }
-
                 $mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$product_target_id];
                 $obj_mod_target = $booking->products()->whereHas('product', function($query) use ($product_target_id) {
                     $query->where('product_id', $product_target_id);
                 })->first();
-
-                $sub_mod_target = null;
                 break;
+        }
+
+        if (is_null($mod_target) || is_null($obj_mod_target)) {
+            return null;
         }
 
         if ($booking->status == 'shipped' || $booking->status == 'saved') {
             switch($this->applies_type) {
+                case 'none':
                 case 'quantity':
                     $attribute = 'delivered';
                     break;
@@ -244,12 +259,30 @@ class Modifier extends Model
                     break;
             }
 
+            switch($this->distribution_type) {
+                case 'none':
+                case 'quantity':
+                    $distribution_attribute = 'delivered';
+                    break;
+                case 'price':
+                    $distribution_attribute = 'price_delivered';
+                    break;
+                case 'weight':
+                    $distribution_attribute = 'weight_delivered';
+                    break;
+            }
+
             $mod_attribute = 'price_delivered';
         }
         else {
             $attribute = $this->applies_type;
             if ($attribute == 'none') {
                 $attribute = 'price';
+            }
+
+            $distribution_attribute = $this->distribution_type;
+            if ($distribution_attribute == 'none') {
+                $distribution_attribute = 'price';
             }
 
             $mod_attribute = 'price';
@@ -260,7 +293,6 @@ class Modifier extends Model
             return null;
         }
 
-        $altered_amount = $mod_target->$mod_attribute;
         $target_definition = null;
 
         if ($this->scale == 'minor') {
@@ -271,7 +303,7 @@ class Modifier extends Model
                 }
             }
         }
-        else {
+        else if ($this->scale == 'major') {
             foreach($this->definitions as $def) {
                 if ($check_value > $def->threshold) {
                     $target_definition = $def;
@@ -281,25 +313,48 @@ class Modifier extends Model
         }
 
         if (is_null($target_definition) == false) {
-            $altered_amount = $this->applyDefinition($altered_amount, $target_definition, $mod_target, $sub_mod_target, $attribute);
+            $altered_amount = $this->applyDefinition($mod_target->$mod_attribute, $target_definition, $check_target);
+
+            /*
+                Se il modificatore è applicato su un ordine, qui applico alla
+                singola prenotazione il suo valore relativo e proporzionale.
+            */
+            if ($this->applies_target == 'order') {
+                if ($this->target_type == 'App\Product') {
+                    $booking_mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$product_target_id] ?? null;
+                    $reference = $mod_target->products[$product_target_id]->$distribution_attribute;
+                }
+                else {
+                    $booking_mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id] ?? null;
+                    $reference = $mod_target->$distribution_attribute;
+                }
+
+                if ($booking_mod_target) {
+                    $altered_amount = (($booking_mod_target->$distribution_attribute * $altered_amount) / $reference);
+                }
+                else {
+                    $altered_amount = 0;
+                }
+            }
+
+            $modifier_value = $obj_mod_target->modifiedValues->firstWhere('modifier_id', $this->id);
+            if (is_null($modifier_value)) {
+                $modifier_value = new ModifiedValue();
+                $modifier_value->setRelation('modifier', $this);
+                $obj_mod_target->modifiedValues->push($modifier_value);
+            }
+
+            $modifier_value->modifier_id = $this->id;
+            $modifier_value->amount = $altered_amount;
+            $modifier_value->target_type = get_class($obj_mod_target);
+            $modifier_value->target_id = $obj_mod_target->id;
+            $modifier_value->save();
+
+            return $modifier_value;
         }
         else {
             Log::error('Unable to apply any threshold for modifier ' . $this->id);
+            return null;
         }
-
-        $modifier_value = $obj_mod_target->modifiedValues->firstWhere('modifier_id', $this->id);
-        if (is_null($modifier_value)) {
-            $modifier_value = new ModifiedValue();
-            $modifier_value->setRelation('modifier', $this);
-            $obj_mod_target->modifiedValues->push($modifier_value);
-        }
-
-        $modifier_value->modifier_id = $this->id;
-        $modifier_value->amount = $altered_amount;
-        $modifier_value->target_type = get_class($obj_mod_target);
-        $modifier_value->target_id = $obj_mod_target->id;
-        $modifier_value->save();
-
-        return $modifier_value;
     }
 }
