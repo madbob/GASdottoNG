@@ -2541,6 +2541,7 @@ $(document).ready(function() {
         var scale = container.find('input:radio[name=scale]:checked').val();
 		var applies_target = container.find('input:radio[name=applies_target]:checked').first().val();
         var distribution_type = container.find('input:radio[name=distribution_type]:checked').val();
+        var distribution_type_selection = container.find('.distribution_type_selection');
 
         if (model_type == 'product') {
             if (applies_type == 'none') {
@@ -2558,21 +2559,27 @@ $(document).ready(function() {
         if (value == 'price') {
             container.find('.arithmetic_type_selection').addClass('hidden').find('input:radio[value=apply]').click();
             arithmetic = 'apply';
-        }
-        else {
-            container.find('.arithmetic_type_selection').removeClass('hidden');
-        }
-
-        var distribution_type_selection = container.find('.distribution_type_selection');
-        distribution_type_selection.toggleClass('hidden', value == 'price' || applies_target != 'order');
-        if (applies_target != 'order') {
-            distribution_type_selection.find('input:radio[value=none]').click();
+            container.find('.distribution_type_selection').addClass('hidden').find('input:radio[value=none]').click();
             distribution_type = 'none';
         }
         else {
-            if (distribution_type == 'none') {
-                distribution_type_selection.find('input:radio[value=quantity]').click();
-                distribution_type = 'quantity';
+            container.find('.arithmetic_type_selection').removeClass('hidden');
+
+            if (arithmetic == 'apply') {
+                container.find('.arithmetic_type_selection').find('input:radio[value=sum]').click();
+                arithmetic = 'sum';
+            }
+
+            if (applies_target != 'order') {
+                distribution_type_selection.addClass('hidden').find('input:radio[value=none]').click();
+                distribution_type = 'none';
+            }
+            else {
+                distribution_type_selection.removeClass('hidden');
+                if (distribution_type == 'none') {
+                    distribution_type_selection.find('input:radio[value=quantity]').click();
+                    distribution_type = 'quantity';
+                }
             }
         }
 
@@ -2603,8 +2610,9 @@ $(document).ready(function() {
                 container.find('input:radio[name=value][value=absolute]').click();
             }
 
-            simplified.find('.form-control-static').text(labels[2]);
+            simplified.find('.form-control-static').eq(0).text(labels[2]);
             simplified.find('.input-group-addon').text(labels[3]);
+            simplified.find('.form-control-static').eq(1).text(labels[4]);
         }
 	});
 

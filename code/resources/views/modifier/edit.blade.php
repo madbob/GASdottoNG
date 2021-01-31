@@ -168,14 +168,14 @@
                                             'label' => '',
                                             'field' => 'static',
                                             'type' => 'custom',
-                                            'width' => 3,
+                                            'width' => 2,
                                             'contents' => $labels[$actual_strings_combination][0],
                                         ],
                                         [
                                             'label' => _i('Soglia'),
                                             'field' => 'threshold',
                                             'type' => 'number',
-                                            'width' => 1,
+                                            'width' => 2,
                                             'extra' => [
                                                 'postlabel' => $labels[$actual_strings_combination][1],
                                             ]
@@ -191,7 +191,7 @@
                                             'label' => _i('Costo'),
                                             'field' => 'amount',
                                             'type' => 'number',
-                                            'width' => 1,
+                                            'width' => 2,
                                             'extra' => [
                                                 'postlabel' => $labels[$actual_strings_combination][3],
                                             ]
@@ -200,7 +200,7 @@
                                             'label' => '',
                                             'field' => 'static',
                                             'type' => 'custom',
-                                            'width' => 3,
+                                            'width' => 2,
                                             'contents' => $labels[$actual_strings_combination][4]
                                         ],
                                     ]
@@ -211,7 +211,7 @@
                                 <hr>
 
                                 <div class="row">
-                                    <div class="col-md-2 col-xs-2 col-md-offset-4 form-control-static">{{ $labels[$actual_strings_combination][2] }}</div>
+                                    <div class="col-md-2 col-xs-2 col-md-offset-3 form-control-static">{{ $labels[$actual_strings_combination][2] }}</div>
 
                                     <div class="col-md-2 col-xs-2">
                                         <div class="form-group">
@@ -223,6 +223,8 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="col-md-2 col-xs-2 form-control-static">{{ $labels[$actual_strings_combination][4] }}</div>
                                 </div>
                             </div>
                         </div>
