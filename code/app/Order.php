@@ -163,7 +163,7 @@ class Order extends Model
         $ret = [];
 
         if (is_null($status))
-            $bookings = $this->bookings;
+            $bookings = $this->bookings()->get();
         else
             $bookings = $this->bookings()->where('status', $status)->get();
 
