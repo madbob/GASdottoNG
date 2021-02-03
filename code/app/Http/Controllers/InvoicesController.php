@@ -135,7 +135,6 @@ class InvoicesController extends Controller
             'total' => 0,
             'total_taxable' => 0,
             'total_tax' => 0,
-            'transport' => 0,
         ];
 
         foreach($invoice->orders as $order) {
@@ -162,7 +161,6 @@ class InvoicesController extends Controller
             $global_summary->total += $summary->total;
             $global_summary->total_taxable += $summary->total_taxable;
             $global_summary->total_tax += $summary->total_tax;
-            $global_summary->transport += $summary->transport;
         }
 
         return view('invoice.products', [
@@ -189,12 +187,10 @@ class InvoicesController extends Controller
 
         $orders_total_taxable = 0;
         $orders_total_tax = 0;
-        $orders_total_transport = 0;
         foreach($invoice->orders as $order) {
             $summary = $order->calculateInvoicingSummary();
             $orders_total_taxable += $summary->total_taxable;
             $orders_total_tax += $summary->total_tax;
-            $orders_total_transport += $summary->transport;
         }
 
         $alternative_types = [];
@@ -212,7 +208,6 @@ class InvoicesController extends Controller
             'invoice' => $invoice,
             'total_orders' => $orders_total_taxable,
             'tax_orders' => $orders_total_tax,
-            'transport_orders' => $orders_total_transport,
             'movements' => $movements,
             'alternative_types' => $alternative_types
         ]);

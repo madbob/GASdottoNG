@@ -45,7 +45,6 @@ class ProductsService extends BaseService
         $this->setIfSet($product, $request, 'name');
         $this->setIfSet($product, $request, 'description');
         $this->transformAndSetIfSet($product, $request, 'price', 'enforceNumber');
-        $this->transformAndSetIfSet($product, $request, 'transport', 'enforceNumber');
 
         $this->setIfSet($product, $request, 'category_id');
         if (empty($product->category_id))

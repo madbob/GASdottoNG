@@ -22,7 +22,7 @@
                                 <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Totale Ordini') }}</label>
                                 <div class="col-sm-{{ $fieldsize }}">
                                     <label class="static-label text-muted">
-                                        {{ printablePriceCurrency($total_orders) }} + {{ printablePriceCurrency($tax_orders) }} + {{ printablePriceCurrency($transport_orders) }} = {{ printablePriceCurrency($total_orders + $tax_orders + $transport_orders) }}
+                                        {{ printablePriceCurrency($total_orders) }} + {{ printablePriceCurrency($tax_orders) }} = {{ printablePriceCurrency($total_orders + $tax_orders) }}
                                     </label>
                                 </div>
                             </div>

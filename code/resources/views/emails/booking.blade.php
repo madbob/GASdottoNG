@@ -70,18 +70,19 @@ $bookings_tot = 0;
             $tot = $b->getValue('effective', false);
             $global_total += $tot;
 
+            $modifiers = $b->applyModifiers();
+            $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
+
             ?>
 
-            <tr>
-                <td><strong>{{ _i('Trasporto') }}</strong></td>
-                <td>&nbsp;</td>
-                <td>{{ printablePriceCurrency($b->getValue('transport', false)) }}</td>
-            </tr>
-            <tr>
-                <td><strong>{{ _i('Sconto') }}</strong></td>
-                <td>&nbsp;</td>
-                <td>{{ printablePriceCurrency($b->getValue('discount', false)) }}</td>
-            </tr>
+            @foreach($aggregated_modifiers as $am)
+                <tr>
+                    <td><strong>{{ $am->name }}</strong></td>
+                    <td>&nbsp;</td>
+                    <td>{{ printablePriceCurrency($am->amount) }}</td>
+                </tr>
+            @endforeach
+
             <tr>
                 <td><strong>{{ _i('Totale') }}</strong></td>
                 <td>&nbsp;</td>
@@ -121,18 +122,19 @@ $bookings_tot = 0;
                     $tot = $fb->getValue('effective', false);
                     $global_total += $tot;
 
+                    $modifiers = $fb->applyModifiers();
+                    $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
+
                     ?>
 
-                    <tr>
-                        <td><strong>{{ _i('Trasporto') }}</strong></td>
-                        <td>&nbsp;</td>
-                        <td>{{ printablePriceCurrency($fb->getValue('transport', false)) }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>{{ _i('Sconto') }}</strong></td>
-                        <td>&nbsp;</td>
-                        <td>{{ printablePriceCurrency($fb->getValue('discount', false)) }}</td>
-                    </tr>
+                    @foreach($aggregated_modifiers as $am)
+                        <tr>
+                            <td><strong>{{ $am->name }}</strong></td>
+                            <td>&nbsp;</td>
+                            <td>{{ printablePriceCurrency($am->amount) }}</td>
+                        </tr>
+                    @endforeach
+
                     <tr>
                         <td><strong>{{ _i('Totale') }}</strong></td>
                         <td>&nbsp;</td>

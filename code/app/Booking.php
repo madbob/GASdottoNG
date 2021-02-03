@@ -482,31 +482,42 @@ class Booking extends Model
 
     public function applyModifiers($aggregate_data = null, $real = true)
     {
-        if (is_null($aggregate_data)) {
-            $aggregate = $this->order->aggregate;
-            $aggregate_data = $aggregate->reduxData();
+        if ($this->status == 'shipped') {
+            return $this->allModifiedValues(null, true);
         }
+        else {
+            if (is_null($aggregate_data)) {
+                $aggregate = $this->order->aggregate;
+                $aggregate_data = $aggregate->reduxData();
+            }
 
-        $modifiers = $this->involvedModifiers();
+            $modifiers = $this->involvedModifiers();
 
-        $values = new Collection();
+            $values = new Collection();
 
-        if ($real == false) {
-            DB::beginTransaction();
-        }
+            if ($real == false) {
+                DB::beginTransaction();
+            }
 
-        foreach($modifiers as $modifier) {
-            $value = $modifier->apply($this, $aggregate_data);
-            if ($value) {
-                $values = $values->push($value);
+            foreach($modifiers as $modifier) {
+                $value = $modifier->apply($this, $aggregate_data);
+                if ($value) {
+                    $values = $values->push($value);
+                }
+            }
+
+            if ($real == false) {
+                DB::rollback();
             }
         }
 
-        if ($real == false) {
-            DB::rollback();
-        }
-
         return $values;
+    }
+
+    public function aggregatedModifiers()
+    {
+        $modifiers = $this->applyModifiers(null, false);
+        return ModifiedValue::aggregateByType($modifiers);
     }
 
     public function deleteModifiedValues()

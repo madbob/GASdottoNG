@@ -34,7 +34,6 @@ class InvalidateDeliveries extends Command
 
             foreach($booking->products as $product) {
                 $product->final_price = 0;
-                $product->final_transport = 0;
                 $product->final_discount = 0;
                 $product->delivered = 0;
                 $product->save();
@@ -42,6 +41,10 @@ class InvalidateDeliveries extends Command
                 foreach($product->variants as $variant) {
                     $variant->delivered = 0;
                     $variant->save();
+                }
+
+                foreach($product->modifiedValues as $mv) {
+                    $mv->delete();
                 }
             }
         }

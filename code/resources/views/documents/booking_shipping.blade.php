@@ -5,8 +5,6 @@ if ($with_friends == true)
 else
     $products_source = 'products';
 
-$transport = $booking->getValue('transport', true);
-
 ?>
 
 @foreach($booking->$products_source as $product)
@@ -31,10 +29,10 @@ $transport = $booking->getValue('transport', true);
     @endif
 @endforeach
 
-@if($transport > 0)
+@foreach($booking->aggregatedModifiers() as $am)
     <tr>
-        <td width="40%">{{ _('Trasporto') }}</td>
+        <td width="40%">{{ $am->name }}</td>
         <td width="40%">&nbsp;</td>
-        <td width="20%">{{ printablePriceCurrency($transport, ',') }}</td>
+        <td width="20%">{{ printablePriceCurrency($am->amount, ',') }}</td>
     </tr>
-@endif
+@endforeach

@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use DB;
 use App;
 use Hash;
+
 use App\User;
 use App\Gas;
 use App\Role;
@@ -21,6 +22,7 @@ use App\Contact;
 use App\Category;
 use App\Measure;
 use App\Product;
+use App\Modifier;
 use App\VatRate;
 use App\Movement;
 use App\Variant;
@@ -576,7 +578,6 @@ class ImportLegacy extends Command
                 $obj->active = $row->available;
                 $obj->description = $row->description;
                 $obj->price = $row->unit_price;
-                $obj->transport = $row->shipping_price;
                 $obj->variable = $row->mutable_price;
                 $obj->portion_quantity = $row->unit_size;
                 $obj->package_size = $row->stock_size;

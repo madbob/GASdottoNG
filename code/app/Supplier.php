@@ -396,7 +396,9 @@ class Supplier extends Model
                                                 $product->max_quantity = html_entity_decode((string) $e);
                                                 break;
                                             case 'shippingCost':
-                                                $product->transport = html_entity_decode((string) $e);
+                                                /*
+                                                    TODO: agganciare un modificatore che rappresenti il costo di trasporto statico
+                                                */
                                                 break;
                                         }
                                     }
@@ -549,8 +551,13 @@ class Supplier extends Model
             $product->min_quantity = (float) $json_product->orderInfo->minQty ?? 0;
             $product->max_quantity = (float) $json_product->orderInfo->maxQty ?? 0;
             $product->multiple = (float) $json_product->orderInfo->mulQty ?? 0;
-            $product->transport = (float) $json_product->orderInfo->shippingCost ?? 0;
             $product->max_available = (float) $json_product->orderInfo->availableQty ?? 0;
+
+            /*
+                TODO: agganciare un modificatore che rappresenti il costo di
+                trasporto statico, col valore di
+                $json_product->orderInfo->shippingCost
+            */
 
             $name = $json_product->category ?? '';
             if (!empty($name)) {

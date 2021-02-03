@@ -86,11 +86,11 @@
                         @endif
                     @endforeach
 
-                    @if(($transport = $booking->getValue('transport', false)) != 0)
+                    @foreach($booking->aggregatedModifiers() as $am)
                         <tr>
-                            <th colspan="5"><strong>{{ _i('Trasporto') }}: {{ printablePriceCurrency($transport, ',') }}</th>
+                            <th colspan="5"><strong>{{ $am->name }}: {{ printablePriceCurrency($am->amount, ',') }}</th>
                         </tr>
-                    @endif
+                    @endforeach
 
                     <tr>
                         <th colspan="5"><strong>{{ _i('Totale Prenotato') }}: {{ printablePriceCurrency($booked_cell_value, ',') }}</strong></th>
@@ -177,11 +177,11 @@
                             @endif
                         @endforeach
 
-                        @if(($transport = $booking->getValue('transport', true)) != 0)
+                        @foreach($booking->aggregatedModifiers() as $am)
                             <tr>
-                                <th colspan="5"><strong>{{ _i('Trasporto') }}: {{ printablePriceCurrency($transport, ',') }}</th>
+                                <th colspan="5"><strong>{{ $am->name }}: {{ printablePriceCurrency($am->amount, ',') }}</th>
                             </tr>
-                        @endif
+                        @endforeach
 
                         <tr>
                             <th colspan="5"><strong>{{ _i('Totale Prenotato') }}: {{ printablePriceCurrency($booked_cell_value, ',') }}</strong></th>

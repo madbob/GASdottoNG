@@ -341,7 +341,6 @@ class Order extends Model
             'total' => 0,
             'total_taxable' => 0,
             'total_tax' => 0,
-            'transport' => 0,
             'products' => [],
         ];
 
@@ -358,7 +357,6 @@ class Order extends Model
         $global_total = 0;
         $global_total_taxable = 0;
         $global_total_tax = 0;
-        $transport = 0;
         $rates = [];
 
         foreach ($products as $product) {
@@ -367,7 +365,6 @@ class Order extends Model
             });
 
             $price_delivered = $query->sum('final_price') - $query->sum('final_discount');
-            $transport += $query->sum('final_transport');
             $quantity_delivered = $query->sum('delivered');
 
             if (isset($rates[$product->vat_rate_id]) == false)
@@ -392,8 +389,7 @@ class Order extends Model
             $global_total_tax += $total_vat;
         }
 
-        $summary->transport = $transport;
-        $summary->total = printablePrice($global_total + $summary->transport);
+        $summary->total = printablePrice($global_total);
         $summary->total_taxable = printablePrice($global_total_taxable);
         $summary->total_tax = printablePrice($global_total_tax);
 
@@ -911,7 +907,6 @@ class Order extends Model
         $order->start = $json->openDate;
         $order->end = $json->closeDate;
         $order->shipping = $json->deliveryDate ?? null;
-        $order->transport = $json->shippingCost ?? 0;
         return $order;
     }
 

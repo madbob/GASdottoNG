@@ -270,9 +270,6 @@ class Product extends Model
                 'name' => _i('Prezzo Unitario'),
                 'checked' => true,
             ],
-            'transport' => (object) [
-                'name' => _i('Prezzo Trasporto'),
-            ],
             'active' => (object) [
                 'name' => _i('Ordinabile'),
             ],

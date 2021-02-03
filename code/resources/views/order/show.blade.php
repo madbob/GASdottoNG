@@ -16,8 +16,7 @@
         </div>
 
         <div class="col-md-4">
-            @include('commons.staticpercentagefield', ['obj' => $order, 'name' => 'discount', 'label' => _i('Sconto Globale')])
-            @include('commons.staticpercentagefield', ['obj' => $order, 'name' => 'transport', 'label' => _i('Spese Trasporto')])
+            @include('commons.staticmodifications', ['obj' => $order])
 
             @if(Gate::check('movements.admin', $currentgas) || Gate::check('supplier.movements', $order->supplier))
                 @include('commons.movementfield', [

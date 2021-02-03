@@ -155,7 +155,7 @@ class SuppliersService extends BaseService
             Cfr. Supplier::defaultAttachments()
         */
         $format = $format ?: $request['format'];
-        $fields = $request['fields'] ?? ['name', 'measure', 'price', 'transport', 'active'];
+        $fields = $request['fields'] ?? ['name', 'measure', 'price', 'active'];
 
         $supplier = $this->show($id);
         $filename = sanitizeFilename(_i('Listino %s.%s', [$supplier->name, $format]));

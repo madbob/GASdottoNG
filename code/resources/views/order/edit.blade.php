@@ -100,8 +100,7 @@
             @if(in_array($order->status, ['suspended', 'open', 'closed']))
                 @include('commons.modifications', ['obj' => $order])
             @else
-                @include('commons.staticpercentagefield', ['obj' => $order, 'name' => 'discount', 'label' => _i('Sconto Globale')])
-                @include('commons.staticpercentagefield', ['obj' => $order, 'name' => 'transport', 'label' => _i('Spese Trasporto')])
+                @include('commons.staticmodifications', ['obj' => $order])
             @endif
 
             @if(Gate::check('movements.admin', $currentgas) || Gate::check('supplier.movements', $order->supplier))

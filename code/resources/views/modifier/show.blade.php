@@ -9,7 +9,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <ul>
-                            @if(empty($modifier->definitions))
+                            @if($modifier->definitions->isEmpty())
                                 <li>
                                     {{ _i('Nessun Valore') }}
                                 </li>

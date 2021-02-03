@@ -165,9 +165,6 @@ class ImportController extends Controller
                             'vat' => (object) [
                                 'label' => _i('Aliquota IVA'),
                             ],
-                            'transport' => (object) [
-                                'label' => _i('Prezzo Trasporto'),
-                            ],
                             'category' => (object) [
                                 'label' => _i('Categoria'),
                             ],
@@ -291,9 +288,6 @@ class ImportController extends Controller
                                         $p->measure_id = $test_measure->id;
                                     }
                                 }
-                                elseif ($field == 'price' || $field == 'transport') {
-                                    $value = str_replace(',', '.', $value);
-                                }
                                 elseif ($field == 'price_without_vat') {
                                     $price_without_vat = str_replace(',', '.', $value);
                                     continue;
@@ -344,7 +338,6 @@ class ImportController extends Controller
                     $names = $request->input('name');
                     $descriptions = $request->input('description');
                     $prices = $request->input('price');
-                    $transports = $request->input('transport');
                     $categories = $request->input('category_id');
                     $measures = $request->input('measure_id');
                     $vat_rates = $request->input('vat_rate_id');
@@ -376,7 +369,6 @@ class ImportController extends Controller
                             $p->name = $names[$index];
                             $p->description = $descriptions[$index];
                             $p->price = $prices[$index];
-                            $p->transport = $transports[$index];
                             $p->supplier_code = $codes[$index];
                             $p->package_size = $sizes[$index];
                             $p->min_quantity = $mins[$index];

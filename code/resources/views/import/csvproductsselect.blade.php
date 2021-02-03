@@ -39,16 +39,15 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                         <th width="3%">{{ _i('Importa') }}</th>
                         <th width="15%">{{ _i('Nome') }}</th>
                         <th width="15%">{{ _i('Descrizione') }}</th>
-                        <th width="7%">{{ _i('Prezzo Unitario') }}</th>
-                        <th width="7%">{{ _i('Prezzo Trasporto') }}</th>
-                        <th width="7%">{{ _i('Categoria') }}</th>
-                        <th width="7%">{{ _i('Unità di Misura') }}</th>
-                        <th width="7%">{{ _i('Aliquota IVA') }}</th>
-                        <th width="7%">{{ _i('Codice Fornitore') }}</th>
-                        <th width="5%">{{ _i('Dimensione Confezione') }}</th>
-                        <th width="5%">{{ _i('Ordine Minimo') }}</th>
-                        <th width="5%">{{ _i('Ordinabile per Multipli') }}</th>
-                        <th width="10%">{{ _i('Aggiorna') }}</th>
+                        <th width="8%">{{ _i('Prezzo Unitario') }}</th>
+                        <th width="8%">{{ _i('Categoria') }}</th>
+                        <th width="8%">{{ _i('Unità di Misura') }}</th>
+                        <th width="8%">{{ _i('Aliquota IVA') }}</th>
+                        <th width="8%">{{ _i('Codice Fornitore') }}</th>
+                        <th width="6%">{{ _i('Dimensione Confezione') }}</th>
+                        <th width="6%">{{ _i('Ordine Minimo') }}</th>
+                        <th width="6%">{{ _i('Ordinabile per Multipli') }}</th>
+                        <th width="9%">{{ _i('Aggiorna') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -79,15 +78,6 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                                 @include('commons.decimalfield', [
                                     'obj' => $product,
                                     'name' => 'price',
-                                    'label' => '',
-                                    'postfix' => '[]',
-                                    'squeeze' => true,
-                                ])
-                            </td>
-                            <td>
-                                @include('commons.decimalfield', [
-                                    'obj' => $product,
-                                    'name' => 'transport',
                                     'label' => '',
                                     'postfix' => '[]',
                                     'squeeze' => true,

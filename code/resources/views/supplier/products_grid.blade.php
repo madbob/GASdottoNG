@@ -35,10 +35,9 @@
                 <thead>
                     <tr>
                         <th width="45%">{{ _i('Nome') }}</th>
-                        <th width="15%">{{ _i('Unità di Misura') }}</th>
-                        <th width="15%">{{ _i('Prezzo Unitario') }}</th>
-                        <th width="15%">{{ _i('Prezzo Trasporto') }}</th>
-                        <th width="5%">{{ _i('Ordinabile') }}</th>
+                        <th width="20%">{{ _i('Unità di Misura') }}</th>
+                        <th width="20%">{{ _i('Prezzo Unitario') }}</th>
+                        <th width="10%">{{ _i('Ordinabile') }}</th>
                         <th width="5%"></th>
                     </tr>
                 </thead>
@@ -81,16 +80,6 @@
                                     'squeeze' => true,
                                     'is_price' => true,
                                     'mandatory' => true
-                                ])
-                            </td>
-                            <td>
-                                @include('commons.decimalfield', [
-                                    'obj' => $product,
-                                    'prefix' => $product->id . '-',
-                                    'name' => 'transport',
-                                    'label' => _i('Prezzo Trasporto'),
-                                    'squeeze' => true,
-                                    'is_price' => true
                                 ])
                             </td>
                             <td>

@@ -212,10 +212,6 @@ class OrdersController extends Controller
             $order->end = decodeDate($request->input('end'));
         if ($request->has('shipping'))
             $order->shipping = decodeDate($request->input('shipping'));
-        if ($request->has('discount'))
-            $order->discount = savingPercentage($request, 'discount');
-        if ($request->has('transport'))
-            $order->transport = savingPercentage($request, 'transport');
 
         $order->deliveries()->sync(array_filter($request->input('deliveries', [])));
         $order->users()->sync($request->input('users', []));
@@ -241,7 +237,6 @@ class OrdersController extends Controller
         $new_products = [];
         $enabled = $request->input('enabled', []);
         $prices = $request->input('product_price', []);
-        $transports = $request->input('product_transport', []);
         $availables = $request->input('product_max_available', []);
         $products = $request->input('productid');
 
@@ -257,9 +252,8 @@ class OrdersController extends Controller
                 }
 
                 $prod = Product::find($id);
-                if ($prod->price != $prices[$i] || $prod->transport != $transports[$i] || $prod->max_available != $availables[$i]) {
+                if ($prod->price != $prices[$i] || $prod->max_available != $availables[$i]) {
                     $prod->price = $prices[$i];
-                    $prod->transport = $transports[$i];
                     $prod->max_available = $availables[$i];
                     $prod->save();
                 }
