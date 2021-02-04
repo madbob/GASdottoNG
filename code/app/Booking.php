@@ -172,6 +172,7 @@ class Booking extends Model
 
         if ($force_recalculate) {
             $this->emptyInnerCache($key);
+            $this->unsetRelation('products');
         }
 
         return $this->innerCache($key, function($obj) use ($type, $with_friends) {

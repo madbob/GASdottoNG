@@ -4,6 +4,7 @@ namespace App;
 
 use Auth;
 use URL;
+use Log;
 use Schema;
 
 trait GASModel
@@ -71,8 +72,10 @@ trait GASModel
 
     protected function innerCache($name, $function)
     {
-        if (!isset($this->inner_runtime_cache[$name]))
+        if (!isset($this->inner_runtime_cache[$name])) {
             $this->inner_runtime_cache[$name] = $function($this);
+        }
+
         return $this->inner_runtime_cache[$name];
     }
 

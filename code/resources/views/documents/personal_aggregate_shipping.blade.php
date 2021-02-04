@@ -40,8 +40,8 @@
                         @if($booking->products->isEmpty() == false)
                             <?php
 
-                            $booked_cell_value += $booking->getValue('booked', false);
-                            $delivered_cell_value += $booking->getValue('delivered', false);
+                            $booked_cell_value += $booking->getValue('booked', false, true);
+                            $delivered_cell_value += $booking->getValue('delivered', false, true);
                             $valid_bookings++;
 
                             ?>
@@ -85,6 +85,12 @@
                             @endforeach
                         @endif
                     @endforeach
+
+                    @if(!empty($booking->notes))
+                        <tr>
+                            <td colspan="5">{!! nl2br($booking->notes) !!}</td>
+                        </tr>
+                    @endif
 
                     @if(($transport = $booking->getValue('transport', false)) != 0)
                         <tr>
