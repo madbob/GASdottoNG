@@ -47,52 +47,58 @@
         <?php $total = $total_transport = $total_discount = 0 ?>
 
         @foreach($data->contents as $d)
-            <table border="1" style="width: 100%" cellpadding="5" nobr="true">
+            <table style="width: 100%">
                 <tr>
-                    <th colspan="{{ count($fields->product_columns) }}">
-                        {!! join('<br>', array_filter($d->user)) !!}
+                    <td>
+                        <table border="1" style="width: 100%" cellpadding="5" nobr="true">
+                            <tr>
+                                <th colspan="{{ count($fields->product_columns) }}">
+                                    {!! join('<br>', array_filter($d->user)) !!}
 
-                        <?php
+                                    <?php
 
-                        $booking_total = $d->totals['total'];
-                        $discount = $d->totals['discount'];
-                        $transport = $d->totals['transport'];
-                        $total += $booking_total;
-                        $total_transport += $transport;
-                        $total_discount += $discount;
+                                    $booking_total = $d->totals['total'];
+                                    $discount = $d->totals['discount'];
+                                    $transport = $d->totals['transport'];
+                                    $total += $booking_total;
+                                    $total_transport += $transport;
+                                    $total_discount += $discount;
 
-                        ?>
-                    </th>
-                </tr>
+                                    ?>
+                                </th>
+                            </tr>
 
-                @foreach($d->products as $product)
-                    <tr>
-                        @foreach($product as $p)
-                            <td>{{ $p }}</td>
-                        @endforeach
-                    </tr>
-                @endforeach
+                            @foreach($d->products as $product)
+                                <tr>
+                                    @foreach($product as $p)
+                                        <td>{{ $p }}</td>
+                                    @endforeach
+                                </tr>
+                            @endforeach
 
-                @if(!empty($d->notes))
-                    <tr>
-                        <td colspan="{{ count($fields->product_columns) }}">{!! join('<br>', $d->notes) !!}</td>
-                    </tr>
-                @endif
+                            @if(!empty($d->notes))
+                                <tr>
+                                    <td colspan="{{ count($fields->product_columns) }}">{!! join('<br>', $d->notes) !!}</td>
+                                </tr>
+                            @endif
 
-                @if($transport != 0)
-                    <tr>
-                        <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Trasporto') }}: {{ printablePriceCurrency($transport, ',') }}</strong></th>
-                    </tr>
-                @endif
+                            @if($transport != 0)
+                                <tr>
+                                    <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Trasporto') }}: {{ printablePriceCurrency($transport, ',') }}</strong></th>
+                                </tr>
+                            @endif
 
-                @if($discount != 0)
-                    <tr>
-                        <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Sconto') }}: {{ printablePriceCurrency($discount, ',') }}</strong></th>
-                    </tr>
-                @endif
+                            @if($discount != 0)
+                                <tr>
+                                    <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Sconto') }}: {{ printablePriceCurrency($discount, ',') }}</strong></th>
+                                </tr>
+                            @endif
 
-                <tr>
-                    <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($booking_total, ',') }}</strong></th>
+                            <tr>
+                                <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($booking_total, ',') }}</strong></th>
+                            </tr>
+                        </table>
+                    </td>
                 </tr>
             </table>
 
