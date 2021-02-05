@@ -30,7 +30,7 @@ class BaseService
 
             if ($user->can($permission, $subject) == false) {
                 if ($or == false) {
-                    Log::info('Utente non autorizzato: non ha permesso ' . $permission);
+                    Log::info('Utente non autorizzato: ' . $user->id . ' non ha permesso ' . $permission);
                     throw new AuthException(403);
                 }
             }
@@ -40,7 +40,7 @@ class BaseService
         }
 
         if ($has_something == false) {
-            Log::info('Utente non autorizzato: non ha nessun permesso tra ' . join(', ', $permissions));
+            Log::info('Utente non autorizzato: ' . $user->id . ' non ha nessun permesso tra ' . join(', ', array_keys($permissions)));
             throw new AuthException(403);
         }
 
