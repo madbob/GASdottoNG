@@ -17,18 +17,6 @@ class FixDatabase
 {
     public function handle($request, Closure $next)
     {
-        $gas = currentAbsoluteGas();
-
-        /*
-            Per aggiungere il default al link dei termini d'uso
-            31/05/2020
-        */
-        $public_registrations = $gas->public_registrations;
-        if (!isset($public_registrations['terms_link'])) {
-            $public_registrations['terms_link'] = '';
-            $gas->setConfig('public_registrations', $public_registrations);
-        }
-
         return $next($request);
     }
 }
