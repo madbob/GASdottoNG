@@ -18,6 +18,9 @@ if (!isset($final_value)) {
                 <br><small>{{ _i("Il valore qui indicato è una stima, sarà finalizzato alla chiusura dell'ordine") }}</small>
             </span>
         </label>
+        <div class="pull-right">
+            @include('commons.detailsbutton', ['obj' => $mod_value->modifier])
+        </div>
     </td>
 
     @for($i = 0; $i < $skip_cells; $i++)

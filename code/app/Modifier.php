@@ -59,6 +59,11 @@ class Modifier extends Model
         return join(' / ', $ret);
     }
 
+    public function getROShowURL()
+    {
+        return route('modifiers.show', $this->id);
+    }
+
     public static function descriptions()
     {
         /*
