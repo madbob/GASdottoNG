@@ -5,7 +5,7 @@
     'values' => $applies_targets,
 ])
 
-<div class="distribution_type_selection {{ $modifier->applies_targets != 'order' ? 'hidden' : '' }}">
+<div class="distribution_type_selection {{ $modifier->applies_target != 'order' ? 'hidden' : '' }}">
     @include('commons.radios', [
         'obj' => $modifier,
         'name' => 'distribution_type',

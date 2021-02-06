@@ -164,7 +164,7 @@ class Modifier extends Model
             $amount = round(($amount * $definition->amount) / 100, $rounding);
         }
         else if ($this->value == 'absolute') {
-            $amount = round($amount + $definition->amount, $rounding);
+            $amount = $definition->amount;
         }
         else {
             /*

@@ -91,6 +91,10 @@
                                         'name' => _i('Ordine Complessivo'),
                                     ],
                                 ];
+
+                                if ($modifier->applies_target == 'order' && $modifier->distribution_type == 'none') {
+                                    $modifier->distribution_type = 'price';
+                                }
                             }
 
                             $labels = App\Modifier::descriptions();
