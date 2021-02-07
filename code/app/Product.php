@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 use App\Events\SluggableCreating;
 use App\GASModel;
@@ -16,6 +17,7 @@ class Product extends Model
     use SoftDeletes, GASModel, SluggableID;
 
     public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,
@@ -57,7 +59,7 @@ class Product extends Model
 
     public function getSlugID()
     {
-        return sprintf('%s::%s', $this->supplier_id, str_slug($this->name));
+        return sprintf('%s::%s', $this->supplier_id, Str::slug($this->name));
     }
 
     public function getPictureUrlAttribute()

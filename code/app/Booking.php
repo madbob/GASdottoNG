@@ -19,6 +19,7 @@ class Booking extends Model
     use GASModel, SluggableID, PayableTrait, CreditableTrait;
 
     public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,

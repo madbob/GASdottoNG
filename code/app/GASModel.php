@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Illuminate\Support\Str;
+
 use Auth;
 use URL;
 use Log;
@@ -97,7 +99,7 @@ trait GASModel
         $class = get_class($this);
         list($namespace, $class) = explode('\\', $class);
 
-        return str_plural($class).'Controller';
+        return Str::plural($class).'Controller';
     }
 
     public function getDisplayURL()
