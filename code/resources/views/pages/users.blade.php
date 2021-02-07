@@ -52,6 +52,12 @@
                     </div>
                 </div>
             </div>
+
+            @if(Gate::check('users.admin', $currentgas) || Gate::check('users.movements', $currentgas))
+                @if($currentgas->getConfig('annual_fee_amount') != 0)
+                    <button type="button" class="btn btn-default async-modal" data-target-url="{{ route('users.fees') }}">{{ _i('Stato Quote') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
+                @endif
+            @endif
         </div>
     </div>
 

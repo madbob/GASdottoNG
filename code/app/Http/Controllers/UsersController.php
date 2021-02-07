@@ -166,6 +166,18 @@ class UsersController extends BackedController
         return $ret;
     }
 
+    public function fees(Request $request)
+    {
+        $user = $request->user();
+
+        if ($user->can('users.admin') || $user->can('users.movements')) {
+            return view('user.fees');
+        }
+        else {
+            abort(401);
+        }
+    }
+
     public function notifications(Request $request, $id)
     {
         try {
