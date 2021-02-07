@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use DB;
 use URL;
 use Auth;
+use Log;
 use PDF;
 
 use App\User;

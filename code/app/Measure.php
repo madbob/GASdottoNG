@@ -13,6 +13,7 @@ class Measure extends Model
     use GASModel, SluggableID;
 
     public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,

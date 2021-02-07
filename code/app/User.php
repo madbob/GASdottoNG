@@ -23,6 +23,7 @@ class User extends Authenticatable
     use Notifiable, Authorizable, CanResetPassword, SoftDeletes, ContactableTrait, CreditableTrait, PayableTrait, SuspendableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
+    protected $keyType = 'string';
     protected $hidden = ['password', 'remember_token'];
     protected $dates = ['deleted_at'];
 

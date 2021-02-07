@@ -21,6 +21,7 @@ class Booking extends Model
     use GASModel, SluggableID, ModifiedTrait, PayableTrait, CreditableTrait, ReducibleTrait;
 
     public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,
@@ -143,6 +144,7 @@ class Booking extends Model
 
         if ($force_recalculate) {
             $this->emptyInnerCache($key);
+            $this->unsetRelation('products');
         }
 
         return $this->innerCache($key, function($obj) use ($type, $with_friends) {

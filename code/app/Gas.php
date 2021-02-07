@@ -18,6 +18,7 @@ class Gas extends Model
     use AttachableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
+    protected $keyType = 'string';
     protected $table = 'gas';
 
     protected $dispatchesEvents = [

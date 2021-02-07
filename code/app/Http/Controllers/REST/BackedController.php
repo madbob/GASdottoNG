@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\REST;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 
 use App\Exceptions\AuthException;
@@ -18,7 +19,7 @@ class BackedController extends Controller
     {
         $this->service = $parameters['service'];
         $this->single_wrapper = $parameters['json_wrapper'];
-        $this->multiple_wrapper = str_plural($parameters['json_wrapper']);
+        $this->multiple_wrapper = Str::plural($parameters['json_wrapper']);
         parent::commonInit($parameters);
     }
 

@@ -52,55 +52,61 @@
         ?>
 
         @foreach($data->contents as $d)
-            <table border="1" style="width: 100%" cellpadding="5" nobr="true">
+            <table style="width: 100%">
                 <tr>
-                    <th colspan="{{ count($fields->product_columns) }}">
-                        {!! join('<br>', array_filter($d->user)) !!}
+                    <td>
+                        <table border="1" style="width: 100%" cellpadding="5" nobr="true">
+                            <tr>
+                                <th colspan="{{ count($fields->product_columns) }}">
+                                    {!! join('<br>', array_filter($d->user)) !!}
 
-                        <?php
+                                    <?php
 
-                        $booking_total = 0;
-                        $booking_modifiers = [];
+                                    $booking_total = 0;
+                                    $booking_modifiers = [];
 
-                        foreach($d->totals as $key => $value) {
-                            if ($key == 'total') {
-                                $booking_total += $value;
-                                $total += $value;
-                            }
-                            else {
-                                $booking_modifiers[$key] = $booking_modifiers[$key] ?? 0;
-                                $booking_modifiers[$key] += $value;
-                                $full_modifiers[$key] = $full_modifiers[$key] ?? 0;
-                                $full_modifiers[$key] += $value;
-                            }
-                        }
+                                    foreach($d->totals as $key => $value) {
+                                        if ($key == 'total') {
+                                            $booking_total += $value;
+                                            $total += $value;
+                                        }
+                                        else {
+                                            $booking_modifiers[$key] = $booking_modifiers[$key] ?? 0;
+                                            $booking_modifiers[$key] += $value;
+                                            $full_modifiers[$key] = $full_modifiers[$key] ?? 0;
+                                            $full_modifiers[$key] += $value;
+                                        }
+                                    }
 
-                        ?>
-                    </th>
-                </tr>
+                                    ?>
+                                </th>
+                            </tr>
 
-                @foreach($d->products as $product)
-                    <tr>
-                        @foreach($product as $p)
-                            <td>{{ $p }}</td>
-                        @endforeach
-                    </tr>
-                @endforeach
+                            @foreach($d->products as $product)
+                                <tr>
+                                    @foreach($product as $p)
+                                        <td>{{ $p }}</td>
+                                    @endforeach
+                                </tr>
+                            @endforeach
 
-                @if(!empty($d->notes))
-                    <tr>
-                        <td colspan="{{ count($fields->product_columns) }}">{!! join('<br>', $d->notes) !!}</td>
-                    </tr>
-                @endif
+                            @if(!empty($d->notes))
+                                <tr>
+                                    <td colspan="{{ count($fields->product_columns) }}">{!! join('<br>', $d->notes) !!}</td>
+                                </tr>
+                            @endif
 
-                @foreach($booking_modifiers as $bm_key => $bm_value)
-                    <tr>
-                        <th colspan="{{ count($fields->product_columns) }}"><strong>{{ $bm_key }}: {{ printablePriceCurrency($bm_value, ',') }}</strong></th>
-                    </tr>
-                @endforeach
+                            @foreach($booking_modifiers as $bm_key => $bm_value)
+                                <tr>
+                                    <th colspan="{{ count($fields->product_columns) }}"><strong>{{ $bm_key }}: {{ printablePriceCurrency($bm_value, ',') }}</strong></th>
+                                </tr>
+                            @endforeach
 
-                <tr>
-                    <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($booking_total, ',') }}</strong></th>
+                            <tr>
+                                <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($booking_total, ',') }}</strong></th>
+                            </tr>
+                        </table>
+                    </td>
                 </tr>
             </table>
 

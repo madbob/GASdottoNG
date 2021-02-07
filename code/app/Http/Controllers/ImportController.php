@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -375,7 +376,7 @@ class ImportController extends Controller
                             $p->multiple = $multiples[$index];
 
                             if (starts_with($categories[$index], 'new:')) {
-                                $category_name = str_after($categories[$index], 'new:');
+                                $category_name = Str::after($categories[$index], 'new:');
                                 if (!empty($category_name)) {
                                     if (isset($new_categories[$category_name])) {
                                         $category = $new_categories[$category_name];
@@ -396,7 +397,7 @@ class ImportController extends Controller
                             $p->category_id = $categories[$index];
 
                             if (starts_with($measures[$index], 'new:')) {
-                                $measure_name = str_after($measures[$index], 'new:');
+                                $measure_name = Str::after($measures[$index], 'new:');
                                 if (!empty($measure_name)) {
                                     if (isset($new_measures[$measure_name])) {
                                         $category = $new_measures[$measure_name];
@@ -417,7 +418,7 @@ class ImportController extends Controller
                             $p->measure_id = $measures[$index];
 
                             if (starts_with($vat_rates[$index], 'new:')) {
-                                $vat_name = (float) str_after($vat_rates[$index], 'new:');
+                                $vat_name = (float) Str::after($vat_rates[$index], 'new:');
                                 if (!empty($vat_name)) {
                                     if (isset($new_vats[$vat_name])) {
                                         $vat = $new_vats[$vat_name];

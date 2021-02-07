@@ -15,6 +15,7 @@ class BookedProduct extends Model
     use GASModel, SluggableID, ModifiedTrait, ReducibleTrait;
 
     public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,

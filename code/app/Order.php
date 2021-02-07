@@ -3,8 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 use App;
 use Auth;
@@ -22,6 +22,7 @@ class Order extends Model
     use AttachableTrait, ExportableTrait, ModifiableTrait, PayableTrait, CreditableTrait, GASModel, SluggableID, ReducibleTrait;
 
     public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class
@@ -839,7 +840,7 @@ class Order extends Model
 
     public function getSlugID()
     {
-        return sprintf('%s::%s', $this->supplier->id, str_slug(strftime('%d %B %Y', strtotime($this->start))));
+        return sprintf('%s::%s', $this->supplier->id, Str::slug(strftime('%d %B %Y', strtotime($this->start))));
     }
 
     /******************************************************** CreditableTrait */

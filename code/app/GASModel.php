@@ -2,8 +2,11 @@
 
 namespace App;
 
+use Illuminate\Support\Str;
+
 use Auth;
 use URL;
+use Log;
 use Schema;
 
 trait GASModel
@@ -71,8 +74,10 @@ trait GASModel
 
     protected function innerCache($name, $function)
     {
-        if (!isset($this->inner_runtime_cache[$name]))
+        if (!isset($this->inner_runtime_cache[$name])) {
             $this->inner_runtime_cache[$name] = $function($this);
+        }
+
         return $this->inner_runtime_cache[$name];
     }
 
@@ -94,7 +99,7 @@ trait GASModel
         $class = get_class($this);
         list($namespace, $class) = explode('\\', $class);
 
-        return str_plural($class).'Controller';
+        return Str::plural($class).'Controller';
     }
 
     public function getDisplayURL()

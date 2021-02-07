@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 use App\Events\SluggableCreating;
 use App\GASModel;
@@ -13,6 +14,7 @@ class Variant extends Model
     use GASModel, SluggableID;
 
     public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,
@@ -41,6 +43,6 @@ class Variant extends Model
 
     public function getSlugID()
     {
-        return sprintf('%s::%s', $this->product_id, str_slug($this->name));
+        return sprintf('%s::%s', $this->product_id, Str::slug($this->name));
     }
 }
