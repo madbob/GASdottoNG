@@ -342,7 +342,11 @@
                                 <input type="hidden" name="group" value="mails">
 
                                 <div class="col-md-12">
-                                    @include('commons.boolfield', ['obj' => $gas, 'name' => 'notify_all_new_orders', 'label' => _i('Tutte le notifiche per i nuovi ordini')])
+                                    @include('commons.boolfield', ['obj' => $gas, 'name' => 'notify_all_new_orders', 'label' => _i("Invia notifica a tutti gli utenti all'apertura di un ordine")])
+                                    @include('commons.boolfield', ['obj' => $gas, 'name' => 'auto_user_order_summary', 'label' => _i("Invia riepilogo automatico agli utenti che hanno partecipato ad un ordine, quando viene chiuso")])
+                                    @include('commons.boolfield', ['obj' => $gas, 'name' => 'auto_supplier_order_summary', 'label' => _i("Invia riepilogo automatico al fornitore di un ordine, quando viene chiuso")])
+
+                                    <hr>
                                 </div>
 
                                 <div class="col-md-12">

@@ -44,8 +44,9 @@ class AppServiceProvider extends ServiceProvider
         Order::updating(function($order) {
             if ($order->status == 'open') {
                 $old = Order::find($order->id);
-                if ($old->status != 'open')
+                if ($old->status != 'open') {
                     $order->sendNotificationMail();
+                }
             }
         });
     }

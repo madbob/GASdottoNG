@@ -293,6 +293,13 @@ class Order extends Model
         $this->save();
     }
 
+    public function sendSupplierMail()
+    {
+        /*
+            TODO
+        */
+    }
+
     public function isActive()
     {
         return $this->status != 'shipped' && $this->status != 'archived';
