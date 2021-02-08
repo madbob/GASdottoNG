@@ -9,6 +9,7 @@ else {
     $personal_details = ($currentuser->id == $user->id);
 }
 
+$display_page = $display_page ?? false;
 $has_accounting = $editable && ($user->isFriend() == false && App\Role::someone('movements.admin', $user->gas));
 $has_bookings = ($currentuser->id == $user->id);
 $has_friends = $editable && $user->can('users.subusers');
@@ -51,7 +52,7 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
 
 <div class="tab-content">
     <div role="tabpanel" class="tab-pane {{ $active_tab == 'profile' ? 'active' : '' }}" id="profile">
-        <form class="form-horizontal main-form user-editor" method="PUT" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data">
+        <form class="form-horizontal main-form user-editor {{ $display_page ? 'inner-form' : '' }}" method="PUT" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-md-6">
                     @if($user->isFriend() == false)
@@ -176,7 +177,18 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
                 </div>
             </div>
 
-            @include('commons.formbuttons', ['obj' => $user, 'no_delete' => true])
+            @if($display_page)
+                <div class="row">
+                    <hr>
+                    <div class="col-md-12">
+                        <div class="btn-group pull-right main-form-buttons" role="group">
+                            <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
+                        </div>
+                    </div>
+                </div>
+            @else
+                @include('commons.formbuttons', ['obj' => $user, 'no_delete' => true])
+            @endif
         </form>
     </div>
 
