@@ -103,7 +103,7 @@ class Order extends Model
         $supplier_shippings = array_keys($user->targetsByAction('supplier.shippings'));
 
         if ($user->gas->hasFeature('shipping_places')) {
-            $query->where(function($query) use ($user) {
+            $query->where(function($query) use ($user, $supplier_shippings) {
                 $query->where(function($query) use ($user) {
                     $query->doesnthave('deliveries')->orWhereHas('deliveries', function($query) use ($user) {
                         $query->where('delivery_id', $user->preferred_delivery_id);
