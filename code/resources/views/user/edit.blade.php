@@ -52,7 +52,7 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
 
 <div class="tab-content">
     <div role="tabpanel" class="tab-pane {{ $active_tab == 'profile' ? 'active' : '' }}" id="profile">
-        <form class="form-horizontal main-form user-editor {{ $display_page ? 'inner-form' : '' }}" method="PUT" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data">
+        <form class="form-horizontal main-form user-editor {{ $display_page ? 'inner-form' : '' }}" method="PUT" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data" autocomplete="off">
             <div class="row">
                 <div class="col-md-6">
                     @if($user->isFriend() == false)

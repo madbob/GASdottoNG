@@ -292,33 +292,7 @@ class Booking extends Model
 
                         if ($master_p->product->variants->isEmpty() == false) {
                             foreach($sub_p->variants as $sub_variant) {
-                                $counter = 0;
-
-                                foreach($master_p->variants as $master_variant) {
-                                    $counter = 0;
-
-                                    foreach($sub_variant->components as $sub_component) {
-                                        $counter++;
-
-                                        foreach($master_variant->components as $master_component) {
-                                            if($master_component->variant_id == $sub_component->variant_id && $master_component->value_id == $sub_component->value_id) {
-                                                $counter--;
-                                                break;
-                                            }
-                                        }
-                                    }
-
-                                    if ($counter == 0)
-                                        break;
-                                }
-
-                                if ($counter == 0) {
-                                    $master_variant->quantity += $sub_variant->quantity;
-                                    $master_variant->delivered += $sub_variant->delivered;
-                                }
-                                else {
-                                    $master_p->variants->push($sub_variant);
-                                }
+                                $master_p->variants->push($sub_variant);
                             }
                         }
 
