@@ -3,13 +3,15 @@ msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2021-02-10 13:02+0100\n"
 "PO-Revision-Date: 2021-02-10 13:23+0100\n"
-"Last-Translator: Roberto Guido <bob@linux.it>\n"
-"Language-Team: Roberto Guido <bob@linux.it>\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
+"translations/de/>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.4.1-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -1368,7 +1370,7 @@ msgstr ""
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:577
 #: ../storage/framework/messages/8213b2de42a57b8769b9deb8aaed6d84d10a486c.php.php:82
 msgid "File Condivisi"
-msgstr "Dateien und Infos"
+msgstr "Geteilte Dateien"
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:607
 msgid ""
@@ -1397,8 +1399,7 @@ msgstr ""
 "kalkulieren und in <strong>'Buchhaltung -> Rechnungen'</strong> zu "
 "übertragen."
 
-#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:658
-#, fuzzy
+#: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:573
 msgid "Log E-Mail"
 msgstr "E-Mail-Protokoll"
 
@@ -2490,8 +2491,7 @@ msgstr "Registriert von"
 
 #: ../storage/framework/messages/3bdd2530c5e43e31dce8c7a7bcdef0b261b175c9.php.php:25
 #: Notifications/BookingNotification.php:25
-#, fuzzy, php-format
-#| msgid "Riassunto prenotazione del GAS"
+#, php-format
 msgid "Riassunto prenotazione del GAS: %s - consegna %s"
 msgstr "GAS-Buchungsübersicht: %s – Lieferung %s"
 
@@ -3661,7 +3661,7 @@ msgstr "Fax"
 #: ../storage/framework/messages/97fcd8734ec055c583fb78ae7ef7279f49c7c4d3.php.php:71
 #: Contact.php:71
 msgid "Sito Web"
-msgstr "Webseite"
+msgstr "Website"
 
 #: ../storage/framework/messages/9869469812674c41a1612a26bdeeb6891dbf5787.php.php:99
 #: ../storage/framework/messages/9869469812674c41a1612a26bdeeb6891dbf5787.php.php:100
@@ -4079,10 +4079,8 @@ msgid ""
 msgstr ""
 "Eine neue Bestellung wurde eröffnet von der %[gas_name] für den Lieferanten "
 "%[supplier_name].\n"
-"\n"
 "Um daran teilzunehmen, melde dich über folgenden Link an: \n"
 "%[gas_booking_link]\n"
-"\n"
 "Die Bestellfrist endet am %[closing_date]"
 
 #: ../storage/framework/messages/b5af75f9e9a5d960b15844aa69c913335f8b0742.php.php:183
@@ -4502,7 +4500,7 @@ msgid ""
 msgstr ""
 "Bevor du das Verhalten eines bereits existierenden Aktionstyps oder sogar "
 "eines Typs veränderst, dem bereits ein Buchhaltungsvorgang zugeordnet ist, "
-"empfielt es sich die Funktion \"Kontostände archivieren\" so zu nutzen, dass "
+"empfielt es sich die Funktion „Kontostände archivieren“ so zu nutzen, dass "
 "die vorherigen Buchungsbewegungen nicht neu verarbeitet werden, während das "
 "neue Verhalten in Kraft tritt (was Kontostände produzieren würde, die "
 "komplett von den aktuellen abweichen)."
@@ -4610,8 +4608,6 @@ msgid "Saldo Corrente"
 msgstr "Aktueller Kontostand"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:48
-#, fuzzy
-#| msgid "Eliminato"
 msgid "Elimina Saldo Passato"
 msgstr "Vergangene Bilanz löschen"
 
@@ -4621,6 +4617,9 @@ msgid ""
 "l'operazione non è reversibile, e non sarà più possibile ricalcolare questi "
 "valori in nessun modo!"
 msgstr ""
+"Warnung! Vergangene Salden können entfernt werden, aber Vorsicht, der "
+"Vorgang ist nicht umkehrbar und es ist nicht mehr möglich, diese Werte in "
+"irgendeiner Weise neu zu berechnen!"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:65
 msgid "Ho capito"
@@ -4664,8 +4663,7 @@ msgstr "Kontostände archivieren"
 
 #: ../storage/framework/messages/d3ff01348e530d31dcfec89ce903767d4fe33ed5.php.php:5
 msgid "Per procedere devi settare una nuova password per il tuo profilo."
-msgstr ""
-"Um fortzufahren musst du ein neues Passwort für deinen Account erstellen."
+msgstr "Um fortzufahren musst du ein neues Passwort für dein Konto erstellen."
 
 #: ../storage/framework/messages/d3ff01348e530d31dcfec89ce903767d4fe33ed5.php.php:17
 msgid "Salva e Procedi"
@@ -4679,7 +4677,7 @@ msgid ""
 "href=\"%s\">pannello utente</a>!"
 msgstr ""
 "Das Passwort ist identisch mit dem Benutzernamen! Ändere es, sobald wie "
-"möglich, in deinem  <a href=\"%s\">Nutzerprofil</a>!"
+"möglich, in deinem <a href=\"%s\">Nutzerprofil</a>!"
 
 #: ../storage/framework/messages/d59b9e643df28842f92755531bb31855cafa2efc.php.php:62
 #: Http/Controllers/Auth/LoginController.php:62
@@ -4688,9 +4686,9 @@ msgid ""
 "lo stato dei tuoi pagamenti e del tuo credito o eventuali notifiche inviate "
 "dagli amministratori."
 msgstr ""
-"Dein Account wurde gesperrt und du kannst keine Bestellungen mehr vornehmen. "
+"Dein Konto wurde gesperrt und du kannst keine Bestellungen mehr vornehmen. "
 "Überprüfe den Status deiner Zahlungen und deines Guthabens oder die von den "
-"Administrator*innen gesendeten Benachrichtigungen."
+"Administrator/innen gesendeten Benachrichtigungen."
 
 #: ../storage/framework/messages/d9a90fb40960eac3cd06ae2cf170ddde20929be0.php.php:24
 msgid "Lascia vuoto per non modificare la password"
