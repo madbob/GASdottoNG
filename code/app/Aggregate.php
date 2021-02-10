@@ -145,6 +145,9 @@ class Aggregate extends Model
                             });
                         })->orWhere(function($query) {
                             $query->accessibleBooking();
+                        })->orWhere(function($query) use ($user) {
+                            $supplier_shippings = array_keys($user->targetsByAction('supplier.shippings'));
+                            $query->whereIn('supplier_id', $supplier_shippings);
                         });
                     });
                 })->with(['orders'])->get();

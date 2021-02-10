@@ -282,7 +282,7 @@ class BookingHandler extends Controller
                 return $this->successResponse([
                     'id' => $aggregate->id,
                     'header' => $aggregate->printableUserHeader(),
-                    'url' => URL::action('BookingController@show', ['id' => $aggregate->id])
+                    'url' => URL::action('BookingController@show', $aggregate->id)
                 ]);
             }
         }
@@ -296,11 +296,10 @@ class BookingHandler extends Controller
                 return $this->successResponse();
             }
             else {
-                $action = 'DeliveryUserController@show';
                 return $this->successResponse([
                     'id' => $subject->id,
                     'header' => $subject->printableHeader(),
-                    'url' => URL::action($action, ['aggregate' => $aggregate_id, 'user' => $user_id])
+                    'url' => URL::action('DeliveryUserController@show', ['delivery' => $aggregate_id, 'user' => $user_id])
                 ]);
             }
         }

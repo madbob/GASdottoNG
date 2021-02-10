@@ -13,11 +13,13 @@ use Response;
 use PDF;
 
 use App\User;
+use App\Movement;
 use App\Invoice;
 use App\Receipt;
 use App\MovementType;
 
 use App\Services\MovementsService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
 
@@ -156,15 +158,47 @@ class MovementsController extends BackedController
         return view('movement.selectors', $data);
     }
 
+    /*
+        È possibile passare l'ID di un movimento non esistente (ad esempio: 0)
+        ed i parametri richiesti per ottenere il modale di creazione di un nuovo
+        movimento
+    */
     public function show(Request $request, $id)
     {
+        $dom_id = $request->input('dom_id', rand());
+
         try {
             $user = Auth::user();
             $movement = $this->service->show($id);
-            return view('movement.modal', ['obj' => $movement, 'editable' => $user->can('movements.admin', $user->gas)]);
+            return view('movement.modal', [
+                'dom_id' => $dom_id,
+                'obj' => $movement,
+                'editable' => $user->can('movements.admin', $user->gas)
+            ]);
         }
         catch (AuthException $e) {
             abort($e->status());
+        }
+        catch (ModelNotFoundException $e) {
+            $type = $request->input('type', null);
+            if (is_null($type)) {
+                abort(404);
+            }
+
+            $sender_id = $request->input('sender_id');
+            $sender_type = $request->input('sender_type');
+            $target_id = $request->input('target_id');
+            $target_type = $request->input('target_type');
+            $amount = $request->input('amount');
+
+            $sender = $sender_type::findOrFail($sender_id);
+            $target = $target_type::findOrFail($target_id);
+
+            return view('movement.modal', [
+                'dom_id' => $dom_id,
+                'obj' => null,
+                'default' => Movement::generate($type, $sender, $target, $amount),
+            ]);
         }
     }
 

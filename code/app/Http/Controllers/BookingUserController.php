@@ -210,7 +210,7 @@ class BookingUserController extends BookingHandler
             return response()->json([
                 'id' => $user->id,
                 'header' => $user->printableFriendHeader($aggregate),
-                'url' => URL::action('BookingUserController@show', ['aggregate' => $aggregate_id, 'user' => $user_id])
+                'url' => URL::action('BookingUserController@show', ['aggregate_id' => $aggregate_id, 'user_id' => $user_id])
             ]);
         }
         else {
@@ -219,7 +219,7 @@ class BookingUserController extends BookingHandler
             return response()->json([
                 'id' => $subject->id,
                 'header' => $subject->printableHeader(),
-                'url' => URL::action('BookingUserController@show', ['aggregate' => $aggregate_id, 'user' => $user_id])
+                'url' => URL::action('BookingUserController@show', ['aggregate_id' => $aggregate_id, 'user_id' => $user_id])
             ]);
         }
     }

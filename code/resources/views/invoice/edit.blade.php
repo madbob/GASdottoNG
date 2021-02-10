@@ -44,7 +44,10 @@ $rand = rand();
 
             @if($invoice->orders->count() > 0 || $invoice->status != 'payed')
                 <div class="form-group">
-                    <label for="orders" class="col-sm-{{ $labelsize }} control-label">{{ _i('Ordini Coinvolti') }}</label>
+                    <label for="orders" class="col-sm-{{ $labelsize }} control-label">
+                        @include('commons.helpbutton', ['help_popover' => _i("Seleziona gli ordini che sono coinvolti in questa fattura. Quando la fatturà sarà marcata come \"pagata\", ad essi sarà aggiunto il riferimento al movimento contabile di pagamento e saranno automaticamente archiviati")])
+                        {{ _i('Ordini Coinvolti') }}
+                    </label>
 
                     <div class="col-sm-{{ $fieldsize }}">
                         @if($invoice->orders->count() > 0)

@@ -19,7 +19,10 @@ else
 
 <div class="form-group">
     @if($squeeze == false)
-        <label for="{{ $prefix . $name . $postfix }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
+        <label for="{{ $prefix . $name . $postfix }}" class="col-sm-{{ $labelsize }} control-label">
+            @include('commons.helpbutton', ['help_popover' => $help_popover])
+            {{ $label }}
+        </label>
     @endif
 
     <div class="col-sm-{{ $fieldsize }}">

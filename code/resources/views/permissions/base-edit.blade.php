@@ -20,7 +20,8 @@
     'label' => _i('Ruolo Superiore'),
     'extra_selection' => [
         '0' => _i('Nessuno')
-    ]
+    ],
+    'help_popover' => _i("Gli utenti con assegnato il \"ruolo superiore\" potranno assegnare ad altri utenti questo ruolo"),
 ])
 
 @foreach(App\Role::allPermissions() as $class => $permissions)

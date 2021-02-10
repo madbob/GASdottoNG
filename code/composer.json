@@ -18,7 +18,7 @@
         "laravel/framework": "^6.0",
         "laravel/tinker": "~1.0",
         "league/csv": "^9.6",
-        "madbob/laravel-log2rss": "^0.3.0",
+        "madbob/laravel-log2rss": "^0.3.1",
         "paypal/rest-api-sdk-php": "^1.13",
         "satispay/online-api-php-sdk": "^1.6",
         "sinergi/browser-detector": "^6.1",
