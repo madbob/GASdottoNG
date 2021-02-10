@@ -278,7 +278,7 @@ class BookingHandler extends Controller
                 return $this->successResponse([
                     'id' => $aggregate->id,
                     'header' => $target_user->printableFriendHeader($aggregate),
-                    'url' => URL::action('BookingUserController@show', ['aggregate_id' => $aggregate_id, 'user_id' => $user_id])
+                    'url' => URL::action('BookingUserController@show', ['booking' => $aggregate_id, 'user' => $user_id])
                 ]);
             }
             else {
