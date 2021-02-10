@@ -3650,10 +3650,6 @@ msgstr "Edit Fee"
 msgid "Nome informale del fornitore"
 msgstr "Supplier's common name"
 
-#: ../storage/framework/messages/f8840bff7b1daae6ad3d30d665caae168fc3e4c7.php.php:46
-msgid "Modalità Pagamento"
-msgstr "Payment method"
-
 #: ../storage/framework/messages/a4cdcea55a523a711c537c1509bd0ed1cd3d4613.php.php:13
 msgid ""
 "Nome completo del fornitore, da usare per fini contabili e fiscali. Se non "
@@ -4020,18 +4016,6 @@ msgstr "New user registered"
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:29
 msgid "Stato Crediti"
 msgstr "Credit Status"
-
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:13
-msgid "Minore di"
-msgstr "Minor than"
-
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:17
-msgid "Maggiore di"
-msgstr "Major than"
-
-#: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:21
-msgid "Filtra Credito"
-msgstr "Filter by credit"
 
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:34
 #: ../storage/framework/messages/c6349acff4f5065c0b9953d51d3ebf9977bdc5d8.php.php:38
