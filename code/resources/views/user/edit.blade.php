@@ -120,6 +120,7 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
                                     'name' => 'preferred_delivery_id',
                                     'objects' => $currentgas->deliveries,
                                     'label' => _i('Luogo di Consegna'),
+                                    'help_popover' => _i("Dove l'utente preferisce avere i propri prodotti recapitati. Permette di organizzare le consegne in luoghi diversi."),
                                     'extra_selection' => [
                                         '0' => _i('Nessuno')
                                     ]
@@ -149,7 +150,10 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
 
                             @if($user->gas->hasFeature('rid'))
                                 <div class="form-group">
-                                    <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Configurazione SEPA') }}</label>
+                                    <label class="col-sm-{{ $labelsize }} control-label">
+                                        @include('commons.helpbutton', ['help_popover' => _i("Specifica qui i parametri per la generazione dei RID per questo utente. Per gli utenti per i quali questi campi non sono stati compilati non sarà possibile generare alcun RID.")])
+                                        {{ _i('Configurazione SEPA') }}
+                                    </label>
 
                                     <div class="col-sm-{{ $fieldsize }}">
                                         @include('commons.textfield', ['obj' => $user, 'name' => 'rid->iban', 'label' => _i('IBAN'), 'squeeze' => true])

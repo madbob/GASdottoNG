@@ -298,6 +298,16 @@ class Gas extends Model
         return (array) json_decode($this->getConfig('extra_invoicing'));
     }
 
+    public function getAnnualFeeAmountAttribute()
+    {
+        return $this->getConfig('annual_fee_amount');
+    }
+
+    public function getDepositAmountAttribute()
+    {
+        return $this->getConfig('deposit_amount');
+    }
+
     public function nextInvoiceNumber()
     {
         $status = $this->extra_invoicing;
