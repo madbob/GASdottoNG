@@ -138,7 +138,7 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                 <td class="order-cell-quantity {{ in_array('quantity', $columns) ? '' : 'hidden' }}">
                     <label>
                         @if($product->portion_quantity != 0)
-                            <span class="order-summary-product-quantity">{{ $summary->products[$product->id]->quantity_pieces ?? 0 }}</span> Pezzi
+                            <span class="order-summary-product-quantity">{{ $summary->products[$product->id]->quantity ?? 0 }}</span> Pezzi
                         @else
                             <span class="order-summary-product-quantity">{{ $summary->products[$product->id]->quantity ?? 0 }}</span> {{ $product->measure->name }}
                         @endif

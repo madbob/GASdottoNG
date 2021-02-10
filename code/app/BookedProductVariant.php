@@ -116,7 +116,6 @@ class BookedProductVariant extends Model
             'weight' => $this->fixWeight('quantity'),
             'quantity' => $this->quantity,
             'quantity_pieces' => $this->product->product->portion_quantity > 0 ? $this->quantity * $this->product->product->portion_quantity : $this->quantity,
-
             'price_delivered' => $this->deliveredValue(),
             'weight_delivered' => $this->fixWeight('delivered'),
             'delivered' => $this->delivered,

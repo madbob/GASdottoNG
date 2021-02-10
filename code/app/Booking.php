@@ -521,7 +521,14 @@ class Booking extends Model
         $ret = $this->emptyReduxBehaviour();
 
         $ret->children = function($item, $filters) {
-            return $item->products;
+            $with_friends = $filters['with_friends'] ?? true;
+
+            if ($with_friends) {
+                return $item->products_with_friends;
+            }
+            else {
+                return $item->products;
+            }
         };
 
         $ret->optimize = function($item, $child) {

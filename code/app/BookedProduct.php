@@ -360,8 +360,8 @@ class BookedProduct extends Model
             $ret = $this->describingAttributesMerge($ret, (object) [
                 'price' => $this->getValue('booked'),
                 'weight' => $this->fixWeight('quantity'),
-                'quantity' => $this->product->portion_quantity > 0 ? $this->quantity * $this->product->portion_quantity : $this->quantity,
-                'quantity_pieces' => $this->quantity,
+                'quantity' => $this->quantity,
+                'quantity_pieces' => $this->product->portion_quantity > 0 ? $this->quantity * $this->product->portion_quantity : $this->quantity,
                 'price_delivered' => $this->getValue('delivered'),
                 'weight_delivered' => $this->fixWeight('delivered'),
                 'delivered' => $this->product->portion_quantity > 0 ? $this->delivered * $this->product->portion_quantity : $this->delivered,
