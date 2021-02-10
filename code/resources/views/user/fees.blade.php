@@ -1,7 +1,7 @@
 <?php $previous_year_closing = date('Y-m-d', strtotime($currentgas->getConfig('year_closing') . ' -1 years')) ?>
 
 <div class="modal fade close-on-submit" id="checkFees" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-extra-lg" role="document">
         <div class="modal-content">
             <form class="form-horizontal" method="GET" data-toggle="validator" novalidate>
                 <div class="modal-header">
@@ -20,7 +20,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($currentgas->users()->topLevel()->get() as $user)
+                                    @foreach($users as $user)
                                         <?php
 
                                         $dom_id = rand();
@@ -40,31 +40,24 @@
 
                                         <tr>
                                             <td>
-                                                <input type="hidden" name="user_id[]" value="{{ $user->id }}">
-                                                {{ $user->printableName() }}
+                                                {!! $user->printableHeader() !!}
                                             </td>
 
-                                            @if($user->fee)
-                                                <td data-updatable-name="movement-id-{{ $dom_id }}" data-updatable-field="name">
+                                            <td data-updatable-name="movement-id-{{ $dom_id }}" data-updatable-field="name">
+                                                @if($user->fee)
                                                     {!! $user->fee->printableName() !!}
-                                                </td>
-
-                                                <td>
-                                                    @if($user->fee->date < $previous_year_closing)
-                                                        <button type="button" class="btn btn-success async-modal" data-target-url="{{ $new_fee_url }}">{{ _i('Nuova Quota') }}</button>
-                                                    @endif
-
-                                                    <button type="button" class="btn btn-default async-modal" data-target-url="{{ route('movements.show', ['movement' => $user->fee->id, 'dom_id' => $dom_id]) }}">{{ _i('Modifica Quota') }}</button>
-                                                </td>
-                                            @else
-                                                <td data-updatable-name="movement-id-{{ $dom_id }}" data-updatable-field="name">
+                                                @else
                                                     {{ printableDate(null) }}
-                                                </td>
+                                                @endif
+                                            </td>
 
-                                                <td>
-                                                    <button type="button" class="btn btn-success async-modal" data-target-url="{{ $new_fee_url }}">{{ _i('Nuova Quota') }}</button>
-                                                </td>
-                                            @endif
+                                            <td>
+                                                <button type="button" class="btn btn-success async-modal" data-target-url="{{ $new_fee_url }}">{{ _i('Nuova Quota') }}</button>
+
+                                                @if($user->fee)
+                                                    <button type="button" class="btn btn-default async-modal" data-target-url="{{ route('movements.show', ['movement' => $user->fee->id, 'dom_id' => $dom_id]) }}">{{ _i('Modifica Quota') }}</button>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

@@ -171,7 +171,8 @@ class UsersController extends BackedController
         $user = $request->user();
 
         if ($user->can('users.admin') || $user->can('users.movements')) {
-            return view('user.fees');
+            $users = $this->service->list('', $user->can('users.admin', $user->gas));
+            return view('user.fees', ['users' => $users]);
         }
         else {
             abort(401);
