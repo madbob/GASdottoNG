@@ -20,7 +20,7 @@ use App\Events\SluggableCreating;
 
 class User extends Authenticatable
 {
-    use Notifiable, Authorizable, CanResetPassword, SoftDeletes, ContactableTrait, CreditableTrait, PayableTrait, SuspendableTrait, GASModel, SluggableID;
+    use Notifiable, Authorizable, CanResetPassword, SoftDeletes, ContactableTrait, CreditableTrait, PayableTrait, SuspendableTrait, HierarcableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -44,11 +44,6 @@ class User extends Authenticatable
     public static function commonClassName()
     {
         return _i('Utente');
-    }
-
-    public function gas()
-    {
-        return $this->belongsTo('App\Gas');
     }
 
     public function roles($target = null)

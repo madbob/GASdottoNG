@@ -13,7 +13,7 @@ foreach ($aggregate->orders as $order) {
 $shippable_status = ($controllable && $aggregate->isActive() && $aggregate->isRunning() == false);
 $shipped_status = ($controllable && $aggregate->isActive() == false && $aggregate->isRunning() == false);
 $more_orders = ($aggregate->orders->count() > 1);
-$multi_gas = ($aggregate->gas()->count() > 1);
+$multi_gas = ($aggregate->gas()->count() > 1 && $currentuser->can('supplier.shippings', $order->supplier));
 $panel_rand_wrap = rand();
 
 ?>

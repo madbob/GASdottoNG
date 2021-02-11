@@ -53,6 +53,8 @@ class MultiGasController extends Controller
         }
 
         try {
+            DB::beginTransaction();
+
             $user_service = new UsersService();
             $admin = $user_service->store($request->only('username', 'firstname', 'lastname', 'password', 'enforce_password_change'));
 
@@ -79,17 +81,28 @@ class MultiGasController extends Controller
 
             /*
                 Aggancio il nuovo utente amministratore al nuovo GAS (di default
-                viene assegnato al GAS corrente)
+                verrebbe assegnato al GAS corrente)
             */
             $admin->gas_id = $gas->id;
             $admin->save();
 
-            /*
-                Assegno ruoli di amministrazione al nuovo utente amministratore
-            */
-            $roles = Role::havingAction('gas.permissions');
-            foreach($roles as $role)
+            $roles = [];
+
+            $target_role = $user->gas->roles['multigas'] ?? -1;
+            if ($target_role != -1) {
+                $role = Role::find($target_role);
+                if ($role) {
+                    $roles = [$role];
+                }
+            }
+
+            if (empty($roles)) {
+                $roles = Role::havingAction('gas.permissions');
+            }
+
+            foreach($roles as $role) {
                 $admin->addRole($role, $gas);
+            }
 
             return $this->successResponse([
                 'id' => $gas->id,
@@ -116,16 +129,6 @@ class MultiGasController extends Controller
         }
 
         return view('multigas.edit', ['gas' => $gas]);
-    }
-
-    public function edit($id)
-    {
-        //
-    }
-
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     public function destroy($id)

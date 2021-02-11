@@ -25,6 +25,16 @@
                         'help_popover' => _i("Questo ruolo sarà automaticamente assegnato ad ogni \"amico\" degli utenti esistenti. Si consiglia di creare un ruolo dedicato, con permessi limitati alle sole prenotazioni"),
                     ])
                 @endif
+
+                @if(App\Role::someone('gas.multi'))
+                    @include('commons.selectobjfield', [
+                        'obj' => $gas,
+                        'name' => 'roles->multigas',
+                        'label' => _i('Ruolo Amministratore Multi-GAS'),
+                        'objects' => App\Role::all(),
+                        'help_popover' => _i("Questo ruolo sarà automaticamente assegnato al primo utente di ogni nuovo GAS creato nel pannello Multi-GAS"),
+                    ])
+                @endif
             </form>
         </div>
     </div>

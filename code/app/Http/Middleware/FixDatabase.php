@@ -17,6 +17,14 @@ class FixDatabase
 {
     public function handle($request, Closure $next)
     {
+        $gas = currentAbsoluteGas();
+        $roles = $gas->roles;
+
+        if (!isset($roles->multigas)) {
+            $roles->multigas = -1;
+            $gas->setConfig('roles', $roles);
+        }
+
         return $next($request);
     }
 }
