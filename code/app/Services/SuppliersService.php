@@ -104,19 +104,12 @@ class SuppliersService extends BaseService
         DB::transaction(function () use ($supplier, $creator) {
             $supplier->save();
 
-            $roles = Role::havingAction('supplier.modify');
-            foreach($roles as $r) {
-                $creator->addRole($r, $supplier);
-            }
-
-            $roles = Role::havingAction('supplier.orders');
-            foreach($roles as $r) {
-                $creator->addRole($r, $supplier);
-            }
-
-            $roles = Role::havingAction('supplier.shippings');
-            foreach($roles as $r) {
-                $creator->addRole($r, $supplier);
+            $desired_actions = ['supplier.modify', 'supplier.orders', 'supplier.shippings'];
+            foreach($desired_actions as $action) {
+                $roles = Role::havingAction($action);
+                foreach($roles as $r) {
+                    $creator->addRole($r, $supplier);
+                }
             }
         });
 

@@ -64,15 +64,28 @@ class DatabaseSeeder extends Seeder
             'parent_id' => $admin_role->id
         ]);
 
+        $friend_role = Role::create([
+            'name' => 'Amico',
+            'actions' => 'users.self,supplier.view,supplier.book',
+            'parent_id' => $user_role->id
+        ]);
+
         $referrer_role = Role::create([
             'name' => 'Referente',
             'actions' => 'supplier.modify,supplier.orders,supplier.shippings,supplier.movements',
             'parent_id' => $admin_role->id
         ]);
 
+        $multigas_role = Role::create([
+            'name' => 'Amministratore GAS Secondario',
+            'actions' => 'gas.access,gas.config,supplier.view,supplier.book,supplier.add,users.admin,users.movements,movements.admin,notifications.admin'
+            'parent_id' => $admin_role->id
+        ]);
+
         $gas->setConfig('roles', (object) [
             'user' => $user_role->id,
-            'friend' => $user_role->id
+            'friend' => $friend_role->id,
+            'multigas' => $multigas_role->id,
         ]);
 
         $admin = User::create([
@@ -141,7 +154,7 @@ class DatabaseSeeder extends Seeder
 
         $notification = Notification::create([
             'creator_id' => $admin->id,
-            'content' => "Benvenuto in GASdotto!\n\nClicca l'icona in alto a destra col punto interrogativo per attivare l'help in linea, ed ottenere una breve descrizione dei campi editabili.\nPer ulteriore assistenza puoi rivolgerti alla mailing list degli utenti su https://groups.google.com/forum/#!forum/gasdotto-dev o all'indirizzo mail info@gasdotto.net",
+            'content' => "Benvenuto in GASdotto!\n\nPer assistenza puoi rivolgerti alla mailing list degli utenti su https://groups.google.com/forum/#!forum/gasdotto-dev o all'indirizzo mail info@gasdotto.net",
             'mailed' => false,
             'start_date' => date('Y-m-d'),
             'end_date' => date('Y-m-d', strtotime('+7 days')),

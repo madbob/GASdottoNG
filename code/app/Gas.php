@@ -115,7 +115,8 @@ class Gas extends Model
             'roles' => [
                 'default' => (object) [
                     'user' => $default_role ? $default_role->id : -1,
-                    'friend' => $default_role ? $default_role->id : -1
+                    'friend' => $default_role ? $default_role->id : -1,
+                    'multigas' => $default_role ? $default_role->id : -1
                 ]
             ],
 
@@ -317,6 +318,16 @@ class Gas extends Model
     public function getExtraInvoicingAttribute()
     {
         return (array) json_decode($this->getConfig('extra_invoicing'));
+    }
+
+    public function getAnnualFeeAmountAttribute()
+    {
+        return $this->getConfig('annual_fee_amount');
+    }
+
+    public function getDepositAmountAttribute()
+    {
+        return $this->getConfig('deposit_amount');
     }
 
     public function nextInvoiceNumber()

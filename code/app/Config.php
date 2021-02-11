@@ -6,10 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Config extends Model
 {
-    public function gas()
-    {
-        $this->belongsTo('App\Gas');
-    }
+    use HierarcableTrait;
 
     public static function customMailTypes()
     {

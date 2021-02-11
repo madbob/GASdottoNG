@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
-"POT-Creation-Date: 2020-02-09 23:46+0100\n"
-"PO-Revision-Date: 2020-11-05 09:26+0000\n"
+"POT-Creation-Date: 2021-02-10 13:01+0100\n"
+"PO-Revision-Date: 2021-02-10 13:01+0100\n"
 "Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/gasdottong/"
 "translations/fr/>\n"
@@ -11,13 +11,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.3.2-dev\n"
+"X-Generator: Weblate 4.4.1-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: ../resources/views\n"
-"X-Poedit-SearchPath-2: ../storage/framework/messages\n"
+"X-Poedit-SearchPath-2: ../storage/framework/messages/\n"
 
 #: ../resources/views/booking/edit.blade.php:35
 #: ../storage/framework/messages/3f3da659f67d6f09b148696de4816ff19cb2e8fd.php.php:35
@@ -327,7 +327,7 @@ msgstr "Fichier"
 #: Http/Controllers/ImportController.php:60
 msgid "File non caricato correttamente, possibili problemi con la dimensione"
 msgstr ""
-"Le fichier n'a pas été téléchargé correctement, peut-être à cause d'un "
+"Le fichier n'a pas été téléversé correctement, peut-être à cause d'un "
 "problème de taille"
 
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:70
@@ -1078,8 +1078,6 @@ msgstr ""
 "factures enregistrées dans <strong>Comptabilité -> Factures</strong>."
 
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:573
-#, fuzzy
-#| msgid "E-Mail"
 msgid "Log E-Mail"
 msgstr "Journal des courriels"
 
@@ -2553,7 +2551,7 @@ msgstr "Satispay"
 
 #: ../storage/framework/messages/5db2a38f9e470b3feb9a627cc9f39980763b545d.php.php:375
 #: MovementType.php:375
-#, fuzzy, php-format
+#, php-format
 msgid "Applicazione movimento su oggetto nullo: %s"
 msgstr "Application de transaction sur objet nul : %s"
 
@@ -3226,7 +3224,7 @@ msgstr "Prochaines dates dans le calendrier :"
 #: ../storage/framework/messages/a4cdcea55a523a711c537c1509bd0ed1cd3d4613.php.php:6
 #: ../storage/framework/messages/f8840bff7b1daae6ad3d30d665caae168fc3e4c7.php.php:46
 msgid "Modalità Pagamento"
-msgstr "Méthode de paiement"
+msgstr "Mode de paiement"
 
 #: ../storage/framework/messages/a4cdcea55a523a711c537c1509bd0ed1cd3d4613.php.php:7
 msgid "Modalità Avanzamento Ordini"
@@ -3234,7 +3232,7 @@ msgstr "Avancement de la commande"
 
 #: ../storage/framework/messages/a5322b2f2be8f8da4bcecea6ac1924410a2b1fd9.php.php:5
 msgid "Modifica Unità di Misura"
-msgstr "Éditer les unités de mesure"
+msgstr "Modifier les unités de mesure"
 
 #: ../storage/framework/messages/a5322b2f2be8f8da4bcecea6ac1924410a2b1fd9.php.php:18
 #: ../storage/framework/messages/c4652b192f85ead50be5a9e63b109416991d8177.php.php:70
@@ -3334,7 +3332,7 @@ msgstr "Réservations concernées"
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:31
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:48
 msgid "Scarica o Inoltra"
-msgstr "Télécharger ou envoyer"
+msgstr "Télécharger ou transférer"
 
 #: ../storage/framework/messages/b1322c3fafe852444e323bfecd06b3ec0cfca40a.php.php:52
 msgid "Scarica la fattura generata, o inoltrala via email."
@@ -3712,7 +3710,7 @@ msgid ""
 "(producendo saldi completamente diversi da quelli attuali)."
 msgstr ""
 "Avant de modifier le comportement d'un type de transaction existant, il est "
-"recommandé d'utiliser la fonction \"Archiver les soldes\" afin d'éviter de "
+"recommandé d'utiliser la fonction « Archiver les soldes » afin d'éviter de "
 "recalculer des mouvements antérieurs et affecter les soldes courants."
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:124
@@ -3722,7 +3720,7 @@ msgstr "Type de transaction"
 
 #: ../storage/framework/messages/cd1fc86c2804db6baf82e393aad296613ba57181.php.php:152
 msgid "Carica Nuova Fattura"
-msgstr "Charger nouvelle facture"
+msgstr "Charger une nouvelle facture"
 
 #: ../storage/framework/messages/ceb7f4cae1837fa8a00b2d0b4240c3e168b2b699.php.php:25
 #: Config.php:25
@@ -3789,7 +3787,7 @@ msgstr "Erreur lors de l'enregistrement"
 #: Services/MovementsService.php:227 Services/MovementsService.php:292
 #, php-format
 msgid "Errore nel ricalcolo saldi: %s"
-msgstr "Erreur lors du calcul du solde du compte : %s"
+msgstr "Erreur lors du calcul du solde du compte : %s"
 
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:13
 #: ../storage/framework/messages/d3472e41f37cc1d02558b8f633e474faa24d0517.php.php:20

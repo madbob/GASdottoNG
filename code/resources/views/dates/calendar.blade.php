@@ -11,7 +11,7 @@
             @endif
         @endforeach
 
-        @foreach(App\Date::all() as $d)
+        @foreach(App\Date::localGas()->get() as $d)
             @foreach($d->dates as $dat)
                 {
                     title: '{{ str_replace("\n", " ", str_replace("\r", '', str_replace("'", "\'", $d->calendar_string))) }}',

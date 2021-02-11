@@ -4,15 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
-use App\GASModel;
-use App\PayableTrait;
-use App\CreditableTrait;
-use App\SluggableID;
 
 class Invoice extends Model
 {
-    use GASModel, PayableTrait, CreditableTrait, SluggableID;
+    use GASModel, PayableTrait, CreditableTrait, HierarcableTrait, SluggableID;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -20,6 +17,12 @@ class Invoice extends Model
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new RestrictedGAS());
+    }
 
     public static function commonClassName()
     {

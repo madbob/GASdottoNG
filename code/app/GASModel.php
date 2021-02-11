@@ -494,6 +494,15 @@ trait GASModel
                     'text' => _i('In Entrata'),
                 ];
             }
+
+            if (Gas::count() > 1) {
+                $icons['Aggregate']['retweet'] = (object) [
+                    'test' => function ($obj) {
+                        return $obj->gas()->count() > 1;
+                    },
+                    'text' => _i('Multi-GAS'),
+                ];
+            }
         }
 
         return $icons;

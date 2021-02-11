@@ -1,6 +1,9 @@
 <div class="form-group">
     @if($squeeze == false)
-        <label for="contacts" class="col-sm-{{ $labelsize }} control-label">{{ _i('Contatti') }}</label>
+        <label for="contacts" class="col-sm-{{ $labelsize }} control-label">
+            @include('commons.helpbutton', ['help_popover' => _i("Qui si può specificare un numero arbitrario di contatti per il soggetto. Le notifiche saranno spedite a tutti gli indirizzi e-mail indicati.")])
+            {{ _i('Contatti') }}
+        </label>
     @endif
 
     <div class="col-sm-{{ $fieldsize }}">

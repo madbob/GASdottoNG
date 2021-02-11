@@ -8,6 +8,7 @@
                     {{ _i('Non ci sono varianti da duplicare') }}
                 @endif
             @else
+                @include('commons.helpbutton', ['help_popover' => _i("Ogni prodotto può avere delle varianti, ad esempio la taglia o il colore per i capi di abbigliamento. In fase di prenotazione, gli utenti potranno indicare quantità diverse per ogni combinazione di varianti. Le varianti possono inoltre avere un proprio prezzo, da specificare in funzione del prezzo unitario del prodotto (ad esempio: +1 euro o -0.8 euro)")])
                 <button type="button" class="btn btn-warning add-variant pull-right">{{ _i('Crea Nuova Variante') }}</button>
             @endif
         </div>

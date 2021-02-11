@@ -24,12 +24,35 @@
                                     @include('commons.textfield', ['obj' => $gas, 'name' => 'name', 'label' => _i('Nome del GAS'), 'mandatory' => true, 'max_length' => 20])
                                     @include('commons.emailfield', ['obj' => $gas, 'name' => 'email', 'label' => _i('E-Mail di Riferimento'), 'mandatory' => true])
                                     @include('commons.imagefield', ['obj' => $gas, 'name' => 'logo', 'label' => _i('Logo Homepage'), 'valuefrom' => 'logo_url'])
-                                    @include('commons.textarea', ['obj' => $gas, 'name' => 'message', 'label' => _i('Messaggio Homepage')])
-                                    @include('commons.selectenumfield', ['obj' => $gas, 'name' => 'language', 'label' => _i('Lingua'), 'values' => getLanguages()])
-                                    @include('commons.textfield', ['obj' => $gas, 'name' => 'currency', 'label' => _i('Valuta')])
+
+                                    @include('commons.textarea', [
+                                        'obj' => $gas,
+                                        'name' => 'message',
+                                        'label' => _i('Messaggio Homepage'),
+                                        'help_popover' => _i("Eventuale messaggio da visualizzare sulla pagina di autenticazione di GASdotto, utile per comunicazioni speciali verso i membri del GAS o come messaggio di benvenuto"),
+                                    ])
+
+                                    @include('commons.selectenumfield', [
+                                        'obj' => $gas,
+                                        'name' => 'language',
+                                        'label' => _i('Lingua'),
+                                        'values' => getLanguages()
+                                    ])
+
+                                    @include('commons.textfield', [
+                                        'obj' => $gas,
+                                        'name' => 'currency',
+                                        'label' => _i('Valuta'),
+                                        'help_popover' => _i("Simbolo della valuta in uso. Verrà usato in tutte le visualizzazioni in cui sono espressi dei prezzi"),
+                                    ])
 
                                     @if(App\Role::someone('gas.access', $gas))
-                                        @include('commons.boolfield', ['obj' => $gas, 'name' => 'restricted', 'label' => _i('Modalità Manutenzione')])
+                                        @include('commons.boolfield', [
+                                            'obj' => $gas,
+                                            'name' => 'restricted',
+                                            'label' => _i('Modalità Manutenzione'),
+                                            'help_popover' => _i("Se abilitato, il login sarà inibito a tutti gli utenti che non hanno il permesso \"Accesso consentito anche in manutenzione\""),
+                                        ])
                                     @endif
 
                                     <div class="btn-group pull-right main-form-buttons" role="group">
@@ -62,7 +85,8 @@
                                         'name' => 'enable_public_registrations',
                                         'label' => _i('Abilita Registrazione Pubblica'),
                                         'extra_class' => 'collapse_trigger',
-                                        'default_checked' => $gas->hasFeature('public_registrations')
+                                        'default_checked' => $gas->hasFeature('public_registrations'),
+                                        'help_popover' => _i("Quando questa opzione è abilitata, chiunque potrà registrarsi all'istanza per mezzo dell'apposito pannello (accessibile da quello di login). Gli amministratori addetti agli utenti riceveranno una mail di notifica per ogni nuovo utente registrato"),
                                     ])
 
                                     <div class="collapse {{ $gas->hasFeature('public_registrations') ? 'in' : '' }}" data-triggerable="enable_public_registrations">
@@ -129,8 +153,18 @@
                                 <input type="hidden" name="group" value="orders">
 
                                 <div class="col-md-12">
-                                    @include('commons.boolfield', ['obj' => $gas, 'name' => 'fast_shipping_enabled', 'label' => _i('Abilita Consegne Rapide')])
-                                    @include('commons.boolfield', ['obj' => $gas, 'name' => 'restrict_booking_to_credit', 'label' => _i('Permetti solo prenotazioni entro il credito disponibile')])
+                                    @include('commons.boolfield', [
+                                        'obj' => $gas,
+                                        'name' => 'fast_shipping_enabled',
+                                        'label' => _i('Abilita Consegne Rapide'),
+                                        'help_popover' => _i("Quando questa opzione è abilitata, nel pannello dell'ordine viene attivato il tab \"Consegne Rapide\" (accanto a \"Consegne\") che permette di marcare più prenotazioni come consegnate in un'unica operazione"),
+                                    ])
+
+                                    @include('commons.boolfield', [
+                                        'obj' => $gas,
+                                        'name' => 'restrict_booking_to_credit',
+                                        'label' => _i('Permetti solo prenotazioni entro il credito disponibile')
+                                    ])
 
                                     <?php
 
@@ -164,7 +198,10 @@
 
                                     <div class="form-group">
                                         <?php $columns = $currentgas->orders_display_columns ?>
-                                        <label for="order_columns" class="col-sm-{{ $labelsize }} control-label">{{ _i('Colonne Riassunto Ordini') }}</label>
+                                        <label for="order_columns" class="col-sm-{{ $labelsize }} control-label">
+                                            @include('commons.helpbutton', ['help_popover' => _i("Colonne visualizzate di default nella griglia di riassunto degli ordini. È comunque sempre possibile modificare la visualizzazione dall'interno della griglia stessa per mezzo del selettore posto in alto a destra")])
+                                            {{ _i('Colonne Riassunto Ordini') }}
+                                        </label>
 
                                         <div class="col-sm-{{ $fieldsize }}">
                                             @foreach(App\Order::displayColumns() as $identifier => $metadata)
@@ -200,7 +237,10 @@
 
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="year_closing" class="col-sm-{{ $labelsize }} control-label">{{ _i('Inizio Anno Sociale') }}</label>
+                                        <label for="year_closing" class="col-sm-{{ $labelsize }} control-label">
+                                            @include('commons.helpbutton', ['help_popover' => _i("In questa data le quote di iscrizione verranno automaticamente fatte scadere e dovranno essere rinnovate")])
+                                            {{ _i('Inizio Anno Sociale') }}
+                                        </label>
                                         <div class="col-sm-{{ $fieldsize }}">
                                             <div class="input-group">
                                                 <input type="text" class="date-to-month form-control" name="year_closing" value="{{ ucwords(strftime('%d %B', strtotime($currentgas->getConfig('year_closing')))) }}" required autocomplete="off">
@@ -210,25 +250,22 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="annual_fee_amount" class="col-sm-{{ $labelsize }} control-label">{{ _i('Quota Annuale') }}</label>
-                                        <div class="col-sm-{{ $fieldsize }}">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control number" name="annual_fee_amount" value="{{ printablePrice($currentgas->getConfig('annual_fee_amount')) }}" autocomplete="off">
-                                                <div class="input-group-addon">{{ $currentgas->currency }}</div>
-                                            </div>
-                                        </div>
-                                    </div>
 
-                                    <div class="form-group">
-                                        <label for="deposit_amount" class="col-sm-{{ $labelsize }} control-label">{{ _i('Cauzione') }}</label>
-                                        <div class="col-sm-{{ $fieldsize }}">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control number" name="deposit_amount" value="{{ printablePrice($currentgas->getConfig('deposit_amount')) }}" autocomplete="off">
-                                                <div class="input-group-addon">{{ $currentgas->currency }}</div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @include('commons.decimalfield', [
+                                        'obj' => $gas,
+                                        'name' => 'annual_fee_amount',
+                                        'label' => _i('Quota Annuale'),
+                                        'is_price' => true,
+                                        'help_popover' => _i("Se non configurato (valore = 0) non verranno gestite le quote di iscrizione"),
+                                    ])
+
+                                    @include('commons.decimalfield', [
+                                        'obj' => $gas,
+                                        'name' => 'deposit_amount',
+                                        'label' => _i('Cauzione'),
+                                        'is_price' => true,
+                                        'help_popover' => _i("Se non configurato (valore = 0) non verranno gestite le cauzioni da parte dei nuovi soci"),
+                                    ])
                                 </div>
 
                                 @include('commons.boolfield', [
@@ -236,7 +273,8 @@
                                     'name' => 'enable_rid',
                                     'label' => _i('Abilita SEPA'),
                                     'extra_class' => 'collapse_trigger',
-                                    'default_checked' => $gas->hasFeature('rid')
+                                    'default_checked' => $gas->hasFeature('rid'),
+                                    'help_popover' => _i("Abilitando questa opzione e popolando i relativi campi verrà attivata l'esportazione dei files SEPA, con cui automatizzare le transazioni bancarie. I files saranno generabili da Contabilità -> Stato Crediti -> Esporta SEPA. Dopo aver compilato questo form, per ogni utente dovrai specificare alcuni parametri dai relativi pannelli in Utenti"),
                                 ])
 
                                 <div class="collapse {{ $gas->hasFeature('rid') ? 'in' : '' }}" data-triggerable="enable_rid">
@@ -254,7 +292,8 @@
                                     'name' => 'enable_paypal',
                                     'label' => _i('Abilita PayPal'),
                                     'extra_class' => 'collapse_trigger',
-                                    'default_checked' => $gas->hasFeature('paypal')
+                                    'default_checked' => $gas->hasFeature('paypal'),
+                                    'help_popover' => _i("Abilitando questa opzione e popolando i relativi campi verranno attivati i pagamenti con PayPal, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto. Per ottenere le credenziali visita https://developer.paypal.com/"),
                                 ])
 
                                 <div class="collapse {{ $gas->hasFeature('paypal') ? 'in' : '' }}" data-triggerable="enable_paypal">
@@ -285,7 +324,8 @@
                                     'name' => 'enable_satispay',
                                     'label' => _i('Abilita Satispay'),
                                     'extra_class' => 'collapse_trigger',
-                                    'default_checked' => $gas->hasFeature('satispay')
+                                    'default_checked' => $gas->hasFeature('satispay'),
+                                    'help_popover' => _i("Abilitando questa opzione e popolando i relativi campi verranno attivati i pagamenti con Satispay, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto. Per ottenere le credenziali visita https://business.satispay.com/"),
                                 ])
 
                                 <div class="collapse {{ $gas->hasFeature('satispay') ? 'in' : '' }}" data-triggerable="enable_satispay">
@@ -301,7 +341,8 @@
                                     'name' => 'enable_extra_invoicing',
                                     'label' => _i('Abilita Emissione Fatture'),
                                     'extra_class' => 'collapse_trigger',
-                                    'default_checked' => $gas->hasFeature('extra_invoicing')
+                                    'default_checked' => $gas->hasFeature('extra_invoicing'),
+                                    'help_popover' => _i("Abilitando questa opzione e popolando i relativi campi verrà attivata l'emissione delle fatture nei confronti degli utenti che effettuano prenotazioni. Le fatture saranno emesse al momento del salvataggio o della consegna della prenotazione, e saranno accessibili da Contabilità -> Fatture"),
                                 ])
 
                                 <div class="collapse {{ $gas->hasFeature('extra_invoicing') ? 'in' : '' }}" data-triggerable="enable_extra_invoicing">
@@ -426,7 +467,10 @@
                         <div class="row">
                             <div class="col-md-12 form-horizontal">
                                 <div class="form-group">
-                                    <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Importazione') }}</label>
+                                    <label class="col-sm-{{ $labelsize }} control-label">
+                                        @include('commons.helpbutton', ['help_popover' => _i("Da qui è possibile importare un file GDXP generato da un'altra istanza di GASdotto o da qualsiasi altra piattaforma che supporta il formato")])
+                                        {{ _i('Importazione') }}
+                                    </label>
                                     <div class="col-sm-{{ $fieldsize }}">
                                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importGDXP">{{ _i('Importa GDXP') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
                                         @push('postponed')

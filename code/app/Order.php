@@ -102,13 +102,11 @@ class Order extends Model
 
         if ($user->gas->hasFeature('shipping_places')) {
             $query->where(function($query) use ($user) {
-                $supplier_shippings = array_keys($user->targetsByAction('supplier.shippings'));
-
                 $query->where(function($query) use ($user) {
                     $query->doesnthave('deliveries')->orWhereHas('deliveries', function($query) use ($user) {
                         $query->where('delivery_id', $user->preferred_delivery_id);
                     });
-                })->orWhereIn('supplier_id', $supplier_shippings);
+                });
             });
         }
     }

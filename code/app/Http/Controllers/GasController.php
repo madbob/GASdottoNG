@@ -198,6 +198,7 @@ class GasController extends Controller
                 $conf = (object) [
                     'user' => $request->input('roles->user'),
                     'friend' => $request->input('roles->friend'),
+                    'multigas' => $request->input('roles->multigas'),
                 ];
 
                 $old_friend_role = $gas->roles['friend'];
