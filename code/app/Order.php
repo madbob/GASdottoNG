@@ -293,9 +293,16 @@ class Order extends Model
 
     public function sendSupplierMail()
     {
-        /*
-            TODO
-        */
+        $required_fields = ['name', 'code', 'quantity', 'boxes', 'measure', 'unit_price', 'price'];
+        $pdf_file_path = $order->document('summary', 'pdf', 'save', $required_fields, 'booked', null);
+        $csv_file_path = $order->document('summary', 'csv', 'save', $required_fields, 'booked', null);
+
+        $mails = $this->supplier->getContactsByType('email');
+        $m = Mail::to($mails);
+        $m->send(new SupplierOrderShipping($pdf_file_path, $csv_file_path));
+
+        @unlink($pdf_file_path);
+        @unlink($csv_file_path);
     }
 
     public function isActive()
@@ -340,6 +347,43 @@ class Order extends Model
 
             return $ret;
         });
+    }
+
+    public function document($type, $format, $action, $required_fields, $status, $shipping_place)
+    {
+        switch($type) {
+            case 'summary':
+                $data = $this->formatSummary($required_fields, $status, $shipping_place);
+                $title = _i('Prodotti ordine %s presso %s', [$this->internal_number, $this->supplier->name]);
+                $filename = sanitizeFilename($title . '.' . $format);
+                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
+
+                if ($format == 'pdf') {
+                    $pdf = PDF::loadView('documents.order_summary_pdf', ['order' => $this, 'data' => $data]);
+
+                    if ($action == 'save') {
+                        $pdf->save($temp_file_path);
+                    }
+                    else {
+                        return $pdf->download($filename);
+                    }
+                }
+                else if ($format == 'csv') {
+                    if ($action == 'save') {
+                        output_csv($filename, $data->headers, $data->contents, function($row) {
+                            return $row;
+                        }, $temp_file_path);
+                    }
+                    else {
+                        return output_csv($filename, $data->headers, $data->contents, function($row) {
+                            return $row;
+                        });
+                    }
+                }
+
+                return $temp_file_path;
+                break;
+        }
     }
 
     public static function emptySummary($order_id)
