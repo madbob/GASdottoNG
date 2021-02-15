@@ -406,7 +406,7 @@
                                     @foreach(App\Config::customMailTypes() as $identifier => $metadata)
                                         <?php
 
-                                        if ($identifier == 'welcome' && $gas->hasFeature('public_registrations') == false) {
+                                        if (($metadata->enabled)($gas) == false) {
                                             continue;
                                         }
                                         if ($identifier == 'receipt' && $gas->hasFeature('extra_invoicing') == false) {

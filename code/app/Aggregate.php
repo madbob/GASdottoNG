@@ -423,7 +423,6 @@ class Aggregate extends Model
             if (in_array($booking->status, $status)) {
                 try {
                     $booking->user->notify(new BookingNotification($booking, $message));
-                    usleep(200000);
                 }
                 catch(\Exception $e) {
                     Log::error('Impossibile inviare notifica mail prenotazione di ' . $booking->user->id);

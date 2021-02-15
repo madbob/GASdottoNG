@@ -23,7 +23,7 @@ $panel_rand_wrap = rand();
         <div class="col-md-6">
             <form class="form-horizontal">
                 <label class="col-sm-{{ $labelsize }} control-label">
-                    @include('commons.helpbutton', ['help_popover' => _i("Invia a tutti gli utenti che hanno partecipato all'ordine una mail riassuntiva della propria prenotazione. È possibile aggiungere un messaggio da allegare a tutti, per eventuali segnalazioni addizionali")])
+                    @include('commons.helpbutton', ['help_popover' => _i("Invia a tutti gli utenti che hanno partecipato all'ordine una mail riassuntiva della propria prenotazione. È possibile aggiungere un messaggio da allegare a tutti, per eventuali segnalazioni addizionali. Il messaggio di riepilogo viene automaticamente inviato alla chiusura dell'ordine, automatica o manuale che sia, se configurato dal pannello Configurazioni.")])
                     @if($shippable_status)
                         {{ _i('Invia Riepiloghi Prenotazioni') }}
                     @else

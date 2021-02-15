@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 
 use App\Notifications\ClosedOrderNotification;
 
+use App;
 use Log;
 
 use App\Order;
@@ -33,26 +34,6 @@ class CloseOrders extends Command
                 $users = Role::everybodyCan('supplier.orders', $order->supplier);
                 foreach($users as $u) {
                     $u->notify(new ClosedOrderNotification($order));
-                }
-
-                if ($order->aggregate->last_notify == null) {
-                    if ($order->aggregate->status == 'closed' && $order->gas->getConfig('auto_user_order_summary')) {
-                        try {
-                            $order->aggregate->sendSummaryMails();
-                        }
-                        catch(\Exception $e) {
-                            Log::error('Errore in invio riepiloghi automatici agli utenti che hanno prenotato: ' . $e->getMessage());
-                        }
-                    }
-
-                    if ($order->gas->getConfig('auto_supplier_order_summary')) {
-                        try {
-                            $order->sendSupplierMail();
-                        }
-                        catch(\Exception $e) {
-                            Log::error('Errore in invio riepilogo automatico al fornitore: ' . $e->getMessage());
-                        }
-                    }
                 }
             }
             catch(\Exception $e) {

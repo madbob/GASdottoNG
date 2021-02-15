@@ -191,6 +191,13 @@ class Gas extends Model
                 'default' => _i("È stato aperto da %[gas_name] un nuovo ordine per il fornitore %[supplier_name].\nPer partecipare, accedi al seguente indirizzo:\n%[gas_booking_link]\nLe prenotazioni verranno chiuse %[closing_date]"),
             ],
 
+            'mail_supplier_summary_subject' => [
+                'default' => _i('Prenotazione ordine %[gas_name]'),
+            ],
+            'mail_supplier_summary_body' => [
+                'default' => _i("Buongiorno.\nIn allegato trova - in duplice copia, PDF e CSV - la prenotazione dell'ordine da parte di %[gas_name].\nPer segnalazioni, può rivolgersi ai referenti in copia a questa mail.\nGrazie."),
+            ],
+
             'mail_receipt_subject' => [
                 'default' => _i("Nuova fattura da %[gas_name]"),
             ],

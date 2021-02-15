@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 
+use Log;
+
 use App\User;
 use App\Order;
 use App\Role;
@@ -41,11 +43,13 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        Order::updating(function($order) {
-            if ($order->status == 'open') {
-                $old = Order::find($order->id);
-                if ($old->status != 'open') {
+        Order::updated(function($order) {
+            if ($order->wasChanged('status')) {
+                if ($order->status == 'open') {
                     $order->sendNotificationMail();
+                }
+                else if ($order->status == 'closed') {
+                    $order->sendClosingMails();
                 }
             }
         });
