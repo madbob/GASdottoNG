@@ -35,6 +35,7 @@ class InvoicesController extends Controller
         }
 
         $invoice = new Invoice();
+        $invoice->gas_id = $user->gas_id;
         $invoice->supplier_id = $request->input('supplier_id');
         $invoice->number = $request->input('number');
         $invoice->date = decodeDate($request->input('date'));
