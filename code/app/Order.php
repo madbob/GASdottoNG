@@ -304,7 +304,7 @@ class Order extends Model
         $order = $this;
 
         if (currentAbsoluteGas()->getConfig('notify_all_new_orders')) {
-            $query_users = User::where('id', '!=', '');
+            $query_users = User::whereNull('parent_id');
         }
         else {
             $query_users = User::whereHas('suppliers', function($query) use ($order) {
