@@ -1,15 +1,27 @@
 <?php
 
+/*
+    Questa funzione deve sempre tornare un GAS: quello dell'utente corrente,
+    quello impostato nel GlobalScopeHub, o alla peggio il primo che si trova nel
+    database
+*/
 function currentAbsoluteGas()
 {
-    static $gas = null;
+    $gas = null;
+    $user = Auth::user();
+
+    if ($user != null) {
+        $gas = $user->gas;
+    }
+    else {
+        $hub = App::make('GlobalScopeHub');
+        if ($hub->enabled()) {
+            $gas = App\Gas::find($hub->getGas());
+        }
+    }
 
     if (is_null($gas)) {
-        $user = Auth::user();
-        if ($user != null)
-            $gas = $user->gas;
-        else
-            $gas = App\Gas::orderBy('created_at', 'asc')->first();
+        $gas = App\Gas::orderBy('created_at', 'asc')->first();
     }
 
     return $gas;

@@ -17,6 +17,7 @@ use Log;
 use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 use App\Notifications\NewOrderNotification;
+use App\Notifications\ClosedOrderNotification;
 use App\Notifications\SupplierOrderShipping;
 
 class Order extends Model
@@ -332,30 +333,9 @@ class Order extends Model
         $this->save();
     }
 
-    public function sendSupplierMail()
-    {
-        try {
-            $required_fields = $this->autoGuessFields();
-            $pdf_file_path = $this->document('summary', 'pdf', 'save', $required_fields, 'booked', null);
-            $csv_file_path = $this->document('summary', 'csv', 'save', $required_fields, 'booked', null);
-
-            $mails = $this->supplier->getContactsByType('email');
-            $m = Mail::to($mails);
-            $m->send(new SupplierOrderShipping($this, $pdf_file_path, $csv_file_path));
-
-            @unlink($pdf_file_path);
-            @unlink($csv_file_path);
-        }
-        catch(\Exception $e) {
-            Log::error('Impossibile inviare email di riepilogo ordine al fornitore: ' . $e->getMessage());
-        }
-    }
-
     /*
         Questa funzione viene eseguita ogni volta che un ordine viene chiuso, in
-        modo automatico o manuale.
-        La mail di notifica di chiusura automatica viene mandata direttamente da
-        CloseOrders
+        modo automatico o manuale
     */
     public function sendClosingMails()
     {
@@ -364,11 +344,20 @@ class Order extends Model
         $aggregate = $this->aggregate;
         $aggregate->refresh();
 
+        $pdf_file_path = $this->document('summary', 'pdf', 'save', null, 'booked', null);
+        $csv_file_path = $this->document('summary', 'csv', 'save', null, 'booked', null);
+
+        $referents = Role::everybodyCan('supplier.orders', $this->supplier);
+        foreach($referents as $u) {
+            $u->notify(new ClosedOrderNotification($this, $pdf_file_path, $csv_file_path));
+        }
+
         if ($this->isRunning() == false) {
             foreach($aggregate->gas as $gas) {
                 if ($gas->auto_supplier_order_summary) {
                     $hub->enable(false);
-                    $this->sendSupplierMail();
+                    $this->supplier->notify(new SupplierOrderShipping($this, $pdf_file_path, $csv_file_path));
+                    $hub->enable(true);
                     break;
                 }
             }
@@ -382,6 +371,9 @@ class Order extends Model
                 }
             }
         }
+
+        @unlink($pdf_file_path);
+        @unlink($csv_file_path);
 
         $hub->setGas($initial_gas);
     }
@@ -432,6 +424,10 @@ class Order extends Model
 
     public function document($type, $format, $action, $required_fields, $status, $shipping_place)
     {
+        if (empty($required_fields)) {
+            $required_fields = $this->autoGuessFields();
+        }
+
         switch($type) {
             case 'summary':
                 $data = $this->formatSummary($required_fields, $status, $shipping_place);

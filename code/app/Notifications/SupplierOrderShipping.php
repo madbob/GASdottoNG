@@ -11,7 +11,7 @@ use Auth;
 
 use App\Role;
 
-class SupplierOrderShipping extends Mailable
+class SupplierOrderShipping extends ManyMailNotification
 {
     use Queueable, SerializesModels, MailFormatter;
 
@@ -26,24 +26,14 @@ class SupplierOrderShipping extends Mailable
         $this->csv_file = $csv_file;
     }
 
-    public function build()
+    public function toMail($notifiable)
     {
-        $message = $this;
+        $message = $this->initMailMessage($notifiable);
 
         $message = $this->formatMail($message, 'supplier_summary', [
             'supplier_name' => $this->order->supplier->name,
             'order_number' => $this->order->number,
         ]);
-
-        $supplier_mail = $this->order->supplier->email;
-
-        if (empty($supplier_mail)) {
-            Log::error('Nessuna email per il fornitore cui mandare il riepilogo ordini');
-            return null;
-        }
-
-        $message->to($supplier_mail);
-        $this->order->supplier->messageAll($message);
 
         $users = Role::everybodyCan('supplier.orders', $this->order->supplier);
         foreach($users as $referent) {
@@ -53,7 +43,6 @@ class SupplierOrderShipping extends Mailable
             }
         }
 
-        $message = $message->attach($this->pdf_file)->attach($this->csv_file);
-        return $message;
+        return $message->attach($this->pdf_file)->attach($this->csv_file);
     }
 }
