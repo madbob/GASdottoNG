@@ -16,9 +16,6 @@ use Log;
 
 use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
-use App\Notifications\NewOrderNotification;
-use App\Notifications\ClosedOrderNotification;
-use App\Notifications\SupplierOrderShipping;
 
 class Order extends Model
 {
@@ -294,88 +291,6 @@ class Order extends Model
         $guessed_fields[] = 'price';
 
         return $guessed_fields;
-    }
-
-    public function sendNotificationMail()
-    {
-        if (is_null($this->first_notify) == false) {
-            return;
-        }
-
-        $order = $this;
-
-        if (currentAbsoluteGas()->getConfig('notify_all_new_orders')) {
-            $query_users = User::whereNull('parent_id');
-        }
-        else {
-            $query_users = User::whereHas('suppliers', function($query) use ($order) {
-                $query->where('suppliers.id', $order->supplier->id);
-            });
-        }
-
-        $deliveries = $order->deliveries;
-        if ($deliveries->isEmpty() == false) {
-            $query_users->whereIn('preferred_delivery_id', $deliveries->pluck('id'));
-        }
-
-        $users = $query_users->get();
-
-        foreach($users as $user) {
-            try {
-                $user->notify(new NewOrderNotification($order));
-            }
-            catch(\Exception $e) {
-                Log::error('Impossibile inoltrare mail di notifica apertura ordine: ' . $e->getMessage());
-            }
-        }
-
-        $this->first_notify = date('Y-m-d');
-        $this->save();
-    }
-
-    /*
-        Questa funzione viene eseguita ogni volta che un ordine viene chiuso, in
-        modo automatico o manuale
-    */
-    public function sendClosingMails()
-    {
-        $hub = App::make('GlobalScopeHub');
-        $initial_gas = $hub->getGas();
-        $aggregate = $this->aggregate;
-        $aggregate->refresh();
-
-        $pdf_file_path = $this->document('summary', 'pdf', 'save', null, 'booked', null);
-        $csv_file_path = $this->document('summary', 'csv', 'save', null, 'booked', null);
-
-        $referents = Role::everybodyCan('supplier.orders', $this->supplier);
-        foreach($referents as $u) {
-            $u->notify(new ClosedOrderNotification($this, $pdf_file_path, $csv_file_path));
-        }
-
-        if ($this->isRunning() == false) {
-            foreach($aggregate->gas as $gas) {
-                if ($gas->auto_supplier_order_summary) {
-                    $hub->enable(false);
-                    $this->supplier->notify(new SupplierOrderShipping($this, $pdf_file_path, $csv_file_path));
-                    $hub->enable(true);
-                    break;
-                }
-            }
-        }
-
-        if ($aggregate->last_notify == null && $aggregate->status == 'closed') {
-            foreach($aggregate->gas as $gas) {
-                if ($gas->auto_user_order_summary) {
-                    $hub->setGas($gas->id);
-                    $aggregate->sendSummaryMails();
-                }
-            }
-        }
-
-        @unlink($pdf_file_path);
-        @unlink($csv_file_path);
-
-        $hub->setGas($initial_gas);
     }
 
     public function isActive()

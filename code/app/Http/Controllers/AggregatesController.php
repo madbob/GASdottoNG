@@ -101,12 +101,11 @@ class AggregatesController extends OrdersController
 
     public function notify(Request $request, $id)
     {
-        $aggregate = Aggregate::findOrFail($id);
         $message = $request->input('message', '');
-        $aggregate->sendSummaryMails($message);
+        async_job('aggregate_summary', ['aggregate_id' => $id, 'message' => $message]);
 
         return response()->json((object) [
-            'last-notification-date-' . $id => $aggregate->printableDate('last_notify')
+            'last-notification-date-' . $id => printableDate(date('Y-m-d'))
         ]);
     }
 

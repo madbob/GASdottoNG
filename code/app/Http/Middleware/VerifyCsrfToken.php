@@ -13,7 +13,8 @@ class VerifyCsrfToken extends BaseVerifier
      * @var array
      */
     protected $except = [
-        'mail/status'
+        'mail/status',
+        'job/execute'
     ];
 
     public function handle($request, Closure $next)

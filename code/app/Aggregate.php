@@ -12,7 +12,6 @@ use Log;
 
 use App\Scopes\RestrictedGAS;
 use App\Events\AttachableToGas;
-use App\Notifications\BookingNotification;
 
 class Aggregate extends Model
 {
@@ -408,34 +407,6 @@ class Aggregate extends Model
         });
 
         return $ret;
-    }
-
-    public function sendSummaryMails($message = '')
-    {
-        if ($this->isActive()) {
-            $status = ['pending', 'saved'];
-        }
-        else {
-            $status = ['shipped'];
-        }
-
-        foreach($this->bookings as $booking) {
-            if (in_array($booking->status, $status)) {
-                try {
-                    $booking->user->notify(new BookingNotification($booking, $message));
-                }
-                catch(\Exception $e) {
-                    Log::error('Impossibile inviare notifica mail prenotazione di ' . $booking->user->id);
-                }
-            }
-        }
-
-        $date = date('Y-m-d');
-
-        foreach($this->orders as $order) {
-            $order->last_notify = $date;
-            $order->save();
-        }
     }
 
     public function getLastNotifyAttribute()

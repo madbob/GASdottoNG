@@ -39,17 +39,17 @@ class AppServiceProvider extends ServiceProvider
 
         Order::created(function($order) {
             if ($order->status == 'open') {
-                $order->sendNotificationMail();
+                async_job('order_open', ['order_id' => $order->id]);
             }
         });
 
         Order::updated(function($order) {
             if ($order->wasChanged('status')) {
                 if ($order->status == 'open') {
-                    $order->sendNotificationMail();
+                    async_job('order_open', ['order_id' => $order->id]);
                 }
                 else if ($order->status == 'closed') {
-                    $order->sendClosingMails();
+                    async_job('order_close', ['order_id' => $order->id]);
                 }
             }
         });
