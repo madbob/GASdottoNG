@@ -48,6 +48,12 @@ trait ReducibleTrait
 
     protected function descendReduction($ret, $filters)
     {
+        foreach ($this->describingAttributes() as $attr) {
+            if (!isset($ret->$attr)) {
+                $ret->$attr = 0;
+            }
+        }
+
         $behaviours = $this->reduxBehaviour();
         $collected = $behaviours->collected;
         $children = ($behaviours->children)($this, $filters);

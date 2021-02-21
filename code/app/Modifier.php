@@ -294,10 +294,6 @@ class Modifier extends Model
         }
 
         $check_value = $check_target->$attribute;
-        if ($check_value == 0) {
-            return null;
-        }
-
         $target_definition = null;
 
         if ($this->scale == 'minor') {
