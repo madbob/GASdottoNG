@@ -36,28 +36,30 @@ class JobsController extends Controller
             abort(503);
         }
 
+        $gas_id = $request->input('gas_id');
         $this->hub = App::make('GlobalScopeHub');
-        $this->hub->setGas($request->input('gas_id'));
-
+        $this->hub->setGas($gas_id);
         $action = $request->input('action');
+
+        Log::info('Eseguo funzione asincrona ' . $action . ' su GAS ' . $gas_id);
 
         switch($action) {
             case 'order_open':
                 $order_id = $request->input('order_id');
-                $order = Order::find($order_id);
+                $order = Order::findOrFail($order_id);
                 $this->sendOrderNotificationMail($order);
                 break;
 
             case 'order_close':
                 $order_id = $request->input('order_id');
-                $order = Order::find($order_id);
+                $order = Order::findOrFail($order_id);
                 $this->sendOrderClosingMails($order);
                 break;
 
             case 'aggregate_summary':
                 $aggregate_id = $request->input('aggregate_id');
                 $message = $request->input('message');
-                $aggregate = Aggregate::find($aggregate_id);
+                $aggregate = Aggregate::findOrFail($aggregate_id);
                 $this->sendAggregateSummaryMails($aggregate, $message);
                 break;
         }
