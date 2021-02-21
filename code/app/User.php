@@ -332,6 +332,11 @@ class User extends Authenticatable
         $this->notify(new ResetPasswordNotification($token));
     }
 
+    public static function usernamePattern()
+    {
+        return '[A-Za-z0-9_@.\- ]{1,50}';
+    }
+
     public static function formattableColumns()
     {
         $ret = [
