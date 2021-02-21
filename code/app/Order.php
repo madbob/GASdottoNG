@@ -9,13 +9,13 @@ use Illuminate\Support\Str;
 use App;
 use Auth;
 use DB;
+use PDF;
 use Mail;
 use URL;
 use Log;
 
 use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
-use App\Notifications\NewOrderNotification;
 
 class Order extends Model
 {
@@ -254,41 +254,43 @@ class Order extends Model
         }
     }
 
-    public function sendNotificationMail()
+    private function autoGuessFields()
     {
-        if (is_null($this->first_notify) == false) {
-            return;
-        }
+        $has_code = false;
+        $has_boxes = false;
 
-        $order = $this;
-
-        if (currentAbsoluteGas()->getConfig('notify_all_new_orders')) {
-            $query_users = User::whereNull('parent_id');
-        }
-        else {
-            $query_users = User::whereHas('suppliers', function($query) use ($order) {
-                $query->where('suppliers.id', $order->supplier->id);
-            });
-        }
-
-        $deliveries = $order->deliveries;
-        if ($deliveries->isEmpty() == false) {
-            $query_users->whereIn('preferred_delivery_id', $deliveries->pluck('id'));
-        }
-
-        $users = $query_users->get();
-
-        foreach($users as $user) {
-            try {
-                $user->notify(new NewOrderNotification($order));
+        foreach($this->products as $product) {
+            if (!empty($product->code)) {
+                $has_code = true;
             }
-            catch(\Exception $e) {
-                Log::error('Impossibile inoltrare mail di notifica apertura ordine: ' . $e->getMessage());
+
+            if ($product->package_size != 0) {
+                $has_boxes = true;
+            }
+
+            if ($has_code && $has_boxes) {
+                break;
             }
         }
 
-        $this->first_notify = date('Y-m-d');
-        $this->save();
+        $guessed_fields = [];
+
+        if ($has_code) {
+            $guessed_fields[] = 'code';
+        }
+
+        $guessed_fields[] = 'name';
+        $guessed_fields[] = 'quantity';
+
+        if ($has_boxes) {
+            $guessed_fields[] = 'boxes';
+        }
+
+        $guessed_fields[] = 'measure';
+        $guessed_fields[] = 'unit_price';
+        $guessed_fields[] = 'price';
+
+        return $guessed_fields;
     }
 
     public function isActive()
@@ -333,6 +335,47 @@ class Order extends Model
 
             return $ret;
         });
+    }
+
+    public function document($type, $format, $action, $required_fields, $status, $shipping_place)
+    {
+        if (empty($required_fields)) {
+            $required_fields = $this->autoGuessFields();
+        }
+
+        switch($type) {
+            case 'summary':
+                $data = $this->formatSummary($required_fields, $status, $shipping_place);
+                $title = _i('Prodotti ordine %s presso %s', [$this->internal_number, $this->supplier->name]);
+                $filename = sanitizeFilename($title . '.' . $format);
+                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
+
+                if ($format == 'pdf') {
+                    $pdf = PDF::loadView('documents.order_summary_pdf', ['order' => $this, 'data' => $data]);
+
+                    if ($action == 'save') {
+                        $pdf->save($temp_file_path);
+                    }
+                    else {
+                        return $pdf->download($filename);
+                    }
+                }
+                else if ($format == 'csv') {
+                    if ($action == 'save') {
+                        output_csv($filename, $data->headers, $data->contents, function($row) {
+                            return $row;
+                        }, $temp_file_path);
+                    }
+                    else {
+                        return output_csv($filename, $data->headers, $data->contents, function($row) {
+                            return $row;
+                        });
+                    }
+                }
+
+                return $temp_file_path;
+                break;
+        }
     }
 
     public static function emptySummary($order_id)

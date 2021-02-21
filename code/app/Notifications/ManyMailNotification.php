@@ -27,8 +27,9 @@ class ManyMailNotification extends Notification
     {
         $message = new MailMessage();
 
-        if (class_uses(get_class($notifiable), 'App\ContactableTrait'))
+        if (class_uses(get_class($notifiable), 'App\ContactableTrait')) {
             $notifiable->messageAll($message);
+        }
 
         if (!empty($replyTo)) {
             if (is_string($replyTo)) {

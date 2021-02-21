@@ -182,6 +182,8 @@ class GasController extends Controller
 
             case 'mails':
                 $gas->setConfig('notify_all_new_orders', $request->has('notify_all_new_orders') ? '1' : '0');
+                $gas->setConfig('auto_user_order_summary', $request->has('auto_user_order_summary') ? '1' : '0');
+                $gas->setConfig('auto_supplier_order_summary', $request->has('auto_supplier_order_summary') ? '1' : '0');
 
                 foreach(Config::customMailTypes() as $identifier => $metadata) {
                     if ($request->has("custom_mails_${identifier}_subject")) {
