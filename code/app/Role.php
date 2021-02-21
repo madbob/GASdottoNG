@@ -456,7 +456,7 @@ class Role extends Model
                 'supplier.view' => _i('Vedere tutti i fornitori'),
                 'order.view' => _i('Vedere tutti gli ordini'),
                 'users.self' => _i('Modificare la propria anagrafica'),
-                'users.admin' => _i('Amministrare le anagrafiche degli utenti'),
+                'users.admin' => _i('Amministrare gli utenti'),
                 'users.view' => _i('Vedere tutti gli utenti'),
                 'users.subusers' => _i('Avere sotto-utenti con funzioni limitate'),
                 'users.movements' => _i('Amministrare i movimenti contabili degli utenti'),

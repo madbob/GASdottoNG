@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Notifications\BookingNotification;
-
 use DB;
 use PDF;
 use Log;
@@ -103,37 +101,11 @@ class AggregatesController extends OrdersController
 
     public function notify(Request $request, $id)
     {
-        $aggregate = Aggregate::findOrFail($id);
         $message = $request->input('message', '');
-
-        if ($aggregate->isActive()) {
-            $status = ['pending', 'saved'];
-        }
-        else {
-            $status = ['shipped'];
-        }
-
-        foreach($aggregate->bookings as $booking) {
-            if (in_array($booking->status, $status)) {
-                try {
-                    $booking->user->notify(new BookingNotification($booking, $message));
-                    usleep(200000);
-                }
-                catch(\Exception $e) {
-                    Log::error('Impossibile inviare notifica mail prenotazione di ' . $booking->user->id);
-                }
-            }
-        }
-
-        $date = date('Y-m-d');
-
-        foreach($aggregate->orders as $order) {
-            $order->last_notify = $date;
-            $order->save();
-        }
+        async_job('aggregate_summary', ['aggregate_id' => $id, 'message' => $message]);
 
         return response()->json((object) [
-            'last-notification-date-' . $id => $aggregate->printableDate('last_notify')
+            'last-notification-date-' . $id => printableDate(date('Y-m-d'))
         ]);
     }
 

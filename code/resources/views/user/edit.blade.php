@@ -5,7 +5,7 @@ if (isset($readonly) && $readonly) {
 }
 else {
     $admin_editable = $currentuser->can('users.admin', $currentgas);
-    $editable = ($admin_editable || ($currentuser->id == $user->id && $currentuser->can('users.self', $currentgas)));
+    $editable = ($admin_editable || ($currentuser->id == $user->id && $currentuser->can('users.self', $currentgas)) || $user->parent_id == $currentuser->id);
     $personal_details = ($currentuser->id == $user->id);
 }
 

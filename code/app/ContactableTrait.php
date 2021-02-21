@@ -72,9 +72,11 @@ trait ContactableTrait
     {
         $master_mail = $this->email;
 
-        foreach($this->contacts as $contact)
-            if ($contact->type == 'email' && $contact->value != $master_mail)
+        foreach($this->contacts as $contact) {
+            if ($contact->type == 'email' && $contact->value != $master_mail) {
                 $message->cc($contact->value);
+            }
+        }
     }
 
     /*

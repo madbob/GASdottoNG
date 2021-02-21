@@ -484,40 +484,16 @@ class OrdersController extends Controller
                 $status = $request->input('status');
 
                 $shipping_place = $request->input('shipping_place', 'all_by_place');
-                if ($shipping_place == 'all_by_place')
-                    $data = $order->formatSummary($required_fields, $status, null);
-                else
-                    $data = $order->formatSummary($required_fields, $status, $shipping_place);
-
-                $title = _i('Prodotti ordine %s presso %s', [$order->internal_number, $order->supplier->name]);
-                $filename = sanitizeFilename($title . '.' . $subtype);
-                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
-
-                if ($subtype == 'pdf') {
-                    $pdf = PDF::loadView('documents.order_summary_pdf', ['order' => $order, 'data' => $data]);
-
-                    if ($send_mail) {
-                        $pdf->save($temp_file_path);
-                    }
-                    else {
-                        return $pdf->download($filename);
-                    }
-                }
-                else if ($subtype == 'csv') {
-                    if ($send_mail) {
-                        output_csv($filename, $data->headers, $data->contents, function($row) {
-                            return $row;
-                        }, $temp_file_path);
-                    }
-                    else {
-                        return output_csv($filename, $data->headers, $data->contents, function($row) {
-                            return $row;
-                        });
-                    }
+                if ($shipping_place == 'all_by_place') {
+                    $shipping_place = null;
                 }
 
                 if ($send_mail) {
+                    $temp_file_path = $order->document('summary', $subtype, 'save', $required_fields, $status, $shipping_place);
                     $this->sendDocumentMail($request, $temp_file_path);
+                }
+                else {
+                    return $order->document('summary', $subtype, 'return', $required_fields, $status, $shipping_place);
                 }
 
                 break;

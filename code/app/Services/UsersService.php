@@ -166,6 +166,15 @@ class UsersService extends BaseService
 
             $type = 2;
         }
+        else if ($user->can('users.subusers', $user->gas)) {
+            $test = $this->show($id);
+            if ($test->parent_id == $user->id) {
+                $type = 2;
+            }
+            else {
+                throw new AuthException(403);
+            }
+        }
         else {
             throw new AuthException(403);
         }

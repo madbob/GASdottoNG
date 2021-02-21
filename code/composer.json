@@ -42,6 +42,7 @@
         },
         "files": [
             "app/Helpers/Setup.php",
+            "app/Helpers/Async.php",
             "app/Helpers/Formatters.php",
             "app/Helpers/Reflection.php",
             "app/Helpers/Paths.php",

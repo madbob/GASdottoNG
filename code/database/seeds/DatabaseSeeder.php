@@ -65,15 +65,28 @@ class DatabaseSeeder extends Seeder
             'parent_id' => $admin_role->id
         ]);
 
+        $friend_role = Role::create([
+            'name' => 'Amico',
+            'actions' => 'users.self,supplier.view,supplier.book',
+            'parent_id' => $user_role->id
+        ]);
+
         $referrer_role = Role::create([
             'name' => 'Referente',
             'actions' => 'supplier.modify,supplier.orders,supplier.shippings,supplier.movements',
             'parent_id' => $admin_role->id
         ]);
 
+        $multigas_role = Role::create([
+            'name' => 'Amministratore GAS Secondario',
+            'actions' => 'gas.access,gas.config,supplier.view,supplier.book,supplier.add,users.admin,users.movements,movements.admin,notifications.admin',
+            'parent_id' => $admin_role->id
+        ]);
+
         $gas->setConfig('roles', (object) [
             'user' => $user_role->id,
-            'friend' => $user_role->id
+            'friend' => $friend_role->id,
+            'multigas' => $multigas_role->id,
         ]);
 
         $admin = User::create([

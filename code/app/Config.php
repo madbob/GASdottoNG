@@ -6,10 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Config extends Model
 {
-    public function gas()
-    {
-        $this->belongsTo('App\Gas');
-    }
+    use HierarcableTrait;
 
     public static function customMailTypes()
     {
@@ -26,14 +23,20 @@ class Config extends Model
                 'params' => [
                     'username' => _i("Username assegnato al nuovo utente"),
                     'gas_login_link' => _i("Link della pagina di login"),
-                ]
+                ],
+                'enabled' => function($gas) {
+                    return $gas->hasFeature('public_registrations');
+                }
             ],
             'password_reset' => (object) [
                 'description' => _i('Messaggio per il ripristino della password.'),
                 'params' => [
                     'username' => _i("Username dell'utente"),
                     'gas_reset_link' => _i("Link per il reset della password"),
-                ]
+                ],
+                'enabled' => function($gas) {
+                    return true;
+                }
             ],
             'new_order' => (object) [
                 'description' => _i('Notifica per i nuovi ordini aperti (inviato agli utenti che hanno esplicitamente abilitato le notifiche per il fornitore).'),
@@ -42,12 +45,28 @@ class Config extends Model
                     'order_comment' => _i("Testo di commento dell'ordine"),
                     'gas_booking_link' => _i("Link per le prenotazioni"),
                     'closing_date' => _i("Data di chiusura dell'ordine")
-                ]
+                ],
+                'enabled' => function($gas) {
+                    return true;
+                }
+            ],
+            'supplier_summary' => (object) [
+                'description' => _i("Notifica destinata ai fornitori alla chiusura automatica dell'ordine."),
+                'params' => [
+                    'supplier_name' => _i("Il nome del fornitore"),
+                    'order_number' => _i("Numero progressivo automaticamente assegnato ad ogni ordine"),
+                ],
+                'enabled' => function($gas) {
+                    return $gas->auto_supplier_order_summary;
+                }
             ],
             'receipt' => (object) [
                 'description' => _i('Mail di accompagnamento per le ricevute.'),
                 'params' => [
-                ]
+                ],
+                'enabled' => function($gas) {
+                    return $gas->hasFeature('extra_invoicing');
+                }
             ],
         ];
     }

@@ -174,7 +174,7 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithViewPerm);
 
-        $this->usersService->update('id', array());
+        $this->usersService->update($this->userWithViewPerm->id, array());
     }
 
     /**

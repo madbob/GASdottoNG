@@ -3,7 +3,7 @@
     'name' => 'username',
     'label' => _i('Username'),
     'mandatory' => true,
-    'pattern' => '[A-Za-z0-9_@.\-]{1,50}',
+    'pattern' => App\User::usernamePattern(),
     'help_popover' => _i("Username col quale l'utente si può autenticare. Deve essere univoco."),
 ])
 
