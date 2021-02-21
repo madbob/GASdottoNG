@@ -141,15 +141,6 @@ class UsersService extends BaseService
         if ($user->can('users.admin', $user->gas)) {
             $type = 1;
         }
-        else if ($user->can('users.subusers', $user->gas)) {
-            $test = $this->show($id);
-            if ($test->parent_id == $user->id) {
-                $type = 2;
-            }
-            else {
-                throw new AuthException(403);
-            }
-        }
         else if ($user->id == $id) {
             /*
                 Anche laddove non sia concesso agli utenti il permesso di
@@ -174,6 +165,15 @@ class UsersService extends BaseService
             }
 
             $type = 2;
+        }
+        else if ($user->can('users.subusers', $user->gas)) {
+            $test = $this->show($id);
+            if ($test->parent_id == $user->id) {
+                $type = 2;
+            }
+            else {
+                throw new AuthException(403);
+            }
         }
         else {
             throw new AuthException(403);
