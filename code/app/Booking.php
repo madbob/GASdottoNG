@@ -102,7 +102,7 @@ class Booking extends Model
 
         if ($id) {
             $values = $values->filter(function($i) use ($id) {
-                return $i->id == $id;
+                return $i->modifier_id == $id;
             });
         }
 
@@ -126,7 +126,7 @@ class Booking extends Model
 
         if ($id) {
             $values = $values->filter(function($i) use ($id) {
-                return $i->id == $id;
+                return $i->modifier_id == $id;
             });
         }
 
@@ -484,6 +484,9 @@ class Booking extends Model
 
             if ($real == false) {
                 DB::rollback();
+            }
+            else {
+                $this->unsetRelation('modifiedValues');
             }
         }
 

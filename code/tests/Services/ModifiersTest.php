@@ -37,19 +37,6 @@ class ModifiersTest extends TestCase
             'measure_id' => $this->measure->id
         ]);
 
-        $this->modifier = factory(\App\Modifier::class)->create([
-            'modifier_type_id' => 'sconto',
-            'target_type' => get_class($this->product),
-            'target_id' => $this->product->id,
-            'value' => 'price',
-            'arithmetic' => 'apply',
-            'scale' => 'major',
-            'applies_type' => 'quantity',
-            'applies_target' => 'order',
-            'distribution_type' => 'quantity',
-            'definition' => '[{"threshold":"20","amount":"0.9"},{"threshold":"10","amount":"0.92"},{"threshold":0,"amount":"0.94"}]'
-        ]);
-
         $this->aggregate = factory(\App\Aggregate::class)->create();
 
         $this->order = factory(\App\Order::class)->create([
@@ -83,11 +70,27 @@ class ModifiersTest extends TestCase
         Model::reguard();
     }
 
-    public function testValues()
+    public function testThreshold()
     {
+        Model::unguard();
+
+        factory(\App\Modifier::class)->create([
+            'modifier_type_id' => 'sconto',
+            'target_type' => get_class($this->product),
+            'target_id' => $this->product->id,
+            'value' => 'price',
+            'arithmetic' => 'apply',
+            'scale' => 'major',
+            'applies_type' => 'quantity',
+            'applies_target' => 'order',
+            'distribution_type' => 'quantity',
+            'definition' => '[{"threshold":"20","amount":"0.9"},{"threshold":"10","amount":"0.92"},{"threshold":0,"amount":"0.94"}]'
+        ]);
+
+        Model::reguard();
+
         $modifiers = $this->order->applyModifiers();
         $aggregated_modifiers = \App\ModifiedValue::aggregateByType($modifiers);
-
         $this->assertEquals(count($aggregated_modifiers), 1);
 
         $without_discount = $this->product->price * (8 + 3);
@@ -95,6 +98,37 @@ class ModifiersTest extends TestCase
 
         foreach($aggregated_modifiers as $ag) {
             $this->assertEquals($ag->amount * -1, $without_discount - $total);
+        }
+    }
+
+    public function testOnOrder()
+    {
+        Model::unguard();
+
+        $test_shipping_value = 50;
+
+        $modifier = factory(\App\Modifier::class)->create([
+            'modifier_type_id' => 'spese-trasporto',
+            'target_type' => get_class($this->order),
+            'target_id' => $this->order->id,
+            'value' => 'absolute',
+            'arithmetic' => 'sum',
+            'scale' => 'minor',
+            'applies_type' => 'none',
+            'applies_target' => 'order',
+            'distribution_type' => 'price',
+            'definition' => '[{"threshold":9223372036854775807,"amount":"' . $test_shipping_value . '"}]'
+        ]);
+
+        Model::reguard();
+
+        $redux = $this->order->reduxData();
+
+        foreach($this->order->bookings as $booking) {
+            $booking->applyModifiers(null, true);
+            $booked_value = $booking->getValue('booked', true);
+            $shipping_value = $booking->getValue('modifier:' . $modifier->id, true);
+            $this->assertEquals(($booked_value * $test_shipping_value) / $redux->price, $shipping_value);
         }
     }
 }
