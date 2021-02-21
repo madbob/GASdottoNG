@@ -78,7 +78,7 @@ class DatabaseSeeder extends Seeder
 
         $multigas_role = Role::create([
             'name' => 'Amministratore GAS Secondario',
-            'actions' => 'gas.access,gas.config,supplier.view,supplier.book,supplier.add,users.admin,users.movements,movements.admin,notifications.admin'
+            'actions' => 'gas.access,gas.config,supplier.view,supplier.book,supplier.add,users.admin,users.movements,movements.admin,notifications.admin',
             'parent_id' => $admin_role->id
         ]);
 
