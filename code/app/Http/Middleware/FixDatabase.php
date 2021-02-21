@@ -3,9 +3,11 @@
 namespace App\Http\Middleware;
 
 use DB;
+use Log;
 use Closure;
 
 use App\Product;
+use App\Order;
 use App\BookedProduct;
 use App\Modifier;
 use App\ModifiedValue;
@@ -18,6 +20,17 @@ use App\ModifierType;
 */
 class FixDatabase
 {
+    private function createEmptyModifier($product, $modifier_type)
+    {
+        $modifier = new Modifier();
+        $modifier->modifier_type_id = $modifier_type;
+        $modifier->target_type = get_class($product);
+        $modifier->target_id = $product->id;
+        $modifier->definition = '[]';
+        $modifier->save();
+        return $modifier;
+    }
+
     private function fixProducts($product_attribute, $modifier_type)
     {
         foreach(Product::where($product_attribute, '!=', 0)->get() as $product) {
@@ -45,13 +58,45 @@ class FixDatabase
         }
     }
 
+    private function fixOrders($order_attribute, $modifier_type)
+    {
+        foreach(Order::where($order_attribute, '!=', 0)->get() as $order) {
+            if (isPercentage($order->$order_attribute)) {
+                $type = 'percentage';
+                $amount = (float) $order->$order_attribute;
+            }
+            else {
+                $type = 'absolute';
+                $amount = $order->$order_attribute;
+            }
+
+            $modifier = new Modifier();
+            $modifier->modifier_type_id = $modifier_type;
+            $modifier->target_type = get_class($order);
+            $modifier->target_id = $order->id;
+            $modifier->value = $type;
+            $modifier->arithmetic = 'sum';
+            $modifier->scale = 'minor';
+            $modifier->applies_type = 'none';
+            $modifier->applies_target = 'order';
+            $modifier->distribution_type = 'price';
+            $modifier->definition = '[{"threshold":9223372036854775807,"amount":"' . $amount . '"}]';
+            $modifier->save();
+        }
+    }
+
     private function fixBooked($product_attribute, $modifier_type)
     {
         $cache = [];
 
         foreach(BookedProduct::where($product_attribute, '!=', 0)->get() as $product) {
             if (!isset($cache[$product->product_id])) {
-                $cache[$product->product_id] = $product->product->modifiers()->where('modifier_type_id', $modifier_type)->first();
+                $modifier = $product->product->modifiers()->where('modifier_type_id', $modifier_type)->first();
+                if (is_null($modifier)) {
+                    $modifier = $this->createEmptyModifier($product->product, $modifier_type);
+                }
+
+                $cache[$product->product_id] = $modifier;
             }
 
             $modifier = new ModifiedValue();
@@ -84,14 +129,16 @@ class FixDatabase
                 $m->save();
 
                 $this->fixProducts('discount', 'sconto');
-                $this->fixProducts('shipping', 'spese-trasporto');
+                $this->fixProducts('transport', 'spese-trasporto');
+                $this->fixOrders('discount', 'sconto');
+                $this->fixOrders('transport', 'spese-trasporto');
                 $this->fixBooked('final_discount', 'sconto');
-                $this->fixBooked('final_shipping', 'spese-trasporto');
+                $this->fixBooked('final_transport', 'spese-trasporto');
 
                 DB::commit();
             }
             catch(\Exception $e) {
-                Log::error('Impossibile adattare i modificatori sul DB: ' . $e->getMessage());
+                Log::error('Impossibile adattare i modificatori sul DB: ' . $e->getMessage() . ' / ' . $e->getLine());
             }
         }
 
