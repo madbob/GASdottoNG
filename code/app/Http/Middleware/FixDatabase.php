@@ -104,6 +104,8 @@ class FixDatabase
             $modifier->target_type = get_class($product);
             $modifier->target_id = $product->id;
             $modifier->amount = $product->$product_attribute;
+            $modifier->created_at = $product->updated_at;
+            $modifier->updated_at = $product->updated_at;
             $modifier->save();
         }
     }

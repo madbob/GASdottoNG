@@ -20,7 +20,7 @@
             <input type="hidden" name="modifiertype" value="{{ $modtype->id }}">
 
             @include('commons.genericdaterange', [
-                'start_date' => strtotime('-6 months'),
+                'start_date' => strtotime('-1 months'),
                 'end_date' => time(),
             ])
 

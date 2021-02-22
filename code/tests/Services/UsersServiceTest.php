@@ -9,13 +9,6 @@ class UsersServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private $userWithViewPerm;
-    private $userWithAdminPerm;
-    private $userWithMovementPerm;
-    private $userWithNoPerms;
-    private $gas;
-    private $usersService;
-
     public function setUp(): void
     {
         parent::setUp();

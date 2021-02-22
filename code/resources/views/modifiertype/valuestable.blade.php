@@ -1,7 +1,7 @@
 <?php
 
 if (!isset($startdate)) {
-    $startdate = date('Y-m-d', strtotime('-6 months'));
+    $startdate = date('Y-m-d', strtotime('-1 months'));
 }
 
 if (!isset($enddate)) {

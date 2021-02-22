@@ -4,151 +4,30 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Modifier;
-use App\ModifierType;
+use App\Services\ModifiersService;
+use App\Exceptions\AuthException;
 
-class ModifiersController extends Controller
+class ModifiersController extends BackedController
 {
-    private function testAccess($user, $modifier)
+    public function __construct(ModifiersService $service)
     {
-        $test = false;
+        $this->middleware('auth');
 
-        switch($modifier->target_type) {
-            case 'App\Supplier':
-                $test = $user->can('supplier.modify', $modifier->target);
-                break;
-
-            case 'App\Product':
-                $test = $user->can('supplier.modify', $modifier->target->supplier);
-                break;
-
-            case 'App\Order':
-                $test = $user->can('supplier.modify', $modifier->target->supplier) || $user->can('supplier.orders', $modifier->target->supplier);
-                break;
-
-            case 'App\Aggregate':
-                foreach($modifier->target->orders as $order) {
-                    if ($user->can('supplier.modify', $modifier->target->supplier) || $user->can('supplier.orders', $modifier->target->supplier)) {
-                        $test = true;
-                        break;
-                    }
-                }
-
-                break;
-
-            case 'App\Delivery':
-                $test = $user->can('gas.config', $user->gas);
-                break;
-        }
-
-        if ($test == false) {
-            abort(503);
-        }
+        $this->commonInit([
+            'reference_class' => 'App\\Modifier',
+            'endpoint' => 'modifiers',
+            'service' => $service
+        ]);
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $modifier = Modifier::find($id);
-        return view('modifier.show', ['modifier' => $modifier]);
-    }
-
-    public function edit(Request $request, $id)
-    {
-        $user = $request->user();
-        $modifier = Modifier::find($id);
-        $this->testAccess($user, $modifier);
-        return view('modifier.edit', ['modifier' => $modifier]);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $user = $request->user();
-        $modifier = Modifier::find($id);
-        $this->testAccess($user, $modifier);
-
-        $modifier->value = $request->input('value');
-        $modifier->arithmetic = $request->input('arithmetic');
-        $modifier->scale = $request->input('scale');
-        $modifier->applies_type = $request->input('applies_type');
-        $modifier->applies_target = $request->input('applies_target');
-        $modifier->distribution_type = $request->input('distribution_type');
-
-        $definition = [];
-
-        if ($modifier->applies_type == 'none') {
-            $amount = $request->input('simplified_amount');
-
-            /*
-                Se non ho soglie, forzo comunque la soglia dell'unico valore
-                esistente al valore più estremo
-            */
-            if ($modifier->scale == 'minor') {
-                $threshold = PHP_INT_MAX;
-            }
-            else {
-                $threshold = PHP_INT_MIN;
-            }
-
-            $definition[] = (object) [
-                'threshold' => $threshold,
-                'amount' => $amount,
-            ];
+        try {
+            $modifier = $this->service->show($id);
+            return view('modifier.show', ['modifier' => $modifier]);
         }
-        else {
-            $thresholds = $request->input('threshold');
-            $amounts = $request->input('amount');
-
-            foreach($thresholds as $index => $threshold) {
-                $threshold = trim($threshold);
-                $amount = trim($amounts[$index]);
-
-                if (empty($threshold)) {
-                    $threshold = 0;
-                }
-
-                if (empty($amount)) {
-                    $amount = 0;
-                }
-
-                if ($threshold == 0 && $amount == 0) {
-                    continue;
-                }
-
-                $definition[] = (object) [
-                    'threshold' => $threshold,
-                    'amount' => $amount,
-                ];
-            }
-
-            /*
-                Mantengo le soglie ordinate secondo il canone più comodo per la
-                successiva valutazione in Modifier::apply()
-            */
-            if ($modifier->scale == 'minor') {
-                usort($definition, function($a, $b) {
-                    return $a->threshold <=> $b->threshold;
-                });
-            }
-            else {
-                usort($definition, function($a, $b) {
-                    return ($a->threshold <=> $b->threshold) * -1;
-                });
-            }
+        catch (AuthException $e) {
+            abort($e->status());
         }
-
-        $modifier->definition = json_encode($definition);
-        $modifier->save();
-        return $this->commonSuccessResponse($modifier);
-    }
-
-    public function destroy(Request $request, $id)
-    {
-        $user = $request->user();
-        $modifier = Modifier::find($id);
-        $this->testAccess($user, $modifier);
-
-        $modifier->definition = '[]';
-        $modifier->save();
-        return $this->commonSuccessResponse($modifier);
     }
 }
