@@ -29,6 +29,7 @@ Route::middleware(['auth'])->group(function() {
     Route::post('dashboard/verify', 'CommonsController@postVerify');
 
     Route::get('gas/{id}/header', 'GasController@objhead')->name('gas.objhead');
+    Route::get('gas/dumpdb', 'GasController@databaseDump')->name('gas.dumpdb');
 
     Route::get('users/ro/{id}', 'UsersController@show_ro');
     Route::get('users/{id}/header', 'UsersController@objhead')->name('users.objhead');

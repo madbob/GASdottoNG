@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
 
 use Auth;
 use DB;
@@ -226,5 +227,32 @@ class GasController extends Controller
 
         $gas->save();
         return $this->successResponse();
+    }
+
+    public function databaseDump(Request $request)
+    {
+        $user = $request->user();
+        if ($user->can('gas.config', $user->gas) == false) {
+            abort(503);
+        }
+
+        $filepath = sprintf('%s/dump_%s', sys_get_temp_dir(), Str::random(20));
+
+        switch(env('DB_CONNECTION')) {
+            case 'mysql':
+                \Spatie\DbDumper\Databases\MySql::create()->setDbName(env('DB_DATABASE'))->setUserName(env('DB_USERNAME'))->setPassword(env('DB_PASSWORD'))->dumpToFile($filepath);
+                break;
+
+            case 'pgsql':
+                \Spatie\DbDumper\Databases\PostgreSql::create()->setDbName(env('DB_DATABASE'))->setUserName(env('DB_USERNAME'))->setPassword(env('DB_PASSWORD'))->dumpToFile($filepath);
+                break;
+
+            default:
+                Log::error('Formato database non supportato');
+                exit();
+                break;
+        }
+
+        return response()->download($filepath, 'database_gasdotto_' . date('Y_m_d') . '.sql')->deleteFileAfterSend();
     }
 }

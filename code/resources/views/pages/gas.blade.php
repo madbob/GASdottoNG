@@ -458,7 +458,7 @@
                 <div class="panel-heading" role="tab">
                     <h4 class="panel-title">
                         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#main-configs" href="#import-config">
-                            {{ _i('Importa') }}
+                            {{ _i('Importa/Esporta') }}
                         </a>
                     </h4>
                 </div>
@@ -513,6 +513,14 @@
                                                 </div>
                                             </div>
                                         @endpush
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-{{ $labelsize }} control-label">
+                                        {{ _i('Esporta database') }}
+                                    </label>
+                                    <div class="col-sm-{{ $fieldsize }}">
+                                        <a href="{{ route('gas.dumpdb') }}" class="btn btn-default">{{ _i('Download') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
                                     </div>
                                 </div>
                             </div>
