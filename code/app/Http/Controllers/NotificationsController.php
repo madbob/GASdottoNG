@@ -32,10 +32,13 @@ class NotificationsController extends Controller
 
         $notifications_query = Notification::orderBy('start_date', 'desc');
 
-        if (!is_null($startdate))
+        if (!is_null($startdate)) {
             $notifications_query->where('end_date', '>=', $startdate);
-        if (!is_null($enddate))
+        }
+
+        if (!is_null($enddate)) {
             $notifications_query->where('start_date', '<=', $enddate);
+        }
 
         if ($user->can('notifications.admin', $user->gas) == false) {
             $notifications_query->whereHas('users', function($query) use ($user) {
@@ -45,11 +48,16 @@ class NotificationsController extends Controller
 
         $notifications = $notifications_query->get();
 
-        $dates_query = Date::where('type', 'internal');
-        if (!is_null($startdate))
+        $dates_query = Date::where('type', 'internal')->where('target_type', 'App\GAS')->where('target_id', $user->gas->id);
+
+        if (!is_null($startdate)) {
             $dates_query->where('date', '>=', $startdate);
-        if (!is_null($enddate))
+        }
+
+        if (!is_null($enddate)) {
             $dates_query->where('date', '<=', $enddate);
+        }
+
         $dates = $dates_query->get();
 
         $all = $notifications->merge($dates)->sort(function($a, $b) {

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 use Session;
 use Auth;
+use Log;
 
 use LaravelGettext;
 
@@ -43,7 +44,15 @@ class LoginController extends Controller
         $username = $request->input('username');
 
         $user = User::where('username', $username)->first();
-        if (is_null($user) || ($user->gas->restricted == '1' && $user->can('gas.access', $user->gas) == false)) {
+
+        if (is_null($user)) {
+            Session::flash('message', _i('Username non valido'));
+            Session::flash('message_type', 'danger');
+            Log::debug('Username non trovato: ' . $username);
+            return redirect(url('login'));
+        }
+
+        if ($user->gas->restricted == '1' && $user->can('gas.access', $user->gas) == false) {
             return redirect(url('login'));
         }
 
@@ -58,8 +67,9 @@ class LoginController extends Controller
             }
             else {
                 $user = User::where('username', $username)->first();
-                if (!is_null($user->suspended_at))
+                if (!is_null($user->suspended_at)) {
                     Session::flash('prompt_message', _i('Il tuo account è stato sospeso, e non puoi effettuare prenotazioni. Verifica lo stato dei tuoi pagamenti e del tuo credito o eventuali notifiche inviate dagli amministratori.'));
+                }
             }
         }
 

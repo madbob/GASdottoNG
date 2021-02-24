@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
 
 use Auth;
 use DB;
@@ -182,6 +183,8 @@ class GasController extends Controller
 
             case 'mails':
                 $gas->setConfig('notify_all_new_orders', $request->has('notify_all_new_orders') ? '1' : '0');
+                $gas->setConfig('auto_user_order_summary', $request->has('auto_user_order_summary') ? '1' : '0');
+                $gas->setConfig('auto_supplier_order_summary', $request->has('auto_supplier_order_summary') ? '1' : '0');
 
                 foreach(Config::customMailTypes() as $identifier => $metadata) {
                     if ($request->has("custom_mails_${identifier}_subject")) {
@@ -202,6 +205,7 @@ class GasController extends Controller
                 $conf = (object) [
                     'user' => $request->input('roles->user'),
                     'friend' => $request->input('roles->friend'),
+                    'multigas' => $request->input('roles->multigas'),
                 ];
 
                 $old_friend_role = $gas->roles['friend'];
@@ -227,5 +231,32 @@ class GasController extends Controller
 
         $gas->save();
         return $this->successResponse();
+    }
+
+    public function databaseDump(Request $request)
+    {
+        $user = $request->user();
+        if ($user->can('gas.config', $user->gas) == false) {
+            abort(503);
+        }
+
+        $filepath = sprintf('%s/dump_%s', sys_get_temp_dir(), Str::random(20));
+
+        switch(env('DB_CONNECTION')) {
+            case 'mysql':
+                \Spatie\DbDumper\Databases\MySql::create()->setDbName(env('DB_DATABASE'))->setUserName(env('DB_USERNAME'))->setPassword(env('DB_PASSWORD'))->dumpToFile($filepath);
+                break;
+
+            case 'pgsql':
+                \Spatie\DbDumper\Databases\PostgreSql::create()->setDbName(env('DB_DATABASE'))->setUserName(env('DB_USERNAME'))->setPassword(env('DB_PASSWORD'))->dumpToFile($filepath);
+                break;
+
+            default:
+                Log::error('Formato database non supportato');
+                exit();
+                break;
+        }
+
+        return response()->download($filepath, 'database_gasdotto_' . date('Y_m_d') . '.sql')->deleteFileAfterSend();
     }
 }

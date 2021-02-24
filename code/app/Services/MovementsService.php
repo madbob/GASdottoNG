@@ -161,8 +161,9 @@ class MovementsService extends BaseService
             $movement = $this->setCommonAttributes($movement, $request);
             $movement->save();
 
-            if ($movement->saved == false)
+            if ($movement->saved == false) {
                 throw new IllegalArgumentException(_i('Salvataggio fallito'));
+            }
 
             return $movement;
         });

@@ -18,6 +18,7 @@
     }
 
     $users = App\User::sorted()->get();
+    $suppliers = App\Supplier::orderBy('name', 'asc')->get();
 ?>
 
 <div class="wizard_page">
@@ -43,6 +44,7 @@
                         <th>{{ _i('Importa') }}</th>
                         <th>{{ _i('Data') }}</th>
                         <th>{{ _i('Utente') }}</th>
+                        <th>{{ _i('Fornitore') }}</th>
                         <th>
                             @include('commons.selectenumfield', [
                                 'obj' => null,
@@ -92,6 +94,18 @@
                                     'name' => 'sender_id',
                                     'postfix' => '[]',
                                     'objects' => $users,
+                                    'extra_selection' => [
+                                        '0' => _i('Nessuno')
+                                    ]
+                                ])
+                            </td>
+                            <td>
+                                @include('commons.selectobjfield', [
+                                    'obj' => $mov,
+                                    'squeeze' => true,
+                                    'name' => 'target_id',
+                                    'postfix' => '[]',
+                                    'objects' => $suppliers,
                                     'extra_selection' => [
                                         '0' => _i('Nessuno')
                                     ]

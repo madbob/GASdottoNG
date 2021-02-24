@@ -4,9 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Auth;
 use Log;
-
-use App\GASModel;
 
 class Date extends Model
 {
@@ -29,6 +28,17 @@ class Date extends Model
                 'value' => 'temp'
             ],
         ];
+    }
+
+    public function scopeLocalGas($query)
+    {
+        $user = Auth::user();
+
+        $query->where(function($query) use ($user) {
+            $query->where('target_type', 'App\GAS')->where('target_id', $user->gas->id);
+        })->orWhere(function($query) {
+            $query->where('target_type', 'App\Supplier')->whereIn('target_id', Supplier::get('id')->toArray());
+        });
     }
 
     public function getCalendarStringAttribute()

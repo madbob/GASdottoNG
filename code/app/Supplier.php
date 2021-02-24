@@ -11,6 +11,7 @@ use Illuminate\Support\Collection;
 
 use Auth;
 
+use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 use App\Events\AttachableToGas;
 
@@ -29,17 +30,7 @@ class Supplier extends Model
     protected static function boot()
     {
         parent::boot();
-
-        $user = Auth::user();
-        if ($user != null) {
-            $gas_id = $user->gas->id;
-
-            static::addGlobalScope('gas', function (Builder $builder) use ($gas_id) {
-                $builder->whereHas('gas', function($query) use ($gas_id) {
-                    $query->where('gas_id', $gas_id);
-                });
-            });
-        }
+        static::addGlobalScope(new RestrictedGAS());
     }
 
     public function gas()

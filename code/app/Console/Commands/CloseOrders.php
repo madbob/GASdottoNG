@@ -4,12 +4,9 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-use App\Notifications\ClosedOrderNotification;
-
 use Log;
 
 use App\Order;
-use App\Role;
 
 class CloseOrders extends Command
 {
@@ -24,19 +21,28 @@ class CloseOrders extends Command
     public function handle()
     {
         $orders = Order::where('status', 'open')->where('end', '<', date('Y-m-d'))->get();
+        $aggregates = [];
 
         foreach($orders as $order) {
             try {
+                $aggregates[$order->aggregate->id] = $order->aggregate;
                 $order->status = 'closed';
                 $order->save();
-
-                $users = Role::everybodyCan('supplier.orders', $order->supplier);
-                foreach($users as $u) {
-                    $u->notify(new ClosedOrderNotification($order));
-                }
             }
             catch(\Exception $e) {
                 Log::error('Errore in chiusura automatica ordine: ' . $e->getMessage());
+            }
+        }
+
+        foreach($aggregates as $aggregate) {
+            $aggregate->refresh();
+
+            if ($aggregate->last_notify == null && $aggregate->status == 'closed') {
+                foreach($aggregate->gas as $gas) {
+                    if ($gas->auto_user_order_summary) {
+                        async_job('aggregate_summary', ['aggregate_id' => $aggregate->id, 'message' => '']);
+                    }
+                }
             }
         }
     }

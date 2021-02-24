@@ -10,18 +10,16 @@ use DB;
 use URL;
 use Log;
 
+use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 use App\Events\BookingDeleting;
-use App\GASModel;
-use App\CreditableTrait;
-use App\SluggableID;
-use App\BookedProduct;
 
 class Booking extends Model
 {
     use GASModel, SluggableID, PayableTrait, CreditableTrait;
 
     public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,
@@ -31,15 +29,7 @@ class Booking extends Model
     protected static function boot()
     {
         parent::boot();
-
-        static::addGlobalScope('gas', function (Builder $builder) {
-            $builder->whereHas('user', function($query) {
-                $user = Auth::user();
-                if (is_null($user))
-                    return;
-                $query->where('gas_id', $user->gas->id);
-            });
-        });
+        static::addGlobalScope(new RestrictedGAS('user'));
     }
 
     public static function commonClassName()
@@ -183,6 +173,7 @@ class Booking extends Model
 
         if ($force_recalculate) {
             $this->emptyInnerCache($key);
+            $this->unsetRelation('products');
         }
 
         return $this->innerCache($key, function($obj) use ($type, $with_friends) {
@@ -456,33 +447,7 @@ class Booking extends Model
 
                         if($master_p->product->variants->isEmpty() == false) {
                             foreach($sub_p->variants as $sub_variant) {
-                                $counter = 0;
-
-                                foreach($master_p->variants as $master_variant) {
-                                    $counter = 0;
-
-                                    foreach($sub_variant->components as $sub_component) {
-                                        $counter++;
-
-                                        foreach($master_variant->components as $master_component) {
-                                            if($master_component->variant_id == $sub_component->variant_id && $master_component->value_id == $sub_component->value_id) {
-                                                $counter--;
-                                                break;
-                                            }
-                                        }
-                                    }
-
-                                    if ($counter == 0)
-                                        break;
-                                }
-
-                                if ($counter == 0) {
-                                    $master_variant->quantity += $sub_variant->quantity;
-                                    $master_variant->delivered += $sub_variant->delivered;
-                                }
-                                else {
-                                    $master_p->variants->push($sub_variant);
-                                }
+                                $master_p->variants->push($sub_variant);
                             }
                         }
                     }

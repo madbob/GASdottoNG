@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -389,7 +390,7 @@ class ImportController extends Controller
                             $p->multiple = $multiples[$index];
 
                             if (starts_with($categories[$index], 'new:')) {
-                                $category_name = str_after($categories[$index], 'new:');
+                                $category_name = Str::after($categories[$index], 'new:');
                                 if (!empty($category_name)) {
                                     if (isset($new_categories[$category_name])) {
                                         $category = $new_categories[$category_name];
@@ -410,7 +411,7 @@ class ImportController extends Controller
                             $p->category_id = $categories[$index];
 
                             if (starts_with($measures[$index], 'new:')) {
-                                $measure_name = str_after($measures[$index], 'new:');
+                                $measure_name = Str::after($measures[$index], 'new:');
                                 if (!empty($measure_name)) {
                                     if (isset($new_measures[$measure_name])) {
                                         $category = $new_measures[$measure_name];
@@ -431,7 +432,7 @@ class ImportController extends Controller
                             $p->measure_id = $measures[$index];
 
                             if (starts_with($vat_rates[$index], 'new:')) {
-                                $vat_name = (float) str_after($vat_rates[$index], 'new:');
+                                $vat_name = (float) Str::after($vat_rates[$index], 'new:');
                                 if (!empty($vat_name)) {
                                     if (isset($new_vats[$vat_name])) {
                                         $vat = $new_vats[$vat_name];
@@ -692,7 +693,11 @@ class ImportController extends Controller
                             'user' => (object) [
                                 'label' => _i('Utente'),
                                 'explain' => _i('Username o indirizzo e-mail')
-                            ]
+                            ],
+                            'supplier' => (object) [
+                                'label' => _i('Fornitore'),
+                                'explain' => _i('Nome o partita IVA')
+                            ],
                         ]
                     ]);
                     break;
@@ -741,15 +746,33 @@ class ImportController extends Controller
                                         $user = User::whereHas('contacts', function($query) use ($name) {
                                             $query->where('value', $name);
                                         })->first();
-                                    }
 
-                                    if (is_null($user)) {
-                                        $save_me = false;
-                                        $errors[] = implode($target_separator, $line) . '<br/>' . _i('Utente non trovato: %s', $name);
-                                        continue;
+                                        if (is_null($user)) {
+                                            $save_me = false;
+                                            $errors[] = implode($target_separator, $line) . '<br/>' . _i('Utente non trovato: %s', $name);
+                                            continue;
+                                        }
                                     }
 
                                     $value = $user->id;
+                                }
+                                elseif ($field == 'supplier') {
+                                    $field = 'target_id';
+
+                                    $name = trim($line[$index]);
+                                    $supplier = Supplier::where('name', $name)->first();
+
+                                    if (is_null($supplier)) {
+                                        $supplier = Supplier::where('vat', $name)->first();
+
+                                        if (is_null($supplier)) {
+                                            $save_me = false;
+                                            $errors[] = implode($target_separator, $line) . '<br/>' . _i('Fornitore non trovato: %s', $name);
+                                            continue;
+                                        }
+                                    }
+
+                                    $value = $supplier->id;
                                 }
                                 else {
                                     $value = $line[$index];
@@ -773,6 +796,7 @@ class ImportController extends Controller
                     $imports = $request->input('import', []);
                     $dates = $request->input('date', []);
                     $senders = $request->input('sender_id', []);
+                    $targets = $request->input('target_id', []);
                     $types = $request->input('mtype', []);
                     $methods = $request->input('method', []);
                     $amounts = $request->input('amount', []);
@@ -795,32 +819,42 @@ class ImportController extends Controller
 
                             $t = MovementType::find($m->type);
 
-                            if ($senders[$index] !== '0') {
-                                if ($t->sender_type == 'App\User') {
-                                    $m->sender_id = $senders[$index];
-                                    $m->sender_type = 'App\User';
-                                }
-                                if ($t->target_type == 'App\User') {
-                                    $m->target_id = $senders[$index];
-                                    $m->target_type = 'App\User';
-                                }
-                            }
+                            $fields = ['sender', 'target'];
 
-                            if ($t->sender_type == 'App\Gas') {
-                                $m->sender_id = $current_gas->id;
-                                $m->sender_type = 'App\Gas';
-                            }
-                            if ($t->target_type == 'App\Gas') {
-                                $m->target_id = $current_gas->id;
-                                $m->target_type = 'App\Gas';
+                            foreach($fields as $f) {
+                                $id_field = $f . '_id';
+                                $type_field = $f . '_type';
+
+                                switch($t->$type_field) {
+                                    case 'App\User':
+                                        if ($senders[$index] !== '0') {
+                                            $m->$id_field = $senders[$index];
+                                            $m->$type_field = 'App\User';
+                                        }
+                                        break;
+
+                                    case 'App\Supplier':
+                                        if ($targets[$index] !== '0') {
+                                            $m->$id_field = $targets[$index];
+                                            $m->$type_field = 'App\Supplier';
+                                        }
+                                        break;
+
+                                    case 'App\Gas':
+                                        $m->$id_field = $current_gas->id;
+                                        $m->$type_field = 'App\Gas';
+                                        break;
+                                }
                             }
 
                             $m->save();
 
-                            if ($m->exists)
+                            if ($m->exists) {
                                 $movements[] = $m;
-                            else
+                            }
+                            else {
                                 $errors[] = $index . '<br/>' . App::make('LogHarvester')->last();
+                            }
                         }
                         catch (\Exception $e) {
                             $errors[] = $index . '<br/>' . $e->getMessage();

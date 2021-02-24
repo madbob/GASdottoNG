@@ -12,7 +12,8 @@
                     'obj' => $gas,
                     'name' => 'roles->user',
                     'label' => _i('Ruolo Utente non Privilegiato'),
-                    'objects' => App\Role::all()
+                    'objects' => App\Role::all(),
+                    'help_popover' => _i("Questo ruolo sarà automaticamete assegnato ad ogni nuovo utente"),
                 ])
 
                 @if(App\Role::someone('users.subusers'))
@@ -20,7 +21,18 @@
                         'obj' => $gas,
                         'name' => 'roles->friend',
                         'label' => _i('Ruolo Sotto-Utente'),
-                        'objects' => App\Role::all()
+                        'objects' => App\Role::all(),
+                        'help_popover' => _i("Questo ruolo sarà automaticamente assegnato ad ogni \"amico\" degli utenti esistenti. Si consiglia di creare un ruolo dedicato, con permessi limitati alle sole prenotazioni"),
+                    ])
+                @endif
+
+                @if(App\Role::someone('gas.multi'))
+                    @include('commons.selectobjfield', [
+                        'obj' => $gas,
+                        'name' => 'roles->multigas',
+                        'label' => _i('Ruolo Amministratore Multi-GAS'),
+                        'objects' => App\Role::all(),
+                        'help_popover' => _i("Questo ruolo sarà automaticamente assegnato al primo utente di ogni nuovo GAS creato nel pannello Multi-GAS"),
                     ])
                 @endif
             </form>

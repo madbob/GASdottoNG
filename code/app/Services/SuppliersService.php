@@ -99,7 +99,18 @@ class SuppliersService extends BaseService
 
         $supplier = new Supplier();
         $this->setCommonAttributes($supplier, $request);
-        $supplier->save();
+
+        DB::transaction(function () use ($supplier, $creator) {
+            $supplier->save();
+
+            $desired_actions = ['supplier.modify', 'supplier.orders', 'supplier.shippings'];
+            foreach($desired_actions as $action) {
+                $roles = Role::havingAction($action);
+                foreach($roles as $r) {
+                    $creator->addRole($r, $supplier);
+                }
+            }
+        });
 
         return $supplier;
     }

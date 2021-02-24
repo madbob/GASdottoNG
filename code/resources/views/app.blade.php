@@ -65,9 +65,6 @@
                             <li class="hidden-xs">
                                 <a href="#" data-toggle="modal" data-target="#feedback-modal"><span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span></a>
                             </li>
-                            <li id="help-trigger" class="hidden-xs">
-                                <a href="#"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
-                            </li>
                             <li>
                                 <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><span class="glyphicon glyphicon-off" aria-hidden="true"></span></a>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -178,7 +175,6 @@
             '/js/jquery.fileupload.js',
             '/js/bootstrap-table.js',
             '/js/bootstrap-toggle.js',
-            '/js/marked.min.js',
             '/js/chartist.js',
             '/js/js.cookie.js',
             '/js/jquery.TableCSVExport.js',
@@ -186,7 +182,6 @@
             '/js/cc.js',
 
             '/js/utils.js',
-            '/js/inline-help.js',
             '/js/statistics.js',
             '/js/aggregation.js',
             '/js/jquery.manyrows.js',

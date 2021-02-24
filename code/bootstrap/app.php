@@ -20,7 +20,12 @@ $app = new Illuminate\Foundation\Application(
     .env (nominato in funzione del dominio)
 */
 if (global_multi_installation()) {
-    $app->loadEnvironmentFrom(env_file());
+    $env_file = env_file();
+    if (file_exists(base_path() . '/' . $env_file) == false) {
+        die('Non sembra esistere nessuna istanza con questo nome. Visita <a href="http://gasdotto.net">gasdotto.net</a> per registrarne gratuitamente una!');
+    }
+
+    $app->loadEnvironmentFrom($env_file);
 }
 
 /*

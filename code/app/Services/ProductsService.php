@@ -55,6 +55,7 @@ class ProductsService extends BaseService
         if (empty($product->measure_id))
             $product->measure_id = 'non-specificato';
 
+        $request['discount'] = savingPercentage($request, 'discount');
         $this->transformAndSetIfSet($product, $request, 'discount', 'normalizePercentage');
 
         $this->transformAndSetIfSet($product, $request, 'vat_rate_id', function($value) {

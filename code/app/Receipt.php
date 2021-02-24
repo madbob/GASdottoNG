@@ -18,6 +18,7 @@ class Receipt extends Model
     use GASModel, SluggableID;
 
     public $incrementing = false;
+    protected $keyType = 'string';
     private $cache_value = null;
 
     protected $dispatchesEvents = [

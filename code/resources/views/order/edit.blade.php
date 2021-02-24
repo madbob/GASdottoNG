@@ -6,10 +6,22 @@
     <div class="row">
         <div class="col-md-6 col-lg-4">
             @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => _i('Fornitore')])
-            @include('commons.staticstringfield', ['obj' => $order, 'name' => 'internal_number', 'label' => _i('Numero')])
+
+            @include('commons.staticstringfield', [
+                'obj' => $order,
+                'name' => 'internal_number',
+                'label' => _i('Numero'),
+                'help_popover' => _i("Numero progressivo automaticamente assegnato ad ogni ordine"),
+            ])
 
             @if(in_array($order->status, ['suspended', 'open', 'closed']))
-                @include('commons.textfield', ['obj' => $order, 'name' => 'comment', 'label' => _i('Commento')])
+                @include('commons.textfield', [
+                    'obj' => $order,
+                    'name' => 'comment',
+                    'label' => _i('Commento'),
+                    'help_popover' => _i("Eventuale testo informativo da visualizzare nel titolo dell'ordine, oltre al nome del fornitore e alle date di apertura e chiusura"),
+                ])
+
                 @include('commons.datefield', ['obj' => $order, 'name' => 'start', 'label' => _i('Data Apertura'), 'mandatory' => true])
 
                 @include('commons.datefield', [
@@ -19,7 +31,8 @@
                     'mandatory' => true,
                     'extras' => [
                         'data-enforce-after' => '.date[name=start]'
-                    ]
+                    ],
+                    'help_popover' => _i("Data di chiusura dell'ordine. Al termine del giorno qui indicato, l'ordine sarà automaticamente impostato nello stato \"Prenotazioni Chiuse\""),
                 ])
 
                 @include('commons.datefield', [
@@ -45,7 +58,7 @@
                         'objects' => $currentgas->deliveries,
                         'multiple_select' => true,
                         'extra_selection' => ['' => _i('Non limitare luogo di consegna')],
-                        'help_text' => _i("Selezionando uno o più luoghi di consegna, l'ordine sarà visibile solo agli utenti che hanno attivato quei luoghi. Se nessun luogo viene selezionato, l'ordine sarà visibile a tutti. Tenere premuto Ctrl per selezionare più voci.")
+                        'help_popover' => _i("Selezionando uno o più luoghi di consegna, l'ordine sarà visibile solo agli utenti che hanno attivato quei luoghi. Se nessun luogo viene selezionato, l'ordine sarà visibile a tutti. Tenere premuto Ctrl per selezionare più voci."),
                     ])
                 @endif
 
@@ -69,12 +82,17 @@
                         'mandatory' => false,
                         'objects' => $contactable_users,
                         'multiple_select' => true,
-                        'help_text' => _i("Tenere premuto Ctrl per selezionare più utenti. I contatti degli utenti selezionati saranno mostrati nel pannello delle prenotazioni.")
+                        'help_text' => _i("I contatti degli utenti selezionati saranno mostrati nel pannello delle prenotazioni. Tenere premuto Ctrl per selezionare più utenti")
                     ])
                 @endif
 
                 @if($order->products()->where('package_size', '!=', 0)->count() != 0)
-                    @include('commons.boolfield', ['obj' => $order, 'name' => 'keep_open_packages', 'label' => _i('Forza completamento confezioni')])
+                    @include('commons.boolfield', [
+                        'obj' => $order,
+                        'name' => 'keep_open_packages',
+                        'label' => _i('Forza completamento confezioni'),
+                        'help_popover' => _i("Se questa opzione viene abilitata, alla chiusura dell'ordine sarà verificato se ci sono prodotti la cui quantità complessivamente ordinata non è multipla della dimensione della relativa confezione. Se si, l'ordine resterà aperto e sarà possibile per gli utenti prenotare solo quegli specifici prodotti finché non si raggiunge la quantità desiderata"),
+                    ])
                 @endif
             @else
                 @if(!empty($order->comment))
@@ -123,7 +141,8 @@
                     'default' => \App\Movement::generate('order-payment', $currentgas, $order, $summary->price_delivered + $summary->transport_delivered),
                     'to_modal' => [
                         'amount_editable' => true
-                    ]
+                    ],
+                    'help_popover' => _i("Da qui è possibile immettere il movimento contabile di pagamento dell'ordine nei confronti del fornitore, che andrà ad alterare il relativo saldo"),
                 ])
             @else
                 @include('commons.staticmovementfield', [

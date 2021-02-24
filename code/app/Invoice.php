@@ -4,21 +4,25 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
-use App\GASModel;
-use App\PayableTrait;
-use App\CreditableTrait;
-use App\SluggableID;
 
 class Invoice extends Model
 {
-    use GASModel, PayableTrait, CreditableTrait, SluggableID;
+    use GASModel, PayableTrait, CreditableTrait, HierarcableTrait, SluggableID;
 
     public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new RestrictedGAS());
+    }
 
     public static function commonClassName()
     {
@@ -47,7 +51,7 @@ class Invoice extends Model
 
     public function ordersCandidates()
     {
-        return $this->supplier->orders()->whereIn('status', ['shipped', 'archived'])->whereNull('payment_id')->where('end', '>', date('Y-m-d G:i:s', strtotime('-1 years')))->whereDoesntHave('invoice', function($query) {
+        return $this->supplier->orders()->whereIn('status', ['shipped', 'archived'])->whereNull('payment_id')->whereDoesntHave('invoice', function($query) {
             $query->whereIn('invoices.status', ['verified', 'payed']);
         })->whereHas('bookings', function($query) {
             $query->where('status', 'shipped');

@@ -3,31 +3,26 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 use App;
 use Auth;
 use DB;
+use PDF;
 use Mail;
 use URL;
 use Log;
 
+use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
-
-use App\GASModel;
-use App\SluggableID;
-use App\BookedProduct;
-use App\ExportableTrait;
-use App\PayableTrait;
-use App\CreditableTrait;
-use App\Notifications\NewOrderNotification;
 
 class Order extends Model
 {
     use AttachableTrait, ExportableTrait, GASModel, SluggableID, PayableTrait, CreditableTrait;
 
     public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class
@@ -36,17 +31,7 @@ class Order extends Model
     protected static function boot()
     {
         parent::boot();
-
-        static::addGlobalScope('gas', function (Builder $builder) {
-            $builder->whereHas('aggregate', function($query) {
-                $query->whereHas('gas', function($query) {
-                    $user = Auth::user();
-                    if (is_null($user))
-                        return;
-                    $query->where('gas_id', $user->gas->id);
-                });
-            });
-        });
+        static::addGlobalScope(new RestrictedGAS('aggregate.gas'));
     }
 
     public static function commonClassName()
@@ -117,13 +102,11 @@ class Order extends Model
 
         if ($user->gas->hasFeature('shipping_places')) {
             $query->where(function($query) use ($user) {
-                $supplier_shippings = array_keys($user->targetsByAction('supplier.shippings'));
-
                 $query->where(function($query) use ($user) {
                     $query->doesnthave('deliveries')->orWhereHas('deliveries', function($query) use ($user) {
                         $query->where('delivery_id', $user->preferred_delivery_id);
                     });
-                })->orWhereIn('supplier_id', $supplier_shippings);
+                });
             });
         }
     }
@@ -271,41 +254,43 @@ class Order extends Model
         }
     }
 
-    public function sendNotificationMail()
+    private function autoGuessFields()
     {
-        if (is_null($this->first_notify) == false) {
-            return;
-        }
+        $has_code = false;
+        $has_boxes = false;
 
-        $order = $this;
-
-        if (currentAbsoluteGas()->getConfig('notify_all_new_orders')) {
-            $query_users = User::where('id', '>', 0);
-        }
-        else {
-            $query_users = User::whereHas('suppliers', function($query) use ($order) {
-                $query->where('suppliers.id', $order->supplier->id);
-            });
-        }
-
-        $deliveries = $order->deliveries;
-        if ($deliveries->isEmpty()) {
-            $query_users->whereIn('preferred_delivery_id', $deliveries->pluck('id'));
-        }
-
-        $users = $query_users->get();
-
-        foreach($users as $user) {
-            try {
-                $user->notify(new NewOrderNotification($order));
+        foreach($this->products as $product) {
+            if (!empty($product->code)) {
+                $has_code = true;
             }
-            catch(\Exception $e) {
-                Log::error('Impossibile inoltrare mail di notifica apertura ordine: ' . $e->getMessage());
+
+            if ($product->package_size != 0) {
+                $has_boxes = true;
+            }
+
+            if ($has_code && $has_boxes) {
+                break;
             }
         }
 
-        $this->first_notify = date('Y-m-d');
-        $this->save();
+        $guessed_fields = [];
+
+        if ($has_code) {
+            $guessed_fields[] = 'code';
+        }
+
+        $guessed_fields[] = 'name';
+        $guessed_fields[] = 'quantity';
+
+        if ($has_boxes) {
+            $guessed_fields[] = 'boxes';
+        }
+
+        $guessed_fields[] = 'measure';
+        $guessed_fields[] = 'unit_price';
+        $guessed_fields[] = 'price';
+
+        return $guessed_fields;
     }
 
     public function isActive()
@@ -352,17 +337,122 @@ class Order extends Model
         });
     }
 
-    public function calculateSummary($products = null, $shipping_place = null)
+    public function document($type, $format, $action, $required_fields, $status, $shipping_place)
     {
-        $summary = (object) [
-            'order' => $this->id,
+        if (empty($required_fields)) {
+            $required_fields = $this->autoGuessFields();
+        }
+
+        switch($type) {
+            case 'summary':
+                $data = $this->formatSummary($required_fields, $status, $shipping_place);
+                $title = _i('Prodotti ordine %s presso %s', [$this->internal_number, $this->supplier->name]);
+                $filename = sanitizeFilename($title . '.' . $format);
+                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
+
+                if ($format == 'pdf') {
+                    $pdf = PDF::loadView('documents.order_summary_pdf', ['order' => $this, 'data' => $data]);
+
+                    if ($action == 'save') {
+                        $pdf->save($temp_file_path);
+                    }
+                    else {
+                        return $pdf->download($filename);
+                    }
+                }
+                else if ($format == 'csv') {
+                    if ($action == 'save') {
+                        output_csv($filename, $data->headers, $data->contents, function($row) {
+                            return $row;
+                        }, $temp_file_path);
+                    }
+                    else {
+                        return output_csv($filename, $data->headers, $data->contents, function($row) {
+                            return $row;
+                        });
+                    }
+                }
+
+                return $temp_file_path;
+                break;
+        }
+    }
+
+    public static function emptySummary($order_id)
+    {
+        return (object) [
+            'order' => $order_id,
             'price' => 0,
             'price_delivered' => 0,
             'undiscounted_price' => 0,
             'undiscounted_price_delivered' => 0,
+            'transport' => 0,
+            'transport_delivered' => 0,
+            'weight' => 0,
+            'weight_delivered' => 0,
             'products' => [],
             'by_variant' => [],
         ];
+    }
+
+    public static function mergeSummary($first, $second)
+    {
+        $merged = self::emptySummary(0);
+        $merged->order = $first->order;
+        $merged->price = $first->price + $second->price;
+        $merged->price_delivered = $first->price_delivered + $second->price_delivered;
+        $merged->undiscounted_price = $first->undiscounted_price + $second->undiscounted_price;
+        $merged->undiscounted_price_delivered = $first->undiscounted_price_delivered + $second->undiscounted_price_delivered;
+        $merged->transport = $first->transport + $second->transport;
+        $merged->transport_delivered = $first->transport_delivered + $second->transport_delivered;
+        $merged->weight = $first->weight + $second->weight;
+        $merged->weight_delivered = $first->weight_delivered + $second->weight_delivered;
+
+        $first_products = array_keys($first->products);
+        $second_products = array_keys($second->products);
+        $all_products = array_unique(array_merge($first_products, $second_products));
+
+        foreach($all_products as $product_id) {
+            $first_product = $first->products[$product_id] ?? null;
+            $second_product = $second->products[$product_id] ?? null;
+
+            if ($first_product == null) {
+                $product = $second_product;
+            }
+            else if ($second_product == null) {
+                $product = $first_product;
+            }
+            else {
+                $product = [];
+                $product['product_obj'] = $first_product['product_obj'];
+                $product['quantity_pieces'] = $first_product['quantity_pieces'] + $second_product['quantity_pieces'];
+                $product['delivered_pieces'] = $first_product['delivered_pieces'] + $second_product['delivered_pieces'];
+                $product['weight'] = $first_product['weight'] + $second_product['weight'];
+                $product['weight_delivered'] = $first_product['weight_delivered'] + $second_product['weight_delivered'];
+
+                $product['raw_quantity'] = $first_product['raw_quantity'] + $second_product['raw_quantity'];
+                $product['quantity'] = printableQuantity($product['raw_quantity'], $first_product['product_obj']->measure->discrete);
+                $product['raw_price'] = $first_product['price'] + $second_product['price'];
+                $product['price'] = printablePrice($product['raw_price']);
+                $product['raw_transport'] = $first_product['transport'] + $second_product['transport'];
+                $product['transport'] = printablePrice($product['raw_transport']);
+                $product['raw_delivered'] = $first_product['delivered'] + $second_product['delivered'];
+                $product['delivered'] = printableQuantity($product['raw_delivered'], $first_product['product_obj']->measure->discrete, 3);
+                $product['raw_price_delivered'] = $first_product['price_delivered'] + $second_product['price_delivered'];
+                $product['price_delivered'] = printablePrice($product['raw_price_delivered']);
+                $product['raw_transport_delivered'] = $first_product['transport_delivered'] + $second_product['transport_delivered'];
+                $product['transport_delivered'] = printablePrice($product['raw_transport_delivered']);
+            }
+
+            $merged->products[$product_id] = $product;
+        }
+
+        return $merged;
+    }
+
+    public function calculateSummary($products = null, $shipping_place = null)
+    {
+        $summary = self::emptySummary($this->id);
 
         $order = $this;
 
@@ -510,6 +600,13 @@ class Order extends Model
             $summary->products[$product->id]['transport_delivered'] = printablePrice($transport_delivered);
             $summary->products[$product->id]['weight'] = $weight;
             $summary->products[$product->id]['weight_delivered'] = $weight_delivered;
+
+            $summary->products[$product->id]['raw_quantity'] = $quantity;
+            $summary->products[$product->id]['raw_price'] = $price;
+            $summary->products[$product->id]['raw_transport'] = $transport;
+            $summary->products[$product->id]['raw_delivered'] = $delivered;
+            $summary->products[$product->id]['raw_price_delivered'] = $price_delivered;
+            $summary->products[$product->id]['raw_transport_delivered'] = $transport_delivered;
 
             $total_price += $price;
             $total_price_delivered += $price_delivered;
@@ -1089,7 +1186,7 @@ class Order extends Model
 
     public function getSlugID()
     {
-        return sprintf('%s::%s', $this->supplier->id, str_slug(strftime('%d %B %Y', strtotime($this->start))));
+        return sprintf('%s::%s', $this->supplier->id, Str::slug(strftime('%d %B %Y', strtotime($this->start))));
     }
 
     /******************************************************** CreditableTrait */

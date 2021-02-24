@@ -11,6 +11,8 @@ Route::get('gas/{id}/logo', 'GasController@getLogo');
 Route::get('payment/status/paypal', 'PaymentController@statusPaymentPaypal')->name('payment.status_paypal');
 Route::get('payment/status/satispay', 'PaymentController@statusPaymentSatispay')->name('payment.status_satispay');
 
+Route::post('job/execute', 'JobsController@execute')->name('job.execute');
+
 Route::post('mail/status', 'MailController@postStatus');
 
 Route::middleware(['auth'])->group(function() {
@@ -27,6 +29,7 @@ Route::middleware(['auth'])->group(function() {
     Route::post('dashboard/verify', 'CommonsController@postVerify');
 
     Route::get('gas/{id}/header', 'GasController@objhead')->name('gas.objhead');
+    Route::get('gas/dumpdb', 'GasController@databaseDump')->name('gas.dumpdb');
 
     Route::get('users/ro/{id}', 'UsersController@show_ro');
     Route::get('users/{id}/header', 'UsersController@objhead')->name('users.objhead');
@@ -36,6 +39,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('users/picture/{id}', 'UsersController@picture');
     Route::get('users/export', 'UsersController@export');
     Route::post('users/notifications/{id}', 'UsersController@notifications')->name('users.notifications');
+    Route::get('users/fees', 'UsersController@fees')->name('users.fees');
     Route::get('users/password', 'UsersController@changePassword')->name('users.password');
 
     Route::get('friends/{id}/header', 'FriendsController@objhead')->name('friends.objhead');
@@ -84,14 +88,15 @@ Route::middleware(['auth'])->group(function() {
     Route::post('orders/recalculate/{id}', 'OrdersController@recalculate');
     Route::get('orders/fixes/{id}/{product_id}', 'OrdersController@getFixes');
     Route::post('orders/fixes/{id}', 'OrdersController@postFixes');
-    Route::get('orders/document/{id}/{type}', 'OrdersController@document');
+    Route::get('orders/document/{id}/{type}', 'OrdersController@document')->name('orders.document');
 
     Route::get('dates/query', 'DatesController@query');
 
     Route::get('aggregates/{id}/header', 'AggregatesController@objhead')->name('aggregates.objhead');
     Route::get('aggregates/notify/test/{id}', 'AggregatesController@testNotify');
     Route::post('aggregates/notify/{id}', 'AggregatesController@notify');
-    Route::get('aggregates/document/{id}/{type}/{subtype?}', 'AggregatesController@document');
+    Route::get('aggregates/document/{id}/{type}', 'AggregatesController@document')->name('aggregates.document');
+    Route::get('aggregates/{id}/multigas', 'AggregatesController@multiGAS')->name('aggregates.multigas');
 
     Route::get('attachments/{id}/header', 'AttachmentsController@objhead')->name('attachments.objhead');
     Route::get('attachments/download/{id}', 'AttachmentsController@download');

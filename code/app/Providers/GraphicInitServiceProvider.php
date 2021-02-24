@@ -31,6 +31,7 @@ class GraphicInitServiceProvider extends ServiceProvider
                 'labelsize' => 4,
                 'fieldsize' => 8,
                 'help_text' => '',
+                'help_popover' => '',
                 'extras' => [],
                 'prefix' => false,
                 'postfix' => false,

@@ -9,6 +9,7 @@
 
     <div class="row">
         <div class="col-md-4">
+            <h4>{{ _i('Fornitori') }}</h4>
             <ul class="list-group">
                 @foreach(App\Supplier::orderBy('name', 'asc')->get() as $supplier)
                     <li class="list-group-item">
@@ -21,6 +22,7 @@
             </ul>
         </div>
         <div class="col-md-4">
+            <h4>{{ _i('Ordini') }}</h4>
             <ul class="list-group">
                 @foreach(App\Aggregate::whereHas('orders', function($query) {
                     $query->whereIn('status', ['open', 'closed', 'suspended']);
@@ -35,6 +37,7 @@
             </ul>
         </div>
         <div class="col-md-4">
+            <h4>{{ _i('Luoghi di Consegna') }}</h4>
             <ul class="list-group">
                 @foreach(App\Delivery::orderBy('name', 'asc')->get() as $delivery)
                     <li class="list-group-item">

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 
 use Auth;
 use DB;
+use Log;
 
 use App\User;
 use App\Supplier;
@@ -124,11 +125,16 @@ class RolesController extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
-        if ($user->can('gas.permissions', $user->gas) == false && $user->can('users.admin', $user->gas) == false) {
+        $role_id = $request->input('role');
+
+        $managed_roles = $user->managed_roles->search(function($item, $key) use ($role_id) {
+            return $item->id == $role_id;
+        });
+
+        if ($user->can('gas.permissions', $user->gas) == false && $user->can('users.admin', $user->gas) == false && $managed_roles === false) {
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
-        $role_id = $request->input('role');
         $r = Role::findOrFail($role_id);
 
         if ($request->has('user')) {
@@ -177,11 +183,16 @@ class RolesController extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
-        if ($user->can('gas.permissions', $user->gas) == false && $user->can('users.admin', $user->gas) == false) {
+        $role_id = $request->input('role');
+
+        $managed_roles = $user->managed_roles->search(function($item, $key) use ($role_id) {
+            return $item->id == $role_id;
+        });
+
+        if ($user->can('gas.permissions', $user->gas) == false && $user->can('users.admin', $user->gas) == false && $managed_roles === false) {
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
-        $role_id = $request->input('role');
         $r = Role::findOrFail($role_id);
 
         if ($request->has('user')) {

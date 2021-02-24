@@ -160,8 +160,9 @@ class Role extends Model
             $rules = DB::table('attached_role_user')->where('role_user_id', $this->pivot->id)->get();
             foreach($rules as $r) {
                 $class = $r->target_type;
-                if (isset($applies_cache[$class]) == false)
+                if (isset($applies_cache[$class]) == false) {
                     $applies_cache[$class] = [];
+                }
 
                 if ($r->target_id == '*') {
                     if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
@@ -455,7 +456,7 @@ class Role extends Model
                 'supplier.view' => _i('Vedere tutti i fornitori'),
                 'order.view' => _i('Vedere tutti gli ordini'),
                 'users.self' => _i('Modificare la propria anagrafica'),
-                'users.admin' => _i('Amministrare le anagrafiche degli utenti'),
+                'users.admin' => _i('Amministrare gli utenti'),
                 'users.view' => _i('Vedere tutti gli utenti'),
                 'users.subusers' => _i('Avere sotto-utenti con funzioni limitate'),
                 'users.movements' => _i('Amministrare i movimenti contabili degli utenti'),

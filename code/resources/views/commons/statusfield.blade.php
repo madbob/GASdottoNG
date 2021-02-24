@@ -1,12 +1,19 @@
 <?php
 
 if ($target) {
-    if (!is_null($target->deleted_at))
+    if (!is_null($target->deleted_at)) {
         $status = 'deleted';
-    else if (!is_null($target->suspended_at))
+    }
+    else if (!is_null($target->suspended_at)) {
         $status = 'suspended';
-    else
+    }
+    else {
         $status = 'active';
+    }
+
+    if (is_a($target, 'App\User')) {
+        $help_popover = _i('Gli utenti Sospesi e Cessati non possono accedere alla piattaforma, pur restando registrati. È necessario specificare una data di cessazione/sospensione.');
+    }
 }
 else {
     $status = 'active';
@@ -15,7 +22,10 @@ else {
 ?>
 
 <div class="form-group">
-    <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Stato') }}</label>
+    <label class="col-sm-{{ $labelsize }} control-label">
+        @include('commons.helpbutton', ['help_popover' => $help_popover])
+        {{ _i('Stato') }}
+    </label>
 
     <div class="col-sm-{{ $fieldsize }}">
         <div class="btn-group" data-toggle="buttons">

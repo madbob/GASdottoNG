@@ -10,18 +10,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-use App\Notifications\ResetPasswordNotification;
-
 use Auth;
+use Log;
 use URL;
 
+use App\Notifications\ResetPasswordNotification;
+use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 
 class User extends Authenticatable
 {
-    use Notifiable, Authorizable, CanResetPassword, SoftDeletes, ContactableTrait, CreditableTrait, PayableTrait, SuspendableTrait, GASModel, SluggableID;
+    use Notifiable, Authorizable, CanResetPassword, SoftDeletes, ContactableTrait, CreditableTrait, PayableTrait, SuspendableTrait, HierarcableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
+    protected $keyType = 'string';
     protected $hidden = ['password', 'remember_token'];
     protected $dates = ['deleted_at'];
 
@@ -36,25 +38,12 @@ class User extends Authenticatable
     protected static function boot()
     {
         parent::boot();
-
-        $user = Auth::user();
-        if ($user != null) {
-            $gas_id = $user->gas->id;
-
-            static::addGlobalScope('gas', function (Builder $builder) use ($gas_id) {
-                $builder->where('gas_id', $gas_id);
-            });
-        }
+        static::addGlobalScope(new RestrictedGAS());
     }
 
     public static function commonClassName()
     {
         return _i('Utente');
-    }
-
-    public function gas()
-    {
-        return $this->belongsTo('App\Gas');
     }
 
     public function roles($target = null)
@@ -343,6 +332,11 @@ class User extends Authenticatable
         $this->notify(new ResetPasswordNotification($token));
     }
 
+    public static function usernamePattern()
+    {
+        return '[A-Za-z0-9_@.\- ]{1,50}';
+    }
+
     public static function formattableColumns()
     {
         $ret = [
@@ -356,22 +350,18 @@ class User extends Authenticatable
             ],
             'fullname' => (object) [
                 'name' => _i('Nome Completo'),
-                'checked' => false,
             ],
             'username' => (object) [
                 'name' => _i('Username'),
             ],
             'email' => (object) [
                 'name' => _i('E-Mail'),
-                'checked' => true,
             ],
             'phone' => (object) [
                 'name' => _i('Telefono'),
-                'checked' => true,
             ],
             'mobile' => (object) [
                 'name' => _i('Cellulare'),
-                'checked' => true,
             ],
             'address' => (object) [
                 'name' => _i('Indirizzo'),
