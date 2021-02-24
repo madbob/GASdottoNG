@@ -518,6 +518,15 @@ table {
 
 .ct-chart-bar, .ct-chart-pie {
     height: 400px;
+
+    span.ct-label {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        max-width: 100%;
+        text-align: start !important;
+        justify-content: right !important;
+    }
 }
 
 .nav {
