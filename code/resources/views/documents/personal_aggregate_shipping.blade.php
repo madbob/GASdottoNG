@@ -76,9 +76,9 @@
                                         <tr>
                                             <td>{{ $product->product->printableName() }}</td>
                                             <td>{{ printableQuantity($product->quantity, $product->product->measure->discrete, 2, ',') }}</td>
-                                            <td>{{ printablePriceCurrency($product->quantityValue(), ',') }}</td>
+                                            <td>{{ printablePriceCurrency($product->getValue('booked'), ',') }}</td>
                                             <td>{{ printableQuantity($product->delivered, $product->product->measure->discrete, 2, ',') }}</td>
-                                            <td>{{ printablePriceCurrency($product->deliveredValue(), ',') }}</td>
+                                            <td>{{ printablePriceCurrency($product->getValue('delivered'), ',') }}</td>
                                         </tr>
                                     @endif
                                 @endif
@@ -173,9 +173,9 @@
                                             <tr>
                                                 <td>{{ $product->product->printableName() }}</td>
                                                 <td>{{ printableQuantity($product->quantity, $product->product->measure->discrete, 2, ',') }}</td>
-                                                <td>{{ printablePriceCurrency($product->quantityValue(), ',') }}</td>
+                                                <td>{{ printablePriceCurrency($product->getValue('booked'), ',') }}</td>
                                                 <td>{{ printableQuantity($product->delivered, $product->product->measure->discrete, 2, ',') }}</td>
-                                                <td>{{ printablePriceCurrency($product->deliveredValue(), ',') }}</td>
+                                                <td>{{ printablePriceCurrency($product->getValue('delivered'), ',') }}</td>
                                             </tr>
                                         @endif
                                     @endif

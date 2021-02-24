@@ -13,7 +13,7 @@ if (!isset($final_value)) {
 <tr class="modifier-row do-not-sort {{ $mod_value ? '' : 'hidden' }}">
     <td>
         <label class="static-label">
-            <span class="name">{{ $mod_value ? $mod_value->modifier->modifierType->name . ' ' . $mod_value->modifier->target->printableName() : '' }}</span>
+            <span class="name">{{ $mod_value ? $mod_value->descriptive_name : '' }}</span>
             <span class="mutable {{ (is_null($mod_value) || $mod_value->is_variable == false || $final_value == true) ? 'hidden' : '' }}">
                 <br><small>{{ _i("Il valore qui indicato è una stima, sarà finalizzato alla chiusura dell'ordine") }}</small>
             </span>

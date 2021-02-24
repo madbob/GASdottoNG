@@ -64,6 +64,11 @@ class Modifier extends Model
         return route('modifiers.show', $this->id);
     }
 
+    public function getActiveAttribute()
+    {
+        return $this->definitions->isEmpty() == false;
+    }
+
     public static function descriptions()
     {
         /*
@@ -185,11 +190,12 @@ class Modifier extends Model
 
     public function apply($booking, $aggregate_data)
     {
-        if (!isset($aggregate_data->orders[$booking->order_id])) {
+        if ($this->active == false) {
             return null;
         }
 
-        if ($this->definitions->isEmpty()) {
+        if (!isset($aggregate_data->orders[$booking->order_id])) {
+            Log::debug('nessun dato');
             return null;
         }
 
@@ -222,10 +228,6 @@ class Modifier extends Model
             }
         }
 
-        if (is_null($check_target)) {
-            return null;
-        }
-
         switch($this->applies_target) {
             case 'order':
                 $mod_target = $aggregate_data->orders[$booking->order_id] ?? null;
@@ -239,15 +241,11 @@ class Modifier extends Model
 
             case 'product':
                 $product_target_id = $this->target->id;
-                $mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$product_target_id];
+                $mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$product_target_id] ?? null;
                 $obj_mod_target = $booking->products()->whereHas('product', function($query) use ($product_target_id) {
                     $query->where('product_id', $product_target_id);
                 })->first();
                 break;
-        }
-
-        if (is_null($mod_target) || is_null($obj_mod_target)) {
-            return null;
         }
 
         if ($booking->status == 'shipped' || $booking->status == 'saved') {
@@ -293,7 +291,7 @@ class Modifier extends Model
             $mod_attribute = 'price';
         }
 
-        $check_value = $check_target->$attribute;
+        $check_value = $check_target->$attribute ?? 0;
         $target_definition = null;
 
         if ($this->scale == 'minor') {
@@ -314,7 +312,7 @@ class Modifier extends Model
         }
 
         if (is_null($target_definition) == false) {
-            $altered_amount = $this->applyDefinition($mod_target->$mod_attribute, $target_definition, $check_target);
+            $altered_amount = $this->applyDefinition($mod_target->$mod_attribute ?? 0, $target_definition, $check_target);
 
             /*
                 Se il modificatore è applicato su un ordine, qui applico alla
@@ -338,18 +336,29 @@ class Modifier extends Model
                 }
             }
 
-            $modifier_value = $obj_mod_target->modifiedValues->firstWhere('modifier_id', $this->id);
-            if (is_null($modifier_value)) {
+            $modifier_value = null;
+
+            if ($obj_mod_target) {
+                $modifier_value = $obj_mod_target->modifiedValues->firstWhere('modifier_id', $this->id);
+                if (is_null($modifier_value)) {
+                    $modifier_value = new ModifiedValue();
+                    $modifier_value->setRelation('modifier', $this);
+                    $obj_mod_target->modifiedValues->push($modifier_value);
+                }
+            }
+            else {
                 $modifier_value = new ModifiedValue();
                 $modifier_value->setRelation('modifier', $this);
-                $obj_mod_target->modifiedValues->push($modifier_value);
             }
 
             $modifier_value->modifier_id = $this->id;
             $modifier_value->amount = $altered_amount;
-            $modifier_value->target_type = get_class($obj_mod_target);
-            $modifier_value->target_id = $obj_mod_target->id;
-            $modifier_value->save();
+
+            if ($obj_mod_target) {
+                $modifier_value->target_type = get_class($obj_mod_target);
+                $modifier_value->target_id = $obj_mod_target->id;
+                $modifier_value->save();
+            }
 
             return $modifier_value;
         }

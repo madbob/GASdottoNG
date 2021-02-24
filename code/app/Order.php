@@ -188,22 +188,6 @@ class Order extends Model
         return App::make('OrderNumbersDispatcher')->getNumber($this);
     }
 
-    public function getTotalValueAttribute()
-    {
-        return $this->innerCache('total_value', function($obj) {
-            $total_value = 0;
-
-            $bookings_ids = $obj->bookings()->pluck('id');
-            $products = BookedProduct::whereIn('booking_id', $bookings_ids)->with(['booking', 'product', 'variants'])->get();
-            foreach($products as $booked) {
-                $booked->booking->setRelation('order', $obj);
-                $total_value += $booked->quantityValue();
-            }
-
-            return $total_value;
-        });
-    }
-
     /*
         Se il prodotto è contenuto nell'ordine la funzione ritorna TRUE
         e la referenza a $product viene sostituita con quella interna

@@ -7,19 +7,19 @@ switch($booking->status) {
         $intro_text = _i('Di seguito il riassunto dei prodotti che ti sono stati consegnati:');
         $display_shipping_date = false;
         $attribute = 'delivered';
-        $function = 'deliveredValue';
+        $get_value = 'delivered';
         break;
 
     case 'saved':
         $intro_text = _i('Di seguito il riassunto dei prodotti che ti saranno consegnati:');
         $attribute = 'delivered';
-        $function = 'deliveredValue';
+        $get_value = 'delivered';
         break;
 
     case 'pending':
         $intro_text = _i('Di seguito il riassunto dei prodotti che hai ordinato:');
         $attribute = 'quantity';
-        $function = 'quantityValue';
+        $get_value = 'booked';
         break;
 }
 
@@ -59,7 +59,7 @@ $bookings_tot = 0;
                     <tr>
                         <td>{{ $product->product->printableName() }}</td>
                         <td>{{ $product->$attribute }} {{ $product->product->printableMeasure() }}</td>
-                        <td>{{ printablePriceCurrency($product->$function()) }}</td>
+                        <td>{{ printablePriceCurrency($product->getValue($get_value)) }}</td>
                     </tr>
                 @endif
             @endforeach
@@ -111,7 +111,7 @@ $bookings_tot = 0;
                             <tr>
                                 <td>{{ $product->product->printableName() }}</td>
                                 <td>{{ $product->$attribute }} {{ $product->product->printableMeasure() }}</td>
-                                <td>{{ printablePriceCurrency($product->$function()) }}</td>
+                                <td>{{ printablePriceCurrency($product->getValue($get_value)) }}</td>
                             </tr>
                         @endif
                     @endforeach

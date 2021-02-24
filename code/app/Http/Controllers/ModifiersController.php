@@ -30,4 +30,15 @@ class ModifiersController extends BackedController
             abort($e->status());
         }
     }
+
+    public function edit(Request $request, $id)
+    {
+        try {
+            $modifier = $this->service->show($id);
+            return view('modifier.edit', ['modifier' => $modifier]);
+        }
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+    }
 }

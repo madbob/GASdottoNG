@@ -23,7 +23,7 @@ else
             <tr>
                 <td width="40%">{{ $product->product->printableName() }}</td>
                 <td width="40%">{{ printableQuantity($product->quantity, $product->product->measure->discrete, 2, ',') }} {{ $product->product->printableMeasure(true) }}</td>
-                <td width="20%">{{ printablePriceCurrency($product->quantityValue(), ',') }}</td>
+                <td width="20%">{{ printablePriceCurrency($product->getValue('booked'), ',') }}</td>
             </tr>
         @endif
     @endif

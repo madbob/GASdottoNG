@@ -69,7 +69,7 @@ class DeliveryUserController extends BookingHandler
                 $booked->delivered = $booked->quantity;
             }
 
-            $booked->final_price = $booked->deliveredValue();
+            $booked->final_price = $booked->getValue('delivered');
             $booked->save();
         }
 

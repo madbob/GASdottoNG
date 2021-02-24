@@ -35,6 +35,11 @@ class ModifiedValue extends Model
         }
     }
 
+    public function getDescriptiveNameAttribute()
+    {
+        return $this->modifier->modifierType->name . ' ' . $this->modifier->target->printableName() . ': ' . $this->modifier->name;
+    }
+
     public function getSummary()
     {
         return $this->target->getModifiedRelations();
