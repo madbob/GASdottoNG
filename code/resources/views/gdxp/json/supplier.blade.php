@@ -6,6 +6,14 @@ if (!isset($currentgas)) {
     $currentgas = currentAbsoluteGas();
 }
 
+if (!isset($order)) {
+    $order = null;
+}
+
+if (!isset($bookings)) {
+    $bookings = false;
+}
+
 $json_object = (object) [
     'protocolVersion' => 1.0,
     'creationDate' => date('Y-m-d'),
@@ -71,6 +79,10 @@ foreach($obj->contacts as $contact) {
     }
 }
 
+if ($order && $bookings) {
+    $summary = $order->calculateSummary();
+}
+
 foreach($obj->products as $product) {
     $p = (object) [
         'name' => $product->name,
@@ -94,7 +106,22 @@ foreach($obj->products as $product) {
         $p->orderInfo->vatRate = $product->vat_rate->percentage;
     }
 
+    if ($bookings) {
+        $p->bookingInfo = (object) [
+            'totalQty' => (float) $summary->products[$product->id]['quantity'] ?? 0,
+        ];
+    }
+
     $json_object->blocks[0]->supplier->products[] = $p;
+}
+
+if ($order) {
+    $json_object->blocks[0]->orderInfo = (object) [
+        'phase' => $bookings ? 'booking' : 'order',
+        'openDate' => $order->start,
+        'closeDate' => $order->end,
+        'deliveryDate' => $order->shipping,
+    ];
 }
 
 echo json_encode($json_object);

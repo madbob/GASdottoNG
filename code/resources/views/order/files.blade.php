@@ -174,6 +174,9 @@
                             'csv' => (object) [
                                 'name' => 'CSV'
                             ],
+                            'gdxp' => (object) [
+                                'name' => 'GDXP'
+                            ],
                         ]
                     ])
 

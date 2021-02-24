@@ -354,13 +354,20 @@ function decodeDateMonth($date)
     return date('Y-m-d', strtotime($en_date));
 }
 
-function http_csv_headers($filename)
+function download_headers($mimetype, $filename)
 {
-    header('Content-Type: text/csv');
+    app('debugbar')->disable();
+
+    header('Content-Type: ' . $mimetype);
     header('Content-Disposition: attachment; filename="' . $filename . '"');
     header('Cache-Control: no-cache, no-store, must-revalidate');
     header('Pragma: no-cache');
     header('Expires: 0');
+}
+
+function http_csv_headers($filename)
+{
+    download_headers('text/csv', $filename);
 }
 
 function output_csv($filename, $head, $contents, $format_callback, $out_file = null)
