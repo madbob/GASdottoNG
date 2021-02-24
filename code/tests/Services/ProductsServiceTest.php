@@ -120,11 +120,14 @@ class ProductsServiceTest extends TestCase
     public function testUpdate()
     {
         $this->actingAs($this->userWithReferrerPerms);
-        $product = $this->productsService->update($this->product->id, array(
+
+        $this->productsService->update($this->product->id, array(
             'name' => 'Another Product',
             'price' => 10,
             'discount' => '10%'
         ));
+
+        $product = $this->productsService->show($this->product->id);
 
         $this->assertNotEquals($product->name, $this->product->name);
         $this->assertEquals($product->price, 10);
