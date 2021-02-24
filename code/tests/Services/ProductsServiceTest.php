@@ -9,16 +9,6 @@ class ProductsServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private $userWithAdminPerm;
-    private $userWithReferrerPerms;
-    private $userWithNoPerms;
-    private $gas;
-    private $supplier;
-    private $product;
-    private $category;
-    private $measure;
-    private $productsService;
-
     public function setUp(): void
     {
         parent::setUp();
@@ -35,27 +25,9 @@ class ProductsServiceTest extends TestCase
             'measure_id' => $this->measure->id
         ]);
 
-        $admin_role = \App\Role::create([
-            'name' => 'Admin',
-            'actions' => 'supplier.add'
-        ]);
-        $this->userWithAdminPerm = factory(\App\User::class)->create([
-            'gas_id' => $this->gas->id
-        ]);
-        $this->userWithAdminPerm->addRole($admin_role, $this->gas);
-
-        $referrer_role = \App\Role::create([
-            'name' => 'Admin',
-            'actions' => 'supplier.modify'
-        ]);
-        $this->userWithReferrerPerms = factory(\App\User::class)->create([
-            'gas_id' => $this->gas->id
-        ]);
-        $this->userWithReferrerPerms->addRole($referrer_role, $this->supplier);
-
-        $this->userWithNoPerms = factory(\App\User::class)->create([
-            'gas_id' => $this->gas->id
-        ]);
+        $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'supplier.add');
+        $this->userWithReferrerPerms = $this->createRoleAndUser($this->gas, 'supplier.modify', $this->supplier);
+        $this->userWithNoPerms = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
 
         Model::reguard();
 

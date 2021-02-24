@@ -11,13 +11,6 @@ class MovementsServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private $userWithAdminPerm;
-    private $userWithReferrerPerms;
-    private $userWithNoPerms;
-    private $gas;
-    private $service;
-    private $sample_movement;
-
     public function setUp(): void
     {
         parent::setUp();
@@ -25,27 +18,9 @@ class MovementsServiceTest extends TestCase
 
         $this->gas = factory(\App\Gas::class)->create();
 
-        $admin_role = \App\Role::create([
-            'name' => 'Admin',
-            'actions' => 'movements.admin'
-        ]);
-        $this->userWithAdminPerm = factory(\App\User::class)->create([
-            'gas_id' => $this->gas->id
-        ]);
-        $this->userWithAdminPerm->addRole($admin_role, $this->gas);
-
-        $treasurer_role = \App\Role::create([
-            'name' => 'Treasurer',
-            'actions' => 'movements.view'
-        ]);
-        $this->userWithReferrerPerms = factory(\App\User::class)->create([
-            'gas_id' => $this->gas->id
-        ]);
-        $this->userWithReferrerPerms->addRole($treasurer_role, $this->gas);
-
-        $this->userWithNoPerms = factory(\App\User::class)->create([
-            'gas_id' => $this->gas->id
-        ]);
+        $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'movements.admin');
+        $this->userWithReferrerPerms = $this->createRoleAndUser($this->gas, 'movements.view');
+        $this->userWithNoPerms = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
 
         $this->sample_movement = factory(\App\Movement::class)->create([
             'type' => 'donation-from-gas',

@@ -9,13 +9,6 @@ class UsersServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private $userWithViewPerm;
-    private $userWithAdminPerm;
-    private $userWithMovementPerm;
-    private $userWithNoPerms;
-    private $gas;
-    private $usersService;
-
     public function setUp(): void
     {
         parent::setUp();
@@ -23,37 +16,10 @@ class UsersServiceTest extends TestCase
 
         $this->gas = factory(\App\Gas::class)->create();
 
-        $view_role = \App\Role::create([
-            'name' => 'Viewer',
-            'actions' => 'users.view,users.subusers'
-        ]);
-        $this->userWithViewPerm = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
-        $this->userWithViewPerm->addRole($view_role, $this->gas);
-
-        $admin_role = \App\Role::create([
-            'name' => 'Admin',
-            'actions' => 'users.admin'
-        ]);
-
-        $this->userWithAdminPerm = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
-        $this->userWithAdminPerm->addRole($admin_role, $this->gas);
-
-        $treasure_role = \App\Role::create([
-            'name' => 'Treasure',
-            'actions' => 'movements.admin'
-        ]);
-
-        $this->userWithMovementPerm = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
-        $this->userWithMovementPerm->addRole($treasure_role, $this->gas);
-
-        $base_role = \App\Role::create([
-            'name' => 'User',
-            'actions' => 'users.self'
-        ]);
-
-        $this->userWithBasePerm = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
-        $this->userWithBasePerm->addRole($base_role, $this->gas);
-
+        $this->userWithViewPerm = $this->createRoleAndUser($this->gas, 'users.view,users.subusers');
+        $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'users.admin');
+        $this->userWithMovementPerm = $this->createRoleAndUser($this->gas, 'movements.admin');
+        $this->userWithBasePerm = $this->createRoleAndUser($this->gas, 'users.self');
         $this->userWithNoPerms = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
 
         factory(\App\User::class, 3)->create(['gas_id' => $this->gas->id]);
