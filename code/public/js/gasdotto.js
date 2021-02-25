@@ -20,6 +20,11 @@ function generalInit(container) {
         autoclose: true,
         language: current_language,
         clearBtn: true,
+    }).each(function() {
+        var input = $(this);
+        input.siblings('.input-group-addon').click(function() {
+            input.focus();
+        });
     });
 
     $('input.date-to-month', container).datepicker({

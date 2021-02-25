@@ -142,6 +142,7 @@ $panel_rand_wrap = rand();
                                             'value' => 'suspended',
                                         ],
                                     ],
+                                    'help_popover' => _i("Da qui puoi modificare lo stato di tutti gli ordini inclusi nell'aggregato"),
                                 ])
 
                                 @include('commons.textfield', ['obj' => $aggregate, 'name' => 'comment', 'label' => _i('Commento')])

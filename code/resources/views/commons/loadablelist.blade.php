@@ -38,7 +38,7 @@ foreach($sorting_rules as $attribute => $info) {
 @if(!empty($filters) || !is_null($legend))
     <div class="row">
         <div class="col-md-12 flowbox">
-            <div class="form-group mainflow hidden-md">
+            <div class="form-group mainflow visible-md-block visible-lg-block">
                 <input type="text" class="form-control list-text-filter" data-list-target="#{{ $identifier }}">
             </div>
             @if(!empty($sorting_rules))
