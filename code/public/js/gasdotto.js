@@ -1608,6 +1608,32 @@ $(document).ready(function() {
         }
     });
 
+    /*
+        Questo è per gestire i modali Bootstrap che si sovrappongono tra loro,
+        ed i relativi z-index (soprattutto dei backdrops)
+    */
+    $('body').on('shown.bs.modal', '.modal', function () {
+        var zIndex = 1040 + (10 * $('.modal:visible').length);
+        $(this).css('z-index', zIndex);
+        setTimeout(function() {
+            $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+        }, 0);
+    });
+
+    /*
+        Questo è per fare in modo che, in caso di molteplici modali sovrapposti
+        tra di loro, quando uno viene chiuso venga comunque mantenuta la classe
+        .modal-open nel body (che serve a gestire correttamente lo scrolling dei
+        modali rimasti)
+    */
+    $('body').on('hidden.bs.modal', function () {
+        setTimeout(function() {
+            if ($('.modal:visible').length > 0) {
+                $('body').addClass('modal-open');
+            }
+        }, 100);
+    });
+
     $('body').on('shown.bs.modal', '.modal', function(e) {
         $(this).find('[data-default-value]').each(function() {
             if ($(this).val() == '') {
@@ -2272,6 +2298,12 @@ $(document).ready(function() {
         });
     });
 
+    $('body').on('change', '.status-selector input:radio[name*="status"]', function() {
+        var field = $(this).closest('.form-group');
+        field.find('.status-date-deleted').toggleClass('hidden', ($(this).val() != 'deleted'));
+        field.find('.status-date-suspended').toggleClass('hidden', ($(this).val() != 'suspended'));
+    });
+
     $('body').on('change', '.movement-modal input[name=method]', function() {
         if ($(this).prop('checked') == false)
             return;
@@ -2612,16 +2644,6 @@ $(document).ready(function() {
 
         var url = $(this).attr('data-export-url') + '?' + $.param(data);
         window.open(url, '_blank');
-    });
-
-    /*
-        Gestione utenti
-    */
-
-    $('body').on('change', '.user-editor input:radio[name=status], .supplier-editor input:radio[name=status]', function() {
-        var field = $(this).closest('.form-group');
-        field.find('.status-date-deleted').toggleClass('hidden', ($(this).val() != 'deleted'));
-        field.find('.status-date-suspended').toggleClass('hidden', ($(this).val() != 'suspended'));
     });
 
     /*

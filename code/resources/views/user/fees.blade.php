@@ -3,19 +3,22 @@
 <div class="modal fade close-on-submit" id="checkFees" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-extra-lg" role="document">
         <div class="modal-content">
-            <form class="form-horizontal" method="GET" data-toggle="validator" novalidate>
+            <form class="form-horizontal inner-form" method="POST" action="{{ route('users.savefees') }}">
+                <input type="hidden" name="reload-whole-page" value="1">
+
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">{{ _i('Controllo Quote') }}</h4>
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-12" id="credits_status_table">
-                            <table class="table" id="creditsTable">
+                        <div class="col-md-12">
+                            <table class="table">
                                 <thead>
                                     <tr>
-                                        <th width="30%">{{ _i('Nome') }}</th>
-                                        <th width="50%">{{ _i('Ultima Quota Versata') }}</th>
+                                        <th width="25%">{{ _i('Nome') }}</th>
+                                        <th width="35%">{{ _i('Ultima Quota Versata') }}</th>
+                                        <th width="20%">{{ _i('Stato') }}</th>
                                         <th width="20%"></th>
                                     </tr>
                                 </thead>
@@ -40,6 +43,7 @@
 
                                         <tr>
                                             <td>
+                                                <input type="hidden" name="user_id[]" value="{{ $user->id }}">
                                                 {!! $user->printableHeader() !!}
                                             </td>
 
@@ -49,6 +53,10 @@
                                                 @else
                                                     {{ printableDate(null) }}
                                                 @endif
+                                            </td>
+
+                                            <td>
+                                                @include('commons.statusfield', ['target' => $user, 'squeeze' => true, 'postfix' => $user->id])
                                             </td>
 
                                             <td>
@@ -67,6 +75,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Chiudi') }}</button>
+                    <button type="submit" class="btn btn-success">{{ _i('Salva') }}</button>
                 </div>
             </form>
         </div>

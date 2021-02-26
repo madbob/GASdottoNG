@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 use Auth;
 
@@ -173,6 +174,24 @@ class UsersController extends BackedController
         if ($user->can('users.admin') || $user->can('users.movements')) {
             $users = $this->service->list('', $user->can('users.admin', $user->gas));
             return view('user.fees', ['users' => $users]);
+        }
+        else {
+            abort(401);
+        }
+    }
+
+    public function feesSave(Request $request)
+    {
+        $user = $request->user();
+
+        if ($user->can('users.admin') || $user->can('users.movements')) {
+            $users = $request->input('user_id');
+
+            foreach($users as $user_id) {
+                $user = User::tFind($user_id);
+                $user->setStatus($request->input('status' . $user_id), $request->input('deleted_at' . $user_id), $request->input('suspended_at' . $user_id));
+                $user->save();
+            }
         }
         else {
             abort(401);
