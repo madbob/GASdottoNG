@@ -1,3 +1,23 @@
+<?php
+
+/*
+    Problema sulla formattazione del documento: c'è chi lo preferisce senza
+    interruzioni di pagina in mezzo alle tabelle, e chi lo vuole continuo (per
+    evitare tanti spazi vuoti nelle pagine stampate).
+    Qui scelgo in base alla dimensione delle prenotazioni: se ce ne sono di
+    grandi (più di 15 prodotti) opto per la visualizzazione continua, altrimenti
+    preferisco quella che predilige l'accorpamento delle tabelle nelle pagine
+*/
+$preferred_style = 'breakup';
+foreach($data->contents as $d){
+    if (count($d->products) >= 15) {
+        $preferred_style = 'compact';
+        break;
+    }
+}
+
+?>
+
 <html>
     <head>
         <style>
@@ -47,60 +67,66 @@
         <?php $total = $total_transport = $total_discount = 0 ?>
 
         @foreach($data->contents as $d)
-            <table style="width: 100%">
+            @if($preferred_style == 'breakup')
+                <table style="width: 100%">
+                    <tr>
+                        <td>
+            @endif
+
+            <table border="1" style="width: 100%" cellpadding="5" nobr="true">
                 <tr>
-                    <td>
-                        <table border="1" style="width: 100%" cellpadding="5" nobr="true">
-                            <tr>
-                                <th colspan="{{ count($fields->product_columns) }}">
-                                    {!! join('<br>', array_filter($d->user)) !!}
+                    <th colspan="{{ count($fields->product_columns) }}">
+                        {!! join('<br>', array_filter($d->user)) !!}
 
-                                    <?php
+                        <?php
 
-                                    $booking_total = $d->totals['total'];
-                                    $discount = $d->totals['discount'];
-                                    $transport = $d->totals['transport'];
-                                    $total += $booking_total;
-                                    $total_transport += $transport;
-                                    $total_discount += $discount;
+                        $booking_total = $d->totals['total'];
+                        $discount = $d->totals['discount'];
+                        $transport = $d->totals['transport'];
+                        $total += $booking_total;
+                        $total_transport += $transport;
+                        $total_discount += $discount;
 
-                                    ?>
-                                </th>
-                            </tr>
+                        ?>
+                    </th>
+                </tr>
 
-                            @foreach($d->products as $product)
-                                <tr>
-                                    @foreach($product as $p)
-                                        <td>{{ $p }}</td>
-                                    @endforeach
-                                </tr>
-                            @endforeach
+                @foreach($d->products as $product)
+                    <tr>
+                        @foreach($product as $p)
+                            <td>{{ $p }}</td>
+                        @endforeach
+                    </tr>
+                @endforeach
 
-                            @if(!empty($d->notes))
-                                <tr>
-                                    <td colspan="{{ count($fields->product_columns) }}">{!! join('<br>', $d->notes) !!}</td>
-                                </tr>
-                            @endif
+                @if(!empty($d->notes))
+                    <tr>
+                        <td colspan="{{ count($fields->product_columns) }}">{!! join('<br>', $d->notes) !!}</td>
+                    </tr>
+                @endif
 
-                            @if($transport != 0)
-                                <tr>
-                                    <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Trasporto') }}: {{ printablePriceCurrency($transport, ',') }}</strong></th>
-                                </tr>
-                            @endif
+                @if($transport != 0)
+                    <tr>
+                        <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Trasporto') }}: {{ printablePriceCurrency($transport, ',') }}</strong></th>
+                    </tr>
+                @endif
 
-                            @if($discount != 0)
-                                <tr>
-                                    <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Sconto') }}: {{ printablePriceCurrency($discount, ',') }}</strong></th>
-                                </tr>
-                            @endif
+                @if($discount != 0)
+                    <tr>
+                        <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Sconto') }}: {{ printablePriceCurrency($discount, ',') }}</strong></th>
+                    </tr>
+                @endif
 
-                            <tr>
-                                <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($booking_total, ',') }}</strong></th>
-                            </tr>
-                        </table>
-                    </td>
+                <tr>
+                    <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($booking_total, ',') }}</strong></th>
                 </tr>
             </table>
+
+            @if($preferred_style == 'breakup')
+                        </td>
+                    </tr>
+                </table>
+            @endif
 
             <p>&nbsp;</p>
         @endforeach
