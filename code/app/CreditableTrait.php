@@ -11,7 +11,7 @@ trait CreditableTrait
     {
         $proxy = $this->getBalanceProxy();
         if (is_null($proxy))
-            return $this->morphMany('App\Balance', 'target')->orderBy('date', 'desc');
+            return $this->morphMany('App\Balance', 'target')->orderBy('current', 'desc')->orderBy('date', 'desc');
         else
             return $proxy->balances();
     }
