@@ -372,6 +372,9 @@ class User extends Authenticatable
             'card_number' => (object) [
                 'name' => _i('Numero Tessera'),
             ],
+            'status' => (object) [
+                'name' => _i('Stato'),
+            ],
             'payment_method' => (object) [
                 'name' => _i('Modalità Pagamento'),
             ],
@@ -413,9 +416,11 @@ class User extends Authenticatable
                             $ret[] = '';
                         }
                         break;
+
                     case 'fullname':
                         $ret[] = $this->printableName();
                         break;
+
                     case 'shipping_place':
                         $sp = $this->shippingplace;
                         if ($sp)
@@ -423,9 +428,15 @@ class User extends Authenticatable
                         else
                             $ret[] = _i('Nessuno');
                         break;
+
+                    case 'status':
+                        $ret[] = $this->printableStatus();
+                        break;
+
                     case 'payment_method':
                         $ret[] = $this->payment_method->name;
                         break;
+
                     default:
                         $ret[] = accessAttr($this, $f);
                         break;
