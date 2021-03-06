@@ -155,13 +155,6 @@
                                 <div class="col-md-12">
                                     @include('commons.boolfield', [
                                         'obj' => $gas,
-                                        'name' => 'fast_shipping_enabled',
-                                        'label' => _i('Abilita Consegne Rapide'),
-                                        'help_popover' => _i("Quando questa opzione è abilitata, nel pannello dell'ordine viene attivato il tab \"Consegne Rapide\" (accanto a \"Consegne\") che permette di marcare più prenotazioni come consegnate in un'unica operazione"),
-                                    ])
-
-                                    @include('commons.boolfield', [
-                                        'obj' => $gas,
                                         'name' => 'restrict_booking_to_credit',
                                         'label' => _i('Permetti solo prenotazioni entro il credito disponibile')
                                     ])

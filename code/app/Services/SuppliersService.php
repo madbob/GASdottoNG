@@ -81,8 +81,9 @@ class SuppliersService extends BaseService
         $this->setIfSet($supplier, $request, 'taxcode');
         $this->setIfSet($supplier, $request, 'vat');
         $this->setIfSet($supplier, $request, 'description');
-        $this->setIfSet($supplier, $request, 'payment_method');
-        $this->setIfSet($supplier, $request, 'order_method');
+        $this->setIfSet($supplier, $request, 'payment_method', '');
+        $this->setIfSet($supplier, $request, 'order_method', '');
+        $this->boolIfSet($supplier, $request, 'fast_shipping_enabled');
 
         if (isset($request['status'])) {
             $supplier->setStatus($request['status'], $request['deleted_at'], $request['suspended_at']);
@@ -92,11 +93,6 @@ class SuppliersService extends BaseService
     public function store(array $request)
     {
         $creator = $this->ensureAuth(['supplier.add' => 'gas']);
-
-        if (!isset($request['payment_method']) || is_null($request['payment_method']))
-            $request['payment_method'] = '';
-        if (!isset($request['order_method']) || is_null($request['order_method']))
-            $request['order_method'] = '';
 
         $supplier = new Supplier();
         $this->setCommonAttributes($supplier, $request);

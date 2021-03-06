@@ -84,10 +84,6 @@ class Gas extends Model
                 'default' => '0'
             ],
 
-            'fast_shipping_enabled' => [
-                'default' => '0'
-            ],
-
             'restrict_booking_to_credit' => [
                 'default' => '0'
             ],
@@ -255,11 +251,6 @@ class Gas extends Model
     public function getRolesAttribute()
     {
         return (array) json_decode($this->getConfig('roles'));
-    }
-
-    public function getFastShippingEnabledAttribute()
-    {
-        return $this->getConfig('fast_shipping_enabled') == '1';
     }
 
     public function getRestrictBookingToCreditAttribute()

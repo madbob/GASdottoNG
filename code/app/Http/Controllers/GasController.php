@@ -175,7 +175,6 @@ class GasController extends Controller
                 break;
 
             case 'orders':
-                $gas->setConfig('fast_shipping_enabled', $request->has('fast_shipping_enabled') ? '1' : '0');
                 $gas->setConfig('restrict_booking_to_credit', $request->has('restrict_booking_to_credit') ? '1' : '0');
                 $gas->setConfig('booking_contacts', $request->input('booking_contacts'));
                 $gas->setConfig('orders_display_columns', $request->input('orders_display_columns'));
