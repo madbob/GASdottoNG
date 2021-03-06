@@ -16,7 +16,7 @@ class SupplierFastShipping extends Migration
         });
 
         $actual = Config::where('name', 'fast_shipping_enabled')->first();
-        if ($actual->value == '1') {
+        if ($actual && $actual->value == '1') {
             Supplier::where('id', '!=', '')->withTrashed()->update(['fast_shipping_enabled' => 1]);
         }
     }
