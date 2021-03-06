@@ -1,4 +1,11 @@
-<?php $suppliers = $currentuser->targetsByAction('supplier.orders') ?>
+<?php
+
+$suppliers = $currentuser->targetsByAction('supplier.orders');
+usort($suppliers, function($a, $b) {
+    return $a->name <=> $b->name;
+});
+
+?>
 
 @if($currentuser->gas->hasFeature('auto_aggregates'))
     <div class="form-group">
