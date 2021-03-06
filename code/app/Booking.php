@@ -201,7 +201,6 @@ class Booking extends Model
                     switch($type) {
                         case 'effective':
                             return $obj->getValue('delivered', $with_friends) + $obj->getValue('transport', $with_friends) - $obj->getValue('discount', $with_friends);
-                            break;
 
                         case 'delivered':
                             $value = $obj->products()->sum('final_price');
@@ -226,7 +225,6 @@ class Booking extends Model
                     switch($type) {
                         case 'effective':
                             return $obj->getValue('booked', $with_friends) + $obj->getValue('transport', $with_friends) - $obj->getValue('discount', $with_friends);
-                            break;
 
                         /*
                             Se la prenotazione non è consegnata, implicitamente il
@@ -383,6 +381,7 @@ class Booking extends Model
                 $total_value = $this->order->total_value;
                 if ($total_value != 0) {
                     $distributed_amount = 0;
+                    $last_product = null;
                     $global_discount = $this->dynamicDiscount(false);
                     $booking_value = $this->getValue('delivered', false);
 
@@ -552,7 +551,7 @@ class Booking extends Model
             if ($friends_tot == 0)
                 $message = _i('Hai ordinato %s', printablePriceCurrency($tot));
             else
-                $message = _i('Hai ordinato %s + %s', printablePriceCurrency($tot), printablePriceCurrency($friends_tot));
+                $message = _i('Hai ordinato %s + %s', [printablePriceCurrency($tot), printablePriceCurrency($friends_tot)]);
         }
 
         $ret .= '<span class="pull-right">' . $message . '</span>';

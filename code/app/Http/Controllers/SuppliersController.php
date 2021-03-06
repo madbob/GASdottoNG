@@ -67,7 +67,7 @@ class SuppliersController extends BackedController
         if ($request->user()->can('supplier.modify', $supplier))
             return view('supplier.products_details', ['supplier' => $supplier]);
         else
-            abort();
+            abort(401);
     }
 
     public function productsGrid(Request $request, $id)
@@ -76,7 +76,7 @@ class SuppliersController extends BackedController
         if ($request->user()->can('supplier.modify', $supplier))
             return view('supplier.products_grid', ['supplier' => $supplier]);
         else
-            abort();
+            abort(401);
     }
 
     public function catalogue(Request $request, $id, $format = null)

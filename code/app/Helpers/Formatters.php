@@ -79,6 +79,7 @@ function printablePeriodic($value)
         return '';
     }
 
+    $day = '';
     $days = localeDays();
     foreach($days as $locale => $english) {
         if ($value_obj->day == $english) {
@@ -171,7 +172,7 @@ function unrollPeriodic($value)
             $validity_end = 31;
             break;
         default:
-            Log::error('Tipo ciclicità non identificato: ' . $cycle);
+            Log::error('Tipo ciclicità non identificato: ' . $value->cycle);
             break;
     }
 
@@ -484,6 +485,11 @@ function iban_split($iban, $field)
         case 'account':
             $start = 15;
             $length = 12;
+            break;
+        default:
+            Log::error('Campo non gestito per IBAN: ' . $field);
+            $start = 0;
+            $lenght = 0;
             break;
     }
 

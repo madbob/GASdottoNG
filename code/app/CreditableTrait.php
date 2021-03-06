@@ -92,6 +92,7 @@ trait CreditableTrait
 
                 $class = get_class($obj);
                 $fields = $class::balanceFields();
+                $now = [];
 
                 if (!isset($current_status[$class]))
                     $current_status[$class] = [];

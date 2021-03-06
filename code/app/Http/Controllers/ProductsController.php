@@ -9,6 +9,9 @@ use DB;
 use Auth;
 
 use App\Services\ProductsService;
+use App\Exceptions\AuthException;
+use App\Exceptions\IllegalArgumentException;
+
 use App\Order;
 use App\Product;
 

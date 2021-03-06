@@ -39,7 +39,7 @@ class MailController extends Controller
                 try {
                     $email = $data->bounce->bouncedRecipients[0]->emailAddress;
                     $message = $data->bounce->bouncedRecipients[0]->diagnosticCode;
-                    $message = sprintf(_i('Impossibile inoltrare mail a %s: %s', $email, $message));
+                    $message = sprintf(_i('Impossibile inoltrare mail a %s: %s', [$email, $message]));
                     $message = addslashes($message);
 
                     if (global_multi_installation()) {

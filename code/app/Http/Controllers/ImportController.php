@@ -65,7 +65,8 @@ class ImportController extends Controller
             $filepath = sys_get_temp_dir();
             $filename = $f->getClientOriginalName();
             $f->move($filepath, $filename);
-            $path = $filepath.'/'.$filename;
+            $path = $filepath . '/' . $filename;
+            $sample_line = '';
 
             $target_separator = $this->guessCsvFileSeparator($path);
             if (is_null($target_separator)) {
@@ -867,7 +868,7 @@ class ImportController extends Controller
             }
         }
 
-        return $this->errorResponse(_i('Comando %s/%s non valido', $type, $step));
+        return $this->errorResponse(_i('Comando %s/%s non valido', [$type, $step]));
     }
 
     public function getGdxp(Request $request)
@@ -893,6 +894,7 @@ class ImportController extends Controller
                 break;
 
             case 'json':
+            default:
                 $json = $obj->exportJSON();
                 $downloadable = sprintf('%s/%s.json', $working_dir, str_replace('/', '_', $obj->printableName()));
                 file_put_contents($downloadable, $json);

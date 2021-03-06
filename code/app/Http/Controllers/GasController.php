@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 
 use Auth;
 use DB;
+use Log;
 
 use App\Config;
 use App\Role;

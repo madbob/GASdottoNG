@@ -28,10 +28,11 @@
         "zetacomponents/archive": "^1.5"
     },
     "require-dev": {
+        "filp/whoops": "~2.0",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "~1.0",
-        "phpunit/phpunit": "~7.0",
-        "filp/whoops": "~2.0"
+        "nunomaduro/larastan": "^0.7.0",
+        "phpunit/phpunit": "~7.0"
     },
     "autoload": {
         "classmap": [
@@ -78,5 +79,12 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "optimize-autoloader": true
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": [
+                "barryvdh/laravel-ide-helper"
+            ]
+        }
     }
 }
