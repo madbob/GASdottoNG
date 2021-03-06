@@ -378,6 +378,9 @@ class Gas extends Model
             case 'public_registrations':
                 return $this->public_registrations['enabled'];
                 break;
+            case 'auto_aggregates':
+                return Aggregate::has('orders', '>=', Aggregate::aggregatesConvenienceLimit())->count() > 3;
+                break;
         }
 
         return false;

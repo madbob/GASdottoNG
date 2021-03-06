@@ -1,12 +1,39 @@
 <?php $suppliers = $currentuser->targetsByAction('supplier.orders') ?>
 
-@include('commons.selectobjfield', [
-    'obj' => $order,
-    'name' => 'supplier_id',
-    'label' => _i('Fornitore'),
-    'mandatory' => true,
-    'objects' => $suppliers
-])
+@if($currentuser->gas->hasFeature('auto_aggregates'))
+    <div class="form-group">
+        <label for="contacts" class="col-sm-{{ $labelsize }} control-label">
+            @include('commons.helpbutton', ['help_popover' => _i("Selezionando diversi fornitori, verranno generati i rispettivi ordini e saranno automaticamente aggregati. Questa funzione viene attivata se nel database sono presenti almeno 3 aggregati con almeno %d ordini ciascuno.", App\Aggregate::aggregatesConvenienceLimit())])
+            {{ _i('Fornitori') }}
+        </label>
+
+        <div class="col-sm-{{ $fieldsize }}">
+            @include('commons.manyrows', [
+                'contents' => $order ? collect([$order]) : new Illuminate\Support\Collection(),
+                'new_label' => _i('Aggiungi'),
+                'columns' => [
+                    [
+                        'label' => _i('Fornitore'),
+                        'field' => 'supplier_id',
+                        'type' => 'selectobj',
+                        'width' => 10,
+                        'extra' => [
+                            'objects' => $suppliers
+                        ]
+                    ],
+                ]
+            ])
+        </div>
+    </div>
+@else
+    @include('commons.selectobjfield', [
+        'obj' => $order,
+        'name' => 'supplier_id',
+        'label' => _i('Fornitore'),
+        'mandatory' => true,
+        'objects' => $suppliers
+    ])
+@endif
 
 @include('commons.textfield', [
     'obj' => $order,

@@ -25,7 +25,7 @@ class AggregatesController extends OrdersController
 
     public function create(Request $request)
     {
-        $orders = Aggregate::orderBy('id', 'desc')->get();
+        $orders = Aggregate::defaultOrders(false);
         return view('order.aggregable', ['orders' => $orders]);
     }
 
