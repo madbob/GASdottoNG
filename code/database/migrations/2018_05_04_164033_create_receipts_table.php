@@ -14,6 +14,7 @@ class CreateReceiptsTable extends Migration
 
             $table->string('number');
             $table->date('date');
+            $table->boolean('mailed')->default(false);
         });
 
         Schema::create('booking_receipt', function (Blueprint $table) {

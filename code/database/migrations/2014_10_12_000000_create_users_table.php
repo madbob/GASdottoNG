@@ -14,10 +14,12 @@ class CreateUsersTable extends Migration
             $table->softDeletes();
 
             $table->string('gas_id');
+            $table->string('parent_id')->nullable();
             $table->string('username')->unique();
             $table->string('firstname');
             $table->string('lastname');
             $table->string('password');
+            $table->boolean('enforce_password_change')->default(false);
             $table->date('birthday')->nullable();
             $table->integer('family_members')->unsigned()->nullable();
             $table->string('picture')->default('');
@@ -26,13 +28,10 @@ class CreateUsersTable extends Migration
             $table->string('card_number')->default('');
             $table->datetime('last_login')->nullable();
             $table->string('preferred_delivery_id')->default('');
+            $table->text('rid')->nullable();
 
             $table->integer('fee_id')->default(0);
             $table->integer('deposit_id')->default(0);
-
-            $table->string('iban')->default('');
-            $table->date('sepa_subscribe')->nullable();
-            $table->date('sepa_first')->nullable();
 
             $table->rememberToken();
 
