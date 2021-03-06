@@ -21,29 +21,31 @@ else {
 
 ?>
 
-<div class="form-group">
-    <label class="col-sm-{{ $labelsize }} control-label">
-        @include('commons.helpbutton', ['help_popover' => $help_popover])
-        {{ _i('Stato') }}
-    </label>
+<div class="form-group status-selector">
+    @if($squeeze == false)
+        <label class="col-sm-{{ $labelsize }} control-label">
+            @include('commons.helpbutton', ['help_popover' => $help_popover])
+            {{ _i('Stato') }}
+        </label>
+    @endif
 
     <div class="col-sm-{{ $fieldsize }}">
         <div class="btn-group" data-toggle="buttons">
             <label class="btn btn-default {{ $status == 'active' ? 'active' : '' }}">
-                <input type="radio" name="status" value="active" {{ $status == 'active' ? 'checked' : '' }}> {{ _i('Attivo') }}
+                <input type="radio" name="{{ $prefix . 'status' . $postfix }}" value="active" {{ $status == 'active' ? 'checked' : '' }}> {{ _i('Attivo') }}
             </label>
             <label class="btn btn-default {{ $status == 'suspended' ? 'active' : '' }}">
-                <input type="radio" name="status" value="suspended" {{ $status == 'suspended' ? 'checked' : '' }}> {{ _i('Sospeso') }}
+                <input type="radio" name="{{ $prefix . 'status' . $postfix }}" value="suspended" {{ $status == 'suspended' ? 'checked' : '' }}> {{ _i('Sospeso') }}
             </label>
             <label class="btn btn-default {{ $status == 'deleted' ? 'active' : '' }}">
-                <input type="radio" name="status" value="deleted" {{ $status == 'deleted' ? 'checked' : '' }}> {{ _i('Cessato') }}
+                <input type="radio" name="{{ $prefix . 'status' . $postfix }}" value="deleted" {{ $status == 'deleted' ? 'checked' : '' }}> {{ _i('Cessato') }}
             </label>
         </div>
     </div>
-    <div class="status-date-deleted col-sm-offset-{{ $labelsize }} col-sm-{{ $fieldsize }} {{ $status != 'deleted' ? 'hidden' : '' }}">
-        @include('commons.datefield', ['obj' => $target, 'name' => 'deleted_at', 'label' => _i('Data'), 'squeeze' => true])
+    <div class="status-date-deleted col-sm-offset-{{ $squeeze == false ? $labelsize : 0 }} col-sm-{{ $fieldsize }} {{ $status != 'deleted' ? 'hidden' : '' }}">
+        @include('commons.datefield', ['obj' => $target, 'name' => 'deleted_at', 'label' => _i('Data'), 'squeeze' => true, 'prefix' => $prefix, 'postfix' => $postfix])
     </div>
-    <div class="status-date-suspended col-sm-offset-{{ $labelsize }} col-sm-{{ $fieldsize }} {{ $status != 'suspended' ? 'hidden' : '' }}">
-        @include('commons.datefield', ['obj' => $target, 'name' => 'suspended_at', 'label' => _i('Data'), 'squeeze' => true])
+    <div class="status-date-suspended col-sm-offset-{{ $squeeze == false ? $labelsize : 0 }} col-sm-{{ $fieldsize }} {{ $status != 'suspended' ? 'hidden' : '' }}">
+        @include('commons.datefield', ['obj' => $target, 'name' => 'suspended_at', 'label' => _i('Data'), 'squeeze' => true, 'prefix' => $prefix, 'postfix' => $postfix])
     </div>
 </div>

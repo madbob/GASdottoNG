@@ -18,18 +18,10 @@ class SuppliersToUsers extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
         });
-
-        Schema::table('orders', function (Blueprint $table) {
-            $table->date('first_notify')->nullable();
-        });
     }
 
     public function down()
     {
         Schema::dropIfExists('supplier_user');
-
-        Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('first_notify');
-        });
     }
 }

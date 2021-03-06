@@ -47,23 +47,6 @@
     color: #BBB;
 }
 
-.middle-tabs {
-    text-align: center;
-
-    hr {
-        position: absolute;
-        width: 100%;
-    }
-
-    .nav-pills {
-        display: inline-block;
-
-        li {
-            background-color: #FFF;
-        }
-    }
-}
-
 .static-label {
 	padding-top: 7px;
 	margin-bottom: 0;
@@ -532,6 +515,15 @@ table {
 
 .ct-chart-bar, .ct-chart-pie {
     height: 400px;
+
+    span.ct-label {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        max-width: 100%;
+        text-align: start !important;
+        justify-content: right !important;
+    }
 }
 
 .nav {

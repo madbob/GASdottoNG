@@ -9,6 +9,7 @@ class CreateAggregatesTable extends Migration
     {
         Schema::create('aggregates', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('comment')->nullable();
             $table->timestamps();
         });
     }

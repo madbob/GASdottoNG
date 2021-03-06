@@ -4,6 +4,7 @@ namespace Tests;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Str;
 
 use Artisan;
 
@@ -38,5 +39,18 @@ abstract class TestCase extends BaseTestCase
     {
         $this->disableQueryDump();
         parent::tearDown();
+    }
+
+    public function createRoleAndUser($gas, $permissions, $target = null)
+    {
+        $role = \App\Role::create([
+            'name' => Str::random(10),
+            'actions' => $permissions
+        ]);
+
+        $user = factory(\App\User::class)->create(['gas_id' => $gas->id]);
+        $user->addRole($role, $target ?: $gas);
+
+        return $user;
     }
 }

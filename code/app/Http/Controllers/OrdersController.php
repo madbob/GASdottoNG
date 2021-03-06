@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Arr;
 
 use DB;
 use Log;
@@ -42,28 +43,6 @@ class OrdersController extends Controller
         $this->commonInit([
             'reference_class' => 'App\\Order'
         ]);
-    }
-
-    private function defaultOrders($mine)
-    {
-        if ($mine) {
-            $user = Auth::user();
-            $supplier_id = [];
-
-            foreach($user->targetsByAction('supplier.modify') as $supplier)
-                $supplier_id[] = $supplier->id;
-            foreach($user->targetsByAction('supplier.orders') as $supplier)
-                $supplier_id[] = $supplier->id;
-            foreach($user->targetsByAction('supplier.shippings') as $supplier)
-                $supplier_id[] = $supplier->id;
-
-            $supplier_id = array_unique($supplier_id);
-        }
-        else {
-            $supplier_id = 0;
-        }
-
-        return Aggregate::easyFilter($supplier_id, date('Y-m-d', strtotime('-1 years')), date('Y-m-d', strtotime('+1 years')), ['open', 'closed', 'shipped', 'suspended']);
     }
 
     private function resetOlderDates($order)
@@ -133,7 +112,7 @@ class OrdersController extends Controller
     {
         $calendar = new \Eluceo\iCal\Component\Calendar(currentAbsoluteGas()->printableName());
 
-        $orders = $this->defaultOrders(false);
+        $orders = Aggregate::defaultOrders(false);
         foreach($orders as $o) {
             if ($o->start && $o->end) {
                 $event = new \Eluceo\iCal\Component\Event();
@@ -150,7 +129,7 @@ class OrdersController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $orders = $this->defaultOrders(!$user->can('order.view', $user->gas));
+        $orders = Aggregate::defaultOrders(!$user->can('order.view', $user->gas));
         return view('pages.orders', ['orders' => $orders]);
     }
 
@@ -158,39 +137,57 @@ class OrdersController extends Controller
     {
         DB::beginTransaction();
 
-        $supplier = Supplier::findOrFail($request->input('supplier_id', -1));
-        if ($request->user()->can('supplier.orders', $supplier) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
+        $a = new Aggregate();
+        $suppliers = Arr::wrap($request->input('supplier_id'));
+
+        if (count($suppliers) == 1) {
+            $order_comment = $request->input('comment');
+        }
+        else {
+            $order_comment = '';
+            $a->comment = $request->input('comment');
         }
 
-        $o = new Order();
-        $o->supplier_id = $supplier->id;
-
-        $now = date('Y-m-d');
-        $o->comment = $request->input('comment');
-        $o->start = decodeDate($request->input('start'));
-        $o->end = decodeDate($request->input('end'));
-        $o->shipping = decodeDate($request->input('shipping'));
-        $o->status = $request->input('status');
-        $o->keep_open_packages = $request->has('keep_open_packages') ? true : false;
-
-        $a = new Aggregate();
         $a->save();
 
-        $o->aggregate_id = $a->id;
-        $o->save();
+        $deliveries = array_filter($request->input('deliveries', []));
+        $start = decodeDate($request->input('start'));
+        $end = decodeDate($request->input('end'));
+        $shipping = decodeDate($request->input('shipping'));
+        $keep_open_packages = $request->has('keep_open_packages') ? true : false;
 
-        $o->deliveries()->sync(array_filter($request->input('deliveries', [])));
-        $o->products()->sync($supplier->products()->where('active', '=', true)->get());
+        foreach($suppliers as $supplier_id) {
+            $supplier = Supplier::findOrFail($supplier_id);
+            if ($request->user()->can('supplier.orders', $supplier) == false) {
+                continue;
+            }
 
-        foreach($supplier->modifiers as $mod) {
-            $new_mod = $mod->replicate();
-            $new_mod->target_id = $o->id;
-            $new_mod->target_type = get_class($o);
-            $new_mod->save();
+            $o = new Order();
+            $o->supplier_id = $supplier->id;
+
+            $now = date('Y-m-d');
+            $o->comment = $order_comment;
+            $o->start = $start;
+            $o->end = $end;
+            $o->shipping = $shipping;
+            $o->status = $request->input('status');
+            $o->keep_open_packages = $keep_open_packages;
+
+            $o->aggregate_id = $a->id;
+            $o->save();
+
+            foreach($supplier->modifiers as $mod) {
+                $new_mod = $mod->replicate();
+                $new_mod->target_id = $o->id;
+                $new_mod->target_type = get_class($o);
+                $new_mod->save();
+            }
+
+            $o->deliveries()->sync($deliveries);
+            $o->products()->sync($supplier->products()->where('active', '=', true)->get());
+
+            $this->resetOlderDates($o);
         }
-
-        $this->resetOlderDates($o);
 
         return $this->commonSuccessResponse($a);
     }

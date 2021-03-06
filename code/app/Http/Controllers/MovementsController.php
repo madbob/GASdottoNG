@@ -191,8 +191,8 @@ class MovementsController extends BackedController
             $target_type = $request->input('target_type');
             $amount = $request->input('amount');
 
-            $sender = $sender_type::findOrFail($sender_id);
-            $target = $target_type::findOrFail($target_id);
+            $sender = $sender_type::tFind($sender_id);
+            $target = $target_type::tFind($target_id);
 
             return view('movement.modal', [
                 'dom_id' => $dom_id,

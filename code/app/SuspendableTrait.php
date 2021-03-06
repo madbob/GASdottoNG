@@ -20,4 +20,17 @@ trait SuspendableTrait {
                 break;
         }
     }
+
+    public function printableStatus()
+    {
+        if (is_null($this->suspended_at) && is_null($this->deleted_at)) {
+            return _i('Attivo');
+        }
+        else if (is_null($this->suspended_at) == false) {
+            return _i('Sospeso');
+        }
+        else if (is_null($this->deleted_at) == false) {
+            return _i('Cessato');
+        }
+    }
 }

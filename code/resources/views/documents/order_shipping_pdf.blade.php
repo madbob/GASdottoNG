@@ -1,3 +1,23 @@
+<?php
+
+/*
+    Problema sulla formattazione del documento: c'è chi lo preferisce senza
+    interruzioni di pagina in mezzo alle tabelle, e chi lo vuole continuo (per
+    evitare tanti spazi vuoti nelle pagine stampate).
+    Qui scelgo in base alla dimensione delle prenotazioni: se ce ne sono di
+    grandi (più di 15 prodotti) opto per la visualizzazione continua, altrimenti
+    preferisco quella che predilige l'accorpamento delle tabelle nelle pagine
+*/
+$preferred_style = 'breakup';
+foreach($data->contents as $d){
+    if (count($d->products) >= 15) {
+        $preferred_style = 'compact';
+        break;
+    }
+}
+
+?>
+
 <html>
     <head>
         <style>
@@ -52,7 +72,13 @@
         ?>
 
         @foreach($data->contents as $d)
-            <table style="width: 100%">
+            @if($preferred_style == 'breakup')
+                <table style="width: 100%">
+                    <tr>
+                        <td>
+            @endif
+
+            <table border="1" style="width: 100%" cellpadding="5" nobr="true">
                 <tr>
                     <td>
                         <table border="1" style="width: 100%" cellpadding="5" nobr="true">
@@ -109,6 +135,12 @@
                     </td>
                 </tr>
             </table>
+
+            @if($preferred_style == 'breakup')
+                        </td>
+                    </tr>
+                </table>
+            @endif
 
             <p>&nbsp;</p>
         @endforeach

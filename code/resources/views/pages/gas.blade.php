@@ -155,13 +155,6 @@
                                 <div class="col-md-12">
                                     @include('commons.boolfield', [
                                         'obj' => $gas,
-                                        'name' => 'fast_shipping_enabled',
-                                        'label' => _i('Abilita Consegne Rapide'),
-                                        'help_popover' => _i("Quando questa opzione è abilitata, nel pannello dell'ordine viene attivato il tab \"Consegne Rapide\" (accanto a \"Consegne\") che permette di marcare più prenotazioni come consegnate in un'unica operazione"),
-                                    ])
-
-                                    @include('commons.boolfield', [
-                                        'obj' => $gas,
                                         'name' => 'restrict_booking_to_credit',
                                         'label' => _i('Permetti solo prenotazioni entro il credito disponibile')
                                     ])
@@ -458,7 +451,7 @@
                 <div class="panel-heading" role="tab">
                     <h4 class="panel-title">
                         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#main-configs" href="#import-config">
-                            {{ _i('Importa') }}
+                            {{ _i('Importa/Esporta') }}
                         </a>
                     </h4>
                 </div>
@@ -513,6 +506,14 @@
                                                 </div>
                                             </div>
                                         @endpush
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-{{ $labelsize }} control-label">
+                                        {{ _i('Esporta database') }}
+                                    </label>
+                                    <div class="col-sm-{{ $fieldsize }}">
+                                        <a href="{{ route('gas.dumpdb') }}" class="btn btn-default">{{ _i('Download') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
                                     </div>
                                 </div>
                             </div>

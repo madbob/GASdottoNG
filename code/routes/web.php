@@ -29,6 +29,7 @@ Route::middleware(['auth'])->group(function() {
     Route::post('dashboard/verify', 'CommonsController@postVerify');
 
     Route::get('gas/{id}/header', 'GasController@objhead')->name('gas.objhead');
+    Route::get('gas/dumpdb', 'GasController@databaseDump')->name('gas.dumpdb');
 
     Route::get('users/ro/{id}', 'UsersController@show_ro');
     Route::get('users/{id}/header', 'UsersController@objhead')->name('users.objhead');
@@ -39,6 +40,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('users/export', 'UsersController@export');
     Route::post('users/notifications/{id}', 'UsersController@notifications')->name('users.notifications');
     Route::get('users/fees', 'UsersController@fees')->name('users.fees');
+    Route::post('users/fees', 'UsersController@feesSave')->name('users.savefees');
     Route::get('users/password', 'UsersController@changePassword')->name('users.password');
 
     Route::get('friends/{id}/header', 'FriendsController@objhead')->name('friends.objhead');

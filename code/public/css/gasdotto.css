@@ -4,7 +4,6 @@
     display: none; }
   .order-summary .form-control {
     padding: 6px; } }
-
 #preloader {
   position: absolute;
   background: white;
@@ -33,16 +32,6 @@
 
 .text-more-muted {
   color: #BBB; }
-
-.middle-tabs {
-  text-align: center; }
-  .middle-tabs hr {
-    position: absolute;
-    width: 100%; }
-  .middle-tabs .nav-pills {
-    display: inline-block; }
-    .middle-tabs .nav-pills li {
-      background-color: #FFF; }
 
 .static-label {
   padding-top: 7px;
@@ -78,7 +67,6 @@ table label {
       color: #777; }
     #dates-calendar .continuous-calendar td a {
       cursor: pointer; }
-
 #dates-calendar a {
   width: 100%;
   max-width: 100%;
@@ -90,22 +78,16 @@ table label {
   padding: 2px;
   margin-bottom: 2px;
   text-decoration: none; }
-
 #dates-calendar .calendar-shipping-open {
   background-color: red; }
-
 #dates-calendar .calendar-shipping-closed {
   background-color: green; }
-
 #dates-calendar .calendar-date-confirmed {
   background-color: blue; }
-
 #dates-calendar .calendar-date-temp {
   background-color: orange; }
-
 #dates-calendar .calendar-date-internal {
   background-color: black; }
-
 #dates-calendar .prev, #dates-calendar .next {
   color: #000;
   display: inline-block;
@@ -119,14 +101,11 @@ table label {
   color: #31708F;
   background-color: #D9EDF7;
   border-color: #BCE8F1; }
-
 .loadablelist .list-group-item.active {
   border: 2px solid #000; }
-
 .loadablelist .loadable-sorting-header {
   background-color: #DDD;
   color: #000; }
-
 .loadablelist .loadable-contents {
   border: 2px solid #000; }
 
@@ -152,25 +131,18 @@ table label {
 
 .dynamic-tree > li > div > input {
   margin-left: 10%; }
-
 .dynamic-tree > li > ul .badge.pull-left {
   display: none; }
-
 .dynamic-tree input {
   width: 80%; }
-
 .dynamic-tree .dynamic-tree-add-row {
   margin-top: 20px; }
-
 .dynamic-tree .mjs-nestedSortable-branch ul {
   margin-top: 10px; }
-
 .dynamic-tree .mjs-nestedSortable-expanded .expanding-icon::before {
   content: "\e252"; }
-
 .dynamic-tree .mjs-nestedSortable-collapsed ul {
   display: none; }
-
 .dynamic-tree .mjs-nestedSortable-collapsed .expanding-icon::before {
   content: "\e250"; }
 
@@ -180,7 +152,6 @@ table label {
 
 table .form-group {
   margin-bottom: 0; }
-
 table .table-sorting-header {
   background-color: #DDD !important;
   color: #000 !important; }
@@ -190,19 +161,14 @@ table .table-sorting-header {
 
 .booking-product .row {
   margin-left: 0; }
-
 .booking-product input[type=text] {
   min-width: 60px; }
-
 .booking-product .input-group {
   float: left; }
-
 .booking-product .master-variant-selector {
   display: none; }
-
 .booking-product .inline-calculator-trigger {
   cursor: pointer; }
-
 .booking-product .mobile-quantity-switch {
   margin-top: 10px; }
 
@@ -241,13 +207,11 @@ table .table-sorting-header {
 .main-form-buttons .btn-default {
   background-color: #FFF;
   border: none; }
-
 .main-form-buttons .close-button {
   margin: 0 10px; }
 
 .modal .modal-header {
   background-color: #EEE; }
-
 .modal .modal-footer {
   background-color: #EEE; }
   .modal .modal-footer .btn-default {
@@ -397,11 +361,9 @@ table .table-sorting-header {
 .dense-list ul {
   height: 930px;
   overflow-x: hidden; }
-
 .dense-list .nav > li > a {
   padding-top: 5px;
   padding-bottom: 5px; }
-
 .dense-list .list-group-item {
   padding-top: 5px;
   padding-bottom: 5px; }
@@ -412,6 +374,15 @@ table .table-sorting-header {
 
 .ct-chart-bar, .ct-chart-pie {
   height: 400px; }
+  .ct-chart-bar span.ct-label, .ct-chart-pie span.ct-label {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
+    text-align: start !important;
+    justify-content: right !important; }
 
 .nav > li > a {
   padding: 14px 10px; }
+
+/*# sourceMappingURL=gasdotto.css.map */

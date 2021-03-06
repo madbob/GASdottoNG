@@ -9,13 +9,6 @@ class SuppliersServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private $userWithAdminPerm;
-    private $userWithReferrerPerms;
-    private $userWithNoPerms;
-    private $gas;
-    private $supplier;
-    private $suppliersService;
-
     public function setUp(): void
     {
         parent::setUp();
@@ -24,36 +17,10 @@ class SuppliersServiceTest extends TestCase
         $this->gas = factory(\App\Gas::class)->create();
         $this->supplier = factory(\App\Supplier::class)->create();
 
-        $admin_role = \App\Role::create([
-            'name' => 'Admin',
-            'actions' => 'supplier.add'
-        ]);
-        $this->userWithAdminPerm = factory(\App\User::class)->create([
-            'gas_id' => $this->gas->id
-        ]);
-        $this->userWithAdminPerm->addRole($admin_role, $this->gas);
-
-        $referrer_role = \App\Role::create([
-            'name' => 'Referrer',
-            'actions' => 'supplier.modify'
-        ]);
-        $this->userWithReferrerPerms = factory(\App\User::class)->create([
-            'gas_id' => $this->gas->id
-        ]);
-        $this->userWithReferrerPerms->addRole($referrer_role, $this->supplier);
-
-        $user_role = \App\Role::create([
-            'name' => 'User',
-            'actions' => 'supplier.view'
-        ]);
-        $this->userWithNormalPerms = factory(\App\User::class)->create([
-            'gas_id' => $this->gas->id
-        ]);
-        $this->userWithNormalPerms->addRole($user_role, $this->gas);
-
-        $this->userWithNoPerms = factory(\App\User::class)->create([
-            'gas_id' => $this->gas->id
-        ]);
+        $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'supplier.add');
+        $this->userWithReferrerPerms = $this->createRoleAndUser($this->gas, 'supplier.modify', $this->supplier);
+        $this->userWithNormalPerms = $this->createRoleAndUser($this->gas, 'supplier.view');
+        $this->userWithNoPerms = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
 
         Model::reguard();
 

@@ -14,7 +14,7 @@ class CreateSuppliersTable extends Migration
 
             $table->string('name');
             $table->string('business_name')->nullable();
-            $table->string('description', 500)->nullable();
+            $table->text('description')->nullable();
             $table->string('comment', 500)->nullable();
 
             $table->text('order_method');

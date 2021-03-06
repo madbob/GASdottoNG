@@ -2,11 +2,15 @@
 
 $shippable_status = false;
 $controllable = false;
+$fast_shipping_enabled = false;
 
 foreach ($aggregate->orders as $order) {
     if ($currentuser->can('supplier.shippings', $order->supplier)) {
-        $controllable = true;
-        break;
+        $controllable = true || $controllable;
+    }
+
+    if ($order->supplier->fast_shipping_enabled) {
+        $fast_shipping_enabled = true || $fast_shipping_enabled;
     }
 }
 
@@ -89,7 +93,7 @@ $panel_rand_wrap = rand();
             @can('supplier.shippings', $aggregate)
                 <li role="presentation"><a href="#shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab" data-async-load="{{ url('/booking/' . $aggregate->id . '/user') }}">{{ _i('Consegne') }}</a></li>
 
-                @if($currentgas->getConfig('fast_shipping_enabled'))
+                @if($fast_shipping_enabled)
                     <li role="presentation"><a href="#fast-shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab" data-async-load="{{ url('/deliveries/' . $aggregate->id . '/fast') }}">{{ _i('Consegne Veloci') }}</a></li>
                 @endif
             @endcan
@@ -142,6 +146,7 @@ $panel_rand_wrap = rand();
                                             'value' => 'suspended',
                                         ],
                                     ],
+                                    'help_popover' => _i("Da qui puoi modificare lo stato di tutti gli ordini inclusi nell'aggregato"),
                                 ])
 
                                 @include('commons.textfield', ['obj' => $aggregate, 'name' => 'comment', 'label' => _i('Commento')])
@@ -182,7 +187,7 @@ $panel_rand_wrap = rand();
             <div role="tabpanel" class="tab-pane shippable-bookings" id="shippings-{{ $aggregate->id }}" data-aggregate-id="{{ $aggregate->id }}">
             </div>
 
-            @if($currentgas->getConfig('fast_shipping_enabled'))
+            @if($fast_shipping_enabled)
                 <div role="tabpanel" class="tab-pane fast-shippable-bookings" id="fast-shippings-{{ $aggregate->id }}">
                 </div>
             @endif
