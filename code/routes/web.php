@@ -2,7 +2,6 @@
 
 Auth::routes();
 
-Route::get(substr(env('APP_KEY'), -5) . '/logs', '\MadBob\LaravelLog2Rss\Log2RssController@index');
 Route::get('ordini.xml', 'OrdersController@rss')->name('rss');
 Route::get('ordini.ics', 'OrdersController@ical');
 
