@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2021-02-10 13:02+0100\n"
-"PO-Revision-Date: 2021-02-10 13:23+0100\n"
+"PO-Revision-Date: 2021-02-28 01:50+0000\n"
 "Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
 "translations/de/>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4.1-dev\n"
+"X-Generator: Weblate 4.5\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -138,17 +138,14 @@ msgstr "Datei im Anhang"
 
 #: ../resources/views/pages/gas.blade.php:181
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:182
-#, fuzzy, php-format
-#| msgid "Tutti (%s)"
+#, php-format
 msgid "Tutti %s"
-msgstr "Alle (%s)"
+msgstr "Alle %s"
 
 #: ../resources/views/pages/gas.blade.php:187
 #: ../storage/framework/messages/0b44ad539cb079e863876c23b3c4f9d8ad2de72c.php.php:188
-#, fuzzy
-#| msgid "Selezione"
 msgid "Selezione manuale"
-msgstr "Auswahl"
+msgstr "Manuelle Auswahl"
 
 #: ../resources/views/product/edit.blade.php:37
 #: ../resources/views/product/variantseditor.blade.php:21
@@ -181,10 +178,8 @@ msgstr "Preisdifferenz"
 #: ../resources/views/product/variantseditor.blade.php:37
 #: ../storage/framework/messages/5a5dd17200a02df698aa6e94abffa77db00114ae.php.php:39
 #: ../storage/framework/messages/b449ad86710ec6847cf2fb9752dcb4ad3862dbce.php.php:53
-#, fuzzy
-#| msgid "Differenza Prezzo"
 msgid "Differenza Peso"
-msgstr "Preisdifferenz"
+msgstr "Gewichtsunterschied"
 
 #: ../resources/views/product/edit.blade.php:57
 #: ../resources/views/product/variantseditor.blade.php:41
@@ -195,7 +190,7 @@ msgstr "Preisdifferenz"
 #: ../storage/framework/messages/d9da9680f882d257f8cb22d7fc339948c7e741ba.php.php:276
 #: ../storage/framework/messages/d9da9680f882d257f8cb22d7fc339948c7e741ba.php.php:281
 msgid "Chili"
-msgstr ""
+msgstr "kg"
 
 #: ../resources/views/supplier/invoicedata.blade.php:10
 #: ../storage/framework/messages/a6a3f9397e6d73f89705b9028f35e6611059e99f.php.php:10
@@ -305,8 +300,8 @@ msgid ""
 "particolare quando viene attivata la \"Pezzatura\""
 msgstr ""
 "Preis pro Gebinde. Zu verstehen inklusive Mwst. Für mehr Details siehe Feld "
-"\"Mwst-Satz\". Der jeweilige Wert ergibt sich, wenn das Feld \"Gebindegröße"
-"\" aktiviert ist"
+"„Mwst-Satz„. Der jeweilige Wert ergibt sich, wenn das Feld „Gebindegröße“ "
+"aktiviert ist"
 
 #: ../storage/framework/messages/03fe6cae2ede501c06dab5b92f4dbd9960b195d1.php.php:20
 #: ../storage/framework/messages/0a80711c8018f37916ec2c8a98416dc9c8e3541a.php.php:170
