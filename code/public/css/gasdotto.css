@@ -82,7 +82,7 @@ table label {
   background-color: red; }
 #dates-calendar .calendar-shipping-closed {
   background-color: green; }
-#dates-calendar .calendar-date-confirmed {
+#dates-calendar .calendar-date-confirmed, #dates-calendar .calendar-date-order {
   background-color: blue; }
 #dates-calendar .calendar-date-temp {
   background-color: orange; }

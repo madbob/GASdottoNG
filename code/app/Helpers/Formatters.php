@@ -180,15 +180,18 @@ function unrollPeriodic($value)
 
     foreach($all_days as $d) {
         $week_index++;
-        if ($week_offset != 1 && $week_index % $week_offset == 0)
+        if ($week_offset != 1 && $week_index % $week_offset == 0) {
             continue;
+        }
 
         $d_day = $d->format('d');
-        if ($d_day < $validity_start || $d_day > $validity_end)
+        if ($d_day < $validity_start || $d_day > $validity_end) {
             continue;
+        }
 
-        if (strtolower($d->format('l')) == $value->day)
+        if (strtolower($d->format('l')) == $value->day) {
             $days[] = $d->format('Y-m-d');
+        }
     }
 
     return $days;

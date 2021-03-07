@@ -34,7 +34,7 @@
                     'label' => _i('Valore'),
                     'field' => 'value',
                     'type' => 'text',
-                    'width' => 6,
+                    'width' => 7,
                     'extra' => [
                         'prefix' => 'contact_'
                     ]

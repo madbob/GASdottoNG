@@ -89,6 +89,8 @@ Route::middleware(['auth'])->group(function() {
     Route::get('orders/document/{id}/{type}', 'OrdersController@document')->name('orders.document');
 
     Route::get('dates/query', 'DatesController@query');
+    Route::get('dates/orders', 'DatesController@orders')->name('dates.orders');
+    Route::post('dates/orders', 'DatesController@updateOrders')->name('dates.updateorders');
 
     Route::get('aggregates/{id}/header', 'AggregatesController@objhead')->name('aggregates.objhead');
     Route::get('aggregates/notify/test/{id}', 'AggregatesController@testNotify');

@@ -41,12 +41,12 @@
             var fields = node.find('.row:not(.many-rows-header)');
             if (fields.length > 1 && node.find('.delete-many-rows').length == 0) {
                 fields.each(function() {
-                    var button = '<div class="col-md-2"><div class="btn btn-danger delete-many-rows pull-right"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div></div>';
+                    var button = '<div class="col-md-1"><div class="btn btn-danger delete-many-rows pull-right"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div></div>';
                     $(this).append(button);
                 });
             } else if (fields.length == 1) {
                 node.find('.delete-many-rows').each(function() {
-                    $(this).closest('.col-md-2').remove();
+                    $(this).closest('.col-md-1').remove();
                 });
             }
         }

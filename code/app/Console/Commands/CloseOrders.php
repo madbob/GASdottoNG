@@ -11,7 +11,7 @@ use App\Order;
 
 class CloseOrders extends Command
 {
-    protected $signature = 'check:orders';
+    protected $signature = 'close:orders';
     protected $description = 'Controlla lo stato degli ordini, ed eventualmente li chiude';
 
     public function __construct()

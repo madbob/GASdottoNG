@@ -29,7 +29,7 @@ class DatesController extends BackedController
     public function index()
     {
         try {
-            $dates = $this->service->list(null, true);
+            $dates = $this->service->list(null, true, ['confirmed', 'temp']);
             return view('dates.table', ['dates' => $dates]);
         }
         catch (AuthException $e) {
@@ -66,6 +66,31 @@ class DatesController extends BackedController
         }
         catch (AuthException $e) {
             abort($e->status());
+        }
+    }
+
+    public function orders()
+    {
+        try {
+            $dates = $this->service->list(null, true, ['order']);
+            return view('dates.orders', ['dates' => $dates]);
+        }
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+    }
+
+    public function updateOrders(Request $request)
+    {
+        try {
+            $this->service->updateOrders($request->except('_method', '_token'));
+            return $this->commonSuccessResponse(null);
+        }
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+        catch (IllegalArgumentException $e) {
+            return $this->errorResponse($e->getMessage(), $e->getArgument());
         }
     }
 }

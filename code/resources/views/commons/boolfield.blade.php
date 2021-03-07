@@ -11,6 +11,14 @@ else {
     $checked = $default_checked;
 }
 
+/*
+    È utile usare "valuefrom" nei casi in cui ci sono molteplici checkboxes,
+    ciascuna riferita ad un determinato elemento (e.g. all'interno di un widget
+    manyrows), magari usando il valore "id".
+    In questo modo l'array generato dalla serializzazione del form conterrà gli
+    identificativi degli elementi per cui la checkbox è stata spuntata, e sarà
+    chiaro quali ce l'hanno spuntata e quali no
+*/
 if (isset($valuefrom) == false) {
     $valuefrom = null;
 }
