@@ -29,7 +29,7 @@
                         'label' => _i('Valore'),
                         'field' => 'value',
                         'type' => 'email',
-                        'width' => 10,
+                        'width' => 11,
                         'extra' => [
                             'prefix' => 'recipient_mail_'
                         ]

@@ -104,7 +104,7 @@ $suppliers = $currentuser->targetsByAction('supplier.orders');
                             'label' => _i('Tipo'),
                             'field' => 'type',
                             'type' => 'selectenum',
-                            'width' => 1,
+                            'width' => 2,
                             'extra' => [
                                 'values' => App\Date::types()
                             ]

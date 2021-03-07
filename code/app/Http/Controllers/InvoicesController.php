@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 use DB;
 use Auth;
+use Log;
 
 use App\Invoice;
 use App\Receipt;

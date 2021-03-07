@@ -591,7 +591,7 @@ class Supplier extends Model
                     $vat_rate->percentage = $name;
                     $vat_rate->save();
                 }
-                $product->category_id = $category->id;
+                $product->vat_rate_id = $vat_rate->id;
             }
 
             $product->save();

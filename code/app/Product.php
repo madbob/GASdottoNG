@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
+use Log;
+
 use App\Events\SluggableCreating;
 
 class Product extends Model

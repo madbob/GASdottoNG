@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Log;
+
 use App\GASModel;
 use App\Aggregate;
 use App\User;

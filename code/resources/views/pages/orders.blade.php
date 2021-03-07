@@ -28,6 +28,14 @@
                     </div>
                 </div>
             </div>
+
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#orderAuto">{{ _i('Gestione Ordini Automatici') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
+            <div class="modal fade dynamic-contents" id="orderAuto" tabindex="-1" role="dialog" data-contents-url="{{ route('dates.orders') }}">
+                <div class="modal-dialog modal-extra-lg" role="document">
+                    <div class="modal-content">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

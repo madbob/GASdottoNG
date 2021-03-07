@@ -176,7 +176,7 @@ function localeMonths()
 function localeDays()
 {
     $lang = currentLang();
-    $months = [];
+    $days = [];
 
     switch($lang) {
         case 'it_IT':

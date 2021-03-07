@@ -305,7 +305,6 @@ class MovementsController extends BackedController
                     $filename = sanitizeFilename(_i('SEPA del %s.xml', date('d/m/Y', strtotime($date))));
 
                     $headers = [
-                        'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
                         'Content-type' => 'text/xml',
                         'Content-Disposition' => 'attachment; filename=' . $filename,
                         'Cache-Control' => 'no-cache, no-store, must-revalidate',

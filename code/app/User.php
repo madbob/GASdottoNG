@@ -423,10 +423,12 @@ class User extends Authenticatable
 
                     case 'shipping_place':
                         $sp = $this->shippingplace;
-                        if ($sp)
-                            $ret[] = $sp->name;
-                        else
+                        if (is_null($sp)) {
                             $ret[] = _i('Nessuno');
+                        }
+                        else {
+                            $ret[] = $sp->name;
+                        }
                         break;
 
                     case 'status':

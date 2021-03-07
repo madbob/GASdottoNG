@@ -90,7 +90,7 @@
                                         'label' => _i('Note'),
                                         'field' => 'notes',
                                         'type' => 'text',
-                                        'width' => 3,
+                                        'width' => 4,
                                     ]
                                 ]
                             ])

@@ -23,7 +23,7 @@ usort($suppliers, function($a, $b) {
                         'label' => _i('Fornitore'),
                         'field' => 'supplier_id',
                         'type' => 'selectobj',
-                        'width' => 10,
+                        'width' => 11,
                         'extra' => [
                             'objects' => $suppliers
                         ]

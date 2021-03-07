@@ -2,7 +2,6 @@
 
 Auth::routes();
 
-Route::get(substr(env('APP_KEY'), -5) . '/logs', '\MadBob\LaravelLog2Rss\Log2RssController@index');
 Route::get('ordini.xml', 'OrdersController@rss')->name('rss');
 Route::get('ordini.ics', 'OrdersController@ical');
 
@@ -10,8 +9,6 @@ Route::get('gas/{id}/logo', 'GasController@getLogo');
 
 Route::get('payment/status/paypal', 'PaymentController@statusPaymentPaypal')->name('payment.status_paypal');
 Route::get('payment/status/satispay', 'PaymentController@statusPaymentSatispay')->name('payment.status_satispay');
-
-Route::post('job/execute', 'JobsController@execute')->name('job.execute');
 
 Route::post('mail/status', 'MailController@postStatus');
 
@@ -93,6 +90,8 @@ Route::middleware(['auth'])->group(function() {
     Route::get('modtype/search', 'ModifierTypesController@search')->name('modtype.search');
 
     Route::get('dates/query', 'DatesController@query');
+    Route::get('dates/orders', 'DatesController@orders')->name('dates.orders');
+    Route::post('dates/orders', 'DatesController@updateOrders')->name('dates.updateorders');
 
     Route::get('aggregates/{id}/header', 'AggregatesController@objhead')->name('aggregates.objhead');
     Route::get('aggregates/notify/test/{id}', 'AggregatesController@testNotify');

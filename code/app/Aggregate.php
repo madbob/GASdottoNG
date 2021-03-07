@@ -149,7 +149,7 @@ class Aggregate extends Model
             case 'open':
                 $ret = new Collection();
 
-                $aggregates = self::whereHas('orders', function ($query) use ($status, $user) {
+                $aggregates = self::whereHas('orders', function ($query) {
                     $query->whereIn('status', ['open', 'closed'])->accessibleBooking();
                 })->with(['orders'])->get();
 
