@@ -8,6 +8,7 @@ use DB;
 use PDF;
 use Log;
 
+use App\Jobs\AggregateSummaries;
 use App\Aggregate;
 use App\Order;
 use App\Booking;
@@ -102,7 +103,7 @@ class AggregatesController extends OrdersController
     public function notify(Request $request, $id)
     {
         $message = $request->input('message', '');
-        async_job('aggregate_summary', ['aggregate_id' => $id, 'message' => $message]);
+        AggregateSummaries::dispatch($id, $message);
 
         return response()->json((object) [
             'last-notification-date-' . $id => printableDate(date('Y-m-d'))

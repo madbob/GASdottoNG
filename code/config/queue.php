@@ -41,6 +41,11 @@ return [
             'retry_after' => 90,
         ],
 
+        'loopback' => [
+            'driver' => 'loopback',
+            'key' => env('QUEUE_LOOPBACK_KEY'),
+        ],
+
         'beanstalkd' => [
             'driver' => 'beanstalkd',
             'host' => 'localhost',

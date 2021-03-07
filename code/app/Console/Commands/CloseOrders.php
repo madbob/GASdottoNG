@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 
 use Log;
 
+use App\Jobs\AggregateSummaries;
 use App\Order;
 
 class CloseOrders extends Command
@@ -40,7 +41,7 @@ class CloseOrders extends Command
             if ($aggregate->last_notify == null && $aggregate->status == 'closed') {
                 foreach($aggregate->gas as $gas) {
                     if ($gas->auto_user_order_summary) {
-                        async_job('aggregate_summary', ['aggregate_id' => $aggregate->id, 'message' => '']);
+                        AggregateSummaries::dispatch($aggregate->id);
                     }
                 }
             }

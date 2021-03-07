@@ -19,6 +19,7 @@
         "laravel/tinker": "~1.0",
         "laravelium/feed": "^6.0",
         "league/csv": "^9.6",
+        "madbob/laravel-queue-loopback": "^0.1.0",
         "paypal/rest-api-sdk-php": "^1.13",
         "satispay/online-api-php-sdk": "^1.6",
         "sinergi/browser-detector": "^6.1",
@@ -44,7 +45,6 @@
         },
         "files": [
             "app/Helpers/Setup.php",
-            "app/Helpers/Async.php",
             "app/Helpers/Formatters.php",
             "app/Helpers/Reflection.php",
             "app/Helpers/Paths.php",

@@ -10,8 +10,6 @@ Route::get('gas/{id}/logo', 'GasController@getLogo');
 Route::get('payment/status/paypal', 'PaymentController@statusPaymentPaypal')->name('payment.status_paypal');
 Route::get('payment/status/satispay', 'PaymentController@statusPaymentSatispay')->name('payment.status_satispay');
 
-Route::post('job/execute', 'JobsController@execute')->name('job.execute');
-
 Route::post('mail/status', 'MailController@postStatus');
 
 Route::middleware(['auth'])->group(function() {
