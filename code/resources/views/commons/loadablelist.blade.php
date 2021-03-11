@@ -39,7 +39,7 @@ foreach($sorting_rules as $attribute => $info) {
     <div class="row">
         <div class="col-md-12 flowbox">
             <div class="form-group mainflow visible-md-block visible-lg-block">
-                <input type="text" class="form-control list-text-filter" data-list-target="#{{ $identifier }}">
+                <input type="text" class="form-control list-text-filter" data-list-target="#{{ $identifier }}" placeholder="{{ _i('Filtra') }}">
             </div>
             @if(!empty($sorting_rules))
                 <div class="btn-group loadablelist-sorter" data-list-target="#{{ $identifier }}">
