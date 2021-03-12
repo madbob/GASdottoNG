@@ -7,6 +7,7 @@ use App\Exceptions\IllegalArgumentException;
 
 use Auth;
 use Log;
+use Artisan;
 use DB;
 
 use App\Date;
@@ -109,6 +110,9 @@ class DatesService extends BaseService
         }
     }
 
+    /*
+        Salva la configurazione per gli ordini automatici
+    */
     public function updateOrders(array $request)
     {
         $user = $this->ensureAuth(['supplier.orders' => null]);
@@ -155,18 +159,23 @@ class DatesService extends BaseService
         }
 
         Date::where('type', 'order')->whereIn('target_id', $suppliers)->whereNotIn('id', $saved_ids)->delete();
+
+        /*
+            Quando vengono salvati gli ordini automatici, controllo se c'è
+            qualcosa da aprire subito
+        */
+        Artisan::call('open:orders');
+
         return null;
     }
 
     public function destroy($id)
     {
-        $date = DB::transaction(function() use ($id) {
-            $date = $this->show($id);
-            $this->ensureAuth(['notifications.admin' => 'gas']);
-            $date->delete();
-            return $date;
-        });
-
+        DB::beginTransaction();
+        $date = $this->show($id);
+        $this->ensureAuth(['notifications.admin' => 'gas']);
+        $date->delete();
+        DB::commit();
         return $date;
     }
 }
