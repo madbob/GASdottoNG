@@ -36,8 +36,8 @@ if (!isset($extra_description)) {
             <div id="import_csv_sorter">
                 <div class="col-md-4">
                     <ul class="list-group">
-                        @foreach($columns as $column)
-                            <li class="list-group-item">{{ empty($column) ? '&nbsp;' : $column }}</li>
+                        @foreach($columns as $index => $column)
+                            <li class="list-group-item">{{ _i('Colonna %s:', [$index + 1]) }} {{ empty($column) ? '&nbsp;' : $column }}</li>
                         @endforeach
                     </ul>
                 </div>

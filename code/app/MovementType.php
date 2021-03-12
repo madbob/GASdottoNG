@@ -379,8 +379,10 @@ class MovementType extends Model
 
         if (is_null($types)) {
             $query = MovementType::orderBy('name', 'asc');
-            if ($with_trashed)
+            if ($with_trashed) {
                 $query = $query->withTrashed();
+            }
+
             $types = self::initSystemTypes($query->get());
         }
 

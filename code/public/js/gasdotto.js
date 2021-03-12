@@ -3111,6 +3111,22 @@ $(document).ready(function() {
         totals_row.find('.total label').text(priceRound(grand_total) + ' ' + current_currency);
     });
 
+    $('body').on('change', '.csv_movement_type_select', function() {
+        var selected = $(this).find('option:selected').val();
+        var payment = null;
+
+        matching_methods_for_movement_types.forEach(function(iter) {
+            if (iter.method == selected) {
+                payment = iter.payment;
+                return false;
+            }
+        });
+
+        if (payment != null) {
+            $(this).closest('tr').find('.csv_movement_method_select').find('option[value=' + payment + ']').prop('selected', true);
+        }
+    });
+
     /*
         Notifiche
     */
