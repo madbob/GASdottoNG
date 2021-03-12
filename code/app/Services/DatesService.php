@@ -7,13 +7,14 @@ use App\Exceptions\IllegalArgumentException;
 
 use Auth;
 use Log;
+use Artisan;
 use DB;
 
 use App\Date;
 
 class DatesService extends BaseService
 {
-    public function list($target = null, $editable = false)
+    public function list($target = null, $editable = false, $types = [])
     {
         $user = $this->ensureAuth(['supplier.orders' => null]);
         $query = Date::where('type', '!=', 'internal')->orderBy('date', 'asc');
@@ -25,6 +26,10 @@ class DatesService extends BaseService
         if ($editable == true) {
             $suppliers = $user->targetsByAction('supplier.orders');
             $query->where('target_type', 'App\Supplier')->whereIn('target_id', array_keys($suppliers));
+        }
+
+        if (!empty($types)) {
+            $query->whereIn('type', $types);
         }
 
         return $query->get();
@@ -54,6 +59,10 @@ class DatesService extends BaseService
             $types = $request['type'];
 
             $saved_ids = [];
+
+            $generic_types = array_map(function($value) {
+                return $value['value'];
+            }, Date::types());
 
             foreach($ids as $index => $id) {
                 if (in_array($targets[$index], $suppliers) == false)
@@ -88,7 +97,7 @@ class DatesService extends BaseService
                 $saved_ids[] = $date->id;
             }
 
-            Date::where('type', '!=', 'internal')->whereIn('target_id', $suppliers)->whereNotIn('id', $saved_ids)->delete();
+            Date::whereIn('type', $generic_types)->whereIn('target_id', $suppliers)->whereNotIn('id', $saved_ids)->delete();
             return null;
         }
         else {
@@ -101,15 +110,72 @@ class DatesService extends BaseService
         }
     }
 
+    /*
+        Salva la configurazione per gli ordini automatici
+    */
+    public function updateOrders(array $request)
+    {
+        $user = $this->ensureAuth(['supplier.orders' => null]);
+        $suppliers = array_keys($user->targetsByAction('supplier.orders'));
+
+        $ids = $request['id'];
+        $targets = $request['target_id'];
+        $recurrings = $request['recurring'];
+        $ends = $request['end'];
+        $shippings = $request['shipping'];
+        $comments = $request['comment'];
+        $suspends = $request['suspend'] ?? [];
+
+        $saved_ids = [];
+
+        foreach($ids as $index => $id) {
+            if (in_array($targets[$index], $suppliers) == false || empty($recurrings[$index])) {
+                continue;
+            }
+
+            if (empty($id)) {
+                $date = new Date();
+            }
+            else {
+                $date = Date::find($id);
+            }
+
+            $date->target_type = 'App\Supplier';
+            $date->target_id = $targets[$index];
+            $date->date = null;
+            $date->recurring = json_encode(decodePeriodic($recurrings[$index]));
+
+            $date->description = json_encode([
+                'end' => $ends[$index],
+                'shipping' => $shippings[$index],
+                'comment' => $comments[$index],
+                'suspend' => in_array($id, $suspends) ? 'true' : 'false',
+            ]);
+
+            $date->type = 'order';
+            $date->save();
+
+            $saved_ids[] = $date->id;
+        }
+
+        Date::where('type', 'order')->whereIn('target_id', $suppliers)->whereNotIn('id', $saved_ids)->delete();
+
+        /*
+            Quando vengono salvati gli ordini automatici, controllo se c'è
+            qualcosa da aprire subito
+        */
+        Artisan::call('open:orders');
+
+        return null;
+    }
+
     public function destroy($id)
     {
-        $date = DB::transaction(function() use ($id) {
-            $date = $this->show($id);
-            $this->ensureAuth(['notifications.admin' => 'gas']);
-            $date->delete();
-            return $date;
-        });
-
+        DB::beginTransaction();
+        $date = $this->show($id);
+        $this->ensureAuth(['notifications.admin' => 'gas']);
+        $date->delete();
+        DB::commit();
         return $date;
     }
 }

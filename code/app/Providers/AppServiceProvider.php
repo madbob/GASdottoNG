@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Schema;
 use Log;
 
 use App\Observers\SupplierObserver;
-
+use App\Jobs\NotifyNewOrder;
+use App\Jobs\NotifyClosedOrder;
 use App\User;
 use App\Supplier;
 use App\Order;
@@ -42,17 +43,17 @@ class AppServiceProvider extends ServiceProvider
 
         Order::created(function($order) {
             if ($order->status == 'open') {
-                async_job('order_open', ['order_id' => $order->id]);
+                NotifyNewOrder::dispatch($order->id);
             }
         });
 
         Order::updated(function($order) {
             if ($order->wasChanged('status')) {
                 if ($order->status == 'open') {
-                    async_job('order_open', ['order_id' => $order->id]);
+                    NotifyNewOrder::dispatch($order->id);
                 }
                 else if ($order->status == 'closed') {
-                    async_job('order_close', ['order_id' => $order->id]);
+                    NotifyClosedOrder::dispatch($order->id);
                 }
             }
         });

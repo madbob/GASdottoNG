@@ -10,6 +10,7 @@ class CreateGasTable extends Migration
         Schema::create('gas', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->string('name', 20)->unique();
             $table->string('email')->nullable();

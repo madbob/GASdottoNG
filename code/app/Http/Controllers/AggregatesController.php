@@ -8,6 +8,7 @@ use DB;
 use PDF;
 use Log;
 
+use App\Jobs\AggregateSummaries;
 use App\Aggregate;
 use App\Order;
 use App\Booking;
@@ -25,7 +26,7 @@ class AggregatesController extends OrdersController
 
     public function create(Request $request)
     {
-        $orders = Aggregate::orderBy('id', 'desc')->get();
+        $orders = Aggregate::defaultOrders(false);
         return view('order.aggregable', ['orders' => $orders]);
     }
 
@@ -74,6 +75,12 @@ class AggregatesController extends OrdersController
         return view('order.aggregate', ['aggregate' => $a]);
     }
 
+    public function details(Request $request, $id)
+    {
+        $a = Aggregate::findOrFail($id);
+        return view('aggregate.details', ['aggregate' => $a]);
+    }
+
     public function update(Request $request, $id)
     {
         DB::beginTransaction();
@@ -102,7 +109,7 @@ class AggregatesController extends OrdersController
     public function notify(Request $request, $id)
     {
         $message = $request->input('message', '');
-        async_job('aggregate_summary', ['aggregate_id' => $id, 'message' => $message]);
+        AggregateSummaries::dispatch($id, $message);
 
         return response()->json((object) [
             'last-notification-date-' . $id => printableDate(date('Y-m-d'))

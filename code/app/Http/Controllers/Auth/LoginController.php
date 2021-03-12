@@ -41,15 +41,29 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $username = $request->input('username');
+        $username = trim($request->input('username'));
 
         $user = User::where('username', $username)->first();
-
         if (is_null($user)) {
-            Session::flash('message', _i('Username non valido'));
-            Session::flash('message_type', 'danger');
-            Log::debug('Username non trovato: ' . $username);
-            return redirect(url('login'));
+            /*
+                Molti utenti si confondono, tentando di usare l'indirizzo email
+                al posto dello username. Qui tento di recuperare l'utente anche
+                in base all'indirizzo email, premesso che è un metodo fallace
+                (diversi utenti possono avere uno stesso indirizzo)
+            */
+            $user = User::whereHas('contacts', function($query) use ($username) {
+                $query->where('type', 'email')->where('value', $username);
+            })->first();
+
+            if (is_null($user)) {
+                Session::flash('message', _i('Username non valido'));
+                Session::flash('message_type', 'danger');
+                Log::debug('Username non trovato: ' . $username);
+                return redirect(url('login'));
+            }
+            else {
+                $request->offsetSet('username', $user->username);
+            }
         }
 
         if ($user->gas->restricted == '1' && $user->can('gas.access', $user->gas) == false) {
@@ -66,7 +80,6 @@ class LoginController extends Controller
                 Session::flash('prompt_message', _i('La password è uguale allo username! Cambiala il prima possibile dal tuo <a href="%s">pannello utente</a>!', [route('profile')]));
             }
             else {
-                $user = User::where('username', $username)->first();
                 if (!is_null($user->suspended_at)) {
                     Session::flash('prompt_message', _i('Il tuo account è stato sospeso, e non puoi effettuare prenotazioni. Verifica lo stato dei tuoi pagamenti e del tuo credito o eventuali notifiche inviate dagli amministratori.'));
                 }

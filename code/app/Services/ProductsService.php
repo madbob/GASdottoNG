@@ -34,7 +34,7 @@ class ProductsService extends BaseService
         }
         else {
             $this->transformAndSetIfSet($product, $request, 'portion_quantity', 'enforceNumber');
-            $product->variable = isset($request['variable']);
+            $this->boolIfSet($product, $request, 'variable');
         }
 
         return $product;
@@ -113,7 +113,7 @@ class ProductsService extends BaseService
         DB::transaction(function () use ($product, $request) {
             $this->setCommonAttributes($product, $request);
 
-            $product->active = (isset($request['active']) && $request['active'] !== false);
+            $this->boolIfSet($product, $request, 'active');
             $this->setIfSet($product, $request, 'supplier_code');
             $this->transformAndSetIfSet($product, $request, 'weight', 'enforceNumber');
             $this->transformAndSetIfSet($product, $request, 'package_size', 'enforceNumber');

@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_DRIVER', 'sync'),
+    'default' => env('QUEUE_DRIVER', 'loopback'),
 
     /*
     |--------------------------------------------------------------------------
@@ -39,6 +39,11 @@ return [
             'table' => 'jobs',
             'queue' => 'default',
             'retry_after' => 90,
+        ],
+
+        'loopback' => [
+            'driver' => 'loopback',
+            'key' => env('QUEUE_LOOPBACK_KEY'),
         ],
 
         'beanstalkd' => [

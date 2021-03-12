@@ -13,6 +13,7 @@ class CreateOrdersTable extends Migration
 
             $table->string('supplier_id');
             $table->integer('aggregate_id')->unsigned();
+            $table->integer('aggregate_sorting')->default(0);
             $table->string('comment')->nullable();
             $table->date('start')->useCurrent();
             $table->date('end')->useCurrent();
@@ -21,6 +22,7 @@ class CreateOrdersTable extends Migration
             $table->string('discount')->nullable();
             $table->string('transport')->nullable();
             $table->integer('payment_id')->nullable();
+            $table->date('first_notify')->nullable();
             $table->date('last_notify')->nullable();
         });
 
@@ -28,6 +30,7 @@ class CreateOrdersTable extends Migration
             $table->string('order_id');
             $table->string('product_id');
             $table->boolean('discount_enabled')->default(true);
+            $table->string('notes', 500)->default('');
 
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');

@@ -23,7 +23,7 @@
                             'label' => _i('Nome'),
                             'field' => 'name',
                             'type' => 'text',
-                            'width' => 5,
+                            'width' => 6,
                             'extra' => [
                                 'mandatory' => true
                             ]

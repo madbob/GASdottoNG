@@ -85,6 +85,31 @@ class Aggregate extends Model
         return $orders;
     }
 
+    public static function defaultOrders($mine)
+    {
+        if ($mine) {
+            $user = Auth::user();
+            $supplier_id = [];
+
+            foreach($user->targetsByAction('supplier.modify') as $supplier) {
+                $supplier_id[] = $supplier->id;
+            }
+            foreach($user->targetsByAction('supplier.orders') as $supplier) {
+                $supplier_id[] = $supplier->id;
+            }
+            foreach($user->targetsByAction('supplier.shippings') as $supplier) {
+                $supplier_id[] = $supplier->id;
+            }
+
+            $supplier_id = array_unique($supplier_id);
+        }
+        else {
+            $supplier_id = 0;
+        }
+
+        return self::easyFilter($supplier_id, date('Y-m-d', strtotime('-1 years')), date('Y-m-d', strtotime('+1 years')), ['open', 'closed', 'shipped', 'suspended']);
+    }
+
     public function getStatusAttribute()
     {
         $priority = ['suspended', 'open', 'closed', 'shipped', 'archived'];
@@ -124,7 +149,7 @@ class Aggregate extends Model
             case 'open':
                 $ret = new Collection();
 
-                $aggregates = self::whereHas('orders', function ($query) use ($status, $user) {
+                $aggregates = self::whereHas('orders', function ($query) {
                     $query->whereIn('status', ['open', 'closed'])->accessibleBooking();
                 })->with(['orders'])->get();
 

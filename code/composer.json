@@ -17,8 +17,9 @@
         "fideloper/proxy": "~4.0",
         "laravel/framework": "^6.0",
         "laravel/tinker": "~1.0",
+        "laravelium/feed": "^6.0",
         "league/csv": "^9.6",
-        "madbob/laravel-log2rss": "^0.3.1",
+        "madbob/laravel-queue-loopback": "^0.1.0",
         "paypal/rest-api-sdk-php": "^1.13",
         "satispay/online-api-php-sdk": "^1.6",
         "sinergi/browser-detector": "^6.1",
@@ -28,10 +29,11 @@
         "zetacomponents/archive": "^1.5"
     },
     "require-dev": {
+        "filp/whoops": "~2.0",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "~1.0",
-        "phpunit/phpunit": "~7.0",
-        "filp/whoops": "~2.0"
+        "nunomaduro/larastan": "^0.7.0",
+        "phpunit/phpunit": "~7.0"
     },
     "autoload": {
         "classmap": [
@@ -43,7 +45,6 @@
         },
         "files": [
             "app/Helpers/Setup.php",
-            "app/Helpers/Async.php",
             "app/Helpers/Formatters.php",
             "app/Helpers/Reflection.php",
             "app/Helpers/Paths.php",
@@ -78,5 +79,12 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "optimize-autoloader": true
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": [
+                "barryvdh/laravel-ide-helper"
+            ]
+        }
     }
 }

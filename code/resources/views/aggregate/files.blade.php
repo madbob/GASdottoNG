@@ -30,8 +30,6 @@ else {
     </a>
 </div>
 
-@push('postponed')
-
 <div class="modal fade close-on-submit" id="shipping-products-aggregate-document-{{ $aggregate->id }}-{{ $rand }}" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-extra-lg" role="document">
         <div class="modal-content">
@@ -201,5 +199,3 @@ else {
         </div>
     </div>
 </div>
-
-@endpush

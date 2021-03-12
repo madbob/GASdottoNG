@@ -14,7 +14,6 @@ class VerifyCsrfToken extends BaseVerifier
      */
     protected $except = [
         'mail/status',
-        'job/execute'
     ];
 
     public function handle($request, Closure $next)

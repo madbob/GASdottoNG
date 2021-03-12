@@ -16,11 +16,13 @@ class CreateBalancesTable extends Migration
 
             $table->datetime('date')->useCurrent();
             $table->boolean('current')->default(false);
-            $table->decimal('bank', 7, 2)->default(0);
-            $table->decimal('cash', 7, 2)->default(0);
-            $table->decimal('gas', 7, 2)->default(0);
-            $table->decimal('suppliers', 7, 2)->default(0);
-            $table->decimal('deposits', 7, 2)->default(0);
+            $table->decimal('bank', 10, 2)->default(0);
+            $table->decimal('cash', 10, 2)->default(0);
+            $table->decimal('gas', 10, 2)->default(0);
+            $table->decimal('suppliers', 10, 2)->default(0);
+            $table->decimal('deposits', 10, 2)->default(0);
+            $table->decimal('paypal', 10, 2)->default(0);
+            $table->decimal('satispay', 10, 2)->default(0);
         });
     }
 

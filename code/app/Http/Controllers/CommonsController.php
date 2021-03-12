@@ -31,7 +31,8 @@ class CommonsController extends Controller
             periodiche
         */
         Artisan::call('check:fees');
-        Artisan::call('check:orders');
+        Artisan::call('close:orders');
+        Artisan::call('open:orders');
         Artisan::call('check:system_notices');
 
         if ($user->gas->getConfig('es_integration')) {

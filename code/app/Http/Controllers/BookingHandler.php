@@ -31,6 +31,7 @@ class BookingHandler extends Controller
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
         if ($target_user->testUserAccess() == false && $user->can('supplier.shippings', $aggregate) == false) {
+            Log::info('Accesso non consentito in aggiornamento prenotazione');
             abort(503);
         }
 

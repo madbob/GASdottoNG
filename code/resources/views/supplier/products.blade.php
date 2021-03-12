@@ -78,24 +78,20 @@
     @if($supplier->orders()->whereNotIn('status', ['shipped', 'archived'])->count() != 0)
         <br>
         <div class="alert alert-danger">
-            {{ _i('Attenzione: ci sono ordini non ancora consegnati ed archiviati per questo fornitore, eventuali modifiche ai prodotti saranno applicate anche a tali ordini.') }}
+            {{ _i("Attenzione: ci sono ordini non ancora consegnati ed archiviati per questo fornitore, eventuali modifiche ai prodotti saranno applicate anche a tali ordini. Eventuali nuovi prodotti aggiunti dovranno invece essere abilitati esplicitamente nell'ordine, se desiderato, agendo sulla tabella dei prodotti.") }}
         </div>
-        <br>
-        <div class="clearfix"></div>
     @endif
 
-    <div class="middle-tabs">
-        <hr/>
-        <ul class="nav nav-pills" role="tablist">
-            <li role="presentation" class="active">
-                <a role="tab" data-toggle="tab" href="#product-full-list-{{ $supplier->id }}" data-async-load="{{ url('suppliers/' . $supplier->id . '/products') }}">{{ _i('Dettagli') }}</a>
-            </li>
-            <li role="presentation">
-                <a role="tab" data-toggle="tab" href="#product-rapid-list-{{ $supplier->id }}" data-async-load="{{ url('suppliers/' . $supplier->id . '/products_grid') }}">{{ _i('Modifica Rapida') }}</a>
-            </li>
-        </ul>
-    </div>
+    <hr>
 
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+            <a role="tab" data-toggle="tab" href="#product-full-list-{{ $supplier->id }}" data-async-load="{{ url('suppliers/' . $supplier->id . '/products') }}">{{ _i('Dettagli') }}</a>
+        </li>
+        <li role="presentation">
+            <a role="tab" data-toggle="tab" href="#product-rapid-list-{{ $supplier->id }}" data-async-load="{{ url('suppliers/' . $supplier->id . '/products_grid') }}">{{ _i('Modifica Rapida') }}</a>
+        </li>
+    </ul>
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane details-list active" id="product-full-list-{{ $supplier->id }}">
             @include('supplier.products_details', ['supplier' => $supplier])

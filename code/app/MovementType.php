@@ -160,7 +160,7 @@ class MovementType extends Model
     {
         $currentuser = Auth::user();
         if(is_null($currentuser)) {
-            $currentgas = Gas::get()->first();
+            $currentgas = Gas::all()->first();
         }
         else {
             $currentgas = $currentuser->gas;
@@ -379,8 +379,10 @@ class MovementType extends Model
 
         if (is_null($types)) {
             $query = MovementType::orderBy('name', 'asc');
-            if ($with_trashed)
+            if ($with_trashed) {
                 $query = $query->withTrashed();
+            }
+
             $types = self::initSystemTypes($query->get());
         }
 

@@ -20,6 +20,11 @@ function generalInit(container) {
         autoclose: true,
         language: current_language,
         clearBtn: true,
+    }).each(function() {
+        var input = $(this);
+        input.siblings('.input-group-addon').click(function() {
+            input.focus();
+        });
     });
 
     $('input.date-to-month', container).datepicker({
@@ -156,6 +161,7 @@ function generalInit(container) {
                             }
 
                             fill_target.empty().append(data);
+                            generalInit(data);
                         }
                     });
                 }
@@ -319,6 +325,7 @@ function wizardLoadPage(node, contents) {
     var parent = page.parent();
     var next = $(contents);
     parent.append(next);
+    generalInit(next);
     page.hide();
     next.show();
 }
@@ -400,6 +407,7 @@ function setupImportCsvEditor() {
 function addPanelToTabs(group, panel, label) {
     var identifier = $(panel).attr('id');
     $(group + '.tab-content').append(panel);
+    generalInit(panel);
 
     var list = $(group + '[role=tablist]');
     var tab = $('<li class="presentation"><a href="#' + identifier + '" aria-controls="#' + identifier + '" role="tab" data-toggle="tab">' + label + '</a></li>');
@@ -1146,8 +1154,7 @@ function setupPermissionsEditor() {
             dataType: 'html',
 
             success: function(data) {
-                var panel = $(data);
-                addPanelToTabs('.roles-list', panel, role_name);
+                addPanelToTabs('.roles-list', $(data), role_name);
             }
         });
 
@@ -1190,7 +1197,7 @@ function setupPermissionsEditor() {
                 method: 'POST',
                 url: absolute_url + '/roles/detach',
                 data: data,
-                success() {
+                success: function() {
                     button.closest('.loadable-contents').find('.role-users').find('[data-user=' + userid + ']').remove();
                 }
             });
@@ -1283,10 +1290,6 @@ $(document).ready(function() {
         }
     });
 
-    $(document).ajaxSuccess(function(event) {
-        generalInit(null);
-    });
-
     $(document).ajaxError(function(event, jqXHR) {
         if (jqXHR.status == 401)
             window.location.href = '/login';
@@ -1372,7 +1375,9 @@ $(document).ready(function() {
                 url: $(this).attr('href'),
 
                 success: function(data) {
+                    data = $(data);
                     node.empty().append(data);
+                    generalInit(data);
                     node.stop().css('height', 'auto');
                 },
                 error: function() {
@@ -1603,6 +1608,32 @@ $(document).ready(function() {
         }
     });
 
+    /*
+        Questo è per gestire i modali Bootstrap che si sovrappongono tra loro,
+        ed i relativi z-index (soprattutto dei backdrops)
+    */
+    $('body').on('shown.bs.modal', '.modal', function () {
+        var zIndex = 1040 + (10 * $('.modal:visible').length);
+        $(this).css('z-index', zIndex);
+        setTimeout(function() {
+            $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+        }, 0);
+    });
+
+    /*
+        Questo è per fare in modo che, in caso di molteplici modali sovrapposti
+        tra di loro, quando uno viene chiuso venga comunque mantenuta la classe
+        .modal-open nel body (che serve a gestire correttamente lo scrolling dei
+        modali rimasti)
+    */
+    $('body').on('hidden.bs.modal', function () {
+        setTimeout(function() {
+            if ($('.modal:visible').length > 0) {
+                $('body').addClass('modal-open');
+            }
+        }, 100);
+    });
+
     $('body').on('shown.bs.modal', '.modal', function(e) {
         $(this).find('[data-default-value]').each(function() {
             if ($(this).val() == '') {
@@ -1663,7 +1694,9 @@ $(document).ready(function() {
             dataType: 'HTML',
             success: function(data) {
                 var modal = $('#service-modal');
+                data = $(data);
                 modal.find('.modal-body').empty().append(data);
+                generalInit(data);
             }
         });
     });
@@ -2273,6 +2306,12 @@ $(document).ready(function() {
         });
     });
 
+    $('body').on('change', '.status-selector input:radio[name*="status"]', function() {
+        var field = $(this).closest('.form-group');
+        field.find('.status-date-deleted').toggleClass('hidden', ($(this).val() != 'deleted'));
+        field.find('.status-date-suspended').toggleClass('hidden', ($(this).val() != 'suspended'));
+    });
+
     $('body').on('change', '.movement-modal input[name=method]', function() {
         if ($(this).prop('checked') == false)
             return;
@@ -2310,7 +2349,9 @@ $(document).ready(function() {
             },
 
             success: function(data) {
+                data = $(data);
                 selectors.empty().append(data);
+                generalInit(data);
             }
         });
     });
@@ -2372,7 +2413,9 @@ $(document).ready(function() {
             dataType: 'html',
 
             success: function(data) {
+                data = $(data);
                 target.empty().append(data);
+                generalInit(data);
             }
         });
     })
@@ -2495,7 +2538,9 @@ $(document).ready(function() {
             dataType: 'html',
 
             success: function(data) {
+                data = $(data);
                 editor.replaceWith(data);
+                generalInit(data);
             }
         });
 
@@ -2560,7 +2605,9 @@ $(document).ready(function() {
             dataType: 'html',
 
             success: function(data) {
+                data = $(data);
                 editor.replaceWith(data);
+                generalInit(data);
                 modal.modal('hide');
             }
         });
@@ -2613,16 +2660,6 @@ $(document).ready(function() {
 
         var url = $(this).attr('data-export-url') + '?' + $.param(data);
         window.open(url, '_blank');
-    });
-
-    /*
-        Gestione utenti
-    */
-
-    $('body').on('change', '.user-editor input:radio[name=status], .supplier-editor input:radio[name=status]', function() {
-        var field = $(this).closest('.form-group');
-        field.find('.status-date-deleted').toggleClass('hidden', ($(this).val() != 'deleted'));
-        field.find('.status-date-suspended').toggleClass('hidden', ($(this).val() != 'suspended'));
     });
 
     /*
@@ -2704,7 +2741,9 @@ $(document).ready(function() {
             },
             dataType: 'HTML',
             success: function(data) {
+                data = $(data);
                 $('#createOrder .supplier-future-dates').empty().append(data);
+                generalInit(data);
             }
         });
     });
@@ -2750,7 +2789,9 @@ $(document).ready(function() {
             dataType: 'html',
 
             success: function(data) {
+                data = $(data);
                 tab.empty().append(data);
+                generalInit(data);
             }
         });
     });
@@ -2894,7 +2935,9 @@ $(document).ready(function() {
                 dataType: 'HTML',
 
                 success: function(data) {
+                    data = $(data);
                     row.find('.bookable-target').empty().append(data);
+                    generalInit(data);
                     bookingTotal(editor);
                 }
             });
@@ -2933,6 +2976,7 @@ $(document).ready(function() {
             success: function(data) {
                 data = $(data);
                 fill_target.empty().append(data);
+                generalInit(data);
             }
         });
     });
@@ -3071,6 +3115,22 @@ $(document).ready(function() {
         totals_row.find('.tax label').text(priceRound(total_tax) + ' ' + current_currency);
         totals_row.find('.transport label').text(priceRound(total_transport) + ' ' + current_currency);
         totals_row.find('.total label').text(priceRound(grand_total) + ' ' + current_currency);
+    });
+
+    $('body').on('change', '.csv_movement_type_select', function() {
+        var selected = $(this).find('option:selected').val();
+        var payment = null;
+
+        matching_methods_for_movement_types.forEach(function(iter) {
+            if (iter.method == selected) {
+                payment = iter.payment;
+                return false;
+            }
+        });
+
+        if (payment != null) {
+            $(this).closest('tr').find('.csv_movement_method_select').find('option[value=' + payment + ']').prop('selected', true);
+        }
     });
 
     /*

@@ -144,6 +144,8 @@ class ImportLegacy extends Command
         }
 
         foreach ($result as $row) {
+            $subrow = null;
+
             try {
                 $old_id = $row->target;
                 $query = 'SELECT * FROM Customfile WHERE id = ' . $old_id;
@@ -178,7 +180,7 @@ class ImportLegacy extends Command
                 }
             }
             catch (\Exception $e) {
-                echo sprintf("Errore nell'importazione del file %s: %s\n", $subrow->name, $e->getMessage());
+                echo sprintf("Errore nell'importazione del file %s: %s\n", ($subrow->name ?? '???'), $e->getMessage());
             }
         }
     }
@@ -629,7 +631,7 @@ class ImportLegacy extends Command
                     }
                 }
                 catch (\Exception $e) {
-                    echo sprintf("Errore nell'importazione variante %s: %s\n", $original_variant[0]->name, $e->getMessage());
+                    echo sprintf("Errore nell'importazione variante %s: %s\n", ($original_variant[0]->name ?? '???'), $e->getMessage());
                 }
             }
         }

@@ -2,7 +2,6 @@
 
 Auth::routes();
 
-Route::get(substr(env('APP_KEY'), -5) . '/logs', '\MadBob\LaravelLog2Rss\Log2RssController@index');
 Route::get('ordini.xml', 'OrdersController@rss')->name('rss');
 Route::get('ordini.ics', 'OrdersController@ical');
 
@@ -10,8 +9,6 @@ Route::get('gas/{id}/logo', 'GasController@getLogo');
 
 Route::get('payment/status/paypal', 'PaymentController@statusPaymentPaypal')->name('payment.status_paypal');
 Route::get('payment/status/satispay', 'PaymentController@statusPaymentSatispay')->name('payment.status_satispay');
-
-Route::post('job/execute', 'JobsController@execute')->name('job.execute');
 
 Route::post('mail/status', 'MailController@postStatus');
 
@@ -40,6 +37,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('users/export', 'UsersController@export');
     Route::post('users/notifications/{id}', 'UsersController@notifications')->name('users.notifications');
     Route::get('users/fees', 'UsersController@fees')->name('users.fees');
+    Route::post('users/fees', 'UsersController@feesSave')->name('users.savefees');
     Route::get('users/password', 'UsersController@changePassword')->name('users.password');
 
     Route::get('friends/{id}/header', 'FriendsController@objhead')->name('friends.objhead');
@@ -91,11 +89,14 @@ Route::middleware(['auth'])->group(function() {
     Route::get('orders/document/{id}/{type}', 'OrdersController@document')->name('orders.document');
 
     Route::get('dates/query', 'DatesController@query');
+    Route::get('dates/orders', 'DatesController@orders')->name('dates.orders');
+    Route::post('dates/orders', 'DatesController@updateOrders')->name('dates.updateorders');
 
     Route::get('aggregates/{id}/header', 'AggregatesController@objhead')->name('aggregates.objhead');
     Route::get('aggregates/notify/test/{id}', 'AggregatesController@testNotify');
     Route::post('aggregates/notify/{id}', 'AggregatesController@notify');
     Route::get('aggregates/document/{id}/{type}', 'AggregatesController@document')->name('aggregates.document');
+    Route::get('aggregates/{id}/details', 'AggregatesController@details')->name('aggregates.details');
     Route::get('aggregates/{id}/multigas', 'AggregatesController@multiGAS')->name('aggregates.multigas');
 
     Route::get('attachments/{id}/header', 'AttachmentsController@objhead')->name('attachments.objhead');

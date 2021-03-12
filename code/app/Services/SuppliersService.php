@@ -82,6 +82,7 @@ class SuppliersService extends BaseService
         $this->setIfSet($supplier, $request, 'description');
         $this->setIfSet($supplier, $request, 'payment_method');
         $this->setIfSet($supplier, $request, 'order_method');
+        $this->boolIfSet($supplier, $request, 'fast_shipping_enabled');
 
         if (isset($request['status'])) {
             $supplier->setStatus($request['status'], $request['deleted_at'], $request['suspended_at']);

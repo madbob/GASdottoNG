@@ -191,8 +191,8 @@ class MovementsController extends BackedController
             $target_type = $request->input('target_type');
             $amount = $request->input('amount');
 
-            $sender = $sender_type::findOrFail($sender_id);
-            $target = $target_type::findOrFail($target_id);
+            $sender = $sender_type::tFind($sender_id);
+            $target = $target_type::tFind($target_id);
 
             return view('movement.modal', [
                 'dom_id' => $dom_id,
@@ -305,7 +305,6 @@ class MovementsController extends BackedController
                     $filename = sanitizeFilename(_i('SEPA del %s.xml', date('d/m/Y', strtotime($date))));
 
                     $headers = [
-                        'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
                         'Content-type' => 'text/xml',
                         'Content-Disposition' => 'attachment; filename=' . $filename,
                         'Cache-Control' => 'no-cache, no-store, must-revalidate',
@@ -333,10 +332,11 @@ class MovementsController extends BackedController
 
                 if ($subtype == 'csv') {
                     $filename = sanitizeFilename(_i('Saldi Fornitori al %s.csv', date('d/m/Y')));
-                    $headers = [_i('Nome'), _i('Saldo')];
+                    $headers = [_i('ID'), _i('Nome'), _i('Saldo')];
 
                     return output_csv($filename, $headers, $suppliers, function($supplier) {
                         $row = [];
+                        $row[] = $supplier->id;
                         $row[] = $supplier->printableName();
                         $row[] = printablePrice($supplier->current_balance_amount, ',');
                         return $row;

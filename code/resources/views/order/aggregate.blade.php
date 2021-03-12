@@ -2,11 +2,15 @@
 
 $shippable_status = false;
 $controllable = false;
+$fast_shipping_enabled = false;
 
 foreach ($aggregate->orders as $order) {
     if ($currentuser->can('supplier.shippings', $order->supplier)) {
-        $controllable = true;
-        break;
+        $controllable = true || $controllable;
+    }
+
+    if ($order->supplier->fast_shipping_enabled) {
+        $fast_shipping_enabled = true || $fast_shipping_enabled;
     }
 }
 
@@ -79,7 +83,7 @@ $panel_rand_wrap = rand();
             @endforeach
 
             @if($controllable && $more_orders)
-                <li role="presentation"><a href="#aggregate-metadata-{{ $aggregate->id }}" role="tab" data-toggle="tab">{{ _i('Aggregato') }}</a></li>
+                <li role="presentation"><a href="#aggregate-metadata-{{ $aggregate->id }}" role="tab" data-toggle="tab" data-async-load="{{ route('aggregates.details', $aggregate->id) }}">{{ _i('Aggregato') }}</a></li>
             @endif
 
             @if($multi_gas)
@@ -89,7 +93,7 @@ $panel_rand_wrap = rand();
             @can('supplier.shippings', $aggregate)
                 <li role="presentation"><a href="#shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab" data-async-load="{{ url('/booking/' . $aggregate->id . '/user') }}">{{ _i('Consegne') }}</a></li>
 
-                @if($currentgas->getConfig('fast_shipping_enabled'))
+                @if($fast_shipping_enabled)
                     <li role="presentation"><a href="#fast-shippings-{{ $aggregate->id }}" role="tab" data-toggle="tab" data-async-load="{{ url('/deliveries/' . $aggregate->id . '/fast') }}">{{ _i('Consegne Veloci') }}</a></li>
                 @endif
             @endcan
@@ -108,68 +112,6 @@ $panel_rand_wrap = rand();
 
             @if($controllable && $more_orders)
                 <div role="tabpanel" class="tab-pane" id="aggregate-metadata-{{ $aggregate->id }}">
-                    <form class="form-horizontal main-form" method="PUT" action="{{ route('aggregates.update', $aggregate->id) }}">
-                        <div class="row">
-                            <div class="col-md-4">
-                                @include('commons.selectenumfield', [
-                                    'obj' => null,
-                                    'name' => 'status',
-                                    'label' => _i('Stato'),
-                                    'enforced_default' => 'no',
-                                    'values' => [
-                                        [
-                                            'label' => _i('Invariato'),
-                                            'value' => 'no',
-                                        ],
-                                        [
-                                            'label' => _i('Prenotazioni Aperte'),
-                                            'value' => 'open',
-                                        ],
-                                        [
-                                            'label' => _i('Prenotazioni Chiuse'),
-                                            'value' => 'closed',
-                                        ],
-                                        [
-                                            'label' => _i('Consegnato'),
-                                            'value' => 'shipped',
-                                        ],
-                                        [
-                                            'label' => _i('Archiviato'),
-                                            'value' => 'archived',
-                                        ],
-                                        [
-                                            'label' => _i('In Sospeso'),
-                                            'value' => 'suspended',
-                                        ],
-                                    ],
-                                ])
-
-                                @include('commons.textfield', ['obj' => $aggregate, 'name' => 'comment', 'label' => _i('Commento')])
-
-                                @if($currentgas->hasFeature('shipping_places'))
-                                    @include('commons.selectobjfield', [
-                                        'obj' => $order,
-                                        'name' => 'deliveries',
-                                        'label' => _i('Luoghi di Consegna'),
-                                        'mandatory' => false,
-                                        'objects' => $currentgas->deliveries,
-                                        'multiple_select' => true,
-                                        'extra_selection' => ['' => _i('Non limitare luogo di consegna')],
-                                        'help_text' => _i("Selezionando uno o più luoghi di consegna, l'ordine sarà visibile solo agli utenti che hanno attivato quei luoghi. Se nessun luogo viene selezionato, l'ordine sarà visibile a tutti. Tenere premuto Ctrl per selezionare più voci.")
-                                    ])
-                                @endif
-                            </div>
-                            <div class="col-md-4">
-                            </div>
-                            <div class="col-md-4">
-                                @include('aggregate.files', ['aggregate' => $aggregate])
-                            </div>
-                        </div>
-
-                        @include('commons.formbuttons', [
-                            'no_delete' => true
-                        ])
-                    </form>
                 </div>
             @endif
 
@@ -181,7 +123,7 @@ $panel_rand_wrap = rand();
             <div role="tabpanel" class="tab-pane shippable-bookings" id="shippings-{{ $aggregate->id }}" data-aggregate-id="{{ $aggregate->id }}">
             </div>
 
-            @if($currentgas->getConfig('fast_shipping_enabled'))
+            @if($fast_shipping_enabled)
                 <div role="tabpanel" class="tab-pane fast-shippable-bookings" id="fast-shippings-{{ $aggregate->id }}">
                 </div>
             @endif

@@ -59,6 +59,11 @@ class BaseService
         }
     }
 
+    protected function boolIfSet($target, array $source, $key, $default = null)
+    {
+        $target->$key = (isset($source[$key]) && $source[$key] !== false);
+    }
+
     protected function transformAndSetIfSet($target, array $source, $key, $transformerFunction)
     {
         if (isset($source[$key])) {

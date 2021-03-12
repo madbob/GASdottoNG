@@ -84,10 +84,6 @@ class Gas extends Model
                 'default' => '0'
             ],
 
-            'fast_shipping_enabled' => [
-                'default' => '0'
-            ],
-
             'restrict_booking_to_credit' => [
                 'default' => '0'
             ],
@@ -261,11 +257,6 @@ class Gas extends Model
         return (array) json_decode($this->getConfig('roles'));
     }
 
-    public function getFastShippingEnabledAttribute()
-    {
-        return $this->getConfig('fast_shipping_enabled') == '1';
-    }
-
     public function getRestrictBookingToCreditAttribute()
     {
         return $this->getConfig('restrict_booking_to_credit') == '1';
@@ -386,6 +377,9 @@ class Gas extends Model
                 break;
             case 'public_registrations':
                 return $this->public_registrations['enabled'];
+                break;
+            case 'auto_aggregates':
+                return Aggregate::has('orders', '>=', Aggregate::aggregatesConvenienceLimit())->count() > 3;
                 break;
         }
 

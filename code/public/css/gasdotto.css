@@ -33,16 +33,6 @@
 .text-more-muted {
   color: #BBB; }
 
-.middle-tabs {
-  text-align: center; }
-  .middle-tabs hr {
-    position: absolute;
-    width: 100%; }
-  .middle-tabs .nav-pills {
-    display: inline-block; }
-    .middle-tabs .nav-pills li {
-      background-color: #FFF; }
-
 .static-label {
   padding-top: 7px;
   margin-bottom: 0; }
@@ -92,7 +82,7 @@ table label {
   background-color: red; }
 #dates-calendar .calendar-shipping-closed {
   background-color: green; }
-#dates-calendar .calendar-date-confirmed {
+#dates-calendar .calendar-date-confirmed, #dates-calendar .calendar-date-order {
   background-color: blue; }
 #dates-calendar .calendar-date-temp {
   background-color: orange; }
