@@ -332,10 +332,11 @@ class MovementsController extends BackedController
 
                 if ($subtype == 'csv') {
                     $filename = sanitizeFilename(_i('Saldi Fornitori al %s.csv', date('d/m/Y')));
-                    $headers = [_i('Nome'), _i('Saldo')];
+                    $headers = [_i('ID'), _i('Nome'), _i('Saldo')];
 
                     return output_csv($filename, $headers, $suppliers, function($supplier) {
                         $row = [];
+                        $row[] = $supplier->id;
                         $row[] = $supplier->printableName();
                         $row[] = printablePrice($supplier->current_balance_amount, ',');
                         return $row;
