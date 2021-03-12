@@ -161,6 +161,7 @@ function generalInit(container) {
                             }
 
                             fill_target.empty().append(data);
+                            generalInit(data);
                         }
                     });
                 }
@@ -324,6 +325,7 @@ function wizardLoadPage(node, contents) {
     var parent = page.parent();
     var next = $(contents);
     parent.append(next);
+    generalInit(next);
     page.hide();
     next.show();
 }
@@ -405,6 +407,7 @@ function setupImportCsvEditor() {
 function addPanelToTabs(group, panel, label) {
     var identifier = $(panel).attr('id');
     $(group + '.tab-content').append(panel);
+    generalInit(panel);
 
     var list = $(group + '[role=tablist]');
     var tab = $('<li class="presentation"><a href="#' + identifier + '" aria-controls="#' + identifier + '" role="tab" data-toggle="tab">' + label + '</a></li>');
@@ -1151,8 +1154,7 @@ function setupPermissionsEditor() {
             dataType: 'html',
 
             success: function(data) {
-                var panel = $(data);
-                addPanelToTabs('.roles-list', panel, role_name);
+                addPanelToTabs('.roles-list', $(data), role_name);
             }
         });
 
@@ -1195,7 +1197,7 @@ function setupPermissionsEditor() {
                 method: 'POST',
                 url: absolute_url + '/roles/detach',
                 data: data,
-                success() {
+                success: function() {
                     button.closest('.loadable-contents').find('.role-users').find('[data-user=' + userid + ']').remove();
                 }
             });
@@ -1288,10 +1290,6 @@ $(document).ready(function() {
         }
     });
 
-    $(document).ajaxSuccess(function(event) {
-        generalInit(null);
-    });
-
     $(document).ajaxError(function(event, jqXHR) {
         if (jqXHR.status == 401)
             window.location.href = '/login';
@@ -1377,7 +1375,9 @@ $(document).ready(function() {
                 url: $(this).attr('href'),
 
                 success: function(data) {
+                    data = $(data);
                     node.empty().append(data);
+                    generalInit(data);
                     node.stop().css('height', 'auto');
                 },
                 error: function() {
@@ -1694,7 +1694,9 @@ $(document).ready(function() {
             dataType: 'HTML',
             success: function(data) {
                 var modal = $('#service-modal');
+                data = $(data);
                 modal.find('.modal-body').empty().append(data);
+                generalInit(data);
             }
         });
     });
@@ -2341,7 +2343,9 @@ $(document).ready(function() {
             },
 
             success: function(data) {
+                data = $(data);
                 selectors.empty().append(data);
+                generalInit(data);
             }
         });
     });
@@ -2403,7 +2407,9 @@ $(document).ready(function() {
             dataType: 'html',
 
             success: function(data) {
+                data = $(data);
                 target.empty().append(data);
+                generalInit(data);
             }
         });
     })
@@ -2526,7 +2532,9 @@ $(document).ready(function() {
             dataType: 'html',
 
             success: function(data) {
+                data = $(data);
                 editor.replaceWith(data);
+                generalInit(data);
             }
         });
 
@@ -2591,7 +2599,9 @@ $(document).ready(function() {
             dataType: 'html',
 
             success: function(data) {
+                data = $(data);
                 editor.replaceWith(data);
+                generalInit(data);
                 modal.modal('hide');
             }
         });
@@ -2725,7 +2735,9 @@ $(document).ready(function() {
             },
             dataType: 'HTML',
             success: function(data) {
+                data = $(data);
                 $('#createOrder .supplier-future-dates').empty().append(data);
+                generalInit(data);
             }
         });
     });
@@ -2771,7 +2783,9 @@ $(document).ready(function() {
             dataType: 'html',
 
             success: function(data) {
+                data = $(data);
                 tab.empty().append(data);
+                generalInit(data);
             }
         });
     });
@@ -2915,7 +2929,9 @@ $(document).ready(function() {
                 dataType: 'HTML',
 
                 success: function(data) {
+                    data = $(data);
                     row.find('.bookable-target').empty().append(data);
+                    generalInit(data);
                     bookingTotal(editor);
                 }
             });
@@ -2954,6 +2970,7 @@ $(document).ready(function() {
             success: function(data) {
                 data = $(data);
                 fill_target.empty().append(data);
+                generalInit(data);
             }
         });
     });
