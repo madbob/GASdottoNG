@@ -12,17 +12,27 @@
         @endforeach
 
         @foreach(App\Date::localGas()->get() as $d)
-            @foreach($d->dates as $dat)
-                {
-                    title: '{{ str_replace("\n", " ", str_replace("\r", '', str_replace("'", "\'", $d->calendar_string))) }}',
-                    date: '{{ $dat }}',
-                    className: 'calendar-date-{{ $d->type }}'
+            @if($d->type == 'order')
+                @foreach($d->dates as $dat)
+                    {
+                        title: '{{ str_replace("\n", " ", str_replace("\r", '', str_replace("'", "\'", $d->calendar_string))) }}',
+                        date: '{{ date('Y-m-d', strtotime($dat . ' +' . $d->shipping . ' days')) }}',
+                        className: 'calendar-date-{{ $d->type }}'
+                    },
+                @endforeach
+            @else
+                @foreach($d->dates as $dat)
+                    {
+                        title: '{{ str_replace("\n", " ", str_replace("\r", '', str_replace("'", "\'", $d->calendar_string))) }}',
+                        date: '{{ $dat }}',
+                        className: 'calendar-date-{{ $d->type }}'
 
-                    @if($d->type == 'internal')
-                        , url: '{{ route('notifications.index') . '#' . $d->id }}'
-                    @endif
-                },
-            @endforeach
+                        @if($d->type == 'internal')
+                            , url: '{{ route('notifications.index') . '#' . $d->id }}'
+                        @endif
+                    },
+                @endforeach
+            @endif
         @endforeach
     ];
 
