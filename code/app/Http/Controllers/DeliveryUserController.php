@@ -59,14 +59,16 @@ class DeliveryUserController extends BookingHandler
         $booking->delivery = date('Y-m-d');
 
         foreach ($booking->products as $booked) {
-            if ($booked->variants->isEmpty() == false) {
-                foreach($booked->variants as $bpv) {
-                    $bpv->delivered = $bpv->quantity;
-                    $bpv->save();
+            if ($booking->status != 'saved') {
+                if ($booked->variants->isEmpty() == false) {
+                    foreach($booked->variants as $bpv) {
+                        $bpv->delivered = $bpv->true_quantity;
+                        $bpv->save();
+                    }
                 }
-            }
-            else {
-                $booked->delivered = $booked->quantity;
+                else {
+                    $booked->delivered = $booked->true_quantity;
+                }
             }
 
             $booked->final_price = $booked->deliveredValue();
