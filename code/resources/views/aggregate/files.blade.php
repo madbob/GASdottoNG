@@ -175,20 +175,32 @@ else {
                         ]
                     ])
 
+                    <?php
+
+                    $formats = [
+                        'pdf' => (object) [
+                            'name' => 'PDF',
+                            'checked' => true
+                        ],
+                        'csv' => (object) [
+                            'name' => 'CSV'
+                        ],
+                    ];
+
+                    if ($managed_gas !== null) {
+                        $formats['gdxp'] = (object) [
+                            'name' => 'GDXP'
+                        ];
+                    }
+
+                    ?>
+
                     @include('commons.radios', [
                         'name' => 'format',
                         'label' => _i('Formato'),
                         'labelsize' => 2,
                         'fieldsize' => 10,
-                        'values' => [
-                            'pdf' => (object) [
-                                'name' => 'PDF',
-                                'checked' => true
-                            ],
-                            'csv' => (object) [
-                                'name' => 'CSV'
-                            ],
-                        ]
+                        'values' => $formats,
                     ])
                 </div>
                 <div class="modal-footer">
