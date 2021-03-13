@@ -231,18 +231,24 @@ class OrdersController extends Controller
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
-        if ($request->has('comment'))
+        if ($request->has('comment')) {
             $order->comment = $request->input('comment');
-        if ($request->has('start'))
+        }
+        if ($request->has('start')) {
             $order->start = decodeDate($request->input('start'));
-        if ($request->has('end'))
+        }
+        if ($request->has('end')) {
             $order->end = decodeDate($request->input('end'));
-        if ($request->has('shipping'))
+        }
+        if ($request->has('shipping')) {
             $order->shipping = decodeDate($request->input('shipping'));
-        if ($request->has('discount'))
+        }
+        if ($request->has('discount')) {
             $order->discount = savingPercentage($request, 'discount');
-        if ($request->has('transport'))
+        }
+        if ($request->has('transport')) {
             $order->transport = savingPercentage($request, 'transport');
+        }
 
         $order->deliveries()->sync(array_filter($request->input('deliveries', [])));
         $order->users()->sync($request->input('users', []));
@@ -255,8 +261,9 @@ class OrdersController extends Controller
         $status = $request->input('status');
         if ($order->status != $status) {
             $today = date('Y-m-d');
-            if ($status == 'open' && $order->end < $today)
+            if ($status == 'open' && $order->end < $today) {
                 $order->end = $today;
+            }
 
             $order->status = $status;
         }
@@ -299,31 +306,17 @@ class OrdersController extends Controller
             $removed_products = $order->products()->whereNotIn('id', $new_products)->pluck('id')->toArray();
             foreach($order->bookings as $booking) {
                 $booking->products()->whereIn('product_id', $removed_products)->delete();
-                if ($booking->products->isEmpty())
+                if ($booking->products->isEmpty()) {
                     $booking->delete();
+                }
             }
 
             $order->products()->sync($new_products);
         }
 
-        $discounted = $request->input('discounted', []);
-        foreach ($order->products as $product) {
-            $dis = false;
-
-            foreach ($discounted as $en) {
-                if ($en == $product->id) {
-                    $dis = true;
-                    break;
-                }
-            }
-
-            if ($product->pivot->discount_enabled != $dis) {
-                $order->products()->updateExistingPivot($product->id, ['discount_enabled' => $dis]);
-            }
-        }
-
-        if ($order->shipping)
+        if ($order->shipping) {
             Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('date', '<=', $order->shipping)->delete();
+        }
 
         return $this->commonSuccessResponse($order->aggregate);
     }
