@@ -7,9 +7,11 @@ use Illuminate\Support\Facades\Schema;
 
 use Log;
 
+use App\Observers\SupplierObserver;
 use App\Jobs\NotifyNewOrder;
 use App\Jobs\NotifyClosedOrder;
 use App\User;
+use App\Supplier;
 use App\Order;
 use App\Role;
 use App\Delivery;
@@ -55,6 +57,8 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
         });
+
+        Supplier::observe(SupplierObserver::class);
     }
 
     public function register()

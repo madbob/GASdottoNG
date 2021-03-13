@@ -10,27 +10,23 @@
                     <h2 class="panel-title">{{ _i('Notifiche') }}</h2>
                 </div>
                 <div class="panel-body">
-                    <ul class="list-group">
-                        @foreach($notifications as $notify)
-                            <li class="list-group-item">
-                                <div class="alert alert-info">
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <input type="hidden" name="notification_id" value="{{ $notify->id }}" />
+                    @foreach($notifications as $notify)
+                        <div class="alert alert-info">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <input type="hidden" name="notification_id" value="{{ $notify->id }}" />
 
-                                    {!! nl2br($notify->content) !!}
+                            {!! nl2br($notify->content) !!}
 
-                                    @if($notify->attachments->isEmpty() == false)
-                                        <hr>
-                                        @foreach($notify->attachments as $attachment)
-                                            <a class="btn btn-info" href="{{ $attachment->download_url }}">
-                                                {{ $attachment->name }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
-                                            </a>
-                                        @endforeach
-                                    @endif
-                                </div>
-                            </li>
-                        @endforeach
-                    </ul>
+                            @if($notify->attachments->isEmpty() == false)
+                                <hr>
+                                @foreach($notify->attachments as $attachment)
+                                    <a class="btn btn-info" href="{{ $attachment->download_url }}">
+                                        {{ $attachment->name }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
+                                    </a>
+                                @endforeach
+                            @endif
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>

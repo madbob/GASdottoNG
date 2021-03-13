@@ -6,8 +6,16 @@ if (!isset($currentgas)) {
     $currentgas = currentAbsoluteGas();
 }
 
+if (!isset($order)) {
+    $order = null;
+}
+
+if (!isset($bookings)) {
+    $bookings = false;
+}
+
 $json_object = (object) [
-    'protocolVersion' => '1.0',
+    'protocolVersion' => 1.0,
     'creationDate' => date('Y-m-d'),
     'applicationSignature' => 'GASdotto',
     'subject' => (object) [
@@ -71,6 +79,10 @@ foreach($obj->contacts as $contact) {
     }
 }
 
+if ($order && $bookings) {
+    $summary = $order->calculateSummary();
+}
+
 foreach($obj->products as $product) {
     $p = (object) [
         'name' => $product->name,
@@ -79,9 +91,9 @@ foreach($obj->products as $product) {
         'category' => $product->category->name,
         'description' => $product->description ?? '',
         'orderInfo' => (object) [
-            'packageQty' => (integer) $product->package_size > 1 ? $product->package_size : 1,
+            'packageQty' => (integer) ($product->package_size > 1 ? $product->package_size : 1),
             'maxQty' => (float) $product->max_quantity,
-            'minQty' => (float) $product->min_quantity > 0 ? $product->min_quantity : 1,
+            'minQty' => (float) ($product->min_quantity > 0 ? $product->min_quantity : 1),
             'mulQty' => (float) $product->multiple,
             'availableQty' => (float) $product->max_available,
             'umPrice' => (float) $product->price,
@@ -94,7 +106,22 @@ foreach($obj->products as $product) {
         $p->orderInfo->vatRate = $product->vat_rate->percentage;
     }
 
+    if ($bookings) {
+        $p->bookingInfo = (object) [
+            'totalQty' => (float) $summary->products[$product->id]['quantity'] ?? 0,
+        ];
+    }
+
     $json_object->blocks[0]->supplier->products[] = $p;
+}
+
+if ($order) {
+    $json_object->blocks[0]->orderInfo = (object) [
+        'phase' => $bookings ? 'booking' : 'order',
+        'openDate' => $order->start,
+        'closeDate' => $order->end,
+        'deliveryDate' => $order->shipping,
+    ];
 }
 
 echo json_encode($json_object);

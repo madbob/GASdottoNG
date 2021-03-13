@@ -13,7 +13,6 @@ use PDF;
 use App\User;
 use App\Supplier;
 use App\Product;
-use App\Role;
 
 class SuppliersService extends BaseService
 {
@@ -101,18 +100,7 @@ class SuppliersService extends BaseService
 
         $supplier = new Supplier();
         $this->setCommonAttributes($supplier, $request);
-
-        DB::transaction(function () use ($supplier, $creator) {
-            $supplier->save();
-
-            $desired_actions = ['supplier.modify', 'supplier.orders', 'supplier.shippings'];
-            foreach($desired_actions as $action) {
-                $roles = Role::havingAction($action);
-                foreach($roles as $r) {
-                    $creator->addRole($r, $supplier);
-                }
-            }
-        });
+        $supplier->save();
 
         return $supplier;
     }

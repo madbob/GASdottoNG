@@ -30,8 +30,6 @@ else {
     </a>
 </div>
 
-@push('postponed')
-
 <div class="modal fade close-on-submit" id="shipping-products-aggregate-document-{{ $aggregate->id }}-{{ $rand }}" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-extra-lg" role="document">
         <div class="modal-content">
@@ -177,20 +175,32 @@ else {
                         ]
                     ])
 
+                    <?php
+
+                    $formats = [
+                        'pdf' => (object) [
+                            'name' => 'PDF',
+                            'checked' => true
+                        ],
+                        'csv' => (object) [
+                            'name' => 'CSV'
+                        ],
+                    ];
+
+                    if ($managed_gas !== null) {
+                        $formats['gdxp'] = (object) [
+                            'name' => 'GDXP'
+                        ];
+                    }
+
+                    ?>
+
                     @include('commons.radios', [
                         'name' => 'format',
                         'label' => _i('Formato'),
                         'labelsize' => 2,
                         'fieldsize' => 10,
-                        'values' => [
-                            'pdf' => (object) [
-                                'name' => 'PDF',
-                                'checked' => true
-                            ],
-                            'csv' => (object) [
-                                'name' => 'CSV'
-                            ],
-                        ]
+                        'values' => $formats,
                     ])
                 </div>
                 <div class="modal-footer">
@@ -201,5 +211,3 @@ else {
         </div>
     </div>
 </div>
-
-@endpush

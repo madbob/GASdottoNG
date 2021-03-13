@@ -3,10 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 use DB;
+use App;
 use PDF;
 use Log;
+
+use ezcArchive;
 
 use App\Jobs\AggregateSummaries;
 use App\Aggregate;
@@ -75,6 +80,12 @@ class AggregatesController extends OrdersController
         return view('order.aggregate', ['aggregate' => $a]);
     }
 
+    public function details(Request $request, $id)
+    {
+        $a = Aggregate::findOrFail($id);
+        return view('aggregate.details', ['aggregate' => $a]);
+    }
+
     public function update(Request $request, $id)
     {
         DB::beginTransaction();
@@ -116,8 +127,9 @@ class AggregatesController extends OrdersController
     */
     public function testNotify(Request $request, $id)
     {
-        if (env('APP_DEBUG', false) == false)
+        if (env('APP_DEBUG', false) == false) {
             abort(403);
+        }
 
         $aggregate = Aggregate::findOrFail($id);
         $message = $request->input('message', '');
@@ -251,6 +263,47 @@ class AggregatesController extends OrdersController
                     return output_csv($filename, $data->headers, $data->contents, function($row) {
                         return $row;
                     });
+                }
+                else if ($subtype == 'gdxp') {
+                    $hub = App::make('GlobalScopeHub');
+                    if ($hub->enabled() == false) {
+                        $gas = $aggregate->gas->pluck('id');
+                    }
+                    else {
+                        $gas = Arr::wrap($hub->getGas());
+                    }
+
+                    $working_dir = sys_get_temp_dir();
+                    chdir($working_dir);
+
+                    foreach($gas as $g) {
+                        $hub->enable(true);
+                        $hub->setGas($g);
+
+                        foreach($aggregate->orders as $order) {
+                            /*
+                                Attenzione: la funzione document() nomina il
+                                file sempre nello stesso modo, a prescindere dal
+                                GAS. Se non lo si rinomina in altro modo, le
+                                diverse iterazioni sovrascrivono sempre lo
+                                stesso file
+                            */
+                            $f = $order->document('summary', 'gdxp', 'save', null, null, null);
+                            $new_f = Str::random(10);
+                            rename($f, $new_f);
+                            $files[] = $new_f;
+                        }
+                    }
+
+                    $archivepath = sprintf('%s/prenotazioni.zip', $working_dir, Str::random(10));
+                    $archive = ezcArchive::open($archivepath, ezcArchive::ZIP);
+
+                    foreach($files as $f) {
+                        $archive->append([$f], '');
+                        unlink($f);
+                    }
+
+                    return response()->download($archivepath)->deleteFileAfterSend(true);
                 }
 
                 break;

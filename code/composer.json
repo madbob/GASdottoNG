@@ -26,7 +26,7 @@
         "spatie/db-dumper": "^2.21",
         "vespakoen/menu": "^3.0",
         "zerospam/laravel-gettext": "7.x",
-        "zetacomponents/archive": "^1.5"
+        "zetacomponents/archive": "dev-master"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

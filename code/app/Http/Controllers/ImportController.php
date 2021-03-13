@@ -91,6 +91,12 @@ class ImportController extends Controller
         }
     }
 
+    public function esModal()
+    {
+        $entries = App::make('RemoteRepository')->getList();
+        return view('import.esmodal', ['entries' => $entries]);
+    }
+
     public function getLegacy()
     {
         return view('import.legacy-pre');
@@ -907,7 +913,7 @@ class ImportController extends Controller
             $info = json_decode(file_get_contents($path));
             foreach($info->blocks as $c) {
                 if ($execute) {
-                    $data[] = Supplier::importJSON($c->supplier, $supplier_replace);
+                    $data[] = Supplier::importJSON($info, $c->supplier, $supplier_replace);
                 }
                 else {
                     $data[] = Supplier::readJSON($c->supplier);
@@ -949,9 +955,17 @@ class ImportController extends Controller
 
             if ($step == 'read') {
                 $file = $request->file('file');
-                $filename = basename(tempnam($working_dir, 'import_gdxp_'));
-                $file->move($working_dir, $filename);
-                $archivepath = sprintf('%s/%s', $working_dir, $filename);
+                if (is_null($file) || $file->isValid() == false) {
+                    $url = $request->input('url');
+                    $file = file_get_contents($url);
+                    $archivepath = tempnam($working_dir, 'gdxp_remote_file');
+                    file_put_contents($archivepath, $file);
+                }
+                else {
+                    $filename = basename(tempnam($working_dir, 'import_gdxp_'));
+                    $file->move($working_dir, $filename);
+                    $archivepath = sprintf('%s/%s', $working_dir, $filename);
+                }
 
                 $data = $this->readGdxpFile($archivepath, false, null);
                 return view('import.gdxpsummary', ['data' => $data, 'path' => $archivepath]);

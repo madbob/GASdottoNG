@@ -97,6 +97,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('aggregates/notify/test/{id}', 'AggregatesController@testNotify');
     Route::post('aggregates/notify/{id}', 'AggregatesController@notify');
     Route::get('aggregates/document/{id}/{type}', 'AggregatesController@document')->name('aggregates.document');
+    Route::get('aggregates/{id}/details', 'AggregatesController@details')->name('aggregates.details');
     Route::get('aggregates/{id}/multigas', 'AggregatesController@multiGAS')->name('aggregates.multigas');
 
     Route::get('attachments/{id}/header', 'AttachmentsController@objhead')->name('attachments.objhead');
@@ -133,6 +134,7 @@ Route::middleware(['auth'])->group(function() {
     Route::post('movements/deletebalance/{id}', 'MovementsController@deleteBalance')->name('movements.deletebalance');
     Route::get('movements/document/{type}/{subtype?}', 'MovementsController@document');
 
+    Route::get('import/esmodal', 'ImportController@esModal')->name('import.esmodal');
     Route::post('import/csv', 'ImportController@postCsv');
     Route::get('import/gdxp', 'ImportController@getGdxp');
     Route::post('import/gdxp', 'ImportController@postGdxp');

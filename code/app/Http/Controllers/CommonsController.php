@@ -35,6 +35,10 @@ class CommonsController extends Controller
         Artisan::call('open:orders');
         Artisan::call('check:system_notices');
 
+        if ($user->gas->getConfig('es_integration')) {
+            Artisan::call('check:remote_products');
+        }
+
         $data['notifications'] = $user->notifications()->where('start_date', '<=', date('Y-m-d'))->where('end_date', '>=', date('Y-m-d'))->get();
 
         $opened = Aggregate::getByStatus($user, 'open');

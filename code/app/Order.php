@@ -354,6 +354,17 @@ class Order extends Model
                         });
                     }
                 }
+                else if ($format == 'gdxp') {
+                    $contents = view('gdxp.json.supplier', ['obj' => $this->supplier, 'order' => $this, 'bookings' => true])->render();
+
+                    if ($action == 'save') {
+                        file_put_contents($temp_file_path, $contents);
+                    }
+                    else {
+                        download_headers('application/json', $filename);
+                        return $contents;
+                    }
+                }
 
                 return $temp_file_path;
                 break;
@@ -924,7 +935,7 @@ class Order extends Model
 
     public function exportJSON()
     {
-        return view('gdxp.json.supplier', ['obj' => $this->supplier, 'orders' => [$this]])->render();
+        return view('gdxp.json.supplier', ['obj' => $this->supplier, 'order' => $this])->render();
     }
 
     public static function readJSON($json)

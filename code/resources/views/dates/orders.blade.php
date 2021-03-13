@@ -18,7 +18,7 @@
 <hr>
 
 <form class="form-horizontal inner-form" method="POST" action="{{ route('dates.updateorders') }}">
-    <input type="hidden" name="close-modal" value="1">
+    <input type="hidden" name="reload-whole-page" value="1">
 
     <div class="modal-body">
         <div class="row">

@@ -1,25 +1,38 @@
 <?php
-    $types = [];
-    foreach (App\MovementType::types() as $info) {
-        if ($info->visibility) {
-            $types[] = [
-                'label' => $info->name,
-                'value' => $info->id,
-            ];
-        }
-    }
 
-    $payments = [];
-    foreach (App\MovementType::payments() as $method_id => $info) {
-        $payments[] = [
+$methods = [];
+
+$types = [];
+foreach (App\MovementType::types() as $info) {
+    if ($info->visibility) {
+        $types[] = [
             'label' => $info->name,
-            'value' => $method_id,
+            'value' => $info->id,
+        ];
+
+        $methods[] = (object) [
+            'method' => $info->id,
+            'payment' => App\MovementType::defaultPaymentByType($info->id),
         ];
     }
+}
 
-    $users = App\User::sorted()->get();
-    $suppliers = App\Supplier::orderBy('name', 'asc')->get();
+$payments = [];
+foreach (App\MovementType::payments() as $method_id => $info) {
+    $payments[] = [
+        'label' => $info->name,
+        'value' => $method_id,
+    ];
+}
+
+$users = App\User::sorted()->get();
+$suppliers = App\Supplier::orderBy('name', 'asc')->get();
+
 ?>
+
+<script>
+matching_methods_for_movement_types = {!! json_encode($methods) !!};
+</script>
 
 <div class="wizard_page">
     <form class="form-horizontal" method="POST" action="{{ url('import/csv?type=movements&step=run') }}" data-toggle="validator">
