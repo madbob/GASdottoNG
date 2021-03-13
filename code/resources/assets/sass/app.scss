@@ -338,6 +338,11 @@ table {
 
 .order-columns-selector {
     margin-left: 10px;
+
+    .dropdown-menu {
+        padding: 5px;
+        width: 210px;
+    }
 }
 
 .main-form-buttons {

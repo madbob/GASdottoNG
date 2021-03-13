@@ -2666,13 +2666,14 @@ $(document).ready(function() {
     	Gestione ordini
     */
 
-    $('body').on('click', '.order-columns-selector a', function(e) {
+    $('body').on('click', '.order-columns-selector .dropdown-menu', function(e) {
+        e.stopPropagation();
+    })
+    .on('change', '.order-columns-selector input:checkbox', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        var box = $(this).find('input:checkbox');
-        var name = box.val();
-        box.prop('checked', !box.prop('checked'));
-        var show = box.prop('checked');
+        var name = $(this).val();
+        var show = $(this).prop('checked');
         $(this).closest('.btn-group').closest('form').find('.order-summary').first().find('.order-cell-' + name).toggleClass('hidden', !show);
     });
 

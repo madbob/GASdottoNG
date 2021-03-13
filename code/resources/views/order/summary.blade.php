@@ -34,9 +34,11 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
         <ul class="dropdown-menu">
             @foreach($display_columns as $identifier => $metadata)
                 <li>
-                    <a href="#">
-                        <input type="checkbox" value="{{ $identifier }}" {{ in_array($identifier, $columns) ? 'checked' : '' }}> {{ $metadata->label }}
-                    </a>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" value="{{ $identifier }}" {{ in_array($identifier, $columns) ? 'checked' : '' }}> {{ $metadata->label }}
+                        </label>
+                    </div>
                 </li>
             @endforeach
         </ul>

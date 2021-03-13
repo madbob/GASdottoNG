@@ -203,6 +203,9 @@ table .table-sorting-header {
 
 .order-columns-selector {
   margin-left: 10px; }
+  .order-columns-selector .dropdown-menu {
+    padding: 5px;
+    width: 210px; }
 
 .main-form-buttons .btn-default {
   background-color: #FFF;
