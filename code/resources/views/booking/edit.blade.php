@@ -55,6 +55,13 @@ $enforced = $enforced ?? false;
             <br>
         @endif
 
+        @if(!empty($order->long_comment))
+            <div class="alert alert-info">
+                {!! nl2br($order->long_comment) !!}
+            </div>
+            <br>
+        @endif
+
         @if($contacts->isEmpty() == false)
             <div class="alert alert-info">
                 {{ _i('Per segnalazioni relative a questo ordine si può contattare:') }}

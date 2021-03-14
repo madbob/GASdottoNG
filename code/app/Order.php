@@ -88,8 +88,9 @@ class Order extends Model
     {
         $ret = $this->supplier->name;
 
-        if (!empty($this->comment))
+        if (!empty($this->comment) && strlen($this->comment) < self::longCommentLimit()) {
             $ret .= ' - ' . $this->comment;
+        }
 
         $ret .= ' - ' . $this->internal_number;
 
@@ -203,6 +204,16 @@ class Order extends Model
         });
     }
 
+    public function getLongCommentAttribute()
+    {
+        if (!empty($this->comment) && strlen($this->comment) >= self::longCommentLimit()) {
+            return $this->comment;
+        }
+        else {
+            return '';
+        }
+    }
+
     /*
         Se il prodotto è contenuto nell'ordine la funzione ritorna TRUE
         e la referenza a $product viene sostituita con quella interna
@@ -252,6 +263,11 @@ class Order extends Model
 
                 break;
         }
+    }
+
+    public static function longCommentLimit()
+    {
+        return 100;
     }
 
     private function autoGuessFields()

@@ -18,6 +18,10 @@ if (!isset($help_text)) {
     $help_text = '';
 }
 
+if (!isset($rows)) {
+    $rows = 5;
+}
+
 ?>
 
 <div class="{{ $wrap_class }}">
@@ -32,7 +36,7 @@ if (!isset($help_text)) {
         <textarea
             class="form-control"
             name="{{ $prefix . $name . $postfix }}"
-            rows="5"
+            rows="{{ $rows }}"
 
             @if($squeeze == true)
                 placeholder="{{ $label }}"
