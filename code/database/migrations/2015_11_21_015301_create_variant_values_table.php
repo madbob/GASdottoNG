@@ -13,7 +13,6 @@ class CreateVariantValuesTable extends Migration
 
             $table->string('variant_id');
             $table->string('value');
-            $table->float('price_offset');
 
             $table->foreign('variant_id')->references('id')->on('variants')->onDelete('cascade');
         });

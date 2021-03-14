@@ -13,7 +13,6 @@ class CreateVariantsTable extends Migration
 
             $table->string('product_id');
             $table->string('name');
-            $table->boolean('has_offset');
 
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });

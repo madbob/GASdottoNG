@@ -1,10 +1,14 @@
 <?php
 
-namespace App\Http\Middleware;
+/*
+    Questo comando viene usato per aggiornare i database delle istanze in
+    produzione per eventuali modifiche allo schema.
+    Il suo contenuto cambia nel tempo, man mano che avvengono gli aggiornamenti.
+*/
 
-use DB;
-use Log;
-use Closure;
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
 
 use App\Product;
 use App\Order;
@@ -12,14 +16,19 @@ use App\BookedProduct;
 use App\Modifier;
 use App\ModifiedValue;
 use App\ModifierType;
+use App\Variant;
+use App\VariantCombo;
 
-/*
-    Questo middleware è destinato ad ospitare eventuali correzioni "in corsa" al
-    database, per creare o ricreare elementi che per default dovrebbero sempre
-    esserci
-*/
-class FixDatabase
+class FixDatabase extends Command
 {
+    protected $signature = 'fix:database';
+    protected $description = 'Sistema le informazioni sul DB per completare il deploy';
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     private function createEmptyModifier($product, $modifier_type)
     {
         $modifier = new Modifier();
@@ -110,8 +119,12 @@ class FixDatabase
         }
     }
 
-    public function handle($request, Closure $next)
+    public function handle()
     {
+        /*
+            Introduzione Modificatori
+        */
+
         if (ModifierType::all()->isEmpty()) {
             try {
                 DB::beginTransaction();
@@ -144,6 +157,32 @@ class FixDatabase
             }
         }
 
-        return $next($request);
+        /*
+            Upgrade combo varianti
+        */
+        if (VariantCombo::all()->count() == 0) {
+            $products = Product::has('variants')->get();
+
+            foreach($products as $product) {
+                $product->reviewCombos();
+            }
+
+            $variants = Variant::where('has_offset', true)->get();
+            foreach($variants as $variant) {
+                foreach($variant->values as $value) {
+                    if ($value->price_offset) {
+                        VariantCombo::whereHas('values', function($query) use ($value) {
+                            $query->where('variant_value_id', $value->id);
+                        })->increment('price_offset', $value->price_offset);
+                    }
+
+                    if ($value->weight_offset) {
+                        VariantCombo::whereHas('values', function($query) use ($value) {
+                            $query->where('variant_value_id', $value->id);
+                        })->increment('weight_offset', $value->weight_offset);
+                    }
+                }
+            }
+        }
     }
 }

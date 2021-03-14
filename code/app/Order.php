@@ -439,8 +439,6 @@ class Order extends Model
             return [];
         }
 
-        Log::debug(print_r($product_redux, true));
-
         if (!empty($product_redux->variants)) {
             $variants_rows = [];
             $offset = $internal_offsets->by_variant;

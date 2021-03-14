@@ -37,7 +37,6 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\SetLanguage::class,
             \App\Http\Middleware\EnforcePassword::class,
             \App\Http\Middleware\ActIntoGas::class,
-            \App\Http\Middleware\FixDatabase::class,
         ],
 
         'api' => [
