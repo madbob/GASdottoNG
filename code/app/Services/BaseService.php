@@ -9,7 +9,7 @@ use Log;
 
 class BaseService
 {
-    protected function ensureAuth($permissions = [], $or = true)
+    public function ensureAuth($permissions = [], $or = true)
     {
         $user = Auth::user();
         if (is_null($user)) {
