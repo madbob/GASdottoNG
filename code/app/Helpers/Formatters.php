@@ -516,7 +516,7 @@ function humanSizeToBytes($size)
         return (int) $size;
     }
 
-    $val = (int) substr($size, 0, -1);
+    $val = (float) substr($size, 0, -1);
 
     switch ($suffix) {
         case 'P':
