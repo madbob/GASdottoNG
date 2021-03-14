@@ -280,6 +280,8 @@ class AggregatesController extends OrdersController
                     $working_dir = sys_get_temp_dir();
                     chdir($working_dir);
 
+                    $files = [];
+
                     foreach($gas as $g) {
                         $hub->enable(true);
                         $hub->setGas($g);
@@ -299,7 +301,7 @@ class AggregatesController extends OrdersController
                         }
                     }
 
-                    $archivepath = sprintf('%s/prenotazioni.zip', $working_dir, Str::random(10));
+                    $archivepath = sprintf('%s/prenotazioni.zip', $working_dir);
                     $archive = ezcArchive::open($archivepath, ezcArchive::ZIP);
 
                     foreach($files as $f) {

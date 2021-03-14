@@ -10,6 +10,9 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
+use DB;
+use Log;
+
 use App\Product;
 use App\Order;
 use App\BookedProduct;

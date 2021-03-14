@@ -37,6 +37,7 @@ class ModifiersService extends BaseService
             case 'App\Aggregate':
                 $test = false;
 
+                $user = Auth::user();
                 foreach($modifier->target->orders as $order) {
                     if ($user->can('supplier.modify', $order->supplier) || $user->can('supplier.orders', $order->supplier)) {
                         $test = true;

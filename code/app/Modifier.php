@@ -225,6 +225,10 @@ class Modifier extends Model
                 case 'product':
                     $check_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$this->target->id] ?? null;
                     break;
+
+                default:
+                    Log::error('applies_target non riconosciuto per modificatore: ' . $this->applies_target);
+                    return null;
             }
         }
 
@@ -247,6 +251,8 @@ class Modifier extends Model
                 })->first();
                 break;
         }
+
+        $attribute = '';
 
         if ($booking->status == 'shipped' || $booking->status == 'saved') {
             switch($this->applies_type) {

@@ -2,8 +2,11 @@
     <?php
 
     $effective_dates = [];
-    foreach($dates as $d)
+
+    foreach($dates as $d) {
         $effective_dates = array_merge($effective_dates, $d->dates);
+    }
+
     $effective_dates = array_sort($effective_dates);
 
     ?>

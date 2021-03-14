@@ -33,6 +33,8 @@ class BookedProductVariant extends Model
 
     private function variantsCombo()
     {
+        $values = [];
+
         foreach ($this->components as $c) {
             $values[] = $c->value_id;
         }
@@ -122,6 +124,15 @@ class BookedProductVariant extends Model
     }
 
     /********************************************************* ReducibleTrait */
+
+    protected function reduxBehaviour()
+    {
+        /*
+            Essendo la variante prenotata la foglia più estrema dell'albero di
+            riduzione, questa funzione non dovrebbe mai essere chiamata
+        */
+        throw new \Exception("Invocata funzione reduxBehaviour() su BookedProductVariant", 1);
+    }
 
     public function reduxData($ret = null, $filters = null)
     {

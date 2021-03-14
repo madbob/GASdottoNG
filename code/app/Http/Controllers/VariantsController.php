@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use DB;
 
 use App\Services\VariantsService;
+use App\Exceptions\AuthException;
 
 use App\Product;
 use App\Variant;

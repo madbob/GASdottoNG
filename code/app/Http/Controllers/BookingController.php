@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 
 use Auth;
 use URL;
+use DB;
 
 use App\Aggregate;
 
@@ -43,12 +44,6 @@ class BookingController extends Controller
         $aggregate = Aggregate::findOrFail($id);
         $user = Auth::user();
         return view('booking.editwrap', ['aggregate' => $aggregate, 'user' => $user, 'standalone' => false]);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $user_id = Auth::user()->id;
-        return $this->bookingUpdate($request, $id, $user_id, false);
     }
 
     public function destroy(Request $request, $aggregate_id, $user_id)

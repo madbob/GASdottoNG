@@ -45,7 +45,7 @@ class DatesController extends BackedController
             if ($supplier == null)
                 abort(404);
 
-            $dates = $supplier->dates;
+            $dates = $supplier->calendarDates;
             return view('dates.list', ['dates' => $dates]);
         }
         catch (AuthException $e) {

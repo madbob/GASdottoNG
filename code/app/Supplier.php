@@ -68,7 +68,7 @@ class Supplier extends Model
         return $this->hasMany('App\Invoice');
     }
 
-    public function dates()
+    public function calendarDates()
     {
         return $this->morphMany('App\Date', 'target')->orderBy('date', 'asc');
     }

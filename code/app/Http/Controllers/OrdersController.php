@@ -494,6 +494,8 @@ class OrdersController extends Controller
                 $status = $request->input('status', 'booked');
                 $shipping_place = $request->input('shipping_place', 0);
 
+                $contents = [];
+
                 if ($status == 'booked') {
                     $bookings = self::orderTopBookingsByShipping($order, $shipping_place);
                     $contents = view('documents.order_table_booked', ['order' => $order, 'bookings' => $bookings])->render();

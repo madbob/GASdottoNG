@@ -6,8 +6,11 @@ parameters:
     paths:
         - app
 
+    ignoreErrors:
+        - '#Access to an undefined property#'
+
     # The level 8 is the highest level
-    level: 1
+    level: 2
     checkModelProperties: true
     checkMissingIterableValueType: false
     reportUnmatchedIgnoredErrors: false

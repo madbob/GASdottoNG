@@ -501,7 +501,7 @@ function iban_split($iban, $field)
         default:
             Log::error('Campo non gestito per IBAN: ' . $field);
             $start = 0;
-            $lenght = 0;
+            $length = 0;
             break;
     }
 
@@ -512,11 +512,11 @@ function iban_split($iban, $field)
 function humanSizeToBytes($size)
 {
     $suffix = strtoupper(substr($size, -1));
-    if (!in_array($suffix, array('P','T','G','M','K'))) {
-        return (int)$size;
+    if (!in_array($suffix, array('P', 'T', 'G', 'M', 'K'))) {
+        return (int) $size;
     }
 
-    $val = substr($size, 0, -1);
+    $val = (int) substr($size, 0, -1);
 
     switch ($suffix) {
         case 'P':
