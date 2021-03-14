@@ -79,6 +79,8 @@ Route::middleware(['auth'])->group(function() {
     Route::get('measures/{id}/header', 'MeasuresController@objhead')->name('measures.objhead');
     Route::get('measures/list/{id}', 'MeasuresController@listProducts');
 
+    Route::get('variants/{id}/matrix', 'VariantsController@matrix')->name('variants.matrix');
+    Route::post('variants/{id}/matrix', 'VariantsController@updateMatrix')->name('variants.updatematrix');
     Route::get('variants/{id}/header', 'VariantsController@objhead')->name('variants.objhead');
 
     Route::get('orders/{id}/header', 'OrdersController@objhead')->name('orders.objhead');

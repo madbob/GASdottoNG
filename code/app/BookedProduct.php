@@ -54,31 +54,23 @@ class BookedProduct extends Model
 
     private function fixQuantity($attribute, $rectify)
     {
-        /*
-            Per i prodotti con pezzatura, basePrice() già fornisce il prezzo per
-            singola unità. Non è dunque qui necessario effettuare altri
-            controlli o aggiustamenti
-        */
-        $base_price = $this->basePrice($rectify);
-        $product = $this->product;
-
-        $variants = $this->variants;
-        if ($variants->isEmpty() == false) {
+        if ($this->variants->isEmpty() == false) {
             $total = 0;
 
-            foreach ($variants as $v) {
-                $price = $base_price;
-
-                foreach ($v->components as $c) {
-                    $price += $c->value->price_offset;
-                }
-
-                $total += $price * $v->$attribute;
+            foreach ($this->variants as $v) {
+                $total += $v->unitPrice($rectify) * $v->$attribute;
             }
 
             return $total;
         }
         else {
+            /*
+                Per i prodotti con pezzatura, basePrice() già fornisce il prezzo per
+                singola unità. Non è dunque qui necessario effettuare altri
+                controlli o aggiustamenti
+            */
+            $base_price = $this->basePrice($rectify);
+
             if (is_numeric($base_price) == false || is_numeric($this->$attribute) == false) {
                 Log::error('Non numeric values for booked product: ' . $base_price . ' / ' . $this->$attribute);
             }
@@ -141,63 +133,9 @@ class BookedProduct extends Model
 
         $summary = (object) [
             'products' => [
-                $faked_index => (object) [
-                    'product_obj' => $this->product,
-                    'quantity' => $this->product->portion_quantity > 0 ? $this->quantity * $this->product->portion_quantity : $this->quantity,
-                    'quantity_pieces' => $this->quantity,
-                    'price' => $this->getValue('booked'),
-                    'delivered' => $this->delivered,
-                    'delivered_pieces' => $this->product->portion_quantity > 0 ? $this->delivered * $this->product->portion_quantity : $this->delivered,
-                    'price_delivered' => $this->getValue('delivered'),
-                ]
+                $faked_index => $this->reduxData(),
             ],
-            'by_variant' => []
         ];
-
-        if ($this->variants->isEmpty() == false) {
-            $variants_quantity = 0;
-            $summary->by_variant[$faked_index] = [];
-
-            foreach($this->variants as $v) {
-                $name = $v->printableName();
-                $variant_index = -1;
-
-                /*
-                    Per i prodotti con unità di misura non discreta gestisco le
-                    diverse varianti separatamente, per distinguere i singoli
-                    pezzi prenotati
-                */
-                if ($this->product->measure->discrete == true) {
-                    foreach($summary->by_variant[$faked_index] as $vindex => $var_iter) {
-                        if ($var_iter->name == $name) {
-                            $variant_index = $vindex;
-                            break;
-                        }
-                    }
-                }
-
-                if ($variant_index == -1) {
-                    $variant_index = count($summary->by_variant[$faked_index]);
-                    $summary->by_variant[$faked_index][$variant_index] = (object) [
-                        'name' => $name,
-                        'quantity' => 0,
-                        'delivered' => 0,
-                        'price' => 0,
-                        'unit_price' => $v->unitPrice()
-                    ];
-                }
-
-                $summary->by_variant[$faked_index][$variant_index]->quantity += $v->quantity;
-                $summary->by_variant[$faked_index][$variant_index]->delivered += $v->delivered;
-                $summary->by_variant[$faked_index][$variant_index]->price += $v->quantityValue();
-
-                $variants_quantity += $v->quantity;
-            }
-
-            if ($variants_quantity != 0) {
-                $summary->products[$faked_index]->quantity = $variants_quantity;
-            }
-        }
 
         return $summary;
     }
@@ -223,11 +161,10 @@ class BookedProduct extends Model
 
     private function fixWeight($attribute)
     {
-        $variants = $this->variants;
-        if ($variants->isEmpty() == false) {
+        if ($this->variants->isEmpty() == false) {
             $total = 0;
 
-            foreach ($variants as $v) {
+            foreach ($this->variants as $v) {
                 $total += $v->fixWeight($attribute);
             }
 

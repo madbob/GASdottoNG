@@ -25,15 +25,6 @@ class VariantValue extends Model
         return $this->belongsTo('App\Variant');
     }
 
-    public function printableFullValue()
-    {
-        if ($this->variant->has_offset) {
-            return sprintf('%s (%s%.02f%s)', $this->value, ($this->price_offset > 0 ? '+' : '-'), abs($this->price_offset), currentAbsoluteGas()->currency);
-        } else {
-            return $this->value;
-        }
-    }
-
     public function getSlugID()
     {
         return sprintf('%s::%s', $this->variant_id, Str::slug($this->value));

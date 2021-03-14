@@ -50,7 +50,7 @@
                 </div>
             </div>
 
-            @include('product.variantsviewer', ['product' => $product])
+            @include('variant.viewer', ['product' => $product])
         </div>
     </div>
 </form>

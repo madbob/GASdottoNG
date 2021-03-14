@@ -95,6 +95,6 @@ if (!isset($duplicate))
             'help_popover' => _i("Se diverso da 0, questa è la quantità massima di prodotto che complessivamente può essere prenotata in un ordine. In fase di prenotazione gli utenti vedranno quanto è già stato sinora prenotato in tutto"),
         ])
 
-        @include('product.variantseditor', ['product' => $product, 'duplicate' => $duplicate])
+        @include('variant.editor', ['product' => $product, 'duplicate' => $duplicate])
     </div>
 </div>

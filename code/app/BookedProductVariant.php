@@ -31,24 +31,34 @@ class BookedProductVariant extends Model
         return false;
     }
 
+    private function variantsCombo()
+    {
+        foreach ($this->components as $c) {
+            $values[] = $c->value_id;
+        }
+
+        return VariantCombo::byValues($values);
+    }
+
     public function unitPrice($rectify = true)
     {
         $base_price = $this->product->basePrice($rectify);
-        $price = $base_price;
 
-        foreach ($this->components as $c) {
-            $price += $c->value->price_offset;
+        $combo = $this->variantsCombo();
+        if ($combo) {
+            $base_price += $combo->price_offset;
         }
 
-        return $price;
+        return $base_price;
     }
 
     public function fixWeight($attribute)
     {
         $weight = $this->product->product->weight;
 
-        foreach ($this->components as $c) {
-            $weight += $c->value->weight_offset;
+        $combo = $this->variantsCombo();
+        if ($combo) {
+            $weight += $combo->weight_offset;
         }
 
         return $weight * $this->$attribute;
@@ -98,6 +108,17 @@ class BookedProductVariant extends Model
     public function getTrueDeliveredAttribute()
     {
         return $this->normalizeQuantity('delivered');
+    }
+
+    public function getSupplierCodeAttribute()
+    {
+        $combo = $this->variantsCombo();
+        if ($combo) {
+            return $combo->code;
+        }
+        else {
+            return '';
+        }
     }
 
     /********************************************************* ReducibleTrait */

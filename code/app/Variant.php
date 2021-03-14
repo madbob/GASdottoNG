@@ -27,18 +27,12 @@ class Variant extends Model
 
     public function values()
     {
-        return $this->hasMany('App\VariantValue')->orderBy('price_offset', 'asc')->orderBy('value', 'asc');
+        return $this->hasMany('App\VariantValue')->orderBy('value', 'asc');
     }
 
     public function printableValues()
     {
-        $vals = [];
-
-        foreach ($this->values as $value) {
-            $vals[] = $value->printableFullValue();
-        }
-
-        return implode(', ', $vals);
+        return $this->values->pluck('value')->join(', ');
     }
 
     public function getSlugID()

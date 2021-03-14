@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
 use DB;
+
 use App\Product;
 use App\Variant;
 use App\VariantValue;
+use App\VariantCombo;
 use App\BookedProductVariant;
 
 class VariantsController extends Controller
@@ -38,51 +41,103 @@ class VariantsController extends Controller
         }
     }
 
+    private function reviewCombos($product)
+    {
+        $combos = [[]];
+        $values = [];
+        $all_values = [];
+
+        foreach($product->variants as $variant) {
+            $variant_values = [];
+
+            foreach($variant->values as $value) {
+                $variant_values[] = $value->id;
+                $all_values[] = $value->id;
+            }
+
+            $values[] = $variant_values;
+        }
+
+        $length = count($values);
+
+        for ($count = 0; $count < $length; $count++) {
+            $tmp = [];
+
+            foreach ($combos as $v1) {
+                foreach ($values[$count] as $v2) {
+                    $tmp[] = array_merge($v1, [$v2]);
+                }
+            }
+
+            $combos = $tmp;
+        }
+
+        $valid_ids = [];
+
+        foreach($combos as $combo) {
+            $vc = VariantCombo::byValues($combo);
+            if (is_null($vc)) {
+                $vc = new VariantCombo();
+                $vc->save();
+                $vc->values()->sync($combo);
+            }
+
+            $valid_ids[] = $vc->id;
+        }
+
+        VariantCombo::whereHas('values', function($query) use ($all_values) {
+            $query->whereIn('variant_value_id', $all_values);
+        })->whereNotIn('id', $valid_ids)->delete();
+    }
+
+    public function create(Request $request)
+    {
+        $product = Product::findOrFail($request->input('product_id'));
+        return view('variant.edit', ['product' => $product, 'variant' => null]);
+    }
+
+    public function edit(Request $request, $id)
+    {
+        $variant = Variant::findOrFail($id);
+        return view('variant.edit', ['product' => $variant->product, 'variant' => $variant]);
+    }
+
+    public function show(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+        return view('variant.editor', ['product' => $product, 'duplicate' => false]);
+    }
+
     public function store(Request $request)
     {
         DB::beginTransaction();
 
-        $product_id = $request->input('product_id');
-        $product = Product::findOrFail($product_id);
-
-        if ($request->user()->can('supplier.modify', $product->supplier) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
-
         $variant_id = $request->input('variant_id');
         if (!empty($variant_id)) {
             $variant = Variant::findOrFail($variant_id);
-        } else {
+        }
+        else {
             $variant = new Variant();
+            $product_id = $request->input('product_id');
+            $product = Product::findOrFail($product_id);
+            $variant->product_id = $product->id;
+        }
+
+        if ($request->user()->can('supplier.modify', $variant->product->supplier) == false) {
+            return $this->errorResponse(_i('Non autorizzato'));
         }
 
         $variant->name = $request->input('name');
-        $variant->product_id = $product_id;
-        $variant->has_offset = $request->has('has_offset');
         $variant->save();
 
         $new_values = $request->input('value', []);
-        $new_price_offsets = $request->input('price_offset', []);
-        $new_weight_offsets = $request->input('weight_offset', []);
         $existing_values = $variant->values;
         $matching_values = [];
 
         for ($i = 0; $i < count($new_values); ++$i) {
             $value = $new_values[$i];
-            if (empty($value))
+            if (empty($value)) {
                 continue;
-
-            $price_offset = $new_price_offsets[$i];
-            if (empty($price_offset)) {
-                $price_offset = 0;
-            }
-
-            $weight_offset = 0;
-            if (isset($new_weight_offsets[$i])) {
-                $weight_offset = $new_weight_offsets[$i];
-                if (empty($weight_offset)) {
-                    $weight_offset = 0;
-                }
             }
 
             $value_found = false;
@@ -91,33 +146,12 @@ class VariantsController extends Controller
                 if ($value == $evalue->value) {
                     $value_found = true;
                     $matching_values[] = $evalue->id;
-
-                    if ($variant->has_offset == true && ($evalue->price_offset != $price_offset || $evalue->weight_offset != $weight_offset)) {
-                        $evalue->price_offset = $price_offset;
-                        $evalue->weight_offset = $weight_offset;
-                        $evalue->save();
-                    }
-                    elseif ($variant->has_offset == false && ($evalue->price_offset != 0 || $evalue->weight_offset != 0)) {
-                        $evalue->price_offset = 0;
-                        $evalue->weight_offset = 0;
-                        $evalue->save();
-                    }
                 }
             }
 
             if ($value_found == false) {
                 $val = new VariantValue();
                 $val->value = $value;
-
-                if ($variant->has_offset) {
-                    $val->price_offset = $price_offset;
-                    $val->weight_offset = $weight_offset;
-                }
-                else {
-                    $val->price_offset = 0;
-                    $val->weight_offset = 0;
-                }
-
                 $val->variant_id = $variant->id;
                 $val->save();
                 $matching_values[] = $val->id;
@@ -130,28 +164,11 @@ class VariantsController extends Controller
             $vtr->delete();
         }
 
-        /*
-            Solo una singola variante per prodotto può avere la
-            "differenza prezzo", se viene attivata sulla variante
-            correntemente salvata la tolgo dall'eventuale altra
-            esistente
-        */
-        if ($variant->has_offset) {
-            foreach ($product->variants as $v) {
-                if ($v->id != $variant->id) {
-                    if ($v->has_offset) {
-                        $v->has_offset = false;
-                        $v->save();
-                        $v->values()->update(['price_offset' => 0, 'weight_offset' => 0]);
-                        break;
-                    }
-                }
-            }
-        }
+        $this->reviewCombos($product);
 
         DB::commit();
 
-        return view('product.variantseditor', ['product' => $product, 'duplicate' => false]);
+        return $this->successResponse();
     }
 
     public function destroy(Request $request, $id)
@@ -169,8 +186,40 @@ class VariantsController extends Controller
         $variant->values()->delete();
         $variant->delete();
 
+        $this->reviewCombos($product);
+
         DB::commit();
 
-        return view('product.variantseditor', ['product' => $product, 'duplicate' => false]);
+        return $this->successResponse();
+    }
+
+    public function matrix(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+        return view('variant.matrix', ['product' => $product]);
+    }
+
+    public function updateMatrix(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        $product = Product::findOrFail($id);
+
+        $combinations = $request->input('combination');
+        $codes = $request->input('code', []);
+        $prices = $request->input('price_offset', []);
+        $weights = $request->input('weight_offset', []);
+
+        foreach($combinations as $index => $combination) {
+            $combo = VariantCombo::byValues(explode(',', $combination));
+            $combo->code = $codes[$index];
+            $combo->price_offset = $prices[$index];
+            $combo->weight_offset = $weights[$index] ?? 0;
+            $combo->save();
+        }
+
+        DB::commit();
+
+        return $this->successResponse();
     }
 }

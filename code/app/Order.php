@@ -439,6 +439,8 @@ class Order extends Model
             return [];
         }
 
+        Log::debug(print_r($product_redux, true));
+
         if (!empty($product_redux->variants)) {
             $variants_rows = [];
             $offset = $internal_offsets->by_variant;
@@ -661,6 +663,14 @@ class Order extends Model
                 'format_product' => function($product, $summary) {
                     return $product->supplier_code;
                 },
+                'format_variant' => function($product, $summary) {
+                    if (!empty($summary->variant->supplier_code)) {
+                        return $summary->variant->supplier_code;
+                    }
+                    else {
+                        return $summary->variant->product->product->supplier_code;
+                    }
+                }
             ],
             'quantity' => (object) [
                 'name' => _i('Quantità'),

@@ -8,7 +8,7 @@
         <div class="col-md-{{ 6 / $product->variants()->count() }}">
             <select class="form-control {{ $master ? 'skip-on-submit' : '' }}" name="variant_selection_{{ $variant->id }}[]" {{ $order->isActive() == false ? 'disabled' : '' }}>
                 @foreach($variant->values as $value)
-                    <option data-variant-price="{{ $value->price_offset }}" value="{{ $value->id }}" {{ ($saved != null && $saved->hasCombination($variant, $value)) ? 'selected="selected"' : '' }}>{{ $value->printableFullValue() }}</option>
+                    <option data-variant-price="{{ $value->price_offset }}" value="{{ $value->id }}" {{ ($saved != null && $saved->hasCombination($variant, $value)) ? 'selected="selected"' : '' }}>{{ $value->value }}</option>
                 @endforeach
             </select>
         </div>

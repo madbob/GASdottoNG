@@ -320,6 +320,19 @@ function previewImage(input) {
     }
 }
 
+function reloadPortion(node) {
+    $.ajax({
+        method: 'GET',
+        url: node.attr('data-reload-url'),
+        dataType: 'HTML',
+        success: function(data) {
+            data = $(data),
+            node.replaceWith(data);
+            generalInit(data);
+        }
+    });
+}
+
 function wizardLoadPage(node, contents) {
     var page = node.closest('.wizard_page');
     var parent = page.parent();
@@ -534,6 +547,15 @@ function miscInnerCallbacks(form, data) {
             var fn = window[$(this).val()];
             if (typeof fn === 'function')
                 fn(form, data);
+        });
+    }
+
+    var test = form.find('input[name=reload-portion]');
+    if (test.length != 0) {
+        test.each(function() {
+            var identifier = $(this).val();
+            var node = $(identifier);
+            reloadPortion(node);
         });
     }
 
@@ -2448,89 +2470,15 @@ $(document).ready(function() {
 
     $('body').on('click', '.variants-editor .delete-variant', function() {
         var editor = $(this).closest('.variants-editor');
-        var id = $(this).closest('.row').find('input:hidden[name=variant_id]').val();
+        var id = $(this).closest('tr').attr('data-variant-id');
 
         $.ajax({
             method: 'DELETE',
             url: absolute_url + '/variants/' + id,
-            dataType: 'html',
-
-            success: function(data) {
-                data = $(data);
-                editor.replaceWith(data);
-                generalInit(data);
+            success: function() {
+                reloadPortion(editor);
             }
         });
-
-    }).on('click', '.variants-editor .edit-variant', function() {
-        var row = $(this).closest('.row');
-        var id = row.find('input:hidden[name=variant_id]').val();
-        var name = row.find('span.variant_name').text().trim();
-        var offset = row.find('input:hidden[name=variant_offset]').val();
-        var values = row.find('.exploded_values').contents().clone();
-
-        var form = $(this).closest('.list-group').find('.creating-variant-form');
-        form.find('input:hidden[name=variant_id]').val(id);
-        form.find('input[name=name]').val(name);
-        form.find('.values_table').empty().append(values);
-        form.find('.many-rows').manyrows();
-
-        if (offset == '1') {
-            form.find('input[name=has_offset]').bootstrapToggle('on');
-            form.find('input[name*=price_offset], input[name*=weight_offset]').closest('.form-group').show();
-        }
-		else {
-            form.find('input[name=has_offset]').bootstrapToggle('off');
-            form.find('input[name*=price_offset], input[name*=weight_offset]').val('0').closest('.form-group').hide();
-        }
-
-        form.closest('.modal').modal('show');
-
-    }).on('click', '.variants-editor .add-variant', function() {
-        var row = $(this).closest('.list-group');
-        var form = row.find('.creating-variant-form');
-        var modal = row.find('.create-variant');
-        form.find('.many-rows').manyrows('refresh');
-        form.find('input:text').val('');
-        form.find('input:hidden[name=variant_id]').val('');
-        form.find('input:checkbox').bootstrapToggle('off');
-        form.find('input[name*=price_offset]').val('0').closest('.form-group').hide();
-        modal.modal('show');
-
-    }).on('change', '.creating-variant-form input:checkbox[name=has_offset]', function() {
-        var has = $(this).is(':checked');
-        var form = $(this).closest('form');
-
-        if (has == true) {
-            form.find('input[name*=price_offset], input[name*=weight_offset]').closest('.form-group').show();
-		}
-        else {
-            form.find('input[name*=price_offset], input[name*=weight_offset]').val('0').closest('.form-group').hide();
-		}
-
-    }).on('submit', '.creating-variant-form', function(e) {
-        e.preventDefault();
-        var modal = $(this).closest('.modal');
-        var editor = $(this).closest('.list-group').find('.variants-editor');
-        var data = $(this).serializeArray();
-
-        editor.empty().append(loadingPlaceholder());
-
-        $.ajax({
-            method: 'POST',
-            url: absolute_url + '/variants',
-            data: data,
-            dataType: 'html',
-
-            success: function(data) {
-                data = $(data);
-                editor.replaceWith(data);
-                generalInit(data);
-                modal.modal('hide');
-            }
-        });
-
-        return false;
     });
 
     $('body').on('click', '.export-custom-list', function(event) {
