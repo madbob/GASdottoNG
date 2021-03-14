@@ -487,6 +487,62 @@ class Order extends Model
     }
 
     /*
+        In mancanza di uno storico dei prezzi dei prodotti, qui si va ad
+        alterare il database andando ad "indovinare" i prezzi all'epoca
+        dell'ordine stesso inferendoli dalle prenotazioni.
+        Da sopprimere prima o dopo con uno storico reale.
+    */
+    public function waybackProducts()
+    {
+        if ($this->isRunning()) {
+            return;
+        }
+
+        /*
+            Questa funzione va sempre sempre sempre eseguita all'interno di una
+            transazione del DB, andando ad alterare i prezzi dei prodotti
+        */
+        if (DB::transactionLevel() <= 0) {
+            throw new \Exception("Revert prezzi dell'ordine senza transazione attiva", 1);
+        }
+
+        $summary = $this->reduxData();
+        $products = [];
+
+        foreach ($this->bookings as $booking) {
+            foreach($booking->products as $product) {
+                $id = $product->product->id;
+
+                if (!isset($products[$id])) {
+                    $products[$id] = (object) [
+                        'quantity' => 0,
+                        'price' => 0,
+                    ];
+                }
+
+                $products[$id]->quantity += $product->delivered;
+                $products[$id]->price += $product->final_price;
+            }
+        }
+
+        $altered = false;
+
+        foreach($products as $id => $values) {
+            $p = Product::find($id);
+            $new_price = $values->price / $values->quantity;
+            if ($new_price != $p->price) {
+                $p->price = $values->price / $values->quantity;
+                $altered = true;
+                $p->save();
+            }
+        }
+
+        if ($altered) {
+            $this->load('products');
+        }
+    }
+
+    /*
         Questo serve a determinare quali valori prendere da prodotti e
         prenotazioni a seconda che siano state chieste delle quantità prenotato
         o consegnate

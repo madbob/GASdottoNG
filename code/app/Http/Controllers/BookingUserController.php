@@ -92,6 +92,8 @@ class BookingUserController extends BookingHandler
         ];
 
         foreach($aggregate->orders as $order) {
+            $order->waybackProducts();
+
             $booking = $this->readBooking($request, $order, $user_id, false);
             if ($booking) {
                 $order->setRelation('aggregate', $aggregate);
@@ -141,6 +143,11 @@ class BookingUserController extends BookingHandler
             }
         }
 
+        /*
+            Lo scopo di questa funzione è ottenere una preview dei totali della
+            prenotazione, dunque al termine invalido tutte le modifiche fatte
+            sul database
+        */
         DB::rollback();
 
         return response()->json($ret);

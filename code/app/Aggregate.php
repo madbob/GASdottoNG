@@ -179,6 +179,15 @@ class Aggregate extends Model
         }
     }
 
+    public function waybackProducts()
+    {
+        if ($this->isRunning() == false) {
+            foreach($this->orders as $order) {
+                $order->waybackProducts();
+            }
+        }
+    }
+
     public function hasPendingPackages()
     {
         return $this->innerCache('pending_packages', function($obj) {
