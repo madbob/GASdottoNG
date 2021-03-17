@@ -13,8 +13,8 @@
                 'extra_size' => true,
             ])
 
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#orderAggregator">{{ _i('Aggrega Ordini') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
-            <div class="modal fade dynamic-contents" id="orderAggregator" tabindex="-1" role="dialog" data-contents-url="{{ route('aggregates.create') }}">
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#orderAggregatorWrap">{{ _i('Aggrega Ordini') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
+            <div class="modal fade dynamic-contents" id="orderAggregatorWrap" tabindex="-1" role="dialog" data-contents-url="{{ route('aggregates.create') }}">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                     </div>
