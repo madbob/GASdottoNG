@@ -6,6 +6,7 @@ use Log;
 
 use App\Notifications\ClosedOrderNotification;
 use App\Notifications\SupplierOrderShipping;
+use App\Jobs\AggregateSummaries;
 
 use App\User;
 use App\Order;
@@ -25,6 +26,7 @@ class NotifyClosedOrder extends Job
     {
         $order = Order::find($this->order_id);
         $aggregate = $order->aggregate;
+        $closed_aggregate = ($aggregate->last_notify == null && $aggregate->status == 'closed');
 
         foreach($aggregate->gas as $gas) {
             $this->hub->setGas($gas->id);
@@ -39,6 +41,10 @@ class NotifyClosedOrder extends Job
 
             @unlink($pdf_file_path);
             @unlink($csv_file_path);
+
+            if ($closed_aggregate && $gas->auto_user_order_summary) {
+                AggregateSummaries::dispatch($aggregate->id);
+            }
         }
 
         if ($order->isRunning() == false) {
