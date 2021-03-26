@@ -65,7 +65,7 @@
                                         <tr data-filtered-actual_status="{{ $user->printableStatus() }}">
                                             <td>
                                                 <input type="hidden" name="user_id[]" value="{{ $user->id }}">
-                                                {!! $user->printableHeader() !!}
+                                                {!! $user->printableName() !!}
                                             </td>
 
                                             <td data-updatable-name="movement-id-{{ $dom_id }}" data-updatable-field="name">

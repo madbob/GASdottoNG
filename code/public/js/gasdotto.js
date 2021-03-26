@@ -1554,7 +1554,9 @@ $(document).ready(function() {
         var form = $(this).closest('form');
         var target = $(this).attr('data-target-class');
         var value = $(this).find('option:selected').val();
-        form.find('.' + target).find('option[value=' + value + ']').prop('selected', true);
+        var t = form.find('.' + target).not($(this));
+        t.find('option[value=' + value + ']').prop('selected', true);
+        t.change();
     });
 
     $('body').on('click', '.decorated_radio label', function() {
@@ -3125,17 +3127,38 @@ $(document).ready(function() {
 
     $('body').on('change', '.csv_movement_type_select', function() {
         var selected = $(this).find('option:selected').val();
-        var payment = null;
+        var default_payment = null;
+        var payments = null;
 
+        /*
+            L'array matching_methods_for_movement_types viene inizializzato
+            direttamente dal codice PHP, ci si aspetta di trovarlo in pagina
+        */
         matching_methods_for_movement_types.forEach(function(iter) {
             if (iter.method == selected) {
-                payment = iter.payment;
+                default_payment = iter.default_payment;
+                payments = iter.payments;
                 return false;
             }
         });
 
-        if (payment != null) {
-            $(this).closest('tr').find('.csv_movement_method_select').find('option[value=' + payment + ']').prop('selected', true);
+        if (payments != null) {
+            $(this).closest('tr').find('.csv_movement_method_select').find('option').each(function() {
+                var v = $(this).val();
+                if (payments.indexOf(v) >= 0) {
+                    $(this).prop('disabled', false);
+
+                    if (default_payment == v) {
+                        $(this).prop('selected', true);
+                    }
+                }
+                else {
+                    $(this).prop('disabled', true);
+                }
+            });
+        }
+        else {
+            $(this).closest('tr').find('.csv_movement_method_select').find('option').prop('disabled', false);
         }
     });
 

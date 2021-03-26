@@ -12,7 +12,8 @@ foreach (App\MovementType::types() as $info) {
 
         $methods[] = (object) [
             'method' => $info->id,
-            'payment' => App\MovementType::defaultPaymentByType($info->id),
+            'payments' => array_keys(App\MovementType::paymentsByType($info->id)),
+            'default_payment' => App\MovementType::defaultPaymentByType($info->id),
         ];
     }
 }
@@ -66,7 +67,7 @@ matching_methods_for_movement_types = {!! json_encode($methods) !!};
                                 'name' => 'type',
                                 'label' => _i('Tipo'),
                                 'values' => $types,
-                                'extra_class' => 'triggers-all-selects',
+                                'extra_class' => 'triggers-all-selects csv_movement_type_select',
                                 'extra_attrs' => [
                                     'data-target-class' => 'csv_movement_type_select',
                                 ]
@@ -81,7 +82,7 @@ matching_methods_for_movement_types = {!! json_encode($methods) !!};
                                 'label' => _i('Metodo'),
                                 'values' => $payments,
                                 'enforced_default' => 'bank',
-                                'extra_class' => 'triggers-all-selects',
+                                'extra_class' => 'triggers-all-selects csv_movement_method_select',
                                 'extra_attrs' => [
                                     'data-target-class' => 'csv_movement_method_select',
                                 ]
