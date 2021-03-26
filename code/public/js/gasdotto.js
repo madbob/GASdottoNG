@@ -173,28 +173,6 @@ function generalInit(container) {
         handle: '.modal-header'
     });
 
-    $('.modal.dynamic-contents', container).not('.dynamic-contents-inited').on('show.bs.modal', function(e) {
-        /*
-            La callback viene chiamata anche quando mostro il popover di
-            selezione di una data: questo è per evitare di ricaricare tutto un
-            .modal.dynamic-contents che contiene una data
-        */
-        if ($(e.target).hasClass('date'))
-            return;
-
-        $(this).addClass('dynamic-contents-inited');
-
-        var contents = $(this).find('.modal-content');
-        contents.empty().append(loadingPlaceholder());
-        var url = $(this).attr('data-contents-url');
-
-        $.get(url, function(data) {
-			var d = $(data);
-            contents.empty().append(d);
-			generalInit(d);
-        });
-    });
-
     $('.measure-selector', container).each(function() {
         enforceMeasureDiscrete($(this));
     });
@@ -2061,6 +2039,33 @@ $(document).ready(function() {
                     $(this).remove();
                 });
             }
+        });
+    });
+
+    $('body').on('show.bs.modal', '.modal.dynamic-contents', function(e) {
+        if ($(this).hasClass('dynamic-contents-inited')) {
+            return;
+        }
+
+        /*
+            La callback viene chiamata anche quando mostro il popover di
+            selezione di una data: questo è per evitare di ricaricare tutto un
+            .modal.dynamic-contents che contiene una data
+        */
+        if ($(this).hasClass('date')) {
+            return;
+        }
+
+        $(this).addClass('dynamic-contents-inited');
+
+        var contents = $(this).find('.modal-content');
+        contents.empty().append(loadingPlaceholder());
+        var url = $(this).attr('data-contents-url');
+
+        $.get(url, function(data) {
+            var d = $(data);
+            contents.empty().append(d);
+            generalInit(d);
         });
     });
 

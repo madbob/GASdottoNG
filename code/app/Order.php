@@ -638,8 +638,8 @@ class Order extends Model
             $total_price += $price;
             $total_price_delivered += $price_delivered;
             $total_transport += $transport;
-            $total_weight += $product->measure->normalizeWeight($weight);
-            $total_weight_delivered += $product->measure->normalizeWeight($weight_delivered);
+            $total_weight += $weight;
+            $total_weight_delivered += $weight_delivered;
 
             $summary->products[$product->id]['notes'] = false;
             if ($product->package_size != 0 && $quantity != 0) {

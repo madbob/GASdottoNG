@@ -82,28 +82,6 @@ class Product extends Model
         }
     }
 
-    public function getRelativeWeightAttribute()
-    {
-        $measure = $this->measure;
-
-        if ($measure) {
-            if ($measure->discrete) {
-                return $this->weight;
-            }
-            else {
-                if ($measure->weight == 0) {
-                    return $this->weight;
-                }
-                else {
-                    return $measure->weight;
-                }
-            }
-        }
-        else {
-            return $this->weight;
-        }
-    }
-
     public function getCategoryNameAttribute()
     {
         $cat = $this->category;
@@ -356,9 +334,6 @@ class Product extends Model
                     case 'active':
                     case 'variable':
                         $ret[] = accessAttr($this, $f) ? _i('Si') : _i('No');
-                        break;
-                    case 'weight':
-                        $ret[] = $this->relative_weight;
                         break;
                     default:
                         $ret[] = accessAttr($this, $f);
