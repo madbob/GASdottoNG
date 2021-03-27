@@ -42,7 +42,7 @@ class BookingHandler extends Controller
         }
 
         foreach ($aggregate->orders as $order) {
-            $booking = $order->userBooking($user_id);
+            $booking = $order->userBooking($target_user);
             $existing_booking = $booking->exists;
 
             if ($delivering == true) {

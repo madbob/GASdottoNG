@@ -137,8 +137,15 @@ class Order extends Model
 
     public function userBooking($userid = null)
     {
+        $userobj = null;
+
         if (is_null($userid)) {
-            $userid = Auth::user()->id;
+            $userobj = Auth::user();
+            $userid = $userobj->id;
+        }
+        else if (is_object($userid)) {
+            $userobj = $userid;
+            $userid = $userobj->id;
         }
 
         $ret = $this->hasMany('App\Booking')->whereHas('user', function ($query) use ($userid) {
@@ -152,6 +159,10 @@ class Order extends Model
             $ret->notes = '';
             $ret->status = 'pending';
             $ret->notes = '';
+        }
+
+        if ($ret && $userobj) {
+            $ret->setRelation('user', $userobj);
         }
 
         return $ret;

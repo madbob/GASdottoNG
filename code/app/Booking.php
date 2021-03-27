@@ -105,9 +105,9 @@ class Booking extends Model
                 });
             }
             else {
-                $transported = $this->products()->whereHas('product', function($query) {
-                    $query->where('transport', '!=', 0);
-                })->with('product')->get();
+                $transported = $this->products->filter(function($e) {
+                    return $e->product->transport != 0;
+                });
             }
 
             foreach($transported as $t) {
@@ -146,9 +146,9 @@ class Booking extends Model
             }
         }
 
-        $discounted = $this->products()->whereHas('product', function($query) {
-            $query->where('discount', '!=', 0);
-        })->with('product')->get();
+        $discounted = $this->products->filter(function($e) {
+            return $e->product->discount != 0;
+        });
 
         foreach($discounted as $d) {
             if (is_numeric($d->product->discount)) {
@@ -464,7 +464,7 @@ class Booking extends Model
     public function getFriendsBookingsAttribute()
     {
         return $this->innerCache('friends_bookings', function($obj) {
-            $bookings = Booking::where('order_id', $obj->order_id)->whereIn('user_id', $obj->user->friends()->withTrashed()->pluck('id'))->get();
+            $bookings = Booking::where('order_id', $obj->order_id)->whereIn('user_id', $obj->user->friends_with_trashed->pluck('id'))->get();
 
             foreach($bookings as $b) {
                 $b->setRelation('order', $obj->order);

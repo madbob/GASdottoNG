@@ -297,7 +297,7 @@ class Aggregate extends Model
         $friends_tot = 0;
 
         foreach($this->orders as $o) {
-            $b = $o->userBooking($user->id);
+            $b = $o->userBooking($user);
             $tot += $b->getValue('effective', false);
             $friends_tot += $b->total_friends_value;
         }
