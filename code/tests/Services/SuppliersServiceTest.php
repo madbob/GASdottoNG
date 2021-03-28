@@ -5,6 +5,9 @@ namespace Tests;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Exceptions\AuthException;
+
 class SuppliersServiceTest extends TestCase
 {
     use DatabaseTransactions;
@@ -27,11 +30,9 @@ class SuppliersServiceTest extends TestCase
         $this->suppliersService = new \App\Services\SuppliersService();
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToStore()
     {
+        $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
 
         $this->suppliersService->store(array(
@@ -70,33 +71,24 @@ class SuppliersServiceTest extends TestCase
         $this->assertCount(1, $suppliers);
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToUpdate()
     {
+        $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-
         $this->suppliersService->update($this->supplier->id, array());
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToUpdateByAdmin()
     {
+        $this->expectException(AuthException::class);
         $this->actingAs($this->userWithAdminPerm);
-
         $this->suppliersService->update($this->supplier->id, array());
     }
 
-    /**
-     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
     public function testFailsToUpdateBecauseNoUserWithID()
     {
+        $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithNormalPerms);
-
         $this->suppliersService->update('id', array());
     }
 
@@ -113,13 +105,10 @@ class SuppliersServiceTest extends TestCase
         $this->assertEquals(0, $supplier->current_balance_amount);
     }
 
-    /**
-     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
     public function testFailsToShowInexistent()
     {
+        $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithNormalPerms);
-
         $this->suppliersService->show('random');
     }
 
@@ -134,13 +123,10 @@ class SuppliersServiceTest extends TestCase
         $this->assertEquals($this->supplier->business_name, $supplier->business_name);
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToDestroy()
     {
+        $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-
         $this->suppliersService->destroy($this->supplier->id);
     }
 
@@ -156,7 +142,8 @@ class SuppliersServiceTest extends TestCase
         try {
             $this->suppliersService->show($this->supplier->id);
             $this->fail('should never run');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        }
+        catch (ModelNotFoundException $e) {
             //good boy
         }
     }

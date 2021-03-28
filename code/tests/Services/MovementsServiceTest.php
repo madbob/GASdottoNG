@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 use Artisan;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Exceptions\AuthException;
+
 class MovementsServiceTest extends TestCase
 {
     use DatabaseTransactions;
@@ -52,23 +55,17 @@ class MovementsServiceTest extends TestCase
         $this->assertEquals($amount * -1, $this->gas->current_balance_amount);
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToUpdate()
     {
+        $this->expectException(AuthException::class);
         $this->actingAs($this->userWithReferrerPerms);
-
         $this->service->update($this->sample_movement->id, array());
     }
 
-    /**
-     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
     public function testFailsToUpdateBecauseNoMovementWithID()
     {
+        $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithAdminPerm);
-
         $this->service->update('id', array());
     }
 
@@ -83,11 +80,9 @@ class MovementsServiceTest extends TestCase
         $this->assertEquals(-50, $this->gas->current_balance_amount);
     }
 
-    /**
-     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
     public function testFailsToShowInexistent()
     {
+        $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithReferrerPerms);
 
         $this->service->show('random');
@@ -103,11 +98,9 @@ class MovementsServiceTest extends TestCase
         $this->assertEquals($this->sample_movement->amount, $movement->amount);
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToDestroy()
     {
+        $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
 
         $this->service->destroy($this->sample_movement->id);
@@ -122,7 +115,7 @@ class MovementsServiceTest extends TestCase
         try {
             $this->service->show($this->sample_movement->id);
             $this->fail('should never run');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             //good boy
         }
     }

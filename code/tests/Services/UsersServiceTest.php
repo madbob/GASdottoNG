@@ -5,6 +5,9 @@ namespace Tests;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Exceptions\AuthException;
+
 class UsersServiceTest extends TestCase
 {
     use DatabaseTransactions;
@@ -32,13 +35,10 @@ class UsersServiceTest extends TestCase
         $this->usersService = new \App\Services\UsersService();
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToListUsers()
     {
+        $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-
         $this->usersService->list();
     }
 
@@ -88,13 +88,10 @@ class UsersServiceTest extends TestCase
         $this->assertCount(1, array_filter($users->toArray(), $findByID($user2->id)));
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToStore()
     {
+        $this->expectException(AuthException::class);
         $this->actingAs($this->userWithViewPerm);
-
         $this->usersService->store(array());
     }
 
@@ -133,23 +130,17 @@ class UsersServiceTest extends TestCase
         $this->assertEquals(0, $newUser->pending_balance);
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToUpdate()
     {
+        $this->expectException(AuthException::class);
         $this->actingAs($this->userWithViewPerm);
-
         $this->usersService->update($this->userWithViewPerm->id, array());
     }
 
-    /**
-     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
     public function testFailsToUpdateBecauseNoUserWithID()
     {
+        $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithAdminPerm);
-
         $this->usersService->update('id', array());
     }
 
@@ -170,11 +161,9 @@ class UsersServiceTest extends TestCase
         $this->assertEquals(0, $updatedUser->pending_balance);
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToSelfUpdate()
     {
+        $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
 
         $user = $this->usersService->update($this->userWithNoPerms->id, array(
@@ -212,21 +201,16 @@ class UsersServiceTest extends TestCase
         $this->assertEquals($this->userWithNoPerms->id, $user->id);
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToShow()
     {
+        $this->expectException(AuthException::class);
         $this->usersService->show($this->userWithViewPerm->id);
     }
 
-    /**
-     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
     public function testFailsToShowInexistent()
     {
+        $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithViewPerm);
-
         $this->usersService->show('random');
     }
 
@@ -262,13 +246,10 @@ class UsersServiceTest extends TestCase
         $this->assertEquals($movement->id, $this->userWithNoPerms->fee_id);
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToDestroy()
     {
+        $this->expectException(AuthException::class);
         $this->actingAs($this->userWithViewPerm);
-
         $this->usersService->destroy($this->userWithNoPerms->id);
     }
 
@@ -286,7 +267,8 @@ class UsersServiceTest extends TestCase
         try {
             $this->usersService->show($this->userWithNoPerms->id);
             $this->fail('should never run');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        }
+        catch (ModelNotFoundException $e) {
             //good boy
         }
     }
