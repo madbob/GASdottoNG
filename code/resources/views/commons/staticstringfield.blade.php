@@ -12,7 +12,7 @@ if (!isset($callable))
     </label>
     <div class="col-sm-{{ $fieldsize }}">
         <label class="static-label text-muted">
-            {!! $callable ? $callable($obj->$name) : $obj->$name !!}
+            {!! $callable ? $callable($obj->$name) : nl2br($obj->$name) !!}
         </label>
     </div>
 </div>

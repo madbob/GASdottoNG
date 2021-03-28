@@ -175,26 +175,15 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                 <!-- Note -->
                 <td class="order-cell-notes {{ in_array('notes', $columns) ? '' : 'hidden' }}">
                     @if($order->isActive())
-                        <?php $random_identifier = rand(); ?>
-
                         @if($product->package_size != 0 && isset($summary->products[$product->id]->quantity) && $summary->products[$product->id]->quantity != 0 && round(fmod($summary->products[$product->id]->quantity, $product->fixed_package_size)) != 0)
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#fix-{{ $random_identifier }}">
+                            <a href="{{ url('orders/fixes/' . $order->id . '/' . $product->id) }}" class="btn btn-danger async-modal">
                                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                            </button>
+                            </a>
                         @else
-                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#fix-{{ $random_identifier }}">
+                            <a href="{{ url('orders/fixes/' . $order->id . '/' . $product->id) }}" class="btn btn-info async-modal">
                                 <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                            </button>
+                            </a>
                         @endif
-
-                        @push('postponed')
-                            <div class="modal fade dynamic-contents" id="fix-{{ $random_identifier }}" tabindex="-1" role="dialog" data-contents-url="{{ url('orders/fixes/' . $order->id . '/' . $product->id) }}">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                    </div>
-                                </div>
-                            </div>
-                        @endpush
                     @endif
                 </td>
             </tr>

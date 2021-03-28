@@ -77,7 +77,7 @@ class Receipt extends Model
         $bookings_ids = [];
 
         foreach($aggregate->orders as $order) {
-            $booking = $order->userBooking($user->id);
+            $booking = $order->userBooking($user);
             if ($booking->exists)
                 $bookings_ids[] = $booking->id;
         }

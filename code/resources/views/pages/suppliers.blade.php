@@ -15,30 +15,11 @@
             @endcan
 
             @can('categories.admin', $currentgas)
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleCategories">{{ _i('Amministra Categorie') }} <span class="glyphicon glyphicon-modal-window"></span></button>
-                <div class="modal fade dynamic-contents close-on-submit" id="handleCategories" tabindex="-1" role="dialog" data-contents-url="{{ route('categories.index') }}">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                        </div>
-                    </div>
-                </div>
+                <a href="{{ route('categories.index') }}" class="btn btn-default async-modal">{{ _i('Amministra Categorie') }} <span class="glyphicon glyphicon-modal-window"></span></a>
             @endcan
 
             @can('measures.admin', $currentgas)
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#handleMeasures">{{ _i('Amministra Unità di Misura') }} <span class="glyphicon glyphicon-modal-window"></span></button>
-                <div class="modal fade dynamic-contents close-on-submit" id="handleMeasures" tabindex="-1" role="dialog" data-contents-url="{{ route('measures.index') }}">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal fade dynamic-contents upper-modal" id="showMeasureProducts" tabindex="-1" role="dialog" data-contents-url="">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                        </div>
-                    </div>
-                </div>
+                <a href="{{ route('measures.index') }}" class="btn btn-default async-modal">{{ _i('Amministra Unità di Misura') }} <span class="glyphicon glyphicon-modal-window"></span></a>
             @endcan
 
             @if($currentgas->getConfig('es_integration'))

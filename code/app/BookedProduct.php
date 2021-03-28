@@ -213,7 +213,7 @@ class BookedProduct extends Model
                                     return $this->fixWeight('quantity');
                                 }
                                 else {
-                                    return $this->true_quantity;
+                                    return $this->fixWeight('true_quantity');
                                 }
 
                                 break;
@@ -237,7 +237,7 @@ class BookedProduct extends Model
                                     return $this->fixWeight('delivered');
                                 }
                                 else {
-                                    return $this->true_delivered;
+                                    return $this->fixWeight('true_delivered');
                                 }
 
                                 break;

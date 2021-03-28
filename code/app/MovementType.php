@@ -254,7 +254,7 @@ class MovementType extends Model
                                 unset($movement->handling_status);
 
                                 foreach ($aggregate->orders as $order) {
-                                    $booking = $order->userBooking($user->id);
+                                    $booking = $order->userBooking($user);
                                     if ($booking->exists == false) {
                                         /*
                                             Quando un utente non ha fatto nessuna prenotazione, ma

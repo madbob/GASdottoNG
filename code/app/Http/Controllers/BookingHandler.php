@@ -24,7 +24,7 @@ use App\Role;
 
 class BookingHandler extends Controller
 {
-    public function readBooking($request, $order, $user_id, $delivering)
+    public function readBooking($request, $order, $user, $delivering)
     {
         if ($delivering == false) {
             $param = 'quantity';
@@ -33,7 +33,7 @@ class BookingHandler extends Controller
             $param = 'delivered';
         }
 
-        $booking = $order->userBooking($user_id);
+        $booking = $order->userBooking($user->id);
         $existing_booking = $booking->exists;
 
         /*
@@ -218,7 +218,7 @@ class BookingHandler extends Controller
         }
 
         foreach ($aggregate->orders as $order) {
-            $booking = $this->readBooking($request, $order, $user_id, $delivering);
+            $booking = $this->readBooking($request, $order, $target_user, $delivering);
 
             if ($booking && $delivering) {
                 $booking->deliverer_id = $user->id;

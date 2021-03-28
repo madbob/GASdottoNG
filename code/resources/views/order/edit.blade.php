@@ -15,11 +15,12 @@
             ])
 
             @if(in_array($order->status, ['suspended', 'open', 'closed']))
-                @include('commons.textfield', [
+                @include('commons.textarea', [
                     'obj' => $order,
                     'name' => 'comment',
                     'label' => _i('Commento'),
-                    'help_popover' => _i("Eventuale testo informativo da visualizzare nel titolo dell'ordine, oltre al nome del fornitore e alle date di apertura e chiusura"),
+                    'rows' => 2,
+                    'help_popover' => _i("Eventuale testo informativo da visualizzare nel titolo dell'ordine. Se più lungo di %d caratteri, il testo viene invece incluso nel pannello delle relative prenotazioni.", [App\Order::longCommentLimit()]),
                 ])
 
                 @include('commons.datefield', ['obj' => $order, 'name' => 'start', 'label' => _i('Data Apertura'), 'mandatory' => true])

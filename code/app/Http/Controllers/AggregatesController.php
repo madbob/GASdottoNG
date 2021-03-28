@@ -146,6 +146,12 @@ class AggregatesController extends OrdersController
         }
     }
 
+    public function exportModal(Request $request, $id, $type)
+    {
+        $aggregate = Aggregate::findOrFail($id);
+        return view('aggregate.export' . $type, ['aggregate' => $aggregate]);
+    }
+
     public function document(Request $request, $id, $type)
     {
         $aggregate = Aggregate::findOrFail($id);

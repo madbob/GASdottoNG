@@ -56,6 +56,11 @@ class User extends Authenticatable
         return $this->hasMany('App\User', 'parent_id');
     }
 
+    public function friends_with_trashed()
+    {
+        return $this->hasMany('App\User', 'parent_id')->withTrashed();
+    }
+
     public function parent()
     {
         return $this->belongsTo('App\User', 'parent_id');
@@ -200,7 +205,7 @@ class User extends Authenticatable
 
         $tot = 0;
         foreach($aggregate->orders as $order)
-            $tot += $order->userBooking($this->id)->getValue('effective', false);
+            $tot += $order->userBooking($this)->getValue('effective', false);
 
         if ($tot != 0)
             $ret .= '<div class="pull-right">' . _i('Ha ordinato %s', printablePriceCurrency($tot)) . '</div>';

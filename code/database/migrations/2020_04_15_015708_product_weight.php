@@ -11,19 +11,11 @@ class ProductWeight extends Migration
         Schema::table('products', function (Blueprint $table) {
             $table->decimal('weight', 7, 4)->default(0);
         });
-
-        Schema::table('measures', function (Blueprint $table) {
-            $table->decimal('weight', 7, 4)->default(0);
-        });
     }
 
     public function down()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('weight');
-        });
-
-        Schema::table('measures', function (Blueprint $table) {
             $table->dropColumn('weight');
         });
     }
