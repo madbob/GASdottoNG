@@ -95,6 +95,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('aggregates/{id}/header', 'AggregatesController@objhead')->name('aggregates.objhead');
     Route::get('aggregates/notify/test/{id}', 'AggregatesController@testNotify');
     Route::post('aggregates/notify/{id}', 'AggregatesController@notify');
+    Route::get('aggregates/export/{id}/{type}', 'AggregatesController@exportModal')->name('aggregates.export');
     Route::get('aggregates/document/{id}/{type}', 'AggregatesController@document')->name('aggregates.document');
     Route::get('aggregates/{id}/details', 'AggregatesController@details')->name('aggregates.details');
     Route::get('aggregates/{id}/multigas', 'AggregatesController@multiGAS')->name('aggregates.multigas');
