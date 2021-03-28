@@ -451,6 +451,12 @@ class OrdersController extends Controller
         return Booking::sortByShippingPlace($bookings, $shipping_place);
     }
 
+    public function exportModal(Request $request, $id, $type)
+    {
+        $order = Order::findOrFail($id);
+        return view('order.export' . $type, ['order' => $order]);
+    }
+
     public function document(Request $request, $id, $type)
     {
         $order = Order::findOrFail($id);

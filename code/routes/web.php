@@ -86,6 +86,7 @@ Route::middleware(['auth'])->group(function() {
     Route::post('orders/recalculate/{id}', 'OrdersController@recalculate');
     Route::get('orders/fixes/{id}/{product_id}', 'OrdersController@getFixes');
     Route::post('orders/fixes/{id}', 'OrdersController@postFixes');
+    Route::get('orders/export/{id}/{type}', 'OrdersController@exportModal')->name('orders.export');
     Route::get('orders/document/{id}/{type}', 'OrdersController@document')->name('orders.document');
 
     Route::get('dates/query', 'DatesController@query');
