@@ -124,24 +124,10 @@ class Booking extends Model
             }
         }
 
-<<<<<<< HEAD
         if ($id) {
             $values = $values->filter(function($i) use ($id) {
                 return $i->modifier_id == $id;
             });
-=======
-        $discounted = $this->products->filter(function($e) {
-            return $e->product->discount != 0;
-        });
-
-        foreach($discounted as $d) {
-            if (is_numeric($d->product->discount)) {
-                $value += $d->quantity * $d->product->discount;
-            }
-            else {
-                $value += applyPercentage($d->quantityValue(), $d->product->discount, '=');
-            }
->>>>>>> master
         }
 
         return $values;

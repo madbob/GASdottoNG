@@ -86,6 +86,7 @@ class BookingUserController extends BookingHandler
         DB::beginTransaction();
 
         $bookings = [];
+        $target_user = User::find($user_id);
 
         $ret = (object) [
             'bookings' => [],
@@ -94,7 +95,7 @@ class BookingUserController extends BookingHandler
         foreach($aggregate->orders as $order) {
             $order->waybackProducts();
 
-            $booking = $this->readBooking($request, $order, $user_id, false);
+            $booking = $this->readBooking($request, $order, $target_user, false);
             if ($booking) {
                 $order->setRelation('aggregate', $aggregate);
                 $booking->setRelation('order', $order);
