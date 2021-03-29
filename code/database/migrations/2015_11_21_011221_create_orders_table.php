@@ -24,6 +24,8 @@ class CreateOrdersTable extends Migration
             $table->integer('payment_id')->nullable();
             $table->date('first_notify')->nullable();
             $table->date('last_notify')->nullable();
+
+            $table->foreign('aggregate_id')->references('id')->on('aggregates')->onDelete('cascade');
         });
 
         Schema::create('order_product', function (Blueprint $table) {
