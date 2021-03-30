@@ -11,6 +11,10 @@ class BaseService
 {
     protected function ensureAuth($permissions = [], $or = true)
     {
+        if (app()->runningInConsole()) {
+            return true;
+        }
+
         $user = Auth::user();
         if (is_null($user)) {
             Log::info('Utente non autorizzato: non autenticato');
