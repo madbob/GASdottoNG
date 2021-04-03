@@ -13,6 +13,14 @@ class BaseService
     {
         $user = Auth::user();
         if (is_null($user)) {
+            /*
+                Questo serve essenzialmente per i casi in cui un Service viene
+                utilizzato all'interno di un Command
+            */
+            if (app()->runningInConsole()) {
+                return true;
+            }
+
             Log::info('Utente non autorizzato: non autenticato');
             throw new AuthException(401);
         }

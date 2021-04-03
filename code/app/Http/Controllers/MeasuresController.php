@@ -73,15 +73,12 @@ class MeasuresController extends Controller
                 continue;
 
             $id = $ids[$i];
-
-            if (empty($id)) {
+            $measure = Measure::find($id);
+            if (is_null($measure)) {
                 $measure = new Measure();
             }
-            else {
-                $measure = Measure::find($id);
-                $measure->discrete = (array_search($id, $new_discretes) !== false);
-            }
 
+            $measure->discrete = (array_search($id, $new_discretes) !== false);
             $measure->name = $name;
             $measure->save();
 

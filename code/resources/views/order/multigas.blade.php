@@ -24,7 +24,7 @@
                 <div role="tabpanel" class="tab-pane {{ $index == 0 ? 'active' : '' }}" id="aggregate-gas-{{ $aggregate->id }}-{{ $gas->id }}">
                     <div class="row">
                         <div class="col-md-4 col-md-offset-8">
-                            @include('aggregate.files', ['aggregate' => $aggregate, 'active_gas' => $gas])
+                            @include('aggregate.files', ['aggregate' => $aggregate, 'managed_gas' => $gas->id])
                         </div>
 
                         <div class="col-md-12">
@@ -51,7 +51,7 @@
             <div role="tabpanel" class="tab-pane {{ $index == 0 ? 'active' : '' }}" id="aggregate-gas-{{ $aggregate->id }}-total">
                 <div class="row">
                     <div class="col-md-4 col-md-offset-8">
-                        @include('aggregate.files', ['aggregate' => $aggregate, 'active_gas' => 0])
+                        @include('aggregate.files', ['aggregate' => $aggregate, 'managed_gas' => 0])
                     </div>
 
                     <div class="col-md-12">

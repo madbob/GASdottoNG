@@ -54,7 +54,7 @@
             @include('commons.modifications', ['obj' => $aggregate])
         </div>
         <div class="col-md-4">
-            @include('aggregate.files', ['aggregate' => $aggregate])
+            @include('aggregate.files', ['aggregate' => $aggregate, 'managed_gas' => $currentgas->id])
         </div>
     </div>
 

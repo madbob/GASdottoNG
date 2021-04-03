@@ -39,5 +39,9 @@ if (!isset($disabled)) {
                 @endforeach
             </div>
         </div>
+
+        @if(!empty($help_text))
+            <span class="help-block">{!! $help_text !!}</span>
+        @endif
     </div>
 @endif

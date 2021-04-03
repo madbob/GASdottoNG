@@ -5,6 +5,8 @@ namespace Tests;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Exceptions\AuthException;
+
 class VatRateServiceTest extends TestCase
 {
     use DatabaseTransactions;
@@ -24,13 +26,10 @@ class VatRateServiceTest extends TestCase
         $this->vatsService = new \App\Services\VatRatesService();
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToStore()
     {
+        $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-
         $this->vatsService->store(array());
     }
 

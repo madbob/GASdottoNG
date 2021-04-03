@@ -4,7 +4,6 @@ namespace App\Exceptions;
 
 class AuthException extends \Exception
 {
-
     public function __construct($status)
     {
         parent::__construct("Not authorized", $status);

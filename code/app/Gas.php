@@ -299,7 +299,7 @@ class Gas extends Model
 
     public function getEsIntegrationAttribute()
     {
-        return $this->getConfig('es_integration');
+        return $this->getConfig('es_integration') == '1';
     }
 
     public function getOrdersDisplayColumnsAttribute()

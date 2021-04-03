@@ -463,7 +463,12 @@
                                     <input type="hidden" name="group" value="import">
 
                                     <div class="col-md-12">
-                                        @include('commons.boolfield', ['obj' => $gas, 'name' => 'es_integration', 'label' => _i('Integrazione Repository Listini')])
+                                        @include('commons.boolfield', [
+                                            'obj' => $gas,
+                                            'name' => 'es_integration',
+                                            'label' => _i('Integrazione Hub Economia Solidale'),
+                                            'help_text' => _i("Abilita alcune funzioni (sperimentali!) di integrazione con hub.economiasolidale.net, tra cui l'aggiornamento automatico dei listini e l'aggregazione degli ordini con altri GAS."),
+                                        ])
                                     </div>
 
                                     <div class="col-md-12">

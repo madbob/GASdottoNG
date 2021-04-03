@@ -5,6 +5,9 @@ namespace Tests;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Exceptions\AuthException;
+
 class ProductsServiceTest extends TestCase
 {
     use DatabaseTransactions;
@@ -34,14 +37,13 @@ class ProductsServiceTest extends TestCase
         $this->productsService = new \App\Services\ProductsService();
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToStore()
     {
+        $this->expectException(AuthException::class);
+
         $this->actingAs($this->userWithNoPerms);
         $this->productsService->store(array(
-            'supplier_id' => $this->supplier,
+            'supplier_id' => $this->supplier->id,
             'name' => 'Test Product'
         ));
     }
@@ -62,29 +64,23 @@ class ProductsServiceTest extends TestCase
         $this->assertEquals($this->supplier->id, $product->supplier_id);
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToUpdate()
     {
+        $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
         $this->productsService->update($this->product->id, array());
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToUpdateByAdmin()
     {
+        $this->expectException(AuthException::class);
         $this->actingAs($this->userWithAdminPerm);
         $this->productsService->update($this->product->id, array());
     }
 
-    /**
-     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
     public function testFailsToUpdateBecauseNoUserWithID()
     {
+        $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithReferrerPerms);
         $this->productsService->update('broken', array());
     }
@@ -107,11 +103,9 @@ class ProductsServiceTest extends TestCase
         $this->assertEquals($this->product->supplier_id, $product->supplier_id);
     }
 
-    /**
-     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
     public function testFailsToShowInexistent()
     {
+        $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithNoPerms);
         $this->productsService->show('random');
     }
@@ -125,11 +119,9 @@ class ProductsServiceTest extends TestCase
         $this->assertEquals($this->product->name, $product->name);
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToDestroy()
     {
+        $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
         $this->productsService->destroy($this->product->id);
     }

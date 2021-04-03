@@ -15,10 +15,10 @@
                         <div class="col-md-12">
                             <div class="form-group hidden-md">
                                 <div class="btn-group table-filters" data-toggle="buttons" data-table-target="#usersStatusTable">
-                                    <label class="btn btn-default active">
+                                    <label class="btn btn-default">
                                         <input type="radio" name="actual_status" class="active" value="all"> {{ _i('Tutti') }}
                                     </label>
-                                    <label class="btn btn-default">
+                                    <label class="btn btn-default active">
                                         <input type="radio" name="actual_status" value="{{ _i('Attivo') }}"> {{ _i('Attivi') }}
                                     </label>
                                     <label class="btn btn-default">
@@ -60,9 +60,12 @@
                                             'amount' => $currentgas->getConfig('annual_fee_amount')
                                         ]);
 
+                                        $user_status = $user->printableStatus();
+                                        $active_identifier = _i('Attivo');
+
                                         ?>
 
-                                        <tr data-filtered-actual_status="{{ $user->printableStatus() }}">
+                                        <tr data-filtered-actual_status="{{ $user_status }}" class="{{ $user_status != $active_identifier ? 'hidden' : '' }}">
                                             <td>
                                                 <input type="hidden" name="user_id[]" value="{{ $user->id }}">
                                                 {!! $user->printableName() !!}

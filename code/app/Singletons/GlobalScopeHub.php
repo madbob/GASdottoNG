@@ -2,6 +2,8 @@
 
 namespace App\Singletons;
 
+use App\Gas;
+
 class GlobalScopeHub
 {
     private $enabled_global_scopes = true;
@@ -25,5 +27,10 @@ class GlobalScopeHub
     public function getGas()
     {
         return $this->gas_id;
+    }
+
+    public function getGasObj()
+    {
+        return Gas::find($this->gas_id);
     }
 }

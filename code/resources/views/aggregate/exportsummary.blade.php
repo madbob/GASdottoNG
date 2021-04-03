@@ -1,18 +1,14 @@
 <?php
 
-$managed_gas = null;
+$hub = App::make('GlobalScopeHub');
 
-if (isset($active_gas)) {
-    if (is_object($active_gas)) {
-        $managed_gas = $active_gas->id;
-    }
-    else {
-        $managed_gas = 0;
-        $active_gas = null;
-    }
+if ($hub->enabled() == false) {
+    $active_gas = null;
+    $managed_gas = 0;
 }
 else {
-    $active_gas = $currentgas;
+    $active_gas = $hub->getGasObj();
+    $managed_gas = $active_gas->id;
 }
 
 ?>
@@ -35,9 +31,7 @@ else {
 
                     <hr/>
 
-                    @if($managed_gas !== null)
-                        <input type="hidden" name="managed_gas" value="{{ $managed_gas }}">
-                    @endif
+                    <input type="hidden" name="managed_gas" value="{{ $managed_gas }}">
 
                     @if($active_gas && $active_gas->hasFeature('shipping_places'))
                         @include('commons.radios', [
@@ -84,7 +78,7 @@ else {
 
                     <?php
 
-                    $formats = [
+                    $enabled_formats = [
                         'pdf' => (object) [
                             'name' => 'PDF',
                             'checked' => true
@@ -94,8 +88,8 @@ else {
                         ],
                     ];
 
-                    if ($managed_gas !== null) {
-                        $formats['gdxp'] = (object) [
+                    if ($currentgas->es_integration) {
+                        $enabled_formats['gdxp'] = (object) [
                             'name' => 'GDXP'
                         ];
                     }
@@ -107,7 +101,7 @@ else {
                         'label' => _i('Formato'),
                         'labelsize' => 2,
                         'fieldsize' => 10,
-                        'values' => $formats,
+                        'values' => $enabled_formats,
                     ])
                 </div>
                 <div class="modal-footer">

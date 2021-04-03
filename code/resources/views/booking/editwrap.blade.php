@@ -54,7 +54,7 @@ else {
                     <div class="row">
                         <div class="col-md-12">
                             @include('commons.loadablelist', [
-                                'identifier' => 'list-friends-' . $user->id . '-' . $aggregate->id,
+                                'identifier' => 'list-friends-' . sanitizeId($user->id) . '-' . $aggregate->id,
                                 'items' => $user->friends,
                                 'header_function' => function($friend) use ($aggregate) {
                                     return $friend->printableFriendHeader($aggregate);

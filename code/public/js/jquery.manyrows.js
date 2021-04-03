@@ -2,8 +2,9 @@
     $.fn.manyrows = function(option) {
         if (option == 'refresh') {
             $(this).each(function() {
-                while($(this).find('.row').length > 1)
+                while($(this).find('.row').length > 1) {
                     $(this).find('.row:first').remove();
+                }
                 addDeleteButtons($(this));
             });
         }
