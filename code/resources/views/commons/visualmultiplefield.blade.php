@@ -25,5 +25,9 @@ if (isset($extra_wrap_class)) {
                 </label>
             @endforeach
         </div>
+
+        @if(!empty($help_text))
+            <span class="help-block">{!! $help_text !!}</span>
+        @endif
     </div>
 </div>
