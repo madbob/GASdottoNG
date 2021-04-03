@@ -66,17 +66,17 @@ function generalInit(container) {
         input.attr('class', '').addClass('form-control').addClass(typeclass);
     });
 
+    /*
+        Qui trasformo le checkboxes in toggles, 100 alla volta.
+        Questo per alleggerire l'operazione in presenza di molte checkboxes
+        (e.g. il complesso pannello dei permessi)
+    */
     function setupCheckboxes() {
-        var checkboxes = $('input:checkbox[data-toggle=toggle]', container).slice(0, 200);
+        var checkboxes = $('input:checkbox[data-toggle=toggle]', container).slice(0, 100);
         if (checkboxes.length != 0) {
 			checkboxes.each(function() {
 				var t = $(this);
 				t.bootstrapToggle().removeAttr('data-toggle');
-
-				if (t.hasClass('row-untoggler')) {
-					var disabled = t.prop('checked');
-					t.closest('.row').find('[data-untoggled]').prop('disabled', disabled);
-				}
 			});
 
             setTimeout(setupCheckboxes, 100);
@@ -101,6 +101,28 @@ function generalInit(container) {
     });
 
     $('.many-rows', container).manyrows().bind('row-added', function(e, row) {
+        var current_id = randomString(10);
+
+        $(row).find('input[name=id\\[\\]]').each(function() {
+            if ($(this).val() == '') {
+                $(this).val(current_id);
+            }
+            else {
+                current_id = $(this).val();
+            }
+        });
+
+        /*
+            Questo è per eliminare in modo forzato i bootstrapToggle e
+            rigenerarli
+        */
+        $(row).find('[data-toggle=toggle] input:checkbox').each(function() {
+            var parent = $(this).closest('[data-toggle=toggle]');
+            parent.replaceWith($(this));
+            $(this).attr('data-toggle', 'toggle');
+            $(this).val(current_id);
+        });
+
         generalInit(row);
     });
 
@@ -2524,11 +2546,6 @@ $(document).ready(function() {
     $('body').on('change', '.collapse_trigger', function() {
         var name = $(this).attr('name');
         $('.collapse[data-triggerable=' + name + ']').collapse($(this).prop('checked') ? 'show' : 'hide');
-    });
-
-	$('body').on('change', '.row-untoggler', function() {
-		var disabled = $(this).prop('checked');
-		$(this).closest('.row').find('[data-untoggled]').prop('disabled', disabled);
     });
 
     /*

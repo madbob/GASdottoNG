@@ -39,7 +39,6 @@
                                         'width' => 2,
                                         'extra' => [
                                             'valuefrom' => 'id',
-                                            'extra_class' => 'row-untoggler'
                                         ]
                                     ],
                                     [
