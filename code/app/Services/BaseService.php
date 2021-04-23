@@ -61,7 +61,7 @@ class BaseService
             $target->$key = $source[$key];
         }
         else {
-            if ($default != null) {
+            if (is_null($default) == false) {
                 $target->$key = $default;
             }
         }
