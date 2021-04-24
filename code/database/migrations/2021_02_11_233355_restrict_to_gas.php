@@ -10,16 +10,9 @@ class RestrictToGas extends Migration
 {
     public function up()
     {
-        $main_gas = currentAbsoluteGas();
-
         Schema::table('invoices', function (Blueprint $table) {
             $table->string('gas_id')->default('');
         });
-
-        foreach(Invoice::withoutGlobalScopes()->get() as $invoice) {
-            $invoice->gas_id = $main_gas->id;
-            $invoice->save();
-        }
     }
 
     public function down()
