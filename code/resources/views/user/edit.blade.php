@@ -191,7 +191,7 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
                     </div>
                 </div>
             @else
-                @include('commons.formbuttons', ['obj' => $user, 'no_delete' => true])
+                @include('commons.formbuttons', ['obj' => $user, 'no_delete' => $user->isFriend() == false])
             @endif
         </form>
     </div>

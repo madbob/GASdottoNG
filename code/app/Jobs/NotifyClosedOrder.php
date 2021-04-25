@@ -36,7 +36,12 @@ class NotifyClosedOrder extends Job
 
             $referents = Role::everybodyCan('supplier.orders', $order->supplier);
             foreach($referents as $u) {
-                $u->notify(new ClosedOrderNotification($order, $pdf_file_path, $csv_file_path));
+                try {
+                    $u->notify(new ClosedOrderNotification($order, $pdf_file_path, $csv_file_path));
+                }
+                catch(\Exception $e) {
+                    Log::error('Errore in notifica chiusura ordine: ' . $e->getMessage());
+                }
             }
 
             @unlink($pdf_file_path);
@@ -50,17 +55,23 @@ class NotifyClosedOrder extends Job
         if ($order->isRunning() == false) {
             foreach($aggregate->gas as $gas) {
                 if ($gas->auto_supplier_order_summary) {
-                    $this->hub->enable(false);
+                    try {
+                        $this->hub->enable(false);
 
-                    $pdf_file_path = $order->document('summary', 'pdf', 'save', null, 'booked', null);
-                    $csv_file_path = $order->document('summary', 'csv', 'save', null, 'booked', null);
+                        $pdf_file_path = $order->document('summary', 'pdf', 'save', null, 'booked', null);
+                        $csv_file_path = $order->document('summary', 'csv', 'save', null, 'booked', null);
 
-                    $order->supplier->notify(new SupplierOrderShipping($order, $pdf_file_path, $csv_file_path));
+                        $order->supplier->notify(new SupplierOrderShipping($order, $pdf_file_path, $csv_file_path));
 
-                    @unlink($pdf_file_path);
-                    @unlink($csv_file_path);
+                        @unlink($pdf_file_path);
+                        @unlink($csv_file_path);
 
-                    $this->hub->enable(true);
+                        $this->hub->enable(true);
+                    }
+                    catch(\Exception $e) {
+                        Log::error('Errore in notifica chiusura ordine a fornitore: ' . $e->getMessage());
+                    }
+
                     break;
                 }
             }

@@ -14,9 +14,18 @@ class GraphicInitServiceProvider extends ServiceProvider
         view()->composer('*', function ($view) {
             if (Auth::check()) {
                 $user = Auth::user();
-                $view->with('currentuser', $user);
-                $view->with('currentgas', $user->gas);
-                $view->with('currentcurrency', $user->gas->currency);
+
+                if ($view->offsetExists('currentuser') == false) {
+                    $view->with('currentuser', $user);
+                }
+
+                if ($view->offsetExists('currentgas') == false) {
+                    $view->with('currentgas', currentAbsoluteGas());
+                }
+
+                if ($view->offsetExists('currentcurrency') == false) {
+                    $view->with('currentcurrency', $user->gas->currency);
+                }
             }
 
             /*

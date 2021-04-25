@@ -1,4 +1,4 @@
-<?php $cellsize = round(100 / count($data->headers), 3) ?>
+<?php $cellsize = round(100 / count($blocks[0]->headers), 3) ?>
 <html>
     <head>
         <style>
@@ -23,25 +23,31 @@
             </h3>
         @endif
 
-        <hr/>
+        @foreach($blocks as $data)
+            <hr/>
 
-        <table border="1" style="width: 100%" cellpadding="5">
-            <thead>
-                <tr>
-                    @foreach($data->headers as $header)
-                        <th width="{{ $cellsize }}%"><strong>{{ $header }}</strong></th>
-                    @endforeach
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($data->contents as $row)
+            @if(count($blocks) > 1)
+                <h4>{{ $data->title }}</h4>
+            @endif
+
+            <table border="1" style="width: 100%" cellpadding="5">
+                <thead>
                     <tr>
-                        @foreach($row as $cell)
-                            <td>{{ $cell }}</td>
+                        @foreach($data->headers as $header)
+                            <th width="{{ $cellsize }}%"><strong>{{ $header }}</strong></th>
                         @endforeach
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach($data->contents as $row)
+                        <tr>
+                            @foreach($row as $cell)
+                                <td>{{ $cell }}</td>
+                            @endforeach
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endforeach
     </body>
 </html>

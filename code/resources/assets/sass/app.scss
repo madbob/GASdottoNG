@@ -418,7 +418,8 @@ table {
 
 .img-preview {
     img {
-        max-height: 240px;
+        max-width: 100%;
+        max-height: 500px;
     }
 }
 

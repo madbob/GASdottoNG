@@ -360,7 +360,7 @@ class Order extends Model
                 $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
 
                 if ($format == 'pdf') {
-                    $pdf = PDF::loadView('documents.order_summary_pdf', ['order' => $this, 'data' => $data]);
+                    $pdf = PDF::loadView('documents.order_summary_pdf', ['order' => $this, 'blocks' => [$data]]);
 
                     if ($action == 'save') {
                         $pdf->save($temp_file_path);
@@ -654,11 +654,12 @@ class Order extends Model
                 'user_id' => $booking->user->id,
 
                 /*
-                    Questi due parametri vengono usati per riordinare le
+                    Questi parametri vengono usati per riordinare le
                     prenotazioni rastrellate da diversi ordini, quando genero il
                     documento di Dettaglio Consegne per un aggregato
                 */
                 'user_sorting' => $booking->user->lastname,
+                'gas_sorting' => $booking->user->gas_id,
                 'shipping_sorting' => $booking->user->shippingplace ? $booking->user->shippingplace->name : 'AAAA',
 
                 'user' => $booking->user->formattedFields($fields->user_columns),
@@ -1026,7 +1027,8 @@ class Order extends Model
 
     public function exportJSON()
     {
-        return view('gdxp.json.supplier', ['obj' => $this->supplier, 'order' => $this])->render();
+        $gas = Gas::find($hub->getGas());
+        return view('gdxp.json.supplier', ['obj' => $this->supplier, 'order' => $this, 'currentgas' => $gas])->render();
     }
 
     public static function readJSON($json)

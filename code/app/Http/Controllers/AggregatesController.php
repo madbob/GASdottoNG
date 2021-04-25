@@ -152,6 +152,27 @@ class AggregatesController extends OrdersController
         return view('aggregate.export' . $type, ['aggregate' => $aggregate]);
     }
 
+    /*
+        Prima di invocare questa funzione, si assume che il GAS corrente sia già
+        stato settato in GlobalScopeHub
+    */
+    private function formatGasSummary($gas, $aggregate, $required_fields, $status, $shipping_place)
+    {
+        $data = (object) [
+            'title' => $gas ? $gas->name : _i('Complessivo'),
+            'headers' => [],
+            'contents' => [],
+        ];
+
+        foreach($aggregate->orders as $order) {
+            $temp_data = $order->formatSummary($required_fields, $status, $shipping_place);
+            $data->headers = $temp_data->headers;
+            $data->contents = array_merge($data->contents, $temp_data->contents);
+        }
+
+        return $data;
+    }
+
     public function document(Request $request, $id, $type)
     {
         $aggregate = Aggregate::findOrFail($id);
@@ -160,6 +181,7 @@ class AggregatesController extends OrdersController
             case 'shipping':
                 $subtype = $request->input('format', 'pdf');
                 $required_fields = $request->input('fields', []);
+
                 $fields = splitFields($required_fields);
                 $status = 'booked';
 
@@ -206,9 +228,15 @@ class AggregatesController extends OrdersController
                         }
                     }
 
-                    usort($data->contents, function($a, $b) use ($shipping_place) {
+                    $all_gas = (App::make('GlobalScopeHub')->enabled() == false);
+
+                    usort($data->contents, function($a, $b) use ($shipping_place, $all_gas) {
                         if ($shipping_place == 'all_by_place' && $a->shipping_sorting != $b->shipping_sorting) {
                             return $a->shipping_sorting <=> $b->shipping_sorting;
+                        }
+
+                        if ($all_gas) {
+                            return $a->gas_sorting <=> $b->gas_sorting;
                         }
 
                         return $a->user_sorting <=> $b->user_sorting;
@@ -217,7 +245,6 @@ class AggregatesController extends OrdersController
 
                 $title = _i('Dettaglio Consegne Ordini');
                 $filename = sanitizeFilename($title . '.' . $subtype);
-                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
 
                 if ($subtype == 'pdf') {
                     $pdf = PDF::loadView('documents.order_shipping_pdf', ['fields' => $fields, 'aggregate' => $aggregate, 'data' => $data]);
@@ -241,38 +268,56 @@ class AggregatesController extends OrdersController
 
             case 'summary':
                 $subtype = $request->input('format', 'pdf');
-                $required_fields = $request->input('fields', []);
-                $status = $request->input('status');
 
-                $shipping_place = $request->input('shipping_place', 'all_by_place');
-                $data = null;
+                if ($subtype == 'pdf' || $subtype == 'csv') {
+                    $required_fields = $request->input('fields', []);
+                    $status = $request->input('status');
 
-                foreach($aggregate->orders as $order) {
-                    if ($shipping_place == 'all_by_place')
-                        $temp_data = $order->formatSummary($required_fields, $status, null);
-                    else
-                        $temp_data = $order->formatSummary($required_fields, $status, $shipping_place);
-
-                    if (is_null($data)) {
-                        $data = $temp_data;
+                    $shipping_place = $request->input('shipping_place', 'all_by_place');
+                    if ($shipping_place == 'all_by_place') {
+                        $shipping_place = null;
                     }
-                    else {
-                        $data->contents = array_merge($data->contents, $temp_data->contents);
+
+                    $data = null;
+                    $title = _i('Prodotti Ordini');
+                    $filename = sanitizeFilename($title . '.' . $subtype);
+
+                    if ($subtype == 'pdf') {
+                        $blocks = [];
+
+                        $hub = App::make('GlobalScopeHub');
+                        if ($hub->enabled() == false) {
+                            $gas = $aggregate->gas->pluck('id');
+                            $blocks[] = $this->formatGasSummary(null, $aggregate, $required_fields, $status, $shipping_place);
+                        }
+                        else {
+                            $gas = Arr::wrap($hub->getGas());
+                        }
+
+                        foreach($gas as $g) {
+                            $hub->enable(true);
+                            $hub->setGas($g);
+                            $blocks[] = $this->formatGasSummary($hub->getGasObj(), $aggregate, $required_fields, $status, $shipping_place);
+                        }
+
+                        $pdf = PDF::loadView('documents.order_summary_pdf', ['aggregate' => $aggregate, 'blocks' => $blocks]);
+                        return $pdf->download($filename);
                     }
-                }
+                    else if ($subtype == 'csv') {
+                        foreach($aggregate->orders as $order) {
+                            $temp_data = $order->formatSummary($required_fields, $status, $shipping_place);
+                            if (is_null($data)) {
+                                $data = $temp_data;
+                            }
+                            else {
+                                $data->contents = array_merge($data->contents, $temp_data->contents);
+                            }
+                        }
 
-                $title = _i('Prodotti Ordini');
-                $filename = sanitizeFilename($title . '.' . $subtype);
-                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
-
-                if ($subtype == 'pdf') {
-                    $pdf = PDF::loadView('documents.order_summary_pdf', ['aggregate' => $aggregate, 'data' => $data]);
-                    return $pdf->download($filename);
-                }
-                else if ($subtype == 'csv') {
-                    return output_csv($filename, $data->headers, $data->contents, function($row) {
-                        return $row;
-                    });
+                        return output_csv($filename, $data->headers, $data->contents, function($row) {
+                            return $row;
+                        });
+                    }
                 }
                 else if ($subtype == 'gdxp') {
                     $hub = App::make('GlobalScopeHub');
