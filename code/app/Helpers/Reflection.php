@@ -7,24 +7,22 @@
 */
 function currentAbsoluteGas()
 {
-    static $gas = null;
+    $gas = null;
+
+    $hub = App::make('GlobalScopeHub');
+    if ($hub->enabled()) {
+        $gas = App\Gas::find($hub->getGas());
+    }
 
     if (is_null($gas)) {
-        $hub = App::make('GlobalScopeHub');
-        if ($hub->enabled()) {
-            $gas = App\Gas::find($hub->getGas());
+        $user = Auth::user();
+
+        if (is_null($user) == false) {
+            $gas = $user->gas;
         }
 
         if (is_null($gas)) {
-            $user = Auth::user();
-
-            if (is_null($user) == false) {
-                $gas = $user->gas;
-            }
-
-            if (is_null($gas)) {
-                $gas = App\Gas::orderBy('created_at', 'asc')->first();
-            }
+            $gas = App\Gas::orderBy('created_at', 'asc')->first();
         }
     }
 

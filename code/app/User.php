@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Auth;
 use Log;
+use App;
 use URL;
 
 use App\Notifications\ResetPasswordNotification;
@@ -399,6 +400,17 @@ class User extends Authenticatable
             ];
         }
 
+        /*
+            Se sono nel contesto di una richiesta non vincolata a nessun GAS
+            dell'istanza (cfr. middleware ActIntoGas), permetto di filtrare gli
+            utenti anche in base del GAS di appartenenza
+        */
+        if (App::make('GlobalScopeHub')->enabled() == false) {
+            $ret['gas'] = (object) [
+                'name' => _i('GAS'),
+            ];
+        }
+
         return $ret;
     }
 
@@ -438,6 +450,10 @@ class User extends Authenticatable
 
                     case 'status':
                         $ret[] = $this->printableStatus();
+                        break;
+
+                    case 'gas':
+                        $ret[] = $this->gas->name;
                         break;
 
                     case 'payment_method':
