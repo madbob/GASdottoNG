@@ -38,7 +38,7 @@ class MailController extends Controller
             if ($data->notificationType == 'Bounce') {
                 try {
                     $email = $data->bounce->bouncedRecipients[0]->emailAddress;
-                    $message = $data->bounce->bouncedRecipients[0]->diagnosticCode;
+                    $message = $data->bounce->bouncedRecipients[0]->diagnosticCode ?? '???';
                     $message = sprintf(_i('Impossibile inoltrare mail a %s: %s', [$email, $message]));
                     $message = addslashes($message);
 
