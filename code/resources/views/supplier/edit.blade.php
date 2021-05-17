@@ -22,8 +22,8 @@
                     @include('commons.boolfield', [
                         'obj' => $supplier,
                         'name' => 'fast_shipping_enabled',
-                        'label' => _i('Abilita Consegne Rapide'),
-                        'help_popover' => _i("Quando questa opzione è abilitata, nel pannello degli ordini per questo fornitore viene attivata la tab \"Consegne Rapide\" (accanto a \"Consegne\") che permette di marcare più prenotazioni come consegnate in un'unica operazione"),
+                        'label' => _i('Abilita Consegne Veloci'),
+                        'help_popover' => _i("Quando questa opzione è abilitata, nel pannello degli ordini per questo fornitore viene attivata la tab \"Consegne Veloci\" (accanto a \"Consegne\") che permette di marcare più prenotazioni come consegnate in un'unica operazione"),
                     ])
 
                     @include('commons.statusfield', ['target' => $supplier])
