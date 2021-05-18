@@ -2757,7 +2757,7 @@ $(document).ready(function() {
         }
     });
 
-    $('body').on('change', '#createOrder select[name=supplier_id]', function() {
+    $('body').on('change', '#createOrder select[name^=supplier_id]', function() {
         $.ajax({
             url: absolute_url + '/dates/query',
             method: 'GET',
