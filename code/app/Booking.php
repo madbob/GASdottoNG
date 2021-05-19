@@ -161,10 +161,7 @@ class Booking extends Model
                 }
 
                 $modified_values = $this->allModifiedValues($id, $with_friends);
-
-                $value = $modified_values->reduce(function($carry, $item) {
-                    return $carry + $item->effective_amount;
-                }, 0);
+                $value = ModifiedValue::sumAmounts($modified_values, 0);
             }
             else {
                 if ($with_friends) {
@@ -181,10 +178,7 @@ class Booking extends Model
 
                 if ($type == 'effective') {
                     $modified_values = $this->localModifiedValues(null, $with_friends);
-
-                    $value = $modified_values->reduce(function($carry, $item) {
-                        return $carry + $item->effective_amount;
-                    }, $value);
+                    $value = ModifiedValue::sumAmounts($modified_values, $value);
                 }
             }
 

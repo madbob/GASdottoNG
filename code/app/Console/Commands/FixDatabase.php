@@ -125,6 +125,11 @@ class FixDatabase extends Command
     public function handle()
     {
         /*
+            Migrazioni rinominate
+        */
+        DB::table('migrations')->where('migration', '2015_11_21_014950_create_aggregates_table')->update(['migration' => '2015_11_21_011220_create_aggregates_table']);
+
+        /*
             Introduzione Modificatori
         */
 

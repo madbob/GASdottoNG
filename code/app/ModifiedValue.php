@@ -27,6 +27,7 @@ class ModifiedValue extends Model
     {
         switch($this->modifier->arithmetic) {
             case 'sum':
+            case 'passive':
                 return $this->amount;
 
             case 'apply':
@@ -60,5 +61,17 @@ class ModifiedValue extends Model
             $carry[$id]->amount += $value->effective_amount;
             return $carry;
         }, []);
+    }
+
+    public static function sumAmounts($values, $starting_value = 0)
+    {
+        return $values->reduce(function($carry, $item) {
+            if ($item->modifier->arithmetic != 'passive') {
+                return $carry + $item->effective_amount;
+            }
+            else {
+                return $carry;
+            }
+        }, $starting_value);
     }
 }

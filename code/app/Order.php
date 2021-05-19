@@ -555,10 +555,11 @@ class Order extends Model
         $altered = false;
 
         foreach($products as $id => $values) {
+            $actual_quantity = max(1, $values->quantity);
             $p = Product::find($id);
-            $new_price = $values->price / $values->quantity;
+            $new_price = $values->price / $actual_quantity;
             if ($new_price != $p->price) {
-                $p->price = $values->price / $values->quantity;
+                $p->price = $values->price / $actual_quantity;
                 $altered = true;
                 $p->save();
             }

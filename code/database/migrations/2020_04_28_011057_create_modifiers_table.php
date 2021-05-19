@@ -17,7 +17,7 @@ class CreateModifiersTable extends Migration
             $table->string('target_id');
             $table->integer('priority')->unsigned()->default(0);
             $table->enum('value', ['absolute', 'percentage', 'price'])->default('absolute');
-            $table->enum('arithmetic', ['sum', 'sub', 'apply'])->default('sum');
+            $table->enum('arithmetic', ['sum', 'sub', 'passive', 'apply'])->default('sum');
             $table->enum('scale', ['minor', 'major'])->default('minor');
             $table->enum('applies_type', ['none', 'quantity', 'price', 'weight'])->default('none');
             $table->enum('applies_target', ['product', 'booking', 'order'])->default('order');

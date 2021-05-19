@@ -125,6 +125,7 @@ class BookingUserController extends BookingHandler
                             'label' => $mod->modifier->modifierType->name,
                             'amount' => 0,
                             'variable' => $mod->is_variable,
+                            'passive' => ($mod->type == 'passive'),
                         ];
                     }
 
@@ -136,6 +137,7 @@ class BookingUserController extends BookingHandler
                             'label' => $mod->modifier->modifierType->name,
                             'amount' => 0,
                             'variable' => $mod->is_variable,
+                            'passive' => ($mod->type == 'passive'),
                         ];
                     }
 

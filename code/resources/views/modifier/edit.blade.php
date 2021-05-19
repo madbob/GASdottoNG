@@ -132,6 +132,9 @@
                                         'sub' => (object) [
                                             'name' => _i('Sottrazione')
                                         ],
+                                        'passive' => (object) [
+                                            'name' => _i('Passivo')
+                                        ],
                                         'apply' => (object) [
                                             'name' => _i('Applica'),
                                             'hidden' => true,
