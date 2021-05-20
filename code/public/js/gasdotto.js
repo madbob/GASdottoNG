@@ -865,7 +865,17 @@ function bookingTotal(editor) {
 					$('.booking-product-price span', container).text(priceRound(0));
 
 					for (let [product_id, product_meta] of Object.entries(booking_data.products)) {
-						$('input[name="' + product_id + '"]', container).closest('tr').find('.booking-product-price span').text(priceRound(product_meta.total));
+						var inputbox = $('input[name="' + product_id + '"]', container);
+                        var inputwrap = inputbox.closest('.booking-product');
+
+                        if (product_meta.quantity == 0 && parseFloatC(inputbox.val()) != 0) {
+                            inputwrap.addClass('has-error');
+                        }
+                        else {
+                            inputwrap.removeClass('has-error');
+                        }
+
+                        inputbox.closest('tr').find('.booking-product-price span').text(priceRound(product_meta.total));
 
 						var modifiers = '';
 						for (let [modifier_id, modifier_meta] of Object.entries(product_meta.modifiers)) {
@@ -2772,76 +2782,7 @@ $(document).ready(function() {
     });
 
     $('body').on('keyup', '.booking-product-quantity input', function(e) {
-        var booked = parseFloatC($(this).val());
-        var row = $(this).closest('.booking-product');
-        var wrong = false;
-
-        if (booked != 0) {
-            var m = row.find('input:hidden[name=product-multiple]');
-            if (m.length != 0) {
-                var multiple = parseFloatC(m.val());
-                if (multiple != 0 && booked % multiple != 0) {
-                    row.addClass('has-error');
-                    booked = 0;
-                    wrong = true;
-                }
-            }
-
-            var m = row.find('input:hidden[name=product-minimum]');
-            if (m.length != 0) {
-                var minimum = parseFloatC(m.val());
-                if (minimum != 0 && booked < minimum) {
-                    row.addClass('has-error');
-                    booked = 0;
-                    wrong = true;
-                }
-            }
-
-            var m = row.find('input:hidden[name=product-maximum]');
-            if (m.length != 0) {
-                var maximum = parseFloatC(m.val());
-                if (maximum != 0 && booked > maximum) {
-                    row.addClass('has-warning');
-                    wrong = true;
-                }
-            }
-
-            var m = row.find('input:hidden[name=product-available]');
-            if (m.length != 0) {
-                var maximum = parseFloatC(m.val());
-
-                /*
-                    I controlli li faccio sul contenuto della singola
-                    casella, ma la disponibilità è complessiva (vedasi: il
-                    caso di un prodotto di cui ordino diverse varianti con
-                    diverse quantità)
-                */
-                var in_booked = 0;
-                row.find('.booking-product-quantity input').each(function() {
-                    var v = $(this).val();
-                    if (v != '')
-                    in_booked += parseFloatC(v);
-                });
-
-                var m = row.find('input:hidden[name=product-partitioning]');
-                if (m.length != 0) {
-                    var portion = parseFloatC(m.val());
-                    if (portion != 0)
-                        in_booked = in_booked * portion;
-                }
-
-                if (in_booked > maximum) {
-                    row.addClass('has-error');
-                    booked = 0;
-                    wrong = true;
-                }
-            }
-
-            if (wrong == false)
-                row.removeClass('has-error').removeClass('has-warning');
-        }
-
-        var editor = row.closest('.booking-editor');
+        var editor = $(this).closest('.booking-editor');
         bookingTotal(editor);
 
     }).on('change', '.variants-selector select', function() {
@@ -2851,8 +2792,10 @@ $(document).ready(function() {
     }).on('blur', '.booking-product-quantity input', function() {
         var v = $(this).val();
         var row = $(this).closest('.booking-product');
-        if (v == '' || row.hasClass('has-error'))
-            $(this).val('0');
+
+        if (v == '' || row.hasClass('has-error')) {
+            $(this).val('0').keyup();
+        }
 
     }).on('focus', '.booking-product-quantity input', function() {
         $(this).closest('.booking-product').removeClass('.has-error').removeClass('has-warning');

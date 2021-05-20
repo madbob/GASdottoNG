@@ -112,6 +112,20 @@ class BookingUserController extends BookingHandler
                 'products' => $booking->products->reduce(function($carry, $product) {
                     $carry[$product->product_id] = (object) [
                         'total' => $product->getValue('effective'),
+
+                        /*
+                            Mentre computo il valore totale della prenotazione
+                            in fase di modifica, controllo anche che le quantità
+                            prenotate siano coerenti coi limiti imposti sul
+                            prodotto prenotato (massimo, minimo,
+                            disponibile...).
+                            Lo faccio qui, server-side, per evitare problemi di
+                            compatibilità client-side (è stato più volte
+                            segnalato che su determinati browser mobile ci siano
+                            problemi su questi controlli)
+                        */
+                        'quantity' => $product->testConstraints($product->quantity),
+
                         'modifiers' => [],
                     ];
                     return $carry;

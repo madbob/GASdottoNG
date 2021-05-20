@@ -84,6 +84,31 @@ class BookedProduct extends Model
         return $this->product->contextualPrice($this->booking->order, $rectify);
     }
 
+    public function testConstraints($quantity)
+    {
+        $product = $this->product;
+
+        if ($product->min_quantity != 0) {
+            if ($quantity < $product->min_quantity) {
+                return 0;
+            }
+        }
+
+        if ($product->multiple != 0) {
+            if ($quantity % $product->multiple != 0) {
+                return 0;
+            }
+        }
+
+        if ($product->max_available != 0) {
+            if ($quantity > ($product->stillAvailable($this->booking->order) + $this->quantity)) {
+                return 0;
+            }
+        }
+
+        return $quantity;
+    }
+
     /*
         Valore complessivo di quanto consegnato, diviso tra imponibile e IVA.
         Questa funzione opera sul valore di final_price, dunque solo su prodotti

@@ -108,8 +108,9 @@ class Product extends Model
             $query->where('order_id', '=', $order->id);
         })->sum('quantity');
 
-        if ($this->portion_quantity != 0)
+        if ($this->portion_quantity != 0) {
             $quantity *= $this->portion_quantity;
+        }
 
         return $this->max_available - $quantity;
     }
