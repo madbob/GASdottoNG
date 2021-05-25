@@ -21,7 +21,7 @@
     <thead>
         <tr>
             @foreach(App\Order::displayColumns() as $identifier => $metadata)
-                @if($identifier != 'selection' && $identifier != 'notes' && $identifier != 'discount')
+                @if($identifier != 'selection' && $identifier != 'discount')
                     <th width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">{{ $metadata->label }}</th>
                 @endif
             @endforeach
@@ -76,6 +76,20 @@
                     <td class="order-cell-price_delivered {{ in_array('price_delivered', $columns) ? '' : 'hidden' }}">
                         <label class="order-summary-product-price_delivered">{{ $summary->products[$product->id]['price_delivered'] }} {{ $currentgas->currency }}</label>
                     </td>
+
+                    <td class="order-cell-notes {{ in_array('notes', $columns) ? '' : 'hidden' }}">
+                        @if($order->isActive())
+                            @if($summary->products[$product->id]['notes'])
+                                <a class="btn btn-danger" disabled>
+                                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                </a>
+                            @else
+                                <a class="btn btn-info" disabled>
+                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                </a>
+                            @endif
+                        @endif
+                    </td>
                 </tr>
             @endif
         @endforeach
@@ -84,7 +98,7 @@
     <thead>
         <tr>
             @foreach(App\Order::displayColumns() as $identifier => $metadata)
-                @if($identifier != 'selection' && $identifier != 'notes' && $identifier != 'discount')
+                @if($identifier != 'selection' && $identifier != 'discount')
                     <th class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
                         @switch($identifier)
                             @case('total_price')

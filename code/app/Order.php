@@ -327,7 +327,7 @@ class Order extends Model
 
     public function isRunning()
     {
-        return (($this->status == 'open') || ($this->status == 'closed' && $this->keep_open_packages && $this->pendingPackages()->isEmpty() == false));
+        return (($this->status == 'open') || ($this->status == 'closed' && $this->keep_open_packages != 'no' && $this->pendingPackages()->isEmpty() == false));
     }
 
     public function pendingPackages()
@@ -337,7 +337,15 @@ class Order extends Model
             $products = $obj->products()->where('package_size', '!=', 0)->with('measure')->get();
 
             if ($products->isEmpty() == false) {
-                $summary = $obj->calculateSummary($products);
+                if ($obj->keep_open_packages == 'each') {
+                    $summary = $obj->calculateSummary($products);
+                }
+                else {
+                    App::make('GlobalScopeHub')->enable(false);
+                    $summary = $obj->calculateSummary($products);
+                    App::make('GlobalScopeHub')->enable(true);
+                }
+
                 foreach($summary->products as $product_id => $meta)
                     if ($meta['notes'] == true) {
                         /*
@@ -480,6 +488,14 @@ class Order extends Model
                 $product['price_delivered'] = printablePrice($product['raw_price_delivered']);
                 $product['raw_transport_delivered'] = $first_product['transport_delivered'] + $second_product['transport_delivered'];
                 $product['transport_delivered'] = printablePrice($product['raw_transport_delivered']);
+
+                $product['notes'] = false;
+                if ($product['product_obj']->package_size != 0 && $product['raw_quantity'] != 0) {
+                    $test = round(fmod($product['raw_quantity'], $product['product_obj']->fixed_package_size));
+                    if ($test != 0) {
+                        $product['notes'] = true;
+                    }
+                }
             }
 
             $merged->products[$product_id] = $product;

@@ -59,7 +59,7 @@ class OpenOrders extends Command
                         $order->supplier_id = $supplier->id;
                         $order->comment = $date->comment;
                         $order->status = 'open';
-                        $order->keep_open_packages = false;
+                        $order->keep_open_packages = 'no';
                         $order->start = $today;
                         $order->end = date('Y-m-d', strtotime($today . ' +' . $date->end . ' days'));
 

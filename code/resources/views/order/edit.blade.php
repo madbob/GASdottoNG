@@ -88,11 +88,44 @@
                 @endif
 
                 @if($order->products()->where('package_size', '!=', 0)->count() != 0)
-                    @include('commons.boolfield', [
-                        'obj' => $order,
+                    <?php
+
+                    if ($order->aggregate->gas()->count() > 1) {
+                        $keep_open_packages_values = [
+                            'no' => (object) [
+                                'name' => _i('No, ignora la dimensione delle confezioni'),
+                                'checked' => ($order->keep_open_packages == 'no'),
+                            ],
+                            'each' => (object) [
+                                'name' => _i('Si, e ogni GAS gestisce le sue confezioni'),
+                                'checked' => ($order->keep_open_packages == 'each'),
+                            ],
+                            'all' => (object) [
+                                'name' => _i('Si, e contempla le quantità prenotate da parte di tutti i GAS'),
+                                'checked' => ($order->keep_open_packages == 'all'),
+                            ],
+                        ];
+                    }
+                    else {
+                        $keep_open_packages_values = [
+                            'no' => (object) [
+                                'name' => _i('No, ignora la dimensione delle confezioni'),
+                                'checked' => ($order->keep_open_packages == 'no'),
+                            ],
+                            'each' => (object) [
+                                'name' => _i('Si, permetti eventuali altre prenotazioni'),
+                                'checked' => ($order->keep_open_packages == 'each'),
+                            ],
+                        ];
+                    }
+
+                    ?>
+
+                    @include('commons.radios', [
                         'name' => 'keep_open_packages',
                         'label' => _i('Forza completamento confezioni'),
                         'help_popover' => _i("Se questa opzione viene abilitata, alla chiusura dell'ordine sarà verificato se ci sono prodotti la cui quantità complessivamente ordinata non è multipla della dimensione della relativa confezione. Se si, l'ordine resterà aperto e sarà possibile per gli utenti prenotare solo quegli specifici prodotti finché non si raggiunge la quantità desiderata"),
+                        'values' => $keep_open_packages_values,
                     ])
                 @endif
             @else

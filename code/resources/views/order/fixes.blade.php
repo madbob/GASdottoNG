@@ -52,6 +52,31 @@
                                     </td>
                                 </tr>
                             @endforeach
+
+                            @if($order->aggregate->gas()->count() > 1 && $currentuser->can('gas.multi', $currentuser->gas))
+                                @foreach($order->aggregate->gas as $other_gas)
+                                    @if($other_gas->id != $currentuser->gas->id)
+                                        <tr>
+                                            <td>
+                                                <label>{{ _i('Multi-GAS: %s', [$other_gas->name]) }}</label>
+                                            </td>
+                                            <td>
+                                                <label>
+                                                    <?php
+
+                                                    App::make('GlobalScopeHub')->setGas($other_gas->id);
+                                                    $summary = $order->calculateSummary(collect([$product]));
+                                                    $other_gas_quantity = $summary->products[$product->id]['quantity'];
+
+                                                    ?>
+
+                                                    {{ $other_gas_quantity }}
+                                                </label>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                @endforeach
+                            @endif
                         </table>
                     @endif
                 </div>
