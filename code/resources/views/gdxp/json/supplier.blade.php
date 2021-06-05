@@ -80,7 +80,7 @@ foreach($obj->contacts as $contact) {
 }
 
 if ($order && $bookings) {
-    $summary = $order->calculateSummary();
+    $summary = $order->reduxData();
 }
 
 foreach($obj->products as $product) {
@@ -108,7 +108,7 @@ foreach($obj->products as $product) {
 
     if ($bookings) {
         $p->bookingInfo = (object) [
-            'totalQty' => (float) $summary->products[$product->id]['quantity'] ?? 0,
+            'totalQty' => (float) $summary->products[$product->id]->quantity ?? 0,
         ];
     }
 

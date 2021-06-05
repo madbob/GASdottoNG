@@ -261,6 +261,18 @@ class Order extends Model
         }
     }
 
+    public function enforcedContacts()
+    {
+        return $this->innerCache('enforced_contacts', function($obj) {
+            $contacts = $obj->showableContacts();
+            if ($contacts->isEmpty()) {
+                $contacts = Role::everybodyCan('supplier.orders', $obj->supplier);
+            }
+
+            return $contacts;
+        });
+    }
+
     public static function longCommentLimit()
     {
         return 100;
@@ -312,7 +324,7 @@ class Order extends Model
 
     public function isRunning()
     {
-        return (($this->status == 'open') || ($this->status == 'closed' && $this->keep_open_packages && $this->pendingPackages()->isEmpty() == false));
+        return (($this->status == 'open') || ($this->status == 'closed' && $this->keep_open_packages != 'no' && $this->pendingPackages()->isEmpty() == false));
     }
 
     public function pendingPackages()
@@ -322,7 +334,10 @@ class Order extends Model
             $products = $obj->products()->where('package_size', '!=', 0)->with('measure')->get();
 
             if ($products->isEmpty() == false) {
-                $order_data = $this->reduxData();
+                $order = $this;
+                $order_data = App::make('GlobalScopeHub')->executedForAll($this->keep_open_packages != 'each', function() use ($order) {
+                    return $order->reduxData();
+                });
 
                 foreach($products as $p) {
                     $quantity = $order_data->products[$p->id]->quantity ?? 0;
@@ -334,8 +349,8 @@ class Order extends Model
                                 $fake_max_available += $p->fixed_package_size;
                             }
 
+                            $p->is_pending_package = true;
                             $p->max_available = $fake_max_available;
-
                             $ret->push($p);
                         }
                     }

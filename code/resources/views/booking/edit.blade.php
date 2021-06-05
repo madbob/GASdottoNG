@@ -142,7 +142,7 @@ $enforced = $enforced ?? false;
                         </td>
 
                         <td>
-                            <label class="static-label"><small>{{ $product->printableDetails($order) }}</small></label>
+                            <label class="static-label"><small>{!! $product->printableDetails($order) !!}</small></label>
                         </td>
 
                         <td class="text-right">

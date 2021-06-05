@@ -192,8 +192,9 @@ class Aggregate extends Model
     {
         return $this->innerCache('pending_packages', function($obj) {
             foreach($this->orders as $o) {
-                if ($o->keep_open_packages && $o->status == 'closed' && $o->pendingPackages()->isEmpty() == false)
+                if ($o->keep_open_packages != 'no' && $o->status == 'closed' && $o->pendingPackages()->isEmpty() == false) {
                     return true;
+                }
             }
 
             return false;

@@ -282,6 +282,8 @@ class MovementType extends Model
                                     }
 
                                     $existing_movement = $booking->payment;
+                                    $date = $movement->date;
+
                                     if (is_null($existing_movement)) {
                                         $m = $movement->replicate();
                                         $m->target_id = $booking->id;
@@ -299,6 +301,7 @@ class MovementType extends Model
                                         $m = $existing_movement;
                                     }
 
+                                    $m->date = $date;
                                     $m->amount = $delivered;
                                     $m->save();
 

@@ -68,10 +68,15 @@ class DatesService extends BaseService
                 if (in_array($targets[$index], $suppliers) == false)
                     continue;
 
-                if (empty($id))
+                if (empty($id)) {
                     $date = new Date();
-                else
+                }
+                else {
                     $date = Date::find($id);
+                    if (is_null($date)) {
+                        $date = new Date();
+                    }
+                }
 
                 $date->target_type = 'App\Supplier';
                 $date->target_id = $targets[$index];

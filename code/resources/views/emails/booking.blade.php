@@ -145,11 +145,22 @@ $bookings_tot = 0;
         @endforeach
     @endif
 
+    <br>
+
     @if($display_shipping_date && $variable)
         <p>
             {{ _i("L'importo reale di questo ordine dipende dal peso effettivo dei prodotti consegnati; il totale qui riportato è solo indicativo.") }}
         </p>
     @endif
+
+    <p>
+        {{ _i("Per comunicazioni su quest'ordine, si raccomanda di contattare:") }}
+    </p>
+    <ul>
+        @foreach($b->order->enforcedContacts() as $contact)
+            <li>{{ $contact->printableName() }} - {{ $contact->email }}</li>
+        @endforeach
+    </ul>
 @endforeach
 
 @if($bookings_tot > 1)

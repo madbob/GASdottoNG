@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
+use App;
 use Log;
 
 use App\Events\SluggableCreating;
@@ -104,9 +105,13 @@ class Product extends Model
             return 0;
         }
 
-        $quantity = BookedProduct::where('product_id', '=', $this->id)->whereHas('booking', function ($query) use ($order) {
-            $query->where('order_id', '=', $order->id);
-        })->sum('quantity');
+        $product = $this;
+
+        $quantity = App::make('GlobalScopeHub')->executedForAll($order->keep_open_packages != 'each', function() use ($product, $order) {
+            return BookedProduct::where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order) {
+                $query->where('order_id', '=', $order->id);
+            })->sum('quantity');
+        });
 
         if ($this->portion_quantity != 0) {
             $quantity *= $this->portion_quantity;
@@ -217,16 +222,19 @@ class Product extends Model
     public function printableMeasure($verbose = false)
     {
         if ($this->portion_quantity != 0) {
-            if ($verbose)
+            if ($verbose) {
                 return sprintf('Pezzi da %.02f %s', $this->portion_quantity, $this->measure->name);
-            else
+            }
+            else {
                 return sprintf('%.02f %s', $this->portion_quantity, $this->measure->name);
+            }
         }
         else {
             $m = $this->measure;
             if (is_null($m)) {
                 return '';
-            } else {
+            }
+            else {
                 return $m->name;
             }
         }
@@ -243,7 +251,22 @@ class Product extends Model
             $details[] = _i('Massimo Consigliato: %.02f', $this->max_quantity);
         }
         if ($this->max_available != 0) {
-            $details[] = _i('Disponibile: %.02f (%.02f totale)', [$this->stillAvailable($order), $this->max_available]);
+            $still_available = $this->stillAvailable($order);
+
+            /*
+                L'attributo is_pending_package viene assegnato da
+                Order::pendingPackages() ai prodotti per i quali si devono
+                completare le confezioni
+            */
+            if ($this->is_pending_package ?? false) {
+                $details[] = _i('%s Disponibile: %.02f', [
+                    view('commons.helpbutton', ['help_popover' => _i('Mancano %s %s per completare la confezione per questo ordine', [$still_available, $this->printableMeasure(true)])])->render(),
+                    $still_available
+                ]);
+            }
+            else {
+                $details[] = _i('Disponibile: %.02f (%.02f totale)', [$still_available, $this->max_available]);
+            }
         }
         if ($this->multiple != 0) {
             $details[] = _i('Multiplo: %.02f', $this->multiple);
