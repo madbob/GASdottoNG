@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
+use App;
 use Log;
 
 use App\Events\SluggableCreating;
@@ -97,9 +98,13 @@ class Product extends Model
             return 0;
         }
 
-        $quantity = BookedProduct::where('product_id', '=', $this->id)->whereHas('booking', function ($query) use ($order) {
-            $query->where('order_id', '=', $order->id);
-        })->sum('quantity');
+        $product = $this;
+
+        $quantity = App::make('GlobalScopeHub')->executedForAll($order->keep_open_packages != 'each', function() use ($product, $order) {
+            return BookedProduct::where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order) {
+                $query->where('order_id', '=', $order->id);
+            })->sum('quantity');
+        });
 
         if ($this->portion_quantity != 0)
             $quantity *= $this->portion_quantity;

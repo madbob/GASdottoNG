@@ -349,14 +349,9 @@ class Order extends Model
             $products = $obj->products()->where('package_size', '!=', 0)->with('measure')->get();
 
             if ($products->isEmpty() == false) {
-                if ($obj->keep_open_packages == 'each') {
-                    $summary = $obj->calculateSummary($products);
-                }
-                else {
-                    App::make('GlobalScopeHub')->enable(false);
-                    $summary = $obj->calculateSummary($products);
-                    App::make('GlobalScopeHub')->enable(true);
-                }
+                $summary = App::make('GlobalScopeHub')->executedForAll($obj->keep_open_packages != 'each', function() use ($obj, $products) {
+                    return $obj->calculateSummary($products);
+                });
 
                 foreach($summary->products as $product_id => $meta)
                     if ($meta['notes'] == true) {

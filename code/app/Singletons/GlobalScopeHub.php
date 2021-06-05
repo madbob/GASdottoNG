@@ -33,4 +33,24 @@ class GlobalScopeHub
     {
         return Gas::find($this->gas_id);
     }
+
+    /*
+        Questa funzione permette di eseguire una determinata funzione con o
+        senza il global scope per il GAS attuale, a seconda della condizione
+        passata come parametro
+    */
+    public function executedForAll($condition, $function)
+    {
+        if ($condition) {
+            $this->enable(false);
+        }
+
+        $ret = $function();
+
+        if ($condition) {
+            $this->enable(true);
+        }
+
+        return $ret;
+    }
 }
