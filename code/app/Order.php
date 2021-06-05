@@ -363,7 +363,8 @@ class Order extends Model
                         /*
                             Se devo completare delle confezioni, altero la quantità
                             massima disponibile a runtime per fare in modo di
-                            forzare il raggiungimento della quantità desiderata
+                            forzare il raggiungimento della quantità desiderata.
+                            Non salvare questo oggetto manipolato nel database!!!
                         */
 
                         $p = $meta['product_obj'];
@@ -374,6 +375,7 @@ class Order extends Model
                             $fake_max_available += $test;
                         }
 
+                        $p->is_pending_package = true;
                         $p->max_available = $fake_max_available;
 
                         $ret->push($p);
