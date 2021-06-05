@@ -276,6 +276,18 @@ class Order extends Model
         }
     }
 
+    public function enforcedContacts()
+    {
+        return $this->innerCache('enforced_contacts', function($obj) {
+            $contacts = $obj->showableContacts();
+            if ($contacts->isEmpty()) {
+                $contacts = Role::everybodyCan('supplier.orders', $obj->supplier);
+            }
+
+            return $contacts;
+        });
+    }
+
     public static function longCommentLimit()
     {
         return 100;

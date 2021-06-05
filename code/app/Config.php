@@ -44,6 +44,7 @@ class Config extends Model
                     'supplier_name' => _i("Il nome del fornitore"),
                     'order_comment' => _i("Testo di commento dell'ordine"),
                     'gas_booking_link' => _i("Link per le prenotazioni"),
+                    'contacts' => _i("Indirizzi email dei referenti dell'ordine"),
                     'closing_date' => _i("Data di chiusura dell'ordine")
                 ],
                 'enabled' => function($gas) {
