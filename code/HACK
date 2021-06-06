@@ -1,3 +1,9 @@
+# Assets
+
+Gli assets, Javascript e CSS, vengono compilati usando Laravel Mix.
+
+Al primo setup eseguire `cd code; npm install` per installare le dipendenze, dopodiché `npm run watch` per la modalità di sviluppo (in cui il tutto viene ricompilato automaticamente quando viene fatta una modifica) oppure `npm run prod` (per compilare e minificare tutti gli assets).
+
 # Traduzioni
 
 Per aggiornare i file delle traduzioni: `php artisan gettext:update`
