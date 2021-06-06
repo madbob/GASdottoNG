@@ -17,18 +17,18 @@ class UsersServiceTest extends TestCase
         parent::setUp();
         Model::unguard();
 
-        $this->gas = factory(\App\Gas::class)->create();
+        $this->gas = \App\Gas::factory()->create();
 
         $this->userWithViewPerm = $this->createRoleAndUser($this->gas, 'users.view,users.subusers');
         $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'users.admin');
         $this->userWithMovementPerm = $this->createRoleAndUser($this->gas, 'movements.admin');
         $this->userWithBasePerm = $this->createRoleAndUser($this->gas, 'users.self');
-        $this->userWithNoPerms = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
+        $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
 
-        factory(\App\User::class, 3)->create(['gas_id' => $this->gas->id]);
+        \App\User::factory()->count(3)->create(['gas_id' => $this->gas->id]);
 
-        $otherGas = factory(\App\Gas::class)->create();
-        factory(\App\User::class, 3)->create(['gas_id' => $otherGas->id]);
+        $otherGas = \App\Gas::factory()->create();
+        \App\User::factory()->count(3)->create(['gas_id' => $otherGas->id]);
 
         Model::reguard();
 
@@ -57,17 +57,17 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithViewPerm);
 
-        $user1 = factory(\App\User::class)->create([
+        $user1 = \App\User::factory()->create([
             'gas_id' => $this->gas->id,
             'firstname' => 'pippo'
         ]);
 
-        $user2 = factory(\App\User::class)->create([
+        $user2 = \App\User::factory()->create([
             'gas_id' => $this->gas->id,
             'lastname' => 'super pippo'
         ]);
 
-        factory(\App\User::class)->create([
+        \App\User::factory()->create([
             'gas_id' => $this->gas->id,
             'firstname' => 'luigi'
         ]);
@@ -148,7 +148,7 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $user = factory(\App\User::class)->create([
+        $user = \App\User::factory()->create([
             'gas_id' => $this->gas->id
         ]);
 

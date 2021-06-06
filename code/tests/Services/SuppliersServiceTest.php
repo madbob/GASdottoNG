@@ -17,13 +17,13 @@ class SuppliersServiceTest extends TestCase
         parent::setUp();
         Model::unguard();
 
-        $this->gas = factory(\App\Gas::class)->create();
-        $this->supplier = factory(\App\Supplier::class)->create();
+        $this->gas = \App\Gas::factory()->create();
+        $this->supplier = \App\Supplier::factory()->create();
 
         $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'supplier.add');
         $this->userWithReferrerPerms = $this->createRoleAndUser($this->gas, 'supplier.modify', $this->supplier);
         $this->userWithNormalPerms = $this->createRoleAndUser($this->gas, 'supplier.view');
-        $this->userWithNoPerms = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
+        $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
 
         Model::reguard();
 

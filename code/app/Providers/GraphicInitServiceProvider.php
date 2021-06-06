@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
 
 use Event;
 use Auth;
@@ -60,6 +61,8 @@ class GraphicInitServiceProvider extends ServiceProvider
                 $view->with('fieldsize', 12);
             }
         });
+
+        Paginator::useBootstrap();
     }
 
     public function register()

@@ -5,6 +5,8 @@ namespace Tests;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Exceptions\AuthException;
+
 class ModifiersServiceTest extends TestCase
 {
     use DatabaseTransactions;
@@ -14,63 +16,63 @@ class ModifiersServiceTest extends TestCase
         parent::setUp();
         Model::unguard();
 
-        $this->gas = factory(\App\Gas::class)->create();
+        $this->gas = \App\Gas::factory()->create();
 
         $booking_role = \App\Role::create([
             'name' => 'Booking',
             'actions' => 'supplier.book'
         ]);
 
-        $this->user1 = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
+        $this->user1 = \App\User::factory()->create(['gas_id' => $this->gas->id]);
         $this->user1->addRole($booking_role, $this->gas);
 
-        $this->user2 = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
+        $this->user2 = \App\User::factory()->create(['gas_id' => $this->gas->id]);
         $this->user2->addRole($booking_role, $this->gas);
 
-        $this->supplier = factory(\App\Supplier::class)->create();
+        $this->supplier = \App\Supplier::factory()->create();
 
         $referrer_role = \App\Role::create([
             'name' => 'Referrer',
             'actions' => 'supplier.modify'
         ]);
 
-        $this->userReferrer = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
+        $this->userReferrer = \App\User::factory()->create(['gas_id' => $this->gas->id]);
         $this->userReferrer->addRole($referrer_role, $this->supplier);
 
-        $this->category = factory(\App\Category::class)->create();
-        $this->measure = factory(\App\Measure::class)->create();
+        $this->category = \App\Category::factory()->create();
+        $this->measure = \App\Measure::factory()->create();
 
-        $this->product = factory(\App\Product::class)->create([
+        $this->product = \App\Product::factory()->create([
             'supplier_id' => $this->supplier->id,
             'category_id' => $this->category->id,
             'measure_id' => $this->measure->id
         ]);
 
-        $this->aggregate = factory(\App\Aggregate::class)->create();
+        $this->aggregate = \App\Aggregate::factory()->create();
 
-        $this->order = factory(\App\Order::class)->create([
+        $this->order = \App\Order::factory()->create([
             'aggregate_id' => $this->aggregate->id,
             'supplier_id' => $this->supplier->id,
         ]);
         $this->order->products()->sync([$this->product->id]);
 
-        $this->booking1 = factory(\App\Booking::class)->create([
+        $this->booking1 = \App\Booking::factory()->create([
             'order_id' => $this->order->id,
             'user_id' => $this->user1->id,
         ]);
 
-        factory(\App\BookedProduct::class)->create([
+        \App\BookedProduct::factory()->create([
             'booking_id' => $this->booking1->id,
             'product_id' => $this->product->id,
             'quantity' => 3,
         ]);
 
-        $this->booking2 = factory(\App\Booking::class)->create([
+        $this->booking2 = \App\Booking::factory()->create([
             'order_id' => $this->order->id,
             'user_id' => $this->user2->id,
         ]);
 
-        factory(\App\BookedProduct::class)->create([
+        \App\BookedProduct::factory()->create([
             'booking_id' => $this->booking2->id,
             'product_id' => $this->product->id,
             'quantity' => 8,
@@ -81,11 +83,9 @@ class ModifiersServiceTest extends TestCase
         Model::reguard();
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToStore()
     {
+        $this->expectException(AuthException::class);
         $this->actingAs($this->user1);
 
         $modifiers = $this->product->applicableModificationTypes();

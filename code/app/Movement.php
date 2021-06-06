@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Request;
 
 use Auth;
@@ -13,7 +14,7 @@ use App\Scopes\RestrictedGAS;
 
 class Movement extends Model
 {
-    use GASModel;
+    use HasFactory, GASModel;
 
     /*
         Per verificare il corretto salvataggio di un movimento, non consultare

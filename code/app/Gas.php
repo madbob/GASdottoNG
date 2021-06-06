@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use Log;
 
@@ -15,7 +16,7 @@ use App\SluggableID;
 
 class Gas extends Model
 {
-    use AttachableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID;
+    use HasFactory, AttachableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
     protected $keyType = 'string';

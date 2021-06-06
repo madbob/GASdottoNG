@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -18,7 +19,7 @@ use App\Events\BookingDeleting;
 
 class Booking extends Model
 {
-    use GASModel, SluggableID, ModifiedTrait, PayableTrait, CreditableTrait, ReducibleTrait;
+    use HasFactory, GASModel, SluggableID, ModifiedTrait, PayableTrait, CreditableTrait, ReducibleTrait;
 
     public $incrementing = false;
     protected $keyType = 'string';

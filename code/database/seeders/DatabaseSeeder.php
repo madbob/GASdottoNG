@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Balance;
 use App\Category;
 use App\Gas;

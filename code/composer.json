@@ -15,17 +15,17 @@
         "doctrine/dbal": "^2.8",
         "eluceo/ical": "^0.14.0",
         "fideloper/proxy": "~4.0",
-        "laravel/framework": "^7.0",
+        "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",
-        "laravel/ui": "^2.0",
-        "laravelium/feed": "^7.0",
+        "laravel/ui": "^3.0",
+        "laravelium/feed": "^8.0",
+        "lavary/laravel-menu": "^1.8",
         "league/csv": "^9.6",
         "madbob/laravel-queue-loopback": "^0.1.0",
         "paypal/rest-api-sdk-php": "^1.13",
         "satispay/online-api-php-sdk": "^1.6",
         "sinergi/browser-detector": "^6.1",
         "spatie/db-dumper": "^2.21",
-        "vespakoen/menu": "^3.0",
         "zerospam/laravel-gettext": "7.x",
         "zetacomponents/archive": "dev-master"
     },
@@ -34,15 +34,13 @@
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "~1.0",
         "nunomaduro/larastan": "^0.7.0",
-        "phpunit/phpunit": "^8.5"
+        "phpunit/phpunit": "^9.0"
     },
     "autoload": {
-        "classmap": [
-            "database/seeds",
-            "database/factories"
-        ],
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
             "app/Helpers/Setup.php",

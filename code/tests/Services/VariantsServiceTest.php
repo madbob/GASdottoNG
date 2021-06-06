@@ -5,6 +5,8 @@ namespace Tests;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Exceptions\AuthException;
+
 class VariantsServiceTest extends TestCase
 {
     use DatabaseTransactions;
@@ -14,30 +16,28 @@ class VariantsServiceTest extends TestCase
         parent::setUp();
         Model::unguard();
 
-        $this->gas = factory(\App\Gas::class)->create();
-        $this->supplier = factory(\App\Supplier::class)->create();
-        $this->category = factory(\App\Category::class)->create();
-        $this->measure = factory(\App\Measure::class)->create();
+        $this->gas = \App\Gas::factory()->create();
+        $this->supplier = \App\Supplier::factory()->create();
+        $this->category = \App\Category::factory()->create();
+        $this->measure = \App\Measure::factory()->create();
 
-        $this->product = factory(\App\Product::class)->create([
+        $this->product = \App\Product::factory()->create([
             'supplier_id' => $this->supplier->id,
             'category_id' => $this->category->id,
             'measure_id' => $this->measure->id
         ]);
 
         $this->userWithReferrerPerms = $this->createRoleAndUser($this->gas, 'supplier.modify', $this->supplier);
-        $this->userWithNoPerms = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
+        $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
 
         Model::reguard();
 
         $this->service = new \App\Services\VariantsService();
     }
 
-    /**
-     * @expectedException \App\Exceptions\AuthException
-     */
     public function testFailsToStore()
     {
+        $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
 
         $this->service->store([

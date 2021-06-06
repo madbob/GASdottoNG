@@ -16,10 +16,10 @@ class VatRateServiceTest extends TestCase
         parent::setUp();
         Model::unguard();
 
-        $this->gas = factory(\App\Gas::class)->create();
+        $this->gas = \App\Gas::factory()->create();
 
         $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'gas.config');
-        $this->userWithNoPerms = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
+        $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
 
         Model::reguard();
 

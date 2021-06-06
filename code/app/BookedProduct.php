@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 
 use Log;
@@ -12,7 +12,7 @@ use App\Events\SluggableCreating;
 
 class BookedProduct extends Model
 {
-    use GASModel, SluggableID, ModifiedTrait, ReducibleTrait;
+    use HasFactory, GASModel, SluggableID, ModifiedTrait, ReducibleTrait;
 
     public $incrementing = false;
     protected $keyType = 'string';

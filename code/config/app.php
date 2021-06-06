@@ -159,8 +159,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        Menu\MenuServiceProvider::class,
-
         App\Providers\SingletonsProvider::class,
         App\Providers\GraphicInitServiceProvider::class,
         App\Providers\MenuServiceProvider::class,
@@ -214,7 +212,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-        'Menu'      => Menu\Menu::class,
+        'Menu' => Lavary\Menu\Facade::class,
     ],
 
 ];

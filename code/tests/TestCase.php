@@ -48,7 +48,7 @@ abstract class TestCase extends BaseTestCase
             'actions' => $permissions
         ]);
 
-        $user = factory(\App\User::class)->create(['gas_id' => $gas->id]);
+        $user = \App\User::factory()->create(['gas_id' => $gas->id]);
         $user->addRole($role, $target ?: $gas);
 
         return $user;

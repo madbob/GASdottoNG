@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use Illuminate\Support\Collection;
 
@@ -17,7 +18,7 @@ use App\Events\AttachableToGas;
 
 class Supplier extends Model
 {
-    use Notifiable, SoftDeletes, AttachableTrait, ContactableTrait, CreditableTrait, PayableTrait, ExportableTrait, SuspendableTrait, ModifiableTrait, GASModel, SluggableID;
+    use HasFactory, Notifiable, SoftDeletes, AttachableTrait, ContactableTrait, CreditableTrait, PayableTrait, ExportableTrait, SuspendableTrait, ModifiableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
     protected $dates = ['deleted_at'];

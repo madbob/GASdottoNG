@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 
 use App;
@@ -13,7 +14,7 @@ use App\Events\SluggableCreating;
 
 class Product extends Model
 {
-    use SoftDeletes, ModifiableTrait, GASModel, SluggableID;
+    use HasFactory, SoftDeletes, ModifiableTrait, GASModel, SluggableID;
 
     public $incrementing = false;
     protected $keyType = 'string';

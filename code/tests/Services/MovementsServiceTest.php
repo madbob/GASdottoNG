@@ -19,13 +19,13 @@ class MovementsServiceTest extends TestCase
         parent::setUp();
         Model::unguard();
 
-        $this->gas = factory(\App\Gas::class)->create();
+        $this->gas = \App\Gas::factory()->create();
 
         $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'movements.admin');
         $this->userWithReferrerPerms = $this->createRoleAndUser($this->gas, 'movements.view');
-        $this->userWithNoPerms = factory(\App\User::class)->create(['gas_id' => $this->gas->id]);
+        $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
 
-        $this->sample_movement = factory(\App\Movement::class)->create([
+        $this->sample_movement = \App\Movement::factory()->create([
             'type' => 'donation-from-gas',
             'method' => 'bank',
             'sender_id' => $this->gas->id,
