@@ -1,3 +1,5 @@
+import Chartist from 'chartist';
+
 var graphGrownFactor = 40;
 
 function doEmpty(target) {

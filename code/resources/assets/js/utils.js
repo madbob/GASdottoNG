@@ -48,47 +48,6 @@ function parseFloatC(value) {
     return ret;
 }
 
-/*
-    I valori dinamici possono essere espressi come:
-
-    10%     calcola la percentuale del valore e la somma/sottrae
-
-    50:10   rappresenta la proporzione di cui fare la somma/sottrazione.
-            Ad esempio: il totale di un ordine sono 50 euro, il trasporto sono
-            10 euro, il trasporto di questa prenotazione è value * 10 / 50
-
-    10      fa una mera somma/sottrazione della cifra rispetto al valore
-*/
-function applyPercentage(value, percentage, operator) {
-    var pvalue = 0;
-
-    if (percentage.endsWith('%')) {
-        var p = parseFloatC(percentage);
-        pvalue = (p * value) / 100;
-    }
-    else if (percentage.indexOf(':') !== -1) {
-        var order_values = percentage.split(':');
-
-        var order_total = parseFloatC(order_values[0]);
-        var order_transport = parseFloatC(order_values[1]);
-
-        if (order_total == 0) {
-            pvalue = order_transport;
-        }
-        else {
-            pvalue = (value * order_transport) / order_total;
-        }
-    }
-    else {
-        pvalue = parseFloatC(percentage);
-    }
-
-    if (operator == '-')
-        return [value - pvalue, pvalue];
-    else if (operator == '+')
-        return [value + pvalue, pvalue];
-}
-
 function priceRound(price) {
     return (Math.round(price * 100) / 100).toFixed(2);
 }
@@ -100,3 +59,5 @@ function priceRound(price) {
 function sanitizeId(identifier) {
     return identifier.replace(/:/g, '\\:').replace(/\[/g, '\\[').replace(/\]/g, '\\]');
 }
+
+module.exports = { loadingPlaceholder, inlineFeedback, randomString, parseFullDate, parseFloatC, priceRound, sanitizeId };

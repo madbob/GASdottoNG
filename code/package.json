@@ -1,0 +1,70 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "npm run development",
+    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "npm run development -- --watch",
+    "watch-poll": "npm run watch -- --watch-poll",
+    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "prod": "npm run production",
+    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module"
+    },
+    "rules": {
+      "semi": 2
+    }
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "animate-sass": "^0.8.2",
+    "babel-loader": "^8.0.6",
+    "browser-sync": "^2.26.7",
+    "browser-sync-webpack-plugin": "^2.2.2",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.1.1",
+    "cross-env": "^7.0",
+    "css-loader": "^2.0.0",
+    "eslint": "^5.16.0",
+    "eslint-loader": "^2.2.1",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "file-loader": "^2.0.0",
+    "handlebars": "^4.4.3",
+    "handlebars-loader": "^1.7.0",
+    "html-webpack-plugin": "^3.2.0",
+    "laravel-mix": "^5.0.1",
+    "node-sass": "^4.13.0",
+    "nodemon": "^1.19.3",
+    "resolve-url-loader": "^3.1.0",
+    "sass-loader": "^7.3.1",
+    "style-loader": "^0.23.1",
+    "vue-template-compiler": "^2.6.13",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-server": "^3.10.1"
+  },
+  "dependencies": {
+    "blueimp-file-upload": "^10.31.0",
+    "bootstrap": "^3.4.1",
+    "bootstrap-datepicker": "^1.9.0",
+    "bootstrap-multiselect": "^0.9.15",
+    "bootstrap-table": "^1.18.3",
+    "bootstrap-toggle": "^2.2.2",
+    "bootstrap-validator": "^0.11.9",
+    "bootstrap-vertical-tabs": "^1.2.2",
+    "chartist": "^0.11.4",
+    "jquery": "^2.2.4",
+    "jquery-ui": "^1.12.1",
+    "jquery-ui-touch-punch": "^0.2.3",
+    "js-cookie": "^2.2.1",
+    "popper.js": "^1.16.1"
+  }
+}

@@ -1,3 +1,23 @@
+@import '~bootstrap/dist/css/bootstrap.css';
+@import '~bootstrap-datepicker/dist/css/bootstrap-datepicker3.css';
+@import '~bootstrap-table/dist/bootstrap-table.css';
+@import '~bootstrap-toggle/css/bootstrap-toggle.css';
+@import '~bootstrap-vertical-tabs/bootstrap.vertical-tabs.css';
+@import '~jquery-ui/themes/base/all.css';
+@import '~chartist/dist/chartist.css';
+
+body {
+    font-size: 16px;
+}
+
+.btn {
+    font-size: 16px;
+}
+
+.form-control {
+    font-size: 16px;
+}
+
 @media (max-width: 1280px) and (min-width: 751px) {
     .order-summary {
         .input-group-addon {

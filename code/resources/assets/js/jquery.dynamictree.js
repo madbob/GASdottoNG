@@ -1,3 +1,6 @@
+require('./jquery.mjs.nestedSortable');
+const utils = require('./utils');
+
 /*
     Questo di fatto è una estensione di nestedSortable
 */
@@ -78,7 +81,7 @@
                     serialized: data
                 },
                 success: function() {
-                    inlineFeedback(button, _('Salvato!'));
+                    utils.inlineFeedback(button, _('Salvato!'));
                     $(this).closest('.modal').modal('hide');
                 }
             });

@@ -1,4 +1,10 @@
 /*
+    Nota di Bob: questo progetto sembra essere abbandonato su NPM, e risulta non
+    essere compatibile con jQueryUI 1.12.
+    Ne tengo qui una copia, con la modifica necessaria per farlo funzionare.
+*/
+
+/*
  * jQuery UI Nested Sortable
  * v 2.1a / 2016-02-04
  * https://github.com/ilikenwf/nestedSortable
@@ -18,7 +24,7 @@
 		// AMD. Register as an anonymous module.
 		define([
 			"jquery",
-			"jquery-ui/sortable"
+			"jquery-ui/ui/widgets/sortable" // Nota di Bob: ho aggiornato questo
 		], factory );
 	} else {
 
