@@ -104,6 +104,14 @@ class AggregatesController extends OrdersController
             $o->deliveries()->sync($deliveries);
         }
 
+        if ($request->has('change_dates')) {
+            $a->orders()->update([
+                'start' => decodeDate($request->input('start')),
+                'end' => decodeDate($request->input('end')),
+                'shipping' => decodeDate($request->input('shipping')),
+            ]);
+        }
+
         return $this->successResponse([
             'id' => $a->id,
             'header' => $a->printableHeader(),
