@@ -268,7 +268,9 @@ class OrdersController extends Controller
             $order->status = $status;
         }
 
-        $order->keep_open_packages = $request->input('keep_open_packages');
+        if ($request->has('keep_open_packages')) {
+            $order->keep_open_packages = $request->input('keep_open_packages');
+        }
 
         $order->save();
 
