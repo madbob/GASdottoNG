@@ -6,6 +6,6 @@ jobs:
     name: PHPUnit
     runs-on: ubuntu-latest
     steps:
-    - run: cd code
     - uses: actions/checkout@v1
+    - run: cd code
     - uses: nathanheffley/laravel-phpunit-action@master
