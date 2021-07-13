@@ -6,5 +6,14 @@ jobs:
     name: PHPUnit
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - run: dotest.sh
+
+      - name: checkout repo content
+        uses: actions/checkout@v2
+
+      - name: running tests
+        run: |
+          cd code
+          composer install --prefer-dist
+          cp .env.example .env
+          php artisan key:generate
+          php vendor/bin/phpunit
