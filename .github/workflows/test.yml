@@ -7,5 +7,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - run: cd code
-    - uses: nathanheffley/laravel-phpunit-action@master
+    - run: dotest.sh
