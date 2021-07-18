@@ -104,7 +104,11 @@ class Modifier extends Model
         ];
 
         $value_units = [
-            'none' => '',
+            /*
+                La 'X' serve a inizializzare l'input group nell'editor del
+                modificatore, di fatto non viene mai visualizzata
+            */
+            'none' => 'X',
             'quantity' => _i('Prodotti'),
             'price' => $currency,
             'weight' => _i('Chili'),
@@ -340,7 +344,7 @@ class Modifier extends Model
                     $reference = $mod_target->$distribution_attribute;
                 }
 
-                if ($booking_mod_target) {
+                if ($booking_mod_target && $reference) {
                     $altered_amount = (($booking_mod_target->$distribution_attribute * $altered_amount) / $reference);
                 }
                 else {

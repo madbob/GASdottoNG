@@ -2,16 +2,10 @@
 
 @section('content')
 
-<ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#allgas" role="tab" data-toggle="tab">{{ _i('GAS') }}</a></li>
-    <li role="presentation"><a href="#allsuppliers" role="tab" data-toggle="tab">{{ _i('Fornitori') }}</a></li>
-    <li role="presentation"><a href="#allorders" role="tab" data-toggle="tab">{{ _i('Ordini') }}</a></li>
-</ul>
-
-<div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="allgas">
+<x-larastrap::tabs>
+    <x-larastrap::tabpane :label="_i('GAS')" active="true">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col">
                 @include('commons.addingbutton', [
                     'template' => 'multigas.base-edit',
                     'typename' => 'gas',
@@ -21,26 +15,22 @@
             </div>
         </div>
 
-        <div class="clearfix"></div>
         <hr/>
 
         <div class="row">
-            <div class="col-md-12">
+            <div class="col">
                 @include('commons.loadablelist', [
                     'identifier' => 'gas-list',
                     'items' => $groups,
                     'url' => url('multigas'),
-                    'legend' => (object)[
-                        'class' => 'Gas'
-                    ]
                 ])
             </div>
         </div>
-    </div>
+    </x-larastrap::tabpane>
 
-    <div role="tabpanel" class="tab-pane" id="allsuppliers">
+    <x-larastrap::tabpane :label="_i('Fornitori')">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col">
                 <table class="table multigas-editor">
                     <thead>
                         <tr>
@@ -60,7 +50,7 @@
 
                                 @foreach($groups as $gas)
                                     <td>
-                                        <input type="checkbox" data-toggle="toggle" data-size="mini" data-gas="{{ $gas->id }}" data-target-type="supplier" data-target-id="{{ $supplier->id }}" {{ $gas->suppliers()->where('suppliers.id', $supplier->id)->first() != null ? 'checked' : '' }}>
+                                        <input type="checkbox" data-gas="{{ $gas->id }}" data-target-type="supplier" data-target-id="{{ $supplier->id }}" {{ $gas->suppliers()->where('suppliers.id', $supplier->id)->first() != null ? 'checked' : '' }}>
                                     </td>
                                 @endforeach
                             </tr>
@@ -69,11 +59,11 @@
                 </table>
             </div>
         </div>
-    </div>
+    </x-larastrap::tabpane>
 
-    <div role="tabpanel" class="tab-pane" id="allorders">
+    <x-larastrap::tabpane :label="_i('Ordini')">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col">
                 <table class="table multigas-editor">
                     <thead>
                         <tr>
@@ -95,7 +85,7 @@
 
                                 @foreach($groups as $gas)
                                     <td>
-                                        <input type="checkbox" data-toggle="toggle" data-size="mini" data-gas="{{ $gas->id }}" data-target-type="aggregate" data-target-id="{{ $aggregate->id }}" {{ $gas->aggregates()->where('aggregates.id', $aggregate->id)->first() != null ? 'checked' : '' }}>
+                                        <input type="checkbox" data-gas="{{ $gas->id }}" data-target-type="aggregate" data-target-id="{{ $aggregate->id }}" {{ $gas->aggregates()->where('aggregates.id', $aggregate->id)->first() != null ? 'checked' : '' }}>
                                     </td>
                                 @endforeach
                             </tr>
@@ -104,7 +94,7 @@
                 </table>
             </div>
         </div>
-    </div>
-</div>
+    </x-larastrap::tabpane>
+</x-larastrap::tabs>
 
 @endsection

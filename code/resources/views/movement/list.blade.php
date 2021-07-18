@@ -23,7 +23,7 @@ else {
         {{ _i('Non ci sono elementi da visualizzare.') }}
     </div>
 @else
-    <table class="table addicted-table" data-classes="table table-no-bordered">
+    <table class="table" data-classes="table table-no-bordered">
         <thead>
             <tr>
                 <th data-sortable="true" data-sorter="sortingDates">{{ _i('Data Registrazione') }}</th>
@@ -80,8 +80,8 @@ else {
 
                     <td>
                         @if(!empty($mov->notes))
-                            <button type="button" class="btn btn-xs btn-default" data-container="body" data-toggle="popover" data-placement="left" data-trigger="hover" data-content="{{ str_replace('"', '\"', $mov->notes) }}">
-                                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                            <button type="button" class="btn btn-sm btn-light" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="hover" data-bs-content="{{ str_replace('"', '\"', $mov->notes) }}">
+                                <i class="bi-info-square"></i>
                             </button>
                         @endif
                     </td>
@@ -89,8 +89,8 @@ else {
                     @if(Gate::check('movements.admin', $currentgas))
                         <td>
                             @if($mov->archived == false)
-                                <button class="btn btn-default async-modal" data-target-url="{{ route('movements.show', $mov->id) }}">
-                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                <button type="button" class="btn btn-xs btn-light async-modal" data-modal-url="{{ route('movements.show', $mov->id) }}">
+                                    <i class="bi-pencil"></i>
                                 </button>
                             @else
                                 @include('commons.detailsbutton', ['obj' => $mov])

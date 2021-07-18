@@ -48,10 +48,10 @@ trait GASModel
         $icons = $this->icons();
 
         if (!empty($icons)) {
-            $ret .= '<div class="pull-right">';
+            $ret .= '<div class="float-end">';
 
             foreach ($icons as $i) {
-                $ret .= '<span class="glyphicon glyphicon-'.$i.'" aria-hidden="true"></span>';
+                $ret .= '<i class="bi-' . $i . '"></i>';
                 if (substr($i, 0, 6) != 'hidden')
                     $ret .= '&nbsp;';
             }
@@ -195,7 +195,7 @@ trait GASModel
                         },
                         'text' => _i('Puoi modificare il fornitore'),
                     ],
-                    'th-list' => (object) [
+                    'card-list' => (object) [
                         'test' => function ($obj) use ($user) {
                             return $user->can('supplier.orders', $obj);
                         },
@@ -209,13 +209,13 @@ trait GASModel
                     ],
                 ],
                 'Attachment' => [
-                    'picture' => (object) [
+                    'image' => (object) [
                         'test' => function ($obj) {
                             return $obj->isImage();
                         },
                         'text' => _i('Immagine'),
                     ],
-                    'remove-sign' => (object) [
+                    'shield-x' => (object) [
                         'test' => function ($obj) {
                             return ($obj->users()->count() != 0);
                         },
@@ -223,13 +223,13 @@ trait GASModel
                     ],
                 ],
                 'Product' => [
-                    'off' => (object) [
+                    'slash-circle' => (object) [
                         'test' => function ($obj) {
                             return $obj->active == false;
                         },
                         'text' => _i('Disabilitato'),
                     ],
-                    'hidden-on' => (object) [
+                    'hidden-circle' => (object) [
                         'test' => function ($obj) {
                             return $obj->active == true;
                         },
@@ -243,7 +243,7 @@ trait GASModel
                     ]
                 ],
                 'Aggregate' => [
-                    'th-list' => (object) [
+                    'card-list' => (object) [
                         'test' => function ($obj) use ($user) {
                             return $user->can('supplier.orders', $obj);
                         },
@@ -267,13 +267,13 @@ trait GASModel
                         },
                         'text' => _i('In Sospeso'),
                     ],
-                    'stop' => (object) [
+                    'stop-fill' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'closed';
                         },
                         'text' => _i('Prenotazioni Chiuse'),
                     ],
-                    'step-forward' => (object) [
+                    'skip-forward' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'shipped';
                         },
@@ -285,7 +285,7 @@ trait GASModel
                         },
                         'text' => _i('Archiviato'),
                     ],
-                    'plus-sign' => (object) [
+                    'plus-circle' => (object) [
                         'test' => function ($obj) {
                             return ($obj->status == 'closed' && $obj->hasPendingPackages());
                         },
@@ -293,7 +293,7 @@ trait GASModel
                     ]
                 ],
                 'Order' => [
-                    'th-list' => (object) [
+                    'card-list' => (object) [
                         'test' => function ($obj) use ($user) {
                             return $user->can('supplier.orders', $obj);
                         },
@@ -317,13 +317,13 @@ trait GASModel
                         },
                         'text' => _i('In Sospeso'),
                     ],
-                    'stop' => (object) [
+                    'stop-fill' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'closed';
                         },
                         'text' => _i('Prenotazioni Chiuse'),
                     ],
-                    'step-forward' => (object) [
+                    'skip-forward' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'shipped';
                         },
@@ -335,7 +335,7 @@ trait GASModel
                         },
                         'text' => _i('Archiviato'),
                     ],
-                    'plus-sign' => (object) [
+                    'plus-circle' => (object) [
                         'test' => function ($obj) {
                             return ($obj->keep_open_packages && $obj->status == 'closed' && $obj->pendingPackages()->isEmpty() == false);
                         },
@@ -343,19 +343,19 @@ trait GASModel
                     ]
                 ],
                 'AggregateBooking' => [
-                    'time' => (object) [
+                    'clock' => (object) [
                         'test' => function ($obj) {
                             return $obj->status != 'shipped';
                         },
                         'text' => _i('Da consegnare'),
                     ],
-                    'ok' => (object) [
+                    'check' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'shipped';
                         },
                         'text' => _i('Consegnato'),
                     ],
-                    'download-alt' => (object) [
+                    'save' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'saved';
                         },
@@ -377,13 +377,13 @@ trait GASModel
                     ],
                 ],
                 'Invoice' => [
-                    'time' => (object) [
+                    'clock' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'pending';
                         },
                         'text' => _i('In Attesa'),
                     ],
-                    'pushpin' => (object) [
+                    'pin-angle' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'to_verify';
                         },
@@ -395,7 +395,7 @@ trait GASModel
                         },
                         'text' => _i('Verificata'),
                     ],
-                    'ok' => (object) [
+                    'check' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'payed';
                         },
@@ -403,19 +403,19 @@ trait GASModel
                     ],
                 ],
                 'Booking' => [
-                    'time' => (object) [
+                    'clock' => (object) [
                         'test' => function ($obj) {
                             return $obj->status != 'shipped';
                         },
                         'text' => _i('Da consegnare'),
                     ],
-                    'ok' => (object) [
+                    'check' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'shipped';
                         },
                         'text' => _i('Consegnato'),
                     ],
-                    'download-alt' => (object) [
+                    'save' => (object) [
                         'test' => function ($obj) {
                             return $obj->status == 'saved';
                         },
@@ -427,13 +427,13 @@ trait GASModel
             ];
 
             if ($user->can('supplier.add', $user->gas)) {
-                $icons['Supplier']['thumbs-down'] = (object) [
+                $icons['Supplier']['hand-thumbs-down'] = (object) [
                     'test' => function ($obj) {
                         return !is_null($obj->suspended_at);
                     },
                     'text' => _i('Sospeso'),
                 ];
-                $icons['Supplier']['off'] = (object) [
+                $icons['Supplier']['slash-circle'] = (object) [
                     'test' => function ($obj) {
                         return !is_null($obj->deleted_at);
                     },
@@ -442,14 +442,14 @@ trait GASModel
             }
 
             if ($user->can('users.admin', $user->gas)) {
-                $icons['User']['thumbs-down'] = (object) [
+                $icons['User']['hand-thumbs-down'] = (object) [
                     'test' => function ($obj) {
                         return !is_null($obj->suspended_at);
                     },
                     'text' => _i('Sospeso'),
                 ];
 
-                $icons['User']['off'] = (object) [
+                $icons['User']['slash-circle'] = (object) [
                     'test' => function ($obj) {
                         return !is_null($obj->deleted_at);
                     },
@@ -458,7 +458,7 @@ trait GASModel
             }
 
             if ($user->can('movements.admin', $user->gas) || $user->can('movements.view', $user->gas)) {
-                $icons['User']['ban-circle'] = (object) [
+                $icons['User']['wallet'] = (object) [
                     'test' => function ($obj) {
                         return $obj->current_balance_amount < 0;
                     },
@@ -471,7 +471,7 @@ trait GASModel
                     l'hanno pagata o rinnovata
                 */
                 if ($user->gas->getConfig('annual_fee_amount') != 0) {
-                    $icons['User']['euro'] = (object) [
+                    $icons['User']['currency-euro'] = (object) [
                         'test' => function ($obj) {
                             return $obj->fee_id == 0;
                         },
@@ -496,7 +496,7 @@ trait GASModel
             }
 
             if (Gas::count() > 1) {
-                $icons['Aggregate']['retweet'] = (object) [
+                $icons['Aggregate']['share'] = (object) [
                     'test' => function ($obj) {
                         return $obj->gas()->count() > 1;
                     },
@@ -532,19 +532,20 @@ trait GASModel
                     ]
                 ],
                 'User' => [
-                    'king' => (object) [
+                    'person-circle' => (object) [
                         'text' => _i('Ruolo'),
                         'assign' => function ($obj) {
                             $ret = [];
-                            foreach($obj->roles as $r)
-                                $ret[] = 'hidden-king-' . $r->id;
+                            foreach($obj->roles as $r) {
+                                $ret[] = 'hidden-person-circle-' . $r->id;
+                            }
                             return $ret;
                         },
                         'options' => function($objs) {
                             $user = Auth::user();
 
                             return Role::whereNotIn('id', [$user->gas->roles['user'], $user->gas->roles['friend']])->get()->reduce(function($carry, $item) {
-                                $carry['hidden-king-' . $item->id] = $item->name;
+                                $carry['hidden-person-circle-' . $item->id] = $item->name;
                                 return $carry;
                             }, []);
                         }

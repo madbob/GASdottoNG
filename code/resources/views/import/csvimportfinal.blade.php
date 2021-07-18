@@ -1,43 +1,29 @@
-<div class="wizard_page">
-    <div class="modal-body">
+<x-larastrap::modal :title="_i('Importa CSV')" :buttons="[['color' => 'success', 'label' => _i('Chiudi'), 'classes' => ['reloader'], 'attributes' => ['data-bs-dismiss' => 'modal']]]">
+    <p>
+        {{ $title }}:
+    </p>
+
+    <ul class="list-group">
+        @if(empty($objects))
+            <li>{{ _i('Nessuno') }}</li>
+        @else
+            @foreach($objects as $m)
+                <li class="list-group-item">{!! $m->printableName() !!}</li>
+            @endforeach
+        @endif
+    </ul>
+
+    @if(!empty($errors))
+        <hr/>
+
         <p>
-            {{ $title }}:
+            {{ _i('Errori') }}:
         </p>
 
         <ul class="list-group">
-            @if(empty($objects))
-                <li>{{ _i('Nessuno') }}</li>
-            @else
-                @foreach($objects as $m)
-                    <li class="list-group-item">{!! $m->printableName() !!}</li>
-                @endforeach
-            @endif
+            @foreach($errors as $e)
+                <li class="list-group-item">{!! $e !!}</li>
+            @endforeach
         </ul>
-
-        @if(!empty($errors))
-            <hr/>
-
-            <p>
-                {{ _i('Errori') }}:
-            </p>
-
-            <ul class="list-group">
-                @foreach($errors as $e)
-                    <li class="list-group-item">{!! $e !!}</li>
-                @endforeach
-            </ul>
-        @endif
-
-        <div class="clearfix"></div>
-    </div>
-
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default reloader" data-dismiss="modal"
-            @if(isset($extra_closing_attributes))
-                @foreach($extra_closing_attributes as $attr => $value)
-                    {{ $attr }}="{{ $value }}"
-                @endforeach
-            @endif
-        >{{ _i('Chiudi') }}</button>
-    </div>
-</div>
+    @endif
+</x-larastrap::modal>

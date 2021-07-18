@@ -1,16 +1,18 @@
 <?php $columns = $currentgas->orders_display_columns ?>
 
-<div class="btn-group pull-right order-columns-selector">
-    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<div class="btn-group float-end order-columns-selector">
+    <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown">
         {{ _i('Colonne') }} <span class="caret"></span>
     </button>
     <ul class="dropdown-menu">
         @foreach(App\Order::displayColumns() as $identifier => $metadata)
             @if($identifier != 'selection' && $identifier != 'notes' && $identifier != 'discount')
                 <li>
-                    <a href="#">
-                        <input type="checkbox" value="{{ $identifier }}" {{ in_array($identifier, $columns) ? 'checked' : '' }}> {{ $metadata->label }}
-                    </a>
+                    <div class="checkbox dropdown-item">
+                        <label>
+                            <input type="checkbox" value="{{ $identifier }}" {{ in_array($identifier, $columns) ? 'checked' : '' }}> {{ $metadata->label }}
+                        </label>
+                    </div>
                 </li>
             @endif
         @endforeach
@@ -73,11 +75,11 @@
                         @if($order->isActive())
                             @if($summary->products[$product->id]['notes'])
                                 <a class="btn btn-danger" disabled>
-                                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                    <i class="bi-exclamation-circle"></i>
                                 </a>
                             @else
                                 <a class="btn btn-info" disabled>
-                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                    <i class="bi-pencil"></i>
                                 </a>
                             @endif
                         @endif

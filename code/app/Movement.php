@@ -64,7 +64,7 @@ class Movement extends Model
     public function getPaymentIconAttribute()
     {
         $types = MovementType::payments();
-        $icon = 'glyphicon-question-sign';
+        $icon = 'question-circle';
         $name = '???';
 
         foreach ($types as $id => $details) {
@@ -75,7 +75,7 @@ class Movement extends Model
             }
         }
 
-        return '<span class="glyphicon ' . $icon . '" aria-hidden="true"></span> ' . $name;
+        return '<i class="bi-' . $icon . '"></i> ' . $name;
     }
 
     public function getTypeMetadataAttribute()
@@ -85,9 +85,7 @@ class Movement extends Model
 
     public function getValidPaymentsAttribute()
     {
-        $ret = MovementType::paymentsByType($this->type);
-        $ret[$this->method]->checked = true;
-        return $ret;
+        return MovementType::paymentsByType($this->type);
     }
 
     public function printableName()

@@ -96,4 +96,17 @@ class MeasuresController extends Controller
         $measure = Measure::findOrFail($id);
         return view('measures.products-list', ['products' => $measure->products]);
     }
+
+    public function discretes()
+    {
+        $measures = Measure::all();
+        $ret = (object) [];
+
+        foreach($measures as $m) {
+            $mid = $m->id;
+            $ret->$mid = $m->discrete;
+        }
+
+        return response()->json($ret);
+    }
 }

@@ -21,16 +21,28 @@ trait SuspendableTrait {
         }
     }
 
-    public function printableStatus()
+    public function plainStatus()
     {
         if (is_null($this->suspended_at) && is_null($this->deleted_at)) {
-            return _i('Attivo');
+            return 'active';
         }
         else if (is_null($this->suspended_at) == false) {
-            return _i('Sospeso');
+            return 'suspended';
         }
         else if (is_null($this->deleted_at) == false) {
-            return _i('Cessato');
+            return 'deleted';
+        }
+    }
+
+    public function printableStatus()
+    {
+        switch($this->plainStatus()) {
+            case 'active':
+                return _i('Attivo');
+            case 'suspended':
+                return _i('Sospeso');
+            case 'deleted':
+                return _i('Cessato');
         }
     }
 }

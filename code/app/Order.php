@@ -919,6 +919,17 @@ class Order extends Model
         ];
     }
 
+    public static function statuses()
+    {
+        return [
+            'open' => _i('Prenotazioni Aperte'),
+            'closed' => _i('Prenotazioni Chiuse'),
+            'shipped' => _i('Consegnato'),
+            'archived' => _i('Archiviato'),
+            'suspended' => _i('In Sospeso'),
+        ];
+    }
+
     public function getPermissionsProxies()
     {
         return [$this->supplier];

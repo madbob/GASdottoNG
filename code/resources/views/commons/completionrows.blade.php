@@ -15,8 +15,8 @@
         <li class="list-group-item" data-object-id="{{ $obj->id }}">
             {{ $obj->printableName() }}
 
-            <div class="btn btn-xs btn-danger pull-right">
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            <div class="btn btn-xs btn-danger float-end">
+                <i class="bi-x-lg"></i>
             </div>
         </li>
     @endforeach

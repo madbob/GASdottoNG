@@ -1,14 +1,10 @@
-<form class="form-horizontal main-form date-editor" method="PUT" action="{{ route('dates.update', $date->id) }}">
+<x-larastrap::form :obj="$date" classes="main-form date-editor" method="PUT" :action="route('dates.update', $date->id)">
     <div class="row">
-        <div class="col-md-6">
-            @include('commons.textarea', ['obj' => $date, 'name' => 'description', 'label' => _i('Contenuto'), 'mandatory' => true])
-            @include('commons.datefield', ['obj' => $date, 'name' => 'date', 'label' => _i('Data'), 'mandatory' => true])
-        </div>
-        <div class="col-md-6">
+        <div class="col-6">
+            <x-larastrap::textarea name="description" :label="_i('Contenuto')" required />
+            <x-larastrap::datepicker name="date" :label="_i('Data')" required />
         </div>
     </div>
-
-    @include('commons.formbuttons')
-</form>
+</x-larastrap::form>
 
 @stack('postponed')

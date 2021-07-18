@@ -66,22 +66,10 @@ class Invoice extends Model
     public static function statuses()
     {
         return [
-            [
-                'label' => _i('In Attesa'),
-                'value' => 'pending',
-            ],
-            [
-                'label' => _i('Da Verificare'),
-                'value' => 'to_verify',
-            ],
-            [
-                'label' => _i('Verificata'),
-                'value' => 'verified',
-            ],
-            [
-                'label' => _i('Pagata'),
-                'value' => 'payed',
-            ]
+            'pending' => _i('In Attesa'),
+            'to_verify' => _i('Da Verificare'),
+            'verified' => _i('Verificata'),
+            'payed' => _i('Pagata'),
         ];
     }
 

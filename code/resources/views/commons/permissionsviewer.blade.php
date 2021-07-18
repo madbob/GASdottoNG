@@ -3,31 +3,25 @@
         @continue
     @endif
 
-    <div class="form-group">
-        <label class="col-sm-{{ $labelsize }} control-label">{{ $role->name }}</label>
+    <x-larastrap::field :label="$role->name">
+        <label class="static-label">
+            <?php
 
-        <div class="col-sm-{{ $fieldsize - 1 }}">
-            <label class="static-label">
-                <?php
+            $final = [];
 
-                $final = [];
+            if ($role->appliesAll())
+                $final[] = 'Tutti';
 
-                if ($role->appliesAll())
-                    $final[] = 'Tutti';
+            foreach($role->applications() as $targets)
+                $final[] = $targets->printableName();
 
-                foreach($role->applications() as $targets)
-                    $final[] = $targets->printableName();
+            ?>
 
-                ?>
-
-                {{ join(', ', $final) }}
-            </label>
-        </div>
-    </div>
+            {{ join(', ', $final) }}
+        </label>
+    </x-larastrap::field>
 @endforeach
 
 @if($editable && (Gate::check('users.admin', $currentgas) || Gate::check('gas.permissions', $currentgas)))
-    <button class="btn btn-default pull-right async-modal" data-target-url="{{ url('/roles/user/' . $object->id) }}">{{ _i('Edita Ruoli') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
+    <x-larastrap::ambutton classes="float-end" :label="_i('Edita Ruoli')" :data-modal-url="url('/roles/user/' . $object->id)" />
 @endif
-
-<div class="clearfix"></div>

@@ -24,33 +24,17 @@ else {
             <br>
         @endif
 
-        <ul class="nav nav-tabs hidden-xs" role="tablist">
-            <li role="presentation"><a href="#myself-{{ $rand }}" role="tab" data-toggle="tab">{{ _i('La Mia Prenotazione') }}</a></li>
-
-            @if($user->can('users.subusers'))
-                <li role="presentation"><a href="#friends-{{ $rand }}" role="tab" data-toggle="tab">{{ _i('Prenotazioni per gli Amici') }}</a></li>
-            @endif
-
-            @if($standalone == false && $has_shipping && $aggregate->isActive())
-                <li role="presentation"><a href="#others-{{ $rand }}" role="tab" data-toggle="tab">{{ _i('Prenotazioni per Altri') }}</a></li>
-            @endif
-
-            @if($standalone == false && $has_shipping && $aggregate->status == 'closed')
-                <li role="presentation"><a href="#add-others-{{ $rand }}" role="tab" data-toggle="tab">{{ _i('Aggiungi/Modifica Prenotazione') }}</a></li>
-            @endif
-        </ul>
-
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane" id="myself-{{ $rand }}">
+        <x-larastrap::tabs>
+            <x-larastrap::tabpane :label="_i('La Mia Prenotazione')" active="true">
                 @if($required_mode == 'edit')
                     @include('booking.edit', ['aggregate' => $aggregate, 'user' => $user, 'enforced' => $enforced])
                 @else
                     @include('booking.show', ['aggregate' => $aggregate, 'user' => $user])
                 @endif
-            </div>
+            </x-larastrap::tabpane>
 
             @if($user->can('users.subusers'))
-                <div role="tabpanel" class="tab-pane" id="friends-{{ $rand }}">
+                <x-larastrap::tabpane :label="_i('Prenotazioni per gli Amici')">
                     <div class="row">
                         <div class="col-md-12">
                             @include('commons.loadablelist', [
@@ -64,11 +48,11 @@ else {
                             ])
                         </div>
                     </div>
-                </div>
+                </x-larastrap::tabpane>
             @endif
 
-            @if($has_shipping && $aggregate->isActive())
-                <div role="tabpanel" class="tab-pane fillable-booking-space" id="others-{{ $rand }}">
+            @if($standalone == false && $has_shipping && $aggregate->isActive())
+                <x-larastrap::tabpane :label="_i('Prenotazioni per Altri')" classes="fillable-booking-space">
                     <div class="row">
                         <div class="col-md-12">
                             <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="{{ _i('Cerca Utente') }}" />
@@ -80,11 +64,11 @@ else {
                         <div class="col-md-12 other-booking">
                         </div>
                     </div>
-                </div>
+                </x-larastrap::tabpane>
             @endif
 
-            @if($has_shipping && $aggregate->status == 'closed')
-                <div role="tabpanel" class="tab-pane fillable-booking-space" id="add-others-{{ $rand }}">
+            @if($standalone == false && $has_shipping && $aggregate->status == 'closed')
+                <x-larastrap::tabpane :label="_i('Aggiungi/Modifica Prenotazione')" classes="fillable-booking-space">
                     <div class="alert alert-danger">
                         {{ _i('Attenzione: questo ordine è stato chiuso, prima di aggiungere o modificare una prenotazione accertati che i quantitativi totali desiderati non siano già stati comunicati al fornitore o che possano comunque essere modificati.') }}
                     </div>
@@ -100,8 +84,8 @@ else {
                         <div class="col-md-12 other-booking">
                         </div>
                     </div>
-                </div>
+                </x-larastrap::tabpane>
             @endif
-        </div>
+        </x-larastrap::tabs>
     </div>
 </div>

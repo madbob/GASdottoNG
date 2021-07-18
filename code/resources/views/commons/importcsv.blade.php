@@ -5,62 +5,37 @@ if (!isset($modal_extras))
 
 ?>
 
-<button type="button" class="btn btn-default hidden-xs hidden-sm" data-toggle="modal" data-target="#{{ $modal_id }}">{{ _i('Importa CSV') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
-<div class="modal fade wizard" id="{{ $modal_id }}" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-extra-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">{{ _i('Importa CSV') }}</h4>
-            </div>
-            <div class="wizard_page">
-                <form class="form-horizontal" method="POST" action="{{ url('import/csv?type=' . $import_target . '&step=guess') }}" data-toggle="validator" enctype="multipart/form-data">
-                    @foreach($modal_extras as $name => $value)
-                        <input type="hidden" name="{{ $name }}" value="{{ $value }}" />
-                    @endforeach
+<x-larastrap::mbutton classes="d-none d-md-inline-block" :label="_i('Importa CSV')" :triggers_modal="$modal_id" />
 
-                    <div class="modal-body">
-                        <p>
-                            {{ _i('Sono ammessi solo files in formato CSV. Si raccomanda di formattare la propria tabella in modo omogeneo, senza usare celle unite, celle vuote, intestazioni: ogni riga deve contenere tutte le informazioni relative al soggetto. Eventuali prezzi e somme vanno espresse senza includere il simbolo dell\'euro.') }}
-                        </p>
-                        <p>
-                            {{ _i('Una volta caricato il file sarà possibile specificare quale attributo rappresenta ogni colonna trovata nel documento.') }}
-                        </p>
-                        <p class="text-center">
-                            <img src="{{ url('images/csv_explain.png') }}" alt="{{ _i('Sono ammessi solo files in formato CSV. Si raccomanda di formattare la propria tabella in modo omogeneo, senza usare celle unite, celle vuote, intestazioni: ogni riga deve contenere tutte le informazioni relative al soggetto. Eventuali prezzi e somme vanno espresse senza includere il simbolo dell\'euro.') }}">
-                        </p>
+<x-larastrap::modal :title="_i('Importa CSV')" id="{{ $modal_id }}">
+    <div class="wizard_page">
+        <x-larastrap::form method="POST" :action="url('import/csv?type=' . $import_target . '&step=guess')" :buttons="[]">
+            @foreach($modal_extras as $name => $value)
+                <input type="hidden" name="{{ $name }}" value="{{ $value }}" />
+            @endforeach
 
-                        <hr/>
+            <p>
+                {{ _i('Sono ammessi solo files in formato CSV. Si raccomanda di formattare la propria tabella in modo omogeneo, senza usare celle unite, celle vuote, intestazioni: ogni riga deve contenere tutte le informazioni relative al soggetto. Eventuali prezzi e somme vanno espresse senza includere il simbolo dell\'euro.') }}
+            </p>
+            <p>
+                {{ _i('Una volta caricato il file sarà possibile specificare quale attributo rappresenta ogni colonna trovata nel documento.') }}
+            </p>
+            <p class="text-center">
+                <img src="{{ url('images/csv_explain.png') }}" alt="{{ _i('Sono ammessi solo files in formato CSV. Si raccomanda di formattare la propria tabella in modo omogeneo, senza usare celle unite, celle vuote, intestazioni: ogni riga deve contenere tutte le informazioni relative al soggetto. Eventuali prezzi e somme vanno espresse senza includere il simbolo dell\'euro.') }}">
+            </p>
 
-                        <?php
+            <hr/>
 
-                        $data = (object)[];
-                        foreach($modal_extras as $name => $value) {
-                            $data->$name = $value;
-                        }
+            <?php
 
-                        ?>
+            $data = (object)[];
+            foreach($modal_extras as $name => $value) {
+                $data->$name = $value;
+            }
 
-                        @include('commons.filefield', [
-                            'obj' => null,
-                            'name' => 'file',
-                            'label' => _i('File da Caricare'),
-                            'mandatory' => true,
-                            'extra_class' => 'immediate-run',
-                            'extras' => [
-                                'data-url' => 'import/csv?type=' . $import_target . '&step=guess',
-                                'data-form-data' => json_encode($data),
-                                'data-run-callback' => 'wizardLoadPage'
-                            ]
-                        ])
-                    </div>
+            ?>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
-                        <button type="submit" class="btn btn-success">{{ _i('Avanti') }}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+            <x-larastrap::file name="file" :label="_i('File da Caricare')" classes="immediate-run" required :data-url="sprintf('import/csv?type=%s&step=guess', $import_target)" :data-form-data="json_encode($data)" />
+        </x-larastrap::form>
     </div>
-</div>
+</x-larastrap::modal>

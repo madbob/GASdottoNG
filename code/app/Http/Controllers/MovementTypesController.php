@@ -21,16 +21,6 @@ class MovementTypesController extends Controller
         ]);
     }
 
-    public function index()
-    {
-        $user = Auth::user();
-        if ($user->can('movements.types', $user->gas) == false) {
-            abort(503);
-        }
-
-        return view('movementtypes.admin', ['types' => MovementType::types()]);
-    }
-
     public function store(Request $request)
     {
         $user = Auth::user();

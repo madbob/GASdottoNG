@@ -326,7 +326,7 @@ class Aggregate extends Model
             $extra_class = '';
         }
 
-        $ret .= '<span class="appended-loadable-message ' . $extra_class . '">' . $message . '</span>';
+        $ret .= '<span class="appended-loadable-message d-block text-end ' . $extra_class . '">' . $message . '</span>';
         return $ret;
     }
 

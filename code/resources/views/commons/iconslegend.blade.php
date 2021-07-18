@@ -1,13 +1,20 @@
 <?php
 
-if (!is_array($class))
+if (!is_array($class)) {
     $class = [$class];
-if (!isset($table_filter))
+}
+
+if (!isset($table_filter)) {
     $table_filter = false;
-if (!isset($contents))
+}
+
+if (!isset($contents)) {
     $contents = null;
-if (!isset($limit_to))
+}
+
+if (!isset($limit_to)) {
     $limit_to = null;
+}
 
 $icons = [];
 
@@ -19,25 +26,23 @@ foreach($class as $c) {
 ?>
 
 @if(!empty($icons))
-    <div class="btn-group pull-right {{ $table_filter ? 'table-' : '' }}icons-legend" role="group" data-list-target="{{ $target }}">
+    <div class="btn-group float-end {{ $table_filter ? 'table-' : '' }}icons-legend" role="group" data-list-target="{{ $target }}">
         @foreach($icons as $icon => $label)
             @if($limit_to == null || in_array($icon, $limit_to))
                 @if(is_string($label))
                     <button type="button" class="btn btn-info">
-                        <span class="glyphicon glyphicon-{{ $icon }}" aria-hidden="true"></span>&nbsp;
-                        <span class="hidden-xs hidden-sm">{{ $label }}</span>
+                        <i class="bi-{{ $icon }}"></i>&nbsp;
+                        <span>{{ $label }}</span>
                     </button>
                 @else
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
-                            <span class="glyphicon glyphicon-{{ $icon }}" aria-hidden="true"></span>&nbsp;<span class="hidden-xs hidden-sm">{{ $label->label }}</span> <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            @foreach($label->items as $subicon => $sublabel)
-                                <li><a href="#"><span class="glyphicon glyphicon-{{ $subicon }}" aria-hidden="true"></span>&nbsp;{{ $sublabel }}</a></li>
-                            @endforeach
-                        </ul>
-                    </div>
+                    <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="bi-{{ $icon }}"></i>&nbsp;<span>{{ $label->label }}</span> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        @foreach($label->items as $subicon => $sublabel)
+                            <li><a href="#" class="dropdown-item"><i class="bi-{{ $subicon }}"></i>&nbsp;{{ $sublabel }}</a></li>
+                        @endforeach
+                    </ul>
                 @endif
             @endif
         @endforeach

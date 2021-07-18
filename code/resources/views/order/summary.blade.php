@@ -10,57 +10,61 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
 
 ?>
 
-<div class="flowbox">
-    <div class="mainflow hidden-md">
-        <input type="text" class="form-control table-text-filter" data-list-target="#{{ $table_identifier }}">
-    </div>
+<div class="row d-none d-md-flex mb-1">
+    <div class="col flowbox">
+        <div class="form-group mainflow d-none d-xl-block">
+            <input type="text" class="form-control table-text-filter" data-list-target="#{{ $table_identifier }}" placeholder="{{ _i('Filtra') }}">
+        </div>
 
-    <div class="btn-group table-sorter" data-table-target="#{{ $table_identifier }}">
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-            {{ _i('Ordina Per') }} <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-            <li>
-                <a href="#" data-sort-by="name">{{ _i('Nome') }}</a>
-                <a href="#" data-sort-by="category_name">{{ _i('Categoria') }}</a>
-            </li>
-        </ul>
-    </div>&nbsp;
-
-    <div class="btn-group hidden-sm hidden-xs order-columns-selector">
-        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span>&nbsp;{{ _i('Colonne') }} <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-            @foreach($display_columns as $identifier => $metadata)
+        <div class="btn-group table-sorter" data-table-target="#{{ $table_identifier }}">
+            <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
+                {{ _i('Ordina Per') }} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
                 <li>
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" value="{{ $identifier }}" {{ in_array($identifier, $columns) ? 'checked' : '' }}> {{ $metadata->label }}
-                        </label>
-                    </div>
+                    <a href="#" class="dropdown-item" data-sort-by="name">{{ _i('Nome') }}</a>
                 </li>
-            @endforeach
-        </ul>
-    </div>&nbsp;
+                <li>
+                    <a href="#" class="dropdown-item" data-sort-by="category_name">{{ _i('Categoria') }}</a>
+                </li>
+            </ul>
+        </div>
 
-    @include('commons.iconslegend', [
-        'class' => 'Product',
-        'target' => '#' . $table_identifier,
-        'table_filter' => true,
-        'limit_to' => ['th'],
-        'contents' => $order->supplier->products
-    ])
+        <div class="btn-group order-columns-selector">
+            <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="bi-layout-three-columns"></i>&nbsp;{{ _i('Colonne') }} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                @foreach($display_columns as $identifier => $metadata)
+                    <li>
+                        <div class="checkbox dropdown-item">
+                            <label>
+                                <input type="checkbox" value="{{ $identifier }}" {{ in_array($identifier, $columns) ? 'checked' : '' }}> {{ $metadata->label }}
+                            </label>
+                        </div>
+                    </li>
+                @endforeach
+            </ul>
+        </div>&nbsp;
+
+        @include('commons.iconslegend', [
+            'class' => 'Product',
+            'target' => '#' . $table_identifier,
+            'table_filter' => true,
+            'limit_to' => ['th'],
+            'contents' => $order->supplier->products
+        ])
+    </div>
 </div>
-
-<hr>
 
 <table class="table order-summary" id="{{ $table_identifier }}">
     <thead>
         <tr>
             @foreach($display_columns as $identifier => $metadata)
                 @if($identifier == 'selection')
-                    <th width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}"><button class="btn btn-default btn-xs toggle-product-abilitation" data-toggle="button" aria-pressed="false" autocomplete="off">{!! _i('Tutti') !!}</button></th>
+                    <th width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
+                        <button class="btn btn-light btn-sm toggle-product-abilitation" data-bs-toggle="button">{!! _i('Vedi Tutti') !!}</button>
+                    </th>
                 @else
                     <th width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">{{ $metadata->label }}</th>
                 @endif
@@ -70,7 +74,7 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
 
     <tbody>
         @foreach($categories as $cat)
-            <tr class="table-sorting-header hidden" data-sorting-category_name="{{ $cat }}">
+            <tr class="table-sorting-header d-none" data-sorting-category_name="{{ $cat }}">
                 <td colspan="{{ count($display_columns) }}">
                     {{ $cat }}
                 </td>
@@ -93,7 +97,7 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
             ?>
 
             @if($enabled == false)
-                <tr class="product-disabled do-not-filter hidden-sm hidden-xs" data-product-id="{{ $product->id }}" data-sorting-name="{{ $product->name }}" data-sorting-category_name="{{ $product->category_name }}">
+                <tr class="product-disabled do-not-filter" data-product-id="{{ $product->id }}" data-sorting-name="{{ $product->name }}" data-sorting-category_name="{{ $product->category_name }}">
             @else
                 <tr data-product-id="{{ $product->id }}" data-sorting-name="{{ $product->name }}" data-sorting-category_name="{{ $product->category_name }}">
             @endif
@@ -102,9 +106,9 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                 <td class="order-cell-selection {{ in_array('selection', $columns) ? '' : 'hidden' }}">
                     <input class="enabling-toggle" type="checkbox" name="enabled[]" value="{{ $product->id }}" {{ $enabled ? 'checked' : '' }} {{ $order->isActive() ? '' : 'disabled' }} />
 
-                    <div class="hidden">
+                    <div class="visually-hidden">
                         @foreach($product->icons() as $icon)
-                            <span class="glyphicon glyphicon-{{ $icon }}" aria-hidden="true"></span>
+                            <i class="bi-{{ $icon }}"></i>
                         @endforeach
                     </div>
                 </td>
@@ -177,11 +181,11 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                     @if($order->isActive())
                         @if($product->package_size != 0 && isset($summary->products[$product->id]->quantity) && $summary->products[$product->id]->quantity != 0 && round(fmod($summary->products[$product->id]->quantity, $product->fixed_package_size)) != 0)
                             <a href="{{ url('orders/fixes/' . $order->id . '/' . $product->id) }}" class="btn btn-danger async-modal">
-                                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                <i class="bi-exclamation-circle"></i>
                             </a>
                         @else
                             <a href="{{ url('orders/fixes/' . $order->id . '/' . $product->id) }}" class="btn btn-info async-modal">
-                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                <i class="bi-pencil"></i>
                             </a>
                         @endif
                     @endif

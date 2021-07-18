@@ -172,6 +172,15 @@ class InvoicesController extends Controller
         ]);
     }
 
+    public function orders($id)
+    {
+        $invoice = Invoice::findOrFail($id);
+
+        return view('invoice.orders', [
+            'invoice' => $invoice,
+        ]);
+    }
+
     public function getMovements($id)
     {
         $user = Auth::user();
@@ -199,10 +208,7 @@ class InvoicesController extends Controller
         $available_types = MovementType::types();
         foreach($available_types as $at) {
             if (($at->sender_type == 'App\Gas' && ($at->target_type == 'App\Supplier' || $at->target_type == 'App\Invoice')) || ($at->sender_type == 'App\Supplier' && $at->target_type == 'App\Gas')) {
-                $alternative_types[] = [
-                    'value' => $at->id,
-                    'label' => $at->name,
-                ];
+                $alternative_types[$at->id] = $at->name;
             }
         }
 

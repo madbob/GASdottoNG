@@ -1,54 +1,38 @@
-<div class="wizard_page">
-    <form class="form-horizontal" method="POST" action="{{ url('import/gdxp?step=run') }}" data-toggle="validator">
-        <input type="hidden" name="path" value="{{ $path }}">
+<x-larastrap::modal :title="_i('Importa GDXP')">
+    <div class="wizard_page">
+        <x-larastrap::form method="POST" :action="url('import/gdxp?step=run')" :buttons="[['color' => 'success', 'type' => 'submit', 'label' => _i('Avanti')]]">
+            <input type="hidden" name="path" value="{{ $path }}">
 
-        <div class="modal-body">
             @foreach($data as $supplier)
                 <?php $existing = App\Supplier::where('name', $supplier->name)->orWhere('vat', $supplier->vat)->first() ?>
 
                 @if($supplier->orders->isEmpty() == false)
-                    @include('commons.staticdatefield', ['obj' => $supplier->orders->first(), 'name' => 'start', 'label' => _i('Data Apertura')])
-                    @include('commons.staticdatefield', ['obj' => $supplier->orders->first(), 'name' => 'end', 'label' => _i('Data Chiusura')])
+                    <x-larastrap::enclose :obj="$supplier->orders->first()">
+                        <x-larastrap::datepicker name="start" :label="_i('Data Apertura')" readonly disabled />
+                        <x-larastrap::datepicker name="end" :label="_i('Data Chiusura')" readonly disabled />
+                    </x-larastrap::enclose>
                 @endif
 
-                <div class="form-group">
-                    <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Fornitore') }}</label>
-                    <div class="col-sm-{{ $fieldsize }}">
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="supplier_source" value="new" {{ $existing ? '' : 'checked' }}> {{ _i('Crea nuovo') }}: {{ $supplier->name }}
-                            </label>
-                        </div>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="supplier_source" value="update" {{ $existing ? 'checked' : '' }}> {{ _i('Aggiorna fornitore esistente') }}
-                            </label>
-                            <select name="supplier_update" class="form-control">
-                                <option value="none" selected>{{ _i('Seleziona un fornitore') }}</option>
-                                @foreach($currentgas->suppliers as $s)
-                                    <option value="{{ $s->id }}" {{ $existing && $existing->id == $s->id ? 'selected' : '' }}>{{ $s->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Prodotti') }}</label>
-                    <div class="col-sm-{{ $fieldsize }}">
-                        <label class="static-label text-muted">
-                            {{ _i('Nel file ci sono %s prodotti.', $supplier->products->count()) }}
+                <x-larastrap::field :label="_i('Fornitore')">
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="supplier_source" value="new" {{ $existing ? '' : 'checked' }}> {{ _i('Crea nuovo') }}: {{ $supplier->name }}
                         </label>
                     </div>
-                </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="supplier_source" value="update" {{ $existing ? 'checked' : '' }}> {{ _i('Aggiorna fornitore esistente') }}
+                        </label>
+                        <x-larastrap::selectobj name="supplier_update" squeeze :options="$currentgas->suppliers" :extraitem="_i('Seleziona un fornitore')" :value="$existing ? $existing->id : 0" />
+                    </div>
+                </x-larastrap::field>
+
+                <x-larastrap::field :label="_i('Prodotti')">
+                    <label class="static-label text-muted">
+                        {{ _i('Nel file ci sono %s prodotti.', $supplier->products->count()) }}
+                    </label>
+                </x-larastrap::field>
             @endforeach
-
-            <div class="clearfix"></div>
-        </div>
-
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
-            <button type="submit" class="btn btn-success">{{ _i('Avanti') }}</button>
-        </div>
-    </form>
-</div>
+        </x-larastrap::form>
+    </div>
+</x-larastrap::modal>

@@ -34,30 +34,12 @@ function htmlLang()
 function getLanguages()
 {
     return [
-        [
-            'value' => 'it_IT',
-            'label' => 'Italiano'
-        ],
-        [
-            'value' => 'en_EN',
-            'label' => 'English'
-        ],
-        [
-            'value' => 'de_DE',
-            'label' => 'Deutsch'
-        ],
-        [
-            'value' => 'fr_FR',
-            'label' => 'Français'
-        ],
-        [
-            'value' => 'nl_NL',
-            'label' => 'Nederlands'
-        ],
-        [
-            'value' => 'nb_NO',
-            'label' => 'Norwegian Bokmål'
-        ],
+        'it_IT' => 'Italiano',
+        'en_EN' => 'English',
+        'de_DE' => 'Deutsch',
+        'fr_FR' => 'Français',
+        'nl_NL' => 'Nederlands',
+        'nb_NO' => 'Norwegian Bokmål',
     ];
 }
 

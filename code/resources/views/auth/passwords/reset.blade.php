@@ -2,58 +2,13 @@
 
 @section('content')
 
-<div class="col-md-6 col-md-offset-3">
-    <form class="form-horizontal" role="form" method="POST" action="{{ route('password.update') }}">
-        {{ csrf_field() }}
+<div class="col-12 col-md-6 offset-md-3">
+    <x-larastrap::form method="POST" :action="route('password.update')" :buttons="[['color' => 'success', 'type' => 'submit', 'label' => _i('Aggiorna Password')]]">
         <input type="hidden" name="token" value="{{ $token }}">
-
-        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-            <label for="email" class="col-md-2 control-label">E-Mail Address</label>
-
-            <div class="col-md-10">
-                <input id="email" type="email" class="form-control" name="email" value="{{ $email or old('email') }}" required autofocus>
-
-                @if ($errors->has('email'))
-                    <span class="help-block">
-                        <strong>{{ $errors->first('email') }}</strong>
-                    </span>
-                @endif
-            </div>
-        </div>
-
-        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-            <label for="password" class="col-md-2 control-label">Password</label>
-
-            <div class="col-md-10">
-                <input id="password" type="password" class="form-control" name="password" required>
-
-                @if ($errors->has('password'))
-                    <span class="help-block">
-                        <strong>{{ $errors->first('password') }}</strong>
-                    </span>
-                @endif
-            </div>
-        </div>
-
-        <div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-            <label for="password-confirm" class="col-md-2 control-label">Conferma Password</label>
-            <div class="col-md-10">
-                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
-
-                @if ($errors->has('password_confirmation'))
-                    <span class="help-block">
-                        <strong>{{ $errors->first('password_confirmation') }}</strong>
-                    </span>
-                @endif
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button class="btn btn-success pull-right" type="submit">Aggiorna Password</button>
-            </div>
-        </div>
-    </form>
+        <x-larastrap::text name="email" :label="_i('E-Mail')" required />
+        <x-larastrap::password name="password" :label="_i('Password')" required />
+        <x-larastrap::password name="password_confirmation" :label="_i('Conferma Password')" required />
+    </x-larastrap::form>
 </div>
 
 @endsection

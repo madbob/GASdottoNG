@@ -74,10 +74,23 @@ class ReceiptsController extends Controller
         return $this->successResponse();
     }
 
+    public function handle(Request $request, $id)
+    {
+        $receipt = Receipt::findOrFail($id);
+        $user = $request->user();
+
+        if ($user->can('movements.admin', $user->gas) || $user->can('movements.view', $user->gas) || $receipt->user_id == $user->id) {
+            return view('receipt.handle', ['receipt' => $receipt]);
+        }
+        else {
+            abort(503);
+        }
+    }
+
     public function download(Request $request, $id)
     {
         $receipt = Receipt::findOrFail($id);
-        $user = Auth::user();
+        $user = $request->user();
 
         if ($user->can('movements.admin', $user->gas) || $user->can('movements.view', $user->gas) || $receipt->user_id == $user->id) {
             $pdf = PDF::loadView('documents.receipt', ['receipt' => $receipt]);

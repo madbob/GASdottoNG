@@ -17,72 +17,45 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
 
 ?>
 
-@if($editable)
-    <?php $active_tab = $active_tab ?? 'profile' ?>
-
-    @include('commons.tabs', ['active' => $active_tab, 'tabs' => [
-        (object) [
-            'label' => _i('Anagrafica'),
-            'id' => 'profile'
-        ],
-        (object) [
-            'label' => _i('Contabilità'),
-            'id' => 'accounting',
-            'enabled' => $has_accounting,
-        ],
-        (object) [
-            'label' => _i('Prenotazioni'),
-            'id' => 'bookings',
-            'enabled' => $has_bookings,
-        ],
-        (object) [
-            'label' => _i('Amici'),
-            'id' => 'friends',
-            'enabled' => $has_friends,
-        ],
-        (object) [
-            'label' => _i('Notifiche'),
-            'id' => 'notifications',
-            'enabled' => $has_notifications,
-        ],
-    ]])
-@else
-    <?php $active_tab = 'profile' ?>
-@endif
-
-<div class="tab-content">
-    <div role="tabpanel" class="tab-pane {{ $active_tab == 'profile' ? 'active' : '' }}" id="profile">
-        <form class="form-horizontal main-form user-editor {{ $display_page ? 'inner-form' : '' }}" method="PUT" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data" autocomplete="off">
+<x-larastrap::tabs>
+    <x-larastrap::tabpane :id="sprintf('profile-%s', sanitizeId($user->id))" label="{{ _i('Anagrafica') }}" active="true">
+        <x-larastrap::mform :obj="$user" method="PUT" :action="route('users.update', $user->id)" :classes="$display_page ? 'inner-form' : ''" :nodelete="$display_page || $user->isFriend() == false">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                     @if($user->isFriend() == false)
                         @if($editable)
-                            @include('user.base-edit', ['user' => $user])
-                            @include('commons.datefield', ['obj' => $user, 'name' => 'birthday', 'label' => _i('Data di Nascita')])
-                            @include('commons.textfield', ['obj' => $user, 'name' => 'taxcode', 'label' => _i('Codice Fiscale')])
-                            @include('commons.textfield', ['obj' => $user, 'name' => 'family_members', 'label' => _i('Persone in Famiglia')])
+                            <x-larastrap::text name="username" :label="_i('Username')" required />
+                            <x-larastrap::text name="firstname" :label="_i('Nome')" />
+                            <x-larastrap::text name="lastname" :label="_i('Cognome')" />
+                            @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => _i('Password')])
+                            <x-larastrap::datepicker name="birthday" :label="_i('Data di Nascita')" />
+                            <x-larastrap::text name="taxcode" :label="_i('Codice Fiscale')" />
+                            <x-larastrap::text name="family_members" :label="_i('Persone in Famiglia')" />
                             @include('commons.contactswidget', ['obj' => $user])
                         @else
-                            @include('commons.staticstringfield', ['obj' => $user, 'name' => 'username', 'label' => _i('Username')])
-                            @include('commons.staticstringfield', ['obj' => $user, 'name' => 'firstname', 'label' => _i('Nome')])
-                            @include('commons.staticstringfield', ['obj' => $user, 'name' => 'lastname', 'label' => _i('Cognome')])
+                            <x-larastrap::text name="username" :label="_i('Username')" readonly disabled />
+                            <x-larastrap::text name="firstname" :label="_i('Nome')" readonly disabled />
+                            <x-larastrap::text name="lastname" :label="_i('Cognome')" readonly disabled />
 
                             @if($personal_details)
                                 @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => _i('Password')])
-                                @include('commons.staticdatefield', ['obj' => $user, 'name' => 'birthday', 'label' => _i('Data di Nascita')])
-                                @include('commons.staticstringfield', ['obj' => $user, 'name' => 'taxcode', 'label' => _i('Codice Fiscale')])
+                                <x-larastrap::datepicker name="birthday" :label="_i('Data di Nascita')" readonly disabled />
+                                <x-larastrap::text name="taxcode" :label="_i('Codice Fiscale')" readonly disabled />
                             @endif
 
                             @include('commons.staticcontactswidget', ['obj' => $user])
                         @endif
                     @else
                         @if($editable)
-                            @include('user.base-edit', ['user' => $user])
+                            <x-larastrap::text name="username" :label="_i('Username')" />
+                            <x-larastrap::text name="firstname" :label="_i('Nome')" />
+                            <x-larastrap::text name="lastname" :label="_i('Cognome')" />
+                            @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => _i('Password')])
                             @include('commons.contactswidget', ['obj' => $user])
                         @else
-                            @include('commons.staticstringfield', ['obj' => $user, 'name' => 'username', 'label' => _i('Username')])
-                            @include('commons.staticstringfield', ['obj' => $user, 'name' => 'firstname', 'label' => _i('Nome')])
-                            @include('commons.staticstringfield', ['obj' => $user, 'name' => 'lastname', 'label' => _i('Cognome')])
+                            <x-larastrap::text name="username" :label="_i('Username')" readonly disabled />
+                            <x-larastrap::text name="firstname" :label="_i('Nome')" readonly disabled />
+                            <x-larastrap::text name="lastname" :label="_i('Cognome')" readonly disabled />
 
                             @if($personal_details)
                                 @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => _i('Password')])
@@ -92,7 +65,7 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
                         @endif
                     @endif
                 </div>
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                     @if($user->isFriend() == false)
                         @if($editable)
                             @include('commons.imagefield', ['obj' => $user, 'name' => 'picture', 'label' => _i('Foto'), 'valuefrom' => 'picture_url'])
@@ -101,227 +74,128 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
                         @endif
 
                         @if($admin_editable)
-                            @include('commons.datefield', ['obj' => $user, 'name' => 'member_since', 'label' => _i('Membro da')])
-                            @include('commons.textfield', ['obj' => $user, 'name' => 'card_number', 'label' => _i('Numero Tessera')])
+                            <x-larastrap::datepicker name="member_since" :label="_i('Membro da')" />
+                            <x-larastrap::text name="card_number" :label="_i('Numero Tessera')" />
                         @else
-                            @include('commons.staticdatefield', ['obj' => $user, 'name' => 'member_since', 'label' => _i('Membro da')])
-                            @include('commons.staticstringfield', ['obj' => $user, 'name' => 'card_number', 'label' => _i('Numero Tessera')])
+                            <x-larastrap::datepicker name="member_since" :label="_i('Membro da')" readonly disabled />
+                            <x-larastrap::text name="card_number" :label="_i('Numero Tessera')" readonly disabled />
                         @endif
 
                         @if($editable || $personal_details)
                             @include('user.movements', ['editable' => $admin_editable])
 
-                            @include('commons.staticdatefield', ['obj' => $user, 'name' => 'last_login', 'label' => _i('Ultimo Accesso')])
-                            @include('commons.staticdatefield', ['obj' => $user, 'name' => 'last_booking', 'label' => _i('Ultima Prenotazione')])
+                            <x-larastrap::datepicker name="last_login" :label="_i('Ultimo Accesso')" readonly disabled />
+                            <x-larastrap::datepicker name="last_booking" :label="_i('Ultima Prenotazione')" readonly disabled />
 
                             @if($currentgas->hasFeature('shipping_places'))
-                                @include('commons.selectobjfield', [
-                                    'obj' => $user,
-                                    'name' => 'preferred_delivery_id',
-                                    'objects' => $currentgas->deliveries,
-                                    'label' => _i('Luogo di Consegna'),
-                                    'help_popover' => _i("Dove l'utente preferisce avere i propri prodotti recapitati. Permette di organizzare le consegne in luoghi diversi."),
-                                    'extra_selection' => [
-                                        '0' => _i('Nessuno')
-                                    ]
-                                ])
+                                <x-larastrap::selectobj name="preferred_delivery_id" :label="_i('Luogo di Consegna')" :options="$currentgas->deliveries" :extraitem="_i('Nessuno')" :pophelp="_i('Dove l\'utente preferisce avere i propri prodotti recapitati. Permette di organizzare le consegne in luoghi diversi.')" />
                             @endif
                         @endif
 
                         @if($admin_editable)
                             @include('commons.statusfield', ['target' => $user])
-
-                            <div class="form-group">
-                                <label class="col-sm-{{ $labelsize }} control-label">{{ _i('Modalità Pagamento') }}</label>
-
-                                <div class="col-sm-{{ $fieldsize }}">
-                                    <div class="btn-group" data-toggle="buttons">
-                                        <label class="btn btn-default {{ $user->payment_method->id == 'none' ? 'active' : '' }}">
-                                            <input type="radio" name="payment_method_id" value="none" {{ $user->payment_method->id == 'none' ? 'checked' : '' }}> {{ _i('Non Specificato') }}
-                                        </label>
-                                        @foreach(App\MovementType::payments() as $payment_identifier => $payment_meta)
-                                            <label class="btn btn-default {{ $user->payment_method->id == $payment_identifier ? 'active' : '' }}">
-                                                <input type="radio" name="payment_method_id" value="{{ $payment_identifier }}" {{ $user->payment_method->id == $payment_identifier ? 'checked' : '' }}> {{ $payment_meta->name }}
-                                            </label>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
+                            <x-larastrap::radios name="payment_method_id" :label="_i('Modalità Pagamento')" :options="App\MovementType::paymentsSimple()" />
 
                             @if($user->gas->hasFeature('rid'))
-                                <div class="form-group">
-                                    <label class="col-sm-{{ $labelsize }} control-label">
-                                        @include('commons.helpbutton', ['help_popover' => _i("Specifica qui i parametri per la generazione dei RID per questo utente. Per gli utenti per i quali questi campi non sono stati compilati non sarà possibile generare alcun RID.")])
-                                        {{ _i('Configurazione SEPA') }}
-                                    </label>
-
-                                    <div class="col-sm-{{ $fieldsize }}">
-                                        @include('commons.textfield', ['obj' => $user, 'name' => 'rid->iban', 'label' => _i('IBAN'), 'squeeze' => true])
-
-                                        <div class="form-group">
-                                            <div class="col-sm-5">
-                                                @include('commons.textfield', ['obj' => $user, 'name' => 'rid->id', 'label' => _i('Identificativo Mandato SEPA'), 'squeeze' => true])
-                                            </div>
-                                            <div class="col-sm-7">
-                                                @include('commons.datefield', ['obj' => $user, 'name' => 'rid->date', 'label' => _i('Data Mandato SEPA'), 'squeeze' => true])
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <x-larastrap::field :label="_i('Configurazione SEPA')" :pophelp="_i('Specifica qui i parametri per la generazione dei RID per questo utente. Per gli utenti per i quali questi campi non sono stati compilati non sarà possibile generare alcun RID.')">
+                                    <x-larastrap::text name="rid->iban" :label="_i('IBAN')" squeeze="true" :value="$user->rid->iban" placeholder="_i('IBAN')" />
+                                    <x-larastrap::text name="rid->id" :label="_i('Identificativo Mandato SEPA')" squeeze="true" :value="$user->rid->id" placeholder="_i('Identificativo Mandato SEPA')" />
+                                    <x-larastrap::datepicker name="rid->date" :label="_i('Data Mandato SEPA')" squeeze="true" :value="$user->rid->date" />
+                                </x-larastrap::field>
                             @endif
                         @endif
 
                         <hr/>
                         @include('commons.permissionsviewer', ['object' => $user, 'editable' => $admin_editable])
                     @else
-                        @include('commons.staticdatefield', ['obj' => $user, 'name' => 'member_since', 'label' => _i('Membro da')])
-                        @include('commons.staticdatefield', ['obj' => $user, 'name' => 'last_login', 'label' => _i('Ultimo Accesso')])
-                        @include('commons.staticdatefield', ['obj' => $user, 'name' => 'last_booking', 'label' => _i('Ultima Prenotazione')])
+                        <x-larastrap::datepicker name="member_since" :label="_i('Membro da')" readonly disabled />
+                        <x-larastrap::datepicker name="last_login" :label="_i('Ultimo Accesso')" readonly disabled />
+                        <x-larastrap::datepicker name="last_booking" :label="_i('Ultima Prenotazione')" readonly disabled />
                     @endif
                 </div>
             </div>
 
-            @if($display_page)
-                <div class="row">
-                    <hr>
-                    <div class="col-md-12">
-                        <div class="btn-group pull-right main-form-buttons" role="group">
-                            <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
-                        </div>
-                    </div>
-                </div>
-            @else
-                @include('commons.formbuttons', ['obj' => $user, 'no_delete' => $user->isFriend() == false])
-            @endif
-        </form>
-    </div>
+            <hr/>
+        </x-larastrap::mform>
+    </x-larastrap::tabpane>
 
     @if($has_accounting)
-        <div role="tabpanel" class="tab-pane {{ $active_tab == 'accounting' ? 'active' : '' }}" id="accounting">
+        <x-larastrap::tabpane :id="sprintf('accounting-%s', sanitizeId($user->id))" label="{{ _i('Contabilità') }}">
             @if($user->gas->hasFeature('paypal'))
-                <button type="button" class="btn btn-warning pull-right" data-toggle="modal" data-target="#paypalCredit">{{ _i('Ricarica Credito con PayPal') }}</button>
+                <x-larastrap::mbutton classes="float-end" :label="_i('Ricarica Credito con PayPal')" triggers_modal="#paypalCredit" />
 
-                <div class="modal fade" id="paypalCredit" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <form class="form-horizontal direct-submit" method="POST" action="{{ route('payment.do') }}" data-toggle="validator">
-                                @csrf
+                <x-larastrap::modal :title="_i('Ricarica Credito')" id="paypalCredit">
+                    <x-larastrap::form classes="direct-submit" method="POST" :action="route('payment.do')">
+                        <input type="hidden" name="type" value="paypal">
 
-                                <input type="hidden" name="type" value="paypal">
+                        <p>
+                            {{ _i('Da qui puoi ricaricare il tuo credito utilizzando PayPal.') }}
+                        </p>
+                        <p>
+                            {{ _i('Specifica quanto vuoi versare ed eventuali note per gli amministratori, verrai rediretto sul sito PayPal dove dovrai autenticarti e confermare il versamento.') }}
+                        </p>
+                        <p>
+                            {{ _i('Eventuali commissioni sulla transazione saranno a tuo carico.') }}
+                        </p>
 
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">{{ _i('Ricarica Credito') }}</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <p>
-                                        {{ _i('Da qui puoi ricaricare il tuo credito utilizzando PayPal.') }}
-                                    </p>
-                                    <p>
-                                        {{ _i('Specifica quanto vuoi versare ed eventuali note per gli amministratori, verrai rediretto sul sito PayPal dove dovrai autenticarti e confermare il versamento.') }}
-                                    </p>
-                                    <p>
-                                        {{ _i('Eventuali commissioni sulla transazione saranno a tuo carico.') }}
-                                    </p>
-
-                                    @include('commons.decimalfield', ['obj' => null, 'name' => 'amount', 'label' => _i('Valore'), 'is_price' => true, 'mandatory' => true])
-                                    @include('commons.textarea', ['obj' => null, 'name' => 'description', 'label' => _i('Descrizione')])
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
-                                    <button type="submit" class="btn btn-success">{{ _i('Vai a PayPal') }}</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                        <x-larastrap::price name="amount" :label="_i('Valore')" required />
+                        <x-larastrap::text name="description" :label="_i('Descrizione')" />
+                    </x-larastrap::form>
+                </x-larastrap::modal>
 
                 <br>
             @endif
 
             @if($user->gas->hasFeature('satispay'))
-                <button type="button" class="btn btn-warning pull-right" data-toggle="modal" data-target="#satispayCredit">{{ _i('Ricarica Credito con Satispay') }}</button>
+                <button type="button" class="btn btn-warning float-end" data-toggle="modal" data-target="#satispayCredit">{{ _i('Ricarica Credito con Satispay') }}</button>
 
-                <div class="modal fade" id="satispayCredit" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <form class="form-horizontal direct-submit" method="POST" action="{{ route('payment.do') }}" data-toggle="validator">
-                                @csrf
+                <x-larastrap::modal id="satispayCredit" :title="_i('Ricarica Credito')">
+                    <x-larastrap::form classes="direct-submit" method="POST" :action="route('payment.do')">
+                        <input type="hidden" name="type" value="satispay">
 
-                                <input type="hidden" name="type" value="satispay">
+                        <p>
+                            {{ _i('Da qui puoi ricaricare il tuo credito utilizzando Satispay.') }}
+                        </p>
+                        <p>
+                            {{ _i('Specifica quanto vuoi versare ed eventuali note per gli amministratori; riceverai una notifica sul tuo smartphone per confermare, entro 15 minuti, il versamento.') }}
+                        </p>
 
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">{{ _i('Ricarica Credito') }}</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <p>
-                                        {{ _i('Da qui puoi ricaricare il tuo credito utilizzando Satispay.') }}
-                                    </p>
-                                    <p>
-                                        {{ _i('Specifica quanto vuoi versare ed eventuali note per gli amministratori; riceverai una notifica sul tuo smartphone per confermare, entro 15 minuti, il versamento.') }}
-                                    </p>
-
-                                    @include('commons.textfield', ['obj' => $user, 'name' => 'mobile', 'label' => _i('Numero di Telefono')])
-                                    @include('commons.decimalfield', ['obj' => null, 'name' => 'amount', 'label' => _i('Valore'), 'is_price' => true, 'mandatory' => true])
-                                    @include('commons.textarea', ['obj' => null, 'name' => 'description', 'label' => _i('Descrizione')])
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
-                                    <button type="submit" class="btn btn-success">{{ _i('Conferma con Satispay') }}</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                        <x-larastrap::text name="mobile" :label="_i('Numero di Telefono')" required />
+                        <x-larastrap::price name="amount" :label="_i('Valore')" required />
+                        <x-larastrap::text name="description" :label="_i('Descrizione')" />
+                    </x-larastrap::form>
+                </x-larastrap::modal>
 
                 <br>
             @endif
 
             @include('movement.targetlist', ['target' => $user])
-        </div>
+        </x-larastrap::tabpane>
     @endif
 
     @if($has_bookings)
-        <div role="tabpanel" class="tab-pane {{ $active_tab == 'bookings' ? 'active' : '' }}" id="bookings">
-            <br>
+        <x-larastrap::tabpane :id="sprintf('bookings-%s', sanitizeId($user->id))" label="{{ _i('Prenotazioni') }}">
             <div class="row">
-                <div class="col-md-6">
-                    <div class="form-horizontal form-filler" data-action="{{ route('users.orders', $user->id) }}" data-toggle="validator" data-fill-target="#user-booking-list">
-                        @include('commons.selectobjfield', [
-                            'obj' => null,
-                            'name' => 'supplier_id',
-                            'label' => _i('Fornitore'),
-                            'mandatory' => true,
-                            'objects' => $currentgas->suppliers,
-                            'extra_selection' => [
-                                '0' => _i('Tutti')
-                            ]
-                        ])
-
+                <div class="col-12 col-md-6">
+                    <x-filler :data-action="route('users.orders', $user->id)" data-fill-target="#user-booking-list">
+                        <x-larastrap::selectobj name="supplier_id" :label="_i('Fornitore')" required :options="$currentgas->suppliers" :extraitem="_i('Tutti')" />
                         @include('commons.genericdaterange')
-
-                        <div class="form-group">
-                            <div class="col-md-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
-                                <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
-                            </div>
-                        </div>
-                    </div>
+                    </x-filler>
                 </div>
             </div>
             <hr>
             <div class="row">
-                <div class="col-md-12" id="user-booking-list">
+                <div class="col" id="user-booking-list">
                     @include('commons.orderslist', ['orders' => $booked_orders ?? []])
                 </div>
             </div>
-        </div>
+        </x-larastrap::tabpane>
     @endif
 
     @if($has_friends)
-        <div role="tabpanel" class="tab-pane {{ $active_tab == 'friends' ? 'active' : '' }}" id="friends">
+        <x-larastrap::tabpane :id="sprintf('friends-%s', sanitizeId($user->id))" label="{{ _i('Amici') }}">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col">
                     @include('commons.addingbutton', [
                         'user' => null,
                         'template' => 'friend.base-edit',
@@ -338,7 +212,7 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
             <hr>
 
             <div class="row">
-                <div class="col-md-12">
+                <div class="col">
                     @include('commons.loadablelist', [
                         'identifier' => 'friend-list',
                         'items' => $user->friends,
@@ -347,11 +221,11 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
                     ])
                 </div>
             </div>
-        </div>
+        </x-larastrap::tabpane>
     @endif
 
     @if($has_notifications)
-        <div role="tabpanel" class="tab-pane {{ $active_tab == 'notifications' ? 'active' : '' }}" id="notifications">
+        <x-larastrap::tabpane :id="sprintf('notifications-%s', sanitizeId($user->id))" label="{{ _i('Notifiche') }}">
             <form class="form-horizontal inner-form" method="POST" action="{{ route('users.notifications', $user->id) }}">
                 <div class="row">
                     <div class="col-md-4">
@@ -362,8 +236,8 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
                             @foreach(App\Supplier::orderBy('name', 'asc')->get() as $supplier)
                                 <li class="list-group-item">
                                     {{ $supplier->name }}
-                                    <span class="pull-right">
-                                        <input name="suppliers[]" type="checkbox" value="{{ $supplier->id }}" data-toggle="toggle" data-size="mini" {{ $user->suppliers->where('id', $supplier->id)->first() != null ? 'checked' : '' }}>
+                                    <span class="float-end">
+                                        <x-larastrap::scheck name="suppliers[]" :value="$supplier->id" :checked="$user->suppliers->where('id', $supplier->id)->first() != null" />
                                     </span>
                                 </li>
                             @endforeach
@@ -371,17 +245,17 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="btn-group pull-right main-form-buttons" role="group">
+                <div class="row mt-2">
+                    <div class="col">
+                        <div class="btn-group float-end main-form-buttons" role="group">
                             <button type="submit" class="btn btn-success saving-button">{{ _i('Salva') }}</button>
                         </div>
                     </div>
                 </div>
             </form>
-        </div>
+        </x-larastrap::tabpane>
     @endif
-</div>
+</x-larastrap::tabs>
 
 <div class="postponed">
     @stack('postponed')

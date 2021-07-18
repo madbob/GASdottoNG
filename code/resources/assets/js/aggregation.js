@@ -1,7 +1,7 @@
 (function ($) {
     $.fn.aggregator = function() {
         $(this).each(function() {
-            $(this).find('div.well').each(function() {
+            $(this).find('div.card').each(function() {
                 initAggregatorList($(this));
             });
 
@@ -10,7 +10,7 @@
             });
 
             $(this).on('click', '.explode-aggregate', function() {
-                var container = $(this).closest('.well');
+                var container = $(this).closest('.card');
                 container.find('li').each(function() {
                     var cell = prependCell(container);
                     cell.find('ul').append($(this).clone());
@@ -18,14 +18,14 @@
                 container.remove();
             });
 
-            $(this).find('form').submit(function(e) {
+            $(this).submit(function(e) {
                 e.preventDefault();
                 var form = $(this);
                 form.find('button[type=submit]').prop('disabled', false);
 
                 var data = new Array();
 
-                form.find('.well').each(function() {
+                form.find('.card').each(function() {
                     var a = {
                         id: $(this).attr('data-aggregate-id'),
                         orders: new Array()
@@ -78,7 +78,7 @@
                         $(this).find('.explode-aggregate').show();
                     }
 
-                    var source = ui.draggable.closest('.well');
+                    var source = ui.draggable.closest('.card');
                     var ex_items = source.find('li').length;
                     if (ex_items == 2)
                         source.find('.explode-aggregate').hide();

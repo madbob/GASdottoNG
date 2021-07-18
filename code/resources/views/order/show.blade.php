@@ -1,12 +1,12 @@
 <?php $summary = $order->reduxData() ?>
 
-<form class="form-horizontal main-form">
+<x-larastrap::mform :obj="$order" nosave nodelete>
     <div class="row">
         <div class="col-md-4">
             @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => _i('Fornitore')])
-            @include('commons.staticdatefield', ['obj' => $order, 'name' => 'start', 'label' => _i('Data Apertura'), 'mandatory' => true])
-            @include('commons.staticdatefield', ['obj' => $order, 'name' => 'end', 'label' => _i('Data Chiusura'), 'mandatory' => true])
-            @include('commons.staticdatefield', ['obj' => $order, 'name' => 'shipping', 'label' => _i('Data Consegna')])
+            <x-larastrap::datepicker name="start" :label="_i('Data Apertura')" readonly disabled />
+            <x-larastrap::datepicker name="end" :label="_i('Data Chiusura')" readonly disabled />
+            <x-larastrap::datepicker name="shipping" :label="_i('Data Consegna')" readonly disabled />
 
             @if($order->deliveries()->count() != 0)
                 @include('commons.staticobjectslistfield', ['obj' => $order, 'name' => 'deliveries', 'label' => _i('Luoghi di Consegna')])
@@ -45,9 +45,4 @@
     @can('supplier.shippings', $order->supplier)
         @include('order.annotations', ['order' => $order])
     @endcan
-
-    @include('commons.formbuttons', [
-        'no_delete' => true,
-        'no_save' => true,
-    ])
-</form>
+</x-larastrap::mform>

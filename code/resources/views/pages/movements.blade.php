@@ -3,20 +3,12 @@
 @section('content')
 
 <div class="row">
-    <div class="col-md-12">
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#movements-tab" aria-controls="movements-tab" role="tab" data-toggle="tab">{{ _i('Movimenti') }}</a></li>
-            @can('movements.types', $currentgas)
-                <li role="presentation"><a href="#movements-types-tab" aria-controls="movements-types-tab" role="tab" data-toggle="tab">{{ _i('Tipi Movimenti') }}</a></li>
-            @endcan
-            <li role="presentation"><a href="#invoices-tab" aria-controls="invoices-tab" role="tab" data-toggle="tab">{{ _i('Fatture') }}</a></li>
-        </ul>
-
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="movements-tab">
-                <div class="row">
-                    <div class="col-md-12">
-                        @can('movements.admin', $currentgas)
+    <div class="col">
+        <x-larastrap::tabs>
+            <x-larastrap::tabpane :label="_i('Movimenti')" active="true">
+                @can('movements.admin', $currentgas)
+                    <div class="row">
+                        <div class="col">
                             @include('commons.addingbutton', [
                                 'typename' => 'movement',
                                 'typename_readable' => _i('Movimento'),
@@ -28,72 +20,35 @@
                                 'import_target' => 'movements'
                             ])
 
-                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#creditsStatus">{{ _i('Stato Crediti') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
-                            <div class="modal fade dynamic-contents" id="creditsStatus" tabindex="-1" data-contents-url="{{ url('movements/showcredits') }}">
-                                <div class="modal-dialog modal-lg" role="document">
-                                    <div class="modal-content">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#suppliersStatus">{{ _i('Stato Fornitori') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
-                            <div class="modal fade dynamic-contents" id="suppliersStatus" tabindex="-1" data-contents-url="{{ url('movements/showsuppliers') }}">
-                                <div class="modal-dialog modal-lg" role="document">
-                                    <div class="modal-content">
-                                    </div>
-                                </div>
-                            </div>
-                        @endcan
-                    </div>
-
-                    <div class="clearfix"></div>
-                    <hr/>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-horizontal form-filler" id="movements-filter" data-action="{{ route('movements.index') }}" data-toggle="validator" data-fill-target="#movements-in-range">
-                            @include('commons.genericdaterange', [
-                                'start_date' => strtotime('-1 weeks'),
-                            ])
-                            @include('commons.selectmovementtypefield', ['show_all' => true])
-                            @include('commons.radios', [
-                                'name' => 'method',
-                                'label' => _i('Pagamento'),
-                                'values' => ['all' => (object)['name' => _i('Tutti'), 'checked' => true]] + App\MovementType::payments()
-                            ])
-                            @include('commons.selectobjfield', [
-                                'obj' => null,
-                                'name' => 'user_id',
-                                'label' => _i('Utente'),
-                                'objects' => $currentgas->users,
-                                'extra_selection' => [
-                                    '0' => _i('Nessuno')
-                                ]
-                            ])
-                            @include('commons.selectobjfield', [
-                                'obj' => null,
-                                'name' => 'supplier_id',
-                                'label' => _i('Fornitore'),
-                                'objects' => $currentgas->suppliers,
-                                'extra_selection' => [
-                                    '0' => _i('Nessuno')
-                                ]
-                            ])
-                            @include('commons.decimalfield', ['obj' => null, 'name' => 'amountstart', 'label' => _i('Importo Minimo'), 'is_price' => true])
-                            @include('commons.decimalfield', ['obj' => null, 'name' => 'amountend', 'label' => _i('Importo Massimo'), 'is_price' => true])
-
-                            <div class="form-group">
-                                <div class="col-md-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
-                                    <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
-                                    <a href="{{ url('movements?format=csv') }}" class="btn btn-default form-filler-download">{{ _i('Esporta CSV') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
-                                    <a href="{{ url('movements?format=pdf') }}" class="btn btn-default form-filler-download">{{ _i('Esporta PDF') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
-                                </div>
-                            </div>
+                            <x-larastrap::ambutton :label="_i('Stato Crediti')" :data-modal-url="url('movements/showcredits')" />
+                            <x-larastrap::ambutton :label="_i('Stato Fornitori')" :data-modal-url="url('movements/showsuppliers')" />
                         </div>
                     </div>
 
-                    <div class="col-md-4 col-md-offset-2 current-balance">
+                    <hr/>
+                @endcan
+
+                <div class="row">
+                    <div class="col-12 order-2 order-md-1 col-md-6">
+                        <x-filler :data-action="route('movements.index')" data-fill-target="#movements-in-range" :download-buttons="[['link' => route('movements.index', ['format' => 'csv']), 'label' => _i('Esporta CSV')], ['link' => route('movements.index', ['format' => 'pdf']), 'label' => _i('Esporta PDF')]]">
+                            @include('commons.genericdaterange', ['start_date' => strtotime('-1 weeks')])
+                            @include('commons.selectmovementtypefield', ['show_all' => true])
+                            <x-larastrap::radios name="method" :label="_i('Pagamento')" :options="App\MovementType::paymentsSimple()" value="none" />
+                            <x-larastrap::selectobj name="user_id" :label="_i('Utente')" :options="$currentgas->users" :extraitem="_i('Nessuno')" />
+                            <x-larastrap::selectobj name="supplier_id" :label="_i('Fornitore')" :options="$currentgas->suppliers" :extraitem="_i('Nessuno')" />
+
+                            <x-larastrap::field :label="_i('Importo')">
+                                <div class="input-group">
+                                    <div class="input-group-text">{{ _i('Da %s', [$currentgas->currency]) }}</div>
+                                    <input type="number" class="date form-control" name="amountstart" autocomplete="off" step="0.01">
+                                    <div class="input-group-text">{{ _i('a %s', $currentgas->currency) }}</div>
+                                    <input type="number" class="date form-control" name="amountend" autocomplete="off" step="0.01">
+                                </div>
+                            </x-larastrap::field>
+                        </x-filler>
+                    </div>
+
+                    <div class="col-12 order-1 order-md-2 col-md-4 offset-md-2 current-balance mb-3">
                         @include('movement.status', ['obj' => $currentgas])
                     </div>
                 </div>
@@ -101,16 +56,16 @@
                 <hr/>
 
                 <div class="row">
-                    <div class="col-md-12" id="movements-in-range">
+                    <div class="col" id="movements-in-range">
                         @include('movement.list', ['movements' => $movements])
                     </div>
                 </div>
-            </div>
+            </x-larastrap::tabpane>
 
             @can('movements.types', $currentgas)
-                <div role="tabpanel" class="tab-pane" id="movements-types-tab">
+                <x-larastrap::tabpane :label="_i('Tipi Movimenti')">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col">
                             <div class="alert alert-danger">
                                 <p>
                                     {{ _i('Attenzione! Modifica i comportamenti dei tipi di movimento contabile con molta cautela!') }}
@@ -125,7 +80,7 @@
                     <br>
 
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col">
                             @include('commons.addingbutton', [
                                 'template' => 'movementtypes.base-edit',
                                 'typename' => 'movementtype',
@@ -135,23 +90,22 @@
                         </div>
                     </div>
 
-                    <div class="clearfix"></div>
                     <hr/>
 
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col">
                             @include('commons.loadablelist', [
                                 'identifier' => 'movementtype-list',
                                 'items' => $types,
                             ])
                         </div>
                     </div>
-                </div>
+                </x-larastrap::tabpane>
             @endcan
 
-            <div role="tabpanel" class="tab-pane" id="invoices-tab">
+            <x-larastrap::tabpane :label="_i('Fatture')">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col">
                         @can('movements.admin', $currentgas)
                             @include('commons.addingbutton', [
                                 'template' => 'invoice.base-edit',
@@ -162,42 +116,21 @@
                             ])
                         @endcan
                     </div>
-
-                    <div class="clearfix"></div>
-                    <hr/>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-horizontal form-filler" data-action="{{ route('invoices.search') }}" data-toggle="validator" data-fill-target="#invoices-in-range">
-                            @include('commons.genericdaterange', [
-                                'start_date' => strtotime('-1 months'),
-                            ])
-
-                            @include('commons.selectobjfield', [
-                                'obj' => null,
-                                'name' => 'supplier_id',
-                                'label' => _i('Fornitore'),
-                                'objects' => $currentgas->suppliers,
-                                'extra_selection' => [
-                                    '0' => _i('Nessuno')
-                                ]
-                            ])
-
-                            <div class="form-group">
-                                <div class="col-md-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
-                                    <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
-                                    <a href="{{ route('invoices.search', ['format' => 'csv']) }}" class="btn btn-default form-filler-download">{{ _i('Esporta CSV') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col-12 col-md-6">
+                        <x-filler :data-action="route('invoices.search')" data-fill-target="#invoices-in-range" :downloadButtons="[['link' => route('invoices.search', ['format' => 'csv']), 'label' => _i('Esporta CSV')]]">
+                            @include('commons.genericdaterange', ['start_date' => strtotime('-1 months')])
+                            <x-larastrap::selectobj name="supplier_id" :label="_i('Fornitore')" :options="$currentgas->suppliers" :extraitem="_i('Nessuno')" />
+                        </x-filler>
                     </div>
                 </div>
 
                 <hr>
 
                 <div class="row">
-                    <div class="col-md-12" id="invoices-in-range">
+                    <div class="col" id="invoices-in-range">
                         @include('commons.loadablelist', [
                             'identifier' => 'invoice-list',
                             'items' => $invoices,
@@ -207,8 +140,8 @@
                         ])
                     </div>
                 </div>
-            </div>
-        </div>
+            </x-larastrap::tabpane>
+        </x-larastrap::tabs>
     </div>
 </div>
 

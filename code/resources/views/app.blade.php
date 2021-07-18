@@ -19,43 +19,12 @@
             <img src="{{ asset('images/loading.svg') }}" alt="{{ _i('Caricamento in corso') }}">
         </div>
 
-        <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar" aria-expanded="false">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    @if(!isset($MainMenu))
-                        <a class="navbar-brand hidden-md hidden-sm" href="{{ route('dashboard') }}">GASdotto</a>
-                    @endif
-                </div>
-
-                <div class="collapse navbar-collapse" id="main-navbar">
-                    @if(isset($MainMenu))
-                        <ul class="nav navbar-nav">
-                            @include(config('laravel-menu.views.bootstrap-items'), ['items' => $MainMenu->roots()])
-                        </ul>
-                    @endif
-
-                    @if(Auth::check())
-                        <ul class="nav navbar-nav navbar-right">
-                            <li class="hidden-xs">
-                                <a href="#" data-toggle="modal" data-target="#feedback-modal"><span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span></a>
-                            </li>
-                            <li>
-                                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><span class="glyphicon glyphicon-off" aria-hidden="true"></span></a>
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                    {{ csrf_field() }}
-                                </form>
-                            </li>
-                        </ul>
-                    @endif
-                </div>
-            </div>
-        </nav>
+        <x-larastrap::navbar :options="$menu" :end_options="$end_menu" />
+        @if(Auth::check())
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                {{ csrf_field() }}
+            </form>
+        @endif
 
         <div class="container-fluid">
             <div class="row">
@@ -67,83 +36,47 @@
         </div>
 
         <div id="postponed"></div>
-        <div id="bottom-stop"></div>
 
-        <div class="modal fade" id="service-modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-extra-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">&nbsp;</h4>
-                    </div>
-                    <div class="modal-body">
-                    </div>
-                </div>
-            </div>
-        </div>
+        <x-larastrap::modal title="" id="service-modal">
+        </x-larastrap::modal>
 
-        <div class="modal fade" id="feedback-modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">{{ _i('Feedback') }}</h4>
-                    </div>
+        <x-larastrap::modal title="{{ _i('Feedback') }}" id="feedback-modal">
+            <p>
+                {{ _i('GASdotto è sviluppato con modello open source! Puoi contribuire mandando una segnalazione o una richiesta:') }}
+            </p>
+            <p>
+                <a href="https://github.com/madbob/GASdottoNG/" target="_blank">https://github.com/madbob/GASdottoNG/</a><br>
+                <a href="mailto:info@gasdotto.net">info@gasdotto.net</a>
+            </p>
+            <p>
+                {{ _i('o facendo una donazione:') }}
+            </p>
+            <p>
+                <a href="https://paypal.me/m4db0b" target="_blank"><img src="https://www.gasdotto.net/images/paypal.png" border="0"></a>
+            </p>
+            <p>
+                {{ _i('Attenzione: per problemi sui contenuti di questo sito (fornitori, ordini, prenotazioni...) fai riferimento agli amministrazioni del tuo GAS.') }}
+            </p>
 
-                    <div class="modal-body">
-                        <p>
-                            {{ _i('GASdotto è sviluppato con modello open source! Puoi contribuire mandando una segnalazione o una richiesta:') }}
-                        </p>
-                        <p>
-                            <a href="https://github.com/madbob/GASdottoNG/" target="_blank">https://github.com/madbob/GASdottoNG/</a><br>
-                            <a href="mailto:info@gasdotto.net">info@gasdotto.net</a>
-                        </p>
-                        <p>
-                            {{ _i('o facendo una donazione:') }}
-                        </p>
-                        <p>
-                            <a href="https://paypal.me/m4db0b" target="_blank"><img src="https://www.gasdotto.net/images/paypal.png" border="0"></a>
-                        </p>
-                        <p>
-                            {{ _i('Attenzione: per problemi sui contenuti di questo sito (fornitori, ordini, prenotazioni...) fai riferimento agli amministrazioni del tuo GAS.') }}
-                        </p>
-
-                        @if(currentLang() != 'it_IT')
-                            <p>
-                                {!! _i('Se vuoi contribuire alla traduzione nella tua lingua, visita <a href="https://hosted.weblate.org/projects/gasdottong/translations/">questa pagina</a>.') !!}
-                            </p>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
+            @if(currentLang() != 'it_IT')
+                <p>
+                    {!! _i('Se vuoi contribuire alla traduzione nella tua lingua, visita <a href="https://hosted.weblate.org/projects/gasdottong/translations/">questa pagina</a>.') !!}
+                </p>
+            @endif
+        </x-larastrap::modal>
 
         @if(Session::has('prompt_message'))
-            <div class="modal fade" id="prompt-message-modal" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">{{ _i('Attenzione') }}</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>
-                                {!! Session::get('prompt_message') !!}
-                            </p>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Chiudi') }}</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <x-larastrap::modal title="{{ _i('Attenzione') }}" id="prompt-message-modal">
+                <p>
+                    {!! Session::get('prompt_message') !!}
+                </p>
+            </x-larastrap::modal>
         @endif
 
-        <script type="application/javascript" src="{{ mix('/js/gasdotto.js') }}"></script>
-        <script type="application/javascript" src="{{ asset('/js/lang/bootstrap-datepicker.' . htmlLang() . '.min.js') }}"></script>
-        <script type="application/javascript" src="{{ asset('/js/lang/bootstrap-table-' . htmlLang() . '.js') }}"></script>
-        <script type="application/javascript" src="{{ asset('/js/lang/' . htmlLang() . '.js') }}"></script>
+        <script src="{{ mix('/js/gasdotto.js') }}"></script>
+        <script src="{{ asset('/js/lang/bootstrap-datepicker.' . htmlLang() . '.min.js') }}"></script>
+        <script src="{{ asset('/js/lang/bootstrap-table-' . htmlLang() . '.js') }}"></script>
+        <script src="{{ asset('/js/lang/' . htmlLang() . '.js') }}"></script>
 
         <!-- Piwik -->
         <script type="text/javascript">

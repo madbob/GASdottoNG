@@ -37,14 +37,8 @@ class Date extends Model
     public static function types()
     {
         return [
-            [
-                'label' => _i('Confermato'),
-                'value' => 'confirmed'
-            ],
-            [
-                'label' => _i('Provvisorio'),
-                'value' => 'temp'
-            ],
+            'confirmed' => _i('Confermato'),
+            'temp' => _i('Provvisorio'),
         ];
     }
 

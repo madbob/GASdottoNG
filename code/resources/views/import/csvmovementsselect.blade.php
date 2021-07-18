@@ -5,10 +5,7 @@ $methods = [];
 $types = [];
 foreach (App\MovementType::types() as $info) {
     if ($info->visibility) {
-        $types[] = [
-            'label' => $info->name,
-            'value' => $info->id,
-        ];
+        $types[$info->id] = $info->name;
 
         $methods[] = (object) [
             'method' => $info->id,
@@ -18,26 +15,20 @@ foreach (App\MovementType::types() as $info) {
     }
 }
 
-$payments = [];
-foreach (App\MovementType::payments() as $method_id => $info) {
-    $payments[] = [
-        'label' => $info->name,
-        'value' => $method_id,
-    ];
-}
+$payments = App\MovementType::paymentsSimple();
 
 $users = App\User::sorted()->get();
 $suppliers = App\Supplier::orderBy('name', 'asc')->get();
 
 ?>
 
-<script>
-matching_methods_for_movement_types = {!! json_encode($methods) !!};
-</script>
+<x-larastrap::modal :title="_i('Importa CSV')">
+    <script>
+    matching_methods_for_movement_types = {!! json_encode($methods) !!};
+    </script>
 
-<div class="wizard_page">
-    <form class="form-horizontal" method="POST" action="{{ url('import/csv?type=movements&step=run') }}" data-toggle="validator">
-        <div class="modal-body">
+    <div class="wizard_page">
+        <x-larastrap::form method="POST" :action="url('import/csv?type=movements&step=run')" :buttons="[['color' => 'success', 'type' => 'submit', 'label' => _i('Avanti')]]">
             @if(!empty($errors))
                 <p>
                     {{ _i('Errori') }}:
@@ -60,107 +51,46 @@ matching_methods_for_movement_types = {!! json_encode($methods) !!};
                         <th>{{ _i('Utente') }}</th>
                         <th>{{ _i('Fornitore') }}</th>
                         <th>
-                            @include('commons.selectenumfield', [
-                                'obj' => null,
-                                'squeeze' => true,
-                                'prefix' => 'skip',
-                                'name' => 'type',
-                                'label' => _i('Tipo'),
-                                'values' => $types,
-                                'extra_class' => 'triggers-all-selects csv_movement_type_select',
-                                'extra_attrs' => [
-                                    'data-target-class' => 'csv_movement_type_select',
-                                ]
-                            ])
+                            <x-larastrap::select name="type" prefix="skip" squeeze :options="$types" classes="triggers-all-selects csv_movement_type_select" data-target-class="csv_movement_type_select" />
                         </th>
                         <th>
-                            @include('commons.selectenumfield', [
-                                'obj' => null,
-                                'squeeze' => true,
-                                'prefix' => 'skip',
-                                'name' => 'method',
-                                'label' => _i('Metodo'),
-                                'values' => $payments,
-                                'enforced_default' => 'bank',
-                                'extra_class' => 'triggers-all-selects csv_movement_method_select',
-                                'extra_attrs' => [
-                                    'data-target-class' => 'csv_movement_method_select',
-                                ]
-                            ])
+                            <x-larastrap::select name="method" prefix="skip" squeeze :options="$payments" classes="triggers-all-selects csv_movement_method_select" data-target-class="csv_movement_method_select" value="bank" />
                         </th>
                         <th>{{ _i('Valore') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($movements as $index => $mov)
-                        <tr>
-                            <td>
-                                <input type="checkbox" name="import[]" value="{{ $index }}" checked>
-                            </td>
-                            <td>
-                                {{ $mov->printableDate('date') }}
-                                <input type="hidden" name="date[]" value="{{ $mov->date }}">
-                            </td>
-                            <td>
-                                @include('commons.selectobjfield', [
-                                    'obj' => $mov,
-                                    'squeeze' => true,
-                                    'name' => 'sender_id',
-                                    'postfix' => '[]',
-                                    'objects' => $users,
-                                    'extra_selection' => [
-                                        '0' => _i('Nessuno')
-                                    ]
-                                ])
-                            </td>
-                            <td>
-                                @include('commons.selectobjfield', [
-                                    'obj' => $mov,
-                                    'squeeze' => true,
-                                    'name' => 'target_id',
-                                    'postfix' => '[]',
-                                    'objects' => $suppliers,
-                                    'extra_selection' => [
-                                        '0' => _i('Nessuno')
-                                    ]
-                                ])
-                            </td>
-                            <td>
-                                @include('commons.selectenumfield', [
-                                    'obj' => $mov,
-                                    'squeeze' => true,
-                                    'prefix' => 'm',
-                                    'name' => 'type',
-                                    'postfix' => '[]',
-                                    'label' => _i('Tipo'),
-                                    'values' => $types,
-                                    'extra_class' => 'csv_movement_type_select',
-                                ])
-                            </td>
-                            <td>
-                                @include('commons.selectenumfield', [
-                                    'obj' => $mov,
-                                    'squeeze' => true,
-                                    'name' => 'method',
-                                    'postfix' => '[]',
-                                    'label' => _i('Metodo'),
-                                    'values' => $payments,
-                                    'extra_class' => 'csv_movement_method_select',
-                                ])
-                            </td>
-                            <td>
-                                {{ printablePriceCurrency($mov->amount) }}
-                                <input type="hidden" name="amount[]" value="{{ $mov->amount }}">
-                            </td>
-                        </tr>
+                        <x-larastrap::enclose :obj="$mov">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="import[]" value="{{ $index }}" checked>
+                                </td>
+                                <td>
+                                    {{ $mov->printableDate('date') }}
+                                    <x-larastrap::hidden name="date" npostfix="[]" />
+                                </td>
+                                <td>
+                                    <x-larastrap::selectobj name="sender_id" npostfix="[]" squeeze :options="$users" :extraitem="_i('Nessuno')" />
+                                </td>
+                                <td>
+                                    <x-larastrap::selectobj name="target_id" npostfix="[]" squeeze :options="$suppliers" :extraitem="_i('Nessuno')" />
+                                </td>
+                                <td>
+                                    <x-larastrap::select name="type" nprefix="m" npostfix="[]" squeeze :options="$types" classes="csv_movement_type_select" />
+                                </td>
+                                <td>
+                                    <x-larastrap::select name="method" npostfix="[]" squeeze :options="$payments" classes="csv_movement_method_select" />
+                                </td>
+                                <td>
+                                    {{ printablePriceCurrency($mov->amount) }}
+                                    <x-larastrap::hidden name="amount" npostfix="[]" />
+                                </td>
+                            </tr>
+                        </x-larastrap::enclose>
                     @endforeach
                 </tbody>
             </table>
-        </div>
-
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
-            <button type="submit" class="btn btn-success">{{ _i('Avanti') }}</button>
-        </div>
-    </form>
-</div>
+        </x-larastrap::form>
+    </div>
+</x-larastrap::modal>

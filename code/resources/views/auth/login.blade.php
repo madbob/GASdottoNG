@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="col-md-6 col-md-offset-3">
+<div class="col-12 col-md-6 offset-md-3">
     @if($gas->message != '')
         <div class="alert alert-info">
             {!! nl2br($gas->message) !!}
@@ -38,16 +38,16 @@
     <form class="form-horizontal" method="POST" action="{{ route('login') }}">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">{{ _i('Username') }}</label>
-            <div class="col-sm-10">
+        <div class="row mb-2">
+            <label class="col-2 col-form-label">{{ _i('Username') }}</label>
+            <div class="col-10">
                 <input class="form-control" type="text" name="username" value="{{ old('username') }}">
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">{{ _i('Password') }}</label>
-            <div class="col-sm-10">
+        <div class="row mb-2">
+            <label class="col-2 col-form-label">{{ _i('Password') }}</label>
+            <div class="col-10">
                 <input class="form-control" type="password" name="password">
             </div>
         </div>
@@ -55,20 +55,20 @@
         @if($gas->getConfig('language'))
             <input type="hidden" name="language" value="{{ $gas->getConfig('language') }}">
         @else
-            <div class="form-group">
-                <label class="col-sm-2 control-label">{{ _i('Lingua') }}</label>
-                <div class="col-sm-10">
+            <div class="row mb-2">
+                <label class="col-2 col-form-label">{{ _i('Lingua') }}</label>
+                <div class="col-10">
                     <select name="language">
-                        @foreach(getLanguages() as $lang)
-                            <option value="{{ $lang['value'] }}">{{ $lang['label'] }}</option>
+                        @foreach(getLanguages() as $identifier => $lang)
+                            <option value="{{ $identifier }}">{{ $lang }}</option>
                         @endforeach
                     </select>
                 </div>
             </div>
         @endif
 
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
+        <div class="row mb-2">
+            <div class="col-10 offset-2">
                 <div class="checkbox">
                     <label>
                         <input type="checkbox" name="remember" class="remember-checkbox" data-attribute="remember_me" data-attribute-default="true" checked> {{ _i('Ricordami') }}
@@ -79,29 +79,25 @@
 
         <br>
 
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button class="btn btn-success pull-right" type="submit">{{ _i('Login') }}</button>
+        <div class="row mb-2">
+            <div class="col-10 offset-2">
+                <button class="btn btn-success float-end" type="submit">{{ _i('Login') }}</button>
             </div>
         </div>
     </form>
 </div>
 
-<div class="col-md-6 col-md-offset-3">
+<div class="col-12 col-md-6 offset-md-3">
     <hr/>
     <p>
         @if($gas->hasFeature('public_registrations'))
             <a href="{{ route('register') }}">{{ _i('Registrati') }}</a>
         @endif
-        <a class="pull-right" href="{{ route('password.request') }}">{{ _i('Recupero Password') }}</a>
+        <a class="float-end" href="{{ route('password.request') }}">{{ _i('Recupero Password') }}</a>
     </p>
 </div>
 
-<p class="clearfix">&nbsp;</p>
-<p class="clearfix">&nbsp;</p>
-<p class="clearfix">&nbsp;</p>
-
-<nav class="navbar navbar-default navbar-fixed-bottom">
+<nav class="fixed-bottom border-top p-3">
     <div class="container">
         <p>
             Powered by <a href="https://www.gasdotto.net/"><img src="{{ url('images/gasdotto.jpg') }}" style="height: 24px" alt="GASdotto"> GASdotto</a>.

@@ -33,44 +33,19 @@ class Contact extends Model
     public function getTypeNameAttribute()
     {
         $types = Contact::types();
-        foreach($types as $t)
-            if ($t['value'] == $this->type)
-                return $t['label'];
-
-        return '???';
+        return $types[$this->type] ?? '???';
     }
 
     public static function types()
     {
         return [
-            [
-                'label' => _i('Indirizzo'),
-                'value' => 'address'
-            ],
-            [
-                'label' => _i('Referente'),
-                'value' => 'referent'
-            ],
-            [
-                'label' => _i('E-Mail'),
-                'value' => 'email'
-            ],
-            [
-                'label' => _i('Telefono'),
-                'value' => 'phone'
-            ],
-            [
-                'label' => _i('Cellulare'),
-                'value' => 'mobile'
-            ],
-            [
-                'label' => _i('Fax'),
-                'value' => 'fax'
-            ],
-            [
-                'label' => _i('Sito Web'),
-                'value' => 'website'
-            ],
+            'address' => _i('Indirizzo'),
+            'referent' => _i('Referente'),
+            'email' => _i('E-Mail'),
+            'phone' => _i('Telefono'),
+            'mobile' => _i('Cellulare'),
+            'fax' => _i('Fax'),
+            'website' => _i('Sito Web'),
         ];
     }
 }

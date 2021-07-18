@@ -1,26 +1,19 @@
 <?php $repository = App::make('RemoteRepository') ?>
 
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <h4 class="modal-title">
-        {{ _i('Indice Remoto') }}
-    </h4>
-</div>
-
-<div class="wizard_page">
-    <div class="modal-body">
+<x-larastrap::modal :title="_i('Indice Remoto')">
+    <div class="wizard_page">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-12">
                 <p>
                     {{ _i("Questa funzione permette di accedere e tenere automaticamente aggiornati i listini condivisi su %s. Attenzione: è una funzione sperimentale, usare con cautela!", [env('HUB_URL')]) }}
                 </p>
                 <hr>
             </div>
-            <div class="col-md-12">
+            <div class="col-12">
                 <input type="text" class="form-control table-text-filter" data-list-target="#remoteSuppliers">
                 <hr>
             </div>
-            <div class="col-md-12">
+            <div class="col-12">
                 <table class="table" id="remoteSuppliers">
                     <thead>
                         <tr>
@@ -55,8 +48,4 @@
             </div>
         </div>
     </div>
-
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
-    </div>
-</div>
+</x-larastrap::modal>

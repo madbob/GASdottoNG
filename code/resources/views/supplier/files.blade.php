@@ -1,6 +1,6 @@
 @can('supplier.modify', $supplier)
     <div class="row">
-        <div class="col-md-12">
+        <div class="col">
             @include('commons.addingbutton', [
                 'template' => 'attachment.base-edit',
                 'typename' => 'attachment',
@@ -18,7 +18,7 @@
     <div class="clearfix"></div>
     <br />
     <div class="row">
-        <div class="col-md-12">
+        <div class="col">
             @include('commons.loadablelist', [
                 'identifier' => 'attachment-list-' . $supplier->id,
                 'items' => $supplier->attachments,
@@ -32,7 +32,7 @@
     <?php $images = [] ?>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col">
             <div class="panel-body">
                 <div class="list-group">
                     @foreach($supplier->attachments as $attachment)
@@ -49,7 +49,7 @@
 
     @if(!empty($images))
         <div class="row">
-            <div class="col-md-12">
+            <div class="col">
                 <div class="gallery">
                     @foreach($images as $img)
                         <?php $size = $img->getSize() ?>

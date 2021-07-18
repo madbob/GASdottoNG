@@ -8,16 +8,12 @@ $url = $obj && $valuefrom ? $obj->$valuefrom : '';
 
 ?>
 
-<div class="form-group">
-    @if($squeeze == false)
-        <label for="{{ $prefix . $name . $postfix }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
-    @endif
-    <div class="col-sm-{{ $fieldsize }}">
-        <div class="img-preview">
-            <input type="file" name="{{ $prefix . $name . $postfix }}" data-max-size="{{ serverMaxUpload() }}">
-            @if(!empty($url))
-                <img src="{{ $url }}" class="img-responsive">
-            @endif
-        </div>
+<x-larastrap::field :pophelp="$help_popover" :label="$label">
+    <div class="img-preview">
+        <x-larastrap::file :name="$name" :attributes="['data-max-size' => serverMaxUpload()]" squeeze="true" />
+
+        @if(!empty($url))
+            <img src="{{ $url }}" class="img-responsive">
+        @endif
     </div>
-</div>
+</x-larastrap::field>

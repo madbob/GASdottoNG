@@ -1,109 +1,76 @@
 <?php
 
-if (is_null($obj))
+if (is_null($obj)) {
     $obj = $default;
+}
 
-if (!isset($dom_id))
+if (!isset($dom_id)){
     $dom_id = rand();
+}
 
-if (!isset($editable))
+if (!isset($editable)) {
     $editable = false;
-if (!isset($amount_editable))
+}
+
+if (!isset($amount_editable)) {
     $amount_editable = false;
-if (!isset($amount_label))
+}
+
+if (!isset($amount_label)) {
     $amount_label = 'Valore';
+}
+
+$buttons = [];
+if ($editable && $obj && $obj->exists) {
+    $buttons[] = ['color' => 'danger', 'label' => _i('Elimina'), 'classes' => ['float-start', 'spare-modal-delete-button'], 'attributes' => ['data-delete-url' => route('movements.destroy', $obj->id)]];
+}
+
+$buttons[] = ['color' => 'success', 'label' => _i('Salva'), 'attributes' => ['type' => 'submit']];
 
 ?>
 
-<div class="modal fade movement-modal" id="editMovement-{{ $dom_id }}" tabindex="-1" role="dialog" aria-labelledby="editMovement-{{ $dom_id }}">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <form class="form-horizontal creating-form" method="POST" action="{{ $obj->exists ? route('movements.update', $obj->id) : route('movements.store') }}" data-toggle="validator">
-                @csrf
-                <input type="hidden" name="update-field" value="movement-id-{{ $dom_id }}">
-                <input type="hidden" name="update-field" value="movement-date-{{ $dom_id }}">
-                <input type="hidden" name="close-modal" value="">
-                <input type="hidden" name="post-saved-function" value="refreshFilter">
-                <input type="hidden" name="post-saved-function" value="reloadLoadableHeaders">
-                <input type="hidden" name="data-refresh-target" value="#movements-filter">
+<x-larastrap::modal :title="_i('Modifica Movimento')" :id="sprintf('editMovement-%s', $dom_id)">
+    <x-larastrap::form :obj="$obj" classes="creating-form" method="POST" :action="$obj->exists ? route('movements.update', $obj->id) : route('movements.store')" :buttons="$buttons">
+        <input type="hidden" name="update-field" value="movement-id-{{ $dom_id }}">
+        <input type="hidden" name="update-field" value="movement-date-{{ $dom_id }}">
+        <input type="hidden" name="close-modal" value="">
+        <input type="hidden" name="post-saved-function" value="refreshFilter">
+        <input type="hidden" name="post-saved-function" value="reloadLoadableHeaders">
+        <input type="hidden" name="data-refresh-target" value="#movements-filter">
 
-                @if($obj->exists)
-                    <input type="hidden" name="_method" value="PUT">
-                @endif
+        @if($obj->exists)
+            <input type="hidden" name="_method" value="PUT">
+        @endif
 
-                @include('commons.extrafields')
+        @include('commons.extrafields')
 
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">{{ _i('Modifica Movimento') }}</h4>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="type" value="{{ $obj->type }}" />
-                    <input type="hidden" name="sender_type" value="{{ $obj->sender_type }}" />
-                    <input type="hidden" name="sender_id" value="{{ $obj->sender_id }}" />
-                    <input type="hidden" name="target_type" value="{{ $obj->target_type }}" />
-                    <input type="hidden" name="target_id" value="{{ $obj->target_id }}" />
+        <x-larastrap::hidden name="type" />
+        <x-larastrap::hidden name="sender_type" />
+        <x-larastrap::hidden name="sender_id" />
+        <x-larastrap::hidden name="target_type" />
+        <x-larastrap::hidden name="target_id" />
 
-                    @include('commons.decimalfield', [
-                        'obj' => $obj,
-                        'name' => 'amount',
-                        'label' => $amount_label,
-                        'is_price' => true,
-                        'fixed_value' => $amount_editable ? false : ($editable ? false : $obj->amount)
-                    ])
+        @if($amount_editable || $editable)
+            <x-larastrap::price name="amount" :label="$amount_label" />
+        @else
+            <x-larastrap::price name="amount" :label="$amount_label" readonly />
+        @endif
 
-                    <div class="col-sm-{{ $fieldsize }} col-sm-offset-{{ $labelsize }}">
-                        @if($obj->sender && array_search('App\CreditableTrait', class_uses($obj->sender)) !== false && count($obj->sender->balanceFields()) == 1)
-                            <p class="sender-credit-status alert alert-{{ $obj->amount < $obj->sender->current_balance_amount ? 'success' : 'danger' }}">
-                                {{ _i('Credito Attuale %s', [$obj->sender->printableName()]) }}: <span class="current-sender-credit">{{ $obj->sender->current_balance_amount }}</span> {{ $currentgas->currency }}
-                            </p>
-                        @endif
+        @if($obj->sender && array_search('App\CreditableTrait', class_uses($obj->sender)) !== false && count($obj->sender->balanceFields()) == 1)
+            <p class="sender-credit-status mb-3 alert alert-{{ $obj->amount < $obj->sender->current_balance_amount ? 'success' : 'danger' }}">
+                {{ _i('Credito Attuale %s', [$obj->sender->printableName()]) }}: <span class="current-sender-credit">{{ $obj->sender->current_balance_amount }}</span> {{ $currentgas->currency }}
+            </p>
+        @endif
 
-                        @if($obj->target && array_search('App\CreditableTrait', class_uses($obj->target)) !== false && count($obj->target->balanceFields()) == 1)
-                            <p class="alert alert-success">
-                                {{ $obj->target->printableName() }}: {{ $obj->target->current_balance_amount }} {{ $currentgas->currency }}
-                            </p>
-                        @endif
+        @if($obj->target && array_search('App\CreditableTrait', class_uses($obj->target)) !== false && count($obj->target->balanceFields()) == 1)
+            <p class="alert alert-success mb-3">
+                {{ $obj->target->printableName() }}: {{ $obj->target->current_balance_amount }} {{ $currentgas->currency }}
+            </p>
+        @endif
 
-                        <br/>
-                    </div>
-
-                    @include('commons.radios', [
-                        'name' => 'method',
-                        'label' => _i('Metodo'),
-                        'values' => $obj ? $obj->valid_payments : App\MovementType::payments()
-                    ])
-
-                    @include('commons.datefield', [
-                        'obj' => $obj,
-                        'name' => 'date',
-                        'label' => _i('Data'),
-                        'defaults_now' => true
-                    ])
-
-                    @include('commons.textfield', [
-                        'obj' => $obj,
-                        'name' => 'identifier',
-                        'label' => _i('Identificativo'),
-                        'extra_wrap_class' => 'when-method-bank' . ($obj->method != 'bank' ? ' hidden' : '')
-                    ])
-
-                    @include('commons.textarea', [
-                        'obj' => $obj,
-                        'name' => 'notes',
-                        'label' => _i('Note')
-                    ])
-                </div>
-
-                <div class="modal-footer">
-                    @if($editable && $obj && $obj->exists)
-                        <button type="button" class="btn btn-danger spare-modal-delete-button" data-delete-url="{{ route('movements.destroy', $obj->id) }}">{{ _i('Elimina') }}</button>
-                    @endif
-
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
-                    <button type="submit" class="btn btn-success">{{ _i('Salva') }}</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+        <x-larastrap::radios name="method" :label="_i('Metodo')" :options="$obj ? $obj->valid_payments : App\MovementType::payments()" />
+        <x-larastrap::datepicker name="date" :label="_i('Data')" defaults_now="true" />
+        <x-larastrap::text :classes="sprintf('when-method-bank %s', ($obj->method != 'bank' ? ' hidden' : ''))" name="identifier" :label="_i('Identificativo')" />
+        <x-larastrap::textarea name="notes" :label="_i('Note')" />
+    </x-larastrap::form>
+</x-larastrap::modal>

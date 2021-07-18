@@ -31,7 +31,7 @@ class MovementType extends Model
             'cash' => (object) [
                 'name' => _i('Contanti'),
                 'identifier' => false,
-                'icon' => 'glyphicon-euro',
+                'icon' => 'cash',
                 'active_for' => null,
                 'valid_config' => function($target) {
                     return true;
@@ -40,7 +40,7 @@ class MovementType extends Model
             'bank' => (object) [
                 'name' => _i('Bonifico'),
                 'identifier' => true,
-                'icon' => 'glyphicon-link',
+                'icon' => 'bank',
                 'active_for' => null,
                 'valid_config' => function($target) {
                     return true;
@@ -49,7 +49,7 @@ class MovementType extends Model
             'credit' => (object) [
                 'name' => _i('Credito Utente'),
                 'identifier' => false,
-                'icon' => 'glyphicon-ok',
+                'icon' => 'person-badge',
                 'active_for' => 'App\User',
                 'valid_config' => function($target) {
                     return true;
@@ -63,7 +63,7 @@ class MovementType extends Model
             $ret['paypal'] = (object) [
                 'name' => _i('PayPal'),
                 'identifier' => true,
-                'icon' => 'glyphicon-cloud-download',
+                'icon' => 'cloud-plus',
                 'active_for' => 'App\User',
                 'valid_config' => function($target) {
                     return true;
@@ -75,7 +75,7 @@ class MovementType extends Model
             $ret['satispay'] = (object) [
                 'name' => _i('Satispay'),
                 'identifier' => true,
-                'icon' => 'glyphicon-cloud-download',
+                'icon' => 'cloud-plus',
                 'active_for' => 'App\User',
                 'valid_config' => function($target) {
                     return true;
@@ -87,12 +87,27 @@ class MovementType extends Model
             $ret['sepa'] = (object) [
                 'name' => _i('SEPA'),
                 'identifier' => true,
-                'icon' => 'glyphicon-cloud-download',
+                'icon' => 'cloud-plus',
                 'active_for' => 'App\User',
                 'valid_config' => function($target) {
                     return (get_class($target) == 'App\User' && !empty($target->rid['iban']));
                 }
             ];
+        }
+
+        return $ret;
+    }
+
+    public static function paymentsSimple()
+    {
+        $payments = self::payments();
+
+        $ret = [
+            'none' => _i('Non Specificato'),
+        ];
+
+        foreach($payments as $identifier => $meta) {
+            $ret[$identifier] = $meta->name;
         }
 
         return $ret;
@@ -133,7 +148,7 @@ class MovementType extends Model
             }
 
             if ($found)
-                $ret[$method_id] = $info;
+                $ret[$method_id] = $info->name;
         }
 
         return $ret;

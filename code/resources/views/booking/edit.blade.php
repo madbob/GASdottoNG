@@ -5,12 +5,27 @@ $grand_total = 0;
 $has_shipping = $aggregate->canShip();
 $enforced = $enforced ?? false;
 
+$form_buttons = [
+    [
+        'label' => _i('Annulla Prenotazione'),
+        'color' => 'danger',
+        'classes' => ['delete-booking'],
+    ],
+    [
+        'label' => _i('Salva'),
+        'type' => 'submit',
+        'color' => 'success',
+        'classes' => ['saving-button'],
+    ]
+];
+
 ?>
 
 @include('booking.head', ['aggregate' => $aggregate])
 
-<form class="form-horizontal inner-form booking-form" method="PUT" action="{{ url('booking/' . $aggregate->id . '/user/' . $user->id) }}" data-dynamic-url="{{ route('booking.dynamics', ['aggregate_id' => $aggregate->id, 'user_id' => $user->id]) }}">
+<x-larastrap::iform classes="booking-form" method="PUT" :action="url('booking/' . $aggregate->id . '/user/' . $user->id)" data-dynamic-url="{{ route('booking.dynamics', ['aggregate_id' => $aggregate->id, 'user_id' => $user->id]) }}" :buttons="$form_buttons">
     <input type="hidden" name="post-saved-function" value="afterBookingSaved" class="skip-on-submit">
+    <input type="hidden" name="close-modal" value="1" class="skip-on-submit">
 
     @if($user->gas->restrict_booking_to_credit)
         <input type="hidden" name="max-bookable" value="{{ $user->activeBalance() }}" class="skip-on-submit">
@@ -76,19 +91,21 @@ $enforced = $enforced ?? false;
             <br>
         @endif
 
-        <div class="flowbox">
-            <div class="mainflow hidden-md">
+        <div class="d-none d-md-flex flowbox mb-1">
+            <div class="mainflow">
                 <input type="text" class="form-control table-text-filter" data-list-target="#booking_{{ sanitizeId($order->id) }}">
             </div>
 
             <div class="btn-group table-sorter" data-table-target="#booking_{{ sanitizeId($order->id) }}">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
                     {{ _i('Ordina Per') }} <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="#" data-sort-by="name">{{ _i('Nome') }}</a>
-                        <a href="#" data-sort-by="category_name">{{ _i('Categoria') }}</a>
+                        <a href="#" class="dropdown-item" data-sort-by="name">{{ _i('Nome') }}</a>
+                    </li>
+                    <li>
+                        <a href="#" class="dropdown-item" data-sort-by="category_name">{{ _i('Categoria') }}</a>
                     </li>
                 </ul>
             </div>&nbsp;
@@ -105,7 +122,7 @@ $enforced = $enforced ?? false;
         <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}">
             <input type="hidden" name="booking_id" value="{{ $o->id }}" class="skip-on-submit">
 
-            <thead>
+            <thead class="d-none d-md-table-header-group">
                 <tr>
                     <th width="40%"></th>
                     <th width="30%"></th>
@@ -116,7 +133,7 @@ $enforced = $enforced ?? false;
             </thead>
             <tbody>
                 @foreach($categories as $cat)
-                    <tr class="table-sorting-header hidden" data-sorting-category_name="{{ $cat }}">
+                    <tr class="table-sorting-header d-none" data-sorting-category_name="{{ $cat }}">
                         <td colspan="5">
                             {{ $cat }}
                         </td>
@@ -132,7 +149,7 @@ $enforced = $enforced ?? false;
 
                             <div class="hidden">
                                 @foreach($product->icons() as $icon)
-                                    <span class="glyphicon glyphicon-{{ $icon }}" aria-hidden="true"></span>
+                                    <i class="bi-{{ $icon }}"></i>
                                 @endforeach
                             </div>
                         </td>
@@ -145,7 +162,7 @@ $enforced = $enforced ?? false;
                             <label class="static-label"><small>{!! $product->printableDetails($order) !!}</small></label>
                         </td>
 
-                        <td class="text-right">
+                        <td class="text-end">
                             <label class="static-label">
                                 <small>{!! $product->printablePrice($order) !!}</small>
                                 <div class="modifiers">
@@ -160,7 +177,7 @@ $enforced = $enforced ?? false;
                         </td>
 
                         <td>
-                            <label class="static-label booking-product-price pull-right">
+                            <label class="static-label booking-product-price float-end">
                                 <span>{{ printablePrice($p ? $p->getValue('effective') : 0) }}</span> {{ $currentgas->currency }}
                             </label>
                         </td>
@@ -180,7 +197,7 @@ $enforced = $enforced ?? false;
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td><label class="static-label pull-right">{{ printablePriceCurrency($user->activeBalance()) }}</label></td>
+                        <td><label class="static-label float-end">{{ printablePriceCurrency($user->activeBalance()) }}</label></td>
                     </tr>
                 @endif
             </tbody>
@@ -190,14 +207,14 @@ $enforced = $enforced ?? false;
                     <th></th>
                     <th></th>
                     <th></th>
-                    <th class="text-right">Totale: <span class="booking-total">{{ printablePrice($o->getValue('effective', false)) }}</span> {{ $currentgas->currency }}</th>
+                    <th class="text-end">Totale: <span class="booking-total">{{ printablePrice($o->getValue('effective', false)) }}</span> {{ $currentgas->currency }}</th>
                 </tr>
             </tfoot>
         </table>
 
         <div class="row">
             <div class="col-md-12">
-                @include('commons.textarea', ['obj' => $o, 'name' => 'notes', 'postfix' => '_' . $order->id, 'label' => _i('Note')])
+                <x-larastrap::textarea name="notes" :label="_i('Note')" :value="$o->notes" squeeze="false" :npostfix="sprintf('_%s', $order->id)" />
             </div>
         </div>
 
@@ -209,7 +226,7 @@ $enforced = $enforced ?? false;
             <tfoot>
                 <tr>
                     <th>
-                        <div class="pull-right">
+                        <div class="float-end">
                             <strong>Totale Complessivo: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currentgas->currency }}</strong>
                         </div>
                     </th>
@@ -217,13 +234,4 @@ $enforced = $enforced ?? false;
             </tfoot>
         </table>
     @endif
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="btn-group pull-right main-form-buttons" role="group">
-                <button type="button" class="btn btn-danger delete-booking">{{ _i('Annulla Prenotazione') }}</button>
-                <button type="submit" class="btn btn-success saving-button" {{ $user->canBook() ? '' : 'disabled' }}>{{ _i('Salva') }}</button>
-            </div>
-        </div>
-    </div>
-</form>
+</x-larastrap::iform>

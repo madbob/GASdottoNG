@@ -4,6 +4,12 @@
     "keywords": ["management", "money", "fair economy"],
     "license": "AGPL-3.0+",
     "type": "project",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "/home/madbob/projects/larastrap/larastrap2"
+        }
+    ],
     "require": {
         "php": ">=7.3",
         "ext-gd": "*",
@@ -26,7 +32,8 @@
         "sinergi/browser-detector": "^6.1",
         "spatie/db-dumper": "^2.21",
         "zerospam/laravel-gettext": "7.x",
-        "zetacomponents/archive": "dev-master"
+        "zetacomponents/archive": "dev-master",
+        "madbob/larastrap": "dev-master"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

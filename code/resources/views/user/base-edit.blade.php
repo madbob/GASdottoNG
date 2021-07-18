@@ -1,25 +1,6 @@
-@include('commons.textfield', [
-    'obj' => $user,
-    'name' => 'username',
-    'label' => _i('Username'),
-    'mandatory' => true,
-    'pattern' => App\User::usernamePattern(),
-    'help_popover' => _i("Username col quale l'utente si può autenticare. Deve essere univoco."),
-])
-
-@include('commons.textfield', [
-    'obj' => $user,
-    'name' => 'firstname',
-    'label' => _i('Nome'),
-    'mandatory' => true,
-])
-
-@include('commons.textfield', [
-    'obj' => $user,
-    'name' => 'lastname',
-    'label' => _i('Cognome'),
-    'mandatory' => true,
-])
+<x-larastrap::text name="username" :label="_i('Username')" required :pattern="App\User::usernamePattern()" :pophelp="_i('Username col quale l\'utente si può autenticare. Deve essere univoco.')" />
+<x-larastrap::text name="firstname" :label="_i('Nome')" required />
+<x-larastrap::text name="lastname" :label="_i('Cognome')" required />
 
 @include('commons.passwordfield', [
     'obj' => $user,

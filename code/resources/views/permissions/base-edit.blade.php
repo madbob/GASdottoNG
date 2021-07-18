@@ -1,36 +1,16 @@
 <input type="hidden" name="post-saved-refetch" value="#role-list" data-fetch-url="{{ route('roles.index') }}">
 
-@include('commons.textfield', [
-    'obj' => $role,
-    'name' => 'name',
-    'label' => _i('Nome'),
-    'mandatory' => true
-])
-
-@include('commons.boolfield', [
-    'obj' => $role,
-    'name' => 'always',
-    'label' => _i('Abilitato di Default')
-])
-
-@include('commons.selectobjfield', [
-    'obj' => $role,
-    'name' => 'parent_id',
-    'objects' => App\Role::orderBy('name')->get(),
-    'label' => _i('Ruolo Superiore'),
-    'extra_selection' => [
-        '0' => _i('Nessuno')
-    ],
-    'help_popover' => _i("Gli utenti con assegnato il \"ruolo superiore\" potranno assegnare ad altri utenti questo ruolo"),
-])
+<x-larastrap::text name="name" :label="_i('Nome')" required />
+<x-larastrap::check name="always" :label="_i('Abilitato di Default')" />
+<x-larastrap::selectobj name="parent_id" :label="_i('Ruolo Superiore')" :options="App\Role::orderBy('name')->get()" :extraitem="_i('Nessuno')" :pophelp="_i('Gli utenti con assegnato il ruolo superiore potranno assegnare ad altri utenti questo ruolo')" />
 
 @foreach(App\Role::allPermissions() as $class => $permissions)
-    <ul class="list-group">
+    <ul class="list-group mt-2">
         @foreach($permissions as $identifier => $description)
             <li class="list-group-item">
                 {{ $description }}
-                <span class="pull-right">
-                    <input type="checkbox" data-toggle="toggle" data-size="mini" name="actions[]" value="{{ $identifier }}">
+                <span class="float-end">
+                    <input type="checkbox" name="actions[]" value="{{ $identifier }}">
                 </span>
             </li>
         @endforeach

@@ -7,29 +7,24 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
 
 ?>
 
-<div class="wizard_page">
-    @if(!empty($errors))
-        <div class="alert alert-danger">
-            <ul>
-                @foreach($errors as $error)
-                    <li>{!! $error !!}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+<x-larastrap::modal :title="_i('Importa CSV')">
+    <div class="wizard_page">
+        @if(!empty($errors))
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach($errors as $error)
+                        <li>{!! $error !!}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-    <form class="form-horizontal" method="POST" action="{{ url('import/csv?type=products&step=run') }}" data-toggle="validator">
-        <input type="hidden" name="supplier_id" value="{{ $supplier->id }}">
+        <x-larastrap::form method="POST" :action="url('import/csv?type=products&step=run')" :buttons="[['color' => 'success', 'type' => 'submit', 'label' => _i('Avanti')]]">
+            <input type="hidden" name="supplier_id" value="{{ $supplier->id }}">
 
-        <div class="modal-body">
             <div class="row">
                 <div class="col-md-6">
-                    @include('commons.boolfield', [
-                        'obj' => null,
-                        'name' => 'reset_list',
-                        'label' => _i("Disattiva prodotti di questo fornitore non inclusi nell'elenco"),
-                        'default_checked' => false
-                    ])
+                    <x-larastrap::check name="reset_list" :label="_i('Disattiva prodotti di questo fornitore non inclusi nell\'elenco')" />
                 </div>
             </div>
 
@@ -52,133 +47,67 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                 </thead>
                 <tbody>
                     @foreach($products as $index => $product)
-                        <tr>
-                            <td>
-                                <input type="checkbox" name="import[]" value="{{ $index }}" checked>
-                            </td>
-                            <td>
-                                @include('commons.textfield', [
-                                    'obj' => $product,
-                                    'name' => 'name',
-                                    'label' => '',
-                                    'postfix' => '[]',
-                                    'squeeze' => true
-                                ])
-                            </td>
-                            <td>
-                                @include('commons.textfield', [
-                                    'obj' => $product,
-                                    'name' => 'description',
-                                    'label' => '',
-                                    'postfix' => '[]',
-                                    'squeeze' => true
-                                ])
-                            </td>
-                            <td>
-                                @include('commons.decimalfield', [
-                                    'obj' => $product,
-                                    'name' => 'price',
-                                    'label' => '',
-                                    'postfix' => '[]',
-                                    'squeeze' => true,
-                                ])
-                            </td>
-                            <td>
-                                @include('commons.selectobjfield', [
-                                    'obj' => $product,
-                                    'name' => 'category_id',
-                                    'postfix' => '[]',
-                                    'squeeze' => true,
-                                    'objects' => $categories,
-                                    'extra_selection' => (isset($product->temp_category_name) ? ['new:' . $product->temp_category_name => $product->temp_category_name] : [])
-                                ])
-                            </td>
-                            <td>
-                                @include('commons.selectobjfield', [
-                                    'obj' => $product,
-                                    'name' => 'measure_id',
-                                    'postfix' => '[]',
-                                    'squeeze' => true,
-                                    'objects' => $measures,
-                                    'extra_selection' => (isset($product->temp_measure_name) ? ['new:' . $product->temp_measure_name => $product->temp_measure_name] : [])
-                                ])
-                            </td>
-                            <td>
-                                @include('commons.selectobjfield', [
-                                    'obj' => $product,
-                                    'name' => 'vat_rate_id',
-                                    'postfix' => '[]',
-                                    'squeeze' => true,
-                                    'objects' => $vat_rates,
-                                    'extra_selection' => (isset($product->temp_vat_rate_name) ? ['new:' . $product->temp_vat_rate_name => $product->temp_vat_rate_name] : [])
-                                ])
-                            </td>
-                            <td>
-                                @include('commons.textfield', [
-                                    'obj' => $product,
-                                    'name' => 'supplier_code',
-                                    'label' => '',
-                                    'postfix' => '[]',
-                                    'squeeze' => true
-                                ])
-                            </td>
-                            <td>
-                                @include('commons.decimalfield', [
-                                    'obj' => $product,
-                                    'name' => 'package_size',
-                                    'label' => '',
-                                    'postfix' => '[]',
-                                    'squeeze' => true,
-                                    'decimals' => 3
-                                ])
-                            </td>
-                            <td>
-                                @include('commons.decimalfield', [
-                                    'obj' => $product,
-                                    'name' => 'min_quantity',
-                                    'label' => '',
-                                    'postfix' => '[]',
-                                    'squeeze' => true,
-                                    'decimals' => 3
-                                ])
-                            </td>
-                            <td>
-                                @include('commons.decimalfield', [
-                                    'obj' => $product,
-                                    'name' => 'multiple',
-                                    'label' => '',
-                                    'postfix' => '[]',
-                                    'squeeze' => true,
-                                    'decimals' => 3
-                                ])
-                            </td>
+                        <x-larastrap::enclose :obj="$product">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="import[]" value="{{ $index }}" checked>
+                                </td>
+                                <td>
+                                    <x-larastrap::text name="name" squeeze npostfix="[]" />
+                                </td>
+                                <td>
+                                    <x-larastrap::text name="description" squeeze npostfix="[]" />
+                                </td>
+                                <td>
+                                    <x-larastrap::price name="price" squeeze npostfix="[]" />^
+                                </td>
+                                <td>
+                                    @if(isset($product->temp_category_name))
+                                        <x-larastrap::selectobj name="category_id" squeeze npostfix="[]" :options="$categories" :extraitem="['new:' . $product->temp_category_name => $product->temp_category_name]" />
+                                    @else
+                                        <x-larastrap::selectobj name="category_id" squeeze npostfix="[]" :options="$categories" />
+                                    @endif
+                                </td>
+                                <td>
+                                    @if(isset($product->temp_measure_name))
+                                        <x-larastrap::selectobj name="measure_id" squeeze npostfix="[]" :options="$measures" :extraitem="['new:' . $product->temp_measure_name => $product->temp_measure_name]" />
+                                    @else
+                                        <x-larastrap::selectobj name="measure_id" squeeze npostfix="[]" :options="$measures" />
+                                    @endif
+                                </td>
+                                <td>
+                                    @if(isset($product->temp_vat_rate_name))
+                                        <x-larastrap::selectobj name="vat_rate_id" squeeze npostfix="[]" :options="$vat_rates" :extraitem="['new:' . $product->temp_vat_rate_name => $product->temp_vat_rate_name]" />
+                                    @else
+                                        <x-larastrap::selectobj name="vat_rate_id" squeeze npostfix="[]" :options="$vat_rates" />
+                                    @endif
+                                </td>
+                                <td>
+                                    <x-larastrap::text name="supplier_code" squeeze npostfix="[]" />
+                                </td>
+                                <td>
+                                    <x-larastrap::number name="package_size" squeeze npostfix="[]" classes="trim-3-ddigits" />
+                                </td>
+                                <td>
+                                    <x-larastrap::number name="min_quantity" squeeze npostfix="[]" classes="trim-3-ddigits" />
+                                </td>
+                                <td>
+                                    <x-larastrap::number name="multiple" squeeze npostfix="[]" classes="trim-3-ddigits" />
+                                </td>
 
-                            <td>
-                                @if($original_products->isEmpty() == false)
-                                    @include('commons.selectobjfield', [
-                                        'obj' => $product,
-                                        'name' => 'want_replace',
-                                        'postfix' => '[]',
-                                        'squeeze' => true,
-                                        'objects' => $original_products,
-                                        'extra_selection' => [
-                                            '-1' => _i('Nessuno')
-                                        ]
-                                    ])
-                                @else
-                                    {{ _i('Nessun Prodotto Aggiornabile') }}
-                                    <input type="hidden" name="want_replace[]" value="-1">
-                                @endif
-                            </td>
-                        </tr>
+                                <td>
+                                    @if($original_products->isEmpty() == false)
+                                        <x-larastrap::selectobj name="want_replace" squeeze npostfix="[]" :options="$original_products" :extraitem="_i('Nessuno')" />
+                                    @else
+                                        {{ _i('Nessun Prodotto Aggiornabile') }}
+                                        <input type="hidden" name="want_replace[]" value="0">
+                                    @endif
+                                </td>
+                            </tr>
+                        </x-larastrap::enclose>
                     @endforeach
                 </tbody>
             </table>
-        </div>
-
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
-            <button type="submit" class="btn btn-success">{{ _i('Avanti') }}</button>
-        </div>
-    </form>
-</div>
+        </x-larastrap::form>
+    </div>
+</x-larastrap::modal>

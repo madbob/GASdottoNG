@@ -1,13 +1,5 @@
 <div class="row">
-    <div class="col-md-12">
-        <ul class="nav nav-tabs" role="tablist">
-            @foreach($aggregate->gas as $index => $gas)
-                <li role="presentation" class="{{ $index == 0 ? 'active' : '' }}"><a href="#aggregate-gas-{{ $aggregate->id }}-{{ $gas->id }}" role="tab" data-toggle="tab">{{ $gas->printableName() }}</a></li>
-            @endforeach
-
-            <li role="presentation"><a href="#aggregate-gas-{{ $aggregate->id }}-total" role="tab" data-toggle="tab">{{ _i('Totale') }}</a></li>
-        </ul>
-
+    <div class="col">
         <?php
 
         $merged = [];
@@ -19,9 +11,9 @@
 
         ?>
 
-        <div class="tab-content">
+        <x-larastrap::tabs>
             @foreach($aggregate->gas as $index => $gas)
-                <div role="tabpanel" class="tab-pane {{ $index == 0 ? 'active' : '' }}" id="aggregate-gas-{{ $aggregate->id }}-{{ $gas->id }}">
+                <x-larastrap::tabpane :active="$index == 0" :label="$gas->printableName()">
                     <div class="row">
                         <div class="col-md-4 col-md-offset-8">
                             @include('aggregate.files', ['aggregate' => $aggregate, 'managed_gas' => $gas->id])
@@ -45,10 +37,10 @@
                             @endforeach
                         </div>
                     </div>
-                </div>
+                </x-larastrap::tabpane>
             @endforeach
 
-            <div role="tabpanel" class="tab-pane {{ $index == 0 ? 'active' : '' }}" id="aggregate-gas-{{ $aggregate->id }}-total">
+            <x-larastrap::tabpane :label="_i('Totale')">
                 <div class="row">
                     <div class="col-md-4 col-md-offset-8">
                         @include('aggregate.files', ['aggregate' => $aggregate, 'managed_gas' => 0])
@@ -64,7 +56,7 @@
                         @endforeach
                     </div>
                 </div>
-            </div>
-        </div>
+            </x-larastrap::tabpane>
+        </x-larastrap::tabs>
     </div>
 </div>

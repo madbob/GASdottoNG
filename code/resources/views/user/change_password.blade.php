@@ -9,16 +9,10 @@
 
     <hr/>
 
-    <form class="form-horizontal inner-form" method="PUT" action="{{ route('users.update', $currentuser->id) }}">
+    <x-larastrap::iform method="PUT" action="{{ route('users.update', $currentuser->id) }}" :buttons="[['type' => 'submit', 'color' => 'success', 'label' => _i('Salva e Procedi')]]">
         <input type="hidden" name="reload-whole-page" value="1">
         @include('commons.passwordfield', ['obj' => null, 'name' => 'password', 'label' => _i('Password'), 'mandatory' => true, 'enforcable_change' => false])
-
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button class="btn btn-success pull-right" type="submit">{{ _i('Salva e Procedi') }}</button>
-            </div>
-        </div>
-    </form>
+    </x-larastrap::form>
 </div>
 
 @endsection

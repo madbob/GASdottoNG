@@ -1,33 +1,74 @@
-@import '~bootstrap/dist/css/bootstrap.css';
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/utilities";
+@import "~bootstrap/scss/root";
+@import "~bootstrap/scss/reboot";
+@import "~bootstrap/scss/type";
+@import "~bootstrap/scss/images";
+@import "~bootstrap/scss/containers";
+@import "~bootstrap/scss/grid";
+@import "~bootstrap/scss/tables";
+@import "~bootstrap/scss/forms";
+@import "~bootstrap/scss/buttons";
+@import "~bootstrap/scss/transitions";
+@import "~bootstrap/scss/dropdown";
+@import "~bootstrap/scss/button-group";
+@import "~bootstrap/scss/nav";
+@import "~bootstrap/scss/navbar";
+@import "~bootstrap/scss/card";
+@import "~bootstrap/scss/accordion";
+@import "~bootstrap/scss/breadcrumb";
+@import "~bootstrap/scss/pagination";
+@import "~bootstrap/scss/badge";
+@import "~bootstrap/scss/alert";
+@import "~bootstrap/scss/progress";
+@import "~bootstrap/scss/list-group";
+@import "~bootstrap/scss/close";
+@import "~bootstrap/scss/toasts";
+@import "~bootstrap/scss/modal";
+@import "~bootstrap/scss/tooltip";
+@import "~bootstrap/scss/popover";
+@import "~bootstrap/scss/carousel";
+@import "~bootstrap/scss/spinners";
+@import "~bootstrap/scss/offcanvas";
+@import "~bootstrap/scss/helpers";
+
+$utilities: map-merge(
+    $utilities,
+    (
+        "display": map-merge(
+            map-get($utilities, "display"),
+            (
+                values: join(
+                    map-get(map-get($utilities, "display"), "values"),
+                    table-header-group,
+                ),
+            ),
+        ),
+    )
+);
+
+@import "~bootstrap/scss/utilities/api";
+
+@import '~bootstrap-icons/font/bootstrap-icons';
 @import '~bootstrap-datepicker/dist/css/bootstrap-datepicker3.css';
-@import '~bootstrap-table/dist/bootstrap-table.css';
-@import '~bootstrap-toggle/css/bootstrap-toggle.css';
-@import '~bootstrap-vertical-tabs/bootstrap.vertical-tabs.css';
+@import '~select2/src/scss/core';
+@import '~select2-bootstrap-5-theme/src/include-all';
 @import '~jquery-ui/themes/base/all.css';
 @import '~chartist/dist/chartist.css';
+@import "./jbob";
 
 body {
     font-size: 16px;
 }
 
-.btn {
-    font-size: 16px;
+.hidden {
+    display: none;
 }
 
 .form-control {
     font-size: 16px;
-}
-
-@media (max-width: 1280px) and (min-width: 751px) {
-    .order-summary {
-        .input-group-addon {
-            display: none;
-        }
-
-        .form-control {
-            padding: 6px;
-        }
-    }
 }
 
 #preloader {
@@ -67,9 +108,32 @@ body {
     color: #BBB;
 }
 
+.nav-tabs {
+    align-items: stretch;
+
+    .nav-link {
+        height: 102%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
 .static-label {
 	padding-top: 7px;
 	margin-bottom: 0;
+}
+
+.glabel {
+    font-weight: bold;
+    display: flex;
+    align-items: baseline;
+    flex-direction: row-reverse;
+    text-align: right;
+
+    .badge {
+        margin-right: 5px;
+    }
 }
 
 .flowbox {
@@ -83,12 +147,23 @@ body {
     }
 }
 
+.wrapped-flex {
+    flex-wrap: wrap;
+}
+
 table {
 	label {
 		padding-top: 7px;
 		margin-bottom: 0;
 		font-weight: normal;
 	}
+}
+
+/*
+    Per far apparire la selezione di Select2 all'interno dei modali
+*/
+.select2-container--open {
+    z-index: 2000;
 }
 
 #dates-calendar {
@@ -170,41 +245,6 @@ table {
     }
 }
 
-.loadablelist {
-	.loadablelist {
-		.list-group-item.active {
-			color: #31708F;
-			background-color: #D9EDF7;
-			border-color: #BCE8F1;
-		}
-	}
-
-	.list-group-item.active {
-		border: 2px solid #000;
-	}
-
-    .loadable-sorting-header {
-        background-color: #DDD;
-        color: #000;
-    }
-
-	.loadable-contents {
-		border: 2px solid #000;
-	}
-}
-
-.help-sensitive {
-	color: #31708F;
-    font-weight: normal;
-    font-size: 0%;
-    text-align: left;
-    display: block;
-}
-
-.twitter-typeahead {
-	width: 100%;
-}
-
 .decorated_radio {
     input[type=radio] {
         display: none;
@@ -226,11 +266,7 @@ table {
 
 .dynamic-tree {
     > li {
-        > div > input {
-            margin-left: 10%;
-        }
-
-        > ul .badge.pull-left {
+        > ul .btn-warning {
             display: none;
         }
     }
@@ -247,9 +283,13 @@ table {
         margin-top: 10px;
     }
 
+    .btn-warning {
+        margin-right: 5px;
+    }
+
     .mjs-nestedSortable-expanded {
         .expanding-icon::before {
-            content: "\e252";
+            content: "\f63b";
         }
     }
 
@@ -259,7 +299,7 @@ table {
         }
 
         .expanding-icon::before {
-            content: "\e250";
+            content: "\f64d";
         }
     }
 }
@@ -337,8 +377,6 @@ table {
 }
 
 .icons-legend {
-	margin-bottom: 10px;
-
     .dropdown-menu {
         a.active {
             background-color: #31B0D5;
@@ -377,22 +415,26 @@ table {
 }
 
 .modal {
+    /*
+        I modali vengono resi draggabili, ma jQueryUI forza un position:relative
+        per il quale il modale stesso viene poi visualizzato inline (anziché in
+        overlay sulla pagina).
+        Questo è per forzare in tutti i casi la position corretta
+    */
+    position: fixed !important;
+
     .modal-header {
         background-color: #EEE;
     }
 
     .modal-footer {
+        display: block;
         background-color: #EEE;
 
-        .btn-default {
-            background-color: #EEE;
-            border: none;
+        .btn {
+            float: right;
         }
     }
-}
-
-.modal-extra-lg {
-    width: 90%;
 }
 
 #delete-confirm-modal {
@@ -403,29 +445,8 @@ table {
     z-index: 2000;
 }
 
-/*
-    Questo è per creare degli alias al glyphicon king, e poter assegnare ad ogni
-    ruolo una diversa icona (o, almeno, una diversa classe) senza sapere a
-    priori quanti sono. Cfr. GASModel::iconsMap()
-*/
-@for $i from 0 to 20 {
-    .glyphicon-king#{$i}:before {
-        content: "\e211";
-    }
-}
-
-.btn {
-    &.btn-wide {
-        width: 100%;
-    }
-}
-
 .btn-group {
-    label.btn.active:after {
-        content: '\e067';
-        font-size: 10px;
-        font-family: 'Glyphicons Halflings';
-    }
+    display: table;
 
     &.disabled {
         pointer-events: none;
@@ -440,6 +461,41 @@ table {
     img {
         max-width: 100%;
         max-height: 500px;
+    }
+}
+
+/*
+    Per gestire il feedback che appare accanto alle checkbox che salvano
+    immediatamente la selezione sul server
+*/
+.saved-checkbox {
+    position: relative;
+
+    &:after {
+        content: 'OK';
+        color: #157347;
+        position: absolute;
+        margin-left: 18px;
+        top: -7px;
+        animation: saved-checkbox-feedback 2s ease 1;
+        opacity: 0;
+    }
+
+    &.saved-left-feedback {
+        &:after {
+            margin-left: -27px;
+        }
+    }
+}
+@keyframes saved-checkbox-feedback {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
     }
 }
 
@@ -475,20 +531,17 @@ table {
 
 .address-popover {
     width: 400px;
-    max-width: 400px;
-    margin-left: 300px !important;
+    max-width: 100%;
 }
 
 .periodic-popover {
     width: 400px;
-    max-width: 400px;
-    margin-left: 300px !important;
+    max-width: 100%;
 }
 
 .password-popover {
     width: 400px;
-    max-width: 400px;
-    margin-left: 300px !important;
+    max-width: 100%;
 }
 
 .movement-type-editor {
@@ -499,39 +552,41 @@ table {
     }
 }
 
-.separated_cell {
-    &.on-left {
-        border-left: 1px solid #ddd;
+.accordion {
+    /*
+        Senza questo, nelle liste di elementi in cui il primo elemento è
+        nascosto da un filtro, il primo elemento non ha il bordo superiore.
+        Così facendo inverto la logica
+    */
+    .accordion-item:not(:first-of-type) {
+        border-top: 1px solid rgba(0, 0, 0, 0.125);
+        border-bottom: 0;
     }
-}
+    .accordion-item:last-of-type {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    }
 
-.list-group {
-    margin-bottom: 11px;
-
-    .list-group-item {
+    .accordion-button {
         .appended-loadable-message {
             width: 100%;
             text-align: right;
             display: block;
         }
     }
+
+    .accordion-body {
+        border: 2px solid #000;
+    }
+
+    &.loadable-list {
+        .accordion-button {
+            display: inline-block;
+        }
+    }
 }
 
-.dense-list {
-    ul {
-        height: 930px;
-        overflow-x: hidden;
-    }
-
-    .nav>li>a {
-        padding-top: 5px;
-        padding-bottom: 5px;
-    }
-
-    .list-group-item {
-        padding-top: 5px;
-        padding-bottom: 5px;
-    }
+.ui-draggable-dragging {
+    z-index: 100;
 }
 
 .gray-row {
@@ -556,6 +611,53 @@ table {
     > li {
         > a {
             padding: 14px 10px;
+        }
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    .btn {
+        padding: 0.375rem 0.35rem;
+    }
+
+    .glabel {
+        text-align: left;
+        flex-direction: row;
+
+        .badge {
+            margin-left: 5px;
+        }
+    }
+
+    .booking-editor {
+        display: flex;
+        flex-direction: column;
+
+        tbody, tfoot {
+            display: flex;
+            flex-direction: column;
+
+            tr {
+                display: flex;
+                flex-direction: column;
+
+                td, th {
+                    border-bottom-width: 0;
+                    padding: 0.2rem 0.5rem;
+                }
+            }
+        }
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .nav-link {
+        padding: 0.375rem 0.75rem;
+    }
+
+    .modal {
+        .modal-footer {
+            padding: 0.15rem;
         }
     }
 }

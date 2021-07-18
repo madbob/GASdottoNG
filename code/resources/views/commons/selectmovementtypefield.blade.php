@@ -1,31 +1,19 @@
 <?php
 
-if(!isset($show_all))
+if(!isset($show_all)) {
     $show_all = false;
+}
 
-$types = [];
-
-$types[] = [
-    'label' => _i('Seleziona un Tipo'),
-    'value' => 'none',
+$types = [
+    'none' => _i('Seleziona un Tipo'),
 ];
 
 foreach (App\MovementType::types() as $info) {
     if ($show_all || $info->visibility) {
-        $types[] = [
-            'label' => $info->name,
-            'value' => $info->id,
-        ];
+        $types[$info->id] = $info->name;
     }
 }
 
 ?>
 
-@include('commons.selectenumfield', [
-    'obj' => null,
-    'name' => 'type',
-    'label' => _i('Tipo'),
-    'values' => $types,
-    'enforced_default' => 'none',
-    'extra_class' => 'movement-type-selector'
-])
+<x-larastrap::select name="type" :label="_i('Tipo')" :options="$types" classes="movement-type-selector" />

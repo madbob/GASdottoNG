@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Modifier;
+
 use App\Services\ModifiersService;
 use App\Exceptions\AuthException;
 
@@ -24,6 +26,10 @@ class ModifiersController extends BackedController
     {
         try {
             $modifier = $this->service->show($id);
+            if (is_null($modifier)) {
+                abort(404);
+            }
+
             return view('modifier.show', ['modifier' => $modifier]);
         }
         catch (AuthException $e) {
@@ -40,5 +46,10 @@ class ModifiersController extends BackedController
         catch (AuthException $e) {
             abort($e->status());
         }
+    }
+
+    public function strings()
+    {
+        return response()->json(Modifier::descriptions());
     }
 }

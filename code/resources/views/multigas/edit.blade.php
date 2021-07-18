@@ -1,9 +1,7 @@
-<form class="form-horizontal main-form multigas-editor" method="PUT" action="{{ route('multigas.update', $gas->id) }}">
+<x-larastrap::form :obj="$gas" classes="main-form multigas-editor" method="PUT" :action="route('multigas.update', $gas->id)">
     <div class="row">
-        <div class="col-md-6">
-            @include('commons.textfield', ['obj' => $gas, 'name' => 'name', 'label' => _i('Nome'), 'mandatory' => true])
-        </div>
-        <div class="col-md-6">
+        <div class="col-6">
+            <x-larastrap::text name="name" :label="_i('Nome')" required />
         </div>
     </div>
 
@@ -14,8 +12,8 @@
                 @foreach(App\Supplier::orderBy('name', 'asc')->get() as $supplier)
                     <li class="list-group-item">
                         {{ $supplier->printableName() }}
-                        <span class="pull-right">
-                            <input type="checkbox" data-toggle="toggle" data-size="mini" data-gas="{{ $gas->id }}" data-target-type="supplier" data-target-id="{{ $supplier->id }}" {{ $gas->suppliers()->where('suppliers.id', $supplier->id)->first() != null ? 'checked' : '' }}>
+                        <span class="float-end">
+                            <input type="checkbox" data-gas="{{ $gas->id }}" data-target-type="supplier" data-target-id="{{ $supplier->id }}" {{ $gas->suppliers()->where('suppliers.id', $supplier->id)->first() != null ? 'checked' : '' }}>
                         </span>
                     </li>
                 @endforeach
@@ -29,8 +27,8 @@
                 })->orderBy('id', 'asc')->get() as $aggregate)
                     <li class="list-group-item">
                         {{ $aggregate->printableName() }}
-                        <span class="pull-right">
-                            <input type="checkbox" data-toggle="toggle" data-size="mini" data-gas="{{ $gas->id }}" data-target-type="aggregate" data-target-id="{{ $aggregate->id }}" {{ $gas->aggregates()->where('aggregates.id', $aggregate->id)->first() != null ? 'checked' : '' }}>
+                        <span class="float-end">
+                            <input type="checkbox" data-gas="{{ $gas->id }}" data-target-type="aggregate" data-target-id="{{ $aggregate->id }}" {{ $gas->aggregates()->where('aggregates.id', $aggregate->id)->first() != null ? 'checked' : '' }}>
                         </span>
                     </li>
                 @endforeach
@@ -44,8 +42,8 @@
                     @foreach(App\Delivery::orderBy('name', 'asc')->get() as $delivery)
                         <li class="list-group-item">
                             {{ $delivery->printableName() }}
-                            <span class="pull-right">
-                                <input type="checkbox" data-toggle="toggle" data-size="mini" data-gas="{{ $gas->id }}" data-target-type="delivery" data-target-id="{{ $delivery->id }}" {{ $gas->deliveries()->where('deliveries.id', $delivery->id)->first() != null ? 'checked' : '' }}>
+                            <span class="float-end">
+                                <input type="checkbox" data-gas="{{ $gas->id }}" data-target-type="delivery" data-target-id="{{ $delivery->id }}" {{ $gas->deliveries()->where('deliveries.id', $delivery->id)->first() != null ? 'checked' : '' }}>
                             </span>
                         </li>
                     @endforeach
@@ -53,6 +51,4 @@
             </div>
         @endif
     </div>
-
-    @include('commons.formbuttons', ['obj' => $gas, 'no_save' => true])
-</form>
+</x-larastrap::form>

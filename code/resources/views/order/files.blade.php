@@ -1,14 +1,5 @@
 <div class="list-group">
-    <a href="{{ route('orders.export', ['id' => $order->id, 'type' => 'shipping']) }}" class="list-group-item async-modal">
-        {{ _i('Dettaglio Consegne') }}
-        <span class="glyphicon glyphicon-modal-window pull-right" aria-hidden="true"></span>
-    </a>
-    <a href="{{ route('orders.export', ['id' => $order->id, 'type' => 'summary']) }}" class="list-group-item async-modal">
-        {{ _i('Riassunto Prodotti') }}
-        <span class="glyphicon glyphicon-modal-window pull-right" aria-hidden="true"></span>
-    </a>
-    <a href="{{ route('orders.export', ['id' => $order->id, 'type' => 'table']) }}" class="list-group-item async-modal">
-        {{ _i('Tabella Complessiva Prodotti') }}
-        <span class="glyphicon glyphicon-modal-window pull-right" aria-hidden="true"></span>
-    </a>
+    <x-larastrap::ambutton classes="list-group-item" :label="_i('Dettaglio Consegne')" :data-modal-url="route('orders.export', ['id' => $order->id, 'type' => 'shipping'])" />
+    <x-larastrap::ambutton classes="list-group-item" :label="_i('Riassunto Prodotti')" :data-modal-url="route('orders.export', ['id' => $order->id, 'type' => 'summary'])" />
+    <x-larastrap::ambutton classes="list-group-item" :label="_i('Tabella Complessiva Prodotti')" :data-modal-url="route('orders.export', ['id' => $order->id, 'type' => 'table'])" />
 </div>

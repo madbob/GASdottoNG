@@ -31,8 +31,10 @@ class ImportController extends Controller
 {
     private function guessCsvFileSeparator($path)
     {
+        Log::debug('Interpreto file in ' . $path);
         $contents = fopen($path, 'r');
         if (is_null($contents)) {
+            Log::debug('File non accessibile in fase di interpretazione CSV');
             return null;
         }
 
@@ -41,11 +43,9 @@ class ImportController extends Controller
 
         while (!feof($contents) && is_null($target_separator)) {
             $char = fgetc($contents);
-            foreach ($separators as $del) {
-                if ($char == $del) {
-                    $target_separator = $del;
-                    break;
-                }
+            if (in_array($char, $separators)) {
+                $target_separator = $char;
+                break;
             }
         }
 
@@ -95,37 +95,6 @@ class ImportController extends Controller
     {
         $entries = App::make('RemoteRepository')->getList();
         return view('import.esmodal', ['entries' => $entries]);
-    }
-
-    public function getLegacy()
-    {
-        return view('import.legacy-pre');
-    }
-
-    public function postLegacy(Request $request)
-    {
-        $old_path = $request->input('old_path');
-        $config = sprintf('%s/server/config.php', $old_path);
-
-        if (file_exists($config) == false) {
-            return view('import.legacy-pre', ['error' => _i('Il file di configurazione non è stato trovato in %s', $config)]);
-        }
-        else {
-            require_once($config);
-
-            $output = new BufferedOutput();
-
-            Artisan::call('import:legacy', [
-                'old_path' => $old_path,
-                'old_driver' => $dbdriver,
-                'old_host' => isset($dbhost) ? $dbhost : 'localhost',
-                'old_username' => $dbuser,
-                'old_password' => $dbpassword,
-                'old_database' => $dbname
-            ], $output);
-
-            return view('import.legacy-post', ['output' => $output]);
-        }
     }
 
     public function postCsv(Request $request)
@@ -263,7 +232,7 @@ class ImportController extends Controller
                                 $p->want_replace = $test->id;
                             }
                             else {
-                                $p->want_replace = -1;
+                                $p->want_replace = 0;
                             }
 
                             $price_without_vat = null;
@@ -364,7 +333,7 @@ class ImportController extends Controller
 
                     foreach($imports as $index) {
                         try {
-                            if ($replaces[$index] != -1) {
+                            if ($replaces[$index] != 0) {
                                 $p = Product::find($replaces[$index]);
                             }
                             else {

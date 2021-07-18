@@ -1,11 +1,11 @@
-<form class="form-horizontal main-form receipt-editor" method="PUT" action="{{ route('receipts.update', $receipt->id) }}">
+<x-larastrap::mform classes="receipt-editor" method="PUT" :action="route('receipts.update', $receipt->id)">
     <div class="row">
         <div class="col-md-4">
             @include('commons.staticobjfield', ['obj' => $receipt, 'name' => 'user', 'label' => _i('Utente')])
-            @include('commons.staticstringfield', ['obj' => $receipt, 'name' => 'number', 'label' => _i('Numero')])
-            @include('commons.datefield', ['obj' => $receipt, 'name' => 'date', 'label' => _i('Data')])
-            @include('commons.staticpricefield', ['obj' => $receipt, 'name' => 'total', 'label' => _i('Totale Imponibile')])
-            @include('commons.staticpricefield', ['obj' => $receipt, 'name' => 'total_vat', 'label' => _i('Totale IVA')])
+            <x-larastrap::text name="number" :label="_i('Numero')" readonly disabled />
+            <x-larastrap::datepicker name="date" :label="_i('Data')" />
+            <x-larastrap::price name="total" :label="_i('Totale Imponibile')" readonly disabled />
+            <x-larastrap::price name="total_vat" :label="_i('Totale IVA')" readonly disabled />
         </div>
         <div class="col-md-4">
             <div class="form-group">
@@ -26,45 +26,8 @@
         </div>
         <div class="col-md-4">
             <div class="list-group">
-                <a href="#" class="list-group-item" data-toggle="modal" data-target="#receipt-document-{{ $receipt->id }}">
-                    {{ _i('Scarica o Inoltra') }}
-                    <span class="glyphicon glyphicon-modal-window pull-right" aria-hidden="true"></span>
-                </a>
+                <x-larastrap::ambutton :label="_i('Scarica o Inoltra')" :data-modal-url="route('receipts.handle', $receipt->id)" />
             </div>
         </div>
     </div>
-
-    @include('commons.formbuttons')
-</form>
-
-<div class="modal fade close-on-submit order-document-download-modal" id="receipt-document-{{ $receipt->id }}" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-extra-lg" role="document">
-        <div class="modal-content">
-            <form class="form-horizontal direct-submit" method="GET" action="{{ route('receipts.download', $receipt->id) }}" data-toggle="validator" novalidate>
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">{{ _i('Scarica o Inoltra') }}</h4>
-                </div>
-                <div class="modal-body">
-                    <p>
-                        {{ _i("Scarica la fattura generata, o inoltrala via email.") }}
-                    </p>
-
-                    <hr/>
-
-                    @include('commons.boolfield', [
-                        'obj' => null,
-                        'name' => 'send_mail',
-                        'label' => _i('Inoltra Mail'),
-                        'labelsize' => 2,
-                        'fieldsize' => 10
-                    ])
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
-                    <button type="submit" class="btn btn-success">{{ _i('Download') }}</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+</x-larastrap::mform>

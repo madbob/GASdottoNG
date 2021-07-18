@@ -4,39 +4,42 @@ if (is_null($obj)) {
     $obj = $default;
 }
 
+if (!isset($squeeze)) {
+    $squeeze = false;
+}
+else {
+    if ($squeeze) {
+        $label = '';
+    }
+}
+
 $rand = rand();
 
-if(!isset($to_modal))
+if (!isset($to_modal)) {
     $to_modal = [];
+}
 
 $to_modal['dom_id'] = $rand;
 
 ?>
 
-<div class="form-group">
-    <label class="col-sm-{{ $labelsize }} control-label">
-        @include('commons.helpbutton', ['help_popover' => $help_popover])
-        {{ $label }}
+<x-larastrap::field :pophelp="$help_popover" :label="$label" :squeeze="$squeeze">
+    <label class="static-label text-muted" data-updatable-name="movement-date-{{ $rand }}" data-updatable-field="name">
+        @if (!$obj || $obj->exists == false)
+            {{ _i('Mai') }}
+        @else
+            {!! $obj->printableName() !!}
+        @endif
     </label>
 
-    <div class="col-sm-{{ $fieldsize }}">
-        <label class="static-label text-muted" data-updatable-name="movement-date-{{ $rand }}" data-updatable-field="name">
-            @if (!$obj || $obj->exists == false)
-                {{ _i('Mai') }}
-            @else
-                {!! $obj->printableName() !!}
-            @endif
-        </label>
-
-        <div class="pull-right">
-            <input type="hidden" name="{{ $name }}" value="{{ $obj->id }}" data-updatable-name="movement-id-{{ $rand }}" data-updatable-field="id">
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editMovement-{{ $rand }}">
-                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-            </button>
-        </div>
-
-        @push('postponed')
-            @include('movement.modal', $to_modal)
-        @endpush
+    <div class="float-end">
+        <input type="hidden" name="{{ $name }}" value="{{ $obj->id }}" data-updatable-name="movement-id-{{ $rand }}" data-updatable-field="id">
+        <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#editMovement-{{ $rand }}">
+            <i class="bi-pencil"></i>
+        </button>
     </div>
-</div>
+</x-larastrap::field>
+
+@push('postponed')
+    @include('movement.modal', $to_modal)
+@endpush

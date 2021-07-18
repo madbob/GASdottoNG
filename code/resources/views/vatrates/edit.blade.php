@@ -1,11 +1,9 @@
-<form class="form-horizontal main-form vatrate-editor" method="PUT" action="{{ route('vatrates.update', $vatrate->id) }}">
+<x-larastrap::form :obj="$vatrate" classes="main-form vatrate-editor" method="PUT" :action="route('vatrates.update', $vatrate->id)">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col">
             @include('vatrates.base-edit', ['vatrate' => $vatrate])
         </div>
     </div>
-
-    @include('commons.formbuttons')
-</form>
+</x-larastrap::form>
 
 @stack('postponed')

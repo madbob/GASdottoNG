@@ -7,7 +7,7 @@ $grand_total = 0;
 
 @include('booking.head', ['aggregate' => $aggregate])
 
-<form class="form-horizontal main-form">
+<x-larastrap::mform nosave nodelete>
     @foreach($aggregate->orders as $order)
         @if($more_orders)
             <h3>{{ $order->printableName() }}</h3>
@@ -39,21 +39,13 @@ $grand_total = 0;
             </div>
             <br/>
         @else
-            @include('commons.iconslegend', [
-                'class' => 'Product',
-                'target' => '#booking_' . sanitizeId($order->id),
-                'table_filter' => true,
-                'limit_to' => ['th'],
-                'contents' => $order->products
-            ])
-
             <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}">
-                <thead>
+                <thead class="d-none d-md-table-header-group">
                     <tr>
                         <th width="50%">{{ _i('Prodotto') }}</th>
                         <th width="20%">{{ _i('Ordinato') }}</th>
                         <th width="20%">{{ _i('Consegnato') }}</th>
-                        <th width="10%" class="text-right">{{ _i('Totale Prezzo') }}</th>
+                        <th width="10%" class="text-end">{{ _i('Totale Prezzo') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,9 +55,9 @@ $grand_total = 0;
                                 <td>
                                     @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product->product])
 
-                                    <div class="hidden">
+                                    <div class="d-none">
                                         @foreach($product->product->icons() as $icon)
-                                            <span class="glyphicon glyphicon-{{ $icon }}" aria-hidden="true"></span>
+                                            <i class="bi-{{ $icon }}"></i>
                                         @endforeach
                                     </div>
                                 </td>
@@ -79,7 +71,7 @@ $grand_total = 0;
                                 </td>
 
                                 <td>
-                                    <label class="pull-right">
+                                    <label class="float-end">
                                         {{ printablePriceCurrency($product->getValue('effective')) }}
                                     </label>
                                 </td>
@@ -92,8 +84,8 @@ $grand_total = 0;
                                             {{ $product->product->name }}: {{ $var->printableName() }}
 
                                             @if(!empty($product->description))
-                                                <button type="button" class="btn btn-xs btn-default" data-container="body" data-toggle="popover" data-placement="right" data-trigger="hover" data-content="{{ str_replace('"', '\"', $product->description) }}">
-                                                    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                                                <button type="button" class="btn btn-xs btn-light" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="hover" data-bs-content="{{ str_replace('"', '\"', $product->description) }}">
+                                                    <i class="bi-info-square"></i>
                                                 </button>
                                             @endif
                                         </label>
@@ -108,7 +100,7 @@ $grand_total = 0;
                                     </td>
 
                                     <td>
-                                        <label class="pull-right">
+                                        <label class="float-end">
                                             {{ printablePriceCurrency($o->status == 'shipped' ? $var->final_price : $var->quantityValue()) }}
                                         </label>
                                     </td>
@@ -130,7 +122,7 @@ $grand_total = 0;
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th class="text-right">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($o->getValue('effective', false)) }}</span> {{ $currentgas->currency }}</th>
+                        <th class="text-end">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($o->getValue('effective', false)) }}</span> {{ $currentgas->currency }}</th>
                     </tr>
                 </tfoot>
             </table>
@@ -138,7 +130,7 @@ $grand_total = 0;
             @if(!empty($o->notes))
                 <div class="row">
                     <div class="col-md-12">
-                        @include('commons.staticstringfield', ['obj' => $o, 'name' => 'notes', 'label' => _i('Note')])
+                        <x-larastrap::text :obj="$o" name="notes" :label="_i('Note')" readonly disabled />
                     </div>
                 </div>
             @endif
@@ -152,7 +144,7 @@ $grand_total = 0;
             <tfoot>
                 <tr>
                     <th>
-                        <div class="pull-right">
+                        <div class="float-end">
                             <strong>{{ _i('Totale Complessivo') }}: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currentgas->currency }}</strong>
                         </div>
                     </th>
@@ -160,12 +152,4 @@ $grand_total = 0;
             </tfoot>
         </table>
     @endif
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="btn-group pull-right main-form-buttons" role="group">
-                <button type="button" class="btn btn-default close-button">{{ _i('Chiudi') }}</button>
-            </div>
-        </div>
-    </div>
-</form>
+</x-larastrap::mform>

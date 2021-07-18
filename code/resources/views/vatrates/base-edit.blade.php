@@ -1,2 +1,2 @@
-@include('commons.textfield', ['obj' => $vatrate, 'name' => 'name', 'label' => _i('Nome')])
-@include('commons.decimalfield', ['obj' => $vatrate, 'name' => 'percentage', 'label' => _i('Aliquota'), 'decimals' => 2])
+<x-larastrap::text name="name" :label="_i('Nome')" />
+<x-larastrap::number name="percentage" :label="_i('Aliquota')" classes="trim-2-ddigits" />

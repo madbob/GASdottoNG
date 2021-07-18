@@ -8,31 +8,28 @@ if (!isset($enforcable_change)) {
 
 ?>
 
-<div class="form-group password-field">
-    <label for="{{ $prefix . $name }}" class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
-    <div class="col-sm-{{ $fieldsize }}">
-        <div class="input-group">
-            <input
-                type="password"
-                class="form-control password-changer {{ $enforcable_change ? 'enforcable_change' : '' }}"
+<x-larastrap::field :label="$label" classes="password-field">
+    <div class="input-group">
+        <input
+            type="password"
+            class="form-control password-changer {{ $enforcable_change ? 'enforcable_change' : '' }}"
 
-                @if(is_null($obj) && isset($mandatory) && $mandatory == true)
-                    required
-                @endif
+            @if(is_null($obj) && isset($mandatory) && $mandatory == true)
+                required
+            @endif
 
-                @if(is_null($obj) == false)
-                    placeholder="{{ _i('Lascia vuoto per non modificare la password') }}"
-                @endif
+            @if(is_null($obj) == false)
+                placeholder="{{ _i('Lascia vuoto per non modificare la password') }}"
+            @endif
 
-                name="{{ $prefix . $name }}">
+            name="{{ $prefix . $name }}">
 
-                <div class="input-group-addon">
-                    <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-                </div>
-
-                @if($enforcable_change)
-                    <input type="hidden" name="enforce_password_change" value="false">
-                @endif
+            <div class="input-group-text">
+                <i class="bi-eye-slash"></i>
             </div>
+
+            @if($enforcable_change)
+                <input type="hidden" name="enforce_password_change" value="false">
+            @endif
     </div>
-</div>
+</x-larastrap::field>

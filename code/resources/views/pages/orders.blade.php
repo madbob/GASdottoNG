@@ -4,38 +4,17 @@
 
 @can('supplier.orders')
     <div class="row">
-        <div class="col-md-12">
+        <div class="col">
             @include('commons.addingbutton', [
                 'template' => 'order.create',
                 'typename' => 'order',
                 'typename_readable' => _i('Ordine'),
                 'targeturl' => 'orders',
-                'extra_size' => true,
             ])
 
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#orderAggregatorWrap">{{ _i('Aggrega Ordini') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
-            <div class="modal fade dynamic-contents" id="orderAggregatorWrap" tabindex="-1" role="dialog" data-contents-url="{{ route('aggregates.create') }}">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                    </div>
-                </div>
-            </div>
-
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#orderDates">{{ _i('Gestione Date') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
-            <div class="modal fade dynamic-contents" id="orderDates" tabindex="-1" role="dialog" data-contents-url="{{ route('dates.index') }}">
-                <div class="modal-dialog modal-extra-lg" role="document">
-                    <div class="modal-content">
-                    </div>
-                </div>
-            </div>
-
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#orderAuto">{{ _i('Gestione Ordini Automatici') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
-            <div class="modal fade dynamic-contents" id="orderAuto" tabindex="-1" role="dialog" data-contents-url="{{ route('dates.orders') }}">
-                <div class="modal-dialog modal-extra-lg" role="document">
-                    <div class="modal-content">
-                    </div>
-                </div>
-            </div>
+            <x-larastrap::ambutton :label="_i('Aggrega Ordini')" :attributes="['data-modal-url' => route('aggregates.create')]" />
+            <x-larastrap::ambutton :label="_i('Gestione Date')" :attributes="['data-modal-url' => route('dates.index')]" />
+            <x-larastrap::ambutton :label="_i('Gestione Ordini Automatici')" :attributes="['data-modal-url' => route('dates.orders')]" />
         </div>
     </div>
 
@@ -43,54 +22,26 @@
     <hr/>
 
     <div class="row">
-        <div class="col-md-12 col-lg-6">
-            <div class="form-horizontal form-filler" data-action="{{ url('orders/search') }}" data-toggle="validator" data-fill-target="#main-order-list">
+        <div class="col-12 col-md-6">
+            <x-filler :data-action="url('orders/search')" data-fill-target="#main-order-list">
                 @include('commons.genericdaterange', [
                     'start_date' => strtotime('-6 months'),
                     'end_date' => strtotime('+6 months'),
                 ])
-                @include('commons.selectobjfield', [
-                    'obj' => null,
-                    'name' => 'supplier_id',
-                    'label' => _i('Fornitore'),
-                    'objects' => $currentgas->suppliers,
-                    'extra_selection' => [
-                        '0' => _i('Tutti')
-                    ]
-                ])
-                @include('commons.checkboxes', [
-                    'name' => 'status',
-                    'label' => _i('Stato'),
-                    'values' => [
-                        'open' => (object) [
-                            'icon' => 'play',
-                            'checked' => true
-                        ],
-                        'suspended' => (object) [
-                            'icon' => 'pause',
-                            'checked' => true
-                        ],
-                        'closed' => (object) [
-                            'icon' => 'stop',
-                            'checked' => true
-                        ],
-                        'shipped' => (object) [
-                            'icon' => 'step-forward',
-                            'checked' => true
-                        ],
-                        'archived' => (object) [
-                            'icon' => 'eject',
-                            'checked' => false
-                        ],
-                    ]
-                ])
 
-                <div class="form-group">
-                    <div class="col-sm-{{ $fieldsize }} col-sm-offset-{{ $labelsize }}">
-                        <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
-                    </div>
-                </div>
-            </div>
+                <x-larastrap::selectobj name="supplier_id" :label="_i('Fornitore')" :options="$currentgas->suppliers" :extraitem="_i('Tutti')" />
+
+                @php
+                    $statuses = [
+                        'open' => '<i class="bi-play"></i>',
+                        'suspended' => '<i class="bi-pause"></i>',
+                        'closed' => '<i class="bi-stop-fill"></i>',
+                        'shipped' => '<i class="bi-skip-forward"></i>',
+                        'archived' => '<i class="bi-eject"></i>',
+                    ];
+                @endphp
+                <x-larastrap::checks name="status" :label="_i('Stato')" :options="$statuses" :value="['open', 'suspended', 'closed', 'shipped']" />
+            </x-filler>
         </div>
     </div>
 
@@ -99,7 +50,7 @@
 @endcan
 
 <div class="row">
-    <div class="col-md-12" id="main-order-list">
+    <div class="col" id="main-order-list">
         @include('commons.loadablelist', [
             'identifier' => 'order-list',
             'items' => $orders,

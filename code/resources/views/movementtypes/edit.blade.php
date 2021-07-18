@@ -1,54 +1,47 @@
 <?php
 
-if($type->system)
-    $classes = modelsUsingTrait('App\PayableTrait');
-else
-    $classes = modelsUsingTrait('App\CreditableTrait');
-
-$target_classes = [];
-
-$target_classes[] = [
-    'value' => null,
-    'label' => _i('Nessuno'),
+$target_classes = [
+    '' => _i('Nessuno'),
 ];
 
+if($type->system) {
+    $classes = modelsUsingTrait('App\PayableTrait');
+}
+else {
+    $classes = modelsUsingTrait('App\CreditableTrait');
+}
+
 foreach($classes as $class => $name) {
-    $target_classes[] = [
-        'value' => $class,
-        'label' => $name,
-    ];
+    $target_classes[$class] = $name;
 }
 
 ?>
 
-<form class="form-horizontal main-form movement-type-editor" method="PUT" action="{{ route('movtypes.update', $type->id) }}">
+<x-larastrap::mform :obj="$type" classes="main-form movement-type-editor" method="PUT" :action="route('movtypes.update', $type->id)" :nodelete="$type->system">
+    @if($type->system)
+        <div class="row mb-4">
+            <div class="col">
+                <div class="alert alert-danger">
+                    {{ _i('Questo è un tipo di movimento contabile indispensabile per il funzionamento del sistema: non può essere eliminato e può essere modificato solo parzialmente.') }}
+                </div>
+            </div>
+        </div>
+    @endif
+
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-12 col-md-6">
             @if($type->system)
-                @include('commons.textfield', ['obj' => $type, 'name' => 'name', 'label' => _i('Nome'), 'mandatory' => true])
-                @include('commons.boolfield', ['obj' => $type, 'name' => 'allow_negative', 'label' => _i('Accetta Valori Negativi')])
-
-                @include('commons.staticpricefield', ['obj' => $type, 'name' => 'fixed_value', 'label' => _i('Valore Fisso')])
-
-                @include('commons.staticenumfield', [
-                    'obj' => $type,
-                    'name' => 'sender_type',
-                    'label' => _i('Pagante'),
-                    'values' => $target_classes
-                ])
-
-                @include('commons.staticenumfield', [
-                    'obj' => $type,
-                    'name' => 'target_type',
-                    'label' => _i('Pagato'),
-                    'values' => $target_classes
-                ])
+                <x-larastrap::text name="name" :label="_i('Nome')" required />
+                <x-larastrap::check name="allow_negative" :label="_i('Accetta Valori Negativi')" :pophelp="_i('Se disabilitato, impedisce di immettere un ammontare negativo per il movimento contabile')" />
+                <x-larastrap::price name="fixed_value" :label="_i('Valore Fisso')" disabled readonly />
+                <x-larastrap::select name="sender_type" :label="_i('Pagante')" :options="$target_classes" disabled readonly />
+                <x-larastrap::select name="target_type" :label="_i('Pagato')" :options="$target_classes" disabled readonly />
             @else
                 @include('movementtypes.base-edit', ['movementtype' => $type])
             @endif
         </div>
-        <div class="col-md-6">
-            @include('commons.textarea', ['obj' => $type, 'name' => 'default_notes', 'label' => _i('Note di Default')])
+        <div class="col-12 col-md-6">
+            <x-larastrap::textarea name="default_notes" :label="_i('Note di Default')" />
         </div>
 
         <?php
@@ -94,7 +87,9 @@ foreach($classes as $class => $name) {
                         @foreach(App\MovementType::payments() as $pay_id => $pay)
                             <th width="{{ $width }}%">
                                 {{ $pay->name }}
-                                <input type="checkbox" data-toggle="toggle" data-size="mini" name="{{ $pay_id }}" {{ $payments[$pay_id] ? 'checked' : '' }} data-active-for="{{ $pay->active_for }}" {{ $pay->active_for != null && $pay->active_for != $type->sender_type && $pay->active_for != $type->target_type ? 'disabled' : '' }}>
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" name="{{ $pay_id }}" class="form-check-input" {{ $payments[$pay_id] ? 'checked' : '' }} data-active-for="{{ $pay->active_for }}" {{ $pay->active_for != null && $pay->active_for != $type->sender_type && $pay->active_for != $type->target_type ? 'disabled' : '' }}>
+                                </div>
                                 <span class="decorated_radio">
                                     <input type="radio" name="payment_default" value="{{ $pay_id }}" {{ isset($defaults[$pay_id]) && $defaults[$pay_id] ? 'checked' : '' }}>
                                     <label>{{ ('default') }}</label>
@@ -104,9 +99,8 @@ foreach($classes as $class => $name) {
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($target_classes as $target_class)
-                        <?php $classname = $target_class['value'] ?>
-                        @if(is_null($classname))
+                    @foreach($target_classes as $classname => $target_class)
+                        @if(empty($classname))
                             @continue
                         @endif
 
@@ -125,13 +119,13 @@ foreach($classes as $class => $name) {
 
                                     <td>
                                         <div class="btn-group" data-toggle="buttons">
-                                            <label class="btn btn-default {{ $selection == 'increment' ? 'active' : '' }}" {{ $payments[$pay_id] ? '' : 'disabled' }}>
+                                            <label class="btn btn-light {{ $selection == 'increment' ? 'active' : '' }}" {{ $payments[$pay_id] ? '' : 'disabled' }}>
                                                 <input type="radio" name="{{ $classname }}-{{ $field }}-{{ $pay_id }}" value="increment" autocomplete="off" {{ $selection == 'increment' ? 'checked' : '' }} {{ $payments[$pay_id] ? '' : 'disabled="disabled"' }}> +
                                             </label>
-                                            <label class="btn btn-default {{ $selection == 'decrement' ? 'active' : '' }}" {{ $payments[$pay_id] ? '' : 'disabled' }}>
+                                            <label class="btn btn-light {{ $selection == 'decrement' ? 'active' : '' }}" {{ $payments[$pay_id] ? '' : 'disabled' }}>
                                                 <input type="radio" name="{{ $classname }}-{{ $field }}-{{ $pay_id }}" value="decrement" autocomplete="off" {{ $selection == 'decrement' ? 'checked' : '' }} {{ $payments[$pay_id] ? '' : 'disabled="disabled"' }}> -
                                             </label>
-                                            <label class="btn btn-default {{ $selection == 'ignore' ? 'active' : '' }}" {{ $payments[$pay_id] ? '' : 'disabled' }}>
+                                            <label class="btn btn-light {{ $selection == 'ignore' ? 'active' : '' }}" {{ $payments[$pay_id] ? '' : 'disabled' }}>
                                                 <input type="radio" name="{{ $classname }}-{{ $field }}-{{ $pay_id }}" value="ignore" autocomplete="off" {{ $selection == 'ignore' ? 'checked' : '' }} {{ $payments[$pay_id] ? '' : 'disabled="disabled"' }}> =
                                             </label>
                                         </div>
@@ -144,8 +138,4 @@ foreach($classes as $class => $name) {
             </table>
         </div>
     </div>
-
-    @include('commons.formbuttons', ['no_delete' => $type->system])
-</form>
-
-@stack('postponed')
+</x-larastrap::mform>

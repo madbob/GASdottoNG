@@ -53,7 +53,7 @@ class MovementsService extends BaseService
             $query->where('type', $request['type']);
         }
 
-        if (isset($request['method']) && $request['method'] != 'all') {
+        if (isset($request['method']) && $request['method'] != 'none') {
             $query->where('method', $request['method']);
         }
 

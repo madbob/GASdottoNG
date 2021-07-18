@@ -1,11 +1,11 @@
-<form class="form-horizontal main-form receipt-editor">
+<x-larastrap::mform classes="receipt-editor" nosave nodelete :other_buttons="[['label' => _i('Scarica'), 'classes' => ['float-start', 'link-button'], 'attributes' => ['data-link' => route('receipts.download', $receipt->id)]]]">
     <div class="row">
         <div class="col-md-6">
             @include('commons.staticobjfield', ['obj' => $receipt, 'name' => 'user', 'label' => _i('Utente')])
-            @include('commons.staticstringfield', ['obj' => $receipt, 'name' => 'number', 'label' => _i('Numero')])
-            @include('commons.staticdatefield', ['obj' => $receipt, 'name' => 'date', 'label' => _i('Data')])
-            @include('commons.staticpricefield', ['obj' => $receipt, 'name' => 'total', 'label' => _i('Totale Imponibile')])
-            @include('commons.staticpricefield', ['obj' => $receipt, 'name' => 'total_vat', 'label' => _i('Totale IVA')])
+            <x-larastrap::text name="number" :label="_i('Numero')" readonly disabled />
+            <x-larastrap::datepicker name="date" :label="_i('Data')" readonly disabled />
+            <x-larastrap::price name="total" :label="_i('Totale Imponibile')" readonly disabled />
+            <x-larastrap::price name="total_vat" :label="_i('Totale IVA')" readonly disabled />
         </div>
         <div class="col-md-6">
             <div class="form-group">
@@ -25,16 +25,4 @@
             </div>
         </div>
     </div>
-
-    @include('commons.formbuttons', [
-        'no_delete' => true,
-        'no_save' => true,
-        'left_buttons' => [
-            (object)[
-                'url' => route('receipts.download', $receipt->id),
-                'class' => '',
-                'label' => _i('Scarica')
-            ]
-        ]
-    ])
-</form>
+</x-larastrap::mform>

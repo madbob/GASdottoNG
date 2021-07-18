@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col">
         @include('user.edit', [
             'user' => $user,
             'active_tab' => $active_tab,

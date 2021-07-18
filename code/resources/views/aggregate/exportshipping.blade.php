@@ -13,80 +13,38 @@ else {
 
 ?>
 
-<div class="modal fade close-on-submit" id="shipping-products-aggregate-document-{{ $aggregate->id }}" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-extra-lg" role="document">
-        <div class="modal-content">
-            <form class="form-horizontal direct-submit" method="GET" action="{{ route('aggregates.document', ['id' => $aggregate->id, 'type' => 'shipping']) }}" data-toggle="validator" novalidate>
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">{{ _i('Dettaglio Consegne Aggregato') }}</h4>
-                </div>
-                <div class="modal-body">
-                    <p>
-                        {{ _i("Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si trovano le informazioni relative alle singole prenotazioni di tutti gli ordini inclusi in questo aggregato.") }}
-                    </p>
+<x-larastrap::modal :title="_i('Dettaglio Consegne Aggregato')">
+    <x-larastrap::form classes="direct-submit" method="GET" :action="route('aggregates.document', ['id' => $aggregate->id, 'type' => 'shipping'])">
+        <p>
+            {{ _i("Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si trovano le informazioni relative alle singole prenotazioni di tutti gli ordini inclusi in questo aggregato.") }}
+        </p>
 
-                    <hr>
+        <hr>
 
-                    <input type="hidden" name="managed_gas" value="{{ $managed_gas }}">
+        <input type="hidden" name="managed_gas" value="{{ $managed_gas }}">
 
-                    @if($active_gas && $active_gas->hasFeature('shipping_places'))
-                        @include('commons.radios', [
-                            'name' => 'shipping_place',
-                            'label' => _i('Luogo di Consegna'),
-                            'labelsize' => 2,
-                            'fieldsize' => 10,
-                            'values' => array_merge(
-                                ['all_by_name' => (object)['name' => _i('Tutti (ordinati per utente)')]],
-                                ['all_by_place' => (object)['name' => _i('Tutti (ordinati per luogo)')]],
-                                as_choosable($active_gas->deliveries, function($i, $a) {
-                                    return $a->id;
-                                }, function($i, $a) {
-                                    return $a->name;
-                                }, function($i, $a) {
-                                    return false;
-                                })
-                            )
-                        ])
-                    @endif
+        @if($currentgas->hasFeature('shipping_places'))
+            <?php
 
-                    @include('commons.checkboxes', [
-                        'name' => 'fields',
-                        'label' => _i('Dati Utenti'),
-                        'labelsize' => 2,
-                        'fieldsize' => 10,
-                        'values' => App\User::formattableColumns()
-                    ])
+            $options = [
+                'all_by_name' => _i('Tutti (ordinati per utente)'),
+                'all_by_place' => _i('Tutti (ordinati per luogo)'),
+            ];
 
-                    @include('commons.checkboxes', [
-                        'name' => 'fields',
-                        'label' => _i('Colonne Prodotti'),
-                        'labelsize' => 2,
-                        'fieldsize' => 10,
-                        'values' => App\Order::formattableColumns('shipping')
-                    ])
+            foreach($currentgas->deliveries as $delivery) {
+                $options[$delivery->id] = $delivery->name;
+            }
 
-                    @include('commons.radios', [
-                        'name' => 'format',
-                        'label' => _i('Formato'),
-                        'labelsize' => 2,
-                        'fieldsize' => 10,
-                        'values' => [
-                            'pdf' => (object) [
-                                'name' => 'PDF',
-                                'checked' => true
-                            ],
-                            'csv' => (object) [
-                                'name' => 'CSV'
-                            ],
-                        ]
-                    ])
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
-                    <button type="submit" class="btn btn-success">{{ _i('Download') }}</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+            ?>
+            <x-larastrap::radios name="shipping_place" :label="_i('Luogo di Consegna')" :options="$options" value="all_by_name" />
+        @endif
+
+        <?php list($options, $values) = flaxComplexOptions(App\User::formattableColumns()) ?>
+        <x-larastrap::checks name="fields" :label="_i('Dati Utenti')" :options="$options" :value="$values" />
+
+        <?php list($options, $values) = flaxComplexOptions(App\Order::formattableColumns('shipping')) ?>
+        <x-larastrap::checks name="fields" :label="_i('Colonne Prodotti')" :options="$options" :value="$values" />
+
+        <x-larastrap::radios name="format" :label="_i('Formato')" :options="['pdf' => _i('PDF'), 'csv' => _i('CSV')]" value="pdf" />
+    </x-larastrap::form>
+</x-larastrap::modal>

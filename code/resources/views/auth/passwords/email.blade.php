@@ -2,28 +2,13 @@
 
 @section('content')
 
-<div class="col-md-6 col-md-offset-3">
-    <form class="form-horizontal" role="form" method="POST" action="{{ route('password.email') }}">
-        {{ csrf_field() }}
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">{{ _i('Username o Indirizzo E-Mail') }}</label>
-            <div class="col-sm-10">
-                <input class="form-control" type="text" name="username" value="{{ old('username') }}">
-            </div>
-        </div>
-
-        <br>
-
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button class="btn btn-success pull-right" type="submit">Chiedi Reset Password</button>
-            </div>
-        </div>
-    </form>
+<div class="col-12 col-md-6 offset-md-3">
+    <x-larastrap::form method="POST" :action="route('password.email')" :buttons="[['color' => 'success', 'type' => 'submit', 'label' => _i('Chiedi Reset Password')]]">
+        <x-larastrap::text name="username" :label="_i('Username o Indirizzo E-Mail')" />
+    </x-larastrap::form>
 </div>
 
-<div class="col-md-6 col-md-offset-3">
+<div class="col-12 col-md-6 offset-md-3">
     <hr/>
     <p>
         <a href="{{ route('login') }}">{{ _i('Login') }}</a>

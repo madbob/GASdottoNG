@@ -1,12 +1,3 @@
-@include('commons.radios', [
-    'obj' => null,
-    'name' => 'type',
-    'values' => [
-        'notification' => (object)['name' => _i('Notifica'), 'checked' => 1],
-        'date' => (object)['name' => _i('Data sul Calendario')],
-    ],
-    'label' => _i('Tipo'),
-    'extra_wrap_class' => 'notification-type-switch'
-])
+<x-larastrap::radios name="type" classes="notification-type-switch" :label="_i('Tipo')" :options="['notification' => _i('Notifica'), 'date' => _i('Data sul Calendario')]" value="notification" />
 
 @include('notification.base-edit', ['notification' => null])

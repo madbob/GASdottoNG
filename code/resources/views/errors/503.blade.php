@@ -7,22 +7,10 @@
 
         <title>GASdotto: ERRORE</title>
 
-        <link rel="stylesheet" type="text/css" href="{{ url('/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ mix('/css/gasdotto.css') }}">
     </head>
     <body>
-        <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand hidden-md" href="{{ route('dashboard') }}">GASdotto</a>
-                </div>
-            </div>
-        </nav>
+        <x-larastrap::navbar title="GASdotto" />
 
         <div class="container">
             <div class="row">
@@ -34,7 +22,7 @@
                         Non sei autorizzato ad accedere alla pagina richesta.
                     </p>
                     <p>
-                        <a class="btn btn-default btn-lg" href="{{ route('dashboard') }}">Torna alla Home</a>
+                        <a class="btn btn-light btn-lg" href="{{ route('dashboard') }}">Torna alla Home</a>
                     </p>
                 </div>
             </div>

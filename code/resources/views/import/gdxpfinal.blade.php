@@ -1,5 +1,5 @@
-<div class="wizard_page">
-    <div class="modal-body">
+<x-larastrap::modal :title="_i('Importa GDXP')">
+    <div class="wizard_page">
         <p>
             {{ _i('Fornitori importati') }}:
         </p>
@@ -13,11 +13,5 @@
                 @endforeach
             @endif
         </ul>
-
-        <p class="clearfix"></p>
     </div>
-
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default reloader" data-dismiss="modal" data-reload-target="#user-list">{{ _i('Chiudi') }}</button>
-    </div>
-</div>
+</x-larastrap::modal>

@@ -25,7 +25,7 @@ $booked_quantity = (isset($o) ? $o->getBookedQuantity($product) : 0);
 @else
     <div class="input-group booking-product-quantity">
         <input type="text" class="form-control number" name="{{ $product->id }}" value="{{ $populate ? $booked_quantity : '' }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
-        <div class="input-group-addon">
+        <div class="input-group-text">
             @if($while_shipping)
                 {{ $product->measure->name }}
             @else
@@ -33,8 +33,8 @@ $booked_quantity = (isset($o) ? $o->getBookedQuantity($product) : 0);
             @endif
         </div>
     </div>
-    <div class="mobile-quantity-switch visible-sm-inline-block visible-xs-inline-block pull-right">
-        <button class="btn btn-default plus"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-        <button class="btn btn-default minus"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
+    <div class="mobile-quantity-switch d-inline-block d-md-none float-end">
+        <button class="btn btn-light plus"><i class="bi-plus"></i></button>
+        <button class="btn btn-light minus"><i class="bi-dash"></i></button>
     </div>
 @endif

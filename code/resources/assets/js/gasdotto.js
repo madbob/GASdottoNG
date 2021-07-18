@@ -2,7 +2,6 @@
 	Varie ed eventuali
 */
 
-window.Popper = require('popper.js').default;
 window.$ = window.jQuery = global.$ = global.jQuery = require('jquery');
 require('bootstrap');
 
@@ -11,32 +10,49 @@ require('jquery-ui/ui/widgets/droppable');
 require('jquery-ui/ui/widgets/autocomplete');
 require('jquery-ui-touch-punch');
 require('bootstrap-datepicker');
-require('bootstrap-table');
-require('bootstrap-toggle');
+require('select2');
 require('blueimp-file-upload');
 import Cookies from 'js-cookie';
 
 require('./aggregation');
 require('./cc');
 require('./jquery.dynamictree');
-require('./jquery.manyrows');
 require('./jquery.TableCSVExport');
 require('./statistics');
 require('./translate');
-const utils = require('./utils');
+require('./password');
+import utils from "./utils";
+import Lists from "./lists";
+import Callables from "./callables";
 
 var locker = false;
 var absolute_url = $('meta[name=absolute_url]').attr('content');
 var current_currency = $('meta[name=current_currency]').attr('content');
 var current_language = $('html').attr('lang').split('-')[0];
+var modifiers_strings = null;
+var measure_discrete = null;
+
+const localCallables = {
+    reloadMeasureDiscrete: function(form, data) {
+        utils.postAjax({
+            method: 'GET',
+            url: 'measures/discretes',
+            dataType: 'JSON',
+            success: function(data) {
+                measure_discrete = data;
+            }
+        });
+    }
+};
 
 $.fn.tagName = function() {
     return this.prop("tagName").toLowerCase();
 };
 
 function generalInit(container) {
-    if (container == null)
+    if (container == null) {
         container = $('body');
+    }
 
     $('input.date', container).datepicker({
         format: 'DD dd MM yyyy',
@@ -48,6 +64,12 @@ function generalInit(container) {
         input.siblings('.input-group-addon').click(function() {
             input.focus();
         });
+    }).on('show', function(e) {
+        /*
+            Senza questo, l'evento risale e - non ho ben capito come -
+            interferisce con le accordion e i modal
+        */
+        e.stopPropagation();
     });
 
     $('input.date-to-month', container).datepicker({
@@ -58,12 +80,15 @@ function generalInit(container) {
         maxViewMode: 'months'
     });
 
-    $('.addicted-table', container).bootstrapTable();
+    $('select[multiple]', container).select2({
+        theme: "bootstrap-5",
+        dropdownParent: container,
+    });
 
     /*
         https://stackoverflow.com/questions/15989591/how-can-i-keep-bootstrap-popover-alive-while-the-popover-is-being-hovered
     */
-    $('[data-toggle="popover"]', container).popover({
+    $('[data-bs-toggle="popover"]', container).popover({
         trigger: "manual",
         html: true,
         animation:false
@@ -83,29 +108,18 @@ function generalInit(container) {
         }, 300);
     });
 
-    $('.contacts-selection .row', container).each(function() {
-        var input = $(this).find('input:text');
-        var typeclass = $(this).find('select option:selected').val();
+    if (container.closest('.contacts-selection').length != 0) {
+        var input = container.find('input:text');
+        var typeclass = container.find('select option:selected').val();
         input.attr('class', '').addClass('form-control').addClass(typeclass);
-    });
-
-    /*
-        Qui trasformo le checkboxes in toggles, 100 alla volta.
-        Questo per alleggerire l'operazione in presenza di molte checkboxes
-        (e.g. il complesso pannello dei permessi)
-    */
-    function setupCheckboxes() {
-        var checkboxes = $('input:checkbox[data-toggle=toggle]', container).slice(0, 100);
-        if (checkboxes.length != 0) {
-			checkboxes.each(function() {
-				var t = $(this);
-				t.bootstrapToggle().removeAttr('data-toggle');
-			});
-
-            setTimeout(setupCheckboxes, 100);
-        }
     }
-    setupCheckboxes();
+    else {
+        $('.contacts-selection .row', container).each(function() {
+            var input = $(this).find('input:text');
+            var typeclass = $(this).find('select option:selected').val();
+            input.attr('class', '').addClass('form-control').addClass(typeclass);
+        });
+    }
 
     $('.nav-tabs a', container).click(function(e) {
         e.preventDefault();
@@ -116,37 +130,9 @@ function generalInit(container) {
         var i = $(this);
         i.fileupload({
             done: function(e, data) {
-                var callback = $(e.target).attr('data-run-callback');
-                if (callback != null)
-                    window[callback]($(e.target), data.result);
+                wizardLoadPage($(e.target), data.result);
             }
         });
-    });
-
-    $('.many-rows', container).manyrows().bind('row-added', function(e, row) {
-        var current_id = utils.randomString(10);
-
-        $(row).find('input[name=id\\[\\]]').each(function() {
-            if ($(this).val() == '') {
-                $(this).val(current_id);
-            }
-            else {
-                current_id = $(this).val();
-            }
-        });
-
-        /*
-            Questo è per eliminare in modo forzato i bootstrapToggle e
-            rigenerarli
-        */
-        $(row).find('[data-toggle=toggle] input:checkbox').each(function() {
-            var parent = $(this).closest('[data-toggle=toggle]');
-            parent.replaceWith($(this));
-            $(this).attr('data-toggle', 'toggle');
-            $(this).val(current_id);
-        });
-
-        generalInit(row);
     });
 
     $('.dynamic-tree-box', container).dynamictree();
@@ -206,7 +192,7 @@ function generalInit(container) {
                             }
 
                             fill_target.empty().append(data);
-                            generalInit(data);
+                            utils.j().initElements(data);
                         }
                     });
                 }
@@ -214,13 +200,53 @@ function generalInit(container) {
         }
     });
 
-    $('.modal', container).draggable({
-        handle: '.modal-header'
-    });
+    if (container.hasClass('modifier-modal') && modifiers_strings == null) {
+        utils.postAjax({
+            method: 'GET',
+            url: 'modifiers/strings',
+            dataType: 'JSON',
+            success: function(data) {
+                modifiers_strings = data;
+            }
+        });
+    }
 
-    $('.measure-selector', container).each(function() {
-        enforceMeasureDiscrete($(this));
-    });
+    if (container.hasClass('modal')) {
+        container.draggable({
+            handle: '.modal-header'
+        });
+    }
+    else {
+        $('.modal', container).draggable({
+            handle: '.modal-header'
+        });
+    }
+
+    function listenMeasureSelectors(mselectors) {
+        mselectors.each(function() {
+            enforceMeasureDiscrete($(this));
+        }).on('change', function(event) {
+            enforceMeasureDiscrete($(this));
+        });
+    }
+
+    var mselectors = $('.measure-selector', container);
+    if (mselectors.length != 0) {
+        if (measure_discrete == null) {
+            utils.postAjax({
+                method: 'GET',
+                url: 'measures/discretes',
+                dataType: 'JSON',
+                success: function(data) {
+                    measure_discrete = data;
+                    listenMeasureSelectors(mselectors);
+                }
+            });
+        }
+        else {
+            listenMeasureSelectors(mselectors);
+        }
+    }
 
 	/*
 		Per ignoti motivi, capita che l'HTML che arriva in modo asincrono dal
@@ -245,23 +271,23 @@ function generalInit(container) {
         var current = $(this);
         var select = current.attr('data-enforce-after');
         var target = current.closest('.form-group').find(select);
-		if (target.length == 0)
+		if (target.length == 0) {
 			target = current.closest('form').find(select);
+        }
 
 		target.datepicker().on('changeDate', function() {
             var current_start = current.datepicker('getDate');
             var current_ref = target.datepicker('getDate');
-            if (current_start < current_ref)
+            if (current_start < current_ref) {
                 current.datepicker('setDate', current_ref);
+            }
         });
     });
 
-    setupImportCsvEditor();
-    setupPermissionsEditor();
+    setupImportCsvEditor(container);
+    setupPermissionsEditor(container);
 
-    $('.loadablelist', container).each(function() {
-        testListsEmptiness($(this));
-    });
+    Lists.init(container);
 }
 
 function voidForm(form) {
@@ -269,29 +295,6 @@ function voidForm(form) {
     form.find('textarea').val('');
     form.find('select option:first').prop('selected', true);
     form.find('.error-message').remove();
-}
-
-function closeMainForm(form, data) {
-    miscInnerCallbacks(form, data);
-
-    var container = form.closest('.list-group-item');
-    var head = container.prev();
-    if (head.length == 0)
-        return;
-
-    head.removeClass('active');
-    container.remove();
-
-    $('html, body').animate({
-        scrollTop: head.offset().top - 60
-    }, 300);
-
-    if (typeof(data) != 'undefined' && data.hasOwnProperty('header')) {
-        head.empty().append(data.header).attr('href', data.url);
-        afterListChanges(head.closest('.loadablelist'));
-    }
-
-    return head;
 }
 
 function sortingDates(a, b) {
@@ -343,6 +346,24 @@ function previewImage(input) {
     }
 }
 
+function wizardLoadPage(node, contents) {
+    try {
+        let previous = node.closest('.modal');
+        previous.modal('hide');
+
+        let next = $(contents);
+        utils.j().initElements(next);
+        next.modal('show');
+    }
+    catch(error) {
+        console.log(error);
+        var json = JSON.parse(contents);
+        var modal = $('#service-modal');
+        modal.find('.modal-body').empty().append('<p>' + json.message + '</p>');
+        modal.modal('show');
+    }
+}
+
 function reloadPortion(node) {
     $.ajax({
         method: 'GET',
@@ -351,33 +372,9 @@ function reloadPortion(node) {
         success: function(data) {
             data = $(data),
             node.replaceWith(data);
-            generalInit(data);
+            utils.j().initElements(data);
         }
     });
-}
-
-function wizardLoadPage(node, contents) {
-    var page = node.closest('.wizard_page');
-    var parent = page.parent();
-    var next = $(contents);
-    parent.append(next);
-    generalInit(next);
-    page.hide();
-    next.show();
-}
-
-function testListsEmptiness(list) {
-    var id = list.attr('id');
-    var c = list.find('a').length;
-    $('#empty-' + id).toggleClass('hidden', (c != 0));
-}
-
-function afterListChanges(list) {
-    var sorting = list.attr('data-sorting-function');
-    if (sorting != null)
-        window[sorting](list);
-
-    testListsEmptiness(list);
 }
 
 function completionRowsInit(node) {
@@ -393,12 +390,13 @@ function completionRowsInit(node) {
             appendTo: $(this).closest('.completion-rows'),
             select: function(event, ui) {
                 var row = $(this).closest('li');
-                row.before('<li class="list-group-item" data-object-id="' + ui.item.id + '">' + ui.item.label + '<div class="btn btn-xs btn-danger pull-right"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div></li>');
+                row.before('<li class="list-group-item" data-object-id="' + ui.item.id + '">' + ui.item.label + '<div class="btn btn-xs btn-danger float-end"><i class="bi-x-lg"></i></div></li>');
 
                 var container = row.closest('.completion-rows');
-                var fn = window[container.attr('data-callback-add')];
-                if (typeof fn === 'function')
+                var fn = Callables[container.attr('data-callback-add')];
+                if (typeof fn === 'function') {
                     fn(container, ui.item.id);
+                }
             }
         });
     });
@@ -407,31 +405,24 @@ function completionRowsInit(node) {
         var row = $(this).closest('li');
 
         var container = row.closest('.completion-rows');
-        var fn = window[container.attr('data-callback-remove')];
-        if (typeof fn === 'function')
+        var fn = Callables[container.attr('data-callback-remove')];
+        if (typeof fn === 'function') {
             fn(container, row.attr('data-object-id'));
+        }
 
         row.remove();
     });
 }
 
-function refreshFilter(form) {
-    var target = form.find('input:hidden[name=data-refresh-target]').val();
-    if (target)
-        $('.form-filler').filter(target).find('button[type=submit]').click();
-    else
-        $('.form-filler').find('button[type=submit]').click();
-}
-
-function setupImportCsvEditor() {
-    $('#import_csv_sorter .im_draggable').each(function() {
+function setupImportCsvEditor(container) {
+    $('#import_csv_sorter .im_draggable', container).each(function() {
         $(this).draggable({
             helper: 'clone',
             revert: 'invalid'
         });
     });
 
-    $('#import_csv_sorter .im_droppable').droppable({
+    $('#import_csv_sorter .im_droppable', container).droppable({
         drop: function(event, ui) {
             var node = ui.draggable.clone();
             node.find('input:hidden').attr('name', 'column[]');
@@ -443,7 +434,7 @@ function setupImportCsvEditor() {
 function addPanelToTabs(group, panel, label) {
     var identifier = $(panel).attr('id');
     $(group + '.tab-content').append(panel);
-    generalInit(panel);
+    utils.j().initElements(panel);
 
     var list = $(group + '[role=tablist]');
     var tab = $('<li class="presentation"><a href="#' + identifier + '" aria-controls="#' + identifier + '" role="tab" data-toggle="tab">' + label + '</a></li>');
@@ -455,19 +446,6 @@ function addPanelToTabs(group, panel, label) {
         list.append(tab);
 
     tab.find('a').click();
-}
-
-function listRow(id, url, header) {
-    return $('<a data-element-id="' + id + '" href="' + url + '" class="loadable-item list-group-item">' + header + '</a>');
-}
-
-function appendToLoadableList(list, data, open) {
-    var node = listRow(data.id, data.url, data.header);
-    list.append(node);
-    afterListChanges(list.closest('.loadablelist'));
-
-    if (open)
-        node.click();
 }
 
 /*
@@ -485,14 +463,20 @@ function miscInnerCallbacks(form, data) {
     if (test.length != 0) {
         var listname = test.val();
         var list = $('#' + listname);
-        appendToLoadableList(list, data, true);
+        Lists.appendToLoadableList(list, data, true);
     }
 
     var test = form.find('input[name=append-list]');
     if (test.length != 0) {
         var listname = test.val();
         var list = $('#' + listname);
-        appendToLoadableList(list, data, false);
+        Lists.appendToLoadableList(list, data, false);
+    }
+
+    var test = form.find('input[name=reload-loadable]');
+    if (test.length != 0) {
+        var listid = test.val();
+        reloadCurrentLoadable(listid);
     }
 
     var test = form.find('input[name=update-select]');
@@ -567,9 +551,12 @@ function miscInnerCallbacks(form, data) {
     var test = form.find('input[name^=post-saved-function]');
     if (test.length != 0) {
         test.each(function() {
-            var fn = window[$(this).val()];
-            if (typeof fn === 'function')
+            var function_name = $(this).val();
+
+            var fn = localCallables[function_name] || Callables[function_name];
+            if (typeof fn === 'function') {
                 fn(form, data);
+            }
         });
     }
 
@@ -602,25 +589,6 @@ function miscInnerCallbacks(form, data) {
     locker = false;
 }
 
-function setInputErrorText(input, message) {
-    if (message == null) {
-        input.closest('.form-group').removeClass('has-error');
-        input.closest('div').find('.help-block.error-message').remove();
-    }
-    else {
-        input.closest('.form-group').addClass('has-error');
-        input.closest('div').append('<span class="help-block error-message">' + message + '</span>');
-    }
-}
-
-function displayServerError(form, data) {
-    if (data.target != '') {
-        utils.inlineFeedback(form.find('.main-form-buttons button[type=submit]'), 'Errore!');
-        var input = form.find('[name=' + data.target + ']');
-        setInputErrorText(input, data.message);
-    }
-}
-
 function creatingFormCallback(form, data) {
     if (data.status == 'success') {
         voidForm(form);
@@ -637,30 +605,34 @@ function creatingFormCallback(form, data) {
         }
     }
     else if (data.status == 'error') {
-        displayServerError(form, data);
+        utils.displayServerError(form, data);
     }
 }
 
 function iconsLegendTrigger(node, legend_class) {
-    if (node.hasClass('dropdown-toggle'))
+    if (node.hasClass('dropdown-toggle')) {
         return;
+    }
 
     var legend = node.closest(legend_class);
     var target = legend.attr('data-list-target');
 
     var iter_selector = '';
-    if (legend_class == '.icons-legend')
-        iter_selector = '.loadablelist' + target + ' a';
-    else
+    if (legend_class == '.icons-legend') {
+        iter_selector = '.loadable-list' + target + ' .accordion-item';
+    }
+    else {
         iter_selector = '.table' + target + ' tbody tr';
+    }
 
     if (node.hasClass('active')) {
         node.removeClass('active');
-        if (node.is('a'))
+        if (node.is('a')) {
             node.closest('.dropdown-menu').siblings('.dropdown-toggle').removeClass('active');
+        }
 
         $(iter_selector).each(function() {
-            $(this).show().next('li').show();
+            $(this).show();
         });
     }
     else {
@@ -673,25 +645,29 @@ function iconsLegendTrigger(node, legend_class) {
         legend.find('button, a').removeClass('active');
 
         node.addClass('active');
-        if (node.is('a'))
+        if (node.is('a')) {
             node.closest('.dropdown-menu').siblings('.dropdown-toggle').addClass('active');
+        }
 
-        var c = node.find('span.glyphicon').attr('class');
+        var c = node.find('i').attr('class');
 
         $(iter_selector).each(function() {
             var show = false;
 
-            $(this).find('span.glyphicon').each(function() {
+            $(this).find('i').each(function() {
                 var icons = $(this).attr('class');
                 show = (icons == c);
-                if (show)
+                if (show) {
                     return false;
+                }
             });
 
-            if (show)
-                $(this).show().next('li').show();
-            else
-                $(this).hide().next('li').hide();
+            if (show) {
+                $(this).show();
+            }
+            else {
+                $(this).hide();
+            }
         });
     }
 }
@@ -702,41 +678,21 @@ function currentLoadableUniqueSelector(target)
     return 'div.list-group-item[data-random-identifier=' + identifier + ']';
 }
 
-function currentLoadableTrigger(target)
-{
-    return $(target).closest('.list-group-item').prev('a');
-}
-
 function currentLoadableLoaded(target)
 {
-    return currentLoadableTrigger(target).attr('data-element-id');
+    return $(target).closest('.remote-accordion').attr('data-element-id');
 }
 
 function closeAllLoadable(target)
 {
-    target.find('> a.active').each(function() {
-        $(this).removeClass('active').next().remove();
-    });
-}
-
-function reloadLoadableHead(item)
-{
-    $.ajax({
-        method: 'GET',
-        url: item.attr('href') + '/header',
-        dataType: 'json',
-        success: function(data) {
-            item.empty().append(data.header).attr('href', data.url);
-            afterListChanges(item.closest('.loadablelist'));
-        }
+    target.find('> accordion-item .accordion-button').filter(':not(.collapsed)').each(function() {
+        $(this).click();
     });
 }
 
 function reloadCurrentLoadable(listid)
 {
-    var list = $(listid);
-    var activated = list.find('a.loadable-item.active');
-    activated.each(function() {
+    $(listid).find('> .accordion-item > .accordion-header > .accordion-button:not(.collapsed)').each(function() {
         var r = $(this);
         r.click();
         setTimeout(function() {
@@ -745,32 +701,14 @@ function reloadCurrentLoadable(listid)
     });
 }
 
-/*
-    Usato al salvataggio di un movimento contabile, per ricaricare gli elementi
-    ad esso correlati (pagante e pagato) nelle eventuali liste attualmente in
-    pagina.
-    Usato primariamente per aggiornare la grafica delle consegne dopo il pagamento
-*/
-function reloadLoadableHeaders(form, data)
-{
-    var n = $('.loadablelist .loadable-item[data-element-id="' + form.find('input[name=sender_id]').val() + '"]');
-    if (n.length != 0) {
-        reloadLoadableHead(n);
-    }
-
-    var n = $('.loadablelist .loadable-item[data-element-id="' + form.find('input[name=target_id]').val() + '"]');
-    if (n.length != 0) {
-        reloadLoadableHead(n);
-    }
-}
-
 /*******************************************************************************
 	Prodotti
 */
 
 function enforceMeasureDiscrete(node) {
     var form = node.closest('form');
-    var discrete = node.find('option:selected').attr('data-discrete');
+    var selected = node.find('option:selected').val();
+    var discrete = measure_discrete[selected];
     var disabled = (discrete == '1');
 
     form.find('input[name=portion_quantity]').prop('disabled', disabled);
@@ -782,8 +720,8 @@ function enforceMeasureDiscrete(node) {
 
 	if (disabled) {
 		form.find('input[name=portion_quantity]').val('0.000');
-		form.find('input[name=variable]').bootstrapToggle('off').bootstrapToggle('disable');
-        form.find('.discrete_unit_alert').removeClass('hidden');
+		form.find('input[name=variable]').prop('checked', false).prop('disabled', true);
+        node.siblings('.form-text').removeClass('d-none');
 
 		multiple_widget.attr('data-enforce-minimum', 1);
 		multiple_widget.attr('data-enforce-integer', 1);
@@ -799,8 +737,8 @@ function enforceMeasureDiscrete(node) {
 	}
 	else {
 		form.find('input[name=weight]').val('0.000');
-		form.find('input[name=variable]').bootstrapToggle('enable');
-        form.find('.discrete_unit_alert').addClass('hidden');
+		form.find('input[name=variable]').prop('disabled', false);
+        node.siblings('.form-text').addClass('d-none');
 		multiple_widget.removeAttr('data-enforce-minimum').removeAttr('data-enforce-integer');
         min_quantity_widget.removeAttr('data-enforce-integer');
         max_quantity_widget.removeAttr('data-enforce-integer');
@@ -824,36 +762,6 @@ function setCellValue(cell, value) {
 /*******************************************************************************
 	Prenotazioni / Consegne
 */
-
-function afterBookingSaved(form, data) {
-    var modal = form.closest('.modal');
-
-    /*
-        In questo caso, ho aggiunto una prenotazione dal modale di "Aggiunti
-        Utente" in fase di consegna
-    */
-    if (modal.length != 0) {
-        /*
-            Se è stato salvata una nuova prenotazione vuota, il backend
-            restituisce una risposta vuota e non c'è nessuna nuova prenotazione
-            da aggiungere all'elenco
-        */
-        if (data.hasOwnProperty('id')) {
-            var list = $("button[data-target='#" + modal.attr('id') + "']").parent().find('.loadablelist');
-            if (list.find('> a[data-element-id=' + data.id + ']').length == 0) {
-                data.url = data.url.replace('booking/', 'delivery/');
-                appendToLoadableList(list, data, false);
-            }
-        }
-        modal.modal('hide');
-    }
-    /*
-        In questo caso, ho aggiunto la prenotazione dal pannello "Prenotazioni"
-    */
-    else {
-        closeMainForm(form, data);
-    }
-}
 
 function bookingTotal(editor) {
 	var form = $(editor).closest('form');
@@ -961,124 +869,12 @@ function bookingTotal(editor) {
 	});
 }
 
-function getBookingRowStatus(row) {
-    if (row.find('.glyphicon-ok').length)
-        return 'shipped';
-    if (row.find('.glyphicon-download-alt').length)
-        return 'saved';
-    return 'pending';
-}
-
-function sortShippingBookings(list) {
-    list.find('> a').sort(function(a, b) {
-        a = $(a);
-        b = $(b);
-
-        var a_status = getBookingRowStatus(a);
-        var b_status = getBookingRowStatus(b);
-
-        if (a_status == b_status) {
-            return a.text().localeCompare(b.text());
-        }
-
-        if (a_status == 'pending')
-            return -1;
-        if (b_status == 'pending')
-            return 1;
-        if (a_status == 'saved')
-            return -1;
-        if (b_status == 'saved')
-            return 1;
-
-        return -1;
-    }).each(function() {
-        $(this).remove();
-        $(this).appendTo(list);
-    });
-}
-
-function submitDeliveryForm(form) {
-    /*
-        Questo è per condensare eventuali nuovi prodotti aggiunti ma già
-        presenti nella prenotazione.
-    */
-    form.find('.fit-add-product').not('.hidden').each(function() {
-        var i = $(this).find('.booking-product-quantity input:text.number');
-        if (i.length == 0)
-            return;
-
-        var product = utils.sanitizeId(i.attr('name'));
-        var added_value = utils.parseFloatC(i.val());
-        var existing = form.find('tr.booking-product').not('.fit-add-product').find('input:text.number[name=' + product + ']');
-        if (existing.length != 0) {
-            existing.val(utils.parseFloatC(existing.val()) + added_value);
-            i.remove();
-        }
-    });
-}
-
-function triggerPayment(form)
-{
-	/*
-		Il valore di "action" viene impostato di default nel form di consegna a
-		"shipped", ma può essere alterato dal pulsante di salvataggio delle
-		informazioni. In tal caso, non occorre visualizzare il modale di
-		pagamento.
-	*/
-	var action = form.find('input:hidden[name=action]').val();
-	if (action == 'shipped') {
-		var payment_modal = form.attr('data-reference-modal');
-		$('#' + payment_modal).appendTo('body').modal('show');
-	}
-}
-
 /*******************************************************************************
 	Permessi
 */
 
-function attachUserRole(role_id, user_id, target_id, target_class, callback) {
-    $.ajax({
-        method: 'POST',
-        url: absolute_url + '/roles/attach',
-        data: {
-            role: role_id,
-            user: user_id,
-            target_id: target_id,
-            target_class: target_class
-        },
-        success: function(data) {
-            if (callback != null)
-                window[callback](data);
-        }
-    });
-}
-
-function detachUserRole(role_id, user_id, target_id, target_class, callback) {
-    $.ajax({
-        method: 'POST',
-        url: absolute_url + '/roles/detach',
-        data: {
-            role: role_id,
-            user: user_id,
-            target_id: target_id,
-            target_class: target_class
-        },
-        success: function(data) {
-            if (callback != null)
-                window[callback](data);
-        }
-    });
-}
-
-function setupPermissionsEditor() {
-    if ($('.role-editor:not(.general-inited)').length == 0)
-        return;
-
-    $('.role-editor:not(.general-inited)').each(function() {
-        $(this).addClass('general-inited');
-    });
-
-    $('.roleAssign').each(function() {
+function setupPermissionsEditor(container) {
+    $('.roleAssign', container).each(function() {
         if ($(this).hasClass('tt-hint') == true) {
             return;
         }
@@ -1110,7 +906,7 @@ function setupPermissionsEditor() {
         }
     });
 
-    $('.role-editor').on('submit', '#permissions-none form', function(e) {
+    $('.role-editor', container).on('submit', '#permissions-none form', function(e) {
         e.preventDefault();
         var form = $(this);
         var data = form.serializeArray();
@@ -1132,12 +928,15 @@ function setupPermissionsEditor() {
 
     }).on('change', 'input:checkbox[data-role]', function(e) {
         var check = $(this);
+        check.removeClass('saved-checkbox saved-left-feedback');
 
         var url = '';
-        if (check.is(':checked') == true)
+        if (check.is(':checked') == true) {
             url = absolute_url + '/roles/attach';
-        else
+        }
+        else {
             url = absolute_url + '/roles/detach';
+        }
 
         var data = {};
         data.role = check.attr('data-role');
@@ -1149,7 +948,10 @@ function setupPermissionsEditor() {
         $.ajax({
             method: 'POST',
             url: url,
-            data: data
+            data: data,
+            success: function() {
+                check.addClass('saved-checkbox saved-left-feedback');
+            }
         });
 
     }).on('click', '.remove-role', function(e) {
@@ -1177,74 +979,17 @@ function setupPermissionsEditor() {
     });
 }
 
-function supplierAttachUser(list, user_id) {
-    var supplier_id = list.attr('data-supplier-id');
-    var role_id = list.attr('data-role-id');
-    attachUserRole(role_id, user_id, supplier_id, 'App\\Supplier', null);
-}
-
-function supplierDetachUser(list, user_id) {
-    var supplier_id = list.attr('data-supplier-id');
-    var role_id = list.attr('data-role-id');
-    detachUserRole(role_id, user_id, supplier_id, 'App\\Supplier', null);
-}
-
-/*******************************************************************************
-	Contabilità
-*/
-
-function displayRecalculatedBalances(form, data) {
-    var modal = $('#display-recalculated-balance-modal');
-
-    if (data.diffs.length != 0) {
-        modal.find('a.table_to_csv').removeClass('hidden');
-        var table = modal.find('.broken.hidden').removeClass('hidden').find('tbody');
-        for (var name in data.diffs) {
-            if (data.diffs.hasOwnProperty(name))
-                table.append('<tr><td>' + name + '</td><td>' + data.diffs[name][0] + '</td><td>' + data.diffs[name][1] + '</td></tr>');
-        }
-    }
-    else {
-        modal.find('.fixed.hidden').removeClass('hidden');
-    }
-
-    modal.modal('show');
-}
-
-function refreshBalanceView() {
-    $.ajax({
-        method: 'GET',
-        url: absolute_url + '/movements/balance',
-        dataType: 'JSON',
-        success: function(data) {
-            $('.current-balance').each(function() {
-                for (var property in data)
-                    if (data.hasOwnProperty(property))
-                        $(this).find('.' + property + ' span').text(data[property]);
-            });
-        }
-    });
-}
-
-function collectFilteredUsers(form) {
-    $('#credits_status_table tbody tr:visible').each(function() {
-        var user_id = $(this).find('input[name^=user_id]').val();
-        form.append('<input type="hidden" name="users[]" value="' + user_id + '">');
-    });
-}
-
-function formToDownload(form) {
-    var data = form.find('input, select').serializeArray();
-    var url = form.attr('action') + '&' + $.param(data);
-    window.open(url, '_blank');
-    throw "Done!";
-}
-
 /*******************************************************************************
 	Core
 */
 
 $(document).ready(function() {
+    utils.j().init({
+        initFunction: function(container) {
+            generalInit(container);
+        }
+    });
+
     /*
         Poiché l'altezza della navbar è estremamente variabile, a seconda delle
         funzioni abilitate, calcolo lo spazio da lasciare sopra al body in modo
@@ -1267,31 +1012,17 @@ $(document).ready(function() {
             window.location.href = '/login';
     });
 
+    /*
+        Per gestire i deep link diretti agli elementi delle liste
+    */
     if (location.hash != '') {
         setTimeout(function() {
             var id = location.hash;
             if (id.charAt(0) === '#')
                 id = id.substr(1);
-            $('.loadablelist').find('a[data-element-id=' + id + ']').click();
+            $('.accordion-item[data-element-id=' + id + ']').find('.accordion-button').first().click();
         }, 100);
     }
-
-    $('#bottom-stop').offset({
-        left: 0,
-        top: $(document).height() - 1
-    });
-
-    $(document).scroll(function() {
-        var h = $(document).height();
-        var b = $('#bottom-stop').offset();
-        if (h < b.top)
-            $(document).height(b.top);
-        else
-            $('#bottom-stop').offset({
-                left: 0,
-                top: $(document).height() - 1
-            });
-    });
 
     if ($('#actual-calendar').length != 0) {
         $('#actual-calendar').ContinuousCalendar({
@@ -1302,8 +1033,6 @@ $(document).ready(function() {
         });
     }
 
-    generalInit($('body'));
-
     $('#prompt-message-modal').modal('show');
 
     $('#home-notifications .alert').on('closed.bs.alert', function() {
@@ -1312,92 +1041,6 @@ $(document).ready(function() {
 
         if ($('#home-notifications .alert').length == 0)
             $('#home-notifications').hide('fadeout');
-    });
-
-    $('body').on('click', '.loadablelist a.loadable-item', function(event) {
-        event.preventDefault();
-
-        if ($(this).hasClass('active')) {
-            var item = $(this);
-            reloadLoadableHead(item);
-
-            item.next().slideUp(200, function() {
-                $(this).remove();
-                item.removeClass('active');
-            });
-        }
-        else {
-            var list = $(this).closest('.loadablelist');
-            if (list.attr('data-sorting-function') != null)
-                closeAllLoadable(list);
-
-            var node = $('<div>').addClass('list-group-item').addClass('loadable-contents').attr('data-random-identifier', utils.randomString(10)).append(utils.loadingPlaceholder());
-            $(this).addClass('active').after(node);
-
-            $('html, body').animate({
-                scrollTop: node.offset().top - 120
-            }, 600);
-
-            node.animate({
-                height: '500px'
-            }, 600);
-
-            $.ajax({
-                method: 'GET',
-                url: $(this).attr('href'),
-
-                success: function(data) {
-                    data = $(data);
-                    node.empty().append(data);
-                    generalInit(data);
-                    node.stop().css('height', 'auto');
-                },
-                error: function() {
-                    /*
-                        TODO: visualizzare un messaggio di errore nel nodo
-                    */
-                    node.empty();
-                    node.stop().css('height', 'auto');
-                }
-            });
-        }
-
-        return false;
-    });
-
-    $('body').on('click', '.password-field .glyphicon', function() {
-        var i = $(this).closest('.password-field').find('input[type!=hidden]');
-        if (i.attr('type') == 'password')
-            i.attr('type', 'text');
-        else
-            i.attr('type', 'password');
-
-        $(this).toggleClass('glyphicon-eye-open').toggleClass('glyphicon-eye-close');
-    });
-
-    $('body').on('click', '[data-toggle="modal"]', function(e) {
-        e.preventDefault();
-    });
-
-    $('body').on('show.bs.popover', '.async-popover', function(e) {
-        if (typeof $.data(e.target, 'dynamic-inited') == 'undefined') {
-            $.data(e.target, 'dynamic-inited', {
-                done: true
-            });
-
-            var pop = $(this);
-            var url = pop.attr('data-contents-url');
-            $.ajax({
-                url: url,
-                method: 'GET',
-                dataType: 'HTML',
-
-                success: function(data) {
-                    pop.attr('data-content', data);
-                    pop.popover('show');
-                }
-            });
-        }
     });
 
 	$('.remember-checkbox').each(function() {
@@ -1475,12 +1118,11 @@ $(document).ready(function() {
 
 		target.find('> .loadable-sorting-header').addClass('hidden').filter('[data-sorting-' + attribute + ']').removeClass('hidden');
 
-        target.find('> a:visible').sort(function(a, b) {
+        target.find('> .accordion-item:visible').sort(function(a, b) {
             var attr_a = $(a).attr('data-sorting-' + attribute);
             var attr_b = $(b).attr('data-sorting-' + attribute);
             return attr_a.localeCompare(attr_b);
         }).each(function() {
-            $(this).remove();
             $(this).appendTo(target);
         });
     });
@@ -1491,19 +1133,17 @@ $(document).ready(function() {
 		var attribute = $(this).attr('data-sort-by');
 		var target_body = target.find('tbody');
 
-		target_body.find('> .table-sorting-header').addClass('hidden').filter('[data-sorting-' + attribute + ']').removeClass('hidden');
+		target_body.find('> .table-sorting-header').addClass('d-none').filter('[data-sorting-' + attribute + ']').removeClass('d-none');
 
-		target_body.find('> tr[data-sorting-' + attribute + ']').sort(function(a, b) {
+		target_body.find('> tr[data-sorting-' + attribute + ']').filter(':not(.table-sorting-header)').sort(function(a, b) {
 			var attr_a = $(a).attr('data-sorting-' + attribute);
 			var attr_b = $(b).attr('data-sorting-' + attribute);
 			return attr_a.localeCompare(attr_b);
 		}).each(function() {
-			$(this).remove();
 			$(this).appendTo(target_body);
 		});
 
 		target_body.find('> tr.do-not-sort').each(function() {
-			$(this).remove();
 			$(this).appendTo(target_body);
 		});
 	});
@@ -1526,15 +1166,8 @@ $(document).ready(function() {
         var target = $(this).attr('data-target-class');
         var new_status = $(this).prop('checked');
 
-        /*
-            Le checkbox in oggetto possono essere "lisce" o gestite con
-            bootstrapToggle, e vanno cambiate in modo diverso
-        */
         form.find('.' + target).each(function() {
-            if ($(this).parent().attr('data-toggle') == 'toggle')
-                $(this).bootstrapToggle(new_status ? 'on' : 'off');
-            else
-                $(this).prop('checked', new_status);
+            $(this).prop('checked', new_status);
         });
 
         $(this).prop('disabled', false);
@@ -1582,49 +1215,12 @@ $(document).ready(function() {
         }
     });
 
-    /*
-        Questo è per gestire i modali Bootstrap che si sovrappongono tra loro,
-        ed i relativi z-index (soprattutto dei backdrops)
-    */
-    $('body').on('shown.bs.modal', '.modal', function () {
-        var zIndex = 1040 + (10 * $('.modal:visible').length);
-        $(this).css('z-index', zIndex);
-        setTimeout(function() {
-            $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
-        }, 0);
-    });
-
-    /*
-        Questo è per fare in modo che, in caso di molteplici modali sovrapposti
-        tra di loro, quando uno viene chiuso venga comunque mantenuta la classe
-        .modal-open nel body (che serve a gestire correttamente lo scrolling dei
-        modali rimasti)
-    */
-    $('body').on('hidden.bs.modal', function () {
-        setTimeout(function() {
-            if ($('.modal:visible').length > 0) {
-                $('body').addClass('modal-open');
-            }
-        }, 100);
-    });
-
-    $('body').on('shown.bs.modal', '.modal', function(e) {
-        $(this).find('[data-default-value]').each(function() {
-            if ($(this).val() == '') {
-                var value = $(this).attr('data-default-value');
-                $(this).val(value);
-            }
-        });
-
-        $(this).parents('.modal-dialog').css('height', '100%');
-        $(this).find('[data-empty-on-modal=true]').empty();
-    });
-
     $('body').on('focus', '.date[data-enforce-after]', function() {
         var select = $(this).attr('data-enforce-after');
         var target = $(this).closest('.form-group').find(select);
-		if (target.length == 0)
+		if (target.length == 0) {
 			target = $(this).closest('form').find(select);
+        }
 
         /*
             Problema: cercando di navigare tra i mesi all'interno del datepicker
@@ -1637,8 +1233,9 @@ $(document).ready(function() {
         */
         var current_start = $(this).datepicker('getStartDate');
         var current_ref = target.datepicker('getUTCDate');
-        if (current_start.toString() != current_ref.toString())
+        if (current_start.toString() != current_ref.toString()) {
             $(this).datepicker('setStartDate', current_ref);
+        }
     });
 
     $('body').on('change', '.select-fetcher', function(event) {
@@ -1646,7 +1243,7 @@ $(document).ready(function() {
         var target = $(this).parent().find(targetid);
         target.empty();
 
-		var id = $(this).find('option:selected').attr('data-id');
+		var id = $(this).find('option:selected').val();
 		var url = $(this).attr('data-fetcher-url');
 		url = url.replace('XXX', id);
 
@@ -1667,10 +1264,9 @@ $(document).ready(function() {
             method: 'GET',
             dataType: 'HTML',
             success: function(data) {
-                var modal = $('#service-modal');
                 data = $(data);
                 modal.find('.modal-body').empty().append(data);
-                generalInit(data);
+                utils.j().initElements(data);
             }
         });
     });
@@ -1679,48 +1275,30 @@ $(document).ready(function() {
         event.preventDefault();
 
         var form = $(this);
-        form.find('.main-form-buttons button').prop('disabled', true);
+        form.find('button[type=submit]').prop('disabled', true);
 
-        /*
-            Problema di origine sconosciuta: i dati in multipart/form-data
-            inviati con una PUT non vengono letti
-            https://github.com/laravel/framework/issues/13457
-        */
-        var data = new FormData(this);
-        var method = form.attr('method').toUpperCase();
-        if (method == 'PUT') {
-            method = 'POST';
-            data.append('_method', 'PUT');
-        }
-
-        $.ajax({
-            method: method,
+        utils.postAjax({
+            method: form.attr('method'),
             url: form.attr('action'),
-            data: data,
-            dataType: 'json',
+            data: new FormData(this),
+            dataType: 'JSON',
             processData: false,
             contentType: false,
 
             success: function(data) {
                 if (data.hasOwnProperty('status') && data.status == 'error') {
-                    displayServerError(form, data);
-                    form.find('.main-form-buttons button').prop('disabled', false);
+                    utils.displayServerError(form, data);
+                    form.find('button[type=submit]').prop('disabled', false);
                 }
                 else {
-                    closeMainForm(form, data);
+                    miscInnerCallbacks(form, data);
+                    lists.closeParent(form);
                 }
             }
         });
     });
 
-    $('body').on('click', '.main-form-buttons .close-button', function(event) {
-        event.preventDefault();
-        var form = $(this).closest('.main-form');
-        form.find('.main-form-buttons button').attr('disabled', 'disabled');
-        closeMainForm(form);
-    });
-
-    $('body').on('click', '.main-form-buttons .delete-button', function(event) {
+    $('body').on('click', '.main-form .delete-button', function(event) {
         event.preventDefault();
         var form = $(this).closest('.main-form');
 
@@ -1729,7 +1307,7 @@ $(document).ready(function() {
         */
 
         if (confirm(_('Sei sicuro di voler eliminare questo elemento?'))) {
-            form.find('.main-form-buttons button').attr('disabled', 'disabled');
+            form.find('button').prop('disabled', true);
 
             $.ajax({
                 method: 'DELETE',
@@ -1737,10 +1315,10 @@ $(document).ready(function() {
                 dataType: 'json',
 
                 success: function(data) {
-                    var upper = closeMainForm(form);
-                    var list = upper.closest('.loadablelist');
+                    var upper = lists.closeParent(form);
+                    var list = upper.closest('.loadable-list');
                     upper.remove();
-                    testListsEmptiness(list);
+                    Lists.testListsEmptiness(list);
                 }
             });
         }
@@ -1761,8 +1339,8 @@ $(document).ready(function() {
         var target = filter.attr('data-list-target');
         var attribute = $(this).attr('data-filter-attribute');
 
-        $('.loadablelist' + target + ' a[data-filtered-' + attribute + '=true]').each(function() {
-            $(this).toggleClass('hidden').next('li').toggleClass('hidden');
+        $('.loadable-list' + target + ' .accordion-item[data-filtered-' + attribute + '=true]').each(function() {
+            $(this).toggleClass('d-none');
         });
     });
 
@@ -1778,14 +1356,16 @@ $(document).ready(function() {
 		*/
 
         if (text == '') {
-            $('.loadablelist' + target + ' .loadable-item').css('display', 'block');
+            $('.loadable-list' + target + ' .accordion-item').css('display', 'block');
         }
         else {
-            $('.loadablelist' + target + ' .loadable-item').each(function() {
-                if ($(this).text().toLowerCase().indexOf(text) == -1)
+            $('.loadable-list' + target + ' .accordion-item').each(function() {
+                if ($(this).find('.accordion-button').text().toLowerCase().indexOf(text) == -1) {
                     $(this).css('display', 'none');
-                else
+                }
+                else {
                     $(this).css('display', 'block');
+                }
             });
         }
     });
@@ -1864,11 +1444,11 @@ $(document).ready(function() {
             var file = this.files[0].size;
             if (file > max) {
                 $(this).val('');
-                setInputErrorText($(this), _('Il file è troppo grande!'));
+                utils.setInputErrorText($(this), _('Il file è troppo grande!'));
                 return false;
             }
             else {
-                setInputErrorText($(this), null);
+                utils.setInputErrorText($(this), null);
                 return true;
             }
         }
@@ -1887,7 +1467,7 @@ $(document).ready(function() {
         var test = form.find('input[name^=pre-saved-function]');
         if (test.length != 0) {
             test.each(function() {
-                var fn = window[$(this).val()];
+                var fn = Callables[$(this).val()];
                 if (typeof fn === 'function') {
                     /*
                         Se una pre-saved-function solleva una eccezione, il form
@@ -1903,26 +1483,20 @@ $(document).ready(function() {
             });
         }
 
-        if (proceed == false)
+        if (proceed == false) {
             return;
-
-        var data = new FormData(this);
-        var method = form.attr('method').toUpperCase();
-        if (method == 'PUT') {
-            method = 'POST';
-            data.append('_method', 'PUT');
         }
 
-        var save_button = form.find('.saving-button');
+        var save_button = form.find('button[type=submit]');
         save_button.prop('disabled', true);
 
-        $.ajax({
-            method: method,
+        utils.postAjax({
+            method: form.attr('method'),
             url: form.attr('action'),
-            data: data,
+            data: utils.j().serializeFormData(form),
             processData: false,
             contentType: false,
-            dataType: 'json',
+            dataType: 'JSON',
 
             success: function(data) {
                 utils.inlineFeedback(save_button, _('Salvato!'));
@@ -1956,21 +1530,21 @@ $(document).ready(function() {
     });
 
     $('body').on('submit', '.creating-form', function(event) {
-        if (event.isDefaultPrevented())
+        if (event.isDefaultPrevented()) {
             return;
+        }
 
         var save_button = $(this).find('button[type=submit]');
         save_button.prop('disabled', true);
 
         event.preventDefault();
         var form = $(this);
-        var disabled = form.find(':disabled').removeAttr('disabled');
 
-        $.ajax({
+        utils.postAjax({
             method: form.attr('method'),
             url: form.attr('action'),
             data: new FormData(this),
-            dataType: 'json',
+            dataType: 'JSON',
             processData: false,
             contentType: false,
             success: function(data) {
@@ -1978,8 +1552,6 @@ $(document).ready(function() {
                 save_button.prop('disabled', false);
             }
         });
-
-        disabled.attr('disabled', 'disabled');
     });
 
 	$('body').on('change', '.simple-sum', function() {
@@ -2015,30 +1587,6 @@ $(document).ready(function() {
         modal.modal('show');
     });
 
-    $('body').on('click', '.async-modal', function(event) {
-        event.preventDefault();
-
-        var url = $(this).attr('data-target-url');
-        if (url == null) {
-            url = $(this).attr('href');
-            if (url == null)
-                return;
-        }
-
-        $.ajax({
-            url: url,
-            method: 'GET',
-            dataType: 'html',
-            success: function(data) {
-                $(data).modal().on('shown.bs.modal', function() {
-                    generalInit($(this));
-                }).on('hidden.bs.modal', function() {
-                    $(this).remove();
-                });
-            }
-        });
-    });
-
     $('body').on('show.bs.modal', '.modal.dynamic-contents', function(e) {
         if ($(this).hasClass('dynamic-contents-inited')) {
             return;
@@ -2062,7 +1610,7 @@ $(document).ready(function() {
         $.get(url, function(data) {
             var d = $(data);
             contents.empty().append(d);
-            generalInit(d);
+            utils.j().initElements(d);
         });
     });
 
@@ -2075,70 +1623,8 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('change', '.measure-selector', function(event) {
-        enforceMeasureDiscrete($(this));
-    });
-
     $('body').on('change', '.contacts-selection select', function() {
         $(this).closest('.row').find('input:text').attr('class', '').addClass('form-control').addClass($(this).find('option:selected').val());
-    });
-
-    $('body').on('focus', 'input.password-changer', function() {
-        if ($(this).closest('.modal').length != 0)
-            return;
-
-        $(this).popover({
-            content: function() {
-                var input = $(this);
-
-                var ret = '<div>\
-                    <div class="form-group"><label for="password" class="col-sm-4 control-label">' + _('Nuova Password') + '</label><div class="col-sm-8"><input type="password" class="form-control" name="password" value="" autocomplete="off" minlength="8"></div></div>\
-                    <div class="form-group"><label for="password_confirm" class="col-sm-4 control-label">' + _('Conferma Password') + '</label><div class="col-sm-8"><input type="password" class="form-control" name="password_confirm" value="" autocomplete="off" minlength="8"></div></div>';
-
-                if (input.hasClass('enforcable_change')) {
-                    ret += '<div class="checkbox"><label><input type="checkbox" name="enforce_change"> ' + _('Forza cambio password al prossimo login') + '</label></div><br>';
-                }
-
-                ret += '<div class="form-group"><div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Conferma') + '</button></div></div></div>';
-
-                ret = $(ret);
-
-                ret.find('button.btn-success').click(function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    var password = ret.find('input[name=password]').val();
-                    var confirm = ret.find('input[name=password_confirm]').val();
-
-                    if (password == confirm) {
-                        if (ret.find('input[name=enforce_change]').length != 0) {
-                            var enforce = ret.find('input[name=enforce_change]').prop('checked') ? 'true' : 'false';
-                            input.closest('.form-group').find('input[name=enforce_password_change]').val(enforce);
-                        }
-
-                        input.val(password);
-                        input.popover('destroy');
-                    }
-                    else {
-                        alert('Le password sono diverse!');
-                    }
-                });
-
-                ret.find('button.btn-default').click(function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    input.popover('destroy');
-                });
-
-                setTimeout(function() {
-                    ret.find('input[name=password]').focus();
-                }, 200);
-
-                return ret;
-            },
-            template: '<div class="popover password-popover" role="tooltip"><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
-            placement: 'left',
-            html: true,
-        });
     });
 
     $('body').on('focus', 'input.address', function() {
@@ -2147,20 +1633,20 @@ $(document).ready(function() {
                 var input = $(this);
 
                 var ret = $('<div>\
-                    <div class="form-group">\
-                        <label for="street" class="col-sm-4 control-label">' + _('Indirizzo') + '</label>\
-                        <div class="col-sm-8"><input type="text" class="form-control" name="street" value="" autocomplete="off"></div>\
+                    <div class="row mb-2">\
+                        <label for="street" class="col-4 col-form-label">' + _('Indirizzo') + '</label>\
+                        <div class="col-8"><input type="text" class="form-control" name="street" value="" autocomplete="off"></div>\
                     </div>\
-                    <div class="form-group">\
-                        <label for="city" class="col-sm-4 control-label">' + _('Città') + '</label>\
+                    <div class="row mb-2">\
+                        <label for="city" class="col-4 col-form-label">' + _('Città') + '</label>\
                         <div class="col-sm-8"><input type="text" class="form-control" name="city" value="" autocomplete="off"></div>\
                     </div>\
-                    <div class="form-group">\
-                        <label for="cap" class="col-sm-4 control-label">' + _('CAP') + '</label>\
+                    <div class="row mb-2">\
+                        <label for="cap" class="col-4 col-form-label">' + _('CAP') + '</label>\
                         <div class="col-sm-8"><input type="text" class="form-control" name="cap" value="" autocomplete="off"></div>\
                     </div>\
-                    <div class="form-group">\
-                        <div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Salva') + '</button></div>\
+                    <div class="row mb-2">\
+                        <div class="col-8 offset-4"><button class="btn btn-light">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Salva') + '</button></div>\
                     </div>\
                 </div>');
 
@@ -2186,13 +1672,13 @@ $(document).ready(function() {
                     else
                         input.val(street + ', ' + city + ', ' + cap);
 
-                    input.popover('destroy');
+                    input.popover('dispose');
                 });
 
-                ret.find('button.btn-default').click(function(e) {
+                ret.find('button.btn-light').click(function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    input.popover('destroy');
+                    input.popover('dispose');
                 });
 
                 setTimeout(function() {
@@ -2201,7 +1687,7 @@ $(document).ready(function() {
 
                 return ret;
             },
-            template: '<div class="popover address-popover" role="tooltip"><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
+            template: '<div class="popover address-popover" role="tooltip"><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
             placement: 'left',
             html: true,
         });
@@ -2213,10 +1699,10 @@ $(document).ready(function() {
                 var input = $(this);
 
                 var ret = $('<div>\
-                    <div class="form-group">\
-                        <label for="day" class="col-sm-4 control-label">' + _('Giorno') + '</label>\
-                        <div class="col-sm-8">\
-                            <select class="form-control" name="day" value="" autocomplete="off">\
+                    <div class="row mb-2">\
+                        <label for="day" class="col-4 col-form-label">' + _('Giorno') + '</label>\
+                        <div class="col-8">\
+                            <select class="form-select" name="day" value="" autocomplete="off">\
                                 <option value="monday">' + _('Lunedì') + '</option>\
                                 <option value="tuesday">' + _('Martedì') + '</option>\
                                 <option value="wednesday">' + _('Mercoledì') + '</option>\
@@ -2227,10 +1713,10 @@ $(document).ready(function() {
                             </select>\
                         </div>\
                     </div>\
-                    <div class="form-group">\
-                        <label for="cycle" class="col-sm-4 control-label">' + _('Periodicità') + '</label>\
-                        <div class="col-sm-8">\
-                            <select class="form-control" name="cycle" value="" autocomplete="off">\
+                    <div class="row mb-2">\
+                        <label for="cycle" class="col-4 col-form-label">' + _('Periodicità') + '</label>\
+                        <div class="col-8">\
+                            <select class="form-select" name="cycle" value="" autocomplete="off">\
                                 <option value="all">' + _('Tutti') + '</option>\
                                 <option value="biweekly">' + _('Ogni due Settimane') + '</option>\
                                 <option value="month_first">' + _('Primo del Mese') + '</option>\
@@ -2241,16 +1727,16 @@ $(document).ready(function() {
                             </select>\
                         </div>\
                     </div>\
-                    <div class="form-group">\
-                        <label for="day" class="col-sm-4 control-label">' + _('Dal') + '</label>\
-                        <div class="col-sm-8"><input type="text" class="date form-control" name="from" value="" autocomplete="off"></div>\
+                    <div class="row mb-2">\
+                        <label for="day" class="col-4 col-form-label">' + _('Dal') + '</label>\
+                        <div class="col-8"><input type="text" class="date form-control" name="from" value="" autocomplete="off"></div>\
                     </div>\
-                    <div class="form-group">\
-                        <label for="day" class="col-sm-4 control-label">' + _('Al') + '</label>\
-                        <div class="col-sm-8"><input type="text" class="date form-control" name="to" value="" autocomplete="off"></div>\
+                    <div class="row mb-2">\
+                        <label for="day" class="col-4 col-form-label">' + _('Al') + '</label>\
+                        <div class="col-8"><input type="text" class="date form-control" name="to" value="" autocomplete="off"></div>\
                     </div>\
-                    <div class="form-group">\
-                        <div class="col-sm-8 col-sm-offset-4"><button class="btn btn-default">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Salva') + '</button></div>\
+                    <div class="row mb-2">\
+                        <div class="col-8 offset-4"><button class="btn btn-light">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Salva') + '</button></div>\
                     </div>\
                 </div>');
 
@@ -2287,13 +1773,13 @@ $(document).ready(function() {
                     var from = ret.find('input[name=from]').val().trim().replace(',', '');
                     var to = ret.find('input[name=to]').val().trim().replace(',', '');
                     input.val(day + ' - ' + cycle + ' - ' + from + ' - ' + to).change();
-                    input.popover('destroy');
+                    input.popover('dispose');
                 });
 
-                ret.find('button.btn-default').click(function(e) {
+                ret.find('button.btn-light').click(function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    input.popover('destroy');
+                    input.popover('dispose');
                 });
 
                 setTimeout(function() {
@@ -2302,16 +1788,19 @@ $(document).ready(function() {
 
                 return ret;
             },
-            template: '<div class="popover periodic-popover" role="tooltip"><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
+            template: '<div class="popover periodic-popover" role="tooltip"><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
             placement: 'left',
             html: true,
         });
     });
 
     $('body').on('change', '.status-selector input:radio[name*="status"]', function() {
-        var field = $(this).closest('.form-group');
-        field.find('.status-date-deleted').toggleClass('hidden', ($(this).val() != 'deleted'));
-        field.find('.status-date-suspended').toggleClass('hidden', ($(this).val() != 'suspended'));
+        let field = $(this).closest('.status-selector');
+        let status = $(this).val();
+        let del = (status != 'deleted');
+        field.find('[name=deleted_at]').prop('hidden', del).closest('.input-group').prop('hidden', del);
+        let sus = (status != 'suspended');
+        field.find('[name=suspended_at]').prop('hidden', sus).closest('.input-group').prop('hidden', sus);
     });
 
     $('body').on('change', '.movement-modal input[name=method]', function() {
@@ -2353,7 +1842,7 @@ $(document).ready(function() {
             success: function(data) {
                 data = $(data);
                 selectors.empty().append(data);
-                generalInit(data);
+                utils.j().initElements(data);
             }
         });
     });
@@ -2377,9 +1866,9 @@ $(document).ready(function() {
         table.find('thead input[data-active-for]').each(function() {
             var type = $(this).attr('data-active-for');
             if(type != '' && type != sender && type != target)
-                $(this).bootstrapToggle('off').bootstrapToggle('disable').change();
+                $(this).prop('checked', false).prop('disabled', true).change();
             else
-                $(this).bootstrapToggle('enable');
+                $(this).prop('disabled', false);
         });
     })
     .on('change', '.movement-type-editor table thead input:checkbox', function() {
@@ -2390,13 +1879,13 @@ $(document).ready(function() {
             $(this).closest('table').find('tbody tr').each(function() {
                 var cell = $(this).find('td:nth-child(' + (index + 1) + ')');
                 cell.find('input[value=ignore]').click();
-                cell.find('label, input').attr('disabled', 'disabled');
+                cell.find('label, input').prop('disabled', true);
             });
         }
         else {
             $(this).closest('table').find('tbody tr').each(function() {
                 var cell = $(this).find('td:nth-child(' + (index + 1) + ')');
-                cell.find('label, input').removeAttr('disabled');
+                cell.find('label, input').prop('disabled', false);
             });
         }
     });
@@ -2417,7 +1906,7 @@ $(document).ready(function() {
             success: function(data) {
                 data = $(data);
                 target.empty().append(data);
-                generalInit(data);
+                utils.j().initElements(data);
             }
         });
     })
@@ -2437,83 +1926,6 @@ $(document).ready(function() {
             row.find('.periodic').val('');
         else
             row.find('.date').val('');
-    });
-
-    $('body').on('click', '.manyrows-dates-filter button[type=submit]', function(event) {
-        event.preventDefault();
-        var form = $(this).closest('.manyrows-dates-filter');
-
-        var target_id = form.find('[name=target_id] option:selected').val();
-        var type = form.find('[name=type]:checked').val();
-
-        $('#dates-in-range .row:not(.many-rows-header)').each(function() {
-            var show = true;
-
-            if (target_id != 0 && $(this).find('[name^=target_id] option:selected').val() != target_id)
-                show = false;
-
-            if (type != 'all' && $(this).find('[name^=type] option:selected').val() != type)
-                show = false;
-
-            if (show == false)
-                $(this).hide();
-            else
-                $(this).show();
-        });
-    });
-
-    $('body').on('submit', '.password-protected', function(event) {
-        if ($(this).attr('data-password-protected-verified') != '1') {
-            event.preventDefault();
-            var id = $(this).attr('id');
-            var modal = $('#password-protection-dialog');
-            modal.attr('data-form-target', '#' + id);
-            modal.find('input:password').val();
-            modal.modal('show');
-
-            $('#' + id).find('button:submit').prop('disabled', true);
-
-            return false;
-        }
-
-        return true;
-    })
-    .on('submit', '#password-protection-dialog form', function(event) {
-        event.preventDefault();
-        var modal = $(this).closest('.modal');
-
-        $.ajax({
-            method: 'POST',
-            url: $(this).attr('action'),
-            data: {
-                password: $(this).find('input[type=password]').val()
-            },
-            success: function(data) {
-                if (data == 'ok') {
-                    var target = modal.attr('data-form-target');
-                    modal.modal('hide');
-                    var form = $(target);
-                    form.attr('data-password-protected-verified', '1');
-
-                    $.ajax({
-                        method: form.attr('method'),
-                        url: form.attr('action'),
-                        data: form.serializeArray(),
-                        dataType: 'JSON',
-                        success: function(data) {
-                            form.find('button:submit').prop('disabled', false);
-                            miscInnerCallbacks(form, data);
-                            form.attr('data-password-protected-verified', '0');
-                        },
-                        error: function() {
-                            var button = form.find('button:submit');
-                            utils.inlineFeedback(button, _('ERRORE'));
-                            form.attr('data-password-protected-verified', '0');
-                        }
-                    });
-                }
-            }
-        });
     });
 
     $('body').on('change', '.collapse_trigger', function() {
@@ -2545,7 +1957,7 @@ $(document).ready(function() {
 
         var explicit_target = $(this).attr('data-target');
         if (explicit_target) {
-            $(explicit_target).find('a:visible').each(function() {
+            $(explicit_target).find('.accordion-item:visible').each(function() {
                 printable.push($(this).attr('data-element-id'));
             });
         }
@@ -2559,7 +1971,7 @@ $(document).ready(function() {
             var tab = $(this).closest('.tab-pane').find('.tab-pane.active');
 
             if (tab.hasClass('details-list')) {
-                tab.find('.loadablelist a:visible').each(function() {
+                tab.find('.loadable-list .accordion-item:visible').each(function() {
                     printable.push($(this).attr('data-element-id'));
                 });
             }
@@ -2571,7 +1983,8 @@ $(document).ready(function() {
         }
 
         var data = {};
-        var parent_form = $(this).closest('form');
+
+        var parent_form = utils.formByButton($(this));
         if (parent_form.length != 0) {
             data = parent_form.serializeArray();
             for (var i = 0; i < printable.length; i++)
@@ -2614,13 +2027,13 @@ $(document).ready(function() {
         }
 
         if (value == 'price') {
-            container.find('.arithmetic_type_selection').addClass('hidden').find('input:radio[value=apply]').click();
+            container.find('.arithmetic_type_selection').addClass('d-none').find('input:radio[value=apply]').click();
             arithmetic = 'apply';
-            container.find('.distribution_type_selection').addClass('hidden').find('input:radio[value=none]').click();
+            container.find('.distribution_type_selection').addClass('d-none').find('input:radio[value=none]').click();
             distribution_type = 'none';
         }
         else {
-            container.find('.arithmetic_type_selection').removeClass('hidden');
+            container.find('.arithmetic_type_selection').removeClass('d-none');
 
             if (arithmetic == 'apply') {
                 container.find('.arithmetic_type_selection').find('input:radio[value=sum]').click();
@@ -2628,11 +2041,11 @@ $(document).ready(function() {
             }
 
             if (applies_target != 'order') {
-                distribution_type_selection.addClass('hidden').find('input:radio[value=none]').click();
+                distribution_type_selection.addClass('d-none').find('input:radio[value=none]').click();
                 distribution_type = 'none';
             }
             else {
-                distribution_type_selection.removeClass('hidden');
+                distribution_type_selection.removeClass('d-none');
                 if (distribution_type == 'none') {
                     distribution_type_selection.find('input:radio[value=quantity]').click();
                     distribution_type = 'quantity';
@@ -2641,34 +2054,42 @@ $(document).ready(function() {
         }
 
 		var key = applies_type + ',' + model_type + ',' + applies_target + ',' + scale + ',' + applies_type + ',' + arithmetic + ',' + applies_target + ',' + value + ',' + distribution_type;
-
 		var labels = modifiers_strings[key];
 
         var simplified = container.find('.simplified_input');
         var advanced = container.find('.advanced_input');
-        simplified.toggleClass('hidden', applies_type != 'none');
-        advanced.toggleClass('hidden', applies_type == 'none');
+        simplified.toggleClass('d-none', applies_type != 'none');
+        advanced.toggleClass('d-none', applies_type == 'none');
 
         if (applies_type != 'none') {
-            container.find('input:radio[name=value][value=price]').closest('label').removeClass('disabled');
+            container.find('input:radio[name=value][value=price]').next('label').removeClass('disabled');
+            var table = advanced.find('.dynamic-table');
 
-    		advanced.find('.many-rows').find('.row').each(function() {
-    			$(this).find('.form-control-static').eq(0).text(labels[0]);
-    			$(this).find('.input-group-addon').eq(0).text(labels[1]);
-    			$(this).find('.form-control-static').eq(1).text(labels[2]);
-    			$(this).find('.input-group-addon').eq(1).text(labels[3]);
-                $(this).find('.form-control-static').eq(2).text(labels[4]);
+    		table.find('tr').each(function() {
+                if ($(this).find('.add-row').length != 0) {
+                    return true;
+                }
+
+    			$(this).find('td:nth-child(1) .form-control-plaintext').text(labels[0]);
+    			$(this).find('td:nth-child(2) .input-group-text').text(labels[1]);
+    			$(this).find('td:nth-child(3) .form-control-plaintext').text(labels[2]);
+    			$(this).find('td:nth-child(4) .input-group-text').text(labels[3]);
+                $(this).find('td:nth-child(5) .form-control-plaintext').text(labels[4]);
     		});
+
+            if (table.find('tbody tr').length == 1) {
+                table.find('.add-row').click();
+            }
         }
         else {
             var value_price_selection = container.find('input:radio[name=value][value=price]');
-            value_price_selection.closest('label').addClass('disabled');
+            value_price_selection.next('label').addClass('disabled');
             if (value_price_selection.prop('checked')) {
                 container.find('input:radio[name=value][value=absolute]').click();
             }
 
             simplified.find('.form-control-static').eq(0).text(labels[2]);
-            simplified.find('.input-group-addon').text(labels[3]);
+            simplified.find('.input-group-text').text(labels[3]);
             simplified.find('.form-control-static').eq(1).text(labels[4]);
         }
 	});
@@ -2714,27 +2135,16 @@ $(document).ready(function() {
         	TODO: aggiornare i prezzi totali nella tabella dell'ordine
         */
     })
-    .on('shown.bs.modal', '.order-document-download-modal', function() {
-        $(this).find('input[name=send_mail]').bootstrapToggle('off');
-        $(this).find('.order_document_body_mail').hide();
-        $(this).find('.order_document_recipient_mail').hide();
-    })
     .on('change', '.order-document-download-modal input[name=send_mail]', function() {
         var status = $(this).prop('checked');
         var form = $(this).closest('.order-document-download-modal').find('form');
-        var textarea = form.find('.order_document_body_mail');
-        var recipient = form.find('.order_document_recipient_mail');
-        var submit = form.find('.btn-success');
+        var submit = form.find('[type=submit]');
 
         if (status) {
-            textarea.show();
-            recipient.show();
             submit.text(_('Invia Mail'));
             form.removeClass('direct-submit');
         }
         else {
-            textarea.hide();
-            recipient.hide();
             submit.text(_('Download'));
             form.addClass('direct-submit');
         }
@@ -2751,7 +2161,7 @@ $(document).ready(function() {
             success: function(data) {
                 data = $(data);
                 $('#createOrder .supplier-future-dates').empty().append(data);
-                generalInit(data);
+                utils.j().initElements(data);
             }
         });
     });
@@ -2782,24 +2192,6 @@ $(document).ready(function() {
             },
             error: function() {
                 button.prop('disabled', false);
-            }
-        });
-    });
-
-    $('body').on('shown.bs.tab', 'a[data-toggle="tab"][data-async-load]', function(e) {
-        var t = e.target.hash;
-        var tab = $(t);
-        tab.empty().append(utils.loadingPlaceholder());
-
-        $.ajax({
-            method: 'GET',
-            url: $(this).attr('data-async-load'),
-            dataType: 'html',
-
-            success: function(data) {
-                data = $(data);
-                tab.empty().append(data);
-                generalInit(data);
             }
         });
     });
@@ -2878,7 +2270,7 @@ $(document).ready(function() {
                 success: function(data) {
                     data = $(data);
                     row.find('.bookable-target').empty().append(data);
-                    generalInit(data);
+                    utils.j().initElements(data);
                     bookingTotal(editor);
                 }
             });
@@ -2917,7 +2309,7 @@ $(document).ready(function() {
             success: function(data) {
                 data = $(data);
                 fill_target.empty().append(data);
-                generalInit(data);
+                utils.j().initElements(data);
             }
         });
     });
@@ -2928,12 +2320,15 @@ $(document).ready(function() {
 
     $('body').on('change', '.multigas-editor input:checkbox[data-gas]', function(e) {
         var check = $(this);
+        check.removeClass('saved-checkbox');
 
         var url = '';
-        if (check.is(':checked') == true)
+        if (check.is(':checked') == true) {
             url = absolute_url + '/multigas/attach';
-        else
+        }
+        else {
             url = absolute_url + '/multigas/detach';
+        }
 
         var data = {};
         data.gas = check.attr('data-gas');
@@ -2943,7 +2338,10 @@ $(document).ready(function() {
         $.ajax({
             method: 'POST',
             url: url,
-            data: data
+            data: data,
+            success: function() {
+                check.addClass('saved-checkbox');
+            }
         });
     });
 
@@ -3007,7 +2405,7 @@ $(document).ready(function() {
         var form = $(this).closest('.inner-form');
 
         if (confirm(_('Sei sicuro di voler annullare questa prenotazione?'))) {
-            form.find('.main-form-buttons button').attr('disabled', 'disabled');
+            form.find('button').prop('disabled', true);
 
             $.ajax({
                 method: 'DELETE',
@@ -3015,7 +2413,7 @@ $(document).ready(function() {
                 dataType: 'json',
 
                 success: function(data) {
-                    form.find('.main-form-buttons button').removeAttr('disabled');
+                    form.find('button').prop('disabled', false);
                     form.find('.booking-product-quantity input').val('0');
                     form.find('.variants-selector').each(function() {
                         while ($(this).find('.row:not(.master-variant-selector)').length != 1) {
@@ -3108,7 +2506,7 @@ $(document).ready(function() {
     });
 
     /*
-    	Widget generico wizard
+        Widget generico wizard
     */
 
     $('body').on('show.bs.modal', '.modal.wizard', function(e) {
@@ -3139,24 +2537,5 @@ $(document).ready(function() {
 
     $('body').on('submit', '.modal.close-on-submit form', function(event) {
         $(this).closest('.modal').modal('hide');
-    });
-
-    $('body').on('submit', '.modal form:not(.direct-submit)', function(event) {
-        if (event.isDefaultPrevented())
-            return;
-
-        event.preventDefault();
-        var form = $(this);
-        var data = form.serializeArray();
-
-        $.ajax({
-            method: form.attr('method'),
-            url: form.attr('action'),
-            data: data,
-
-            success: function(data) {
-                /* dummy */
-            }
-        });
     });
 });

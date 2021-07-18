@@ -2,164 +2,36 @@
 
 @section('content')
 
-<div class="col-md-6 col-md-offset-3">
-    <form class="form-horizontal" method="POST" action="{{ route('register') }}">
-        {{ csrf_field() }}
-
-        <div class="form-group{{ $errors->has('firstname') ? ' has-error' : '' }}">
-            <label for="firstname" class="col-md-4 control-label">{{ _i('Nome') }}</label>
-            <div class="col-md-6">
-                <input id="firstname" type="text" class="form-control" name="firstname" value="{{ old('firstname') }}" {{ in_array('firstname', currentAbsoluteGas()->public_registrations['mandatory_fields']) ? 'required' : '' }} autofocus>
-
-                @if ($errors->has('firstname'))
-                    <span class="help-block">
-                        <strong>{{ $errors->first('firstname') }}</strong>
-                    </span>
-                @endif
-            </div>
-        </div>
-
-        <div class="form-group{{ $errors->has('lastname') ? ' has-error' : '' }}">
-            <label for="lastname" class="col-md-4 control-label">{{ _i('Cognome') }}</label>
-            <div class="col-md-6">
-                <input id="lastname" type="text" class="form-control" name="lastname" value="{{ old('lastname') }}" {{ in_array('lastname', currentAbsoluteGas()->public_registrations['mandatory_fields']) ? 'required' : '' }}>
-
-                @if ($errors->has('lastname'))
-                    <span class="help-block">
-                        <strong>{{ $errors->first('lastname') }}</strong>
-                    </span>
-                @endif
-            </div>
-        </div>
-
-        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-            <label for="email" class="col-md-4 control-label">{{ _i('E-Mail') }}</label>
-
-            <div class="col-md-6">
-                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" {{ in_array('email', currentAbsoluteGas()->public_registrations['mandatory_fields']) ? 'required' : '' }}>
-
-                @if ($errors->has('email'))
-                    <span class="help-block">
-                        <strong>{{ $errors->first('email') }}</strong>
-                    </span>
-                @endif
-            </div>
-        </div>
-
-        <div class="form-group{{ $errors->has('phone') ? ' has-error' : '' }}">
-            <label for="phone" class="col-md-4 control-label">{{ _i('Telefono') }}</label>
-
-            <div class="col-md-6">
-                <input id="phone" type="text" class="form-control" name="phone" value="{{ old('phone') }}" {{ in_array('phone', currentAbsoluteGas()->public_registrations['mandatory_fields']) ? 'required' : '' }}>
-
-                @if ($errors->has('phone'))
-                    <span class="help-block">
-                        <strong>{{ $errors->first('phone') }}</strong>
-                    </span>
-                @endif
-            </div>
-        </div>
-
-        <div class="form-group{{ $errors->has('username') ? ' has-error' : '' }}">
-            <label for="username" class="col-md-4 control-label">{{ _i('Username') }}</label>
-            <div class="col-md-6">
-                <input id="username" type="text" class="form-control" name="username" value="{{ old('username') }}" required pattern="{{ App\User::usernamePattern() }}">
-
-                @if ($errors->has('username'))
-                    <span class="help-block">
-                        <strong>{{ $errors->first('username') }}</strong>
-                    </span>
-                @endif
-            </div>
-        </div>
-
-        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-            <label for="password" class="col-md-4 control-label">{{ _i('Password') }}</label>
-
-            <div class="col-md-6">
-                <input id="password" type="password" class="form-control" name="password" required>
-
-                @if ($errors->has('password'))
-                    <span class="help-block">
-                        <strong>{{ $errors->first('password') }}</strong>
-                    </span>
-                @endif
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="password-confirm" class="col-md-4 control-label">{{ _i('Conferma Password') }}</label>
-
-            <div class="col-md-6">
-                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="verify" class="col-md-4 control-label">{{ $captcha }}</label>
-
-            <div class="col-md-6">
-                <input id="verify" type="text" class="form-control" name="verify" required>
-
-                @if ($errors->has('verify'))
-                    <span class="help-block">
-                        <strong>{{ $errors->first('verify') }}</strong>
-                    </span>
-                @endif
-            </div>
-        </div>
+<div class="col-12 col-md-6 offset-md-3">
+    <x-larastrap::form method="POST" action="{{ route('register') }}" :buttons="[['type' => 'submit', 'color' => 'success', 'label' => _i('Registrati')]]">
+        <x-larastrap::text name="firstname" :label="_i('Nome')" :required="in_array('firstname', currentAbsoluteGas()->public_registrations['mandatory_fields'])" />
+        <x-larastrap::text name="lastname" :label="_i('Cognome')" :required="in_array('lastname', currentAbsoluteGas()->public_registrations['mandatory_fields'])" />
+        <x-larastrap::email name="email" :label="_i('E-Mail')" :required="in_array('email', currentAbsoluteGas()->public_registrations['mandatory_fields'])" />
+        <x-larastrap::text name="phone" :label="_i('Telefono')" :required="in_array('phone', currentAbsoluteGas()->public_registrations['mandatory_fields'])" />
+        <x-larastrap::text name="username" :label="_i('Username')" required pattern="{{ App\User::usernamePattern() }}" />
+        <x-larastrap::password name="password" :label="_i('Password')" required />
+        <x-larastrap::password name="password_confirmation" :label="_i('Conferma Password')" required />
+        <x-larastrap::text name="verify" :label="$captcha" required />
 
         @if(App\Gas::count() > 1)
-            <div class="form-group">
-                <label for="gas_id" class="col-md-4 control-label">{{ _i('GAS') }}</label>
-
-                <div class="col-md-6">
-                    <select id="gas_id" class="form-control" name="gas_id">
-                        @foreach(App\Gas::orderBy('name', 'asc')->get() as $g)
-                            <option value="{{ $g->id }}">{{ $g->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
+            <x-larastrap::selectobj name="gas_id" :label="_('GAS')" required :options="App\Gas::orderBy('name', 'asc')->get()" />
         @else
             <input type="hidden" name="gas_id" value="{{ currentAbsoluteGas()->id }}">
         @endif
 
         @if (!empty(currentAbsoluteGas()->public_registrations['privacy_link']))
-            <div class="form-group">
-                <div class="col-sm-offset-4 col-sm-6">
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" required> {!! _i("Ho letto e accetto l'<a href=\"%s\" target=\"_blank\">Informativa sulla Privacy</a>.", [currentAbsoluteGas()->public_registrations['privacy_link']]) !!}
-                        </label>
-                    </div>
-                </div>
-            </div>
+            <?php $privacy_claim = _i("Ho letto e accetto l'<a href=\"%s\" target=\"_blank\">Informativa sulla Privacy</a>.", [currentAbsoluteGas()->public_registrations['privacy_link']]) ?>
+            <x-larastrap::scheck name="privacy" :label="$privacy_claim" required />
         @endif
 
         @if (!empty(currentAbsoluteGas()->public_registrations['terms_link']))
-            <div class="form-group">
-                <div class="col-sm-offset-4 col-sm-6">
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" required> {!! _i("Ho letto e accetto le <a href=\"%s\" target=\"_blank\">Condizioni d'Uso</a>.", [currentAbsoluteGas()->public_registrations['terms_link']]) !!}
-                        </label>
-                    </div>
-                </div>
-            </div>
+            <?php $terms_claim = _i("Ho letto e accetto le <a href=\"%s\" target=\"_blank\">Condizioni d'Uso</a>.", [currentAbsoluteGas()->public_registrations['terms_link']]) ?>
+            <x-larastrap::scheck name="terms" :label="$terms_claim" required />
         @endif
-
-        <br>
-
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button class="btn btn-success pull-right" type="submit">{{ _i('Registrati') }}</button>
-            </div>
-        </div>
-    </form>
+    </x-larastrap::form>
 </div>
 
-<div class="col-md-6 col-md-offset-3">
+<div class="col-12 col-md-6 offset-md-3">
     <hr/>
     <p>
         <a href="{{ route('login') }}">{{ _i('Login') }}</a>

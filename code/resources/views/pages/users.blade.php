@@ -4,7 +4,7 @@
 
 @can('users.admin', $currentgas)
     <div class="row">
-        <div class="col-md-12">
+        <div class="col">
             @include('commons.addingbutton', [
                 'template' => 'user.base-edit',
                 'typename' => 'user',
@@ -17,45 +17,25 @@
                 'import_target' => 'users'
             ])
 
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#exportCSVusers">{{ _i('Esporta CSV') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
-            <div class="modal fade close-on-submit" id="exportCSVusers" tabindex="-1" role="dialog">
-                <div class="modal-dialog modal-extra-lg" role="document">
-                    <div class="modal-content">
-                        <form class="form-horizontal" method="GET" data-toggle="validator" novalidate>
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">{{ _i('Esporta CSV') }}</h4>
-                            </div>
-                            <div class="modal-body">
-                                <p>
-                                    {{ _i("Verranno esportati gli utenti attualmente filtrati nella lista principale, in funzione del loro stato e del loro ruolo.") }}
-                                </p>
-                                <p>
-                                    {!! _i("Per la consultazione e l'elaborazione dei files in formato CSV (<i>Comma-Separated Values</i>) si consiglia l'uso di <a target=\"_blank\" href=\"http://it.libreoffice.org/\">LibreOffice</a>.") !!}
-                                </p>
+            <x-larastrap::mbutton :label="_i('Esporta CSV')" triggers_modal="exportCSVusers" />
+            <x-larastrap::modal id="exportCSVusers" :title="_i('Esporta CSV')" classes="close-on-submit">
+                <x-larastrap::form method="GET" :buttons="[['label' => _i('Download'), 'classes' => 'export-custom-list', 'attributes' => ['data-export-url' => url('users/export'), 'data-target' => '#user-list']]]" label_width="2" input_width="10">
+                    <p>
+                        {{ _i("Verranno esportati gli utenti attualmente filtrati nella lista principale, in funzione del loro stato e del loro ruolo.") }}
+                    </p>
+                    <p>
+                        {!! _i("Per la consultazione e l'elaborazione dei files in formato CSV (<i>Comma-Separated Values</i>) si consiglia l'uso di <a target=\"_blank\" href=\"http://it.libreoffice.org/\">LibreOffice</a>.") !!}
+                    </p>
 
-                                <hr/>
+                    <hr/>
 
-                                @include('commons.checkboxes', [
-                                    'name' => 'fields',
-                                    'label' => _i('Colonne'),
-                                    'labelsize' => 2,
-                                    'fieldsize' => 10,
-                                    'values' => App\User::formattableColumns()
-                                ])
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">{{ _i('Annulla') }}</button>
-                                <button class="btn btn-success export-custom-list" data-export-url="{{ url('users/export') }}" data-target="#user-list">{{ _i('Download') }}</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+                    <x-larastrap::structchecks name="fields" :label="_i('Colonne')" :options="App\User::formattableColumns()" />
+                </x-larastrap::form>
+            </x-larastrap::modal>
 
             @if(Gate::check('users.admin', $currentgas) || Gate::check('users.movements', $currentgas))
                 @if($currentgas->getConfig('annual_fee_amount') != 0)
-                    <button type="button" class="btn btn-default async-modal" data-target-url="{{ route('users.fees') }}">{{ _i('Stato Quote') }} <span class="glyphicon glyphicon-modal-window" aria-hidden="true"></span></button>
+                    <x-larastrap::ambutton :label="_i('Stato Quote')" :attributes="['data-modal-url' => route('users.fees')]" />
                 @endif
             @endif
         </div>
@@ -66,7 +46,7 @@
 @endcan
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col">
         @can('users.admin', $currentgas)
             @include('commons.loadablelist', [
                 'identifier' => 'user-list',
@@ -75,7 +55,7 @@
                     'class' => 'User'
                 ],
                 'filters' => [
-                    'deleted_at' => (object)[
+                    'deleted_at' => (object) [
                         'icon' => 'inbox',
                         'label' => _i('Cessati'),
                         'value' => null

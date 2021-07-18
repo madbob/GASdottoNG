@@ -1,13 +1,3 @@
-<form class="form-horizontal main-form product-editor" method="PUT" action="{{ route('products.update', $product->id) }}">
+<x-larastrap::mform :obj="$product" classes="product-editor" method="PUT" :action="route('products.update', $product->id)" :other_buttons="[['color' => 'light', 'label' => _i('Duplica'), 'attributes' => ['data-modal-url' => route('products.duplicate', $product->id)], 'classes' => ['float-start', 'async-modal']]]">
     @include('product.editform', ['product' => $product])
-
-    @include('commons.formbuttons', [
-        'left_buttons' => [
-            (object) [
-                'label' => _i('Duplica'),
-                'url' => route('products.duplicate', $product->id),
-                'class' => 'async-modal'
-            ]
-        ]
-    ])
-</form>
+</x-larastrap::mform>

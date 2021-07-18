@@ -4,12 +4,12 @@
 
 @if($notifications->isEmpty() == false)
     <div class="row" id="home-notifications">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h2 class="panel-title">{{ _i('Notifiche') }}</h2>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    {{ _i('Notifiche') }}
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     @foreach($notifications as $notify)
                         <div class="alert alert-info">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -21,7 +21,7 @@
                                 <hr>
                                 @foreach($notify->attachments as $attachment)
                                     <a class="btn btn-info" href="{{ $attachment->download_url }}">
-                                        {{ $attachment->name }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
+                                        {{ $attachment->name }} <i class="bi-download"></i>
                                     </a>
                                 @endforeach
                             @endif
@@ -36,16 +36,16 @@
 <div class="row">
     <div class="col-md-6">
         @if(Gate::check('supplier.book', null))
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <p class="pull-right">
-                        <a target="_blank" href="{{ url('ordini.xml') }}"><span class="glyphicon glyphicon-signal" aria-hidden="true"></span></a>
-                        <a target="_blank" href="{{ url('ordini.ics') }}"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></a>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <p class="float-end">
+                        <a target="_blank" href="{{ url('ordini.xml') }}"><i class="bi-rss"></i></a>
+                        <a target="_blank" href="{{ url('ordini.ics') }}"><i class="bi-calendar"></i></a>
                     </p>
-                    <h2 class="panel-title">{{ _i('Prenotazioni Aperte') }}</h2>
+                    {{ _i('Prenotazioni Aperte') }}
                 </div>
                 @if(count($opened) == 0)
-                    <div class="panel-body">
+                    <div class="card-body">
                         <div class="alert alert-info" role="alert">
                             {{ _i('Non ci sono prenotazioni aperte.') }}
                         </div>
@@ -55,12 +55,12 @@
                 @endif
             </div>
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h2 class="panel-title">{{ _i('Ordini in Consegna') }}</h2>
+            <div class="card mb-3">
+                <div class="card-header">
+                    {{ _i('Ordini in Consegna') }}
                 </div>
                 @if(count($shipping) == 0)
-                    <div class="panel-body">
+                    <div class="card-body">
                         <div class="alert alert-info" role="alert">
                             {{ _i('Non ci sono ordini in consegna.') }}
                         </div>
@@ -72,15 +72,15 @@
         @endif
 
         @if($currentgas->attachments->isEmpty() == false)
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h2 class="panel-title">{{ _i('File Condivisi') }}</h2>
+            <div class="card mb-3">
+                <div class="card-header">
+                    {{ _i('File Condivisi') }}
                 </div>
-                <div class="list-group">
+                <div class="list-group list-group-flush">
                     @foreach($currentgas->attachments as $attachment)
-                        <a href="{{ $attachment->download_url }}" class="list-group-item">
+                        <a href="{{ $attachment->download_url }}" class="list-group-item list-group-item-action">
                             {{ $attachment->name }}
-                            <span class="glyphicon glyphicon-download pull-right" aria-hidden="true"></span>
+                            <i class="bi-download float-end"></i>
                         </a>
                     @endforeach
                 </div>
@@ -108,7 +108,6 @@
 
             <div class="alert {{ $current_balance >= $to_pay ? 'alert-success' : 'alert-danger' }} text-right">
                 <p class="lead">{{ _i('Credito Attuale') }}: {{ printablePriceCurrency($current_balance) }}</p>
-                <br>
                 <p class="lead">{{ _i('Da Pagare') }}: {{ printablePriceCurrency($to_pay) }}</p>
                 @if(!empty($to_pay_friend))
                     <p>{{ _i('di cui') }}</p>

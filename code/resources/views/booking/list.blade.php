@@ -2,36 +2,29 @@
     <?php $identifier = sprintf('booking-list-%s', $aggregate->id) ?>
 
     @if($aggregate->isActive())
-        <button class="btn btn-warning" data-toggle="modal" data-target="#addBooking-{{ $aggregate->id }}">{{ _i('Aggiungi Utente') }}</button>
-        <div class="modal fade add-booking-while-shipping" id="addBooking-{{ $aggregate->id }}" tabindex="-1">
-            <div class="modal-dialog modal-extra-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">{{ _i('Aggiungi Utente') }}</h4>
-                    </div>
-                    <div class="modal-body fillable-booking-space">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="{{ _i('Cerca Utente') }}" />
-                            </div>
-                            <p>&nbsp;</p>
+        <div class="flowbox mb-1">
+            <x-larastrap::mbutton :label="_i('Aggiungi Utente')" :triggers_modal="sprintf('addBooking-%s', $aggregate->id)" color="warning" />
+            <x-larastrap::modal :title="_i('Aggiungi Utente')" classes="add-booking-while-shipping" :id="sprintf('addBooking-%s', $aggregate->id)">
+                <div class="fillable-booking-space">
+                    <div class="row">
+                        <div class="col">
+                            <input type="text" data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="{{ _i('Cerca Utente') }}" />
                         </div>
+                    </div>
 
-                        <div class="row">
-                            <div class="col-md-12 other-booking">
-                            </div>
+                    <div class="row">
+                        <div class="col other-booking">
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </x-larastrap::modal>
 
-        @include('commons.iconslegend', ['class' => 'AggregateBooking', 'target' => '#' . $identifier])
+            @include('commons.iconslegend', ['class' => 'AggregateBooking', 'target' => '#' . $identifier])
+        </div>
     @endif
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col">
             @include('commons.loadablelist', [
                 'identifier' => $identifier,
                 'items' => $aggregate->bookings,

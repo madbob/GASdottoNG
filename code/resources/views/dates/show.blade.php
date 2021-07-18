@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-12">
-        @include('commons.staticstringfield', ['obj' => $date, 'name' => 'description', 'label' => _i('Contenuto')])
-        @include('commons.staticdatefield', ['obj' => $date, 'name' => 'date', 'label' => _i('Data')])
+        <x-larastrap::text name="description" :label="_i('Contenuto')" readonly disabled />
+        <x-larastrap::datepicker name="date" :label="_i('Data')" readonly disabled />
     </div>
 </div>

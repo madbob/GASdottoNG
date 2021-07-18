@@ -1,33 +1,23 @@
-<ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#details-{{ $supplier->id }}" aria-controls="dettagli" role="tab" data-toggle="tab">{{ _i('Dettagli') }}</a></li>
-    <li role="presentation"><a href="#orders-{{ $supplier->id }}" aria-controls="ordini" role="tab" data-toggle="tab">{{ _i('Ordini') }}</a></li>
-    <li role="presentation"><a href="#products-{{ $supplier->id }}" aria-controls="prodotti" role="tab" data-toggle="tab">{{ _i('Prodotti') }}</a></li>
-    <li role="presentation"><a href="#files-{{ $supplier->id }}" aria-controls="files" role="tab" data-toggle="tab">{{ _i('File e Immagini') }}</a></li>
-    @if(Gate::check('movements.view', $currentgas) || Gate::check('movements.admin', $currentgas))
-        <li role="presentation"><a href="#accounting-{{ $supplier->id }}" aria-controls="accounting-{{ $supplier->id }}" role="tab" data-toggle="tab">{{ _i('Contabilità') }}</a></li>
-    @endif
-</ul>
-
-<div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="details-{{ $supplier->id }}">
+<x-larastrap::tabs>
+    <x-larastrap::tabpane active="true" :label="_i('Dettagli')">
         @include('supplier.base_show', ['supplier' => $supplier, 'editable' => true])
-    </div>
+    </x-larastrap::tabpane>
 
-    <div role="tabpanel" class="tab-pane fade" id="orders-{{ $supplier->id }}">
+    <x-larastrap::tabpane :label="_i('Ordini')">
         @include('supplier.orders', ['supplier' => $supplier])
-    </div>
+    </x-larastrap::tabpane>
 
-    <div role="tabpanel" class="tab-pane fade" id="products-{{ $supplier->id }}">
+    <x-larastrap::tabpane :label="_i('Prodotti')">
         @include('supplier.products', ['supplier' => $supplier])
-    </div>
+    </x-larastrap::tabpane>
 
-    <div role="tabpanel" class="tab-pane fade" id="files-{{ $supplier->id }}">
+    <x-larastrap::tabpane :label="_i('File e Immagini')">
         @include('supplier.files', ['supplier' => $supplier])
-    </div>
+    </x-larastrap::tabpane>
 
     @if(Gate::check('movements.view', $currentgas) || Gate::check('movements.admin', $currentgas))
-        <div role="tabpanel" class="tab-pane fade" id="accounting-{{ $supplier->id }}">
+        <x-larastrap::tabpane :label="_i('Contabilità')">
             @include('supplier.accounting', ['supplier' => $supplier])
-        </div>
+        </x-larastrap::tabpane>
     @endif
-</div>
+</x-larastrap::tabs>

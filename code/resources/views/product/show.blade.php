@@ -1,12 +1,18 @@
-<form class="form-horizontal main-form" method="PUT" action="{{ route('products.update', $product->id) }}">
+<x-larastrap::form :obj="$product" classes="main-form" method="PUT" :action="route('products.update', $product->id)" :buttons="[]">
     <div class="row">
         <div class="col-md-6">
-            @include('commons.staticpricefield', ['obj' => $product, 'name' => 'price', 'label' => 'Prezzo Unitario', 'mandatory' => true])
+            <x-larastrap::price name="price" :label="_i('Prezzo Unitario')" readonly disabled />
             @include('commons.staticobjfield', ['obj' => $product, 'name' => 'category', 'label' => 'Categoria'])
             @include('commons.staticobjfield', ['obj' => $product, 'name' => 'measure', 'label' => 'Unità di Misura'])
-            @include('commons.staticstringfield', ['obj' => $product, 'name' => 'description', 'label' => 'Descrizione', 'callable' => 'htmlize'])
-            @include('commons.staticstringfield', ['obj' => $product, 'name' => 'supplier_code', 'label' => 'Codice Fornitore'])
-            @include('commons.staticboolfield', ['obj' => $product, 'name' => 'active', 'label' => 'Ordinabile'])
+
+            <x-larastrap::field :label="_i('Descrizione')">
+                <p class="form-control-plaintext">
+                    {{ htmlize($product->description) }}
+                </p>
+            </x-larastrap::field>
+
+            <x-larastrap::price name="supplier_code" :label="_i('Codice Fornitore')" readonly disabled />
+            <x-larastrap::check name="active" :label="_i('Ordinabile')" readonly disabled />
         </div>
         <div class="col-md-6">
             <div class="row">
@@ -17,38 +23,38 @@
 
             <div class="row">
                 <div class="col-md-6">
-                    @include('commons.staticstringfield', ['obj' => $product, 'name' => 'portion_quantity', 'label' => 'Pezzatura'])
+                    <x-larastrap::text name="portion_quantity" :label="_i('Pezzatura')" readonly disabled />
                 </div>
                 <div class="col-md-6">
-                    @include('commons.staticboolfield', ['obj' => $product, 'name' => 'variable', 'label' => 'Variabile'])
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    @include('commons.staticstringfield', ['obj' => $product, 'name' => 'package_size', 'label' => 'Confezione'])
-                </div>
-                <div class="col-md-6">
-                    @include('commons.staticstringfield', ['obj' => $product, 'name' => 'multiple', 'label' => 'Multiplo'])
+                    <x-larastrap::check name="variable" :label="_i('Variabile')" readonly disabled />
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6">
-                    @include('commons.staticstringfield', ['obj' => $product, 'name' => 'min_quantity', 'label' => 'Minimo'])
+                    <x-larastrap::text name="package_size" :label="_i('Confezione')" readonly disabled />
                 </div>
                 <div class="col-md-6">
-                    @include('commons.staticstringfield', ['obj' => $product, 'name' => 'max_quantity', 'label' => 'Massimo'])
+                    <x-larastrap::text name="multiple" :label="_i('Multiplo')" readonly disabled />
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6">
-                    @include('commons.staticstringfield', ['obj' => $product, 'name' => 'max_available', 'label' => 'Disponibile'])
+                    <x-larastrap::text name="min_quantity" :label="_i('Minimo')" readonly disabled />
+                </div>
+                <div class="col-md-6">
+                    <x-larastrap::text name="max_quantity" :label="_i('Massimo')" readonly disabled />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <x-larastrap::text name="max_available" :label="_i('Disponibile')" readonly disabled />
                 </div>
             </div>
 
             @include('variant.viewer', ['product' => $product])
         </div>
     </div>
-</form>
+</x-larastrap::form>

@@ -1,11 +1,5 @@
 @include('commons.selectmovementtypefield')
-
-@include('commons.datefield', [
-    'obj' => null,
-    'name' => 'date',
-    'label' => _i('Data'),
-    'defaults_now' => true
-])
+<x-larastrap::datepicker name="date" :label="_i('Data')" defaults_now />
 
 <div class="selectors" data-empty-on-modal="true">
 </div>

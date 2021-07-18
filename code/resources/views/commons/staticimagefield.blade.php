@@ -6,17 +6,12 @@ if (isset($valuefrom) == false) {
 
 ?>
 
-<div class="form-group">
-    @if($squeeze == false)
-        <label class="col-sm-{{ $labelsize }} control-label">{{ $label }}</label>
+<x-larastrap::field :label="$label" :squeeze="$squeeze">
+    @if($obj && $valuefrom && !empty($obj->$valuefrom))
+        <div class="img-preview">
+            <img src="{{ $obj->$valuefrom }}">
+        </div>
+    @else
+        <label class="static-label text-muted">{{ _i('Nessuna Immagine') }}</label>
     @endif
-    <div class="col-sm-{{ $fieldsize }}">
-        @if($obj && $valuefrom && !empty($obj->$valuefrom))
-            <div class="img-preview">
-                <img src="{{ $obj->$valuefrom }}">
-            </div>
-        @else
-            <label class="static-label text-muted">{{ _i('Nessuna Immagine') }}</label>
-        @endif
-    </div>
-</div>
+</x-larastrap::field>

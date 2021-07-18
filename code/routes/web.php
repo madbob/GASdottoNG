@@ -65,6 +65,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('vatrates/{id}/header', 'VatRatesController@objhead')->name('vatrates.objhead');
 
     Route::get('invoices/{id}/products', 'InvoicesController@products')->name('invoices.products');
+    Route::get('invoices/{id}/orders', 'InvoicesController@orders')->name('invoices.orders');
     Route::get('invoices/{id}/movements', 'InvoicesController@getMovements')->name('invoices.movements');
     Route::post('invoices/{id}/movements', 'InvoicesController@postMovements')->name('invoices.savemovements');
     Route::post('invoices/wire/{step}/{id}', 'InvoicesController@wiring');
@@ -72,12 +73,14 @@ Route::middleware(['auth'])->group(function() {
     Route::get('invoices/{id}/header', 'InvoicesController@objhead');
 
     Route::get('receipts/{id}/header', 'ReceiptsController@objhead')->name('receipts.objhead');
+    Route::get('receipts/{id}/handle', 'ReceiptsController@handle')->name('receipts.handle');
     Route::get('receipts/{id}/download', 'ReceiptsController@download')->name('receipts.download');
 
     Route::get('categories/{id}/header', 'CategoriesController@objhead')->name('categories.objhead');
 
     Route::get('measures/{id}/header', 'MeasuresController@objhead')->name('measures.objhead');
     Route::get('measures/list/{id}', 'MeasuresController@listProducts');
+    Route::get('measures/discretes', 'MeasuresController@discretes');
 
     Route::get('variants/{id}/matrix', 'VariantsController@matrix')->name('variants.matrix');
     Route::post('variants/{id}/matrix', 'VariantsController@updateMatrix')->name('variants.updatematrix');
@@ -91,6 +94,8 @@ Route::middleware(['auth'])->group(function() {
     Route::get('orders/document/{id}/{type}', 'OrdersController@document')->name('orders.document');
 
     Route::get('modtype/search', 'ModifierTypesController@search')->name('modtype.search');
+
+    Route::get('modifiers/strings', 'ModifiersController@strings')->name('modifiers.string');
 
     Route::get('dates/query', 'DatesController@query');
     Route::get('dates/orders', 'DatesController@orders')->name('dates.orders');
@@ -142,8 +147,6 @@ Route::middleware(['auth'])->group(function() {
     Route::post('import/csv', 'ImportController@postCsv');
     Route::get('import/gdxp', 'ImportController@getGdxp');
     Route::post('import/gdxp', 'ImportController@postGdxp');
-    Route::get('import/legacy', 'ImportController@getLegacy');
-    Route::post('import/legacy', 'ImportController@postLegacy');
 
     Route::resource('gas', 'GasController');
     Route::resource('multigas', 'MultiGasController');

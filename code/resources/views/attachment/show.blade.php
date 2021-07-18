@@ -1,13 +1,9 @@
-<form class="form-horizontal main-form attachment-editor" method="PUT" action="{{ route('attachments.update', $attachment->id) }}">
+<x-larastrap::mform classes="attachment-editor" :buttons="[]">
     <div class="row">
         <div class="col-md-12">
-            <div class="form-group">
-                <label for="download" class="col-sm-{{ $labelsize }} control-label">{{ _i('Scarica') }}</label>
-
-                <div class="col-sm-{{ $fieldsize }}">
-                    <a class="btn btn-default" href="{{ $attachment->download_url }}">{{ _i('Clicca Qui') }} <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
-                </div>
-            </div>
+            <x-larastrap::field :label="_i('Scarica')">
+                <a class="btn btn-light" href="{{ $attachment->download_url }}">{{ _i('Clicca Qui') }} <i class="bi-download"></i></a>
+            </x-larastrap::field>
         </div>
     </div>
-</form>
+</x-larastrap::mform>

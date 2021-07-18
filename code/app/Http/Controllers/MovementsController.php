@@ -129,9 +129,7 @@ class MovementsController extends BackedController
         $data = [];
 
         $data['payments'] = MovementType::paymentsByType($type);
-        $default_method = MovementType::defaultPaymentByType($type);
-        $data['payments'][$default_method]->checked = true;
-        $data['default_method'] = $default_method;
+        $data['default_method'] = MovementType::defaultPaymentByType($type);
 
         $data['fixed'] = $metadata->fixed_value;
         $data['default_notes'] = $metadata->default_notes;
@@ -140,7 +138,8 @@ class MovementsController extends BackedController
         if ($metadata->sender_type != null) {
             $st = $metadata->sender_type;
             $data['senders'] = $st::sorted()->get();
-        } else {
+        }
+        else {
             $data['senders'] = [];
         }
 

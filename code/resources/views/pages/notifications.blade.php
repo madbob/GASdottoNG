@@ -4,7 +4,7 @@
 
 @can('notifications.admin', $currentgas)
     <div class="row">
-        <div class="col-md-12">
+        <div class="col">
             @include('commons.addingbutton', [
                 'template' => 'notification.create',
                 'typename' => 'notification',
@@ -12,33 +12,26 @@
                 'targeturl' => 'notifications'
             ])
         </div>
-
-        <div class="clearfix"></div>
-        <hr/>
     </div>
+
+    <hr/>
 @endcan
 
 <div class="row">
-    <div class="col-md-6">
-        <div class="form-horizontal form-filler" data-action="{{ route('notifications.search') }}" data-toggle="validator" data-fill-target="#main-notifications-list">
+    <div class="col-12 col-md-6">
+        <x-filler :data-action="route('notifications.search')" data-fill-target="#main-notifications-list">
             @include('commons.genericdaterange', [
                 'start_date' => strtotime('-1 years'),
                 'end_date' => strtotime('+1 years'),
             ])
-            <div class="form-group">
-                <div class="col-md-{{ $fieldsize }} col-md-offset-{{ $labelsize }}">
-                    <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
-                </div>
-            </div>
-        </div>
+        </x-filler>
     </div>
-
-    <div class="clearfix"></div>
-    <hr/>
 </div>
 
+<hr/>
+
 <div class="row">
-    <div class="col-md-12" id="main-notifications-list">
+    <div class="col" id="main-notifications-list">
         @include('commons.loadablelist', ['identifier' => 'notification-list', 'items' => $notifications])
     </div>
 </div>

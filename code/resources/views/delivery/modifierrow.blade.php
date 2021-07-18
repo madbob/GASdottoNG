@@ -18,7 +18,7 @@ if (!isset($final_value)) {
                 <br><small>{{ _i("Il valore qui indicato è una stima, sarà finalizzato alla chiusura dell'ordine") }}</small>
             </span>
         </label>
-        <div class="pull-right">
+        <div class="float-end">
             @include('commons.detailsbutton', ['obj' => $mod_value->modifier])
         </div>
     </td>
@@ -29,7 +29,7 @@ if (!isset($final_value)) {
 
     <td>
         <input type="hidden" name="modifier-{{ $mod_value ? $mod_value->modifier->id : '0' }}" class="skip-on-submit">
-        <label class="pull-right">
+        <label class="float-end">
             <span class="booking-modifier">{{ $mod_value ? printablePrice($mod_value->effective_amount) : '' }}</span> {{ $currentgas->currency }}
         </label>
     </td>

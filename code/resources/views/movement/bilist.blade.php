@@ -55,8 +55,8 @@
 
                     <td>
                         @if(!empty($mov->notes))
-                            <button type="button" class="btn btn-xs btn-default" data-container="body" data-toggle="popover" data-placement="left" data-trigger="hover" data-content="{{ str_replace('"', '\"', $mov->notes) }}">
-                                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                            <button type="button" class="btn btn-xs btn-light" data-container="body" data-bs-toggle="popover" data-placement="left" data-trigger="hover" data-content="{{ str_replace('"', '\"', $mov->notes) }}">
+                                <i class="bi-info-square"></i>
                             </button>
                         @endif
                     </td>
@@ -64,9 +64,7 @@
                     @if(Gate::check('movements.admin', $currentgas))
                         <td>
                             @if($mov->archived == false)
-                                <button class="btn btn-default async-modal" data-target-url="{{ route('movements.show', $mov->id) }}">
-                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                                </button>
+                                <x-larastrap::ambutton label="<i class='bi-pencil'></i>" :data-modal-url="route('movements.show', $mov->id)" />
                             @else
                                 @include('commons.detailsbutton', ['obj' => $mov])
                             @endif

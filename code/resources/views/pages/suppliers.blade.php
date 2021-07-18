@@ -4,7 +4,7 @@
 
 @if(Gate::check('supplier.add', $currentgas) || Gate::check('categories.admin', $currentgas) || Gate::check('measures.admin', $currentgas))
     <div class="row">
-        <div class="col-md-12">
+        <div class="col">
             @can('supplier.add', $currentgas)
                 @include('commons.addingbutton', [
                     'template' => 'supplier.base-edit',
@@ -15,31 +15,24 @@
             @endcan
 
             @can('categories.admin', $currentgas)
-                <a href="{{ route('categories.index') }}" class="btn btn-default async-modal">{{ _i('Amministra Categorie') }} <span class="glyphicon glyphicon-modal-window"></span></a>
+                <x-larastrap::ambutton :label="_i('Amministra Categorie')" :data-modal-url="route('categories.index')" />
             @endcan
 
             @can('measures.admin', $currentgas)
-                <a href="{{ route('measures.index') }}" class="btn btn-default async-modal">{{ _i('Amministra Unità di Misura') }} <span class="glyphicon glyphicon-modal-window"></span></a>
+                <x-larastrap::ambutton :label="_i('Amministra Unità di Misura')" :data-modal-url="route('measures.index')" />
             @endcan
 
             @if($currentgas->getConfig('es_integration'))
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#viewRepository">{{ _i('Indice Remoto') }} <span class="glyphicon glyphicon-modal-window"></span></button>
-                <div class="modal fade wizard dynamic-contents" id="viewRepository" tabindex="-1" role="dialog" data-contents-url="{{ route('import.esmodal') }}">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                        </div>
-                    </div>
-                </div>
+                <x-larastrap::ambutton :label="_i('Indice Remoto')" :data-modal-url="route('import.esmodal')" />
             @endif
         </div>
     </div>
 
-    <div class="clearfix"></div>
     <hr/>
 @endif
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col">
         @can('supplier.add', $currentgas)
             @include('commons.loadablelist', [
                 'identifier' => 'supplier-list',
