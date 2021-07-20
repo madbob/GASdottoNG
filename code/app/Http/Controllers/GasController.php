@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 use Auth;
 use DB;
@@ -161,7 +162,7 @@ class GasController extends Controller
                         'enabled' => true,
                         'privacy_link' => $request->input('public_registrations->privacy_link', ''),
                         'terms_link' => $request->input('public_registrations->terms_link', ''),
-                        'mandatory_fields' => $request->input('public_registrations->mandatory_fields', []),
+                        'mandatory_fields' => Arr::wrap($request->input('public_registrations->mandatory_fields', [])),
                     ];
                 }
                 else {
