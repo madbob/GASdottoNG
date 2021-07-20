@@ -1,6 +1,6 @@
 <?php $previous_year_closing = date('Y-m-d', strtotime($currentgas->getConfig('year_closing') . ' -1 years')) ?>
 
-<x-larastrap::modal classes="close-on-submit" :title="_i('Controllo Quote')">
+<x-larastrap::modal classes="close-on-submit" :title="_i('Controllo Quote')" size="fullscreen">
     <x-larastrap::form method="POST" :action="route('users.savefees')">
         <input type="hidden" name="reload-whole-page" value="1">
 
@@ -63,10 +63,10 @@
                                     </td>
 
                                     <td>
-                                        <x-larastrap::ambutton color="light" :label="_i('Nuova Quota')" :data-modal-url="$new_fee_url" />
+                                        <x-larastrap::ambutton color="success" :label="_i('Nuova Quota')" :data-modal-url="$new_fee_url" />
 
                                         @if($user->fee)
-                                            <x-larastrap::ambutton color="light" :label="_i('Modifica Quota')" :data-modal-url="route('movements.show', ['movement' => $user->fee->id, 'dom_id' => $dom_id])" />
+                                            <x-larastrap::ambutton color="warning" :label="_i('Modifica Quota')" :data-modal-url="route('movements.show', ['movement' => $user->fee->id, 'dom_id' => $dom_id])" />
                                         @endif
                                     </td>
                                 </tr>

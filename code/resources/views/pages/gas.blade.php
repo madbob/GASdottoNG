@@ -40,31 +40,29 @@
                                 <div class="col">
                                     <x-larastrap::check name="enable_public_registrations" :label="_i('Abilita Registrazione Pubblica')" classes="collapse_trigger" :value="$gas->hasFeature('public_registrations')" :pophelp="_i('Quando questa opzione è abilitata, chiunque potrà registrarsi all\'istanza per mezzo dell\'apposito pannello (accessibile da quello di login). Gli amministratori addetti agli utenti riceveranno una mail di notifica per ogni nuovo utente registrato')" />
 
-                                    <div class="collapse {{ $gas->hasFeature('public_registrations') ? 'in' : '' }}" data-triggerable="enable_public_registrations">
-                                        <div class="col-md-12">
-                                            <div class="well">
-                                                <x-larastrap::url name="public_registrations->privacy_link" :label="_i('Link Privacy Policy')" :value="$gas->public_registrations['privacy_link']" />
-                                                <x-larastrap::url name="public_registrations->terms_link" :label="_i('Link Condizioni d\'Uso')" :value="$gas->public_registrations['terms_link']" />
+                                    <div class="collapse {{ $gas->hasFeature('public_registrations') ? 'show' : '' }}" data-triggerable="enable_public_registrations">
+                                        <div class="col">
+                                            <x-larastrap::url name="public_registrations->privacy_link" :label="_i('Link Privacy Policy')" :value="$gas->public_registrations['privacy_link']" />
+                                            <x-larastrap::url name="public_registrations->terms_link" :label="_i('Link Condizioni d\'Uso')" :value="$gas->public_registrations['terms_link']" />
 
-                                                <?php
+                                            <?php
 
-                                                $selectable_mandatory = [
-                                                    'firstname' => _i('Nome'),
-                                                    'lastname' => _i('Cognome'),
-                                                    'email' => _i('E-Mail'),
-                                                    'phone' => _i('Telefono'),
-                                                ];
+                                            $selectable_mandatory = [
+                                                'firstname' => _i('Nome'),
+                                                'lastname' => _i('Cognome'),
+                                                'email' => _i('E-Mail'),
+                                                'phone' => _i('Telefono'),
+                                            ];
 
-                                                foreach($selectable_mandatory as $identifier => $label) {
-                                                    if (in_array($identifier, $gas->public_registrations['mandatory_fields'])) {
-                                                        $selected_mandatory[] = $identifier;
-                                                    }
+                                            foreach($selectable_mandatory as $identifier => $label) {
+                                                if (in_array($identifier, $gas->public_registrations['mandatory_fields'])) {
+                                                    $selected_mandatory[] = $identifier;
                                                 }
+                                            }
 
-                                                ?>
+                                            ?>
 
-                                                <x-larastrap::checks name="public_registrations->mandatory_fields" :label="_i('Campi Obbligatori')" :options="$selectable_mandatory" :value="$selected_mandatory" />
-                                            </div>
+                                            <x-larastrap::checks name="public_registrations->mandatory_fields" :label="_i('Campi Obbligatori')" :options="$selectable_mandatory" :value="$selected_mandatory" />
                                         </div>
                                     </div>
                                 </div>
@@ -121,7 +119,7 @@
                                     <x-larastrap::price name="deposit_amount" :label="_i('Cauzione')" :pophelp="_i('Se non configurato (valore = 0) non verranno gestite le cauzioni da parte dei nuovi soci')" />
 
                                     <x-larastrap::check name="enable_rid" :label="_i('Abilita SEPA')" classes="collapse_trigger" :value="$gas->hasFeature('rid')" :pophelp="_i('Abilitando questa opzione e popolando i relativi campi verrà attivata l\'esportazione dei files SEPA, con cui automatizzare le transazioni bancarie. I files saranno generabili da Contabilità -> Stato Crediti -> Esporta SEPA. Dopo aver compilato questo form, per ogni utente dovrai specificare alcuni parametri dai relativi pannelli in Utenti')" />
-                                    <div class="collapse {{ $gas->hasFeature('rid') ? 'in' : '' }}" data-triggerable="enable_rid">
+                                    <div class="collapse {{ $gas->hasFeature('rid') ? 'show' : '' }}" data-triggerable="enable_rid">
                                         <div class="col-md-12">
                                             <div class="well">
                                                 <x-larastrap::text name="rid->iban" :label="_i('IBAN')" :value="$gas->rid['iban'] ?? ''" />
@@ -132,7 +130,7 @@
                                     </div>
 
                                     <x-larastrap::check name="enable_paypal" :label="_i('Abilita PayPal')" classes="collapse_trigger" :value="$gas->hasFeature('paypal')" :pophelp="_i('Abilitando questa opzione e popolando i relativi campi verranno attivati i pagamenti con PayPal, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto. Per ottenere le credenziali visita https://developer.paypal.com/')" />
-                                    <div class="collapse {{ $gas->hasFeature('paypal') ? 'in' : '' }}" data-triggerable="enable_paypal">
+                                    <div class="collapse {{ $gas->hasFeature('paypal') ? 'show' : '' }}" data-triggerable="enable_paypal">
                                         <div class="col-md-12">
                                             <div class="well">
                                                 <x-larastrap::text name="paypal->client_id" :label="_i('Client ID')" :value="$gas->paypal['client_id']" />
@@ -143,7 +141,7 @@
                                     </div>
 
                                     <x-larastrap::check name="enable_satispay" :label="_i('Abilita Satispay')" classes="collapse_trigger" :value="$gas->hasFeature('satispay')" :pophelp="_i('Abilitando questa opzione e popolando i relativi campi verranno attivati i pagamenti con Satispay, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto. Per ottenere le credenziali visita https://business.satispay.com/')" />
-                                    <div class="collapse {{ $gas->hasFeature('satispay') ? 'in' : '' }}" data-triggerable="enable_satispay">
+                                    <div class="collapse {{ $gas->hasFeature('satispay') ? 'show' : '' }}" data-triggerable="enable_satispay">
                                         <div class="col-md-12">
                                             <div class="well">
                                                 <x-larastrap::text name="satispay->secret" :label="_i('Security Bearer')" :value="$gas->satispay['secret']" />
@@ -152,7 +150,7 @@
                                     </div>
 
                                     <x-larastrap::check name="enable_extra_invoicing" :label="_i('Abilita Emissione Fatture')" classes="collapse_trigger" :value="$gas->hasFeature('extra_invoicing')" :pophelp="_i('Abilitando questa opzione e popolando i relativi campi verrà attivata l\'emissione delle fatture nei confronti degli utenti che effettuano prenotazioni. Le fatture saranno emesse al momento del salvataggio o della consegna della prenotazione, e saranno accessibili da Contabilità -> Fatture')" />
-                                    <div class="collapse {{ $gas->hasFeature('extra_invoicing') ? 'in' : '' }}" data-triggerable="enable_extra_invoicing">
+                                    <div class="collapse {{ $gas->hasFeature('extra_invoicing') ? 'show' : '' }}" data-triggerable="enable_extra_invoicing">
                                         <div class="col-md-12">
                                             <div class="well">
                                                 <x-larastrap::text name="extra_invoicing->business_name" :label="_i('Ragione Sociale')" :value="$gas->extra_invoicing['business_name']" />

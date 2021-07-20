@@ -1292,7 +1292,7 @@ $(document).ready(function() {
                 }
                 else {
                     miscInnerCallbacks(form, data);
-                    lists.closeParent(form);
+                    Lists.closeParent(form);
                 }
             }
         });
@@ -1931,6 +1931,7 @@ $(document).ready(function() {
     $('body').on('change', '.collapse_trigger', function() {
         var name = $(this).attr('name');
         $('.collapse[data-triggerable=' + name + ']').collapse($(this).prop('checked') ? 'show' : 'hide');
+        $('.collapse[data-triggerable-reverse=' + name + ']').collapse($(this).prop('checked') ? 'hide' : 'show');
     });
 
     /*

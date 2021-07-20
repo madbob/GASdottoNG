@@ -42,7 +42,6 @@ class BackedController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            Log::debug(print_r($request->all(), true));
             $subject = $this->service->update($id, $request->except('_method', '_token'));
             return $this->commonSuccessResponse($subject);
         }

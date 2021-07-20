@@ -11,13 +11,13 @@ class Lists {
             Lists.testListsEmptiness($(this));
         });
 
-        $('.loadable-list > .accordion-item > .accordion-collapse', container).on('hide.bs.collapse', function(event) {
+        container.on('hide.bs.collapse', '.loadable-list > .accordion-item > .accordion-collapse', function(event) {
             event.stopPropagation();
             let head = $(this).closest('.accordion-item');
             Lists.reloadLoadableHead(head);
         });
 
-        $('.loadable-list > .accordion-item > .accordion-collapse', container).on('show.bs.collapse', function(event) {
+        container.on('show.bs.collapse', '.loadable-list > .accordion-item > .accordion-collapse', function(event) {
             event.stopPropagation();
             $(this).find('.accordion-body').animate({
                 'min-height': '150px'

@@ -178,6 +178,13 @@ class Gas extends Model
                 'default' => _i("Benvenuto in %[gas_name]!\nIn futuro potrai accedere usando il link qui sotto, lo username \"%[username]\" e la password da te scelta.\n%[gas_login_link]\nUna mail di notifica è stata inviata agli amministratori."),
             ],
 
+            'mail_manual_welcome_subject' => [
+                'default' => _i("Benvenuto!"),
+            ],
+            'mail_manual_welcome_body' => [
+                'default' => _i("Sei stato invitato a %[gas_name]!\n\nPer accedere la prima volta clicca il link qui sotto.\n%[gas_access_link]\n\nIn futuro potrai accedere usando quest'altro link, lo username \"%[username]\" e la password che avrai scelto.\n%[gas_login_link]\n"),
+            ],
+
             'mail_password_reset_subject' => [
                 'default' => _i("Recupero Password"),
             ],

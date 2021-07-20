@@ -18,7 +18,7 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
 ?>
 
 <x-larastrap::tabs>
-    <x-larastrap::tabpane :id="sprintf('profile-%s', sanitizeId($user->id))" label="{{ _i('Anagrafica') }}" active="true">
+    <x-larastrap::tabpane :id="sprintf('profile-%s', sanitizeId($user->id))" label="{{ _i('Anagrafica') }}" active="true" classes="mb-2">
         <x-larastrap::mform :obj="$user" method="PUT" :action="route('users.update', $user->id)" :classes="$display_page ? 'inner-form' : ''" :nodelete="$display_page || $user->isFriend() == false">
             <div class="row">
                 <div class="col-12 col-md-6">

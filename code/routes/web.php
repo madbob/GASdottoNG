@@ -1,6 +1,7 @@
 <?php
 
 Auth::routes();
+Route::get('autologin/{token}', 'Auth\LoginController@autologin')->name('autologin');
 
 Route::get('ordini.xml', 'OrdersController@rss')->name('rss');
 Route::get('ordini.ics', 'OrdersController@ical');

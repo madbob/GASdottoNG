@@ -610,6 +610,8 @@ class ImportController extends Controller
                             if ($credit != null) {
                                 $u->alterBalance($credit);
                             }
+
+                            $u->initialWelcome();
                         }
                         catch (\Exception $e) {
                             $errors[] = implode($target_separator, $line).'<br/>'.$e->getMessage();

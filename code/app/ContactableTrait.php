@@ -61,6 +61,16 @@ trait ContactableTrait
         $this->contacts()->whereNotIn('id', $contacts)->delete();
     }
 
+    public function addContact($type, $value)
+    {
+        $contact = new Contact();
+        $contact->target_id = $this->id;
+        $contact->target_type = get_class($this);
+        $contact->type = $type;
+        $contact->value = $value;
+        $contact->save();
+    }
+
     /*
         Questa viene usata da ManyMailNotification per popolare la notifica
         mail con tutte le destinazioni possibili. La prima mail disponibile

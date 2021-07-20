@@ -88,4 +88,18 @@ class LoginController extends Controller
 
         return $ret;
     }
+
+    public function autologin(Request $request, $token)
+    {
+        $user = User::where('access_token', $token)->first();
+        if (is_null($user)) {
+            abort(503);
+        }
+
+        $user->access_token = '';
+        $user->save();
+
+        Auth::loginUsingId($user->id);
+        return redirect()->route('dashboard');
+    }
 }

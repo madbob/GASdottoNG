@@ -19,7 +19,10 @@
             <img src="{{ asset('images/loading.svg') }}" alt="{{ _i('Caricamento in corso') }}">
         </div>
 
-        <x-larastrap::navbar :options="$menu" :end_options="$end_menu" />
+        @if(isset($menu))
+            <x-larastrap::navbar :options="$menu" :end_options="$end_menu" />
+        @endif
+
         @if(Auth::check())
             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                 {{ csrf_field() }}

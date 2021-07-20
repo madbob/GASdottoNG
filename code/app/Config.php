@@ -19,13 +19,24 @@ class Config extends Model
         */
         return [
             'welcome' => (object) [
-                'description' => _i('Messaggio inviato ai nuovi iscritti sulla piattaforma.'),
+                'description' => _i('Messaggio inviato ai nuovi iscritti registrati sulla piattaforma.'),
                 'params' => [
                     'username' => _i("Username assegnato al nuovo utente"),
                     'gas_login_link' => _i("Link della pagina di login"),
                 ],
                 'enabled' => function($gas) {
                     return $gas->hasFeature('public_registrations');
+                }
+            ],
+            'manual_welcome' => (object) [
+                'description' => _i('Messaggio inviato ai nuovi utenti creati sulla piattaforma.'),
+                'params' => [
+                    'username' => _i("Username assegnato al nuovo utente"),
+                    'gas_access_link' => _i("Link per accedere la prima volta"),
+                    'gas_login_link' => _i("Link della pagina di login"),
+                ],
+                'enabled' => function($gas) {
+                    return true;
                 }
             ],
             'password_reset' => (object) [

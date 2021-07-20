@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,6 +18,7 @@ use App;
 use URL;
 
 use App\Notifications\ResetPasswordNotification;
+use App\Notifications\ManualWelcomeMessage;
 use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 
@@ -342,6 +344,18 @@ class User extends Authenticatable
     public static function usernamePattern()
     {
         return '[A-Za-z0-9_@.\- ]{1,50}';
+    }
+
+    public function initialWelcome()
+    {
+        $this->load('contacts');
+
+        if (!empty($this->getContactsByType('email'))) {
+            $this->enforce_password_change = true;
+            $this->access_token = Str::random(10);
+            $this->save();
+            $this->notify(new ManualWelcomeMessage($this->access_token));
+        }
     }
 
     public static function formattableColumns()

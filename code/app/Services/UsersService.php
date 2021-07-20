@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
+use Illuminate\Support\Str;
 
 use Auth;
 use Log;
@@ -57,6 +58,8 @@ class UsersService extends BaseService
 
     public function store(array $request)
     {
+        DB::beginTransaction();
+
         /*
             Gli utenti col permesso di agire sul multi-gas devono poter creare i
             nuovi utenti amministratori
@@ -75,14 +78,24 @@ class UsersService extends BaseService
         $user->username = $username;
         $user->firstname = $request['firstname'];
         $user->lastname = $request['lastname'];
-        $user->password = Hash::make($request['password']);
+        $user->password = Hash::make(Str::random(10));
+        $user->save();
 
-        if (isset($request['enforce_password_change']) && $request['enforce_password_change'] == 'true')
-            $user->enforce_password_change = true;
+        if (isset($request['sendmail'])) {
+            $user->addContact('email', $request['email']);
+            $user->initialWelcome();
+        }
+        else {
+            $user->password = Hash::make($request['password']);
 
-        DB::transaction(function () use ($user) {
-            $user->save();
-        });
+            if (isset($request['enforce_password_change']) && $request['enforce_password_change'] == 'true') {
+                $user->enforce_password_change = true;
+            }
+        }
+
+        $user->save();
+
+        DB::commit();
 
         return $user;
     }
