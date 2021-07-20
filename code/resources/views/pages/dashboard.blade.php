@@ -3,7 +3,7 @@
 @section('content')
 
 @if($notifications->isEmpty() == false)
-    <div class="row" id="home-notifications">
+    <div class="row mb-3" id="home-notifications">
         <div class="col">
             <div class="card">
                 <div class="card-header">
@@ -11,8 +11,8 @@
                 </div>
                 <div class="card-body">
                     @foreach($notifications as $notify)
-                        <div class="alert alert-info">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <div class="alert alert-info alert-dismissible fade show">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             <input type="hidden" name="notification_id" value="{{ $notify->id }}" />
 
                             {!! nl2br($notify->content) !!}

@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use DB;
+use Hash;
+
 use App\Balance;
 use App\Category;
 use App\Gas;
