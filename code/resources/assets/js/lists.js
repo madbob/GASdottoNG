@@ -31,7 +31,7 @@ class Lists {
             precedentemente aperto (che comunque viene chiuso contestualmete
             all'apertura di questo) ed il posizionamento viene alterato
         */
-        $('.loadable-list > .accordion-item > .accordion-collapse', container).on('shown.bs.collapse', function(event) {
+        container.on('shown.bs.collapse', '.loadable-list > .accordion-item > .accordion-collapse', function(event) {
             event.stopPropagation();
             var node = $(this);
             $('html, body').animate({

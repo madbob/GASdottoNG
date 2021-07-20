@@ -78,7 +78,6 @@
 
         <script src="{{ mix('/js/gasdotto.js') }}"></script>
         <script src="{{ asset('/js/lang/bootstrap-datepicker.' . htmlLang() . '.min.js') }}"></script>
-        <script src="{{ asset('/js/lang/bootstrap-table-' . htmlLang() . '.js') }}"></script>
         <script src="{{ asset('/js/lang/' . htmlLang() . '.js') }}"></script>
 
         <!-- Piwik -->

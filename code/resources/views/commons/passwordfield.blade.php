@@ -6,6 +6,10 @@ if (!isset($enforcable_change)) {
         $enforcable_change = true;
 }
 
+if (!isset($mandatory)) {
+    $mandatory = false;
+}
+
 ?>
 
 <x-larastrap::field :label="$label" classes="password-field">
@@ -14,7 +18,7 @@ if (!isset($enforcable_change)) {
             type="password"
             class="form-control password-changer {{ $enforcable_change ? 'enforcable_change' : '' }}"
 
-            @if(is_null($obj) && isset($mandatory) && $mandatory == true)
+            @if(is_null($obj) || $mandatory == true)
                 required
             @endif
 
