@@ -17,13 +17,17 @@ $identifier = sprintf('create%s-%s', ucfirst($typename), Illuminate\Support\Str:
     <x-larastrap::button :label="$button_label" color="warning" :triggers_modal="$identifier" classes="float-end" />
 
     <x-larastrap::modal :id="$identifier" :title="$button_label">
-        <x-larastrap::form method="POST" :action="$targeturl" classes="creating-form">
+        <x-larastrap::iform method="POST" :action="$targeturl">
+            <input type="hidden" name="void-form" value="1">
+            <input type="hidden" name="test-feedback" value="1">
+            <input type="hidden" name="close-modal" value="1">
             <input type="hidden" name="update-list" value="{{ $target_update }}">
+
             @include('commons.extrafields')
 
             <div class="modal-body">
                 @include($template, [$typename => null])
             </div>
-        </x-larastrap::form>
+        </x-larastrap::iform>
     </x-larastrap::modal>
 @endif

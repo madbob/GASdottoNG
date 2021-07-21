@@ -30,7 +30,10 @@ $buttons[] = ['color' => 'success', 'label' => _i('Salva'), 'attributes' => ['ty
 ?>
 
 <x-larastrap::modal :title="_i('Modifica Movimento')" :id="sprintf('editMovement-%s', $dom_id)">
-    <x-larastrap::form :obj="$obj" classes="creating-form" method="POST" :action="$obj->exists ? route('movements.update', $obj->id) : route('movements.store')" :buttons="$buttons">
+    <x-larastrap::form :obj="$obj" method="POST" :action="$obj->exists ? route('movements.update', $obj->id) : route('movements.store')" :buttons="$buttons">
+        <input type="hidden" name="void-form" value="1">
+        <input type="hidden" name="test-feedback" value="1">
+        <input type="hidden" name="close-modal" value="1">
         <input type="hidden" name="update-field" value="movement-id-{{ $dom_id }}">
         <input type="hidden" name="update-field" value="movement-date-{{ $dom_id }}">
         <input type="hidden" name="close-modal" value="">

@@ -87,12 +87,11 @@ foreach($classes as $class => $name) {
                         @foreach(App\MovementType::payments() as $pay_id => $pay)
                             <th width="{{ $width }}%">
                                 {{ $pay->name }}
-                                <div class="form-check form-switch">
+                                <div class="form-check form-switch d-inline-block">
                                     <input type="checkbox" name="{{ $pay_id }}" class="form-check-input" {{ $payments[$pay_id] ? 'checked' : '' }} data-active-for="{{ $pay->active_for }}" {{ $pay->active_for != null && $pay->active_for != $type->sender_type && $pay->active_for != $type->target_type ? 'disabled' : '' }}>
                                 </div>
-                                <span class="decorated_radio">
-                                    <input type="radio" name="payment_default" value="{{ $pay_id }}" {{ isset($defaults[$pay_id]) && $defaults[$pay_id] ? 'checked' : '' }}>
-                                    <label>{{ ('default') }}</label>
+                                <div class="form-check form-switch d-inline-block">
+                                    <input type="radio" name="payment_default" value="{{ $pay_id }}" {{ isset($defaults[$pay_id]) && $defaults[$pay_id] ? 'checked' : '' }}> {{ _i('Default') }}
                                 </span>
                             </th>
                         @endforeach

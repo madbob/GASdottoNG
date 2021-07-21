@@ -459,6 +459,14 @@ function miscInnerCallbacks(form, data) {
 
     locker = true;
 
+    var test = form.find('input[name=test-feedback]');
+    if (test.length != 0) {
+        if (data.status == 'error') {
+            utils.displayServerError(form, data);
+            return;
+        }
+    }
+
     var test = form.find('input[name=update-list]');
     if (test.length != 0) {
         var listname = test.val();
@@ -569,6 +577,13 @@ function miscInnerCallbacks(form, data) {
         });
     }
 
+    var test = form.find('input[name=void-form]');
+    if (test.length != 0) {
+        test.each(function() {
+            voidForm(form);
+        });
+    }
+
     var test = form.find('input[name=close-modal]');
     if (test.length != 0) {
         var modal = form.parents('.modal');
@@ -587,26 +602,6 @@ function miscInnerCallbacks(form, data) {
     }
 
     locker = false;
-}
-
-function creatingFormCallback(form, data) {
-    if (data.status == 'success') {
-        voidForm(form);
-
-        var modal = form.parents('.modal');
-        if (modal.length != 0) {
-            modal.one('hidden.bs.modal', function() {
-                miscInnerCallbacks(form, data);
-            });
-            modal.modal('hide');
-        }
-        else {
-            miscInnerCallbacks(form, data);
-        }
-    }
-    else if (data.status == 'error') {
-        utils.displayServerError(form, data);
-    }
 }
 
 function iconsLegendTrigger(node, legend_class) {
@@ -990,14 +985,6 @@ $(document).ready(function() {
         }
     });
 
-    /*
-        Poiché l'altezza della navbar è estremamente variabile, a seconda delle
-        funzioni abilitate, calcolo lo spazio da lasciare sopra al body in modo
-        dinamico
-    */
-    var navbar = $('.navbar-default').first();
-    $('body').css('padding-top', (navbar.height() + parseInt(navbar.css('margin-bottom'))) + 'px');
-
     $('#preloader').remove();
 
     $.ajaxSetup({
@@ -1039,8 +1026,9 @@ $(document).ready(function() {
         var id = $(this).find('input:hidden[name=notification_id]').val();
         $.post('notifications/markread/' + id);
 
-        if ($('#home-notifications .alert').length == 0)
+        if ($('#home-notifications .alert').length == 0) {
             $('#home-notifications').hide('fadeout');
+        }
     });
 
 	$('.remember-checkbox').each(function() {
@@ -1184,10 +1172,6 @@ $(document).ready(function() {
         var t = form.find('.' + target).not($(this));
         t.find('option[value=' + value + ']').prop('selected', true);
         t.change();
-    });
-
-    $('body').on('click', '.decorated_radio label', function() {
-        $(this).siblings('input[type=radio]').prop('checked', true);
     });
 
     $('body').on('click', '.reloader', function(event) {
@@ -1525,31 +1509,6 @@ $(document).ready(function() {
 
             success: function(data) {
                 miscInnerCallbacks(form, data);
-            }
-        });
-    });
-
-    $('body').on('submit', '.creating-form', function(event) {
-        if (event.isDefaultPrevented()) {
-            return;
-        }
-
-        var save_button = $(this).find('button[type=submit]');
-        save_button.prop('disabled', true);
-
-        event.preventDefault();
-        var form = $(this);
-
-        utils.postAjax({
-            method: form.attr('method'),
-            url: form.attr('action'),
-            data: new FormData(this),
-            dataType: 'JSON',
-            processData: false,
-            contentType: false,
-            success: function(data) {
-                creatingFormCallback(form, data);
-                save_button.prop('disabled', false);
             }
         });
     });
