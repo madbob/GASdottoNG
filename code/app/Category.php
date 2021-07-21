@@ -4,15 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use App\Events\SluggableCreating;
-use App\GASModel;
-use App\SluggableID;
-use App\Hierarchic;
 
 class Category extends Model implements Hierarchic
 {
-    use HasFactory, GASModel, SluggableID;
+    use HasFactory, GASModel, SluggableID, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';

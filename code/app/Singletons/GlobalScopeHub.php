@@ -8,6 +8,7 @@ class GlobalScopeHub
 {
     private $enabled_global_scopes = true;
     private $gas_id = null;
+    private $gas = null;
 
     public function enable($active)
     {
@@ -22,6 +23,7 @@ class GlobalScopeHub
     public function setGas($gas_id)
     {
         $this->gas_id = $gas_id;
+        $this->gas = Gas::find($this->gas_id);
     }
 
     public function getGas()
@@ -31,7 +33,7 @@ class GlobalScopeHub
 
     public function getGasObj()
     {
-        return Gas::find($this->gas_id);
+        return $this->gas;
     }
 
     /*

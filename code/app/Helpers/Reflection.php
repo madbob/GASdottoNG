@@ -7,11 +7,12 @@
 */
 function currentAbsoluteGas()
 {
+    static $gasses = [];
     $gas = null;
 
     $hub = App::make('GlobalScopeHub');
     if ($hub->enabled()) {
-        $gas = App\Gas::find($hub->getGas());
+        $gas = $hub->getGasObj();
     }
 
     if (is_null($gas)) {

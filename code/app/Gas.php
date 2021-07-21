@@ -4,19 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Log;
 
 use App\Events\SluggableCreating;
 
-use App\Role;
-use App\AttachableTrait;
-use App\GASModel;
-use App\SluggableID;
-
 class Gas extends Model
 {
-    use HasFactory, AttachableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID;
+    use HasFactory, AttachableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';

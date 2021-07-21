@@ -3,15 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Log;
 use Auth;
 
-use App\GASModel;
-
 class Attachment extends Model
 {
-    use GASModel;
+    use GASModel, Cachable;
 
     public function attached()
     {

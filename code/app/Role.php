@@ -4,18 +4,16 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use DB;
 use Auth;
 use URL;
 use Log;
 
-use App\GASModel;
-use App\User;
-
 class Role extends Model
 {
-    use GASModel;
+    use GASModel, Cachable;
 
     private $targets = null;
 

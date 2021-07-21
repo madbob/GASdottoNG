@@ -3,11 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\GASModel;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class VatRate extends Model
 {
-    use GASModel;
+    use GASModel, Cachable;
 
     public function products()
     {

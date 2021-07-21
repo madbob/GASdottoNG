@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Auth;
 use DB;
@@ -19,7 +20,7 @@ use App\Events\BookingDeleting;
 
 class Booking extends Model
 {
-    use HasFactory, GASModel, SluggableID, ModifiedTrait, PayableTrait, CreditableTrait, ReducibleTrait;
+    use HasFactory, GASModel, SluggableID, ModifiedTrait, PayableTrait, CreditableTrait, ReducibleTrait, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';

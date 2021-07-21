@@ -7,7 +7,7 @@ Per riferimenti:
 * Sito web: http://gasdotto.net/
 * Vecchia implementazione (non più mantenuta): https://github.com/madbob/GASdotto
 
-[![Build Status](https://github.com/madbob/gasdottong/actions/workflows/test.yml/badge.svg)
+[![Build Status](https://github.com/madbob/gasdottong/actions/workflows/test.yml/badge.svg)](https://github.com/madbob/GASdottoNG/actions)
 [![Translations Status](https://hosted.weblate.org/widgets/gasdottong/-/translations/svg-badge.svg)](https://hosted.weblate.org/engage/gasdottong/?utm_source=widget)
 
 ### Installazione
