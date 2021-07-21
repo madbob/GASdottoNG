@@ -87,7 +87,7 @@ class Booking extends Model
         }
     }
 
-    private function localModifiedValues($id = null, $with_friends)
+    private function localModifiedValues($id, $with_friends)
     {
         $values = $this->modifiedValues;
 
