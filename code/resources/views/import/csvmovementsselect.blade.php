@@ -22,7 +22,7 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
 
 ?>
 
-<x-larastrap::modal :title="_i('Importa CSV')">
+<x-larastrap::modal :title="_i('Importa CSV')" size="fullscreen">
     <script>
     matching_methods_for_movement_types = {!! json_encode($methods) !!};
     </script>

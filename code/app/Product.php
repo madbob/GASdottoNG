@@ -284,7 +284,7 @@ class Product extends Model
                 'checked' => true,
             ],
             'supplier_code' => (object) [
-                'name' => _i('Codice'),
+                'name' => _i('Codice Fornitore'),
             ],
             'measure' => (object) [
                 'name' => _i('Unità di Misura'),
@@ -306,7 +306,7 @@ class Product extends Model
                 'name' => _i('Variabile'),
             ],
             'package_size' => (object) [
-                'name' => _i('Confezione'),
+                'name' => _i('Dimensione Confezione'),
             ],
             'weight' => (object) [
                 'name' => _i('Peso'),

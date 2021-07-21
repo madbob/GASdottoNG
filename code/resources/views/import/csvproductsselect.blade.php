@@ -7,7 +7,7 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
 
 ?>
 
-<x-larastrap::modal :title="_i('Importa CSV')">
+<x-larastrap::modal :title="_i('Importa CSV')" size="fullscreen">
     <div class="wizard_page">
         @if(!empty($errors))
             <div class="alert alert-danger">
@@ -59,7 +59,7 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                                     <x-larastrap::text name="description" squeeze npostfix="[]" />
                                 </td>
                                 <td>
-                                    <x-larastrap::price name="price" squeeze npostfix="[]" />^
+                                    <x-larastrap::price name="price" squeeze npostfix="[]" />
                                 </td>
                                 <td>
                                     @if(isset($product->temp_category_name))

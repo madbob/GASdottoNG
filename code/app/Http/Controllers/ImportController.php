@@ -158,6 +158,9 @@ class ImportController extends Controller
                                 'label' => _i('Prezzo Confezione'),
                                 'explain' => _i('Se specificato, il prezzo unitario viene calcolato come Prezzo Confezione / Dimensione Confezione')
                             ],
+                            'weight' => (object) [
+                                'label' => _i('Peso'),
+                            ],
                             'min_quantity' => (object) [
                                 'label' => _i('Ordine Minimo'),
                             ],
@@ -220,6 +223,9 @@ class ImportController extends Controller
                             $p->name = $name;
                             $p->category_id = 'non-specificato';
                             $p->measure_id = 'non-specificato';
+                            $p->min_quantity = 0;
+                            $p->multiple = 0;
+                            $p->package_size = 0;
 
                             if ($supplier_code_index == -1) {
                                 $test = $s->products()->where('name', $name)->orderBy('id', 'desc')->first();
