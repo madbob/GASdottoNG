@@ -13,7 +13,7 @@ $url = $obj && $valuefrom ? $obj->$valuefrom : '';
         <x-larastrap::file :name="$name" :attributes="['data-max-size' => serverMaxUpload()]" squeeze="true" />
 
         @if(!empty($url))
-            <img src="{{ $url }}" class="img-responsive">
+            <img src="{{ $url }}" class="img-fluid">
         @endif
     </div>
 </x-larastrap::field>

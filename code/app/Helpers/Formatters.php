@@ -644,7 +644,7 @@ function formatObjectsToComponent($component, $params)
         unset($params['attributes']['extraitem']);
     }
 
-    $translated = array_merge($translated, formatObjectsToComponentRec($params['options']));
+    $translated = $translated + formatObjectsToComponentRec($params['options']);
 
     $params['options'] = $translated;
 
@@ -662,7 +662,7 @@ function formatObjectsToComponent($component, $params)
     }
 
     if (empty($translated) && $extraitem) {
-        $translated[] = 0;
+        $translated[] = '0';
     }
 
     $params['value'] = $translated;

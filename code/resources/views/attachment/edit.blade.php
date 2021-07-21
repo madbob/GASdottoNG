@@ -12,10 +12,10 @@
 
             <x-larastrap::field :label="_i('Scarica')">
                 @if($attachment->isImage())
-                    <img src="{{ $attachment->download_url }}" class="img-responsive">
-                @else
-                    <a class="btn btn-light" href="{{ $attachment->download_url }}">{{ _i('Clicca Qui') }} <i class="bi-download"></i></a>
+                    <img src="{{ $attachment->download_url }}" class="img-fluid mb-2">
                 @endif
+
+                <a class="btn btn-light" href="{{ $attachment->download_url }}">{{ _i('Clicca Qui') }} <i class="bi-download"></i></a>
             </x-larastrap::field>
         </div>
     </div>
