@@ -1889,8 +1889,20 @@ $(document).ready(function() {
 
     $('body').on('change', '.collapse_trigger', function() {
         var name = $(this).attr('name');
-        $('.collapse[data-triggerable=' + name + ']').collapse($(this).prop('checked') ? 'show' : 'hide');
-        $('.collapse[data-triggerable-reverse=' + name + ']').collapse($(this).prop('checked') ? 'hide' : 'show');
+
+        /*
+            L'evento show.bs.collapse va espressamente bloccato, altrimenti se
+            il widget si trova all'interno di una accordion risale fino a quella
+            e scattano anche le callback per le async-accordion
+        */
+
+        $('.collapse[data-triggerable=' + name + ']').one('show.bs.collapse', function(e) {
+            e.stopPropagation()}
+        ).collapse($(this).prop('checked') ? 'show' : 'hide');
+
+        $('.collapse[data-triggerable-reverse=' + name + ']').one('show.bs.collapse', function(e) {
+            e.stopPropagation()}
+        ).collapse($(this).prop('checked') ? 'hide' : 'show');
     });
 
     /*

@@ -4,12 +4,6 @@
     "keywords": ["management", "money", "fair economy"],
     "license": "AGPL-3.0+",
     "type": "project",
-    "repositories": [
-        {
-            "type": "path",
-            "url": "/home/madbob/projects/larastrap/larastrap2"
-        }
-    ],
     "require": {
         "php": ">=7.3",
         "ext-gd": "*",
