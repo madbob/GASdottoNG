@@ -409,9 +409,12 @@
 </div>
 
 @can('gas.permissions', $gas)
-    @include('permissions.gas-management', ['gas' => $gas])
-    <br/>
+    <div id="permissions-management" class="card gas-permission-editor" data-fetch-url="{{ route('roles.index') }}">
+        @include('permissions.gas-management', ['gas' => $gas])
+    </div>
 @endcan
+
+<br>
 
 @stack('postponed')
 

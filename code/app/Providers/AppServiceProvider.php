@@ -23,15 +23,23 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         User::created(function($user) {
-            $default_roles = Role::where('always', true)->get();
-            foreach($default_roles as $dr) {
-                $user->addRole($dr, $user->gas);
-            }
-
             if ($user->isFriend()) {
+                $default_role = $user->gas->roles['friend'] ?? -1;
+                $role = Role::find($default_role);
+                if (is_null($role)) {
+                    $default_role = $user->gas->roles['user'];
+                    $role = Role::find($default_role);
+                }
+
+                $user->addRole($role, $user->gas);
+
                 $user->preferred_delivery_id = '';
             }
             else {
+                $default_role = $user->gas->roles['user'];
+                $role = Role::find($default_role);
+                $user->addRole($role, $user->gas);
+
                 $fallback_delivery = Delivery::where('default', true)->first();
                 if ($fallback_delivery != null) {
                     $user->preferred_delivery_id = $fallback_delivery->id;

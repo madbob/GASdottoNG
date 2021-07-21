@@ -537,14 +537,14 @@ function miscInnerCallbacks(form, data) {
         test.each(function() {
             var target = utils.sanitizeId($(this).val());
             var box = $(target);
+            console.log(target);
 
             var url = box.attr('data-fetch-url');
-            if (url == null)
+            if (url == null) {
                 url = $(this).attr('data-fetch-url');
+            }
 
-            $.get(url, function(data) {
-                box.empty().append(data);
-            });
+            utils.j().fetchNode(url, box);
         });
     }
 
@@ -1315,7 +1315,7 @@ $(document).ready(function() {
                 dataType: 'json',
 
                 success: function(data) {
-                    var upper = lists.closeParent(form);
+                    var upper = Lists.closeParent(form);
                     var list = upper.closest('.loadable-list');
                     upper.remove();
                     Lists.testListsEmptiness(list);

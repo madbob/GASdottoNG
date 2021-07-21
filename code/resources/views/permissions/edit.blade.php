@@ -1,10 +1,7 @@
-<x-larastrap::form :obj="$role" classes="main-form role-editor" method="PUT" :action="route('roles.update', $role->id)">
-    <input type="hidden" name="post-saved-refetch" value="#permissions-management">
-
+<x-larastrap::mform :obj="$role" classes="role-editor" method="PUT" :action="route('roles.update', $role->id)" :nodelete="$role->users()->count() != 0">
     <div class="row">
         <div class="col-md-6">
             <x-larastrap::text name="name" :label="_i('Nome')" required />
-            <x-larastrap::check name="always" :label="_i('Abilitato di Default')" />
             <x-larastrap::selectobj name="parent_id" :label="_i('Ruolo Superiore')" :options="App\Role::orderBy('name')->get()" :extraitem="_i('Nessuno')" />
         </div>
     </div>

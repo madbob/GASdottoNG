@@ -263,7 +263,6 @@ class ImportLegacy extends Command
 
         $user_role = Role::create([
             'name' => 'Utente',
-            'always' => true,
             'actions' => 'users.view,supplier.book',
             'parent_id' => $admin_role->id
         ]);
@@ -301,6 +300,12 @@ class ImportLegacy extends Command
 
             $master_gas = $obj;
             $this->appendBalance($obj, $row, true);
+
+            $obj->setConfig('roles', (object) [
+                'user' => $user_role->id,
+                'friend' => -1,
+                'multigas' => -1,
+            ]);
 
             if (isset($row->payment_date))
                 $obj->setConfig('year_closing', $row->payment_date);

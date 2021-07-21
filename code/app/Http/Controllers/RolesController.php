@@ -45,7 +45,6 @@ class RolesController extends Controller
 
         $r = new Role();
         $r->name = $request->input('name');
-        $r->always = $request->has('always');
         $r->parent_id = $request->input('parent_id');
         $r->actions = join(',', $request->input('actions', []));
         $r->save();
@@ -75,7 +74,6 @@ class RolesController extends Controller
 
         $r = Role::findOrFail($id);
         $r->name = $request->input('name');
-        $r->always = $request->has('always');
         $r->parent_id = $request->input('parent_id');
         $r->save();
 

@@ -27,6 +27,7 @@ return [
         ],
 
         'form' => [
+            'novalidate' => false,
             'view' => 'horizontal',
             'buttons' => [['color' => 'primary', 'label' => 'Salva', 'attributes' => ['type' => 'submit']]],
         ],

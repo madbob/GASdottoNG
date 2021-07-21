@@ -127,18 +127,6 @@ class UsersService extends BaseService
 
         DB::transaction(function () use ($user, $creator) {
             $user->save();
-
-            $user_role = $creator->gas->roles['user'];
-            $friend_role = $creator->gas->roles['friend'];
-
-            if ($user_role != $friend_role) {
-                $role = Role::find($friend_role);
-                if ($role) {
-                    $user->roles()->detach();
-                    $role_id = normalizeId($role);
-                    $user->addRole($role_id, $creator->gas);
-                }
-            }
         });
 
         return $user;

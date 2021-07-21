@@ -1,8 +1,4 @@
 @foreach($object->roles as $role)
-    @if($role->always)
-        @continue
-    @endif
-
     <x-larastrap::field :label="$role->name">
         <label class="static-label">
             <?php

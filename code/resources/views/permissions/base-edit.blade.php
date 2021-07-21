@@ -1,7 +1,6 @@
-<input type="hidden" name="post-saved-refetch" value="#role-list" data-fetch-url="{{ route('roles.index') }}">
+<input type="hidden" name="post-saved-refetch" value="#permissions-management">
 
 <x-larastrap::text name="name" :label="_i('Nome')" required />
-<x-larastrap::check name="always" :label="_i('Abilitato di Default')" />
 <x-larastrap::selectobj name="parent_id" :label="_i('Ruolo Superiore')" :options="App\Role::orderBy('name')->get()" :extraitem="_i('Nessuno')" :pophelp="_i('Gli utenti con assegnato il ruolo superiore potranno assegnare ad altri utenti questo ruolo')" />
 
 @foreach(App\Role::allPermissions() as $class => $permissions)

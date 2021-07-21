@@ -13,7 +13,7 @@
 
             {{ join(', ', $final) }}
         </label>
-    </x-larastra::field>
+    </x-larastrap::field>
 @endforeach
 
 @if($editable && (Gate::check('supplier.modify', $object) || Gate::check('gas.permissions', $currentgas)))
