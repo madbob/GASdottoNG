@@ -154,7 +154,13 @@ class OrdersController extends Controller
         $start = decodeDate($request->input('start'));
         $end = decodeDate($request->input('end'));
         $shipping = decodeDate($request->input('shipping'));
-        $keep_open_packages = $request->input('keep_open_packages');
+
+        if ($request->has('keep_open_packages')) {
+            $keep_open_packages = $request->input('keep_open_packages');
+        }
+        else {
+            $keep_open_packages = false;
+        }
 
         foreach($suppliers as $supplier_id) {
             $supplier = Supplier::findOrFail($supplier_id);
@@ -232,7 +238,9 @@ class OrdersController extends Controller
             $order->status = $status;
         }
 
-        $order->keep_open_packages = $request->input('keep_open_packages');
+        if ($request->has('keep_open_packages')) {
+            $order->keep_open_packages = $request->input('keep_open_packages');
+        }
 
         $order->save();
 

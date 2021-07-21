@@ -6,6 +6,23 @@
 
             <x-larastrap::textarea name="comment" :label="_i('Commento')" rows="2" />
 
+            @include('commons.boolfield', [
+                'obj' => null,
+                'name' => 'change_dates',
+                'label' => _i('Modifica Date'),
+                'extra_class' => 'collapse_trigger',
+                'default_checked' => false,
+                'help_popover' => _i("Da qui è possibile modificare la data di apertura, chiusura a consegna di tutti gli ordini inclusi nell'aggregato"),
+            ])
+
+            <div class="collapse" data-triggerable="change_dates">
+                <div class="col-md-12">
+                    @include('commons.datefield', ['obj' => $aggregate, 'name' => 'start', 'label' => _i('Data Apertura')])
+                    @include('commons.datefield', ['obj' => $aggregate, 'name' => 'end', 'label' => _i('Data Chiusura')])
+                    @include('commons.datefield', ['obj' => $aggregate, 'name' => 'shipping', 'label' => _i('Data Consegna')])
+                </div>
+            </div>
+
             @if($currentgas->hasFeature('shipping_places'))
                 <x-larastrap::selectobj name="deliveries" :label="_i('Luoghi di Consegna')" :options="$currentgas->deliveries" multiple="multiple" />
             @endif
