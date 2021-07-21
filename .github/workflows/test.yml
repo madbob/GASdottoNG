@@ -1,0 +1,19 @@
+name: Tests
+on: [push]
+
+jobs:
+  phpunit:
+    name: PHPUnit
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: checkout repo content
+        uses: actions/checkout@v2
+
+      - name: running tests
+        run: |
+          cd code
+          composer install --prefer-dist
+          cp .env.example .env
+          php artisan key:generate
+          php vendor/bin/phpunit
