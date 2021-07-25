@@ -64,7 +64,7 @@ class Controller extends BaseController
     public function objhead(Request $request, $id)
     {
         $class = $this->reference_class;
-        $subject = $class::findOrFail($id);
+        $subject = $class::tFind($id);
         return response()->json([
             'id' => $subject->id,
             'header' => $subject->printableHeader(),

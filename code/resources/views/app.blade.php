@@ -20,7 +20,7 @@
         </div>
 
         @if(isset($menu))
-            <x-larastrap::navbar :options="$menu" :end_options="$end_menu" />
+            <x-larastrap::navbar :options="$menu" :end_options="$end_menu" classes="fixed-top" />
         @endif
 
         @if(Auth::check())

@@ -761,3 +761,36 @@ function formatMainFormButtons($component, $params)
 
     return $params;
 }
+
+function formatForDuskTesting($component, $params)
+{
+    /*
+        Questo viene settato nel file .env.dusk.local e si attiva eseguendo i
+        test Dusk
+    */
+    if (env('DUSK_TESTING', false)) {
+        $options = $params['options'];
+        $new_options = [];
+
+        foreach($options as $value => $option) {
+            if (is_object($option)) {
+                if (!isset($option->button_attributes)) {
+                    $option->button_attributes = [];
+                }
+            }
+            else {
+                $option = (object) [
+                    'label' => $option,
+                    'button_attributes' => [],
+                ];
+            }
+
+            $option->button_attributes['dusk'] = sprintf('%s-%s', $params['name'], $value);
+            $new_options[$value] = $option;
+        }
+
+        $params['options'] = $new_options;
+    }
+
+    return $params;
+}

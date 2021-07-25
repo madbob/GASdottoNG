@@ -59,6 +59,10 @@ $utilities: map-merge(
 @import '~chartist/dist/chartist.css';
 @import "./jbob";
 
+html, body {
+    min-height: 100%;
+}
+
 body {
     font-size: 16px;
 }

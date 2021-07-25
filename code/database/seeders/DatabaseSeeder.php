@@ -66,7 +66,6 @@ class DatabaseSeeder extends Seeder
         $user_role = Role::create([
             'name' => 'Utente',
             'actions' => 'users.self,users.view,supplier.view,supplier.book',
-            'always' => true,
             'parent_id' => $admin_role->id
         ]);
 

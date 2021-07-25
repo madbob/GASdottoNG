@@ -13,7 +13,7 @@ jobs:
       - name: running tests
         run: |
           cd code
-          composer install --prefer-dist
+          composer install --no-interaction --no-progress --prefer-dist
           cp .env.example .env
           php artisan key:generate
           php vendor/bin/phpunit
