@@ -549,7 +549,6 @@ class Order extends Model
             throw new \Exception("Revert prezzi dell'ordine senza transazione attiva", 1);
         }
 
-        $summary = $this->reduxData();
         $products = [];
 
         foreach ($this->bookings as $booking) {
@@ -571,13 +570,15 @@ class Order extends Model
         $altered = false;
 
         foreach($products as $id => $values) {
-            $actual_quantity = max(1, $values->quantity);
-            $p = Product::find($id);
-            $new_price = $values->price / $actual_quantity;
-            if ($new_price != $p->price) {
-                $p->price = $values->price / $actual_quantity;
-                $altered = true;
-                $p->save();
+            if ($values->price != 0) {
+                $actual_quantity = max(1, $values->quantity);
+                $p = Product::find($id);
+                $new_price = $values->price / $actual_quantity;
+                if ($new_price != $p->price) {
+                    $p->price = $new_price;
+                    $altered = true;
+                    $p->save();
+                }
             }
         }
 
@@ -967,16 +968,23 @@ class Order extends Model
             }
             else {
                 /*
-                    Attenzione: qui eseguo esplicitamente la query per
-                    recuperare le prenotazioni anziché usare $item->bookings,
-                    che è eventualmente già valorizzato.
-                    Questo per fare in modo che agendo sullo stesso ordine ma
-                    per GAS diversi sia riapplicato lo scope RestrictedGAS, ed
-                    ottenere le prenotazioni dell'ordine desiderato; altrimenti,
-                    otterrei sempre le prenotazioni del primo GAS che viene
-                    elaborato
+                    Qui recupero solo le prenotazioni di primo livello (non
+                    quelle degli amici), in quanto comunque il comportamento di
+                    Booking prevede di default di ridurre anche le informazioni
+                    degli amici. Se qui contemplassi tutte le prenotazioni,
+                    finirei col sommare due volte le quantità degli utenti
+                    amici: una volta nella prenotazione stessa, una volta in
+                    quella dell'utente superiore.
+
+                    Ricordarsi comunque che qui le prenotazioni vanno sempre
+                    lette dal DB, non accedendo al valore eventualmente cachato
+                    in $item->bookings. Questo per fare in modo che agendo sullo
+                    stesso ordine ma per GAS diversi sia riapplicato lo scope
+                    RestrictedGAS, ed ottenere le prenotazioni dell'ordine
+                    desiderato; altrimenti, otterrei sempre le prenotazioni del
+                    primo GAS che viene elaborato
                 */
-                $bookings = $item->bookings()->get();
+                $bookings = $item->topLevelBookings();
             }
 
             return $bookings;
@@ -988,7 +996,7 @@ class Order extends Model
         };
 
         $ret->collected = 'bookings';
-        $ret->merged = ['products'];
+        $ret->merged = 'products';
         return $ret;
     }
 

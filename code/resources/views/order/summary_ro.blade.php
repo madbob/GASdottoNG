@@ -33,6 +33,27 @@
     <tbody>
         @foreach($order->supplier->products as $product)
             @if($order->hasProduct($product))
+                @php
+
+                if(isset($summary->products[$product->id])) {
+                    $quantity_pieces = $summary->products[$product->id]->quantity_pieces ?? 0;
+                    $quantity = $summary->products[$product->id]->quantity ?? 0;
+                    $price = $summary->products[$product->id]->price ?? 0;
+                    $delivered = $summary->products[$product->id]->delivered ?? 0;
+                    $price_delivered = $summary->products[$product->id]->price_delivered ?? 0;
+                    $notes = $summary->products[$product->id]->notes ?? false;
+                }
+                else {
+                    $quantity_pieces = 0;
+                    $quantity = 0;
+                    $price = 0;
+                    $delivered = 0;
+                    $price_delivered = 0;
+                    $notes = false;
+                }
+
+                @endphp
+
                 <tr data-product-id="{{ $product->id }}">
                     <td class="order-cell-name {{ in_array('name', $columns) ? '' : 'hidden' }}">
                         @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product])
@@ -53,27 +74,27 @@
                     <td class="order-cell-quantity {{ in_array('quantity', $columns) ? '' : 'hidden' }}">
                         <label>
                             @if($product->portion_quantity != 0)
-                                {{ sprintf('%d', $summary->products[$product->id]->quantity_pieces ?? 0) }} Pezzi /
+                                {{ sprintf('%d', $quantity_pieces) }} Pezzi /
                             @endif
-                            <span class="order-summary-product-quantity">{{ $summary->products[$product->id]->quantity ?? 0 }}</span> {{ $product->measure->name }}
+                            <span class="order-summary-product-quantity">{{ $quantity }}</span> {{ $product->measure->name }}
                         </label>
                     </td>
 
                     <td class="order-cell-total_price {{ in_array('total_price', $columns) ? '' : 'hidden' }}">
-                        <label class="order-summary-product-price">{{ printablePriceCurrency($summary->products[$product->id]->price ?? 0) }}</label>
+                        <label class="order-summary-product-price">{{ printablePriceCurrency($price) }}</label>
                     </td>
 
                     <td class="order-cell-quantity_delivered {{ in_array('quantity_delivered', $columns) ? '' : 'hidden' }}">
-                        <label class="order-summary-product-delivered">{{ $summary->products[$product->id]->delivered ?? 0 }} {{ $product->measure->name }}</label>
+                        <label class="order-summary-product-delivered">{{ $delivered }} {{ $product->measure->name }}</label>
                     </td>
 
                     <td class="order-cell-price_delivered {{ in_array('price_delivered', $columns) ? '' : 'hidden' }}">
-                        <label class="order-summary-product-price_delivered">{{ printablePriceCurrency($summary->products[$product->id]->price_delivered ?? 0) }}</label>
+                        <label class="order-summary-product-price_delivered">{{ printablePriceCurrency($price_delivered) }}</label>
                     </td>
 
                     <td class="order-cell-notes {{ in_array('notes', $columns) ? '' : 'hidden' }}">
                         @if($order->isActive())
-                            @if($summary->products[$product->id]['notes'])
+                            @if($notes)
                                 <a class="btn btn-danger" disabled>
                                     <i class="bi-exclamation-circle"></i>
                                 </a>

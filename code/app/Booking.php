@@ -520,6 +520,12 @@ class Booking extends Model
         $ret = $this->emptyReduxBehaviour();
 
         $ret->children = function($item, $filters) {
+            /*
+                Di default vengono incluse anche le prenotazioni degli amici.
+                Non modificare questo comportamento se non con cognizione di
+                causa (da questo dipende poi la riduzione sull'ordine, cfr.
+                Order::reduxBehaviour())
+            */
             $with_friends = $filters['with_friends'] ?? true;
 
             if ($with_friends) {

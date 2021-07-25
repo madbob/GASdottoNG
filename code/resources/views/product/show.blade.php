@@ -11,7 +11,7 @@
                 </p>
             </x-larastrap::field>
 
-            <x-larastrap::price name="supplier_code" :label="_i('Codice Fornitore')" readonly disabled />
+            <x-larastrap::text name="supplier_code" :label="_i('Codice Fornitore')" readonly disabled />
             <x-larastrap::check name="active" :label="_i('Ordinabile')" readonly disabled />
         </div>
         <div class="col-md-6">

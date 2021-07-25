@@ -63,7 +63,9 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
             @foreach($display_columns as $identifier => $metadata)
                 @if($identifier == 'selection')
                     <th width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
-                        <button class="btn btn-light btn-sm toggle-product-abilitation" data-bs-toggle="button">{!! _i('Vedi Tutti') !!}</button>
+                        @if($order->supplier->products->count() != $order->products->count())
+                            <button class="btn btn-light btn-sm toggle-product-abilitation" data-bs-toggle="button">{!! _i('Vedi Tutti') !!}</button>
+                        @endif
                     </th>
                 @else
                     <th width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">{{ $metadata->label }}</th>
@@ -90,9 +92,10 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
         @foreach($order->supplier->products as $product)
             <?php
 
-                $enabled = $order->hasProduct($product);
-                if ($order->isActive() == false & $enabled == false)
-                    continue;
+            $enabled = $order->hasProduct($product);
+            if ($order->isActive() == false & $enabled == false) {
+                continue;
+            }
 
             ?>
 

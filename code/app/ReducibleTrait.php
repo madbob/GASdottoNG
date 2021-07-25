@@ -1,11 +1,33 @@
 <?php
 
+/*
+    Questa è la classe essenziale che permette la "riduzione" delle informazioni
+    all'interno di un ordine e delle sue prenotazioni.
+    Aggregati, ordini, prenotazioni, prodotti prenotati e loro varianti fanno
+    tutti capo a questa struttura dati, che riassume in modo omogeneo quantità e
+    prezzi. Più precisamente: un aggregato è la somma delle riduzioni dei suoi
+    ordini, i quali sono la somma delle riduzioni delle sue prenotazioni, le
+    quali sono la somma delle riduzioni dei loro prodotti, i quali possono
+    eventualmente essere la somma delle riduzione delle loro varianti.
+    Questo per semplificare il calcolo dei valori complessivi, e dunque
+    l'applicazione dei modificatori o la generazione delle esportazioni.
+    Le classi la cui riduzione non dipende da altri elementi (tipicamente: le
+    foglie dell'albero di riduzione, ovvero i prodotti senza varianti o le
+    varianti) devono sovrascrivere la funzione reduxData() per restituire
+    direttamente la loro propria rappresentazione, che andrà a essere sommata a
+    tutte le altre.
+*/
+
 namespace App;
 
 use Log;
 
 trait ReducibleTrait
 {
+    /*
+        Questi sono gli attributi essenziali che ci si aspetta di trovare nella
+        riduzione di un oggetto
+    */
     protected function describingAttributes()
     {
         return [
@@ -65,11 +87,10 @@ trait ReducibleTrait
             $ret->$collected[$reduxed_child->id] = $this->describingAttributesMerge($ret->$collected[$reduxed_child->id] ?? null, $reduxed_child);
             $ret = $this->describingAttributesMerge($ret, $reduxed_child);
 
-            if (isset($behaviours->merged)) {
-                foreach($behaviours->merged as $merged) {
-                    foreach($reduxed_child->$merged as $to_merge) {
-                        $ret->$merged[$to_merge->id] = $this->describingAttributesMerge($ret->$merged[$to_merge->id] ?? null, $to_merge);
-                    }
+            $merged = $behaviours->merged ?? '';
+            if (!empty($merged)) {
+                foreach($reduxed_child->$merged as $to_merge) {
+                    $ret->$merged[$to_merge->id] = $this->describingAttributesMerge($ret->$merged[$to_merge->id] ?? null, $to_merge);
                 }
             }
         }
@@ -81,7 +102,7 @@ trait ReducibleTrait
     {
         return (object) [
             'master_key' => 'id',
-            'merged' => [],
+            'merged' => '',
 
             'optimize' => function($master, $child) {
                 return $child;
@@ -104,10 +125,9 @@ trait ReducibleTrait
                 $ret->$collected = [];
             }
 
-            if (isset($behaviours->merged)) {
-                foreach($behaviours->merged as $merged) {
-                    $ret->$merged = [];
-                }
+            $merged = $behaviours->merged ?? '';
+            if (!empty($merged)) {
+                $ret->$merged = [];
             }
         }
 
@@ -132,12 +152,11 @@ trait ReducibleTrait
 
         $ret = $ref->describingAttributesMerge($first, $second);
 
-        if (isset($behaviours->merged)) {
-            foreach($behaviours->merged as $merged) {
-                $merged_ids = array_unique(array_merge(array_keys($first->$merged), array_keys($second->$merged)));
-                foreach($merged_ids as $id) {
-                    $ret->$merged[$id] = $ref->describingAttributesMerge($first->$merged[$id] ?? null, $second->$merged[$id] ?? null);
-                }
+        $merged = $behaviours->merged ?? '';
+        if (!empty($merged)) {
+            $merged_ids = array_unique(array_merge(array_keys($first->$merged), array_keys($second->$merged)));
+            foreach($merged_ids as $id) {
+                $ret->$merged[$id] = $ref->describingAttributesMerge($first->$merged[$id] ?? null, $second->$merged[$id] ?? null);
             }
         }
 

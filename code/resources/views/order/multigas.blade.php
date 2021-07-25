@@ -15,7 +15,7 @@
             @foreach($aggregate->gas as $index => $gas)
                 <x-larastrap::tabpane :active="$index == 0" :label="$gas->printableName()">
                     <div class="row">
-                        <div class="col-md-4 col-md-offset-8">
+                        <div class="col-md-4 offset-md-8 mb-2">
                             @include('aggregate.files', ['aggregate' => $aggregate, 'managed_gas' => $gas->id])
                         </div>
 
@@ -42,7 +42,7 @@
 
             <x-larastrap::tabpane :label="_i('Totale')">
                 <div class="row">
-                    <div class="col-md-4 col-md-offset-8">
+                    <div class="col-md-4 offset-md-8 mb-2">
                         @include('aggregate.files', ['aggregate' => $aggregate, 'managed_gas' => 0])
                     </div>
 
