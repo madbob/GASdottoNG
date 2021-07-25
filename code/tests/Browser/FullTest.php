@@ -11,14 +11,32 @@ class FullTest extends DuskTestCase
 {
     use DatabaseMigrations;
 
+    /*
+        Questo è per eseguire lo unit test Dusk solo quando espressamente
+        richiesto (ovvero: eseguendo il comando "php artisan dusk")
+    */
+    private function checkEnv()
+    {
+        return (env('DUSK_TESTING', false));
+    }
+
     public function setUp(): void
     {
+        if ($this->checkEnv() == false) {
+            return;
+        }
+
         parent::setUp();
         $this->artisan('db:seed');
     }
 
     public function testAll()
     {
+        if ($this->checkEnv() == false) {
+            $this->assertNotNull(true);
+            return;
+        }
+
         /*
             Questo serve a generare le stringhe delle date in italiano, per la
             corretta formattazione da parte di printableDate()
