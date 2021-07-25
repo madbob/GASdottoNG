@@ -25,7 +25,6 @@
 				link.addClass(e.className || 'event');
 
 				if (typeof e.url !== "undefined") {
-					link.attr('target', '_blank');
 					link.attr('href', e.url);
 				}
 
