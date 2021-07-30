@@ -15,10 +15,10 @@ import utils from "./utils";
                 startCollapsed: true
             });
 
-            $(this).off('click', '.dynamic-tree-remove', removeRow).on('click', '.dynamic-tree-remove', removeRow);
-            $(this).off('click', '.dynamic-tree-add', appendRow).on('click', '.dynamic-tree-add', appendRow);
-            $(this).off('click', '.dynamic-tree-expand', expandRow).on('click', '.dynamic-tree-expand', expandRow);
-            $(this).off('submit', doSubmit).on('submit', doSubmit);
+            $(this).on('click', '.dynamic-tree-remove', removeRow);
+            $(this).on('click', '.dynamic-tree-add', appendRow);
+            $(this).on('click', '.dynamic-tree-expand', expandRow);
+            $(this).on('submit', doSubmit);
         });
 
         function parseDynamicTree(tree) {
@@ -56,8 +56,8 @@ import utils from "./utils";
 
             tree.append('<li class="list-group-item mjs-nestedSortable-branch mjs-nestedSortable-collapsed"> \
                 <div> \
-                    <div class="btn btn-danger float-end"><i class="bi-x-lg dynamic-tree-remove"></i></div> \
-                    <div class="btn btn-warning float-end"><i class="bi-plus-lg expanding-icon dynamic-tree-expand"></i></div> \
+                    <div class="btn btn-danger float-end dynamic-tree-remove"><i class="bi-x-lg"></i></div> \
+                    <div class="btn btn-warning float-end dynamic-tree-expand"><i class="bi-plus-lg expanding-icon"></i></div> \
                     <input name="names[]" class="form-control" value="' + name + '"> \
                 </div> \
                 <ul></ul> \
@@ -85,6 +85,8 @@ import utils from "./utils";
                 method: box.attr('method'),
                 url: box.attr('action'),
                 data: {
+                    _token: box.find('input[name=_token]').val(),
+                    _method: box.find('input[name=_method]').val(),
                     serialized: data
                 },
                 success: function() {

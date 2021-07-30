@@ -431,8 +431,6 @@ table {
 }
 
 .btn-group {
-    display: table;
-
     &.disabled {
         pointer-events: none;
     }

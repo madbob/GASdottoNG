@@ -63,6 +63,30 @@ class GraphicInitServiceProvider extends ServiceProvider
         });
 
         Paginator::useBootstrap();
+
+        if (env('DUSK_TESTING', false)) {
+            /*
+                Sperabilmente questo finirà prima o poi direttamente in Laravel Dusk
+                https://github.com/laravel/dusk/pull/895
+                e sarà da rimuovere.
+            */
+            \Laravel\Dusk\Browser::macro('typeAtXPath', function ($expression, $value) {
+                $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::xpath($expression))->clear()->sendKeys($value);
+                return $this;
+            });
+
+            \Laravel\Dusk\Browser::macro('assertInputValueAtXPath', function ($expression, $value) {
+                $input_value = $this->driver->findElement(\Facebook\WebDriver\WebDriverBy::xpath($expression))->getAttribute('value');
+
+                \PHPUnit\Framework\Assert::assertEquals(
+                    $value,
+                    $input_value,
+                    "Expected value [{$value}] for the [{$expression}] input does not equal the actual value [${input_value}]."
+                );
+
+                return $this;
+            });
+        }
     }
 
     public function register()

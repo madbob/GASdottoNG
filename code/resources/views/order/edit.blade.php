@@ -52,7 +52,7 @@
                 @endif
 
                 @if($order->products()->where('package_size', '!=', 0)->count() != 0)
-                    <x-larastrap::radios name="keep_open_packages" :label="_i('Forza completamento confezioni')" :options="$keep_open_packages_values" :pophelp="_i('Se questa opzione viene abilitata, alla chiusura dell\'ordine sarà verificato se ci sono prodotti la cui quantità complessivamente ordinata non è multipla della dimensione della relativa confezione. Se si, l\'ordine resterà aperto e sarà possibile per gli utenti prenotare solo quegli specifici prodotti finché non si raggiunge la quantità desiderata')" />
+                    <x-larastrap::radios name="keep_open_packages" :label="_i('Forza completamento confezioni')" :options="$keep_open_packages_values" classes="btn-group-vertical" :pophelp="_i('Se questa opzione viene abilitata, alla chiusura dell\'ordine sarà verificato se ci sono prodotti la cui quantità complessivamente ordinata non è multipla della dimensione della relativa confezione. Se si, l\'ordine resterà aperto e sarà possibile per gli utenti prenotare solo quegli specifici prodotti finché non si raggiunge la quantità desiderata')" />
                 @endif
             @else
                 @if(!empty($order->comment))

@@ -15,11 +15,11 @@
             @endcan
 
             @can('categories.admin', $currentgas)
-                <x-larastrap::ambutton :label="_i('Amministra Categorie')" :data-modal-url="route('categories.index')" />
+                <x-larastrap::ambutton id="category_admin" :label="_i('Amministra Categorie')" :data-modal-url="route('categories.index')" />
             @endcan
 
             @can('measures.admin', $currentgas)
-                <x-larastrap::ambutton :label="_i('Amministra Unità di Misura')" :data-modal-url="route('measures.index')" />
+                <x-larastrap::ambutton id="unit_measure_admin" :label="_i('Amministra Unità di Misura')" :data-modal-url="route('measures.index')" />
             @endcan
 
             @if($currentgas->getConfig('es_integration'))
