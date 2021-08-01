@@ -92,7 +92,7 @@
 
                                     ?>
 
-                                    <x-larastrap::radios name="booking_contacts" :label="_i('Visualizza contatti in prenotazioni')" :options="$values_for_contacts" />
+                                    <x-larastrap::radios name="booking_contacts" :label="_i('Visualizza contatti in prenotazioni')" :options="$values_for_contacts" classes="btn-group-vertical" />
 
                                     <x-larastrap::field :label="_i('Colonne Riassunto Ordini')" :pophelp="_i('Colonne visualizzate di default nella griglia di riassunto degli ordini. È comunque sempre possibile modificare la visualizzazione dall\'interno della griglia stessa per mezzo del selettore posto in alto a destra')">
                                         <?php $columns = $currentgas->orders_display_columns ?>

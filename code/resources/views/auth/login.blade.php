@@ -18,11 +18,11 @@
     @endif
 
     @if(!empty($gas->logo))
-        <p class="text-center">
+        <p class="text-center mt-3">
             <img class="img-fluid" src="{{ $gas->logo_url }}" alt="{{ $gas->name }}">
         </p>
     @else
-        <h2 class="text-center">{{ $gas->name }}</h2>
+        <h2 class="text-center mt-3">{{ $gas->name }}</h2>
     @endif
 
     <hr>

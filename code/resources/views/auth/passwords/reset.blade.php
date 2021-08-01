@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="col-12 col-md-6 offset-md-3">
+<div class="col-12 col-md-6 offset-md-3 mt-3">
     <x-larastrap::form method="POST" :action="route('password.update')" :buttons="[['color' => 'success', 'type' => 'submit', 'label' => _i('Aggiorna Password')]]">
         <input type="hidden" name="token" value="{{ $token }}">
         <x-larastrap::text name="email" :label="_i('E-Mail')" required />

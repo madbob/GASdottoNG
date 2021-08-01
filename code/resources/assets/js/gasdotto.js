@@ -1590,6 +1590,12 @@ $(document).ready(function() {
         });
     });
 
+    $('body').on('click', '.link-button', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('data-link');
+        window.open(url, '_blank');
+    });
+
     $('body').on('change', '.contacts-selection select', function() {
         $(this).closest('.row').find('input:text').attr('class', '').addClass('form-control').addClass($(this).find('option:selected').val());
     });

@@ -1063,6 +1063,7 @@ class Order extends Model
 
     public function exportJSON()
     {
+        $hub = App::make('GlobalScopeHub');
         $gas = Gas::find($hub->getGas());
         return view('gdxp.json.supplier', ['obj' => $this->supplier, 'order' => $this, 'currentgas' => $gas])->render();
     }

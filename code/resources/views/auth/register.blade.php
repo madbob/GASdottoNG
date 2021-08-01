@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="col-12 col-md-6 offset-md-3">
+<div class="col-12 col-md-6 offset-md-3 mt-3">
     <x-larastrap::form method="POST" action="{{ route('register') }}" :buttons="[['type' => 'submit', 'color' => 'success', 'label' => _i('Registrati')]]">
         <x-larastrap::text name="firstname" :label="_i('Nome')" :required="in_array('firstname', currentAbsoluteGas()->public_registrations['mandatory_fields'])" />
         <x-larastrap::text name="lastname" :label="_i('Cognome')" :required="in_array('lastname', currentAbsoluteGas()->public_registrations['mandatory_fields'])" />
