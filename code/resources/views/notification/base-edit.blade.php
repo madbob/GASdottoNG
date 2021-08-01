@@ -22,7 +22,7 @@ if (!isset($instant)) {
 
 <x-larastrap::textarea name="content" :label="_i('Contenuto')" required />
 <x-larastrap::datepicker name="start_date" :label="_i('Inizio')" defaults_now required />
-<x-larastrap::datepicker name="start_end" :label="_i('Scadenza')" defaults_now required />
+<x-larastrap::datepicker name="end_date" :label="_i('Scadenza')" defaults_now required />
 
 @if($notification && $notification->attachments->isEmpty() == false)
     <x-larastrap::field :label="_i('Allegato')">
