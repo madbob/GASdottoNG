@@ -31,14 +31,18 @@ class AppServiceProvider extends ServiceProvider
                     $role = Role::find($default_role);
                 }
 
-                $user->addRole($role, $user->gas);
+                if ($role) {
+                    $user->addRole($role, $user->gas);
+                }
 
                 $user->preferred_delivery_id = '';
             }
             else {
                 $default_role = $user->gas->roles['user'];
                 $role = Role::find($default_role);
-                $user->addRole($role, $user->gas);
+                if ($role) {
+                    $user->addRole($role, $user->gas);
+                }
 
                 $fallback_delivery = Delivery::where('default', true)->first();
                 if ($fallback_delivery != null) {
@@ -51,7 +55,7 @@ class AppServiceProvider extends ServiceProvider
 
         Order::created(function($order) {
             if ($order->status == 'open') {
-                NotifyNewOrder::dispatch($order->id);
+                NotifyNewOrder::dispatch($order->id)->delay(now()->addMinutes(1));
             }
         });
 

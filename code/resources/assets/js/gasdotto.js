@@ -1998,12 +1998,6 @@ $(document).ready(function() {
                 container.find('input:radio[name=applies_target][value=product]').click();
                 applies_target = 'product';
             }
-            else {
-                if (applies_target == 'product') {
-                    container.find('input:radio[name=applies_target][value=booking]').click();
-                    applies_target = 'booking';
-                }
-            }
         }
 
         if (value == 'price') {

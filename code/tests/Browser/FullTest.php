@@ -39,12 +39,12 @@ class FullTest extends DuskTestCase
         */
         $browser->visitRoute('profile')
             ->waitForText('Anagrafica')
-            ->type('firstname', 'Mario')
-            ->type('lastname', 'Rossi')
-            ->type('birthday', 'Giovedì 01 Gennaio 1970')
-            ->type('taxcode', 'RSSMRA70A01L219K')
-            ->type('family_members', '2')
-            ->clickLink('Aggiungi Nuovo')->select('contact_type[]', 'email')->type('contact_value[]', 'mario@mailinator.com')
+            ->typeSlowly('firstname', 'Mario', 50)
+            ->typeSlowly('lastname', 'Rossi', 50)
+            ->typeSlowly('birthday', 'Sabato 03 Gennaio 1970', 50)
+            ->typeSlowly('taxcode', 'RSSMRA70A01L219K', 50)
+            ->typeSlowly('family_members', '2', 50)
+            ->clickLink('Aggiungi Nuovo')->select('contact_type[]', 'email')->typeSlowly('contact_value[]', 'mario@mailinator.com', 50)
             ->pressAndWaitFor('Salva');
 
         /*
@@ -77,10 +77,10 @@ class FullTest extends DuskTestCase
             ->waitForText('Crea Nuovo Amico')
             ->press('Crea Nuovo Amico')->waitForText('Username')
             ->with('.modal.show', function($panel) {
-                $panel->typeSlowly('username', 'amico_di_mario')
-                    ->typeSlowly('firstname', 'di Mario')
-                    ->typeSlowly('lastname', 'Amico')
-                    ->typeSlowly('password', 'amico_di_mario')
+                $panel->typeSlowly('username', 'amico_di_mario', 50)
+                    ->typeSlowly('firstname', 'di Mario', 50)
+                    ->typeSlowly('lastname', 'Amico', 50)
+                    ->typeSlowly('password', 'amico_di_mario', 50)
                     ->press('Salva');
             })
             ->waitForText('Amico di Mario');
@@ -91,11 +91,11 @@ class FullTest extends DuskTestCase
         $users = [
             ['garibaldi', 'Giuseppe', 'Garibaldi'],
             ['verdi', 'Giuseppe', 'Verdi'],
-            ['mazzini', 'Giuseppe', 'Mazzini'],
-            ['azeglio', 'Massimo', "D'Azeglio"],
-            ['pisacane', 'Carlo', 'Pisacane'],
-            ['bandiera', 'Attilio', 'Bandiera'],
-            ['benso', 'Camillo', 'Benso'],
+            // ['mazzini', 'Giuseppe', 'Mazzini'],
+            // ['azeglio', 'Massimo', "D'Azeglio"],
+            // ['pisacane', 'Carlo', 'Pisacane'],
+            // ['bandiera', 'Attilio', 'Bandiera'],
+            // ['benso', 'Camillo', 'Benso'],
         ];
 
         /*
@@ -106,11 +106,11 @@ class FullTest extends DuskTestCase
             $browser->visitRoute('users.index')
                 ->waitForText('Importa CSV')
                 ->press('Crea Nuovo Utente')->waitForText('Username')
-                ->typeSlowly('username', $user[0])
-                ->typeSlowly('firstname', $user[1])
-                ->typeSlowly('lastname', $user[2])
+                ->typeSlowly('username', $user[0], 50)
+                ->typeSlowly('firstname', $user[1], 50)
+                ->typeSlowly('lastname', $user[2], 50)
                 ->uncheck('sendmail')
-                ->typeSlowly('password', $user[0])
+                ->typeSlowly('password', $user[0], 50)
                 ->press('Salva')
                 ->waitForText('Anagrafica');
         }
@@ -147,10 +147,10 @@ class FullTest extends DuskTestCase
     private function suppliers()
     {
         return [
-            ['La Zucchina Dorata', 'Verdure di stagione, prenotazioni settimanali', 'Bonifico bancario IBAN IT01234567890', 'Mandare una mail con le prenotazioni a Luisa: zucchina@example.com', 'ITIT01234567890'],
+            ['La Zucchina Dorata', 'Verdure di stagione, prenotazioni settimanali', 'Bonifico bancario IBAN IT01234567890', 'Mandare una mail con le prenotazioni a Luisa: zucchina@example.com', 'IT01234567890'],
             ['Mele e Pere', '', '', '', ''],
-            ['Panetteria da Pasquale', '', '', '', ''],
-            ['Luigi il Macellaio', '', '', '', ''],
+            // ['Panetteria da Pasquale', '', '', '', ''],
+            // ['Luigi il Macellaio', '', '', '', ''],
         ];
     }
 
@@ -168,6 +168,21 @@ class FullTest extends DuskTestCase
         ];
     }
 
+    private function quantities()
+    {
+        static $quantities = null;
+
+        if (is_null($quantities)) {
+            $quantities = [];
+            $products = $this->products();
+            foreach($products as $product) {
+                $quantities[] = rand(0, 5);
+            }
+        }
+
+        return $quantities;
+    }
+
     private function disableEnableSupplier($browser, $supplier_name)
     {
         $supplier_id = Str::slug($supplier_name);
@@ -177,8 +192,7 @@ class FullTest extends DuskTestCase
             ->click('.accordion-item[data-element-id="' . $supplier_id . '"]')->waitForText('Dettagli')
             ->mainScreenshot('fornitore')
             ->with('.accordion-item[data-element-id="' . $supplier_id . '"]', function($panel) use ($supplier_name) {
-                $panel->assertInputValue('name', $supplier_name)
-                    ->waitForText('Salva')
+                $panel->waitForText('Salva')
                     ->click('@status-deleted')
                     ->pause(500)
                     ->press('Salva');
@@ -220,16 +234,22 @@ class FullTest extends DuskTestCase
             $browser->visitRoute('suppliers.index')
                 ->waitForText('Amministra Categorie')
                 ->press('Crea Nuovo Fornitore')->waitForText('Nome')
-                ->typeSlowly('name', $supplier[0])
-                ->typeSlowly('description', $supplier[1])
-                ->typeSlowly('payment_method', $supplier[2])
-                ->typeSlowly('order_method', $supplier[3])
-                ->typeSlowly('vat', $supplier[4])
+                ->typeSlowly('name', $supplier[0], 50)
+                ->typeSlowly('description', $supplier[1], 50)
+                ->typeSlowly('payment_method', $supplier[2], 50)
+                ->typeSlowly('order_method', $supplier[3], 50)
+                ->typeSlowly('vat', $supplier[4], 50)
                 ->press('Salva')
-                ->waitForText('Dettagli');
+                ->pause(1000)
+                ->with('.accordion-collapse.collapse.show', function($panel) use ($supplier) {
+                    $panel->assertInputValue('name', $supplier[0])
+                        ->assertInputValue('payment_method', $supplier[2])
+                        ->assertInputValue('order_method', $supplier[3])
+                        ->assertInputValue('vat', $supplier[4]);
+                });
         }
 
-        // $this->disableEnableSupplier($browser, $suppliers[0][0]);
+        $this->disableEnableSupplier($browser, $suppliers[0][0]);
 
         $supplier_name = $suppliers[0][0];
         $supplier_id = Str::slug($supplier_name);
@@ -249,18 +269,18 @@ class FullTest extends DuskTestCase
                 $default_vat_rate = VatRate::where('percentage', 4)->first();
 
                 foreach($products as $index => $product) {
-                    $browser->scrollIntoView('#category_admin');
+                    $browser->scrollIntoView('#category_admin')->pause(500);
 
                     $panel->press('Crea Nuovo Prodotto')->waitForText('Prezzo Unitario')
                         ->with('.modal.show', function($panel) use ($product, $default_vat_rate) {
-                            $panel->typeSlowly('name', $product[0])
-                                ->typeSlowly('price', $product[1])
+                            $panel->typeSlowly('name', $product[0], 50)
+                                ->typeSlowly('price', $product[1], 50)
                                 ->select('measure_id', $product[2])
                                 ->select('category_id', $product[3])
                                 ->select('vat_rate_id', $default_vat_rate->id)
                                 ->press('Salva');
                         })
-                        ->waitForText($product[0]);
+                        ->waitForText($product[0])->pause(500);
 
                     if ($index == 0) {
                         $browser->mainScreenshot('prodotto');
@@ -278,7 +298,7 @@ class FullTest extends DuskTestCase
             ->waitForText('Amministra Categorie')
             ->press('#category_admin')->waitForText('Clicca e trascina le categorie nell\'elenco')
             ->mainScreenshot('categorie')
-            ->type('input[name=new_category]', 'Pippo')->click('.dynamic-tree-add')
+            ->typeSlowly('input[name=new_category]', 'Pippo', 50)->click('.dynamic-tree-add')
             ->pause(100)
             ->press('Salva')
             ->pause(500)
@@ -310,9 +330,9 @@ class FullTest extends DuskTestCase
         $browser->visitRoute('orders.index')
             ->waitForText('Aggrega Ordini')
             ->press('Crea Nuovo Ordine')->waitForText('Fornitore')
-            ->type('start', printableDate(date('Y-m-d')))
-            ->type('end', printableDate(date('Y-m-d', strtotime('+10 days'))))
-            ->type('shipping', printableDate(date('Y-m-d', strtotime('+15 days'))))
+            ->typeSlowly('start', printableDate(date('Y-m-d')), 50)
+            ->typeSlowly('end', printableDate(date('Y-m-d', strtotime('+7 days'))), 50)
+            ->typeSlowly('shipping', printableDate(date('Y-m-d', strtotime('+14 days'))), 50)
             ->select('supplier_id', $supplier_id)
             ->press('Salva')
             ->waitForText('Consegne');
@@ -323,10 +343,7 @@ class FullTest extends DuskTestCase
         $products = $this->products();
 
         $total = 0;
-        $quantities = [];
-        foreach($products as $product) {
-            $quantities[] = rand(0, 5);
-        }
+        $quantities = $this->quantities();
 
         /*
             Salvataggio prenotazione, e controllo
@@ -373,8 +390,55 @@ class FullTest extends DuskTestCase
 
         $browser->visitRoute('orders.index')
             ->waitForText('Aggrega Ordini')
-            ->clickAtXPath('//*/div[contains(@class, "accordion-item")][1]/h2/button')->waitForText('Consegne')
-            ->scrollIntoView('.order-summary-order-price')->assertSeeIn('.order-summary-order-price', '0.00 €');
+            ->clickAtXPath('//*/div[contains(@class, "accordion-item")][1]/h2/button')->waitForText('Consegne')->pause(1000)
+            ->scrollIntoView('.order-summary-order-price')
+            ->assertSeeIn('.order-summary-order-price', '0.00');
+    }
+
+    private function modifiedProducts($browser)
+    {
+        $suppliers = $this->suppliers();
+        $supplier_name = $suppliers[0][0];
+        $supplier_id = Str::slug($supplier_name);
+
+        $browser->visitRoute('suppliers.index')
+            ->waitForText('Amministra Categorie')
+            ->click('.accordion-item[data-element-id="' . $supplier_id . '"]')->waitForText('Dettagli')
+            ->press('Prodotti')
+            ->pause(500)
+            ->clickAtXPath('//*/div[@data-element-id="' . $supplier_id . '"]//div[contains(@class, "active")]//div[contains(@class, "accordion-item")][1]/h2/button')->waitForText('Sconto')->pause(1000)
+            ->clickAtXPath('//*/div[@data-element-id="' . $supplier_id . '"]//div[contains(@class, "active")]//div[contains(@class, "accordion-item")][1]//label[normalize-space()="Sconto"]/following-sibling::div/button')
+            ->waitForText('Misura su cui applicare le soglie')
+
+            ->click('@applies_type-quantity')
+            ->click('@value-percentage')
+            ->click('@arithmetic-sub')
+            ->click('@applies_target-booking')
+            ->click('@scale-major')
+            ->clickLink('Aggiungi Soglia')
+            ->typeAtXPath('//*/table/tbody/tr[1]/td[2]/div/input', '5')->typeAtXPath('//*/table/tbody/tr[1]/td[4]/div/input', '10')
+            ->typeAtXPath('//*/table/tbody/tr[2]/td[2]/div/input', '15')->typeAtXPath('//*/table/tbody/tr[2]/td[4]/div/input', '20')
+            ->mainScreenshot('modificatore_soglie')
+
+            ->click('@applies_type-quantity')
+            ->click('@value-price')
+            ->click('@applies_target-order')
+            ->click('@scale-major')
+            ->typeAtXPath('//*/table/tbody/tr[1]/td[2]/div/input', '20')->typeAtXPath('//*/table/tbody/tr[1]/td[4]/div/input', '2.50')
+            ->typeAtXPath('//*/table/tbody/tr[2]/td[2]/div/input', '40')->typeAtXPath('//*/table/tbody/tr[2]/td[4]/div/input', '2.20')
+            ->mainScreenshot('modificatore_prezzo_unitario')
+
+            ->click('@applies_type-none')
+            ->click('@value-percentage')
+            ->click('@arithmetic-sub')
+            ->typeSlowly('simplified_amount', '5', 50)
+            ->mainScreenshot('modificatore_semplice')
+
+            ->press('Salva')
+            ->pause(500)
+            ->script('window.scrollTo(0,document.body.scrollHeight)');
+
+        $browser->press('Salva')->pause(500);
     }
 
     private function createNotification($browser)
@@ -382,11 +446,13 @@ class FullTest extends DuskTestCase
         $browser->visitRoute('notifications.index')
             ->waitForText('Crea Nuovo Notifica')
             ->press('Crea Nuovo Notifica')->waitForText('Tipo')
-            ->type('content', 'Questa è una prova')
-            ->type('start_date', printableDate(date('Y-m-d')))
-            ->type('end_date', printableDate(date('Y-m-d', strtotime('+15 days'))))
-            ->press('Salva')
-            ->waitForText('Questa è una prova');
+            ->with('.modal.show', function($panel) {
+                $panel->typeSlowly('content', 'Solo una prova', 50)
+                    ->typeSlowly('start_date', printableDate(date('Y-m-d')), 50)
+                    ->typeSlowly('end_date', printableDate(date('Y-m-d', strtotime('+7 days'))), 50)
+                    ->press('Salva');
+            })
+            ->waitForText('Solo una prova');
     }
 
     public function testAll()
@@ -417,10 +483,13 @@ class FullTest extends DuskTestCase
 
             $this->testProfile($browser);
             $this->createUsers($browser);
+
             $this->createSuppliers($browser);
             $this->testSuppliersTools($browser);
             $this->createOrders($browser);
             $this->doBookings($browser);
+            $this->modifiedProducts($browser);
+
             $this->createNotification($browser);
         });
     }

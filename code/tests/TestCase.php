@@ -43,13 +43,12 @@ abstract class TestCase extends BaseTestCase
 
     public function createRoleAndUser($gas, $permissions, $target = null)
     {
-        $role = \App\Role::create([
-            'name' => Str::random(10),
+        $role = \App\Role::factory()->create([
             'actions' => $permissions
         ]);
 
         $user = \App\User::factory()->create(['gas_id' => $gas->id]);
-        $user->addRole($role, $target ?: $gas);
+        $user->addRole($role->id, $target ?: $gas);
 
         return $user;
     }

@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col">
-        <x-larastrap::form :obj="$modtype" classes="main-form" method="PUT" :action="route('modtypes.update', $modtype->id)">
+        <x-larastrap::mform :obj="$modtype" method="PUT" :action="route('modtypes.update', $modtype->id)">
             <div class="row">
                 <div class="col">
                     @include('modifiertype.base-edit', ['modtype' => $modtype])

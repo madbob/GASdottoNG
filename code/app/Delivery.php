@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Auth;
@@ -18,7 +19,7 @@ use App\Events\AttachableToGas;
 
 class Delivery extends Model
 {
-    use ModifiableTrait, GASModel, SluggableID, Cachable;
+    use HasFactory, ModifiableTrait, GASModel, SluggableID, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';

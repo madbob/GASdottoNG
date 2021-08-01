@@ -434,8 +434,8 @@ class Booking extends Model
             $modifiers = $modifiers->merge($product->modifiers);
         }
 
-        if ($this->user->shipping_place) {
-            $modifiers = $modifiers->merge($this->user->shipping_place->modifiers);
+        if ($this->user->shippingplace) {
+            $modifiers = $modifiers->merge($this->user->shippingplace->modifiers);
         }
 
         return $modifiers->sortBy('priority');

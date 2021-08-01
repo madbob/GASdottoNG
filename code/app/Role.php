@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use DB;
@@ -13,7 +14,7 @@ use Log;
 
 class Role extends Model
 {
-    use GASModel, Cachable;
+    use HasFactory, GASModel, Cachable;
 
     private $targets = null;
 

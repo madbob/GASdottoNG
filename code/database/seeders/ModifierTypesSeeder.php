@@ -16,7 +16,7 @@ class ModifierTypesSeeder extends Seeder
             $m->id = 'spese-trasporto';
             $m->name = _i('Spese Trasporto');
             $m->system = true;
-            $m->classes = ['App\Product', 'App\Supplier'];
+            $m->classes = ['App\Product', 'App\Supplier', 'App\Delivery'];
             $m->save();
         }
 
