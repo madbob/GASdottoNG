@@ -1891,14 +1891,17 @@ $(document).ready(function() {
     });
 
     $('body').on('change', '#dates-in-range input.date, #dates-in-range input.periodic', function() {
-        if ($(this).val() == '')
+        if ($(this).val() == '') {
             return;
+        }
 
-        var row = $(this).closest('.row');
-        if ($(this).hasClass('date'))
+        var row = $(this).closest('tr');
+        if ($(this).hasClass('date')) {
             row.find('.periodic').val('');
-        else
+        }
+        else {
             row.find('.date').val('');
+        }
     });
 
     $('body').on('change', '.collapse_trigger', function() {
@@ -2130,7 +2133,7 @@ $(document).ready(function() {
         }
     });
 
-    $('body').on('change', '#createOrder select[name^=supplier_id]', function() {
+    $('body').on('change', '[id^="createOrder"] select[name^=supplier_id]', function() {
         $.ajax({
             url: absolute_url + '/dates/query',
             method: 'GET',
@@ -2140,7 +2143,7 @@ $(document).ready(function() {
             dataType: 'HTML',
             success: function(data) {
                 data = $(data);
-                $('#createOrder .supplier-future-dates').empty().append(data);
+                $('[id^="createOrder"] .supplier-future-dates').empty().append(data);
                 utils.j().initElements(data);
             }
         });
@@ -2148,7 +2151,7 @@ $(document).ready(function() {
 
     $('body').on('click', '.suggested-dates li', function() {
         var date = $(this).text();
-        $(this).closest('#createOrder').find('input[name=shipping]').val(date);
+        $(this).closest('form').find('input[name=shipping]').val(date);
     });
 
     /*

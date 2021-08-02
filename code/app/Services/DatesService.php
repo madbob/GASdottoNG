@@ -60,9 +60,7 @@ class DatesService extends BaseService
 
             $saved_ids = [];
 
-            $generic_types = array_map(function($value) {
-                return $value['value'];
-            }, Date::types());
+            $generic_types = array_keys(Date::types());
 
             foreach($ids as $index => $id) {
                 if (in_array($targets[$index], $suppliers) == false)

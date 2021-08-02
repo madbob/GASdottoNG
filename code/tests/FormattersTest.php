@@ -76,4 +76,90 @@ class FormattersTest extends TestCase
         $this->assertEquals(2202009, humanSizeToBytes('2.1M'));
         $this->assertEquals(1073741824, humanSizeToBytes('1G'));
     }
+
+    public function testUnrollPeriodicWeekly()
+    {
+        $test = (object) [
+            'from' => '2021-08-01',
+            'to' => '2021-10-31',
+            'cycle' => 'all',
+            'day' => 'tuesday',
+        ];
+
+        $dates = unrollPeriodic($test);
+
+        $valid_dates = [
+            '2021-08-03',
+            '2021-08-10',
+            '2021-08-17',
+            '2021-08-24',
+            '2021-08-31',
+            '2021-09-07',
+            '2021-09-14',
+            '2021-09-21',
+            '2021-09-28',
+            '2021-10-05',
+            '2021-10-12',
+            '2021-10-19',
+            '2021-10-26',
+        ];
+
+        $this->assertEquals(count($dates), count($valid_dates));
+
+        foreach($dates as $index => $date) {
+            $this->assertEquals($date, $valid_dates[$index]);
+        }
+    }
+
+    public function testUnrollPeriodicMonthFirst()
+    {
+        $test = (object) [
+            'from' => '2021-08-01',
+            'to' => '2021-10-31',
+            'cycle' => 'month_first',
+            'day' => 'wednesday',
+        ];
+
+        $dates = unrollPeriodic($test);
+
+        $valid_dates = [
+            '2021-08-04',
+            '2021-09-01',
+            '2021-10-06',
+        ];
+
+        $this->assertEquals(count($dates), count($valid_dates));
+
+        foreach($dates as $index => $date) {
+            $this->assertEquals($date, $valid_dates[$index]);
+        }
+    }
+
+    public function testUnrollPeriodicBiWeekly()
+    {
+        $test = (object) [
+            'from' => '2021-08-01',
+            'to' => '2021-10-31',
+            'cycle' => 'biweekly',
+            'day' => 'monday',
+        ];
+
+        $dates = unrollPeriodic($test);
+
+        $valid_dates = [
+            '2021-08-02',
+            '2021-08-16',
+            '2021-08-30',
+            '2021-09-13',
+            '2021-09-27',
+            '2021-10-11',
+            '2021-10-25',
+        ];
+
+        $this->assertEquals(count($dates), count($valid_dates));
+
+        foreach($dates as $index => $date) {
+            $this->assertEquals($date, $valid_dates[$index]);
+        }
+    }
 }

@@ -9,8 +9,8 @@
 
     <hr>
 
-    <x-larastrap::form method="PUT" :action="route('dates.update', 0)">
-        <input type="hidden" name="close-modal" value="1">
+    <x-larastrap::iform method="PUT" :action="route('dates.update', 0)">
+        <input type="hidden" name="reload-whole-page" value="1">
 
         <div class="row">
             <div class="col-md-12" id="dates-in-range">
@@ -36,7 +36,7 @@
                         [
                             'label' => _i('Data'),
                             'field' => 'date',
-                            'type' => 'date',
+                            'type' => 'datepicker',
                             'width' => 2,
                             'extra' => [
                                 'defaults_now' => true
@@ -67,5 +67,5 @@
                 ])
             </div>
         </div>
-    </x-larastrap::form>
+    </x-larastrap::iform>
 </x-larastrap::modal>

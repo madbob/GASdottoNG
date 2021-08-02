@@ -7,7 +7,7 @@
 
     <hr>
 
-    <x-larastrap::form method="POST" :action="route('dates.updateorders')">
+    <x-larastrap::iform method="POST" :action="route('dates.updateorders')">
         <input type="hidden" name="reload-whole-page" value="1">
 
         <div class="row">
@@ -87,5 +87,5 @@
                 ])
             </div>
         </div>
-    </x-larastrap::form>
+    </x-larastrap::iform>
 </x-larastrap::modal>

@@ -53,19 +53,24 @@ class OrdersController extends Controller
 
         $recurrings = Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('recurring', '!=', '')->get();
         foreach($recurrings as $d) {
-            $data = json_decode($d->recurring);
-            if ($data) {
-                $data->from = date('Y-m-d', strtotime($last_date . ' +1 days'));
-                if ($data->to <= $data->from) {
-                    $d->delete();
-                }
-                else {
-                    $d->recurring = json_encode($data);
-                    $d->save();
+            $dates = $d->dates;
+            $next_date = null;
+
+            foreach($dates as $read_date) {
+                if ($read_date > $last_date) {
+                    $next_date = $read_date;
+                    break;
                 }
             }
+
+            if (is_null($next_date)) {
+                $d->delete();
+            }
             else {
-                Log::error('Broken date description: ' . $d->recurring);
+                $data = json_decode($d->recurring);
+                $data->from = $next_date;
+                $d->recurring = json_encode($data);
+                $d->save();
             }
         }
     }

@@ -33,11 +33,13 @@ usort($suppliers, function($a, $b) {
 <x-larastrap::datepicker name="end" :label="_i('Data Chiusura Prenotazioni')" defaults_now="true" required data-enforce-after=".date[name=start]" :pophelp="_i('Data di chiusura dell\'ordine. Al termine del giorno qui indicato, l\'ordine sarà automaticamente impostato nello stato Prenotazioni Chiuse')" />
 <x-larastrap::datepicker name="shipping" :label="_i('Data Consegna')" defaults_now="true" required data-enforce-after=".date[name=end]" />
 
-@if(empty($suppliers) == false)
-    <div class="supplier-future-dates">
-        @include('dates.list', ['dates' => array_values($suppliers)[0]->calendarDates])
-    </div>
-@endif
+<x-larastrap::field>
+    @if(empty($suppliers) == false)
+        <div class="supplier-future-dates">
+            @include('dates.list', ['dates' => array_values($suppliers)[0]->calendarDates])
+        </div>
+    @endif
+</x-larastrap::field>
 
 @if($currentgas->hasFeature('shipping_places'))
     <x-larastrap::selectobj name="deliveries" :label="_i('Luoghi di Consegna')" :options="$currentgas->deliveries" multiple :pophelp="_i('Selezionando uno o più luoghi di consegna, l\'ordine sarà visibile solo agli utenti che hanno attivato quei luoghi. Se nessun luogo viene selezionato, l\'ordine sarà visibile a tutti.')" />

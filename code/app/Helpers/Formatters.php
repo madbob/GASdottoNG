@@ -135,6 +135,7 @@ function unrollPeriodic($value)
     }
 
     $start = new \DateTime($value->from);
+    $start = $start->modify('-1 days');
     $end = new \DateTime($value->to);
     $end = $end->modify('+1 days');
 

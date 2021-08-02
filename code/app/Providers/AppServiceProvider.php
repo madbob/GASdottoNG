@@ -55,7 +55,7 @@ class AppServiceProvider extends ServiceProvider
 
         Order::created(function($order) {
             if ($order->status == 'open') {
-                NotifyNewOrder::dispatch($order->id)->delay(now()->addMinutes(1));
+                NotifyNewOrder::dispatch($order->id);
             }
         });
 
