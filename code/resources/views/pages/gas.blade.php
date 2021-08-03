@@ -114,7 +114,7 @@
                                 <input type="hidden" name="group" value="banking">
 
                                 <div class="col">
-                                    <x-larastrap::text name="year_closing" :label="_i('Inizio Anno Sociale')" classes="date-to-month" textappend="<i class='bi-calendar'></i>" :pophelp="_i('In questa data le quote di iscrizione verranno automaticamente fatte scadere e dovranno essere rinnovate')" />
+                                    <x-larastrap::text name="year_closing" :label="_i('Inizio Anno Sociale')" classes="date-to-month" :value="ucwords(strftime('%d %B', strtotime($gas->getConfig('year_closing'))))" textappend="<i class='bi-calendar'></i>" :pophelp="_i('In questa data le quote di iscrizione verranno automaticamente fatte scadere e dovranno essere rinnovate')" />
                                     <x-larastrap::price name="annual_fee_amount" :label="_i('Quota Annuale')" :pophelp="_i('Se non configurato (valore = 0) non verranno gestite le quote di iscrizione')" />
                                     <x-larastrap::price name="deposit_amount" :label="_i('Cauzione')" :pophelp="_i('Se non configurato (valore = 0) non verranno gestite le cauzioni da parte dei nuovi soci')" />
 

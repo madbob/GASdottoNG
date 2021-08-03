@@ -69,6 +69,9 @@ return [
                 'placeholder' => 'Mai',
                 'textappend' => '<i class="bi-calendar"></i>',
                 'reviewCallback' => 'formatDateToComponent',
+                'attributes' => [
+                    'autocomplete' => 'off',
+                ],
             ],
         ],
         'address' => [

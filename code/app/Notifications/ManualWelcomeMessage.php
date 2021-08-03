@@ -9,7 +9,8 @@ class ManualWelcomeMessage extends ManyMailNotification
 {
     use MailFormatter;
 
-    private $token;
+    public $afterCommit = true;
+    private $token = null;
 
     public function __construct($token)
     {

@@ -595,9 +595,20 @@ function flaxComplexOptions($array)
 function formatDateToComponent($component, $params)
 {
     $mandatory = $params['required'];
-    $defaults_now = filter_var($params['defaults_now'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
-    $params['value'] = printableDate($params['value'], $defaults_now ? date('Y-m-d G:i:s') : '');
+    $defaults_now = $params['attributes']['defaults_now'] ?? false;
+    if ($defaults_now) {
+        $defaults_now = filter_var($defaults_now, FILTER_VALIDATE_BOOLEAN);
+        unset($params['attributes']['defaults_now']);
+    }
+
+    if (empty($params['value'])) {
+        if ($defaults_now) {
+            $params['value'] = date('Y-m-d G:i:s');
+        }
+    }
+
+    $params['value'] = printableDate($params['value']);
     if ($params['value'] == _i('Mai') && $mandatory) {
         $params['value'] = '';
     }

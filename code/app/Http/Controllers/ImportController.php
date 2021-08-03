@@ -453,6 +453,10 @@ class ImportController extends Controller
                 case 'guess':
                     return $this->storeUploadedFile($request, [
                         'type' => 'users',
+                        'extra_description' => [
+                            _i('Se il login è già esistente il relativo utente sarà aggiornato coi dati letti dal file.'),
+                            _i('Altrimenti verrà inviata una email di invito con il link da visitare per accedere la prima volta e definire la propria password.'),
+                        ],
                         'sorting_fields' => [
                             'firstname' => (object) [
                                 'label' => _i('Nome'),
@@ -546,7 +550,9 @@ class ImportController extends Controller
 
                     foreach($reader->getRecords() as $line) {
                         try {
+                            $new_user = false;
                             $login = $line[$login_index];
+
                             $u = User::where('username', '=', $login)->orderBy('id', 'desc')->first();
                             if (is_null($u)) {
                                 $u = new User();
@@ -554,6 +560,7 @@ class ImportController extends Controller
                                 $u->username = $login;
                                 $u->password = Hash::make($login);
                                 $u->member_since = date('Y-m-d');
+                                $new_user = true;
                             }
 
                             $contacts = [
@@ -617,7 +624,9 @@ class ImportController extends Controller
                                 $u->alterBalance($credit);
                             }
 
-                            $u->initialWelcome();
+                            if ($new_user) {
+                                $u->initialWelcome();
+                            }
                         }
                         catch (\Exception $e) {
                             $errors[] = implode($target_separator, $line).'<br/>'.$e->getMessage();

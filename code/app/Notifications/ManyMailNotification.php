@@ -14,12 +14,13 @@ use Illuminate\Notifications\Messages\MailMessage;
     Le classi per le notifiche che estendono questa qua vanno a popolare i
     destinatari delle mail tenendo conto di questo.
 */
-class ManyMailNotification extends Notification
+class ManyMailNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public function via($notifiable)
     {
+        $this->connection = config('queue.default');
         return ['mail'];
     }
 

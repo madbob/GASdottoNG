@@ -35,7 +35,7 @@ class Lists {
             event.stopPropagation();
             var node = $(this);
             $('html, body').animate({
-                scrollTop: node.closest('.accordion-item').offset().top
+                scrollTop: node.closest('.accordion-item').offset().top - 50
             }, 300);
         });
     }

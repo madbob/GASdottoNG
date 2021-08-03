@@ -890,7 +890,7 @@ class MovementTypesSeeder extends Seeder
             $type->function = json_encode(
                 [
                     (object) [
-                        'method' => 'bank',
+                        'method' => 'cash',
                         'sender' => (object) [
                             'operations' => [
                                 (object) [
@@ -904,6 +904,10 @@ class MovementTypesSeeder extends Seeder
                                 (object) [
                                     'operation' => 'increment',
                                     'field' => 'gas'
+                                ],
+                                (object) [
+                                    'operation' => 'decrement',
+                                    'field' => 'suppliers'
                                 ],
                             ]
                         ],

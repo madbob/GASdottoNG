@@ -98,9 +98,9 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
 
                             @if($user->gas->hasFeature('rid'))
                                 <x-larastrap::field :label="_i('Configurazione SEPA')" :pophelp="_i('Specifica qui i parametri per la generazione dei RID per questo utente. Per gli utenti per i quali questi campi non sono stati compilati non sarà possibile generare alcun RID.')">
-                                    <x-larastrap::text name="rid->iban" :label="_i('IBAN')" squeeze="true" :value="$user->rid['iban']" :placeholder="_i('IBAN')" />
-                                    <x-larastrap::text name="rid->id" :label="_i('Identificativo Mandato SEPA')" squeeze="true" :value="$user->rid['id']" :placeholder="_i('Identificativo Mandato SEPA')" />
-                                    <x-larastrap::datepicker name="rid->date" :label="_i('Data Mandato SEPA')" squeeze="true" :value="$user->rid['date']" />
+                                    <x-larastrap::text name="rid->iban" :label="_i('IBAN')" squeeze="true" :value="$user->rid['iban'] ?? ''" :placeholder="_i('IBAN')" />
+                                    <x-larastrap::text name="rid->id" :label="_i('Identificativo Mandato SEPA')" squeeze="true" :value="$user->rid['id'] ?? ''" :placeholder="_i('Identificativo Mandato SEPA')" />
+                                    <x-larastrap::datepicker name="rid->date" :label="_i('Data Mandato SEPA')" squeeze="true" :value="$user->rid['date'] ?? ''" />
                                 </x-larastrap::field>
                             @endif
                         @endif

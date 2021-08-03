@@ -165,9 +165,12 @@ class NotificationsController extends Controller
 
     public function update(Request $request, $id)
     {
+        DB::beginTransaction();
+
         $user = Auth::user();
-        if ($user->can('notifications.admin', $user->gas) == false)
+        if ($user->can('notifications.admin', $user->gas) == false) {
             return $this->errorResponse(_i('Non autorizzato'));
+        }
 
         $n = Notification::findOrFail($id);
         $n->creator_id = $user->id;
