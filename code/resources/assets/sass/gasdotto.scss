@@ -352,6 +352,10 @@ button {
     }
 }
 
+i[class^='bi-hidden-'] {
+    display: none;
+}
+
 #bottom-stop {
 	position: absolute;
 	clear: both;
@@ -437,6 +441,8 @@ button {
 }
 
 .btn-group {
+    flex-flow: wrap;
+
     &.disabled {
         pointer-events: none;
     }
