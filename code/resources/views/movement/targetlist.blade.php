@@ -1,8 +1,4 @@
-<?php
-
-$domid = Illuminate\Support\Str::random(10);
-
-?>
+<?php $domid = Illuminate\Support\Str::random(10) ?>
 
 <div class="row">
     <div class="col-12 col-md-6 order-2 order-md-1">

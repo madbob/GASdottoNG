@@ -74,3 +74,17 @@ function normalizeId($subject)
         return $subject;
     }
 }
+
+function inlineId($obj)
+{
+    $class = get_class($obj);
+    list($namespace, $class) = explode('\\', $class);
+    return sprintf('%s---%s', $class, $obj->id);
+}
+
+function fromInlineId($id)
+{
+    list($class, $id) = explode('---', $id);
+    $class = sprintf('App\\%s', $class);
+    return $class::find($id);
+}

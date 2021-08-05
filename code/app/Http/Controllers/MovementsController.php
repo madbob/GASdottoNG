@@ -346,9 +346,9 @@ class MovementsController extends BackedController
         }
     }
 
-    public function getBalance()
+    public function getBalance(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
         if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
             return $this->errorResponse(_i('Non autorizzato'));
         }
@@ -362,6 +362,17 @@ class MovementsController extends BackedController
             'deposits' => $balance->deposits
         ];
         return response()->json($obj, 200);
+    }
+
+    public function getHistory(Request $request, $targetid)
+    {
+        $user = $request->user();
+        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
+            return $this->errorResponse(_i('Non autorizzato'));
+        }
+
+        $obj = fromInlineId($targetid);
+        return view('movement.history', ['obj' => $obj]);
     }
 
     public function recalculateCurrentBalance()
