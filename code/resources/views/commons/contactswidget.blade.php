@@ -1,4 +1,4 @@
-<x-larastrap::field :label="_i('Contatti')" :pophelp="_i('Qui si può specificare un numero arbitrario di contatti per il soggetto. Le notifiche saranno spedite a tutti gli indirizzi e-mail indicati.')">
+<x-larastrap::field :label="_i('Contatti')" :pophelp="_i('Qui si può specificare un numero arbitrario di contatti per il soggetto. Le notifiche saranno spedite a tutti gli indirizzi e-mail indicati. Si raccomanda di specificare un solo contatto per riga.')">
     @include('commons.manyrows', [
         'contents' => $obj ? $obj->contacts : [],
         'extra_class' => 'contacts-selection',

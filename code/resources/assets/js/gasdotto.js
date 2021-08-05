@@ -109,15 +109,15 @@ function generalInit(container) {
     });
 
     if (container.closest('.contacts-selection').length != 0) {
-        var input = container.find('input:text');
+        var input = container.find('input[name="contact_value[]"]');
         var typeclass = container.find('select option:selected').val();
-        input.attr('class', '').addClass('form-control').addClass(typeclass);
+        fixContactField(input, typeclass);
     }
     else {
-        $('.contacts-selection .row', container).each(function() {
-            var input = $(this).find('input:text');
+        $('.contacts-selection tr', container).each(function() {
+            var input = $(this).find('input[name="contact_value[]"]');
             var typeclass = $(this).find('select option:selected').val();
-            input.attr('class', '').addClass('form-control').addClass(typeclass);
+            fixContactField(input, typeclass);
         });
     }
 
@@ -295,6 +295,21 @@ function voidForm(form) {
     form.find('textarea').val('');
     form.find('select option:first').prop('selected', true);
     form.find('.error-message').remove();
+}
+
+function fixContactField(input, typeclass) {
+    input.attr('class', '').addClass('form-control');
+
+    if (typeclass == 'email') {
+        input.attr('type', 'email');
+    }
+    else if (typeclass == 'website') {
+        input.attr('type', 'url');
+    }
+    else {
+        input.attr('type', 'text');
+        input.addClass(typeclass);
+    }
 }
 
 function sortingDates(a, b) {
@@ -1597,7 +1612,9 @@ $(document).ready(function() {
     });
 
     $('body').on('change', '.contacts-selection select', function() {
-        $(this).closest('.row').find('input:text').attr('class', '').addClass('form-control').addClass($(this).find('option:selected').val());
+        var input = $(this).closest('tr').find('input[name="contact_value[]"]');
+        var typeclass = $(this).find('option:selected').val();
+        fixContactField(input, typeclass);
     });
 
     $('body').on('focus', 'input.address', function() {
