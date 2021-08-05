@@ -14,7 +14,11 @@ class Utils {
     }
 
     static inlineFeedback(button, feedback_text) {
-        var idle_text = button.text();
+        var idle_text = button.attr('data-idle-text');
+        if (!idle_text) {
+            idle_text = button.text();
+        }
+
         button.text(feedback_text);
         setTimeout(function() {
             button.text(idle_text).prop('disabled', false);

@@ -127,6 +127,17 @@ class Callables {
         throw "Done!";
     }
 
+    static passwordProtected(form)
+    {
+        if (form.attr('data-password-protected-verified') != '1') {
+            var id = form.attr('id');
+            var modal = $('#password-protection-dialog');
+            modal.find('input:password').val('');
+            modal.attr('data-form-target', '#' + id).modal('show');
+            throw 'Check password!';
+        }
+    }
+
     /* post-saved-function ****************************************************/
 
     static triggerPayment(form)

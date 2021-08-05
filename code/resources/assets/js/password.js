@@ -1,4 +1,4 @@
-const utils = require('./utils');
+import utils from "./utils";
 
 $(document).ready(function() {
     $('body').on('click', '.password-field .bi-eye-slash', function() {
@@ -71,21 +71,7 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('submit', '.password-protected', function(event) {
-        if ($(this).attr('data-password-protected-verified') != '1') {
-            event.preventDefault();
-            var id = $(this).attr('id');
-            var modal = $('#password-protection-dialog');
-            modal.attr('data-form-target', '#' + id);
-            modal.find('input:password').val();
-            modal.modal('show');
-            $('#' + id).find('button:submit').prop('disabled', true);
-            return false;
-        }
-
-        return true;
-    })
-    .on('submit', '#password-protection-dialog form', function(event) {
+    $('body').on('submit', '#password-protection-dialog form', function(event) {
         event.preventDefault();
         var modal = $(this).closest('.modal');
 
@@ -96,28 +82,17 @@ $(document).ready(function() {
                 password: $(this).find('input[type=password]').val()
             },
             success: function(data) {
-                if (data == 'ok') {
-                    var target = modal.attr('data-form-target');
-                    modal.modal('hide');
-                    var form = $(target);
-                    form.attr('data-password-protected-verified', '1');
+                modal.modal('hide');
+                var target = modal.attr('data-form-target');
+                var form = $(target);
 
-                    $.ajax({
-                        method: form.attr('method'),
-                        url: form.attr('action'),
-                        data: form.serializeArray(),
-                        dataType: 'JSON',
-                        success: function(data) {
-                            form.find('button:submit').prop('disabled', false);
-                            miscInnerCallbacks(form, data);
-                            form.attr('data-password-protected-verified', '0');
-                        },
-                        error: function() {
-                            var button = form.find('button:submit');
-                            utils.inlineFeedback(button, _('ERRORE'));
-                            form.attr('data-password-protected-verified', '0');
-                        }
-                    });
+                if (data == 'ok') {
+                    form.attr('data-password-protected-verified', '1');
+                    form.submit();
+                }
+                else {
+                    var save_button = form.find('button:submit')
+                    utils.inlineFeedback(save_button, _('Password errata!'));
                 }
             }
         });

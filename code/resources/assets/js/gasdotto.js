@@ -1495,7 +1495,9 @@ $(document).ready(function() {
         }
 
         var save_button = form.find('button[type=submit]');
-        save_button.prop('disabled', true);
+        var idle_text = save_button.text();
+        save_button.attr('data-idle-text', idle_text);
+        save_button.empty().append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop('disabled', true);
 
         utils.postAjax({
             method: form.attr('method'),

@@ -126,6 +126,12 @@ return [
                 'postlabel' => '<i class="bi-window"></i>',
             ],
         ],
+        'iconbutton' => [
+            'extends' => 'button',
+            'params' => [
+                'classes' => ['btn-icon'],
+            ],
+        ],
         'mform' => [
             'extends' => 'form',
             'params' => [

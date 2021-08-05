@@ -347,8 +347,10 @@ table {
 }
 
 button {
-    i {
-        margin-left: 5px;
+    &:not(.btn-icon) {
+        i {
+            margin-left: 5px;
+        }
     }
 }
 
