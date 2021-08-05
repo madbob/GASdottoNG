@@ -1,4 +1,6 @@
-<x-larastrap::modal :title="_i('Configura Ruoli per %s', [$user->printableName()])">
+<x-larastrap::modal :title="_i('Configura Ruoli per %s', [$user->printableName()])" classes="inner-modal">
+    <input type="hidden" name="reload-portion" value="#permissions-list-{{ sanitizeId($user->id) }}">
+
     <div class="role-editor">
         @foreach($currentuser->managed_roles as $role)
             <?php

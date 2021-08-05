@@ -195,6 +195,7 @@ class FullTest extends DuskTestCase
                 $panel->waitForText('Salva')
                     ->click('@status-deleted')
                     ->pause(500)
+                    ->scrollIntoView('button[type=submit]')
                     ->press('Salva');
             })
             ->waitUntilMissing('Dettagli');
@@ -218,6 +219,7 @@ class FullTest extends DuskTestCase
                     ->waitForText('Salva')
                     ->click('@status-active')
                     ->pause(500)
+                    ->scrollIntoView('button[type=submit]')
                     ->press('Salva');
             })
             ->waitUntilMissing('Dettagli');
@@ -269,7 +271,7 @@ class FullTest extends DuskTestCase
                 $default_vat_rate = VatRate::where('percentage', 4)->first();
 
                 foreach($products as $index => $product) {
-                    $browser->scrollIntoView('#category_admin')->pause(500);
+                    $browser->scrollIntoView('#category_admin')->pause(1000);
 
                     $panel->press('Crea Nuovo Prodotto')->waitForText('Prezzo Unitario')
                         ->with('.modal.show', function($panel) use ($product, $default_vat_rate) {
@@ -453,6 +455,16 @@ class FullTest extends DuskTestCase
                     ->press('Salva');
             })
             ->waitForText('Solo una prova');
+
+        $browser->visitRoute('notifications.index')
+            ->waitForText('Crea Nuovo Notifica')
+            ->press('Crea Nuovo Notifica')->waitForText('Tipo')->pause(1000)
+            ->with('.modal.show', function($panel) {
+                $panel->click('@type-date')
+                    ->assertDontSee('Destinatari')
+                    ->click('@type-notification')
+                    ->assertSee('Destinatari');
+            });
     }
 
     public function testAll()

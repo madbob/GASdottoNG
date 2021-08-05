@@ -44,7 +44,9 @@ Route::middleware(['auth'])->group(function() {
     Route::get('friends/{id}/header', 'FriendsController@objhead')->name('friends.objhead');
 
     Route::get('roles/{id}/header', 'RolesController@objhead')->name('roles.objhead');
+    Route::get('roles/user/table/{user_id}', 'RolesController@tableByUser')->name('roles.usertable');
     Route::get('roles/user/{user_id}', 'RolesController@formByUser');
+    Route::get('roles/supplier/table/{supplier_id}', 'RolesController@tableBySupplier')->name('roles.suppliertable');
     Route::get('roles/supplier/{supplier_id}', 'RolesController@formBySupplier');
     Route::post('roles/attach', 'RolesController@attach');
     Route::post('roles/detach', 'RolesController@detach');

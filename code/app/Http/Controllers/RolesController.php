@@ -118,6 +118,29 @@ class RolesController extends Controller
         return view('permissions.supplier-edit', ['supplier' => $supplier]);
     }
 
+    public function tableByUser(Request $request, $user_id)
+    {
+        $user = Auth::user();
+        if ($user->can('gas.permissions', $user->gas) == false && $user->can('users.admin', $user->gas) == false) {
+            abort(503);
+        }
+
+        $user = User::find($user_id);
+        return view('commons.permissionsviewer', ['object' => $user, 'editable' => true]);
+    }
+
+    public function tableBySupplier(Request $request, $supplier_id)
+    {
+        $user = Auth::user();
+        $supplier = Supplier::findOrFail($supplier_id);
+
+        if ($user->can('gas.permissions', $user->gas) == false && $user->can('supplier.modify', $supplier) == false) {
+            abort(503);
+        }
+
+        return view('commons.permissionseditor', ['object' => $supplier, 'editable' => true]);
+    }
+
     public function attach(Request $request)
     {
         DB::beginTransaction();

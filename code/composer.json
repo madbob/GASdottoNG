@@ -36,7 +36,8 @@
         "laravel/dusk": "^6.15",
         "mockery/mockery": "~1.0",
         "nunomaduro/larastan": "^0.7.0",
-        "phpunit/phpunit": "^9.3"
+        "phpunit/phpunit": "^9.3",
+        "staudenmeir/dusk-updater": "^1.2"
     },
     "autoload": {
         "psr-4": {

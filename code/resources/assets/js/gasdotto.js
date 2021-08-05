@@ -386,8 +386,8 @@ function reloadPortion(node) {
         dataType: 'HTML',
         success: function(data) {
             data = $(data),
-            node.replaceWith(data);
             utils.j().initElements(data);
+            node.replaceWith(data);
         }
     });
 }
@@ -560,7 +560,6 @@ function miscInnerCallbacks(form, data) {
         test.each(function() {
             var target = utils.sanitizeId($(this).val());
             var box = $(target);
-            console.log(target);
 
             var url = box.attr('data-fetch-url');
             if (url == null) {
@@ -617,6 +616,17 @@ function miscInnerCallbacks(form, data) {
     }
 
     locker = false;
+}
+
+function miscInnerModalCallbacks(modal) {
+    var test = modal.find('input[name=reload-portion]');
+    if (test.length != 0) {
+        test.each(function() {
+            var identifier = $(this).val();
+            var node = $(identifier);
+            reloadPortion(node);
+        });
+    }
 }
 
 function iconsLegendTrigger(node, legend_class) {
@@ -1514,6 +1524,10 @@ $(document).ready(function() {
         });
     });
 
+    $('body').on('hide.bs.modal', '.inner-modal', function(event) {
+        miscInnerModalCallbacks($(this));
+    });
+
     $('body').on('change', '.auto-submit select', function(event) {
         var form = $(this).closest('form');
 
@@ -1569,33 +1583,6 @@ $(document).ready(function() {
         var modal = $('#delete-confirm-modal');
         modal.find('form').attr('action', $(this).attr('data-delete-url'));
         modal.modal('show');
-    });
-
-    $('body').on('show.bs.modal', '.modal.dynamic-contents', function(e) {
-        if ($(this).hasClass('dynamic-contents-inited')) {
-            return;
-        }
-
-        /*
-            La callback viene chiamata anche quando mostro il popover di
-            selezione di una data: questo è per evitare di ricaricare tutto un
-            .modal.dynamic-contents che contiene una data
-        */
-        if ($(this).hasClass('date')) {
-            return;
-        }
-
-        $(this).addClass('dynamic-contents-inited');
-
-        var contents = $(this).find('.modal-content');
-        contents.empty().append(utils.loadingPlaceholder());
-        var url = $(this).attr('data-contents-url');
-
-        $.get(url, function(data) {
-            var d = $(data);
-            contents.empty().append(d);
-            utils.j().initElements(d);
-        });
     });
 
     $('body').on('click', '.table_to_csv', function(e) {
@@ -2497,14 +2484,15 @@ $(document).ready(function() {
     */
 
     $('body').on('change', '.notification-type-switch input', function() {
-        if ($(this).prop('checked') == false)
+        if ($(this).prop('checked') == false) {
             return;
+        }
 
         var form = $(this).closest('form');
-        form.find('[name^=users]').closest('.form-group').toggle();
-        form.find('[name=end_date]').closest('.form-group').toggle();
-        form.find('[name=mailed]').closest('.form-group').toggle();
-		form.find('[name=file]').closest('.form-group').toggle();
+        form.find('[name^=users]').closest('.row').toggle();
+        form.find('[name=end_date]').closest('.row').toggle();
+        form.find('[name=mailed]').closest('.row').toggle();
+		form.find('[name=file]').closest('.row').toggle();
     });
 
     /*
