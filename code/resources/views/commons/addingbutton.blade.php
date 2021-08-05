@@ -14,7 +14,7 @@ $identifier = sprintf('create%s-%s', ucfirst($typename), Illuminate\Support\Str:
 @if(isset($dynamic_url))
     <x-larastrap::ambutton :label="$button_label" color="warning" :data-modal-url="$dynamic_url" classes="float-end" />
 @else
-    <x-larastrap::button :label="$button_label" color="warning" :triggers_modal="$identifier" classes="float-end" />
+    <x-larastrap::button :label="$button_label" color="warning" :triggers_modal="$identifier" classes="float-end" postlabel="<i class='bi-window'></i>" />
 
     <x-larastrap::modal :id="$identifier" :title="$button_label">
         <x-larastrap::iform method="POST" :action="$targeturl">
