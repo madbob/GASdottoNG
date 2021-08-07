@@ -175,6 +175,14 @@ class Booking extends Model
                 }
 
                 if ($type == 'effective') {
+                    /*
+                        TODO: per le prenotazioni non ancora consegnate, i modificatori non necessariamente sono già
+                        stati calcolati e salvati. Dunque qui non vengono considerati nel totale.
+                        Se servono viene invocato
+                        $booking->applyModifiers(null, false);
+                        prima di accedere a getValue(), in modo da calcolarli e agganciarli all'oggetto.
+                        Vedere se questa pratica può essere applicata sempre, a priori, direttamente in questa funzione
+                    */
                     $modified_values = $this->localModifiedValues(null, $with_friends);
                     $value = ModifiedValue::sumAmounts($modified_values, $value);
                 }
@@ -456,7 +464,7 @@ class Booking extends Model
 
     public function applyModifiers($aggregate_data = null, $real = true)
     {
-        if ($this->status == 'shipped') {
+        if ($this->status == 'shipped' && $real == true) {
             return $this->allModifiedValues(null, true);
         }
         else {

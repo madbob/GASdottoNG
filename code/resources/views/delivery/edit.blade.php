@@ -156,7 +156,9 @@ $existing = false;
                                                 </td>
 
                                                 <td>
-                                                    <label class="static-label booking-product-price float-end">{{ printablePriceCurrency($var->final_price) }}</label>
+                                                    <label class="static-label booking-product-price float-end">
+                                                        <span>{{ printablePriceCurrency($var->deliveredValue()) }}</span> {{ $currentgas->currency }}
+                                                    </label>
                                                 </td>
                                             </tr>
                                         @endforeach

@@ -94,8 +94,6 @@ class BookingUserController extends BookingHandler
         ];
 
         foreach($aggregate->orders as $order) {
-            // $order->waybackProducts();
-
             $booking = $this->readBooking($request, $order, $target_user, $delivering);
             if ($booking) {
                 $order->setRelation('aggregate', $aggregate);
@@ -114,14 +112,21 @@ class BookingUserController extends BookingHandler
         }
 
         foreach($bookings as $booking) {
-            $modified = $booking->applyModifiers();
+            /*
+                Qui forzo sempre il ricalcolo dei modificatori, altrimenti
+                vengono letti quelli effettivamente salvati sul DB.
+                Ma se la prenotazione è ancora in fase di consegna, lo status è
+                impostato temporaneamente a "shipped" ed andrebbe a leggere
+                quelli salvati anche se ancora non ce ne sono
+            */
+            $modified = $booking->applyModifiers(null, false);
 
             $ret->bookings[$booking->id] = (object) [
                 'total' => printablePrice($booking->getValue('effective', false)),
                 'modifiers' => [],
                 'products' => $booking->products->reduce(function($carry, $product) use ($delivering) {
                     $carry[$product->product_id] = (object) [
-                        'total' => $product->getValue('effective'),
+                        'total' => printablePrice($product->getValue('effective')),
 
                         /*
                             Mentre computo il valore totale della prenotazione
@@ -146,6 +151,7 @@ class BookingUserController extends BookingHandler
                                 }, []),
 
                                 'quantity' => $delivering ? $variant->delivered : $product->testConstraints($variant->quantity),
+                                'total' => printablePrice($delivering ? $variant->deliveredValue() : $variant->quantityValue()),
                             ];
 
                             return $varcarry;
