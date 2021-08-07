@@ -26,6 +26,7 @@ $form_buttons = [
 <x-larastrap::iform classes="booking-form" method="PUT" :action="url('booking/' . $aggregate->id . '/user/' . $user->id)" data-dynamic-url="{{ route('booking.dynamics', ['aggregate_id' => $aggregate->id, 'user_id' => $user->id]) }}" :buttons="$form_buttons">
     <input type="hidden" name="post-saved-function" value="afterBookingSaved" class="skip-on-submit">
     <input type="hidden" name="close-modal" value="1" class="skip-on-submit">
+    <input type="hidden" name="action" value="booked">
 
     @if($user->gas->restrict_booking_to_credit)
         <input type="hidden" name="max-bookable" value="{{ $user->activeBalance() }}" class="skip-on-submit">

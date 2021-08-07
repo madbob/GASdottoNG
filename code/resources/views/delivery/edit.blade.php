@@ -11,8 +11,15 @@ $existing = false;
 
 <div class="row">
     <div class="col">
-        <form class="form-horizontal inner-form booking-form" method="PUT" action="{{ url('delivery/' . $aggregate->id . '/user/' . $user->id) }}" data-dynamic-url="{{ route('booking.dynamics', ['aggregate_id' => $aggregate->id, 'user_id' => $user->id]) }}" data-reference-modal="editMovement-{{ $rand }}">
+        <form class="form-horizontal inner-form booking-form" method="POST" action="{{ url('delivery/' . $aggregate->id . '/user/' . $user->id) }}" data-dynamic-url="{{ route('booking.dynamics', ['aggregate_id' => $aggregate->id, 'user_id' => $user->id]) }}" data-reference-modal="editMovement-{{ $rand }}">
+            {{--
+                Questo valore viene all'occorrenza modificato via JS quando
+                viene cliccato il tasto di "Salva Informazioni"
+            --}}
             <input type="hidden" name="action" value="shipped">
+
+            @csrf
+            @method('PUT')
 
             <div class="row">
                 <div class="col-md-6">
@@ -85,7 +92,6 @@ $existing = false;
                                         <tr class="booking-product">
                                             <td>
                                                 <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($product->true_quantity, $discrete_quantity) }}" class="skip-on-submit" />
-                                                <input type="hidden" name="product-price" value="{{ $product->product->contextualPrice($order, false) }}" class="skip-on-submit" />
                                                 <label class="static-label">{{ $product->product->name }}</label>
                                             </td>
 
@@ -261,4 +267,6 @@ $existing = false;
             ],
         ])
     @endif
+
+    @stack('postponed')
 </div>

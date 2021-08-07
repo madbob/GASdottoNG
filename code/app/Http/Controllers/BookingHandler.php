@@ -83,8 +83,9 @@ class BookingHandler extends Controller
                     $quantity = 0;
 
                     $quantities = $request->input('variant_quantity_' . $product->id);
-                    if (empty($quantities))
+                    if (empty($quantities)) {
                         continue;
+                    }
 
                     $values = [];
                     foreach ($product->variants as $variant) {
@@ -95,7 +96,6 @@ class BookingHandler extends Controller
 
                     for ($i = 0; $i < count($quantities); ++$i) {
                         $q = (float) $quantities[$i];
-
                         $query = BookedProductVariant::where('product_id', '=', $booked->id);
 
                         foreach ($values as $variant_id => $vals) {
@@ -110,8 +110,9 @@ class BookingHandler extends Controller
                         $bpv = $query->first();
 
                         if (is_null($bpv)) {
-                            if ($q == 0)
+                            if ($q == 0) {
                                 continue;
+                            }
 
                             $bpv = new BookedProductVariant();
                             $bpv->product_id = $booked->id;
@@ -131,8 +132,10 @@ class BookingHandler extends Controller
 
                             foreach ($values as $variant_id => $vals) {
                                 $value_id = $vals[$i];
-                                if (empty($value_id))
+                                if (empty($value_id)) {
                                     continue;
+                                }
+
                                 $bpc = new BookedProductComponent();
                                 $bpc->productvariant_id = $bpv->id;
                                 $bpc->variant_id = $variant_id;
@@ -141,8 +144,9 @@ class BookingHandler extends Controller
                                 $no_components = false;
                             }
 
-                            if ($no_components)
+                            if ($no_components) {
                                 $bpv->delete();
+                            }
                         }
                         else {
                             if ($q == 0 && $delivering == false) {
@@ -182,16 +186,13 @@ class BookingHandler extends Controller
                 $booked->delete();
             }
             else {
-                if ($quantity != 0) {
-                    $count_products++;
-                }
-
                 if ($booked->$param != 0 || $quantity != 0) {
                     $booked->$param = $quantity;
                     $booked->save();
-                }
 
-                $booked_products->push($booked);
+                    $count_products++;
+                    $booked_products->push($booked);
+                }
             }
         }
 

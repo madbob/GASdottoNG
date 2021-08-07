@@ -87,18 +87,28 @@ class BookingUserController extends BookingHandler
 
         $bookings = [];
         $target_user = User::find($user_id);
+        $delivering = $request->input('action') != 'booked';
 
         $ret = (object) [
             'bookings' => [],
         ];
 
         foreach($aggregate->orders as $order) {
-            $order->waybackProducts();
+            // $order->waybackProducts();
 
-            $booking = $this->readBooking($request, $order, $target_user, false);
+            $booking = $this->readBooking($request, $order, $target_user, $delivering);
             if ($booking) {
                 $order->setRelation('aggregate', $aggregate);
                 $booking->setRelation('order', $order);
+
+                if ($delivering) {
+                    $booking->status = 'shipped';
+                    $booking->saveFinalPrices();
+                }
+                else {
+                    $booking->status = 'pending';
+                }
+
                 $bookings[] = $booking;
             }
         }
@@ -109,7 +119,7 @@ class BookingUserController extends BookingHandler
             $ret->bookings[$booking->id] = (object) [
                 'total' => printablePrice($booking->getValue('effective', false)),
                 'modifiers' => [],
-                'products' => $booking->products->reduce(function($carry, $product) {
+                'products' => $booking->products->reduce(function($carry, $product) use ($delivering) {
                     $carry[$product->product_id] = (object) [
                         'total' => $product->getValue('effective'),
 
@@ -122,9 +132,11 @@ class BookingUserController extends BookingHandler
                             Lo faccio qui, server-side, per evitare problemi di
                             compatibilità client-side (è stato più volte
                             segnalato che su determinati browser mobile ci siano
-                            problemi su questi controlli)
+                            problemi su questi controlli).
+                            Ma solo se non sono in consegna: in quel caso è
+                            ammesso immettere qualsiasi quantità
                         */
-                        'quantity' => $product->testConstraints($product->quantity),
+                        'quantity' => $delivering ? $product->delivered : $product->testConstraints($product->quantity),
 
                         'modifiers' => [],
                     ];

@@ -95,7 +95,7 @@ class BookedProduct extends Model
         }
 
         if ($product->multiple != 0) {
-            if ($quantity % $product->multiple != 0) {
+            if (fmod($quantity, $product->multiple) != 0) {
                 return 0;
             }
         }
@@ -226,7 +226,7 @@ class BookedProduct extends Model
                     case 'pending':
                         switch($type) {
                             case 'delivered':
-                                return $this->fixQuantity('delivered', true);
+                                return $this->fixQuantity('delivered', false);
                                 break;
 
                             case 'effective':
@@ -254,7 +254,7 @@ class BookedProduct extends Model
                                 break;
 
                             case 'effective':
-                                return $this->fixQuantity('delivered', true) + $this->getValue('modifier:all');
+                                return $this->fixQuantity('delivered', false) + $this->getValue('modifier:all');
                                 break;
 
                             case 'weight':

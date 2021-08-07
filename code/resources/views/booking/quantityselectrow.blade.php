@@ -11,16 +11,17 @@ $booked_quantity = (isset($o) ? $o->getBookedQuantity($product) : 0);
     <input type="hidden" name="{{ $product->id }}" value="1" />
 
     <div class="variants-selector">
-        @include('booking.variantselectrow', ['product' => $product, 'order' => $order, 'master' => true, 'saved' => null])
-
         <?php $booked = isset($o) ? $o->getBooked($product) : null ?>
-        @if($booked != null)
+
+        @if($booked != null && $booked->variants->count() != 0)
             @foreach($booked->variants as $var)
                 @include('booking.variantselectrow', ['product' => $product, 'order' => $order, 'master' => false, 'saved' => $var])
             @endforeach
         @else
             @include('booking.variantselectrow', ['product' => $product, 'order' => $order, 'master' => false, 'saved' => null])
         @endif
+
+        @include('booking.variantselectrow', ['product' => $product, 'order' => $order, 'master' => true, 'saved' => null])
     </div>
 @else
     <div class="input-group booking-product-quantity">

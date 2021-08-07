@@ -91,11 +91,11 @@ class FullTest extends DuskTestCase
         $users = [
             ['garibaldi', 'Giuseppe', 'Garibaldi'],
             ['verdi', 'Giuseppe', 'Verdi'],
-            // ['mazzini', 'Giuseppe', 'Mazzini'],
-            // ['azeglio', 'Massimo', "D'Azeglio"],
-            // ['pisacane', 'Carlo', 'Pisacane'],
-            // ['bandiera', 'Attilio', 'Bandiera'],
-            // ['benso', 'Camillo', 'Benso'],
+            ['mazzini', 'Giuseppe', 'Mazzini'],
+            ['azeglio', 'Massimo', "D'Azeglio"],
+            ['pisacane', 'Carlo', 'Pisacane'],
+            ['bandiera', 'Attilio', 'Bandiera'],
+            ['benso', 'Camillo', 'Benso'],
         ];
 
         /*
@@ -149,8 +149,8 @@ class FullTest extends DuskTestCase
         return [
             ['La Zucchina Dorata', 'Verdure di stagione, prenotazioni settimanali', 'Bonifico bancario IBAN IT01234567890', 'Mandare una mail con le prenotazioni a Luisa: zucchina@example.com', 'IT01234567890'],
             ['Mele e Pere', '', '', '', ''],
-            // ['Panetteria da Pasquale', '', '', '', ''],
-            // ['Luigi il Macellaio', '', '', '', ''],
+            ['Panetteria da Pasquale', '', '', '', ''],
+            ['Luigi il Macellaio', '', '', '', ''],
         ];
     }
 
@@ -438,9 +438,8 @@ class FullTest extends DuskTestCase
 
             ->press('Salva')
             ->pause(500)
-            ->script('window.scrollTo(0,document.body.scrollHeight)');
-
-        $browser->press('Salva')->pause(500);
+            ->scrollBottom()
+            ->press('Salva')->pause(500);
     }
 
     private function createNotification($browser)
@@ -465,6 +464,43 @@ class FullTest extends DuskTestCase
                     ->click('@type-notification')
                     ->assertSee('Destinatari');
             });
+    }
+
+    private function createShippingPlace($browser)
+    {
+        $browser->visit('/gas/senza-nome/edit')
+            ->waitForText('Luoghi di Consegna')
+            ->press('Luoghi di Consegna')->pause(200)
+            ->press('Crea Nuovo Luogo di Consegna')->waitForText('Nome')->pause(1000)
+            ->with('.modal.show', function($panel) use ($browser) {
+                $panel->typeSlowly('name', 'Luogo Test', 50)
+                    ->click('.address')->pause(200);
+
+                    $browser->with('.popover-body', function($popover) {
+                        $popover->typeSlowly('street', 'Via Test 42', 50)
+                            ->typeSlowly('city', 'Torino', 50)
+                            ->typeSlowly('cap', '10100', 50)
+                            ->press('.btn-success')->pause(200);
+                    });
+
+                    $panel->press('Salva');
+            })
+            ->waitForText('Luogo Test');
+
+        $browser->click('.accordion-item[data-element-id="luogo-test"]')->pause(1000)
+            ->press('@modifier_spese-trasporto')
+            ->pause(500)
+            ->with('.modal', function($panel) {
+                $panel->click('@applies_type-none')
+                    ->click('@value-absolute')
+                    ->click('@arithmetic-sum')
+                    ->click('@applies_target-booking')
+                    ->typeSlowly('simplified_amount', '3', 50)
+                    ->mainScreenshot('modificatore_luogo')
+                    ->press('Salva');
+            })
+            ->pause(500)
+            ->assertSee('3€');
     }
 
     public function testAll()
@@ -493,16 +529,15 @@ class FullTest extends DuskTestCase
                 ->assertPathIs('/dashboard')
                 ->assertSee('Prenotazioni Aperte');
 
-            $this->testProfile($browser);
-            $this->createUsers($browser);
-
-            $this->createSuppliers($browser);
-            $this->testSuppliersTools($browser);
-            $this->createOrders($browser);
-            $this->doBookings($browser);
-            $this->modifiedProducts($browser);
-
-            $this->createNotification($browser);
+            // $this->testProfile($browser);
+            // $this->createUsers($browser);
+            // $this->createSuppliers($browser);
+            // $this->testSuppliersTools($browser);
+            // $this->createOrders($browser);
+            // $this->doBookings($browser);
+            // $this->modifiedProducts($browser);
+            // $this->createNotification($browser);
+            $this->createShippingPlace($browser);
         });
     }
 }

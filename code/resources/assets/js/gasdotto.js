@@ -817,15 +817,7 @@ function bookingTotal(editor) {
 
 					for (let [product_id, product_meta] of Object.entries(booking_data.products)) {
 						var inputbox = $('input[name="' + product_id + '"]', container);
-                        var inputwrap = inputbox.closest('.booking-product');
-
-                        if (product_meta.quantity == 0 && utils.parseFloatC(inputbox.val()) != 0) {
-                            inputwrap.addClass('has-error');
-                        }
-                        else {
-                            inputwrap.removeClass('has-error');
-                        }
-
+                        inputbox.toggleClass('is-invalid', product_meta.quantity == 0 && utils.parseFloatC(inputbox.val()) != 0);
                         inputbox.closest('tr').find('.booking-product-price span').text(utils.priceRound(product_meta.total));
 
 						var modifiers = '';
@@ -1504,10 +1496,10 @@ $(document).ready(function() {
             return;
         }
 
-        var save_button = form.find('button[type=submit]');
-        var idle_text = save_button.text();
-        save_button.attr('data-idle-text', idle_text);
-        save_button.empty().append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop('disabled', true);
+        form.find('button[type=submit]').each(function() {
+            var idle_text = $(this).text();
+            $(this).attr('data-idle-text', idle_text).empty().append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop('disabled', true);
+        });
 
         utils.postAjax({
             method: form.attr('method'),
@@ -1518,7 +1510,10 @@ $(document).ready(function() {
             dataType: 'JSON',
 
             success: function(data) {
-                utils.inlineFeedback(save_button, _('Salvato!'));
+                form.find('button[type=submit]').each(function() {
+                    utils.inlineFeedback($(this), _('Salvato!'));
+                });
+
                 miscInnerCallbacks(form, data);
             }
         });
@@ -1607,7 +1602,20 @@ $(document).ready(function() {
     });
 
     $('body').on('focus', 'input.address', function() {
+        /*
+            Questo è indispensabile per gestire il popover quando si trova
+            all'interno di un modale (e.g. l'indirizzo di un Luogo di Consegna
+            in fase di creazione). Altrimenti il popover viene appeso al body,
+            ed il focus sugli input field viene prevenuto dagli eventi interni
+            di Bootstrap sui modali
+        */
+        var container = $(this).closest('.modal');
+        if (container.length == 0) {
+            container = false;
+        }
+
         $(this).popover({
+            container: container,
             content: function() {
                 var input = $(this);
 
@@ -1783,8 +1791,9 @@ $(document).ready(function() {
     });
 
     $('body').on('change', '.movement-modal input[name=method]', function() {
-        if ($(this).prop('checked') == false)
+        if ($(this).prop('checked') == false) {
             return;
+        }
 
         var method = $(this).val();
         var method_string = 'when-method-' + method;
@@ -2194,15 +2203,12 @@ $(document).ready(function() {
         bookingTotal(editor);
 
     }).on('blur', '.booking-product-quantity input', function() {
-        var v = $(this).val();
-        var row = $(this).closest('.booking-product');
-
-        if (v == '' || row.hasClass('has-error')) {
+        if ($(this).val() == '' || $(this).hasClass('is-invalid')) {
             $(this).val('0').keyup();
         }
 
     }).on('focus', '.booking-product-quantity input', function() {
-        $(this).closest('.booking-product').removeClass('.has-error').removeClass('has-warning');
+        $(this).removeClass('.is-invalid');
 
     }).on('click', '.booking-product .add-variant', function(e) {
         e.preventDefault();
@@ -2374,8 +2380,9 @@ $(document).ready(function() {
 
         modal.find('input.number').each(function() {
             var v = $(this).val();
-            if (v != '')
+            if (v != '') {
                 quantity += utils.parseFloatC(v);
+            }
 
             $(this).val('0');
         });
@@ -2384,7 +2391,8 @@ $(document).ready(function() {
             Il trigger keyup() alla fine serve a forzare il ricalcolo del totale
             della consegna quando il modale viene chiuso
         */
-        modal.closest('.booking-product-quantity').find('input.number').first().val(quantity).keyup();
+        var identifier = modal.attr('id');
+        $('[data-bs-target="#' + identifier + '"]').closest('.booking-product-quantity').find('input.number').first().val(quantity).keyup();
         modal.modal('hide');
     });
 

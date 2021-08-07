@@ -29,8 +29,8 @@ $buttons[] = ['color' => 'success', 'label' => _i('Salva'), 'attributes' => ['ty
 
 ?>
 
-<x-larastrap::modal :title="_i('Modifica Movimento')" :id="sprintf('editMovement-%s', $dom_id)">
-    <x-larastrap::form :obj="$obj" method="POST" :action="$obj->exists ? route('movements.update', $obj->id) : route('movements.store')" :buttons="$buttons">
+<x-larastrap::modal :title="_i('Modifica Movimento')" :id="sprintf('editMovement-%s', $dom_id)" classes="movement-modal">
+    <x-larastrap::iform :obj="$obj" method="POST" :action="$obj->exists ? route('movements.update', $obj->id) : route('movements.store')" :buttons="$buttons">
         <input type="hidden" name="void-form" value="1">
         <input type="hidden" name="test-feedback" value="1">
         <input type="hidden" name="close-modal" value="1">
@@ -42,7 +42,7 @@ $buttons[] = ['color' => 'success', 'label' => _i('Salva'), 'attributes' => ['ty
         <input type="hidden" name="data-refresh-target" value="#movements-filter">
 
         @if($obj->exists)
-            <input type="hidden" name="_method" value="PUT">
+            @method('PUT')
         @endif
 
         @include('commons.extrafields')
@@ -73,7 +73,11 @@ $buttons[] = ['color' => 'success', 'label' => _i('Salva'), 'attributes' => ['ty
 
         <x-larastrap::radios name="method" :label="_i('Metodo')" :options="$obj ? $obj->valid_payments : App\MovementType::payments()" />
         <x-larastrap::datepicker name="date" :label="_i('Data')" defaults_now="true" />
-        <x-larastrap::text :classes="sprintf('when-method-bank %s', ($obj->method != 'bank' ? ' hidden' : ''))" name="identifier" :label="_i('Identificativo')" />
+
+        <div class="when-method-bank {{ $obj->method != 'bank' ? ' hidden' : '' }}">
+            <x-larastrap::text name="identifier" :label="_i('Identificativo')" />
+        </div>
+
         <x-larastrap::textarea name="notes" :label="_i('Note')" />
-    </x-larastrap::form>
+    </x-larastrap::iform>
 </x-larastrap::modal>

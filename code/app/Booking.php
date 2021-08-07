@@ -196,6 +196,12 @@ class Booking extends Model
 
         $p = $this->products->firstWhere('product_id', $product_id);
 
+        /*
+            Se sono in modalità fallback, creo un nuovo oggetto e lo incastro
+            nella prenotazione ma senza salvarlo. Verrà poi successivamente
+            salvato se e quando sarà necessario (quando sarà accertato che la
+            quantità prenotata o consegnata non è 0)
+        */
         if (is_null($p) && $fallback == true) {
             $p = new BookedProduct();
             $p->booking_id = $this->id;

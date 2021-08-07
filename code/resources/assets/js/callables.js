@@ -205,7 +205,7 @@ class Callables {
         var modal = form.closest('.modal');
 
         /*
-            In questo caso, ho aggiunto una prenotazione dal modale di "Aggiunti
+            In questo caso, ho aggiunto una prenotazione dal modale di "Aggiungi
             Utente" in fase di consegna
         */
         if (modal.length != 0) {
@@ -247,6 +247,11 @@ class Callables {
         if (n.length != 0) {
             lists.reloadLoadableHead(n);
         }
+    }
+
+    static closeMainForm(form, data)
+    {
+        lists.closeParent(form);
     }
 }
 
