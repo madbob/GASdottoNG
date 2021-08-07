@@ -208,7 +208,8 @@ $form_buttons = [
                     <th></th>
                     <th></th>
                     <th></th>
-                    <th class="text-end">Totale: <span class="booking-total">{{ printablePrice($o->getValue('effective', false)) }}</span> {{ $currentgas->currency }}</th>
+                    <?php $booking_total = $o->getValue('effective', false) ?>
+                    <th class="text-end">Totale: <span class="booking-total">{{ printablePrice($booking_total) }}</span> {{ $currentgas->currency }}</th>
                 </tr>
             </tfoot>
         </table>
@@ -219,7 +220,7 @@ $form_buttons = [
             </div>
         </div>
 
-        <?php $grand_total += $o->getValue('effective', false) ?>
+        <?php $grand_total += $booking_total ?>
     @endforeach
 
     @if($more_orders)

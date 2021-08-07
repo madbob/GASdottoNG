@@ -138,6 +138,19 @@ class BookingUserController extends BookingHandler
                         */
                         'quantity' => $delivering ? $product->delivered : $product->testConstraints($product->quantity),
 
+                        'variants' => $product->variants->reduce(function($varcarry, $variant) use ($product, $delivering) {
+                            $varcarry[] = (object) [
+                                'components' => $variant->components->reduce(function($componentcarry, $component) {
+                                    $componentcarry[] = $component->value->id;
+                                    return $componentcarry;
+                                }, []),
+
+                                'quantity' => $delivering ? $variant->delivered : $product->testConstraints($variant->quantity),
+                            ];
+
+                            return $varcarry;
+                        }, []),
+
                         'modifiers' => [],
                     ];
                     return $carry;

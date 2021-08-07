@@ -92,10 +92,6 @@ class Booking extends Model
     {
         $values = $this->modifiedValues;
 
-        if ($this->user->shipping_place) {
-            $values = $values->merge($this->user->shipping_place->modifiedValues);
-        }
-
         if ($with_friends) {
             foreach($this->friends_bookings as $friend) {
                 $values = $values->merge($friend->localModifiedValues($id, true));

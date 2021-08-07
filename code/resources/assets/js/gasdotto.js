@@ -816,16 +816,35 @@ function bookingTotal(editor) {
 					$('.booking-product-price span', container).text(utils.priceRound(0));
 
 					for (let [product_id, product_meta] of Object.entries(booking_data.products)) {
-						var inputbox = $('input[name="' + product_id + '"]', container);
-                        inputbox.toggleClass('is-invalid', product_meta.quantity == 0 && utils.parseFloatC(inputbox.val()) != 0);
+                        var inputbox = $('input[name="' + product_id + '"]', container);
                         inputbox.closest('tr').find('.booking-product-price span').text(utils.priceRound(product_meta.total));
 
-						var modifiers = '';
-						for (let [modifier_id, modifier_meta] of Object.entries(product_meta.modifiers)) {
-							modifiers += '<br>' + modifier_meta.label + ': ' + utils.priceRound(modifier_meta.amount) + current_currency;
-						}
+                        var modifiers = '';
+                        for (let [modifier_id, modifier_meta] of Object.entries(product_meta.modifiers)) {
+                            modifiers += '<br>' + modifier_meta.label + ': ' + utils.priceRound(modifier_meta.amount) + current_currency;
+                        }
 
-						$('input[name="' + product_id + '"]', container).closest('tr').find('.modifiers').html(modifiers);
+                        $('input[name="' + product_id + '"]', container).closest('tr').find('.modifiers').html(modifiers);
+
+                        if (product_meta.variants.length != 0) {
+                            /*
+                                Attenzione: qui mi baso sul fatto che le
+                                varianti rappresentate nel feedback server-side
+                                siano ordinate nello stesso modo rispetto al
+                                pannello. Potrei usare i components come
+                                riferimento, ma possono esserci più varianti con
+                                gli stessi componenti e dovrei intuire qual è
+                                quella da eventualmente invalidare
+                            */
+                            for (let i = 0; i < product_meta.variants.length; i++) {
+                                var variant = product_meta.variants[i];
+                                var varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).filter(':not(.skip-on-submit)').eq(i);
+                                varinputbox.toggleClass('is-invalid', variant.quantity == 0 && utils.parseFloatC(inputbox.val()) != 0);
+                            }
+                        }
+                        else {
+                            inputbox.toggleClass('is-invalid', product_meta.quantity == 0 && utils.parseFloatC(inputbox.val()) != 0);
+                        }
 					}
 
 					for (let [modifier_id, modifier_meta] of Object.entries(booking_data.modifiers)) {
