@@ -14,16 +14,16 @@
                             @endforeach
 
                             <th width="25%">
-                                Codice Fornitore
+                                {{ _i('Codice Fornitore') }}
                                 <x-larastrap::pophelp :text="_i('Se non viene specificato, tutte le varianti usano il Codice Fornitore del prodotto principale.')" />
                             </th>
                             <th width="25%">
-                                Differenza Prezzo
+                                {{ _i('Differenza Prezzo') }}
                                 <x-larastrap::pophelp :text="_i('Differenza di prezzo, positiva o negativa, da applicare al prezzo del prodotto quando una specifica combinazione di varianti viene selezionata.')" />
                             </th>
 
                             @if ($product->measure->discrete)
-                                <th width="25%">Differenza Peso</th>
+                                <th width="25%">{{ _i('Differenza Peso') }}</th>
                             @endif
                         </tr>
                     </thead>
@@ -46,7 +46,7 @@
 
                                     @if ($product->measure->discrete)
                                         <td>
-                                            <x-larastrap::number name="weight_offset" squeeze npostfix="[]" textappend="_i('Chili')" />
+                                            <x-larastrap::number name="weight_offset" squeeze npostfix="[]" :textappend="_i('Chili')" />
                                         </td>
                                     @endif
                                 </tr>

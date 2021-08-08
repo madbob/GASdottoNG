@@ -28,7 +28,7 @@ class ManyMailNotification extends Notification implements ShouldQueue
     {
         $message = new MailMessage();
 
-        if (class_uses(get_class($notifiable), 'App\ContactableTrait')) {
+        if (in_array('App\ContactableTrait', class_uses(get_class($notifiable)))) {
             $notifiable->messageAll($message);
         }
 

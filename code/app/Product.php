@@ -260,7 +260,7 @@ class Product extends Model
             // @phpstan-ignore-next-line
             if ($this->is_pending_package ?? false) {
                 $details[] = _i('%s Disponibile: %.02f', [
-                    view('commons.helpbutton', ['help_popover' => _i('Mancano %s %s per completare la confezione per questo ordine', [$still_available, $this->printableMeasure(true)])])->render(),
+                    sprintf('<span class="badge rounded-pill bg-primary" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="%s" data-bs-original-title="" title="">?</span>', _i('Mancano %s %s per completare la confezione per questo ordine', [$still_available, $this->printableMeasure(true)])),
                     $still_available
                 ]);
             }
