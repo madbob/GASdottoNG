@@ -121,84 +121,17 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
     </x-larastrap::tabpane>
 
     @if($has_accounting)
-        <x-larastrap::tabpane :id="sprintf('accounting-%s', sanitizeId($user->id))" label="{{ _i('Contabilità') }}">
-            @if($currentuser->id == $user->id && ($user->gas->hasFeature('paypal') || $user->gas->hasFeature('satispay')))
-                <div class="row">
-                    <div class="col">
-                        @if($user->gas->hasFeature('paypal'))
-                            <x-larastrap::mbutton :label="_i('Ricarica Credito con PayPal')" triggers_modal="#paypalCredit" />
-
-                            <x-larastrap::modal :title="_i('Ricarica Credito')" id="paypalCredit">
-                                <x-larastrap::form classes="direct-submit" method="POST" :action="route('payment.do')">
-                                    <input type="hidden" name="type" value="paypal">
-
-                                    <p>
-                                        {{ _i('Da qui puoi ricaricare il tuo credito utilizzando PayPal.') }}
-                                    </p>
-                                    <p>
-                                        {{ _i('Specifica quanto vuoi versare ed eventuali note per gli amministratori, verrai rediretto sul sito PayPal dove dovrai autenticarti e confermare il versamento.') }}
-                                    </p>
-                                    <p>
-                                        {{ _i('Eventuali commissioni sulla transazione saranno a tuo carico.') }}
-                                    </p>
-
-                                    <x-larastrap::price name="amount" :label="_i('Valore')" required />
-                                    <x-larastrap::text name="description" :label="_i('Descrizione')" />
-                                </x-larastrap::form>
-                            </x-larastrap::modal>
-                        @endif
-
-                        @if($user->gas->hasFeature('satispay'))
-                            <x-larastrap::mbutton :label="_i('Ricarica Credito con Satispay')" triggers_modal="#satispayCredit" />
-
-                            <x-larastrap::modal id="satispayCredit" :title="_i('Ricarica Credito')">
-                                <x-larastrap::form classes="direct-submit" method="POST" :action="route('payment.do')">
-                                    <input type="hidden" name="type" value="satispay">
-
-                                    <p>
-                                        {{ _i('Da qui puoi ricaricare il tuo credito utilizzando Satispay.') }}
-                                    </p>
-                                    <p>
-                                        {{ _i('Specifica quanto vuoi versare ed eventuali note per gli amministratori; riceverai una notifica sul tuo smartphone per confermare, entro 15 minuti, il versamento.') }}
-                                    </p>
-
-                                    <x-larastrap::text name="mobile" :label="_i('Numero di Telefono')" required />
-                                    <x-larastrap::price name="amount" :label="_i('Valore')" required />
-                                    <x-larastrap::text name="description" :label="_i('Descrizione')" />
-                                </x-larastrap::form>
-                            </x-larastrap::modal>
-                        @endif
-                    </div>
-                </div>
-
-                <hr/>
-            @endif
-
-            @include('movement.targetlist', ['target' => $user])
-        </x-larastrap::tabpane>
+        <x-larastrap::remotetabpane :label="_i('Contabilità')" :button_attributes="['data-tab-url' => route('users.accounting', $user->id)]">
+        </x-larastrap::remotetabpane>
     @endif
 
     @if($has_bookings)
-        <x-larastrap::tabpane :id="sprintf('bookings-%s', sanitizeId($user->id))" label="{{ _i('Prenotazioni') }}">
-            <div class="row">
-                <div class="col-12 col-md-6">
-                    <x-filler :data-action="route('users.orders', $user->id)" data-fill-target="#user-booking-list">
-                        <x-larastrap::selectobj name="supplier_id" :label="_i('Fornitore')" required :options="$currentgas->suppliers" :extraitem="_i('Tutti')" />
-                        @include('commons.genericdaterange')
-                    </x-filler>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="col" id="user-booking-list">
-                    @include('commons.orderslist', ['orders' => $booked_orders ?? []])
-                </div>
-            </div>
-        </x-larastrap::tabpane>
+        <x-larastrap::remotetabpane :label="_i('Prenotazioni')" :button_attributes="['data-tab-url' => route('users.bookings', $user->id)]">
+        </x-larastrap::remotetabpane>
     @endif
 
     @if($has_friends)
-        <x-larastrap::tabpane :id="sprintf('friends-%s', sanitizeId($user->id))" label="{{ _i('Amici') }}">
+        <x-larastrap::tabpane :id="sprintf('friends-%s', sanitizeId($user->id))" :label="_i('Amici')">
             <div class="row">
                 <div class="col">
                     @include('commons.addingbutton', [

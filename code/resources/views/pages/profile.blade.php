@@ -7,7 +7,6 @@
         @include('user.edit', [
             'user' => $user,
             'active_tab' => $active_tab,
-            'booked_orders' => $booked_orders,
             'display_page' => true,
         ])
     </div>

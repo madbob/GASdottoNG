@@ -102,8 +102,7 @@ class UsersController extends BackedController
             $id = Auth::user()->id;
             $active_tab = $request->input('tab');
             $user = $this->service->show($id);
-            $booked_orders = $this->getOrders($id, 0, date('Y-m-d', strtotime('-1 months')), '2100-01-01');
-            return view('pages.profile', ['user' => $user, 'active_tab' => $active_tab, 'booked_orders' => $booked_orders]);
+            return view('pages.profile', ['user' => $user, 'active_tab' => $active_tab]);
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -146,6 +145,40 @@ class UsersController extends BackedController
     {
         try {
             return $this->service->picture($id);
+        }
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+    }
+
+    private function testInternalFunctionsAccess($requester, $target)
+    {
+        $admin_editable = $requester->can('users.admin', $target->gas);
+        $access = ($admin_editable || ($requester->id == $target->id && $requester->can('users.self', $requester->gas)) || $target->parent_id == $requester->id);
+        if (!$access) {
+            throw new AuthException(403);
+        }
+    }
+
+    public function bookings(Request $request, $id)
+    {
+        try {
+            $user = $this->service->show($id);
+            $this->testInternalFunctionsAccess($request->user(), $user);
+            $booked_orders = $this->getOrders($id, 0, date('Y-m-d', strtotime('-1 months')), '2100-01-01');
+            return view('user.bookings', ['user' => $user, 'booked_orders' => $booked_orders]);
+        }
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+    }
+
+    public function accounting(Request $request, $id)
+    {
+        try {
+            $user = $this->service->show($id);
+            $this->testInternalFunctionsAccess($request->user(), $user);
+            return view('user.accounting', ['user' => $user]);
         }
         catch (AuthException $e) {
             abort($e->status());

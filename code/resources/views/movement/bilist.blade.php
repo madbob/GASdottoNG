@@ -64,7 +64,9 @@
                     @if(Gate::check('movements.admin', $currentgas))
                         <td>
                             @if($mov->archived == false)
-                                <x-larastrap::ambutton label="<i class='bi-pencil'></i>" :data-modal-url="route('movements.show', $mov->id)" />
+                                <a href="{{ route('movements.show', $mov->id) }}" class="btn btn-light async-modal">
+                                    <i class="bi-pencil"></i>
+                                </a>
                             @else
                                 @include('commons.detailsbutton', ['obj' => $mov])
                             @endif
