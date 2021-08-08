@@ -242,11 +242,9 @@ class Order extends Model
         switch($gas->booking_contacts) {
             case 'none':
                 return new Collection();
-                break;
 
             case 'manual':
                 return $this->users;
-                break;
 
             default:
                 $role = Role::find($gas->booking_contacts);
@@ -257,8 +255,6 @@ class Order extends Model
                     Log::error('Role not found while displaying contacts for order: ' . $gas->booking_contacts);
                     return new Collection();
                 }
-
-                break;
         }
     }
 
@@ -410,7 +406,6 @@ class Order extends Model
                 }
 
                 return $temp_file_path;
-                break;
         }
     }
 

@@ -531,7 +531,6 @@ class OrdersController extends Controller
 
                 $filename = sanitizeFilename(_i('Tabella Ordine %s presso %s.csv', [$order->internal_number, $order->supplier->name]));
                 return output_csv($filename, null, $contents, null, null);
-                break;
         }
     }
 }

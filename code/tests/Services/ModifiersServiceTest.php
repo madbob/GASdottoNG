@@ -180,6 +180,7 @@ class ModifiersServiceTest extends TestCase
         }
 
         $redux = $this->order->reduxData();
+        $this->assertNotEquals($redux->price, 0);
 
         foreach($this->order->bookings as $booking) {
             $booking->applyModifiers(null, true);
@@ -228,6 +229,7 @@ class ModifiersServiceTest extends TestCase
         $this->assertEquals($this->order->bookings->count(), 2);
 
         $redux = $this->order->reduxData();
+        $this->assertNotEquals($redux->price, 0);
 
         foreach($this->order->bookings as $booking) {
             $booking->applyModifiers(null, true);
@@ -278,6 +280,7 @@ class ModifiersServiceTest extends TestCase
         $this->assertNotNull($mod);
 
         $redux = $this->order->reduxData();
+        $this->assertNotEquals($redux->price, 0);
 
         foreach($this->order->bookings as $booking) {
             $mods = $booking->applyModifiers(null, true);

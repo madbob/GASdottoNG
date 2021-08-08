@@ -254,11 +254,10 @@ class Product extends Model
         if ($this->max_available != 0) {
             $still_available = $this->stillAvailable($order);
 
-            /*
-                L'attributo is_pending_package viene assegnato da
-                Order::pendingPackages() ai prodotti per i quali si devono
-                completare le confezioni
-            */
+            // L'attributo is_pending_package non fa parte del model Product,
+            // viene valorizzato staticamente da Order::pendingPackages() ai
+            // prodotti per i quali si devono completare le confezioni
+            // @phpstan-ignore-next-line
             if ($this->is_pending_package ?? false) {
                 $details[] = _i('%s Disponibile: %.02f', [
                     view('commons.helpbutton', ['help_popover' => _i('Mancano %s %s per completare la confezione per questo ordine', [$still_available, $this->printableMeasure(true)])])->render(),

@@ -58,7 +58,7 @@ trait AttachableTrait
         if (is_null($id)) {
             $attachment = new Attachment();
             $attachment->target_type = get_class($this);
-            $attachment->target_id = $this->id;
+            $attachment->target_id = (string) $this->id;
         }
         else {
             $attachment = Attachment::findOrFail($id);

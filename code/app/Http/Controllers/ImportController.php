@@ -33,7 +33,7 @@ class ImportController extends Controller
     {
         Log::debug('Interpreto file in ' . $path);
         $contents = fopen($path, 'r');
-        if (is_null($contents)) {
+        if ($contents === false) {
             Log::debug('File non accessibile in fase di interpretazione CSV');
             return null;
         }
@@ -169,7 +169,6 @@ class ImportController extends Controller
                             ],
                         ]
                     ]);
-                    break;
 
                 case 'select':
                     $path = $request->input('path');
@@ -255,7 +254,6 @@ class ImportController extends Controller
                                     $test_category = Category::where('name', $value)->first();
                                     if (is_null($test_category)) {
                                         $field = 'temp_category_name';
-                                        $p->category_id = -1;
                                     }
                                     else {
                                         $p->category_id = $test_category->id;
@@ -265,7 +263,6 @@ class ImportController extends Controller
                                     $test_measure = Measure::where('name', $value)->first();
                                     if (is_null($test_measure)) {
                                         $field = 'temp_measure_name';
-                                        $p->measure_id = -1;
                                     }
                                     else {
                                         $p->measure_id = $test_measure->id;
@@ -282,7 +279,6 @@ class ImportController extends Controller
                                     $test_vat = VatRate::where('percentage', $value)->first();
                                     if (is_null($test_vat)) {
                                         $field = 'temp_vat_rate_name';
-                                        $p->vat_rate_id = -1;
                                     }
                                     else {
                                         $p->vat_rate_id = $test_vat->id;
@@ -312,7 +308,6 @@ class ImportController extends Controller
                     }
 
                     return view('import.csvproductsselect', ['products' => $products, 'supplier' => $s, 'errors' => $errors]);
-                    break;
 
                 case 'run':
                     DB::beginTransaction();
@@ -444,8 +439,6 @@ class ImportController extends Controller
                             'data-reload-target' => '#supplier-list'
                         ]
                     ]);
-
-                    break;
             }
         }
         else if ($type == 'users') {
@@ -510,7 +503,6 @@ class ImportController extends Controller
                             ]
                         ]
                     ]);
-                    break;
 
                 case 'run':
                     DB::beginTransaction();
@@ -640,8 +632,6 @@ class ImportController extends Controller
                         'objects' => $users,
                         'errors' => $errors,
                     ]);
-
-                    break;
             }
         }
         else if ($type == 'movements') {
@@ -679,7 +669,6 @@ class ImportController extends Controller
                             ],
                         ]
                     ]);
-                    break;
 
                 case 'select':
                     $path = $request->input('path');
@@ -769,7 +758,6 @@ class ImportController extends Controller
                     }
 
                     return view('import.csvmovementsselect', ['movements' => $movements, 'errors' => $errors]);
-                    break;
 
                 case 'run':
                     $imports = $request->input('import', []);
@@ -847,8 +835,6 @@ class ImportController extends Controller
                         'objects' => $movements,
                         'errors' => $errors
                     ]);
-
-                    break;
             }
         }
 

@@ -227,11 +227,9 @@ class BookedProduct extends Model
                         switch($type) {
                             case 'delivered':
                                 return $this->fixQuantity('delivered', false);
-                                break;
 
                             case 'effective':
                                 return $this->fixQuantity('quantity', true) + $this->getValue('modifier:all');
-                                break;
 
                             case 'weight':
                                 if ($this->product->measure->discrete) {
@@ -240,8 +238,6 @@ class BookedProduct extends Model
                                 else {
                                     return $this->fixWeight('true_quantity');
                                 }
-
-                                break;
                         }
 
                         break;
@@ -251,11 +247,9 @@ class BookedProduct extends Model
                         switch($type) {
                             case 'delivered':
                                 return $this->final_price;
-                                break;
 
                             case 'effective':
                                 return $this->fixQuantity('delivered', false) + $this->getValue('modifier:all');
-                                break;
 
                             case 'weight':
                                 if ($this->product->measure->discrete) {
@@ -264,8 +258,6 @@ class BookedProduct extends Model
                                 else {
                                     return $this->fixWeight('true_delivered');
                                 }
-
-                                break;
                         }
 
                         break;

@@ -366,25 +366,18 @@ class Gas extends Model
         switch($name) {
             case 'shipping_places':
                 return ($this->deliveries->isEmpty() == false);
-                break;
             case 'rid':
                 return !empty($this->rid['iban']);
-                break;
             case 'paypal':
                 return !empty($this->paypal['client_id']);
-                break;
             case 'satispay':
                 return !empty($this->satispay['secret']);
-                break;
             case 'extra_invoicing':
                 return (!empty($this->extra_invoicing['taxcode']) || !empty($this->extra_invoicing['vat']));
-                break;
             case 'public_registrations':
                 return $this->public_registrations['enabled'];
-                break;
             case 'auto_aggregates':
                 return Aggregate::has('orders', '>=', Aggregate::aggregatesConvenienceLimit())->count() > 3;
-                break;
         }
 
         return false;

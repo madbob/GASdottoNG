@@ -319,7 +319,6 @@ class InvoicesController extends Controller
                 $invoice->status = 'to_verify';
                 $invoice->save();
                 return $this->successResponse();
-                break;
         }
     }
 

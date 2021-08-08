@@ -255,7 +255,6 @@ class GasController extends Controller
             default:
                 Log::error('Formato database non supportato');
                 exit();
-                break;
         }
 
         return response()->download($filepath, 'database_gasdotto_' . date('Y_m_d') . '.sql')->deleteFileAfterSend();
