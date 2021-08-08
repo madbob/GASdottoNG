@@ -785,7 +785,23 @@ function setCellValue(cell, value) {
 
 function bookingTotal(editor) {
 	var form = $(editor).closest('form');
+
+    /*
+        Qui aggiungo temporaneamente la classe skip-on-submit a tutti gli input
+        a 0, in modo da ridurre la quantità di dati spediti al server per il
+        controllo dinamico, salvo poi toglierla a operazione conclusa
+    */
+
+    form.find('textarea').addClass('skip-on-submit restore-after-serialize');
+
+    form.find('.booking-product-quantity input').each(function() {
+        $(this).toggleClass('skip-on-submit restore-after-serialize', $(this).val() == '0');
+    });
+
 	var data = form.find(':not(.skip-on-submit)').serialize();
+
+    form.find('.restore-after-serialize').removeClass('skip-on-submit restore-after-serialize');
+
 	var url = form.attr('data-dynamic-url');
 
 	$.ajax({
