@@ -382,7 +382,7 @@ class ImportController extends Controller
                                 $measure_name = Str::after($measures[$index], 'new:');
                                 if (!empty($measure_name)) {
                                     if (isset($new_measures[$measure_name])) {
-                                        $category = $new_measures[$measure_name];
+                                        $measure = $new_measures[$measure_name];
                                     }
                                     else {
                                         $measure = new Measure();
@@ -412,9 +412,9 @@ class ImportController extends Controller
                                         $vat->save();
                                         $new_vats[$vat_name] = $vat;
                                     }
-                                }
 
-                                $vat_rates[$index] = $vat->id;
+                                    $vat_rates[$index] = $vat->id;
+                                }
                             }
 
                             if (!empty($vat_rates[$index])) {

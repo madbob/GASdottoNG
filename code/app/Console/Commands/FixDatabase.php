@@ -133,7 +133,7 @@ class FixDatabase extends Command
             Introduzione Modificatori
         */
 
-        if (ModifierType::all()->isEmpty()) {
+        if (ModifierType::count() == 0) {
             try {
                 DB::beginTransaction();
 
@@ -168,7 +168,7 @@ class FixDatabase extends Command
         /*
             Upgrade combo varianti
         */
-        if (VariantCombo::all()->count() == 0) {
+        if (VariantCombo::count() == 0) {
             $products = Product::has('variants')->get();
 
             foreach($products as $product) {

@@ -125,7 +125,7 @@ class UsersService extends BaseService
         if (isset($request['enforce_password_change']) && $request['enforce_password_change'] == 'true')
             $user->enforce_password_change = true;
 
-        DB::transaction(function () use ($user, $creator) {
+        DB::transaction(function () use ($user) {
             $user->save();
         });
 

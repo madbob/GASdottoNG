@@ -628,6 +628,9 @@ function formatObjectsToComponentRec($options)
     foreach($options as $option) {
         if (is_a($option, 'App\Hierarchic') && $option->children->count() != 0) {
             $ret[$option->id] = (object) [
+                // printableName() è una funzione di GASModel, estesa da tutte
+                // le classi che usano App\Hierarchic
+                // @phpstan-ignore-next-line
                 'label' => $option->printableName(),
                 'children' => formatObjectsToComponentRec($option->children),
             ];

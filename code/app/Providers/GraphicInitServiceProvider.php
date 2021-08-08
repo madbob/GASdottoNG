@@ -100,16 +100,19 @@ class GraphicInitServiceProvider extends ServiceProvider
             });
 
             \Laravel\Dusk\Browser::macro('scrollTop', function () {
+                // @phpstan-ignore-next-line
                 $this->script('document.documentElement.scrollTop = 0');
                 return $this;
             });
 
             \Laravel\Dusk\Browser::macro('scrollBottom', function () {
+                // @phpstan-ignore-next-line
                 $this->script('window.scrollTo(0,document.body.scrollHeight)');
                 return $this;
             });
 
             \Laravel\Dusk\Browser::macro('mainScreenshot', function ($filename) {
+                // @phpstan-ignore-next-line
                 $this->scrollTop()->pause(1000)->screenshot($filename);
                 return $this;
             });

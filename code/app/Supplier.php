@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 
 use Auth;
+use URL;
 
 use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
@@ -85,7 +86,7 @@ class Supplier extends Model
 
     public function getDisplayURL()
     {
-        return Illuminate\Routing\UrlGenerator::action('SuppliersController@show');
+        return URL::action('SuppliersController@show');
     }
 
     public function involvedEmails()

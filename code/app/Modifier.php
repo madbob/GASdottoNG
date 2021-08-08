@@ -209,6 +209,8 @@ class Modifier extends Model
             return null;
         }
 
+        $product_target_id = 0;
+
         if ($this->target_type == 'App\Product') {
             $product_target_id = $this->target->id;
 
@@ -260,6 +262,9 @@ class Modifier extends Model
                     $query->where('product_id', $product_target_id);
                 })->first();
                 break;
+
+            default:
+                return null;
         }
 
         $attribute = '';
@@ -289,6 +294,8 @@ class Modifier extends Model
                 case 'weight':
                     $distribution_attribute = 'weight_delivered';
                     break;
+                default:
+                    return null;
             }
 
             $mod_attribute = 'price_delivered';

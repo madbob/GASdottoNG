@@ -175,7 +175,7 @@ class MovementType extends Model
     {
         $currentuser = Auth::user();
         if(is_null($currentuser)) {
-            $currentgas = Gas::all()->first();
+            $currentgas = Gas::first();
         }
         else {
             $currentgas = $currentuser->gas;

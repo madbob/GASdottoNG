@@ -14,10 +14,14 @@ class Attachment extends Model
 
     public function attached()
     {
-        if ($this->target_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->target_type)))
+        if ($this->target_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->target_type))) {
+            // @phpstan-ignore-next-line
             return $this->morphTo('target')->withoutGlobalScopes()->withTrashed();
-        else
+        }
+        else {
+            // @phpstan-ignore-next-line
             return $this->morphTo('target')->withoutGlobalScopes();
+        }
     }
 
     public function users()

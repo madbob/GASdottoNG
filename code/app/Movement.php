@@ -42,18 +42,24 @@ class Movement extends Model
 
     public function sender()
     {
-        if ($this->sender_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->sender_type)))
+        if ($this->sender_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->sender_type))) {
+            // @phpstan-ignore-next-line
             return $this->morphTo()->withoutGlobalScopes()->withTrashed();
-        else
+        }
+        else {
             return $this->morphTo()->withoutGlobalScopes();
+        }
     }
 
     public function target()
     {
-        if ($this->target_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->target_type)))
+        if ($this->target_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->target_type))) {
+            // @phpstan-ignore-next-line
             return $this->morphTo()->withoutGlobalScopes()->withTrashed();
-        else
+        }
+        else {
             return $this->morphTo()->withoutGlobalScopes();
+        }
     }
 
     public function registerer()
