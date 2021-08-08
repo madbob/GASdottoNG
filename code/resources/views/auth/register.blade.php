@@ -21,12 +21,12 @@
 
         @if (!empty(currentAbsoluteGas()->public_registrations['privacy_link']))
             <?php $privacy_claim = _i("Ho letto e accetto l'<a href=\"%s\" target=\"_blank\">Informativa sulla Privacy</a>.", [currentAbsoluteGas()->public_registrations['privacy_link']]) ?>
-            <x-larastrap::scheck name="privacy" :label="$privacy_claim" required />
+            <x-larastrap::check name="privacy" :label="ue('<span>' . $privacy_claim . '</span>')" required />
         @endif
 
         @if (!empty(currentAbsoluteGas()->public_registrations['terms_link']))
             <?php $terms_claim = _i("Ho letto e accetto le <a href=\"%s\" target=\"_blank\">Condizioni d'Uso</a>.", [currentAbsoluteGas()->public_registrations['terms_link']]) ?>
-            <x-larastrap::scheck name="terms" :label="$terms_claim" required />
+            <x-larastrap::check name="terms" :label="ue('<span>' . $terms_claim . '</span>')" required />
         @endif
     </x-larastrap::form>
 </div>

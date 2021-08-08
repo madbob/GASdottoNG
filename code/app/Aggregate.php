@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Auth;
 use URL;
@@ -16,7 +17,7 @@ use App\Events\AttachableToGas;
 
 class Aggregate extends Model
 {
-    use HasFactory, GASModel, ModifiableTrait, ReducibleTrait;
+    use HasFactory, GASModel, ModifiableTrait, ReducibleTrait, Cachable;
 
     protected $dispatchesEvents = [
         'created' => AttachableToGas::class

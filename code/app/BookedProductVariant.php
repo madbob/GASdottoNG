@@ -3,10 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class BookedProductVariant extends Model
 {
-    use GASModel, ReducibleTrait;
+    use GASModel, ReducibleTrait, Cachable;
 
     public function product()
     {

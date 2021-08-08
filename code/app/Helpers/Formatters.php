@@ -577,6 +577,11 @@ function splitFields($fields)
     return $ret;
 }
 
+function ue($value)
+{
+    return new \Illuminate\Support\HtmlString($value);
+}
+
 function flaxComplexOptions($array)
 {
     $options = [];

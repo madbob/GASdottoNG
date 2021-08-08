@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Log;
 
@@ -12,7 +13,7 @@ use App\Events\SluggableCreating;
 
 class BookedProduct extends Model
 {
-    use HasFactory, GASModel, SluggableID, ModifiedTrait, ReducibleTrait;
+    use HasFactory, GASModel, SluggableID, ModifiedTrait, ReducibleTrait, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';

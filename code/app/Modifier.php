@@ -3,12 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Log;
 
 class Modifier extends Model
 {
-    use GASModel;
+    use GASModel, Cachable;
 
     public function modifierType()
     {
