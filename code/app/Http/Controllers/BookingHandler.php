@@ -258,7 +258,7 @@ class BookingHandler extends Controller
                     nuovamente
                 */
                 $booking->deleteModifiedValues();
-                $booking->applyModifiers();
+                $booking->calculateModifiers(null, true);
 
                 foreach($booking->friends_bookings as $friend_booking) {
                     $friend_booking->status = $new_status;

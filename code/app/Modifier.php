@@ -205,7 +205,7 @@ class Modifier extends Model
         }
 
         if (!isset($aggregate_data->orders[$booking->order_id])) {
-            Log::debug('nessun dato');
+            Log::debug('Nessun dato su cui applicare il modificatore');
             return null;
         }
 

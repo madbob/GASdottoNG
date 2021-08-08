@@ -175,14 +175,10 @@ class Booking extends Model
                 }
 
                 if ($type == 'effective') {
-                    /*
-                        TODO: per le prenotazioni non ancora consegnate, i modificatori non necessariamente sono già
-                        stati calcolati e salvati. Dunque qui non vengono considerati nel totale.
-                        Se servono viene invocato
-                        $booking->applyModifiers(null, false);
-                        prima di accedere a getValue(), in modo da calcolarli e agganciarli all'oggetto.
-                        Vedere se questa pratica può essere applicata sempre, a priori, direttamente in questa funzione
-                    */
+                    if ($this->status == 'pending') {
+                        $this->calculateModifiers(null, false);
+                    }
+
                     $modified_values = $this->localModifiedValues(null, $with_friends);
                     $value = ModifiedValue::sumAmounts($modified_values, $value);
                 }
@@ -462,41 +458,46 @@ class Booking extends Model
         return $modifiers;
     }
 
-    public function applyModifiers($aggregate_data = null, $real = true)
+    public function calculateModifiers($aggregate_data = null, $real = true)
     {
-        if ($this->status == 'shipped' && $real == true) {
-            return $this->allModifiedValues(null, true);
+        if (is_null($aggregate_data)) {
+            $aggregate = $this->order->aggregate;
+            $aggregate_data = $aggregate->reduxData();
+        }
+
+        $modifiers = $this->involvedModifiers();
+
+        $values = new Collection();
+
+        if ($real == false) {
+            DB::beginTransaction();
+        }
+
+        foreach($modifiers as $modifier) {
+            $value = $modifier->apply($this, $aggregate_data);
+            if ($value) {
+                $values = $values->push($value);
+            }
+        }
+
+        if ($real == false) {
+            DB::rollback();
         }
         else {
-            if (is_null($aggregate_data)) {
-                $aggregate = $this->order->aggregate;
-                $aggregate_data = $aggregate->reduxData();
-            }
-
-            $modifiers = $this->involvedModifiers();
-
-            $values = new Collection();
-
-            if ($real == false) {
-                DB::beginTransaction();
-            }
-
-            foreach($modifiers as $modifier) {
-                $value = $modifier->apply($this, $aggregate_data);
-                if ($value) {
-                    $values = $values->push($value);
-                }
-            }
-
-            if ($real == false) {
-                DB::rollback();
-            }
-            else {
-                $this->unsetRelation('modifiedValues');
-            }
+            $this->unsetRelation('modifiedValues');
         }
 
         return $values;
+    }
+
+    public function applyModifiers($aggregate_data = null, $real = true)
+    {
+        if ($this->status == 'shipped') {
+            return $this->allModifiedValues(null, true);
+        }
+        else {
+            return $this->calculateModifiers($aggregate_data, $real);
+        }
     }
 
     public function aggregatedModifiers()

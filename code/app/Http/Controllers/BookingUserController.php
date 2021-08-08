@@ -74,6 +74,16 @@ class BookingUserController extends BookingHandler
         return $this->bookingUpdate($request, $aggregate_id, $user_id, false);
     }
 
+    /*
+        Questa funzione viene invocata dai pannelli di prenotazione e consegna,
+        ogni volta che viene apportata una modifica sulle quantità, e permette
+        di controllare che le quantità immesse siano coerenti coi constraints
+        imposti sui prodotti (quantità minima, quantità multipla...) e calcolare
+        tutti i valori tenendo in considerazione tutti i modificatori esistenti.
+        Eseguire tutti questi calcoli client-side in JS sarebbe complesso, e
+        ridondante rispetto all'implementazione server-side che comunque sarebbe
+        necessaria
+    */
     public function dynamicModifiers(Request $request, $aggregate_id, $user_id)
     {
         $user = $request->user();
@@ -119,7 +129,7 @@ class BookingUserController extends BookingHandler
                 impostato temporaneamente a "shipped" ed andrebbe a leggere
                 quelli salvati anche se ancora non ce ne sono
             */
-            $modified = $booking->applyModifiers(null, false);
+            $modified = $booking->calculateModifiers(null, false);
 
             $ret->bookings[$booking->id] = (object) [
                 'total' => printablePrice($booking->getValue('effective', false)),

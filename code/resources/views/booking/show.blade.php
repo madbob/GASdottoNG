@@ -17,7 +17,13 @@ $grand_total = 0;
 
         $contacts = $order->showableContacts();
         $o = $order->userBooking($user->id);
-        $mods = $o->applyModifiers(null, false);
+
+        if ($o->status == 'pending') {
+            $mods = $o->applyModifiers(null, false);
+        }
+        else {
+            $mods = $o->allModifiedValues(null, true);
+        }
 
         ?>
 

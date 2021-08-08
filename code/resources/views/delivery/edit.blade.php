@@ -42,15 +42,20 @@ $existing = false;
                 <?php
 
                     $o = $order->userBooking($user->id);
-                    $mods = $o->applyModifiers(null, false);
 
                     $existing = ($existing || $o->exists || $o->friends_bookings->isEmpty() == false);
 
                     if ($o->status == 'pending') {
                         $now_delivered = 0;
+                        $mods = $o->applyModifiers(null, false);
+                    }
+                    else if ($o->status == 'saved') {
+                        $now_delivered = $o->getValue('effective', true);
+                        $mods = $o->applyModifiers(null, false);
                     }
                     else {
                         $now_delivered = $o->getValue('effective', true);
+                        $mods = $o->applyModifiers(null, true);
                     }
 
                     $tot_delivered[$o->id] = $now_delivered;
@@ -157,7 +162,7 @@ $existing = false;
 
                                                 <td>
                                                     <label class="static-label booking-product-price float-end">
-                                                        <span>{{ printablePriceCurrency($var->deliveredValue()) }}</span> {{ $currentgas->currency }}
+                                                        <span>{{ printablePrice($var->deliveredValue()) }}</span> {{ $currentgas->currency }}
                                                     </label>
                                                 </td>
                                             </tr>

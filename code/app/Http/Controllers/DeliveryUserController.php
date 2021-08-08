@@ -76,8 +76,10 @@ class DeliveryUserController extends BookingHandler
         }
 
         $booking->status = 'shipped';
-        $booking->applyModifiers();
         $booking->save();
+
+        $booking->deleteModifiedValues();
+        $booking->calculateModifiers(null, true);
 
         $booking->load('products');
         return $booking->getValue('effective', false, true);
