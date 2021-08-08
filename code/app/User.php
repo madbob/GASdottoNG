@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Auth;
 use Log;
@@ -24,7 +25,7 @@ use App\Events\SluggableCreating;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, Authorizable, CanResetPassword, SoftDeletes, ContactableTrait, CreditableTrait, PayableTrait, SuspendableTrait, HierarcableTrait, GASModel, SluggableID;
+    use HasFactory, Notifiable, Authorizable, CanResetPassword, SoftDeletes, ContactableTrait, CreditableTrait, PayableTrait, SuspendableTrait, HierarcableTrait, GASModel, SluggableID, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';

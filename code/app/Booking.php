@@ -460,31 +460,41 @@ class Booking extends Model
 
     public function calculateModifiers($aggregate_data = null, $real = true)
     {
-        if (is_null($aggregate_data)) {
-            $aggregate = $this->order->aggregate;
-            $aggregate_data = $aggregate->reduxData();
-        }
+        $values = new Collection();
 
         $modifiers = $this->involvedModifiers();
 
-        $values = new Collection();
-
-        if ($real == false) {
-            DB::beginTransaction();
-        }
-
-        foreach($modifiers as $modifier) {
-            $value = $modifier->apply($this, $aggregate_data);
-            if ($value) {
-                $values = $values->push($value);
+        /*
+            Se non ci sono modificatori coinvolti, evito di fare la riduzione
+            dell'intero aggregato.
+            TODO: questo potrebbe essere ulteriormente perfezionato
+            identificando gli elementi di cui ha bisogno ogni modificatore (la
+            prenotazione, l'intero ordine o l'intero aggregato) e ridurre solo
+            quelli rilevanti
+        */
+        if ($modifiers->isEmpty() == false) {
+            if (is_null($aggregate_data)) {
+                $aggregate = $this->order->aggregate;
+                $aggregate_data = $aggregate->reduxData();
             }
-        }
 
-        if ($real == false) {
-            DB::rollback();
-        }
-        else {
-            $this->unsetRelation('modifiedValues');
+            if ($real == false) {
+                DB::beginTransaction();
+            }
+
+            foreach($modifiers as $modifier) {
+                $value = $modifier->apply($this, $aggregate_data);
+                if ($value) {
+                    $values = $values->push($value);
+                }
+            }
+
+            if ($real == false) {
+                DB::rollback();
+            }
+            else {
+                $this->unsetRelation('modifiedValues');
+            }
         }
 
         return $values;
