@@ -249,45 +249,23 @@ class OrdersController extends Controller
 
         $order->save();
 
-        $new_products = [];
         $enabled = $request->input('enabled', []);
-        $prices = $request->input('product_price', []);
-        $availables = $request->input('product_max_available', []);
-        $products = $request->input('productid');
 
-        if (count($prices)) {
-            for ($i = 0; $i < count($products); ++$i) {
-                $id = $products[$i];
-
-                foreach ($enabled as $en) {
-                    if ($en == $id) {
-                        $new_products[] = $id;
-                        break;
-                    }
-                }
-
-                $prod = Product::find($id);
-                if ($prod->price != $prices[$i] || $prod->max_available != $availables[$i]) {
-                    $prod->price = $prices[$i];
-                    $prod->max_available = $availables[$i];
-                    $prod->save();
-                }
-            }
-
-            /*
-                Se vengono rimossi dei prodotti dall'ordine, ne elimino tutte le
-                relative prenotazioni sinora avvenute
-            */
-            $removed_products = $order->products()->whereNotIn('id', $new_products)->pluck('id')->toArray();
+        /*
+            Se vengono rimossi dei prodotti dall'ordine, ne elimino tutte le
+            relative prenotazioni sinora avvenute
+        */
+        $removed_products = $order->products()->whereNotIn('id', $enabled)->pluck('id')->toArray();
+        if (!empty($removed_products)) {
             foreach($order->bookings as $booking) {
                 $booking->products()->whereIn('product_id', $removed_products)->delete();
                 if ($booking->products->isEmpty()) {
                     $booking->delete();
                 }
             }
-
-            $order->products()->sync($new_products);
         }
+
+        $order->products()->sync($enabled);
 
         if ($order->shipping) {
             Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('date', '<=', $order->shipping)->delete();
