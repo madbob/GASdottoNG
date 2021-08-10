@@ -4,6 +4,7 @@ if (isset($readonly) && $readonly) {
     $admin_editable = $editable = $personal_details = false;
 }
 else {
+    $readonly = false;
     $admin_editable = $currentuser->can('users.admin', $currentgas);
     $editable = ($admin_editable || ($currentuser->id == $user->id && $currentuser->can('users.self', $currentgas)) || $user->parent_id == $currentuser->id);
     $personal_details = ($currentuser->id == $user->id);
@@ -19,7 +20,7 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
 
 <x-larastrap::tabs>
     <x-larastrap::tabpane :id="sprintf('profile-%s', sanitizeId($user->id))" label="{{ _i('Anagrafica') }}" active="true" classes="mb-2">
-        <x-larastrap::mform :obj="$user" method="PUT" :action="route('users.update', $user->id)" :classes="$display_page ? 'inner-form' : ''" :nodelete="$display_page || $user->isFriend() == false">
+        <x-larastrap::mform :obj="$user" method="PUT" :action="route('users.update', $user->id)" :classes="$display_page ? 'inner-form' : ''" :nodelete="$display_page || $user->isFriend() == false" :nosave="$readonly">
             <div class="row">
                 <div class="col-12 col-md-6">
                     @if($user->isFriend() == false)
