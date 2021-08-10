@@ -36,8 +36,9 @@ class MovementsService extends BaseService
             $start = date('Y-m-d', strtotime('-1 weeks'));
         }
 
-        if (!empty($start))
+        if (!empty($start)) {
             $query->where('date', '>=', $start);
+        }
 
         if (isset($request['enddate'])) {
             $end = decodeDate($request['enddate']);
@@ -46,8 +47,9 @@ class MovementsService extends BaseService
             $end = date('Y-m-d');
         }
 
-        if (!empty($end))
+        if (!empty($end)) {
             $query->where('date', '<=', $end);
+        }
 
         if (isset($request['type']) && $request['type'] != 'none') {
             $query->where('type', $request['type']);
@@ -60,15 +62,17 @@ class MovementsService extends BaseService
         if (isset($request['user_id']) && !empty($request['user_id']) && $request['user_id'] != '0') {
             $user_id = $request['user_id'];
             $generic_target = User::find($user_id);
-            if ($generic_target)
+            if ($generic_target) {
                 $query = $generic_target->queryMovements($query);
+            }
         }
 
         if (isset($request['supplier_id']) && $request['supplier_id'] != '0') {
             $supplier_id = $request['supplier_id'];
             $generic_target = Supplier::withTrashed()->find($supplier_id);
-            if ($generic_target)
+            if ($generic_target) {
                 $query = $generic_target->queryMovements($query);
+            }
         }
 
         if (isset($request['generic_target_id']) && $request['generic_target_id'] != '0') {
@@ -81,11 +85,11 @@ class MovementsService extends BaseService
             }
         }
 
-        if (isset($request['amountstart']) && $request['amountstart'] != '0') {
+        if (isset($request['amountstart']) && !empty($request['amountstart']) && $request['amountstart'] != '0') {
             $query->where('amount', '>=', $request['amountstart']);
         }
 
-        if (isset($request['amountend']) && $request['amountend'] != '0') {
+        if (isset($request['amountend']) && !empty($request['amountend']) && $request['amountend'] != '0') {
             $query->where('amount', '<=', $request['amountend']);
         }
 
