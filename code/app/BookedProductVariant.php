@@ -147,8 +147,13 @@ class BookedProductVariant extends Model
         return $this->describingAttributesMerge($ret, (object) [
             'price' => $this->quantityValue(),
             'weight' => $this->fixWeight('quantity'),
+
+            /*
+                Cfr. comportamento di BookedProduct
+            */
             'quantity' => $this->quantity,
-            'quantity_pieces' => $this->product->product->portion_quantity > 0 ? $this->quantity * $this->product->product->portion_quantity : $this->quantity,
+            'quantity_pieces' => $this->quantity,
+
             'price_delivered' => $this->deliveredValue(),
             'weight_delivered' => $this->fixWeight('delivered'),
             'delivered' => $this->delivered,
