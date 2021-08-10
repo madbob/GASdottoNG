@@ -131,10 +131,14 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                     <!-- Disponibile -->
                     <td class="order-cell-available {{ in_array('available', $columns) ? '' : 'hidden' }}">
                         <label>
-                            @if($product->portion_quantity != 0)
-                                {{ $product->max_available * $product->portion_quantity }} Pezzi
+                            @if($product->max_available != 0)
+                                @if($product->portion_quantity != 0)
+                                    {{ round($product->max_available / $product->portion_quantity, 3) }} Pezzi ({{ $product->max_available }} {{ $product->measure->name }})
+                                @else
+                                    {{ $product->max_available }} {{ $product->measure->name }}
+                                @endif
                             @else
-                                {{ $product->max_available ?? 0 }} {{ $product->measure->name }}
+                                -
                             @endif
                         </label>
                     </td>
