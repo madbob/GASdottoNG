@@ -40,9 +40,9 @@
                             <x-larastrap::field :label="_i('Importo')">
                                 <div class="input-group">
                                     <div class="input-group-text">{{ _i('Da %s', [$currentgas->currency]) }}</div>
-                                    <input type="number" class="date form-control" name="amountstart" autocomplete="off" step="0.01">
+                                    <input type="number" class="form-control" name="amountstart" autocomplete="off" step="0.01">
                                     <div class="input-group-text">{{ _i('a %s', $currentgas->currency) }}</div>
-                                    <input type="number" class="date form-control" name="amountend" autocomplete="off" step="0.01">
+                                    <input type="number" class="form-control" name="amountend" autocomplete="off" step="0.01">
                                 </div>
                             </x-larastrap::field>
                         </x-filler>
