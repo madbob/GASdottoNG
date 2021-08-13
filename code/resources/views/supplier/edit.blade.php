@@ -9,9 +9,12 @@
 
                     <hr>
 
-                    <div class="form-text mb-3">
-                        {{ _i('Questi valori saranno usati come default per tutti i nuovi ordini di questo fornitore, ma sarà comunque possibile modificarli per ciascun ordine.') }}
-                    </div>
+                    <x-larastrap::field label="">
+                        <div class="form-text">
+                            {{ _i('Questi valori saranno usati come default per tutti i nuovi ordini di questo fornitore, ma sarà comunque possibile modificarli per ciascun ordine.') }}
+                        </div>
+                    </x-larastrap::field>
+
                     @include('commons.modifications', ['obj' => $supplier])
 
                     <hr>

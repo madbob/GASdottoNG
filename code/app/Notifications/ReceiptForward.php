@@ -2,8 +2,6 @@
 
 namespace App\Notifications;
 
-use Auth;
-
 use App\Notifications\ManyMailNotification;
 use App\Notifications\MailFormatter;
 
@@ -20,8 +18,7 @@ class ReceiptForward extends ManyMailNotification
 
     public function toMail($notifiable)
     {
-        $user = Auth::user();
-        $message = $this->initMailMessage($notifiable, $user->gas);
+        $message = $this->initMailMessage($notifiable);
         return $this->formatMail($message, 'receipt')->attach($this->temp_file);
     }
 }
