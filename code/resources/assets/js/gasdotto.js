@@ -1201,6 +1201,13 @@ $(document).ready(function() {
 		});
 	});
 
+    $('body').on('blur', 'input[type=url]', function() {
+        var uri = $(this).val();
+        if (uri.startsWith('http') == false) {
+            $(this).val('http://' + uri);
+        }
+    });
+
     $('body').on('blur', '.trim-2-ddigits', function() {
         $(this).val(function(index, value) {
             return utils.parseFloatC(value).toFixed(2);
