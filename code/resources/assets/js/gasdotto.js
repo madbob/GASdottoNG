@@ -816,7 +816,9 @@ function bookingTotal(editor) {
 
     form.find('textarea').addClass('skip-on-submit restore-after-serialize');
 
-    form.find('.booking-product-quantity input').each(function() {
+    form.find('.booking-product-quantity input').filter(function() {
+        return $(this).closest('.master-variant-selector').length == 0;
+    }).each(function() {
         $(this).toggleClass('skip-on-submit restore-after-serialize', $(this).val() == '0');
     });
 

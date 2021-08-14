@@ -1,14 +1,15 @@
 <?php
 
-if(!isset($while_shipping))
+if(!isset($while_shipping)) {
     $while_shipping = false;
+}
 
 $booked_quantity = (isset($o) ? $o->getBookedQuantity($product) : 0);
 
 ?>
 
 @if($product->variants->isEmpty() == false)
-    <input type="hidden" name="{{ $product->id }}" value="1" />
+    <input type="hidden" name="{{ $product->id }}" value="{{ $populate ? $booked_quantity : '' }}" />
 
     <div class="variants-selector">
         <?php $booked = isset($o) ? $o->getBooked($product) : null ?>

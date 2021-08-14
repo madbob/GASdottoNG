@@ -63,29 +63,43 @@ class BookingHandler extends Controller
             amministratore e sto intervenendo sull'intera prenotazione
             (dunque posso potenzialmente modificare tutto).
         */
-        if ($request->has('limited'))
+        if ($request->has('limited')) {
             $products = $order->status == 'open' ? $order->products : $order->pendingPackages();
-        else
+        }
+        else {
             $products = $order->products;
+        }
 
         foreach ($products as $product) {
+            /*
+                $booking->getBooked() all'occorrenza crea un nuovo
+                BookedProduct, che deve essere salvato per potergli agganciare
+                le varianti.
+                Ma se la quantità è 0 (e bisogna badare che lo sia in caso di
+                varianti che senza varianti) devo evitare di salvare tale
+                oggetto temporaneo, che andrebbe solo a complicare le cose nel
+                database
+            */
+
             $quantity = (float) $request->input($product->id, 0);
             if (empty($quantity)) {
                 $quantity = 0;
             }
 
+            if ($product->variants->isEmpty() == false) {
+                $quantities = $request->input('variant_quantity_' . $product->id);
+                if (empty($quantities)) {
+                    continue;
+                }
+            }
+
             $booked = $booking->getBooked($product, true);
 
-            if ($quantity != 0) {
+            if ($quantity != 0 || !empty($quantities)) {
                 $booked->save();
 
                 if ($product->variants->isEmpty() == false) {
                     $quantity = 0;
-
-                    $quantities = $request->input('variant_quantity_' . $product->id);
-                    if (empty($quantities)) {
-                        continue;
-                    }
 
                     $values = [];
                     foreach ($product->variants as $variant) {
@@ -96,13 +110,17 @@ class BookingHandler extends Controller
 
                     for ($i = 0; $i < count($quantities); ++$i) {
                         $q = (float) $quantities[$i];
-                        $query = BookedProductVariant::where('product_id', '=', $booked->id);
+                        if ($q == 0) {
+                            continue;
+                        }
+
+                        $query = BookedProductVariant::where('product_id', $booked->id);
 
                         foreach ($values as $variant_id => $vals) {
                             $value_id = $vals[$i];
 
                             $query->whereHas('components', function ($q) use ($variant_id, $value_id) {
-                                $q->where('variant_id', '=', $variant_id)->where('value_id', '=', $value_id);
+                                $q->where('variant_id', $variant_id)->where('value_id', $value_id);
                             });
                         }
 
