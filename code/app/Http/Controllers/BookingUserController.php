@@ -10,6 +10,7 @@ use URL;
 use Auth;
 use Log;
 use PDF;
+use Cache;
 
 use App\User;
 use App\Aggregate;
@@ -74,6 +75,16 @@ class BookingUserController extends BookingHandler
         return $this->bookingUpdate($request, $aggregate_id, $user_id, false);
     }
 
+    private function initDynamicModifier($mod)
+    {
+        return (object) [
+            'label' => $mod->modifier->modifierType->name,
+            'amount' => 0,
+            'variable' => $mod->is_variable,
+            'passive' => ($mod->type == 'passive'),
+        ];
+    }
+
     /*
         Questa funzione viene invocata dai pannelli di prenotazione e consegna,
         ogni volta che viene apportata una modifica sulle quantità, e permette
@@ -93,122 +104,114 @@ class BookingUserController extends BookingHandler
             abort(503);
         }
 
-        DB::beginTransaction();
+        return app()->make('Locker')->execute('lock_aggregate_' . $aggregate_id, function() use ($request, $aggregate, $user, $user_id) {
+            DB::beginTransaction();
 
-        $bookings = [];
-        $target_user = User::find($user_id);
-        $delivering = $request->input('action') != 'booked';
+            $bookings = [];
+            $target_user = User::find($user_id);
+            $delivering = $request->input('action') != 'booked';
 
-        $ret = (object) [
-            'bookings' => [],
-        ];
-
-        foreach($aggregate->orders as $order) {
-            $booking = $this->readBooking($request, $order, $target_user, $delivering);
-            if ($booking) {
-                $order->setRelation('aggregate', $aggregate);
-                $booking->setRelation('order', $order);
-
-                if ($delivering) {
-                    $booking->status = 'shipped';
-                    $booking->saveFinalPrices();
-                }
-                else {
-                    $booking->status = 'pending';
-                }
-
-                $bookings[] = $booking;
-            }
-        }
-
-        foreach($bookings as $booking) {
-            /*
-                Qui forzo sempre il ricalcolo dei modificatori, altrimenti
-                vengono letti quelli effettivamente salvati sul DB.
-                Ma se la prenotazione è ancora in fase di consegna, lo status è
-                impostato temporaneamente a "shipped" ed andrebbe a leggere
-                quelli salvati anche se ancora non ce ne sono
-            */
-            $modified = $booking->calculateModifiers(null, false);
-
-            $ret->bookings[$booking->id] = (object) [
-                'total' => printablePrice($booking->getValue('effective', false)),
-                'modifiers' => [],
-                'products' => $booking->products->reduce(function($carry, $product) use ($delivering) {
-                    $carry[$product->product_id] = (object) [
-                        'total' => printablePrice($product->getValue('effective')),
-
-                        /*
-                            Mentre computo il valore totale della prenotazione
-                            in fase di modifica, controllo anche che le quantità
-                            prenotate siano coerenti coi limiti imposti sul
-                            prodotto prenotato (massimo, minimo,
-                            disponibile...).
-                            Lo faccio qui, server-side, per evitare problemi di
-                            compatibilità client-side (è stato più volte
-                            segnalato che su determinati browser mobile ci siano
-                            problemi su questi controlli).
-                            Ma solo se non sono in consegna: in quel caso è
-                            ammesso immettere qualsiasi quantità
-                        */
-                        'quantity' => $delivering ? $product->delivered : $product->testConstraints($product->quantity),
-
-                        'variants' => $product->variants->reduce(function($varcarry, $variant) use ($product, $delivering) {
-                            $varcarry[] = (object) [
-                                'components' => $variant->components->reduce(function($componentcarry, $component) {
-                                    $componentcarry[] = $component->value->id;
-                                    return $componentcarry;
-                                }, []),
-
-                                'quantity' => $delivering ? $variant->delivered : $product->testConstraints($variant->quantity),
-                                'total' => printablePrice($delivering ? $variant->deliveredValue() : $variant->quantityValue()),
-                            ];
-
-                            return $varcarry;
-                        }, []),
-
-                        'modifiers' => [],
-                    ];
-                    return $carry;
-                }, []),
+            $ret = (object) [
+                'bookings' => [],
             ];
 
-            foreach($modified as $mod) {
-                if ($mod->target_type == 'App\Product') {
-                    if (!isset($ret->bookings[$booking->id]->products[$mod->target->product_id]->modifiers[$mod->modifier_id])) {
-                        $ret->bookings[$booking->id]->products[$mod->target->product_id]->modifiers[$mod->modifier_id] = (object) [
-                            'label' => $mod->modifier->modifierType->name,
-                            'amount' => 0,
-                            'variable' => $mod->is_variable,
-                            'passive' => ($mod->type == 'passive'),
-                        ];
+            foreach($aggregate->orders as $order) {
+                $booking = $this->readBooking($request, $order, $target_user, $delivering);
+                if ($booking) {
+                    $order->setRelation('aggregate', $aggregate);
+                    $booking->setRelation('order', $order);
+
+                    if ($delivering) {
+                        $booking->status = 'shipped';
+                        $booking->saveFinalPrices();
+                    }
+                    else {
+                        $booking->status = 'pending';
                     }
 
-                    $ret->bookings[$booking->id]->products[$mod->target->product_id]->modifiers[$mod->modifier_id]->amount += $mod->effective_amount;
-                }
-                else {
-                    if (!isset($ret->bookings[$booking->id]->modifiers[$mod->modifier_id])) {
-                        $ret->bookings[$booking->id]->modifiers[$mod->modifier_id] = (object) [
-                            'label' => $mod->modifier->modifierType->name,
-                            'amount' => 0,
-                            'variable' => $mod->is_variable,
-                            'passive' => ($mod->type == 'passive'),
-                        ];
-                    }
-
-                    $ret->bookings[$booking->id]->modifiers[$mod->modifier_id]->amount += $mod->effective_amount;
+                    $bookings[] = $booking;
                 }
             }
-        }
 
-        /*
-            Lo scopo di questa funzione è ottenere una preview dei totali della
-            prenotazione, dunque al termine invalido tutte le modifiche fatte
-            sul database
-        */
-        DB::rollback();
+            foreach($bookings as $booking) {
+                /*
+                    Qui forzo sempre il ricalcolo dei modificatori, altrimenti
+                    vengono letti quelli effettivamente salvati sul DB.
+                    Ma se la prenotazione è ancora in fase di consegna, lo status è
+                    impostato temporaneamente a "shipped" ed andrebbe a leggere
+                    quelli salvati anche se ancora non ce ne sono
+                */
+                $modified = $booking->calculateModifiers(null, false);
 
-        return response()->json($ret);
+                $ret->bookings[$booking->id] = (object) [
+                    'total' => printablePrice($booking->getValue('effective', false)),
+                    'modifiers' => [],
+                    'products' => $booking->products->reduce(function($carry, $product) use ($delivering) {
+                        $carry[$product->product_id] = (object) [
+                            'total' => printablePrice($product->getValue('effective')),
+
+                            /*
+                                Mentre computo il valore totale della prenotazione
+                                in fase di modifica, controllo anche che le quantità
+                                prenotate siano coerenti coi limiti imposti sul
+                                prodotto prenotato (massimo, minimo,
+                                disponibile...).
+                                Lo faccio qui, server-side, per evitare problemi di
+                                compatibilità client-side (è stato più volte
+                                segnalato che su determinati browser mobile ci siano
+                                problemi su questi controlli).
+                                Ma solo se non sono in consegna: in quel caso è
+                                ammesso immettere qualsiasi quantità
+                            */
+                            'quantity' => $delivering ? $product->delivered : $product->testConstraints($product->quantity),
+
+                            'variants' => $product->variants->reduce(function($varcarry, $variant) use ($product, $delivering) {
+                                $varcarry[] = (object) [
+                                    'components' => $variant->components->reduce(function($componentcarry, $component) {
+                                        $componentcarry[] = $component->value->id;
+                                        return $componentcarry;
+                                    }, []),
+
+                                    'quantity' => $delivering ? $variant->delivered : $product->testConstraints($variant->quantity),
+                                    'total' => printablePrice($delivering ? $variant->deliveredValue() : $variant->quantityValue()),
+                                ];
+
+                                return $varcarry;
+                            }, []),
+
+                            'modifiers' => [],
+                        ];
+                        return $carry;
+                    }, []),
+                ];
+
+                foreach($modified as $mod) {
+                    if ($mod->target_type == 'App\Product') {
+                        if (!isset($ret->bookings[$booking->id]->products[$mod->target->product_id]->modifiers[$mod->modifier_id])) {
+                            $ret->bookings[$booking->id]->products[$mod->target->product_id]->modifiers[$mod->modifier_id] = $this->initDynamicModifier($mod);
+                        }
+
+                        $ret->bookings[$booking->id]->products[$mod->target->product_id]->modifiers[$mod->modifier_id]->amount += $mod->effective_amount;
+                    }
+                    else {
+                        if (!isset($ret->bookings[$booking->id]->modifiers[$mod->modifier_id])) {
+                            $ret->bookings[$booking->id]->modifiers[$mod->modifier_id] = $this->initDynamicModifier($mod);
+                        }
+
+                        $ret->bookings[$booking->id]->modifiers[$mod->modifier_id]->amount += $mod->effective_amount;
+                    }
+                }
+            }
+
+            /*
+                Lo scopo di questa funzione è ottenere una preview dei totali della
+                prenotazione, dunque al termine invalido tutte le modifiche fatte
+                sul database
+            */
+            DB::rollback();
+
+            return response()->json($ret);
+        });
     }
 
     public function destroy(Request $request, $aggregate_id, $user_id)

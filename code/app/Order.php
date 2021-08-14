@@ -931,19 +931,51 @@ class Order extends Model
         return [$this->supplier];
     }
 
+    public function involvedModifiers($include_shipping_places = false)
+    {
+        $key = 'involved_modifiers_' . ($include_shipping_places ? 'shipping' : 'no_shipping');
+
+        return $this->innerCache($key, function($obj) use ($include_shipping_places) {
+            $modifiers = $this->modifiers;
+
+            foreach ($this->products as $product) {
+                $modifiers = $modifiers->merge($product->modifiers);
+            }
+
+            if ($include_shipping_places) {
+                $managed_shipping_places = [];
+
+                foreach ($this->bookings as $booking) {
+                    $booker = $booking->user;
+                    if ($booker->shippingplace && !isset($managed_shipping_places[$booker->shippingplace->id])) {
+                        $managed_shipping_places[$booker->shippingplace->id] = true;
+                        $modifiers = $modifiers->merge($booker->shippingplace->modifiers);
+                    }
+                }
+            }
+
+            return $modifiers->filter(function($mod) {
+                return $mod->isVoid() == false;
+            })->sortBy('priority');
+        });
+    }
+
     public function applyModifiers()
     {
-        DB::beginTransaction();
+        $modifiers = $this->involvedModifiers(true);
+        if ($modifiers->isEmpty() == false) {
+            DB::beginTransaction();
 
-        $modifiers = new Collection();
-        $aggregate_data = $this->aggregate->reduxData();
+            $modifiers = new Collection();
+            $aggregate_data = $this->aggregate->reduxData();
 
-        foreach($this->bookings as $booking) {
-            $booking->setRelation('order', $this);
-            $modifiers = $modifiers->merge($booking->applyModifiers($aggregate_data));
+            foreach($this->bookings as $booking) {
+                $booking->setRelation('order', $this);
+                $modifiers = $modifiers->merge($booking->applyModifiers($aggregate_data));
+            }
+
+            DB::rollback();
         }
-
-        DB::rollback();
 
         return $modifiers;
     }

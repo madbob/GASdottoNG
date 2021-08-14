@@ -434,11 +434,7 @@ class Booking extends Model
 
     public function involvedModifiers()
     {
-        $modifiers = $this->order->modifiers;
-
-        foreach($this->order->products as $product) {
-            $modifiers = $modifiers->merge($product->modifiers);
-        }
+        $modifiers = $this->order->involvedModifiers(false);
 
         if ($this->user->shippingplace) {
             $modifiers = $modifiers->merge($this->user->shippingplace->modifiers);

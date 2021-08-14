@@ -2323,9 +2323,14 @@ $(document).ready(function() {
                     input.val(booked.val());
                 }
             });
-
-            bookingTotal($(this));
         });
+
+        /*
+            Se mi trovo in un ordine aggregato, eseguo la funzione di controllo
+            e calcolo solo sul primo. Tanto comunque bookingTotal() riesegue
+            sempre sull'intero form dell'aggregato
+        */
+        bookingTotal($(this).closest('form').find('.booking-editor').first());
 
         return false;
     });

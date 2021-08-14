@@ -36,6 +36,12 @@ class Modifier extends Model
         return $ret;
     }
 
+    public function isVoid()
+    {
+        $data = $this->definitions;
+        return $data->isEmpty();
+    }
+
     public function getNameAttribute()
     {
         $data = $this->definitions;
