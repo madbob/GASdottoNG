@@ -3,12 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use App\Events\SluggableCreating;
 
 class ModifierType extends Model
 {
-    use GASModel, SluggableID;
+    use GASModel, SluggableID, Cachable;
 
     public $incrementing = false;
 

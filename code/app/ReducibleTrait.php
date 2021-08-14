@@ -110,6 +110,11 @@ trait ReducibleTrait
         ];
     }
 
+    /*
+        Reminder: è sconsigliato cachare i risultati dell'operazione di
+        riduzione, esistendo diverse variabili (incluso il GAS attualmente
+        attivo nel GlobalScopeHub)
+    */
     public function reduxData($ret = null, $filters = null)
     {
         if (is_null($ret)) {
