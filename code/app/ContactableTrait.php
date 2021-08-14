@@ -114,18 +114,11 @@ trait ContactableTrait
     public function getAddress()
     {
         $address = $this->contacts()->where('type', 'address')->first();
-        if (is_null($address) || empty($address->value))
+        if (is_null($address) || empty($address->value)) {
             return ['', '', ''];
-
-        $tokens = explode(',', $address->value);
-        foreach($tokens as $index => $value) {
-            $tokens[$index] = trim($value);
         }
 
-        for($i = count($tokens); $i < 3; $i++)
-            $tokens[$i] = '';
-
-        return $tokens;
+        return $address->asAddress();
     }
 
     public function getContactsByType($type)

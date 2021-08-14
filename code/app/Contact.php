@@ -48,4 +48,18 @@ class Contact extends Model
             'website' => _i('Sito Web'),
         ];
     }
+
+    public function asAddress()
+    {
+        $tokens = explode(',', $this->value);
+        foreach($tokens as $index => $value) {
+            $tokens[$index] = trim($value);
+        }
+
+        for($i = count($tokens); $i < 3; $i++) {
+            $tokens[$i] = '';
+        }
+
+        return $tokens;
+    }
 }

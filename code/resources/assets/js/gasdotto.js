@@ -325,9 +325,6 @@ function fixContactField(input, typeclass) {
     if (typeclass == 'email') {
         input.attr('type', 'email');
     }
-    else if (typeclass == 'website') {
-        input.attr('type', 'url');
-    }
     else {
         input.attr('type', 'text');
         input.addClass(typeclass);
@@ -1224,13 +1221,6 @@ $(document).ready(function() {
 			$(this).appendTo(target_body);
 		});
 	});
-
-    $('body').on('blur', 'input[type=url]', function() {
-        var uri = $(this).val();
-        if (uri.startsWith('http') == false) {
-            $(this).val('http://' + uri);
-        }
-    });
 
     $('body').on('blur', '.trim-2-ddigits', function() {
         $(this).val(function(index, value) {
