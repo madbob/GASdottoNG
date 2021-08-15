@@ -137,7 +137,7 @@ class Product extends Model
         $str = sprintf('%.02f %s / %s', $price, $currency, $this->measure->name);
 
         if ($this->variable) {
-            $str .= '<small> <span class="visible-sm">' . _i('(prodotto a prezzo variabile)') . '</span><span class="visible-xs">' . _i('(variabile)') . '</span></small>';
+            $str .= '<small> <span class="d-none d-sm-block">' . _i('(prodotto a prezzo variabile)') . '</span><span class="d-block d-sm-none">' . _i('(variabile)') . '</span></small>';
         }
 
         return $str;
