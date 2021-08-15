@@ -192,6 +192,11 @@ $form_buttons = [
                     ])
                 @endforeach
 
+                @include('delivery.modifierrow', [
+                    'mod_value' => null,
+                    'skip_cells' => 3
+                ])
+
                 @if($user->gas->restrict_booking_to_credit)
                     <tr class="do-not-sort">
                         <td><label class="static-label">{{ _i('Credito Disponibile') }}</label></td>

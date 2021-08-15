@@ -33,6 +33,10 @@ class Utils {
         }
     }
 
+    static detailsButton(url) {
+        return '<button type="button" class="btn btn-xs btn-info object-details d-none d-md-inline-block" data-show-url="' + url + '"><i class="bi-zoom-in"></i></button>';
+    }
+
     static setInputErrorText(input, message) {
         if (message == null) {
             input.closest('.form-group').removeClass('has-error');

@@ -889,22 +889,37 @@ function bookingTotal(editor) {
                         }
 					}
 
-					for (let [modifier_id, modifier_meta] of Object.entries(booking_data.modifiers)) {
-						var row = $('input[name="modifier-' + modifier_id + '"]', container).parent();
-						if (row.length == 0) {
-							var template = $('.modifier-row.hidden', container);
-							var new_row = template.clone();
+                    var dynamic_modifiers = booking_data.modifiers;
 
-							new_row.removeClass('hidden').find('.static-label .name').text(modifier_meta.label);
-							if (modifier_meta.variable) {
-								new_row.find('.static-label .mutable').removeClass('hidden');
-							}
+                    $('input[name^="modifier-"]', container).each(function() {
+                        let modid = parseInt($(this).attr('name').split('-')[1]);
+                        if (modid == 0) {
+                            return;
+                        }
 
-							row = new_row.find('input[name="modifier-0"]').attr('name', 'modifier-' + modifier_id).parent();
-							template.before(new_row);
+                        for (let [modifier_id, modifier_meta] of Object.entries(dynamic_modifiers)) {
+                            if (modid == modifier_id) {
+                                $(this).parent().find('span').text(utils.priceRound(modifier_meta.amount));
+                                delete dynamic_modifiers[modifier_id];
+                                return;
+                            }
+                        }
+
+                        $(this).closest('.modifier-row').remove();
+                    });
+
+					for (let [modifier_id, modifier_meta] of Object.entries(dynamic_modifiers)) {
+						var template = $('.modifier-row.hidden', container);
+						var new_row = template.clone();
+
+						new_row.removeClass('hidden').find('.static-label .name').text(modifier_meta.label);
+						if (modifier_meta.variable) {
+							new_row.find('.static-label .mutable').removeClass('hidden');
 						}
 
-						row.find('span').text(utils.priceRound(modifier_meta.amount));
+                        new_row.find('.static-label').siblings('.float-end').append(utils.detailsButton(modifier_meta.url));
+						new_row.find('input[name="modifier-0"]').attr('name', 'modifier-' + modifier_id).parent().find('span').text(utils.priceRound(modifier_meta.amount));
+						template.before(new_row);
 					}
 
 					var t = utils.priceRound(booking_data.total);

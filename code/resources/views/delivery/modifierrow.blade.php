@@ -19,7 +19,7 @@ if (!isset($final_value)) {
             </span>
         </label>
         <div class="float-end">
-            @include('commons.detailsbutton', ['obj' => $mod_value->modifier])
+            @include('commons.detailsbutton', ['obj' => $mod_value ? $mod_value->modifier : null])
         </div>
     </td>
 

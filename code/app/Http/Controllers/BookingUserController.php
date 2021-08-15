@@ -78,7 +78,8 @@ class BookingUserController extends BookingHandler
     private function initDynamicModifier($mod)
     {
         return (object) [
-            'label' => $mod->modifier->modifierType->name,
+            'label' => $mod->descriptive_name,
+            'url' => $mod->modifier->getROShowURL(),
             'amount' => 0,
             'variable' => $mod->is_variable,
             'passive' => ($mod->type == 'passive'),
