@@ -19,6 +19,7 @@ $shipped_status = ($controllable && $aggregate->isActive() == false && $aggregat
 $more_orders = ($aggregate->orders->count() > 1);
 $multi_gas = ($aggregate->gas()->count() > 1 && $currentuser->can('gas.multi', $currentuser->gas));
 $panel_rand_wrap = rand();
+$master_summary = $aggregate->reduxData();
 
 ?>
 
@@ -51,9 +52,9 @@ $panel_rand_wrap = rand();
             @foreach($aggregate->orders as $index => $order)
                 <x-larastrap::tabpane :label="$order->printableName()" :active="$index == 0">
                     @can('supplier.orders', $order->supplier)
-                        @include('order.edit', ['order' => $order])
+                        @include('order.edit', ['order' => $order, 'master_summary' => $master_summary])
                     @else
-                        @include('order.show', ['order' => $order])
+                        @include('order.show', ['order' => $order, 'master_summary' => $master_summary])
                     @endcan
                 </x-larastrap::tabpane>
             @endforeach

@@ -1,4 +1,4 @@
-<?php $summary = $order->reduxData() ?>
+<?php $summary = $master_summary->orders[$order->id] ?>
 
 <x-larastrap::mform :obj="$order" nosave nodelete>
     <div class="row">
@@ -40,7 +40,7 @@
 
     <hr/>
 
-    @include('order.summary_ro', ['order' => $order, 'summary' => $summary])
+    @include('order.summary_ro', ['order' => $order, 'master_summary' => $master_summary])
 
     @can('supplier.shippings', $order->supplier)
         @include('order.annotations', ['order' => $order])

@@ -960,17 +960,25 @@ class Order extends Model
         });
     }
 
-    public function applyModifiers()
+    public function applyModifiers($aggregate_data = null, $enforce_status = false)
     {
         $modifiers = $this->involvedModifiers(true);
         if ($modifiers->isEmpty() == false) {
             DB::beginTransaction();
 
             $modifiers = new Collection();
-            $aggregate_data = $this->aggregate->reduxData();
+
+            if (is_null($aggregate_data)) {
+                $aggregate_data = $this->aggregate->reduxData();
+            }
 
             foreach($this->bookings as $booking) {
                 $booking->setRelation('order', $this);
+
+                if ($enforce_status !== false) {
+                    $booking->status = $enforce_status;
+                }
+
                 $modifiers = $modifiers->merge($booking->applyModifiers($aggregate_data));
             }
 

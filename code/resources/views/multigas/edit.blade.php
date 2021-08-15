@@ -1,4 +1,4 @@
-<x-larastrap::form :obj="$gas" classes="main-form multigas-editor" method="PUT" :action="route('multigas.update', $gas->id)">
+<x-larastrap::mform :obj="$gas" classes="multigas-editor" method="PUT" :action="route('multigas.update', $gas->id)">
     <div class="row">
         <div class="col-6">
             <x-larastrap::text name="name" :label="_i('Nome')" required />
@@ -51,4 +51,4 @@
             </div>
         @endif
     </div>
-</x-larastrap::form>
+</x-larastrap::mform>

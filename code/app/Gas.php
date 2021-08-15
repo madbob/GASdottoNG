@@ -383,6 +383,13 @@ class Gas extends Model
         return false;
     }
 
+    /*************************************************************** GASModel */
+
+    public function getShowURL()
+    {
+        return route('multigas.show', $this->id);
+    }
+
     /******************************************************** AttachableTrait */
 
     protected function requiredAttachmentPermission()

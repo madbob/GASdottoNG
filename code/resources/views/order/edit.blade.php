@@ -1,4 +1,4 @@
-<?php $summary = $order->reduxData() ?>
+<?php $summary = $master_summary->orders[$order->id] ?>
 
 <x-larastrap::mform :obj="$order" classes="order-editor" method="PUT" :action="route('orders.update', $order->id)" :nodelete="$order->isActive() == false" :other_buttons="[['label' => _i('Esporta'), 'classes' => ['float-start', 'link-button'], 'attributes' => ['data-link' => $order->exportableURL()]]]">
     <input type="hidden" name="order_id" value="{{ $order->id }}" />
@@ -105,6 +105,6 @@
 
     <hr>
 
-    @include('order.summary', ['order' => $order, 'summary' => $summary])
+    @include('order.summary', ['order' => $order, 'master_summary' => $master_summary])
     @include('order.annotations', ['order' => $order])
 </x-larastrap::mform>

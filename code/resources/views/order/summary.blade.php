@@ -1,5 +1,7 @@
 <?php
 
+$summary = $master_summary->orders[$order->id];
+
 $columns = $currentgas->orders_display_columns;
 $table_identifier = 'summary-' . sanitizeId($order->id);
 $display_columns = App\Order::displayColumns();
@@ -211,19 +213,30 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                                 <span class="order-summary-order-price">{{ printablePriceCurrency($summary->price ?? 0) }}</span>
                                 <?php
 
-                                $modifiers = $order->applyModifiers();
+                                $modifiers = $order->applyModifiers($master_summary, 'pending');
                                 $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
 
                                 ?>
 
                                 @foreach($aggregated_modifiers as $am)
-                                    <p>+ {{ $am->name }}: {{ printablePrice($am->amount) }}</p>
+                                    <br>+ {{ $am->name }}: {{ printablePrice($am->amount) }}
                                 @endforeach
 
                                 @break
 
                             @case('price_delivered')
                                 <span class="order-summary-order-price_delivered">{{ printablePriceCurrency($summary->price_delivered ?? 0) }}</span>
+                                <?php
+
+                                $modifiers = $order->applyModifiers($master_summary, 'shipped');
+                                $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
+
+                                ?>
+
+                                @foreach($aggregated_modifiers as $am)
+                                    <br>+ {{ $am->name }}: {{ printablePrice($am->amount) }}
+                                @endforeach
+
                                 @break
 
                             @case('weight')

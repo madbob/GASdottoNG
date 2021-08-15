@@ -76,7 +76,7 @@
 
                     $orders_total = $orders_total_taxable + $orders_total_tax;
 
-                    $modifiers = $o->applyModifiers();
+                    $modifiers = $o->applyModifiers(null, false);
                     $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
 
                     foreach($aggregated_modifiers as $am) {

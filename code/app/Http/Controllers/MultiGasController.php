@@ -47,7 +47,7 @@ class MultiGasController extends Controller
 
     public function store(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
         if ($user->can('gas.multi', $user->gas) == false) {
             abort(503);
         }
@@ -129,6 +129,20 @@ class MultiGasController extends Controller
         }
 
         return view('multigas.edit', ['gas' => $gas]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = $request->user();
+        $gas = Gas::findOrFail($id);
+
+        if ($user->can('gas.multi', $gas) == false) {
+            abort(503);
+        }
+
+        $gas->name = $request->input('name');
+        $gas->save();
+        return $this->commonSuccessResponse($gas);
     }
 
     public function destroy($id)

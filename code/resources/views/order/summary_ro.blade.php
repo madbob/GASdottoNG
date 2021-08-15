@@ -1,4 +1,9 @@
-<?php $columns = $currentgas->orders_display_columns ?>
+<?php
+
+$summary = $master_summary->orders[$order->id];
+$columns = $currentgas->orders_display_columns;
+
+?>
 
 <div class="btn-group float-end order-columns-selector">
     <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown">
@@ -121,19 +126,30 @@
                                     <span class="order-summary-order-price">{{ printablePriceCurrency($summary->price ?? 0) }}</span>
                                     <?php
 
-                                    $modifiers = $order->applyModifiers();
+                                    $modifiers = $order->applyModifiers($master_summary, 'pending');
                                     $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
 
                                     ?>
 
                                     @foreach($aggregated_modifiers as $am)
-                                        <p>+ {{ $am->name }}: {{ printablePrice($am->amount) }}</p>
+                                        <br>+ {{ $am->name }}: {{ printablePrice($am->amount) }}
                                     @endforeach
 
                                     @break
 
                                 @case('price_delivered')
                                     <span class="order-summary-order-price_delivered">{{ printablePriceCurrency($summary->price_delivered) }}</span>
+                                    <?php
+
+                                    $modifiers = $order->applyModifiers($master_summary, 'shipped');
+                                    $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
+
+                                    ?>
+
+                                    @foreach($aggregated_modifiers as $am)
+                                        <br>+ {{ $am->name }}: {{ printablePrice($am->amount) }}
+                                    @endforeach
+
                                     @break
 
                             @endswitch
