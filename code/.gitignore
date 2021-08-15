@@ -11,3 +11,4 @@
 .docker_bundle/.htaccess
 .editorconfig
 composer.lock
+package-lock.json
