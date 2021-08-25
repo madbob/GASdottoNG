@@ -26,7 +26,7 @@ class ProductsService extends BaseService
         return Product::withTrashed()->with('variants')->with('variants.values')->findOrFail($id);
     }
 
-    private function enforceMeasure($product, $request)
+    private function enforceMeasure(&$product, $request)
     {
         if ($product->measure->discrete) {
             $product->portion_quantity = 0;
@@ -36,33 +36,45 @@ class ProductsService extends BaseService
             $this->transformAndSetIfSet($product, $request, 'portion_quantity', 'enforceNumber');
             $this->boolIfSet($product, $request, 'variable');
         }
-
-        return $product;
     }
 
-    private function setCommonAttributes($product, $request)
+    private function setCommonAttributes(&$product, $request)
     {
         $this->setIfSet($product, $request, 'name');
         $this->setIfSet($product, $request, 'description');
         $this->transformAndSetIfSet($product, $request, 'price', 'enforceNumber');
 
         $this->setIfSet($product, $request, 'category_id');
-        if (empty($product->category_id))
+        if (empty($product->category_id)) {
             $product->category_id = 'non-specificato';
+        }
 
         $this->setIfSet($product, $request, 'measure_id');
-        if (empty($product->measure_id))
+        if (empty($product->measure_id)) {
             $product->measure_id = 'non-specificato';
-
-        $request['discount'] = savingPercentage($request, 'discount');
-        $this->transformAndSetIfSet($product, $request, 'discount', 'normalizePercentage');
+        }
 
         $this->transformAndSetIfSet($product, $request, 'vat_rate_id', function($value) {
-            if ($value != 0)
+            if ($value != 0) {
                 return $value;
-            else
+            }
+            else {
                 return null;
+            }
         });
+    }
+
+    private function setUncommonAttributes(&$product, $request)
+    {
+        $this->boolIfSet($product, $request, 'active');
+        $this->setIfSet($product, $request, 'supplier_code');
+        $this->transformAndSetIfSet($product, $request, 'weight', 'enforceNumber');
+        $this->transformAndSetIfSet($product, $request, 'package_size', 'enforceNumber');
+        $this->transformAndSetIfSet($product, $request, 'multiple', 'enforceNumber');
+        $this->transformAndSetIfSet($product, $request, 'min_quantity', 'enforceNumber');
+        $this->transformAndSetIfSet($product, $request, 'max_quantity', 'enforceNumber');
+        $this->transformAndSetIfSet($product, $request, 'max_available', 'enforceNumber');
+        $this->enforceMeasure($product, $request);
     }
 
     public function store(array $request)
@@ -83,6 +95,9 @@ class ProductsService extends BaseService
         });
 
         if (isset($request['duplicating_from'])) {
+            $this->setUncommonAttributes($product, $request);
+            $product->save();
+
             $original_product_id = $request['duplicating_from'];
             $original_product = Product::find($original_product_id);
 
@@ -99,6 +114,14 @@ class ProductsService extends BaseService
                     $new_value->save();
                 }
             }
+
+            foreach($original_product->modifiers as $old_modifier) {
+                $new_modifier = $old_modifier->replicate();
+                unset($new_modifier->id);
+                $new_modifier->target_id = $product->id;
+                $new_modifier->target_type = get_class($product);
+                $new_modifier->save();
+            }
         }
 
         return $product;
@@ -111,16 +134,7 @@ class ProductsService extends BaseService
 
         DB::transaction(function () use ($product, $request) {
             $this->setCommonAttributes($product, $request);
-
-            $this->boolIfSet($product, $request, 'active');
-            $this->setIfSet($product, $request, 'supplier_code');
-            $this->transformAndSetIfSet($product, $request, 'weight', 'enforceNumber');
-            $this->transformAndSetIfSet($product, $request, 'package_size', 'enforceNumber');
-            $this->transformAndSetIfSet($product, $request, 'multiple', 'enforceNumber');
-            $this->transformAndSetIfSet($product, $request, 'min_quantity', 'enforceNumber');
-            $this->transformAndSetIfSet($product, $request, 'max_quantity', 'enforceNumber');
-            $this->transformAndSetIfSet($product, $request, 'max_available', 'enforceNumber');
-            $product = $this->enforceMeasure($product, $request);
+            $this->setUncommonAttributes($product, $request);
             $product->save();
 
             if (isset($request['picture'])) {

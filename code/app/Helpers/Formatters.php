@@ -744,36 +744,51 @@ function formatPeriodicToComponent($component, $params)
 
 function formatMainFormButtons($component, $params)
 {
-    $other_buttons = $params['attributes']['other_buttons'] ?? [];
-    if (!empty($other_buttons)) {
-        $buttons = $other_buttons;
+    /*
+        Da questa funzione passo due volte, ma la prima volta i pulsanti vengono
+        passati all'eventuale modale che contiene il form e la seconda restano
+        nel form stesso.
+        Sicché forzo un flag tra i parametri, per tenere traccia
+        dell'operazione, e fare in modo che i pulsanti restino da una parte sola
+        se necessario.
+    */
+    if (isset($params['main_form_managed'])) {
+        unset($params['main_form_managed']);
     }
     else {
-        $buttons = [];
+        $params['main_form_managed'] = 'ongoing';
+
+        $other_buttons = $params['attributes']['other_buttons'] ?? [];
+        if (!empty($other_buttons)) {
+            $buttons = $other_buttons;
+        }
+        else {
+            $buttons = [];
+        }
+
+        $nodelete = filter_var($params['attributes']['nodelete'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        if (!$nodelete) {
+            $obj = $params['obj'];
+
+            $buttons[] = [
+                'color' => 'danger',
+                'classes' => ['delete-button'],
+                'label' => $obj && $obj->deleted_at != null ? _i('Elimina Definitivamente') : _i('Elimina'),
+            ];
+        }
+
+        $nosave = filter_var($params['attributes']['nosave'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        if (!$nosave) {
+            $buttons[] = [
+                'color' => 'success',
+                'classes' => ['save-button'],
+                'label' => _i('Salva'),
+                'attributes' => ['type' => 'submit'],
+            ];
+        }
+
+        $params['buttons'] = $buttons;
     }
-
-    $nodelete = filter_var($params['attributes']['nodelete'] ?? false, FILTER_VALIDATE_BOOLEAN);
-    if (!$nodelete) {
-        $obj = $params['obj'];
-
-        $buttons[] = [
-            'color' => 'danger',
-            'classes' => ['delete-button'],
-            'label' => $obj && $obj->deleted_at != null ? _i('Elimina Definitivamente') : _i('Elimina'),
-        ];
-    }
-
-    $nosave = filter_var($params['attributes']['nosave'] ?? false, FILTER_VALIDATE_BOOLEAN);
-    if (!$nosave) {
-        $buttons[] = [
-            'color' => 'success',
-            'classes' => ['save-button'],
-            'label' => _i('Salva'),
-            'attributes' => ['type' => 'submit'],
-        ];
-    }
-
-    $params['buttons'] = $buttons;
 
     unset($params['attributes']['other_buttons']);
     unset($params['attributes']['nodelete']);

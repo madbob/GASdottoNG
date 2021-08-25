@@ -12,7 +12,10 @@ if (!isset($duplicate)) {
 
         <x-larastrap::text name="supplier_code" :label="_i('Codice Fornitore')" />
         <x-larastrap::check name="active" :label="_i('Ordinabile')" :pophelp="_i('Indica se il prodotto potrà essere ordinato o meno all\'interno dei nuovi ordini per il fornitore. Lo stato dei singoli prodotti potrà comunque essere cambiato da parte dei referenti anche all\'interno di un ordine aperto')" />
-        @include('commons.modifications', ['obj' => $product])
+
+        @if($duplicate == false)
+            @include('commons.modifications', ['obj' => $product, 'duplicate' => $duplicate])
+        @endif
     </div>
     <div class="col-md-6">
         @include('commons.imagefield', [
@@ -31,8 +34,18 @@ if (!isset($duplicate)) {
         <x-larastrap::decimal name="max_quantity" :label="_i('Massimo Consigliato')" decimals="3" :pophelp="_i('Se diverso da 0, se viene prenotata una quantità superiore di quella indicata viene mostrato un warning')" />
         <x-larastrap::decimal name="max_available" :label="_i('Disponibile')" decimals="3" :pophelp="_i('Se diverso da 0, questa è la quantità massima di prodotto che complessivamente può essere prenotata in un ordine. In fase di prenotazione gli utenti vedranno quanto è già stato sinora prenotato in tutto')" />
 
-        <x-larastrap::field :label="_i('Varianti')" :pophelp="_i('Ogni prodotto può avere delle varianti, ad esempio la taglia o il colore per i capi di abbigliamento. In fase di prenotazione, gli utenti potranno indicare quantità diverse per ogni combinazione di varianti.')">
-            @include('variant.editor', ['product' => $product, 'duplicate' => $duplicate])
-        </x-larastrap::field>
+        @if($duplicate == false)
+            <x-larastrap::field :label="_i('Varianti')" :pophelp="_i('Ogni prodotto può avere delle varianti, ad esempio la taglia o il colore per i capi di abbigliamento. In fase di prenotazione, gli utenti potranno indicare quantità diverse per ogni combinazione di varianti.')">
+                @include('variant.editor', ['product' => $product])
+            </x-larastrap::field>
+        @endif
     </div>
+
+    @if($duplicate)
+        <div class="col-12">
+            <div class="alert alert-info">
+                {{ _i('Il duplicato avrà una copia delle varianti e dei modificatori del prodotto originario. Potranno essere eventualmente modificati dopo il salvataggio.') }}
+            </div>
+        </div>
+    @endif
 </div>

@@ -53,7 +53,7 @@ class VariantsController extends BackedController
     {
         $product = Product::findOrFail($id);
         $this->ensureAuth(['supplier.modify' => $product->supplier]);
-        return view('variant.editor', ['product' => $product, 'duplicate' => false]);
+        return view('variant.editor', ['product' => $product]);
     }
 
     public function matrix(Request $request, $id)
