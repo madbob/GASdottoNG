@@ -270,7 +270,7 @@ function generalInit(container) {
     $('.date[data-enforce-after]', container).each(function() {
         var current = $(this);
         var select = current.attr('data-enforce-after');
-        var target = current.closest('.form-group').find(select);
+        var target = current.closest('.input-group').find(select);
 		if (target.length == 0) {
 			target = current.closest('form').find(select);
         }
@@ -1269,7 +1269,7 @@ $(document).ready(function() {
 
     $('body').on('focus', '.date[data-enforce-after]', function() {
         var select = $(this).attr('data-enforce-after');
-        var target = $(this).closest('.form-group').find(select);
+        var target = $(this).closest('.input-group').find(select);
 		if (target.length == 0) {
 			target = $(this).closest('form').find(select);
         }
