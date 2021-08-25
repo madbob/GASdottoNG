@@ -222,7 +222,7 @@ class AggregatesController extends OrdersController
                                     $d->notes = array_merge($d->notes, $td->notes);
 
                                     foreach($d->totals as $index => $t) {
-                                        $d->totals[$index] += $td->totals[$index];
+                                        $d->totals[$index] += $td->totals[$index] ?? 0;
                                     }
 
                                     $found = true;
