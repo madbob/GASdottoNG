@@ -26,7 +26,7 @@
             </div>
             <div class="col-md-4">
                 <div class="d-flex align-items-start">
-                    <ul class="nav flex-column nav-pills">
+                    <ul class="nav flex-column nav-pills" role="tablist">
                         @foreach($role->users as $user)
                             <li class="nav-item" data-user="{{ $user->id }}">
                                 <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#permissions-{{ sanitizeId($user->id) }}-{{ $role->id }}">

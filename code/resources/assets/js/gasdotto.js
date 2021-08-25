@@ -465,23 +465,6 @@ function setupImportCsvEditor(container) {
     });
 }
 
-function addPanelToTabs(group, panel, label) {
-    var identifier = $(panel).attr('id');
-    $(group + '.tab-content').append(panel);
-    utils.j().initElements(panel);
-
-    var list = $(group + '[role=tablist]');
-    var tab = $('<li class="presentation"><a href="#' + identifier + '" aria-controls="#' + identifier + '" role="tab" data-toggle="tab">' + label + '</a></li>');
-
-    var last = list.find('.last-tab');
-    if (last.length != 0)
-        last.before(tab);
-    else
-        list.append(tab);
-
-    tab.find('a').click();
-}
-
 /*
     I form possono includere una serie di campi <input type="hidden"> che, in
     funzione dell'attributo "name", possono attivare delle funzioni speciali
@@ -711,15 +694,9 @@ function iconsLegendTrigger(node, legend_class) {
     }
 }
 
-function currentLoadableUniqueSelector(target)
-{
-    var identifier = $(target).closest('div.list-group-item').attr('data-random-identifier');
-    return 'div.list-group-item[data-random-identifier=' + identifier + ']';
-}
-
 function currentLoadableLoaded(target)
 {
-    return $(target).closest('.remote-accordion').attr('data-element-id');
+    return $(target).closest('.async-accordion').attr('data-element-id');
 }
 
 function closeAllLoadable(target)
@@ -973,7 +950,8 @@ function setupPermissionsEditor(container) {
                 select: function(event, ui) {
                     var text = $(this);
                     var role_id = currentLoadableLoaded(this);
-                    var selector = currentLoadableUniqueSelector(this);
+                    var group = $(this).closest('.accordion-body');
+                    var user_id = ui.item.id;
 
                     var label = ui.item.label;
                     $.ajax({
@@ -982,10 +960,16 @@ function setupPermissionsEditor(container) {
                         dataType: 'HTML',
                         data: {
                             role: role_id,
-                            user: ui.item.id,
+                            user: user_id,
                         },
                         success: function(data) {
-                            addPanelToTabs(selector + ' .role-users', $(data), label);
+                            var panel = $(data);
+                            var identifier = $(panel).attr('id');
+                            utils.j().initElements(panel);
+                            group.find('.tab-content').append(panel);
+
+                            var tab = $('<li class="nav-item" data-user="' + user_id + '"><button type="button" class="nav-link" data-bs-target="#' + identifier + '" data-bs-toggle="tab">' + label + '</button></li>');
+                            group.find('[role=tablist]').find('.last-tab').before(tab);
                             text.val('');
                         }
                     });
@@ -994,27 +978,7 @@ function setupPermissionsEditor(container) {
         }
     });
 
-    $('.role-editor', container).on('submit', '#permissions-none form', function(e) {
-        e.preventDefault();
-        var form = $(this);
-        var data = form.serializeArray();
-
-        var name = form.find('input[name=name]');
-        var role_name = name.val();
-        name.val('');
-
-        $.ajax({
-            method: form.attr('method'),
-            url: form.attr('action'),
-            data: data,
-            dataType: 'html',
-
-            success: function(data) {
-                addPanelToTabs('.roles-list', $(data), role_name);
-            }
-        });
-
-    }).on('change', 'input:checkbox[data-role]', function(e) {
+    $('.role-editor', container).on('change', 'input:checkbox[data-role]', function(e) {
         var check = $(this);
         check.removeClass('saved-checkbox saved-left-feedback');
 
@@ -1060,7 +1024,10 @@ function setupPermissionsEditor(container) {
                 url: absolute_url + '/roles/detach',
                 data: data,
                 success: function() {
-                    button.closest('.loadable-contents').find('.role-users').find('[data-user=' + userid + ']').remove();
+                    var panel = button.closest('.accordion-body');
+                    var tab = panel.find('[data-user=' + userid + ']');
+                    panel.find(tab.find('button').attr('data-bs-target')).remove();
+                    tab.remove();
                 }
             });
         }
