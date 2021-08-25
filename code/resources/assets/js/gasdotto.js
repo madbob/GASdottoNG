@@ -248,6 +248,10 @@ function generalInit(container) {
         }
     }
 
+    $('.collapse_trigger', container).each(function() {
+        triggerCollapse($(this));
+    });
+
 	/*
 		Per ignoti motivi, capita che l'HTML che arriva in modo asincrono dal
 		server sia riformattato ed i nodi che dovrebbero stare nel nodo
@@ -692,6 +696,56 @@ function iconsLegendTrigger(node, legend_class) {
             }
         });
     }
+}
+
+/*
+    Questo è per gestire campi diversi di cui almeno uno è obbligatorio
+*/
+function reviewRequired(panel)
+{
+    panel.find('input[data-alternative-required]').each(function() {
+        var alternative = $(this).attr('data-alternative-required');
+        if (alternative) {
+            var alt = panel.find('[name="' + alternative + '"]');
+            if (alt.val() != '') {
+                $(this).prop('required', false);
+            }
+            else {
+                $(this).prop('required', true);
+            }
+        }
+    });
+}
+
+function triggerCollapse(trigger)
+{
+    var name = trigger.attr('name');
+    var display = trigger.prop('checked');
+
+    /*
+        L'evento show.bs.collapse va espressamente bloccato, altrimenti se
+        il widget si trova all'interno di una accordion risale fino a quella
+        e scattano anche le callback per le async-accordion
+    */
+
+    $('.collapse[data-triggerable=' + name + ']').one('show.bs.collapse', function(e) {
+        e.stopPropagation();
+    }).collapse(display ? 'show' : 'hide').find('.required_when_triggered').prop('required', display);
+
+    $('.collapse[data-triggerable-reverse=' + name + ']').one('show.bs.collapse', function(e) {
+        e.stopPropagation();
+    }).collapse(display ? 'hide' : 'show').find('.required_when_triggered').prop('required', display == false);
+
+    var panel = null;
+
+    if (display) {
+        panel = $('.collapse[data-triggerable=' + name + ']');
+    }
+    else {
+        panel = $('.collapse[data-triggerable-reverse=' + name + ']');
+    }
+
+    reviewRequired(panel);
 }
 
 function currentLoadableLoaded(target)
@@ -1240,6 +1294,10 @@ $(document).ready(function() {
         var t = form.find('.' + target).not($(this));
         t.find('option[value=' + value + ']').prop('selected', true);
         t.change();
+    });
+
+    $('body').on('change', 'input[data-alternative-required]', function() {
+        reviewRequired($(this).closest('form'));
     });
 
     $('body').on('click', '.reloader', function(event) {
@@ -1936,21 +1994,7 @@ $(document).ready(function() {
     });
 
     $('body').on('change', '.collapse_trigger', function() {
-        var name = $(this).attr('name');
-
-        /*
-            L'evento show.bs.collapse va espressamente bloccato, altrimenti se
-            il widget si trova all'interno di una accordion risale fino a quella
-            e scattano anche le callback per le async-accordion
-        */
-
-        $('.collapse[data-triggerable=' + name + ']').one('show.bs.collapse', function(e) {
-            e.stopPropagation()}
-        ).collapse($(this).prop('checked') ? 'show' : 'hide');
-
-        $('.collapse[data-triggerable-reverse=' + name + ']').one('show.bs.collapse', function(e) {
-            e.stopPropagation()}
-        ).collapse($(this).prop('checked') ? 'hide' : 'show');
+        triggerCollapse($(this));
     });
 
     /*
