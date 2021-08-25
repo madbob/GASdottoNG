@@ -51,12 +51,12 @@ class DatesService extends BaseService
             $user = $this->ensureAuth(['supplier.orders' => null]);
             $suppliers = array_keys($user->targetsByAction('supplier.orders'));
 
-            $ids = $request['id'];
-            $targets = $request['target_id'];
-            $dates = $request['date'];
-            $recurrings = $request['recurring'];
-            $descriptions = $request['description'];
-            $types = $request['type'];
+            $ids = $request['id'] ?? [];
+            $targets = $request['target_id'] ?? [];
+            $dates = $request['date'] ?? [];
+            $recurrings = $request['recurring'] ?? [];
+            $descriptions = $request['description'] ?? [];
+            $types = $request['type'] ?? [];
 
             $saved_ids = [];
 
