@@ -1,4 +1,4 @@
-<x-larastrap::mform classes="receipt-editor" method="PUT" :action="route('receipts.update', $receipt->id)">
+<x-larastrap::mform :obj="$receipt" classes="receipt-editor" method="PUT" :action="route('receipts.update', $receipt->id)">
     <div class="row">
         <div class="col-md-4">
             @include('commons.staticobjfield', ['obj' => $receipt, 'name' => 'user', 'label' => _i('Utente')])
