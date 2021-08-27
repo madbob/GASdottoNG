@@ -15,7 +15,7 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
 <div class="row d-none d-md-flex mb-1">
     <div class="col flowbox">
         <div class="form-group mainflow d-none d-xl-block">
-            <input type="text" class="form-control table-text-filter" data-list-target="#{{ $table_identifier }}" placeholder="{{ _i('Filtra') }}">
+            <input type="text" class="form-control table-text-filter" data-table-target="#{{ $table_identifier }}" placeholder="{{ _i('Filtra') }}">
         </div>
 
         <div class="btn-group table-sorter" data-table-target="#{{ $table_identifier }}">

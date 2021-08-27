@@ -22,6 +22,7 @@ require('./statistics');
 require('./translate');
 require('./password');
 import utils from "./utils";
+import filters from "./filters";
 import Lists from "./lists";
 import Callables from "./callables";
 
@@ -631,69 +632,6 @@ function miscInnerModalCallbacks(modal) {
             var identifier = $(this).val();
             var node = $(identifier);
             reloadPortion(node);
-        });
-    }
-}
-
-function iconsLegendTrigger(node, legend_class) {
-    if (node.hasClass('dropdown-toggle')) {
-        return;
-    }
-
-    var legend = node.closest(legend_class);
-    var target = legend.attr('data-list-target');
-
-    var iter_selector = '';
-    if (legend_class == '.icons-legend') {
-        iter_selector = '.loadable-list' + target + ' .accordion-item';
-    }
-    else {
-        iter_selector = '.table' + target + ' tbody tr';
-    }
-
-    if (node.hasClass('active')) {
-        node.removeClass('active');
-        if (node.is('a')) {
-            node.closest('.dropdown-menu').siblings('.dropdown-toggle').removeClass('active');
-        }
-
-        $(iter_selector).each(function() {
-            $(this).show();
-        });
-    }
-    else {
-        /*
-            Qui devo considerare la somma di tutti i filtri che sono stati
-            attivati: se un elemento risulterebbe nascosto a fronte del
-            click su un attributo, potrebbero essercene altri che lo
-            mantengono visibile
-        */
-        legend.find('button, a').removeClass('active');
-
-        node.addClass('active');
-        if (node.is('a')) {
-            node.closest('.dropdown-menu').siblings('.dropdown-toggle').addClass('active');
-        }
-
-        var c = node.find('i').attr('class');
-
-        $(iter_selector).each(function() {
-            var show = false;
-
-            $(this).find('i').each(function() {
-                var icons = $(this).attr('class');
-                show = (icons == c);
-                if (show) {
-                    return false;
-                }
-            });
-
-            if (show) {
-                $(this).show();
-            }
-            else {
-                $(this).hide();
-            }
         });
     }
 }
@@ -1436,12 +1374,12 @@ $(document).ready(function() {
 
     $('body').on('click', '.icons-legend button, .icons-legend a', function(e) {
         e.preventDefault();
-        iconsLegendTrigger($(this), '.icons-legend');
+        filters.iconsLegendTrigger($(this), '.icons-legend');
     });
 
     $('body').on('click', '.table-icons-legend button, .table-icons-legend a', function(e) {
         e.preventDefault();
-        iconsLegendTrigger($(this), '.table-icons-legend');
+        filters.iconsLegendTrigger($(this), '.table-icons-legend');
     });
 
     $('body').on('click', '.list-filters button', function() {
@@ -1481,49 +1419,11 @@ $(document).ready(function() {
     });
 
     $('body').on('keyup', '.table-text-filter', function() {
-        var text = $(this).val().toLowerCase();
-        var target = $(this).attr('data-list-target');
-
-        if (text == '') {
-            $('.table' + target + ' tbody tr:not(.do-not-filter)').show();
-        }
-        else {
-            $('.table' + target + ' tbody tr:not(.do-not-filter)').each(function() {
-                var show_row = false;
-
-                $(this).find('.text-filterable-cell').each(function() {
-                    if ($(this).text().toLowerCase().indexOf(text) != -1) {
-                        show_row = true;
-                        return false;
-                    }
-                });
-
-                $(this).toggle(show_row);
-            });
-        }
+        filters.tableFilters($(this).attr('data-table-target'));
     });
 
     $('body').on('keyup', '.table-number-filters input.table-number-filter', function() {
-        var text = $(this).val().toLowerCase();
-        var target = $(this).attr('data-list-target');
-        var mode = $(this).closest('.input-group').find('input[name=filter_mode]:checked').val();
-
-        if (text == '') {
-            $('.table' + target + ' tbody tr').show();
-        }
-        else {
-            var number = parseFloat(text);
-
-            $('.table' + target + ' tbody .text-filterable-cell').each(function() {
-                var val = parseFloat($(this).text());
-                if (mode == 'min' && val <= number)
-                    $(this).closest('tr').show();
-                else if (mode == 'max' && val >= number)
-                    $(this).closest('tr').show();
-                else
-                    $(this).closest('tr').hide();
-            });
-        }
+        filters.tableFilters($(this).closest('.table-number-filters').attr('data-table-target'));
     });
 
     $('body').on('change', '.table-number-filters input[name=filter_mode]', function() {
@@ -1531,21 +1431,7 @@ $(document).ready(function() {
     });
 
     $('body').on('change', '.table-filters input:radio', function() {
-        var filter = $(this).closest('.table-filters');
-        var target = filter.attr('data-table-target');
-        var attribute = $(this).attr('name');
-        var value = $(this).val();
-        var table = $(target);
-
-        if (value == 'all') {
-            table.find('tr').removeClass('hidden');
-        }
-        else {
-            table.find('tbody tr[data-filtered-' + attribute + ']').each(function() {
-                var attr = $(this).attr('data-filtered-' + attribute);
-                $(this).toggleClass('hidden', (attr != value));
-            });
-        }
+        filters.tableFilters($(this).closest('.table-filters').attr('data-table-target'));
     });
 
     $('body').on('change', 'input:file[data-max-size]', function() {

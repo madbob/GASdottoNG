@@ -3,7 +3,7 @@
 <div class="row d-none d-md-flex mb-1">
     <div class="col flowbox">
         <div class="form-group mainflow d-none d-xl-block">
-            <input type="text" class="form-control table-text-filter" data-list-target="#{{ $identifier }}"  placeholder="{{ _i('Filtra') }}">
+            <input type="text" class="form-control table-text-filter" data-table-target="#{{ $identifier }}"  placeholder="{{ _i('Filtra') }}">
         </div>
 
         @include('commons.iconslegend', [

@@ -10,14 +10,14 @@
                 <div class="row">
                     <div class="col">
                         <div class="form-group">
-                            <div class="input-group table-number-filters">
+                            <div class="input-group table-number-filters" data-table-target="#suppliersTable">
                                 <div class="input-group-text">
                                     <input class="form-check-input mt-0" type="radio" value="min" name="filter_mode">&nbsp;{{ _i('Minore di') }}
                                 </div>
                                 <div class="input-group-text">
                                     <input class="form-check-input mt-0" type="radio" value="max" name="filter_mode">&nbsp;{{ _i('Maggiore di') }}
                                 </div>
-                                <input type="number" class="form-control table-number-filter" placeholder="{{ _i('Filtra Credito') }}" data-list-target="#suppliersTable">
+                                <input type="number" class="form-control table-number-filter" placeholder="{{ _i('Filtra Credito') }}">
                                 <div class="input-group-text">
                                     {{ $currentgas->currency }}
                                 </div>

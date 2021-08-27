@@ -10,7 +10,7 @@
                 <hr>
             </div>
             <div class="col-12">
-                <input type="text" class="form-control table-text-filter" data-list-target="#remoteSuppliers">
+                <input type="text" class="form-control table-text-filter" data-table-target="#remoteSuppliers">
                 <hr>
             </div>
             <div class="col-12">

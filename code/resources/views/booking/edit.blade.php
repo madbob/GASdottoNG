@@ -94,7 +94,7 @@ $form_buttons = [
 
         <div class="d-none d-md-flex flowbox mb-1">
             <div class="mainflow">
-                <input type="text" class="form-control table-text-filter" data-list-target="#booking_{{ sanitizeId($order->id) }}">
+                <input type="text" class="form-control table-text-filter" data-table-target="#booking_{{ sanitizeId($order->id) }}">
             </div>
 
             <div class="btn-group table-sorter" data-table-target="#booking_{{ sanitizeId($order->id) }}">
