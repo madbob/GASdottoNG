@@ -140,59 +140,60 @@ function unrollPeriodic($value)
     $end = $end->modify('+1 days');
 
     $days = [];
-    $all_days = new \DatePeriod($start, new \DateInterval('P1D'), $end);
 
-    $week_offset = 1;
-    $validity_start = 1;
-    $validity_end = 31;
-
-    switch($value->cycle) {
-        case 'all':
-            break;
-        case 'biweekly':
-            $week_offset = 2;
-            break;
-        case 'month_first':
-            $validity_start = 1;
-            $validity_end = 7;
-            break;
-        case 'month_second':
-            $validity_start = 8;
-            $validity_end = 14;
-            break;
-        case 'month_third':
-            $validity_start = 15;
-            $validity_end = 21;
-            break;
-        case 'month_fourth':
-            $validity_start = 22;
-            $validity_end = 28;
-            break;
-        case 'month_last':
-            $validity_start = 25;
-            $validity_end = 31;
-            break;
-        default:
-            Log::error('Tipo ciclicità non identificato: ' . $value->cycle);
-            break;
-    }
-
-    $week_index = -1;
-
-    foreach($all_days as $d) {
-        $week_index++;
-
-        if ($week_offset != 1 && $week_index % $week_offset == 0) {
-            continue;
+    if ($value->cycle == 'biweekly') {
+        while (strtolower($start->format('l')) != $value->day) {
+            $start = $start->modify('+1 days');
         }
 
-        $d_day = $d->format('d');
-        if ($d_day < $validity_start || $d_day > $validity_end) {
-            continue;
-        }
-
-        if (strtolower($d->format('l')) == $value->day) {
+        $all_days = new \DatePeriod($start, new \DateInterval('P2W'), $end);
+        foreach($all_days as $d) {
             $days[] = $d->format('Y-m-d');
+        }
+    }
+    else {
+        $all_days = new \DatePeriod($start, new \DateInterval('P1D'), $end);
+
+        $validity_start = 1;
+        $validity_end = 31;
+
+        switch($value->cycle) {
+            case 'all':
+                break;
+            case 'month_first':
+                $validity_start = 1;
+                $validity_end = 7;
+                break;
+            case 'month_second':
+                $validity_start = 8;
+                $validity_end = 14;
+                break;
+            case 'month_third':
+                $validity_start = 15;
+                $validity_end = 21;
+                break;
+            case 'month_fourth':
+                $validity_start = 22;
+                $validity_end = 28;
+                break;
+            case 'month_last':
+                $validity_start = 25;
+                $validity_end = 31;
+                break;
+            default:
+                Log::error('Tipo ciclicità non identificato: ' . $value->cycle);
+                break;
+        }
+
+        foreach($all_days as $d) {
+            $d_day = $d->format('d');
+            if ($d_day < $validity_start || $d_day > $validity_end) {
+                continue;
+            }
+
+            if (strtolower($d->format('l')) == $value->day) {
+                $days[] = $d->format('Y-m-d');
+            }
         }
     }
 

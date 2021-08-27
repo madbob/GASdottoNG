@@ -137,14 +137,11 @@ class FormattersTest extends TestCase
 
     public function testUnrollPeriodicBiWeekly()
     {
-        $test = (object) [
-            'from' => '2021-08-01',
-            'to' => '2021-10-31',
-            'cycle' => 'biweekly',
-            'day' => 'monday',
-        ];
-
-        $dates = unrollPeriodic($test);
+        /*
+            Qui eseguo due volte lo stesso test, ma prima partendo da una data
+            antecedente alla prima effettiva data che deve risultare e poi
+            partendo dalla prima data utile per l'intervallo di ricorrenza
+        */
 
         $valid_dates = [
             '2021-08-02',
@@ -156,6 +153,28 @@ class FormattersTest extends TestCase
             '2021-10-25',
         ];
 
+        $test = (object) [
+            'from' => '2021-08-01',
+            'to' => '2021-10-31',
+            'cycle' => 'biweekly',
+            'day' => 'monday',
+        ];
+
+        $dates = unrollPeriodic($test);
+        $this->assertEquals(count($dates), count($valid_dates));
+
+        foreach($dates as $index => $date) {
+            $this->assertEquals($date, $valid_dates[$index]);
+        }
+
+        $test = (object) [
+            'from' => '2021-08-02',
+            'to' => '2021-10-31',
+            'cycle' => 'biweekly',
+            'day' => 'monday',
+        ];
+
+        $dates = unrollPeriodic($test);
         $this->assertEquals(count($dates), count($valid_dates));
 
         foreach($dates as $index => $date) {
