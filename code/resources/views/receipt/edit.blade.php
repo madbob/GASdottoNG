@@ -5,7 +5,7 @@
             <x-larastrap::text name="number" :label="_i('Numero')" readonly disabled />
             <x-larastrap::datepicker name="date" :label="_i('Data')" />
             <x-larastrap::price name="total" :label="_i('Totale Imponibile')" readonly disabled />
-            <x-larastrap::price name="total_vat" :label="_i('Totale IVA')" readonly disabled />
+            <x-larastrap::price name="total_tax" :label="_i('Totale IVA')" readonly disabled />
         </div>
         <div class="col-md-4">
             <div class="form-group">

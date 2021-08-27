@@ -96,6 +96,6 @@ class Receipt extends Model
     public function getTotalTaxAttribute()
     {
         $this->calculateTotal();
-        return $this->cache_value['total_vat'];
+        return $this->cache_value['total_tax'];
     }
 }
