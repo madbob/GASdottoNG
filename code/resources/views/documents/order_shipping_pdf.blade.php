@@ -9,8 +9,8 @@
     preferisco quella che predilige l'accorpamento delle tabelle nelle pagine
 */
 $preferred_style = 'breakup';
-foreach($data->contents as $d){
-    if (count($d->products) >= 15) {
+foreach($data->contents as $d) {
+    if (count($d->products) >= 20) {
         $preferred_style = 'compact';
         break;
     }
@@ -24,6 +24,31 @@ foreach($data->contents as $d){
             table {
                 border-spacing: 0;
                 border-collapse: collapse;
+            }
+
+            .main-wrapper {
+                display: table;
+                width: 100%;
+            }
+
+            .row {
+                display: table-row;
+                width: 100%;
+            }
+
+            .cell {
+                border: 1px solid #000;
+                display: table-cell;
+                padding: 4px;
+            }
+
+            .extended {
+                font-weight: bold;
+                text-align: center;
+                border: 1px solid #000;
+                display: block;
+                padding: 4px;
+                width: 100%;
             }
         </style>
     </head>
@@ -42,27 +67,21 @@ foreach($data->contents as $d){
             </h3>
         @endif
 
-        <br/>
-        <hr>
-        <br/>
+        <br/><hr><br/>
 
-        <table border="1" style="width: 100%" cellpadding="5" nobr="true">
-            <tr>
-                <th colspan="{{ count($fields->product_columns) }}">
-                    {!! join('<br>', $fields->user_columns_names) !!}
-                </th>
-            </tr>
+        <div class="extended">
+            {!! join('<br>', $fields->user_columns_names) !!}
+        </div>
 
-            <tr>
+        <div class="main-wrapper">
+            <div class="row">
                 @foreach($fields->product_columns_names as $h)
-                    <th>{{ $h }}</th>
+                    <div class="cell">{{ $h }}</div>
                 @endforeach
-            </tr>
-        </table>
+            </div>
+        </div>
 
-        <br/>
-        <hr>
-        <br/>
+        <br/><hr><br/>
 
         <?php
 
@@ -78,63 +97,49 @@ foreach($data->contents as $d){
                         <td>
             @endif
 
-            <table border="1" style="width: 100%" cellpadding="5" nobr="true">
-                <tr>
-                    <td>
-                        <table border="1" style="width: 100%" cellpadding="5" nobr="true">
-                            <tr>
-                                <th colspan="{{ count($fields->product_columns) }}">
-                                    {!! join('<br>', array_filter($d->user)) !!}
+            <div class="extended">
+                {!! join('<br>', array_filter($d->user)) !!}
 
-                                    <?php
+                <?php
 
-                                    $booking_total = 0;
-                                    $booking_modifiers = [];
+                $booking_total = 0;
+                $booking_modifiers = [];
 
-                                    foreach($d->totals as $key => $value) {
-                                        if ($key == 'total') {
-                                            $booking_total += $value;
-                                            $total += $value;
-                                        }
-                                        else {
-                                            $booking_modifiers[$key] = $booking_modifiers[$key] ?? 0;
-                                            $booking_modifiers[$key] += $value;
-                                            $full_modifiers[$key] = $full_modifiers[$key] ?? 0;
-                                            $full_modifiers[$key] += $value;
-                                        }
-                                    }
+                foreach($d->totals as $key => $value) {
+                    if ($key == 'total') {
+                        $booking_total += $value;
+                        $total += $value;
+                    }
+                    else {
+                        $booking_modifiers[$key] = $booking_modifiers[$key] ?? 0;
+                        $booking_modifiers[$key] += $value;
+                        $full_modifiers[$key] = $full_modifiers[$key] ?? 0;
+                        $full_modifiers[$key] += $value;
+                    }
+                }
 
-                                    ?>
-                                </th>
-                            </tr>
+                ?>
+            </div>
 
-                            @foreach($d->products as $product)
-                                <tr>
-                                    @foreach($product as $p)
-                                        <td>{{ $p }}</td>
-                                    @endforeach
-                                </tr>
-                            @endforeach
+            <div class="main-wrapper">
+                @foreach($d->products as $product)
+                    <div class="row">
+                        @foreach($product as $p)
+                            <div class="cell">{{ $p }}</div>
+                        @endforeach
+                    </div>
+                @endforeach
+            </div>
 
-                            @if(!empty($d->notes))
-                                <tr>
-                                    <td colspan="{{ count($fields->product_columns) }}">{!! join('<br>', $d->notes) !!}</td>
-                                </tr>
-                            @endif
+            @if(!empty($d->notes))
+                <div class="extended">{!! join('<br>', $d->notes) !!}</div>
+            @endif
 
-                            @foreach($booking_modifiers as $bm_key => $bm_value)
-                                <tr>
-                                    <th colspan="{{ count($fields->product_columns) }}"><strong>{{ $bm_key }}: {{ printablePriceCurrency($bm_value, ',') }}</strong></th>
-                                </tr>
-                            @endforeach
+            @foreach($booking_modifiers as $bm_key => $bm_value)
+                <div class="extended"><strong>{{ $bm_key }}: {{ printablePriceCurrency($bm_value, ',') }}</strong></div>
+            @endforeach
 
-                            <tr>
-                                <th colspan="{{ count($fields->product_columns) }}"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($booking_total, ',') }}</strong></th>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
+            <div class="extended"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($booking_total, ',') }}</strong></div>
 
             @if($preferred_style == 'breakup')
                         </td>
@@ -145,16 +150,10 @@ foreach($data->contents as $d){
             <p>&nbsp;</p>
         @endforeach
 
-        <table border="1" style="width: 100%" cellpadding="5" nobr="true">
-            @foreach($full_modifiers as $fm_key => $fm_value)
-                <tr>
-                    <th colspan="3"><strong>{{ $fm_key }}: {{ printablePriceCurrency($fm_value, ',') }}</strong></th>
-                </tr>
-            @endforeach
+        @foreach($full_modifiers as $fm_key => $fm_value)
+            <div class="extended"><strong>{{ $fm_key }}: {{ printablePriceCurrency($fm_value, ',') }}</strong></div>
+        @endforeach
 
-            <tr>
-                <th colspan="3"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($total, ',') }}</strong></th>
-            </tr>
-        </table>
+        <div class="extended"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($total, ',') }}</strong></div>
     </body>
 </html>

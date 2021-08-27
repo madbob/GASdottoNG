@@ -432,6 +432,7 @@ class OrdersController extends Controller
 
                 if ($subtype == 'pdf') {
                     $pdf = PDF::loadView('documents.order_shipping_pdf', ['fields' => $fields, 'order' => $order, 'data' => $data]);
+                    enablePdfPagesNumbers($pdf);
 
                     if ($send_mail) {
                         $pdf->save($temp_file_path);

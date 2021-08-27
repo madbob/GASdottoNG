@@ -256,6 +256,7 @@ class AggregatesController extends OrdersController
 
                 if ($subtype == 'pdf') {
                     $pdf = PDF::loadView('documents.order_shipping_pdf', ['fields' => $fields, 'aggregate' => $aggregate, 'data' => $data]);
+                    enablePdfPagesNumbers($pdf);
                     return $pdf->download($filename);
                 }
                 else if ($subtype == 'csv') {

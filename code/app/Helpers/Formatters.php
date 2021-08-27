@@ -427,6 +427,13 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
     }
 }
 
+function enablePdfPagesNumbers($pdf)
+{
+    $dompdf = $pdf->getDomPDF();
+    $font = $dompdf->getFontMetrics()->get_font("helvetica", "bold");
+    $dompdf->get_canvas()->page_text(34, 18, "{PAGE_NUM} / {PAGE_COUNT}", $font, 10, array(0, 0, 0));
+}
+
 function htmlize($string)
 {
     $string = str_replace('"', '\"', $string);
