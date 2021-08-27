@@ -250,7 +250,7 @@ class BookedProduct extends Model
                                 return $this->final_price;
 
                             case 'effective':
-                                return $this->fixQuantity('delivered', false) + $this->getValue('modifier:all');
+                                return $this->final_price + $this->getValue('modifier:all');
 
                             case 'weight':
                                 if ($this->product->measure->discrete) {
