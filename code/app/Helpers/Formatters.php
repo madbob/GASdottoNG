@@ -177,10 +177,11 @@ function unrollPeriodic($value)
             break;
     }
 
-    $week_index = 0;
+    $week_index = -1;
 
     foreach($all_days as $d) {
         $week_index++;
+
         if ($week_offset != 1 && $week_index % $week_offset == 0) {
             continue;
         }
