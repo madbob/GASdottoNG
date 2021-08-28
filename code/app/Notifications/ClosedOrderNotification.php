@@ -4,8 +4,6 @@ namespace App\Notifications;
 
 use Auth;
 
-use App\Notifications\ManyMailNotification;
-
 class ClosedOrderNotification extends ManyMailNotification
 {
     use MailFormatter;
@@ -19,6 +17,13 @@ class ClosedOrderNotification extends ManyMailNotification
         $this->order = $order;
         $this->pdf_file = $pdf_file;
         $this->csv_file = $csv_file;
+
+        /*
+            Reminder: i files qui allegati non vanno rimossi subito dopo l'invio
+            della notifica in quanto possono essere usati molteplici volte, per
+            tutti i referenti dell'ordine. Vengono semmai rimossi a posteriori,
+            una volta sola. Cfr. NotifyClosedOrder
+        */
     }
 
     public function toMail($notifiable)

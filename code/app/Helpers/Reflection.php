@@ -29,23 +29,32 @@ function currentAbsoluteGas()
     return $gas;
 }
 
-function modelsUsingTrait($trait_name) {
+function modelsUsingTrait($trait_name)
+{
     $out = [];
     $results = scandir(app_path());
 
     foreach ($results as $result) {
-        if ($result === '.' or $result === '..')
+        if ($result === '.' || $result === '..') {
             continue;
+        }
 
-        if (is_dir(app_path() . '/' . $result))
+        if (is_dir(app_path() . '/' . $result)) {
             continue;
+        }
 
         $classname = 'App\\' . substr($result, 0, -4);
-        if (class_exists($classname) && in_array($trait_name, class_uses($classname)))
+        if (class_exists($classname) && in_array($trait_name, class_uses($classname))) {
             $out[$classname] = $classname::commonClassName();
+        }
     }
 
     return $out;
+}
+
+function hasTrait($obj, $trait)
+{
+    return in_array($trait, class_uses(get_class($obj)));
 }
 
 function accessAttr($obj, $name, $default = '')
@@ -55,10 +64,12 @@ function accessAttr($obj, $name, $default = '')
 
     if (strpos($name, '->') !== false) {
         list($array, $index) = explode('->', $name);
-        if (isset($obj->$array[$index]))
+        if (isset($obj->$array[$index])) {
             return $obj->$array[$index];
-        else
+        }
+        else {
             return '';
+        }
     }
     else {
         return $obj->$name;

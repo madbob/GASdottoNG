@@ -105,11 +105,6 @@ class ReceiptsController extends Controller
                 $receipt->user->notify(new ReceiptForward($temp_file_path));
                 $receipt->mailed = true;
                 $receipt->save();
-
-                /*
-                    TODO Vedere di eliminare il file PDF dopo l'invio della
-                    notifica (che viene inviata in modo asincrono)
-                */
             }
             else {
                 return $pdf->download($filename);

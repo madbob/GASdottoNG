@@ -9,6 +9,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 use DB;
+use Log;
 
 class Controller extends BaseController
 {
@@ -63,12 +64,18 @@ class Controller extends BaseController
 
     public function objhead(Request $request, $id)
     {
-        $class = $this->reference_class;
-        $subject = $class::tFind($id);
-        return response()->json([
-            'id' => $subject->id,
-            'header' => $subject->printableHeader(),
-            'url' => $subject->getShowURL()
-        ]);
+        try {
+            $class = $this->reference_class;
+            $subject = $class::tFind($id);
+            return response()->json([
+                'id' => $subject->id,
+                'header' => $subject->printableHeader(),
+                'url' => $subject->getShowURL()
+            ]);
+        }
+        catch(\Exception $e) {
+            Log::error('Unable to generate object header: ' . $this->reference_class . ' / ' . $id);
+            abort(404);
+        }
     }
 }

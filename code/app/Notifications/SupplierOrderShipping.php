@@ -13,7 +13,7 @@ use App\Role;
 
 class SupplierOrderShipping extends ManyMailNotification
 {
-    use Queueable, SerializesModels, MailFormatter;
+    use Queueable, SerializesModels, MailFormatter, TemporaryFiles;
 
     private $order;
     private $pdf_file;
@@ -24,6 +24,7 @@ class SupplierOrderShipping extends ManyMailNotification
         $this->order = $order;
         $this->pdf_file = $pdf_file;
         $this->csv_file = $csv_file;
+        $this->setFiles([$pdf_file, $csv_file]);
     }
 
     public function toMail($notifiable)

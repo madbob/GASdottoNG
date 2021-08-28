@@ -17,6 +17,9 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Log\Events\MessageLogged' => [
             'App\Listeners\HarvestLogs',
         ],
+        'Illuminate\Notifications\Events\NotificationSent' => [
+            'App\Listeners\AfterNotification',
+        ],
     ];
 
     public function boot()

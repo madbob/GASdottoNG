@@ -2,18 +2,16 @@
 
 namespace App\Notifications;
 
-use App\Notifications\ManyMailNotification;
-use App\Notifications\MailFormatter;
-
 class ReceiptForward extends ManyMailNotification
 {
-    use MailFormatter;
+    use MailFormatter, TemporaryFiles;
 
     private $temp_file = null;
 
     public function __construct($temp_file)
     {
         $this->temp_file = $temp_file;
+        $this->setFiles($temp_file);
     }
 
     public function toMail($notifiable)

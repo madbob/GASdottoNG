@@ -7,6 +7,7 @@ use Log;
 use App\Notifications\ClosedOrderNotification;
 use App\Notifications\SupplierOrderShipping;
 use App\Jobs\AggregateSummaries;
+use App\Jobs\DeleteFiles;
 
 use App\User;
 use App\Order;
@@ -44,8 +45,7 @@ class NotifyClosedOrder extends Job
                 }
             }
 
-            @unlink($pdf_file_path);
-            @unlink($csv_file_path);
+            DeleteFiles::dispatch([$pdf_file_path, $csv_file_path])->delay(now()->addMinutes($referents->count()));
 
             if ($closed_aggregate && $gas->auto_user_order_summary) {
                 AggregateSummaries::dispatch($aggregate->id);
@@ -62,9 +62,6 @@ class NotifyClosedOrder extends Job
                         $csv_file_path = $order->document('summary', 'csv', 'save', null, 'booked', null);
 
                         $order->supplier->notify(new SupplierOrderShipping($order, $pdf_file_path, $csv_file_path));
-
-                        @unlink($pdf_file_path);
-                        @unlink($csv_file_path);
 
                         $this->hub->enable(true);
                     }
