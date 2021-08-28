@@ -85,29 +85,33 @@ class OrdersController extends Controller
         $feed->link = $request->url();
         $feed->setDateFormat('datetime');
 
-        if ($aggregates->isEmpty() == false)
+        if ($aggregates->isEmpty() == false) {
             $feed->pubdate = date('Y-m-d G:i:s');
-        else
+        }
+        else {
             $feed->pubdate = '1970-01-01 00:00:00';
+        }
 
         foreach($aggregates as $aggregate) {
             $summary = '';
 
             foreach($aggregate->orders as $order) {
                 $summary .= $order->printableName() . "<br>\n";
-                foreach($order->products as $product)
+
+                foreach($order->products as $product) {
                     $summary .= $product->printableName() . "<br>\n";
+                }
+
                 $summary .= "<br>\n";
             }
 
-            $feed->add(
-                $aggregate->printableName(),
-                $aggregate->gas->first()->printableName(),
-                $aggregate->getBookingURL(),
-                $aggregate->updated_at,
-                nl2br($summary),
-                ''
-            );
+            $feed->addItem([
+                'title' => $aggregate->printableName(),
+                'author' => $aggregate->gas->first()->printableName(),
+                'link' => $aggregate->getBookingURL(),
+                'pubdate' => $aggregate->updated_at,
+                'description' => nl2br($summary),
+            ]);
         }
 
         return $feed->render('rss');
