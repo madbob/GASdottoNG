@@ -280,7 +280,7 @@ class ModifiersServiceTest extends TestCase
         $this->assertNotNull($mod);
 
         $redux = $this->order->reduxData();
-        $this->assertNotEquals($redux->price, 0);
+        $this->assertNotEquals($redux->price, 0.0);
 
         foreach($this->order->bookings as $booking) {
             $mods = $booking->applyModifiers(null, true);
