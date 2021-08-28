@@ -1,4 +1,4 @@
-<x-larastrap::form :obj="$product" classes="main-form" method="PUT" :action="route('products.update', $product->id)" :buttons="[]">
+<x-larastrap::form :obj="$product" :buttons="[]">
     <div class="row">
         <div class="col-md-6">
             <x-larastrap::price name="price" :label="_i('Prezzo Unitario')" readonly disabled />

@@ -44,6 +44,14 @@ class ProductsController extends BackedController
                 return view('product.show', ['product' => $product]);
             }
         }
+        else if ($format == 'modal') {
+            if ($user->can('supplier.modify', $product->supplier)) {
+                return view('product.editmodal', ['product' => $product]);
+            }
+            else {
+                abort(503);
+            }
+        }
         elseif ($format == 'json') {
             $ret = $product->toJson();
             $ret = json_decode($ret);

@@ -142,6 +142,27 @@ class OrdersController extends Controller
         return view('pages.orders', ['orders' => $orders]);
     }
 
+    public function show(Request $request, $id)
+    {
+        $user = Auth::user();
+
+        $format = $request->input('format', 'summary');
+        $order = Order::findOrFail($id);
+
+        if ($format == 'summary') {
+            $master_summary = $order->aggregate->reduxData();
+
+            if ($request->user()->can('supplier.orders', $order->supplier)) {
+                return view('order.summary', ['order' => $order, 'master_summary' => $master_summary]);
+            }
+            else {
+                return view('order.summary_ro', ['order' => $order, 'master_summary' => $master_summary]);
+            }
+        }
+
+        abort(404);
+    }
+
     public function store(Request $request)
     {
         DB::beginTransaction();

@@ -593,8 +593,9 @@ function miscInnerCallbacks(form, data) {
     if (test.length != 0) {
         test.each(function() {
             var identifier = $(this).val();
-            var node = $(identifier);
-            reloadPortion(node);
+            $(identifier).each(function() {
+                reloadPortion($(this));
+            });
         });
     }
 
