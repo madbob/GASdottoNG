@@ -151,7 +151,7 @@ function generalInit(container) {
         if ($(this).hasClass('tt-input') == false) {
             var appendTo = 'body';
             if ($(this).closest('.modal').length != 0) {
-                appendTo = '#' + $(this).closest('.modal').attr('id');
+                appendTo = $(this).closest('.modal');
             }
 
             $(this).autocomplete({

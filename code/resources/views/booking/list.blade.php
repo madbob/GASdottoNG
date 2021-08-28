@@ -12,7 +12,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row mt-2">
                         <div class="col other-booking">
                         </div>
                     </div>
