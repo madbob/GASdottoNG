@@ -178,6 +178,11 @@ $existing = false;
                                     ])
                                 @endforeach
 
+                                @include('delivery.modifierrow', [
+                                    'mod_value' => null,
+                                    'skip_cells' => 2
+                                ])
+
                                 @if($order->isActive())
                                     <tr class="hidden booking-product fit-add-product">
                                         <td>

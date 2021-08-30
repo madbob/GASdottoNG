@@ -138,11 +138,15 @@ class BookingUserController extends BookingHandler
                 /*
                     Qui forzo sempre il ricalcolo dei modificatori, altrimenti
                     vengono letti quelli effettivamente salvati sul DB.
-                    Ma se la prenotazione è ancora in fase di consegna, lo status è
+                    Nota bene: passo il parametro real = true perché qui sono
+                    già all'interno di una transazione, ed i valori qui
+                    calcolati devono esistere anche successivamente mentre
+                    recupero i totali dei singoli prodotti.
+                    La prenotazione è ancora in fase di consegna, lo status è
                     impostato temporaneamente a "shipped" ed andrebbe a leggere
                     quelli salvati anche se ancora non ce ne sono
                 */
-                $modified = $booking->calculateModifiers(null, false);
+                $modified = $booking->calculateModifiers(null, true);
 
                 $ret->bookings[$booking->id] = (object) [
                     'total' => printablePrice($booking->getValue('effective', false)),

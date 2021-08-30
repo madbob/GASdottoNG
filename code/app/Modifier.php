@@ -205,6 +205,24 @@ class Modifier extends Model
         return $amount;
     }
 
+    private function retrieveExistingValue($obj_mod_target)
+    {
+        if ($obj_mod_target) {
+            $modifier_value = $obj_mod_target->modifiedValues->firstWhere('modifier_id', $this->id);
+            if (is_null($modifier_value)) {
+                $modifier_value = new ModifiedValue();
+                $modifier_value->setRelation('modifier', $this);
+                $obj_mod_target->modifiedValues->push($modifier_value);
+            }
+        }
+        else {
+            $modifier_value = new ModifiedValue();
+            $modifier_value->setRelation('modifier', $this);
+        }
+
+        return $modifier_value;
+    }
+
     public function apply($booking, $aggregate_data)
     {
         if ($this->active == false) {
@@ -323,78 +341,91 @@ class Modifier extends Model
 
         $check_value = $check_target->$attribute ?? 0;
         $target_definition = null;
+        $altered_amount = null;
 
-        if ($this->scale == 'minor') {
-            foreach($this->definitions as $def) {
-                if ($check_value < $def->threshold) {
-                    $target_definition = $def;
-                    break;
-                }
-            }
+        if ($check_value == 0) {
+            $altered_amount = 0;
         }
-        else if ($this->scale == 'major') {
-            foreach($this->definitions as $def) {
-                if ($check_value > $def->threshold) {
-                    $target_definition = $def;
-                    break;
+        else {
+            if ($this->scale == 'minor') {
+                foreach($this->definitions as $def) {
+                    if ($check_value < $def->threshold) {
+                        $target_definition = $def;
+                        break;
+                    }
                 }
             }
-        }
-
-        if (is_null($target_definition) == false) {
-            $altered_amount = $this->applyDefinition($mod_target->$mod_attribute ?? 0, $target_definition, $check_target);
-
-            /*
-                Se il modificatore è applicato su un ordine, qui applico alla
-                singola prenotazione il suo valore relativo e proporzionale.
-            */
-            if ($this->applies_target == 'order') {
-                if ($this->target_type == 'App\Product') {
-                    $booking_mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$product_target_id] ?? null;
-                    $reference = $mod_target->products[$product_target_id]->$distribution_attribute;
-                }
-                else {
-                    $booking_mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id] ?? null;
-                    $reference = $mod_target->$distribution_attribute;
-                }
-
-                if ($booking_mod_target && $reference) {
-                    $altered_amount = (($booking_mod_target->$distribution_attribute * $altered_amount) / $reference);
-                }
-                else {
-                    $altered_amount = 0;
+            else if ($this->scale == 'major') {
+                foreach($this->definitions as $def) {
+                    if ($check_value > $def->threshold) {
+                        $target_definition = $def;
+                        break;
+                    }
                 }
             }
 
-            $modifier_value = null;
+            if (is_null($target_definition) == false) {
+                $altered_amount = $this->applyDefinition($mod_target->$mod_attribute ?? 0, $target_definition, $check_target);
 
-            if ($obj_mod_target) {
-                $modifier_value = $obj_mod_target->modifiedValues->firstWhere('modifier_id', $this->id);
-                if (is_null($modifier_value)) {
-                    $modifier_value = new ModifiedValue();
-                    $modifier_value->setRelation('modifier', $this);
-                    $obj_mod_target->modifiedValues->push($modifier_value);
+                /*
+                    Se il modificatore è applicato su un ordine, qui applico alla
+                    singola prenotazione il suo valore relativo e proporzionale.
+                */
+                if ($this->applies_target == 'order') {
+                    if ($this->target_type == 'App\Product') {
+                        $booking_mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$product_target_id] ?? null;
+                        $reference = $mod_target->products[$product_target_id]->$distribution_attribute;
+                    }
+                    else {
+                        $booking_mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id] ?? null;
+                        $reference = $mod_target->$distribution_attribute;
+                    }
+
+                    if ($booking_mod_target && $reference) {
+                        $altered_amount = (($booking_mod_target->$distribution_attribute * $altered_amount) / $reference);
+                    }
+                    else {
+                        $altered_amount = 0;
+                    }
                 }
             }
             else {
-                $modifier_value = new ModifiedValue();
-                $modifier_value->setRelation('modifier', $this);
+                Log::error('Unable to apply any threshold for modifier ' . $this->id);
+
+                $modifier_value = $this->retrieveExistingValue($obj_mod_target);
+                if ($modifier_value->exists) {
+                    \Log::debug('elimino ' . $modifier_value->id);
+                    $modifier_value->delete();
+                }
+
+                return null;
             }
-
-            $modifier_value->modifier_id = $this->id;
-            $modifier_value->amount = $altered_amount;
-
-            if ($obj_mod_target) {
-                $modifier_value->target_type = get_class($obj_mod_target);
-                $modifier_value->target_id = $obj_mod_target->id;
-                $modifier_value->save();
-            }
-
-            return $modifier_value;
         }
-        else {
-            Log::error('Unable to apply any threshold for modifier ' . $this->id);
+
+        $modifier_value = $this->retrieveExistingValue($obj_mod_target);
+
+        /*
+            Se alla fine il modificatore non modifica nulla, lo ignoro (e ne
+            elimino il valore esistente, se c'è)
+        */
+        if ($altered_amount == 0) {
+            if ($modifier_value->exists) {
+                \Log::debug('elimino ' . $modifier_value->id);
+                $modifier_value->delete();
+            }
+
             return null;
         }
+
+        $modifier_value->modifier_id = $this->id;
+        $modifier_value->amount = $altered_amount;
+
+        if ($obj_mod_target) {
+            $modifier_value->target_type = get_class($obj_mod_target);
+            $modifier_value->target_id = $obj_mod_target->id;
+            $modifier_value->save();
+        }
+
+        return $modifier_value;
     }
 }
