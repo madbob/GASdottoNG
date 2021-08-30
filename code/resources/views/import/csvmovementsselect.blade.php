@@ -51,10 +51,10 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
                         <th>{{ _i('Utente') }}</th>
                         <th>{{ _i('Fornitore') }}</th>
                         <th>
-                            <x-larastrap::select name="type" prefix="skip" squeeze :options="$types" classes="triggers-all-selects csv_movement_type_select" data-target-class="csv_movement_type_select" />
+                            <x-larastrap::select name="type" nprefix="skip" squeeze :options="$types" classes="triggers-all-selects csv_movement_type_select" data-target-class="csv_movement_type_select" />
                         </th>
                         <th>
-                            <x-larastrap::select name="method" prefix="skip" squeeze :options="$payments" classes="triggers-all-selects csv_movement_method_select" data-target-class="csv_movement_method_select" value="bank" />
+                            <x-larastrap::select name="method" nprefix="skip" squeeze :options="$payments" classes="triggers-all-selects csv_movement_method_select" data-target-class="csv_movement_method_select" value="bank" />
                         </th>
                         <th>{{ _i('Valore') }}</th>
                     </tr>
