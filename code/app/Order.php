@@ -98,6 +98,12 @@ class Order extends Model
         return $ret;
     }
 
+    public function statusIcons()
+    {
+        $icons = $this->icons('status');
+        return $this->formatIcons($icons);
+    }
+
     public function scopeAccessibleBooking($query)
     {
         $user = Auth::user();

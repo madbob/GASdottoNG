@@ -1938,8 +1938,9 @@ $(document).ready(function() {
         var parent_form = utils.formByButton($(this));
         if (parent_form.length != 0) {
             data = parent_form.serializeArray();
-            for (var i = 0; i < printable.length; i++)
+            for (var i = 0; i < printable.length; i++) {
                 data.push({name: 'printable[]', value: printable[i]});
+            }
         }
         else {
             data = {printable: printable};

@@ -50,7 +50,7 @@ $master_summary = $aggregate->reduxData();
     <div class="col-12">
         <x-larastrap::tabs>
             @foreach($aggregate->orders as $index => $order)
-                <x-larastrap::tabpane :label="$order->printableName()" :active="$index == 0">
+                <x-larastrap::tabpane :label="$order->printableName() . $order->statusIcons()" :active="$index == 0">
                     @can('supplier.orders', $order->supplier)
                         @include('order.edit', ['order' => $order, 'master_summary' => $master_summary])
                     @else

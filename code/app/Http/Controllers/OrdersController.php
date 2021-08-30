@@ -189,7 +189,7 @@ class OrdersController extends Controller
             $keep_open_packages = $request->input('keep_open_packages');
         }
         else {
-            $keep_open_packages = false;
+            $keep_open_packages = 'no';
         }
 
         foreach($suppliers as $supplier_id) {
