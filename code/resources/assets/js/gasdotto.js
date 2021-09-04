@@ -615,7 +615,7 @@ function miscInnerCallbacks(form, data) {
 
     var test = form.find('input[name=close-all-modal]');
     if (test.length != 0) {
-        $('.modal.fade.in').modal('hide');
+        $('.modal.fade.show').modal('hide');
     }
 
     var test = form.find('input[name=reload-whole-page]');
@@ -1484,7 +1484,7 @@ $(document).ready(function() {
             return;
         }
 
-        form.find('button[type=submit]').each(function() {
+        utils.submitButton(form).each(function() {
             var idle_text = $(this).text();
             $(this).attr('data-idle-text', idle_text).empty().append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop('disabled', true);
         });
@@ -1503,6 +1503,12 @@ $(document).ready(function() {
                 });
 
                 miscInnerCallbacks(form, data);
+            },
+
+            error: function(data) {
+                utils.submitButton(form).each(function() {
+                    utils.inlineFeedback($(this), _('ERRORE!'));
+                });
             }
         });
     });

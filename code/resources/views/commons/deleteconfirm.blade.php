@@ -1,4 +1,4 @@
-<x-larastrap::modal id="delete-confirm-modal" :title="_i('Elimina')">
+<x-larastrap::modal id="delete-confirm-modal" :title="_i('Elimina')" size="md">
     <x-larastrap::iform method="POST" id="form-delete-confirm-modal" :buttons="[['type' => 'submit', 'color' => 'danger', 'label' => _i('Conferma')]]">
         <input type="hidden" name="_method" value="delete">
 

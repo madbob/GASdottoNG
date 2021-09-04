@@ -128,6 +128,18 @@ class Utils {
 
         return parent_form;
     }
+
+    static submitButton(form) {
+        let ret = form.find('button[type=submit]');
+        if (ret.length == 0) {
+            let id = form.attr('id');
+            if (id) {
+                ret = $('button[type=submit][form=' + id + ']')
+            }
+        }
+
+        return ret;
+    }
 }
 
 export default Utils;

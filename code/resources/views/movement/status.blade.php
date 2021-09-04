@@ -51,7 +51,16 @@
                 <x-larastrap::mbutton :label="_i('Archivia Saldi')" triggers_modal="#close-balance-modal" classes="btn-danger" />
             </div>
 
-            <x-larastrap::modal :title="_i('Conferma Operazione')" id="close-balance-modal">
+            <x-larastrap::modal :title="_i('Archivia Saldi')" id="close-balance-modal">
+                <p>
+                    {{ _("È raccomandato archiviare i saldi periodicamente, ad esempio alla chiusura dell'anno sociale, dopo aver verificato che questi siano tutti corretti. In tal modo le successive operazioni di ricalcolo saranno molto più veloci, non dovendo computare ogni volta tutti i movimenti contabili esistenti ma solo quelli avvenuti dopo l'ultima archiviazione. I movimenti archiviati saranno comunque sempre consultabili.") }}
+                </p>
+                <p>
+                    {{ _i('Questa operazione può richiedere diversi minuti per essere completata.') }}
+                </p>
+
+                <hr>
+
                 <x-larastrap::iform id="close-balance" :action="url('/movements/close')">
                     <input type="hidden" name="reload-whole-page" value="1">
                     <input type="hidden" name="pre-saved-function" value="passwordProtected">
