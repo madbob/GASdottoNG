@@ -24,7 +24,7 @@ class DeliveryUserController extends BookingHandler
             abort(503);
         }
 
-        $user = User::findOrFail($user_id);
+        $user = User::withTrashed()->findOrFail($user_id);
 
         return view('delivery.edit', ['aggregate' => $aggregate, 'user' => $user]);
     }
