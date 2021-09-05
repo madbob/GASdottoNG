@@ -112,6 +112,9 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                         <!-- Visualizza tutti -->
                         <td class="order-cell-selection {{ in_array('selection', $columns) ? '' : 'hidden' }}">
                             <input class="enabling-toggle" type="checkbox" name="enabled[]" value="{{ $product->id }}" {{ $enabled ? 'checked' : '' }} {{ $order->isActive() ? '' : 'disabled' }} />
+                            @if($order->isActive() == false)
+                                <input type="hidden" name="enabled[]" value="{{ $product->id }}">
+                            @endif
 
                             <div class="visually-hidden">
                                 @foreach($product->icons() as $icon)

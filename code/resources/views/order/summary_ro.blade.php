@@ -62,6 +62,7 @@ $columns = $currentgas->orders_display_columns;
 
                     <tr data-product-id="{{ $product->id }}">
                         <td class="order-cell-name {{ in_array('name', $columns) ? '' : 'hidden' }}">
+                            <input type="hidden" name="enabled[]" value="{{ $product->id }}">
                             @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product])
                         </td>
 
