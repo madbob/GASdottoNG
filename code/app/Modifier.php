@@ -94,13 +94,13 @@ class Modifier extends Model
         ];
 
         $targets_labels = [
-            'product,product' => _i(''),
+            'product,product' => '',
             'product,booking' => _i('di prodotto nella prenotazione'),
             'product,order' => _i("di prodotto nell'ordine"),
-            'order,product' => _i(''),
+            'order,product' => '',
             'order,booking' => _i('della prenotazione'),
             'order,order' => _i("dell'ordine"),
-            'delivery,product' => _i(''),
+            'delivery,product' => '',
             'delivery,booking' => _i('della prenotazione destinata al luogo'),
             'delivery,order' => _i("dell'ordine destinato al luogo"),
         ];
