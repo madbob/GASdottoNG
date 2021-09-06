@@ -39,6 +39,10 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\ActIntoGas::class,
         ],
 
+        'jobs' => [
+            \App\Http\Middleware\SetLanguage::class,
+        ],
+
         'api' => [
             'throttle:60,1',
             'bindings',

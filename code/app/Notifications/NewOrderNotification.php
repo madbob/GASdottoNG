@@ -31,7 +31,7 @@ class NewOrderNotification extends ManyMailNotification
             'order_comment' => $this->order->comment ?? '',
             'gas_booking_link' => $this->order->getBookingURL(),
             'contacts' => $contacts,
-            'closing_date' => printableDate($this->order->end)
+            'closing_date' => printableDate($this->order->end),
         ]);
     }
 }

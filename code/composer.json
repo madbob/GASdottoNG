@@ -22,7 +22,7 @@
         "lavary/laravel-menu": "^1.8",
         "league/csv": "^9.6",
         "madbob/larastrap": "dev-master",
-        "madbob/laravel-queue-loopback": "^0.2.0",
+        "madbob/laravel-queue-loopback": "^0.3.0",
         "paypal/rest-api-sdk-php": "^1.13",
         "satispay/online-api-php-sdk": "^1.6",
         "sinergi/browser-detector": "^6.1",
