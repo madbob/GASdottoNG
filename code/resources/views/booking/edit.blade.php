@@ -34,6 +34,7 @@ $form_buttons = [
 
     @foreach($aggregate->orders as $order)
         @if($more_orders)
+            <hr/>
             <h3>{{ $order->printableName() }}</h3>
         @endif
 
@@ -64,6 +65,12 @@ $form_buttons = [
         $contacts = $order->showableContacts();
 
         ?>
+
+        <div class="row mb-2">
+            <div class="col-12 col-lg-4">
+                @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => _i('Fornitore')])
+            </div>
+        </div>
 
         @if(!is_null($notice))
             <div class="alert alert-info">
@@ -220,7 +227,7 @@ $form_buttons = [
         </table>
 
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-12 col-lg-4 offset-lg-8">
                 <x-larastrap::textarea name="notes" :label="_i('Note')" :value="$o->notes" squeeze="false" :npostfix="sprintf('_%s', $order->id)" />
             </div>
         </div>

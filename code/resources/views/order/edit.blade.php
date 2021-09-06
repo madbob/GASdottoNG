@@ -5,7 +5,7 @@
 
     <div class="row">
         <div class="col-12 col-lg-4">
-            <x-larastrap::text name="supplier" :label="_i('Fornitore')" readonly disabled :value="$order->supplier->printableName()" />
+            @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => _i('Fornitore')])
             <x-larastrap::text name="internal_number" :label="_i('Numero')" readonly disabled :pophelp="_i('Numero progressivo automaticamente assegnato ad ogni ordine')" />
 
             <?php
