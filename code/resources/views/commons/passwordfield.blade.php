@@ -1,5 +1,9 @@
 <?php
 
+if (!isset($classes)) {
+    $classes = '';
+}
+
 if (!isset($enforcable_change)) {
     $enforcable_change = false;
     if ($obj == null || $obj->id != $currentuser->id)
@@ -16,7 +20,7 @@ if (!isset($mandatory)) {
     <div class="input-group">
         <input
             type="password"
-            class="form-control password-changer {{ $enforcable_change ? 'enforcable_change' : '' }}"
+            class="form-control password-changer {{ $enforcable_change ? 'enforcable_change' : '' }} {{ $classes }}"
 
             @if(is_null($obj) || $mandatory == true)
                 required

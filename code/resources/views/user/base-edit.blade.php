@@ -22,7 +22,7 @@
             'obj' => $user,
             'name' => 'password',
             'label' => _i('Password'),
-            'mandatory' => true,
+            'classes' => 'required_when_triggered',
         ])
     </div>
 </div>
