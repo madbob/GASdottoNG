@@ -4,25 +4,34 @@ namespace App\Notifications;
 
 use App\Notifications\ManyMailNotification;
 
+use App\Aggregate;
+
 class BookingNotification extends ManyMailNotification
 {
-    private $booking = null;
+    private $aggregate_id = null;
+    private $user_id = null;
     private $message = null;
 
-    public function __construct($booking, $message)
+    public function __construct($aggregate_id, $user_id, $message)
     {
-        $this->booking = $booking;
+        $this->aggregate_id = $aggregate_id;
+        $this->user_id = $user_id;
         $this->message = $message;
     }
 
     public function toMail($notifiable)
     {
+        $aggregate = Aggregate::find($this->aggregate_id);
+        $booking = $aggregate->bookingBy($this->user_id);
+
         $message = $this->initMailMessage($notifiable);
-        $strings = $this->booking->convenient_strings;
+        $strings = $booking->convenient_strings;
+
         $message->subject(_i('Riassunto prenotazione del GAS: %s - consegna %s', [$strings['suppliers'], $strings['shipping']]))->view('emails.booking', [
-            'booking' => $this->booking,
+            'booking' => $booking,
             'txt_message' => $this->message
         ]);
+
         return $message;
     }
 }

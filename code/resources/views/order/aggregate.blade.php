@@ -36,11 +36,11 @@ $master_summary = $aggregate->reduxData();
                     </x-larastrap::field>
 
                     <x-larastrap::modal :title="_i('Notifiche Mail')" :id="sprintf('notify-aggregate-%s', $aggregate->id)">
-                        <x-larastrap::form method="POST" :action="url('aggregates/notify/' . $aggregate->id)">
+                        <x-larastrap::iform method="POST" :action="url('aggregates/notify/' . $aggregate->id)">
                             <input type="hidden" name="update-field" value="last-notification-date-{{ $aggregate->id }}">
                             <input type="hidden" name="close-modal" value="1">
                             <x-larastrap::textarea name="message" :label="_i('Messaggio (Opzionale)')" rows="5" />
-                        </x-larastrap::form>
+                        </x-larastrap::iform>
                     </x-larastrap::modal>
                 </div>
             </div>

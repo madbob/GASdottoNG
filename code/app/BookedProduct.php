@@ -72,11 +72,16 @@ class BookedProduct extends Model
             */
             $base_price = $this->basePrice($rectify);
 
-            if (is_numeric($base_price) == false || is_numeric($this->$attribute) == false) {
-                Log::error('Non numeric values for booked product: ' . $base_price . ' / ' . $this->$attribute);
+            $content = $this->$attribute;
+            if (empty(trim($content))) {
+                $content = 0;
             }
 
-            return $base_price * $this->$attribute;
+            if (is_numeric($base_price) == false || is_numeric($content) == false) {
+                Log::error('Non numeric values for booked product: ' . $base_price . ' / ' . $content);
+            }
+
+            return $base_price * $content;
         }
     }
 
