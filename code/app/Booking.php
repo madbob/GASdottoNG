@@ -454,6 +454,16 @@ class Booking extends Model
         return $modifiers;
     }
 
+    public function saveModifiers($aggregate_data = null)
+    {
+        /*
+            Qui ripulisco i modificatori eventualmente già salvati, nel caso in
+            cui la consegna venga modificata e salvata nuovamente
+        */
+        $this->deleteModifiedValues();
+        $this->calculateModifiers($aggregate_data, true);
+    }
+
     public function calculateModifiers($aggregate_data = null, $real = true)
     {
         $values = new Collection();
