@@ -2,14 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2021-09-06 12:20+0200\n"
-"PO-Revision-Date: 2021-09-06 12:22+0200\n"
-"Last-Translator: Roberto Guido <bob@linux.it>\n"
-"Language-Team: Roberto Guido <bob@linux.it>\n"
+"PO-Revision-Date: 2021-09-12 21:33+0000\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
+"translations/de/>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.9-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -19,7 +21,7 @@ msgstr ""
 
 #: ../resources/views/aggregate/details.blade.php:4
 msgid "Invariato"
-msgstr ""
+msgstr "Unverändert"
 
 #: ../resources/views/aggregate/exportshipping.blade.php:30
 #: ../resources/views/order/exportshipping.blade.php:16
@@ -127,12 +129,12 @@ msgstr "Zusammenfassung deiner Bestellung:"
 #: ../resources/views/modifier/edit.blade.php:16
 #: ../resources/views/modifier/edit.blade.php:40
 msgid "Assoluto"
-msgstr ""
+msgstr "Absolut"
 
 #: ../resources/views/modifier/edit.blade.php:17
 #: ../resources/views/modifier/edit.blade.php:41
 msgid "Percentuale"
-msgstr ""
+msgstr "Prozentsatz"
 
 #: ../resources/views/modifier/edit.blade.php:18
 #: Http/Controllers/ImportController.php:136 Order.php:825 Product.php:295
@@ -161,7 +163,7 @@ msgstr "Wert"
 #: ../resources/views/modifier/edit.blade.php:47
 #: Http/Controllers/ImportController.php:162 Product.php:311
 msgid "Peso"
-msgstr ""
+msgstr "Gewicht"
 
 #: ../resources/views/modifier/edit.blade.php:29 Order.php:867
 msgid "Prodotto"
@@ -232,7 +234,7 @@ msgstr "Link zu den Bestellungen"
 
 #: ../resources/views/order/edit.blade.php:19
 msgid "Si, e contempla le quantità prenotate da parte di tutti i GAS"
-msgstr ""
+msgstr "Ja, und es umfasst die von allen GAS gebuchten Mengen."
 
 #: ../resources/views/order/filesmail.blade.php:5
 msgid "Documento allegato"
@@ -328,7 +330,7 @@ msgstr ""
 
 #: Config.php:36
 msgid "Link per accedere la prima volta"
-msgstr ""
+msgstr "Link für den erstmaligen Zugang"
 
 #: Config.php:44
 msgid "Messaggio per il ripristino della password."
@@ -369,7 +371,7 @@ msgstr "Link zu den Bestellungen"
 
 #: Config.php:59
 msgid "Indirizzi email dei referenti dell'ordine"
-msgstr ""
+msgstr "E-Mail-Adressen der Ansprechpartner für die Bestellung"
 
 #: Config.php:60
 msgid "Data di chiusura dell'ordine"
@@ -378,6 +380,7 @@ msgstr "Ende der Bestellfrist"
 #: Config.php:67
 msgid "Notifica destinata ai fornitori alla chiusura automatica dell'ordine."
 msgstr ""
+"Benachrichtigung der Lieferanten über den automatischen Auftragsabschluss."
 
 #: Config.php:70
 msgid "Numero progressivo automaticamente assegnato ad ogni ordine"
@@ -459,6 +462,14 @@ msgid ""
 "\"%[username]\" e la password che avrai scelto.\n"
 "%[gas_login_link]\n"
 msgstr ""
+"Sie sind zu %[gas_name] eingeladen worden!\n"
+"\n"
+"Für den erstmaligen Zugang klicken Sie auf den unten stehenden Link.\n"
+"%[gas_access_link].\n"
+"\n"
+"In Zukunft können Sie sich über diesen anderen Link, den Benutzernamen "
+"„%[username]“ und das von Ihnen gewählte Passwort anmelden.\n"
+"%[gas_login_link]\n"
 
 #: Gas.php:185
 msgid "Recupero Password"
@@ -509,6 +520,12 @@ msgid ""
 "Per segnalazioni, può rivolgersi ai referenti in copia a questa mail.\n"
 "Grazie."
 msgstr ""
+"Guten Tag.\n"
+"Anbei finden Sie die Auftragsbuchung von %[gas_name] in zweifacher "
+"Ausfertigung, PDF und CSV.\n"
+"Wenn Sie Fragen haben, wenden Sie sich bitte an die Ansprechpartner in der "
+"Kopie dieser E-Mail.\n"
+"Danke."
 
 #: Gas.php:206
 msgid "Nuova fattura da %[gas_name]"
@@ -786,12 +803,17 @@ msgid ""
 "Se il login è già esistente il relativo utente sarà aggiornato coi dati "
 "letti dal file."
 msgstr ""
+"Wenn die Anmeldungsdaten bereits existieren, wird der entsprechende Benutzer "
+"mit den aus der Datei gelesenen Daten aktualisiert."
 
 #: Http/Controllers/ImportController.php:451
 msgid ""
 "Altrimenti verrà inviata una email di invito con il link da visitare per "
 "accedere la prima volta e definire la propria password."
 msgstr ""
+"Andernfalls erhalten Sie eine Einladungs-E-Mail mit dem Link, den Sie "
+"besuchen müssen, um sich zum ersten Mal anzumelden und Ihr Passwort "
+"festzulegen."
 
 #: Http/Controllers/ImportController.php:461
 msgid "Login"
@@ -1242,7 +1264,7 @@ msgstr "Wert"
 
 #: Modifier.php:93
 msgid "il peso"
-msgstr ""
+msgstr "das Gewicht"
 
 #: Modifier.php:98
 #, fuzzy
@@ -1264,11 +1286,11 @@ msgstr "Vorbestellung stornieren"
 
 #: Modifier.php:102
 msgid "dell'ordine"
-msgstr ""
+msgstr "der Bestellung"
 
 #: Modifier.php:104
 msgid "della prenotazione destinata al luogo"
-msgstr ""
+msgstr "der Buchung für den Ort"
 
 #: Modifier.php:105
 msgid "dell'ordine destinato al luogo"
@@ -1292,7 +1314,7 @@ msgstr "Produkte"
 
 #: Modifier.php:121
 msgid "Chili"
-msgstr "KG"
+msgstr "kg"
 
 #: Modifier.php:125 Modifier.php:128
 #, fuzzy
@@ -1593,7 +1615,7 @@ msgstr "Gebindegröße"
 
 #: Product.php:305
 msgid "Variabile"
-msgstr ""
+msgstr "Veränderbar"
 
 #: Product.php:314
 msgid "Multiplo"
@@ -1609,17 +1631,15 @@ msgstr "Empfohlenes Maximum"
 
 #: Product.php:345
 msgid "Si"
-msgstr ""
+msgstr "Ja"
 
 #: Product.php:345
-#, fuzzy
-#| msgid "Nome"
 msgid "No"
-msgstr "Vorname"
+msgstr "Nein"
 
 #: Providers/MenuServiceProvider.php:21
 msgid "Home"
-msgstr "Home"
+msgstr "Startseite"
 
 #: Providers/MenuServiceProvider.php:26
 msgid "Utenti"
@@ -1668,7 +1688,7 @@ msgstr "Bewegung %d: target_type non coerente (%s != %s)"
 #: Providers/MovementsKeeper.php:60
 #, php-format
 msgid "Movimento %d: metodo \"%s\" non permesso su tipo \"%s\""
-msgstr "Bewegung %d: metodo %s non permesso su tipo \"%s\""
+msgstr "Bewegung %d: metodo %s non permesso su tipo „%s“"
 
 #: Providers/MovementsKeeper.php:65
 msgid "Movimento: ammontare negativo non permesso"
@@ -1784,7 +1804,7 @@ msgstr "Die Prüfziffern sind falsch"
 
 #: Rules/EMail.php:18
 msgid "L'indirizzo e-mail è già registrato."
-msgstr ""
+msgstr "Die E-Mail-Adresse ist bereits registriert."
 
 #: Services/MovementsService.php:169 Services/MovementsService.php:185
 msgid "Salvataggio fallito"
