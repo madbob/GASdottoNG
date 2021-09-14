@@ -1491,17 +1491,9 @@ $(document).ready(function() {
             $(this).attr('data-idle-text', idle_text).empty().append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop('disabled', true);
         });
 
-        var data = utils.j().serializeForm(form);
-        if (form.find('input[type="file"]').length) {
-            data = utils.j().serializeFormData(form);
-        }
-
-        utils.postAjax({
+        var params = {
             method: form.attr('method'),
             url: form.attr('action'),
-            data: data,
-            processData: false,
-            contentType: false,
             dataType: 'JSON',
 
             success: function(data) {
@@ -1517,7 +1509,18 @@ $(document).ready(function() {
                     utils.inlineFeedback($(this), _('ERRORE!'));
                 });
             }
-        });
+        };
+
+        if (form.find('input[type="file"]').length) {
+            params.data = utils.j().serializeFormData(form);
+            params.processData = false;
+            params.contentType = false;
+        }
+        else {
+            params.data = utils.j().serializeForm(form);
+        }
+
+        utils.postAjax(params);
     });
 
     $('body').on('hide.bs.modal', '.inner-modal', function(event) {
