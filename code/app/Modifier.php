@@ -394,7 +394,6 @@ class Modifier extends Model
 
                 $modifier_value = $this->retrieveExistingValue($obj_mod_target);
                 if ($modifier_value->exists) {
-                    \Log::debug('elimino ' . $modifier_value->id);
                     $modifier_value->delete();
                 }
 
@@ -410,7 +409,6 @@ class Modifier extends Model
         */
         if ($altered_amount == 0) {
             if ($modifier_value->exists) {
-                \Log::debug('elimino ' . $modifier_value->id);
                 $modifier_value->delete();
             }
 

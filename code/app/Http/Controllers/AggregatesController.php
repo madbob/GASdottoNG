@@ -76,12 +76,8 @@ class AggregatesController extends OrdersController
 
     public function show(Request $request, $id)
     {
-        DB::beginTransaction();
         $a = Aggregate::findOrFail($id);
-        $a->waybackProducts();
-        $view = view('order.aggregate', ['aggregate' => $a])->render();
-        DB::rollback();
-        return $view;
+        return view('order.aggregate', ['aggregate' => $a]);
     }
 
     public function details(Request $request, $id)

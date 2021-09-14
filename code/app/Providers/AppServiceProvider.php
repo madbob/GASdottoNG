@@ -8,11 +8,13 @@ use Illuminate\Support\Facades\Schema;
 use App\Observers\UserObserver;
 use App\Observers\SupplierObserver;
 use App\Observers\OrderObserver;
+use App\Observers\ModifierObserver;
 use App\Observers\ContactObserver;
 
 use App\User;
 use App\Supplier;
 use App\Order;
+use App\Modifier;
 use App\Contact;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
         User::observe(UserObserver::class);
         Supplier::observe(SupplierObserver::class);
         Order::observe(OrderObserver::class);
+        Modifier::observe(ModifierObserver::class);
         Contact::observe(ContactObserver::class);
     }
 
