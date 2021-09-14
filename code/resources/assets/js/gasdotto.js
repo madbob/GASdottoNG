@@ -1484,21 +1484,28 @@ $(document).ready(function() {
             return;
         }
 
-        utils.submitButton(form).each(function() {
+        var submit_button = utils.submitButton(form);
+
+        submit_button.each(function() {
             var idle_text = $(this).text();
             $(this).attr('data-idle-text', idle_text).empty().append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop('disabled', true);
         });
 
+        var data = utils.j().serializeForm(form);
+        if (form.find('input[type="file"]').length) {
+            data = utils.j().serializeFormData(form);
+        }
+
         utils.postAjax({
             method: form.attr('method'),
             url: form.attr('action'),
-            data: utils.j().serializeFormData(form),
+            data: data,
             processData: false,
             contentType: false,
             dataType: 'JSON',
 
             success: function(data) {
-                form.find('button[type=submit]').each(function() {
+                submit_button.each(function() {
                     utils.inlineFeedback($(this), _('Salvato!'));
                 });
 
@@ -1506,7 +1513,7 @@ $(document).ready(function() {
             },
 
             error: function(data) {
-                utils.submitButton(form).each(function() {
+                submit_button.each(function() {
                     utils.inlineFeedback($(this), _('ERRORE!'));
                 });
             }
@@ -2090,16 +2097,16 @@ $(document).ready(function() {
     .on('change', '.order-document-download-modal input[name=send_mail]', function() {
         var status = $(this).prop('checked');
         var form = $(this).closest('.order-document-download-modal').find('form');
-        var submit = form.find('[type=submit]');
+        var submit = utils.submitButton(form);
 
         if (status) {
             submit.text(_('Invia Mail'));
-            form.removeClass('direct-submit');
         }
         else {
-            submit.text(_('Download'));
-            form.addClass('direct-submit');
+            submit.text(_('Salva'));
         }
+
+        form.toggleClass('inner-form', status);
     });
 
     $('body').on('change', '[id^="createOrder"] select[name^=supplier_id]', function() {

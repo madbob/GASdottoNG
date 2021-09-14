@@ -1,5 +1,5 @@
 <x-larastrap::modal :title="_i('Riassunto Prodotti')" classes="close-on-submit order-document-download-modal">
-    <x-larastrap::form classes="direct-submit" method="GET" :action="url('orders/document/' . $order->id . '/summary')" label_width="2" input_width="10">
+    <x-larastrap::form method="GET" :action="url('orders/document/' . $order->id . '/summary')" label_width="2" input_width="10">
         <p>
             {{ ("Da qui puoi ottenere un documento che riassume le quantità prenotate di tutti i prodotti: utile da inviare al fornitore, una volta chiuso l'ordine.") }}
         </p>
