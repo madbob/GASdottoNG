@@ -18,7 +18,7 @@
 @endif
 
 @if($fixed)
-    <x-larastrap::price name="amount" :label="_i('Valore')" :value="$fixed" disabled />
+    <x-larastrap::price name="amount" :label="_i('Valore')" :value="$fixed" readonly />
 @else
     <x-larastrap::price name="amount" :label="_i('Valore')" required />
 @endif
