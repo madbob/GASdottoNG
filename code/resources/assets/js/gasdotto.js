@@ -289,6 +289,10 @@ function generalInit(container) {
         });
     });
 
+    $('.csv_movement_type_select', container).each(function() {
+        enforcePaymentMethod($(this));
+    });
+
     setupImportCsvEditor(container);
     setupPermissionsEditor(container);
 
@@ -708,6 +712,47 @@ function reloadCurrentLoadable(listid)
             r.click();
         }, 600);
     });
+}
+
+/*******************************************************************************
+	Contabilità
+*/
+
+/*
+    Questa è per forzare i metodi di pagamento disponibili nel modale di
+    importazione dei movimenti contabili
+*/
+function enforcePaymentMethod(node) {
+    var selected = node.find('option:selected').val();
+    var default_payment = null;
+    var payments = null;
+
+    JSON.parse(node.closest('.modal').find('input[name=matching_methods_for_movement_types]').val()).forEach(function(iter) {
+        if (iter.method == selected) {
+            default_payment = iter.default_payment;
+            payments = iter.payments;
+            return false;
+        }
+    });
+
+    if (payments != null) {
+        node.closest('tr').find('.csv_movement_method_select').find('option').each(function() {
+            var v = $(this).val();
+            if (payments.indexOf(v) >= 0) {
+                $(this).prop('disabled', false);
+
+                if (default_payment == v) {
+                    $(this).prop('selected', true);
+                }
+            }
+            else {
+                $(this).prop('disabled', true);
+            }
+        });
+    }
+    else {
+        node.closest('tr').find('.csv_movement_method_select').find('option').prop('disabled', false);
+    }
 }
 
 /*******************************************************************************
@@ -2420,40 +2465,7 @@ $(document).ready(function() {
     });
 
     $('body').on('change', '.csv_movement_type_select', function() {
-        var selected = $(this).find('option:selected').val();
-        var default_payment = null;
-        var payments = null;
-
-        /*
-            L'array matching_methods_for_movement_types viene inizializzato
-            direttamente dal codice PHP, ci si aspetta di trovarlo in pagina
-        */
-        matching_methods_for_movement_types.forEach(function(iter) {
-            if (iter.method == selected) {
-                default_payment = iter.default_payment;
-                payments = iter.payments;
-                return false;
-            }
-        });
-
-        if (payments != null) {
-            $(this).closest('tr').find('.csv_movement_method_select').find('option').each(function() {
-                var v = $(this).val();
-                if (payments.indexOf(v) >= 0) {
-                    $(this).prop('disabled', false);
-
-                    if (default_payment == v) {
-                        $(this).prop('selected', true);
-                    }
-                }
-                else {
-                    $(this).prop('disabled', true);
-                }
-            });
-        }
-        else {
-            $(this).closest('tr').find('.csv_movement_method_select').find('option').prop('disabled', false);
-        }
+        enforcePaymentMethod($(this));
     });
 
     /*
