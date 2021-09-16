@@ -42,10 +42,31 @@ trait ReducibleTrait
         ];
     }
 
+    /*
+        In fase di popolamento dell'array "merged" della riduzione, questi sono
+        i sotto-array che devono (se presenti) essere a loro volta essere
+        mergiati
+    */
+    protected function subArrayMerge()
+    {
+        return [
+            'variants',
+        ];
+    }
+
+    /*
+        Date due riduzioni (ad esempio, di due prenotazioni) questa funzione
+        provvede a sommare tra di loro i valori enumerati in
+        describingAttributes() per ottenere la riduzione complessiva
+    */
     protected function describingAttributesMerge($first, $second, $sum = true)
     {
         if (is_null($first)) {
             return clone $second;
+        }
+
+        if (is_null($second)) {
+            return $first;
         }
 
         foreach ($this->describingAttributes() as $attr) {
@@ -66,6 +87,36 @@ trait ReducibleTrait
         }
 
         return $first;
+    }
+
+    /*
+        Come describingAttributesMerge(), ma in più condensa anche i sotto-array
+        enumerati in subArrayMerge() delle due riduzioni.
+        Funzione introdotta per condensare le varianti dei prodotti presenti in
+        diverse prenotazioni (che vengono ridotte indipendentemente tra loro)
+    */
+    protected function deepMergingAttributes($first, $second, $sum = true)
+    {
+        $ret = $this->describingAttributesMerge($first, $second, $sum);
+
+        foreach ($this->subArrayMerge() as $subarray) {
+            if (!isset($first->$subarray) && !isset($second->$subarray)) {
+                continue;
+            }
+
+            $first_subarray = $first->$subarray ?? [];
+            $second_subarray = $second->$subarray ?? [];
+            $final = [];
+            $ids = array_unique(array_merge(array_keys($first_subarray), array_keys($second_subarray)));
+
+            foreach($ids as $id) {
+                $final[$id] = $this->describingAttributesMerge($first_subarray[$id] ?? null, $second_subarray[$id] ?? null);
+            }
+
+            $ret->$subarray = $final;
+        }
+
+        return $ret;
     }
 
     protected function descendReduction($ret, $filters)
@@ -90,7 +141,7 @@ trait ReducibleTrait
             $merged = $behaviours->merged ?? '';
             if (!empty($merged)) {
                 foreach($reduxed_child->$merged as $to_merge) {
-                    $ret->$merged[$to_merge->id] = $this->describingAttributesMerge($ret->$merged[$to_merge->id] ?? null, $to_merge);
+                    $ret->$merged[$to_merge->id] = $this->deepMergingAttributes($ret->$merged[$to_merge->id] ?? null, $to_merge);
                 }
             }
         }

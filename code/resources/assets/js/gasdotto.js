@@ -289,6 +289,10 @@ function generalInit(container) {
         });
     });
 
+    $('.csv_movement_type_select', container).each(function() {
+        enforcePaymentMethod($(this));
+    });
+
     setupImportCsvEditor(container);
     setupPermissionsEditor(container);
 
@@ -708,6 +712,47 @@ function reloadCurrentLoadable(listid)
             r.click();
         }, 600);
     });
+}
+
+/*******************************************************************************
+	Contabilità
+*/
+
+/*
+    Questa è per forzare i metodi di pagamento disponibili nel modale di
+    importazione dei movimenti contabili
+*/
+function enforcePaymentMethod(node) {
+    var selected = node.find('option:selected').val();
+    var default_payment = null;
+    var payments = null;
+
+    JSON.parse(node.closest('.modal').find('input[name=matching_methods_for_movement_types]').val()).forEach(function(iter) {
+        if (iter.method == selected) {
+            default_payment = iter.default_payment;
+            payments = iter.payments;
+            return false;
+        }
+    });
+
+    if (payments != null) {
+        node.closest('tr').find('.csv_movement_method_select').find('option').each(function() {
+            var v = $(this).val();
+            if (payments.indexOf(v) >= 0) {
+                $(this).prop('disabled', false);
+
+                if (default_payment == v) {
+                    $(this).prop('selected', true);
+                }
+            }
+            else {
+                $(this).prop('disabled', true);
+            }
+        });
+    }
+    else {
+        node.closest('tr').find('.csv_movement_method_select').find('option').prop('disabled', false);
+    }
 }
 
 /*******************************************************************************
@@ -1484,21 +1529,20 @@ $(document).ready(function() {
             return;
         }
 
-        utils.submitButton(form).each(function() {
+        var submit_button = utils.submitButton(form);
+
+        submit_button.each(function() {
             var idle_text = $(this).text();
             $(this).attr('data-idle-text', idle_text).empty().append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop('disabled', true);
         });
 
-        utils.postAjax({
+        var params = {
             method: form.attr('method'),
             url: form.attr('action'),
-            data: utils.j().serializeFormData(form),
-            processData: false,
-            contentType: false,
             dataType: 'JSON',
 
             success: function(data) {
-                form.find('button[type=submit]').each(function() {
+                submit_button.each(function() {
                     utils.inlineFeedback($(this), _('Salvato!'));
                 });
 
@@ -1506,11 +1550,22 @@ $(document).ready(function() {
             },
 
             error: function(data) {
-                utils.submitButton(form).each(function() {
+                submit_button.each(function() {
                     utils.inlineFeedback($(this), _('ERRORE!'));
                 });
             }
-        });
+        };
+
+        if (form.find('input[type="file"]').length) {
+            params.data = utils.j().serializeFormData(form);
+            params.processData = false;
+            params.contentType = false;
+        }
+        else {
+            params.data = utils.j().serializeForm(form);
+        }
+
+        utils.postAjax(params);
     });
 
     $('body').on('hide.bs.modal', '.inner-modal', function(event) {
@@ -2090,16 +2145,16 @@ $(document).ready(function() {
     .on('change', '.order-document-download-modal input[name=send_mail]', function() {
         var status = $(this).prop('checked');
         var form = $(this).closest('.order-document-download-modal').find('form');
-        var submit = form.find('[type=submit]');
+        var submit = utils.submitButton(form);
 
         if (status) {
             submit.text(_('Invia Mail'));
-            form.removeClass('direct-submit');
         }
         else {
-            submit.text(_('Download'));
-            form.addClass('direct-submit');
+            submit.text(_('Salva'));
         }
+
+        form.toggleClass('inner-form', status);
     });
 
     $('body').on('change', '[id^="createOrder"] select[name^=supplier_id]', function() {
@@ -2410,40 +2465,7 @@ $(document).ready(function() {
     });
 
     $('body').on('change', '.csv_movement_type_select', function() {
-        var selected = $(this).find('option:selected').val();
-        var default_payment = null;
-        var payments = null;
-
-        /*
-            L'array matching_methods_for_movement_types viene inizializzato
-            direttamente dal codice PHP, ci si aspetta di trovarlo in pagina
-        */
-        matching_methods_for_movement_types.forEach(function(iter) {
-            if (iter.method == selected) {
-                default_payment = iter.default_payment;
-                payments = iter.payments;
-                return false;
-            }
-        });
-
-        if (payments != null) {
-            $(this).closest('tr').find('.csv_movement_method_select').find('option').each(function() {
-                var v = $(this).val();
-                if (payments.indexOf(v) >= 0) {
-                    $(this).prop('disabled', false);
-
-                    if (default_payment == v) {
-                        $(this).prop('selected', true);
-                    }
-                }
-                else {
-                    $(this).prop('disabled', true);
-                }
-            });
-        }
-        else {
-            $(this).closest('tr').find('.csv_movement_method_select').find('option').prop('disabled', false);
-        }
+        enforcePaymentMethod($(this));
     });
 
     /*

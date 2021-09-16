@@ -1,5 +1,8 @@
 <x-larastrap::modal :title="_i('Note e Quantità')">
-    <x-larastrap::form method="POST" :action="url('orders/fixes/' . $order->id)">
+    <x-larastrap::iform method="POST" :action="url('orders/fixes/' . $order->id)">
+        <input type="hidden" name="close-modal" value="1" class="skip-on-submit" />
+        <input type="hidden" name="reload-portion" value=".order-summary-wrapper" class="skip-on-submit" />
+
         <input type="hidden" name="product" value="{{ $product->id }}" />
 
         @if($product->package_size != 0)
@@ -67,5 +70,5 @@
                 @endif
             </table>
         @endif
-    </x-larastrap::form>
+    </x-larastrap::iform>
 </x-larastrap::modal>

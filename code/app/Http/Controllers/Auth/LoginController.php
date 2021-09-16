@@ -97,6 +97,7 @@ class LoginController extends Controller
         }
 
         $user->access_token = '';
+        $user->enforce_password_change = true;
         $user->save();
 
         Auth::loginUsingId($user->id);

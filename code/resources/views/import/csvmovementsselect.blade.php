@@ -23,9 +23,7 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
 ?>
 
 <x-larastrap::modal :title="_i('Importa CSV')" size="fullscreen">
-    <script>
-    matching_methods_for_movement_types = {!! json_encode($methods) !!};
-    </script>
+    <input type="hidden" name="matching_methods_for_movement_types" value='{!! json_encode($methods) !!}'>
 
     <div class="wizard_page">
         <x-larastrap::form method="POST" :action="url('import/csv?type=movements&step=run')" :buttons="[['color' => 'success', 'type' => 'submit', 'label' => _i('Avanti')]]">
