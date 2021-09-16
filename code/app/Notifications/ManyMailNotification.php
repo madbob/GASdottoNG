@@ -2,9 +2,7 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
 /*
@@ -14,10 +12,8 @@ use Illuminate\Notifications\Messages\MailMessage;
     Le classi per le notifiche che estendono questa qua vanno a popolare i
     destinatari delle mail tenendo conto di questo.
 */
-class ManyMailNotification extends Notification implements ShouldQueue
+class ManyMailNotification extends Notification
 {
-    use Queueable;
-
     public function via($notifiable)
     {
         $this->connection = config('queue.default');

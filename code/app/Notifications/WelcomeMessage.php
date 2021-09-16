@@ -2,12 +2,12 @@
 
 namespace App\Notifications;
 
-use App\Notifications\ManyMailNotification;
-use App\Notifications\MailFormatter;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class WelcomeMessage extends ManyMailNotification
+class WelcomeMessage extends ManyMailNotification implements ShouldQueue
 {
-    use MailFormatter;
+    use MailFormatter, Queueable;
 
     public function toMail($notifiable)
     {

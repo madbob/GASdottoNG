@@ -5,12 +5,11 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
-use App\Notifications\GenericNotificationWrapper;
-
 use Auth;
 use Mail;
 use Log;
 
+use App\Jobs\DeliverNotification;
 use App\Scopes\RestrictedGAS;
 
 class Notification extends Model
@@ -50,14 +49,7 @@ class Notification extends Model
             return;
         }
 
-        foreach ($this->users as $user) {
-            try {
-                $user->notify(new GenericNotificationWrapper($this));
-            }
-            catch(\Exception $e) {
-                Log::error('Impossibile inoltrare mail di notifica a utente ' . $user->id . ': ' . $e->getMessage());
-            }
-        }
+        DeliverNotification::dispatch($this->id);
     }
 
     public function printableName()

@@ -2,10 +2,13 @@
 
 namespace App\Notifications;
 
-use App\Notifications\ManyMailNotification;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class NewUserNotification extends ManyMailNotification
+class NewUserNotification extends ManyMailNotification implements ShouldQueue
 {
+    use Queueable;
+
     private $user = null;
 
     public function __construct($user)

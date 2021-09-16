@@ -2,12 +2,12 @@
 
 namespace App\Notifications;
 
-use App\Notifications\ManyMailNotification;
-use App\Notifications\MailFormatter;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ResetPasswordNotification extends ManyMailNotification
+class ResetPasswordNotification extends ManyMailNotification implements ShouldQueue
 {
-    use MailFormatter;
+    use MailFormatter, Queueable;
 
     private $reset_token = null;
 
