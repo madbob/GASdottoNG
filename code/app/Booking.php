@@ -464,6 +464,19 @@ class Booking extends Model
         $this->calculateModifiers($aggregate_data, true);
     }
 
+    public function fixPayment()
+    {
+        $payment = $this->payment;
+
+        if ($payment) {
+            $actual_total = $this->getValue('effective', true);
+            if ($payment->amount != $actual_total) {
+                $payment->amount = $actual_total;
+                $payment->save();
+            }
+        }
+    }
+
     public function calculateModifiers($aggregate_data = null, $real = true)
     {
         $values = new Collection();

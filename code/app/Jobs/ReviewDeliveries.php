@@ -34,6 +34,8 @@ class ReviewDeliveries extends Job
         $order = Order::find($this->order_id);
 
         if ($order->aggregate->status == 'shipped') {
+            $aggregate = $order->aggregate;
+
             foreach($aggregate->gas as $gas) {
                 $this->hub->setGas($gas->id);
                 $redux = $aggregate->reduxData();
@@ -41,6 +43,7 @@ class ReviewDeliveries extends Job
                 foreach($aggregate->orders as $order) {
                     foreach($order->bookings as $booking) {
                         $booking->saveModifiers($redux);
+                        $booking->fixPayment();
                     }
                 }
             }

@@ -308,32 +308,12 @@ class Modifier extends Model
                     break;
             }
 
-            switch($this->distribution_type) {
-                case 'none':
-                case 'quantity':
-                    $distribution_attribute = 'delivered';
-                    break;
-                case 'price':
-                    $distribution_attribute = 'price_delivered';
-                    break;
-                case 'weight':
-                    $distribution_attribute = 'weight_delivered';
-                    break;
-                default:
-                    return null;
-            }
-
             $mod_attribute = 'price_delivered';
         }
         else {
             $attribute = $this->applies_type;
             if ($attribute == 'none') {
                 $attribute = 'price';
-            }
-
-            $distribution_attribute = $this->distribution_type;
-            if ($distribution_attribute == 'none') {
-                $distribution_attribute = 'price';
             }
 
             $mod_attribute = 'price';
@@ -372,6 +352,13 @@ class Modifier extends Model
                     singola prenotazione il suo valore relativo e proporzionale.
                 */
                 if ($this->applies_target == 'order') {
+                    $distribution_attribute = $this->distribution_type;
+                    if ($distribution_attribute == 'none') {
+                        $distribution_attribute = 'price';
+                    }
+
+                    $distribution_attribute = 'relative_' . $distribution_attribute;
+
                     if ($this->target_type == 'App\Product') {
                         $booking_mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$product_target_id] ?? null;
                         $reference = $mod_target->products[$product_target_id]->$distribution_attribute;

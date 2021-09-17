@@ -89,15 +89,41 @@ trait ReducibleTrait
         return $first;
     }
 
+    protected function relativeAttributeMerge($ret, $child, $reduxed_child)
+    {
+        $child_status = $child->status;
+
+        $ret->relative_quantity = $ret->relative_quantity ?? 0;
+        $ret->relative_pieces = $ret->relative_pieces ?? 0;
+        $ret->relative_price = $ret->relative_price ?? 0;
+        $ret->relative_weight = $ret->relative_weight ?? 0;
+
+        if ($child_status == 'shipped' || $child_status == 'saved') {
+            $ret->relative_quantity += $reduxed_child->delivered;
+            $ret->relative_pieces += $reduxed_child->delivered_pieces;
+            $ret->relative_price += $reduxed_child->price_delivered;
+            $ret->relative_weight += $reduxed_child->weight_delivered;
+        }
+        else {
+            $ret->relative_quantity += $reduxed_child->quantity;
+            $ret->relative_pieces += $reduxed_child->quantity_pieces;
+            $ret->relative_price += $reduxed_child->price;
+            $ret->relative_weight += $reduxed_child->weight;
+        }
+
+        return $ret;
+    }
+
     /*
         Come describingAttributesMerge(), ma in più condensa anche i sotto-array
         enumerati in subArrayMerge() delle due riduzioni.
         Funzione introdotta per condensare le varianti dei prodotti presenti in
         diverse prenotazioni (che vengono ridotte indipendentemente tra loro)
     */
-    protected function deepMergingAttributes($first, $second, $sum = true)
+    protected function deepMergingAttributes($child, $first, $second, $sum = true)
     {
         $ret = $this->describingAttributesMerge($first, $second, $sum);
+        $ret = $this->relativeAttributeMerge($ret, $child, $second);
 
         foreach ($this->subArrayMerge() as $subarray) {
             if (!isset($first->$subarray) && !isset($second->$subarray)) {
@@ -137,11 +163,12 @@ trait ReducibleTrait
             $reduxed_child = $child->reduxData(null, $filters);
             $ret->$collected[$reduxed_child->id] = $this->describingAttributesMerge($ret->$collected[$reduxed_child->id] ?? null, $reduxed_child);
             $ret = $this->describingAttributesMerge($ret, $reduxed_child);
+            $ret = $this->relativeAttributeMerge($ret, $child, $reduxed_child);
 
             $merged = $behaviours->merged ?? '';
             if (!empty($merged)) {
                 foreach($reduxed_child->$merged as $to_merge) {
-                    $ret->$merged[$to_merge->id] = $this->deepMergingAttributes($ret->$merged[$to_merge->id] ?? null, $to_merge);
+                    $ret->$merged[$to_merge->id] = $this->deepMergingAttributes($child, $ret->$merged[$to_merge->id] ?? null, $to_merge);
                 }
             }
         }
@@ -221,4 +248,6 @@ trait ReducibleTrait
 
         return $ret;
     }
+
+    abstract protected function reduxBehaviour();
 }

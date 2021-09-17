@@ -438,12 +438,15 @@ class MovementType extends Model
             return;
         }
 
-        if ($op->operation == 'decrement')
+        if ($op->operation == 'decrement') {
             $amount = $movement->amount * -1;
-        else if ($op->operation == 'increment')
+        }
+        else if ($op->operation == 'increment') {
             $amount = $movement->amount;
-        else
+        }
+        else {
             return;
+        }
 
         $obj->alterBalance($amount, $op->field);
     }
@@ -453,20 +456,24 @@ class MovementType extends Model
         $ops = json_decode($this->function);
 
         foreach($ops as $o) {
-            if ($o->method != $movement->method)
+            if ($o->method != $movement->method) {
                 continue;
+            }
 
-            foreach($o->sender->operations as $op)
+            foreach($o->sender->operations as $op) {
                 $this->applyFunction($movement->sender, $movement, $op);
+            }
 
-            foreach($o->target->operations as $op)
+            foreach($o->target->operations as $op) {
                 $this->applyFunction($movement->target, $movement, $op);
+            }
 
             if (!empty($o->master->operations)) {
                 $currentgas = currentAbsoluteGas();
 
-                foreach($o->master->operations as $op)
+                foreach($o->master->operations as $op) {
                     $this->applyFunction($currentgas, $movement, $op);
+                }
             }
 
             break;
