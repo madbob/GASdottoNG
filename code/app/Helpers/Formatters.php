@@ -330,8 +330,14 @@ function normalizeUrl($url)
 
 function decodeDate($date)
 {
+    $date = trim($date);
+
     if ($date == '' || $date == _i('Mai')) {
         return null;
+    }
+
+    if (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $date) == 1) {
+        return $date;
     }
 
     $months = localeMonths();
