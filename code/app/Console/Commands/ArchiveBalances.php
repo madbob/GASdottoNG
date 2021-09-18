@@ -6,10 +6,10 @@ use Illuminate\Console\Command;
 
 use App\Services\MovementsService;
 
-class RecalculateBalances extends Command
+class ArchiveBalances extends Command
 {
-    protected $signature = 'balances:recalculate';
-    protected $description = 'Effettua un ricalcolo saldi';
+    protected $signature = 'balances:archive {date}';
+    protected $description = 'Archivia i saldi ad una certa data';
 
     public function __construct()
     {
@@ -18,7 +18,8 @@ class RecalculateBalances extends Command
 
     public function handle()
     {
+        $date = $this->argument('date');
         $service = new MovementsService();
-        $service->recalculate();
+        $service->closeBalance(['date' => $date]);
     }
 }
