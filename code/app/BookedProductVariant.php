@@ -184,5 +184,7 @@ class BookedProductVariant extends Model
             $ret->relative_quantity += $ret->quantity;
             $ret->relative_pieces += $ret->quantity_pieces;
         }
+
+        return $ret;
     }
 }

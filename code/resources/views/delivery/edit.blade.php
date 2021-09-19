@@ -186,7 +186,7 @@ $existing = false;
                                 @if($order->isActive())
                                     <tr class="hidden booking-product fit-add-product">
                                         <td>
-                                            <select class="fit-add-product-select form-control">
+                                            <select class="fit-add-product-select form-select">
                                                 <option value="-1">{{ _i('Seleziona un Prodotto') }}</option>
                                                 @foreach($order->products as $product)
                                                     <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -264,6 +264,7 @@ $existing = false;
                 <input type="hidden" name="post-saved-function" value="closeMainForm">
             @else
                 <input type="hidden" name="append-list" value="booking-list-{{ $aggregate->id }}">
+                <input type="hidden" name="close-modal" value="1">
             @endif
         </form>
     </div>

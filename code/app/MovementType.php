@@ -342,7 +342,7 @@ class MovementType extends Model
                         },
                         'post' => function (Movement $movement) {
                             $target = $movement->target;
-                            if($target != null) {
+                            if ($target != null) {
                                 /*
                                     Salvando il movimento contabile legato ad
                                     una consegna, ne aggiorno anche il suo stato.
