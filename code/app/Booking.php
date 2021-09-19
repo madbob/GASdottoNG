@@ -425,6 +425,7 @@ class Booking extends Model
         $this->status = 'pending';
 
         foreach($this->products as $p) {
+            $p->setRelation('booking', $this);
             $p->final_price = $p->getValue('delivered');
             $p->save();
         }

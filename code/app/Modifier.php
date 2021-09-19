@@ -386,8 +386,6 @@ class Modifier extends Model
                 }
             }
             else {
-                Log::error('Unable to apply any threshold for modifier ' . $this->id);
-
                 $modifier_value = $this->retrieveExistingValue($obj_mod_target);
                 if ($modifier_value->exists) {
                     $modifier_value->delete();

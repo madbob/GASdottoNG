@@ -4,6 +4,7 @@ namespace Tests;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 use App\Exceptions\AuthException;
 
@@ -199,6 +200,26 @@ class ModifiersServiceTest extends TestCase
         }
     }
 
+    private function reviewBookingsIntoOrder($mod, $order, $test_shipping_value)
+    {
+        $order = $order->fresh();
+        $redux = $order->reduxData();
+        $this->assertNotEquals($redux->relative_price, 0.0);
+
+        foreach($order->bookings as $booking) {
+            if ($booking->status == 'pending') {
+                $booking->applyModifiers(null, true);
+                $booked_value = $booking->getValue('booked', true);
+            }
+            else {
+                $booked_value = $booking->getValue('delivered', true);
+            }
+
+            $shipping_value = $booking->getValue('modifier:' . $mod->id, true);
+            $this->assertEquals(($booked_value * $test_shipping_value) / $redux->relative_price, $shipping_value);
+        }
+    }
+
     public function testOnOrder()
     {
         $this->actingAs($this->userReferrer);
@@ -228,15 +249,51 @@ class ModifiersServiceTest extends TestCase
         $this->assertNotNull($mod);
         $this->assertEquals($this->order->bookings->count(), 2);
 
-        $redux = $this->order->reduxData();
-        $this->assertNotEquals($redux->price, 0.0);
+        $this->reviewBookingsIntoOrder($mod, $this->order, $test_shipping_value);
 
         foreach($this->order->bookings as $booking) {
-            $booking->applyModifiers(null, true);
-            $booked_value = $booking->getValue('booked', true);
-            $shipping_value = $booking->getValue('modifier:' . $mod->id, true);
-            $this->assertEquals(($booked_value * $test_shipping_value) / $redux->price, $shipping_value);
+            foreach($booking->products as $product) {
+                $product->delivered = $product->quantity;
+                $product->save();
+            }
+
+            $booking->status = 'shipped';
+            $booking->save();
+
+            $booking->unsetRelation('products');
+            $booking->saveFinalPrices();
+            $booking->saveModifiers();
         }
+
+        $this->order->status = 'shipped';
+        $this->order->save();
+
+        $this->reviewBookingsIntoOrder($mod, $this->order, $test_shipping_value);
+
+        /*
+            Alterando le quantità consegnate e forzando il ricalcolo dei
+            modificatori, questi devono essere coerenti con le nuove quantità
+        */
+
+        foreach($this->order->bookings as $booking) {
+            foreach($booking->products as $product) {
+                $product->delivered += rand(-2, 2);
+                $product->save();
+            }
+
+            $booking->saveFinalPrices();
+            $booking = $booking->fresh();
+
+            foreach($booking->products as $product) {
+                $this->assertNotEquals($product->final_price, 0);
+            }
+        }
+
+        foreach($this->order->bookings as $booking) {
+            $booking->saveModifiers();
+        }
+
+        $this->reviewBookingsIntoOrder($mod, $this->order, $test_shipping_value);
     }
 
     public function testOnShippingPlace()
