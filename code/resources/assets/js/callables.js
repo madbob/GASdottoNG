@@ -201,6 +201,19 @@ class Callables {
         });
     }
 
+    static afterAggregateChange(form, data) {
+        utils.postAjax({
+            method: 'GET',
+            url: 'aggregates/' + data.id + '/post_feedback',
+            dataType: 'JSON',
+            success: function(data) {
+                for (let i = 0; i < data.length; i++) {
+                    utils.j().fetchRemoteModal(data[i]);
+                }
+            }
+        });
+    }
+
     static afterBookingSaved(form, data) {
         var modal = form.closest('.modal');
 

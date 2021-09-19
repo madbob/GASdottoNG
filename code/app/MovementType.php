@@ -480,27 +480,47 @@ class MovementType extends Model
         }
     }
 
+    public function altersBalances($movement, $peer)
+    {
+        $ops = json_decode($this->function);
+
+        foreach($ops as $o) {
+            if ($o->method != $movement->method) {
+                continue;
+            }
+
+            return (!empty($o->$peer->operations));
+        }
+
+        return false;
+    }
+
     public function transactionType($movement, $peer)
     {
         $ops = json_decode($this->function);
 
         foreach($ops as $o) {
-            if ($o->method != $movement->method)
+            if ($o->method != $movement->method) {
                 continue;
+            }
 
             foreach($o->$peer->operations as $op) {
-                if ($op->operation == 'increment')
+                if ($op->operation == 'increment') {
                     return 'credit';
-                else
+                }
+                else {
                     return 'debit';
+                }
             }
 
             break;
         }
 
-        if ($peer == 'sender')
+        if ($peer == 'sender') {
             return 'debit';
-        else
+        }
+        else {
             return 'credit';
+        }
     }
 }

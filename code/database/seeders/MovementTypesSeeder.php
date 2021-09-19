@@ -527,6 +527,50 @@ class MovementTypesSeeder extends Seeder
             $type->save();
         }
 
+        if (MovementType::find('booking-payment-adjust') == null) {
+            $type = new MovementType();
+            $type->id = 'booking-payment-adjust';
+            $type->name = 'Aggiustamento pagamento prenotazione da parte di un socio';
+            $type->sender_type = 'App\User';
+            $type->target_type = 'App\Booking';
+            $type->allow_negative = true;
+            $type->fixed_value = null;
+            $type->visibility = false;
+            $type->system = true;
+            $type->function = json_encode(
+                [
+                    (object) [
+                        'method' => 'credit',
+                        'sender' => (object) [
+                            'operations' => [
+                                (object) [
+                                    'operation' => 'decrement',
+                                    'field' => 'bank'
+                                ],
+                            ]
+                        ],
+                        'target' => (object) [
+                            'operations' => [
+                                (object) [
+                                    'operation' => 'increment',
+                                    'field' => 'bank'
+                                ],
+                            ]
+                        ],
+                        'master' => (object) [
+                            'operations' => [
+                                (object) [
+                                    'operation' => 'increment',
+                                    'field' => 'suppliers'
+                                ],
+                            ]
+                        ],
+                    ],
+                ]
+            );
+            $type->save();
+        }
+
         /*
             Il comportamento di questi movimenti non è strettamente vincolati al
             codice, ma si consiglia comunque di non modificarli se non molto

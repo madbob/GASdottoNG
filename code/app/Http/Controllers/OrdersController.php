@@ -383,6 +383,45 @@ class OrdersController extends Controller
         return $this->successResponse();
     }
 
+    public function getFixModifiers(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+        if ($request->user()->can('supplier.orders', $order->supplier) == false) {
+            return $this->errorResponse(_i('Non autorizzato'));
+        }
+
+        return view('order.fixemodifiers', ['order' => $order]);
+    }
+
+    public function postFixModifiers(Request $request, $id)
+    {
+        $action = $request->input('action');
+
+        switch($action) {
+            case 'none':
+                return $this->successResponse();
+
+            case 'adjust':
+                $order = Order::find($id);
+                $aggregate = $order->aggregate;
+                $hub = App::make('GlobalScopeHub');
+
+                foreach($aggregate->gas as $gas) {
+                    $hub->setGas($gas->id);
+                    $redux = $aggregate->reduxData();
+
+                    foreach($aggregate->orders as $order) {
+                        foreach($order->bookings as $booking) {
+                            $booking->saveModifiers($redux);
+                            $booking->fixPayment();
+                        }
+                    }
+                }
+
+                return $this->successResponse();
+        }
+    }
+
     public function search(Request $request)
     {
         $startdate = decodeDate($request->input('startdate'));

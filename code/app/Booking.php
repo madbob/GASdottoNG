@@ -470,9 +470,16 @@ class Booking extends Model
 
         if ($payment) {
             $actual_total = $this->getValue('effective', true);
+
             if ($payment->amount != $actual_total) {
-                $payment->amount = $actual_total;
-                $payment->save();
+                if ($payment->type_metadata->altersBalances($payment, 'sender')) {
+                    $payment->amount = $actual_total;
+                    $payment->save();
+                }
+                else {
+                    $mov = Movement::generate('booking-payment-adjust', $this->user, $this, $actual_total - $payment->amount);
+                    $mov->save();
+                }
             }
         }
     }

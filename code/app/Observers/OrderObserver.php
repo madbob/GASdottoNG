@@ -4,7 +4,6 @@ namespace App\Observers;
 
 use App\Jobs\NotifyNewOrder;
 use App\Jobs\NotifyClosedOrder;
-use App\Jobs\ReviewDeliveries;
 
 use App\Order;
 
@@ -25,9 +24,6 @@ class OrderObserver
             }
             else if ($order->status == 'closed') {
                 NotifyClosedOrder::dispatch($order->id);
-            }
-            else if ($order->status == 'shipped') {
-                ReviewDeliveries::dispatch($order->id);
             }
         }
     }

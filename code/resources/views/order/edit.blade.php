@@ -2,6 +2,7 @@
 
 <x-larastrap::mform :obj="$order" classes="order-editor" method="PUT" :action="route('orders.update', $order->id)" :nodelete="$order->isActive() == false" :other_buttons="[['label' => _i('Esporta'), 'classes' => ['float-start', 'link-button'], 'attributes' => ['data-link' => $order->exportableURL()]]]">
     <input type="hidden" name="order_id" value="{{ $order->id }}" />
+    <input type="hidden" name="post-saved-function" value="afterAggregateChange" class="skip-on-submit">
 
     <div class="row">
         <div class="col-12 col-lg-4">
@@ -77,7 +78,7 @@
         <div class="col-12 col-lg-4">
             @include('commons.modifications', [
                 'obj' => $order,
-                'static_view' => in_array($order->status, ['suspended', 'open', 'closed']) == false,
+                'static_view' => false,
             ])
 
             @if(Gate::check('movements.admin', $currentgas) || Gate::check('supplier.movements', $order->supplier))

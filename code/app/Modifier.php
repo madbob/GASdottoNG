@@ -42,6 +42,15 @@ class Modifier extends Model
         return $data->isEmpty();
     }
 
+    public function isTrasversal()
+    {
+        if ($this->isVoid()) {
+            return false;
+        }
+
+        return ($this->value == 'absolute' && $this->applies_target == 'order');
+    }
+
     public function getNameAttribute()
     {
         $data = $this->definitions;
