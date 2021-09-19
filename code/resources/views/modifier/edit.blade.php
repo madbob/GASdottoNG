@@ -1,10 +1,9 @@
 <x-larastrap::modal :title="$modifier->modifierType->name" classes="modifier-modal" :data-target-type="$modifier->model_type" size="fullscreen">
     <x-larastrap::iform :obj="$modifier" method="POST" :action="route('modifiers.update', $modifier->id)">
-        <input type="hidden" name="void-form" value="1">
         <input type="hidden" name="test-feedback" value="1">
         <input type="hidden" name="close-modal" value="1">
         <input type="hidden" name="update-field" value="modifier-button-{{ $modifier->modifierType->id }}-{{ $modifier->target_id }}">
-        <input type="hidden" name="close-modal" value="">
+        <input type="hidden" name="post-saved-function" value="afterModifierChange">
         <input type="hidden" name="_method" value="PUT">
 
         <div class="row">

@@ -83,6 +83,11 @@ class Supplier extends Model
             return $query;
     }
 
+    public function getActiveOrdersAttribute()
+    {
+        return $this->orders()->whereNotIn('status', ['shipped', 'archived'])->get();
+    }
+
     public function getDisplayURL()
     {
         return URL::action('SuppliersController@show');

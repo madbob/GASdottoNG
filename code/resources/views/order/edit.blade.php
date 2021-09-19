@@ -78,7 +78,7 @@
         <div class="col-12 col-lg-4">
             @include('commons.modifications', [
                 'obj' => $order,
-                'static_view' => false,
+                'skip_void' => true,
             ])
 
             @if(Gate::check('movements.admin', $currentgas) || Gate::check('supplier.movements', $order->supplier))
