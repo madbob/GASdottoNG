@@ -254,7 +254,7 @@ $existing = false;
             @endif
 
             <input type="hidden" name="pre-saved-function" value="submitDeliveryForm">
-            <input type="hidden" name="post-saved-function" value="updateOrderSummary">
+            <input type="hidden" name="reload-portion" value=".order-summary-wrapper" class="skip-on-submit" />
 
             @if($handling_movements)
                 <input type="hidden" name="post-saved-function" value="triggerPayment">

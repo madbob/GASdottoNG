@@ -25,7 +25,7 @@ class Movement extends Model
         viene realmente salvato ma elaborato (in questo caso: scomposto in più
         movimenti), dunque l'oggetto in sé non viene riportato sul database
         anche se l'operazione, nel suo complesso, è andata a buon fine.
-        Vedasi MovementsKeeper::saving(), MovementsController::store(), o le
+        Vedasi MovementObserver::saving(), MovementsController::store(), o le
         pre-callbacks definite in MovementType::systemTypes()
     */
     public $saved = false;

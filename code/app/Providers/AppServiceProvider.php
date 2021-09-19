@@ -5,12 +5,14 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 
+use App\Observers\MovementObserver;
 use App\Observers\UserObserver;
 use App\Observers\SupplierObserver;
 use App\Observers\OrderObserver;
 use App\Observers\ModifierObserver;
 use App\Observers\ContactObserver;
 
+use App\Movement;
 use App\User;
 use App\Supplier;
 use App\Order;
@@ -23,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
+        Movement::observe(MovementObserver::class);
         User::observe(UserObserver::class);
         Supplier::observe(SupplierObserver::class);
         Order::observe(OrderObserver::class);

@@ -162,7 +162,6 @@ return [
         App\Providers\SingletonsProvider::class,
         App\Providers\GraphicInitServiceProvider::class,
         App\Providers\MenuServiceProvider::class,
-        App\Providers\MovementsKeeper::class,
     ],
 
     /*
