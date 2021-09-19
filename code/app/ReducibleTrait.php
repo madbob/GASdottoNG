@@ -31,14 +31,33 @@ trait ReducibleTrait
     protected function describingAttributes()
     {
         return [
+            /*
+                Dati relativi al prenotato
+            */
             'price',
             'weight',
             'quantity',
             'quantity_pieces',
+
+            /*
+                Dati relativi al consegnato
+            */
             'price_delivered',
             'weight_delivered',
             'delivered',
             'delivered_pieces',
+
+            /*
+                Se la prenotazione/prodotto è consegnata qui vengono accumulati
+                i valori del consegnato, altrimenti quelli del prenotato.
+                Queste informazioni relative, che variano durante la fase di
+                consegna dell'ordine, servono a calcolare nel modo più accurato
+                possibile il valore dinamico dei modificatori trasversali
+            */
+            'relative_price',
+            'relative_weight',
+            'relative_quantity',
+            'relative_pieces',
         ];
     }
 
@@ -89,31 +108,6 @@ trait ReducibleTrait
         return $first;
     }
 
-    protected function relativeAttributeMerge($ret, $child, $reduxed_child)
-    {
-        $child_status = $child->status;
-
-        $ret->relative_quantity = $ret->relative_quantity ?? 0;
-        $ret->relative_pieces = $ret->relative_pieces ?? 0;
-        $ret->relative_price = $ret->relative_price ?? 0;
-        $ret->relative_weight = $ret->relative_weight ?? 0;
-
-        if ($child_status == 'shipped' || $child_status == 'saved') {
-            $ret->relative_quantity += $reduxed_child->delivered;
-            $ret->relative_pieces += $reduxed_child->delivered_pieces;
-            $ret->relative_price += $reduxed_child->price_delivered;
-            $ret->relative_weight += $reduxed_child->weight_delivered;
-        }
-        else {
-            $ret->relative_quantity += $reduxed_child->quantity;
-            $ret->relative_pieces += $reduxed_child->quantity_pieces;
-            $ret->relative_price += $reduxed_child->price;
-            $ret->relative_weight += $reduxed_child->weight;
-        }
-
-        return $ret;
-    }
-
     /*
         Come describingAttributesMerge(), ma in più condensa anche i sotto-array
         enumerati in subArrayMerge() delle due riduzioni.
@@ -123,7 +117,6 @@ trait ReducibleTrait
     protected function deepMergingAttributes($child, $first, $second, $sum = true)
     {
         $ret = $this->describingAttributesMerge($first, $second, $sum);
-        $ret = $this->relativeAttributeMerge($ret, $child, $second);
 
         foreach ($this->subArrayMerge() as $subarray) {
             if (!isset($first->$subarray) && !isset($second->$subarray)) {
@@ -163,7 +156,6 @@ trait ReducibleTrait
             $reduxed_child = $child->reduxData(null, $filters);
             $ret->$collected[$reduxed_child->id] = $this->describingAttributesMerge($ret->$collected[$reduxed_child->id] ?? null, $reduxed_child);
             $ret = $this->describingAttributesMerge($ret, $reduxed_child);
-            $ret = $this->relativeAttributeMerge($ret, $child, $reduxed_child);
 
             $merged = $behaviours->merged ?? '';
             if (!empty($merged)) {
