@@ -37,6 +37,11 @@ class BookedProduct extends Model
         return $this->hasMany('App\BookedProductVariant', 'product_id')->with('components');
     }
 
+    public function getStatusAttribute()
+    {
+        return $this->booking->status;
+    }
+
     public function getSlugID()
     {
         /*

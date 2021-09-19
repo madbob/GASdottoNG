@@ -269,14 +269,7 @@ class BookingHandler extends Controller
                 $booking->save();
 
                 $booking->saveFinalPrices();
-
-                /*
-                    Qui ripulisco i modificatori eventualmente già salvati, nel
-                    caso in cui la consegna venga modificata e salvata
-                    nuovamente
-                */
-                $booking->deleteModifiedValues();
-                $booking->calculateModifiers(null, true);
+                $booking->saveModifiers();
 
                 foreach($booking->friends_bookings as $friend_booking) {
                     $friend_booking->status = $new_status;

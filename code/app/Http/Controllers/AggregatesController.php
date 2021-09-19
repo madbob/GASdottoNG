@@ -372,6 +372,51 @@ class AggregatesController extends OrdersController
         }
     }
 
+    /*
+        Questa funzione, invocata dopo il salvataggio di un ordine, deve
+        ritornare un array di URL da cui attingere modali di interazione con
+        l'utente per svolgere eventuali funzioni secondarie.
+        Viene invocata dalla funzione JS afterAggregateChange()
+    */
+    public function postFeedback(Request $request, $id)
+    {
+        $ret = [];
+        $aggregate = Aggregate::findOrFail($id);
+        $master_summary = null;
+
+        if ($aggregate->isActive() == false) {
+            foreach($aggregate->orders as $order) {
+                /*
+                    Se l'ordine non è più attivo (e dunque risulta consegnato e
+                    archiviato), include dei modificatori calcolati in modo
+                    trasversale tra le prenotazioni (e.g. le spese di trasporto in
+                    valore assoluto, da ripartire in funzione del valore delle
+                    prenotazioni) e la ripartizione effettuata in base al prenotato
+                    non è coerente con quella reale, si attiva la funzione di
+                    revisione dei modificatori
+                */
+                $modifiers = $order->involvedModifiers(true);
+
+                foreach($modifiers as $modifier) {
+                    if ($modifier->isTrasversal()) {
+                        if (is_null($master_summary)) {
+                            $master_summary = $aggregate->reduxData();
+                        }
+
+                        $broken = $order->unalignedModifiers($master_summary);
+
+                        if (!empty($broken)) {
+                            $ret[] = route('orders.fixmodifiers', $order->id);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return response()->json($ret);
+    }
+
     public function multiGAS(Request $request, $id)
     {
         $aggregate = Aggregate::findOrFail($id);

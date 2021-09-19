@@ -994,6 +994,42 @@ class Order extends Model
         return $modifiers;
     }
 
+    /*
+        Se l'ordine non è più attivo, confronta i valori dei modificatori
+        trasversalmente applicati tra le prenotazioni e restituisce quelli il
+        cui valore assoluto definito non corrisponde al valore effettivamente
+        distribuito (probabilmente perché le quantità consegnate non
+        corrispondono a quelle prenotate).
+        Se ci sono delle discrepanze, possono essere risolte da
+        OrdersController::postFixModifiers()
+    */
+    public function unalignedModifiers($master_summary)
+    {
+        if ($this->isActive()) {
+            return [];
+        }
+
+        $ret = [];
+
+        $pending_modifiers = ModifiedValue::aggregateByType($this->applyModifiers($master_summary, 'pending'));
+        $shipped_modifiers = ModifiedValue::aggregateByType($this->applyModifiers($master_summary, 'shipped'));
+
+        foreach($pending_modifiers as $pending_id => $pending_mod) {
+            foreach($shipped_modifiers as $shipped_id => $shipped_mod) {
+                if ($pending_id == $shipped_id) {
+                    if ($pending_mod->amount != $shipped_mod->amount) {
+                        $ret[] = (object) [
+                            'pending' => $pending_mod,
+                            'shipped' => $shipped_mod,
+                        ];
+                    }
+                }
+            }
+        }
+
+        return $ret;
+    }
+
     /********************************************************* ReducibleTrait */
 
     protected function reduxBehaviour()

@@ -454,6 +454,36 @@ class Booking extends Model
         return $modifiers;
     }
 
+    public function saveModifiers($aggregate_data = null)
+    {
+        /*
+            Qui ripulisco i modificatori eventualmente già salvati, nel caso in
+            cui la consegna venga modificata e salvata nuovamente
+        */
+        $this->deleteModifiedValues();
+        $this->calculateModifiers($aggregate_data, true);
+    }
+
+    public function fixPayment()
+    {
+        $payment = $this->payment;
+
+        if ($payment) {
+            $actual_total = $this->getValue('effective', true);
+
+            if ($payment->amount != $actual_total) {
+                if ($payment->type_metadata->altersBalances($payment, 'sender')) {
+                    $payment->amount = $actual_total;
+                    $payment->save();
+                }
+                else {
+                    $mov = Movement::generate('booking-payment-adjust', $this->user, $this, $actual_total - $payment->amount);
+                    $mov->save();
+                }
+            }
+        }
+    }
+
     public function calculateModifiers($aggregate_data = null, $real = true)
     {
         $values = new Collection();

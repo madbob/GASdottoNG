@@ -130,6 +130,8 @@ class BookingUserController extends BookingHandler
                         $booking->status = 'pending';
                     }
 
+                    $booking->save();
+
                     $bookings[] = $booking;
                 }
             }

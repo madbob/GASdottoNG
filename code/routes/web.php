@@ -95,6 +95,8 @@ Route::middleware(['auth'])->group(function() {
     Route::get('orders/search', 'OrdersController@search');
     Route::get('orders/fixes/{id}/{product_id}', 'OrdersController@getFixes');
     Route::post('orders/fixes/{id}', 'OrdersController@postFixes');
+    Route::get('orders/fixmods/{id}', 'OrdersController@getFixModifiers')->name('orders.fixmodifiers');
+    Route::post('orders/fixmods/{id}', 'OrdersController@postFixModifiers')->name('orders.postfixmodifiers');
     Route::get('orders/export/{id}/{type}', 'OrdersController@exportModal')->name('orders.export');
     Route::get('orders/document/{id}/{type}', 'OrdersController@document')->name('orders.document');
 
@@ -112,6 +114,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('aggregates/export/{id}/{type}', 'AggregatesController@exportModal')->name('aggregates.export');
     Route::get('aggregates/document/{id}/{type}', 'AggregatesController@document')->name('aggregates.document');
     Route::get('aggregates/{id}/details', 'AggregatesController@details')->name('aggregates.details');
+    Route::get('aggregates/{id}/post_feedback', 'AggregatesController@postFeedback')->name('aggregates.feedback');
     Route::get('aggregates/{id}/multigas', 'AggregatesController@multiGAS')->name('aggregates.multigas');
 
     Route::get('attachments/{id}/header', 'AttachmentsController@objhead')->name('attachments.objhead');

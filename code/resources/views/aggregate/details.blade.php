@@ -1,4 +1,6 @@
 <x-larastrap::form :obj="$aggregate" classes="main-form" method="PUT" :action="route('aggregates.update', $aggregate->id)">
+    <input type="hidden" name="post-saved-function" value="afterAggregateChange" class="skip-on-submit">
+
     <div class="row">
         <div class="col-md-4">
             <?php $statuses = array_merge(['no' => _i('Invariato')], \App\Order::statuses()) ?>
