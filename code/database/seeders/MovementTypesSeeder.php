@@ -9,6 +9,37 @@ use App\MovementType;
 
 class MovementTypesSeeder extends Seeder
 {
+    private function voidFunctions($array)
+    {
+        foreach($array as $i => $a) {
+            foreach(['sender', 'target', 'master'] as $t) {
+                if (!isset($a->$t)) {
+                    $array[$i]->$t = (object) [
+                        'operations' => []
+                    ];
+                }
+            }
+        }
+
+        return $array;
+    }
+
+    private function format($ops)
+    {
+        $ret = (object) [
+            'operations' => [],
+        ];
+
+        foreach ($ops as $field => $op) {
+            $ret->operations[] = (object) [
+                'operation' => $op,
+                'field' => $field,
+            ];
+        }
+
+        return $ret;
+    }
+
     public function run()
     {
         /*
@@ -22,78 +53,34 @@ class MovementTypesSeeder extends Seeder
             $type->name = 'Deposito cauzione socio del GAS';
             $type->sender_type = 'App\User';
             $type->target_type = 'App\Gas';
-            $type->allow_negative = false;
             $type->fixed_value = null;
             $type->visibility = false;
             $type->system = true;
-            $type->function = json_encode(
-                [
-                    (object) [
-                        'method' => 'cash',
-                        'sender' => (object) [
-                            'operations' => []
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'cash'
-                                ],
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'deposits'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                    (object) [
-                        'method' => 'bank',
-                        'sender' => (object) [
-                            'operations' => []
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'bank'
-                                ],
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'deposits'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                    (object) [
-                        'method' => 'credit',
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ]
-                            ]
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'deposits'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                ]
-            );
+            $type->function = json_encode($this->voidFunctions([
+                (object) [
+                    'method' => 'cash',
+                    'target' => $this->format([
+                        'cash' => 'increment',
+                        'deposits' => 'increment',
+                    ]),
+                ],
+                (object) [
+                    'method' => 'bank',
+                    'target' => $this->format([
+                        'bank' => 'increment',
+                        'deposits' => 'increment',
+                    ]),
+                ],
+                (object) [
+                    'method' => 'credit',
+                    'sender' => $this->format([
+                        'bank' => 'decrement',
+                    ]),
+                    'target' => $this->format([
+                        'deposits' => 'increment',
+                    ]),
+                ],
+            ]));
             $type->save();
         }
 
@@ -103,56 +90,24 @@ class MovementTypesSeeder extends Seeder
             $type->name = 'Restituzione cauzione socio del GAS';
             $type->sender_type = 'App\Gas';
             $type->target_type = 'App\User';
-            $type->allow_negative = false;
             $type->fixed_value = null;
-            $type->visibility = true;
             $type->system = true;
-            $type->function = json_encode(
-                [
-                    (object) [
-                        'method' => 'cash',
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'cash'
-                                ],
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'deposits'
-                                ],
-                            ]
-                        ],
-                        'target' => (object) [
-                            'operations' => []
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                    (object) [
-                        'method' => 'bank',
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ],
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'deposits'
-                                ],
-                            ]
-                        ],
-                        'target' => (object) [
-                            'operations' => []
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ]
+            $type->function = json_encode($this->voidFunctions([
+                (object) [
+                    'method' => 'cash',
+                    'sender' => $this->format([
+                        'cash' => 'decrement',
+                        'deposits' => 'decrement',
+                    ]),
+                ],
+                (object) [
+                    'method' => 'bank',
+                    'sender' => $this->format([
+                        'bank' => 'decrement',
+                        'deposits' => 'decrement',
+                    ]),
                 ]
-            );
+            ]));
             $type->save();
         }
 
@@ -162,78 +117,34 @@ class MovementTypesSeeder extends Seeder
             $type->name = 'Versamento della quota annuale da parte di un socio';
             $type->sender_type = 'App\User';
             $type->target_type = 'App\Gas';
-            $type->allow_negative = false;
             $type->fixed_value = null;
             $type->visibility = false;
             $type->system = true;
-            $type->function = json_encode(
-                [
-                    (object) [
-                        'method' => 'cash',
-                        'sender' => (object) [
-                            'operations' => []
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'cash'
-                                ],
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'gas'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                    (object) [
-                        'method' => 'bank',
-                        'sender' => (object) [
-                            'operations' => []
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'bank'
-                                ],
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'gas'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                    (object) [
-                        'method' => 'credit',
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'gas'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ]
+            $type->function = json_encode($this->voidFunctions([
+                (object) [
+                    'method' => 'cash',
+                    'target' => $this->format([
+                        'cash' => 'increment',
+                        'gas' => 'increment',
+                    ]),
+                ],
+                (object) [
+                    'method' => 'bank',
+                    'target' => $this->format([
+                        'bank' => 'increment',
+                        'gas' => 'increment',
+                    ]),
+                ],
+                (object) [
+                    'method' => 'credit',
+                    'sender' => $this->format([
+                        'bank' => 'decrement',
+                    ]),
+                    'target' => $this->format([
+                        'gas' => 'increment',
+                    ]),
                 ]
-            );
+            ]));
             $type->save();
         }
 
@@ -243,67 +154,33 @@ class MovementTypesSeeder extends Seeder
             $type->name = 'Pagamento prenotazione da parte di un socio';
             $type->sender_type = 'App\User';
             $type->target_type = 'App\Booking';
-            $type->allow_negative = false;
             $type->fixed_value = null;
             $type->visibility = false;
             $type->system = true;
-            $type->function = json_encode(
-                [
-                    (object) [
-                        'method' => 'cash',
-                        'sender' => (object) [
-                            'operations' => []
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'cash'
-                                ],
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'suppliers'
-                                ],
-                            ]
-                        ],
-                    ],
-                    (object) [
-                        'method' => 'credit',
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'suppliers'
-                                ],
-                            ]
-                        ],
-                    ],
-                ]
-            );
+            $type->function = json_encode($this->voidFunctions([
+                (object) [
+                    'method' => 'cash',
+                    'target' => $this->format([
+                        'bank' => 'increment',
+                    ]),
+                    'master' => $this->format([
+                        'cash' => 'increment',
+                        'suppliers' => 'increment',
+                    ]),
+                ],
+                (object) [
+                    'method' => 'credit',
+                    'sender' => $this->format([
+                        'bank' => 'decrement',
+                    ]),
+                    'target' => $this->format([
+                        'bank' => 'increment',
+                    ]),
+                    'master' => $this->format([
+                        'suppliers' => 'increment',
+                    ]),
+                ],
+            ]));
             $type->save();
         }
 
@@ -313,66 +190,31 @@ class MovementTypesSeeder extends Seeder
             $type->name = 'Pagamento ordine a fornitore';
             $type->sender_type = 'App\Gas';
             $type->target_type = 'App\Order';
-            $type->allow_negative = false;
             $type->fixed_value = null;
             $type->visibility = false;
             $type->system = true;
-            $type->function = json_encode(
-                [
-                    (object) [
-                        'method' => 'cash',
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'cash'
-                                ],
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'suppliers'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                    (object) [
-                        'method' => 'bank',
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ],
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'suppliers'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ]
+            $type->function = json_encode($this->voidFunctions([
+                (object) [
+                    'method' => 'cash',
+                    'target' => $this->format([
+                        'bank' => 'decrement',
+                    ]),
+                    'sender' => $this->format([
+                        'cash' => 'decrement',
+                        'suppliers' => 'decrement',
+                    ]),
+                ],
+                (object) [
+                    'method' => 'bank',
+                    'target' => $this->format([
+                        'bank' => 'decrement',
+                    ]),
+                    'sender' => $this->format([
+                        'bank' => 'decrement',
+                        'suppliers' => 'decrement',
+                    ]),
                 ]
-            );
+            ]));
             $type->save();
         }
 
@@ -382,66 +224,31 @@ class MovementTypesSeeder extends Seeder
             $type->name = 'Pagamento fattura a fornitore';
             $type->sender_type = 'App\Gas';
             $type->target_type = 'App\Invoice';
-            $type->allow_negative = false;
             $type->fixed_value = null;
             $type->visibility = false;
             $type->system = true;
-            $type->function = json_encode(
-                [
-                    (object) [
-                        'method' => 'cash',
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'cash'
-                                ],
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'suppliers'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                    (object) [
-                        'method' => 'bank',
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ],
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'suppliers'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ]
+            $type->function = json_encode($this->voidFunctions([
+                (object) [
+                    'method' => 'cash',
+                    'target' => $this->format([
+                        'bank' => 'decrement',
+                    ]),
+                    'sender' => $this->format([
+                        'cash' => 'decrement',
+                        'suppliers' => 'decrement',
+                    ]),
+                ],
+                (object) [
+                    'method' => 'bank',
+                    'target' => $this->format([
+                        'bank' => 'decrement',
+                    ]),
+                    'sender' => $this->format([
+                        'bank' => 'decrement',
+                        'suppliers' => 'decrement',
+                    ]),
                 ]
-            );
+            ]));
             $type->save();
         }
 
@@ -451,79 +258,37 @@ class MovementTypesSeeder extends Seeder
             $type->name = 'Deposito di credito da parte di un socio';
             $type->sender_type = null;
             $type->target_type = 'App\User';
-            $type->allow_negative = false;
             $type->fixed_value = null;
             $type->system = true;
-            $type->function = json_encode(
-                [
-                    (object) [
-                        'method' => 'cash',
-                        'sender' => (object) [
-                            'operations' => []
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'cash'
-                                ],
-                            ]
-                        ]
-                    ],
-                    (object) [
-                        'method' => 'bank',
-                        'sender' => (object) [
-                            'operations' => []
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ]
-                    ],
-                    (object) [
-                        'method' => 'paypal',
-                        'sender' => (object) [
-                            'operations' => []
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'paypal'
-                                ],
-                            ]
-                        ]
-                    ]
+            $type->function = json_encode($this->voidFunctions([
+                (object) [
+                    'method' => 'cash',
+                    'target' => $this->format([
+                        'bank' => 'increment',
+                    ]),
+                    'master' => $this->format([
+                        'cash' => 'increment',
+                    ]),
+                ],
+                (object) [
+                    'method' => 'bank',
+                    'target' => $this->format([
+                        'bank' => 'increment',
+                    ]),
+                    'master' => $this->format([
+                        'bank' => 'increment',
+                    ]),
+                ],
+                (object) [
+                    'method' => 'paypal',
+                    'target' => $this->format([
+                        'bank' => 'increment',
+                    ]),
+                    'master' => $this->format([
+                        'paypal' => 'increment',
+                    ]),
                 ]
-            );
+            ]));
             $type->save();
         }
 
@@ -537,37 +302,20 @@ class MovementTypesSeeder extends Seeder
             $type->fixed_value = null;
             $type->visibility = false;
             $type->system = true;
-            $type->function = json_encode(
-                [
-                    (object) [
-                        'method' => 'credit',
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'suppliers'
-                                ],
-                            ]
-                        ],
-                    ],
-                ]
-            );
+            $type->function = json_encode($this->voidFunctions([
+                (object) [
+                    'method' => 'credit',
+                    'sender' => $this->format([
+                        'bank' => 'decrement',
+                    ]),
+                    'target' => $this->format([
+                        'bank' => 'increment',
+                    ]),
+                    'master' => $this->format([
+                        'suppliers' => 'increment',
+                    ]),
+                ],
+            ]));
             $type->save();
         }
 
@@ -583,56 +331,27 @@ class MovementTypesSeeder extends Seeder
             $type->name = 'Reso credito per un socio';
             $type->sender_type = 'App\User';
             $type->target_type = null;
-            $type->allow_negative = false;
             $type->fixed_value = null;
-            $type->function = json_encode(
-                [
-                    (object) [
-                        'method' => 'cash',
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'target' => (object) [
-                            'operations' => []
-                        ],
-                        'master' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'cash'
-                                ],
-                            ]
-                        ]
-                    ],
-                    (object) [
-                        'method' => 'bank',
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'target' => (object) [
-                            'operations' => []
-                        ],
-                        'master' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ]
-                    ]
+            $type->function = json_encode($this->voidFunctions([
+                (object) [
+                    'method' => 'cash',
+                    'sender' => $this->format([
+                        'bank' => 'decrement',
+                    ]),
+                    'master' => $this->format([
+                        'cash' => 'decrement',
+                    ]),
+                ],
+                (object) [
+                    'method' => 'bank',
+                    'sender' => $this->format([
+                        'bank' => 'decrement',
+                    ]),
+                    'master' => $this->format([
+                        'bank' => 'decrement',
+                    ]),
                 ]
-            );
+            ]));
             $type->save();
         }
 
@@ -642,33 +361,16 @@ class MovementTypesSeeder extends Seeder
             $type->name = 'Versamento sul conto';
             $type->sender_type = null;
             $type->target_type = 'App\Gas';
-            $type->allow_negative = false;
             $type->fixed_value = null;
-            $type->function = json_encode(
-                [
-                    (object) [
-                        'method' => 'bank',
-                        'sender' => (object) [
-                            'operations' => []
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'bank'
-                                ],
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'cash'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                ]
-            );
+            $type->function = json_encode($this->voidFunctions([
+                (object) [
+                    'method' => 'bank',
+                    'target' => $this->format([
+                        'bank' => 'increment',
+                        'cash' => 'decrement',
+                    ]),
+                ],
+            ]));
             $type->save();
         }
 
@@ -678,54 +380,23 @@ class MovementTypesSeeder extends Seeder
             $type->name = 'Acquisto/spesa GAS';
             $type->sender_type = 'App\Gas';
             $type->target_type = null;
-            $type->allow_negative = false;
             $type->fixed_value = null;
-            $type->function = json_encode(
-                [
-                    (object) [
-                        'method' => 'cash',
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'cash'
-                                ],
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'gas'
-                                ],
-                            ]
-                        ],
-                        'target' => (object) [
-                            'operations' => []
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                    (object) [
-                        'method' => 'bank',
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ],
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'gas'
-                                ],
-                            ]
-                        ],
-                        'target' => (object) [
-                            'operations' => []
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                ]
-            );
+            $type->function = json_encode($this->voidFunctions([
+                (object) [
+                    'method' => 'cash',
+                    'sender' => $this->format([
+                        'cash' => 'decrement',
+                        'gas' => 'decrement',
+                    ]),
+                ],
+                (object) [
+                    'method' => 'bank',
+                    'sender' => $this->format([
+                        'bank' => 'decrement',
+                        'gas' => 'decrement',
+                    ]),
+                ],
+            ]));
             $type->save();
         }
 
@@ -735,55 +406,25 @@ class MovementTypesSeeder extends Seeder
             $type->name = 'Rimborso spesa socio';
             $type->sender_type = 'App\Gas';
             $type->target_type = 'App\User';
-            $type->allow_negative = false;
             $type->fixed_value = null;
-            $type->function = json_encode(
-                [
-                    (object) [
-                        'method' => 'cash',
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'cash'
-                                ],
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'gas'
-                                ],
-                            ]
-                        ],
-                        'target' => (object) [
-                            'operations' => []
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                    (object) [
-                        'method' => 'credit',
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'gas'
-                                ],
-                            ]
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                ]
-            );
+            $type->function = json_encode($this->voidFunctions([
+                (object) [
+                    'method' => 'cash',
+                    'sender' => $this->format([
+                        'cash' => 'decrement',
+                        'gas' => 'decrement',
+                    ]),
+                ],
+                (object) [
+                    'method' => 'credit',
+                    'sender' => $this->format([
+                        'gas' => 'decrement',
+                    ]),
+                    'target' => $this->format([
+                        'bank' => 'increment',
+                    ]),
+                ],
+            ]));
             $type->save();
         }
 
@@ -793,76 +434,32 @@ class MovementTypesSeeder extends Seeder
             $type->name = 'Donazione al GAS';
             $type->sender_type = 'App\User';
             $type->target_type = 'App\Gas';
-            $type->allow_negative = false;
             $type->fixed_value = null;
-            $type->function = json_encode(
-                [
-                    (object) [
-                        'method' => 'cash',
-                        'sender' => (object) [
-                            'operations' => []
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'cash'
-                                ],
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'gas'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                    (object) [
-                        'method' => 'bank',
-                        'sender' => (object) [
-                            'operations' => []
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'bank'
-                                ],
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'gas'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                    (object) [
-                        'method' => 'credit',
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'gas'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                ]
-            );
+            $type->function = json_encode($this->voidFunctions([
+                (object) [
+                    'method' => 'cash',
+                    'target' => $this->format([
+                        'cash' => 'increment',
+                        'gas' => 'increment',
+                    ]),
+                ],
+                (object) [
+                    'method' => 'bank',
+                    'target' => $this->format([
+                        'bank' => 'increment',
+                        'gas' => 'increment',
+                    ]),
+                ],
+                (object) [
+                    'method' => 'credit',
+                    'sender' => $this->format([
+                        'bank' => 'decrement',
+                    ]),
+                    'target' => $this->format([
+                        'gas' => 'increment',
+                    ]),
+                ],
+            ]));
             $type->save();
         }
 
@@ -872,54 +469,23 @@ class MovementTypesSeeder extends Seeder
             $type->name = 'Donazione dal GAS';
             $type->sender_type = 'App\Gas';
             $type->target_type = null;
-            $type->allow_negative = false;
             $type->fixed_value = null;
-            $type->function = json_encode(
-                [
-                    (object) [
-                        'method' => 'cash',
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'cash'
-                                ],
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'gas'
-                                ],
-                            ]
-                        ],
-                        'target' => (object) [
-                            'operations' => []
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                    (object) [
-                        'method' => 'bank',
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ],
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'gas'
-                                ],
-                            ]
-                        ],
-                        'target' => (object) [
-                            'operations' => []
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ],
-                ]
-            );
+            $type->function = json_encode($this->voidFunctions([
+                (object) [
+                    'method' => 'cash',
+                    'sender' => $this->format([
+                        'cash' => 'decrement',
+                        'gas' => 'decrement',
+                    ]),
+                ],
+                (object) [
+                    'method' => 'bank',
+                    'sender' => $this->format([
+                        'bank' => 'decrement',
+                        'gas' => 'decrement',
+                    ]),
+                ],
+            ]));
             $type->save();
         }
 
@@ -931,36 +497,18 @@ class MovementTypesSeeder extends Seeder
             $type->target_type = 'App\Gas';
             $type->allow_negative = true;
             $type->fixed_value = null;
-            $type->function = json_encode(
-                [
-                    (object) [
-                        'method' => 'cash',
-                        'sender' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'bank'
-                                ],
-                            ]
-                        ],
-                        'target' => (object) [
-                            'operations' => [
-                                (object) [
-                                    'operation' => 'increment',
-                                    'field' => 'gas'
-                                ],
-                                (object) [
-                                    'operation' => 'decrement',
-                                    'field' => 'suppliers'
-                                ],
-                            ]
-                        ],
-                        'master' => (object) [
-                            'operations' => []
-                        ]
-                    ]
+            $type->function = json_encode($this->voidFunctions([
+                (object) [
+                    'method' => 'cash',
+                    'sender' => $this->format([
+                        'bank' => 'decrement',
+                    ]),
+                    'target' => $this->format([
+                        'gas' => 'increment',
+                        'suppliers' => 'decrement',
+                    ]),
                 ]
-            );
+            ]));
             $type->save();
         }
     }
