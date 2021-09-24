@@ -6,7 +6,10 @@
             {{ _i('Non ci sono ordini assegnabili a questa fattura. Gli ordini devono: fare riferimento allo stesso fornitore cui è assegnata la fattura; non avere un pagamento al fornitore già registrato; essere in stato "Consegnato" o "Archiviato"; avere almeno una prenotazione "Consegnata" (il totale delle prenotazioni consegnate viene usato per effettuare il calcolo del pagamento effettivo).') }}
         </div>
     @else
-        <x-larastrap::form method="POST" :action="url('invoices/wire/review/' . $invoice->id)">
+        <x-larastrap::iform method="POST" :action="url('invoices/wire/review/' . $invoice->id)">
+            <input type="hidden" name="close-modal" value="1" />
+            <input type="hidden" name="reload-loadable" value="#invoice-list" />
+
             <table class="table">
                 <thead>
                     <tr>
@@ -70,5 +73,5 @@
                 </tr>
             </tbody>
         </table>
-    </x-larastrap::form>
+    </x-larastrap::iform>
 </x-larastrap::modal>
