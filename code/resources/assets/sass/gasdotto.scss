@@ -658,3 +658,15 @@ i[class^='bi-hidden-'] {
         }
     }
 }
+
+@include media-breakpoint-down(lg) {
+    /*
+        Questo è per assicurarsi che i pulsanti a destra del menu siano
+        visualizzati anche su mobile
+    */
+    .navbar-collapse {
+        .position-absolute {
+            position: relative !important;
+        }
+    }
+}
