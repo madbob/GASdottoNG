@@ -27,4 +27,15 @@
 
         @include('movement.bilist', ['movements' => $movements, 'main_target' => $target])
     </div>
+
+    @if(Gate::check('movements.admin', $currentgas))
+        @include('commons.deleteconfirm', [
+            'url' => 'movements',
+            'password_protected' => true,
+            'extra' => [
+                'close-all-modal' => '1',
+                'post-saved-function' => ['refreshFilter']
+            ]
+        ])
+    @endif
 </div>

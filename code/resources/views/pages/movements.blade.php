@@ -154,6 +154,4 @@
     ]
 ])
 
-@include('commons.passwordmodal')
-
 @endsection

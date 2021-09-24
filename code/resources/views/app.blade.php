@@ -76,6 +76,8 @@
             </x-larastrap::modal>
         @endif
 
+        @include('commons.passwordmodal')
+
         <script src="{{ mix('/js/gasdotto.js') }}"></script>
         <script src="{{ asset('/js/lang/bootstrap-datepicker.' . htmlLang() . '.min.js') }}"></script>
         <script src="{{ asset('/js/lang/' . htmlLang() . '.js') }}"></script>
