@@ -108,7 +108,7 @@ class Order extends Model
     {
         $user = Auth::user();
 
-        if ($user->gas->hasFeature('shipping_places')) {
+        if ($user && $user->gas->hasFeature('shipping_places')) {
             $query->where(function($query) use ($user) {
                 $query->where(function($query) use ($user) {
                     $query->doesnthave('deliveries')->orWhereHas('deliveries', function($query) use ($user) {
