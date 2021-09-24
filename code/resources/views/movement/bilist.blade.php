@@ -55,7 +55,7 @@
 
                     <td>
                         @if(!empty($mov->notes))
-                            <button type="button" class="btn btn-xs btn-light" data-container="body" data-bs-toggle="popover" data-placement="left" data-trigger="hover" data-content="{{ str_replace('"', '\"', $mov->notes) }}">
+                            <button type="button" class="btn btn-xs btn-light" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="hover" data-bs-content="{{ str_replace('"', '\"', $mov->notes) }}">
                                 <i class="bi-info-square"></i>
                             </button>
                         @endif
