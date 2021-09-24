@@ -85,6 +85,7 @@ return [
             'extends' => 'text',
             'params' => [
                 'classes' => ['number', 'trim-2-ddigits'],
+                'asplaintext' => false,
                 'reviewCallback' => 'formatPriceToComponent',
             ]
         ],

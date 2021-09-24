@@ -117,13 +117,8 @@ function formatPriceToComponent($component, $params)
     $value = printablePrice($params['value']);
     $currency = currentAbsoluteGas()->currency;
 
-    if ($params['readonly'] || $params['disabled']) {
-        $params['value'] = sprintf('%s %s', $value, $currency);
-    }
-    else {
-        $params['value'] = printablePrice($params['value']);
-        $params['textappend'] = currentAbsoluteGas()->currency;
-    }
+    $params['value'] = printablePrice($params['value']);
+    $params['textappend'] = currentAbsoluteGas()->currency;
 
     return $params;
 }
