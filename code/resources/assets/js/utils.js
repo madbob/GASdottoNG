@@ -1,7 +1,8 @@
 import jBob from "./jbob";
 
 class Utils {
-    static j() {
+    static j()
+    {
         if (typeof Utils.jbob == 'undefined') {
             Utils.jbob = new jBob();
         }
@@ -9,11 +10,13 @@ class Utils {
         return Utils.jbob;
     }
 
-    static loadingPlaceholder() {
+    static loadingPlaceholder()
+    {
         return $('<div class="progress"><div class="progress-bar progress-bar-striped active" style="width: 100%"></div></div>');
     }
 
-    static inlineFeedback(button, feedback_text) {
+    static inlineFeedback(button, feedback_text)
+    {
         var idle_text = button.attr('data-idle-text');
         if (!idle_text) {
             idle_text = button.text();
@@ -25,7 +28,8 @@ class Utils {
         }, 2000);
     }
 
-    static displayServerError(form, data) {
+    static displayServerError(form, data)
+    {
         if (data.target != '') {
             Utils.inlineFeedback(form.find('button[type=submit]'), 'Errore!');
             var input = form.find('[name=' + data.target + ']');
@@ -33,11 +37,36 @@ class Utils {
         }
     }
 
-    static detailsButton(url) {
+    static detailsButton(url)
+    {
         return '<button type="button" class="btn btn-xs btn-info object-details d-none d-md-inline-block" data-show-url="' + url + '"><i class="bi-zoom-in"></i></button>';
     }
 
-    static setInputErrorText(input, message) {
+    static complexPopover(input, type, content)
+    {
+        /*
+            Questo è indispensabile per gestire il popover quando si trova
+            all'interno di un modale (e.g. l'indirizzo di un Luogo di Consegna
+            in fase di creazione). Altrimenti il popover viene appeso al body,
+            ed il focus sugli input field viene prevenuto dagli eventi interni
+            di Bootstrap sui modali
+        */
+        var container = input.closest('.modal');
+        if (container.length == 0) {
+            container = false;
+        }
+
+        input.popover({
+            container: container,
+            template: '<div class="popover ' + type + '-popover" role="tooltip"><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
+            placement: 'left',
+            html: true,
+            content: content(input),
+        });
+    }
+
+    static setInputErrorText(input, message)
+    {
         if (message == null) {
             input.closest('.form-group').removeClass('has-error');
             input.closest('div').find('.help-block.error-message').remove();
@@ -59,7 +88,8 @@ class Utils {
         return text;
     }
 
-    static parseFullDate(string) {
+    static parseFullDate(string)
+    {
         var components = string.split(' ');
 
         var month = 0;
@@ -75,7 +105,8 @@ class Utils {
         return Date.parse(date);
     }
 
-    static parseFloatC(value) {
+    static parseFloatC(value)
+    {
         if (typeof value === 'undefined')
             return 0;
 
@@ -86,11 +117,13 @@ class Utils {
         return ret;
     }
 
-    static priceRound(price) {
+    static priceRound(price)
+    {
         return (Math.round(price * 100) / 100).toFixed(2);
     }
 
-    static postAjax(params) {
+    static postAjax(params)
+    {
         let absolute_url = $('meta[name=absolute_url]').attr('content');
         params.data = params.data || {};
         params.method = params.method || 'POST';
@@ -112,11 +145,13 @@ class Utils {
         Il selector jQuery si lamenta quando trova un ':' ad esempio come valore di
         un attributo, questa funzione serve ad applicare l'escape necessario
     */
-    static sanitizeId(identifier) {
+    static sanitizeId(identifier)
+    {
         return identifier.replace(/:/g, '\\:').replace(/\[/g, '\\[').replace(/\]/g, '\\]');
     }
 
-    static formByButton(button) {
+    static formByButton(button)
+    {
         var parent_form = button.closest('form');
 
         if (parent_form.length == 0) {
@@ -129,7 +164,8 @@ class Utils {
         return parent_form;
     }
 
-    static submitButton(form) {
+    static submitButton(form)
+    {
         let ret = form.find('button[type=submit]');
         if (ret.length == 0) {
             let id = form.attr('id');

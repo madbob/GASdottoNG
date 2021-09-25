@@ -131,7 +131,6 @@ class BookingUserController extends BookingHandler
                     }
 
                     $booking->save();
-
                     $bookings[] = $booking;
                 }
             }

@@ -24,16 +24,21 @@ require('./password');
 import utils from "./utils";
 import filters from "./filters";
 import Lists from "./lists";
+import Modifiers from "./modifiers";
 import Callables from "./callables";
 
 var locker = false;
 var absolute_url = $('meta[name=absolute_url]').attr('content');
 var current_currency = $('meta[name=current_currency]').attr('content');
 var current_language = $('html').attr('lang').split('-')[0];
-var modifiers_strings = null;
 var measure_discrete = null;
 
 const localCallables = {
+    /*
+        Questa funzione viene lasciata qui, anziché essere spostata in
+        callables.js, perché va a modificare la variabile globale
+        measure_discrete
+    */
     reloadMeasureDiscrete: function(form, data) {
         utils.postAjax({
             method: 'GET',
@@ -201,17 +206,6 @@ function generalInit(container) {
         }
     });
 
-    if (container.hasClass('modifier-modal') && modifiers_strings == null) {
-        utils.postAjax({
-            method: 'GET',
-            url: 'modifiers/strings',
-            dataType: 'JSON',
-            success: function(data) {
-                modifiers_strings = data;
-            }
-        });
-    }
-
     if (container.hasClass('modal')) {
         container.draggable({
             handle: '.modal-header'
@@ -296,29 +290,8 @@ function generalInit(container) {
     setupImportCsvEditor(container);
     setupPermissionsEditor(container);
 
+    Modifiers.init(container);
     Lists.init(container);
-}
-
-function complexPopover(input, type, content) {
-    /*
-        Questo è indispensabile per gestire il popover quando si trova
-        all'interno di un modale (e.g. l'indirizzo di un Luogo di Consegna
-        in fase di creazione). Altrimenti il popover viene appeso al body,
-        ed il focus sugli input field viene prevenuto dagli eventi interni
-        di Bootstrap sui modali
-    */
-    var container = input.closest('.modal');
-    if (container.length == 0) {
-        container = false;
-    }
-
-    input.popover({
-        container: container,
-        template: '<div class="popover ' + type + '-popover" role="tooltip"><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
-        placement: 'left',
-        html: true,
-        content: content(input),
-    });
 }
 
 function voidForm(form) {
@@ -407,19 +380,6 @@ function wizardLoadPage(node, contents) {
     }
 }
 
-function reloadPortion(node) {
-    $.ajax({
-        method: 'GET',
-        url: node.attr('data-reload-url'),
-        dataType: 'HTML',
-        success: function(data) {
-            data = $(data),
-            utils.j().initElements(data);
-            node.replaceWith(data);
-        }
-    });
-}
-
 function completionRowsInit(node) {
     $(node).find('input:text').each(function() {
         if ($(this).hasClass('ui-autocomplete-input') == true) {
@@ -493,25 +453,7 @@ function miscInnerCallbacks(form, data) {
         }
     }
 
-    var test = form.find('input[name=update-list]');
-    if (test.length != 0) {
-        var listname = test.val();
-        var list = $('#' + listname);
-        Lists.appendToLoadableList(list, data, true);
-    }
-
-    var test = form.find('input[name=append-list]');
-    if (test.length != 0) {
-        var listname = test.val();
-        var list = $('#' + listname);
-        Lists.appendToLoadableList(list, data, false);
-    }
-
-    var test = form.find('input[name=reload-loadable]');
-    if (test.length != 0) {
-        var listid = test.val();
-        reloadCurrentLoadable(listid);
-    }
+    Lists.innerCallbacks(form, data);
 
     var test = form.find('input[name=update-select]');
     if (test.length != 0) {
@@ -598,7 +540,7 @@ function miscInnerCallbacks(form, data) {
         test.each(function() {
             var identifier = $(this).val();
             $(identifier).each(function() {
-                reloadPortion($(this));
+                utils.j().reloadNode($(this));
             });
         });
     }
@@ -635,8 +577,7 @@ function miscInnerModalCallbacks(modal) {
     if (test.length != 0) {
         test.each(function() {
             var identifier = $(this).val();
-            var node = $(identifier);
-            reloadPortion(node);
+            utils.j().reloadNode($(identifier));
         });
     }
 }
@@ -689,29 +630,6 @@ function triggerCollapse(trigger)
     }
 
     reviewRequired(panel);
-}
-
-function currentLoadableLoaded(target)
-{
-    return $(target).closest('.async-accordion').attr('data-element-id');
-}
-
-function closeAllLoadable(target)
-{
-    target.find('> accordion-item .accordion-button').filter(':not(.collapsed)').each(function() {
-        $(this).click();
-    });
-}
-
-function reloadCurrentLoadable(listid)
-{
-    $(listid).find('> .accordion-item > .accordion-header > .accordion-button:not(.collapsed)').each(function() {
-        var r = $(this);
-        r.click();
-        setTimeout(function() {
-            r.click();
-        }, 600);
-    });
 }
 
 /*******************************************************************************
@@ -904,38 +822,7 @@ function bookingTotal(editor) {
                         }
 					}
 
-                    var dynamic_modifiers = booking_data.modifiers;
-
-                    $('input[name^="modifier-"]', container).each(function() {
-                        let modid = parseInt($(this).attr('name').split('-')[1]);
-                        if (modid == 0) {
-                            return;
-                        }
-
-                        for (let [modifier_id, modifier_meta] of Object.entries(dynamic_modifiers)) {
-                            if (modid == modifier_id) {
-                                $(this).parent().find('span').text(utils.priceRound(modifier_meta.amount));
-                                delete dynamic_modifiers[modifier_id];
-                                return;
-                            }
-                        }
-
-                        $(this).closest('.modifier-row').remove();
-                    });
-
-					for (let [modifier_id, modifier_meta] of Object.entries(dynamic_modifiers)) {
-						var template = $('.modifier-row.hidden', container);
-						var new_row = template.clone();
-
-						new_row.removeClass('hidden').find('.static-label .name').text(modifier_meta.label);
-						if (modifier_meta.variable) {
-							new_row.find('.static-label .mutable').removeClass('hidden');
-						}
-
-                        new_row.find('.static-label').siblings('.float-end').append(utils.detailsButton(modifier_meta.url));
-						new_row.find('input[name="modifier-0"]').attr('name', 'modifier-' + modifier_id).parent().find('span').text(utils.priceRound(modifier_meta.amount));
-						template.before(new_row);
-					}
+                    Modifiers.updateBookingModifiers(booking_data.modifiers, container);
 
 					var t = utils.priceRound(booking_data.total);
 					$('.booking-total', container).text(t);
@@ -987,7 +874,7 @@ function setupPermissionsEditor(container) {
                 source: absolute_url + '/users/search',
                 select: function(event, ui) {
                     var text = $(this);
-                    var role_id = currentLoadableLoaded(this);
+                    var role_id = Lists.currentLoadableLoaded(this);
                     var group = $(this).closest('.accordion-body');
                     var user_id = ui.item.id;
 
@@ -1203,24 +1090,6 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('click', '.loadablelist-sorter a', function(e) {
-        e.preventDefault();
-        var target = $($(this).closest('.loadablelist-sorter').attr('data-list-target'));
-        closeAllLoadable(target);
-
-        var attribute = $(this).attr('data-sort-by');
-
-		target.find('> .loadable-sorting-header').addClass('hidden').filter('[data-sorting-' + attribute + ']').removeClass('hidden');
-
-        target.find('> .accordion-item:visible').sort(function(a, b) {
-            var attr_a = $(a).attr('data-sorting-' + attribute);
-            var attr_b = $(b).attr('data-sorting-' + attribute);
-            return attr_a.localeCompare(attr_b);
-        }).each(function() {
-            $(this).appendTo(target);
-        });
-    });
-
 	$('body').on('click', '.table-sorter a', function(e) {
 		e.preventDefault();
 		var target = $($(this).closest('.table-sorter').attr('data-table-target'));
@@ -1299,12 +1168,12 @@ $(document).ready(function() {
             var modal = $(this).closest('.modal').first();
             if (modal != null) {
                 modal.on('hidden.bs.modal', function() {
-                    reloadCurrentLoadable(listid);
+                    Lists.reloadCurrentLoadable(listid);
                 });
                 modal.modal('hide');
             }
             else {
-                reloadCurrentLoadable(listid);
+                Lists.reloadCurrentLoadable(listid);
             }
         }
     });
@@ -1426,42 +1295,6 @@ $(document).ready(function() {
     $('body').on('click', '.table-icons-legend button, .table-icons-legend a', function(e) {
         e.preventDefault();
         filters.iconsLegendTrigger($(this), '.table-icons-legend');
-    });
-
-    $('body').on('click', '.list-filters button', function() {
-        var filter = $(this).closest('.list-filters');
-        var target = filter.attr('data-list-target');
-        var attribute = $(this).attr('data-filter-attribute');
-
-        $('.loadable-list' + target + ' .accordion-item[data-filtered-' + attribute + '=true]').each(function() {
-            $(this).toggleClass('d-none');
-        });
-    });
-
-    $('body').on('keyup', '.list-text-filter', function() {
-        var text = $(this).val().toLowerCase();
-        var target = $(this).attr('data-list-target');
-
-		/*
-			Usando qui show() al posto di css('display','block') talvolta agli
-			elementi nascosti viene applicato un display:inline, che spacca il
-			layout quando vengono visualizzati. Forzando l'uso di display:block
-			mantengo intatta la lista
-		*/
-
-        if (text == '') {
-            $('.loadable-list' + target + ' .accordion-item').css('display', 'block');
-        }
-        else {
-            $('.loadable-list' + target + ' .accordion-item').each(function() {
-                if ($(this).find('.accordion-button').text().toLowerCase().indexOf(text) == -1) {
-                    $(this).css('display', 'none');
-                }
-                else {
-                    $(this).css('display', 'block');
-                }
-            });
-        }
     });
 
     $('body').on('keyup', '.table-text-filter', function() {
@@ -1651,7 +1484,7 @@ $(document).ready(function() {
     });
 
     $('body').on('focus', 'input.address', function() {
-        complexPopover($(this), 'address', function(input) {
+        utils.complexPopover($(this), 'address', function(input) {
             var ret = $('<div>\
                 <div class="row mb-2">\
                     <label for="street" class="col-4 col-form-label">' + _('Indirizzo') + '</label>\
@@ -1710,7 +1543,7 @@ $(document).ready(function() {
     });
 
     $('body').on('focus', 'input.periodic', function() {
-        complexPopover($(this), 'periodic', function(input) {
+        utils.complexPopover($(this), 'periodic', function(input) {
             var ret = $('<div>\
                 <div class="row mb-2">\
                     <label for="day" class="col-4 col-form-label">' + _('Giorno') + '</label>\
@@ -1957,7 +1790,7 @@ $(document).ready(function() {
             method: 'DELETE',
             url: absolute_url + '/variants/' + id,
             success: function() {
-                reloadPortion(editor);
+                utils.j().reloadNode(editor);
             }
         });
     });
@@ -2010,96 +1843,6 @@ $(document).ready(function() {
         var url = $(this).attr('data-export-url') + '?' + $.param(data);
         window.open(url, '_blank');
     });
-
-	$('body').on('change', '.modifier-modal input:radio', function() {
-		/*
-			L'ordine degli elementi usati per costruire l'indice delle stringhe
-			deve combaciare con quello in modifier/edit.blade.php
-		*/
-		var container = $(this).closest('.modifier-modal');
-        var model_type = container.attr('data-target-type');
-		var arithmetic = container.find('input:radio[name=arithmetic]:checked').val();
-		var value = container.find('input:radio[name=value]:checked').val();
-        var applies_type = container.find('input:radio[name=applies_type]:checked').val();
-        var scale = container.find('input:radio[name=scale]:checked').val();
-		var applies_target = container.find('input:radio[name=applies_target]:checked').first().val();
-        var distribution_type = container.find('input:radio[name=distribution_type]:checked').val();
-        var distribution_type_selection = container.find('.distribution_type_selection');
-
-        if (model_type == 'product') {
-            if (applies_type == 'none') {
-                container.find('input:radio[name=applies_target][value=product]').click();
-                applies_target = 'product';
-            }
-        }
-
-        if (value == 'price') {
-            container.find('.arithmetic_type_selection').addClass('d-none').find('input:radio[value=apply]').click();
-            arithmetic = 'apply';
-            container.find('.distribution_type_selection').addClass('d-none').find('input:radio[value=none]').click();
-            distribution_type = 'none';
-        }
-        else {
-            container.find('.arithmetic_type_selection').removeClass('d-none');
-
-            if (arithmetic == 'apply') {
-                container.find('.arithmetic_type_selection').find('input:radio[value=sum]').click();
-                arithmetic = 'sum';
-            }
-
-            if (applies_target != 'order') {
-                distribution_type_selection.addClass('d-none').find('input:radio[value=none]').click();
-                distribution_type = 'none';
-            }
-            else {
-                distribution_type_selection.removeClass('d-none');
-                if (distribution_type == 'none') {
-                    distribution_type_selection.find('input:radio[value=quantity]').click();
-                    distribution_type = 'quantity';
-                }
-            }
-        }
-
-		var key = applies_type + ',' + model_type + ',' + applies_target + ',' + scale + ',' + applies_type + ',' + arithmetic + ',' + applies_target + ',' + value + ',' + distribution_type;
-		var labels = modifiers_strings[key];
-
-        var simplified = container.find('.simplified_input');
-        var advanced = container.find('.advanced_input');
-        simplified.toggleClass('d-none', applies_type != 'none');
-        advanced.toggleClass('d-none', applies_type == 'none');
-
-        if (applies_type != 'none') {
-            container.find('input:radio[name=value][value=price]').next('label').removeClass('disabled');
-            var table = advanced.find('.dynamic-table');
-
-    		table.find('tr').each(function() {
-                if ($(this).find('.add-row').length != 0) {
-                    return true;
-                }
-
-    			$(this).find('td:nth-child(1) .form-control-plaintext').text(labels[0]);
-    			$(this).find('td:nth-child(2) .input-group-text').text(labels[1]);
-    			$(this).find('td:nth-child(3) .form-control-plaintext').text(labels[2]);
-    			$(this).find('td:nth-child(4) .input-group-text').text(labels[3]);
-                $(this).find('td:nth-child(5) .form-control-plaintext').text(labels[4]);
-    		});
-
-            if (table.find('tbody tr').length == 1) {
-                table.find('.add-row').click();
-            }
-        }
-        else {
-            var value_price_selection = container.find('input:radio[name=value][value=price]');
-            value_price_selection.next('label').addClass('disabled');
-            if (value_price_selection.prop('checked')) {
-                container.find('input:radio[name=value][value=absolute]').click();
-            }
-
-            simplified.find('.form-control-static').eq(0).text(labels[2]);
-            simplified.find('.input-group-text').text(labels[3]);
-            simplified.find('.form-control-static').eq(1).text(labels[4]);
-        }
-	});
 
     /*
     	Gestione ordini

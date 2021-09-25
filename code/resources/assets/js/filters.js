@@ -1,5 +1,6 @@
 class Filters {
-    static tableFilters(table_id) {
+    static tableFilters(table_id)
+    {
         var filters = $('[data-table-target="' + table_id + '"]');
 
         $('table' + table_id + ' tbody tr').each(function() {
@@ -80,7 +81,8 @@ class Filters {
         });
     }
 
-    static iconsLegendTrigger(node, legend_class) {
+    static iconsLegendTrigger(node, legend_class)
+    {
         if (node.hasClass('dropdown-toggle')) {
             return;
         }
