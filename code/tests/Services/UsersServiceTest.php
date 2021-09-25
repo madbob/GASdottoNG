@@ -1,7 +1,8 @@
 <?php
 
-namespace Tests;
+namespace Tests\Services;
 
+use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Database\Eloquent\Model;
 
@@ -260,7 +261,7 @@ class UsersServiceTest extends TestCase
         $user = $this->usersService->destroy($this->userWithNoPerms->id);
         $user = $this->usersService->show($this->userWithNoPerms->id);
         $this->assertEquals($this->userWithNoPerms->id, $user->id);
-        $this->assertNotEquals(null, $user->deleted_at);
+        $this->assertNotNull($user->deleted_at);
 
         $user = $this->usersService->destroy($this->userWithNoPerms->id);
 

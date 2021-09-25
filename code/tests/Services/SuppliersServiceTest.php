@@ -1,7 +1,8 @@
 <?php
 
-namespace Tests;
+namespace Tests\Services;
 
+use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Database\Eloquent\Model;
 
@@ -134,7 +135,7 @@ class SuppliersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithReferrerPerms);
         $supplier = $this->suppliersService->destroy($this->supplier->id);
-        $this->assertNotEquals(null, $supplier->deleted_at);
+        $this->assertNotNull($supplier->deleted_at);
 
         $this->actingAs($this->userWithAdminPerm);
         $supplier = $this->suppliersService->destroy($this->supplier->id);

@@ -234,7 +234,6 @@ class Order extends Model
         foreach ($this->products as $p) {
             if ($p->id == $product->id) {
                 $product = $p;
-
                 return true;
             }
         }
@@ -1106,53 +1105,11 @@ class Order extends Model
         return view('gdxp.xml.supplier', ['obj' => $this->supplier, 'orders' => [$this]])->render();
     }
 
-    public static function readXML($xml)
-    {
-        $order = new Order();
-
-        foreach($xml->children() as $p) {
-            switch($p->getName()) {
-                case 'openDate':
-                    $d = html_entity_decode((string) $p);
-                    $year = substr($d, 0, 4);
-                    $month = substr($d, 4, 2);
-                    $day = substr($d, 6, 2);
-                    $order->start = sprintf('%d-%d-%d', $year, $month, $day);
-                    break;
-                case 'closeDate':
-                    $d = html_entity_decode((string) $p);
-                    $year = substr($d, 0, 4);
-                    $month = substr($d, 4, 2);
-                    $day = substr($d, 6, 2);
-                    $order->end = sprintf('%d-%d-%d', $year, $month, $day);
-                    break;
-                case 'deliveryDate':
-                    $d = html_entity_decode((string) $p);
-                    $year = substr($d, 0, 4);
-                    $month = substr($d, 4, 2);
-                    $day = substr($d, 6, 2);
-                    $order->shipping = sprintf('%d-%d-%d', $year, $month, $day);
-                    break;
-            }
-        }
-
-        return $order;
-    }
-
     public function exportJSON()
     {
         $hub = App::make('GlobalScopeHub');
         $gas = Gas::find($hub->getGas());
         return view('gdxp.json.supplier', ['obj' => $this->supplier, 'order' => $this, 'currentgas' => $gas])->render();
-    }
-
-    public static function readJSON($json)
-    {
-        $order = new Order();
-        $order->start = $json->openDate;
-        $order->end = $json->closeDate;
-        $order->shipping = $json->deliveryDate ?? null;
-        return $order;
     }
 
     /******************************************************** ModifiableTrait */

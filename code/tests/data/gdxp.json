@@ -1,0 +1,118 @@
+{
+	"protocolVersion": "1.0",
+	"creationDate": "2021-05-06",
+	"applicationSignature": "Hub",
+	"subject": {
+		"name": "",
+		"taxCode": "",
+		"vatNumber": "",
+		"address": {
+			"street": "",
+			"locality": "",
+			"zipCode": ""
+		},
+		"contacts": []
+	},
+	"blocks": [{
+		"supplier": {
+			"name": "Teanatura",
+			"vatNumber": "02804570428",
+			"taxCode": "02804570428 ",
+			"address": {
+				"street": "Via delle Palombare 55\/a",
+				"locality": "Ancona",
+				"zipCode": "60127"
+			},
+			"contacts": [{
+				"type": "phoneNumber",
+				"value": "0712810690"
+			}],
+			"products": [{
+				"name": "Acido Citrico Monoidrato 2 kg",
+				"um": "Pezzi",
+				"sku": "",
+				"category": "Disincrostatori, decalcificatori e sbiancanti",
+				"description": "Acido Citrico Monoidrato 2 kg",
+				"active": true,
+				"orderInfo": {
+					"packageQty": 1,
+					"umPrice": 11.1,
+					"maxQty": 0,
+					"minQty": 1,
+					"mulQty": 1,
+					"availableQty": 0,
+					"shippingCost": 0,
+					"vatRate": 22
+				}
+			}, {
+				"name": "Acido Citrico Monoidrato 500 gr.",
+				"um": "Pezzi",
+				"sku": "",
+				"category": "Disincrostatori, decalcificatori e sbiancanti",
+				"description": "Acido Citrico Monoidrato 500 GR",
+				"active": true,
+				"orderInfo": {
+					"packageQty": 1,
+					"umPrice": 3.66,
+					"maxQty": 0,
+					"minQty": 1,
+					"mulQty": 1,
+					"availableQty": 0,
+					"shippingCost": 0,
+					"vatRate": 22
+				}
+			}, {
+				"name": "Amla ( Emblica Officinalis ) novit\u00e0 100 Gr.",
+				"um": "Non Specificato",
+				"sku": "",
+				"category": "Tintura per capelli",
+				"description": "Amla ( Emblica Officinalis ) novit\u00e0. HENNE' INDIANO: progetto equosolidale",
+				"active": true,
+				"orderInfo": {
+					"packageQty": 1,
+					"umPrice": 3.66,
+					"maxQty": 0,
+					"minQty": 1,
+					"mulQty": 0,
+					"availableQty": 0,
+					"shippingCost": 0,
+					"vatRate": 22
+				}
+			}, {
+				"name": "Ammorbidente Minerale 500 gr",
+				"um": "Non Specificato",
+				"sku": "",
+				"category": "Disincrostatori, decalcificatori e sbiancanti",
+				"description": "Ammorbidente Minerale 20 lavaggi",
+				"active": true,
+				"orderInfo": {
+					"packageQty": 1,
+					"umPrice": 4.21,
+					"maxQty": 0,
+					"minQty": 1,
+					"mulQty": 0,
+					"availableQty": 0,
+					"shippingCost": 0,
+					"vatRate": 22
+				}
+			}, {
+				"name": "Antica Lisciva 1 Kg.",
+				"um": "Non Specificato",
+				"sku": "",
+				"category": "Detersivi per bucato a mano e lavatrice",
+				"description": "Antica Lisciva 1 KG",
+				"active": true,
+				"orderInfo": {
+					"packageQty": 1,
+					"umPrice": 1.95,
+					"maxQty": 0,
+					"minQty": 1,
+					"mulQty": 0,
+					"availableQty": 0,
+					"shippingCost": 0,
+					"vatRate": 22
+				}
+			}]
+		}
+	}]
+}

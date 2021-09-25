@@ -12,8 +12,7 @@ use App;
 use ezcArchive;
 use App\Exceptions\MissingFieldException;
 use App\Importers\CSV\CSVImporter;
-
-use App\Supplier;
+use App\Importers\GDXP\Suppliers;
 
 class ImportController extends Controller
 {
@@ -109,10 +108,10 @@ class ImportController extends Controller
             $info = json_decode(file_get_contents($path));
             foreach($info->blocks as $c) {
                 if ($execute) {
-                    $data[] = Supplier::importJSON($info, $c->supplier, $supplier_replace);
+                    $data[] = Suppliers::importJSON($info, $c->supplier, $supplier_replace);
                 }
                 else {
-                    $data[] = Supplier::readJSON($c->supplier);
+                    $data[] = Suppliers::readJSON($c->supplier);
                 }
             }
         }
@@ -127,10 +126,10 @@ class ImportController extends Controller
 
                 foreach($contents->children() as $c) {
                     if ($execute) {
-                        $data[] = Supplier::importXML($c, $supplier_replace);
+                        $data[] = Suppliers::importXML($c, $supplier_replace);
                     }
                     else {
-                        $data[] = Supplier::readXML($c);
+                        $data[] = Suppliers::readXML($c);
                     }
                 }
 

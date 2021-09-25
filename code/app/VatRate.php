@@ -9,6 +9,8 @@ class VatRate extends Model
 {
     use GASModel, Cachable;
 
+    protected $fillable = ['percentage', 'name'];
+
     public function products()
     {
         return $this->hasMany('App\Product');

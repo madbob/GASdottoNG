@@ -399,10 +399,10 @@ class Booking extends Model
             $message = _i("Non hai partecipato a quest'ordine");
         }
         else {
-            if ($friends_tot == 0)
-                $message = _i('Hai ordinato %s', printablePriceCurrency($tot));
-            else
-                $message = _i('Hai ordinato %s + %s', [printablePriceCurrency($tot), printablePriceCurrency($friends_tot)]);
+            $message = _i('Hai ordinato %s', printablePriceCurrency($tot));
+            if ($friends_tot != 0) {
+                $message += sprintf(' + %s', printablePriceCurrency($friends_tot));
+            }
         }
 
         $ret .= '<span class="pull-right">' . $message . '</span>';

@@ -36,7 +36,7 @@ abstract class CSVImporter
         $separators = [',', ';', "\t"];
         $target_separator = null;
 
-        while (!feof($contents) && is_null($target_separator)) {
+        while (!feof($contents)) {
             $char = fgetc($contents);
             if (in_array($char, $separators)) {
                 $target_separator = $char;
@@ -45,7 +45,6 @@ abstract class CSVImporter
         }
 
         fclose($contents);
-
         return $target_separator;
     }
 
@@ -61,7 +60,6 @@ abstract class CSVImporter
             $filename = $f->getClientOriginalName();
             $f->move($filepath, $filename);
             $path = $filepath . '/' . $filename;
-            $sample_line = '';
 
             $target_separator = $this->guessCsvFileSeparator($path);
             if (is_null($target_separator)) {
@@ -70,13 +68,9 @@ abstract class CSVImporter
 
             $reader = Reader::createFromPath($path, 'r');
             $reader->setDelimiter($target_separator);
-            foreach($reader->getRecords() as $line) {
-                $sample_line = $line;
-                break;
-            }
 
             $parameters['path'] = $path;
-            $parameters['columns'] = $sample_line;
+            $parameters['columns'] = $reader->getRecords()[0] ?? '';
 
             return $parameters;
         }

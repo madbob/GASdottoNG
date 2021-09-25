@@ -14,6 +14,7 @@ class Measure extends Model
 
     public $incrementing = false;
     protected $keyType = 'string';
+    protected $fillable = ['name'];
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,

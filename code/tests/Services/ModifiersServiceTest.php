@@ -1,7 +1,8 @@
 <?php
 
-namespace Tests;
+namespace Tests\Services;
 
+use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
