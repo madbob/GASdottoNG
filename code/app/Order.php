@@ -16,6 +16,7 @@ use URL;
 use Log;
 
 use App\Scopes\RestrictedGAS;
+use App\Formatters\User as UserFormatter;
 use App\Events\SluggableCreating;
 
 class Order extends Model
@@ -681,7 +682,7 @@ class Order extends Model
                 'gas_sorting' => $booking->user->gas_id,
                 'shipping_sorting' => $booking->user->shippingplace ? $booking->user->shippingplace->name : 'AAAA',
 
-                'user' => $booking->user->formattedFields($fields->user_columns),
+                'user' => UserFormatter::format($booking->user, $fields->user_columns),
                 'products' => [],
                 'totals' => [],
                 'notes' => !empty($booking->notes) ? [$booking->notes] : [],

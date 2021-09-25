@@ -11,6 +11,7 @@ use App\User;
 use App\Aggregate;
 
 use App\Services\UsersService;
+use App\Formatters\User as UserFormatter;
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
 
@@ -62,16 +63,11 @@ class UsersController extends BackedController
 
         $fields = $request->input('fields', []);
         $printable = $request->input('printable', []);
-        $formattable = User::formattableColumns();
-        $headers = [];
-        foreach($fields as $f) {
-            $headers[] = $formattable[$f]->name;
-        }
-
+        $headers = UserFormatter::getHeaders($fields);
         $users = $this->service->list('', true, $printable);
 
         return output_csv(_i('utenti.csv'), $headers, $users, function($user) use ($fields) {
-            return $user->formattedFields($fields);
+            return UserFormatter::format($user, $fields);
         });
     }
 

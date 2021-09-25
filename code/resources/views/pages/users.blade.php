@@ -29,7 +29,7 @@
 
                     <hr/>
 
-                    <x-larastrap::structchecks name="fields" :label="_i('Colonne')" :options="App\User::formattableColumns()" />
+                    <x-larastrap::structchecks name="fields" :label="_i('Colonne')" :options="App\Formatters\User::formattableColumns()" />
                 </x-larastrap::form>
             </x-larastrap::modal>
 

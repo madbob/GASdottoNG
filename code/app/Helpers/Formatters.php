@@ -534,7 +534,7 @@ function normalizeAddress($street, $city, $cap)
 */
 function splitFields($fields)
 {
-    $formattable_user = App\User::formattableColumns();
+    $formattable_user = App\Formatters\User::formattableColumns();
     $formattable_product = App\Order::formattableColumns('shipping');
 
     $ret = (object) [

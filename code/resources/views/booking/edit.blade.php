@@ -92,7 +92,7 @@ $form_buttons = [
                 {{ _i('Per segnalazioni relative a questo ordine si può contattare:') }}
                 <ul>
                     @foreach($contacts as $contact)
-                        <li>{{ $contact->printableName() }} - {{ join(', ', $contact->formattedFields(['email', 'phone', 'mobile'])) }}</li>
+                        <li>{{ $contact->printableName() }} - {{ join(', ', App\Formatters\User::format($contact, ['email', 'phone', 'mobile'])) }}</li>
                     @endforeach
                 </ul>
             </div>

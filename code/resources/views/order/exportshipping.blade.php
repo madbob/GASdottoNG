@@ -25,7 +25,7 @@
             <x-larastrap::radios name="shipping_place" :label="_i('Luogo di Consegna')" :options="$options" value="all_by_name" />
         @endif
 
-        <?php list($options, $values) = flaxComplexOptions(App\User::formattableColumns()) ?>
+        <?php list($options, $values) = flaxComplexOptions(App\Formatters\User::formattableColumns()) ?>
         <x-larastrap::checks name="fields" :label="_i('Dati Utenti')" :options="$options" :value="$values" />
 
         <?php list($options, $values) = flaxComplexOptions(App\Order::formattableColumns('shipping')) ?>

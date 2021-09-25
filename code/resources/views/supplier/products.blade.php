@@ -29,7 +29,7 @@
 
                     <hr/>
 
-                    <?php list($options, $values) = flaxComplexOptions(App\Product::formattableColumns()) ?>
+                    <?php list($options, $values) = flaxComplexOptions(App\Formatters\Product::formattableColumns()) ?>
                     <x-larastrap::checks name="fields" :label="_i('Colonne')" :options="$options" :value="$values" />
 
                     <x-larastrap::radios name="format" :label="_i('Formato')" :options="['pdf' => _i('PDF'), 'csv' => _i('CSV')]" value="pdf" />

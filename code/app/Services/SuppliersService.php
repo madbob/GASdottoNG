@@ -10,6 +10,7 @@ use Log;
 use DB;
 use PDF;
 
+use App\Formatters\Product as ProductFormatter;
 use App\User;
 use App\Supplier;
 use App\Product;
@@ -149,16 +150,12 @@ class SuppliersService extends BaseService
             $products = $supplier->products;
         }
 
-        $columns = Product::formattableColumns();
-        $headers = [];
-        foreach($fields as $field) {
-            $headers[] = $columns[$field]->name;
-        }
+        $headers = ProductFormatter::getHeaders($fields);
 
         $data = [];
         foreach($products as $product) {
-            $rows = $product->formattedFields($fields);
-            $data = array_merge($data, $rows);
+            $rows = ProductFormatter::format($product, $fields);
+            $data = array_merge($data, [$rows]);
         }
 
         if ($format == 'pdf') {
