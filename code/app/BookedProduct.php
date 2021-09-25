@@ -159,7 +159,9 @@ class BookedProduct extends Model
         Questa funzione serve a generare un oggetto simile a quello prodotto da
         Order::calculateSummary() ma relativo solo a questo prodotto.
         In particolare, viene usato per formattare il contenuto del Dettaglio
-        Consegne (in cui ogni prodotto va gestito singolarmente, non aggregato).
+        Consegne, in cui ogni prodotto (e più in particolare ogni variante del
+        prodotto) va gestito singolarmente e non aggregato.
+        Da non usare in altri casi!!!
         Usato per essere dato in input alle callback di formattazione di
         Order::formattableColumns()
     */
@@ -172,6 +174,16 @@ class BookedProduct extends Model
                 $faked_index => $this->reduxData(),
             ],
         ];
+
+        if ($this->variants->isEmpty() == false) {
+            $true_variants = [];
+
+            foreach($this->variants as $variant) {
+                $true_variants[] = $variant->reduxData();
+            }
+
+            $summary->products[$faked_index]->variants = $true_variants;
+        }
 
         return $summary;
     }
