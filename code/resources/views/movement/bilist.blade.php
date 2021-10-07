@@ -50,8 +50,8 @@
                     <td>{{ $mov->printableType() }}</td>
                     <td>{!! $mov->payment_icon !!}</td>
                     <td>{{ $reference ? $reference->printableName() : '' }}</td>
-                    <td>{{ $in != 0 ? printablePriceCurrency($in) : '' }}</td>
-                    <td>{{ $out != 0 ? printablePriceCurrency($out) : '' }}</td>
+                    <td>{{ $in != 0 ? printablePriceCurrency($in, '.', $mov->currency) : '' }}</td>
+                    <td>{{ $out != 0 ? printablePriceCurrency($out, '.', $mov->currency) : '' }}</td>
 
                     <td>
                         @if(!empty($mov->notes))

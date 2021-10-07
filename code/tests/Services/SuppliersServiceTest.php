@@ -53,7 +53,7 @@ class SuppliersServiceTest extends TestCase
 
         $this->assertEquals('Test Supplier', $supplier->name);
         $this->assertEquals('Test Supplier SRL', $supplier->business_name);
-        $this->assertEquals(0, $supplier->current_balance_amount);
+        $this->assertEquals(0, $supplier->currentBalanceAmount());
     }
 
     public function testNoList()
@@ -103,7 +103,7 @@ class SuppliersServiceTest extends TestCase
         ));
 
         $this->assertNotEquals($supplier->taxcode, $this->supplier->taxcode);
-        $this->assertEquals(0, $supplier->current_balance_amount);
+        $this->assertEquals(0, $supplier->currentBalanceAmount());
     }
 
     public function testFailsToShowInexistent()

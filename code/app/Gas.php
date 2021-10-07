@@ -117,10 +117,6 @@ class Gas extends Model
                 'default' => 'it_IT'
             ],
 
-            'currency' => [
-                'default' => '€'
-            ],
-
             'public_registrations' => [
                 'default' => (object) [
                     'enabled' => false,
@@ -154,6 +150,12 @@ class Gas extends Model
                 'default' => (object) [
                     'secret' => ''
                 ]
+            ],
+
+            'integralces' => [
+                'default' => (object) [
+                    'enabled' => false,
+                ],
             ],
 
             'extra_invoicing' => [
@@ -293,7 +295,7 @@ class Gas extends Model
 
     public function getCurrencyAttribute()
     {
-        return $this->getConfig('currency');
+        return defaultCurrency()->symbol;
     }
 
     public function getPublicRegistrationsAttribute()
@@ -304,6 +306,13 @@ class Gas extends Model
     public function getEsIntegrationAttribute()
     {
         return $this->getConfig('es_integration') == '1';
+    }
+
+    public function getIntegralcesAttribute()
+    {
+        $ret = (array) json_decode($this->getConfig('integralces'));
+        $ret['symbol'] = Currency::where('context', 'integralces')->first()->symbol ?? '';
+        return $ret;
     }
 
     public function getOrdersDisplayColumnsAttribute()
@@ -372,6 +381,8 @@ class Gas extends Model
                 return !empty($this->paypal['client_id']);
             case 'satispay':
                 return !empty($this->satispay['secret']);
+            case 'integralces':
+                return $this->integralces['enabled'];
             case 'extra_invoicing':
                 return (!empty($this->extra_invoicing['taxcode']) || !empty($this->extra_invoicing['vat']));
             case 'public_registrations':
@@ -410,10 +421,14 @@ class Gas extends Model
         ];
 
         $gas = currentAbsoluteGas();
-        if($gas->hasFeature('paypal'))
+
+        if ($gas->hasFeature('paypal')) {
             $ret['paypal'] = _i('PayPal');
-        if($gas->hasFeature('satispay'))
+        }
+
+        if ($gas->hasFeature('satispay')) {
             $ret['satispay'] = _i('Satispay');
+        }
 
         return $ret;
     }

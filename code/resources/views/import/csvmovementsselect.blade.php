@@ -16,6 +16,7 @@ foreach (App\MovementType::types() as $info) {
 }
 
 $payments = App\MovementType::paymentsSimple();
+$currencies = App\Currency::enabled();
 
 $users = App\User::sorted()->get();
 $suppliers = App\Supplier::orderBy('name', 'asc')->get();
@@ -55,6 +56,9 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
                             <x-larastrap::select name="method" nprefix="skip" squeeze :options="$payments" classes="triggers-all-selects csv_movement_method_select" data-target-class="csv_movement_method_select" value="bank" />
                         </th>
                         <th>{{ _i('Valore') }}</th>
+                        <th>
+                            <x-larastrap::selectobj name="currency_id" nprefix="skip" squeeze :options="$currencies" classes="triggers-all-selects csv_movement_currency_select" data-target-class="csv_movement_currency_select" :value="defaultCurrency()->id" />
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -83,6 +87,9 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
                                 <td>
                                     {{ printablePriceCurrency($mov->amount) }}
                                     <x-larastrap::hidden name="amount" npostfix="[]" />
+                                </td>
+                                <td>
+                                    <x-larastrap::selectobj name="currency_id" npostfix="[]" squeeze :options="$currencies" classes="csv_movement_currency_select" />
                                 </td>
                             </tr>
                         </x-larastrap::enclose>

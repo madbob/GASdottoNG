@@ -14,6 +14,9 @@ use DB;
 use Log;
 
 use App\MovementType;
+use App\Currency;
+use App\Balance;
+use App\Movement;
 
 class FixDatabase extends Command
 {
@@ -69,6 +72,17 @@ class FixDatabase extends Command
                 ]
             );
             $type->save();
+        }
+
+        if (Currency::where('symbol', '€')->first() == null) {
+            $c = new Currency();
+            $c->symbol = '€';
+            $c->context = 'default';
+            $c->enabled = true;
+            $c->save();
+
+            Balance::where('id', '>', 0)->update(['currency_id' => $c->id]);
+            Movement::where('id', '>', 0)->update(['currency_id' => $c->id]);
         }
     }
 }

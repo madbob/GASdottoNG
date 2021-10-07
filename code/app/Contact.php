@@ -38,7 +38,7 @@ class Contact extends Model
 
     public static function types()
     {
-        return [
+        $ret = [
             'address' => _i('Indirizzo'),
             'referent' => _i('Referente'),
             'email' => _i('E-Mail'),
@@ -47,6 +47,12 @@ class Contact extends Model
             'fax' => _i('Fax'),
             'website' => _i('Sito Web'),
         ];
+
+        if (currentAbsoluteGas()->hasFeature('integralces')) {
+            $ret['integralces'] = _i('IntegralCES');
+        }
+
+        return $ret;
     }
 
     public function asAddress()

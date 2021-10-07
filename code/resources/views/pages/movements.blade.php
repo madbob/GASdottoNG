@@ -150,7 +150,8 @@
     'password_protected' => true,
     'extra' => [
         'close-all-modal' => '1',
-        'post-saved-function' => ['refreshFilter', 'refreshBalanceView']
+        'reload-portion' => '.balance-summary',
+        'post-saved-function' => ['refreshFilter']
     ]
 ])
 

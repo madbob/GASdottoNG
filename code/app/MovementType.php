@@ -448,7 +448,7 @@ class MovementType extends Model
             return;
         }
 
-        $obj->alterBalance($amount, $op->field);
+        $obj->alterBalance($amount, $movement->currency, $op->field);
     }
 
     public function apply($movement)

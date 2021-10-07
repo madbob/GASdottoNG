@@ -23,15 +23,34 @@ trait GASModel
     {
         $class = get_called_class();
 
-        if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
+        if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class))) {
             $ret = $class::where('id', $id)->withoutGlobalScopes()->withTrashed()->first();
-        else
+        }
+        else {
             $ret = $class::find($id);
+        }
 
-        if ($ret == null && $fail == true)
+        if ($ret == null && $fail == true) {
             abort(404);
+        }
 
         return $ret;
+    }
+
+    /*
+        Funzione di comodo, funge come all() ma se la classe è soft-deletable
+        cerca anche tra gli elementi cancellati
+    */
+    public static function tAll()
+    {
+        $class = get_called_class();
+
+        if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class))) {
+            return $class::withTrashed()->get();
+        }
+        else {
+            return $class::all();
+        }
     }
 
     public function printableName()

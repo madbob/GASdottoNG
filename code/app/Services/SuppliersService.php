@@ -167,13 +167,6 @@ class SuppliersService extends BaseService
         }
     }
 
-    public function plainBalance($id)
-    {
-        $this->ensureAuth(['movements.view' => 'gas', 'movements.admin' => 'gas']);
-        $supplier = $this->show($id);
-        return $supplier->current_balance_amount;
-    }
-
     public function destroy($id)
     {
         $supplier = DB::transaction(function () use ($id) {

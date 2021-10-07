@@ -48,7 +48,6 @@ class MovementsController extends BackedController
                 */
                 $gas = Auth::user()->gas;
                 $data['types'] = MovementType::types();
-                $data['balance'] = $gas->current_balance;
 
                 $one_month_ago = date('Y-m-d', strtotime('-1 months'));
 
@@ -250,6 +249,10 @@ class MovementsController extends BackedController
                     });
                 }
                 else {
+                    /*
+                        TODO FIX: capire come gestire i filtri in caso di valute multiple
+                    */
+
                     $group = $request->input('credit', 'all');
                     $threeshold = $request->input('amount', 0);
 
@@ -346,22 +349,15 @@ class MovementsController extends BackedController
         }
     }
 
-    public function getBalance(Request $request)
+    public function getBalance(Request $request, $targetid)
     {
         $user = $request->user();
         if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
-        $balance = $user->gas->current_balance;
-        $obj = (object)[
-            'bank' => $balance->bank,
-            'cash' => $balance->cash,
-            'gas' => $balance->gas,
-            'suppliers' => $balance->suppliers,
-            'deposits' => $balance->deposits
-        ];
-        return response()->json($obj, 200);
+        $obj = fromInlineId($targetid);
+        return view('movement.summary', ['obj' => $obj]);
     }
 
     public function getHistory(Request $request, $targetid)

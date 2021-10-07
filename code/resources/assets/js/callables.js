@@ -184,23 +184,6 @@ class Callables {
         }
     }
 
-    static refreshBalanceView() {
-        utils.postAjax({
-            method: 'GET',
-            url: 'movements/balance',
-            dataType: 'JSON',
-            success: function(data) {
-                $('.current-balance').each(function() {
-                    for (var property in data) {
-                        if (data.hasOwnProperty(property)) {
-                            $(this).find('.' + property + ' span').text(data[property]);
-                        }
-                    }
-                });
-            }
-        });
-    }
-
     static afterAggregateChange(form, data) {
         utils.postAjax({
             method: 'GET',

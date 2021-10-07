@@ -15,6 +15,7 @@ use App\Config;
 use App\Role;
 use App\Gas;
 use App\User;
+use App\Currency;
 
 class GasController extends Controller
 {
@@ -80,7 +81,10 @@ class GasController extends Controller
                 $gas->message = $request->input('message');
                 $gas->setConfig('restricted', $request->has('restricted') ? '1' : '0');
                 $gas->setConfig('language', $request->input('language'));
-                $gas->setConfig('currency', $request->input('currency'));
+
+                $currency = defaultCurrency();
+                $currency->symbol = $request->input('currency');
+                $currency->save();
                 break;
 
             case 'banking':
@@ -131,6 +135,34 @@ class GasController extends Controller
                     ];
                 }
                 $gas->setConfig('satispay', $satispay_info);
+
+                if ($request->has('enable_integralces')) {
+                    $integralces_info = (object) [
+                        'enabled' => true,
+                    ];
+
+                    $integralces_currency = Currency::where('context', 'integralces')->first();
+                    if (is_null($integralces_currency)) {
+                        $integralces_currency = new Currency();
+                        $integralces_currency->context = 'integralces';
+                        $integralces_currency->symbol = $request->input('integralces->symbol');
+                    }
+
+                    $integralces_currency->enabled = true;
+                    $integralces_currency->save();
+                }
+                else {
+                    $integralces_info = (object) [
+                        'enabled' => false,
+                    ];
+
+                    $integralces_currency = Currency::where('context', 'integralces')->first();
+                    if ($integralces_currency) {
+                        $integralces_currency->enabled = false;
+                        $integralces_currency->save();
+                    }
+                }
+                $gas->setConfig('integralces', $integralces_info);
 
                 if ($request->has('enable_extra_invoicing')) {
                     $invoicing_info = $gas->extra_invoicing;

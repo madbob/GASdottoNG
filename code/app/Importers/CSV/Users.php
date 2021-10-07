@@ -62,7 +62,8 @@ class Users extends CSVImporter
                 'explain' => _i('Indicare "true" o "false"')
             ],
             'credit' => (object) [
-                'label' => _i('Credito Attuale')
+                'label' => _i('Credito Attuale'),
+                'explain' => _i('Attenzione! Usare questo attributo solo in fase di importazione iniziale degli utenti, e solo per i nuovi utenti, o i saldi risulteranno sempre incoerenti!')
             ]
         ];
     }
@@ -184,7 +185,7 @@ class Users extends CSVImporter
                 $u->updateContacts($contacts);
 
                 if ($credit != null) {
-                    $u->alterBalance($credit);
+                    $u->alterBalance($credit, defaultCurrency());
                 }
 
                 if ($new_user) {

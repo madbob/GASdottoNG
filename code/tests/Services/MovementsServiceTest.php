@@ -31,7 +31,8 @@ class MovementsServiceTest extends TestCase
             'method' => 'bank',
             'sender_id' => $this->gas->id,
             'sender_type' => 'App\Gas',
-            'registerer_id' => $this->userWithAdminPerm->id
+            'registerer_id' => $this->userWithAdminPerm->id,
+            'currency_id' => defaultCurrency()->id,
         ]);
 
         Model::reguard();
@@ -42,18 +43,20 @@ class MovementsServiceTest extends TestCase
     public function testStore()
     {
         $this->actingAs($this->userWithAdminPerm);
+        $currency = defaultCurrency();
 
         $this->service->store(array(
             'type' => 'donation-from-gas',
             'method' => 'bank',
             'sender_id' => $this->gas->id,
             'sender_type' => 'App\Gas',
+            'currency_id' => $currency->id,
             'amount' => 100
         ));
 
         $amount = 100 + $this->sample_movement->amount;
 
-        $this->assertEquals($amount * -1, $this->gas->current_balance_amount);
+        $this->assertEquals($amount * -1, $this->gas->currentBalanceAmount($currency));
     }
 
     public function testFailsToUpdate()
@@ -78,7 +81,7 @@ class MovementsServiceTest extends TestCase
             'amount' => 50
         ));
 
-        $this->assertEquals(-50, $this->gas->current_balance_amount);
+        $this->assertEquals(-50, $this->gas->currentBalanceAmount());
     }
 
     public function testFailsToShowInexistent()
@@ -111,7 +114,7 @@ class MovementsServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
         $this->service->destroy($this->sample_movement->id);
-        $this->assertEquals(0, $this->gas->current_balance_amount);
+        $this->assertEquals(0, $this->gas->currentBalanceAmount());
 
         try {
             $this->service->show($this->sample_movement->id);

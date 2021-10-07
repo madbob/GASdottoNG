@@ -1,4 +1,6 @@
 <div class="modal fade delete-on-close">
+    <?php $currencies = App\Currency::enabled() ?>
+
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
@@ -51,8 +53,10 @@
                         <table class="table" id="creditsTable">
                             <thead>
                                 <tr>
-                                    <th width="50%">{{ _i('Nome') }}</th>
-                                    <th width="25%">{{ _i('Credito Residuo') }}</th>
+                                    <th width="40%">{{ _i('Nome') }}</th>
+                                    @foreach($currencies as $curr)
+                                        <th width="{{ round(35 / $currencies->count(), 2) }}%">{{ _i('Credito Residuo') }}</th>
+                                    @endforeach
                                     <th width="25%">{{ _i('Modalità Pagamento') }}</th>
                                 </tr>
                             </thead>
@@ -64,9 +68,11 @@
                                             {{ $user->printableName() }}
                                         </td>
 
-                                        <td class="text-filterable-cell">
-                                            {{ printablePriceCurrency($user->current_balance_amount) }}
-                                        </td>
+                                        @foreach($currencies as $curr)
+                                            <td class="text-filterable-cell">
+                                                {{ printablePriceCurrency($user->currentBalanceAmount($curr), '.', $curr) }}
+                                            </td>
+                                        @endforeach
 
                                         <td>
                                             {{ $user->payment_method->name }}

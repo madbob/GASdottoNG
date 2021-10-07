@@ -59,7 +59,6 @@ Route::middleware(['auth'])->group(function() {
     Route::get('suppliers/{id}/products', 'SuppliersController@productsDetails');
     Route::get('suppliers/{id}/products_grid', 'SuppliersController@productsGrid');
     Route::get('suppliers/{id}/invoicedata', 'SuppliersController@invoiceData')->name('suppliers.invoicedata');
-    Route::get('suppliers/{id}/plain_balance', 'SuppliersController@plainBalance');
 
     Route::get('products/ro/{id}', 'ProductsController@show_ro');
     Route::get('products/duplicate/{id}', 'ProductsController@duplicate')->name('products.duplicate');
@@ -150,7 +149,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('movements/showcredits', 'MovementsController@creditsTable');
     Route::get('movements/showsuppliers', 'MovementsController@suppliersTable');
     Route::get('movements/{targetid}/history', 'MovementsController@getHistory')->name('movements.history');
-    Route::get('movements/balance', 'MovementsController@getBalance');
+    Route::get('movements/{targetid}/balance', 'MovementsController@getBalance')->name('movements.balance');
     Route::post('movements/recalculate', 'MovementsController@recalculate');
     Route::post('movements/close', 'MovementsController@closeBalance');
     Route::post('movements/deletebalance/{id}', 'MovementsController@deleteBalance')->name('movements.deletebalance');

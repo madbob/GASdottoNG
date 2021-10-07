@@ -23,10 +23,6 @@ class GraphicInitServiceProvider extends ServiceProvider
                 if ($view->offsetExists('currentgas') == false) {
                     $view->with('currentgas', currentAbsoluteGas());
                 }
-
-                if ($view->offsetExists('currentcurrency') == false) {
-                    $view->with('currentcurrency', $user->gas->currency);
-                }
             }
 
             /*

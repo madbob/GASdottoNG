@@ -2,14 +2,19 @@
 
 <?php
 
+/*
+    I RID SEPA funzionano solo con la valuta Euro
+*/
+$currency = defaultCurrency();
+
 $count_rows = 0;
 $count_total = 0;
 $index = 1;
 
 foreach($users as $user) {
-    if ($user->current_balance_amount < 0 && !empty($user->rid['iban'])) {
+    if ($user->currentBalanceAmount($currency) < 0 && !empty($user->rid['iban'])) {
         $count_rows++;
-        $count_total += $user->current_balance_amount;
+        $count_total += $user->currentBalanceAmount($currency);
     }
 }
 
@@ -78,13 +83,13 @@ $count_total = $count_total * -1;
                     </urn1:Id>
                 </urn1:CdtrSchmeId>
                 @foreach($users as $user)
-                    @if ($user->current_balance_amount < 0 && !empty($user->rid['iban']))
+                    @if ($user->currentBalanceAmount($currency) < 0 && !empty($user->rid['iban']))
                         <urn1:DrctDbtTxInf>
                             <urn1:PmtId>
                                 <urn1:InstrId>{{ $index++ }}</urn1:InstrId>
                                 <urn1:EndToEndId>{{ $user->username }}</urn1:EndToEndId>
                             </urn1:PmtId>
-                            <urn1:InstdAmt Ccy="EUR">{{ round($user->current_balance_amount * -1, 2) }}</urn1:InstdAmt>
+                            <urn1:InstdAmt Ccy="EUR">{{ round($user->currentBalanceAmount($currency) * -1, 2) }}</urn1:InstdAmt>
                             <urn1:DrctDbtTx>
                                 <urn1:MndtRltdInf>
                                     <urn1:MndtId>{{ $user->rid['id'] }}</urn1:MndtId>

@@ -148,6 +148,15 @@
                                         </div>
                                     </div>
 
+                                    <x-larastrap::check name="enable_integralces" :label="_i('Abilita IntegralCES')" classes="collapse_trigger" :value="$gas->hasFeature('integralces')" :pophelp="_i('Abilitando questa opzione sarà possibile gestire la contabilità (saldi, pagamenti, movimenti...) con una moneta complementare, ed accedere ad alcune funzioni di integrazione con IntegralCES')" />
+                                    <div class="collapse" data-triggerable="enable_integralces">
+                                        <div class="col-md-12">
+                                            <div class="well">
+                                                <x-larastrap::text name="integralces->symbol" :label="_i('Valuta')" :value="$gas->integralces['symbol']" />
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <x-larastrap::check name="enable_extra_invoicing" :label="_i('Abilita Emissione Fatture')" classes="collapse_trigger" :value="$gas->hasFeature('extra_invoicing')" :pophelp="_i('Abilitando questa opzione e popolando i relativi campi verrà attivata l\'emissione delle fatture nei confronti degli utenti che effettuano prenotazioni. Le fatture saranno emesse al momento del salvataggio o della consegna della prenotazione, e saranno accessibili da Contabilità -> Fatture')" />
                                     <div class="collapse" data-triggerable="enable_extra_invoicing">
                                         <div class="col-md-12">

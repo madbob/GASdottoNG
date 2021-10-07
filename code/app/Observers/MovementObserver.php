@@ -75,6 +75,7 @@ class MovementObserver
         $movement->registerer_id = $movement->registerer_id ?: Auth::user()->id;
         $movement->identifier = $movement->identifier ?: '';
         $movement->notes = $movement->notes ?: '';
+        $movement->currency_id = $movement->currency_id ?: defaultCurrency()->id;
 
         if ($movement->exists == false && $movement->archived == true) {
             return true;

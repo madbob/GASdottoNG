@@ -76,7 +76,7 @@ else {
                         <td>{{ $mov->target ? $mov->target->printableName() : '' }}</td>
                     @endif
 
-                    <td>{{ printablePriceCurrency($mov->amount) }}</td>
+                    <td>{{ printablePriceCurrency($mov->amount, '.', $mov->currency) }}</td>
 
                     <td>
                         @if(!empty($mov->notes))

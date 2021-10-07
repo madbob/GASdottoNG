@@ -329,7 +329,7 @@ trait Iconable
             if ($user->can('movements.admin', $user->gas) || $user->can('movements.view', $user->gas)) {
                 $icons['User']['wallet'] = (object) [
                     'test' => function ($obj) {
-                        return $obj->current_balance_amount < 0;
+                        return $obj->currentBalanceAmount(null) < 0;
                     },
                     'text' => _i('Credito < 0'),
                 ];

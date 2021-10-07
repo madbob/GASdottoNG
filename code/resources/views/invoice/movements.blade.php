@@ -7,7 +7,11 @@
             <div class="col-md-6">
                 <x-larastrap::text :label="_i('Totale Fattura')" :value="sprintf('%s + %s = %s', printablePriceCurrency($invoice->total), printablePriceCurrency($invoice->total_vat), printablePriceCurrency($invoice->total + $invoice->total_vat))" readonly disabled />
                 <x-larastrap::text :label="_i('Totale Ordini')" :value="sprintf('%s + %s = %s', printablePriceCurrency($total_orders), printablePriceCurrency($tax_orders), printablePriceCurrency($total_orders + $tax_orders))" readonly disabled />
-                <x-larastrap::text :label="_i('Saldo Fornitore')" :value="printablePriceCurrency($invoice->supplier->current_balance_amount)" readonly disabled />
+
+                @foreach(App\Currency::enabled() as $curr)
+                    <x-larastrap::text :label="_i('Saldo Fornitore')" :value="printablePriceCurrency($invoice->supplier->currentBalanceAmount($curr), '.', $curr)" readonly disabled />
+                @endforeach
+
                 <hr>
             </div>
             <div class="col-md-6">

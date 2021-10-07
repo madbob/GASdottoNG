@@ -9,12 +9,13 @@ use App\User;
 use App\Supplier;
 use App\Movement;
 use App\MovementType;
+use App\Currency;
 
 class Movements extends CSVImporter
 {
     protected function fields()
     {
-        return [
+        $ret = [
             'date' => (object) [
                 'label' => _i('Data'),
                 'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')])
@@ -34,6 +35,16 @@ class Movements extends CSVImporter
                 'explain' => _i('Nome o partita IVA')
             ],
         ];
+
+        $currencies = Currency::enabled();
+        if ($currencies->count() > 1) {
+            $ret['currency'] = (object) [
+                'label' => _i('Valuta'),
+                'explain' => _i('Una delle valute gestite dal sistema. Se non specificato, verrà selezionata quella di default(%s). Valori ammessi: %s', [defaultCurrency()->symbol, $currencies->pluck('symbol')->join(' / ')]),
+            ];
+        }
+
+        return $ret;
     }
 
     public function testAccess($request)
@@ -62,6 +73,10 @@ class Movements extends CSVImporter
         $movements = [];
         $errors = [];
 
+        $cached_currencies = [];
+        $default_currency = defaultCurrency();
+        $cached_currencies[$default_currency->symbol] = $default_currency;
+
         foreach($reader->getRecords() as $line) {
             try {
                 /*
@@ -72,6 +87,7 @@ class Movements extends CSVImporter
                 */
                 $m = new Movement();
                 $m->method = 'bank';
+                $m->currency_id = $default_currency->id;
                 $save_me = true;
 
                 foreach ($columns as $index => $field) {
@@ -119,6 +135,23 @@ class Movements extends CSVImporter
 
                         $value = $supplier->id;
                     }
+                    elseif ($field == 'currency') {
+                        $field = 'currency_id';
+                        $value = $line[$index];
+
+                        if (!isset($cached_currencies[$value])) {
+                            $cached_currencies[$value] = Currency::where('symbol', $value)->where('enabled', true)->first();
+                        }
+
+                        if ($cached_currencies[$value]) {
+                            $value = $cached_currencies[$value]->id;
+                        }
+                        else {
+                            $save_me = false;
+                            $errors[] = implode($target_separator, $line) . '<br/>' . _i('Valuta non trovata: %s', $value);
+                            continue;
+                        }
+                    }
                     else {
                         $value = $line[$index];
                     }
@@ -126,8 +159,9 @@ class Movements extends CSVImporter
                     $m->$field = $value;
                 }
 
-                if ($save_me)
+                if ($save_me) {
                     $movements[] = $m;
+                }
             }
             catch (\Exception $e) {
                 $errors[] = implode($target_separator, $line) . '<br/>' . $e->getMessage();
@@ -151,6 +185,7 @@ class Movements extends CSVImporter
         $types = $request->input('mtype', []);
         $methods = $request->input('method', []);
         $amounts = $request->input('amount', []);
+        $currencies = $request->input('currency_id', []);
 
         $errors = [];
         $movements = [];
@@ -167,6 +202,7 @@ class Movements extends CSVImporter
                 $m->type = $types[$index];
                 $m->amount = $amounts[$index];
                 $m->method = $methods[$index];
+                $m->currency_id = $currencies[$index];
 
                 $t = MovementType::find($m->type);
 

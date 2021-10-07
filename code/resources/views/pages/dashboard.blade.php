@@ -92,7 +92,14 @@
         @if($currentuser->isFriend() == false)
             <?php
 
-            $current_balance = $currentuser->current_balance_amount;
+            $balances = [];
+            $default_currency = defaultCurrency();
+            $currencies = App\Currency::enabled();
+
+            foreach ($currencies as $currency) {
+                $balances[$currency->id] = $currentuser->currentBalanceAmount($currency);
+            }
+
             $to_pay = $currentuser->pending_balance;
             $to_pay_friend = [];
 
@@ -106,8 +113,11 @@
 
             ?>
 
-            <div class="alert {{ $current_balance >= $to_pay ? 'alert-success' : 'alert-danger' }} text-right">
-                <p class="lead">{{ _i('Credito Attuale') }}: {{ printablePriceCurrency($current_balance) }}</p>
+            <div class="alert {{ $balances[$default_currency->id] >= $to_pay ? 'alert-success' : 'alert-danger' }} text-right">
+                @foreach($currencies as $curr)
+                    <p class="lead">{{ _i('Credito Attuale') }}: {{ printablePriceCurrency($balances[$curr->id], '.', $curr) }}</p>
+                @endforeach
+
                 <p class="lead">{{ _i('Da Pagare') }}: {{ printablePriceCurrency($to_pay) }}</p>
                 @if(!empty($to_pay_friend))
                     <p>{{ _i('di cui') }}</p>

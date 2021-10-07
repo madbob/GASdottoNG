@@ -163,6 +163,7 @@ class DatabaseSeeder extends Seeder
 
         $notification->users()->attach($admin->id, ['done' => false]);
 
+        $this->call(CurrenciesSeeder::class);
         $this->call(MovementTypesSeeder::class);
         $this->call(ModifierTypesSeeder::class);
     }

@@ -285,6 +285,10 @@ function generalInit(container) {
 
     $('.csv_movement_type_select', container).each(function() {
         enforcePaymentMethod($(this));
+
+        $(this).change(function() {
+            enforcePaymentMethod($(this));
+        });
     });
 
     setupImportCsvEditor(container);
@@ -2205,10 +2209,6 @@ $(document).ready(function() {
         totals_row.find('.taxable label').text(utils.priceRound(total_taxable) + ' ' + current_currency);
         totals_row.find('.tax label').text(utils.priceRound(total_tax) + ' ' + current_currency);
         totals_row.find('.total label').text(utils.priceRound(grand_total) + ' ' + current_currency);
-    });
-
-    $('body').on('change', '.csv_movement_type_select', function() {
-        enforcePaymentMethod($(this));
     });
 
     /*

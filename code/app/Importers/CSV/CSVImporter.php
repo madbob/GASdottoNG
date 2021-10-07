@@ -70,7 +70,11 @@ abstract class CSVImporter
             $reader->setDelimiter($target_separator);
 
             $parameters['path'] = $path;
-            $parameters['columns'] = $reader->getRecords()[0] ?? '';
+
+            foreach($reader->getRecords() as $sampleline) {
+                $parameters['columns'] = $sampleline;
+                break;
+            }
 
             return $parameters;
         }

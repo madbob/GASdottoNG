@@ -105,17 +105,4 @@ class SuppliersController extends BackedController
             return $this->errorResponse($e->getMessage(), $e->getArgument());
         }
     }
-
-    public function plainBalance(Request $request, $id)
-    {
-        try {
-            return $this->service->plainBalance($id);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
-        catch (IllegalArgumentException $e) {
-            return $this->errorResponse($e->getMessage(), $e->getArgument());
-        }
-    }
 }

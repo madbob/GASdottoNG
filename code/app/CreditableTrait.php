@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Illuminate\Support\Arr;
+
 use DB;
 use Log;
 
@@ -10,18 +12,17 @@ trait CreditableTrait
     public function balances()
     {
         $proxy = $this->getBalanceProxy();
-        if (is_null($proxy))
+        if (is_null($proxy)) {
             return $this->morphMany('App\Balance', 'target')->orderBy('current', 'desc')->orderBy('date', 'desc');
-        else
+        }
+        else {
             return $proxy->balances();
+        }
     }
 
-    private function fixFirstBalance()
+    private function fixFirstBalance($currency)
     {
-        $proxy = $this->getBalanceProxy();
-        if (is_null($proxy))
-            $proxy = $this;
-
+        $proxy = $this->getActualObject();
         $balance = new Balance();
         $balance->target_id = $proxy->id;
         $balance->target_type = get_class($proxy);
@@ -33,22 +34,23 @@ trait CreditableTrait
         $balance->paypal = 0;
         $balance->satispay = 0;
         $balance->current = true;
+        $balance->currency_id = $currency->id;
         $balance->date = date('Y-m-d');
         $balance->save();
         return $balance;
     }
 
-    public function resetCurrentBalance()
+    private function resetCurrentBalance($currency)
     {
-        $this->current_balance->delete();
+        $this->currentBalance($currency)->delete();
 
-        if ($this->balances()->count() == 0) {
-            return $this->fixFirstBalance();
+        if ($this->balances()->where('currency_id', $currency->id)->count() == 0) {
+            return $this->fixFirstBalance($currency);
         }
         else {
-            $latest = $this->balances()->where('current', false)->first();
+            $latest = $this->balances()->where('current', false)->where('currency_id', $currency->id)->first();
             if (is_null($latest)) {
-                return $this->fixFirstBalance();
+                return $this->fixFirstBalance($currency);
             }
             else {
                 $new = $latest->replicate();
@@ -65,8 +67,9 @@ trait CreditableTrait
         $ret = [];
 
         $models = modelsUsingTrait('App\CreditableTrait');
-        foreach($models as $m)
+        foreach($models as $m) {
             $ret[$m] = $m::commonClassName();
+        }
 
         return $ret;
     }
@@ -74,28 +77,18 @@ trait CreditableTrait
     public static function resetAllCurrentBalances()
     {
         $current_status = [];
+        $currencies = Currency::enabled();
 
         $classes = DB::table('balances')->select('target_type')->distinct()->get();
         foreach($classes as $c) {
             $class = $c->target_type;
-            $current_status[$class] = [];
+            $objects = $class::tAll();
 
-            if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
-                $objects = $class::withTrashed()->get();
-            else
-                $objects = $class::all();
-
-            foreach($objects as $obj) {
-                $proxy = $obj->getBalanceProxy();
-                if ($proxy != null)
-                    $obj = $proxy;
-
+            foreach ($objects as $obj) {
+                $proxy = $obj->getActualObject();
                 $class = get_class($obj);
                 $fields = $class::balanceFields();
                 $now = [];
-
-                if (!isset($current_status[$class]))
-                    $current_status[$class] = [];
 
                 /*
                     Attenzione: qui prendo in considerazione gli eventuali
@@ -105,20 +98,16 @@ trait CreditableTrait
                     Ma il reset lo devo fare una volta sola, altrimenti cancello
                     a ritroso i saldi salvati passati.
                 */
-                if (!isset($current_status[$class][$obj->id])) {
-                    $cb = $obj->current_balance;
-
-                    if (is_null($cb)) {
-                        foreach($fields as $field => $name)
-                            $now[$field] = 0;
-                    }
-                    else {
-                        foreach($fields as $field => $name)
+                foreach ($currencies as $curr) {
+                    if (!isset($current_status[$curr->id][$class][$obj->id])) {
+                        $cb = $obj->currentBalance($curr);
+                        foreach ($fields as $field => $name) {
                             $now[$field] = $cb->$field;
-                    }
+                        }
 
-                    $current_status[$class][$obj->id] = $now;
-                    $obj->resetCurrentBalance();
+                        $current_status[$curr->id][$class][$obj->id] = $now;
+                        $obj->resetCurrentBalance($curr);
+                    }
                 }
             }
         }
@@ -129,37 +118,30 @@ trait CreditableTrait
     public static function duplicateAllCurrentBalances($latest_date)
     {
         $current_status = [];
+        $currencies = Currency::enabled();
 
         $classes = DB::table('balances')->select('target_type')->distinct()->get();
-        foreach($classes as $c) {
+        foreach ($classes as $c) {
             $class = $c->target_type;
+            $objects = $class::tAll();
 
-            if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
-                $objects = $class::withTrashed()->get();
-            else
-                $objects = $class::all();
+            foreach ($objects as $obj) {
+                $proxy = $obj->getActualObject();
+                $class = get_class($obj);
 
-            foreach($objects as $obj) {
-                $proxy = $obj->getBalanceProxy();
-                if ($proxy != null) {
-                    $obj = $proxy;
-                    $class = get_class($obj);
-                }
+                foreach ($currencies as $curr) {
+                    if (!isset($current_status[$curr->id][$class][$obj->id])) {
+                        $latest = $obj->currentBalance($curr);
+                        $new = $latest->replicate();
 
-                if (!isset($current_status[$class]))
-                    $current_status[$class] = [];
+                        $latest->date = $latest_date;
+                        $latest->current = false;
+                        $latest->save();
+                        $new->current = true;
+                        $new->save();
 
-                if (!isset($current_status[$class][$obj->id])) {
-                    $latest = $obj->current_balance;
-                    $new = $latest->replicate();
-
-                    $latest->date = $latest_date;
-                    $latest->current = false;
-                    $latest->save();
-                    $new->current = true;
-                    $new->save();
-
-                    $current_status[$class][$obj->id] = true;
+                        $current_status[$curr->id][$class][$obj->id] = true;
+                    }
                 }
             }
         }
@@ -186,31 +168,23 @@ trait CreditableTrait
     {
         $diff = [];
 
-        foreach($old_balances as $class => $ids) {
-            foreach($ids as $id => $old) {
-                $obj = $class::tFind($id);
-                if (is_null($obj))
-                    continue;
+        foreach($old_balances as $currency_id => $data) {
+            $currency = Currency::find($currency_id);
 
-                $proxy = $obj->getBalanceProxy();
-                if ($proxy != null) {
-                    $obj = $proxy;
-                    $proxy_class = get_class($obj);
-                    $fields = $proxy_class::balanceFields();
-                }
-                else {
-                    $fields = $class::balanceFields();
-                }
+            foreach($data as $class => $ids) {
+                foreach($ids as $id => $old) {
+                    $obj = $class::tFind($id);
+                    if (is_null($obj)) {
+                        continue;
+                    }
 
-                $cb = $obj->current_balance;
-                foreach($fields as $field => $name) {
-                    if ($old[$field] != $cb->$field) {
-                        $diff[$obj->printableName()] = [
-                            $old[$field],
-                            $cb->$field
-                        ];
-
-                        break;
+                    $cb = $obj->currentBalance($currency);
+                    foreach ($old as $field => $old_value) {
+                        if ($old_value != $cb->$field) {
+                            $key = sprintf('%s (%s)', $obj->printableName(), $currency->symbol);
+                            $diff[$key] = [$old_value, $cb->$field];
+                            break;
+                        }
                     }
                 }
             }
@@ -219,16 +193,16 @@ trait CreditableTrait
         return $diff;
     }
 
-    public function getCurrentBalanceAttribute()
+    public function currentBalance($currency)
     {
         $proxy = $this->getBalanceProxy();
 
         if(is_null($proxy)) {
-            $balance = $this->balances()->where('current', true)->first();
+            $balance = $this->balances()->where('current', true)->where('currency_id', $currency->id)->first();
             if (is_null($balance)) {
-                $balance = $this->balances()->where('current', false)->first();
+                $balance = $this->balances()->where('current', false)->where('currency_id', $currency->id)->first();
                 if (is_null($balance)) {
-                    $balance = $this->fixFirstBalance();
+                    $balance = $this->fixFirstBalance($currency);
                 }
                 else {
                     $balance->current = true;
@@ -239,37 +213,44 @@ trait CreditableTrait
             return $balance;
         }
         else {
-            return $proxy->current_balance;
+            return $proxy->currentBalance($currency);
         }
     }
 
-    public function getCurrentBalanceAmountAttribute()
+    public function currentBalanceAmount($currency = null)
     {
-        $balance = $this->current_balance;
+        if (is_null($currency)) {
+            $currency = defaultCurrency();
+        }
+
+        $balance = $this->currentBalance($currency);
         return $balance->bank + $balance->cash;
     }
 
-    public function alterBalance($amount, $type = 'bank')
+    public function alterBalance($amount, $currency, $type = 'bank')
+    {
+        $type = Arr::wrap($type);
+        $balance = $this->currentBalance($currency);
+
+        foreach ($type as $t) {
+            if (!isset($balance->$t)) {
+                $balance->$t = 0;
+            }
+
+            $balance->$t += $amount;
+        }
+
+        $balance->save();
+    }
+
+    private function getActualObject()
     {
         $proxy = $this->getBalanceProxy();
-
-        if(is_null($proxy)) {
-            if (is_string($type)) {
-                $type = [$type];
-            }
-
-            $balance = $this->current_balance;
-
-            foreach ($type as $t) {
-                if (!isset($balance->$t))
-                    $balance->$t = 0;
-                $balance->$t += $amount;
-            }
-
-            $balance->save();
+        if ($proxy != null) {
+            return $proxy;
         }
         else {
-            $proxy->alterBalance($amount, $type);
+            return $this;
         }
     }
 

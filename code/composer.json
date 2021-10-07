@@ -48,6 +48,8 @@
         "files": [
             "app/Helpers/Setup.php",
             "app/Helpers/Formatters.php",
+            "app/Helpers/Dates.php",
+            "app/Helpers/Percentages.php",
             "app/Helpers/Reflection.php",
             "app/Helpers/Paths.php",
             "app/Helpers/Files.php",

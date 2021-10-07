@@ -67,6 +67,16 @@ class Movement extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function currency()
+    {
+        return $this->belongsTo('App\Currency');
+    }
+
+    public function related()
+    {
+        return $this->belongsTo('App\Movement');
+    }
+
     public function getPaymentIconAttribute()
     {
         $types = MovementType::payments();
@@ -99,7 +109,7 @@ class Movement extends Model
         if (empty($this->date) || strstr($this->date, '0000-00-00') !== false)
             return 'Mai';
         else
-            return sprintf('%s | %s | %s', $this->printableDate('date'), printablePriceCurrency($this->amount), $this->payment_icon);
+            return sprintf('%s | %s | %s', $this->printableDate('date'), printablePriceCurrency($this->amount, '.', $this->currency), $this->payment_icon);
     }
 
     public function printableType()

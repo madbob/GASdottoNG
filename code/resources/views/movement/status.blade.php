@@ -1,11 +1,4 @@
-<ul class="list-group mb-2">
-    @foreach($obj->balanceFields() as $identifier => $name)
-        <li class="list-group-item">
-            {{ $name }}
-            <span class="badge bg-secondary float-end {{ $identifier }}"><span>{{ $obj->current_balance->$identifier }}</span> {{ $currentgas->currency }}</span>
-        </li>
-    @endforeach
-</ul>
+@include('movement.summary', ['obj' => $obj])
 
 <div class="float-end">
     <div class="form-inline iblock inner-form">
