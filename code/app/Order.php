@@ -1041,7 +1041,7 @@ class Order extends Model
             if ($shipping_place) {
                 $bookings = $item->bookings()->whereHas('user', function($query) use ($shipping_place) {
                     $query->where('preferred_delivery_id', $shipping_place);
-                });
+                })->get();
             }
             else {
                 /*
