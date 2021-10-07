@@ -152,7 +152,7 @@ class Users extends CSVImporter
                     }
                     else if ($field == 'credit') {
                         if (!empty($line[$index]) && $line[$index] != 0) {
-                            $credit = str_replace(',', '.', $value);
+                            $credit = guessDecimal($value);
                         }
                     }
                     else if ($field == 'ceased') {

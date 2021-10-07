@@ -152,6 +152,9 @@ class Movements extends CSVImporter
                             continue;
                         }
                     }
+                    elseif ($field == 'amount') {
+                        $value = guessDecimal($value);
+                    }
                     else {
                         $value = $line[$index];
                     }

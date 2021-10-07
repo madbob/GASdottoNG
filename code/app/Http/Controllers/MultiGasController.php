@@ -36,12 +36,15 @@ class MultiGasController extends Controller
 
         foreach($user->roles as $role) {
             if ($role->enabledAction('gas.multi')) {
-                foreach ($role->applications() as $obj)
-                    if (get_class($obj) == 'App\\Gas')
+                foreach ($role->applications() as $obj) {
+                    if (get_class($obj) == 'App\\Gas') {
                         $groups[] = $obj;
+                    }
+                }
             }
         }
 
+        $groups = array_unique($groups, SORT_REGULAR);
         return view('pages.multigas', ['groups' => $groups]);
     }
 

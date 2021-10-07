@@ -11,7 +11,130 @@ function printablePrice($price, $separator = '.')
 
 function defaultCurrency()
 {
+<<<<<<< HEAD
     static $currency = null;
+=======
+    return sprintf('%s %s', printablePrice($price), currentAbsoluteGas()->currency);
+}
+
+function guessDecimal($value)
+{
+    $has_dot = (strpos($value, '.') !== false);
+    $has_comma = (strpos($value, ',') !== false);
+
+    if ($has_dot == false && $has_comma == false) {
+        return $value;
+    }
+
+    if ($has_dot && $has_comma == false) {
+        return $value;
+    }
+
+    if ($has_dot == false && $has_comma) {
+        return strtr($value, ',', '.');
+    }
+
+    $last_dot = strrpos($value, '.');
+    $last_comma = strrpos($value, ',');
+
+    if ($last_dot > $last_comma) {
+        return str_replace(',', '', $value);
+    }
+    else {
+        $value = str_replace('.', '', $value);
+        return strtr($value, ',', '.');
+    }
+}
+
+function printableDate($value)
+{
+    if (is_null($value) || empty($value)) {
+        return _i('Mai');
+    }
+    else {
+        if (is_numeric($value)) {
+            $t = $value;
+        }
+        else {
+            $t = strtotime($value);
+            if (empty($t)) {
+                $t = $value;
+            }
+        }
+
+        return ucwords(strftime('%A %d %B %Y', $t));
+    }
+}
+
+function readDate($date)
+{
+    if (preg_match('/\d{1,2}\/\d{1,2}\/\d{1,4}/', $date) == 1) {
+        list($day, $month, $year) = explode('/', $date);
+        if ($year < 1000)
+            $year = (int)$year + 2000;
+
+        return strtotime("$year-$month-$day");
+    }
+
+    if (preg_match('/\d{1,2}\.\d{1,2}\.\d{1,4}/', $date) == 1) {
+        list($day, $month, $year) = explode('.', $date);
+        if ($year < 1000)
+            $year = (int)$year + 2000;
+
+        return strtotime("$year-$month-$day");
+    }
+
+    return strtotime($date);
+}
+
+function periodicCycling()
+{
+    return [
+        'all' => _i('Tutti'),
+        'biweekly' => _i('Ogni due Settimane'),
+        'month_first' => _i('Primo del Mese'),
+        'month_second' => _i('Secondo del Mese'),
+        'month_third' => _i('Terzo del Mese'),
+        'month_fourth' => _i('Quarto del Mese'),
+        'month_last' => _i('Ultimo del Mese'),
+    ];
+}
+
+function printablePeriodic($value)
+{
+    if (empty($value))
+        return '';
+
+    $value_obj = json_decode($value);
+    if (empty($value_obj)) {
+        Log::error('Data periodica non riconosciuta: ' . $value);
+        return '';
+    }
+
+    $day = '';
+    $days = localeDays();
+    foreach($days as $locale => $english) {
+        if ($value_obj->day == $english) {
+            $day = ucwords($locale);
+            break;
+        }
+    }
+
+    $cycles = periodicCycling();
+    $cycle = $cycles[$value_obj->cycle];
+
+    return sprintf('%s - %s - %s - %s', $day, $cycle, printableDate($value_obj->from), printableDate($value_obj->to));
+}
+
+function decodePeriodic($value)
+{
+    if (empty($value))
+        return '';
+
+    $values = explode(' - ', $value);
+    if (count($values) < 4)
+        return '';
+>>>>>>> master
 
     if (is_null($currency)) {
         $currency = App\Currency::where('context', 'default')->first();

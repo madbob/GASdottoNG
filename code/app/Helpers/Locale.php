@@ -29,6 +29,35 @@ function htmlLang()
     return str_replace('_', '-', currentLang());
 }
 
+function guessDecimal($value)
+{
+    $has_dot = (strpos($value, '.') !== false);
+    $has_comma = (strpos($value, ',') !== false);
+
+    if ($has_dot == false && $has_comma == false) {
+        return $value;
+    }
+
+    if ($has_dot && $has_comma == false) {
+        return $value;
+    }
+
+    if ($has_dot == false && $has_comma) {
+        return strtr($value, ',', '.');
+    }
+
+    $last_dot = strrpos($value, '.');
+    $last_comma = strrpos($value, ',');
+
+    if ($last_dot > $last_comma) {
+        return str_replace(',', '', $value);
+    }
+    else {
+        $value = str_replace('.', '', $value);
+        return strtr($value, ',', '.');
+    }
+}
+
 /*
     Se vengono aggiunte nuove traduzioni, correggere anche il file
     code/config/laravel-gettext.php

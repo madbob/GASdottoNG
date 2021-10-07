@@ -116,7 +116,7 @@ class Products extends CSVImporter
                 $p->multiple = 0;
                 $p->package_size = 0;
 
-                if ($supplier_code_index == -1 && !empty($line[$supplier_code_index])) {
+                if ($supplier_code_index == -1 || !empty($line[$supplier_code_index])) {
                     $test = $s->products()->where('name', $name)->orderBy('id', 'desc')->first();
                 }
                 else {
@@ -147,6 +147,7 @@ class Products extends CSVImporter
                         }
                         else {
                             $p->category_id = $test_category->id;
+                            continue;
                         }
                     }
                     elseif ($field == 'measure') {
@@ -156,14 +157,18 @@ class Products extends CSVImporter
                         }
                         else {
                             $p->measure_id = $test_measure->id;
+                            continue;
                         }
                     }
+                    elseif ($field == 'price') {
+                        $value = guessDecimal($value);
+                    }
                     elseif ($field == 'price_without_vat') {
-                        $price_without_vat = str_replace(',', '.', $value);
+                        $price_without_vat = guessDecimal($value);
                         continue;
                     }
                     elseif ($field == 'vat') {
-                        $value = str_replace(',', '.', $value);
+                        $value = guessDecimal($value);
                         $vat_rate = $value = (float) $value;
 
                         $test_vat = VatRate::where('percentage', $value)->first();
@@ -175,7 +180,7 @@ class Products extends CSVImporter
                         }
                     }
                     elseif ($field == 'package_price') {
-                        $package_price = str_replace(',', '.', $value);
+                        $package_price = guessDecimal($value);
                         continue;
                     }
 
@@ -195,7 +200,7 @@ class Products extends CSVImporter
                 $products[] = $p;
             }
             catch (\Exception $e) {
-                $errors[] = join($target_separator, $line).'<br/>'.$e->getMessage();
+                $errors[] = join($target_separator, $line) . '<br/>' . $e->getMessage();
             }
         }
 

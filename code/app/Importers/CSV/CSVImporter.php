@@ -34,18 +34,15 @@ abstract class CSVImporter
         }
 
         $separators = [',', ';', "\t"];
-        $target_separator = null;
+        $lenghts = [0, 0, 0];
 
-        while (!feof($contents)) {
-            $char = fgetc($contents);
-            if (in_array($char, $separators)) {
-                $target_separator = $char;
-                break;
-            }
+        foreach($separators as $sep_index => $sep) {
+            $row = fgetcsv($contents, 0, $sep);
+            $lenghts[$sep_index] = count($row);
+            rewind($contents);
         }
 
-        fclose($contents);
-        return $target_separator;
+        return $separators[array_search(max($lenghts), $lenghts)];
     }
 
     protected function storeUploadedFile($request, $parameters)
@@ -71,10 +68,14 @@ abstract class CSVImporter
 
             $parameters['path'] = $path;
 
-            foreach($reader->getRecords() as $sampleline) {
-                $parameters['columns'] = $sampleline;
+            $sample_line = '';
+
+            foreach($reader->getRecords() as $line) {
+                $sample_line = $line;
                 break;
             }
+
+            $parameters['columns'] = $sample_line;
 
             return $parameters;
         }

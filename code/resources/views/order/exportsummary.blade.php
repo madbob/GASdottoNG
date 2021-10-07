@@ -13,8 +13,7 @@
             <?php
 
             $options = [
-                'all_by_name' => _i('Tutti (ordinati per utente)'),
-                'all_by_place' => _i('Tutti (ordinati per luogo)'),
+                'all_by_place' => _i('Tutti'),
             ];
 
             foreach($currentgas->deliveries as $delivery) {

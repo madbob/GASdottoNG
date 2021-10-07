@@ -31,13 +31,13 @@
                                     <small>{{ $o->printableDates() }}</small>
                                 </td>
                                 <td class="taxable">
-                                    <x-larastrap::price squeeze :value="$summary->total_taxable" readonly disabled />
+                                    <label>{{ $summary->total_taxable }}</label> {{ currentAbsoluteGas()->currency }}
                                 </td>
                                 <td class="tax">
-                                    <x-larastrap::price squeeze :value="$summary->total_tax" readonly disabled />
+                                    <label>{{ $summary->total_tax }}</label> {{ currentAbsoluteGas()->currency }}
                                 </td>
                                 <td class="total">
-                                    <x-larastrap::price squeeze :value="$summary->total" readonly disabled />
+                                    <label>{{ $summary->total }}</label> {{ currentAbsoluteGas()->currency }}
                                 </td>
                             </tr>
                         @endif
@@ -48,13 +48,13 @@
                     <td>&nbsp;</td>
                     <td>Totale Selezionato</td>
                     <td class="taxable">
-                        <x-larastrap::price squeeze value="0" readonly disabled />
+                        <label>0</label> {{ currentAbsoluteGas()->currency }}
                     </td>
                     <td class="tax">
-                        <x-larastrap::price squeeze value="0" readonly disabled />
+                        <label>0</label> {{ currentAbsoluteGas()->currency }}
                     </td>
                     <td class="total">
-                        <x-larastrap::price squeeze value="0" readonly disabled />
+                        <label>0</label> {{ currentAbsoluteGas()->currency }}
                     </td>
                 </tr>
 
@@ -62,13 +62,13 @@
                     <td>&nbsp;</td>
                     <td>{{ _i('Fattura') }}</td>
                     <td>
-                        <x-larastrap::price squeeze :value="$invoice->total" readonly disabled />
+                        <label>{{ $invoice->total }}</label> {{ currentAbsoluteGas()->currency }}
                     </td>
                     <td>
-                        <x-larastrap::price squeeze :value="$invoice->total_vat" readonly disabled />
+                        <label>{{ $invoice->total_vat }}</label> {{ currentAbsoluteGas()->currency }}
                     </td>
                     <td>
-                        <x-larastrap::price squeeze :value="$invoice->total + $invoice->total_vat" readonly disabled />
+                        <label>{{ $invoice->total + $invoice->total_vat }}</label> {{ currentAbsoluteGas()->currency }}
                     </td>
                 </tr>
             </tbody>
