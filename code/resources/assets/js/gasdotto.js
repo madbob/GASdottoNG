@@ -2202,9 +2202,9 @@ $(document).ready(function() {
         });
 
         var totals_row = table.find('.orders-in-invoice-total');
-        totals_row.find('.taxable label').text(utils.priceRound(total_taxable) + ' ' + current_currency);
-        totals_row.find('.tax label').text(utils.priceRound(total_tax) + ' ' + current_currency);
-        totals_row.find('.total label').text(utils.priceRound(grand_total) + ' ' + current_currency);
+        totals_row.find('.taxable label').text(utils.priceRound(total_taxable));
+        totals_row.find('.tax label').text(utils.priceRound(total_tax));
+        totals_row.find('.total label').text(utils.priceRound(grand_total));
     });
 
     $('body').on('change', '.csv_movement_type_select', function() {
