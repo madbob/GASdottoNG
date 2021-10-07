@@ -119,6 +119,9 @@ class Movements extends CSVImporter
 
                         $value = $supplier->id;
                     }
+                    elseif ($field == 'amount') {
+                        $value = guessDecimal($value);
+                    }
                     else {
                         $value = $line[$index];
                     }

@@ -14,6 +14,35 @@ function printablePriceCurrency($price, $separator = '.')
     return sprintf('%s %s', printablePrice($price), currentAbsoluteGas()->currency);
 }
 
+function guessDecimal($value)
+{
+    $has_dot = (strpos($value, '.') !== false);
+    $has_comma = (strpos($value, ',') !== false);
+
+    if ($has_dot == false && $has_comma == false) {
+        return $value;
+    }
+
+    if ($has_dot && $has_comma == false) {
+        return $value;
+    }
+
+    if ($has_dot == false && $has_comma) {
+        return strtr($value, ',', '.');
+    }
+
+    $last_dot = strrpos($value, '.');
+    $last_comma = strrpos($value, ',');
+
+    if ($last_dot > $last_comma) {
+        return str_replace(',', '', $value);
+    }
+    else {
+        $value = str_replace('.', '', $value);
+        return strtr($value, ',', '.');
+    }
+}
+
 function printableDate($value)
 {
     if (is_null($value) || empty($value)) {
