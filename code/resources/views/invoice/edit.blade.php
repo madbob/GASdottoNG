@@ -79,12 +79,12 @@
                     $modifiers = $o->applyModifiers(null, false);
                     $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
 
-                    foreach($aggregated_modifiers as $am) {
-                        if (!isset($orders_modifiers[$am->id])) {
-                            $orders_modifiers[$am->id] = $am;
+                    foreach($aggregated_modifiers as $am_id => $am) {
+                        if (!isset($orders_modifiers[$am_id])) {
+                            $orders_modifiers[$am_id] = $am;
                         }
                         else {
-                            $orders_modifiers[$am->id]->amount += $am->amount;
+                            $orders_modifiers[$am_id]->amount += $am->amount;
                         }
 
                         $orders_total += $am->amount;
