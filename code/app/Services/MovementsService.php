@@ -75,6 +75,10 @@ class MovementsService extends BaseService
             }
         }
 
+        if (isset($request['currency_id']) && $request['currency_id'] != '0') {
+            $query->where('currency_id', $request['currency_id']);
+        }
+
         if (isset($request['generic_target_id']) && $request['generic_target_id'] != '0') {
             $target_id = $request['generic_target_id'];
             $target_type = $request['generic_target_type'];
@@ -120,6 +124,7 @@ class MovementsService extends BaseService
         $this->setIfSet($movement, $request, 'target_type');
         $this->setIfSet($movement, $request, 'target_id');
         $this->setIfSet($movement, $request, 'amount');
+        $this->setIfSet($movement, $request, 'currency_id');
         $this->setIfSet($movement, $request, 'method');
         $this->setIfSet($movement, $request, 'type');
         $this->setIfSet($movement, $request, 'identifier');
@@ -229,7 +234,7 @@ class MovementsService extends BaseService
             });
         }
         catch(\Exception $e) {
-            Log::error(_i('Errore nel ricalcolo saldi: %s', $e->getMessage()));
+            Log::error('Errore nel ricalcolo saldi: %s', $e->getMessage());
             $hub->setRecalculating(false);
             return null;
         }
@@ -259,8 +264,9 @@ class MovementsService extends BaseService
                 $index = 0;
                 do {
                     $movements = Movement::where('date', '<', $date)->where('archived', false)->take(100)->offset(100 * $index)->get();
-                    if ($movements->count() == 0)
+                    if ($movements->count() == 0) {
                         break;
+                    }
 
                     foreach($movements as $m) {
                         $m->updated_at = $current_date;

@@ -54,9 +54,9 @@ $buttons[] = ['color' => 'success', 'label' => _i('Salva'), 'attributes' => ['ty
         <x-larastrap::hidden name="target_id" />
 
         @if($amount_editable || $editable)
-            <x-larastrap::price name="amount" :label="$amount_label" />
+            @include('commons.pricecurrency')
         @else
-            <x-larastrap::price name="amount" :label="$amount_label" readonly />
+            <x-larastrap::price name="amount" :label="$amount_label" readonly :currency="$obj->currency_id" />
         @endif
 
         @if($obj->sender && array_search('App\CreditableTrait', class_uses($obj->sender)) !== false && count($obj->sender->balanceFields()) == 1)

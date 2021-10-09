@@ -81,8 +81,8 @@ class FixDatabase extends Command
             $c->enabled = true;
             $c->save();
 
-            Balance::where('id', '>', 0)->update(['currency_id' => $c->id]);
-            Movement::where('id', '>', 0)->update(['currency_id' => $c->id]);
+            Balance::whereNull('currency_id')->update(['currency_id' => $c->id]);
+            Movement::whereNull('currency_id')->update(['currency_id' => $c->id]);
         }
     }
 }

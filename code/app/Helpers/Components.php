@@ -115,10 +115,24 @@ function formatObjectsToComponent($component, $params)
 function formatPriceToComponent($component, $params)
 {
     $value = printablePrice($params['value']);
-    $currency = currentAbsoluteGas()->currency;
+
+    if (!isset($params['currency'])) {
+        $currency = currentAbsoluteGas()->currency;
+    }
+    else {
+        if ($params['currency'] != '0') {
+            $c = App\Currency::find($params['currency']);
+            $currency = $c->symbol;
+        }
+        else {
+            $currency = '';
+        }
+
+        unset($params['currency']);
+    }
 
     $params['value'] = printablePrice($params['value']);
-    $params['textappend'] = currentAbsoluteGas()->currency;
+    $params['textappend'] = $currency;
 
     return $params;
 }

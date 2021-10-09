@@ -39,12 +39,17 @@
 
                             <x-larastrap::field :label="_i('Importo')">
                                 <div class="input-group">
-                                    <div class="input-group-text">{{ _i('Da %s', [$currentgas->currency]) }}</div>
+                                    <div class="input-group-text">{{ _i('Da') }}</div>
                                     <input type="number" class="form-control" name="amountstart" autocomplete="off" step="0.01">
-                                    <div class="input-group-text">{{ _i('a %s', $currentgas->currency) }}</div>
+                                    <div class="input-group-text">{{ _i('a') }}</div>
                                     <input type="number" class="form-control" name="amountend" autocomplete="off" step="0.01">
                                 </div>
                             </x-larastrap::field>
+
+                            <?php $currencies = App\Currency::enabled() ?>
+                            @if($currencies->count() > 1)
+                                <x-larastrap::selectobj name="currency_id" :label="_i('Valuta')" :options="$currencies" :extraitem="_i('Tutte')" />
+                            @endif
                         </x-filler>
                     </div>
 

@@ -106,10 +106,12 @@ class Movement extends Model
 
     public function printableName()
     {
-        if (empty($this->date) || strstr($this->date, '0000-00-00') !== false)
+        if (empty($this->date) || strstr($this->date, '0000-00-00') !== false) {
             return 'Mai';
-        else
+        }
+        else {
             return sprintf('%s | %s | %s', $this->printableDate('date'), printablePriceCurrency($this->amount, '.', $this->currency), $this->payment_icon);
+        }
     }
 
     public function printableType()
@@ -189,6 +191,7 @@ class Movement extends Model
             $ret->amount = $amount;
         }
 
+        $ret->currency_id = currentAbsoluteGas()->currency;
         $ret->date = date('Y-m-d');
         $ret->notes = $type_descr->default_notes;
         $ret->method = MovementType::defaultPaymentByType($type);
