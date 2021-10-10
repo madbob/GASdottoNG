@@ -140,6 +140,7 @@ Route::middleware(['auth'])->group(function() {
 
     Route::post('multigas/attach', 'MultiGasController@attach');
     Route::post('multigas/detach', 'MultiGasController@detach');
+    Route::get('multigas/{id}/goto', 'MultiGasController@goTo')->name('multigas.goto');
     Route::get('multigas/{id}/header', 'GasController@objhead')->name('multigas.objhead');
 
     Route::post('payment/do', 'PaymentController@doPayment')->name('payment.do');

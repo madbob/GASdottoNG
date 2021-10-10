@@ -2,6 +2,21 @@
 
 @section('content')
 
+@if(count($groups) > 1)
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-light" disabled>{{ _i('GAS attivo: %s', [$currentgas->name]) }}</a>
+            @foreach($groups as $gas)
+                @if($gas->id != $currentgas->id)
+                    <a href="{{ route('multigas.goto', $gas->id) }}" class="btn btn-primary">Passa a {{ $gas->name }}</a>
+                @endif
+            @endforeach
+        </div>
+    </div>
+
+    <hr>
+@endif
+
 <x-larastrap::tabs>
     <x-larastrap::tabpane :label="_i('GAS')" active="true">
         <div class="row">
