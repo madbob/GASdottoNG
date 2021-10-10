@@ -187,7 +187,7 @@ class AggregatesController extends OrdersController
                 $required_fields = $request->input('fields', []);
 
                 $fields = splitFields($required_fields);
-                $status = 'booked';
+                $status = $request->input('status', 'booked');
 
                 $shipping_place = $request->input('shipping_place', 'all_by_name');
 
