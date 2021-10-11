@@ -372,7 +372,6 @@ function wizardLoadPage(node, contents) {
         next.modal('show');
     }
     catch(error) {
-        console.log(error);
         var json = JSON.parse(contents);
         var modal = $('#service-modal');
         modal.find('.modal-body').empty().append('<p>' + json.message + '</p>');
@@ -810,7 +809,7 @@ function bookingTotal(editor) {
                             for (let i = 0; i < product_meta.variants.length; i++) {
                                 var variant = product_meta.variants[i];
                                 var varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).filter(':not(.skip-on-submit)').eq(i);
-                                varinputbox.toggleClass('is-invalid', variant.quantity == 0 && utils.parseFloatC(inputbox.val()) != 0);
+                                utils.inputInvalidFeedback(varinputbox, variant.quantity == 0 && utils.parseFloatC(varinputbox.val()) != 0, variant.message);
 
                                 if (action == 'shipped') {
                                     varinputbox.closest('tr').find('.booking-product-price span').text(utils.priceRound(variant.total));
@@ -818,7 +817,7 @@ function bookingTotal(editor) {
                             }
                         }
                         else {
-                            inputbox.toggleClass('is-invalid', product_meta.quantity == 0 && utils.parseFloatC(inputbox.val()) != 0);
+                            utils.inputInvalidFeedback(inputbox, product_meta.quantity == 0 && utils.parseFloatC(inputbox.val()) != 0, product_meta.message);
                         }
 					}
 
@@ -1956,7 +1955,7 @@ $(document).ready(function() {
 
     }).on('blur', '.booking-product-quantity input', function() {
         if ($(this).val() == '' || $(this).hasClass('is-invalid')) {
-            $(this).val('0').keyup();
+            $(this).val('0').removeClass('is-invalid').keyup();
         }
 
     }).on('focus', '.booking-product-quantity input', function() {

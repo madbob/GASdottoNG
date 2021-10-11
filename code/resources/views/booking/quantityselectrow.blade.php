@@ -34,6 +34,7 @@ $booked_quantity = (isset($o) ? $o->getBookedQuantity($product) : 0);
                 {{ $product->printableMeasure() }}
             @endif
         </div>
+        <div class="invalid-feedback"></div>
     </div>
     <div class="mobile-quantity-switch d-inline-block d-md-none float-end">
         <button class="btn btn-light plus"><i class="bi-plus"></i></button>

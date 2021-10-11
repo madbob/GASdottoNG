@@ -12,7 +12,7 @@ class Locker
         $identifier = sprintf('%s_%s', env('DB_DATABASE'), $identifier);
 
         while (Cache::get($identifier) && $tries < 10) {
-            sleep(50000);
+            usleep(50000);
             $tries++;
         }
 

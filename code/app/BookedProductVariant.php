@@ -24,12 +24,12 @@ class BookedProductVariant extends Model
         return $this->product->status;
     }
 
-    public function hasCombination($variant, $value)
+    public function hasCombination($variant_id, $value_id)
     {
         $components = $this->components;
 
         foreach ($components as $c) {
-            if ($c->variant_id == $variant->id && $c->value_id == $value->id) {
+            if ($c->variant_id == $variant_id && $c->value_id == $value_id) {
                 return true;
             }
         }
@@ -37,7 +37,7 @@ class BookedProductVariant extends Model
         return false;
     }
 
-    private function variantsCombo()
+    public function variantsCombo()
     {
         $values = [];
 

@@ -72,12 +72,14 @@ class VariantsController extends BackedController
 
         $combinations = $request->input('combination');
         $codes = $request->input('code', []);
+        $actives = $request->input('active', []);
         $prices = $request->input('price_offset', []);
         $weights = $request->input('weight_offset', []);
 
         foreach($combinations as $index => $combination) {
             $combo = VariantCombo::byValues(explode(',', $combination));
             $combo->code = $codes[$index];
+            $combo->active = in_array($combo->id, $actives);
             $combo->price_offset = $prices[$index];
             $combo->weight_offset = $weights[$index] ?? 0;
             $combo->save();

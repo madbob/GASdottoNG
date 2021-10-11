@@ -164,6 +164,14 @@ class Utils {
         return parent_form;
     }
 
+    static inputInvalidFeedback(input, is_invalid, message)
+    {
+        input.toggleClass('is-invalid', is_invalid);
+        if (is_invalid == true) {
+            input.siblings('.invalid-feedback').text(message);
+        }
+    }
+
     static submitButton(form)
     {
         let ret = form.find('button[type=submit]');
