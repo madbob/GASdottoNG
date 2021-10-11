@@ -76,7 +76,7 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
                                     <x-larastrap::selectobj name="target_id" npostfix="[]" squeeze :options="$suppliers" :extraitem="_i('Nessuno')" />
                                 </td>
                                 <td>
-                                    <x-larastrap::textarea name="notes" npostfix="[]" squeeze />
+                                    <x-larastrap::text name="notes" npostfix="[]" squeeze />
                                 </td>
                                 <td>
                                     <x-larastrap::select name="type" nprefix="m" npostfix="[]" squeeze :options="$types" classes="csv_movement_type_select" />

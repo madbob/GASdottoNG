@@ -34,15 +34,12 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                         <th width="3%">{{ _i('Importa') }}</th>
                         <th width="15%">{{ _i('Nome') }}</th>
                         <th width="15%">{{ _i('Descrizione') }}</th>
-                        <th width="8%">{{ _i('Prezzo Unitario') }}</th>
-                        <th width="8%">{{ _i('Categoria') }}</th>
-                        <th width="8%">{{ _i('Unità di Misura') }}</th>
-                        <th width="8%">{{ _i('Aliquota IVA') }}</th>
-                        <th width="8%">{{ _i('Codice Fornitore') }}</th>
-                        <th width="6%">{{ _i('Dimensione Confezione') }}</th>
-                        <th width="6%">{{ _i('Ordine Minimo') }}</th>
-                        <th width="6%">{{ _i('Ordinabile per Multipli') }}</th>
-                        <th width="9%">{{ _i('Aggiorna') }}</th>
+                        <th width="10%">{{ _i('Prezzo Unitario') }}</th>
+                        <th width="10%">{{ _i('Categoria') }}</th>
+                        <th width="10%">{{ _i('Unità di Misura') }}</th>
+                        <th width="10%">{{ _i('Aliquota IVA') }}</th>
+                        <th width="10%">{{ _i('Codice Fornitore') }}</th>
+                        <th width="15%">{{ _i('Aggiorna') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,6 +50,11 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                                     <input type="checkbox" name="import[]" value="{{ $index }}" checked>
                                 </td>
                                 <td>
+                                    <x-larastrap::hidden name="weight" squeeze npostfix="[]" />
+                                    <x-larastrap::hidden name="package_size" squeeze npostfix="[]" />
+                                    <x-larastrap::hidden name="min_quantity" squeeze npostfix="[]" />
+                                    <x-larastrap::hidden name="multiple" squeeze npostfix="[]" />
+
                                     <x-larastrap::text name="name" squeeze npostfix="[]" />
                                 </td>
                                 <td>
@@ -79,22 +81,12 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                                     @if(isset($product->temp_vat_rate_name))
                                         <x-larastrap::selectobj name="vat_rate_id" squeeze npostfix="[]" :options="$vat_rates" :extraitem="['new:' . $product->temp_vat_rate_name => $product->temp_vat_rate_name]" />
                                     @else
-                                        <x-larastrap::selectobj name="vat_rate_id" squeeze npostfix="[]" :options="$vat_rates" />
+                                        <x-larastrap::selectobj name="vat_rate_id" squeeze npostfix="[]" :options="$vat_rates" :extraitem="['0' => _i('Nessuna')]" />
                                     @endif
                                 </td>
                                 <td>
                                     <x-larastrap::text name="supplier_code" squeeze npostfix="[]" />
                                 </td>
-                                <td>
-                                    <x-larastrap::number name="package_size" squeeze npostfix="[]" classes="trim-3-ddigits" />
-                                </td>
-                                <td>
-                                    <x-larastrap::number name="min_quantity" squeeze npostfix="[]" classes="trim-3-ddigits" />
-                                </td>
-                                <td>
-                                    <x-larastrap::number name="multiple" squeeze npostfix="[]" classes="trim-3-ddigits" />
-                                </td>
-
                                 <td>
                                     @if($original_products->isEmpty() == false)
                                         <x-larastrap::selectobj name="want_replace" squeeze npostfix="[]" :options="$original_products" :extraitem="_i('Nessuno')" />
