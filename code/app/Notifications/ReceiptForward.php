@@ -14,7 +14,7 @@ class ReceiptForward extends ManyMailNotification implements ShouldQueue
     public function __construct($temp_file)
     {
         $this->temp_file = $temp_file;
-        $this->setFiles($temp_file);
+        $this->setFiles([$temp_file]);
     }
 
     public function toMail($notifiable)
