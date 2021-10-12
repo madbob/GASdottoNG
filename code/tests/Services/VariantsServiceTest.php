@@ -55,6 +55,7 @@ class VariantsServiceTest extends TestCase
         $variant = $this->service->store([
             'product_id' => $this->product->id,
             'name' => 'Colore',
+            'id' => ['', '', ''],
             'value' => ['Rosso', 'Verde', 'Blu'],
         ]);
 
@@ -62,9 +63,17 @@ class VariantsServiceTest extends TestCase
         $this->assertEquals(3, $variant->values()->count());
         $this->assertEquals(3, $this->product->variant_combos->count());
 
+        $old_value = $variant->values()->where('value', 'Rosso')->first();
+
         $variant = $this->service->store([
             'variant_id' => $variant->id,
             'name' => 'Colore',
+            'id' => [
+                $variant->values()->where('value', 'Rosso')->first()->id,
+                $variant->values()->where('value', 'Verde')->first()->id,
+                $variant->values()->where('value', 'Blu')->first()->id,
+                ''
+            ],
             'value' => ['Rosso', 'Verde', 'Blu', 'Giallo'],
         ]);
 
@@ -72,9 +81,13 @@ class VariantsServiceTest extends TestCase
         $this->assertEquals(4, $variant->values()->count());
         $this->assertEquals(4, $this->product->variant_combos->count());
 
+        $new_value = $variant->values()->where('value', 'Rosso')->first();
+        $this->assertEquals($old_value->id, $new_value->id);
+
         $variant = $this->service->store([
             'product_id' => $this->product->id,
             'name' => 'Taglia',
+            'id' => ['', '', ''],
             'value' => ['S', 'M', 'L'],
         ]);
 
