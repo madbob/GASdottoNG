@@ -2,10 +2,7 @@
     <div class="row">
         <div class="col">
             <x-larastrap::ambutton :label="_i('Crea Nuova Variante')" :data-modal-url="route('variants.create', ['product_id' => $product->id])" />
-
-            @if($product->variantCombos->isEmpty() == false)
-                <x-larastrap::ambutton :label="_i('Modifica Matrice Varianti')" :data-modal-url="route('variants.matrix', $product->id)" />
-            @endif
+            <x-larastrap::ambutton :label="_i('Modifica Matrice Varianti')" :data-modal-url="route('variants.matrix', $product->id)" />
         </div>
     </div>
 

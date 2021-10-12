@@ -7,7 +7,6 @@
                 'label' => _i('ID'),
                 'field' => 'id',
                 'type' => 'hidden',
-                'width' => 0,
                 'extra' => [
                     'nprefix' => 'contact_'
                 ]
@@ -16,7 +15,6 @@
                 'label' => _i('Tipo'),
                 'field' => 'type',
                 'type' => 'select',
-                'width' => 4,
                 'extra' => [
                     'nprefix' => 'contact_',
                     'options' => App\Contact::types()
@@ -26,7 +24,6 @@
                 'label' => _i('Valore'),
                 'field' => 'value',
                 'type' => 'text',
-                'width' => 7,
                 'extra' => [
                     'nprefix' => 'contact_'
                 ]

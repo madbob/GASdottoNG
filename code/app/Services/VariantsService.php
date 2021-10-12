@@ -64,35 +64,33 @@ class VariantsService extends BaseService
         $this->setIfSet($variant, $request, 'name');
         $variant->save();
 
+        $ids = $request['id'] ?? [];
         $new_values = $request['value'] ?? [];
-        $existing_values = $variant->values;
-        $matching_values = [];
+        $new_ids = [];
 
-        for ($i = 0; $i < count($new_values); ++$i) {
-            $value = $new_values[$i];
+        foreach($new_values as $i => $value) {
+            $value = trim($value);
             if (empty($value)) {
                 continue;
             }
 
-            $value_found = false;
+            $id = $ids[$i];
 
-            foreach ($existing_values as $evalue) {
-                if ($value == $evalue->value) {
-                    $value_found = true;
-                    $matching_values[] = $evalue->id;
-                }
-            }
-
-            if ($value_found == false) {
+            if (empty($id)) {
                 $val = new VariantValue();
-                $val->value = $value;
                 $val->variant_id = $variant->id;
-                $val->save();
-                $matching_values[] = $val->id;
             }
+            else {
+                $val = VariantValue::find($id);
+            }
+
+            $val->value = $value;
+            $val->save();
+
+            $new_ids[] = $val->id;
         }
 
-        $values_to_remove = VariantValue::where('variant_id', '=', $variant->id)->whereNotIn('id', $matching_values)->get();
+        $values_to_remove = VariantValue::where('variant_id', '=', $variant->id)->whereNotIn('id', $new_ids)->get();
         foreach($values_to_remove as $vtr) {
             $this->removeFromBooked('value_id', $vtr->id);
             $vtr->delete();
