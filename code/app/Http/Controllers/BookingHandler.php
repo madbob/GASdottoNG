@@ -205,7 +205,11 @@ class BookingHandler extends Controller
             }
         }
 
-        if ($count_products == 0) {
+        /*
+            Attenzione: se sto consegnando, e tutte le quantità sono a 0,
+            comunque devo preservare i dati della prenotazione
+        */
+        if ($delivering == false && $count_products == 0) {
             $booking->delete();
             return null;
         }
