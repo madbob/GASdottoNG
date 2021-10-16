@@ -10,6 +10,7 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Log;
 
 use App\Events\SluggableCreating;
+use App\Exceptions\InvalidQuantityConstraint;
 
 class BookedProduct extends Model
 {
@@ -95,26 +96,37 @@ class BookedProduct extends Model
         return $this->product->contextualPrice($this->booking->order, $rectify);
     }
 
-    public function testConstraints($quantity)
+    public function testConstraints($quantity, $variant = null)
     {
         $product = $this->product;
 
         if ($product->min_quantity != 0) {
             if ($quantity < $product->min_quantity) {
-                return 0;
+                throw new InvalidQuantityConstraint(_('Quantità inferiore al minimo consentito'), 1);
             }
         }
 
         if ($product->multiple != 0) {
             if (fmod($quantity, $product->multiple) != 0) {
-                return 0;
+                throw new InvalidQuantityConstraint(_('Quantità non multipla del valore consentito'), 2);
             }
         }
 
         if ($product->max_available != 0) {
             if ($quantity > ($product->stillAvailable($this->booking->order) + $this->quantity)) {
-                return 0;
+                throw new InvalidQuantityConstraint(_('Quantità superiore alla disponibilità'), 3);
             }
+        }
+
+        if ($variant) {
+            $combo = $variant->variantsCombo();
+            if ($combo->active == false) {
+                throw new InvalidQuantityConstraint(_('Questa combinazione di varianti non è attualmente ordinabile'), 4);
+            }
+        }
+
+        if ($quantity > 9999.99) {
+            throw new InvalidQuantityConstraint(_('La quantità massima è 9999.99'), 5);
         }
 
         return $quantity;

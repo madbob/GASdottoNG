@@ -9,11 +9,11 @@ class ManualWelcomeMessage extends ManyMailNotification implements ShouldQueue
 {
     use MailFormatter, Queueable;
 
-    public $afterCommit = true;
     private $token = null;
 
     public function __construct($token)
     {
+        $this->afterCommit = true;
         $this->token = $token;
     }
 

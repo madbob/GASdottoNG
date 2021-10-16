@@ -11,7 +11,7 @@
 
                     <x-larastrap::field label="">
                         <div class="form-text">
-                            {{ _i('Questi valori saranno usati come default per tutti i nuovi ordini di questo fornitore, ma sarà comunque possibile modificarli per ciascun ordine.') }}
+                            {{ _i('Questi valori saranno usati come default per tutti i nuovi ordini di questo fornitore, ma sarà comunque possibile modificarli per ciascun ordine. Solo i modificatori valorizzati con qualche valore, o esplicitamente marcati come "sempre attivi", risulteranno accessibili dai relativi ordini.') }}
                         </div>
                     </x-larastrap::field>
 

@@ -52,7 +52,7 @@ class Products extends CSVImporter
                 'explain' => _i('Se specificato, il prezzo unitario viene calcolato come Prezzo Confezione / Dimensione Confezione')
             ],
             'weight' => (object) [
-                'label' => _i('Peso'),
+                'label' => _i('Peso (in KG)'),
             ],
             'min_quantity' => (object) [
                 'label' => _i('Ordine Minimo'),
@@ -171,12 +171,17 @@ class Products extends CSVImporter
                         $value = guessDecimal($value);
                         $vat_rate = $value = (float) $value;
 
-                        $test_vat = VatRate::where('percentage', $value)->first();
-                        if (is_null($test_vat)) {
-                            $field = 'temp_vat_rate_name';
+                        if ($vat_rate == 0) {
+                            $p->vat_rate_id = 0;
                         }
                         else {
-                            $p->vat_rate_id = $test_vat->id;
+                            $test_vat = VatRate::where('percentage', $value)->first();
+                            if (is_null($test_vat)) {
+                                $field = 'temp_vat_rate_name';
+                            }
+                            else {
+                                $p->vat_rate_id = $test_vat->id;
+                            }
                         }
                     }
                     elseif ($field == 'package_price') {
@@ -239,6 +244,7 @@ class Products extends CSVImporter
 
         $imports = $request->input('import');
         $names = $request->input('name');
+        $weights = $request->input('weight');
         $descriptions = $request->input('description');
         $prices = $request->input('price');
         $categories = $request->input('category_id');
@@ -273,6 +279,7 @@ class Products extends CSVImporter
                 $p->active = true;
 
                 $p->name = $names[$index];
+                $p->weight = $weights[$index] ?: 0;
                 $p->description = $descriptions[$index];
                 $p->price = $prices[$index];
                 $p->supplier_code = $codes[$index];

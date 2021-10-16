@@ -241,4 +241,18 @@ class MultiGasController extends Controller
 
         return $this->successResponse();
     }
+
+    public function goTo($id)
+    {
+        $user = Auth::user();
+        $gas = Gas::findOrFail($id);
+
+        if ($user->can('gas.multi', $gas) == false) {
+            abort(503);
+        }
+
+        $user->gas_id = $id;
+        $user->save();
+        return redirect('/');
+    }
 }

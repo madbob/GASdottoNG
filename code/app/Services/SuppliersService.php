@@ -131,16 +131,21 @@ class SuppliersService extends BaseService
     {
         $this->ensureAuth();
 
+        $format = $format ?: $request['format'];
+        $supplier = $this->show($id);
+
+        if ($format == 'gdxp') {
+            return redirect($supplier->exportableURL());
+        }
+
         /*
             Questi sono i dati di default, da usare quando si fa il download del
             listino come allegato al fornitore (e dunque non si passa per il
             pannello di selezione dei campi).
             Cfr. Supplier::defaultAttachments()
         */
-        $format = $format ?: $request['format'];
         $fields = $request['fields'] ?? ['name', 'measure', 'price', 'active'];
 
-        $supplier = $this->show($id);
         $filename = sanitizeFilename(_i('Listino %s.%s', [$supplier->name, $format]));
 
         if (isset($request['printable'])) {

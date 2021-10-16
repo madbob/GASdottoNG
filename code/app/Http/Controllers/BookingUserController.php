@@ -12,6 +12,7 @@ use Log;
 use PDF;
 use Cache;
 
+use App\Exceptions\InvalidQuantityConstraint;
 use App\User;
 use App\Aggregate;
 
@@ -137,15 +138,13 @@ class BookingUserController extends BookingHandler
 
             foreach($bookings as $booking) {
                 /*
-                    Qui forzo sempre il ricalcolo dei modificatori, altrimenti
-                    vengono letti quelli effettivamente salvati sul DB.
-                    Nota bene: passo il parametro real = true perché qui sono
-                    già all'interno di una transazione, ed i valori qui
-                    calcolati devono esistere anche successivamente mentre
-                    recupero i totali dei singoli prodotti.
-                    La prenotazione è ancora in fase di consegna, lo status è
-                    impostato temporaneamente a "shipped" ed andrebbe a leggere
-                    quelli salvati anche se ancora non ce ne sono
+                    Qui forzo sempre il ricalcolo dei modificatori, altrimenti vengono letti quelli effettivamente
+                    salvati sul DB.
+                    Nota bene: passo il parametro real = true perché qui sono già all'interno di una transazione, ed i
+                    valori qui calcolati devono esistere anche successivamente mentre recupero i totali dei singoli
+                    prodotti.
+                    La prenotazione è ancora in fase di consegna, lo status è impostato temporaneamente a "shipped" ed
+                    andrebbe a leggere quelli salvati anche se ancora non ce ne sono
                 */
                 $modified = $booking->calculateModifiers(null, true);
 
@@ -153,33 +152,47 @@ class BookingUserController extends BookingHandler
                     'total' => printablePrice($booking->getValue('effective', false)),
                     'modifiers' => [],
                     'products' => $booking->products->reduce(function($carry, $product) use ($delivering) {
+                        /*
+                            Mentre computo il valore totale della prenotazione in fase di modifica, controllo anche che
+                            le quantità prenotate siano coerenti coi limiti imposti sul prodotto prenotato (massimo,
+                            minimo, disponibile...).
+                            Lo faccio qui, server-side, per evitare problemi di compatibilità client-side (è stato più
+                            volte segnalato che su determinati browser mobile ci siano problemi su questi controlli).
+                            Ma solo se non sono in consegna: in quel caso è ammesso immettere qualsiasi quantità
+                        */
+                        try {
+                            $final_quantity = $delivering ? $product->delivered : $product->testConstraints($product->quantity);
+                            $message = '';
+                        }
+                        catch(InvalidQuantityConstraint $e) {
+                            $final_quantity = 0;
+                            $message = $e->getMessage();
+                        }
+
                         $carry[$product->product_id] = (object) [
                             'total' => printablePrice($product->getValue('effective')),
-
-                            /*
-                                Mentre computo il valore totale della prenotazione
-                                in fase di modifica, controllo anche che le quantità
-                                prenotate siano coerenti coi limiti imposti sul
-                                prodotto prenotato (massimo, minimo,
-                                disponibile...).
-                                Lo faccio qui, server-side, per evitare problemi di
-                                compatibilità client-side (è stato più volte
-                                segnalato che su determinati browser mobile ci siano
-                                problemi su questi controlli).
-                                Ma solo se non sono in consegna: in quel caso è
-                                ammesso immettere qualsiasi quantità
-                            */
-                            'quantity' => $delivering ? $product->delivered : $product->testConstraints($product->quantity),
+                            'quantity' => $final_quantity,
+                            'message' => $message,
 
                             'variants' => $product->variants->reduce(function($varcarry, $variant) use ($product, $delivering) {
+                                try {
+                                    $final_variant_quantity = $delivering ? $variant->delivered : $product->testConstraints($variant->quantity, $variant);
+                                    $variant_message = '';
+                                }
+                                catch(InvalidQuantityConstraint $e) {
+                                    $final_variant_quantity = 0;
+                                    $variant_message = $e->getMessage();
+                                }
+
                                 $varcarry[] = (object) [
                                     'components' => $variant->components->reduce(function($componentcarry, $component) {
                                         $componentcarry[] = $component->value->id;
                                         return $componentcarry;
                                     }, []),
 
-                                    'quantity' => $delivering ? $variant->delivered : $product->testConstraints($variant->quantity),
+                                    'quantity' => $final_variant_quantity,
                                     'total' => printablePrice($delivering ? $variant->deliveredValue() : $variant->quantityValue()),
+                                    'message' => $variant_message,
                                 ];
 
                                 return $varcarry;

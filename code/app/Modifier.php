@@ -36,15 +36,9 @@ class Modifier extends Model
         return $ret;
     }
 
-    public function isVoid()
-    {
-        $data = $this->definitions;
-        return $data->isEmpty();
-    }
-
     public function isTrasversal()
     {
-        if ($this->isVoid()) {
+        if ($this->active == false) {
             return false;
         }
 
@@ -53,11 +47,11 @@ class Modifier extends Model
 
     public function getNameAttribute()
     {
-        $data = $this->definitions;
-
-        if ($data->isEmpty()) {
+        if ($this->active == false) {
             return _i('Nessun Valore');
         }
+
+        $data = $this->definitions;
 
         if ($this->value == 'percentage') {
             $postfix = '%';
@@ -82,7 +76,20 @@ class Modifier extends Model
 
     public function getActiveAttribute()
     {
-        return $this->definitions->isEmpty() == false;
+        $data = $this->definitions;
+
+        if ($data->isEmpty()) {
+            return false;
+        }
+        else {
+            foreach($data as $d) {
+                if ($d->amount != 0) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 
     public static function descriptions()
@@ -303,7 +310,18 @@ class Modifier extends Model
 
         $attribute = '';
 
-        if ($booking->status == 'shipped' || $booking->status == 'saved') {
+        /*
+            Fintantoché l'ordine non è marcato come "consegnato" uso le quantità
+            prenotate come riferimento per i calcoli (sulle soglie o per la
+            distribuzione dei costi sulle prenotazioni).
+            Se poi, alla fine, le quantità consegnate non corrispondono con
+            quelle prenotate, e dunque i calcoli devono essere revisionati per
+            ridistribuire in modo corretto il tutto, allora uso come riferimento
+            le quantità realmente consegnate: tale ricalcolo viene invocato da
+            OrdersController::postFixModifiers(), previa conferma dell'utente,
+            quando l'ordine è davvero in stato "consegnato"
+        */
+        if ($booking->order->isActive() == false) {
             switch($this->applies_type) {
                 case 'none':
                 case 'quantity':

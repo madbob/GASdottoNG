@@ -23,4 +23,26 @@ class VariantCombo extends Model
 
         return $query->first();
     }
+
+    public static function activeValues($combos)
+    {
+        $ret = [];
+
+        foreach($combos as $combo) {
+            if ($combo->active == false) {
+                continue;
+            }
+
+            foreach($combo->values()->orderBy('value', 'asc')->get() as $value) {
+                $variant_id = $value->variant_id;
+                if (!isset($ret[$variant_id])) {
+                    $ret[$variant_id] = [];
+                }
+
+                $ret[$variant_id][$value->id] = $value->value;
+            }
+        }
+
+        return $ret;
+    }
 }

@@ -49,6 +49,7 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
                         <th>{{ _i('Data') }}</th>
                         <th>{{ _i('Utente') }}</th>
                         <th>{{ _i('Fornitore') }}</th>
+                        <th>{{ _i('Note') }}</th>
                         <th>
                             <x-larastrap::select name="type" nprefix="skip" squeeze :options="$types" classes="triggers-all-selects csv_movement_type_select" data-target-class="csv_movement_type_select" />
                         </th>
@@ -77,6 +78,9 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
                                 </td>
                                 <td>
                                     <x-larastrap::selectobj name="target_id" npostfix="[]" squeeze :options="$suppliers" :extraitem="_i('Nessuno')" />
+                                </td>
+                                <td>
+                                    <x-larastrap::text name="notes" npostfix="[]" squeeze />
                                 </td>
                                 <td>
                                     <x-larastrap::select name="type" nprefix="m" npostfix="[]" squeeze :options="$types" classes="csv_movement_type_select" />

@@ -45,6 +45,8 @@ else {
         <?php list($options, $values) = flaxComplexOptions(App\Order::formattableColumns('shipping')) ?>
         <x-larastrap::checks name="fields" :label="_i('Colonne Prodotti')" :options="$options" :value="$values" />
 
+        <x-larastrap::radios name="status" :label="_i('Stato Prenotazioni')" :options="['booked' => _i('Prenotate'), 'delivered' => _i('Consegnate')]" value="booked" />
+
         <x-larastrap::radios name="format" :label="_i('Formato')" :options="['pdf' => _i('PDF'), 'csv' => _i('CSV')]" value="pdf" />
     </x-larastrap::form>
 </x-larastrap::modal>

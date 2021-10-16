@@ -36,6 +36,17 @@ class Product extends Formatter
                     return $obj->active ? _i('Si') : _i('No');
                 },
             ],
+            'vat_rate' => (object) [
+                'name' => _i('Aliquota IVA'),
+                'format' => function($obj, $context) {
+                    if ($obj->vat_rate) {
+                        return $obj->vat_rate->percentage;
+                    }
+                    else {
+                        return _i('Nessuna');
+                    }
+                },
+            ],
             'portion_quantity' => (object) [
                 'name' => _i('Pezzatura'),
             ],

@@ -13,6 +13,11 @@
                 'contents' => $variant ? $variant->values : [],
                 'columns' => [
                     [
+                        'label' => _i('ID'),
+                        'field' => 'id',
+                        'type' => 'hidden',
+                    ],
+                    [
                         'label' => _i('Valore'),
                         'field' => 'value',
                         'type' => 'text'

@@ -153,6 +153,7 @@ class Movements extends CSVImporter
                         }
                     }
                     elseif ($field == 'amount') {
+                        $value = $line[$index];
                         $value = guessDecimal($value);
                     }
                     else {
@@ -185,6 +186,7 @@ class Movements extends CSVImporter
         $dates = $request->input('date', []);
         $senders = $request->input('sender_id', []);
         $targets = $request->input('target_id', []);
+        $notes = $request->input('notes', []);
         $types = $request->input('mtype', []);
         $methods = $request->input('method', []);
         $amounts = $request->input('amount', []);
@@ -206,6 +208,7 @@ class Movements extends CSVImporter
                 $m->amount = $amounts[$index];
                 $m->method = $methods[$index];
                 $m->currency_id = $currencies[$index];
+                $m->notes = $notes[$index];
 
                 $t = MovementType::find($m->type);
 
