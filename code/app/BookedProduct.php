@@ -125,6 +125,10 @@ class BookedProduct extends Model
             }
         }
 
+        if ($quantity > 9999.99) {
+            throw new InvalidQuantityConstraint(_('La quantità massima è 9999.99'), 5);
+        }
+
         return $quantity;
     }
 
