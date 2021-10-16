@@ -985,13 +985,12 @@ class Order extends Model
                 $aggregate_data = $this->aggregate->reduxData();
             }
 
+            if ($enforce_status !== false) {
+                $this->status = $enforce_status;
+            }
+
             foreach($this->bookings as $booking) {
                 $booking->setRelation('order', $this);
-
-                if ($enforce_status !== false) {
-                    $booking->status = $enforce_status;
-                }
-
                 $modifiers = $modifiers->merge($booking->applyModifiers($aggregate_data));
             }
 

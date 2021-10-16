@@ -303,7 +303,18 @@ class Modifier extends Model
 
         $attribute = '';
 
-        if ($booking->status == 'shipped' || $booking->status == 'saved') {
+        /*
+            Fintantoché l'ordine non è marcato come "consegnato" uso le quantità
+            prenotate come riferimento per i calcoli (sulle soglie o per la
+            distribuzione dei costi sulle prenotazioni).
+            Se poi, alla fine, le quantità consegnate non corrispondono con
+            quelle prenotate, e dunque i calcoli devono essere revisionati per
+            ridistribuire in modo corretto il tutto, allora uso come riferimento
+            le quantità realmente consegnate: tale ricalcolo viene invocato da
+            OrdersController::postFixModifiers(), previa conferma dell'utente,
+            quando l'ordine è davvero in stato "consegnato"
+        */
+        if ($booking->order->isActive() == false) {
             switch($this->applies_type) {
                 case 'none':
                 case 'quantity':

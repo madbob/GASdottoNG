@@ -381,6 +381,10 @@ class OrdersController extends Controller
         return $this->successResponse();
     }
 
+    /*
+        Questa funzione viene eventualmente attivata da
+        AggregatesController::postFeedback()
+    */
     public function getFixModifiers(Request $request, $id)
     {
         $order = Order::findOrFail($id);
