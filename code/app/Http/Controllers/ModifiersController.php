@@ -66,14 +66,14 @@ class ModifiersController extends BackedController
                 modificatore non è attivo, viene proposto all'utente di
                 agganciarli a questi
             */
-            if ($modifier->isVoid() == false && $modifier->target_type == 'App\Supplier') {
+            if ($modifier->target_type == 'App\Supplier' && ($modifier->active || $modifier->always_on)) {
                 $to_be_attached = false;
 
                 foreach ($modifier->target->active_orders as $order) {
                     $to_be_attached = true;
 
                     foreach ($order->modifiers()->where('modifier_type_id', $modifier->modifier_type_id)->get() as $m) {
-                        $to_be_attached = $m->isVoid() && $to_be_attached;
+                        $to_be_attached = ($m->active == false) && $to_be_attached;
                     }
 
                     if ($to_be_attached) {
@@ -112,7 +112,12 @@ class ModifiersController extends BackedController
 
             foreach($activated as $activate) {
                 $order = Order::find($activate);
+
                 if ($order && $order->supplier_id == $modifier->target_id && $request->user()->can('supplier.orders', $order->supplier)) {
+                    foreach ($order->modifiers()->where('modifier_type_id', $modifier->modifier_type_id)->get() as $m) {
+                        $m->delete();
+                    }
+
                     $new_mod = $modifier->replicate();
                     $new_mod->target_id = $order->id;
                     $new_mod->target_type = get_class($order);

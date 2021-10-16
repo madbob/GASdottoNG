@@ -968,7 +968,7 @@ class Order extends Model
             }
 
             return $modifiers->filter(function($mod) {
-                return $mod->isVoid() == false;
+                return $mod->active;
             })->sortBy('priority');
         });
     }

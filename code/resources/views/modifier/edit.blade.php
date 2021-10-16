@@ -8,6 +8,10 @@
 
         <div class="row">
             <div class="col">
+                @if($modifier->target_type == 'App\Supplier')
+                    <x-larastrap::check name="always_on" :label="_i('Modificatore sempre attivo')" :pophelp="_i('Se attivo, il modificatore viene sempre incluso nei nuovi ordini per questo fornitore anche se non viene qui valorizzato. Questo permette di avere sempre il modificatore disponibile nel contesto degli ordini e di poterlo aggiornare di volta in volta.')" />
+                @endif
+
                 <?php
 
                 if ($modifier->target_type == 'App\Product') {

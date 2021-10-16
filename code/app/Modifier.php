@@ -36,15 +36,9 @@ class Modifier extends Model
         return $ret;
     }
 
-    public function isVoid()
-    {
-        $data = $this->definitions;
-        return $data->isEmpty();
-    }
-
     public function isTrasversal()
     {
-        if ($this->isVoid()) {
+        if ($this->active == false) {
             return false;
         }
 
@@ -53,11 +47,11 @@ class Modifier extends Model
 
     public function getNameAttribute()
     {
-        $data = $this->definitions;
-
-        if ($data->isEmpty()) {
+        if ($this->active == false) {
             return _i('Nessun Valore');
         }
+
+        $data = $this->definitions;
 
         if ($this->value == 'percentage') {
             $postfix = '%';
@@ -82,7 +76,20 @@ class Modifier extends Model
 
     public function getActiveAttribute()
     {
-        return $this->definitions->isEmpty() == false;
+        $data = $this->definitions;
+
+        if ($data->isEmpty()) {
+            return false;
+        }
+        else {
+            foreach($data as $d) {
+                if ($d->amount != 0) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 
     public static function descriptions()

@@ -8,7 +8,7 @@
         <p>
             @foreach($modifier->target->active_orders as $order)
                 @foreach($order->modifiers()->where('modifier_type_id', $modifier->modifier_type_id)->get() as $m)
-                    @if($m->isVoid())
+                    @if($m->active == false)
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="activated[]" value="{{ $order->id }}" id="activate-order-{{ sanitizeId($order->id) }}">
                             <label class="form-check-label" for="activate-order-{{ sanitizeId($order->id) }}">

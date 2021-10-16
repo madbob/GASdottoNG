@@ -23,7 +23,7 @@ else {
     $actual_modifiers = [];
 
     foreach ($obj->modifiers()->where('modifier_type_id', $mod->id)->get() as $m) {
-        if ($skip_void == false || $m->isVoid() == false) {
+        if ($skip_void == false || $m->active || $m->always_on) {
             $actual_modifiers[] = $m;
         }
     }

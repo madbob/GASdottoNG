@@ -211,10 +211,12 @@ class OrdersController extends Controller
             $o->save();
 
             foreach($supplier->modifiers as $mod) {
-                $new_mod = $mod->replicate();
-                $new_mod->target_id = $o->id;
-                $new_mod->target_type = get_class($o);
-                $new_mod->save();
+                if ($mod->active || $mod->always_on == true) {
+                    $new_mod = $mod->replicate();
+                    $new_mod->target_id = $o->id;
+                    $new_mod->target_type = get_class($o);
+                    $new_mod->save();
+                }
             }
 
             $o->deliveries()->sync($deliveries);
