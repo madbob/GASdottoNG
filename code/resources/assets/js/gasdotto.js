@@ -19,16 +19,18 @@ require('./cc');
 require('./jquery.dynamictree');
 require('./jquery.TableCSVExport');
 require('./statistics');
+require('./popovers');
 require('./translate');
 require('./password');
 import utils from "./utils";
-import filters from "./filters";
 import Lists from "./lists";
+import Triggers from "./triggers";
+import Filters from "./filters";
+import Roles from "./roles";
 import Modifiers from "./modifiers";
 import Callables from "./callables";
 
 var locker = false;
-var absolute_url = $('meta[name=absolute_url]').attr('content');
 var current_currency = $('meta[name=current_currency]').attr('content');
 var current_language = $('html').attr('lang').split('-')[0];
 var measure_discrete = null;
@@ -160,7 +162,7 @@ function generalInit(container) {
             }
 
             $(this).autocomplete({
-                source: absolute_url + '/users/search',
+                source: utils.absoluteUrl() + '/users/search',
                 appendTo: appendTo,
                 select: function(event, ui) {
                     var aggregate_id = $(this).attr('data-aggregate');
@@ -170,19 +172,13 @@ function generalInit(container) {
 
                     var data = {};
                     var mode = $(this).attr('data-enforce-booking-mode');
-                    if (mode != null)
+                    if (mode != null) {
                         data.enforce = mode;
-
-                    var url = '';
-
-                    if (while_shipping) {
-                        url = absolute_url + '/delivery/' + aggregate_id + '/user/' + ui.item.id;
-                    }
-                    else {
-                        url = absolute_url + '/booking/' + aggregate_id + '/user/' + ui.item.id + '?extended=true';
                     }
 
-                    $.ajax({
+                    var url = while_shipping ? ('delivery/' + aggregate_id + '/user/' + ui.item.id) : 'booking/' + aggregate_id + '/user/' + ui.item.id + '?extended=true';
+
+                    utils.postAjax({
                         url: url,
                         method: 'GET',
                         data: data,
@@ -243,10 +239,6 @@ function generalInit(container) {
         }
     }
 
-    $('.collapse_trigger', container).each(function() {
-        triggerCollapse($(this));
-    });
-
 	/*
 		Per ignoti motivi, capita che l'HTML che arriva in modo asincrono dal
 		server sia riformattato ed i nodi che dovrebbero stare nel nodo
@@ -288,10 +280,13 @@ function generalInit(container) {
     });
 
     setupImportCsvEditor(container);
-    setupPermissionsEditor(container);
 
+    utils.init(container);
     Modifiers.init(container);
     Lists.init(container);
+    Triggers.init(container);
+    Filters.init(container);
+    Roles.init(container);
 }
 
 function voidForm(form) {
@@ -311,42 +306,6 @@ function fixContactField(input, typeclass) {
         input.attr('type', 'text');
         input.addClass(typeclass);
     }
-}
-
-function sortingDates(a, b) {
-    a = utils.parseFullDate(a);
-    b = utils.parseFullDate(b);
-
-    if (a == b)
-        return 0;
-    else if (a < b)
-        return -1;
-    else
-        return 1;
-}
-
-function sortingValues(a, b) {
-    a = utils.parseFloatC(a);
-    b = utils.parseFloatC(b);
-
-    if (a == b)
-        return 0;
-    else if (a < b)
-        return -1;
-    else
-        return 1;
-}
-
-function checkboxSorter(a, b) {
-    var ah = $(a).is(':checked');
-    var bh = $(b).is(':checked');
-
-    if (ah == bh)
-        return 0;
-    if (ah == true)
-        return -1;
-    else
-        return 1;
 }
 
 function previewImage(input) {
@@ -581,56 +540,6 @@ function miscInnerModalCallbacks(modal) {
     }
 }
 
-/*
-    Questo è per gestire campi diversi di cui almeno uno è obbligatorio
-*/
-function reviewRequired(panel)
-{
-    panel.find('input[data-alternative-required]').each(function() {
-        var alternative = $(this).attr('data-alternative-required');
-        if (alternative) {
-            var alt = panel.find('[name="' + alternative + '"]');
-            if (alt.val() != '') {
-                $(this).prop('required', false);
-            }
-            else {
-                $(this).prop('required', true);
-            }
-        }
-    });
-}
-
-function triggerCollapse(trigger)
-{
-    var name = trigger.attr('name');
-    var display = trigger.prop('checked');
-
-    /*
-        L'evento show.bs.collapse va espressamente bloccato, altrimenti se
-        il widget si trova all'interno di una accordion risale fino a quella
-        e scattano anche le callback per le async-accordion
-    */
-
-    $('.collapse[data-triggerable=' + name + ']').one('show.bs.collapse', function(e) {
-        e.stopPropagation();
-    }).collapse(display ? 'show' : 'hide').find('.required_when_triggered').prop('required', display);
-
-    $('.collapse[data-triggerable-reverse=' + name + ']').one('show.bs.collapse', function(e) {
-        e.stopPropagation();
-    }).collapse(display ? 'hide' : 'show').find('.required_when_triggered').prop('required', display == false);
-
-    var panel = null;
-
-    if (display) {
-        panel = $('.collapse[data-triggerable=' + name + ']');
-    }
-    else {
-        panel = $('.collapse[data-triggerable-reverse=' + name + ']');
-    }
-
-    reviewRequired(panel);
-}
-
 /*******************************************************************************
 	Contabilità
 */
@@ -715,19 +624,6 @@ function enforceMeasureDiscrete(node) {
         max_quantity_widget.removeAttr('data-enforce-integer');
         max_available_widget.removeAttr('data-enforce-integer');
 	}
-}
-
-/*******************************************************************************
-	Ordini
-*/
-
-function setCellValue(cell, value) {
-    string = value;
-
-    if (cell.text().indexOf(current_currency) != -1)
-        string = utils.priceRound(value) + ' ' + current_currency;
-
-    cell.text(string);
 }
 
 /*******************************************************************************
@@ -856,106 +752,6 @@ function bookingTotal(editor) {
 			}
 		}
 	});
-}
-
-/*******************************************************************************
-	Permessi
-*/
-
-function setupPermissionsEditor(container) {
-    $('.roleAssign', container).each(function() {
-        if ($(this).hasClass('tt-hint') == true) {
-            return;
-        }
-
-        if ($(this).hasClass('tt-input') == false) {
-            $(this).autocomplete({
-                source: absolute_url + '/users/search',
-                select: function(event, ui) {
-                    var text = $(this);
-                    var role_id = Lists.currentLoadableLoaded(this);
-                    var group = $(this).closest('.accordion-body');
-                    var user_id = ui.item.id;
-
-                    var label = ui.item.label;
-                    $.ajax({
-                        method: 'POST',
-                        url: absolute_url + '/roles/attach',
-                        dataType: 'HTML',
-                        data: {
-                            role: role_id,
-                            user: user_id,
-                        },
-                        success: function(data) {
-                            var panel = $(data);
-                            var identifier = $(panel).attr('id');
-                            utils.j().initElements(panel);
-                            group.find('.tab-content').append(panel);
-
-                            var tab = $('<li class="nav-item" data-user="' + user_id + '"><button type="button" class="nav-link" data-bs-target="#' + identifier + '" data-bs-toggle="tab">' + label + '</button></li>');
-                            group.find('[role=tablist]').find('.last-tab').before(tab);
-                            text.val('');
-                        }
-                    });
-                }
-            });
-        }
-    });
-
-    $('.role-editor', container).on('change', 'input:checkbox[data-role]', function(e) {
-        var check = $(this);
-        check.removeClass('saved-checkbox saved-left-feedback');
-
-        var url = '';
-        if (check.is(':checked') == true) {
-            url = absolute_url + '/roles/attach';
-        }
-        else {
-            url = absolute_url + '/roles/detach';
-        }
-
-        var data = {};
-        data.role = check.attr('data-role');
-        data.action = check.attr('data-action');
-        data.user = check.attr('data-user');
-        data.target_id = check.attr('data-target-id');
-        data.target_class = check.attr('data-target-class');
-
-        $.ajax({
-            method: 'POST',
-            url: url,
-            data: data,
-            success: function() {
-                check.addClass('saved-checkbox saved-left-feedback');
-            }
-        });
-
-    }).on('click', '.remove-role', function(e) {
-        e.preventDefault();
-
-        if(confirm(_('Sei sicuro di voler revocare questo ruolo?'))) {
-            var button = $(this);
-
-            var data = {
-                role: button.attr('data-role'),
-                user: button.attr('data-user')
-            };
-
-            var userid = data.user;
-
-            $.ajax({
-                method: 'POST',
-                url: absolute_url + '/roles/detach',
-                data: data,
-                success: function() {
-                    var panel = button.closest('.accordion-body');
-                    var tab = panel.find('[data-user=' + userid + ']');
-                    panel.find(tab.find('button').attr('data-bs-target')).remove();
-                    tab.remove();
-                }
-            });
-        }
-    });
 }
 
 /*******************************************************************************
@@ -1121,118 +917,6 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('change', '.triggers-all-checkbox', function() {
-        $(this).prop('disabled', true);
-
-        var form = $(this).closest('form');
-        var target = $(this).attr('data-target-class');
-        var new_status = $(this).prop('checked');
-
-        form.find('.' + target).each(function() {
-            $(this).prop('checked', new_status);
-        });
-
-        $(this).prop('disabled', false);
-    })
-    .on('click', '.triggers-all-radio label', function() {
-        var form = $(this).closest('form');
-        var target = $(this).attr('data-target-class');
-        form.find('.' + target).button('toggle');
-    })
-    .on('change', '.triggers-all-selects', function() {
-        var form = $(this).closest('form');
-        var target = $(this).attr('data-target-class');
-        var value = $(this).find('option:selected').val();
-        var t = form.find('.' + target).not($(this));
-        t.find('option[value=' + value + ']').prop('selected', true);
-        t.change();
-    });
-
-    $('body').on('change', 'input[data-alternative-required]', function() {
-        reviewRequired($(this).closest('form'));
-    });
-
-    $('body').on('click', '.reloader', function(event) {
-        var listid = $(this).attr('data-reload-target');
-
-        if (listid == null) {
-            location.reload();
-        }
-        else {
-            /*
-                Nel caso in cui il tasto sia dentro ad un modale, qui ne forzo la
-                chiusura (che non e' implicita, se questo non viene fatto resta
-                l'overlay grigio in sovraimpressione)
-            */
-            var modal = $(this).closest('.modal').first();
-            if (modal != null) {
-                modal.on('hidden.bs.modal', function() {
-                    Lists.reloadCurrentLoadable(listid);
-                });
-                modal.modal('hide');
-            }
-            else {
-                Lists.reloadCurrentLoadable(listid);
-            }
-        }
-    });
-
-    $('body').on('focus', '.date[data-enforce-after]', function() {
-        var select = $(this).attr('data-enforce-after');
-        var target = $(this).closest('.input-group').find(select);
-		if (target.length == 0) {
-			target = $(this).closest('form').find(select);
-        }
-
-        /*
-            Problema: cercando di navigare tra i mesi all'interno del datepicker
-            viene lanciato nuovamente l'evento di focus, che fa rientrare in
-            questa funzione, e se setStartDate() viene incondazionatamente
-            eseguita modifica a sua volta la data annullando l'operazione.
-            Dunque qui la eseguo solo se non l'ho già fatto (se la data di
-            inizio forzato non corrisponde a quel che dovrebbe essere), badando
-            però a fare i confronti sui giusti formati
-        */
-        var current_start = $(this).datepicker('getStartDate');
-        var current_ref = target.datepicker('getUTCDate');
-        if (current_start.toString() != current_ref.toString()) {
-            $(this).datepicker('setStartDate', current_ref);
-        }
-    });
-
-    $('body').on('change', '.select-fetcher', function(event) {
-        var targetid = $(this).attr('data-fetcher-target');
-        var target = $(this).parent().find(targetid);
-        target.empty();
-
-		var id = $(this).find('option:selected').val();
-		var url = $(this).attr('data-fetcher-url');
-		url = url.replace('XXX', id);
-
-        target.append(utils.loadingPlaceholder());
-        $.get(url, function(data) {
-            target.empty().append(data);
-        });
-    });
-
-    $('body').on('click', '.object-details', function() {
-        var url = $(this).attr('data-show-url');
-        var modal = $('#service-modal');
-        modal.find('.modal-body').empty().append(utils.loadingPlaceholder());
-        modal.modal('show');
-
-        $.ajax({
-            url: url,
-            method: 'GET',
-            dataType: 'HTML',
-            success: function(data) {
-                data = $(data);
-                modal.find('.modal-body').empty().append(data);
-                utils.j().initElements(data);
-            }
-        });
-    });
-
     $('body').on('submit', '.main-form', function(event) {
         event.preventDefault();
 
@@ -1284,32 +968,6 @@ $(document).ready(function() {
                 }
             });
         }
-    });
-
-    $('body').on('click', '.icons-legend button, .icons-legend a', function(e) {
-        e.preventDefault();
-        filters.iconsLegendTrigger($(this), '.icons-legend');
-    });
-
-    $('body').on('click', '.table-icons-legend button, .table-icons-legend a', function(e) {
-        e.preventDefault();
-        filters.iconsLegendTrigger($(this), '.table-icons-legend');
-    });
-
-    $('body').on('keyup', '.table-text-filter', function() {
-        filters.tableFilters($(this).attr('data-table-target'));
-    });
-
-    $('body').on('keyup', '.table-number-filters input.table-number-filter', function() {
-        filters.tableFilters($(this).closest('.table-number-filters').attr('data-table-target'));
-    });
-
-    $('body').on('change', '.table-number-filters input[name=filter_mode]', function() {
-        $(this).closest('.input-group').find('input.table-number-filter').keyup();
-    });
-
-    $('body').on('change', '.table-filters input:radio', function() {
-        filters.tableFilters($(this).closest('.table-filters').attr('data-table-target'));
     });
 
     $('body').on('change', 'input:file[data-max-size]', function() {
@@ -1482,159 +1140,6 @@ $(document).ready(function() {
         fixContactField(input, typeclass);
     });
 
-    $('body').on('focus', 'input.address', function() {
-        utils.complexPopover($(this), 'address', function(input) {
-            var ret = $('<div>\
-                <div class="row mb-2">\
-                    <label for="street" class="col-4 col-form-label">' + _('Indirizzo') + '</label>\
-                    <div class="col-8"><input type="text" class="form-control" name="street" value="" autocomplete="off"></div>\
-                </div>\
-                <div class="row mb-2">\
-                    <label for="city" class="col-4 col-form-label">' + _('Città') + '</label>\
-                    <div class="col-sm-8"><input type="text" class="form-control" name="city" value="" autocomplete="off"></div>\
-                </div>\
-                <div class="row mb-2">\
-                    <label for="cap" class="col-4 col-form-label">' + _('CAP') + '</label>\
-                    <div class="col-sm-8"><input type="text" class="form-control" name="cap" value="" autocomplete="off"></div>\
-                </div>\
-                <div class="row mb-2">\
-                    <div class="col-8 offset-4"><button class="btn btn-light">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Salva') + '</button></div>\
-                </div>\
-            </div>');
-
-            var value = input.val();
-            if (value != '') {
-                var values = value.split(',');
-                for(var i = values.length; i < 3; i++)
-                    values[i] = '';
-                ret.find('input[name=street]').val(values[0].trim());
-                ret.find('input[name=city]').val(values[1].trim());
-                ret.find('input[name=cap]').val(values[2].trim());
-            }
-
-            ret.find('button.btn-success').click(function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                var street = ret.find('input[name=street]').val().trim().replace(',', '');
-                var city = ret.find('input[name=city]').val().trim().replace(',', '');
-                var cap = ret.find('input[name=cap]').val().trim().replace(',', '');
-
-                if (street == '' && city == '' && cap == '')
-                    input.val('');
-                else
-                    input.val(street + ', ' + city + ', ' + cap);
-
-                input.popover('dispose');
-            });
-
-            ret.find('button.btn-light').click(function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                input.popover('dispose');
-            });
-
-            setTimeout(function() {
-                ret.find('input[name=street]').focus();
-            }, 200);
-
-            return ret;
-        });
-    });
-
-    $('body').on('focus', 'input.periodic', function() {
-        utils.complexPopover($(this), 'periodic', function(input) {
-            var ret = $('<div>\
-                <div class="row mb-2">\
-                    <label for="day" class="col-4 col-form-label">' + _('Giorno') + '</label>\
-                    <div class="col-8">\
-                        <select class="form-select" name="day" value="" autocomplete="off">\
-                            <option value="monday">' + _('Lunedì') + '</option>\
-                            <option value="tuesday">' + _('Martedì') + '</option>\
-                            <option value="wednesday">' + _('Mercoledì') + '</option>\
-                            <option value="thursday">' + _('Giovedì') + '</option>\
-                            <option value="friday">' + _('Venerdì') + '</option>\
-                            <option value="saturday">' + _('Sabato') + '</option>\
-                            <option value="sunday">' + _('Domenica') + '</option>\
-                        </select>\
-                    </div>\
-                </div>\
-                <div class="row mb-2">\
-                    <label for="cycle" class="col-4 col-form-label">' + _('Periodicità') + '</label>\
-                    <div class="col-8">\
-                        <select class="form-select" name="cycle" value="" autocomplete="off">\
-                            <option value="all">' + _('Tutti') + '</option>\
-                            <option value="biweekly">' + _('Ogni due Settimane') + '</option>\
-                            <option value="month_first">' + _('Primo del Mese') + '</option>\
-                            <option value="month_second">' + _('Secondo del Mese') + '</option>\
-                            <option value="month_third">' + _('Terzo del Mese') + '</option>\
-                            <option value="month_fourth">' + _('Quarto del Mese') + '</option>\
-                            <option value="month_last">' + _('Ultimo del Mese') + '</option>\
-                        </select>\
-                    </div>\
-                </div>\
-                <div class="row mb-2">\
-                    <label for="day" class="col-4 col-form-label">' + _('Dal') + '</label>\
-                    <div class="col-8"><input type="text" class="date form-control" name="from" value="" autocomplete="off"></div>\
-                </div>\
-                <div class="row mb-2">\
-                    <label for="day" class="col-4 col-form-label">' + _('Al') + '</label>\
-                    <div class="col-8"><input type="text" class="date form-control" name="to" value="" autocomplete="off"></div>\
-                </div>\
-                <div class="row mb-2">\
-                    <div class="col-8 offset-4"><button class="btn btn-light">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Salva') + '</button></div>\
-                </div>\
-            </div>');
-
-            $('input.date', ret).datepicker({
-                format: 'DD dd MM yyyy',
-                autoclose: true,
-                language: current_language,
-                clearBtn: true,
-            });
-
-            var value = input.val();
-            if (value != '') {
-                var values = value.split(' - ');
-                for(var i = values.length; i < 4; i++)
-                    values[i] = '';
-
-                ret.find('select[name=day] option').filter(function() {
-                    return $(this).html() == values[0];
-                }).prop('selected', true);
-
-                ret.find('select[name=cycle] option').filter(function() {
-                    return $(this).html() == values[1];
-                }).prop('selected', true);
-
-                ret.find('input[name=from]').val(values[2].trim());
-                ret.find('input[name=to]').val(values[3].trim());
-            }
-
-            ret.find('button.btn-success').click(function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                var day = ret.find('select[name=day] option:selected').text();
-                var cycle = ret.find('select[name=cycle] option:selected').text();
-                var from = ret.find('input[name=from]').val().trim().replace(',', '');
-                var to = ret.find('input[name=to]').val().trim().replace(',', '');
-                input.val(day + ' - ' + cycle + ' - ' + from + ' - ' + to).change();
-                input.popover('dispose');
-            });
-
-            ret.find('button.btn-light').click(function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                input.popover('dispose');
-            });
-
-            setTimeout(function() {
-                ret.find('select[name=day]').focus();
-            }, 200);
-
-            return ret;
-        });
-    });
-
     $('body').on('change', '.status-selector input:radio[name*="status"]', function() {
         let field = $(this).closest('.status-selector');
         let status = $(this).val();
@@ -1673,9 +1178,9 @@ $(document).ready(function() {
         var selectors = $(this).closest('form').find('.selectors');
         selectors.empty().append(utils.loadingPlaceholder());
 
-        $.ajax({
+        utils.postAjax({
             method: 'GET',
-            url: absolute_url + '/movements/create',
+            url: 'movements/create',
             dataType: 'html',
             data: {
                 type: type
@@ -1773,10 +1278,6 @@ $(document).ready(function() {
         }
     });
 
-    $('body').on('change', '.collapse_trigger', function() {
-        triggerCollapse($(this));
-    });
-
     /*
         Gestione fornitori
     */
@@ -1785,9 +1286,9 @@ $(document).ready(function() {
         var editor = $(this).closest('.variants-editor');
         var id = $(this).closest('tr').attr('data-variant-id');
 
-        $.ajax({
+        utils.postAjax({
             method: 'DELETE',
-            url: absolute_url + '/variants/' + id,
+            url: 'variants/' + id,
             success: function() {
                 utils.j().reloadNode(editor);
             }
@@ -1900,8 +1401,8 @@ $(document).ready(function() {
     });
 
     $('body').on('change', '[id^="createOrder"] select[name^=supplier_id]', function() {
-        $.ajax({
-            url: absolute_url + '/dates/query',
+        utils.postAjax({
+            url: 'dates/query',
             method: 'GET',
             data: {
                 supplier_id: $(this).val()
@@ -1932,9 +1433,8 @@ $(document).ready(function() {
         var id = button.attr('data-aggregate-id');
         var date = button.closest('form').find('.last-date');
 
-        $.ajax({
-            url: absolute_url + '/aggregates/notify/' + id,
-            method: 'POST',
+        utils.postAjax({
+            url: 'aggregates/notify/' + id,
             success: function(data) {
                 date.text(data);
                 button.prop('disabled', false);
@@ -2004,9 +1504,9 @@ $(document).ready(function() {
             row.find('.bookable-target').empty();
             bookingTotal(editor);
         } else {
-            $.ajax({
+            utils.postAjax({
                 method: 'GET',
-                url: absolute_url + '/products/' + id,
+                url: 'products/' + id,
                 data: {
                     format: 'bookable',
                     order_id: editor.attr('data-order-id')
@@ -2061,37 +1561,6 @@ $(document).ready(function() {
                 data = $(data);
                 fill_target.empty().append(data);
                 utils.j().initElements(data);
-            }
-        });
-    });
-
-    /*
-        Multi-GAS
-    */
-
-    $('body').on('change', '.multigas-editor input:checkbox[data-gas]', function(e) {
-        var check = $(this);
-        check.removeClass('saved-checkbox');
-
-        var url = '';
-        if (check.is(':checked') == true) {
-            url = absolute_url + '/multigas/attach';
-        }
-        else {
-            url = absolute_url + '/multigas/detach';
-        }
-
-        var data = {};
-        data.gas = check.attr('data-gas');
-        data.target_id = check.attr('data-target-id');
-        data.target_type = check.attr('data-target-type');
-
-        $.ajax({
-            method: 'POST',
-            url: url,
-            data: data,
-            success: function() {
-                check.addClass('saved-checkbox');
             }
         });
     });

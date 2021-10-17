@@ -1,6 +1,94 @@
 import jBob from "./jbob";
+import Lists from "./lists";
 
 class Utils {
+    static init(container)
+    {
+        $('.reloader', container).click(function(e) {
+            var listid = $(this).attr('data-reload-target');
+
+            if (listid == null) {
+                location.reload();
+            }
+            else {
+                /*
+                    Nel caso in cui il tasto sia dentro ad un modale, qui ne forzo la
+                    chiusura (che non e' implicita, se questo non viene fatto resta
+                    l'overlay grigio in sovraimpressione)
+                */
+                var modal = $(this).closest('.modal').first();
+                if (modal != null) {
+                    modal.on('hidden.bs.modal', function() {
+                        Lists.reloadCurrentLoadable(listid);
+                    });
+                    modal.modal('hide');
+                }
+                else {
+                    Lists.reloadCurrentLoadable(listid);
+                }
+            }
+        });
+
+        $('.date[data-enforce-after]', container).focus(function(e) {
+            var select = $(this).attr('data-enforce-after');
+            var target = $(this).closest('.input-group').find(select);
+            if (target.length == 0) {
+                target = $(this).closest('form').find(select);
+            }
+
+            /*
+                Problema: cercando di navigare tra i mesi all'interno del datepicker
+                viene lanciato nuovamente l'evento di focus, che fa rientrare in
+                questa funzione, e se setStartDate() viene incondazionatamente
+                eseguita modifica a sua volta la data annullando l'operazione.
+                Dunque qui la eseguo solo se non l'ho già fatto (se la data di
+                inizio forzato non corrisponde a quel che dovrebbe essere), badando
+                però a fare i confronti sui giusti formati
+            */
+            var current_start = $(this).datepicker('getStartDate');
+            var current_ref = target.datepicker('getUTCDate');
+            if (current_start.toString() != current_ref.toString()) {
+                $(this).datepicker('setStartDate', current_ref);
+            }
+        });
+
+        $('.select-fetcher', container).change((e) => {
+            var fetcher = $(e.currentTarget);
+            var targetid = fetcher.attr('data-fetcher-target');
+            var target = fetcher.parent().find(targetid);
+            target.empty().append(this.loadingPlaceholder());
+
+            var id = fetcher.find('option:selected').val();
+            var url = fetcher.attr('data-fetcher-url').replace('XXX', id);
+
+            $.get(url, function(data) {
+                target.empty().append(data);
+            });
+        });
+
+        $('.object-details', container).click((e) => {
+            var url = $(e.currentTarget).attr('data-show-url');
+            var modal = $('#service-modal');
+            modal.find('.modal-body').empty().append(this.loadingPlaceholder());
+            modal.modal('show');
+
+            this.postAjax({
+                url: url,
+                method: 'GET',
+                dataType: 'HTML',
+                success: (data) => {
+                    data = $(data);
+                    modal.find('.modal-body').empty().append(data);
+                    this.j().initElements(data);
+                }
+            });
+        });
+
+        $('input[data-alternative-required]', container).change((e) => {
+            this.reviewRequired($(e.currentTarget).closest('form'));
+        });
+    }
+
     static j()
     {
         if (typeof Utils.jbob == 'undefined') {
@@ -8,6 +96,15 @@ class Utils {
         }
 
         return Utils.jbob;
+    }
+
+    static absoluteUrl()
+    {
+        if (typeof Utils.absolute_url == 'undefined') {
+            Utils.absolute_url = $('meta[name=absolute_url]').attr('content');
+        }
+
+        return Utils.absolute_url;
     }
 
     static loadingPlaceholder()
@@ -124,7 +221,6 @@ class Utils {
 
     static postAjax(params)
     {
-        let absolute_url = $('meta[name=absolute_url]').attr('content');
         params.data = params.data || {};
         params.method = params.method || 'POST';
 
@@ -134,7 +230,7 @@ class Utils {
         }
 
         if (params.url.startsWith('http') == false) {
-            params.url = absolute_url + '/' + params.url;
+            params.url = this.absoluteUrl() + '/' + params.url;
         }
 
         // params.data._token = $('meta[name="csrf-token"]').attr('content');
@@ -170,6 +266,25 @@ class Utils {
         if (is_invalid == true) {
             input.siblings('.invalid-feedback').text(message);
         }
+    }
+
+    /*
+        Questo è per gestire campi diversi di cui almeno uno è obbligatorio
+    */
+    static reviewRequired(panel)
+    {
+        panel.find('input[data-alternative-required]').each(function() {
+            var alternative = $(this).attr('data-alternative-required');
+            if (alternative) {
+                var alt = panel.find('[name="' + alternative + '"]');
+                if (alt.val() != '') {
+                    $(this).prop('required', false);
+                }
+                else {
+                    $(this).prop('required', true);
+                }
+            }
+        });
     }
 
     static submitButton(form)

@@ -26,17 +26,17 @@ else {
     <table class="table" data-classes="table table-no-bordered">
         <thead>
             <tr>
-                <th data-sortable="true" data-sorter="sortingDates">{{ _i('Data Registrazione') }}</th>
-                <th data-sortable="true" data-sorter="sortingDates">{{ _i('Data Movimento') }}</th>
-                <th data-sortable="true">{{ _i('Tipo') }}</th>
-                <th data-sortable="true">{{ _i('Pagamento') }}</th>
+                <th>{{ _i('Data Registrazione') }}</th>
+                <th>{{ _i('Data Movimento') }}</th>
+                <th>{{ _i('Tipo') }}</th>
+                <th>{{ _i('Pagamento') }}</th>
                 @if($exclude_sender == false)
-                    <th data-sortable="true">{{ _i('Pagante') }}</th>
+                    <th>{{ _i('Pagante') }}</th>
                 @endif
                 @if($exclude_target == false)
-                    <th data-sortable="true">{{ _i('Pagato') }}</th>
+                    <th>{{ _i('Pagato') }}</th>
                 @endif
-                <th data-sortable="true" data-sorter="sortingValues">{{ _i('Valore') }}</th>
+                <th>{{ _i('Valore') }}</th>
                 <th>{{ _i('Note') }}</th>
                 @if(Gate::check('movements.admin', $currentgas))
                     <th>{{ _i('Modifica') }}</th>

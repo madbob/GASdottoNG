@@ -1,4 +1,33 @@
 class Filters {
+    static init(container)
+    {
+        $('.icons-legend button, .icons-legend a', container).click((e) => {
+            e.preventDefault();
+            this.iconsLegendTrigger($(e.currentTarget), '.icons-legend');
+        });
+
+        $('.table-icons-legend button, .table-icons-legend a', container).click((e) => {
+            e.preventDefault();
+            this.iconsLegendTrigger($(e.currentTarget), '.table-icons-legend');
+        });
+
+        $('.table-text-filter', container).keyup((e) => {
+            this.tableFilters($(e.currentTarget).attr('data-table-target'));
+        });
+
+        $('.table-number-filters input.table-number-filter', container).keyup((e) => {
+            this.tableFilters($(e.currentTarget).closest('.table-number-filters').attr('data-table-target'));
+        });
+
+        $('.table-number-filters input[name=filter_mode]', container).change((e) => {
+            $(e.currentTarget).closest('.input-group').find('input.table-number-filter').keyup();
+        });
+
+        $('.table-filters input:radio', container).change((e) => {
+            this.tableFilters($(e.currentTarget).closest('.table-filters').attr('data-table-target'));
+        });
+    }
+
     static tableFilters(table_id)
     {
         var filters = $('[data-table-target="' + table_id + '"]');
