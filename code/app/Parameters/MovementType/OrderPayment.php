@@ -2,7 +2,6 @@
 
 namespace App\Parameters\MovementType;
 
-use App\MovementType as MovementTypeModel;
 use App\Movement;
 
 class OrderPayment extends MovementType
@@ -12,41 +11,29 @@ class OrderPayment extends MovementType
         return 'order-payment';
     }
 
-    public function create()
+    public function initNew($type)
     {
-        $type = new MovementTypeModel();
-
-        $type->id = 'order-payment';
         $type->name = 'Pagamento ordine a fornitore';
         $type->sender_type = 'App\Gas';
         $type->target_type = 'App\Order';
         $type->fixed_value = null;
         $type->visibility = false;
         $type->system = true;
+
         $type->function = json_encode($this->voidFunctions([
             (object) [
                 'method' => 'cash',
-                'target' => $this->format([
-                    'bank' => 'decrement',
-                ]),
-                'sender' => $this->format([
-                    'cash' => 'decrement',
-                    'suppliers' => 'decrement',
-                ]),
+                'target' => $this->format(['bank' => 'decrement']),
+                'sender' => $this->format(['cash' => 'decrement', 'suppliers' => 'decrement']),
             ],
             (object) [
                 'method' => 'bank',
-                'target' => $this->format([
-                    'bank' => 'decrement',
-                ]),
-                'sender' => $this->format([
-                    'bank' => 'decrement',
-                    'suppliers' => 'decrement',
-                ]),
+                'target' => $this->format(['bank' => 'decrement']),
+                'sender' => $this->format(['bank' => 'decrement', 'suppliers' => 'decrement']),
             ]
         ]));
 
-        $type->save();
+        return $type;
     }
 
     public function systemInit($mov)

@@ -12,44 +12,32 @@ class DepositPay extends MovementType
         return 'deposit-pay';
     }
 
-    public function create()
+    public function initNew($type)
     {
-        $type = new MovementTypeModel();
-
-        $type->id = 'deposit-pay';
         $type->name = 'Deposito cauzione socio del GAS';
         $type->sender_type = 'App\User';
         $type->target_type = 'App\Gas';
         $type->fixed_value = null;
         $type->visibility = false;
         $type->system = true;
+
         $type->function = json_encode($this->voidFunctions([
             (object) [
                 'method' => 'cash',
-                'target' => $this->format([
-                    'cash' => 'increment',
-                    'deposits' => 'increment',
-                ]),
+                'target' => $this->format(['cash' => 'increment', 'deposits' => 'increment']),
             ],
             (object) [
                 'method' => 'bank',
-                'target' => $this->format([
-                    'bank' => 'increment',
-                    'deposits' => 'increment',
-                ]),
+                'target' => $this->format(['bank' => 'increment', 'deposits' => 'increment']),
             ],
             (object) [
                 'method' => 'credit',
-                'sender' => $this->format([
-                    'bank' => 'decrement',
-                ]),
-                'target' => $this->format([
-                    'deposits' => 'increment',
-                ]),
+                'sender' => $this->format(['bank' => 'decrement']),
+                'target' => $this->format(['deposits' => 'increment']),
             ],
         ]));
 
-        $type->save();
+        return $type;
     }
 
     public function systemInit($mov)

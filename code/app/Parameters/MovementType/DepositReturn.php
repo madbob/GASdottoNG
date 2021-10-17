@@ -2,7 +2,6 @@
 
 namespace App\Parameters\MovementType;
 
-use App\MovementType as MovementTypeModel;
 use App\Movement;
 
 class DepositReturn extends MovementType
@@ -12,34 +11,26 @@ class DepositReturn extends MovementType
         return 'deposit-return';
     }
 
-    public function create()
+    public function initNew($type)
     {
-        $type = new MovementTypeModel();
-
-        $type->id = 'deposit-return';
         $type->name = 'Restituzione cauzione socio del GAS';
         $type->sender_type = 'App\Gas';
         $type->target_type = 'App\User';
         $type->fixed_value = null;
         $type->system = true;
+
         $type->function = json_encode($this->voidFunctions([
             (object) [
                 'method' => 'cash',
-                'sender' => $this->format([
-                    'cash' => 'decrement',
-                    'deposits' => 'decrement',
-                ]),
+                'sender' => $this->format(['cash' => 'decrement', 'deposits' => 'decrement']),
             ],
             (object) [
                 'method' => 'bank',
-                'sender' => $this->format([
-                    'bank' => 'decrement',
-                    'deposits' => 'decrement',
-                ]),
+                'sender' => $this->format(['bank' => 'decrement', 'deposits' => 'decrement']),
             ]
         ]));
 
-        $type->save();
+        return $type;
     }
 
     public function systemInit($mov)

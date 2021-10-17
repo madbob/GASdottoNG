@@ -10,6 +10,8 @@
 
 namespace App\Parameters\MovementType;
 
+use App\MovementType as MovementTypeModel;
+
 abstract class MovementType
 {
     protected function voidFunctions($array)
@@ -43,11 +45,23 @@ abstract class MovementType
         return $ret;
     }
 
+    /*
+        Questa deve essere sovrascritta per forzare le callback da attivare per
+        la manipolazione dei movimenti
+    */
     public function systemInit($mov)
     {
         return $mov;
     }
 
+    public function create()
+    {
+        $type = new MovementTypeModel();
+        $type->id = $this->identifier();
+        $type = $this->initNew($type);
+        $type->save();
+    }
+
     public abstract function identifier();
-    public abstract function create();
+    public abstract function initNew($type);
 }

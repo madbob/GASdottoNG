@@ -8,10 +8,8 @@ class ModifierEngine
 {
     private function applyDefinition($modifier, $amount, $definition, $target)
     {
-        $rounding = 4;
-
         if ($modifier->value == 'percentage') {
-            $amount = round(($amount * $definition->amount) / 100, $rounding);
+            $amount = round(($amount * $definition->amount) / 100, 4);
         }
         else if ($modifier->value == 'absolute') {
             $amount = $definition->amount;
@@ -46,6 +44,98 @@ class ModifierEngine
         return $modifier_value;
     }
 
+    private function targetDefinition($modifier, $value)
+    {
+        if ($modifier->scale == 'minor') {
+            foreach($modifier->definitions as $def) {
+                if ($value < $def->threshold) {
+                    return $def;
+                }
+            }
+        }
+        else if ($modifier->scale == 'major') {
+            foreach($modifier->definitions as $def) {
+                if ($value > $def->threshold) {
+                    return $def;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private function handlingAttributes($booking, $modifier)
+    {
+        /*
+            Fintantoché l'ordine non è marcato come "consegnato" uso le quantità
+            prenotate come riferimento per i calcoli (sulle soglie o per la
+            distribuzione dei costi sulle prenotazioni).
+            Se poi, alla fine, le quantità consegnate non corrispondono con
+            quelle prenotate, e dunque i calcoli devono essere revisionati per
+            ridistribuire in modo corretto il tutto, allora uso come riferimento
+            le quantità realmente consegnate: tale ricalcolo viene invocato da
+            OrdersController::postFixModifiers(), previa conferma dell'utente,
+            quando l'ordine è davvero in stato "consegnato"
+        */
+        if ($booking->order->isActive() == false) {
+            switch($modifier->applies_type) {
+                case 'none':
+                case 'quantity':
+                    $attribute = 'delivered';
+                    break;
+                case 'price':
+                    $attribute = 'price_delivered';
+                    break;
+                case 'weight':
+                    $attribute = 'weight_delivered';
+                    break;
+                default:
+                    $attribute = '';
+                    break;
+            }
+
+            $mod_attribute = 'price_delivered';
+        }
+        else {
+            $attribute = $modifier->applies_type;
+            if ($attribute == 'none') {
+                $attribute = 'price';
+            }
+
+            $mod_attribute = 'price';
+        }
+
+        return [$attribute, $mod_attribute];
+    }
+
+    private function saveValue($modifier, $obj_mod_target, $altered_amount)
+    {
+        $modifier_value = $this->retrieveExistingValue($modifier, $obj_mod_target);
+
+        /*
+            Se alla fine il modificatore non modifica nulla, lo ignoro (e ne
+            elimino il valore esistente, se c'è)
+        */
+        if ($altered_amount == 0) {
+            if ($modifier_value->exists) {
+                $modifier_value->delete();
+            }
+
+            return null;
+        }
+
+        $modifier_value->modifier_id = $modifier->id;
+        $modifier_value->amount = $altered_amount;
+
+        if ($obj_mod_target) {
+            $modifier_value->target_type = get_class($obj_mod_target);
+            $modifier_value->target_id = $obj_mod_target->id;
+            $modifier_value->save();
+        }
+
+        return $modifier_value;
+    }
+
     public function apply($modifier, $booking, $aggregate_data)
     {
         if ($modifier->active == false) {
@@ -53,7 +143,6 @@ class ModifierEngine
         }
 
         if (!isset($aggregate_data->orders[$booking->order_id])) {
-            Log::debug('Nessun dato su cui applicare il modificatore');
             return null;
         }
 
@@ -115,44 +204,7 @@ class ModifierEngine
                 return null;
         }
 
-        $attribute = '';
-
-        /*
-            Fintantoché l'ordine non è marcato come "consegnato" uso le quantità
-            prenotate come riferimento per i calcoli (sulle soglie o per la
-            distribuzione dei costi sulle prenotazioni).
-            Se poi, alla fine, le quantità consegnate non corrispondono con
-            quelle prenotate, e dunque i calcoli devono essere revisionati per
-            ridistribuire in modo corretto il tutto, allora uso come riferimento
-            le quantità realmente consegnate: tale ricalcolo viene invocato da
-            OrdersController::postFixModifiers(), previa conferma dell'utente,
-            quando l'ordine è davvero in stato "consegnato"
-        */
-        if ($booking->order->isActive() == false) {
-            switch($modifier->applies_type) {
-                case 'none':
-                case 'quantity':
-                    $attribute = 'delivered';
-                    break;
-                case 'price':
-                    $attribute = 'price_delivered';
-                    break;
-                case 'weight':
-                    $attribute = 'weight_delivered';
-                    break;
-            }
-
-            $mod_attribute = 'price_delivered';
-        }
-        else {
-            $attribute = $modifier->applies_type;
-            if ($attribute == 'none') {
-                $attribute = 'price';
-            }
-
-            $mod_attribute = 'price';
-        }
-
+        list($attribute, $mod_attribute) = $this->handlingAttributes($booking, $modifier);
         $check_value = $check_target->$attribute ?? 0;
         $target_definition = null;
         $altered_amount = null;
@@ -161,22 +213,7 @@ class ModifierEngine
             $altered_amount = 0;
         }
         else {
-            if ($modifier->scale == 'minor') {
-                foreach($modifier->definitions as $def) {
-                    if ($check_value < $def->threshold) {
-                        $target_definition = $def;
-                        break;
-                    }
-                }
-            }
-            else if ($modifier->scale == 'major') {
-                foreach($modifier->definitions as $def) {
-                    if ($check_value > $def->threshold) {
-                        $target_definition = $def;
-                        break;
-                    }
-                }
-            }
+            $target_definition = $this->targetDefinition($modifier, $check_value);
 
             if (is_null($target_definition) == false) {
                 $altered_amount = $this->applyDefinition($modifier, $mod_target->$mod_attribute ?? 0, $target_definition, $check_target);
@@ -220,29 +257,6 @@ class ModifierEngine
             }
         }
 
-        $modifier_value = $this->retrieveExistingValue($modifier, $obj_mod_target);
-
-        /*
-            Se alla fine il modificatore non modifica nulla, lo ignoro (e ne
-            elimino il valore esistente, se c'è)
-        */
-        if ($altered_amount == 0) {
-            if ($modifier_value->exists) {
-                $modifier_value->delete();
-            }
-
-            return null;
-        }
-
-        $modifier_value->modifier_id = $modifier->id;
-        $modifier_value->amount = $altered_amount;
-
-        if ($obj_mod_target) {
-            $modifier_value->target_type = get_class($obj_mod_target);
-            $modifier_value->target_id = $obj_mod_target->id;
-            $modifier_value->save();
-        }
-
-        return $modifier_value;
+        return $this->saveValue($modifier, $obj_mod_target, $altered_amount);
     }
 }
