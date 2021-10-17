@@ -12,8 +12,6 @@ use Auth;
 use Log;
 
 use App\Events\SluggableCreating;
-use App\Gas;
-use App\GASModel;
 
 class MovementType extends Model
 {
@@ -25,152 +23,6 @@ class MovementType extends Model
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,
     ];
-
-    public static function payments()
-    {
-        $ret = [
-            'cash' => (object) [
-                'name' => _i('Contanti'),
-                'identifier' => false,
-                'icon' => 'cash',
-                'active_for' => null,
-                'valid_config' => function($target) {
-                    return true;
-                }
-            ],
-            'bank' => (object) [
-                'name' => _i('Bonifico'),
-                'identifier' => true,
-                'icon' => 'bank',
-                'active_for' => null,
-                'valid_config' => function($target) {
-                    return true;
-                }
-            ],
-            'credit' => (object) [
-                'name' => _i('Credito Utente'),
-                'identifier' => false,
-                'icon' => 'person-badge',
-                'active_for' => 'App\User',
-                'valid_config' => function($target) {
-                    return true;
-                }
-            ],
-        ];
-
-        $gas = currentAbsoluteGas();
-
-        if($gas->hasFeature('paypal')) {
-            $ret['paypal'] = (object) [
-                'name' => _i('PayPal'),
-                'identifier' => true,
-                'icon' => 'cloud-plus',
-                'active_for' => 'App\User',
-                'valid_config' => function($target) {
-                    return true;
-                }
-            ];
-        }
-
-        if($gas->hasFeature('satispay')) {
-            $ret['satispay'] = (object) [
-                'name' => _i('Satispay'),
-                'identifier' => true,
-                'icon' => 'cloud-plus',
-                'active_for' => 'App\User',
-                'valid_config' => function($target) {
-                    return true;
-                }
-            ];
-        }
-
-        if($gas->hasFeature('rid')) {
-            $ret['sepa'] = (object) [
-                'name' => _i('SEPA'),
-                'identifier' => true,
-                'icon' => 'cloud-plus',
-                'active_for' => 'App\User',
-                'valid_config' => function($target) {
-                    return (get_class($target) == 'App\User' && !empty($target->rid['iban']));
-                }
-            ];
-        }
-
-        return $ret;
-    }
-
-    public static function paymentsSimple()
-    {
-        $payments = self::payments();
-
-        $ret = [
-            'none' => _i('Non Specificato'),
-        ];
-
-        foreach($payments as $identifier => $meta) {
-            $ret[$identifier] = $meta->name;
-        }
-
-        return $ret;
-    }
-
-    public static function paymentMethodByType($type)
-    {
-        $movement_methods = MovementType::payments();
-        return $movement_methods[$type] ?? null;
-    }
-
-    public static function paymentsByType($type)
-    {
-        $function = null;
-
-        if ($type != null) {
-            $metadata = self::types($type);
-            if ($metadata)
-                $function = json_decode($metadata->function);
-        }
-
-        $movement_methods = MovementType::payments();
-        $ret = [];
-
-        foreach ($movement_methods as $method_id => $info) {
-            $found = false;
-
-            if ($function) {
-                foreach($function as $f) {
-                    if ($f->method == $method_id) {
-                        $found = true;
-                        break;
-                    }
-                }
-            }
-            else {
-                $found = true;
-            }
-
-            if ($found)
-                $ret[$method_id] = $info->name;
-        }
-
-        return $ret;
-    }
-
-    public static function defaultPaymentByType($type)
-    {
-        $metadata = self::types($type);
-        $function = json_decode($metadata->function);
-
-        foreach($function as $f) {
-            if (isset($f->is_default) && $f->is_default) {
-                return $f->method;
-            }
-        }
-
-        if (empty($function))
-            return null;
-        else
-            return $function[0]->method;
-    }
 
     public static function initSystemTypes($types)
     {
@@ -191,14 +43,10 @@ class MovementType extends Model
 
                     $mov->callbacks = [
                         'post' => function (Movement $movement) {
-                            $sender = $movement->sender;
-                            $sender->deposit_id = $movement->id;
-                            $sender->save();
+                            $movement->attachToSender('deposit_id');
                         },
                         'delete' => function(Movement $movement) {
-                            $sender = $movement->sender;
-                            $sender->deposit_id = 0;
-                            $sender->save();
+                            $movement->detachFromSender('deposit_id');
                         }
                     ];
 
@@ -209,9 +57,7 @@ class MovementType extends Model
 
                     $mov->callbacks = [
                         'post' => function (Movement $movement) {
-                            $target = $movement->target;
-                            $target->deposit_id = 0;
-                            $target->save();
+                            $movement->detachFromTarget('deposit_id');
                         },
                         'delete' => function(Movement $movement) {
                             $sender = $movement->sender;
@@ -233,14 +79,10 @@ class MovementType extends Model
 
                     $mov->callbacks = [
                         'post' => function (Movement $movement) {
-                            $sender = $movement->sender;
-                            $sender->fee_id = $movement->id;
-                            $sender->save();
+                            $movement->attachToSender('fee_id');
                         },
                         'delete' => function(Movement $movement) {
-                            $sender = $movement->sender;
-                            $sender->fee_id = 0;
-                            $sender->save();
+                            $movement->detachFromSender('fee_id');
                         }
                     ];
 
@@ -361,11 +203,7 @@ class MovementType extends Model
                             }
                         },
                         'delete' => function(Movement $movement) {
-                            $target = $movement->target;
-                            if($target != null) {
-                                $target->payment_id = 0;
-                                $target->save();
-                            }
+                            $movement->detachFromTarget();
                         }
                     ];
 
@@ -374,14 +212,10 @@ class MovementType extends Model
                 case 'order-payment':
                     $mov->callbacks = [
                         'post' => function (Movement $movement) {
-                            $target = $movement->target;
-                            $target->payment_id = $movement->id;
-                            $target->save();
+                            $movement->attachToTarget();
                         },
                         'delete' => function(Movement $movement) {
-                            $target = $movement->target;
-                            $target->payment_id = 0;
-                            $target->save();
+                            $movement->detachFromTarget();
                         }
                     ];
 
@@ -392,35 +226,9 @@ class MovementType extends Model
         return $types;
     }
 
-    public static function types($identifier = null, $with_trashed = false)
-    {
-        static $types = null;
-
-        if (is_null($types)) {
-            $query = MovementType::orderBy('name', 'asc');
-            if ($with_trashed) {
-                $query = $query->withTrashed();
-            }
-
-            $types = self::initSystemTypes($query->get());
-        }
-
-        if ($identifier) {
-            $ret = $types->where('id', $identifier)->first();
-            if (is_null($ret)) {
-                Log::error('Richiesto tipo di movimento non esistente: ' . $identifier);
-            }
-        }
-        else {
-            $ret = $types;
-        }
-
-        return $ret;
-    }
-
     public function hasPayment($type)
     {
-        $valid = MovementType::paymentsByType($this->id);
+        $valid = paymentsByType($this->id);
         return array_key_exists($type, $valid);
     }
 

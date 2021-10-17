@@ -48,14 +48,14 @@ class MovementTypesController extends Controller
             abort(503);
         }
 
-        $type = MovementType::types($id);
+        $type = movementTypes($id);
         $type->id = $id;
         return view('movementtypes.edit', ['type' => $type]);
     }
 
     private function parseRules(&$data, $role, $classname, $request)
     {
-        $payments = MovementType::payments();
+        $payments = paymentTypes();
         $fields = $classname::balanceFields();
 
         foreach($fields as $f => $fieldname) {
@@ -103,7 +103,7 @@ class MovementTypesController extends Controller
 
     public function fixVoidMethods(&$data, $request)
     {
-        $payments = MovementType::payments();
+        $payments = paymentTypes();
 
         foreach($payments as $pay_id => $pay) {
             if ($request->has($pay_id) == false)

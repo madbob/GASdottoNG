@@ -36,7 +36,7 @@
                                 <label class="btn btn-light">
                                     <input type="radio" name="payment_method" value="none"> {{ _i('Non Specificato') }}
                                 </label>
-                                @foreach(App\MovementType::payments() as $payment_identifier => $payment_meta)
+                                @foreach(paymentTypes() as $payment_identifier => $payment_meta)
                                     <label class="btn btn-light">
                                         <input type="radio" name="payment_method" value="{{ $payment_identifier }}"> {{ $payment_meta->name }}
                                     </label>

@@ -69,7 +69,7 @@ class Movement extends Model
 
     public function getPaymentIconAttribute()
     {
-        $types = MovementType::payments();
+        $types = paymentTypes();
         $icon = 'question-circle';
         $name = '???';
 
@@ -86,12 +86,12 @@ class Movement extends Model
 
     public function getTypeMetadataAttribute()
     {
-        return MovementType::types($this->type, true);
+        return movementTypes($this->type, true);
     }
 
     public function getValidPaymentsAttribute()
     {
-        return MovementType::paymentsByType($this->type);
+        return paymentsByType($this->type);
     }
 
     public function printableName()
@@ -113,7 +113,7 @@ class Movement extends Model
 
     public function printablePayment()
     {
-        $types = MovementType::payments();
+        $types = paymentTypes();
         foreach ($types as $id => $details) {
             if ($this->method == $id) {
                 return $details->name;
@@ -162,6 +162,35 @@ class Movement extends Model
         return null;
     }
 
+    private function wiring($peer, $field, $id)
+    {
+        $peer_obj = $movement->$peer;
+        if ($peer_obj != null) {
+            $peer_obj->$field = $id;
+            $peer_obj->save();
+        }
+    }
+
+    public function attachToSender($field = 'payment_id')
+    {
+        $this->wiring('sender', $field, $this->id);
+    }
+
+    public function attachToTarget($field = 'payment_id')
+    {
+        $this->wiring('target', $field, $this->id);
+    }
+
+    public function detachFromSender($field = 'payment_id')
+    {
+        $this->wiring('sender', $field, 0);
+    }
+
+    public function detachFromTarget($field = 'payment_id')
+    {
+        $this->wiring('target', $field, 0);
+    }
+
     public static function generate($type, $sender, $target, $amount)
     {
         $ret = new self();
@@ -171,7 +200,7 @@ class Movement extends Model
         $ret->target_type = get_class($target);
         $ret->target_id = $target->id;
 
-        $type_descr = MovementType::types($type);
+        $type_descr = movementTypes($type);
         if ($type_descr->fixed_value != false) {
             $ret->amount = $type_descr->fixed_value;
         }
@@ -181,7 +210,7 @@ class Movement extends Model
 
         $ret->date = date('Y-m-d');
         $ret->notes = $type_descr->default_notes;
-        $ret->method = MovementType::defaultPaymentByType($type);
+        $ret->method = defaultPaymentByType($type);
 
         return $ret;
     }

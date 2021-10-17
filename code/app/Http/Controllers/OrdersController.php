@@ -43,36 +43,6 @@ class OrdersController extends Controller
         ]);
     }
 
-    private function resetOlderDates($order)
-    {
-        $last_date = $order->shipping ? $order->shipping : $order->end;
-
-        Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('date', '<=', $last_date)->delete();
-
-        $recurrings = Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('recurring', '!=', '')->get();
-        foreach($recurrings as $d) {
-            $dates = $d->dates;
-            $next_date = null;
-
-            foreach($dates as $read_date) {
-                if ($read_date > $last_date) {
-                    $next_date = $read_date;
-                    break;
-                }
-            }
-
-            if (is_null($next_date)) {
-                $d->delete();
-            }
-            else {
-                $data = json_decode($d->recurring);
-                $data->from = $next_date;
-                $d->recurring = json_encode($data);
-                $d->save();
-            }
-        }
-    }
-
     public function rss(Request $request)
     {
         $aggregates = Aggregate::getByStatus(null, 'open');
@@ -206,23 +176,10 @@ class OrdersController extends Controller
             $o->shipping = $shipping;
             $o->status = $request->input('status');
             $o->keep_open_packages = $keep_open_packages;
-
             $o->aggregate_id = $a->id;
             $o->save();
 
-            foreach($supplier->modifiers as $mod) {
-                if ($mod->active || $mod->always_on == true) {
-                    $new_mod = $mod->replicate();
-                    $new_mod->target_id = $o->id;
-                    $new_mod->target_type = get_class($o);
-                    $new_mod->save();
-                }
-            }
-
             $o->deliveries()->sync($deliveries);
-            $o->products()->sync($supplier->products()->where('active', '=', true)->get());
-
-            $this->resetOlderDates($o);
         }
 
         return $this->commonSuccessResponse($a);
@@ -446,18 +403,22 @@ class OrdersController extends Controller
     private function sendDocumentMail($request, $temp_file_path)
     {
         $recipient_mails = $request->input('recipient_mail_value', []);
-        if (empty($recipient_mails))
+        if (empty($recipient_mails)) {
             return;
+        }
 
         $real_recipient_mails = [];
         foreach($recipient_mails as $rm) {
-            if (empty($rm))
+            if (empty($rm)) {
                 continue;
+            }
+
             $real_recipient_mails[] = (object) ['email' => $rm];
         }
 
-        if (empty($real_recipient_mails))
+        if (empty($real_recipient_mails)) {
             return;
+        }
 
         $m = Mail::to($real_recipient_mails);
         $subject_mail = $request->input('subject_mail');

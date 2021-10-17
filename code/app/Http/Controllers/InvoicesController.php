@@ -205,7 +205,7 @@ class InvoicesController extends Controller
         }
 
         $alternative_types = [];
-        $available_types = MovementType::types();
+        $available_types = movementTypes();
         foreach($available_types as $at) {
             if (($at->sender_type == 'App\Gas' && ($at->target_type == 'App\Supplier' || $at->target_type == 'App\Invoice')) || ($at->sender_type == 'App\Supplier' && $at->target_type == 'App\Gas')) {
                 $alternative_types[$at->id] = $at->name;
@@ -247,7 +247,7 @@ class InvoicesController extends Controller
             $target = null;
             $sender = null;
 
-            $metadata = MovementType::types($type);
+            $metadata = movementTypes($type);
 
             if ($metadata->target_type == 'App\Invoice') {
                 $target = $invoice;

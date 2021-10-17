@@ -97,7 +97,7 @@ class DeliveryUserController extends BookingHandler
         DB::beginTransaction();
 
         $users = $request->input('bookings', []);
-        $default_payment_method = MovementType::defaultPaymentByType('booking-payment');
+        $default_payment_method = defaultPaymentByType('booking-payment');
 
         foreach($users as $index => $user_id) {
             $grand_total = 0;
