@@ -164,7 +164,7 @@ class Movement extends Model
 
     private function wiring($peer, $field, $id)
     {
-        $peer_obj = $movement->$peer;
+        $peer_obj = $this->$peer;
         if ($peer_obj != null) {
             $peer_obj->$field = $id;
             $peer_obj->save();

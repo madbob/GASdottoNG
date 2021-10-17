@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Jobs\NotifyNewOrder;
 use App\Jobs\NotifyClosedOrder;
 
+use App\Aggregate;
 use App\Order;
 use App\Date;
 
@@ -13,7 +14,6 @@ class OrderObserver
     private function resetOlderDates($order)
     {
         $last_date = $order->shipping ? $order->shipping : $order->end;
-
         Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('date', '<=', $last_date)->delete();
 
         $recurrings = Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('recurring', '!=', '')->get();
@@ -86,10 +86,28 @@ class OrderObserver
                 NotifyClosedOrder::dispatch($order->id);
             }
         }
+
+        if ($order->shipping) {
+            Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('date', '<=', $order->shipping)->delete();
+        }
+    }
+
+    public function deleting(Order $order)
+    {
+        foreach($order->bookings as $booking) {
+            $booking->deleteMovements();
+        }
+
+        $order->deleteMovements();
+        $order->modifiers()->delete();
+        return true;
     }
 
     public function deleted(Order $order)
     {
-        $order->modifiers()->delete();
+        $aggregate = Aggregate::find($order->aggregate_id);
+        if ($aggregate->orders()->count() <= 0) {
+            $aggregate->delete();
+        }
     }
 }

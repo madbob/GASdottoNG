@@ -4,23 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Arr;
 
 use DB;
 use Log;
 use App;
-use Auth;
-use PDF;
-use Mail;
 
-use App\Supplier;
+use App\Services\OrdersService;
 use App\Product;
 use App\Order;
 use App\Aggregate;
-use App\Date;
-use App\Booking;
-use App\BookedProduct;
-use App\Notifications\GenericOrderShipping;
 
 /*
     Attenzione, quando si maneggia in questo file bisogna ricordare la
@@ -34,12 +26,16 @@ use App\Notifications\GenericOrderShipping;
     in altri casi ad un Aggregato.
 */
 
-class OrdersController extends Controller
+class OrdersController extends BackedController
 {
-    public function __construct()
+    public function __construct(OrdersService $service)
     {
+        $this->service = $service;
+
         $this->commonInit([
-            'reference_class' => 'App\\Order'
+            'reference_class' => 'App\\Order',
+            'endpoint' => 'orders',
+            'service' => $service,
         ]);
     }
 
@@ -112,10 +108,9 @@ class OrdersController extends Controller
 
     public function show(Request $request, $id)
     {
-        $user = Auth::user();
-
+        $user = $request->user();
         $format = $request->input('format', 'summary');
-        $order = Order::findOrFail($id);
+        $order = $this->service->show($id);
 
         if ($format == 'summary') {
             $master_summary = $order->aggregate->reduxData();
@@ -127,157 +122,9 @@ class OrdersController extends Controller
                 return view('order.summary_ro', ['order' => $order, 'master_summary' => $master_summary]);
             }
         }
-
-        abort(404);
-    }
-
-    public function store(Request $request)
-    {
-        DB::beginTransaction();
-
-        $a = new Aggregate();
-        $suppliers = Arr::wrap($request->input('supplier_id'));
-
-        if (count($suppliers) == 1) {
-            $order_comment = $request->input('comment');
-        }
         else {
-            $order_comment = '';
-            $a->comment = $request->input('comment');
+            abort(404);
         }
-
-        $a->save();
-
-        $deliveries = array_filter($request->input('deliveries', []));
-        $start = decodeDate($request->input('start'));
-        $end = decodeDate($request->input('end'));
-        $shipping = decodeDate($request->input('shipping'));
-
-        if ($request->has('keep_open_packages')) {
-            $keep_open_packages = $request->input('keep_open_packages');
-        }
-        else {
-            $keep_open_packages = 'no';
-        }
-
-        foreach($suppliers as $supplier_id) {
-            $supplier = Supplier::findOrFail($supplier_id);
-            if ($request->user()->can('supplier.orders', $supplier) == false) {
-                continue;
-            }
-
-            $o = new Order();
-            $o->supplier_id = $supplier->id;
-
-            $now = date('Y-m-d');
-            $o->comment = $order_comment;
-            $o->start = $start;
-            $o->end = $end;
-            $o->shipping = $shipping;
-            $o->status = $request->input('status');
-            $o->keep_open_packages = $keep_open_packages;
-            $o->aggregate_id = $a->id;
-            $o->save();
-
-            $o->deliveries()->sync($deliveries);
-        }
-
-        return $this->commonSuccessResponse($a);
-    }
-
-    public function update(Request $request, $id)
-    {
-        DB::beginTransaction();
-
-        $order = Order::findOrFail($id);
-        if ($request->user()->can('supplier.orders', $order->supplier) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
-
-        if ($request->has('comment')) {
-            $order->comment = $request->input('comment');
-        }
-        if ($request->has('start')) {
-            $order->start = decodeDate($request->input('start'));
-        }
-        if ($request->has('end')) {
-            $order->end = decodeDate($request->input('end'));
-        }
-        if ($request->has('shipping')) {
-            $order->shipping = decodeDate($request->input('shipping'));
-        }
-
-        $order->deliveries()->sync(array_filter($request->input('deliveries', [])));
-        $order->users()->sync($request->input('users', []));
-
-        /*
-            Se un ordine viene riaperto, modifico artificiosamente la sua data
-            di chiusura. Questo per evitare che venga nuovamente automaticamente
-            chiuso
-        */
-        $status = $request->input('status');
-        if ($order->status != $status) {
-            $today = date('Y-m-d');
-            if ($status == 'open' && $order->end < $today) {
-                $order->end = $today;
-            }
-
-            $order->status = $status;
-        }
-
-        if ($request->has('keep_open_packages')) {
-            $order->keep_open_packages = $request->input('keep_open_packages');
-        }
-
-        $order->save();
-
-        $enabled = $request->input('enabled', []);
-
-        /*
-            Se vengono rimossi dei prodotti dall'ordine, ne elimino tutte le
-            relative prenotazioni sinora avvenute
-        */
-        $removed_products = $order->products()->whereNotIn('id', $enabled)->pluck('id')->toArray();
-        if (!empty($removed_products)) {
-            foreach($order->bookings as $booking) {
-                $booking->products()->whereIn('product_id', $removed_products)->delete();
-                if ($booking->products->isEmpty()) {
-                    $booking->delete();
-                }
-            }
-        }
-
-        $order->products()->sync($enabled);
-
-        if ($order->shipping) {
-            Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('date', '<=', $order->shipping)->delete();
-        }
-
-        return $this->commonSuccessResponse($order->aggregate);
-    }
-
-    public function destroy(Request $request, $id)
-    {
-        DB::beginTransaction();
-
-        $order = Order::findOrFail($id);
-        if ($request->user()->can('supplier.orders', $order->supplier) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
-
-        foreach($order->bookings as $booking)
-            $booking->deleteMovements();
-        $order->deleteMovements();
-
-        $aggregate_id = $order->aggregate_id;
-
-        $order->delete();
-
-        $aggregate = Aggregate::find($aggregate_id);
-        if ($aggregate->orders()->count() <= 0)
-            $aggregate->delete();
-
-        return $this->successResponse();
     }
 
     /*
@@ -286,10 +133,7 @@ class OrdersController extends Controller
     */
     public function getFixes(Request $request, $id, $product_id)
     {
-        $order = Order::findOrFail($id);
-        if ($request->user()->can('supplier.orders', $order->supplier) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
+        $order = $this->service->show($id, true);
 
         $product = Product::findOrFail($product_id);
         if ($order->hasProduct($product) == false) {
@@ -303,28 +147,19 @@ class OrdersController extends Controller
     {
         DB::beginTransaction();
 
-        $order = Order::findOrFail($id);
-        if ($request->user()->can('supplier.orders', $order->supplier) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
-
+        $order = $this->service->show($id, true);
         $product_id = $request->input('product', []);
         $bookings = $request->input('booking', []);
         $quantities = $request->input('quantity', []);
         $notes = $request->input('notes') ?? '';
-
         $order->products()->updateExistingPivot($product_id, ['notes' => $notes]);
 
         for ($i = 0; $i < count($bookings); ++$i) {
             $booking_id = $bookings[$i];
 
             $booking = Booking::find($booking_id);
-            if (is_null($booking)) {
+            if (is_null($booking) || $booking->order->id != $id) {
                 continue;
-            }
-
-            if ($booking->order->id != $id) {
-                return $this->errorResponse(_i('Non autorizzato'));
             }
 
             $product = $booking->getBooked($product_id, true);
@@ -346,11 +181,7 @@ class OrdersController extends Controller
     */
     public function getFixModifiers(Request $request, $id)
     {
-        $order = Order::findOrFail($id);
-        if ($request->user()->can('supplier.orders', $order->supplier) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
-
+        $order = $this->service->show($id, true);
         return view('order.fixemodifiers', ['order' => $order]);
     }
 
@@ -363,7 +194,7 @@ class OrdersController extends Controller
                 return $this->successResponse();
 
             case 'adjust':
-                $order = Order::find($id);
+                $order = $this->service->show($id, true);
                 $aggregate = $order->aggregate;
                 $hub = App::make('GlobalScopeHub');
 
@@ -400,145 +231,14 @@ class OrdersController extends Controller
         ]);
     }
 
-    private function sendDocumentMail($request, $temp_file_path)
-    {
-        $recipient_mails = $request->input('recipient_mail_value', []);
-        if (empty($recipient_mails)) {
-            return;
-        }
-
-        $real_recipient_mails = [];
-        foreach($recipient_mails as $rm) {
-            if (empty($rm)) {
-                continue;
-            }
-
-            $real_recipient_mails[] = (object) ['email' => $rm];
-        }
-
-        if (empty($real_recipient_mails)) {
-            return;
-        }
-
-        $m = Mail::to($real_recipient_mails);
-        $subject_mail = $request->input('subject_mail');
-        $body_mail = $request->input('body_mail');
-        $m->send(new GenericOrderShipping($temp_file_path, $subject_mail, $body_mail));
-
-        @unlink($temp_file_path);
-    }
-
-    private function orderTopBookingsByShipping($order, $shipping_place, $status = null)
-    {
-        $bookings = $order->topLevelBookings($status);
-        return Booking::sortByShippingPlace($bookings, $shipping_place);
-    }
-
     public function exportModal(Request $request, $id, $type)
     {
-        $order = Order::findOrFail($id);
+        $order = $this->service->show($id);
         return view('order.export' . $type, ['order' => $order]);
     }
 
     public function document(Request $request, $id, $type)
     {
-        $order = Order::findOrFail($id);
-
-        switch ($type) {
-            case 'shipping':
-                $send_mail = $request->has('send_mail');
-                $subtype = $request->input('format', 'pdf');
-                $status = $request->input('status');
-                $required_fields = $request->input('fields', []);
-                $fields = splitFields($required_fields);
-
-                $shipping_place = $request->input('shipping_place', 'all_by_name');
-                $data = $order->formatShipping($fields, $status, $shipping_place);
-
-                $title = _i('Dettaglio Consegne ordine %s presso %s', [$order->internal_number, $order->supplier->name]);
-                $filename = sanitizeFilename($title . '.' . $subtype);
-                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
-
-                if ($subtype == 'pdf') {
-                    $pdf = PDF::loadView('documents.order_shipping_pdf', ['fields' => $fields, 'order' => $order, 'data' => $data]);
-                    enablePdfPagesNumbers($pdf);
-
-                    if ($send_mail) {
-                        $pdf->save($temp_file_path);
-                    }
-                    else {
-                        return $pdf->download($filename);
-                    }
-                }
-                else if ($subtype == 'csv') {
-                    $flat_contents = [];
-
-                    foreach($data->contents as $c) {
-                        foreach($c->products as $p) {
-                            $flat_contents[] = array_merge($c->user, $p);
-                        }
-                    }
-
-                    if ($send_mail) {
-                        output_csv($filename, $data->headers, $flat_contents, function($row) {
-                            return $row;
-                        }, $temp_file_path);
-                    }
-                    else {
-                        return output_csv($filename, $data->headers, $flat_contents, function($row) {
-                            return $row;
-                        });
-                    }
-                }
-
-                if ($send_mail) {
-                    $this->sendDocumentMail($request, $temp_file_path);
-                }
-
-                break;
-
-            case 'summary':
-                $send_mail = $request->has('send_mail');
-                $subtype = $request->input('format', 'pdf');
-                $required_fields = $request->input('fields', []);
-                $status = $request->input('status');
-
-                $shipping_place = $request->input('shipping_place', 'all_by_place');
-                if ($shipping_place == 'all_by_place') {
-                    $shipping_place = null;
-                }
-
-                if ($send_mail) {
-                    $temp_file_path = $order->document('summary', $subtype, 'save', $required_fields, $status, $shipping_place);
-                    $this->sendDocumentMail($request, $temp_file_path);
-                }
-                else {
-                    return $order->document('summary', $subtype, 'return', $required_fields, $status, $shipping_place);
-                }
-
-                break;
-
-            case 'table':
-                $status = $request->input('status', 'booked');
-                $shipping_place = $request->input('shipping_place', 0);
-
-                $contents = [];
-
-                if ($status == 'booked') {
-                    $bookings = self::orderTopBookingsByShipping($order, $shipping_place);
-                    $contents = view('documents.order_table_booked', ['order' => $order, 'bookings' => $bookings])->render();
-                }
-                else if ($status == 'delivered') {
-                    $bookings = self::orderTopBookingsByShipping($order, $shipping_place);
-                    $contents = view('documents.order_table_delivered', ['order' => $order, 'bookings' => $bookings])->render();
-                }
-                else if ($status == 'saved') {
-                    $bookings = self::orderTopBookingsByShipping($order, $shipping_place, 'saved');
-                    $contents = view('documents.order_table_saved', ['order' => $order, 'bookings' => $bookings])->render();
-                }
-
-                $filename = sanitizeFilename(_i('Tabella Ordine %s presso %s.csv', [$order->internal_number, $order->supplier->name]));
-                return output_csv($filename, null, $contents, null, null);
-        }
+        return $this->service->document($id, $type, $request->all());
     }
 }
