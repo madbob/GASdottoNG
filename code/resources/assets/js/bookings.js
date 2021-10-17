@@ -7,55 +7,49 @@ class Bookings {
         $('.bookingSearch', container).each((index, item) => {
             var input = $(item);
 
-            if (input.hasClass('tt-hint') == true) {
-                return;
+            var appendTo = 'body';
+            if (input.closest('.modal').length != 0) {
+                appendTo = input.closest('.modal');
             }
 
-            if (input.hasClass('tt-input') == false) {
-                var appendTo = 'body';
-                if (input.closest('.modal').length != 0) {
-                    appendTo = input.closest('.modal');
-                }
+            input.autocomplete({
+                source: utils.absoluteUrl() + '/users/search',
+                appendTo: appendTo,
+                select: function(event, ui) {
+                    var aggregate_id = input.attr('data-aggregate');
+                    var while_shipping = (input.closest('.modal.add-booking-while-shipping').length != 0);
+                    var fill_target = input.closest('.fillable-booking-space').find('.other-booking');
+                    fill_target.empty().append(utils.loadingPlaceholder());
 
-                input.autocomplete({
-                    source: utils.absoluteUrl() + '/users/search',
-                    appendTo: appendTo,
-                    select: function(event, ui) {
-                        var aggregate_id = input.attr('data-aggregate');
-                        var while_shipping = (input.closest('.modal.add-booking-while-shipping').length != 0);
-                        var fill_target = input.closest('.fillable-booking-space').find('.other-booking');
-                        fill_target.empty().append(utils.loadingPlaceholder());
-
-                        var data = {};
-                        var mode = input.attr('data-enforce-booking-mode');
-                        if (mode != null) {
-                            data.enforce = mode;
-                        }
-
-                        var url = while_shipping ? ('delivery/' + aggregate_id + '/user/' + ui.item.id) : ('booking/' + aggregate_id + '/user/' + ui.item.id + '?extended=true');
-
-                        utils.postAjax({
-                            url: url,
-                            method: 'GET',
-                            data: data,
-                            dataType: 'HTML',
-                            success: function(data) {
-                                data = $(data);
-
-                                if (while_shipping) {
-                                    var test = data.find('.booking-product:not(.fit-add-product)');
-                                    if (test.length != 0) {
-                                        data = $('<div class="alert alert-danger">' + _('Questa prenotazione esiste già e non può essere ricreata.') + '</div>');
-                                    }
-                                }
-
-                                fill_target.empty().append(data);
-                                utils.j().initElements(data);
-                            }
-                        });
+                    var data = {};
+                    var mode = input.attr('data-enforce-booking-mode');
+                    if (mode != null) {
+                        data.enforce = mode;
                     }
-                });
-            }
+
+                    var url = while_shipping ? ('delivery/' + aggregate_id + '/user/' + ui.item.id) : ('booking/' + aggregate_id + '/user/' + ui.item.id + '?extended=true');
+
+                    utils.postAjax({
+                        url: url,
+                        method: 'GET',
+                        data: data,
+                        dataType: 'HTML',
+                        success: function(data) {
+                            data = $(data);
+
+                            if (while_shipping) {
+                                var test = data.find('.booking-product:not(.fit-add-product)');
+                                if (test.length != 0) {
+                                    data = $('<div class="alert alert-danger">' + _('Questa prenotazione esiste già e non può essere ricreata.') + '</div>');
+                                }
+                            }
+
+                            fill_target.empty().append(data);
+                            utils.j().initElements(data);
+                        }
+                    });
+                }
+            });
         });
 
         utils.sel('.booking-product-quantity input', container).keyup((e) => {
@@ -97,11 +91,7 @@ class Bookings {
                 input.val(original + 1);
             }
             else {
-                if (original == 0) {
-                    return;
-                }
-
-                input.val(original - 1);
+                input.val(Math.max(0, original - 1));
             }
 
             input.keyup();
@@ -110,7 +100,7 @@ class Bookings {
         $('.add-booking-product', container).click(function(e) {
             e.preventDefault();
             var table = $(this).closest('table');
-            var row = $(this).closest('table').find('.fit-add-product').first().clone().removeClass('hidden');
+            var row = table.find('.fit-add-product').first().clone().removeClass('hidden');
             utils.j().initElements(row);
             row.appendTo(table.find('tbody'));
             return false;
@@ -148,16 +138,13 @@ class Bookings {
 
         $('.preload-quantities', container).click((e) => {
             e.preventDefault();
-
-            var button = $(e.currentTarget);
-            var editors = button.closest('form').find('.booking-editor');
+            var editors = $(e.currentTarget).closest('form').find('.booking-editor');
 
             editors.each(function() {
                 $(this).find('tbody .booking-product').each(function() {
                     var booked = $(this).find('input:hidden[name=booking-product-real-booked]');
                     if (booked.length != 0) {
-                        var input = $(this).find('.booking-product-quantity input');
-                        input.val(booked.val());
+                        $(this).find('.booking-product-quantity input').val(booked.val());
                     }
                 });
             });
@@ -174,22 +161,10 @@ class Bookings {
 
         $('.load-other-booking', container).click((e) => {
             e.preventDefault();
-
             var button = $(e.currentTarget);
             var url = button.attr('data-booking-url');
             var fill_target = button.closest('.other-booking');
-            fill_target.empty().append(utils.loadingPlaceholder());
-
-            $.ajax({
-                url: url,
-                method: 'GET',
-                dataType: 'HTML',
-                success: function(data) {
-                    data = $(data);
-                    fill_target.empty().append(data);
-                    utils.j().initElements(data);
-                }
-            });
+            utils.j().fetchNode(url, fill_target);
         });
 
         $('.inline-calculator button[type=submit]', container).click((e) => {
@@ -280,15 +255,13 @@ class Bookings {
         });
     }
 
-    static bookingTotal(editor) {
-    	var form = $(editor).closest('form');
-
+    static serializeBooking(form)
+    {
         /*
             Qui aggiungo temporaneamente la classe skip-on-submit a tutti gli input
             a 0, in modo da ridurre la quantità di dati spediti al server per il
             controllo dinamico, salvo poi toglierla a operazione conclusa
         */
-
         form.find('textarea').addClass('skip-on-submit restore-after-serialize');
 
         form.find('.booking-product-quantity input').filter(function() {
@@ -298,9 +271,81 @@ class Bookings {
         });
 
     	var data = form.find(':not(.skip-on-submit)').serialize();
-
         form.find('.restore-after-serialize').removeClass('skip-on-submit restore-after-serialize');
+        return data;
+    }
 
+    static updateBookingQuantities(dynamic_data, container, action)
+    {
+        for (let [product_id, product_meta] of Object.entries(dynamic_data)) {
+            var inputbox = $('input[name="' + product_id + '"]', container);
+            inputbox.closest('tr').find('.booking-product-price span').text(utils.priceRound(product_meta.total));
+
+            var modifiers = '';
+            for (let [modifier_id, modifier_meta] of Object.entries(product_meta.modifiers)) {
+                modifiers += '<br>' + modifier_meta.label + ': ' + utils.priceRound(modifier_meta.amount) + current_currency;
+            }
+
+            inputbox.closest('tr').find('.modifiers').html(modifiers);
+
+            if (product_meta.variants.length != 0) {
+                /*
+                    Attenzione: qui mi baso sul fatto che le
+                    varianti rappresentate nel feedback server-side
+                    siano ordinate nello stesso modo rispetto al
+                    pannello. Potrei usare i components come
+                    riferimento, ma possono esserci più varianti con
+                    gli stessi componenti e dovrei intuire qual è
+                    quella da eventualmente invalidare
+                */
+                for (let i = 0; i < product_meta.variants.length; i++) {
+                    var variant = product_meta.variants[i];
+                    var varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).filter(':not(.skip-on-submit)').eq(i);
+                    utils.inputInvalidFeedback(varinputbox, variant.quantity == 0 && utils.parseFloatC(varinputbox.val()) != 0, variant.message);
+
+                    if (action == 'shipped') {
+                        varinputbox.closest('tr').find('.booking-product-price span').text(utils.priceRound(variant.total));
+                    }
+                }
+            }
+            else {
+                utils.inputInvalidFeedback(inputbox, product_meta.quantity == 0 && utils.parseFloatC(inputbox.val()) != 0, product_meta.message);
+            }
+        }
+    }
+
+    static testMaxBookable(form, grand_total)
+    {
+        /*
+            Se è attivo il limite di prenotazioni sul credito, controllo
+            che non sia stato raggiunto e nel caso disabilito il
+            pulsante di invio
+        */
+        var max_bookable = form.find('input:hidden[name="max-bookable"]');
+        if (max_bookable.length != 0) {
+            max_bookable = parseFloat(max_bookable.val());
+            form.find('button[type=submit]').prop('disabled', grand_total > max_bookable);
+        }
+    }
+
+    static updatePayment(form, grand_total, status)
+    {
+        /*
+            Qui aggiorno il valore totale della prenotazione nel (eventuale)
+            modale per il pagamento
+        */
+        var payment_modal_id = form.attr('data-reference-modal');
+        var payment_modal = $('#' + payment_modal_id);
+
+        if (payment_modal.length != 0) {
+            payment_modal.find('input[name=amount]').val(grand_total.toFixed(2)).change();
+            payment_modal.find('input[name=delivering-status]').val(JSON.stringify(status));
+        }
+    }
+
+    static bookingTotal(editor) {
+    	var form = $(editor).closest('form');
+        var data = this.serializeBooking(form);
     	var url = form.attr('data-dynamic-url');
 
     	$.ajax({
@@ -308,11 +353,10 @@ class Bookings {
     		method: 'GET',
     		data: data,
     		dataType: 'JSON',
-    		success: function(data) {
+    		success: (data) => {
     			if (Object.entries(data.bookings).length == 0) {
     				$('.booking-product-price span', form).text(utils.priceRound(0));
-    				$('.booking-modifier', container).text(utils.priceRound(0));
-    				$('.booking-total', container).text(utils.priceRound(0));
+    				$('.booking-modifier, .booking-total', container).text(utils.priceRound(0));
     			}
     			else {
                     var action = $('input:hidden[name=action]', form).val();
@@ -331,42 +375,7 @@ class Bookings {
     					var container = $('input[value="' + booking_id + '"]').closest('table');
     					$('.booking-product-price span', container).text(utils.priceRound(0));
 
-    					for (let [product_id, product_meta] of Object.entries(booking_data.products)) {
-                            var inputbox = $('input[name="' + product_id + '"]', container);
-                            inputbox.closest('tr').find('.booking-product-price span').text(utils.priceRound(product_meta.total));
-
-                            var modifiers = '';
-                            for (let [modifier_id, modifier_meta] of Object.entries(product_meta.modifiers)) {
-                                modifiers += '<br>' + modifier_meta.label + ': ' + utils.priceRound(modifier_meta.amount) + current_currency;
-                            }
-
-                            inputbox.closest('tr').find('.modifiers').html(modifiers);
-
-                            if (product_meta.variants.length != 0) {
-                                /*
-                                    Attenzione: qui mi baso sul fatto che le
-                                    varianti rappresentate nel feedback server-side
-                                    siano ordinate nello stesso modo rispetto al
-                                    pannello. Potrei usare i components come
-                                    riferimento, ma possono esserci più varianti con
-                                    gli stessi componenti e dovrei intuire qual è
-                                    quella da eventualmente invalidare
-                                */
-                                for (let i = 0; i < product_meta.variants.length; i++) {
-                                    var variant = product_meta.variants[i];
-                                    var varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).filter(':not(.skip-on-submit)').eq(i);
-                                    utils.inputInvalidFeedback(varinputbox, variant.quantity == 0 && utils.parseFloatC(varinputbox.val()) != 0, variant.message);
-
-                                    if (action == 'shipped') {
-                                        varinputbox.closest('tr').find('.booking-product-price span').text(utils.priceRound(variant.total));
-                                    }
-                                }
-                            }
-                            else {
-                                utils.inputInvalidFeedback(inputbox, product_meta.quantity == 0 && utils.parseFloatC(inputbox.val()) != 0, product_meta.message);
-                            }
-    					}
-
+                        this.updateBookingQuantities(booking_data.products, container, action);
                         Modifiers.updateBookingModifiers(booking_data.modifiers, container);
 
     					var t = utils.priceRound(booking_data.total);
@@ -376,29 +385,8 @@ class Bookings {
     				}
 
     				form.find('.all-bookings-total').text(utils.priceRound(grand_total));
-
-    				/*
-    					Se è attivo il limite di prenotazioni sul credito, controllo
-    					che non sia stato raggiunto e nel caso disabilito il
-    					pulsante di invio
-    				*/
-    				var max_bookable = form.find('input:hidden[name="max-bookable"]');
-    				if (max_bookable.length != 0) {
-    					max_bookable = parseFloat(max_bookable.val());
-    					form.find('button[type=submit]').prop('disabled', grand_total > max_bookable);
-    				}
-
-    				/*
-    					Qui aggiorno il valore totale della prenotazione nel (eventuale)
-    					modale per il pagamento
-    				*/
-    				var payment_modal_id = form.attr('data-reference-modal');
-    				var payment_modal = $('#' + payment_modal_id);
-
-    				if (payment_modal.length != 0) {
-    					payment_modal.find('input[name=amount]').val(grand_total.toFixed(2)).change();
-    					payment_modal.find('input[name=delivering-status]').val(JSON.stringify(status));
-    				}
+                    this.testMaxBookable(form, grand_total);
+                    this.updatePayment(form, grand_total, status);
     			}
     		}
     	});

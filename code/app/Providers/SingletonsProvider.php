@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 
 use App\Singletons\OrderNumbersDispatcher;
+use App\Singletons\ModifierEngine;
 use App\Singletons\MovementsHub;
 use App\Singletons\RemoteRepository;
 use App\Singletons\GlobalScopeHub;
@@ -22,6 +23,10 @@ class SingletonsProvider extends ServiceProvider
     {
         $this->app->singleton('OrderNumbersDispatcher', function ($app) {
             return new OrderNumbersDispatcher();
+        });
+
+        $this->app->singleton('ModifierEngine', function ($app) {
+            return new ModifierEngine();
         });
 
         $this->app->singleton('MovementsHub', function ($app) {
