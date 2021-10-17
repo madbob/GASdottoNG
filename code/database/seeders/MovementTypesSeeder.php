@@ -11,7 +11,7 @@ class MovementTypesSeeder extends Seeder
     public function run()
     {
         foreach (predefinedMovementTypes() as $identifier => $instance) {
-            if (MovementType::find($identifier()) == null) {
+            if (MovementType::find($identifier) == null) {
                 $instance->create();
             }
         }

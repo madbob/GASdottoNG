@@ -4,7 +4,7 @@ namespace App\Parameters\MovementType;
 
 abstract class MovementType
 {
-    private function voidFunctions($array)
+    protected function voidFunctions($array)
     {
         foreach($array as $i => $a) {
             foreach(['sender', 'target', 'master'] as $t) {
@@ -19,7 +19,7 @@ abstract class MovementType
         return $array;
     }
 
-    private function format($ops)
+    protected function format($ops)
     {
         $ret = (object) [
             'operations' => [],
