@@ -26,8 +26,10 @@ import utils from "./utils";
 import Lists from "./lists";
 import Triggers from "./triggers";
 import Filters from "./filters";
+import Bookings from "./bookings";
 import Roles from "./roles";
 import Modifiers from "./modifiers";
+import Movements from "./movements";
 import Callables from "./callables";
 
 var locker = false;
@@ -150,58 +152,6 @@ function generalInit(container) {
         completionRowsInit($(this));
     });
 
-    $('.bookingSearch', container).each(function() {
-        if ($(this).hasClass('tt-hint') == true) {
-            return;
-        }
-
-        if ($(this).hasClass('tt-input') == false) {
-            var appendTo = 'body';
-            if ($(this).closest('.modal').length != 0) {
-                appendTo = $(this).closest('.modal');
-            }
-
-            $(this).autocomplete({
-                source: utils.absoluteUrl() + '/users/search',
-                appendTo: appendTo,
-                select: function(event, ui) {
-                    var aggregate_id = $(this).attr('data-aggregate');
-                    var while_shipping = ($(this).closest('.modal.add-booking-while-shipping').length != 0);
-                    var fill_target = $(this).closest('.fillable-booking-space').find('.other-booking');
-                    fill_target.empty().append(utils.loadingPlaceholder());
-
-                    var data = {};
-                    var mode = $(this).attr('data-enforce-booking-mode');
-                    if (mode != null) {
-                        data.enforce = mode;
-                    }
-
-                    var url = while_shipping ? ('delivery/' + aggregate_id + '/user/' + ui.item.id) : 'booking/' + aggregate_id + '/user/' + ui.item.id + '?extended=true';
-
-                    utils.postAjax({
-                        url: url,
-                        method: 'GET',
-                        data: data,
-                        dataType: 'HTML',
-                        success: function(data) {
-                            data = $(data);
-
-                            if (while_shipping) {
-                                var test = data.find('.booking-product:not(.fit-add-product)');
-                                if (test.length != 0) {
-                                    data = $('<div class="alert alert-danger">' + _('Questa prenotazione esiste già e non può essere ricreata.') + '</div>');
-                                }
-                            }
-
-                            fill_target.empty().append(data);
-                            utils.j().initElements(data);
-                        }
-                    });
-                }
-            });
-        }
-    });
-
     if (container.hasClass('modal')) {
         container.draggable({
             handle: '.modal-header'
@@ -258,35 +208,16 @@ function generalInit(container) {
         }
     });
 
-    $('.date[data-enforce-after]', container).each(function() {
-        var current = $(this);
-        var select = current.attr('data-enforce-after');
-        var target = current.closest('.input-group').find(select);
-		if (target.length == 0) {
-			target = current.closest('form').find(select);
-        }
-
-		target.datepicker().on('changeDate', function() {
-            var current_start = current.datepicker('getDate');
-            var current_ref = target.datepicker('getDate');
-            if (current_start < current_ref) {
-                current.datepicker('setDate', current_ref);
-            }
-        });
-    });
-
-    $('.csv_movement_type_select', container).each(function() {
-        enforcePaymentMethod($(this));
-    });
-
     setupImportCsvEditor(container);
 
     utils.init(container);
     Modifiers.init(container);
     Lists.init(container);
+    Bookings.init(container);
     Triggers.init(container);
     Filters.init(container);
     Roles.init(container);
+    Movements.init(container);
 }
 
 function voidForm(form) {
@@ -541,47 +472,6 @@ function miscInnerModalCallbacks(modal) {
 }
 
 /*******************************************************************************
-	Contabilità
-*/
-
-/*
-    Questa è per forzare i metodi di pagamento disponibili nel modale di
-    importazione dei movimenti contabili
-*/
-function enforcePaymentMethod(node) {
-    var selected = node.find('option:selected').val();
-    var default_payment = null;
-    var payments = null;
-
-    JSON.parse(node.closest('.modal').find('input[name=matching_methods_for_movement_types]').val()).forEach(function(iter) {
-        if (iter.method == selected) {
-            default_payment = iter.default_payment;
-            payments = iter.payments;
-            return false;
-        }
-    });
-
-    if (payments != null) {
-        node.closest('tr').find('.csv_movement_method_select').find('option').each(function() {
-            var v = $(this).val();
-            if (payments.indexOf(v) >= 0) {
-                $(this).prop('disabled', false);
-
-                if (default_payment == v) {
-                    $(this).prop('selected', true);
-                }
-            }
-            else {
-                $(this).prop('disabled', true);
-            }
-        });
-    }
-    else {
-        node.closest('tr').find('.csv_movement_method_select').find('option').prop('disabled', false);
-    }
-}
-
-/*******************************************************************************
 	Prodotti
 */
 
@@ -594,164 +484,29 @@ function enforceMeasureDiscrete(node) {
     form.find('input[name=portion_quantity]').prop('disabled', disabled);
 	form.find('input[name=weight]').prop('disabled', !disabled);
 	var multiple_widget = form.find('input[name=multiple]');
-    var min_quantity_widget = form.find('input[name=min_quantity]');
-    var max_quantity_widget = form.find('input[name=max_quantity]');
-    var max_available_widget = form.find('input[name=max_available]');
+    var widgets = form.find('input[name=min_quantity], input[name=max_quantity], input[name=max_available]');
 
 	if (disabled) {
 		form.find('input[name=portion_quantity]').val('0.000');
 		form.find('input[name=variable]').prop('checked', false).prop('disabled', true);
         node.siblings('.form-text').removeClass('d-none');
 
-		multiple_widget.attr('data-enforce-minimum', 1);
-		multiple_widget.attr('data-enforce-integer', 1);
+		multiple_widget.attr('data-enforce-minimum', 1).attr('data-enforce-integer', 1);
 
 		multiple_widget.val(parseInt(multiple_widget.val()));
 		if (multiple_widget.val() < 1) {
 			multiple_widget.val('1.000');
         }
 
-        min_quantity_widget.attr('data-enforce-integer', 1);
-        max_quantity_widget.attr('data-enforce-integer', 1);
-        max_available_widget.attr('data-enforce-integer', 1);
+        widgets.attr('data-enforce-integer', 1);
 	}
 	else {
 		form.find('input[name=weight]').val('0.000');
 		form.find('input[name=variable]').prop('disabled', false);
         node.siblings('.form-text').addClass('d-none');
 		multiple_widget.removeAttr('data-enforce-minimum').removeAttr('data-enforce-integer');
-        min_quantity_widget.removeAttr('data-enforce-integer');
-        max_quantity_widget.removeAttr('data-enforce-integer');
-        max_available_widget.removeAttr('data-enforce-integer');
+        widgets.removeAttr('data-enforce-integer');
 	}
-}
-
-/*******************************************************************************
-	Prenotazioni / Consegne
-*/
-
-function bookingTotal(editor) {
-	var form = $(editor).closest('form');
-
-    /*
-        Qui aggiungo temporaneamente la classe skip-on-submit a tutti gli input
-        a 0, in modo da ridurre la quantità di dati spediti al server per il
-        controllo dinamico, salvo poi toglierla a operazione conclusa
-    */
-
-    form.find('textarea').addClass('skip-on-submit restore-after-serialize');
-
-    form.find('.booking-product-quantity input').filter(function() {
-        return $(this).closest('.master-variant-selector').length == 0;
-    }).each(function() {
-        $(this).toggleClass('skip-on-submit restore-after-serialize', $(this).val() == '0');
-    });
-
-	var data = form.find(':not(.skip-on-submit)').serialize();
-
-    form.find('.restore-after-serialize').removeClass('skip-on-submit restore-after-serialize');
-
-	var url = form.attr('data-dynamic-url');
-
-	$.ajax({
-		url: url,
-		method: 'GET',
-		data: data,
-		dataType: 'JSON',
-		success: function(data) {
-			if (Object.entries(data.bookings).length == 0) {
-				$('.booking-product-price span', form).text(utils.priceRound(0));
-				$('.booking-modifier', container).text(utils.priceRound(0));
-				$('.booking-total', container).text(utils.priceRound(0));
-			}
-			else {
-                var action = $('input:hidden[name=action]', form).val();
-				var grand_total = 0;
-
-				/*
-					Questa variabile contiene i totali di ogni prenotazione
-					coinvolta nel pannello, ed in fase di consegna viene spedita
-					al server sotto il nome di 'delivering-status'.
-					Viene usata in MovementType per gestire i movimenti
-					contabili
-				*/
-				var status = {};
-
-				for (let [booking_id, booking_data] of Object.entries(data.bookings)) {
-					var container = $('input[value="' + booking_id + '"]').closest('table');
-					$('.booking-product-price span', container).text(utils.priceRound(0));
-
-					for (let [product_id, product_meta] of Object.entries(booking_data.products)) {
-                        var inputbox = $('input[name="' + product_id + '"]', container);
-                        inputbox.closest('tr').find('.booking-product-price span').text(utils.priceRound(product_meta.total));
-
-                        var modifiers = '';
-                        for (let [modifier_id, modifier_meta] of Object.entries(product_meta.modifiers)) {
-                            modifiers += '<br>' + modifier_meta.label + ': ' + utils.priceRound(modifier_meta.amount) + current_currency;
-                        }
-
-                        inputbox.closest('tr').find('.modifiers').html(modifiers);
-
-                        if (product_meta.variants.length != 0) {
-                            /*
-                                Attenzione: qui mi baso sul fatto che le
-                                varianti rappresentate nel feedback server-side
-                                siano ordinate nello stesso modo rispetto al
-                                pannello. Potrei usare i components come
-                                riferimento, ma possono esserci più varianti con
-                                gli stessi componenti e dovrei intuire qual è
-                                quella da eventualmente invalidare
-                            */
-                            for (let i = 0; i < product_meta.variants.length; i++) {
-                                var variant = product_meta.variants[i];
-                                var varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).filter(':not(.skip-on-submit)').eq(i);
-                                utils.inputInvalidFeedback(varinputbox, variant.quantity == 0 && utils.parseFloatC(varinputbox.val()) != 0, variant.message);
-
-                                if (action == 'shipped') {
-                                    varinputbox.closest('tr').find('.booking-product-price span').text(utils.priceRound(variant.total));
-                                }
-                            }
-                        }
-                        else {
-                            utils.inputInvalidFeedback(inputbox, product_meta.quantity == 0 && utils.parseFloatC(inputbox.val()) != 0, product_meta.message);
-                        }
-					}
-
-                    Modifiers.updateBookingModifiers(booking_data.modifiers, container);
-
-					var t = utils.priceRound(booking_data.total);
-					$('.booking-total', container).text(t);
-					grand_total += parseFloat(t);
-					status[booking_id] = booking_data.total;
-				}
-
-				form.find('.all-bookings-total').text(utils.priceRound(grand_total));
-
-				/*
-					Se è attivo il limite di prenotazioni sul credito, controllo
-					che non sia stato raggiunto e nel caso disabilito il
-					pulsante di invio
-				*/
-				var max_bookable = form.find('input:hidden[name="max-bookable"]');
-				if (max_bookable.length != 0) {
-					max_bookable = parseFloat(max_bookable.val());
-					form.find('button[type=submit]').prop('disabled', grand_total > max_bookable);
-				}
-
-				/*
-					Qui aggiorno il valore totale della prenotazione nel (eventuale)
-					modale per il pagamento
-				*/
-				var payment_modal_id = form.attr('data-reference-modal');
-				var payment_modal = $('#' + payment_modal_id);
-
-				if (payment_modal.length != 0) {
-					payment_modal.find('input[name=amount]').val(grand_total.toFixed(2)).change();
-					payment_modal.find('input[name=delivering-status]').val(JSON.stringify(status));
-				}
-			}
-		}
-	});
 }
 
 /*******************************************************************************
@@ -1128,12 +883,6 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('click', '.link-button', function(e) {
-        e.preventDefault();
-        var url = $(this).attr('data-link');
-        window.open(url, '_blank');
-    });
-
     $('body').on('change', '.contacts-selection select', function() {
         var input = $(this).closest('tr').find('input[name="contact_value[]"]');
         var typeclass = $(this).find('option:selected').val();
@@ -1147,94 +896,6 @@ $(document).ready(function() {
         field.find('[name=deleted_at]').prop('hidden', del).closest('.input-group').prop('hidden', del);
         let sus = (status != 'suspended');
         field.find('[name=suspended_at]').prop('hidden', sus).closest('.input-group').prop('hidden', sus);
-    });
-
-    $('body').on('change', '.movement-modal input[name=method]', function() {
-        if ($(this).prop('checked') == false) {
-            return;
-        }
-
-        var method = $(this).val();
-        var method_string = 'when-method-' + method;
-        var modal = $(this).closest('.movement-modal');
-        modal.find('[class*="when-method-"]').each(function() {
-            $(this).toggleClass('hidden', ($(this).hasClass(method_string) == false));
-        });
-    })
-    .on('change', '.movement-modal input[name=amount]', function() {
-        var status = $(this).closest('.movement-modal').find('.sender-credit-status');
-        if (status.length) {
-            var amount = utils.parseFloatC($(this).val());
-            var current = utils.parseFloatC(status.find('.current-sender-credit').text());
-            if (amount > current)
-                status.removeClass('alert-success').addClass('alert-danger');
-            else
-                status.removeClass('alert-danger').addClass('alert-success');
-        }
-    });
-
-    $('body').on('change', '.movement-type-selector', function(event) {
-        var type = $(this).find('option:selected').val();
-        var selectors = $(this).closest('form').find('.selectors');
-        selectors.empty().append(utils.loadingPlaceholder());
-
-        utils.postAjax({
-            method: 'GET',
-            url: 'movements/create',
-            dataType: 'html',
-            data: {
-                type: type
-            },
-
-            success: function(data) {
-                data = $(data);
-                selectors.empty().append(data);
-                utils.j().initElements(data);
-            }
-        });
-    });
-
-    $('body').on('change', '.movement-type-editor select[name=sender_type], .movement-type-editor select[name=target_type]', function() {
-        var editor = $(this).closest('.movement-type-editor');
-        var sender = editor.find('select[name=sender_type] option:selected').val();
-        var target = editor.find('select[name=target_type] option:selected').val();
-        var table = editor.find('table');
-
-        table.find('tbody tr').each(function() {
-            var type = $(this).attr('data-target-class');
-            /*
-                Le righe relative al GAS non vengono mai nascoste, in quanto
-                molti tipi di movimento vanno ad incidere sui saldi globali
-                anche quando il GAS non è direttamente coinvolto
-            */
-            $(this).toggleClass('hidden', (type != 'App\\Gas' && type != sender && type != target));
-        });
-
-        table.find('thead input[data-active-for]').each(function() {
-            var type = $(this).attr('data-active-for');
-            if(type != '' && type != sender && type != target)
-                $(this).prop('checked', false).prop('disabled', true).change();
-            else
-                $(this).prop('disabled', false);
-        });
-    })
-    .on('change', '.movement-type-editor table thead input:checkbox', function() {
-        var active = $(this).prop('checked');
-        var index = $(this).closest('th').index();
-
-        if (active == false) {
-            $(this).closest('table').find('tbody tr').each(function() {
-                var cell = $(this).find('td:nth-child(' + (index + 1) + ')');
-                cell.find('input[value=ignore]').click();
-                cell.find('label, input').prop('disabled', true);
-            });
-        }
-        else {
-            $(this).closest('table').find('tbody tr').each(function() {
-                var cell = $(this).find('td:nth-child(' + (index + 1) + ')');
-                cell.find('label, input').prop('disabled', false);
-            });
-        }
     });
 
     $('body').on('click', '.form-filler button[type=submit]', function(event) {
@@ -1262,20 +923,6 @@ $(document).ready(function() {
         var data = $(this).closest('.form-filler').find('input, select').serializeArray();
         var url = $(this).attr('href') + '&' + $.param(data);
         window.open(url, '_blank');
-    });
-
-    $('body').on('change', '#dates-in-range input.date, #dates-in-range input.periodic', function() {
-        if ($(this).val() == '') {
-            return;
-        }
-
-        var row = $(this).closest('tr');
-        if ($(this).hasClass('date')) {
-            row.find('.periodic').val('');
-        }
-        else {
-            row.find('.date').val('');
-        }
     });
 
     /*
@@ -1445,212 +1092,6 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('keyup', '.booking-product-quantity input', function(e) {
-        var editor = $(this).closest('.booking-editor');
-        bookingTotal(editor);
-
-    }).on('change', '.variants-selector select', function() {
-        var editor = $(this).closest('.booking-editor');
-        bookingTotal(editor);
-
-    }).on('blur', '.booking-product-quantity input', function() {
-        if ($(this).val() == '' || $(this).hasClass('is-invalid')) {
-            $(this).val('0').removeClass('is-invalid').keyup();
-        }
-
-    }).on('focus', '.booking-product-quantity input', function() {
-        $(this).removeClass('.is-invalid');
-
-    }).on('click', '.booking-product .add-variant', function(e) {
-        e.preventDefault();
-        var variant_selector = $(this).closest('.variants-selector');
-        var master = variant_selector.find('.master-variant-selector').clone().removeClass('master-variant-selector');
-        master.find('.skip-on-submit').removeClass('skip-on-submit');
-        variant_selector.append(master);
-        return false;
-    });
-
-    $('body').on('click', '.mobile-quantity-switch button', function(e) {
-        e.preventDefault();
-
-        var input = $(this).closest('.mobile-quantity-switch').siblings('.booking-product-quantity').find('input.number');
-
-        var original = parseFloat(input.val());
-        if ($(this).hasClass('plus')) {
-            input.val(original + 1);
-        }
-        else {
-            if (original == 0)
-                return;
-            input.val(original - 1);
-        }
-
-        input.keyup();
-    });
-
-    $('body').on('click', '.add-booking-product', function(e) {
-        e.preventDefault();
-        var table = $(this).closest('table');
-        $(this).closest('table').find('.fit-add-product').first().clone().removeClass('hidden').appendTo(table.find('tbody'));
-        return false;
-    });
-
-    $('body').on('change', '.fit-add-product .fit-add-product-select', function(e) {
-        var id = $(this).find('option:selected').val();
-        var row = $(this).closest('tr');
-        var editor = row.closest('.booking-editor');
-
-        if (id == -1) {
-            row.find('.bookable-target').empty();
-            bookingTotal(editor);
-        } else {
-            utils.postAjax({
-                method: 'GET',
-                url: 'products/' + id,
-                data: {
-                    format: 'bookable',
-                    order_id: editor.attr('data-order-id')
-                },
-                dataType: 'HTML',
-
-                success: function(data) {
-                    data = $(data);
-                    row.find('.bookable-target').empty().append(data);
-                    utils.j().initElements(data);
-                    bookingTotal(editor);
-                }
-            });
-        }
-    });
-
-    $('body').on('click', '.preload-quantities', function(e) {
-        e.preventDefault();
-
-        var editor = $(this).closest('form').find('.booking-editor').each(function() {
-            $(this).find('tbody .booking-product').each(function() {
-                var booked = $(this).find('input:hidden[name=booking-product-real-booked]');
-                if (booked.length != 0) {
-                    var input = $(this).find('.booking-product-quantity input');
-                    input.val(booked.val());
-                }
-            });
-        });
-
-        /*
-            Se mi trovo in un ordine aggregato, eseguo la funzione di controllo
-            e calcolo solo sul primo. Tanto comunque bookingTotal() riesegue
-            sempre sull'intero form dell'aggregato
-        */
-        bookingTotal($(this).closest('form').find('.booking-editor').first());
-
-        return false;
-    });
-
-    $('body').on('click', '.load-other-booking', function(e) {
-        e.preventDefault();
-        var url = $(this).attr('data-booking-url');
-
-        var fill_target = $(this).closest('.other-booking');
-	    fill_target.empty().append(utils.loadingPlaceholder());
-
-        $.ajax({
-            url: url,
-            method: 'GET',
-            dataType: 'HTML',
-            success: function(data) {
-                data = $(data);
-                fill_target.empty().append(data);
-                utils.j().initElements(data);
-            }
-        });
-    });
-
-    /*
-        Pulsante "Salva Informazioni" in pannello consegna
-    */
-    $('body').on('click', '.booking-form .info-button', function(e) {
-        e.preventDefault();
-        var form = $(this).closest('form');
-        form.find('input:hidden[name=action]').val('saved');
-        form.submit();
-    });
-
-    $('body').on('click', '.booking-form .saving-button', function(e) {
-        if ($(this).closest('.booking-form').find('input:hidden[name=action]').val() == 'shipped') {
-            if (typeof $(this).data('total-checked') === 'undefined') {
-                e.stopPropagation();
-                var test = false;
-
-                $(this).closest('form').find('.booking-total').each(function() {
-                    var total = utils.parseFloatC($(this).text());
-                    test = (test || (total != 0));
-                });
-
-                if (test == false) {
-                    test = confirm(_('Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?'));
-				}
-
-                if (test == true) {
-                    $(this).data('total-checked', 1);
-                    $(this).click();
-                }
-            }
-        }
-    });
-
-    $('body').on('click', '.inline-calculator button[type=submit]', function(e) {
-        e.preventDefault();
-        var modal = $(this).closest('.modal');
-        var quantity = 0;
-
-        modal.find('input.number').each(function() {
-            var v = $(this).val();
-            if (v != '') {
-                quantity += utils.parseFloatC(v);
-            }
-
-            $(this).val('0');
-        });
-
-        /*
-            Il trigger keyup() alla fine serve a forzare il ricalcolo del totale
-            della consegna quando il modale viene chiuso
-        */
-        var identifier = modal.attr('id');
-        $('[data-bs-target="#' + identifier + '"]').closest('.booking-product-quantity').find('input.number').first().val(quantity).keyup();
-        modal.modal('hide');
-    });
-
-    $('body').on('click', '.delete-booking', function(e) {
-        e.preventDefault();
-
-        var form = $(this).closest('.inner-form');
-
-        if (confirm(_('Sei sicuro di voler annullare questa prenotazione?'))) {
-            form.find('button').prop('disabled', true);
-
-            $.ajax({
-                method: 'DELETE',
-                url: form.attr('action'),
-                dataType: 'json',
-
-                success: function(data) {
-                    form.find('button').prop('disabled', false);
-                    form.find('.booking-product-quantity input').val('0');
-                    form.find('.variants-selector').each(function() {
-                        while ($(this).find('.row:not(.master-variant-selector)').length != 1) {
-                            $(this).find('.row:not(.master-variant-selector):last').remove();
-                        }
-                    });
-
-                    bookingTotal(form.find('.booking-editor'));
-                }
-            });
-        }
-
-        return false;
-    });
-
     /*
         Contabilità
     */
@@ -1673,10 +1114,6 @@ $(document).ready(function() {
         totals_row.find('.taxable label').text(utils.priceRound(total_taxable));
         totals_row.find('.tax label').text(utils.priceRound(total_tax));
         totals_row.find('.total label').text(utils.priceRound(grand_total));
-    });
-
-    $('body').on('change', '.csv_movement_type_select', function() {
-        enforcePaymentMethod($(this));
     });
 
     /*

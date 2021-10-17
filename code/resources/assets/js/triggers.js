@@ -3,8 +3,8 @@ import utils from "./utils";
 class Triggers {
     static init(container)
     {
-        $('.collapse_trigger', container).each((e) => {
-            this.triggerCollapse($(e.currentTarget));
+        $('.collapse_trigger', container).each((index, item) => {
+            this.triggerCollapse($(item));
         }).change((e) => {
             this.triggerCollapse($(e.currentTarget));
         });

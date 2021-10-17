@@ -153,4 +153,18 @@ $(document).ready(function() {
             return ret;
         });
     });
+
+    $('body').on('change', '#dates-in-range input.date, #dates-in-range input.periodic', function() {
+        if ($(this).val() == '') {
+            return;
+        }
+
+        var row = $(this).closest('tr');
+        if ($(this).hasClass('date')) {
+            row.find('.periodic').val('');
+        }
+        else {
+            row.find('.date').val('');
+        }
+    });
 });

@@ -29,12 +29,19 @@ class Utils {
             }
         });
 
-        $('.date[data-enforce-after]', container).focus(function(e) {
-            var select = $(this).attr('data-enforce-after');
-            var target = $(this).closest('.input-group').find(select);
-            if (target.length == 0) {
-                target = $(this).closest('form').find(select);
-            }
+        $('.date[data-enforce-after]', container).each((index, item) => {
+            var current = $(item);
+            var target = this.dateEnforcePeer(current);
+
+            target.datepicker().on('changeDate', function() {
+                var current_start = current.datepicker('getDate');
+                var current_ref = target.datepicker('getDate');
+                if (current_start < current_ref) {
+                    current.datepicker('setDate', current_ref);
+                }
+            });
+        }).focus((e) => {
+            var target = this.dateEnforcePeer($(e.currentTarget));
 
             /*
                 Problema: cercando di navigare tra i mesi all'interno del datepicker
@@ -45,10 +52,10 @@ class Utils {
                 inizio forzato non corrisponde a quel che dovrebbe essere), badando
                 però a fare i confronti sui giusti formati
             */
-            var current_start = $(this).datepicker('getStartDate');
+            var current_start = $(e.currentTarget).datepicker('getStartDate');
             var current_ref = target.datepicker('getUTCDate');
             if (current_start.toString() != current_ref.toString()) {
-                $(this).datepicker('setStartDate', current_ref);
+                $(e.currentTarget).datepicker('setStartDate', current_ref);
             }
         });
 
@@ -86,6 +93,12 @@ class Utils {
 
         $('input[data-alternative-required]', container).change((e) => {
             this.reviewRequired($(e.currentTarget).closest('form'));
+        });
+
+        $('.link-button', container).click(function(e) {
+            e.preventDefault();
+            var url = $(this).attr('data-link');
+            window.open(url, '_blank');
         });
     }
 
@@ -202,6 +215,17 @@ class Utils {
         return Date.parse(date);
     }
 
+    static dateEnforcePeer(node)
+    {
+        var select = node.attr('data-enforce-after');
+        var target = node.closest('.input-group').find(select);
+		if (target.length == 0) {
+			target = node.closest('form').find(select);
+        }
+
+        return target;
+    }
+
     static parseFloatC(value)
     {
         if (typeof value === 'undefined')
@@ -212,6 +236,17 @@ class Utils {
             ret = 0;
 
         return ret;
+    }
+
+    static sel(selector, container)
+    {
+        var classes = selector.split(' ');
+        if (container.is(classes[0])) {
+            return container.find(classes.slice(1).join(' '));
+        }
+        else {
+            return $(selector, container);
+        }
     }
 
     static priceRound(price)
