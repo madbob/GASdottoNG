@@ -31,4 +31,45 @@ class ImportersTest extends TestCase
             $this->assertEquals($p->description, $real_product->description);
         }
     }
+
+    public function testProductsCsv()
+    {
+        $data = [];
+        $path = base_path('tests/data/products.csv');
+
+        $importer = \App\Importers\CSV\CSVImporter::getImporter('products');
+        $supplier = \App\Supplier::factory()->create();
+
+        $request = new \Illuminate\Http\Request();
+        $request->merge([
+            'path' => $path,
+            'supplier_id' => $supplier->id,
+            'column' => ['name', 'supplier_code', 'measure', 'category', 'price', 'vat', 'package_price', 'package_size', 'weight', 'multiple', 'min_quantity'],
+        ]);
+
+        $data = $importer->select($request);
+
+        $this->assertEquals(10, count($data['products']));
+        $this->assertEquals(0, count($data['errors']));
+        $this->assertEquals($supplier->id, $data['supplier']->id);
+
+        $this->assertEquals(3.3, $data['products'][0]->price);
+        $this->assertEquals(0.1, $data['products'][0]->weight);
+        $this->assertEquals(0, $data['products'][0]->min_quantity);
+        $this->assertEquals('Biscotti e dolci', $data['products'][0]->temp_category_name);
+        $this->assertEquals('Barattoli', $data['products'][0]->temp_measure_name);
+
+        $this->assertEquals(4.8, $data['products'][8]->price);
+        $this->assertEquals(10, $data['products'][8]->package_size);
+        $this->assertEquals(5, $data['products'][8]->multiple);
+        $this->assertEquals(0, $data['products'][8]->min_quantity);
+        $this->assertEquals('4', $data['products'][8]->temp_vat_rate_name);
+
+        $this->assertEquals('Mandorle Bio sgusciate 600gr', $data['products'][9]->name);
+        $this->assertEquals(1, $data['products'][9]->multiple);
+        $this->assertEquals(5, $data['products'][9]->min_quantity);
+        $this->assertEquals('Frutta secca', $data['products'][9]->temp_category_name);
+        $this->assertEquals('Sacchetti', $data['products'][9]->temp_measure_name);
+        $this->assertEquals(0, $data['products'][9]->vat_rate_id);
+    }
 }

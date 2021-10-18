@@ -155,4 +155,16 @@ trait GASModel
         else
             return $query->orderBy('id', 'asc');
     }
+
+    public static function easyCreate($params)
+    {
+        $obj = new self();
+
+        foreach($params as $name => $value) {
+            $obj->$name = $value;
+        }
+
+        $obj->save();
+        return $obj;
+    }
 }
