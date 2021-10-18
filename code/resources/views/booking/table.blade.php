@@ -6,8 +6,8 @@
     @else
         <?php
 
-        $payments = App\MovementType::paymentsByType('booking-payment');
-        $default_payment_method = App\MovementType::defaultPaymentByType('booking-payment');
+        $payments = paymentsByType('booking-payment');
+        $default_payment_method = defaultPaymentByType('booking-payment');
 
         ?>
 

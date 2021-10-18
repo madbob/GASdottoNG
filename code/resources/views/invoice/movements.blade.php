@@ -41,7 +41,7 @@
                             'type' => 'select',
                             'width' => 2,
                             'extra' => [
-                                'options' => App\MovementType::paymentsSimple(),
+                                'options' => paymentsSimple(),
                             ]
                         ],
                         [

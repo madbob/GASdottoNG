@@ -18,12 +18,10 @@ use App\Aggregate;
 use App\Order;
 use App\Booking;
 
-class AggregatesController extends OrdersController
+class AggregatesController extends Controller
 {
     public function __construct()
     {
-        parent::__construct();
-
         $this->commonInit([
             'reference_class' => 'App\\Aggregate'
         ]);

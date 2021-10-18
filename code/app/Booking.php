@@ -509,8 +509,10 @@ class Booking extends Model
                 DB::beginTransaction();
             }
 
+            $engine = app()->make('ModifierEngine');
+
             foreach($modifiers as $modifier) {
-                $value = $modifier->apply($this, $aggregate_data);
+                $value = $engine->apply($modifier, $this, $aggregate_data);
                 if ($value) {
                     $values = $values->push($value);
                 }

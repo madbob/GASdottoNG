@@ -95,7 +95,7 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
 
                         @if($admin_editable)
                             @include('commons.statusfield', ['target' => $user])
-                            <x-larastrap::radios name="payment_method_id" :label="_i('Modalità Pagamento')" :options="App\MovementType::paymentsSimple()" />
+                            <x-larastrap::radios name="payment_method_id" :label="_i('Modalità Pagamento')" :options="paymentsSimple()" />
 
                             @if($user->gas->hasFeature('rid'))
                                 <x-larastrap::field :label="_i('Configurazione SEPA')" :pophelp="_i('Specifica qui i parametri per la generazione dei RID per questo utente. Per gli utenti per i quali questi campi non sono stati compilati non sarà possibile generare alcun RID.')">

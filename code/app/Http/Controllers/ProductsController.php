@@ -19,7 +19,6 @@ class ProductsController extends BackedController
 {
     public function __construct(ProductsService $service)
     {
-        $this->middleware('auth');
         $this->service = $service;
 
         $this->commonInit([
@@ -61,6 +60,9 @@ class ProductsController extends BackedController
         elseif ($format == 'bookable') {
             $order = Order::find($request->input('order_id'));
             return view('booking.quantityselectrow', ['product' => $product, 'order' => $order, 'populate' => false, 'while_shipping' => true]);
+        }
+        else {
+            abort(404);
         }
     }
 

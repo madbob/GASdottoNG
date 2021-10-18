@@ -138,7 +138,7 @@ class User extends Authenticatable
     public function getPaymentMethodAttribute()
     {
         return $this->innerCache('payment_method', function($obj) {
-            $ret = MovementType::paymentMethodByType($obj->payment_method_id);
+            $ret = paymentMethodByType($obj->payment_method_id);
 
             if (!$ret) {
                 $ret = (object) [

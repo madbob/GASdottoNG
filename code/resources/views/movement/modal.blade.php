@@ -71,7 +71,7 @@ $buttons[] = ['color' => 'success', 'label' => _i('Salva'), 'attributes' => ['ty
             </p>
         @endif
 
-        <x-larastrap::radios name="method" :label="_i('Metodo')" :options="$obj ? $obj->valid_payments : App\MovementType::payments()" />
+        <x-larastrap::radios name="method" :label="_i('Metodo')" :options="$obj ? $obj->valid_payments : paymentTypes()" />
         <x-larastrap::datepicker name="date" :label="_i('Data')" defaults_now="true" />
 
         <div class="when-method-bank {{ $obj->method != 'bank' ? ' hidden' : '' }}">

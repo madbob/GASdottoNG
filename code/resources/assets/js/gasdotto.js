@@ -19,16 +19,20 @@ require('./cc');
 require('./jquery.dynamictree');
 require('./jquery.TableCSVExport');
 require('./statistics');
+require('./popovers');
 require('./translate');
 require('./password');
 import utils from "./utils";
-import filters from "./filters";
 import Lists from "./lists";
+import Triggers from "./triggers";
+import Filters from "./filters";
+import Bookings from "./bookings";
+import Roles from "./roles";
 import Modifiers from "./modifiers";
+import Movements from "./movements";
 import Callables from "./callables";
 
 var locker = false;
-var absolute_url = $('meta[name=absolute_url]').attr('content');
 var current_currency = $('meta[name=current_currency]').attr('content');
 var current_language = $('html').attr('lang').split('-')[0];
 var measure_discrete = null;
@@ -148,64 +152,6 @@ function generalInit(container) {
         completionRowsInit($(this));
     });
 
-    $('.bookingSearch', container).each(function() {
-        if ($(this).hasClass('tt-hint') == true) {
-            return;
-        }
-
-        if ($(this).hasClass('tt-input') == false) {
-            var appendTo = 'body';
-            if ($(this).closest('.modal').length != 0) {
-                appendTo = $(this).closest('.modal');
-            }
-
-            $(this).autocomplete({
-                source: absolute_url + '/users/search',
-                appendTo: appendTo,
-                select: function(event, ui) {
-                    var aggregate_id = $(this).attr('data-aggregate');
-                    var while_shipping = ($(this).closest('.modal.add-booking-while-shipping').length != 0);
-                    var fill_target = $(this).closest('.fillable-booking-space').find('.other-booking');
-                    fill_target.empty().append(utils.loadingPlaceholder());
-
-                    var data = {};
-                    var mode = $(this).attr('data-enforce-booking-mode');
-                    if (mode != null)
-                        data.enforce = mode;
-
-                    var url = '';
-
-                    if (while_shipping) {
-                        url = absolute_url + '/delivery/' + aggregate_id + '/user/' + ui.item.id;
-                    }
-                    else {
-                        url = absolute_url + '/booking/' + aggregate_id + '/user/' + ui.item.id + '?extended=true';
-                    }
-
-                    $.ajax({
-                        url: url,
-                        method: 'GET',
-                        data: data,
-                        dataType: 'HTML',
-                        success: function(data) {
-                            data = $(data);
-
-                            if (while_shipping) {
-                                var test = data.find('.booking-product:not(.fit-add-product)');
-                                if (test.length != 0) {
-                                    data = $('<div class="alert alert-danger">' + _('Questa prenotazione esiste già e non può essere ricreata.') + '</div>');
-                                }
-                            }
-
-                            fill_target.empty().append(data);
-                            utils.j().initElements(data);
-                        }
-                    });
-                }
-            });
-        }
-    });
-
     if (container.hasClass('modal')) {
         container.draggable({
             handle: '.modal-header'
@@ -243,10 +189,6 @@ function generalInit(container) {
         }
     }
 
-    $('.collapse_trigger', container).each(function() {
-        triggerCollapse($(this));
-    });
-
 	/*
 		Per ignoti motivi, capita che l'HTML che arriva in modo asincrono dal
 		server sia riformattato ed i nodi che dovrebbero stare nel nodo
@@ -266,36 +208,16 @@ function generalInit(container) {
         }
     });
 
-    $('.date[data-enforce-after]', container).each(function() {
-        var current = $(this);
-        var select = current.attr('data-enforce-after');
-        var target = current.closest('.input-group').find(select);
-		if (target.length == 0) {
-			target = current.closest('form').find(select);
-        }
-
-		target.datepicker().on('changeDate', function() {
-            var current_start = current.datepicker('getDate');
-            var current_ref = target.datepicker('getDate');
-            if (current_start < current_ref) {
-                current.datepicker('setDate', current_ref);
-            }
-        });
-    });
-
-    $('.csv_movement_type_select', container).each(function() {
-        enforcePaymentMethod($(this));
-
-        $(this).change(function() {
-            enforcePaymentMethod($(this));
-        });
-    });
-
     setupImportCsvEditor(container);
-    setupPermissionsEditor(container);
 
+    utils.init(container);
     Modifiers.init(container);
     Lists.init(container);
+    Bookings.init(container);
+    Triggers.init(container);
+    Filters.init(container);
+    Roles.init(container);
+    Movements.init(container);
 }
 
 function voidForm(form) {
@@ -315,42 +237,6 @@ function fixContactField(input, typeclass) {
         input.attr('type', 'text');
         input.addClass(typeclass);
     }
-}
-
-function sortingDates(a, b) {
-    a = utils.parseFullDate(a);
-    b = utils.parseFullDate(b);
-
-    if (a == b)
-        return 0;
-    else if (a < b)
-        return -1;
-    else
-        return 1;
-}
-
-function sortingValues(a, b) {
-    a = utils.parseFloatC(a);
-    b = utils.parseFloatC(b);
-
-    if (a == b)
-        return 0;
-    else if (a < b)
-        return -1;
-    else
-        return 1;
-}
-
-function checkboxSorter(a, b) {
-    var ah = $(a).is(':checked');
-    var bh = $(b).is(':checked');
-
-    if (ah == bh)
-        return 0;
-    if (ah == true)
-        return -1;
-    else
-        return 1;
 }
 
 function previewImage(input) {
@@ -585,97 +471,6 @@ function miscInnerModalCallbacks(modal) {
     }
 }
 
-/*
-    Questo è per gestire campi diversi di cui almeno uno è obbligatorio
-*/
-function reviewRequired(panel)
-{
-    panel.find('input[data-alternative-required]').each(function() {
-        var alternative = $(this).attr('data-alternative-required');
-        if (alternative) {
-            var alt = panel.find('[name="' + alternative + '"]');
-            if (alt.val() != '') {
-                $(this).prop('required', false);
-            }
-            else {
-                $(this).prop('required', true);
-            }
-        }
-    });
-}
-
-function triggerCollapse(trigger)
-{
-    var name = trigger.attr('name');
-    var display = trigger.prop('checked');
-
-    /*
-        L'evento show.bs.collapse va espressamente bloccato, altrimenti se
-        il widget si trova all'interno di una accordion risale fino a quella
-        e scattano anche le callback per le async-accordion
-    */
-
-    $('.collapse[data-triggerable=' + name + ']').one('show.bs.collapse', function(e) {
-        e.stopPropagation();
-    }).collapse(display ? 'show' : 'hide').find('.required_when_triggered').prop('required', display);
-
-    $('.collapse[data-triggerable-reverse=' + name + ']').one('show.bs.collapse', function(e) {
-        e.stopPropagation();
-    }).collapse(display ? 'hide' : 'show').find('.required_when_triggered').prop('required', display == false);
-
-    var panel = null;
-
-    if (display) {
-        panel = $('.collapse[data-triggerable=' + name + ']');
-    }
-    else {
-        panel = $('.collapse[data-triggerable-reverse=' + name + ']');
-    }
-
-    reviewRequired(panel);
-}
-
-/*******************************************************************************
-	Contabilità
-*/
-
-/*
-    Questa è per forzare i metodi di pagamento disponibili nel modale di
-    importazione dei movimenti contabili
-*/
-function enforcePaymentMethod(node) {
-    var selected = node.find('option:selected').val();
-    var default_payment = null;
-    var payments = null;
-
-    JSON.parse(node.closest('.modal').find('input[name=matching_methods_for_movement_types]').val()).forEach(function(iter) {
-        if (iter.method == selected) {
-            default_payment = iter.default_payment;
-            payments = iter.payments;
-            return false;
-        }
-    });
-
-    if (payments != null) {
-        node.closest('tr').find('.csv_movement_method_select').find('option').each(function() {
-            var v = $(this).val();
-            if (payments.indexOf(v) >= 0) {
-                $(this).prop('disabled', false);
-
-                if (default_payment == v) {
-                    $(this).prop('selected', true);
-                }
-            }
-            else {
-                $(this).prop('disabled', true);
-            }
-        });
-    }
-    else {
-        node.closest('tr').find('.csv_movement_method_select').find('option').prop('disabled', false);
-    }
-}
-
 /*******************************************************************************
 	Prodotti
 */
@@ -689,277 +484,29 @@ function enforceMeasureDiscrete(node) {
     form.find('input[name=portion_quantity]').prop('disabled', disabled);
 	form.find('input[name=weight]').prop('disabled', !disabled);
 	var multiple_widget = form.find('input[name=multiple]');
-    var min_quantity_widget = form.find('input[name=min_quantity]');
-    var max_quantity_widget = form.find('input[name=max_quantity]');
-    var max_available_widget = form.find('input[name=max_available]');
+    var widgets = form.find('input[name=min_quantity], input[name=max_quantity], input[name=max_available]');
 
 	if (disabled) {
 		form.find('input[name=portion_quantity]').val('0.000');
 		form.find('input[name=variable]').prop('checked', false).prop('disabled', true);
         node.siblings('.form-text').removeClass('d-none');
 
-		multiple_widget.attr('data-enforce-minimum', 1);
-		multiple_widget.attr('data-enforce-integer', 1);
+		multiple_widget.attr('data-enforce-minimum', 1).attr('data-enforce-integer', 1);
 
 		multiple_widget.val(parseInt(multiple_widget.val()));
 		if (multiple_widget.val() < 1) {
 			multiple_widget.val('1.000');
         }
 
-        min_quantity_widget.attr('data-enforce-integer', 1);
-        max_quantity_widget.attr('data-enforce-integer', 1);
-        max_available_widget.attr('data-enforce-integer', 1);
+        widgets.attr('data-enforce-integer', 1);
 	}
 	else {
 		form.find('input[name=weight]').val('0.000');
 		form.find('input[name=variable]').prop('disabled', false);
         node.siblings('.form-text').addClass('d-none');
 		multiple_widget.removeAttr('data-enforce-minimum').removeAttr('data-enforce-integer');
-        min_quantity_widget.removeAttr('data-enforce-integer');
-        max_quantity_widget.removeAttr('data-enforce-integer');
-        max_available_widget.removeAttr('data-enforce-integer');
+        widgets.removeAttr('data-enforce-integer');
 	}
-}
-
-/*******************************************************************************
-	Ordini
-*/
-
-function setCellValue(cell, value) {
-    string = value;
-
-    if (cell.text().indexOf(current_currency) != -1)
-        string = utils.priceRound(value) + ' ' + current_currency;
-
-    cell.text(string);
-}
-
-/*******************************************************************************
-	Prenotazioni / Consegne
-*/
-
-function bookingTotal(editor) {
-	var form = $(editor).closest('form');
-
-    /*
-        Qui aggiungo temporaneamente la classe skip-on-submit a tutti gli input
-        a 0, in modo da ridurre la quantità di dati spediti al server per il
-        controllo dinamico, salvo poi toglierla a operazione conclusa
-    */
-
-    form.find('textarea').addClass('skip-on-submit restore-after-serialize');
-
-    form.find('.booking-product-quantity input').filter(function() {
-        return $(this).closest('.master-variant-selector').length == 0;
-    }).each(function() {
-        $(this).toggleClass('skip-on-submit restore-after-serialize', $(this).val() == '0');
-    });
-
-	var data = form.find(':not(.skip-on-submit)').serialize();
-
-    form.find('.restore-after-serialize').removeClass('skip-on-submit restore-after-serialize');
-
-	var url = form.attr('data-dynamic-url');
-
-	$.ajax({
-		url: url,
-		method: 'GET',
-		data: data,
-		dataType: 'JSON',
-		success: function(data) {
-			if (Object.entries(data.bookings).length == 0) {
-				$('.booking-product-price span', form).text(utils.priceRound(0));
-				$('.booking-modifier', container).text(utils.priceRound(0));
-				$('.booking-total', container).text(utils.priceRound(0));
-			}
-			else {
-                var action = $('input:hidden[name=action]', form).val();
-				var grand_total = 0;
-
-				/*
-					Questa variabile contiene i totali di ogni prenotazione
-					coinvolta nel pannello, ed in fase di consegna viene spedita
-					al server sotto il nome di 'delivering-status'.
-					Viene usata in MovementType per gestire i movimenti
-					contabili
-				*/
-				var status = {};
-
-				for (let [booking_id, booking_data] of Object.entries(data.bookings)) {
-					var container = $('input[value="' + booking_id + '"]').closest('table');
-					$('.booking-product-price span', container).text(utils.priceRound(0));
-
-					for (let [product_id, product_meta] of Object.entries(booking_data.products)) {
-                        var inputbox = $('input[name="' + product_id + '"]', container);
-                        inputbox.closest('tr').find('.booking-product-price span').text(utils.priceRound(product_meta.total));
-
-                        var modifiers = '';
-                        for (let [modifier_id, modifier_meta] of Object.entries(product_meta.modifiers)) {
-                            modifiers += '<br>' + modifier_meta.label + ': ' + utils.priceRound(modifier_meta.amount) + current_currency;
-                        }
-
-                        inputbox.closest('tr').find('.modifiers').html(modifiers);
-
-                        if (product_meta.variants.length != 0) {
-                            /*
-                                Attenzione: qui mi baso sul fatto che le
-                                varianti rappresentate nel feedback server-side
-                                siano ordinate nello stesso modo rispetto al
-                                pannello. Potrei usare i components come
-                                riferimento, ma possono esserci più varianti con
-                                gli stessi componenti e dovrei intuire qual è
-                                quella da eventualmente invalidare
-                            */
-                            for (let i = 0; i < product_meta.variants.length; i++) {
-                                var variant = product_meta.variants[i];
-                                var varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).filter(':not(.skip-on-submit)').eq(i);
-                                utils.inputInvalidFeedback(varinputbox, variant.quantity == 0 && utils.parseFloatC(varinputbox.val()) != 0, variant.message);
-
-                                if (action == 'shipped') {
-                                    varinputbox.closest('tr').find('.booking-product-price span').text(utils.priceRound(variant.total));
-                                }
-                            }
-                        }
-                        else {
-                            utils.inputInvalidFeedback(inputbox, product_meta.quantity == 0 && utils.parseFloatC(inputbox.val()) != 0, product_meta.message);
-                        }
-					}
-
-                    Modifiers.updateBookingModifiers(booking_data.modifiers, container);
-
-					var t = utils.priceRound(booking_data.total);
-					$('.booking-total', container).text(t);
-					grand_total += parseFloat(t);
-					status[booking_id] = booking_data.total;
-				}
-
-				form.find('.all-bookings-total').text(utils.priceRound(grand_total));
-
-				/*
-					Se è attivo il limite di prenotazioni sul credito, controllo
-					che non sia stato raggiunto e nel caso disabilito il
-					pulsante di invio
-				*/
-				var max_bookable = form.find('input:hidden[name="max-bookable"]');
-				if (max_bookable.length != 0) {
-					max_bookable = parseFloat(max_bookable.val());
-					form.find('button[type=submit]').prop('disabled', grand_total > max_bookable);
-				}
-
-				/*
-					Qui aggiorno il valore totale della prenotazione nel (eventuale)
-					modale per il pagamento
-				*/
-				var payment_modal_id = form.attr('data-reference-modal');
-				var payment_modal = $('#' + payment_modal_id);
-
-				if (payment_modal.length != 0) {
-					payment_modal.find('input[name=amount]').val(grand_total.toFixed(2)).change();
-					payment_modal.find('input[name=delivering-status]').val(JSON.stringify(status));
-				}
-			}
-		}
-	});
-}
-
-/*******************************************************************************
-	Permessi
-*/
-
-function setupPermissionsEditor(container) {
-    $('.roleAssign', container).each(function() {
-        if ($(this).hasClass('tt-hint') == true) {
-            return;
-        }
-
-        if ($(this).hasClass('tt-input') == false) {
-            $(this).autocomplete({
-                source: absolute_url + '/users/search',
-                select: function(event, ui) {
-                    var text = $(this);
-                    var role_id = Lists.currentLoadableLoaded(this);
-                    var group = $(this).closest('.accordion-body');
-                    var user_id = ui.item.id;
-
-                    var label = ui.item.label;
-                    $.ajax({
-                        method: 'POST',
-                        url: absolute_url + '/roles/attach',
-                        dataType: 'HTML',
-                        data: {
-                            role: role_id,
-                            user: user_id,
-                        },
-                        success: function(data) {
-                            var panel = $(data);
-                            var identifier = $(panel).attr('id');
-                            utils.j().initElements(panel);
-                            group.find('.tab-content').append(panel);
-
-                            var tab = $('<li class="nav-item" data-user="' + user_id + '"><button type="button" class="nav-link" data-bs-target="#' + identifier + '" data-bs-toggle="tab">' + label + '</button></li>');
-                            group.find('[role=tablist]').find('.last-tab').before(tab);
-                            text.val('');
-                        }
-                    });
-                }
-            });
-        }
-    });
-
-    $('.role-editor', container).on('change', 'input:checkbox[data-role]', function(e) {
-        var check = $(this);
-        check.removeClass('saved-checkbox saved-left-feedback');
-
-        var url = '';
-        if (check.is(':checked') == true) {
-            url = absolute_url + '/roles/attach';
-        }
-        else {
-            url = absolute_url + '/roles/detach';
-        }
-
-        var data = {};
-        data.role = check.attr('data-role');
-        data.action = check.attr('data-action');
-        data.user = check.attr('data-user');
-        data.target_id = check.attr('data-target-id');
-        data.target_class = check.attr('data-target-class');
-
-        $.ajax({
-            method: 'POST',
-            url: url,
-            data: data,
-            success: function() {
-                check.addClass('saved-checkbox saved-left-feedback');
-            }
-        });
-
-    }).on('click', '.remove-role', function(e) {
-        e.preventDefault();
-
-        if(confirm(_('Sei sicuro di voler revocare questo ruolo?'))) {
-            var button = $(this);
-
-            var data = {
-                role: button.attr('data-role'),
-                user: button.attr('data-user')
-            };
-
-            var userid = data.user;
-
-            $.ajax({
-                method: 'POST',
-                url: absolute_url + '/roles/detach',
-                data: data,
-                success: function() {
-                    var panel = button.closest('.accordion-body');
-                    var tab = panel.find('[data-user=' + userid + ']');
-                    panel.find(tab.find('button').attr('data-bs-target')).remove();
-                    tab.remove();
-                }
-            });
-        }
-    });
 }
 
 /*******************************************************************************
@@ -1125,118 +672,6 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('change', '.triggers-all-checkbox', function() {
-        $(this).prop('disabled', true);
-
-        var form = $(this).closest('form');
-        var target = $(this).attr('data-target-class');
-        var new_status = $(this).prop('checked');
-
-        form.find('.' + target).each(function() {
-            $(this).prop('checked', new_status);
-        });
-
-        $(this).prop('disabled', false);
-    })
-    .on('click', '.triggers-all-radio label', function() {
-        var form = $(this).closest('form');
-        var target = $(this).attr('data-target-class');
-        form.find('.' + target).button('toggle');
-    })
-    .on('change', '.triggers-all-selects', function() {
-        var form = $(this).closest('form');
-        var target = $(this).attr('data-target-class');
-        var value = $(this).find('option:selected').val();
-        var t = form.find('.' + target).not($(this));
-        t.find('option[value=' + value + ']').prop('selected', true);
-        t.change();
-    });
-
-    $('body').on('change', 'input[data-alternative-required]', function() {
-        reviewRequired($(this).closest('form'));
-    });
-
-    $('body').on('click', '.reloader', function(event) {
-        var listid = $(this).attr('data-reload-target');
-
-        if (listid == null) {
-            location.reload();
-        }
-        else {
-            /*
-                Nel caso in cui il tasto sia dentro ad un modale, qui ne forzo la
-                chiusura (che non e' implicita, se questo non viene fatto resta
-                l'overlay grigio in sovraimpressione)
-            */
-            var modal = $(this).closest('.modal').first();
-            if (modal != null) {
-                modal.on('hidden.bs.modal', function() {
-                    Lists.reloadCurrentLoadable(listid);
-                });
-                modal.modal('hide');
-            }
-            else {
-                Lists.reloadCurrentLoadable(listid);
-            }
-        }
-    });
-
-    $('body').on('focus', '.date[data-enforce-after]', function() {
-        var select = $(this).attr('data-enforce-after');
-        var target = $(this).closest('.input-group').find(select);
-		if (target.length == 0) {
-			target = $(this).closest('form').find(select);
-        }
-
-        /*
-            Problema: cercando di navigare tra i mesi all'interno del datepicker
-            viene lanciato nuovamente l'evento di focus, che fa rientrare in
-            questa funzione, e se setStartDate() viene incondazionatamente
-            eseguita modifica a sua volta la data annullando l'operazione.
-            Dunque qui la eseguo solo se non l'ho già fatto (se la data di
-            inizio forzato non corrisponde a quel che dovrebbe essere), badando
-            però a fare i confronti sui giusti formati
-        */
-        var current_start = $(this).datepicker('getStartDate');
-        var current_ref = target.datepicker('getUTCDate');
-        if (current_start.toString() != current_ref.toString()) {
-            $(this).datepicker('setStartDate', current_ref);
-        }
-    });
-
-    $('body').on('change', '.select-fetcher', function(event) {
-        var targetid = $(this).attr('data-fetcher-target');
-        var target = $(this).parent().find(targetid);
-        target.empty();
-
-		var id = $(this).find('option:selected').val();
-		var url = $(this).attr('data-fetcher-url');
-		url = url.replace('XXX', id);
-
-        target.append(utils.loadingPlaceholder());
-        $.get(url, function(data) {
-            target.empty().append(data);
-        });
-    });
-
-    $('body').on('click', '.object-details', function() {
-        var url = $(this).attr('data-show-url');
-        var modal = $('#service-modal');
-        modal.find('.modal-body').empty().append(utils.loadingPlaceholder());
-        modal.modal('show');
-
-        $.ajax({
-            url: url,
-            method: 'GET',
-            dataType: 'HTML',
-            success: function(data) {
-                data = $(data);
-                modal.find('.modal-body').empty().append(data);
-                utils.j().initElements(data);
-            }
-        });
-    });
-
     $('body').on('submit', '.main-form', function(event) {
         event.preventDefault();
 
@@ -1288,32 +723,6 @@ $(document).ready(function() {
                 }
             });
         }
-    });
-
-    $('body').on('click', '.icons-legend button, .icons-legend a', function(e) {
-        e.preventDefault();
-        filters.iconsLegendTrigger($(this), '.icons-legend');
-    });
-
-    $('body').on('click', '.table-icons-legend button, .table-icons-legend a', function(e) {
-        e.preventDefault();
-        filters.iconsLegendTrigger($(this), '.table-icons-legend');
-    });
-
-    $('body').on('keyup', '.table-text-filter', function() {
-        filters.tableFilters($(this).attr('data-table-target'));
-    });
-
-    $('body').on('keyup', '.table-number-filters input.table-number-filter', function() {
-        filters.tableFilters($(this).closest('.table-number-filters').attr('data-table-target'));
-    });
-
-    $('body').on('change', '.table-number-filters input[name=filter_mode]', function() {
-        $(this).closest('.input-group').find('input.table-number-filter').keyup();
-    });
-
-    $('body').on('change', '.table-filters input:radio', function() {
-        filters.tableFilters($(this).closest('.table-filters').attr('data-table-target'));
     });
 
     $('body').on('change', 'input:file[data-max-size]', function() {
@@ -1474,169 +883,10 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('click', '.link-button', function(e) {
-        e.preventDefault();
-        var url = $(this).attr('data-link');
-        window.open(url, '_blank');
-    });
-
     $('body').on('change', '.contacts-selection select', function() {
         var input = $(this).closest('tr').find('input[name="contact_value[]"]');
         var typeclass = $(this).find('option:selected').val();
         fixContactField(input, typeclass);
-    });
-
-    $('body').on('focus', 'input.address', function() {
-        utils.complexPopover($(this), 'address', function(input) {
-            var ret = $('<div>\
-                <div class="row mb-2">\
-                    <label for="street" class="col-4 col-form-label">' + _('Indirizzo') + '</label>\
-                    <div class="col-8"><input type="text" class="form-control" name="street" value="" autocomplete="off"></div>\
-                </div>\
-                <div class="row mb-2">\
-                    <label for="city" class="col-4 col-form-label">' + _('Città') + '</label>\
-                    <div class="col-sm-8"><input type="text" class="form-control" name="city" value="" autocomplete="off"></div>\
-                </div>\
-                <div class="row mb-2">\
-                    <label for="cap" class="col-4 col-form-label">' + _('CAP') + '</label>\
-                    <div class="col-sm-8"><input type="text" class="form-control" name="cap" value="" autocomplete="off"></div>\
-                </div>\
-                <div class="row mb-2">\
-                    <div class="col-8 offset-4"><button class="btn btn-light">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Salva') + '</button></div>\
-                </div>\
-            </div>');
-
-            var value = input.val();
-            if (value != '') {
-                var values = value.split(',');
-                for(var i = values.length; i < 3; i++)
-                    values[i] = '';
-                ret.find('input[name=street]').val(values[0].trim());
-                ret.find('input[name=city]').val(values[1].trim());
-                ret.find('input[name=cap]').val(values[2].trim());
-            }
-
-            ret.find('button.btn-success').click(function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                var street = ret.find('input[name=street]').val().trim().replace(',', '');
-                var city = ret.find('input[name=city]').val().trim().replace(',', '');
-                var cap = ret.find('input[name=cap]').val().trim().replace(',', '');
-
-                if (street == '' && city == '' && cap == '')
-                    input.val('');
-                else
-                    input.val(street + ', ' + city + ', ' + cap);
-
-                input.popover('dispose');
-            });
-
-            ret.find('button.btn-light').click(function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                input.popover('dispose');
-            });
-
-            setTimeout(function() {
-                ret.find('input[name=street]').focus();
-            }, 200);
-
-            return ret;
-        });
-    });
-
-    $('body').on('focus', 'input.periodic', function() {
-        utils.complexPopover($(this), 'periodic', function(input) {
-            var ret = $('<div>\
-                <div class="row mb-2">\
-                    <label for="day" class="col-4 col-form-label">' + _('Giorno') + '</label>\
-                    <div class="col-8">\
-                        <select class="form-select" name="day" value="" autocomplete="off">\
-                            <option value="monday">' + _('Lunedì') + '</option>\
-                            <option value="tuesday">' + _('Martedì') + '</option>\
-                            <option value="wednesday">' + _('Mercoledì') + '</option>\
-                            <option value="thursday">' + _('Giovedì') + '</option>\
-                            <option value="friday">' + _('Venerdì') + '</option>\
-                            <option value="saturday">' + _('Sabato') + '</option>\
-                            <option value="sunday">' + _('Domenica') + '</option>\
-                        </select>\
-                    </div>\
-                </div>\
-                <div class="row mb-2">\
-                    <label for="cycle" class="col-4 col-form-label">' + _('Periodicità') + '</label>\
-                    <div class="col-8">\
-                        <select class="form-select" name="cycle" value="" autocomplete="off">\
-                            <option value="all">' + _('Tutti') + '</option>\
-                            <option value="biweekly">' + _('Ogni due Settimane') + '</option>\
-                            <option value="month_first">' + _('Primo del Mese') + '</option>\
-                            <option value="month_second">' + _('Secondo del Mese') + '</option>\
-                            <option value="month_third">' + _('Terzo del Mese') + '</option>\
-                            <option value="month_fourth">' + _('Quarto del Mese') + '</option>\
-                            <option value="month_last">' + _('Ultimo del Mese') + '</option>\
-                        </select>\
-                    </div>\
-                </div>\
-                <div class="row mb-2">\
-                    <label for="day" class="col-4 col-form-label">' + _('Dal') + '</label>\
-                    <div class="col-8"><input type="text" class="date form-control" name="from" value="" autocomplete="off"></div>\
-                </div>\
-                <div class="row mb-2">\
-                    <label for="day" class="col-4 col-form-label">' + _('Al') + '</label>\
-                    <div class="col-8"><input type="text" class="date form-control" name="to" value="" autocomplete="off"></div>\
-                </div>\
-                <div class="row mb-2">\
-                    <div class="col-8 offset-4"><button class="btn btn-light">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Salva') + '</button></div>\
-                </div>\
-            </div>');
-
-            $('input.date', ret).datepicker({
-                format: 'DD dd MM yyyy',
-                autoclose: true,
-                language: current_language,
-                clearBtn: true,
-            });
-
-            var value = input.val();
-            if (value != '') {
-                var values = value.split(' - ');
-                for(var i = values.length; i < 4; i++)
-                    values[i] = '';
-
-                ret.find('select[name=day] option').filter(function() {
-                    return $(this).html() == values[0];
-                }).prop('selected', true);
-
-                ret.find('select[name=cycle] option').filter(function() {
-                    return $(this).html() == values[1];
-                }).prop('selected', true);
-
-                ret.find('input[name=from]').val(values[2].trim());
-                ret.find('input[name=to]').val(values[3].trim());
-            }
-
-            ret.find('button.btn-success').click(function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                var day = ret.find('select[name=day] option:selected').text();
-                var cycle = ret.find('select[name=cycle] option:selected').text();
-                var from = ret.find('input[name=from]').val().trim().replace(',', '');
-                var to = ret.find('input[name=to]').val().trim().replace(',', '');
-                input.val(day + ' - ' + cycle + ' - ' + from + ' - ' + to).change();
-                input.popover('dispose');
-            });
-
-            ret.find('button.btn-light').click(function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                input.popover('dispose');
-            });
-
-            setTimeout(function() {
-                ret.find('select[name=day]').focus();
-            }, 200);
-
-            return ret;
-        });
     });
 
     $('body').on('change', '.status-selector input:radio[name*="status"]', function() {
@@ -1646,94 +896,6 @@ $(document).ready(function() {
         field.find('[name=deleted_at]').prop('hidden', del).closest('.input-group').prop('hidden', del);
         let sus = (status != 'suspended');
         field.find('[name=suspended_at]').prop('hidden', sus).closest('.input-group').prop('hidden', sus);
-    });
-
-    $('body').on('change', '.movement-modal input[name=method]', function() {
-        if ($(this).prop('checked') == false) {
-            return;
-        }
-
-        var method = $(this).val();
-        var method_string = 'when-method-' + method;
-        var modal = $(this).closest('.movement-modal');
-        modal.find('[class*="when-method-"]').each(function() {
-            $(this).toggleClass('hidden', ($(this).hasClass(method_string) == false));
-        });
-    })
-    .on('change', '.movement-modal input[name=amount]', function() {
-        var status = $(this).closest('.movement-modal').find('.sender-credit-status');
-        if (status.length) {
-            var amount = utils.parseFloatC($(this).val());
-            var current = utils.parseFloatC(status.find('.current-sender-credit').text());
-            if (amount > current)
-                status.removeClass('alert-success').addClass('alert-danger');
-            else
-                status.removeClass('alert-danger').addClass('alert-success');
-        }
-    });
-
-    $('body').on('change', '.movement-type-selector', function(event) {
-        var type = $(this).find('option:selected').val();
-        var selectors = $(this).closest('form').find('.selectors');
-        selectors.empty().append(utils.loadingPlaceholder());
-
-        $.ajax({
-            method: 'GET',
-            url: absolute_url + '/movements/create',
-            dataType: 'html',
-            data: {
-                type: type
-            },
-
-            success: function(data) {
-                data = $(data);
-                selectors.empty().append(data);
-                utils.j().initElements(data);
-            }
-        });
-    });
-
-    $('body').on('change', '.movement-type-editor select[name=sender_type], .movement-type-editor select[name=target_type]', function() {
-        var editor = $(this).closest('.movement-type-editor');
-        var sender = editor.find('select[name=sender_type] option:selected').val();
-        var target = editor.find('select[name=target_type] option:selected').val();
-        var table = editor.find('table');
-
-        table.find('tbody tr').each(function() {
-            var type = $(this).attr('data-target-class');
-            /*
-                Le righe relative al GAS non vengono mai nascoste, in quanto
-                molti tipi di movimento vanno ad incidere sui saldi globali
-                anche quando il GAS non è direttamente coinvolto
-            */
-            $(this).toggleClass('hidden', (type != 'App\\Gas' && type != sender && type != target));
-        });
-
-        table.find('thead input[data-active-for]').each(function() {
-            var type = $(this).attr('data-active-for');
-            if(type != '' && type != sender && type != target)
-                $(this).prop('checked', false).prop('disabled', true).change();
-            else
-                $(this).prop('disabled', false);
-        });
-    })
-    .on('change', '.movement-type-editor table thead input:checkbox', function() {
-        var active = $(this).prop('checked');
-        var index = $(this).closest('th').index();
-
-        if (active == false) {
-            $(this).closest('table').find('tbody tr').each(function() {
-                var cell = $(this).find('td:nth-child(' + (index + 1) + ')');
-                cell.find('input[value=ignore]').click();
-                cell.find('label, input').prop('disabled', true);
-            });
-        }
-        else {
-            $(this).closest('table').find('tbody tr').each(function() {
-                var cell = $(this).find('td:nth-child(' + (index + 1) + ')');
-                cell.find('label, input').prop('disabled', false);
-            });
-        }
     });
 
     $('body').on('click', '.form-filler button[type=submit]', function(event) {
@@ -1763,24 +925,6 @@ $(document).ready(function() {
         window.open(url, '_blank');
     });
 
-    $('body').on('change', '#dates-in-range input.date, #dates-in-range input.periodic', function() {
-        if ($(this).val() == '') {
-            return;
-        }
-
-        var row = $(this).closest('tr');
-        if ($(this).hasClass('date')) {
-            row.find('.periodic').val('');
-        }
-        else {
-            row.find('.date').val('');
-        }
-    });
-
-    $('body').on('change', '.collapse_trigger', function() {
-        triggerCollapse($(this));
-    });
-
     /*
         Gestione fornitori
     */
@@ -1789,9 +933,9 @@ $(document).ready(function() {
         var editor = $(this).closest('.variants-editor');
         var id = $(this).closest('tr').attr('data-variant-id');
 
-        $.ajax({
+        utils.postAjax({
             method: 'DELETE',
-            url: absolute_url + '/variants/' + id,
+            url: 'variants/' + id,
             success: function() {
                 utils.j().reloadNode(editor);
             }
@@ -1904,8 +1048,8 @@ $(document).ready(function() {
     });
 
     $('body').on('change', '[id^="createOrder"] select[name^=supplier_id]', function() {
-        $.ajax({
-            url: absolute_url + '/dates/query',
+        utils.postAjax({
+            url: 'dates/query',
             method: 'GET',
             data: {
                 supplier_id: $(this).val()
@@ -1936,9 +1080,8 @@ $(document).ready(function() {
         var id = button.attr('data-aggregate-id');
         var date = button.closest('form').find('.last-date');
 
-        $.ajax({
-            url: absolute_url + '/aggregates/notify/' + id,
-            method: 'POST',
+        utils.postAjax({
+            url: 'aggregates/notify/' + id,
             success: function(data) {
                 date.text(data);
                 button.prop('disabled', false);
@@ -1947,243 +1090,6 @@ $(document).ready(function() {
                 button.prop('disabled', false);
             }
         });
-    });
-
-    $('body').on('keyup', '.booking-product-quantity input', function(e) {
-        var editor = $(this).closest('.booking-editor');
-        bookingTotal(editor);
-
-    }).on('change', '.variants-selector select', function() {
-        var editor = $(this).closest('.booking-editor');
-        bookingTotal(editor);
-
-    }).on('blur', '.booking-product-quantity input', function() {
-        if ($(this).val() == '' || $(this).hasClass('is-invalid')) {
-            $(this).val('0').removeClass('is-invalid').keyup();
-        }
-
-    }).on('focus', '.booking-product-quantity input', function() {
-        $(this).removeClass('.is-invalid');
-
-    }).on('click', '.booking-product .add-variant', function(e) {
-        e.preventDefault();
-        var variant_selector = $(this).closest('.variants-selector');
-        var master = variant_selector.find('.master-variant-selector').clone().removeClass('master-variant-selector');
-        master.find('.skip-on-submit').removeClass('skip-on-submit');
-        variant_selector.append(master);
-        return false;
-    });
-
-    $('body').on('click', '.mobile-quantity-switch button', function(e) {
-        e.preventDefault();
-
-        var input = $(this).closest('.mobile-quantity-switch').siblings('.booking-product-quantity').find('input.number');
-
-        var original = parseFloat(input.val());
-        if ($(this).hasClass('plus')) {
-            input.val(original + 1);
-        }
-        else {
-            if (original == 0)
-                return;
-            input.val(original - 1);
-        }
-
-        input.keyup();
-    });
-
-    $('body').on('click', '.add-booking-product', function(e) {
-        e.preventDefault();
-        var table = $(this).closest('table');
-        $(this).closest('table').find('.fit-add-product').first().clone().removeClass('hidden').appendTo(table.find('tbody'));
-        return false;
-    });
-
-    $('body').on('change', '.fit-add-product .fit-add-product-select', function(e) {
-        var id = $(this).find('option:selected').val();
-        var row = $(this).closest('tr');
-        var editor = row.closest('.booking-editor');
-
-        if (id == -1) {
-            row.find('.bookable-target').empty();
-            bookingTotal(editor);
-        } else {
-            $.ajax({
-                method: 'GET',
-                url: absolute_url + '/products/' + id,
-                data: {
-                    format: 'bookable',
-                    order_id: editor.attr('data-order-id')
-                },
-                dataType: 'HTML',
-
-                success: function(data) {
-                    data = $(data);
-                    row.find('.bookable-target').empty().append(data);
-                    utils.j().initElements(data);
-                    bookingTotal(editor);
-                }
-            });
-        }
-    });
-
-    $('body').on('click', '.preload-quantities', function(e) {
-        e.preventDefault();
-
-        var editor = $(this).closest('form').find('.booking-editor').each(function() {
-            $(this).find('tbody .booking-product').each(function() {
-                var booked = $(this).find('input:hidden[name=booking-product-real-booked]');
-                if (booked.length != 0) {
-                    var input = $(this).find('.booking-product-quantity input');
-                    input.val(booked.val());
-                }
-            });
-        });
-
-        /*
-            Se mi trovo in un ordine aggregato, eseguo la funzione di controllo
-            e calcolo solo sul primo. Tanto comunque bookingTotal() riesegue
-            sempre sull'intero form dell'aggregato
-        */
-        bookingTotal($(this).closest('form').find('.booking-editor').first());
-
-        return false;
-    });
-
-    $('body').on('click', '.load-other-booking', function(e) {
-        e.preventDefault();
-        var url = $(this).attr('data-booking-url');
-
-        var fill_target = $(this).closest('.other-booking');
-	    fill_target.empty().append(utils.loadingPlaceholder());
-
-        $.ajax({
-            url: url,
-            method: 'GET',
-            dataType: 'HTML',
-            success: function(data) {
-                data = $(data);
-                fill_target.empty().append(data);
-                utils.j().initElements(data);
-            }
-        });
-    });
-
-    /*
-        Multi-GAS
-    */
-
-    $('body').on('change', '.multigas-editor input:checkbox[data-gas]', function(e) {
-        var check = $(this);
-        check.removeClass('saved-checkbox');
-
-        var url = '';
-        if (check.is(':checked') == true) {
-            url = absolute_url + '/multigas/attach';
-        }
-        else {
-            url = absolute_url + '/multigas/detach';
-        }
-
-        var data = {};
-        data.gas = check.attr('data-gas');
-        data.target_id = check.attr('data-target-id');
-        data.target_type = check.attr('data-target-type');
-
-        $.ajax({
-            method: 'POST',
-            url: url,
-            data: data,
-            success: function() {
-                check.addClass('saved-checkbox');
-            }
-        });
-    });
-
-    /*
-        Pulsante "Salva Informazioni" in pannello consegna
-    */
-    $('body').on('click', '.booking-form .info-button', function(e) {
-        e.preventDefault();
-        var form = $(this).closest('form');
-        form.find('input:hidden[name=action]').val('saved');
-        form.submit();
-    });
-
-    $('body').on('click', '.booking-form .saving-button', function(e) {
-        if ($(this).closest('.booking-form').find('input:hidden[name=action]').val() == 'shipped') {
-            if (typeof $(this).data('total-checked') === 'undefined') {
-                e.stopPropagation();
-                var test = false;
-
-                $(this).closest('form').find('.booking-total').each(function() {
-                    var total = utils.parseFloatC($(this).text());
-                    test = (test || (total != 0));
-                });
-
-                if (test == false) {
-                    test = confirm(_('Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?'));
-				}
-
-                if (test == true) {
-                    $(this).data('total-checked', 1);
-                    $(this).click();
-                }
-            }
-        }
-    });
-
-    $('body').on('click', '.inline-calculator button[type=submit]', function(e) {
-        e.preventDefault();
-        var modal = $(this).closest('.modal');
-        var quantity = 0;
-
-        modal.find('input.number').each(function() {
-            var v = $(this).val();
-            if (v != '') {
-                quantity += utils.parseFloatC(v);
-            }
-
-            $(this).val('0');
-        });
-
-        /*
-            Il trigger keyup() alla fine serve a forzare il ricalcolo del totale
-            della consegna quando il modale viene chiuso
-        */
-        var identifier = modal.attr('id');
-        $('[data-bs-target="#' + identifier + '"]').closest('.booking-product-quantity').find('input.number').first().val(quantity).keyup();
-        modal.modal('hide');
-    });
-
-    $('body').on('click', '.delete-booking', function(e) {
-        e.preventDefault();
-
-        var form = $(this).closest('.inner-form');
-
-        if (confirm(_('Sei sicuro di voler annullare questa prenotazione?'))) {
-            form.find('button').prop('disabled', true);
-
-            $.ajax({
-                method: 'DELETE',
-                url: form.attr('action'),
-                dataType: 'json',
-
-                success: function(data) {
-                    form.find('button').prop('disabled', false);
-                    form.find('.booking-product-quantity input').val('0');
-                    form.find('.variants-selector').each(function() {
-                        while ($(this).find('.row:not(.master-variant-selector)').length != 1) {
-                            $(this).find('.row:not(.master-variant-selector):last').remove();
-                        }
-                    });
-
-                    bookingTotal(form.find('.booking-editor'));
-                }
-            });
-        }
-
-        return false;
     });
 
     /*

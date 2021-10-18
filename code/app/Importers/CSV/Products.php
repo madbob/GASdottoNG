@@ -2,9 +2,6 @@
 
 namespace App\Importers\CSV;
 
-use Illuminate\Support\Str;
-
-use App;
 use DB;
 
 use App\Supplier;
@@ -63,42 +60,50 @@ class Products extends CSVImporter
         ];
     }
 
-    public function testAccess($request)
+    private function getSupplier($request)
     {
         $supplier_id = $request->input('supplier_id');
-        $s = Supplier::findOrFail($supplier_id);
-        return $request->user()->can('supplier.modify', $s);
+        return Supplier::findOrFail($supplier_id);
+    }
+
+    public function testAccess($request)
+    {
+        return $request->user()->can('supplier.modify', $this->getSupplier($request));
     }
 
     public function guess($request)
     {
-        $supplier_id = $request->input('supplier_id');
-        $s = Supplier::findOrFail($supplier_id);
+        $s = $this->getSupplier($request);
 
         return $this->storeUploadedFile($request, [
             'type' => 'products',
             'next_step' => 'select',
-            'extra_fields' => [
-                'supplier_id' => $s->id
-            ],
-            'extra_description' => [
-                _i('Le categorie e le unità di misura il cui nome non sarà trovato tra quelle esistenti saranno create.')
-            ],
+            'extra_fields' => ['supplier_id' => $s->id],
+            'extra_description' => [_i('Le categorie e le unità di misura il cui nome non sarà trovato tra quelle esistenti saranno create.')],
             'sorting_fields' => $this->fields(),
         ]);
+    }
+
+    private function mapSelection($class, $param, $value, $field, &$product)
+    {
+        $test = $class::where($param, $value)->first();
+        if (is_null($test)) {
+            return 'temp_' . $field . '_name';
+        }
+        else {
+            $field_name = sprintf('%s_id', $field);
+            $product->$field_name = $test->id;
+            return null;
+        }
     }
 
     public function select($request)
     {
         list($reader, $columns) = $this->initRead($request);
         list($name_index, $supplier_code_index) = $this->getColumnsIndex($columns, ['name', 'supplier_code']);
-        $target_separator = ',';
+        $s = $this->getSupplier($request);
 
-        $supplier_id = $request->input('supplier_id');
-        $s = Supplier::findOrFail($supplier_id);
-
-        $products = [];
-        $errors = [];
+        $products = $errors = [];
 
         foreach($reader->getRecords() as $line) {
             if (empty($line) || (count($line) == 1 && empty($line[0]))) {
@@ -110,86 +115,45 @@ class Products extends CSVImporter
 
                 $p = new Product();
                 $p->name = $name;
-                $p->category_id = 'non-specificato';
-                $p->measure_id = 'non-specificato';
-                $p->min_quantity = 0;
-                $p->multiple = 0;
-                $p->package_size = 0;
+                $p->category_id = $p->measure_id = 'non-specificato';
+                $p->min_quantity = $p->multiple = $p->package_size = 0;
+                $price_without_vat = $vat_rate = $package_price = null;
 
-                if ($supplier_code_index == -1 || !empty($line[$supplier_code_index])) {
-                    $test = $s->products()->where('name', $name)->orderBy('id', 'desc')->first();
+                $test_query = $s->products()->where('name', $name)->orderBy('id', 'desc');
+                if ($supplier_code_index != -1 && !empty($line[$supplier_code_index])) {
+                    $test_query->orWhere('supplier_code', $line[$supplier_code_index]);
                 }
-                else {
-                    $test = $s->products()->where('name', $name)->orWhere('supplier_code', $line[$supplier_code_index])->orderBy('id', 'desc')->first();
-                }
-
-                if (is_null($test) == false) {
-                    $p->want_replace = $test->id;
-                }
-                else {
-                    $p->want_replace = 0;
-                }
-
-                $price_without_vat = null;
-                $vat_rate = null;
-                $package_price = null;
+                $test = $test_query->first();
+                $p->want_replace = is_null($test) ? 0 : $test->id;
 
                 foreach ($columns as $index => $field) {
                     $value = trim($line[$index]);
 
-                    if ($field == 'none') {
-                        continue;
-                    }
-                    elseif ($field == 'category') {
-                        $test_category = Category::where('name', $value)->first();
-                        if (is_null($test_category)) {
-                            $field = 'temp_category_name';
-                        }
-                        else {
-                            $p->category_id = $test_category->id;
-                            continue;
-                        }
+                    if ($field == 'category') {
+                        $field = $this->mapSelection(Category::class, 'name', $value, 'category', $p);
                     }
                     elseif ($field == 'measure') {
-                        $test_measure = Measure::where('name', $value)->first();
-                        if (is_null($test_measure)) {
-                            $field = 'temp_measure_name';
-                        }
-                        else {
-                            $p->measure_id = $test_measure->id;
-                            continue;
-                        }
+                        $field = $this->mapSelection(Measure::class, 'name', $value, 'measure', $p);
                     }
                     elseif ($field == 'price') {
                         $value = guessDecimal($value);
                     }
-                    elseif ($field == 'price_without_vat') {
-                        $price_without_vat = guessDecimal($value);
-                        continue;
-                    }
                     elseif ($field == 'vat') {
                         $value = guessDecimal($value);
-                        $vat_rate = $value = (float) $value;
-
-                        if ($vat_rate == 0) {
+                        if ($value == 0) {
                             $p->vat_rate_id = 0;
+                            continue;
                         }
                         else {
-                            $test_vat = VatRate::where('percentage', $value)->first();
-                            if (is_null($test_vat)) {
-                                $field = 'temp_vat_rate_name';
-                            }
-                            else {
-                                $p->vat_rate_id = $test_vat->id;
-                            }
+                            $field = $this->mapSelection(VatRate::class, 'percentage', $value, 'vat_rate', $p);
                         }
                     }
-                    elseif ($field == 'package_price') {
-                        $package_price = guessDecimal($value);
+                    elseif ($field == 'price_without_vat' || $field == 'package_price') {
+                        $$field = guessDecimal($value);
                         continue;
                     }
 
-                    if (!empty($value)) {
+                    if (!empty($value) && is_null($field) == false && $field != 'none') {
                         $p->$field = $value;
                     }
                 }
@@ -205,7 +169,7 @@ class Products extends CSVImporter
                 $products[] = $p;
             }
             catch (\Exception $e) {
-                $errors[] = join($target_separator, $line) . '<br/>' . $e->getMessage();
+                $errors[] = join(',', $line) . '<br/>' . $e->getMessage();
             }
         }
 
@@ -217,91 +181,40 @@ class Products extends CSVImporter
         return view('import.csvproductsselect', $parameters);
     }
 
-    private function mapNewElements($value, &$cached, $createNew)
-    {
-        if (Str::startsWith($value, 'new:')) {
-            $name = Str::after($value, 'new:');
-            if (!empty($name)) {
-                if (!isset($cached[$name])) {
-                    $obj = $createNew($name);
-                    $obj->save();
-                    $cached[$name] = $obj->id;
-                }
-
-                return $cached[$name];
-            }
-            else {
-                return $name;
-            }
-        }
-
-        return $value;
-    }
-
     public function run($request)
     {
         DB::beginTransaction();
 
-        $imports = $request->input('import');
-        $names = $request->input('name');
-        $weights = $request->input('weight');
-        $descriptions = $request->input('description');
-        $prices = $request->input('price');
-        $categories = $request->input('category_id');
-        $measures = $request->input('measure_id');
-        $vat_rates = $request->input('vat_rate_id');
-        $codes = $request->input('supplier_code');
-        $sizes = $request->input('package_size');
-        $mins = $request->input('min_quantity');
-        $multiples = $request->input('multiple');
-        $replaces = $request->input('want_replace');
+        $direct_fields = ['name', 'weight', 'description', 'price', 'supplier_code', 'package_size', 'min_quantity', 'multiple'];
+        $data = $request->all();
 
-        $supplier_id = $request->input('supplier_id');
-        $s = Supplier::findOrFail($supplier_id);
+        $s = $this->getSupplier($request);
+        $errors = $products = $products_ids = $new_categories = $new_measures = $new_vats = [];
 
-        $errors = [];
-        $products = [];
-        $products_ids = [];
-        $new_categories = [];
-        $new_measures = [];
-        $new_vats = [];
-
-        foreach($imports as $index) {
+        foreach($data['import'] as $index) {
             try {
-                if ($replaces[$index] != '0') {
-                    $p = Product::find($replaces[$index]);
+                if ($data['want_replace'][$index] != '0') {
+                    $p = Product::find($data['want_replace'][$index]);
                 }
                 else {
                     $p = new Product();
                     $p->supplier_id = $s->id;
+                    $p->active = true;
                 }
 
-                $p->active = true;
+                foreach($direct_fields as $field) {
+                    $p->$field = $data[$field][$index];
+                }
 
-                $p->name = $names[$index];
-                $p->weight = $weights[$index] ?: 0;
-                $p->description = $descriptions[$index];
-                $p->price = $prices[$index];
-                $p->supplier_code = $codes[$index];
-                $p->package_size = $sizes[$index];
-                $p->min_quantity = $mins[$index];
-                $p->multiple = $multiples[$index];
-
-                $p->category_id = $this->mapNewElements($categories[$index], $new_categories, function($name) {
-                    $category = new Category();
-                    $category->name = $name;
-                    $category->save();
-                    return $category;
+                $p->category_id = $this->mapNewElements($data['category_id'][$index], $new_categories, function($name) {
+                    return Category::easyCreate(['name' => $name]);
                 });
 
-                $p->measure_id = $this->mapNewElements($measures[$index], $new_measures, function($name) {
-                    $measure = new Measure();
-                    $measure->name = $name;
-                    $measure->save();
-                    return $measure;
+                $p->measure_id = $this->mapNewElements($data['measure_id'][$index], $new_measures, function($name) {
+                    return Measure::easyCreate(['name' => $name]);
                 });
 
-                $p->vat_rate_id = $this->mapNewElements($vat_rates[$index], $new_vats, function($name) {
+                $p->vat_rate_id = $this->mapNewElements($data['vat_rate_id'][$index], $new_vats, function($name) {
                     $name = (float) $name;
                     $vat = new VatRate();
                     $vat->percentage = $name;
@@ -329,9 +242,7 @@ class Products extends CSVImporter
             'title' => _i('Prodotti importati'),
             'objects' => $products,
             'errors' => $errors,
-            'extra_closing_attributes' => [
-                'data-reload-target' => '#supplier-list'
-            ]
+            'extra_closing_attributes' => ['data-reload-target' => '#supplier-list']
         ];
     }
 }

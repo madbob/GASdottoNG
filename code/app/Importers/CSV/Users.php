@@ -7,6 +7,8 @@ use App;
 use DB;
 use Hash;
 
+use Illuminate\Support\Str;
+
 use App\User;
 
 class Users extends CSVImporter
@@ -33,13 +35,13 @@ class Users extends CSVImporter
             'mobile' => (object) [
                 'label' => _i('Cellulare'),
             ],
-            'address_street' => (object) [
+            'address_0' => (object) [
                 'label' => _i('Indirizzo (Via)'),
             ],
-            'address_zip' => (object) [
+            'address_1' => (object) [
                 'label' => _i('Indirizzo (CAP)'),
             ],
-            'address_city' => (object) [
+            'address_2' => (object) [
                 'label' => _i('Indirizzo (Città)'),
             ],
             'birthday' => (object) [
@@ -96,13 +98,21 @@ class Users extends CSVImporter
         return null;
     }
 
+    private function fillContact(&$contacts, $type, $value)
+    {
+        if (!empty($value)) {
+            $contacts['contact_id'][] = '';
+            $contacts['contact_type'][] = $type;
+            $contacts['contact_value'][] = $value;
+        }
+    }
+
     public function run($request)
     {
         DB::beginTransaction();
 
         list($reader, $columns) = $this->initRead($request);
         list($login_index) = $this->getColumnsIndex($columns, ['username']);
-        $target_separator = ',';
 
         $gas = Auth::user()->gas;
         $users = [];
@@ -132,6 +142,7 @@ class Users extends CSVImporter
                     'contact_type' => [],
                     'contact_value' => []
                 ];
+
                 $credit = null;
                 $address = [];
 
@@ -142,9 +153,7 @@ class Users extends CSVImporter
                         continue;
                     }
                     else if ($field == 'phone' || $field == 'email' || $field == 'mobile') {
-                        $contacts['contact_id'][] = '';
-                        $contacts['contact_type'][] = $field;
-                        $contacts['contact_value'][] = $value;
+                        $this->fillContact($contacts, $field, $value);
                         continue;
                     }
                     else if ($field == 'birthday' || $field == 'member_since' || $field == 'last_login') {
@@ -156,17 +165,12 @@ class Users extends CSVImporter
                         }
                     }
                     else if ($field == 'ceased') {
-                        if (strtolower($value) == 'true' || strtolower($value) == 'vero' || $value == '1')
+                        if (strtolower($value) == 'true' || strtolower($value) == 'vero' || $value == '1') {
                             $u->deleted_at = date('Y-m-d');
+                        }
                     }
-                    else if ($field == 'address_street') {
-                        $address[0] = $value;
-                    }
-                    else if ($field == 'address_zip') {
-                        $address[1] = $value;
-                    }
-                    else if ($field == 'address_city') {
-                        $address[2] = $value;
+                    else if (Str::startsWith($field, 'address_')) {
+                        $address[(int) Str::after($value, 'address_')] = $value;
                     }
                     else {
                         $u->$field = $value;
@@ -176,12 +180,7 @@ class Users extends CSVImporter
                 $u->save();
                 $users[] = $u;
 
-                if (!empty($address)) {
-                    $contacts['contact_id'][] = '';
-                    $contacts['contact_type'][] = 'address';
-                    $contacts['contact_value'][] = join(',', $address);;
-                }
-
+                $this->fillContact($contacts, 'address', join(',', $address));
                 $u->updateContacts($contacts);
 
                 if ($credit != null) {
@@ -193,7 +192,7 @@ class Users extends CSVImporter
                 }
             }
             catch (\Exception $e) {
-                $errors[] = implode($target_separator, $line).'<br/>'.$e->getMessage();
+                $errors[] = implode(',', $line).'<br/>'.$e->getMessage();
             }
         }
 

@@ -51,8 +51,9 @@ foreach($classes as $class => $name) {
         $defaults = [];
 
         $payments = [];
-        foreach(App\MovementType::payments() as $id => $pay)
+        foreach(paymentTypes() as $id => $pay) {
             $payments[$id] = false;
+        }
 
         foreach($ops as $o) {
             $methods[$o->method] = [];
@@ -74,7 +75,7 @@ foreach($classes as $class => $name) {
             }
         }
 
-        $width = floor(100 / (count(App\MovementType::payments()) + 1));
+        $width = floor(100 / (count(paymentTypes()) + 1));
 
         ?>
 
@@ -84,7 +85,7 @@ foreach($classes as $class => $name) {
                     <tr>
                         <th width="{{ $width }}%">Saldo</th>
 
-                        @foreach(App\MovementType::payments() as $pay_id => $pay)
+                        @foreach(paymentTypes() as $pay_id => $pay)
                             <th width="{{ $width }}%">
                                 {{ $pay->name }}
                                 <div class="form-check form-switch">
@@ -107,7 +108,7 @@ foreach($classes as $class => $name) {
                             <tr data-target-class="{{ $classname }}" class="{{ $classname != 'App\Gas' && $classname != $type->sender_type && $classname != $type->target_type ? 'hidden' : '' }}">
                                 <td>{{ $classname::commonClassName() }}: {{ $fieldname }}</td>
 
-                                @foreach(App\MovementType::payments() as $pay_id => $pay)
+                                @foreach(paymentTypes() as $pay_id => $pay)
                                     <?php
 
                                     $selection = 'ignore';

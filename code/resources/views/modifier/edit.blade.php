@@ -60,7 +60,7 @@
                     }
                 }
 
-                $labels = App\Modifier::descriptions();
+                $labels = App\View\Texts\Modifier::descriptions();
                 $actual_strings_combination = $modifier->description_index;
 
                 ?>

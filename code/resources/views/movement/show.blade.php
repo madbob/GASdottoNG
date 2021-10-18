@@ -5,7 +5,7 @@
 
             $types = [];
 
-            foreach (App\MovementType::types() as $info) {
+            foreach (movementTypes() as $info) {
                 $types[$info->id] = $info->name;
             }
 

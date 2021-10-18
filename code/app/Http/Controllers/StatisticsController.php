@@ -48,7 +48,7 @@ class StatisticsController extends Controller
         });
 
         foreach ($data as $info) {
-            $ret->expenses->labels[] = sprintf('%s<br>%s', $info->name, printablePriceCurrency($info->value));
+            $ret->expenses->labels[] = sprintf("%s\n%s", $info->name, printablePriceCurrency($info->value));
             $ret->expenses->series[0][] = $info->value;
             $ret->users->labels[] = $info->name;
             $ret->users->series[0][] = count($info->users);

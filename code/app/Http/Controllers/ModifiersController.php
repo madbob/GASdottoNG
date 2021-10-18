@@ -51,7 +51,7 @@ class ModifiersController extends BackedController
 
     public function strings()
     {
-        return response()->json(Modifier::descriptions());
+        return response()->json(App\View\Texts\Modifier::descriptions());
     }
 
     public function postFeedback(Request $request, $id)

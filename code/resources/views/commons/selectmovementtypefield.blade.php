@@ -8,7 +8,7 @@ $types = [
     'none' => _i('Seleziona un Tipo'),
 ];
 
-foreach (App\MovementType::types() as $info) {
+foreach (movementTypes() as $info) {
     if ($show_all || $info->visibility) {
         $types[$info->id] = $info->name;
     }

@@ -1,126 +1,68 @@
 import Chartist from 'chartist';
-
-var graphGrownFactor = 40;
+import utils from "./utils";
 
 function doEmpty(target) {
     $(target).empty().css('height', 'auto').append($('#templates .alert').clone());
 }
 
+function commonGraphConfig()
+{
+    return {
+        horizontalBars: true,
+        axisX: {
+            onlyInteger: true
+        },
+        axisY: {
+            offset: 220
+        },
+    };
+}
+
+function doGraph(selector, data)
+{
+    if (data.labels.length == 0) {
+        doEmpty(selector);
+    }
+    else {
+        $(selector).empty().css('height', data.labels.length * 40);
+        new Chartist.Bar(selector, data, commonGraphConfig());
+    }
+}
+
+function doGraphs(group, data)
+{
+    doGraph('#stats-' + group + '-expenses', data.expenses);
+    doGraph('#stats-' + group + '-users', data.users);
+    doGraph('#stats-' + group + '-categories', data.categories);
+}
+
+function loadingGraphs(group)
+{
+    $('#stats-' + group + '-expenses').empty().append(utils.loadingPlaceholder());
+    $('#stats-' + group + '-users').empty().append(utils.loadingPlaceholder());
+    $('#stats-' + group + '-categories').empty().append(utils.loadingPlaceholder());
+}
+
 function runSummaryStats() {
-    var start = $('#stats-summary-form input[name=startdate]').val();
-    var end = $('#stats-summary-form input[name=enddate]').val();
+    loadingGraphs('generic');
 
     $.getJSON('/stats/summary', {
-        start: start,
-        end: end
+        start: $('#stats-summary-form input[name=startdate]').val(),
+        end: $('#stats-summary-form input[name=enddate]').val(),
     }, function(data) {
-        if (data.expenses.labels.length == 0) {
-            doEmpty('#stats-generic-expenses');
-        }
-        else {
-            $('#stats-generic-expenses').empty().css('height', data.expenses.labels.length * graphGrownFactor);
-            new Chartist.Bar('#stats-generic-expenses', data.expenses, {
-                horizontalBars: true,
-                axisX: {
-                    onlyInteger: true
-                },
-                axisY: {
-                    offset: 220
-                },
-            });
-        }
-
-        if (data.users.labels.length == 0) {
-            doEmpty('#stats-generic-users');
-        }
-        else {
-            $('#stats-generic-users').empty().css('height', data.users.labels.length * graphGrownFactor);
-            new Chartist.Bar('#stats-generic-users', data.users, {
-                horizontalBars: true,
-                axisX: {
-                    onlyInteger: true
-                },
-                axisY: {
-                    offset: 220
-                },
-            });
-        }
-
-        if (data.categories.labels.length == 0) {
-            doEmpty('#stats-generic-categories');
-        }
-        else {
-            $('#stats-generic-categories').empty().css('height', data.categories.labels.length * graphGrownFactor);
-            new Chartist.Bar('#stats-generic-categories', data.categories, {
-                horizontalBars: true,
-                axisX: {
-                    onlyInteger: true
-                },
-                axisY: {
-                    offset: 210
-                },
-            });
-        }
+        doGraphs('generic', data);
     });
 }
 
 function runSupplierStats() {
-    var supplier = $('#stats-supplier-form select[name=supplier] option:selected').val();
-    var start = $('#stats-supplier-form input[name=startdate]').val();
-    var end = $('#stats-supplier-form input[name=enddate]').val();
+    loadingGraphs('products');
 
     $.getJSON('/stats/supplier', {
-        start: start,
-        end: end,
-        supplier: supplier
+        supplier: $('#stats-supplier-form select[name=supplier] option:selected').val(),
+        start: $('#stats-supplier-form input[name=startdate]').val(),
+        end: $('#stats-supplier-form input[name=enddate]').val(),
     }, function(data) {
-        if (data.expenses.labels.length == 0) {
-            doEmpty('#stats-products-expenses');
-        }
-        else {
-            $('#stats-products-expenses').empty().css('height', data.expenses.labels.length * graphGrownFactor);
-            new Chartist.Bar('#stats-products-expenses', data.expenses, {
-                horizontalBars: true,
-                axisX: {
-                    onlyInteger: true
-                },
-                axisY: {
-                    offset: 210
-                },
-            });
-        }
-
-        if (data.users.labels.length == 0) {
-            doEmpty('#stats-products-users');
-        }
-        else {
-            $('#stats-products-users').empty().css('height', data.users.labels.length * graphGrownFactor);
-            new Chartist.Bar('#stats-products-users', data.users, {
-                horizontalBars: true,
-                axisX: {
-                    onlyInteger: true
-                },
-                axisY: {
-                    offset: 210
-                },
-            });
-        }
-
-        if (data.categories.labels.length == 0) {
-            doEmpty('#stats-products-categories');
-        }
-        else {
-            $('#stats-products-categories').empty().css('height', data.categories.labels.length * graphGrownFactor);
-            new Chartist.Bar('#stats-products-categories', data.categories, {
-                horizontalBars: true,
-                axisX: {
-                    onlyInteger: true
-                },
-                axisY: {
-                    offset: 210
-                },
-            });
-        }
+        doGraphs('products', data);
     });
 }
 

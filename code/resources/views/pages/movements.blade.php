@@ -33,7 +33,7 @@
                         <x-filler :data-action="route('movements.index')" data-fill-target="#movements-in-range" :download-buttons="[['link' => route('movements.index', ['format' => 'csv']), 'label' => _i('Esporta CSV')], ['link' => route('movements.index', ['format' => 'pdf']), 'label' => _i('Esporta PDF')]]">
                             @include('commons.genericdaterange', ['start_date' => strtotime('-1 weeks')])
                             @include('commons.selectmovementtypefield', ['show_all' => true])
-                            <x-larastrap::radios name="method" :label="_i('Pagamento')" :options="App\MovementType::paymentsSimple()" value="none" />
+                            <x-larastrap::radios name="method" :label="_i('Pagamento')" :options="paymentsSimple()" value="none" />
                             <x-larastrap::selectobj name="user_id" :label="_i('Utente')" :options="$currentgas->users" :extraitem="_i('Nessuno')" />
                             <x-larastrap::selectobj name="supplier_id" :label="_i('Fornitore')" :options="$currentgas->suppliers" :extraitem="_i('Nessuno')" />
 

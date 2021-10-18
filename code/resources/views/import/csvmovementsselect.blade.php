@@ -3,19 +3,19 @@
 $methods = [];
 
 $types = [];
-foreach (App\MovementType::types() as $info) {
+foreach (movementTypes() as $info) {
     if ($info->visibility) {
         $types[$info->id] = $info->name;
 
         $methods[] = (object) [
             'method' => $info->id,
-            'payments' => array_keys(App\MovementType::paymentsByType($info->id)),
-            'default_payment' => App\MovementType::defaultPaymentByType($info->id),
+            'payments' => array_keys(paymentsByType($info->id)),
+            'default_payment' => defaultPaymentByType($info->id),
         ];
     }
 }
 
-$payments = App\MovementType::paymentsSimple();
+$payments = paymentsSimple();
 $currencies = App\Currency::enabled();
 
 $users = App\User::sorted()->get();

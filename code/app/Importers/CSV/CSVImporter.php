@@ -4,6 +4,7 @@ namespace App\Importers\CSV;
 
 use Log;
 
+use Illuminate\Support\Str;
 use League\Csv\Reader;
 
 use App\Exceptions\MissingFieldException;
@@ -137,6 +138,26 @@ abstract class CSVImporter
         $reader->setDelimiter($target_separator);
 
         return [$reader, $columns];
+    }
+
+    protected function mapNewElements($value, &$cached, $createNew)
+    {
+        if (Str::startsWith($value, 'new:')) {
+            $name = Str::after($value, 'new:');
+            if (!empty($name)) {
+                if (!isset($cached[$name])) {
+                    $obj = $createNew($name);
+                    $cached[$name] = $obj->id;
+                }
+
+                return $cached[$name];
+            }
+            else {
+                return $name;
+            }
+        }
+
+        return $value;
     }
 
     protected abstract function fields();

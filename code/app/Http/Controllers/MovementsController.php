@@ -47,7 +47,7 @@ class MovementsController extends BackedController
                     contabilità
                 */
                 $gas = Auth::user()->gas;
-                $data['types'] = MovementType::types();
+                $data['types'] = movementTypes();
 
                 $one_month_ago = date('Y-m-d', strtotime('-1 months'));
 
@@ -124,11 +124,11 @@ class MovementsController extends BackedController
             return '';
         }
 
-        $metadata = MovementType::types($type);
+        $metadata = movementTypes($type);
         $data = [];
 
-        $data['payments'] = MovementType::paymentsByType($type);
-        $data['default_method'] = MovementType::defaultPaymentByType($type);
+        $data['payments'] = paymentsByType($type);
+        $data['default_method'] = defaultPaymentByType($type);
 
         $data['fixed'] = $metadata->fixed_value;
         $data['default_notes'] = $metadata->default_notes;

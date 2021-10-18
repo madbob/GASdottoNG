@@ -29,6 +29,11 @@ function currentAbsoluteGas()
     return $gas;
 }
 
+function classesInNamespace($namespace)
+{
+    return HaydenPierce\ClassFinder\ClassFinder::getClassesInNamespace($namespace);
+}
+
 function modelsUsingTrait($trait_name)
 {
     $out = [];
