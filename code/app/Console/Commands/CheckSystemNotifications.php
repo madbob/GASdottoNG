@@ -6,7 +6,6 @@ use Illuminate\Console\Command;
 
 use Log;
 
-use App\Role;
 use App\Notification;
 
 class CheckSystemNotifications extends Command
@@ -42,7 +41,7 @@ class CheckSystemNotifications extends Command
                 $new_notification->end_date = date('Y-m-d H:i:s', strtotime('+3 days'));
                 $new_notification->save();
 
-                $users = Role::everybodyCan('gas.config');
+                $users = everybodyCan('gas.config');
                 foreach($users as $u)
                     $new_notification->users()->attach($u->id);
             }

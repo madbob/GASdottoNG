@@ -99,7 +99,7 @@ class Supplier extends Model
 
         $contacts = $contacts->merge($this->contacts()->where('type', 'email')->get());
 
-        $users = Role::everybodyCan('supplier.modify', $this);
+        $users = everybodyCan('supplier.modify', $this);
         foreach($users as $u)
             $contacts = $contacts->merge($u->contacts()->where('type', 'email')->get());
 

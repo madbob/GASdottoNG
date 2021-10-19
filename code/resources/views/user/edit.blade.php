@@ -11,7 +11,7 @@ else {
 }
 
 $display_page = $display_page ?? false;
-$has_accounting = $editable && ($user->isFriend() == false && App\Role::someone('movements.admin', $user->gas));
+$has_accounting = $editable && ($user->isFriend() == false && someoneCan('movements.admin', $user->gas));
 $has_bookings = ($currentuser->id == $user->id);
 $has_friends = $editable && $user->can('users.subusers');
 $has_notifications = $user->isFriend() == false && $editable && ($currentgas->getConfig('notify_all_new_orders') == false);

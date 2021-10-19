@@ -4,8 +4,6 @@ namespace App\Listeners;
 
 use App\Events\BookingDelivered;
 
-use App\Role;
-
 class DeliverBooking
 {
     public function __construct()
@@ -26,7 +24,7 @@ class DeliverBooking
             $booking->payment->delete();
             $booking->payment_id = null;
         }
-        else if (Role::someone('movements.admin', $user->gas) && $new_status == 'shipped' && $booking->payment == null) {
+        else if (someoneCan('movements.admin', $user->gas) && $new_status == 'shipped' && $booking->payment == null) {
             /*
                 Se sull'istanza locale sto gestendo i pagamenti, quando viene
                 salvata una consegna senza pagamento la salvo come "salvata" e

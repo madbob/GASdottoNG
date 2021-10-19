@@ -49,6 +49,7 @@
         "files": [
             "app/Helpers/Setup.php",
             "app/Helpers/Formatters.php",
+            "app/Helpers/Permissions.php",
             "app/Helpers/Reflection.php",
             "app/Helpers/Paths.php",
             "app/Helpers/Accounting.php",

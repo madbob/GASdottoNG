@@ -24,7 +24,7 @@
                                     <x-larastrap::select name="language" :label="_i('Lingua')" :options="getLanguages()" />
                                     <x-larastrap::text name="currency" :label="_i('Valuta')" :pophelp="_i('Simbolo della valuta in uso. Verrà usato in tutte le visualizzazioni in cui sono espressi dei prezzi')" />
 
-                                    @if(App\Role::someone('gas.access', $gas))
+                                    @if(someoneCan('gas.access', $gas))
                                         <x-larastrap::check name="restricted" :label="_i('Modalità Manutenzione')" :pophelp="_i('Se abilitato, il login sarà inibito a tutti gli utenti che non hanno il permesso Accesso consentito anche in manutenzione')" />
                                     @endif
                                 </div>
@@ -84,7 +84,7 @@
                                         'manual' => _i('Selezione manuale'),
                                     ];
 
-                                    $supplier_roles = App\Role::rolesByClass('App\Supplier');
+                                    $supplier_roles = rolesByClass('App\Supplier');
                                     foreach($supplier_roles as $sr) {
                                         $values_for_contacts[$sr->id] = _i('Tutti %s', $sr->name);
                                     }

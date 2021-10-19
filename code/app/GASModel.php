@@ -23,15 +23,30 @@ trait GASModel
     {
         $class = get_called_class();
 
-        if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
+        if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class))) {
             $ret = $class::where('id', $id)->withoutGlobalScopes()->withTrashed()->first();
-        else
+        }
+        else {
             $ret = $class::find($id);
+        }
 
-        if ($ret == null && $fail == true)
+        if ($ret == null && $fail == true) {
             abort(404);
+        }
 
         return $ret;
+    }
+
+    public static function tAll()
+    {
+        $class = get_called_class();
+
+        if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class))) {
+            return $class::withTrashed()->orderBy('name', 'asc')->get();
+        }
+        else {
+            return $class::orderBy('name', 'asc')->get();
+        }
     }
 
     public function printableName()

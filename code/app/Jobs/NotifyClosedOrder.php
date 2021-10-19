@@ -11,7 +11,6 @@ use App\Jobs\DeleteFiles;
 
 use App\User;
 use App\Order;
-use App\Role;
 
 class NotifyClosedOrder extends Job
 {
@@ -35,7 +34,7 @@ class NotifyClosedOrder extends Job
             $pdf_file_path = $order->document('summary', 'pdf', 'save', null, 'booked', null);
             $csv_file_path = $order->document('summary', 'csv', 'save', null, 'booked', null);
 
-            $referents = Role::everybodyCan('supplier.orders', $order->supplier);
+            $referents = everybodyCan('supplier.orders', $order->supplier);
             foreach($referents as $u) {
                 try {
                     $u->notify(new ClosedOrderNotification($order, $pdf_file_path, $csv_file_path));
