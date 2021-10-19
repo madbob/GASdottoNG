@@ -14,6 +14,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\AttachableToGas' => [
             'App\Listeners\AttachToGas',
         ],
+        'App\Events\BookingDelivered' => [
+            'App\Listeners\DeliverBooking',
+        ],
         'Illuminate\Log\Events\MessageLogged' => [
             'App\Listeners\HarvestLogs',
         ],

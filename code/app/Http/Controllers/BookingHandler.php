@@ -15,7 +15,7 @@ use App\User;
 use App\Aggregate;
 use App\BookedProductVariant;
 use App\BookedProductComponent;
-use App\Role;
+use App\Events\BookingDelivered;
 
 /*
     Questa classe è destinata ad essere estesa dai Controller che maneggiano
@@ -24,6 +24,120 @@ use App\Role;
 
 class BookingHandler extends Controller
 {
+    private function initVariant($booked, $quantity, $delivering, $values)
+    {
+        if ($quantity == 0) {
+            return null;
+        }
+
+        $bpv = new BookedProductVariant();
+        $bpv->product_id = $booked->id;
+
+        if ($delivering == false) {
+            $bpv->quantity = $quantity;
+            $bpv->delivered = 0;
+        }
+        else {
+            $bpv->quantity = 0;
+            $bpv->delivered = $quantity;
+        }
+
+        $bpv->save();
+
+        foreach ($values as $variant_id => $value_id) {
+            $bpc = new BookedProductComponent();
+            $bpc->productvariant_id = $bpv->id;
+            $bpc->variant_id = $variant_id;
+            $bpc->value_id = $value_id;
+            $bpc->save();
+        }
+
+        return $bpv;
+    }
+
+    private function findVariant($booked, $values, $saved_variants)
+    {
+        $query = BookedProductVariant::where('product_id', $booked->id);
+
+        foreach ($values as $variant_id => $value_id) {
+            $query->whereHas('components', function ($q) use ($variant_id, $value_id) {
+                $q->where('variant_id', $variant_id)->where('value_id', $value_id);
+            });
+        }
+
+        return $query->whereNotIn('id', $saved_variants)->first();
+    }
+
+    private function adjustVariantValues($values, $i)
+    {
+        $real_values = [];
+
+        foreach($values as $variant_id => $vals) {
+            if (isset($vals[$i]) && !empty($vals[$i])) {
+                $real_values[$variant_id] = $vals[$i];
+            }
+        }
+
+        return $real_values;
+    }
+
+    private function readVariants($product, $booked, $values, $quantities, $delivering)
+    {
+        $quantity = 0;
+        $saved_variants = [];
+
+        for ($i = 0; $i < count($quantities); ++$i) {
+            $q = (float) $quantities[$i];
+            if ($q == 0) {
+                continue;
+            }
+
+            $real_values = $this->adjustVariantValues($values, $i);
+            if (empty($real_values)) {
+                continue;
+            }
+
+            $bpv = $this->findVariant($booked, $real_values, $saved_variants);
+
+            if (is_null($bpv)) {
+                $bpv = $this->initVariant($booked, $q, $delivering, $real_values);
+                if (is_null($bpv)) {
+                    continue;
+                }
+            }
+            else {
+                if ($q == 0 && $delivering == false) {
+                    $bpv->delete();
+                    continue;
+                }
+
+                if ($bpv->$param != $q) {
+                    $bpv->$param = $q;
+                    $bpv->save();
+                }
+            }
+
+            $saved_variants[] = $bpv->id;
+            $quantity += $q;
+        }
+
+        /*
+            Attenzione: in fase di consegna/salvataggio è lecito che una
+            quantità sia a zero, ma ciò non implica eliminare la variante
+        */
+        if ($delivering == false) {
+            BookedProductVariant::where('product_id', '=', $booked->id)->whereNotIn('id', $saved_variants)->delete();
+        }
+
+        /*
+            Per ogni evenienza qui ricarico le varianti appena salvate, affinché
+            il computo del prezzo totale finale per il prodotto risulti corretto
+        */
+        $booked->load('variants');
+
+        return [$booked, $quantity];
+    }
+
     public function readBooking($request, $order, $user, $delivering)
     {
         if ($delivering == false) {
@@ -90,104 +204,12 @@ class BookingHandler extends Controller
                 $booked->save();
 
                 if ($product->variants->isEmpty() == false) {
-                    $quantity = 0;
-
                     $values = [];
                     foreach ($product->variants as $variant) {
                         $values[$variant->id] = $request->input('variant_selection_' . $variant->id);
                     }
 
-                    $saved_variants = [];
-
-                    for ($i = 0; $i < count($quantities); ++$i) {
-                        $q = (float) $quantities[$i];
-                        if ($q == 0) {
-                            continue;
-                        }
-
-                        $query = BookedProductVariant::where('product_id', $booked->id);
-
-                        foreach ($values as $variant_id => $vals) {
-                            $value_id = $vals[$i];
-
-                            $query->whereHas('components', function ($q) use ($variant_id, $value_id) {
-                                $q->where('variant_id', $variant_id)->where('value_id', $value_id);
-                            });
-                        }
-
-                        $query->whereNotIn('id', $saved_variants);
-                        $bpv = $query->first();
-
-                        if (is_null($bpv)) {
-                            if ($q == 0) {
-                                continue;
-                            }
-
-                            $bpv = new BookedProductVariant();
-                            $bpv->product_id = $booked->id;
-
-                            if ($delivering == false) {
-                                $bpv->quantity = $q;
-                                $bpv->delivered = 0;
-                            }
-                            else {
-                                $bpv->quantity = 0;
-                                $bpv->delivered = $q;
-                            }
-
-                            $bpv->save();
-
-                            $no_components = true;
-
-                            foreach ($values as $variant_id => $vals) {
-                                $value_id = $vals[$i];
-                                if (empty($value_id)) {
-                                    continue;
-                                }
-
-                                $bpc = new BookedProductComponent();
-                                $bpc->productvariant_id = $bpv->id;
-                                $bpc->variant_id = $variant_id;
-                                $bpc->value_id = $value_id;
-                                $bpc->save();
-                                $no_components = false;
-                            }
-
-                            if ($no_components) {
-                                $bpv->delete();
-                            }
-                        }
-                        else {
-                            if ($q == 0 && $delivering == false) {
-                                $bpv->delete();
-                                continue;
-                            }
-
-                            if ($bpv->$param != $q) {
-                                $bpv->$param = $q;
-                                $bpv->save();
-                            }
-                        }
-
-                        $saved_variants[] = $bpv->id;
-                        $quantity += $q;
-                    }
-
-                    /*
-                        Attenzione: in fase di consegna/salvataggio è lecito
-                        che una quantità sia a zero, ma ciò non implica
-                        eliminare la variante
-                    */
-                    if ($delivering == false) {
-                        BookedProductVariant::where('product_id', '=', $booked->id)->whereNotIn('id', $saved_variants)->delete();
-                    }
-
-                    /*
-                        Per ogni evenienza qui ricarico le varianti appena
-                        salvate, affinché il computo del prezzo totale
-                        finale per il prodotto risulti corretto
-                    */
-                    $booked->load('variants');
+                    list($booked, $quantity) = $this->readVariants($product, $booked, $values, $quantities, $delivering);
                 }
             }
 
@@ -233,43 +255,8 @@ class BookingHandler extends Controller
 
         foreach ($aggregate->orders as $order) {
             $booking = $this->readBooking($request, $order, $target_user, $delivering);
-
             if ($booking && $delivering) {
-                $booking->deliverer_id = $user->id;
-                $booking->delivery = date('Y-m-d');
-
-                $new_status = $request->input('action');
-
-                if ($new_status == 'saved' && $booking->payment != null) {
-                    $booking->payment->delete();
-                    $booking->payment_id = null;
-                }
-                else if (Role::someone('movements.admin', $user->gas) && $new_status == 'shipped' && $booking->payment == null) {
-                    /*
-                        Se sull'istanza locale sto gestendo i pagamenti,
-                        quando viene salvata una consegna senza pagamento la
-                        salvo come "salvata" e non "consegnata".
-                        Questo per evitare che nella fase successiva -
-                        appunto, quella del pagamento - qualcosa vada storto
-                        e la consegna continui a risultare consegnata benché
-                        senza alcun pagamento.
-                        La consegna viene effettivamente marcata come
-                        consegnata al salvataggio del relativo movimento
-                        contabile, in MovementType
-                    */
-                    $new_status = 'saved';
-                }
-
-                $booking->status = $new_status;
-                $booking->save();
-
-                $booking->saveFinalPrices();
-                $booking->saveModifiers();
-
-                foreach($booking->friends_bookings as $friend_booking) {
-                    $friend_booking->status = $new_status;
-                    $friend_booking->save();
-                }
+                BookingDelivered::dispatch($booking, $request->input('action'), $user);
             }
         }
 

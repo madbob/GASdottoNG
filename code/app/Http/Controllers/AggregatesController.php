@@ -127,27 +127,6 @@ class AggregatesController extends Controller
         ]);
     }
 
-    /*
-        Questa funzione serve solo per debuggare le mail di riassunto dei
-        prodotti destinate agli utenti
-    */
-    public function testNotify(Request $request, $id)
-    {
-        if (env('APP_DEBUG', false) == false) {
-            abort(403);
-        }
-
-        $aggregate = Aggregate::findOrFail($id);
-        $message = $request->input('message', '');
-
-        foreach($aggregate->bookings as $booking) {
-            if ($booking->status != 'shipped') {
-                echo view('emails.booking', ['booking' => $booking, 'txt_message' => $message])->render();
-                echo '<hr>';
-            }
-        }
-    }
-
     public function exportModal(Request $request, $id, $type)
     {
         $aggregate = Aggregate::findOrFail($id);
