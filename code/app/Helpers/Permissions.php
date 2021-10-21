@@ -57,7 +57,7 @@ function someoneCan($permission, $subject = null)
 
 function everybodyCan($permission, $subject = null)
 {
-    $ret = new Collection();
+    $ret = new Illuminate\Support\Collection();
 
     $basic_roles = App\Role::havingAction($permission);
     foreach($basic_roles as $br) {

@@ -3,17 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Arr;
 
 use DB;
-use App;
-use PDF;
-use Log;
-
-use ezcArchive;
 
 use App\Jobs\AggregateSummaries;
+use App\Printers\Aggregate as Printer;
 use App\Aggregate;
 use App\Order;
 use App\Booking;
@@ -134,222 +128,6 @@ class AggregatesController extends Controller
     }
 
     /*
-        Prima di invocare questa funzione, si assume che il GAS corrente sia già
-        stato settato in GlobalScopeHub
-    */
-    private function formatGasSummary($gas, $aggregate, $required_fields, $status, $shipping_place)
-    {
-        $data = (object) [
-            'title' => $gas ? $gas->name : _i('Complessivo'),
-            'headers' => [],
-            'contents' => [],
-        ];
-
-        foreach($aggregate->orders as $order) {
-            $temp_data = $order->formatSummary($required_fields, $status, $shipping_place);
-            $data->headers = $temp_data->headers;
-            $data->contents = array_merge($data->contents, $temp_data->contents);
-        }
-
-        return $data;
-    }
-
-    public function document(Request $request, $id, $type)
-    {
-        $aggregate = Aggregate::findOrFail($id);
-
-        switch ($type) {
-            case 'shipping':
-                $subtype = $request->input('format', 'pdf');
-                $required_fields = $request->input('fields', []);
-
-                $fields = splitFields($required_fields);
-                $status = $request->input('status', 'booked');
-
-                $shipping_place = $request->input('shipping_place', 'all_by_name');
-
-                $temp_data = [];
-                foreach($aggregate->orders as $order) {
-                    $temp_data[] = $order->formatShipping($fields, $status, $shipping_place);
-                }
-
-                if (empty($temp_data)) {
-                    $data = (object) [
-                        'headers' => [],
-                        'contents' => []
-                    ];
-                }
-                else {
-                    $data = (object) [
-                        'headers' => $temp_data[0]->headers,
-                        'contents' => []
-                    ];
-
-                    foreach($temp_data as $td_row) {
-                        foreach($td_row->contents as $td) {
-                            $found = false;
-
-                            foreach($data->contents as $d) {
-                                if ($d->user_id == $td->user_id) {
-                                    $d->products = array_merge($d->products, $td->products);
-                                    $d->notes = array_merge($d->notes, $td->notes);
-
-                                    foreach($d->totals as $index => $t) {
-                                        $d->totals[$index] += $td->totals[$index] ?? 0;
-                                    }
-
-                                    $found = true;
-                                    break;
-                                }
-                            }
-
-                            if ($found == false) {
-                                $data->contents[] = $td;
-                            }
-                        }
-                    }
-
-                    $all_gas = (App::make('GlobalScopeHub')->enabled() == false);
-
-                    usort($data->contents, function($a, $b) use ($shipping_place, $all_gas) {
-                        if ($shipping_place == 'all_by_place' && $a->shipping_sorting != $b->shipping_sorting) {
-                            return $a->shipping_sorting <=> $b->shipping_sorting;
-                        }
-
-                        if ($all_gas) {
-                            return $a->gas_sorting <=> $b->gas_sorting;
-                        }
-
-                        return $a->user_sorting <=> $b->user_sorting;
-                    });
-                }
-
-                $title = _i('Dettaglio Consegne Ordini');
-                $filename = sanitizeFilename($title . '.' . $subtype);
-
-                if ($subtype == 'pdf') {
-                    $pdf = PDF::loadView('documents.order_shipping_pdf', ['fields' => $fields, 'aggregate' => $aggregate, 'data' => $data]);
-                    enablePdfPagesNumbers($pdf);
-                    return $pdf->download($filename);
-                }
-                else if ($subtype == 'csv') {
-                    $flat_contents = [];
-
-                    foreach($data->contents as $c) {
-                        foreach($c->products as $p) {
-                            $flat_contents[] = array_merge($c->user, $p);
-                        }
-                    }
-
-                    return output_csv($filename, $data->headers, $flat_contents, function($row) {
-                        return $row;
-                    });
-                }
-
-                break;
-
-            case 'summary':
-                $subtype = $request->input('format', 'pdf');
-
-                if ($subtype == 'pdf' || $subtype == 'csv') {
-                    $required_fields = $request->input('fields', []);
-                    $status = $request->input('status');
-
-                    $shipping_place = $request->input('shipping_place', 'all_by_place');
-                    if ($shipping_place == 'all_by_place') {
-                        $shipping_place = null;
-                    }
-
-                    $data = null;
-                    $title = _i('Prodotti Ordini');
-                    $filename = sanitizeFilename($title . '.' . $subtype);
-
-                    if ($subtype == 'pdf') {
-                        $blocks = [];
-
-                        $hub = App::make('GlobalScopeHub');
-                        if ($hub->enabled() == false) {
-                            $gas = $aggregate->gas->pluck('id');
-                            $blocks[] = $this->formatGasSummary(null, $aggregate, $required_fields, $status, $shipping_place);
-                        }
-                        else {
-                            $gas = Arr::wrap($hub->getGas());
-                        }
-
-                        foreach($gas as $g) {
-                            $hub->enable(true);
-                            $hub->setGas($g);
-                            $blocks[] = $this->formatGasSummary($hub->getGasObj(), $aggregate, $required_fields, $status, $shipping_place);
-                        }
-
-                        $pdf = PDF::loadView('documents.order_summary_pdf', ['aggregate' => $aggregate, 'blocks' => $blocks]);
-                        return $pdf->download($filename);
-                    }
-                    else if ($subtype == 'csv') {
-                        foreach($aggregate->orders as $order) {
-                            $temp_data = $order->formatSummary($required_fields, $status, $shipping_place);
-                            if (is_null($data)) {
-                                $data = $temp_data;
-                            }
-                            else {
-                                $data->contents = array_merge($data->contents, $temp_data->contents);
-                            }
-                        }
-
-                        return output_csv($filename, $data->headers, $data->contents, function($row) {
-                            return $row;
-                        });
-                    }
-                }
-                else if ($subtype == 'gdxp') {
-                    $hub = App::make('GlobalScopeHub');
-                    if ($hub->enabled() == false) {
-                        $gas = $aggregate->gas->pluck('id');
-                    }
-                    else {
-                        $gas = Arr::wrap($hub->getGas());
-                    }
-
-                    $working_dir = sys_get_temp_dir();
-                    chdir($working_dir);
-
-                    $files = [];
-
-                    foreach($gas as $g) {
-                        $hub->enable(true);
-                        $hub->setGas($g);
-
-                        foreach($aggregate->orders as $order) {
-                            /*
-                                Attenzione: la funzione document() nomina il
-                                file sempre nello stesso modo, a prescindere dal
-                                GAS. Se non lo si rinomina in altro modo, le
-                                diverse iterazioni sovrascrivono sempre lo
-                                stesso file
-                            */
-                            $f = $order->document('summary', 'gdxp', 'save', null, null, null);
-                            $new_f = Str::random(10);
-                            rename($f, $new_f);
-                            $files[] = $new_f;
-                        }
-                    }
-
-                    $archivepath = sprintf('%s/prenotazioni.zip', $working_dir);
-                    $archive = ezcArchive::open($archivepath, ezcArchive::ZIP);
-
-                    foreach($files as $f) {
-                        $archive->append([$f], '');
-                        unlink($f);
-                    }
-
-                    return response()->download($archivepath)->deleteFileAfterSend(true);
-                }
-
-                break;
-        }
-    }
-
-    /*
         Questa funzione, invocata dopo il salvataggio di un ordine, deve
         ritornare un array di URL da cui attingere modali di interazione con
         l'utente per svolgere eventuali funzioni secondarie.
@@ -402,5 +180,12 @@ class AggregatesController extends Controller
         }
 
         return view('order.multigas', ['aggregate' => $aggregate]);
+    }
+
+    public function document(Request $request, $id, $type)
+    {
+        $printer = new Printer();
+        $aggregate = Aggregate::findOrFail($id);
+        return $printer->document($aggregate, $type, $request->all());
     }
 }
