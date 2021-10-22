@@ -3,7 +3,7 @@ Questo pannello viene ricaricato alla chiusura del modale di modifica dei
 permessi, cfr. permissions.supplier-edit
 -->
 <div id="permissions-list-{{ sanitizeId($object->id) }}" data-reload-url="{{ route('roles.suppliertable', $object->id) }}">
-    @foreach(App\Role::rolesByClass(get_class($object)) as $role)
+    @foreach(rolesByClass(get_class($object)) as $role)
         <x-larastrap::field :label="$role->name">
             <label class="static-label">
                 <?php

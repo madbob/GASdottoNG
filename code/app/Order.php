@@ -276,7 +276,7 @@ class Order extends Model
         return $this->innerCache('enforced_contacts', function($obj) {
             $contacts = $obj->showableContacts();
             if ($contacts->isEmpty()) {
-                $contacts = Role::everybodyCan('supplier.orders', $obj->supplier);
+                $contacts = everybodyCan('supplier.orders', $obj->supplier);
             }
 
             return $contacts;

@@ -33,7 +33,7 @@ class SupplierObserver
 
     public function deleted(Supplier $supplier)
     {
-        $roles = Role::rolesByClass('App\Supplier');
+        $roles = rolesByClass('App\Supplier');
         foreach($roles as $role) {
             $users = $role->usersByTarget($supplier);
             foreach($users as $u) {

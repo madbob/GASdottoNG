@@ -178,7 +178,7 @@ class RolesController extends Controller
                 $attached = $u->addRole($r, null);
 
                 foreach($r->getAllClasses() as $target_class) {
-                    $available_targets = Role::targetsByClass($target_class);
+                    $available_targets = $target_class::tAll();
                     if ($available_targets->count() == 1)
                         $attached->attachApplication($available_targets->get(0));
                 }

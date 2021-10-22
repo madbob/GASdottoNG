@@ -114,7 +114,7 @@ class Role extends Model
     public function getAllClasses()
     {
         $ret = [];
-        $permissions = self::allPermissions();
+        $permissions = allPermissions();
 
         foreach ($permissions as $class => $types) {
             foreach($types as $t => $label) {
@@ -128,14 +128,6 @@ class Role extends Model
         return $ret;
     }
 
-    public static function targetsByClass($class)
-    {
-        if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
-            return $class::withTrashed()->orderBy('name', 'asc')->get();
-        else
-            return $class::orderBy('name', 'asc')->get();
-    }
-
     public function getTargetsAttribute()
     {
         if (is_null($this->targets)) {
@@ -143,7 +135,7 @@ class Role extends Model
 
             $classes = $this->getAllClasses();
             foreach($classes as $class) {
-                $this->targets = $this->targets->merge(self::targetsByClass($class));
+                $this->targets = $this->targets->merge($class::tAll());
             }
         }
 
@@ -164,13 +156,10 @@ class Role extends Model
                 }
 
                 if ($r->target_id == '*') {
-                    if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
-                        $objects = $class::withTrashed()->get();
-                    else
-                        $objects = $class::get();
-
-                    foreach($objects as $o)
+                    $objects = $class::tAll();
+                    foreach($objects as $o) {
                         $applies_cache[$class][] = $o->id;
+                    }
                 }
                 else {
                     $applies_cache[$class][] = $r->target_id;
@@ -373,7 +362,7 @@ class Role extends Model
                 Se attivo un permesso che ha un solo target (di solito: il GAS),
                 attacco quest'ultimo direttamente a tutti gli utenti coinvolti
             */
-            $class = self::classByRule($action);
+            $class = classByRule($action);
             if ($class::count() == 1) {
                 $only_target = $class::first();
 
@@ -405,135 +394,8 @@ class Role extends Model
         return Role::where('actions', 'LIKE', "%$action%")->get();
     }
 
-    public static function someone($permission, $subject = null)
-    {
-        $basic_roles = self::havingAction($permission);
-        foreach($basic_roles as $br) {
-            if (is_null($subject)) {
-                $users = $br->users;
-                if ($users->isEmpty() == false)
-                    return true;
-                else
-                    return false;
-            }
-            else {
-                $users = $br->usersByTarget($subject);
-                if ($users->isEmpty() == false)
-                    return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static function everybodyCan($permission, $subject = null)
-    {
-        $ret = new Collection();
-
-        $basic_roles = self::havingAction($permission);
-        foreach($basic_roles as $br) {
-            $users = $br->users;
-
-            if ($subject != null)
-                $users = $br->usersByTarget($subject);
-
-            $ret = $ret->merge($users);
-        }
-
-        return $ret->unique('id');
-    }
-
-    public static function allPermissions()
-    {
-        return [
-            'App\Gas' => [
-                'gas.access' => _i('Accesso consentito anche in manutenzione'),
-                'gas.permissions' => _i('Modificare tutti i permessi'),
-                'gas.config' => _i('Modificare le configurazioni del GAS'),
-                'supplier.add' => _i('Creare nuovi fornitori'),
-                'supplier.book' => _i('Effettuare ordini'),
-                'supplier.view' => _i('Vedere tutti i fornitori'),
-                'order.view' => _i('Vedere tutti gli ordini'),
-                'users.self' => _i('Modificare la propria anagrafica'),
-                'users.admin' => _i('Amministrare gli utenti'),
-                'users.view' => _i('Vedere tutti gli utenti'),
-                'users.subusers' => _i('Avere sotto-utenti con funzioni limitate'),
-                'users.movements' => _i('Amministrare i movimenti contabili degli utenti'),
-                'movements.admin' => _i('Amministrare tutti i movimenti contabili'),
-                'movements.view' => _i('Vedere i movimenti contabili'),
-                'movements.types' => _i('Amministrare i tipi dei movimenti contabili'),
-                'categories.admin' => _i('Amministrare le categorie'),
-                'measures.admin' => _i('Amministrare le unità di misura'),
-                'gas.statistics' => _i('Visualizzare le statistiche'),
-                'notifications.admin' => _i('Amministrare le notifiche'),
-                'gas.multi' => _i('Amministrare i GAS su questa istanza'),
-            ],
-            'App\Supplier' => [
-                'supplier.modify' => _i('Modificare i fornitori assegnati'),
-                'supplier.orders' => _i('Aprire e modificare ordini'),
-                'supplier.shippings' => _i('Effettuare le consegne'),
-                'supplier.movements' => _i('Amministrare i movimenti contabili'),
-            ],
-        ];
-    }
-
-    public static function allTargets()
-    {
-        $targets = [];
-
-        $permissions = self::allPermissions();
-        foreach ($permissions as $class => $types) {
-            if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class)))
-                $all = $class::withTrashed()->orderBy('name', 'asc')->get();
-            else
-                $all = $class::orderBy('name', 'asc')->get();
-
-            foreach ($all as $subject) {
-                $targets[] = $subject;
-            }
-        }
-
-        return $targets;
-    }
-
     public function enabledClass($class)
     {
         return in_array($class, $this->getAllClasses());
-    }
-
-    public static function classByRule($rule_id)
-    {
-        $all_permissions = self::allPermissions();
-        foreach ($all_permissions as $class => $rules) {
-            foreach ($rules as $identifier => $name) {
-                if ($rule_id == $identifier) {
-                    return $class;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    public static function rolesByClass($asked_class)
-    {
-        $roles = [];
-
-        $all_permissions = self::allPermissions();
-
-        foreach (Role::all() as $role) {
-            foreach ($all_permissions as $class => $rules) {
-                if ($class == $asked_class) {
-                    foreach ($rules as $identifier => $name) {
-                        if ($role->enabledAction($identifier)) {
-                            $roles[] = $role;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        return $roles;
     }
 }

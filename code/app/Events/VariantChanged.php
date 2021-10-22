@@ -2,18 +2,17 @@
 
 namespace App\Events;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 
-class BookingDeleting
+class VariantChanged
 {
     use Dispatchable, SerializesModels;
 
-    public $booking;
+    public $variant;
 
-    public function __construct(Model $booking)
+    public function __construct($variant)
     {
-        $this->booking = $booking;
+        $this->variant = $variant;
     }
 }

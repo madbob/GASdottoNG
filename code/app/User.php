@@ -279,7 +279,7 @@ class User extends Authenticatable
     public function targetsByAction($action, $exclude_trashed = true)
     {
         $targets = [];
-        $class = Role::classByRule($action);
+        $class = classByRule($action);
 
         foreach ($this->roles as $role) {
             if ($role->enabledAction($action))

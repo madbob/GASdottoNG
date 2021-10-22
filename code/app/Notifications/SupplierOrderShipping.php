@@ -36,7 +36,7 @@ class SupplierOrderShipping extends ManyMailNotification
             'order_number' => $this->order->number,
         ]);
 
-        $users = Role::everybodyCan('supplier.orders', $this->order->supplier);
+        $users = everybodyCan('supplier.orders', $this->order->supplier);
         foreach($users as $referent) {
             if (!empty($referent->email)) {
                 $message = $message->cc($referent->email);

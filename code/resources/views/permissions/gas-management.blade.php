@@ -11,11 +11,11 @@
 
                 <x-larastrap::selectobj name="roles->user" :label="_i('Ruolo Utente non Privilegiato')" :options="$existing_roles" :value="$gas->roles['user']" :pophelp="_i('Questo ruolo sarà automaticamete assegnato ad ogni nuovo utente')" />
 
-                @if(App\Role::someone('users.subusers'))
+                @if(someoneCan('users.subusers'))
                     <x-larastrap::selectobj name="roles->friend" :label="_i('Ruolo Sotto-Utente')" :options="$existing_roles" :value="$gas->roles['friend'] ?? ''" :pophelp="_i('Questo ruolo sarà automaticamente assegnato ad ogni amico degli utenti esistenti. Si consiglia di creare un ruolo dedicato, con permessi limitati alle sole prenotazioni')" />
                 @endif
 
-                @if(App\Role::someone('gas.multi'))
+                @if(someoneCan('gas.multi'))
                     <x-larastrap::selectobj name="roles->multigas" :label="_i('Ruolo Amministratore Multi-GAS')" :options="$existing_roles" :value="$gas->roles['multigas'] ?? ''" :pophelp="_i('Questo ruolo sarà automaticamente assegnato al primo utente di ogni nuovo GAS creato nel pannello Multi-GAS')" />
                 @endif
             </x-larastrap::form>

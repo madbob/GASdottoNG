@@ -22,12 +22,14 @@ class AggregateBooking extends Model
 
     public $id;
     public $user;
+    public $aggregate;
     public $bookings = [];
 
-    public function __construct($user_id)
+    public function __construct($user_id, $aggregate)
     {
         $this->id = $user_id;
         $this->user = User::withTrashed()->find($user_id);
+        $this->aggregate = $aggregate;
     }
 
     public function add($booking)

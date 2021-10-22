@@ -8,11 +8,9 @@ use Illuminate\Support\Collection;
 use DB;
 use URL;
 use Auth;
-use Log;
-use PDF;
-use Cache;
 
 use App\Exceptions\InvalidQuantityConstraint;
+use App\Printers\AggregateBooking as Printer;
 use App\User;
 use App\Aggregate;
 
@@ -258,30 +256,11 @@ class BookingUserController extends BookingHandler
     */
     public function document(Request $request, $aggregate_id, $user_id)
     {
+        $printer = new Printer();
         $aggregate = Aggregate::findOrFail($aggregate_id);
         $user = User::find($user_id);
-
-        $bookings = [$aggregate->bookingBy($user_id)];
-        foreach($user->friends as $friend) {
-            $friend_booking = $aggregate->bookingBy($friend->id);
-            if (!empty($friend_booking->bookings))
-                $bookings[] = $friend_booking;
-        }
-
-        $names = [];
-        foreach($aggregate->orders as $order) {
-            $names[] = sprintf('%s %s', $order->supplier->name, $order->internal_number);
-        }
-
-        $names = join(' / ', $names);
-        $filename = sanitizeFilename(_i('Dettaglio Consegne ordini %s.pdf', [$names]));
-
-        $pdf = PDF::loadView('documents.personal_aggregate_shipping', [
-            'aggregate' => $aggregate,
-            'bookings' => $bookings,
-        ]);
-
-        return $pdf->download($filename);
+        $booking = $aggregate->bookingBy($user_id);
+        return $printer->document($booking, '', $request->all());
     }
 
     /*

@@ -11,7 +11,7 @@
 
         <div class="row">
             <div class="col-md-4">
-                @foreach(App\Role::allPermissions() as $class => $permissions)
+                @foreach(allPermissions() as $class => $permissions)
                     <ul class="list-group mb-2">
                         @foreach($permissions as $identifier => $description)
                             <li class="list-group-item">

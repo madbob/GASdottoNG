@@ -41,7 +41,7 @@
                     <?php
 
                     $contactable_users = new Illuminate\Support\Collection();
-                    foreach(App\Role::rolesByClass('App\Supplier') as $role) {
+                    foreach(rolesByClass('App\Supplier') as $role) {
                         $contactable_users = $contactable_users->merge($role->usersByTarget($order->supplier));
                     }
 

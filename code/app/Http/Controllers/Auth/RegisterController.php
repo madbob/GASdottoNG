@@ -20,7 +20,6 @@ use Log;
 use App\Gas;
 use App\User;
 use App\Contact;
-use App\Role;
 
 class RegisterController extends Controller
 {
@@ -155,7 +154,7 @@ class RegisterController extends Controller
             Log::error('Impossibile inviare mail di verifica a nuovo utente: ' . $e->getMessage());
         }
 
-        $admins = Role::everybodyCan('users.admin', $user->gas);
+        $admins = everybodyCan('users.admin', $user->gas);
         foreach($admins as $ad) {
             try {
                 $ad->notify(new NewUserNotification($user));

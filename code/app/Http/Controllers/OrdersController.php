@@ -10,6 +10,7 @@ use Log;
 use App;
 
 use App\Services\OrdersService;
+use App\Printers\Order as Printer;
 use App\Product;
 use App\Order;
 use App\Aggregate;
@@ -239,6 +240,8 @@ class OrdersController extends BackedController
 
     public function document(Request $request, $id, $type)
     {
-        return $this->service->document($id, $type, $request->all());
+        $printer = new Printer();
+        $order = Order::findOrFail($id);
+        return $printer->document($order, $type, $request->all());
     }
 }

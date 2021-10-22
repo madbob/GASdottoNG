@@ -51,6 +51,7 @@
             "app/Helpers/Formatters.php",
             "app/Helpers/Dates.php",
             "app/Helpers/Percentages.php",
+            "app/Helpers/Permissions.php",
             "app/Helpers/Reflection.php",
             "app/Helpers/Paths.php",
             "app/Helpers/Accounting.php",

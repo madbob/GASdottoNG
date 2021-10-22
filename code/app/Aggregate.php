@@ -381,7 +381,7 @@ class Aggregate extends Model
                 $user_id = $booking->user->id;
 
                 if (!isset($ret[$user_id])) {
-                    $ret[$user_id] = new AggregateBooking($user_id);
+                    $ret[$user_id] = new AggregateBooking($user_id, $this);
                 }
 
                 $ret[$user_id]->add($booking);
@@ -411,7 +411,7 @@ class Aggregate extends Model
                 }
 
                 if (!isset($ret[$user_id])) {
-                    $ret[$user_id] = new AggregateBooking($user_id);
+                    $ret[$user_id] = new AggregateBooking($user_id, $this);
                 }
 
                 $fake_booking = $order->userBooking($user_id);
@@ -495,7 +495,7 @@ class Aggregate extends Model
 
     public function bookingBy($user_id)
     {
-        $ret = new AggregateBooking($user_id);
+        $ret = new AggregateBooking($user_id, $this);
 
         foreach ($this->orders as $order) {
             $booking = $order->userBooking($user_id);

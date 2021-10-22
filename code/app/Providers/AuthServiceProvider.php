@@ -9,8 +9,6 @@ use App\Extensions\BypassUserProvider;
 
 use Auth;
 
-use App\Role;
-
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -31,7 +29,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        $all_permissions = Role::allPermissions();
+        $all_permissions = allPermissions();
         foreach ($all_permissions as $class => $rules) {
             foreach ($rules as $identifier => $name) {
                 Gate::define($identifier, function ($user, $obj = null) use ($identifier) {
