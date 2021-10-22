@@ -3,13 +3,14 @@
 namespace App\Events;
 
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Foundation\Events\Dispatchable;
 
 use App\User;
 use App\Booking;
 
 class BookingDelivered
 {
-    use SerializesModels;
+    use Dispatchable, SerializesModels;
 
     public $booking;
     public $status;
