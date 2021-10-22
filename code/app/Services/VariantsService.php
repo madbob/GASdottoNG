@@ -9,6 +9,7 @@ use Auth;
 use Log;
 use DB;
 
+use App\Events\VariantChanged;
 use App\Product;
 use App\Variant;
 use App\VariantValue;
@@ -16,32 +17,26 @@ use App\BookedProductVariant;
 
 class VariantsService extends BaseService
 {
-    private function removeFromBooked($type, $id)
-    {
-        $booked = BookedProductVariant::whereHas('components', function($query) use ($type, $id) {
-            $query->where($type, $id);
-        })->with('components')->get();
-
-        foreach($booked as $b) {
-            if ($b->components->count() == 1) {
-                $b->components->first()->delete();
-                $b->delete();
-            }
-            else {
-                foreach($b->components as $component) {
-                    if ($component->$type == $id) {
-                        $component->delete();
-                    }
-                }
-            }
-        }
-    }
-
     public function show($id)
     {
         $variant = Variant::findOrFail($id);
         $this->ensureAuth(['supplier.modify' => $variant->product->supplier]);
         return $variant;
+    }
+
+    private function updateVariantValue($id, $variant, $value)
+    {
+        if (empty($id)) {
+            $val = new VariantValue();
+        }
+        else {
+            $val = VariantValue::find($id);
+        }
+
+        $val->variant_id = $variant->id;
+        $val->value = $value;
+        $val->save();
+        return $val;
     }
 
     public function store(array $request)
@@ -75,28 +70,16 @@ class VariantsService extends BaseService
             }
 
             $id = $ids[$i];
-
-            if (empty($id)) {
-                $val = new VariantValue();
-                $val->variant_id = $variant->id;
-            }
-            else {
-                $val = VariantValue::find($id);
-            }
-
-            $val->value = $value;
-            $val->save();
-
+            $val = $this->updateVariantValue($id, $variant, $value);
             $new_ids[] = $val->id;
         }
 
         $values_to_remove = VariantValue::where('variant_id', '=', $variant->id)->whereNotIn('id', $new_ids)->get();
         foreach($values_to_remove as $vtr) {
-            $this->removeFromBooked('value_id', $vtr->id);
             $vtr->delete();
         }
 
-        $variant->product->reviewCombos();
+        VariantChanged::dispatch($variant);
 
         DB::commit();
 
@@ -108,15 +91,8 @@ class VariantsService extends BaseService
         DB::beginTransaction();
 
         $variant = Variant::findOrFail($id);
-
-        $product = $variant->product;
-        $this->ensureAuth(['supplier.modify' => $product->supplier]);
-
-        $this->removeFromBooked('variant_id', $variant->id);
-        $variant->values()->delete();
+        $this->ensureAuth(['supplier.modify' => $variant->product->supplier]);
         $variant->delete();
-
-        $product->reviewCombos();
 
         DB::commit();
 

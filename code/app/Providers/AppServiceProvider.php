@@ -11,6 +11,7 @@ use App\Observers\SupplierObserver;
 use App\Observers\OrderObserver;
 use App\Observers\ModifierObserver;
 use App\Observers\ContactObserver;
+use App\Observers\VariantObserver;
 
 use App\Movement;
 use App\User;
@@ -18,6 +19,7 @@ use App\Supplier;
 use App\Order;
 use App\Modifier;
 use App\Contact;
+use App\Variant;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
         Order::observe(OrderObserver::class);
         Modifier::observe(ModifierObserver::class);
         Contact::observe(ContactObserver::class);
+        Variant::observe(VariantObserver::class);
     }
 
     public function register()

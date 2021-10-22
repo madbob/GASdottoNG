@@ -17,6 +17,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\BookingDelivered' => [
             'App\Listeners\DeliverBooking',
         ],
+        'App\Events\VariantChanged' => [
+            'App\Listeners\ReviewProductVariantCombos',
+        ],
         'Illuminate\Log\Events\MessageLogged' => [
             'App\Listeners\HarvestLogs',
         ],
