@@ -265,5 +265,6 @@ trait CreditableTrait
         return null;
     }
 
+    abstract public static function commonClassName();
     abstract public static function balanceFields();
 }

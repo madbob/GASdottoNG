@@ -1,11 +1,27 @@
 <?php
 
-if(!isset($show_all)) {
+if (!isset($show_all)) {
     $show_all = false;
 }
 
+if (!isset($field_name)) {
+    $field_name = 'type';
+}
+
+if (!isset($current_label)) {
+    $current_label = _i('Tipo');
+}
+
+if (!isset($current_pophelp)) {
+    $current_pophelp = '';
+}
+
+if (!isset($empty_label)) {
+    $empty_label = _i('Seleziona un Tipo');
+}
+
 $types = [
-    'none' => _i('Seleziona un Tipo'),
+    'none' => $empty_label,
 ];
 
 foreach (movementTypes() as $info) {
@@ -16,4 +32,4 @@ foreach (movementTypes() as $info) {
 
 ?>
 
-<x-larastrap::select name="type" :label="_i('Tipo')" :options="$types" classes="movement-type-selector" />
+<x-larastrap::select :name="$field_name" :label="$current_label" :options="$types" classes="movement-type-selector" :pophelp="$current_pophelp" />

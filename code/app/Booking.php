@@ -36,11 +36,6 @@ class Booking extends Model
         static::addGlobalScope(new RestrictedGAS('user'));
     }
 
-    public static function commonClassName()
-    {
-        return 'Prenotazione';
-    }
-
     public function user()
     {
         return $this->belongsTo('App\User')->withTrashed();
@@ -531,7 +526,7 @@ class Booking extends Model
 
     public function applyModifiers($aggregate_data = null, $real = true)
     {
-        if ($this->status == 'shipped') {
+        if ($this->status != 'pending') {
             return $this->allModifiedValues(null, true);
         }
         else {
@@ -614,5 +609,10 @@ class Booking extends Model
         return [
             'bank' => _i('Saldo'),
         ];
+    }
+
+    public static function commonClassName()
+    {
+        return 'Prenotazione';
     }
 }

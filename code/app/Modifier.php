@@ -16,6 +16,11 @@ class Modifier extends Model
         return $this->belongsTo('App\ModifierType');
     }
 
+    public function movementType()
+    {
+        return $this->belongsTo('App\MovementType');
+    }
+
     public function target()
     {
         return $this->morphTo();

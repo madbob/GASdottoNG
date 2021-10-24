@@ -74,7 +74,7 @@ class Movement extends Model
 
     public function related()
     {
-        return $this->belongsTo('App\Movement');
+        return $this->hasMany('App\Movement', 'related_id');
     }
 
     public function getPaymentIconAttribute()
@@ -110,17 +110,24 @@ class Movement extends Model
             return 'Mai';
         }
         else {
-            return sprintf('%s | %s | %s', $this->printableDate('date'), printablePriceCurrency($this->amount, '.', $this->currency), $this->payment_icon);
+            $total_amount = [printablePriceCurrency($this->amount, '.', $this->currency)];
+            foreach($this->related as $rel) {
+                $total_amount[] = printablePriceCurrency($rel->amount, '.', $rel->currency);
+            }
+
+            return sprintf('%s | %s | %s', $this->printableDate('date'), join(' + ', $total_amount), $this->payment_icon);
         }
     }
 
     public function printableType()
     {
         $type = $this->type_metadata;
-        if (is_null($type))
+        if (is_null($type)) {
             return '???';
-        else
+        }
+        else {
             return $type->name;
+        }
     }
 
     public function printablePayment()
@@ -224,7 +231,6 @@ class Movement extends Model
         $ret->date = date('Y-m-d');
         $ret->notes = $type_descr->default_notes;
         $ret->method = defaultPaymentByType($type);
-
         return $ret;
     }
 

@@ -68,6 +68,7 @@ class ModifiersService extends BaseService
         $user = $this->testAccess($modifier);
 
         $this->boolIfSet($modifier, $request, 'always_on');
+        $this->setIfSet($modifier, $request, 'movement_type_id');
         $this->setIfSet($modifier, $request, 'value');
         $this->setIfSet($modifier, $request, 'arithmetic');
         $this->setIfSet($modifier, $request, 'scale');

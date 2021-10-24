@@ -37,6 +37,26 @@ class BookingPayment extends MovementType
         return $type;
     }
 
+    private function handleModifiers($movement, $booking)
+    {
+        $values = $booking->applyModifiers(null, false);
+        $amount = $movement->amount;
+
+        foreach($values as $value) {
+            $movement_type = $value->modifier->movementType;
+            if (is_null($movement_type)) {
+                \Log::debug('no tipo movimento');
+                $amount = $value->sumAmount($amount);
+            }
+            else {
+                \Log::debug('genero altro movimento');
+                $value->generateMovement($movement);
+            }
+        }
+
+        return $amount;
+    }
+
     public function systemInit($mov)
     {
         $mov->callbacks = [
@@ -54,13 +74,6 @@ class BookingPayment extends MovementType
                     $user = $movement->sender;
                     $m = null;
 
-                    /*
-                        'handling_status' è un attributo fittizio allegato all'oggetto solo per determinare lo
-                        stato corrente della consegna. Cfr. la callback parse()
-                    */
-                    $handling_status = $movement->handling_status;
-                    unset($movement->handling_status);
-
                     foreach ($aggregate->orders as $order) {
                         $booking = $order->userBooking($user);
                         if ($booking->exists == false) {
@@ -72,19 +85,15 @@ class BookingPayment extends MovementType
                                 DeliveryUserController::update() (quando marcato come
                                 consegnato), dunque tanto vale farlo subito
                             */
-                            if ($booking->friends_bookings->isEmpty())
+                            if ($booking->friends_bookings->isEmpty()) {
                                 continue;
-                            else
+                            }
+                            else {
                                 $booking->save();
+                            }
                         }
 
-                        if (isset($handling_status->{$booking->id})) {
-                            $delivered = $handling_status->{$booking->id};
-                        }
-                        else {
-                            $delivered = $booking->getValue('effective', true, true);
-                        }
-
+                        $delivered = $booking->getValue('delivered', true, true);
                         if ($total < $delivered) {
                             $delivered = $total;
                         }
@@ -113,18 +122,17 @@ class BookingPayment extends MovementType
                         $m->amount = $delivered;
                         $m->save();
 
+                        $after_delivered = $this->handleModifiers($m, $booking);
+                        if ($after_delivered != $delivered) {
+                            $m->amount = $after_delivered;
+                            $m->save();
+                            $delivered = $after_delivered;
+                        }
+
                         $total -= $delivered;
                         if ($total <= 0) {
                             break;
                         }
-                    }
-
-                    /*
-                        Se avanza qualcosa, lo metto sulla fiducia nell'ultimo movimento salvato
-                    */
-                    if ($total > 0 && $m != null) {
-                        $m->amount += $total;
-                        $m->save();
                     }
 
                     return 2;
@@ -143,13 +151,6 @@ class BookingPayment extends MovementType
                     $target->payment_id = $movement->id;
                     $target->status = 'shipped';
                     $target->save();
-                }
-            },
-            'parse' => function (Movement &$movement, $request) {
-                if ($movement->target_type == 'App\Aggregate') {
-                    if (isset($request['delivering-status'])) {
-                        $movement->handling_status = json_decode($request['delivering-status']);
-                    }
                 }
             },
             'delete' => function(Movement $movement) {
