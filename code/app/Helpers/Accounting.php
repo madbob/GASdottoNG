@@ -29,6 +29,11 @@ function movementTypes($identifier = null, $with_trashed = false)
 {
     static $types = null;
 
+    if ($identifier == 'VOID') {
+        $types = null;
+        return null;
+    }
+
     if (is_null($types)) {
         $query = App\MovementType::orderBy('name', 'asc');
         if ($with_trashed) {
@@ -53,7 +58,12 @@ function movementTypes($identifier = null, $with_trashed = false)
     if ($identifier) {
         $ret = $types->where('id', $identifier)->first();
         if (is_null($ret)) {
-            \Log::error('Richiesto tipo di movimento non esistente: ' . $identifier);
+            /*
+                Questo è per compatibilità coi controlli usati in giro, che
+                assumono venga usato findOrFail() sulle query eseguite sul
+                database
+            */
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Error Processing Request", 1);
         }
     }
     else {
@@ -163,30 +173,22 @@ function paymentsByType($type)
 
     if ($type != null) {
         $metadata = movementTypes($type);
-        if ($metadata)
+        if ($metadata) {
             $function = json_decode($metadata->function);
+        }
     }
 
     $movement_methods = paymentTypes();
     $ret = [];
 
     foreach ($movement_methods as $method_id => $info) {
-        $found = false;
-
         if ($function) {
             foreach($function as $f) {
                 if ($f->method == $method_id) {
-                    $found = true;
+                    $ret[$method_id] = $info->name;
                     break;
                 }
             }
-        }
-        else {
-            $found = true;
-        }
-
-        if ($found) {
-            $ret[$method_id] = $info->name;
         }
     }
 
