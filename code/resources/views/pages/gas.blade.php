@@ -361,7 +361,7 @@
                             <div class="col">
                                 @include('commons.loadablelist', [
                                     'identifier' => 'modtype-list',
-                                    'items' => App\ModifierType::orderBy('name', 'asc')->get(),
+                                    'items' => App\ModifierType::where('hidden', false)->orderBy('name', 'asc')->get(),
                                 ])
                             </div>
                         </div>

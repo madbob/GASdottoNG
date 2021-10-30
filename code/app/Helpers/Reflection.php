@@ -34,6 +34,26 @@ function classesInNamespace($namespace)
     return HaydenPierce\ClassFinder\ClassFinder::getClassesInNamespace($namespace);
 }
 
+function systemParameters($type)
+{
+    static $types = [];
+
+    if (!isset($types[$type])) {
+        $types[$type] = [];
+        $classes = classesInNamespace('App\\Parameters\\' . $type);
+
+        foreach($classes as $class) {
+            $rclass = new \ReflectionClass($class);
+            if ($rclass->isInstantiable()) {
+                $m = new $class();
+                $types[$type][$m->identifier()] = $m;
+            }
+        }
+    }
+
+    return $types[$type];
+}
+
 function modelsUsingTrait($trait_name)
 {
     $out = [];

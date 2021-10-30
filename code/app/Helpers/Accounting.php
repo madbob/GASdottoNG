@@ -1,25 +1,5 @@
 <?php
 
-function predefinedMovementTypes()
-{
-    static $types = null;
-
-    if (is_null($types)) {
-        $types = [];
-        $classes = classesInNamespace('App\Parameters\MovementType');
-
-        foreach($classes as $class) {
-            $rclass = new \ReflectionClass($class);
-            if ($rclass->isInstantiable()) {
-                $m = new $class();
-                $types[$m->identifier()] = $m;
-            }
-        }
-    }
-
-    return $types;
-}
-
 /*
     Qui vengono letti i tipi di movimento contabile dal database, e le strutture
     dati di quelli "di sistema" (che non possono essere eliminati) vengono
@@ -41,7 +21,7 @@ function movementTypes($identifier = null, $with_trashed = false)
         }
 
         $from_database = $query->get();
-        $predefined = predefinedMovementTypes();
+        $predefined = systemParameters('MovementType');
         $types = new Illuminate\Support\Collection();
 
         foreach($from_database as $mov) {

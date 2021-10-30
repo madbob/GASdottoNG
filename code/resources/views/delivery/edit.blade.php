@@ -216,7 +216,12 @@ $existing = false;
                                     </th>
                                     <th></th>
                                     <th></th>
-                                    <th class="text-end">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> {{ $currentgas->currency }}</th>
+
+                                    @if($order->supplier->unmanaged_shipping_enabled)
+                                        <th class="text-end"><x-larastrap::price :label="_i('Totale Manuale')" :name="sprintf('manual_total_%s', $order->id)" classes="booking-total manual-total" :value="$now_delivered" /></th>
+                                    @else
+                                        <th class="text-end">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> {{ $currentgas->currency }}</th>
+                                    @endif
                                 </tr>
                             </tfoot>
                         </table>

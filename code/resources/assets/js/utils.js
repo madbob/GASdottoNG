@@ -336,4 +336,23 @@ class Utils {
     }
 }
 
+$.fn.textVal = function(value) {
+    if (typeof value == 'undefined') {
+        if (this.is('input')) {
+            return this.val();
+        }
+        else {
+            return this.text();
+        }
+    }
+    else {
+        if (this.is('input')) {
+            return this.val(value);
+        }
+        else {
+            return this.text(value);
+        }
+    }
+};
+
 export default Utils;

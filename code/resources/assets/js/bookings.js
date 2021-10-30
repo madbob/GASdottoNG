@@ -140,13 +140,8 @@ class Bookings {
             e.preventDefault();
             var editors = $(e.currentTarget).closest('form').find('.booking-editor');
 
-            editors.each(function() {
-                $(this).find('tbody .booking-product').each(function() {
-                    var booked = $(this).find('input:hidden[name=booking-product-real-booked]');
-                    if (booked.length != 0) {
-                        $(this).find('.booking-product-quantity input').val(booked.val());
-                    }
-                });
+            editors.each((index, item) => {
+                this.preloadQuantities($(item));
             });
 
             /*
@@ -157,6 +152,11 @@ class Bookings {
             this.bookingTotal(editors.first());
 
             return false;
+        });
+
+        $('input.manual-total', container).change((e) => {
+            var editor = $(e.currentTarget).closest('.booking-editor');
+            this.bookingTotal(editor);
         });
 
         $('.load-other-booking', container).click((e) => {
@@ -238,7 +238,7 @@ class Bookings {
                     var test = false;
 
                     button.closest('form').find('.booking-total').each(function() {
-                        var total = utils.parseFloatC($(this).text());
+                        var total = utils.parseFloatC($(this).textVal());
                         test = (test || (total != 0));
                     });
 
@@ -253,6 +253,18 @@ class Bookings {
                 }
             }
         });
+    }
+
+    static preloadQuantities(container)
+    {
+        container.find('.booking-product').each(function() {
+            var booked = $(this).find('input:hidden[name=booking-product-real-booked]');
+            if (booked.length != 0) {
+                $(this).find('.booking-product-quantity input').val(booked.val());
+            }
+        });
+
+        this.bookingTotal(container.closest('.booking-editor'));
     }
 
     static serializeBooking(form)
@@ -343,6 +355,23 @@ class Bookings {
         }
     }
 
+    static verifyManualTotal(container, data)
+    {
+        /*
+            Se tutte le quantità nella prenotazione risultano a 0, ma è stato
+            definito un valore manuale per la consegna, carico comunque tutte le
+            quantità prenotate come consegnate. In questo modo salvo almeno
+            qualche quantità per le consegne, che non saranno quella reali ma
+            quantomeno una approssimazione
+        */
+        if (data.products.length == 0) {
+            var manual = $('input.manual-total', container);
+            if (manual.length != 0 && manual.val() != 0) {
+                this.preloadQuantities(container);
+            }
+        }
+    }
+
     static bookingTotal(editor) {
     	var form = $(editor).closest('form');
         var data = this.serializeBooking(form);
@@ -356,7 +385,7 @@ class Bookings {
     		success: (data) => {
     			if (Object.entries(data.bookings).length == 0) {
     				$('.booking-product-price span', form).text(utils.priceRound(0));
-    				$('.booking-modifier, .booking-total', container).text(utils.priceRound(0));
+    				$('.booking-modifier, .booking-total', container).textVal(utils.priceRound(0));
     			}
     			else {
                     var action = $('input:hidden[name=action]', form).val();
@@ -379,9 +408,11 @@ class Bookings {
                         Modifiers.updateBookingModifiers(booking_data.modifiers, container);
 
     					var t = utils.priceRound(booking_data.total);
-    					$('.booking-total', container).text(t);
+    					$('.booking-total', container).textVal(t);
     					grand_total += parseFloat(t);
     					status[booking_id] = booking_data.total;
+
+                        this.verifyManualTotal(container, booking_data);
     				}
 
     				form.find('.all-bookings-total').text(utils.priceRound(grand_total));
