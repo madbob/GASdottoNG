@@ -23,7 +23,7 @@ class Movements {
             var selector = $(e.currentTarget);
             var type = selector.find('option:selected').val();
             var selectors = selector.closest('form').find('.selectors');
-            selectors.empty().append(this.loadingPlaceholder());
+            selectors.empty().append(utils.loadingPlaceholder());
 
             utils.postAjax({
                 method: 'GET',
