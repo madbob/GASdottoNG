@@ -1,8 +1,8 @@
 <ul class="list-group mb-2">
-    @foreach($obj->balanceFields() as $identifier => $name)
+    @foreach($obj->extendedBalanceFields() as $identifier => $name)
         <li class="list-group-item">
             {{ $name }}
-            <span class="badge bg-secondary float-end {{ $identifier }}"><span>{{ $obj->current_balance->$identifier }}</span> {{ $currentgas->currency }}</span>
+            <span class="badge bg-secondary float-end {{ $identifier }}"><span>{{ $obj->extended_current_balance->$identifier }}</span> {{ $currentgas->currency }}</span>
         </li>
     @endforeach
 </ul>

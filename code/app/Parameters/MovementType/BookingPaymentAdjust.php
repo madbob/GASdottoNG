@@ -24,7 +24,6 @@ class BookingPaymentAdjust extends MovementType
                 'method' => 'credit',
                 'sender' => $this->format(['bank' => 'decrement']),
                 'target' => $this->format(['bank' => 'increment']),
-                'master' => $this->format(['suppliers' => 'increment']),
             ],
         ]));
 

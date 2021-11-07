@@ -400,7 +400,7 @@ class User extends Authenticatable
 
     /******************************************************** CreditableTrait */
 
-    public static function balanceFields()
+    public function balanceFields()
     {
         return [
             'bank' => _i('Credito'),

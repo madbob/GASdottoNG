@@ -59,7 +59,7 @@ class MovementTypesService extends BaseService
     private function parseRules(&$data, $role, $classname, $request)
     {
         $payments = paymentTypes();
-        $fields = $classname::balanceFields();
+        $fields = (new $classname())->balanceFields();
 
         foreach($fields as $f => $fieldname) {
             foreach($payments as $pay_id => $pay) {

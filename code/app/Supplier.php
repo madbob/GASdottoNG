@@ -198,7 +198,7 @@ class Supplier extends Model
 
     /******************************************************** CreditableTrait */
 
-    public static function balanceFields()
+    public function balanceFields()
     {
         return [
             'bank' => _i('Ordini'),

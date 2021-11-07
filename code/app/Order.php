@@ -1112,7 +1112,7 @@ class Order extends Model
         return $this->supplier;
     }
 
-    public static function balanceFields()
+    public function balanceFields()
     {
         return [
             'bank' => _i('Saldo Fornitore'),

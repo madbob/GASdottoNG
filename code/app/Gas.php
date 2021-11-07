@@ -399,21 +399,51 @@ class Gas extends Model
 
     /******************************************************** CreditableTrait */
 
-    public static function balanceFields()
+    public function virtualBalances()
+    {
+        return $this->innerCache('enforced_contacts', function($obj) {
+            $suppliers_balance = 0;
+            $users_balance = 0;
+
+            foreach($obj->suppliers as $supplier) {
+                $suppliers_balance += $supplier->current_balance_amount;
+            }
+
+            foreach($obj->users as $user) {
+                $users_balance += $user->current_balance_amount;
+            }
+
+            return [
+                'suppliers' => (object) [
+                    'label' => _i('Fornitori'),
+                    'value' => $suppliers_balance,
+                ],
+                'users' => (object) [
+                    'label' => _i('Utenti'),
+                    'value' => $users_balance,
+                ],
+            ];
+        });
+    }
+
+    public function balanceFields()
     {
         $ret = [
             'bank' => _i('Conto Corrente'),
             'cash' => _i('Cassa Contanti'),
             'gas' => _i('GAS'),
-            'suppliers' => _i('Fornitori'),
             'deposits' => _i('Cauzioni'),
         ];
 
         $gas = currentAbsoluteGas();
-        if($gas->hasFeature('paypal'))
+
+        if ($gas->hasFeature('paypal')) {
             $ret['paypal'] = _i('PayPal');
-        if($gas->hasFeature('satispay'))
+        }
+
+        if ($gas->hasFeature('satispay')) {
             $ret['satispay'] = _i('Satispay');
+        }
 
         return $ret;
     }

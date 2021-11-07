@@ -24,12 +24,12 @@ class OrderPayment extends MovementType
             (object) [
                 'method' => 'cash',
                 'target' => $this->format(['bank' => 'decrement']),
-                'sender' => $this->format(['cash' => 'decrement', 'suppliers' => 'decrement']),
+                'sender' => $this->format(['cash' => 'decrement']),
             ],
             (object) [
                 'method' => 'bank',
                 'target' => $this->format(['bank' => 'decrement']),
-                'sender' => $this->format(['bank' => 'decrement', 'suppliers' => 'decrement']),
+                'sender' => $this->format(['bank' => 'decrement']),
             ]
         ]));
 

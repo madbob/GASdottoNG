@@ -91,11 +91,12 @@ trait CreditableTrait
                     $obj = $proxy;
 
                 $class = get_class($obj);
-                $fields = $class::balanceFields();
+                $fields = $obj->balanceFields();
                 $now = [];
 
-                if (!isset($current_status[$class]))
+                if (!isset($current_status[$class])) {
                     $current_status[$class] = [];
+                }
 
                 /*
                     Attenzione: qui prendo in considerazione gli eventuali
@@ -195,12 +196,9 @@ trait CreditableTrait
                 $proxy = $obj->getBalanceProxy();
                 if ($proxy != null) {
                     $obj = $proxy;
-                    $proxy_class = get_class($obj);
-                    $fields = $proxy_class::balanceFields();
                 }
-                else {
-                    $fields = $class::balanceFields();
-                }
+
+                $fields = $obj->balanceFields();
 
                 $cb = $obj->current_balance;
                 foreach($fields as $field => $name) {
@@ -241,6 +239,17 @@ trait CreditableTrait
         else {
             return $proxy->current_balance;
         }
+    }
+
+    public function getExtendedCurrentBalanceAttribute()
+    {
+        $balance = $this->current_balance;
+
+        foreach($this->virtualBalances() as $name => $value) {
+            $balance->$name = $value->value;
+        }
+
+        return $balance;
     }
 
     public function getCurrentBalanceAmountAttribute()
@@ -284,5 +293,26 @@ trait CreditableTrait
         return null;
     }
 
-    abstract public static function balanceFields();
+    /*
+        Questa funzione è destinata ad essere sovrascritta per includere nel
+        saldo "esteso" (cfr. getExtendedCurrentBalanceAttribute()) valori
+        dinamicamente calcolati
+    */
+    public function virtualBalances()
+    {
+        return [];
+    }
+
+    public function extendedBalanceFields()
+    {
+        $ret = $this->balanceFields();
+
+        foreach($this->virtualBalances() as $name => $virtual) {
+            $ret[$name] = $virtual->label;
+        }
+
+        return $ret;
+    }
+
+    abstract public function balanceFields();
 }
