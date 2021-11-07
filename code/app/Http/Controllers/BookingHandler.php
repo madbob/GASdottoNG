@@ -81,10 +81,20 @@ class BookingHandler extends Controller
         return $real_values;
     }
 
+    private function handlingParam($delivering) {
+        if ($delivering == false) {
+            return 'quantity';
+        }
+        else {
+            return 'delivered';
+        }
+    }
+
     private function readVariants($product, $booked, $values, $quantities, $delivering)
     {
         $quantity = 0;
         $saved_variants = [];
+        $param = $this->handlingParam($delivering);
 
         for ($i = 0; $i < count($quantities); ++$i) {
             $q = (float) $quantities[$i];
@@ -140,13 +150,7 @@ class BookingHandler extends Controller
 
     public function readBooking($request, $order, $user, $delivering)
     {
-        if ($delivering == false) {
-            $param = 'quantity';
-        }
-        else {
-            $param = 'delivered';
-        }
-
+        $param = $this->handlingParam($delivering);
         $booking = $order->userBooking($user->id);
 
         if ($request->has('notes_' . $order->id)) {
