@@ -12,7 +12,7 @@ jobs:
       - name: setup
         run: |
           cd code
-          cp .env.dusk.remote .env
+          cp .env.dusk.remote .env.dusk.local
           sudo systemctl start mysql
           mysql --user="root" --password="root" -e "CREATE DATABASE gasdottong_test character set UTF8mb4 collate utf8mb4_bin;"
           composer install --no-interaction --no-progress --prefer-dist
