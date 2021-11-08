@@ -30,3 +30,27 @@ jobs:
         run: |
           cd code
           php artisan dusk
+
+      - name: upload screenshots
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: screenshots
+          path: tests/Browser/screenshots
+          retention-days: 3
+
+      - name: upload console logs
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: console
+          path: tests/Browser/console
+          retention-days: 3
+
+      - name: upload logs
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: console
+          path: storage/logs
+          retention-days: 3
