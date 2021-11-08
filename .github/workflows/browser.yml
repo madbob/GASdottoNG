@@ -13,10 +13,10 @@ jobs:
         run: |
           cd code
           cp .env.dusk.remote .env
+          cp .env.dusk.remote .env.dusk.local
           sudo systemctl start mysql
           mysql --user="root" --password="root" -e "CREATE DATABASE gasdottong_test character set UTF8mb4 collate utf8mb4_bin;"
           composer install --no-interaction --no-progress --prefer-dist
-          php artisan key:generate
           php artisan migrate
           php artisan db:seed
           php artisan dusk:chrome-driver `/opt/google/chrome/chrome --version | cut -d " " -f3 | cut -d "." -f1`
