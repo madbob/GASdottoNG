@@ -36,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: screenshots
-          path: tests/Browser/screenshots
+          path: code/tests/Browser/screenshots
           retention-days: 3
 
       - name: upload console logs
@@ -44,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: console
-          path: tests/Browser/console
+          path: code/tests/Browser/console
           retention-days: 3
 
       - name: upload logs
@@ -52,5 +52,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: console
-          path: storage/logs
+          path: code/storage/logs
           retention-days: 3
