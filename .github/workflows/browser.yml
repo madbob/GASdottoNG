@@ -26,4 +26,6 @@ jobs:
       - name: running tests
         env:
           APP_URL: "http://127.0.0.1:8000"
-        run: php artisan dusk
+        run: |
+          cd code
+          php artisan dusk
