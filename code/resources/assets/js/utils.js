@@ -260,8 +260,8 @@ class Utils {
         params.method = params.method || 'POST';
 
         if (params.method != 'GET' && params.method != 'POST') {
-            params.method = 'POST';
             params.data._method = params.method;
+            params.method = 'POST';
         }
 
         if (params.url.startsWith('http') == false) {
