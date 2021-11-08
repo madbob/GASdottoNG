@@ -10,6 +10,8 @@ jobs:
         uses: actions/checkout@v2
 
       - name: setup
+        env:
+          APP_ENV: local
         run: |
           cd code
           cp .env.dusk.remote .env.dusk.local
