@@ -10,11 +10,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: setup
-        env:
-          APP_ENV: local
         run: |
           cd code
-          cp .env.dusk.remote .env.dusk.local
+          cp .env.dusk.remote .env
           sudo systemctl start mysql
           mysql --user="root" --password="root" -e "CREATE DATABASE gasdottong_test character set UTF8mb4 collate utf8mb4_bin;"
           composer install --no-interaction --no-progress --prefer-dist
