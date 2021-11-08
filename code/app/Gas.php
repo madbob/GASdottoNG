@@ -85,6 +85,10 @@ class Gas extends Model
                 'default' => '0'
             ],
 
+            'unmanaged_shipping' => [
+                'default' => 0
+            ],
+
             'notify_all_new_orders' => [
                 'default' => '0'
             ],
@@ -264,6 +268,11 @@ class Gas extends Model
     public function getRestrictBookingToCreditAttribute()
     {
         return $this->getConfig('restrict_booking_to_credit') == '1';
+    }
+
+    public function getUnmanagedShippingAttribute()
+    {
+        return $this->getConfig('unmanaged_shipping') == '1';
     }
 
     public function getNotifyAllNewOrdersAttribute()

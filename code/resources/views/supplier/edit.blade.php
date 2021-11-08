@@ -23,7 +23,10 @@
                 </div>
                 <div class="col-md-6">
                     <x-larastrap::check name="fast_shipping_enabled" :label="_i('Abilita Consegne Veloci')" :pophelp="_i('Quando questa opzione è abilitata, nel pannello degli ordini per questo fornitore viene attivata la tab Consegne Veloci (accanto a Consegne) che permette di marcare più prenotazioni come consegnate in un\'unica operazione')" />
-                    <x-larastrap::check name="unmanaged_shipping_enabled" :label="_i('Abilita Consegne Senza Quantità')" :pophelp="_i('Quando questa opzione è abilitata, nel pannello delle consegne per questo fornitore viene attivato un campo per immettere direttamente il valore totale della consegna anziché le quantità di ogni prodotto consegnato. Se questo campo viene usato, tutte le quantità presenti nella prenotazione si assumono essere consegnate e viene tenuto traccia della differenza del valore teorico e di quello reale immesso a mano. Attenzione: l\'uso di questa funzione non permetterà di ottenere delle statistiche precise sui prodotti consegnati, né una ripartizione equa dei modificatori basati sulle quantità e sui pesi dei prodotti consegnati.')" />
+
+                    @if($currentgas->unmanaged_shipping == '1')
+                        <x-larastrap::check name="unmanaged_shipping_enabled" :label="_i('Abilita Consegne Senza Quantità')" :pophelp="_i('Quando questa opzione è abilitata, nel pannello delle consegne per questo fornitore viene attivato un campo per immettere direttamente il valore totale della consegna anziché le quantità di ogni prodotto consegnato. Se questo campo viene usato, tutte le quantità presenti nella prenotazione si assumono essere consegnate e viene tenuto traccia della differenza del valore teorico e di quello reale immesso a mano.')" />
+                    @endif
 
                     @include('commons.statusfield', ['target' => $supplier])
                     <hr>

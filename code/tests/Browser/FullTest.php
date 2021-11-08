@@ -202,7 +202,7 @@ class FullTest extends DuskTestCase
             ->with('.accordion-item[data-element-id="' . $supplier_id . '"]', function($panel) use ($supplier_name) {
                 $panel->waitForText('Salva')
                     ->click('@status-deleted')
-                    ->pause(500)
+                    ->waitFor('input[name="deleted_at"]')
                     ->scrollIntoView('button[type=submit]')
                     ->press('Salva');
             })
@@ -291,7 +291,7 @@ class FullTest extends DuskTestCase
                 ->typeSlowly('vat', $supplier[4], 50)
                 ->press('Salva')
                 ->waitForText('Ordini')->pause(500)
-                ->with('.accordion-collapse.collapse.show', function($panel) use ($index, $supplier) {
+                ->with('.accordion-collapse.collapse.show', function($panel) use ($browser, $index, $supplier) {
                     $panel->pause(500)
                         ->assertInputValue('name', $supplier[0])
                         ->assertInputValue('payment_method', $supplier[2])
@@ -302,9 +302,9 @@ class FullTest extends DuskTestCase
                         Abilitazione Consegne Veloci
                     */
                     if ($index == 0) {
-                        $panel->check('fast_shipping_enabled')
-                            ->scrollIntoView('.save-button')
-                            ->press('Salva');
+                        $panel->check('fast_shipping_enabled');
+                        $browser->scrollIntoView('.save-button');
+                        $panel->press('Salva');
                     }
                 });
         }

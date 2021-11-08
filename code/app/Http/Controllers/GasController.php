@@ -178,6 +178,7 @@ class GasController extends Controller
 
             case 'orders':
                 $gas->setConfig('restrict_booking_to_credit', $request->has('restrict_booking_to_credit') ? '1' : '0');
+                $gas->setConfig('unmanaged_shipping', $request->has('unmanaged_shipping') ? '1' : '0');
                 $gas->setConfig('booking_contacts', $request->input('booking_contacts'));
                 $gas->setConfig('orders_display_columns', $request->input('orders_display_columns'));
                 break;
