@@ -56,6 +56,20 @@ class MovementsServiceTest extends TestCase
         $this->assertEquals($amount * -1, $this->gas->current_balance_amount);
     }
 
+    public function testRecalculate()
+    {
+        $this->testStore();
+
+        $this->gas->alterBalance(50);
+        $amount = 100 - 50 + $this->sample_movement->amount;
+        $this->assertEquals($amount * -1, $this->gas->current_balance_amount);
+
+        $this->service->recalculate();
+
+        $amount = 100 + $this->sample_movement->amount;
+        $this->assertEquals($amount * -1, $this->gas->current_balance_amount);
+    }
+
     public function testFailsToUpdate()
     {
         $this->expectException(AuthException::class);

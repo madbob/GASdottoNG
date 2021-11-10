@@ -63,10 +63,10 @@ class FullTest extends DuskTestCase
         */
         $browser->visit('/gas/senza-nome/edit')
             ->waitForText('Amministratore')
-            ->press('Amministratore')->waitForText('Avere sotto-utenti')
-            ->pause(1000)
+            ->press('Amministratore')->waitForText('Avere sotto-utenti')->pause(500)
+            ->scrollView('input[type="checkbox"][data-action="users.subusers"]')
             ->click('input[type="checkbox"][data-action="users.subusers"]')
-            ->pause(1000);
+            ->pause(500);
 
         /*
             Creazione amico
@@ -128,13 +128,13 @@ class FullTest extends DuskTestCase
             ->with('.accordion-item[data-element-id="bandiera"]', function($panel) {
                 $panel->assertInputValue('firstname', 'Attilio')
                     ->assertInputValue('lastname', 'Bandiera')
-                    ->scrollIntoView('button[type=submit]')
+                    ->scrollView('button[type=submit]')
                     ->press('@status-deleted')
                     ->waitFor('input[name="deleted_at"]')
-                    ->scrollIntoView('button[type=submit]')
+                    ->scrollView('button[type=submit]')
                     ->press('Salva');
             })
-            ->waitUntilMissing('Anagrafica');
+            ->waitUntilMissing('Anagrafica')->pause(500);
 
         /*
             Controllo cessazione utente
@@ -164,31 +164,42 @@ class FullTest extends DuskTestCase
             appaiono nel pannello della prenotazione
         */
         return [
-            ['Finocchi', 3.00, 'chili', 'verdura', []],
-            ['Melanzane', 2.00, 'chili', 'verdura', [
-                'Forma' => ['Tonda', 'Ovale', 'Lunga'],
-                'Colore' => ['Nera', 'Viola']
-            ]],
-            ['Peperoncino piccante', 0.50, 'pezzi', 'verdura', [
-                'Piccantezza' => ['Poco piccante', 'Molto piccante']
-            ]],
-            ['Zucchine', 2.50, 'chili', 'verdura', []],
+            (object) [
+                'name' => 'Finocchi',
+                'price' => 3.00,
+                'unit_measure' => 'chili',
+                'category' => 'verdura',
+                'min_quantity' => 3,
+                'variants' => []
+            ],
+            (object) [
+                'name' => 'Melanzane',
+                'price' => 2.00,
+                'unit_measure' => 'chili',
+                'category' => 'verdura',
+                'variants' => [
+                    'Forma' => ['Tonda', 'Ovale', 'Lunga'],
+                    'Colore' => ['Nera', 'Viola']
+                ]
+            ],
+            (object) [
+                'name' => 'Peperoncino piccante',
+                'price' => 0.50,
+                'unit_measure' => 'pezzi',
+                'category' => 'verdura',
+                'variants' => [
+                    'Piccantezza' => ['Poco piccante', 'Molto piccante']
+                ]
+            ],
+            (object) [
+                'name' => 'Zucchine',
+                'price' => 2.50,
+                'unit_measure' => 'chili',
+                'category' => 'verdura',
+                'max_available' => 3,
+                'variants' => []
+            ],
         ];
-    }
-
-    private function quantities()
-    {
-        static $quantities = null;
-
-        if (is_null($quantities)) {
-            $quantities = [];
-            $products = $this->products();
-            foreach($products as $product) {
-                $quantities[] = rand(0, 5);
-            }
-        }
-
-        return $quantities;
     }
 
     private function disableEnableSupplier($browser, $supplier_name)
@@ -203,7 +214,7 @@ class FullTest extends DuskTestCase
                 $panel->waitForText('Salva')
                     ->click('@status-deleted')
                     ->waitFor('input[name="deleted_at"]')
-                    ->scrollIntoView('button[type=submit]')
+                    ->scrollView('button[type=submit]')
                     ->press('Salva');
             })
             ->waitUntilMissing('Dettagli');
@@ -227,7 +238,7 @@ class FullTest extends DuskTestCase
                     ->waitForText('Salva')
                     ->click('@status-active')
                     ->pause(500)
-                    ->scrollIntoView('button[type=submit]')
+                    ->scrollView('button[type=submit]')
                     ->press('Salva');
             })
             ->waitUntilMissing('Dettagli');
@@ -236,7 +247,7 @@ class FullTest extends DuskTestCase
     private function handlingVariants($panel, $browser, $variants, $actual_save)
     {
         foreach($variants as $variant_name => $variant_values) {
-            $browser->scrollIntoView('button[type=submit]')->press('Crea Nuova Variante')->waitForText('Valori')
+            $browser->scrollView('button[type=submit]')->press('Crea Nuova Variante')->waitForText('Valori')
                 ->with('.modal.show', function($panel) use ($browser, $variant_name, $variant_values, $actual_save) {
                     $panel->pause(100)->typeSlowly('name', $variant_name, 50);
 
@@ -255,7 +266,7 @@ class FullTest extends DuskTestCase
                 });
 
             if ($actual_save) {
-                $panel->scrollIntoView('button[type=submit]')->waitForText($variant_name);
+                $panel->scrollView('button[type=submit]')->waitForText($variant_name);
             }
         }
 
@@ -270,7 +281,7 @@ class FullTest extends DuskTestCase
                 }
             });
 
-        $browser->scrollIntoView('button[type=submit]')->waitForText('Elimina');
+        $browser->scrollView('button[type=submit]')->waitForText('Elimina');
     }
 
     private function createSuppliers($browser)
@@ -292,20 +303,10 @@ class FullTest extends DuskTestCase
                 ->press('Salva')
                 ->waitForText('Ordini')->pause(500)
                 ->with('.accordion-collapse.collapse.show', function($panel) use ($browser, $index, $supplier) {
-                    $panel->pause(500)
-                        ->assertInputValue('name', $supplier[0])
+                    $panel->assertInputValue('name', $supplier[0])
                         ->assertInputValue('payment_method', $supplier[2])
                         ->assertInputValue('order_method', $supplier[3])
                         ->assertInputValue('vat', $supplier[4]);
-
-                    /*
-                        Abilitazione Consegne Veloci
-                    */
-                    if ($index == 0) {
-                        $panel->check('fast_shipping_enabled');
-                        $browser->scrollIntoView('.save-button');
-                        $panel->press('Salva');
-                    }
                 });
         }
 
@@ -330,43 +331,47 @@ class FullTest extends DuskTestCase
                 $variant_screenshot_made = false;
 
                 foreach($products as $index => $product) {
-                    $browser->scrollIntoView($accordion_target)->pause(1000);
+                    $browser->scrollView($accordion_target)->pause(1000);
 
                     $panel->press('Crea Nuovo Prodotto')->waitForText('Prezzo Unitario')
                         ->with('.modal.show', function($panel) use ($product) {
-                            $panel->typeSlowly('name', $product[0], 50)
-                                ->typeSlowly('price', $product[1], 50)
-                                ->select('measure_id', $product[2])
-                                ->select('category_id', $product[3])
+                            $panel->typeSlowly('name', $product->name, 50)
+                                ->typeSlowly('price', $product->price, 50)
+                                ->select('measure_id', $product->unit_measure)
+                                ->select('category_id', $product->category)
                                 ->select('vat_rate_id', VatRate::inRandomOrder()->first()->id)
                                 ->press('Salva');
                         })
-                        ->waitForText($product[0])->pause(500);
+                        ->waitForText($product->name)->pause(500);
 
-                    $product_obj = Product::where('supplier_id', $supplier_id)->where('name', $product[0])->first();
-
-                    /*
-                        Creazione varianti
-                    */
-                    if (!empty($product[4])) {
-                        $variants = $product[4];
-
-                        $browser->with('.accordion-item[data-element-id="' . $product_obj->id . '"]', function($panel) use ($browser, $variants) {
-                            $this->handlingVariants($panel, $browser, $variants, true);
-                        });
-
-                        if ($variant_screenshot_made == false) {
-                            foreach($variants as $variant_name => $variant_values) {
-                                $this->handlingVariants($panel, $browser, [$variant_name => $variant_values], false);
-                                break;
-                            }
-                            $variant_screenshot_made = true;
-                        }
-                    }
+                    $product_obj = Product::where('supplier_id', $supplier_id)->where('name', $product->name)->first();
 
                     if ($index == 0) {
                         $browser->mainScreenshot('prodotto');
                     }
+
+                    $browser->with('.accordion-item[data-element-id="' . $product_obj->id . '"]', function($panel) use ($variant_screenshot_made, $browser, $product) {
+                        $panel->clear('min_quantity')->typeSlowly('min_quantity', $product->min_quantity ?? 0, 50)
+                            ->clear('max_available')->typeSlowly('max_available', $product->max_available ?? 0, 50);
+
+                        /*
+                            Creazione varianti
+                        */
+                        if (!empty($product->variants)) {
+                            $variants = $product->variants;
+                            $this->handlingVariants($panel, $browser, $variants, true);
+
+                            if ($variant_screenshot_made == false) {
+                                foreach($variants as $variant_name => $variant_values) {
+                                    $this->handlingVariants($panel, $browser, [$variant_name => $variant_values], false);
+                                    break;
+                                }
+                                $variant_screenshot_made = true;
+                            }
+                        }
+
+                        $panel->scrollView('.save-button')->press('Salva');
+                    });
                 }
             });
     }
@@ -413,8 +418,7 @@ class FullTest extends DuskTestCase
             ->typeSlowly('shipping', printableDate(date('Y-m-d', strtotime('+14 days'))), 50)
             ->select('supplier_id', $supplier_id)
             ->press('Salva')
-            ->waitForText('Consegne')
-            ->assertSee('Consegne Veloci');
+            ->waitForText('Consegne');
     }
 
     private function doBookings($browser)
@@ -422,7 +426,6 @@ class FullTest extends DuskTestCase
         $products = $this->products();
 
         $total = 0;
-        $quantities = $this->quantities();
 
         /*
             Salvataggio prenotazione, e controllo
@@ -432,13 +435,38 @@ class FullTest extends DuskTestCase
             ->waitForText('Puoi modificare')
             ->clickAtXPath('//*/div[contains(@class, "accordion-item")][1]/h2/button')
             ->waitForText('La Mia Prenotazione')
-            ->with('.accordion-collapse.show', function($panel) use ($products, $quantities, &$total) {
-                foreach($quantities as $index => $quantity) {
-                    $product_total = sprintf('%.02f', $products[$index][1] * $quantity);
+            ->with('.accordion-collapse.show', function($panel) use ($products, &$total) {
+                foreach($products as $index => $product) {
+                    $target_input = '//*/table/tbody/tr[contains(@class, "booking-product")][' . ($index + 1) . ']/td//input[@type="text"]';
+                    $target_feedback = '(//*/table/tbody/tr[contains(@class, "booking-product")][' . ($index + 1) . ']/td//div[@class="invalid-feedback"])[1]';
+                    $target_price = '//*/table/tbody/tr[contains(@class, "booking-product")][' . ($index + 1) . ']/td//label[contains(@class, "booking-product-price")]/span';
+
+                    $quantity = rand(0, 5);
+
+                    if ($product->min_quantity ?? 0) {
+                        $panel->pause(200)
+                            ->typeAtXPath($target_input, $product->min_quantity - 1)
+                            ->pause(500)
+                            ->assertSeeAtXPath($target_feedback, 'Quantità inferiore al minimo consentito');
+
+                        $quantity = $product->min_quantity + 1;
+                    }
+                    else if ($product->max_available ?? 0) {
+                        $panel->pause(200)
+                            ->typeAtXPath($target_input, $product->max_available + 1)
+                            ->pause(500)
+                            ->assertSeeAtXPath($target_feedback, 'Quantità superiore alla disponibilità');
+
+                        $quantity = $product->max_available - 1;
+                    }
+
+                    $product_total = sprintf('%.02f', $product->price * $quantity);
+
                     $panel->pause(200)
-                        ->typeAtXPath('//*/table/tbody/tr[contains(@class, "booking-product")][' . ($index + 1) . ']/td//input[@type="text"]', $quantity)
-                        ->pause(200)
-                        ->assertSeeAtXPath('//*/table/tbody/tr[contains(@class, "booking-product")][' . ($index + 1) . ']/td//label[contains(@class, "booking-product-price")]/span', $product_total);
+                        ->typeAtXPath($target_input, $quantity)
+                        ->pause(500)
+                        ->assertSeeAtXPath($target_price, $product_total);
+
                     $total += $product_total;
                 }
 
@@ -452,7 +480,7 @@ class FullTest extends DuskTestCase
             ->waitForText('Aggrega Ordini')
             ->clickAtXPath('//*/div[contains(@class, "accordion-item")][1]/h2/button')->waitForText('Consegne')
             ->mainScreenshot('ordine')
-            ->scrollIntoView('.order-summary-order-price')->assertSeeIn('.order-summary-order-price', sprintf('%.02f €', $total));
+            ->scrollView('.order-summary-order-price')->assertSeeIn('.order-summary-order-price', sprintf('%.02f €', $total));
 
         /*
             Annullamento prenotazione, e controllo
@@ -470,7 +498,7 @@ class FullTest extends DuskTestCase
         $browser->visitRoute('orders.index')
             ->waitForText('Aggrega Ordini')
             ->clickAtXPath('//*/div[contains(@class, "accordion-item")][1]/h2/button')->waitForText('Consegne')->pause(1000)
-            ->scrollIntoView('.order-summary-order-price')
+            ->scrollView('.order-summary-order-price')
             ->assertSeeIn('.order-summary-order-price', '0.00');
     }
 

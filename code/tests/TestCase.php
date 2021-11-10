@@ -20,6 +20,12 @@ abstract class TestCase extends BaseTestCase
         Artisan::call('migrate:refresh');
         Artisan::call('db:seed', ['--force' => true, '--class' => 'MovementTypesSeeder']);
         Artisan::call('db:seed', ['--force' => true, '--class' => 'ModifierTypesSeeder']);
+
+        /*
+            Questo serve a generare le stringhe delle date in italiano, per la
+            corretta formattazione da parte di printableDate()
+        */
+        setlocale(LC_TIME, 'it_IT.UTF-8');
     }
 
     public function enabledQueryDump()

@@ -99,6 +99,13 @@ class GraphicInitServiceProvider extends ServiceProvider
                 return $this;
             });
 
+            \Laravel\Dusk\Browser::macro('scrollView', function ($selector) {
+                $selector = addslashes($this->resolver->format($selector));
+                $this->driver->executeScript("document.querySelector(\"$selector\").scrollIntoView({block: 'end'});");
+                $this->pause(500);
+                return $this;
+            });
+
             \Laravel\Dusk\Browser::macro('scrollTop', function () {
                 // @phpstan-ignore-next-line
                 $this->script('document.documentElement.scrollTop = 0');
