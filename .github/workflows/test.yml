@@ -14,6 +14,8 @@ jobs:
         run: |
           cd code
           composer install --no-interaction --no-progress --prefer-dist
+          sudo locale-gen it_IT.UTF-8
+          sudo update-locale LANG=it_IT.UTF-8
           cp .env.example .env
           php artisan key:generate
           php vendor/bin/phpunit

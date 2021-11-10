@@ -301,7 +301,7 @@ class FullTest extends DuskTestCase
                 ->typeSlowly('order_method', $supplier[3], 50)
                 ->typeSlowly('vat', $supplier[4], 50)
                 ->press('Salva')
-                ->waitForText('Ordini')->pause(500)
+                ->pause(500)->waitForText('Ordini')->pause(500)
                 ->with('.accordion-collapse.collapse.show', function($panel) use ($browser, $index, $supplier) {
                     $panel->assertInputValue('name', $supplier[0])
                         ->assertInputValue('payment_method', $supplier[2])
