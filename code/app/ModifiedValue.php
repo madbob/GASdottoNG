@@ -145,7 +145,7 @@ class ModifiedValue extends Model
         return $rel->supplier;
     }
 
-    public static function balanceFields()
+    public function balanceFields()
     {
         return [
             'bank' => _i('Saldo'),
