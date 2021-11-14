@@ -4,7 +4,6 @@ namespace Tests\Services;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Database\Eloquent\Model;
 
 use App\Exceptions\AuthException;
 
@@ -15,7 +14,6 @@ class VariantsServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Model::unguard();
 
         $this->gas = \App\Gas::factory()->create();
         $this->supplier = \App\Supplier::factory()->create();
@@ -31,8 +29,6 @@ class VariantsServiceTest extends TestCase
         $this->userWithReferrerPerms = $this->createRoleAndUser($this->gas, 'supplier.modify', $this->supplier);
         $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
 
-        Model::reguard();
-
         $this->service = new \App\Services\VariantsService();
     }
 
@@ -46,6 +42,9 @@ class VariantsServiceTest extends TestCase
         ]);
     }
 
+    /*
+        Salvataggio Variante con permessi sbagliati
+    */
     public function testFailsToStore()
     {
         $this->expectException(AuthException::class);
@@ -53,6 +52,9 @@ class VariantsServiceTest extends TestCase
         $variant = $this->createVariant();
     }
 
+    /*
+        Salvataggio Variante con permessi corretti
+    */
     public function testStore()
     {
         $this->actingAs($this->userWithReferrerPerms);
@@ -73,6 +75,9 @@ class VariantsServiceTest extends TestCase
         $this->assertEquals(9, $this->product->variant_combos->count());
     }
 
+    /*
+        Modifica Variante
+    */
     public function testModify()
     {
         $variant = $this->createVariant();
@@ -94,6 +99,9 @@ class VariantsServiceTest extends TestCase
         $this->assertEquals(4, $variant->values()->count());
         $this->assertEquals(4, $this->product->variant_combos->count());
 
+        /*
+            https://github.com/madbob/GASdottoNG/issues/145
+        */
         $new_value = $variant->values()->where('value', 'Rosso')->first();
         $this->assertEquals($old_value->id, $new_value->id);
 
@@ -113,6 +121,9 @@ class VariantsServiceTest extends TestCase
         $this->assertNull(\App\VariantValue::where('value', 'Blu')->first());
     }
 
+    /*
+        Cancellazione Variante
+    */
     public function testDestroy()
     {
         $variant = $this->createVariant();

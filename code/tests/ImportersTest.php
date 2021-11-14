@@ -32,6 +32,9 @@ class ImportersTest extends TestCase
         }
     }
 
+    /*
+        https://github.com/madbob/GASdottoNG/issues/143
+    */
     public function testProductsCsv()
     {
         $data = [];

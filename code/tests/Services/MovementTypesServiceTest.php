@@ -4,7 +4,6 @@ namespace Tests\Services;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Database\Eloquent\Model;
 
 use Artisan;
 
@@ -18,7 +17,6 @@ class MovementTypesServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Model::unguard();
 
         $this->gas = \App\Gas::factory()->create();
 
@@ -32,11 +30,12 @@ class MovementTypesServiceTest extends TestCase
             'target_type' => 'App\Supplier',
         ]);
 
-        Model::reguard();
-
         $this->service = new \App\Services\MovementTypesService();
     }
 
+    /*
+        Creazione Tipo di Movimento
+    */
     public function testStore()
     {
         $this->actingAs($this->userWithAdminPerm);
@@ -50,6 +49,9 @@ class MovementTypesServiceTest extends TestCase
         $this->assertEquals($type->exists, true);
     }
 
+    /*
+        Modifica Tipo di Movimento con permessi sbagliati
+    */
     public function testFailsToUpdate()
     {
         $this->expectException(AuthException::class);
@@ -57,6 +59,9 @@ class MovementTypesServiceTest extends TestCase
         $this->service->update($this->sample_type->id, array());
     }
 
+    /*
+        Modifica Tipo di Movimento
+    */
     public function testUpdate()
     {
         $this->actingAs($this->userWithAdminPerm);
@@ -75,6 +80,9 @@ class MovementTypesServiceTest extends TestCase
         $this->assertEquals($type->hasPayment('cash'), true);
     }
 
+    /*
+        Accesso Tipo di Movimento con ID non esistente
+    */
     public function testFailsToShowInexistent()
     {
         $this->expectException(ModelNotFoundException::class);
@@ -82,6 +90,9 @@ class MovementTypesServiceTest extends TestCase
         $this->service->show('random');
     }
 
+    /*
+        Accesso Tipo di Movimento
+    */
     public function testShow()
     {
         $this->actingAs($this->userWithAdminPerm);
@@ -93,6 +104,9 @@ class MovementTypesServiceTest extends TestCase
         $this->assertEquals($this->sample_type->target_type, $type->target_type);
     }
 
+    /*
+        Cancellazione Tipo di Movimento con permessi sbagliati
+    */
     public function testFailsToDestroy()
     {
         $this->expectException(AuthException::class);
@@ -100,6 +114,9 @@ class MovementTypesServiceTest extends TestCase
         $this->service->destroy($this->sample_type->id);
     }
 
+    /*
+        Cancellazione Tipo di Movimento
+    */
     public function testDestroy()
     {
         $this->actingAs($this->userWithAdminPerm);

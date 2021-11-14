@@ -4,9 +4,6 @@ namespace App\Services;
 
 use Illuminate\Support\Arr;
 
-use App\Exceptions\AuthException;
-use App\Exceptions\IllegalArgumentException;
-
 use DB;
 
 use App\Order;

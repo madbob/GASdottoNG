@@ -4,8 +4,6 @@ namespace App\Services;
 
 use DB;
 
-use App\Exceptions\AuthException;
-
 use App\Movement;
 use App\MovementType;
 

@@ -9,7 +9,6 @@
 namespace App\Services;
 
 use App\Exceptions\AuthException;
-use App\Exceptions\IllegalArgumentException;
 
 use Auth;
 use Log;

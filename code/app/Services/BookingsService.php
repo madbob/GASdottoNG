@@ -1,29 +1,38 @@
 <?php
 
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+namespace App\Services;
 
 use Illuminate\Support\Collection;
+use App\Exceptions\AuthException;
 
+use Auth;
 use DB;
 use Log;
-use URL;
 
-use App\User;
-use App\Aggregate;
 use App\BookedProductVariant;
 use App\BookedProductComponent;
 use App\Events\BookingDelivered;
 
-/*
-    Questa classe è destinata ad essere estesa dai Controller che maneggiano
-    le prenotazioni, ed in particolare il loro aggiornamento.
-*/
-
-class BookingHandler extends Controller
+class BookingsService extends BaseService
 {
+    protected function testAccess($target, $supplier, $delivering)
+    {
+        $user = Auth::user();
+
+        if ($delivering) {
+            if ($user->can('supplier.shippings', $supplier) == false) {
+                throw new AuthException(403);
+            }
+        }
+        else {
+            if ($target->testUserAccess($user) == false && $user->can('supplier.shippings', $supplier) == false) {
+                throw new AuthException(403);
+            }
+        }
+
+        return $user;
+    }
+
     private function initVariant($booked, $quantity, $delivering, $values)
     {
         if ($quantity == 0) {
@@ -148,13 +157,15 @@ class BookingHandler extends Controller
         return [$booked, $quantity];
     }
 
-    public function readBooking($request, $order, $user, $delivering)
+    public function readBooking(array $request, $order, $user, $delivering)
     {
+        $this->testAccess($user, $order->supplier, $delivering);
+
         $param = $this->handlingParam($delivering);
         $booking = $order->userBooking($user->id);
 
-        if ($request->has('notes_' . $order->id)) {
-            $booking->notes = $request->input('notes_' . $order->id) ?: '';
+        if (isset($request['notes_' . $order->id])) {
+            $booking->notes = $request['notes_' . $order->id] ?? '';
         }
 
         $booking->save();
@@ -172,7 +183,7 @@ class BookingHandler extends Controller
             amministratore e sto intervenendo sull'intera prenotazione
             (dunque posso potenzialmente modificare tutto).
         */
-        if ($request->has('limited')) {
+        if (isset($request['limited'])) {
             $products = $order->status == 'open' ? $order->products : $order->pendingPackages();
         }
         else {
@@ -190,13 +201,13 @@ class BookingHandler extends Controller
                 database
             */
 
-            $quantity = (float) $request->input($product->id, 0);
+            $quantity = (float) ($request[$product->id] ?? 0);
             if (empty($quantity)) {
                 $quantity = 0;
             }
 
             if ($product->variants->isEmpty() == false) {
-                $quantities = $request->input('variant_quantity_' . $product->id);
+                $quantities = $request['variant_quantity_' . $product->id] ?? '';
                 if (empty($quantities)) {
                     continue;
                 }
@@ -210,7 +221,7 @@ class BookingHandler extends Controller
                 if ($product->variants->isEmpty() == false) {
                     $values = [];
                     foreach ($product->variants as $variant) {
-                        $values[$variant->id] = $request->input('variant_selection_' . $variant->id);
+                        $values[$variant->id] = $request['variant_selection_' . $variant->id];
                     }
 
                     list($booked, $quantity) = $this->readVariants($product, $booked, $values, $quantities, $delivering);
@@ -233,11 +244,13 @@ class BookingHandler extends Controller
 
         /*
             Attenzione: se sto consegnando, e tutte le quantità sono a 0,
-            comunque devo preservare i dati della prenotazione
+            comunque devo preservare i dati della prenotazione (se esistono)
         */
-        if ($delivering == false && $count_products == 0) {
-            $booking->delete();
-            return null;
+        if ($count_products == 0) {
+            if ($delivering == false || $booking->products->count() == 0) {
+                $booking->delete();
+                return null;
+            }
         }
         else {
             $booking->setRelation('products', $booked_products);
@@ -245,69 +258,18 @@ class BookingHandler extends Controller
         }
     }
 
-    public function bookingUpdate(Request $request, $aggregate_id, $user_id, $delivering)
+    public function bookingUpdate(array $request, $aggregate, $target_user, $delivering)
     {
         DB::beginTransaction();
 
-        $user = $request->user();
-        $target_user = User::find($user_id);
-        $aggregate = Aggregate::findOrFail($aggregate_id);
-
-        if ($target_user->testUserAccess() == false && $user->can('supplier.shippings', $aggregate) == false) {
-            abort(503);
-        }
-
         foreach ($aggregate->orders as $order) {
+            $user = $this->testAccess($target_user, $order->supplier, $delivering);
             $booking = $this->readBooking($request, $order, $target_user, $delivering);
             if ($booking && $delivering) {
-                BookingDelivered::dispatch($booking, $request->input('action'), $user);
+                BookingDelivered::dispatch($booking, $request['action'], $user);
             }
         }
 
-        /*
-            In contesti diversi ritorno risposte diverse, da cui dipende
-            l'header che verrà visualizzato chiudendo il pannello su cui si è
-            operato
-        */
-        if ($delivering == false) {
-            if ($user_id != $user->id && $target_user->isFriend() && $target_user->parent_id == $user->id) {
-                /*
-                    Ho effettuato una prenotazione per un amico
-                */
-                return $this->successResponse([
-                    'id' => $aggregate->id,
-                    'header' => $target_user->printableFriendHeader($aggregate),
-                    'url' => URL::action('BookingUserController@show', ['booking' => $aggregate_id, 'user' => $user_id])
-                ]);
-            }
-            else {
-                /*
-                    Ho effettuato una prenotazione per me o per un utente di
-                    primo livello (non un amico)
-                */
-                return $this->successResponse([
-                    'id' => $aggregate->id,
-                    'header' => $aggregate->printableUserHeader(),
-                    'url' => URL::action('BookingController@show', $aggregate->id)
-                ]);
-            }
-        }
-        else {
-            $subject = $aggregate->bookingBy($user_id);
-            $subject->generateReceipt();
-
-            $total = $subject->total_delivered;
-
-            if ($total == 0) {
-                return $this->successResponse();
-            }
-            else {
-                return $this->successResponse([
-                    'id' => $subject->id,
-                    'header' => $subject->printableHeader(),
-                    'url' => URL::action('DeliveryUserController@show', ['delivery' => $aggregate_id, 'user' => $user_id])
-                ]);
-            }
-        }
+        DB::commit();
     }
 }

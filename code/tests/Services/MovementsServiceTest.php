@@ -4,7 +4,6 @@ namespace Tests\Services;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Database\Eloquent\Model;
 
 use Artisan;
 
@@ -18,7 +17,6 @@ class MovementsServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Model::unguard();
 
         $this->gas = \App\Gas::factory()->create();
 
@@ -34,11 +32,12 @@ class MovementsServiceTest extends TestCase
             'registerer_id' => $this->userWithAdminPerm->id
         ]);
 
-        Model::reguard();
-
         $this->service = new \App\Services\MovementsService();
     }
 
+    /*
+        Creazione Movimento
+    */
     public function testStore()
     {
         $this->actingAs($this->userWithAdminPerm);
@@ -56,6 +55,9 @@ class MovementsServiceTest extends TestCase
         $this->assertEquals($amount * -1, $this->gas->current_balance_amount);
     }
 
+    /*
+        Ricalcolo saldi
+    */
     public function testRecalculate()
     {
         $this->testStore();
@@ -70,6 +72,9 @@ class MovementsServiceTest extends TestCase
         $this->assertEquals($amount * -1, $this->gas->current_balance_amount);
     }
 
+    /*
+        Modifica Movimento con permessi sbagliati
+    */
     public function testFailsToUpdate()
     {
         $this->expectException(AuthException::class);
@@ -77,6 +82,9 @@ class MovementsServiceTest extends TestCase
         $this->service->update($this->sample_movement->id, array());
     }
 
+    /*
+        Modifica Movimento con ID non esistente
+    */
     public function testFailsToUpdateBecauseNoMovementWithID()
     {
         $this->expectException(ModelNotFoundException::class);
@@ -84,6 +92,9 @@ class MovementsServiceTest extends TestCase
         $this->service->update('id', array());
     }
 
+    /*
+        Modifica Movimento
+    */
     public function testUpdate()
     {
         $this->actingAs($this->userWithAdminPerm);
@@ -95,6 +106,9 @@ class MovementsServiceTest extends TestCase
         $this->assertEquals(-50, $this->gas->current_balance_amount);
     }
 
+    /*
+        Accesso Movimento con ID non esistente
+    */
     public function testFailsToShowInexistent()
     {
         $this->expectException(ModelNotFoundException::class);
@@ -103,6 +117,9 @@ class MovementsServiceTest extends TestCase
         $this->service->show('random');
     }
 
+    /*
+        Accesso Movimento
+    */
     public function testShow()
     {
         $this->actingAs($this->userWithReferrerPerms);
@@ -113,6 +130,9 @@ class MovementsServiceTest extends TestCase
         $this->assertEquals($this->sample_movement->amount, $movement->amount);
     }
 
+    /*
+        Cancellazione Movimento con permessi sbagliati
+    */
     public function testFailsToDestroy()
     {
         $this->expectException(AuthException::class);
@@ -121,6 +141,9 @@ class MovementsServiceTest extends TestCase
         $this->service->destroy($this->sample_movement->id);
     }
 
+    /*
+        Cancellazione Movimento
+    */
     public function testDestroy()
     {
         $this->actingAs($this->userWithAdminPerm);
@@ -135,6 +158,9 @@ class MovementsServiceTest extends TestCase
         }
     }
 
+    /*
+        Versamento, assegnazione e scadenza quote di iscrizione
+    */
     public function testUserFees()
     {
         $this->actingAs($this->userWithAdminPerm);

@@ -4,7 +4,6 @@ namespace Tests\Services;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Database\Eloquent\Model;
 
 use Artisan;
 
@@ -18,36 +17,20 @@ class OrdersServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Model::unguard();
 
         $this->gas = \App\Gas::factory()->create();
-
-        $this->sample_supplier = \App\Supplier::factory()->create();
-
-        $this->category = \App\Category::factory()->create();
-        $this->measure = \App\Measure::factory()->create();
-
-        for($i = 0; $i < 10; $i++) {
-            $this->products[] = \App\Product::factory()->create([
-                'supplier_id' => $this->sample_supplier->id,
-                'category_id' => $this->category->id,
-                'measure_id' => $this->measure->id
-            ]);
-        }
-
-        $this->sample_order = \App\Order::factory()->create([
-            'supplier_id' => $this->sample_supplier->id,
-        ]);
+        list($this->sample_supplier, $this->products, $this->sample_order) = $this->initOrder(null);
 
         $this->userAdmin = $this->createRoleAndUser($this->gas, 'gas.config');
         $this->userWithReferrerPerms = $this->createRoleAndUser($this->gas, 'supplier.orders', $this->sample_supplier);
         $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
 
-        Model::reguard();
-
         $this->service = new \App\Services\OrdersService();
     }
 
+    /*
+        Creazione Ordine con permessi sbagliati
+    */
     public function testFailsToStore()
     {
         $this->expectException(AuthException::class);
@@ -58,6 +41,9 @@ class OrdersServiceTest extends TestCase
         ));
     }
 
+    /*
+        Creazione Ordine
+    */
     public function testStore()
     {
         $this->actingAs($this->userWithReferrerPerms);
@@ -90,6 +76,9 @@ class OrdersServiceTest extends TestCase
         }
     }
 
+    /*
+        Modifica Ordine con permessi sbagliati
+    */
     public function testFailsToUpdate()
     {
         $this->expectException(AuthException::class);
@@ -97,6 +86,9 @@ class OrdersServiceTest extends TestCase
         $this->service->update($this->sample_order->id, array());
     }
 
+    /*
+        Modifica Ordine con ID non esistente
+    */
     public function testFailsToUpdateBecauseNoUserWithID()
     {
         $this->expectException(ModelNotFoundException::class);
@@ -104,6 +96,9 @@ class OrdersServiceTest extends TestCase
         $this->service->update('broken', array());
     }
 
+    /*
+        Modifica Ordine
+    */
     public function testUpdate()
     {
         $this->actingAs($this->userWithReferrerPerms);
@@ -123,6 +118,9 @@ class OrdersServiceTest extends TestCase
         $this->assertEquals($order->end, $this->sample_order->end);
     }
 
+    /*
+        Assegnazione Luoghi di Consegna
+    */
     public function testOnShippingPlace()
     {
         $this->actingAs($this->userAdmin);
@@ -147,6 +145,9 @@ class OrdersServiceTest extends TestCase
         */
     }
 
+    /*
+        Accesso Ordine con ID non esistente
+    */
     public function testFailsToShowInexistent()
     {
         $this->expectException(ModelNotFoundException::class);
@@ -154,6 +155,9 @@ class OrdersServiceTest extends TestCase
         $this->service->show('random');
     }
 
+    /*
+        Accesso Ordine
+    */
     public function testShow()
     {
         $this->actingAs($this->userWithNoPerms);
@@ -163,6 +167,9 @@ class OrdersServiceTest extends TestCase
         $this->assertEquals($this->sample_order->name, $order->name);
     }
 
+    /*
+        Cancellazione Ordine con permessi sbagliati
+    */
     public function testFailsToDestroy()
     {
         $this->expectException(AuthException::class);
@@ -170,6 +177,9 @@ class OrdersServiceTest extends TestCase
         $this->service->destroy($this->sample_order->id);
     }
 
+    /*
+        Cancellazione Ordine
+    */
     public function testDestroy()
     {
         $this->actingAs($this->userWithReferrerPerms);

@@ -223,15 +223,19 @@ class User extends Authenticatable
         return $this->parent_id != null;
     }
 
-    public function testUserAccess()
+    public function testUserAccess($myself = null)
     {
-        $myself = Auth::user();
+        if (is_null($myself)) {
+            $myself = Auth::user();
+        }
 
-        if ($myself->id == $this->id)
+        if ($myself->id == $this->id) {
             return true;
+        }
 
-        if ($this->parent_id == $myself->id && $myself->can('users.subusers', $myself->gas))
+        if ($this->parent_id == $myself->id && $myself->can('users.subusers', $myself->gas)) {
             return true;
+        }
 
         return false;
     }

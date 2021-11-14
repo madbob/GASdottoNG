@@ -4,7 +4,6 @@ namespace Tests\Services;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\AuthException;
@@ -16,7 +15,6 @@ class ProductsServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Model::unguard();
 
         $this->gas = \App\Gas::factory()->create();
         $this->supplier = \App\Supplier::factory()->create();
@@ -33,11 +31,12 @@ class ProductsServiceTest extends TestCase
         $this->userWithReferrerPerms = $this->createRoleAndUser($this->gas, 'supplier.modify', $this->supplier);
         $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
 
-        Model::reguard();
-
         $this->productsService = new \App\Services\ProductsService();
     }
 
+    /*
+        Creazione Prodotto con permessi sbagliati
+    */
     public function testFailsToStore()
     {
         $this->expectException(AuthException::class);
@@ -49,6 +48,9 @@ class ProductsServiceTest extends TestCase
         ));
     }
 
+    /*
+        Creazione Prodotto
+    */
     public function testStore()
     {
         $this->actingAs($this->userWithReferrerPerms);
@@ -65,6 +67,9 @@ class ProductsServiceTest extends TestCase
         $this->assertEquals($this->supplier->id, $product->supplier_id);
     }
 
+    /*
+        Modifica Prodotto con permessi sbagliati
+    */
     public function testFailsToUpdate()
     {
         $this->expectException(AuthException::class);
@@ -72,6 +77,9 @@ class ProductsServiceTest extends TestCase
         $this->productsService->update($this->product->id, array());
     }
 
+    /*
+        Modifica Prodotto con permessi sbagliati
+    */
     public function testFailsToUpdateByAdmin()
     {
         $this->expectException(AuthException::class);
@@ -79,6 +87,9 @@ class ProductsServiceTest extends TestCase
         $this->productsService->update($this->product->id, array());
     }
 
+    /*
+        Modifica Prodotto con ID non esistente
+    */
     public function testFailsToUpdateBecauseNoUserWithID()
     {
         $this->expectException(ModelNotFoundException::class);
@@ -86,6 +97,9 @@ class ProductsServiceTest extends TestCase
         $this->productsService->update('broken', array());
     }
 
+    /*
+        Modifica Prodotto
+    */
     public function testUpdate()
     {
         $this->actingAs($this->userWithReferrerPerms);
@@ -102,6 +116,9 @@ class ProductsServiceTest extends TestCase
         $this->assertEquals($this->product->supplier_id, $product->supplier_id);
     }
 
+    /*
+        Accesso Prodotto con ID non esistente
+    */
     public function testFailsToShowInexistent()
     {
         $this->expectException(ModelNotFoundException::class);
@@ -109,6 +126,9 @@ class ProductsServiceTest extends TestCase
         $this->productsService->show('random');
     }
 
+    /*
+        Accesso Prodotto
+    */
     public function testShow()
     {
         $this->actingAs($this->userWithNoPerms);
@@ -118,6 +138,9 @@ class ProductsServiceTest extends TestCase
         $this->assertEquals($this->product->name, $product->name);
     }
 
+    /*
+        Cancellazione Prodotto con permessi sbagliati
+    */
     public function testFailsToDestroy()
     {
         $this->expectException(AuthException::class);
@@ -125,6 +148,9 @@ class ProductsServiceTest extends TestCase
         $this->productsService->destroy($this->product->id);
     }
 
+    /*
+        Cancellazione Prodotto
+    */
     public function testDestroy()
     {
         $this->actingAs($this->userWithReferrerPerms);

@@ -4,7 +4,6 @@ namespace Tests\Services;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Database\Eloquent\Model;
 
 use App\Exceptions\AuthException;
 
@@ -15,18 +14,18 @@ class VatRateServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Model::unguard();
 
         $this->gas = \App\Gas::factory()->create();
 
         $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'gas.config');
         $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
 
-        Model::reguard();
-
         $this->vatsService = new \App\Services\VatRatesService();
     }
 
+    /*
+        Salvataggio Aliquota IVA con permessi sbagliati
+    */
     public function testFailsToStore()
     {
         $this->expectException(AuthException::class);
@@ -34,6 +33,9 @@ class VatRateServiceTest extends TestCase
         $this->vatsService->store(array());
     }
 
+    /*
+        Salvataggio Aliquota IVA con permessi corretti
+    */
     public function testStore()
     {
         $this->actingAs($this->userWithAdminPerm);
