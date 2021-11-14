@@ -306,6 +306,54 @@ class ModifiersServiceTest extends TestCase
     }
 
     /*
+        Modificatore passivo applicato sulla prenotazione
+    */
+    public function testOnBooking()
+    {
+        $this->actingAs($this->userReferrer);
+
+        $test_passive = 10;
+
+        $modifiers = $this->order->applicableModificationTypes();
+        $mod = null;
+
+        foreach ($modifiers as $mod) {
+            if ($mod->id == 'spese-trasporto') {
+                $mod = $this->order->modifiers()->where('modifier_type_id', $mod->id)->first();
+                $this->modifiersService->update($mod->id, [
+                    'value' => 'percentage',
+                    'arithmetic' => 'passive',
+                    'scale' => 'minor',
+                    'applies_type' => 'none',
+                    'applies_target' => 'booking',
+                    'simplified_amount' => $test_passive,
+                ]);
+
+                break;
+            }
+        }
+
+        $this->assertNotNull($mod);
+
+        foreach($this->order->bookings as $booking) {
+            $modifiers = $booking->applyModifiers(null, true);
+            $this->assertEquals($modifiers->count(), 1);
+
+            /*
+                Un modificatore passivo ha sempre valore 0, nel totale della
+                prenotazione; esiste solo accedendovi direttamente
+            */
+            $passive_value = $booking->getValue('modifier:' . $mod->id, true);
+            $this->assertEquals($passive_value, 0);
+
+            $booked_value = $booking->getValue('booked', true);
+            $effective_value = $booking->getValue('effective', true);
+            $this->assertEquals($modifiers->first()->effective_amount, ($booked_value * $test_passive) / 100);
+            $this->assertEquals($effective_value, $booked_value);
+        }
+    }
+
+    /*
         Modificatore applicato su Luogo di Consegna
     */
     public function testOnShippingPlace()

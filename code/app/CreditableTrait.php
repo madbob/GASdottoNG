@@ -62,6 +62,36 @@ trait CreditableTrait
         }
     }
 
+    public function resetCurrentBalances(&$current_status)
+    {
+        $currencies = Currency::enabled();
+
+        $obj = $this->getActualObject();
+        $class = get_class($obj);
+        $fields = $obj->balanceFields();
+        $now = [];
+
+        /*
+            Attenzione: qui prendo in considerazione gli eventuali
+            "proxy" degli elementi coinvolti nei movimenti, che
+            all'interno di questo ciclo possono anche presentarsi più
+            volte (e.g. diversi ordini per lo stesso fornitore).
+            Ma il reset lo devo fare una volta sola, altrimenti cancello
+            a ritroso i saldi salvati passati.
+        */
+        foreach ($currencies as $curr) {
+            if (!isset($current_status[$curr->id][$class][$obj->id])) {
+                $cb = $obj->currentBalance($curr);
+                foreach ($fields as $field => $name) {
+                    $now[$field] = $cb->$field;
+                }
+
+                $current_status[$curr->id][$class][$obj->id] = $now;
+                $obj->resetCurrentBalance($curr);
+            }
+        }
+    }
+
     public static function acceptedClasses()
     {
         $ret = [];
@@ -77,38 +107,14 @@ trait CreditableTrait
     public static function resetAllCurrentBalances()
     {
         $current_status = [];
-        $currencies = Currency::enabled();
-
         $classes = DB::table('balances')->select('target_type')->distinct()->get();
+
         foreach($classes as $c) {
             $class = $c->target_type;
             $objects = $class::tAll();
 
             foreach ($objects as $obj) {
-                $proxy = $obj->getActualObject();
-                $class = get_class($obj);
-                $fields = $obj->balanceFields();
-                $now = [];
-
-                /*
-                    Attenzione: qui prendo in considerazione gli eventuali
-                    "proxy" degli elementi coinvolti nei movimenti, che
-                    all'interno di questo ciclo possono anche presentarsi più
-                    volte (e.g. diversi ordini per lo stesso fornitore).
-                    Ma il reset lo devo fare una volta sola, altrimenti cancello
-                    a ritroso i saldi salvati passati.
-                */
-                foreach ($currencies as $curr) {
-                    if (!isset($current_status[$curr->id][$class][$obj->id])) {
-                        $cb = $obj->currentBalance($curr);
-                        foreach ($fields as $field => $name) {
-                            $now[$field] = $cb->$field;
-                        }
-
-                        $current_status[$curr->id][$class][$obj->id] = $now;
-                        $obj->resetCurrentBalance($curr);
-                    }
-                }
+                $obj->resetCurrentBalances($current_status);
             }
         }
 
@@ -178,12 +184,9 @@ trait CreditableTrait
                         continue;
                     }
 
-                    $proxy = $obj->getBalanceProxy();
-                    if ($proxy != null) {
-                        $obj = $proxy;
-                    }
-
+                    $obj = $obj->getActualObject();
                     $cb = $obj->currentBalance($currency);
+
                     foreach ($old as $field => $old_value) {
                         if ($old_value != $cb->$field) {
                             $key = sprintf('%s (%s)', $obj->printableName(), $currency->symbol);
@@ -200,26 +203,21 @@ trait CreditableTrait
 
     public function currentBalance($currency)
     {
-        $proxy = $this->getBalanceProxy();
+        $proxy = $this->getActualObject();
 
-        if(is_null($proxy)) {
-            $balance = $this->balances()->where('current', true)->where('currency_id', $currency->id)->first();
+        $balance = $this->balances()->where('current', true)->where('currency_id', $currency->id)->first();
+        if (is_null($balance)) {
+            $balance = $this->balances()->where('current', false)->where('currency_id', $currency->id)->first();
             if (is_null($balance)) {
-                $balance = $this->balances()->where('current', false)->where('currency_id', $currency->id)->first();
-                if (is_null($balance)) {
-                    $balance = $this->fixFirstBalance($currency);
-                }
-                else {
-                    $balance->current = true;
-                    $balance->save();
-                }
+                $balance = $this->fixFirstBalance($currency);
             }
+            else {
+                $balance->current = true;
+                $balance->save();
+            }
+        }
 
-            return $balance;
-        }
-        else {
-            return $proxy->currentBalance($currency);
-        }
+        return $balance;
     }
 
     public function extendedCurrentBalance($currency)
@@ -259,7 +257,7 @@ trait CreditableTrait
         $balance->save();
     }
 
-    private function getActualObject()
+    public function getActualObject()
     {
         $proxy = $this->getBalanceProxy();
         if ($proxy != null) {

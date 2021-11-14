@@ -64,10 +64,10 @@ class FullTest extends DuskTestCase
         $browser->visit('/gas/senza-nome/edit')
             ->waitForText('Amministratore')
             ->press('Amministratore')->waitForText('Avere sotto-utenti')->pause(500)
+            ->screenshot('permessi')
             ->scrollView('input[type="checkbox"][data-action="users.subusers"]')
             ->click('input[type="checkbox"][data-action="users.subusers"]')
-            ->pause(2000)
-            ->mainScreenshot('permessi');
+            ->pause(2000);
 
         /*
             Creazione amico
@@ -124,6 +124,7 @@ class FullTest extends DuskTestCase
         $browser->visitRoute('users.index')
             ->waitForText('Importa CSV')
             ->mainScreenshot('utenti')
+            ->pause(1000)
             ->click('.accordion-item[data-element-id="bandiera"]')
             ->waitForText('Anagrafica')
             ->with('.accordion-item[data-element-id="bandiera"]', function($panel) {
@@ -333,7 +334,7 @@ class FullTest extends DuskTestCase
                 foreach($products as $index => $product) {
                     $browser->scrollView($accordion_target)->pause(1000);
 
-                    $panel->press('Crea Nuovo Prodotto')->waitForText('Prezzo Unitario')
+                    $panel->press('Crea Nuovo Prodotto')->waitForText('Prezzo Unitario')->pause(500)
                         ->with('.modal.show', function($panel) use ($product) {
                             $panel->typeSlowly('name', $product->name, 50)
                                 ->typeSlowly('price', $product->price, 50)
@@ -595,7 +596,7 @@ class FullTest extends DuskTestCase
 
         $browser->click('.accordion-item[data-element-id="luogo-test"]')->pause(1000)
             ->press('@modifier_spese-trasporto')
-            ->pause(500)
+            ->pause(1000)
             ->with('.modal', function($panel) {
                 $panel->click('@applies_type-none')
                     ->click('@value-absolute')

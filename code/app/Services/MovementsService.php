@@ -196,14 +196,19 @@ class MovementsService extends BaseService
     {
         $this->ensureAuth(['movements.admin' => 'gas']);
 
+        \Log::debug('ricalcolo');
+
         DB::transaction(function() {
             $current_date = date('Y-m-d H:i:s');
             $index = 0;
 
             do {
                 $movements = Movement::where('archived', false)->take(100)->offset(100 * $index)->get();
-                if ($movements->count() == 0)
+                if ($movements->count() == 0) {
                     break;
+                }
+
+                \Log::debug('ricalcolo movimento');
 
                 foreach($movements as $m) {
                     $m->updated_at = $current_date;
@@ -215,6 +220,8 @@ class MovementsService extends BaseService
 
             } while(true);
         });
+
+        \Log::debug('fine ricalcolo');
     }
 
     public function recalculate()
@@ -233,7 +240,7 @@ class MovementsService extends BaseService
             });
         }
         catch(\Exception $e) {
-            Log::error('Errore nel ricalcolo saldi: %s', $e->getMessage());
+            Log::error('Errore nel ricalcolo saldi: ' . $e->getMessage());
             $hub->setRecalculating(false);
             return null;
         }

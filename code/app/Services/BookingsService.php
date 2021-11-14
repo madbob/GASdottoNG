@@ -101,7 +101,7 @@ class BookingsService extends BaseService
 
     private function readVariants($product, $booked, $values, $quantities, $delivering)
     {
-        $param = $this->touchingParam($delivering);
+        $param = $this->handlingParam($delivering);
         $quantity = 0;
         $saved_variants = [];
         $param = $this->handlingParam($delivering);

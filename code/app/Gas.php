@@ -159,6 +159,7 @@ class Gas extends Model
             'integralces' => [
                 'default' => (object) [
                     'enabled' => false,
+                    'identifier' => '',
                 ],
             ],
 

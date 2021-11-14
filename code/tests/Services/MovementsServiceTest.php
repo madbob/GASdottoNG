@@ -65,14 +65,15 @@ class MovementsServiceTest extends TestCase
     {
         $this->testStore();
 
-        $this->gas->alterBalance(50);
+        $currency = defaultCurrency();
+
+        $this->gas->alterBalance(50, $currency);
         $amount = 100 - 50 + $this->sample_movement->amount;
-        $this->assertEquals($amount * -1, $this->gas->current_balance_amount);
+        $this->assertEquals($amount * -1, $this->gas->currentBalanceAmount($currency));
 
         $this->service->recalculate();
-
         $amount = 100 + $this->sample_movement->amount;
-        $this->assertEquals($amount * -1, $this->gas->current_balance_amount);
+        $this->assertEquals($amount * -1, $this->gas->currentBalanceAmount($currency));
     }
 
     /*

@@ -227,7 +227,7 @@ class Movement extends Model
             $ret->amount = $amount;
         }
 
-        $ret->currency_id = currentAbsoluteGas()->currency;
+        $ret->currency_id = defaultCurrency()->id;
         $ret->date = date('Y-m-d');
         $ret->notes = $type_descr->default_notes;
         $ret->method = defaultPaymentByType($type);
