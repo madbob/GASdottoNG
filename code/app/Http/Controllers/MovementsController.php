@@ -13,6 +13,7 @@ use Response;
 use PDF;
 
 use App\User;
+use App\Currency;
 use App\Invoice;
 use App\Receipt;
 
@@ -229,6 +230,41 @@ class MovementsController extends BackedController
         return view('movement.suppliers');
     }
 
+    private function exportIntegralCES($gas, $objects, $filename, $body)
+    {
+        $currency = Currency::where('context', 'integralces')->first();
+
+        return output_csv($filename, null, $objects, function($object) use ($gas, $currency, $body) {
+            $amount = $object->currentBalanceAmount($currency);
+            if ($amount == 0) {
+                return null;
+            }
+
+            $object_account = $object->contacts()->where('type', 'integralces')->first();
+
+            if ($object_account) {
+                if ($amount < 0) {
+                    $input_account = $object_account->value;
+                    $output_account = $gas->integralces['identifier'];
+                }
+                else {
+                    $input_account = $gas->integralces['identifier'];
+                    $output_account = $object_account->value;
+                }
+
+                return [
+                    $input_account,
+                    $output_account,
+                    $body,
+                    printablePrice($amount * -1),
+                ];
+            }
+            else {
+                return null;
+            }
+        });
+    }
+
     public function document(Request $request, $type, $subtype = 'none')
     {
         $user = Auth::user();
@@ -256,12 +292,12 @@ class MovementsController extends BackedController
 
                     if ($group == 'minor') {
                         $users = $users->filter(function($u) use ($threeshold) {
-                            return $u->current_balance_amount <= $threeshold;
+                            return $u->currentBalanceAmount(defaultCurrency()) <= $threeshold;
                         });
                     }
                     else if ($group == 'major') {
                         $users = $users->filter(function($u) use ($threeshold) {
-                            return $u->current_balance_amount >= $threeshold;
+                            return $u->currentBalanceAmount(defaultCurrency()) >= $threeshold;
                         });
                     }
                 }
@@ -277,24 +313,38 @@ class MovementsController extends BackedController
                     $has_shipping_place = $user->gas->hasFeature('shipping_places');
                     $filename = sanitizeFilename(_i('Crediti al %s.csv', date('d/m/Y')));
 
-                    $headers = [_i('ID'), _i('Nome'), _i('E-Mail'), _i('Credito Residuo')];
-                    if ($has_fee)
-                        $headers[] = _i('Quota Pagata');
-                    if($has_shipping_place)
-                        $headers[] = _i('Luogo di Consegna');
+                    $headers = [_i('ID'), _i('Nome'), _i('E-Mail')];
 
-                    return output_csv($filename, $headers, $users, function($user) use ($has_fee, $has_shipping_place) {
+                    $currencies = Currency::enabled();
+                    foreach($currencies as $curr) {
+                        $headers[] = _i('Credito Residuo %s', $curr->symbol);
+                    }
+
+                    if ($has_fee) {
+                        $headers[] = _i('Quota Pagata');
+                    }
+
+                    if ($has_shipping_place) {
+                        $headers[] = _i('Luogo di Consegna');
+                    }
+
+                    return output_csv($filename, $headers, $users, function($user) use ($currencies, $has_fee, $has_shipping_place) {
                         $row = [];
                         $row[] = $user->username;
                         $row[] = $user->printableName();
                         $row[] = $user->email;
-                        $row[] = printablePrice($user->current_balance_amount, ',');
 
-                        if ($has_fee)
+                        foreach($currencies as $curr) {
+                            $row[] = printablePrice($user->currentBalanceAmount($curr), ',');
+                        }
+
+                        if ($has_fee) {
                             $row[] = $user->fee != null ? _i('SI') : _i('NO');
+                        }
 
-                        if ($has_shipping_place)
+                        if ($has_shipping_place) {
                             $row[] = $user->shippingplace != null ? $user->shippingplace->name : _i('Nessuno');
+                        }
 
                         return $row;
                     });
@@ -325,6 +375,12 @@ class MovementsController extends BackedController
                         fclose($FH);
                     }, 200, $headers);
                 }
+                else if ($subtype == 'integralces') {
+                    $body = strtoupper($request->input('body'));
+                    $filename = sanitizeFilename(_i('IntegralCES Utenti.csv'));
+                    return $this->exportIntegralCES($user->gas, $users, $filename, $body);
+                }
+
                 break;
 
             case 'suppliers':
@@ -332,15 +388,29 @@ class MovementsController extends BackedController
 
                 if ($subtype == 'csv') {
                     $filename = sanitizeFilename(_i('Saldi Fornitori al %s.csv', date('d/m/Y')));
-                    $headers = [_i('ID'), _i('Nome'), _i('Saldo')];
+                    $headers = [_i('ID'), _i('Nome')];
 
-                    return output_csv($filename, $headers, $suppliers, function($supplier) {
+                    $currencies = Currency::enabled();
+                    foreach($currencies as $curr) {
+                        $headers[] = _i('Saldo %s', $curr->symbol);
+                    }
+
+                    return output_csv($filename, $headers, $suppliers, function($currencies, $supplier) {
                         $row = [];
                         $row[] = $supplier->id;
                         $row[] = $supplier->printableName();
-                        $row[] = printablePrice($supplier->current_balance_amount, ',');
+
+                        foreach($currencies as $curr) {
+                            $row[] = printablePrice($supplier->currentBalanceAmount($curr), ',');
+                        }
+
                         return $row;
                     });
+                }
+                else if ($subtype == 'integralces') {
+                    $body = strtoupper($request->input('body'));
+                    $filename = sanitizeFilename(_i('IntegralCES Fornitori.csv'));
+                    return $this->exportIntegralCES($user->gas, $suppliers, $filename, $body);
                 }
 
                 break;

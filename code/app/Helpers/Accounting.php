@@ -123,6 +123,18 @@ function paymentTypes()
         ];
     }
 
+    if($gas->hasFeature('integralces')) {
+        $ret['integralces'] = (object) [
+            'name' => _i('IntegralCES'),
+            'identifier' => true,
+            'icon' => 'cloud-plus',
+            'active_for' => 'App\User',
+            'valid_config' => function($target) {
+                return (get_class($target) == 'App\User' && !empty($target->getContactsByType('integralces')));
+            }
+        ];
+    }
+
     return $ret;
 }
 

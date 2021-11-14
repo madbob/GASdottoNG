@@ -513,33 +513,40 @@ class FullTest extends DuskTestCase
             ->waitForText('Amministra Categorie')
             ->click('.accordion-item[data-element-id="' . $supplier_id . '"]')->waitForText('Dettagli')
             ->press('Prodotti')
+
+            /*
+                Questa attesa particolarmente prolungata è perché il file coi
+                testi per i modificatori è molto grosso e può metterci di più
+                per essere scaricato
+            */
             ->pause(3000)
+
             ->waitForText('Modifica Rapida')
             ->clickAtXPath('//*/div[@data-element-id="' . $supplier_id . '"]//div[contains(@class, "active")]//div[contains(@class, "accordion-item")][1]/h2/button')->waitForText('Sconto')->pause(1000)
             ->clickAtXPath('//*/div[@data-element-id="' . $supplier_id . '"]//div[contains(@class, "active")]//div[contains(@class, "accordion-item")][1]//label[normalize-space()="Sconto"]/following-sibling::div/button')
             ->waitForText('Misura su cui applicare le soglie')
 
-            ->click('@applies_type-quantity')
-            ->click('@value-percentage')
-            ->click('@arithmetic-sub')
-            ->click('@applies_target-booking')
-            ->click('@scale-major')
-            ->clickLink('Aggiungi Soglia')
+            ->click('@applies_type-quantity')->pause(200)
+            ->click('@value-percentage')->pause(200)
+            ->click('@arithmetic-sub')->pause(200)
+            ->click('@applies_target-booking')->pause(200)
+            ->click('@scale-major')->pause(200)
+            ->clickLink('Aggiungi Soglia')->pause(200)
             ->typeAtXPath('//*/table/tbody/tr[1]/td[2]/div/input', '5')->typeAtXPath('//*/table/tbody/tr[1]/td[4]/div/input', '10')
             ->typeAtXPath('//*/table/tbody/tr[2]/td[2]/div/input', '15')->typeAtXPath('//*/table/tbody/tr[2]/td[4]/div/input', '20')
             ->mainScreenshot('modificatore_soglie')
 
-            ->click('@applies_type-quantity')
-            ->click('@value-price')
-            ->click('@applies_target-order')
-            ->click('@scale-major')
+            ->click('@applies_type-quantity')->pause(200)
+            ->click('@value-price')->pause(200)
+            ->click('@applies_target-order')->pause(200)
+            ->click('@scale-major')->pause(200)
             ->typeAtXPath('//*/table/tbody/tr[1]/td[2]/div/input', '20')->typeAtXPath('//*/table/tbody/tr[1]/td[4]/div/input', '2.50')
             ->typeAtXPath('//*/table/tbody/tr[2]/td[2]/div/input', '40')->typeAtXPath('//*/table/tbody/tr[2]/td[4]/div/input', '2.20')
             ->mainScreenshot('modificatore_prezzo_unitario')
 
-            ->click('@applies_type-none')
-            ->click('@value-percentage')
-            ->click('@arithmetic-sub')
+            ->click('@applies_type-none')->pause(200)
+            ->click('@value-percentage')->pause(200)
+            ->click('@arithmetic-sub')->pause(200)
             ->typeSlowly('simplified_amount', '5', 50)
             ->mainScreenshot('modificatore_semplice')
 

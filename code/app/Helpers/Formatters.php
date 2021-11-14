@@ -111,11 +111,15 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
             }
         }
         else {
-            fputcsv($FH, $head);
+            if ($head) {
+                fputcsv($FH, $head);
+            }
 
             foreach ($contents as $c) {
                 $row = $format_callback($c);
-                fputcsv($FH, $row);
+                if ($row) {
+                    fputcsv($FH, $row);
+                }
             }
         }
 

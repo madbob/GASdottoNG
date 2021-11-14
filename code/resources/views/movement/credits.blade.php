@@ -1,7 +1,7 @@
 <div class="modal fade delete-on-close">
     <?php $currencies = App\Currency::enabled() ?>
 
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{{ _i('Stato Crediti') }}</h5>
@@ -100,6 +100,10 @@
                     <a type="button" class="btn btn-success" data-bs-toggle="collapse" href="#exportRID">{{ _i('Esporta SEPA') }}<span class="caret"></span></a>
                 @endif
 
+                @if($currentgas->hasFeature('integralces'))
+                    <a type="button" class="btn btn-success" data-bs-toggle="collapse" href="#exportIntegralCES">{{ _i('Esporta IntegralCES') }}<span class="caret"></span></a>
+                @endif
+
                 <a type="button" class="btn btn-success" data-bs-toggle="collapse" href="#sendCreditsMail">{{ _i('Notifica Utente Visualizzati') }}<span class="caret"></span></a>
 
                 @if($currentgas->hasFeature('rid'))
@@ -109,6 +113,16 @@
                             <x-larastrap::datepicker name="date" :label="_i('Data')" requird defaults_now />
                             <x-larastrap::text name="body" :label="_i('Causale')" :value="_i('VERSAMENTO GAS')" />
                             <button type="submit" class="btn btn-success">{{ _i('Esporta SEPA') }}</button>
+                        </form>
+                    </div>
+                @endif
+
+                @if($currentgas->hasFeature('integralces'))
+                    <div class="collapse well" id="exportIntegralCES">
+                        <form class="form-horizontal inner-form" action="{{ url('movements/document/credits/integralces?download=1') }}" method="GET">
+                            <input type="hidden" name="pre-saved-function" value="formToDownload">
+                            <x-larastrap::text name="body" :label="_i('Causale')" :value="_i('Versamento GAS')" />
+                            <button type="submit" class="btn btn-success">{{ _i('Esporta IntegralCES') }}</button>
                         </form>
                     </div>
                 @endif

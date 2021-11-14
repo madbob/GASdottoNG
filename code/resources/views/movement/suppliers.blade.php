@@ -65,6 +65,18 @@
                     <input type="hidden" name="pre-saved-function" value="formToDownload">
                     <button type="submit" class="btn btn-success">{{ _i('Esporta CSV') }} <i class="bi-download"></i></button>
                 </form>
+
+                @if($currentgas->hasFeature('integralces'))
+                    <a type="button" class="btn btn-success" data-bs-toggle="collapse" href="#exportIntegralCES">{{ _i('Esporta IntegralCES') }}<span class="caret"></span></a>
+
+                    <div class="collapse well" id="exportIntegralCES">
+                        <form class="form-horizontal inner-form" action="{{ url('movements/document/suppliers/integralces?download=1') }}" method="GET">
+                            <input type="hidden" name="pre-saved-function" value="formToDownload">
+                            <x-larastrap::text name="body" :label="_i('Causale')" :value="_i('Versamento GAS')" />
+                            <button type="submit" class="btn btn-success">{{ _i('Esporta IntegralCES') }}</button>
+                        </form>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

@@ -139,6 +139,7 @@ class GasController extends Controller
                 if ($request->has('enable_integralces')) {
                     $integralces_info = (object) [
                         'enabled' => true,
+                        'identifier' => $request->input('integralces->identifier'),
                     ];
 
                     $integralces_currency = Currency::where('context', 'integralces')->first();
@@ -154,6 +155,7 @@ class GasController extends Controller
                 else {
                     $integralces_info = (object) [
                         'enabled' => false,
+                        'identifier' => '',
                     ];
 
                     $integralces_currency = Currency::where('context', 'integralces')->first();
