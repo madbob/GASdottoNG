@@ -30,7 +30,7 @@ if (!isset($mandatory)) {
                 placeholder="{{ _i('Lascia vuoto per non modificare la password') }}"
             @endif
 
-            name="{{ $prefix . $name }}">
+            name="{{ $name }}">
 
             <div class="input-group-text">
                 <i class="bi-eye-slash"></i>

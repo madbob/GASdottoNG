@@ -115,6 +115,7 @@ class Utils {
     {
         if (typeof Utils.absolute_url == 'undefined') {
             Utils.absolute_url = $('meta[name=absolute_url]').attr('content');
+            console.log(Utils.absolute_url);
         }
 
         return Utils.absolute_url;

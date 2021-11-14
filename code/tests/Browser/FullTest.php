@@ -66,7 +66,8 @@ class FullTest extends DuskTestCase
             ->press('Amministratore')->waitForText('Avere sotto-utenti')->pause(500)
             ->scrollView('input[type="checkbox"][data-action="users.subusers"]')
             ->click('input[type="checkbox"][data-action="users.subusers"]')
-            ->pause(500);
+            ->pause(2000)
+            ->mainScreenshot('permessi');
 
         /*
             Creazione amico
@@ -294,14 +295,14 @@ class FullTest extends DuskTestCase
         foreach($suppliers as $index => $supplier) {
             $browser->visitRoute('suppliers.index')
                 ->waitForText('Amministra Categorie')
-                ->press('Crea Nuovo Fornitore')->waitForText('Nome')
+                ->press('Crea Nuovo Fornitore')->waitForText('Nome')->pause(500)
                 ->typeSlowly('name', $supplier[0], 50)
                 ->typeSlowly('description', $supplier[1], 50)
                 ->typeSlowly('payment_method', $supplier[2], 50)
                 ->typeSlowly('order_method', $supplier[3], 50)
                 ->typeSlowly('vat', $supplier[4], 50)
                 ->press('Salva')
-                ->pause(500)->waitForText('Ordini')->pause(500)
+                ->pause(1000)->waitForText('Ordini')->pause(1000)
                 ->with('.accordion-collapse.collapse.show', function($panel) use ($browser, $index, $supplier) {
                     $panel->assertInputValue('name', $supplier[0])
                         ->assertInputValue('payment_method', $supplier[2])
@@ -324,9 +325,8 @@ class FullTest extends DuskTestCase
 
         $browser->visitRoute('suppliers.index')
             ->waitForText('Amministra Categorie')
-            ->click($accordion_target)->waitForText('Dettagli')
-            ->press('Prodotti')
-            ->pause(500)
+            ->click($accordion_target)->pause(500)->waitForText('Dettagli')
+            ->press('Prodotti')->pause(500)
             ->with('.accordion-item[data-element-id="' . $supplier_id . '"]', function($panel) use ($browser, $products, $supplier_id, $accordion_target) {
                 $variant_screenshot_made = false;
 
@@ -512,7 +512,8 @@ class FullTest extends DuskTestCase
             ->waitForText('Amministra Categorie')
             ->click('.accordion-item[data-element-id="' . $supplier_id . '"]')->waitForText('Dettagli')
             ->press('Prodotti')
-            ->pause(500)
+            ->pause(1000)
+            ->waitForText('Modifica Rapida')
             ->clickAtXPath('//*/div[@data-element-id="' . $supplier_id . '"]//div[contains(@class, "active")]//div[contains(@class, "accordion-item")][1]/h2/button')->waitForText('Sconto')->pause(1000)
             ->clickAtXPath('//*/div[@data-element-id="' . $supplier_id . '"]//div[contains(@class, "active")]//div[contains(@class, "accordion-item")][1]//label[normalize-space()="Sconto"]/following-sibling::div/button')
             ->waitForText('Misura su cui applicare le soglie')

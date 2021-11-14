@@ -24,6 +24,8 @@ else {
     $status = 'active';
 }
 
+$postfix = $postfix ?? false;
+
 ?>
 
 <x-larastrap::field :pophelp="$help_popover" :label="_i('Stato')" :squeeze="$squeeze" classes="status-selector">

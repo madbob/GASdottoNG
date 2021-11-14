@@ -17,7 +17,7 @@
         <div class="col-md-6">
             <div class="row">
                 <div class="col-md-12">
-                    @include('commons.staticimagefield', ['obj' => $product, 'label' => _i('Foto'), 'valuefrom' => 'picture_url', 'labelsize' => 2, 'fieldsize' => 10])
+                    @include('commons.staticimagefield', ['obj' => $product, 'label' => _i('Foto'), 'valuefrom' => 'picture_url'])
                 </div>
             </div>
 

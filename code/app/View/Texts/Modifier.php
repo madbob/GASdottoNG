@@ -4,24 +4,19 @@ namespace App\View\Texts;
 
 class Modifier
 {
-    public static function descriptions()
+    private static function valueLabels()
     {
-        /*
-            Qui predispongo le stringhe descrittive per tutte le possibili
-            combinazioni di valori, destinate a rendere più comprensibile la
-            tabella delle soglie.
-        */
-
-        $currency = currentAbsoluteGas()->currency;
-
-        $value_labels = [
+        return [
             'none' => '',
             'quantity' => _i('la quantità'),
             'price' => _i('il valore'),
             'weight' => _i('il peso'),
         ];
+    }
 
-        $targets_labels = [
+    private static function targetsLabels()
+    {
+        return [
             'product,product' => '',
             'product,booking' => _i('di prodotto nella prenotazione'),
             'product,order' => _i("di prodotto nell'ordine"),
@@ -32,13 +27,21 @@ class Modifier
             'delivery,booking' => _i('della prenotazione destinata al luogo'),
             'delivery,order' => _i("dell'ordine destinato al luogo"),
         ];
+    }
 
-        $scale_labels = [
+    private static function scaleLabels()
+    {
+        return [
             'minor' => _i('è minore di'),
             'major' => _i('è maggiore di'),
         ];
+    }
 
-        $value_units = [
+    private static function unitLabels()
+    {
+        $currency = currentAbsoluteGas()->currency;
+
+        return [
             /*
                 La 'X' serve a inizializzare l'input group nell'editor del
                 modificatore, di fatto non viene mai visualizzata
@@ -48,8 +51,13 @@ class Modifier
             'price' => $currency,
             'weight' => _i('Chili'),
         ];
+    }
 
-        $distribution_labels = [
+    private static function distributionLabels()
+    {
+        $currency = currentAbsoluteGas()->currency;
+
+        return [
             'sum,product,absolute' => [_i("somma al costo del prodotto"), $currency],
             'sum,booking,absolute' => [_i("somma al costo della prenotazione"), $currency],
             'sum,order,absolute' => [_i("somma al costo dell'ordine"), $currency],
@@ -72,13 +80,32 @@ class Modifier
             'apply,booking,price' => [_i("applica il prezzo unitario"), $currency],
             'apply,order,price' => [_i("applica il prezzo unitario"), $currency],
         ];
+    }
 
-        $distribution_types = [
+    private static function typesLabels()
+    {
+        return [
             'none' => '',
             'quantity' => _i('e distribuiscilo in base alle quantità prenotate'),
             'price' => _i('e distribuiscilo in base al valore delle prenotazioni'),
             'weight' => _i('e distribuiscilo in base al peso delle prenotazioni'),
         ];
+    }
+
+    public static function descriptions()
+    {
+        /*
+            Qui predispongo le stringhe descrittive per tutte le possibili
+            combinazioni di valori, destinate a rendere più comprensibile la
+            tabella delle soglie.
+        */
+
+        $value_labels = self::valueLabels();
+        $targets_labels = self::targetsLabels();
+        $scale_labels = self::scaleLabels();
+        $value_units = self::unitLabels();
+        $distribution_labels = self::distributionLabels();
+        $distribution_types = self::typesLabels();
 
         $labels = [];
 

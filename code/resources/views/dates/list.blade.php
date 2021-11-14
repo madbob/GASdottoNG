@@ -20,34 +20,26 @@
     ?>
 
     @if(!empty($effective_dates))
-        <div class="form-group suggested-dates">
-            <div class="col-sm-offset-{{ $labelsize }} col-sm-{{ $fieldsize }}">
-                <p>
-                    {{ _i('Prossime date in calendario:') }}
-                </p>
-                <ul>
-                    @foreach($effective_dates as $d)
-                        <li>{{ printableDate($d) }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        </div>
+        <p>
+            {{ _i('Prossime date in calendario:') }}
+        </p>
+        <ul>
+            @foreach($effective_dates as $d)
+                <li>{{ printableDate($d) }}</li>
+            @endforeach
+        </ul>
     @endif
 
     @if(!empty($automatic_dates))
-        <div class="form-group suggested-dates">
-            <div class="col-sm-offset-{{ $labelsize }} col-sm-{{ $fieldsize }}">
-                <p>
-                    {{ _i('Prossime aperture ordini automatici:') }}
-                </p>
-                <ul>
-                    @foreach($automatic_dates as $d)
-                        @if($d >= $today)
-                            <li>{{ printableDate($d) }}</li>
-                        @endif
-                    @endforeach
-                </ul>
-            </div>
-        </div>
+        <p>
+            {{ _i('Prossime aperture ordini automatici:') }}
+        </p>
+        <ul>
+            @foreach($automatic_dates as $d)
+                @if($d >= $today)
+                    <li>{{ printableDate($d) }}</li>
+                @endif
+            @endforeach
+        </ul>
     @endif
 @endif
