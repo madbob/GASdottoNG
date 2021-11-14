@@ -16,6 +16,25 @@ use App\Product;
 
 class SuppliersService extends BaseService
 {
+    private function accessible($user)
+    {
+        $suppliers_id = [];
+
+        foreach($user->targetsByAction('supplier.modify', false) as $supplier) {
+            $suppliers_id[] = $supplier->id;
+        }
+
+        foreach($user->targetsByAction('supplier.orders', false) as $supplier) {
+            $suppliers_id[] = $supplier->id;
+        }
+
+        foreach($user->targetsByAction('supplier.shippings', false) as $supplier) {
+            $suppliers_id[] = $supplier->id;
+        }
+
+        return array_unique($suppliers_id);
+    }
+
     public function list($term = '', $all = false)
     {
         $user = $this->ensureAuth();
@@ -29,18 +48,8 @@ class SuppliersService extends BaseService
         }
 
         if ($user->can('supplier.view', $user->gas) == false && $user->can('supplier.add', $user->gas) == false) {
-            $suppliers_id = [];
-
-            foreach($user->targetsByAction('supplier.modify', false) as $supplier)
-                $suppliers_id[] = $supplier->id;
-
-            foreach($user->targetsByAction('supplier.orders', false) as $supplier)
-                $suppliers_id[] = $supplier->id;
-
-            foreach($user->targetsByAction('supplier.shippings', false) as $supplier)
-                $suppliers_id[] = $supplier->id;
-
-            $query->whereIn('id', array_unique($suppliers_id));
+            $suppliers_id = $this->accessible($user);
+            $query->whereIn('id', $suppliers_id);
         }
 
         if ($all)
@@ -55,19 +64,10 @@ class SuppliersService extends BaseService
         $user = $this->ensureAuth();
 
         if ($user->can('supplier.view', $user->gas) == false && $user->can('supplier.add', $user->gas) == false) {
-            $found = false;
-
-            foreach(['supplier.modify', 'supplier.orders', 'supplier.shippings'] as $action) {
-                foreach($user->targetsByAction($action, false) as $supplier) {
-                    if ($supplier->id == $id) {
-                        $found = true;
-                        break;
-                    }
-                }
-            }
-
-            if ($found == false)
+            $suppliers_id = $this->accessible($user);
+            if (in_array($id, $suppliers_id) == false) {
                 throw new AuthException(401);
+            }
         }
 
         return Supplier::withTrashed()->findOrFail($id);
@@ -156,12 +156,7 @@ class SuppliersService extends BaseService
         }
 
         $headers = ProductFormatter::getHeaders($fields);
-
-        $data = [];
-        foreach($products as $product) {
-            $rows = ProductFormatter::format($product, $fields);
-            $data = array_merge($data, [$rows]);
-        }
+        $data = ProductFormatter::formatArray($products, $fields);
 
         if ($format == 'pdf') {
             $pdf = PDF::loadView('documents.cataloguepdf', ['supplier' => $supplier, 'headers' => $headers, 'data' => $data]);

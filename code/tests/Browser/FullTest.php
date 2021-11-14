@@ -512,7 +512,7 @@ class FullTest extends DuskTestCase
             ->waitForText('Amministra Categorie')
             ->click('.accordion-item[data-element-id="' . $supplier_id . '"]')->waitForText('Dettagli')
             ->press('Prodotti')
-            ->pause(1000)
+            ->pause(3000)
             ->waitForText('Modifica Rapida')
             ->clickAtXPath('//*/div[@data-element-id="' . $supplier_id . '"]//div[contains(@class, "active")]//div[contains(@class, "accordion-item")][1]/h2/button')->waitForText('Sconto')->pause(1000)
             ->clickAtXPath('//*/div[@data-element-id="' . $supplier_id . '"]//div[contains(@class, "active")]//div[contains(@class, "accordion-item")][1]//label[normalize-space()="Sconto"]/following-sibling::div/button')

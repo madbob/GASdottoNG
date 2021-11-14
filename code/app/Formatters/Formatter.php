@@ -8,6 +8,8 @@
 
 namespace App\Formatters;
 
+use Log;
+
 abstract class Formatter
 {
     public static function getHeaders($fields)
@@ -39,9 +41,21 @@ abstract class Formatter
                 }
             }
             catch(\Exception $e) {
-                Log::error('Formattazione: impossibile accedere al campo ' . $f . ' di ' . $obj->id);
+                Log::error('Formattazione: impossibile accedere al campo ' . $f . ' di ' . $obj->id . ': ' . $e->getMessage());
                 $ret[] = '';
             }
+        }
+
+        return $ret;
+    }
+
+    public static function formatArray($objs, $fields, $context = null)
+    {
+        $ret = [];
+
+        foreach($objs as $obj) {
+            $rows = self::format($obj, $fields, $context);
+            $ret = array_merge($ret, [$rows]);
         }
 
         return $ret;
