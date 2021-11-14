@@ -4,9 +4,6 @@ namespace App\Services;
 
 use Illuminate\Support\Arr;
 
-use App\Exceptions\AuthException;
-use App\Exceptions\IllegalArgumentException;
-
 use DB;
 
 use App\Order;
@@ -85,7 +82,7 @@ class OrdersService extends BaseService
             di chiusura. Questo per evitare che venga nuovamente automaticamente
             chiuso
         */
-        $status = $request['status'];
+        $status = $request['status'] ?? $order->status;
         if ($order->status != $status) {
             $today = date('Y-m-d');
             if ($status == 'open' && $order->end < $today) {

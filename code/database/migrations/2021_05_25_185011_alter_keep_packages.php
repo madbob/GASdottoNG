@@ -20,6 +20,8 @@ class AlterKeepPackages extends Migration
 
     public function down()
     {
+        Order::where('id', '!=', '0')->update(['keep_open_packages' => '0']);
+
         Schema::table('orders', function (Blueprint $table) {
             $table->boolean('keep_open_packages')->default(false)->change();
         });

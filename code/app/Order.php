@@ -1043,31 +1043,46 @@ class Order extends Model
         $ret = $this->emptyReduxBehaviour();
 
         $ret->children = function($item, $filters) {
+            /*
+                Qui recupero solo le prenotazioni di primo livello (non
+                quelle degli amici), in quanto comunque il comportamento di
+                Booking prevede di default di ridurre anche le informazioni
+                degli amici. Se qui contemplassi tutte le prenotazioni,
+                finirei col sommare due volte le quantità degli utenti
+                amici: una volta nella prenotazione stessa, una volta in
+                quella dell'utente superiore.
+
+                Ricordarsi comunque che qui le prenotazioni vanno sempre
+                lette dal DB, non accedendo al valore eventualmente cachato
+                in $item->bookings. Questo per fare in modo che agendo sullo
+                stesso ordine ma per GAS diversi sia riapplicato lo scope
+                RestrictedGAS, ed ottenere le prenotazioni dell'ordine
+                desiderato; altrimenti, otterrei sempre le prenotazioni del
+                primo GAS che viene elaborato
+            */
+            $bookings = $item->topLevelBookings();
+
             $shipping_place = $filters['shipping_place'] ?? null;
             if ($shipping_place) {
-                $bookings = $item->bookings()->whereHas('user', function($query) use ($shipping_place) {
-                    $query->where('preferred_delivery_id', $shipping_place);
-                })->get();
-            }
-            else {
                 /*
-                    Qui recupero solo le prenotazioni di primo livello (non
-                    quelle degli amici), in quanto comunque il comportamento di
-                    Booking prevede di default di ridurre anche le informazioni
-                    degli amici. Se qui contemplassi tutte le prenotazioni,
-                    finirei col sommare due volte le quantità degli utenti
-                    amici: una volta nella prenotazione stessa, una volta in
-                    quella dell'utente superiore.
+                    Ricordarsi che spesso i "top level bookings" includono solo
+                    prenotazioni dagli amici, non dall'utente principale, ma
+                    occorre filtrare i luoghi di consegna in base a
+                    quest'ultimo.
 
-                    Ricordarsi comunque che qui le prenotazioni vanno sempre
-                    lette dal DB, non accedendo al valore eventualmente cachato
-                    in $item->bookings. Questo per fare in modo che agendo sullo
-                    stesso ordine ma per GAS diversi sia riapplicato lo scope
-                    RestrictedGAS, ed ottenere le prenotazioni dell'ordine
-                    desiderato; altrimenti, otterrei sempre le prenotazioni del
-                    primo GAS che viene elaborato
+                    TODO: probabilmente c'è una query che si può direttamente
+                    eseguire, anziché filtrare tutte le prenotazioni a
+                    posteriori
                 */
-                $bookings = $item->topLevelBookings();
+                $filtered_bookings = [];
+
+                foreach($bookings as $user_id => $booking) {
+                    if ($booking->user->preferred_delivery_id == $shipping_place) {
+                        $filtered_bookings[$booking->user_id] = $booking;
+                    }
+                }
+
+                $bookings = $filtered_bookings;
             }
 
             return $bookings;
@@ -1097,7 +1112,7 @@ class Order extends Model
         return $this->supplier;
     }
 
-    public static function balanceFields()
+    public function balanceFields()
     {
         return [
             'bank' => _i('Saldo Fornitore'),

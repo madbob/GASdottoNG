@@ -12,6 +12,7 @@ class BaseService
     public function ensureAuth($permissions = [], $or = true)
     {
         $user = Auth::user();
+
         if (is_null($user)) {
             /*
                 Questo serve essenzialmente per i casi in cui un Service viene

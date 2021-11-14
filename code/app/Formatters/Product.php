@@ -4,6 +4,36 @@ namespace App\Formatters;
 
 class Product extends Formatter
 {
+    public static function formatMeasure($obj, $context)
+    {
+        return $obj->measure->name;
+    }
+
+    public static function formatCategory($obj, $context)
+    {
+        return $obj->category_name;
+    }
+
+    public static function formatActive($obj, $context)
+    {
+        return $obj->active ? _i('Si') : _i('No');
+    }
+
+    public static function formatVat($obj, $context)
+    {
+        if ($obj->vat_rate) {
+            return $obj->vat_rate->percentage;
+        }
+        else {
+            return _i('Nessuna');
+        }
+    }
+
+    public static function formatVariable($obj, $context)
+    {
+        return $obj->variable ? _i('Si') : _i('No');
+    }
+
     public static function formattableColumns($type = null)
     {
         $ret = [
@@ -16,15 +46,11 @@ class Product extends Formatter
             ],
             'measure' => (object) [
                 'name' => _i('Unità di Misura'),
-                'format' => function($obj, $context) {
-                    return $obj->measure->name;
-                },
+                'format' => 'static::formatMeasure',
             ],
             'category' => (object) [
                 'name' => _i('Categoria'),
-                'format' => function($obj, $context) {
-                    return $obj->category_name;
-                },
+                'format' => 'static::formatCategory',
             ],
             'price' => (object) [
                 'name' => _i('Prezzo Unitario'),
@@ -32,29 +58,18 @@ class Product extends Formatter
             ],
             'active' => (object) [
                 'name' => _i('Ordinabile'),
-                'format' => function($obj, $context) {
-                    return $obj->active ? _i('Si') : _i('No');
-                },
+                'format' => 'static::formatActive',
             ],
             'vat_rate' => (object) [
                 'name' => _i('Aliquota IVA'),
-                'format' => function($obj, $context) {
-                    if ($obj->vat_rate) {
-                        return $obj->vat_rate->percentage;
-                    }
-                    else {
-                        return _i('Nessuna');
-                    }
-                },
+                'format' => 'static::formatVat',
             ],
             'portion_quantity' => (object) [
                 'name' => _i('Pezzatura'),
             ],
             'variable' => (object) [
                 'name' => _i('Variabile'),
-                'format' => function($obj, $context) {
-                    return $obj->variable ? _i('Si') : _i('No');
-                },
+                'format' => 'static::formatVariable',
             ],
             'package_size' => (object) [
                 'name' => _i('Dimensione Confezione'),

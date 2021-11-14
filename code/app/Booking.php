@@ -604,7 +604,7 @@ class Booking extends Model
         return $this->order->supplier;
     }
 
-    public static function balanceFields()
+    public function balanceFields()
     {
         return [
             'bank' => _i('Saldo'),

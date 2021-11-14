@@ -5,6 +5,8 @@ namespace App\Observers;
 use App\Jobs\NotifyNewOrder;
 use App\Jobs\NotifyClosedOrder;
 
+use Log;
+
 use App\Aggregate;
 use App\Order;
 use App\Date;
@@ -72,7 +74,12 @@ class OrderObserver
                 database, dunque solo dopo l'esecuzione di questa funzione si
                 conosce l'elenco degli utenti che sono davvero da notificare
             */
-            NotifyNewOrder::dispatch($order->id);
+            try {
+                NotifyNewOrder::dispatch($order->id);
+            }
+            catch(\Exception $e) {
+                Log::error('Unable to trigger NotifyNewOrder job on newly created order: ' . $e->getMessage());
+            }
         }
     }
 
@@ -80,10 +87,20 @@ class OrderObserver
     {
         if ($order->wasChanged('status')) {
             if ($order->status == 'open') {
-                NotifyNewOrder::dispatch($order->id);
+                try {
+                    NotifyNewOrder::dispatch($order->id);
+                }
+                catch(\Exception $e) {
+                    Log::error('Unable to trigger NotifyNewOrder job on updated order: ' . $e->getMessage());
+                }
             }
             else if ($order->status == 'closed') {
-                NotifyClosedOrder::dispatch($order->id);
+                try {
+                    NotifyClosedOrder::dispatch($order->id);
+                }
+                catch(\Exception $e) {
+                    Log::error('Unable to trigger NotifyClosedOrder job on updated order: ' . $e->getMessage());
+                }
             }
         }
 

@@ -1063,7 +1063,7 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('click', '.suggested-dates li', function() {
+    $('body').on('click', '.supplier-future-dates li', function() {
         var date = $(this).text();
         $(this).closest('form').find('input[name=shipping]').val(date);
     });

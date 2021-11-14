@@ -4,7 +4,6 @@ namespace Tests\Services;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\AuthException;
@@ -16,7 +15,6 @@ class SuppliersServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Model::unguard();
 
         $this->gas = \App\Gas::factory()->create();
         $this->supplier = \App\Supplier::factory()->create();
@@ -26,11 +24,12 @@ class SuppliersServiceTest extends TestCase
         $this->userWithNormalPerms = $this->createRoleAndUser($this->gas, 'supplier.view');
         $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
 
-        Model::reguard();
-
         $this->suppliersService = new \App\Services\SuppliersService();
     }
 
+    /*
+        Salvataggio Fornitore con permessi sbagliati
+    */
     public function testFailsToStore()
     {
         $this->expectException(AuthException::class);
@@ -42,6 +41,9 @@ class SuppliersServiceTest extends TestCase
         ));
     }
 
+    /*
+        Salvataggio Fornitore
+    */
     public function testStore()
     {
         $this->actingAs($this->userWithAdminPerm);
@@ -56,6 +58,9 @@ class SuppliersServiceTest extends TestCase
         $this->assertEquals(0, $supplier->currentBalanceAmount());
     }
 
+    /*
+        Permessi sbagliati su elenco Fornitori
+    */
     public function testNoList()
     {
         $this->actingAs($this->userWithNoPerms);
@@ -64,6 +69,9 @@ class SuppliersServiceTest extends TestCase
         $this->assertCount(0, $suppliers);
     }
 
+    /*
+        Elenco Fornitori corretto
+    */
     public function testList()
     {
         $this->actingAs($this->userWithNormalPerms);
@@ -72,6 +80,9 @@ class SuppliersServiceTest extends TestCase
         $this->assertCount(1, $suppliers);
     }
 
+    /*
+        Modifica Fornitore con permessi sbagliati
+    */
     public function testFailsToUpdate()
     {
         $this->expectException(AuthException::class);
@@ -79,6 +90,9 @@ class SuppliersServiceTest extends TestCase
         $this->suppliersService->update($this->supplier->id, array());
     }
 
+    /*
+        Modifica Fornitore con permessi sbagliati
+    */
     public function testFailsToUpdateByAdmin()
     {
         $this->expectException(AuthException::class);
@@ -86,6 +100,9 @@ class SuppliersServiceTest extends TestCase
         $this->suppliersService->update($this->supplier->id, array());
     }
 
+    /*
+        Modifica Fornitore con ID non esistente
+    */
     public function testFailsToUpdateBecauseNoUserWithID()
     {
         $this->expectException(ModelNotFoundException::class);
@@ -93,6 +110,9 @@ class SuppliersServiceTest extends TestCase
         $this->suppliersService->update('id', array());
     }
 
+    /*
+        Modifica Fornitore
+    */
     public function testUpdate()
     {
         $this->actingAs($this->userWithReferrerPerms);
@@ -106,6 +126,9 @@ class SuppliersServiceTest extends TestCase
         $this->assertEquals(0, $supplier->currentBalanceAmount());
     }
 
+    /*
+        Accesso Fornitore con ID non esistente
+    */
     public function testFailsToShowInexistent()
     {
         $this->expectException(ModelNotFoundException::class);
@@ -113,6 +136,9 @@ class SuppliersServiceTest extends TestCase
         $this->suppliersService->show('random');
     }
 
+    /*
+        Accesso Fornitore
+    */
     public function testShow()
     {
         $this->actingAs($this->userWithNormalPerms);
@@ -124,6 +150,9 @@ class SuppliersServiceTest extends TestCase
         $this->assertEquals($this->supplier->business_name, $supplier->business_name);
     }
 
+    /*
+        Cancellazione Fornitore con permessi sbagliati
+    */
     public function testFailsToDestroy()
     {
         $this->expectException(AuthException::class);
@@ -131,6 +160,9 @@ class SuppliersServiceTest extends TestCase
         $this->suppliersService->destroy($this->supplier->id);
     }
 
+    /*
+        Cancellazione Fornitore
+    */
     public function testDestroy()
     {
         $this->actingAs($this->userWithReferrerPerms);
@@ -145,7 +177,7 @@ class SuppliersServiceTest extends TestCase
             $this->fail('should never run');
         }
         catch (ModelNotFoundException $e) {
-            //good boy
+            // good boy
         }
     }
 }

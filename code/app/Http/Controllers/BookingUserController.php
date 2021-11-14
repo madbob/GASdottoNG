@@ -9,16 +9,20 @@ use DB;
 use URL;
 use Auth;
 
-use App\Exceptions\InvalidQuantityConstraint;
+use App\Services\BookingsService;
+use App\Services\DynamicBookingsService;
 use App\Printers\AggregateBooking as Printer;
+
 use App\User;
 use App\Aggregate;
 
-class BookingUserController extends BookingHandler
+class BookingUserController extends Controller
 {
-    public function __construct()
+    public function __construct(BookingsService $booking_service, DynamicBookingsService $dynamic_service)
     {
         $this->middleware('auth');
+        $this->booking_service = $booking_service;
+        $this->dynamic_service = $dynamic_service;
     }
 
     public function index(Request $request, $aggregate_id)
@@ -71,164 +75,45 @@ class BookingUserController extends BookingHandler
 
     public function update(Request $request, $aggregate_id, $user_id)
     {
-        return $this->bookingUpdate($request, $aggregate_id, $user_id, false);
-    }
+        $target_user = User::find($user_id);
+        $aggregate = Aggregate::findOrFail($aggregate_id);
 
-    private function initDynamicModifier($mod)
-    {
-        return (object) [
-            'label' => $mod->descriptive_name,
-            'url' => $mod->modifier->getROShowURL(),
-            'amount' => 0,
-            'variable' => $mod->is_variable,
-            'passive' => ($mod->type == 'passive'),
-        ];
+        $this->booking_service->bookingUpdate($request->all(), $aggregate, $target_user, false);
+
+        $user = $request->user();
+
+        if ($target_user->id != $user->id && $target_user->isFriend() && $target_user->parent_id == $user->id) {
+            /*
+                Ho effettuato una prenotazione per un amico
+            */
+            return $this->successResponse([
+                'id' => $aggregate->id,
+                'header' => $target_user->printableFriendHeader($aggregate),
+                'url' => URL::action('BookingUserController@show', ['booking' => $aggregate->id, 'user' => $target_user->id])
+            ]);
+        }
+        else {
+            /*
+                Ho effettuato una prenotazione per me o per un utente di primo
+                livello (non un amico)
+            */
+            return $this->successResponse([
+                'id' => $aggregate->id,
+                'header' => $aggregate->printableUserHeader(),
+                'url' => URL::action('BookingController@show', $aggregate->id)
+            ]);
+        }
     }
 
     /*
-        Questa funzione viene invocata dai pannelli di prenotazione e consegna,
-        ogni volta che viene apportata una modifica sulle quantità, e permette
-        di controllare che le quantità immesse siano coerenti coi constraints
-        imposti sui prodotti (quantità minima, quantità multipla...) e calcolare
-        tutti i valori tenendo in considerazione tutti i modificatori esistenti.
-        Eseguire tutti questi calcoli client-side in JS sarebbe complesso, e
-        ridondante rispetto all'implementazione server-side che comunque sarebbe
-        necessaria
+        Cfr. DynamicBookingsService::dynamicModifiers()
     */
     public function dynamicModifiers(Request $request, $aggregate_id, $user_id)
     {
-        $user = $request->user();
+        $user = User::find($user_id);
         $aggregate = Aggregate::findOrFail($aggregate_id);
-
-        if ($user->id != $user_id && $user->can('supplier.shippings', $aggregate) == false) {
-            abort(503);
-        }
-
-        return app()->make('Locker')->execute('lock_aggregate_' . $aggregate_id, function() use ($request, $aggregate, $user, $user_id) {
-            DB::beginTransaction();
-
-            $bookings = [];
-            $target_user = User::find($user_id);
-            $delivering = $request->input('action') != 'booked';
-
-            $ret = (object) [
-                'bookings' => [],
-            ];
-
-            foreach($aggregate->orders as $order) {
-                $booking = $this->readBooking($request, $order, $target_user, $delivering);
-                if ($booking) {
-                    $order->setRelation('aggregate', $aggregate);
-                    $booking->setRelation('order', $order);
-
-                    if ($delivering) {
-                        $booking->status = 'shipped';
-                        $booking->saveFinalPrices();
-                    }
-                    else {
-                        $booking->status = 'pending';
-                    }
-
-                    $booking->save();
-                    $bookings[] = $booking;
-                }
-            }
-
-            foreach($bookings as $booking) {
-                /*
-                    Qui forzo sempre il ricalcolo dei modificatori, altrimenti vengono letti quelli effettivamente
-                    salvati sul DB.
-                    Nota bene: passo il parametro real = true perché qui sono già all'interno di una transazione, ed i
-                    valori qui calcolati devono esistere anche successivamente mentre recupero i totali dei singoli
-                    prodotti.
-                    La prenotazione è ancora in fase di consegna, lo status è impostato temporaneamente a "shipped" ed
-                    andrebbe a leggere quelli salvati anche se ancora non ce ne sono
-                */
-                $modified = $booking->calculateModifiers(null, true);
-
-                $ret->bookings[$booking->id] = (object) [
-                    'total' => printablePrice($booking->getValue('effective', false)),
-                    'modifiers' => [],
-                    'products' => $booking->products->reduce(function($carry, $product) use ($delivering) {
-                        /*
-                            Mentre computo il valore totale della prenotazione in fase di modifica, controllo anche che
-                            le quantità prenotate siano coerenti coi limiti imposti sul prodotto prenotato (massimo,
-                            minimo, disponibile...).
-                            Lo faccio qui, server-side, per evitare problemi di compatibilità client-side (è stato più
-                            volte segnalato che su determinati browser mobile ci siano problemi su questi controlli).
-                            Ma solo se non sono in consegna: in quel caso è ammesso immettere qualsiasi quantità
-                        */
-                        try {
-                            $final_quantity = $delivering ? $product->delivered : $product->testConstraints($product->quantity);
-                            $message = '';
-                        }
-                        catch(InvalidQuantityConstraint $e) {
-                            $final_quantity = 0;
-                            $message = $e->getMessage();
-                        }
-
-                        $carry[$product->product_id] = (object) [
-                            'total' => printablePrice($product->getValue('effective')),
-                            'quantity' => $final_quantity,
-                            'message' => $message,
-
-                            'variants' => $product->variants->reduce(function($varcarry, $variant) use ($product, $delivering) {
-                                try {
-                                    $final_variant_quantity = $delivering ? $variant->delivered : $product->testConstraints($variant->quantity, $variant);
-                                    $variant_message = '';
-                                }
-                                catch(InvalidQuantityConstraint $e) {
-                                    $final_variant_quantity = 0;
-                                    $variant_message = $e->getMessage();
-                                }
-
-                                $varcarry[] = (object) [
-                                    'components' => $variant->components->reduce(function($componentcarry, $component) {
-                                        $componentcarry[] = $component->value->id;
-                                        return $componentcarry;
-                                    }, []),
-
-                                    'quantity' => $final_variant_quantity,
-                                    'total' => printablePrice($delivering ? $variant->deliveredValue() : $variant->quantityValue()),
-                                    'message' => $variant_message,
-                                ];
-
-                                return $varcarry;
-                            }, []),
-
-                            'modifiers' => [],
-                        ];
-                        return $carry;
-                    }, []),
-                ];
-
-                foreach($modified as $mod) {
-                    if ($mod->target_type == 'App\Product') {
-                        if (!isset($ret->bookings[$booking->id]->products[$mod->target->product_id]->modifiers[$mod->modifier_id])) {
-                            $ret->bookings[$booking->id]->products[$mod->target->product_id]->modifiers[$mod->modifier_id] = $this->initDynamicModifier($mod);
-                        }
-
-                        $ret->bookings[$booking->id]->products[$mod->target->product_id]->modifiers[$mod->modifier_id]->amount += $mod->effective_amount;
-                    }
-                    else {
-                        if (!isset($ret->bookings[$booking->id]->modifiers[$mod->modifier_id])) {
-                            $ret->bookings[$booking->id]->modifiers[$mod->modifier_id] = $this->initDynamicModifier($mod);
-                        }
-
-                        $ret->bookings[$booking->id]->modifiers[$mod->modifier_id]->amount += $mod->effective_amount;
-                    }
-                }
-            }
-
-            /*
-                Lo scopo di questa funzione è ottenere una preview dei totali della
-                prenotazione, dunque al termine invalido tutte le modifiche fatte
-                sul database
-            */
-            DB::rollback();
-
-            return response()->json($ret);
-        });
+        $ret = $this->dynamic_service->dynamicModifiers($request->all(), $aggregate, $user);
+        return response()->json($ret);
     }
 
     public function destroy(Request $request, $aggregate_id, $user_id)

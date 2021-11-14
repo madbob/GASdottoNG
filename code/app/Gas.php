@@ -85,6 +85,10 @@ class Gas extends Model
                 'default' => '0'
             ],
 
+            'unmanaged_shipping' => [
+                'default' => 0
+            ],
+
             'notify_all_new_orders' => [
                 'default' => '0'
             ],
@@ -268,6 +272,11 @@ class Gas extends Model
         return $this->getConfig('restrict_booking_to_credit') == '1';
     }
 
+    public function getUnmanagedShippingAttribute()
+    {
+        return $this->getConfig('unmanaged_shipping') == '1';
+    }
+
     public function getNotifyAllNewOrdersAttribute()
     {
         return $this->getConfig('notify_all_new_orders') == '1';
@@ -410,13 +419,51 @@ class Gas extends Model
 
     /******************************************************** CreditableTrait */
 
-    public static function balanceFields()
+    protected function virtualBalances($currency)
+    {
+        if ($currency) {
+            return $this->innerCache('virtual_balances_' . $currency->id, function($obj) use ($currency) {
+                $suppliers_balance = 0;
+                $users_balance = 0;
+
+                foreach($obj->suppliers as $supplier) {
+                    $suppliers_balance += $supplier->currentBalanceAmount($currency);
+                }
+
+                foreach($obj->users as $user) {
+                    $users_balance += $user->currentBalanceAmount($currency);
+                }
+
+                return [
+                    'suppliers' => (object) [
+                        'label' => _i('Fornitori'),
+                        'value' => $suppliers_balance,
+                    ],
+                    'users' => (object) [
+                        'label' => _i('Utenti'),
+                        'value' => $users_balance,
+                    ],
+                ];
+            });
+        }
+        else {
+            return [
+                'suppliers' => (object) [
+                    'label' => _i('Fornitori'),
+                ],
+                'users' => (object) [
+                    'label' => _i('Utenti'),
+                ],
+            ];
+        }
+    }
+
+    public function balanceFields()
     {
         $ret = [
             'bank' => _i('Conto Corrente'),
             'cash' => _i('Cassa Contanti'),
             'gas' => _i('GAS'),
-            'suppliers' => _i('Fornitori'),
             'deposits' => _i('Cauzioni'),
         ];
 

@@ -4,12 +4,12 @@
     $currencies = App\Currency::enabled();
     $balances = [];
     foreach ($currencies as $curr) {
-        $balances[$curr->id] = $obj->currentBalance($curr);
+        $balances[$curr->id] = $obj->extendedCurrentBalance($curr);
     }
 
     ?>
 
-    @foreach($obj->balanceFields() as $identifier => $name)
+    @foreach($obj->extendedBalanceFields() as $identifier => $name)
         <li class="list-group-item">
             {{ $name }}
 

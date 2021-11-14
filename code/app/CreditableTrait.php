@@ -87,7 +87,7 @@ trait CreditableTrait
             foreach ($objects as $obj) {
                 $proxy = $obj->getActualObject();
                 $class = get_class($obj);
-                $fields = $class::balanceFields();
+                $fields = $obj->balanceFields();
                 $now = [];
 
                 /*
@@ -178,6 +178,11 @@ trait CreditableTrait
                         continue;
                     }
 
+                    $proxy = $obj->getBalanceProxy();
+                    if ($proxy != null) {
+                        $obj = $proxy;
+                    }
+
                     $cb = $obj->currentBalance($currency);
                     foreach ($old as $field => $old_value) {
                         if ($old_value != $cb->$field) {
@@ -215,6 +220,17 @@ trait CreditableTrait
         else {
             return $proxy->currentBalance($currency);
         }
+    }
+
+    public function extendedCurrentBalance($currency)
+    {
+        $balance = $this->currentBalance($currency);
+
+        foreach($this->virtualBalances($currency) as $name => $value) {
+            $balance->$name = $value->value;
+        }
+
+        return $balance;
     }
 
     public function currentBalanceAmount($currency = null)
@@ -265,6 +281,27 @@ trait CreditableTrait
         return null;
     }
 
+    /*
+        Questa funzione è destinata ad essere sovrascritta per includere nel
+        saldo "esteso" (cfr. getExtendedCurrentBalanceAttribute()) valori
+        dinamicamente calcolati
+    */
+    protected function virtualBalances()
+    {
+        return [];
+    }
+
+    public function extendedBalanceFields()
+    {
+        $ret = $this->balanceFields();
+
+        foreach($this->virtualBalances(null) as $name => $virtual) {
+            $ret[$name] = $virtual->label;
+        }
+
+        return $ret;
+    }
+
     abstract public static function commonClassName();
-    abstract public static function balanceFields();
+    abstract public function balanceFields();
 }

@@ -49,7 +49,12 @@ class Notification extends Model
             return;
         }
 
-        DeliverNotification::dispatch($this->id);
+        try {
+            DeliverNotification::dispatch($this->id);
+        }
+        catch(\Exception $e) {
+            Log::error('Unable to trigger DeliverNotification job while sending notification: ' . $e->getMessage());
+        }
     }
 
     public function printableName()

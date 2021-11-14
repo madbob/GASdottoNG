@@ -4,7 +4,6 @@ namespace Tests\Services;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\AuthException;
@@ -16,7 +15,6 @@ class UsersServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Model::unguard();
 
         $this->gas = \App\Gas::factory()->create();
 
@@ -31,11 +29,12 @@ class UsersServiceTest extends TestCase
         $otherGas = \App\Gas::factory()->create();
         \App\User::factory()->count(3)->create(['gas_id' => $otherGas->id]);
 
-        Model::reguard();
-
         $this->usersService = new \App\Services\UsersService();
     }
 
+    /*
+        Permessi sbagliati su elenco Utenti
+    */
     public function testFailsToListUsers()
     {
         $this->expectException(AuthException::class);
@@ -43,6 +42,9 @@ class UsersServiceTest extends TestCase
         $this->usersService->list();
     }
 
+    /*
+        Elenco Utenti corretto
+    */
     public function testList()
     {
         $this->actingAs($this->userWithViewPerm);
@@ -54,6 +56,9 @@ class UsersServiceTest extends TestCase
         }
     }
 
+    /*
+        Elenco Utenti con parametri di ricerca
+    */
     public function testListWithSearchParam()
     {
         $this->actingAs($this->userWithViewPerm);
@@ -89,6 +94,9 @@ class UsersServiceTest extends TestCase
         $this->assertCount(1, array_filter($users->toArray(), $findByID($user2->id)));
     }
 
+    /*
+        Salvataggio Utente con permessi sbagliati
+    */
     public function testFailsToStore()
     {
         $this->expectException(AuthException::class);
@@ -96,6 +104,9 @@ class UsersServiceTest extends TestCase
         $this->usersService->store(array());
     }
 
+    /*
+        Salvataggio Utente con permessi corretti
+    */
     public function testStore()
     {
         $this->actingAs($this->userWithAdminPerm);
@@ -113,6 +124,9 @@ class UsersServiceTest extends TestCase
         $this->assertEquals(0, $newUser->pending_balance);
     }
 
+    /*
+        Salvataggio Amico
+    */
     public function testStoreFriend()
     {
         $this->actingAs($this->userWithViewPerm);
@@ -131,6 +145,9 @@ class UsersServiceTest extends TestCase
         $this->assertEquals(0, $newUser->pending_balance);
     }
 
+    /*
+        Modifica Utente con permessi sbagliati
+    */
     public function testFailsToUpdate()
     {
         $this->expectException(AuthException::class);
@@ -138,6 +155,9 @@ class UsersServiceTest extends TestCase
         $this->usersService->update($this->userWithViewPerm->id, array());
     }
 
+    /*
+        Modifica Utente con ID non esistente
+    */
     public function testFailsToUpdateBecauseNoUserWithID()
     {
         $this->expectException(ModelNotFoundException::class);
@@ -145,6 +165,9 @@ class UsersServiceTest extends TestCase
         $this->usersService->update('id', array());
     }
 
+    /*
+        Modifica Utente con permessi corretti
+    */
     public function testUpdate()
     {
         $this->actingAs($this->userWithAdminPerm);
@@ -162,6 +185,9 @@ class UsersServiceTest extends TestCase
         $this->assertEquals(0, $updatedUser->pending_balance);
     }
 
+    /*
+        Modifica del proprio Utente con permessi sbagliati
+    */
     public function testFailsToSelfUpdate()
     {
         $this->expectException(AuthException::class);
@@ -175,6 +201,9 @@ class UsersServiceTest extends TestCase
         $this->assertEquals($this->userWithNoPerms->id, $user->id);
     }
 
+    /*
+        Modifica del proprio Utente con permessi corretti
+    */
     public function testSelfUpdate()
     {
         $this->actingAs($this->userWithBasePerm);
@@ -187,6 +216,9 @@ class UsersServiceTest extends TestCase
         $this->assertEquals($this->userWithBasePerm->id, $user->id);
     }
 
+    /*
+        Modifica del proprio Utente con permessi limitati
+    */
     public function testLimitedSelfUpdate()
     {
         /*
@@ -202,12 +234,18 @@ class UsersServiceTest extends TestCase
         $this->assertEquals($this->userWithNoPerms->id, $user->id);
     }
 
+    /*
+        Accesso Utente con permessi sbagliati
+    */
     public function testFailsToShow()
     {
         $this->expectException(AuthException::class);
         $this->usersService->show($this->userWithViewPerm->id);
     }
 
+    /*
+        Accesso Utente con ID non esistente
+    */
     public function testFailsToShowInexistent()
     {
         $this->expectException(ModelNotFoundException::class);
@@ -215,6 +253,9 @@ class UsersServiceTest extends TestCase
         $this->usersService->show('random');
     }
 
+    /*
+        Accesso Utente
+    */
     public function testShow()
     {
         $this->actingAs($this->userWithViewPerm);
@@ -226,6 +267,9 @@ class UsersServiceTest extends TestCase
         $this->assertEquals($this->userWithViewPerm->lastname, $user->lastname);
     }
 
+    /*
+        Pagamento e assegnazione quota di iscrizione
+    */
     public function testAnnualFee()
     {
         $this->actingAs($this->userWithMovementPerm);
@@ -247,6 +291,9 @@ class UsersServiceTest extends TestCase
         $this->assertEquals($movement->id, $this->userWithNoPerms->fee_id);
     }
 
+    /*
+        Cancellazione Utente con permessi sbagliati
+    */
     public function testFailsToDestroy()
     {
         $this->expectException(AuthException::class);
@@ -254,6 +301,9 @@ class UsersServiceTest extends TestCase
         $this->usersService->destroy($this->userWithNoPerms->id);
     }
 
+    /*
+        Cancellazione Utente
+    */
     public function testDestroy()
     {
         $this->actingAs($this->userWithAdminPerm);
@@ -270,7 +320,7 @@ class UsersServiceTest extends TestCase
             $this->fail('should never run');
         }
         catch (ModelNotFoundException $e) {
-            //good boy
+            // good boy
         }
     }
 }

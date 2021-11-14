@@ -4,7 +4,6 @@ namespace Tests\Services;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 use App\Exceptions\AuthException;
@@ -16,7 +15,6 @@ class ModifiersServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Model::unguard();
 
         $this->gas = \App\Gas::factory()->create();
 
@@ -73,10 +71,11 @@ class ModifiersServiceTest extends TestCase
         ]);
 
         $this->modifiersService = new \App\Services\ModifiersService();
-
-        Model::reguard();
     }
 
+    /*
+        Creazione Modificatore con permessi sbagliati
+    */
     public function testFailsToStore()
     {
         $this->expectException(AuthException::class);
@@ -103,6 +102,9 @@ class ModifiersServiceTest extends TestCase
         }
     }
 
+    /*
+        Modificatore applicato su Prodotto, con soglie sul valore
+    */
     public function testThresholdUnitPrice()
     {
         $this->actingAs($this->userReferrer);
@@ -143,6 +145,9 @@ class ModifiersServiceTest extends TestCase
         }
     }
 
+    /*
+        Modificatore applicato su Prodotto, con soglie sulle quantità
+    */
     public function testThresholdQuantity()
     {
         $this->actingAs($this->userReferrer);
@@ -221,6 +226,9 @@ class ModifiersServiceTest extends TestCase
         }
     }
 
+    /*
+        Modificatore applicato sull'ordine
+    */
     public function testOnOrder()
     {
         $this->actingAs($this->userReferrer);
@@ -297,6 +305,9 @@ class ModifiersServiceTest extends TestCase
         $this->reviewBookingsIntoOrder($mod, $this->order, $test_shipping_value);
     }
 
+    /*
+        Modificatore applicato su Luogo di Consegna
+    */
     public function testOnShippingPlace()
     {
         $this->actingAs($this->userAdmin);

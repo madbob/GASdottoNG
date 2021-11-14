@@ -104,7 +104,7 @@ foreach($classes as $class => $name) {
                             @continue
                         @endif
 
-                        @foreach($classname::balanceFields() as $field => $fieldname)
+                        @foreach((new $classname())->balanceFields() as $field => $fieldname)
                             <tr data-target-class="{{ $classname }}" class="{{ $classname != 'App\Gas' && $classname != $type->sender_type && $classname != $type->target_type ? 'hidden' : '' }}">
                                 <td>{{ $classname::commonClassName() }}: {{ $fieldname }}</td>
 

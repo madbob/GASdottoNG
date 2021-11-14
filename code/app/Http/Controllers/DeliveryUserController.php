@@ -8,13 +8,21 @@ use Auth;
 use DB;
 use URL;
 
+use App\Services\BookingsService;
+
 use App\User;
 use App\Aggregate;
 use App\Movement;
 use App\MovementType;
 
-class DeliveryUserController extends BookingHandler
+class DeliveryUserController extends Controller
 {
+    public function __construct(BookingsService $service)
+    {
+        $this->middleware('auth');
+        $this->service = $service;
+    }
+
     public function show(Request $request, $aggregate_id, $user_id)
     {
         $user = Auth::user();
@@ -31,7 +39,25 @@ class DeliveryUserController extends BookingHandler
 
     public function update(Request $request, $aggregate_id, $user_id)
     {
-        return $this->bookingUpdate($request, $aggregate_id, $user_id, true);
+        $target_user = User::find($user_id);
+        $aggregate = Aggregate::findOrFail($aggregate_id);
+
+        $this->service->bookingUpdate($request->all(), $aggregate, $target_user, true);
+
+        $subject = $aggregate->bookingBy($target_user->id);
+        $subject->generateReceipt();
+        $total = $subject->total_delivered;
+
+        if ($total == 0) {
+            return $this->successResponse();
+        }
+        else {
+            return $this->successResponse([
+                'id' => $subject->id,
+                'header' => $subject->printableHeader(),
+                'url' => URL::action('DeliveryUserController@show', ['delivery' => $aggregate->id, 'user' => $target_user->id])
+            ]);
+        }
     }
 
     public function getFastShipping(Request $request, $aggregate_id)

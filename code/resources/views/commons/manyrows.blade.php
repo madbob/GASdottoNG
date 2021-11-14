@@ -48,7 +48,7 @@ if (isset($extra_class)) {
                         $attributes = [
                             'name' => $column['field'],
                             'label' => $column['label'],
-                            'nprefix' => $prefix,
+                            'nprefix' => $prefix ?? '',
                             'npostfix' => '[]',
                             'squeeze' => true,
                         ];
@@ -128,7 +128,7 @@ if (isset($extra_class)) {
                     $attributes = [
                         'name' => $column['field'],
                         'label' => $column['label'],
-                        'nprefix' => $prefix,
+                        'nprefix' => $prefix ?? '',
                         'npostfix' => '[]',
                         'squeeze' => true,
                         'value' => '',

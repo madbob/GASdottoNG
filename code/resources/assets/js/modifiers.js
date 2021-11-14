@@ -136,11 +136,15 @@ class Modifiers {
             var new_row = template.clone();
 
             new_row.removeClass('hidden').find('.static-label .name').text(modifier_meta.label);
+
             if (modifier_meta.variable) {
                 new_row.find('.static-label .mutable').removeClass('hidden');
             }
 
-            new_row.find('.static-label').siblings('.float-end').append(utils.detailsButton(modifier_meta.url));
+            if (modifier_meta.url != '') {
+                new_row.find('.static-label').siblings('.float-end').append(utils.detailsButton(modifier_meta.url));
+            }
+
             new_row.find('input[name="modifier-0"]').attr('name', 'modifier-' + modifier_id).parent().find('span').text(utils.priceRound(modifier_meta.amount));
             template.before(new_row);
         }

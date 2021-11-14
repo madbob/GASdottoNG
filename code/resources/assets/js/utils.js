@@ -115,6 +115,7 @@ class Utils {
     {
         if (typeof Utils.absolute_url == 'undefined') {
             Utils.absolute_url = $('meta[name=absolute_url]').attr('content');
+            console.log(Utils.absolute_url);
         }
 
         return Utils.absolute_url;
@@ -260,8 +261,8 @@ class Utils {
         params.method = params.method || 'POST';
 
         if (params.method != 'GET' && params.method != 'POST') {
-            params.method = 'POST';
             params.data._method = params.method;
+            params.method = 'POST';
         }
 
         if (params.url.startsWith('http') == false) {
@@ -335,5 +336,24 @@ class Utils {
         return ret;
     }
 }
+
+$.fn.textVal = function(value) {
+    if (typeof value == 'undefined') {
+        if (this.is('input')) {
+            return this.val();
+        }
+        else {
+            return this.text();
+        }
+    }
+    else {
+        if (this.is('input')) {
+            return this.val(value);
+        }
+        else {
+            return this.text(value);
+        }
+    }
+};
 
 export default Utils;

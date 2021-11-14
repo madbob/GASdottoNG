@@ -13,10 +13,8 @@ use Response;
 use PDF;
 
 use App\User;
-use App\Movement;
 use App\Invoice;
 use App\Receipt;
-use App\MovementType;
 
 use App\Services\MovementsService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

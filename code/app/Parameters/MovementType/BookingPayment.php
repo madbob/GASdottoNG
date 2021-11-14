@@ -24,13 +24,12 @@ class BookingPayment extends MovementType
             (object) [
                 'method' => 'cash',
                 'target' => $this->format(['bank' => 'increment']),
-                'master' => $this->format(['cash' => 'increment', 'suppliers' => 'increment']),
+                'master' => $this->format(['cash' => 'increment']),
             ],
             (object) [
                 'method' => 'credit',
                 'sender' => $this->format(['bank' => 'decrement']),
                 'target' => $this->format(['bank' => 'increment']),
-                'master' => $this->format(['suppliers' => 'increment']),
             ],
         ]));
 

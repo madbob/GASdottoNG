@@ -114,7 +114,13 @@ class AggregatesController extends Controller
     public function notify(Request $request, $id)
     {
         $message = $request->input('message', '');
-        AggregateSummaries::dispatch($id, $message);
+
+        try {
+            AggregateSummaries::dispatch($id, $message);
+        }
+        catch(\Exception $e) {
+            Log::error('Unable to trigger AggregateSummaries job on aggregate notification: ' . $e->getMessage());
+        }
 
         return response()->json((object) [
             'last-notification-date-' . $id => printableDate(date('Y-m-d'))

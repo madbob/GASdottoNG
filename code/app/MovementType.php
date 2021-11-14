@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Auth;
@@ -15,7 +16,7 @@ use App\Events\SluggableCreating;
 
 class MovementType extends Model
 {
-    use SoftDeletes, GASModel, SluggableID, Cachable;
+    use HasFactory, SoftDeletes, GASModel, SluggableID, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';

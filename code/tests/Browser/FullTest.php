@@ -8,6 +8,7 @@ use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
 use App\VatRate;
+use App\Product;
 
 class FullTest extends DuskTestCase
 {
@@ -62,10 +63,11 @@ class FullTest extends DuskTestCase
         */
         $browser->visit('/gas/senza-nome/edit')
             ->waitForText('Amministratore')
-            ->press('Amministratore')->waitForText('Avere sotto-utenti')
-            ->pause(1000)
+            ->press('Amministratore')->waitForText('Avere sotto-utenti')->pause(500)
+            ->scrollView('input[type="checkbox"][data-action="users.subusers"]')
             ->click('input[type="checkbox"][data-action="users.subusers"]')
-            ->pause(1000);
+            ->pause(2000)
+            ->mainScreenshot('permessi');
 
         /*
             Creazione amico
@@ -78,12 +80,13 @@ class FullTest extends DuskTestCase
             ->press('Crea Nuovo Amico')->waitForText('Username')
             ->with('.modal.show', function($panel) {
                 $panel->typeSlowly('username', 'amico_di_mario', 50)
-                    ->typeSlowly('firstname', 'di Mario', 50)
-                    ->typeSlowly('lastname', 'Amico', 50)
+                    ->typeSlowly('firstname', 'Luigi', 50)
+                    ->typeSlowly('lastname', 'Verdi', 50)
                     ->typeSlowly('password', 'amico_di_mario', 50)
                     ->press('Salva');
             })
-            ->waitForText('Amico di Mario');
+            ->waitForText('Verdi Luigi')
+            ->mainScreenshot('amici');
     }
 
     private function createUsers($browser)
@@ -121,27 +124,28 @@ class FullTest extends DuskTestCase
         $browser->visitRoute('users.index')
             ->waitForText('Importa CSV')
             ->mainScreenshot('utenti')
-            ->click('.accordion-item[data-element-id="garibaldi"]')
+            ->click('.accordion-item[data-element-id="bandiera"]')
             ->waitForText('Anagrafica')
-            ->with('.accordion-item[data-element-id="garibaldi"]', function($panel) {
-                $panel->assertInputValue('firstname', 'Giuseppe')
-                    ->assertInputValue('lastname', 'Garibaldi')
-                    ->waitForText('Salva')
-                    ->click('@status-deleted')
-                    ->pause(500)
+            ->with('.accordion-item[data-element-id="bandiera"]', function($panel) {
+                $panel->assertInputValue('firstname', 'Attilio')
+                    ->assertInputValue('lastname', 'Bandiera')
+                    ->scrollView('button[type=submit]')
+                    ->press('@status-deleted')
+                    ->waitFor('input[name="deleted_at"]')
+                    ->scrollView('button[type=submit]')
                     ->press('Salva');
             })
-            ->waitUntilMissing('Anagrafica');
+            ->waitUntilMissing('Anagrafica')->pause(500);
 
         /*
             Controllo cessazione utente
         */
         $browser->visitRoute('users.index')
             ->waitForText('Importa CSV')
-            ->assertDontSee('Garibaldi')
+            ->assertDontSee('Bandiera')
             ->press('button[data-filter-attribute="deleted_at"]')
-            ->waitForText('Garibaldi')
-            ->assertSee('Garibaldi');
+            ->waitForText('Bandiera')
+            ->assertSee('Bandiera');
     }
 
     private function suppliers()
@@ -161,26 +165,42 @@ class FullTest extends DuskTestCase
             appaiono nel pannello della prenotazione
         */
         return [
-            ['Finocchi', 3.00, 'chili', 'verdura'],
-            ['Melanzane', 2.00, 'chili', 'verdura'],
-            ['Peperoncino piccante', 0.50, 'pezzi', 'verdura'],
-            ['Zucchine', 2.50, 'chili', 'verdura'],
+            (object) [
+                'name' => 'Finocchi',
+                'price' => 3.00,
+                'unit_measure' => 'chili',
+                'category' => 'verdura',
+                'min_quantity' => 3,
+                'variants' => []
+            ],
+            (object) [
+                'name' => 'Melanzane',
+                'price' => 2.00,
+                'unit_measure' => 'chili',
+                'category' => 'verdura',
+                'variants' => [
+                    'Forma' => ['Tonda', 'Ovale', 'Lunga'],
+                    'Colore' => ['Nera', 'Viola']
+                ]
+            ],
+            (object) [
+                'name' => 'Peperoncino piccante',
+                'price' => 0.50,
+                'unit_measure' => 'pezzi',
+                'category' => 'verdura',
+                'variants' => [
+                    'Piccantezza' => ['Poco piccante', 'Molto piccante']
+                ]
+            ],
+            (object) [
+                'name' => 'Zucchine',
+                'price' => 2.50,
+                'unit_measure' => 'chili',
+                'category' => 'verdura',
+                'max_available' => 3,
+                'variants' => []
+            ],
         ];
-    }
-
-    private function quantities()
-    {
-        static $quantities = null;
-
-        if (is_null($quantities)) {
-            $quantities = [];
-            $products = $this->products();
-            foreach($products as $product) {
-                $quantities[] = rand(0, 5);
-            }
-        }
-
-        return $quantities;
     }
 
     private function disableEnableSupplier($browser, $supplier_name)
@@ -194,8 +214,8 @@ class FullTest extends DuskTestCase
             ->with('.accordion-item[data-element-id="' . $supplier_id . '"]', function($panel) use ($supplier_name) {
                 $panel->waitForText('Salva')
                     ->click('@status-deleted')
-                    ->pause(500)
-                    ->scrollIntoView('button[type=submit]')
+                    ->waitFor('input[name="deleted_at"]')
+                    ->scrollView('button[type=submit]')
                     ->press('Salva');
             })
             ->waitUntilMissing('Dettagli');
@@ -219,10 +239,50 @@ class FullTest extends DuskTestCase
                     ->waitForText('Salva')
                     ->click('@status-active')
                     ->pause(500)
-                    ->scrollIntoView('button[type=submit]')
+                    ->scrollView('button[type=submit]')
                     ->press('Salva');
             })
             ->waitUntilMissing('Dettagli');
+    }
+
+    private function handlingVariants($panel, $browser, $variants, $actual_save)
+    {
+        foreach($variants as $variant_name => $variant_values) {
+            $browser->scrollView('button[type=submit]')->press('Crea Nuova Variante')->waitForText('Valori')
+                ->with('.modal.show', function($panel) use ($browser, $variant_name, $variant_values, $actual_save) {
+                    $panel->pause(100)->typeSlowly('name', $variant_name, 50);
+
+                    foreach($variant_values as $value) {
+                        $panel->clickLink('Aggiungi Nuovo')->pause(200)
+                            ->typeAtXPath('//*/table/tbody/tr[last() - 1]/td/input', $value);
+                    }
+
+                    if ($actual_save) {
+                        $panel->press('Salva');
+                    }
+                    else {
+                        $browser->mainScreenshot('variante');
+                        $panel->press('Chiudi');
+                    }
+                });
+
+            if ($actual_save) {
+                $panel->scrollView('button[type=submit]')->waitForText($variant_name);
+            }
+        }
+
+        $browser->pause(500)->scrollBottom()->press('Modifica Matrice Varianti')->waitForText('Differenza Prezzo')
+            ->with('.modal.show', function($panel) use ($browser, $actual_save) {
+                if ($actual_save) {
+                    $panel->press('Salva')->pause(500);
+                }
+                else {
+                    $browser->mainScreenshot('matrice_varianti');
+                    $panel->press('Chiudi')->pause(500);
+                }
+            });
+
+        $browser->scrollView('button[type=submit]')->waitForText('Elimina');
     }
 
     private function createSuppliers($browser)
@@ -232,18 +292,18 @@ class FullTest extends DuskTestCase
         /*
             Creazione fornitori
         */
-        foreach($suppliers as $supplier) {
+        foreach($suppliers as $index => $supplier) {
             $browser->visitRoute('suppliers.index')
                 ->waitForText('Amministra Categorie')
-                ->press('Crea Nuovo Fornitore')->waitForText('Nome')
+                ->press('Crea Nuovo Fornitore')->waitForText('Nome')->pause(500)
                 ->typeSlowly('name', $supplier[0], 50)
                 ->typeSlowly('description', $supplier[1], 50)
                 ->typeSlowly('payment_method', $supplier[2], 50)
                 ->typeSlowly('order_method', $supplier[3], 50)
                 ->typeSlowly('vat', $supplier[4], 50)
                 ->press('Salva')
-                ->pause(1000)
-                ->with('.accordion-collapse.collapse.show', function($panel) use ($supplier) {
+                ->pause(1000)->waitForText('Ordini')->pause(1000)
+                ->with('.accordion-collapse.collapse.show', function($panel) use ($browser, $index, $supplier) {
                     $panel->assertInputValue('name', $supplier[0])
                         ->assertInputValue('payment_method', $supplier[2])
                         ->assertInputValue('order_method', $supplier[3])
@@ -261,32 +321,57 @@ class FullTest extends DuskTestCase
         */
 
         $products = $this->products();
+        $accordion_target = '.accordion-item[data-element-id="' . $supplier_id . '"]';
 
         $browser->visitRoute('suppliers.index')
             ->waitForText('Amministra Categorie')
-            ->click('.accordion-item[data-element-id="' . $supplier_id . '"]')->waitForText('Dettagli')
-            ->press('Prodotti')
-            ->pause(500)
-            ->with('.accordion-item[data-element-id="' . $supplier_id . '"]', function($panel) use ($browser, $products) {
-                $default_vat_rate = VatRate::where('percentage', 4)->first();
+            ->click($accordion_target)->pause(500)->waitForText('Dettagli')
+            ->press('Prodotti')->pause(500)
+            ->with('.accordion-item[data-element-id="' . $supplier_id . '"]', function($panel) use ($browser, $products, $supplier_id, $accordion_target) {
+                $variant_screenshot_made = false;
 
                 foreach($products as $index => $product) {
-                    $browser->scrollIntoView('#category_admin')->pause(1000);
+                    $browser->scrollView($accordion_target)->pause(1000);
 
                     $panel->press('Crea Nuovo Prodotto')->waitForText('Prezzo Unitario')
-                        ->with('.modal.show', function($panel) use ($product, $default_vat_rate) {
-                            $panel->typeSlowly('name', $product[0], 50)
-                                ->typeSlowly('price', $product[1], 50)
-                                ->select('measure_id', $product[2])
-                                ->select('category_id', $product[3])
-                                ->select('vat_rate_id', $default_vat_rate->id)
+                        ->with('.modal.show', function($panel) use ($product) {
+                            $panel->typeSlowly('name', $product->name, 50)
+                                ->typeSlowly('price', $product->price, 50)
+                                ->select('measure_id', $product->unit_measure)
+                                ->select('category_id', $product->category)
+                                ->select('vat_rate_id', VatRate::inRandomOrder()->first()->id)
                                 ->press('Salva');
                         })
-                        ->waitForText($product[0])->pause(500);
+                        ->waitForText($product->name)->pause(500);
+
+                    $product_obj = Product::where('supplier_id', $supplier_id)->where('name', $product->name)->first();
 
                     if ($index == 0) {
                         $browser->mainScreenshot('prodotto');
                     }
+
+                    $browser->with('.accordion-item[data-element-id="' . $product_obj->id . '"]', function($panel) use ($variant_screenshot_made, $browser, $product) {
+                        $panel->clear('min_quantity')->typeSlowly('min_quantity', $product->min_quantity ?? 0, 50)
+                            ->clear('max_available')->typeSlowly('max_available', $product->max_available ?? 0, 50);
+
+                        /*
+                            Creazione varianti
+                        */
+                        if (!empty($product->variants)) {
+                            $variants = $product->variants;
+                            $this->handlingVariants($panel, $browser, $variants, true);
+
+                            if ($variant_screenshot_made == false) {
+                                foreach($variants as $variant_name => $variant_values) {
+                                    $this->handlingVariants($panel, $browser, [$variant_name => $variant_values], false);
+                                    break;
+                                }
+                                $variant_screenshot_made = true;
+                            }
+                        }
+
+                        $panel->scrollView('.save-button')->press('Salva');
+                    });
                 }
             });
     }
@@ -297,29 +382,25 @@ class FullTest extends DuskTestCase
             Amministrazione categorie
         */
         $browser->visitRoute('suppliers.index')
-            ->waitForText('Amministra Categorie')
-            ->press('#category_admin')->waitForText('Clicca e trascina le categorie nell\'elenco')
+            ->waitForText('Amministra Categorie')->press('#category_admin')->waitForText('Clicca e trascina le categorie nell\'elenco')
             ->mainScreenshot('categorie')
             ->typeSlowly('input[name=new_category]', 'Pippo', 50)->click('.dynamic-tree-add')
             ->pause(100)
             ->press('Salva')
-            ->pause(500)
-            ->press('#category_admin')->waitForText('Clicca e trascina le categorie nell\'elenco')
+            ->waitForText('Amministra Categorie')->press('#category_admin')->waitForText('Clicca e trascina le categorie nell\'elenco')
             ->assertInputValueAtXPath('//*[@id="pippo"]/div/input', 'Pippo');
 
         /*
             Amministrazione unità di misura
         */
         $browser->visitRoute('suppliers.index')
-            ->waitForText('Amministra Categorie')
-            ->click('#unit_measure_admin')->waitForText('Unità Discreta')
+            ->waitForText('Amministra Categorie')->click('#unit_measure_admin')->waitForText('Unità Discreta')
             ->mainScreenshot('unita_misura')
             ->click('.add-row')
             ->pause(100)
             ->typeAtXPath('//*/table/tbody/tr[last() - 1]/td/input', 'Pippo')
             ->press('Salva')
-            ->pause(500)
-            ->click('#unit_measure_admin')->waitForText('Unità Discreta')
+            ->waitForText('Amministra Categorie')->click('#unit_measure_admin')->waitForText('Unità Discreta')
             ->assertInputValueAtXPath('//*/input[@value="pippo"]/following-sibling::td/input', 'Pippo');
     }
 
@@ -345,7 +426,6 @@ class FullTest extends DuskTestCase
         $products = $this->products();
 
         $total = 0;
-        $quantities = $this->quantities();
 
         /*
             Salvataggio prenotazione, e controllo
@@ -355,13 +435,38 @@ class FullTest extends DuskTestCase
             ->waitForText('Puoi modificare')
             ->clickAtXPath('//*/div[contains(@class, "accordion-item")][1]/h2/button')
             ->waitForText('La Mia Prenotazione')
-            ->with('.accordion-collapse.show', function($panel) use ($products, $quantities, &$total) {
-                foreach($quantities as $index => $quantity) {
-                    $product_total = sprintf('%.02f', $products[$index][1] * $quantity);
+            ->with('.accordion-collapse.show', function($panel) use ($products, &$total) {
+                foreach($products as $index => $product) {
+                    $target_input = '//*/table/tbody/tr[contains(@class, "booking-product")][' . ($index + 1) . ']/td//input[@type="text"]';
+                    $target_feedback = '(//*/table/tbody/tr[contains(@class, "booking-product")][' . ($index + 1) . ']/td//div[@class="invalid-feedback"])[1]';
+                    $target_price = '//*/table/tbody/tr[contains(@class, "booking-product")][' . ($index + 1) . ']/td//label[contains(@class, "booking-product-price")]/span';
+
+                    $quantity = rand(0, 5);
+
+                    if ($product->min_quantity ?? 0) {
+                        $panel->pause(200)
+                            ->typeAtXPath($target_input, $product->min_quantity - 1)
+                            ->pause(500)
+                            ->assertSeeAtXPath($target_feedback, 'Quantità inferiore al minimo consentito');
+
+                        $quantity = $product->min_quantity + 1;
+                    }
+                    else if ($product->max_available ?? 0) {
+                        $panel->pause(200)
+                            ->typeAtXPath($target_input, $product->max_available + 1)
+                            ->pause(500)
+                            ->assertSeeAtXPath($target_feedback, 'Quantità superiore alla disponibilità');
+
+                        $quantity = $product->max_available - 1;
+                    }
+
+                    $product_total = sprintf('%.02f', $product->price * $quantity);
+
                     $panel->pause(200)
-                        ->typeAtXPath('//*/table/tbody/tr[contains(@class, "booking-product")][' . ($index + 1) . ']/td//input[@type="text"]', $quantity)
-                        ->pause(100)
-                        ->assertSeeAtXPath('//*/table/tbody/tr[contains(@class, "booking-product")][' . ($index + 1) . ']/td//label[contains(@class, "booking-product-price")]/span', $product_total);
+                        ->typeAtXPath($target_input, $quantity)
+                        ->pause(500)
+                        ->assertSeeAtXPath($target_price, $product_total);
+
                     $total += $product_total;
                 }
 
@@ -375,7 +480,7 @@ class FullTest extends DuskTestCase
             ->waitForText('Aggrega Ordini')
             ->clickAtXPath('//*/div[contains(@class, "accordion-item")][1]/h2/button')->waitForText('Consegne')
             ->mainScreenshot('ordine')
-            ->scrollIntoView('.order-summary-order-price')->assertSeeIn('.order-summary-order-price', sprintf('%.02f €', $total));
+            ->scrollView('.order-summary-order-price')->assertSeeIn('.order-summary-order-price', sprintf('%.02f €', $total));
 
         /*
             Annullamento prenotazione, e controllo
@@ -393,7 +498,7 @@ class FullTest extends DuskTestCase
         $browser->visitRoute('orders.index')
             ->waitForText('Aggrega Ordini')
             ->clickAtXPath('//*/div[contains(@class, "accordion-item")][1]/h2/button')->waitForText('Consegne')->pause(1000)
-            ->scrollIntoView('.order-summary-order-price')
+            ->scrollView('.order-summary-order-price')
             ->assertSeeIn('.order-summary-order-price', '0.00');
     }
 
@@ -407,7 +512,8 @@ class FullTest extends DuskTestCase
             ->waitForText('Amministra Categorie')
             ->click('.accordion-item[data-element-id="' . $supplier_id . '"]')->waitForText('Dettagli')
             ->press('Prodotti')
-            ->pause(500)
+            ->pause(3000)
+            ->waitForText('Modifica Rapida')
             ->clickAtXPath('//*/div[@data-element-id="' . $supplier_id . '"]//div[contains(@class, "active")]//div[contains(@class, "accordion-item")][1]/h2/button')->waitForText('Sconto')->pause(1000)
             ->clickAtXPath('//*/div[@data-element-id="' . $supplier_id . '"]//div[contains(@class, "active")]//div[contains(@class, "accordion-item")][1]//label[normalize-space()="Sconto"]/following-sibling::div/button')
             ->waitForText('Misura su cui applicare le soglie')
@@ -446,7 +552,7 @@ class FullTest extends DuskTestCase
     {
         $browser->visitRoute('notifications.index')
             ->waitForText('Crea Nuovo Notifica')
-            ->press('Crea Nuovo Notifica')->waitForText('Tipo')
+            ->press('Crea Nuovo Notifica')->waitForText('Tipo')->pause(100)
             ->with('.modal.show', function($panel) {
                 $panel->typeSlowly('content', 'Solo una prova', 50)
                     ->typeSlowly('start_date', printableDate(date('Y-m-d')), 50)
@@ -503,6 +609,26 @@ class FullTest extends DuskTestCase
             ->assertSee('3€');
     }
 
+    private function createMovement($browser)
+    {
+        $browser->visit('/movements')
+            ->press('Crea Nuovo Movimento')->waitForText('Tipo')
+            ->with('.modal.show', function($panel) use ($browser) {
+                $panel->pause(500)
+                    ->select('type', 'user-credit')
+                    ->waitForText('Valore')
+                    ->select('target_id', 'garibaldi')
+                    ->typeSlowly('amount', '10')
+                    ->press('@method-bank')
+                    ->typeSlowly('identifier', '1234567890')
+                    ->typeSlowly('notes', 'Versamento credito');
+
+                $browser->mainScreenshot('movimento');
+                $panel->press('Salva');
+            })
+            ->waitForText('Garibaldi');
+    }
+
     public function testAll()
     {
         if ($this->checkEnv() == false) {
@@ -517,6 +643,8 @@ class FullTest extends DuskTestCase
         setlocale(LC_TIME, 'it_IT.UTF-8');
 
         $this->browse(function (Browser $browser) {
+            $browser->maximize();
+
             /*
                 Login
             */
@@ -529,15 +657,16 @@ class FullTest extends DuskTestCase
                 ->assertPathIs('/dashboard')
                 ->assertSee('Prenotazioni Aperte');
 
-            // $this->testProfile($browser);
-            // $this->createUsers($browser);
-            // $this->createSuppliers($browser);
-            // $this->testSuppliersTools($browser);
-            // $this->createOrders($browser);
-            // $this->doBookings($browser);
-            // $this->modifiedProducts($browser);
-            // $this->createNotification($browser);
+            $this->testProfile($browser);
+            $this->createUsers($browser);
+            $this->createSuppliers($browser);
+            $this->testSuppliersTools($browser);
+            $this->createOrders($browser);
+            $this->doBookings($browser);
+            $this->modifiedProducts($browser);
+            $this->createNotification($browser);
             $this->createShippingPlace($browser);
+            $this->createMovement($browser);
         });
     }
 }

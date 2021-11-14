@@ -1,25 +1,5 @@
 <?php
 
-function predefinedMovementTypes()
-{
-    static $types = null;
-
-    if (is_null($types)) {
-        $types = [];
-        $classes = classesInNamespace('App\Parameters\MovementType');
-
-        foreach($classes as $class) {
-            $rclass = new \ReflectionClass($class);
-            if ($rclass->isInstantiable()) {
-                $m = new $class();
-                $types[$m->identifier()] = $m;
-            }
-        }
-    }
-
-    return $types;
-}
-
 /*
     Qui vengono letti i tipi di movimento contabile dal database, e le strutture
     dati di quelli "di sistema" (che non possono essere eliminati) vengono
@@ -29,6 +9,11 @@ function movementTypes($identifier = null, $with_trashed = false)
 {
     static $types = null;
 
+    if ($identifier == 'VOID') {
+        $types = null;
+        return null;
+    }
+
     if (is_null($types)) {
         $query = App\MovementType::orderBy('name', 'asc');
         if ($with_trashed) {
@@ -36,7 +21,7 @@ function movementTypes($identifier = null, $with_trashed = false)
         }
 
         $from_database = $query->get();
-        $predefined = predefinedMovementTypes();
+        $predefined = systemParameters('MovementType');
         $types = new Illuminate\Support\Collection();
 
         foreach($from_database as $mov) {
@@ -53,7 +38,12 @@ function movementTypes($identifier = null, $with_trashed = false)
     if ($identifier) {
         $ret = $types->where('id', $identifier)->first();
         if (is_null($ret)) {
-            \Log::error('Richiesto tipo di movimento non esistente: ' . $identifier);
+            /*
+                Questo è per compatibilità coi controlli usati in giro, che
+                assumono venga usato findOrFail() sulle query eseguite sul
+                database
+            */
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Error Processing Request", 1);
         }
     }
     else {
@@ -163,30 +153,22 @@ function paymentsByType($type)
 
     if ($type != null) {
         $metadata = movementTypes($type);
-        if ($metadata)
+        if ($metadata) {
             $function = json_decode($metadata->function);
+        }
     }
 
     $movement_methods = paymentTypes();
     $ret = [];
 
     foreach ($movement_methods as $method_id => $info) {
-        $found = false;
-
         if ($function) {
             foreach($function as $f) {
                 if ($f->method == $method_id) {
-                    $found = true;
+                    $ret[$method_id] = $info->name;
                     break;
                 }
             }
-        }
-        else {
-            $found = true;
-        }
-
-        if ($found) {
-            $ret[$method_id] = $info->name;
         }
     }
 
