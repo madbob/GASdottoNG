@@ -8,7 +8,7 @@
         <x-larastrap::text name="lastname" :label="_i('Cognome')" :required="in_array('lastname', currentAbsoluteGas()->public_registrations['mandatory_fields'])" />
         <x-larastrap::email name="email" :label="_i('E-Mail')" :required="in_array('email', currentAbsoluteGas()->public_registrations['mandatory_fields'])" />
         <x-larastrap::text name="phone" :label="_i('Telefono')" :required="in_array('phone', currentAbsoluteGas()->public_registrations['mandatory_fields'])" />
-        <x-larastrap::text name="username" :label="_i('Username')" required pattern="{{ App\User::usernamePattern() }}" />
+        <x-larastrap::text name="username" :label="_i('Username')" required pattern="{{ usernamePattern() }}" />
         <x-larastrap::password name="password" :label="_i('Password')" required />
         <x-larastrap::password name="password_confirmation" :label="_i('Conferma Password')" required />
         <x-larastrap::text name="verify" :label="$captcha" required />

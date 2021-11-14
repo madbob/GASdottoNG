@@ -71,10 +71,12 @@ class BookingPayment extends MovementType
                                 DeliveryUserController::update() (quando marcato come
                                 consegnato), dunque tanto vale farlo subito
                             */
-                            if ($booking->friends_bookings->isEmpty())
+                            if ($booking->friends_bookings->isEmpty()) {
                                 continue;
-                            else
+                            }
+                            else {
                                 $booking->save();
+                            }
                         }
 
                         if (isset($handling_status->{$booking->id})) {
@@ -113,9 +115,7 @@ class BookingPayment extends MovementType
                         $m->save();
 
                         $total -= $delivered;
-                        if ($total <= 0) {
-                            break;
-                        }
+                        $total = max(0, $total);
                     }
 
                     /*

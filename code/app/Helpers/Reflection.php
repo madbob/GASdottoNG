@@ -124,3 +124,35 @@ function fromInlineId($id)
     $class = sprintf('App\\%s', $class);
     return $class::find($id);
 }
+
+function unrollSpecialSelectors($users)
+{
+    $map = [];
+
+    if(!is_array($users)) {
+        return $map;
+    }
+
+    foreach ($users as $u) {
+        if (strrpos($u, 'special::', -strlen($u)) !== false) {
+            if (strrpos($u, 'special::role::', -strlen($u)) !== false) {
+                $role_id = substr($u, strlen('special::role::'));
+                $role = Role::find($role_id);
+                foreach ($role->users as $u) {
+                    $map[] = $u->id;
+                }
+            }
+            elseif (strrpos($u, 'special::order::', -strlen($u)) !== false) {
+                $order_id = substr($u, strlen('special::order::'));
+                $order = Order::findOrFail($order_id);
+                foreach ($order->topLevelBookings() as $booking) {
+                    $map[] = $booking->user->id;
+                }
+            }
+        } else {
+            $map[] = $u;
+        }
+    }
+
+    return array_unique($map);
+}

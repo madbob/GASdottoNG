@@ -106,7 +106,7 @@ class NotificationsController extends Controller
             }
         }
         else {
-            $users = User::unrollSpecialSelectors($users);
+            $users = unrollSpecialSelectors($users);
         }
 
         $notification->users()->sync($users, ['done' => false]);

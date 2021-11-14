@@ -246,11 +246,10 @@ class BookingsService extends BaseService
             Attenzione: se sto consegnando, e tutte le quantità sono a 0,
             comunque devo preservare i dati della prenotazione (se esistono)
         */
-        if ($count_products == 0) {
-            if ($delivering == false || $booking->products->count() == 0) {
-                $booking->delete();
-                return null;
-            }
+
+        if ($count_products == 0 && ($delivering == false || $booking->products()->count() == 0)) {
+            $booking->delete();
+            return null;
         }
         else {
             $booking->setRelation('products', $booked_products);

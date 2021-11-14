@@ -6,8 +6,6 @@ use Illuminate\Support\Str;
 
 use Auth;
 
-use App\User;
-
 trait AttachableTrait
 {
     public function attachments()
@@ -72,7 +70,7 @@ trait AttachableTrait
         $attachment->save();
 
         $users = $request->input('users', []);
-        $users = User::unrollSpecialSelectors($users);
+        $users = unrollSpecialSelectors($users);
         $attachment->users()->sync($users);
 
         return $attachment;
