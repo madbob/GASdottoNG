@@ -12,7 +12,7 @@ class Modifiers {
             if (Modifiers.modifiers_strings == null) {
                 utils.postAjax({
                     method: 'GET',
-                    url: 'modifiers/strings',
+                    url: container.attr('data-strings-source'),
                     dataType: 'JSON',
                     success: function(data) {
                         Modifiers.modifiers_strings = data;
