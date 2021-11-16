@@ -9,32 +9,30 @@ require('jquery-ui/ui/widgets/draggable');
 require('jquery-ui/ui/widgets/droppable');
 require('jquery-ui/ui/widgets/autocomplete');
 require('jquery-ui-touch-punch');
-require('bootstrap-datepicker');
-require('select2');
 require('blueimp-file-upload');
 import Cookies from 'js-cookie';
 
 require('./aggregation');
 require('./cc');
 require('./jquery.dynamictree');
-require('./jquery.TableCSVExport');
 require('./statistics');
 require('./popovers');
 require('./translate');
 require('./password');
 import utils from "./utils";
 import Lists from "./lists";
+import Widgets from "./widgets";
 import Triggers from "./triggers";
 import Filters from "./filters";
 import Bookings from "./bookings";
 import Roles from "./roles";
 import Modifiers from "./modifiers";
 import Movements from "./movements";
+import Exports from "./exports";
 import Callables from "./callables";
 
 var locker = false;
 var current_currency = $('meta[name=current_currency]').attr('content');
-var current_language = $('html').attr('lang').split('-')[0];
 var measure_discrete = null;
 
 const localCallables = {
@@ -62,73 +60,6 @@ $.fn.tagName = function() {
 function generalInit(container) {
     if (container == null) {
         container = $('body');
-    }
-
-    $('input.date', container).datepicker({
-        format: 'DD dd MM yyyy',
-        autoclose: true,
-        language: current_language,
-        clearBtn: true,
-    }).each(function() {
-        var input = $(this);
-        input.siblings('.input-group-addon').click(function() {
-            input.focus();
-        });
-    }).on('show', function(e) {
-        /*
-            Senza questo, l'evento risale e - non ho ben capito come -
-            interferisce con le accordion e i modal
-        */
-        e.stopPropagation();
-    });
-
-    $('input.date-to-month', container).datepicker({
-        format: 'dd MM',
-        autoclose: true,
-        language: current_language,
-        clearBtn: false,
-        maxViewMode: 'months'
-    });
-
-    $('select[multiple]', container).select2({
-        theme: "bootstrap-5",
-        dropdownParent: container,
-    });
-
-    /*
-        https://stackoverflow.com/questions/15989591/how-can-i-keep-bootstrap-popover-alive-while-the-popover-is-being-hovered
-    */
-    $('[data-bs-toggle="popover"]', container).popover({
-        trigger: "manual",
-        html: true,
-        animation:false
-    })
-    .on("mouseenter", function () {
-        var _this = this;
-        $(this).popover("show");
-        $(".popover").on("mouseleave", function () {
-            $(_this).popover('hide');
-        });
-    }).on("mouseleave", function () {
-        var _this = this;
-        setTimeout(function () {
-            if (!$(".popover:hover").length) {
-                $(_this).popover("hide");
-            }
-        }, 300);
-    });
-
-    if (container.closest('.contacts-selection').length != 0) {
-        var input = container.find('input[name="contact_value[]"]');
-        var typeclass = container.find('select option:selected').val();
-        fixContactField(input, typeclass);
-    }
-    else {
-        $('.contacts-selection tr', container).each(function() {
-            var input = $(this).find('input[name="contact_value[]"]');
-            var typeclass = $(this).find('select option:selected').val();
-            fixContactField(input, typeclass);
-        });
     }
 
     $('.nav-tabs a', container).click(function(e) {
@@ -208,16 +139,16 @@ function generalInit(container) {
         }
     });
 
-    setupImportCsvEditor(container);
-
     utils.init(container);
     Modifiers.init(container);
     Lists.init(container);
     Bookings.init(container);
+    Widgets.init(container);
     Triggers.init(container);
     Filters.init(container);
     Roles.init(container);
     Movements.init(container);
+    Exports.init(container);
 }
 
 function voidForm(form) {
@@ -225,31 +156,6 @@ function voidForm(form) {
     form.find('textarea').val('');
     form.find('select option:first').prop('selected', true);
     form.find('.error-message').remove();
-}
-
-function fixContactField(input, typeclass) {
-    input.attr('class', '').addClass('form-control');
-
-    if (typeclass == 'email') {
-        input.attr('type', 'email');
-    }
-    else {
-        input.attr('type', 'text');
-        input.addClass(typeclass);
-    }
-}
-
-function previewImage(input) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        var img = $(input).closest('.img-preview').find('img');
-
-        reader.onload = function (e) {
-            img.attr('src', e.target.result);
-        }
-
-        reader.readAsDataURL(input.files[0]);
-    }
 }
 
 function wizardLoadPage(node, contents) {
@@ -303,23 +209,6 @@ function completionRowsInit(node) {
         }
 
         row.remove();
-    });
-}
-
-function setupImportCsvEditor(container) {
-    $('#import_csv_sorter .im_draggable', container).each(function() {
-        $(this).draggable({
-            helper: 'clone',
-            revert: 'invalid'
-        });
-    });
-
-    $('#import_csv_sorter .im_droppable', container).droppable({
-        drop: function(event, ui) {
-            var node = ui.draggable.clone();
-            node.find('input:hidden').attr('name', 'column[]');
-            $(this).find('.column_content').empty().append(node.contents());
-        }
     });
 }
 
@@ -590,88 +479,6 @@ $(document).ready(function() {
 		Cookies.set(attr, value);
 	});
 
-    $('body').on('keydown', 'input.number', function(e) {
-        if (e.which == 13) {
-            e.preventDefault();
-            return;
-        }
-
-		var integer = $(this).attr('data-enforce-integer');
-		if (integer && (e.key == '.' || e.key == ',')) {
-			e.preventDefault();
-			return;
-		}
-
-        var allow_negative = ($(this).attr('data-allow-negative') == '1');
-		var minimum = $(this).attr('data-enforce-minimum');
-
-        $(this).val(function(index, value) {
-            var val = value.replace(/,/g, '.');
-            if (allow_negative)
-                val = val.replace(/[^\-0-9\.]/g, '');
-            else
-                val = val.replace(/[^0-9\.]/g, '');
-
-			if (val != '' && minimum && val < minimum)
-				val = minimum;
-
-            return val;
-        });
-    })
-    .on('focus', 'input.number', function(e) {
-        var v = utils.parseFloatC($(this).val());
-        if (v == 0) {
-			var minimum = $(this).attr('data-enforce-minimum');
-			if (minimum)
-				$(this).val(minimum);
-			else
-				$(this).val('0');
-		}
-    })
-    .on('blur', 'input.number', function(e) {
-        $(this).val(function(index, value) {
-			var v = utils.parseFloatC(value);
-
-			var minimum = $(this).attr('data-enforce-minimum');
-			if (minimum && v < minimum)
-				return minimum;
-			else
-				return v;
-        });
-    });
-
-	$('body').on('click', '.table-sorter a', function(e) {
-		e.preventDefault();
-		var target = $($(this).closest('.table-sorter').attr('data-table-target'));
-		var attribute = $(this).attr('data-sort-by');
-		var target_body = target.find('tbody');
-
-		target_body.find('> .table-sorting-header').addClass('d-none').filter('[data-sorting-' + attribute + ']').removeClass('d-none');
-
-		target_body.find('> tr[data-sorting-' + attribute + ']').filter(':not(.table-sorting-header)').sort(function(a, b) {
-			var attr_a = $(a).attr('data-sorting-' + attribute);
-			var attr_b = $(b).attr('data-sorting-' + attribute);
-			return attr_a.localeCompare(attr_b);
-		}).each(function() {
-			$(this).appendTo(target_body);
-		});
-
-		target_body.find('> tr.do-not-sort').each(function() {
-			$(this).appendTo(target_body);
-		});
-	});
-
-    $('body').on('blur', '.trim-2-ddigits', function() {
-        $(this).val(function(index, value) {
-            return utils.parseFloatC(value).toFixed(2);
-        });
-    })
-    .on('blur', '.trim-3-ddigits', function() {
-        $(this).val(function(index, value) {
-            return utils.parseFloatC(value).toFixed(3);
-        });
-    });
-
     $('body').on('submit', '.main-form', function(event) {
         event.preventDefault();
 
@@ -723,26 +530,6 @@ $(document).ready(function() {
                 }
             });
         }
-    });
-
-    $('body').on('change', 'input:file[data-max-size]', function() {
-        if (this.files && this.files[0]) {
-            var max = $(this).attr('data-max-size');
-            var file = this.files[0].size;
-            if (file > max) {
-                $(this).val('');
-                utils.setInputErrorText($(this), _('Il file è troppo grande!'));
-                return false;
-            }
-            else {
-                utils.setInputErrorText($(this), null);
-                return true;
-            }
-        }
-    });
-
-    $('body').on('change', '.img-preview input:file', function() {
-        previewImage(this);
     });
 
     $('body').on('submit', '.inner-form', function(event) {
@@ -841,88 +628,11 @@ $(document).ready(function() {
         });
     });
 
-	$('body').on('change', '.simple-sum', function() {
-		var sum = 0;
-		var container = $(this).closest('.simple-sum-container');
-		container.find('.simple-sum').each(function() {
-			sum += utils.parseFloatC($(this).val());
-		});
-		container.find('.simple-sum-result').val(sum);
-	});
-
-    $('body').on('click', '.spare-delete-button', function(event) {
-        event.preventDefault();
-
-        if (confirm('Sei sicuro?')) {
-            var form = $(this).closest('form');
-
-            $.ajax({
-                url: $(this).attr('data-delete-url'),
-                method: 'DELETE',
-				dataType: 'json',
-                success: function(data) {
-                    miscInnerCallbacks(form, data);
-                }
-            });
-        }
-    });
-
     $('body').on('click', '.spare-modal-delete-button', function(event) {
         event.preventDefault();
         var modal = $('#delete-confirm-modal');
         modal.find('form').attr('action', $(this).attr('data-delete-url'));
         modal.modal('show');
-    });
-
-    $('body').on('click', '.table_to_csv', function(e) {
-        e.preventDefault();
-        var target = $(this).attr('data-target');
-        var data = $(target).TableCSVExport({
-            delivery: 'download',
-            filename: _('bilanci_ricalcolati.csv')
-        });
-    });
-
-    $('body').on('change', '.contacts-selection select', function() {
-        var input = $(this).closest('tr').find('input[name="contact_value[]"]');
-        var typeclass = $(this).find('option:selected').val();
-        fixContactField(input, typeclass);
-    });
-
-    $('body').on('change', '.status-selector input:radio[name*="status"]', function() {
-        let field = $(this).closest('.status-selector');
-        let status = $(this).val();
-        let del = (status != 'deleted');
-        field.find('[name=deleted_at]').prop('hidden', del).closest('.input-group').prop('hidden', del);
-        let sus = (status != 'suspended');
-        field.find('[name=suspended_at]').prop('hidden', sus).closest('.input-group').prop('hidden', sus);
-    });
-
-    $('body').on('click', '.form-filler button[type=submit]', function(event) {
-        event.preventDefault();
-        var form = $(this).closest('.form-filler');
-        var target = $(form.attr('data-fill-target'));
-        var data = form.find('input, select').serialize();
-        target.empty().append(utils.loadingPlaceholder());
-
-        $.ajax({
-            method: 'GET',
-            url: form.attr('data-action'),
-            data: data,
-            dataType: 'html',
-
-            success: function(data) {
-                data = $(data);
-                target.empty().append(data);
-                utils.j().initElements(data);
-            }
-        });
-    })
-    .on('click', '.form-filler a.form-filler-download', function(event) {
-        event.preventDefault();
-        var data = $(this).closest('.form-filler').find('input, select').serializeArray();
-        var url = $(this).attr('href') + '&' + $.param(data);
-        window.open(url, '_blank');
     });
 
     /*
@@ -940,55 +650,6 @@ $(document).ready(function() {
                 utils.j().reloadNode(editor);
             }
         });
-    });
-
-    $('body').on('click', '.export-custom-list', function(event) {
-        event.preventDefault();
-
-        var printable = new Array();
-
-        var explicit_target = $(this).attr('data-target');
-        if (explicit_target) {
-            $(explicit_target).find('.accordion-item:visible').each(function() {
-                printable.push($(this).attr('data-element-id'));
-            });
-        }
-        else {
-            /*
-                Questo è per gestire il caso speciale dell'esportazione dei
-                prodotti di un fornitore, i quali potrebbero essere visualizzati
-                (e dunque filtrati) in una .loadablelist o nella tabella di
-                modifica rapida
-            */
-            var tab = $(this).closest('.tab-pane').find('.tab-pane.active');
-
-            if (tab.hasClass('details-list')) {
-                tab.find('.loadable-list .accordion-item:visible').each(function() {
-                    printable.push($(this).attr('data-element-id'));
-                });
-            }
-            else {
-                tab.find('.table tr:visible').each(function() {
-                    printable.push($(this).attr('data-element-id'));
-                });
-            }
-        }
-
-        var data = {};
-
-        var parent_form = utils.formByButton($(this));
-        if (parent_form.length != 0) {
-            data = parent_form.serializeArray();
-            for (var i = 0; i < printable.length; i++) {
-                data.push({name: 'printable[]', value: printable[i]});
-            }
-        }
-        else {
-            data = {printable: printable};
-        }
-
-        var url = $(this).attr('data-export-url') + '?' + $.param(data);
-        window.open(url, '_blank');
     });
 
     /*

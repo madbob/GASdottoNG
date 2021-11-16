@@ -189,4 +189,29 @@ class BookingsServiceTest extends TestCase
         $this->assertNotNull($booking->payment_id);
         $this->assertEquals($booking->payment->amount, $total);
     }
+
+    public function testKeepBookedQuantities()
+    {
+        $this->actingAs($this->userWithBasePerms);
+        list($data, $booked_count, $total) = $this->randomQuantities($this->products);
+        $data['action'] = 'booked';
+        $this->service->bookingUpdate($data, $this->sample_order->aggregate, $this->userWithBasePerms, false);
+
+        $this->actingAs($this->userWithShippingPerms);
+        $booked_data = [];
+        foreach($data as $index => $d) {
+            $booked_data[$d] = 0;
+        }
+        $booked_data['action'] = 'shipped';
+        $this->service->bookingUpdate($booked_data, $this->sample_order->aggregate, $this->userWithBasePerms, true);
+
+        $booking = \App\Booking::where('order_id', $this->sample_order->id)->where('user_id', $this->userWithBasePerms->id)->first();
+        $this->assertEquals($booking->status, 'saved');
+        $this->assertEquals($booking->products->count(), $booked_count);
+
+        foreach($booking->products as $product) {
+            $this->assertEquals($product->quantity, $data[$product->product_id]);
+            $this->assertEquals($product->delivered, 0);
+        }
+    }
 }

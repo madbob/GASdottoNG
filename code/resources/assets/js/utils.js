@@ -111,6 +111,15 @@ class Utils {
         return Utils.jbob;
     }
 
+    static currentLanguage()
+    {
+        if (typeof Utils.current_language == 'undefined') {
+            Utils.current_language = $('html').attr('lang').split('-')[0];
+        }
+
+        return Utils.current_language;
+    }
+
     static absoluteUrl()
     {
         if (typeof Utils.absolute_url == 'undefined') {
