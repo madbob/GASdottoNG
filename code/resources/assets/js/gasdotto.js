@@ -142,8 +142,8 @@ function generalInit(container) {
     utils.init(container);
     Modifiers.init(container);
     Lists.init(container);
-    Bookings.init(container);
     Widgets.init(container);
+    Bookings.init(container);
     Triggers.init(container);
     Filters.init(container);
     Roles.init(container);

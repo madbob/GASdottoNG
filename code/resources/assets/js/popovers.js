@@ -107,7 +107,7 @@ $(document).ready(function() {
             $('input.date', ret).datepicker({
                 format: 'DD dd MM yyyy',
                 autoclose: true,
-                language: current_language,
+                language: utils.currentLanguage(),
                 clearBtn: true,
             });
 

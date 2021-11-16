@@ -34,6 +34,36 @@ class Widgets {
             maxViewMode: 'months'
         });
 
+        $('.date[data-enforce-after]', container).each((index, item) => {
+            var current = $(item);
+            var target = this.dateEnforcePeer(current);
+
+            target.datepicker().on('changeDate', function() {
+                var current_start = current.datepicker('getDate');
+                var current_ref = target.datepicker('getDate');
+                if (current_start < current_ref) {
+                    current.datepicker('setDate', current_ref);
+                }
+            });
+        }).focus((e) => {
+            var target = this.dateEnforcePeer($(e.currentTarget));
+
+            /*
+                Problema: cercando di navigare tra i mesi all'interno del datepicker
+                viene lanciato nuovamente l'evento di focus, che fa rientrare in
+                questa funzione, e se setStartDate() viene incondazionatamente
+                eseguita modifica a sua volta la data annullando l'operazione.
+                Dunque qui la eseguo solo se non l'ho già fatto (se la data di
+                inizio forzato non corrisponde a quel che dovrebbe essere), badando
+                però a fare i confronti sui giusti formati
+            */
+            var current_start = $(e.currentTarget).datepicker('getStartDate');
+            var current_ref = target.datepicker('getUTCDate');
+            if (current_start.toString() != current_ref.toString()) {
+                $(e.currentTarget).datepicker('setStartDate', current_ref);
+            }
+        });
+
         $('select[multiple]', container).select2({
             theme: "bootstrap-5",
             dropdownParent: container,
@@ -161,6 +191,17 @@ class Widgets {
             let sus = (status != 'suspended');
             field.find('[name=suspended_at]').prop('hidden', sus).closest('.input-group').prop('hidden', sus);
         });
+    }
+
+    static dateEnforcePeer(node)
+    {
+        var select = node.attr('data-enforce-after');
+        var target = node.closest('.input-group').find(select);
+        if (target.length == 0) {
+            target = node.closest('form').find(select);
+        }
+
+        return target;
     }
 
     static handlingContactSelection(container) {
