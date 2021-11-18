@@ -4,7 +4,7 @@ namespace App\View\Icons;
 
 class Supplier extends IconsMap
 {
-    private function altIcons($ret, $user)
+    private static function altIcons($ret, $user)
     {
         if ($user->can('supplier.add', $user->gas)) {
             $ret['hand-thumbs-down'] = (object) [

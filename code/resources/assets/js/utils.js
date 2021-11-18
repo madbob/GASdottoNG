@@ -46,19 +46,8 @@ class Utils {
         $('.object-details', container).click((e) => {
             var url = $(e.currentTarget).attr('data-show-url');
             var modal = $('#service-modal');
-            modal.find('.modal-body').empty().append(this.loadingPlaceholder());
+            this.j().fetchNode(url, modal.find('.modal-body'));
             modal.modal('show');
-
-            this.postAjax({
-                url: url,
-                method: 'GET',
-                dataType: 'HTML',
-                success: (data) => {
-                    data = $(data);
-                    modal.find('.modal-body').empty().append(data);
-                    this.j().initElements(data);
-                }
-            });
         });
 
         $('input[data-alternative-required]', container).change((e) => {
@@ -97,6 +86,15 @@ class Utils {
         }
 
         return Utils.absolute_url;
+    }
+
+    static normalizeUrl(url)
+    {
+        if (url.startsWith('http') == false) {
+            url = this.absoluteUrl() + '/' + url;
+        }
+
+        return url;
     }
 
     static loadingPlaceholder()
@@ -232,12 +230,16 @@ class Utils {
             params.method = 'POST';
         }
 
-        if (params.url.startsWith('http') == false) {
-            params.url = this.absoluteUrl() + '/' + params.url;
-        }
+        params.url = this.normalizeUrl(params.url);
 
         // params.data._token = $('meta[name="csrf-token"]').attr('content');
         $.ajax(params);
+    }
+
+    static fetchNode(url, node)
+    {
+        url = this.normalizeUrl(url);
+        this.j().fetchNode(url, node);
     }
 
     /*
