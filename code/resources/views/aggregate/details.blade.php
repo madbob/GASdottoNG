@@ -3,7 +3,15 @@
 
     <div class="row">
         <div class="col-md-4">
-            <?php $statuses = array_merge(['no' => _i('Invariato')], \App\Order::statuses()) ?>
+            <?php
+
+            $statuses = ['no' => _i('Invariato')];
+            foreach(\App\Order::statuses() as $identifier => $meta) {
+                $statuses[$identifier] = $meta->label;
+            }
+
+            ?>
+
             <x-larastrap::select name="status" :label="_i('Stato')" :options="$statuses" value="no" :pophelp="_i('Da qui puoi modificare lo stato di tutti gli ordini inclusi nell\'aggregato')" />
 
             <x-larastrap::textarea name="comment" :label="_i('Commento')" rows="2" />

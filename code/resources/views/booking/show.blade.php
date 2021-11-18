@@ -80,15 +80,15 @@ $grand_total = 0;
                             @foreach($product->variants as $var)
                                 <tr>
                                     <td>
-                                        <label class="static-label">
-                                            {{ $product->product->name }}: {{ $var->printableName() }}
+                                        <x-larastrap::field squeeze="true">
+                                            <label class="static-label">
+                                                {{ $product->product->name }}: {{ $var->printableName() }}
+                                            </label>
 
-                                            @if(!empty($product->description))
-                                                <button type="button" class="btn btn-xs btn-light" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="hover" data-bs-content="{{ str_replace('"', '\"', $product->description) }}">
-                                                    <i class="bi-info-square"></i>
-                                                </button>
-                                            @endif
-                                        </label>
+                                            <div class="float-end">
+                                                @include('commons.detailsbutton', ['obj' => $product->product])
+                                            </div>
+                                        </x-larastrap::field>
                                     </td>
 
                                     <td>

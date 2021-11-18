@@ -145,17 +145,16 @@ class AggregatesController extends Controller
         $aggregate = Aggregate::findOrFail($id);
         $master_summary = null;
 
+        /*
+            Se l'ordine non è più attivo (e dunque risulta consegnato e
+            archiviato), include dei modificatori calcolati in modo trasversale
+            tra le prenotazioni (e.g. le spese di trasporto in valore assoluto,
+            da ripartire in funzione del valore delle prenotazioni) e la
+            ripartizione effettuata in base al prenotato non è coerente con
+            quella reale, si attiva la funzione di revisione dei modificatori
+        */
         if ($aggregate->isActive() == false) {
             foreach($aggregate->orders as $order) {
-                /*
-                    Se l'ordine non è più attivo (e dunque risulta consegnato e
-                    archiviato), include dei modificatori calcolati in modo
-                    trasversale tra le prenotazioni (e.g. le spese di trasporto in
-                    valore assoluto, da ripartire in funzione del valore delle
-                    prenotazioni) e la ripartizione effettuata in base al prenotato
-                    non è coerente con quella reale, si attiva la funzione di
-                    revisione dei modificatori
-                */
                 $modifiers = $order->involvedModifiers(true);
 
                 foreach($modifiers as $modifier) {

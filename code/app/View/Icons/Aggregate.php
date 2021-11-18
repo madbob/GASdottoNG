@@ -21,36 +21,6 @@ class Aggregate extends IconsMap
                 },
                 'text' => _i('Gestisci le consegne'),
             ],
-            'play' => (object) [
-                'test' => function ($obj) {
-                    return $obj->status == 'open';
-                },
-                'text' => _i('Prenotazioni Aperte'),
-            ],
-            'pause' => (object) [
-                'test' => function ($obj) {
-                    return $obj->status == 'suspended';
-                },
-                'text' => _i('In Sospeso'),
-            ],
-            'stop-fill' => (object) [
-                'test' => function ($obj) {
-                    return $obj->status == 'closed';
-                },
-                'text' => _i('Prenotazioni Chiuse'),
-            ],
-            'skip-forward' => (object) [
-                'test' => function ($obj) {
-                    return $obj->status == 'shipped';
-                },
-                'text' => _i('Consegnato'),
-            ],
-            'eject' => (object) [
-                'test' => function ($obj) {
-                    return $obj->status == 'archived';
-                },
-                'text' => _i('Archiviato'),
-            ],
             'plus-circle' => (object) [
                 'test' => function ($obj) {
                     return ($obj->status == 'closed' && $obj->hasPendingPackages());
@@ -58,6 +28,16 @@ class Aggregate extends IconsMap
                 'text' => _i('Confezioni Da Completare'),
             ]
         ];
+
+        foreach(\App\Order::statuses() as $identifier => $meta) {
+            $ret[$meta->icon] = (object) [
+                'test' => function ($obj) use ($identifier) {
+                    return $obj->status == $identifier;
+                },
+                'text' => $meta->label,
+                'group' => 'status',
+            ];
+        }
 
         if (Gas::count() > 1) {
             $ret['share'] = (object) [

@@ -53,8 +53,9 @@ class Aggregate extends Model
         else
             $supplier_id = $supplier;
 
-        if ($statuses == null)
-            $statuses = ['open', 'closed', 'shipped', 'suspended', 'archived'];
+        if ($statuses == null) {
+            $statuses = array_keys(Order::statuses());
+        }
 
         /*
             Questa funzione dovrebbe prendere in considerazione anche i permessi
@@ -109,13 +110,24 @@ class Aggregate extends Model
             $supplier_id = 0;
         }
 
-        return self::easyFilter($supplier_id, date('Y-m-d', strtotime('-1 years')), date('Y-m-d', strtotime('+1 years')), ['open', 'closed', 'shipped', 'suspended']);
+        $valid_statuses = [];
+        foreach(Order::statuses() as $identifier => $meta) {
+            if ($meta->default_display) {
+                $valid_statuses[] = $identifier;
+            }
+        }
+
+        return self::easyFilter($supplier_id, date('Y-m-d', strtotime('-1 years')), date('Y-m-d', strtotime('+1 years')), $valid_statuses);
     }
 
     public function getStatusAttribute()
     {
-        $priority = ['suspended', 'open', 'closed', 'shipped', 'archived'];
-        $index = 10;
+        $priority = [];
+        foreach(Order::statuses() as $identifier => $meta) {
+            $priority[$meta->aggregate_priority] = $identifier;
+        }
+
+        $index = 999;
 
         foreach ($this->orders as $order) {
             $a = array_search($order->status, $priority);
@@ -124,8 +136,8 @@ class Aggregate extends Model
             }
         }
 
-        if ($index == 10) {
-            $index = 2;
+        if ($index == 999) {
+            return 'closed';
         }
 
         return $priority[$index];
@@ -165,7 +177,7 @@ class Aggregate extends Model
 
             case 'closed':
                 return self::whereHas('orders', function ($query) use ($user) {
-                    $query->where('status', 'closed')->where(function($query) use ($user) {
+                    $query->whereIn('status', ['closed', 'user_payment'])->where(function($query) use ($user) {
                         $query->whereHas('bookings', function($query) use ($user) {
                             $query->where('status', '!=', 'shipped')->where(function($query) use ($user) {
                                 $query->where('user_id', $user->id)->orWhereIn('user_id', $user->friends()->pluck('id'));
