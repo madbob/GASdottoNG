@@ -67,8 +67,12 @@ class Aggregate extends Printer
                             $d->products = array_merge($d->products, $td->products);
                             $d->notes = array_merge($d->notes, $td->notes);
 
-                            foreach($d->totals as $index => $t) {
-                                $d->totals[$index] += $td->totals[$index] ?? 0;
+                            /*
+                                Nell'array "totals" si trova il totale della
+                                prenotazione, ma anche i totali dei modificatori
+                            */
+                            foreach($td->totals as $index => $t) {
+                                $d->totals[$index] = ($d->totals[$index] ?? 0) + $td->totals[$index];
                             }
 
                             $found = true;
