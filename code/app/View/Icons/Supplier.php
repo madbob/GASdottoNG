@@ -4,6 +4,27 @@ namespace App\View\Icons;
 
 class Supplier extends IconsMap
 {
+    private function altIcons($ret, $user)
+    {
+        if ($user->can('supplier.add', $user->gas)) {
+            $ret['hand-thumbs-down'] = (object) [
+                'test' => function ($obj) {
+                    return !is_null($obj->suspended_at);
+                },
+                'text' => _i('Sospeso'),
+            ];
+
+            $ret['slash-circle'] = (object) [
+                'test' => function ($obj) {
+                    return !is_null($obj->deleted_at);
+                },
+                'text' => _i('Eliminato'),
+            ];
+        }
+
+        return $ret;
+    }
+
     public static function commons($user)
     {
         $ret = [
@@ -27,22 +48,6 @@ class Supplier extends IconsMap
             ],
         ];
 
-        if ($user->can('supplier.add', $user->gas)) {
-            $ret['hand-thumbs-down'] = (object) [
-                'test' => function ($obj) {
-                    return !is_null($obj->suspended_at);
-                },
-                'text' => _i('Sospeso'),
-            ];
-
-            $ret['slash-circle'] = (object) [
-                'test' => function ($obj) {
-                    return !is_null($obj->deleted_at);
-                },
-                'text' => _i('Eliminato'),
-            ];
-        }
-
-        return $ret;
+        return self::altIcons($ret, $user);
     }
 }

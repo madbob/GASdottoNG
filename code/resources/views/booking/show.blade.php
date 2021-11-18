@@ -101,7 +101,7 @@ $grand_total = 0;
 
                                     <td>
                                         <label class="float-end">
-                                            {{ printablePriceCurrency($o->status == 'shipped' ? $var->final_price : $var->quantityValue()) }}
+                                            {{ printablePriceCurrency($o->status == 'shipped' ? $var->deliveredValue() : $var->quantityValue()) }}
                                         </label>
                                     </td>
                                 </tr>

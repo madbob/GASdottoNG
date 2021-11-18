@@ -61,29 +61,21 @@ trait Iconable
         $box = static::myIconsBox();
         if ($box) {
             $user = Auth::user();
+            $obj = $this;
 
-            foreach ($box->commons($user) as $icon => $condition) {
+            $ret = array_keys(array_filter($box->commons($user), function($condition, $icon) use ($obj, $group) {
+                if (is_null($group) == false && (isset($condition->group) == false || $condition->group != $group)) {
+                    return false;
+                }
+
                 $t = $condition->test;
+                return $t($obj);
+            }, ARRAY_FILTER_USE_BOTH));
 
-                if (is_null($group) == false) {
-                    if (isset($condition->group) == false) {
-                        continue;
-                    }
-
-                    if ($condition->group != $group) {
-                        continue;
-                    }
-                }
-
-                if ($t($this)) {
-                    $ret[] = $icon;
-                }
-            }
-
-            foreach ($box->selective() as $icon => $condition) {
+            $ret = array_reduce($box->selective(), function($ret, $condition) use ($obj) {
                 $assign = $condition->assign;
-                $ret = array_merge($ret, $assign($this));
-            }
+                return array_merge($ret, $assign($obj));
+            }, $ret);
         }
 
         return $ret;
@@ -97,9 +89,9 @@ trait Iconable
         if (is_null($box) == false) {
             $user = Auth::user();
 
-            foreach ($box->commons($user) as $icon => $condition) {
-                $ret[$icon] = $condition->text;
-            }
+            $ret = array_map(function($condition) {
+                return $condition->text;
+            }, $box->commons($user));
 
             if ($contents != null) {
                 foreach ($box->selective() as $icon => $condition) {
