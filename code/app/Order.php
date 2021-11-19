@@ -173,11 +173,10 @@ class Order extends Model
             $ret->order_id = $this->id;
             $ret->notes = '';
             $ret->status = 'pending';
-            $ret->notes = '';
             $ret->id = $ret->getSlugID();
         }
 
-        if ($ret && $userobj) {
+        if ($userobj) {
             $ret->setRelation('user', $userobj);
         }
 
@@ -196,10 +195,7 @@ class Order extends Model
         foreach($bookings as $booking) {
             if ($booking->user->isFriend()) {
                 if (!isset($ret[$booking->user->parent_id])) {
-                    $placeholder = new Booking();
-                    $placeholder->user_id = $booking->user->parent_id;
-                    $placeholder->order_id = $this->id;
-                    $ret[$booking->user->parent_id] = $placeholder;
+                    $ret[$booking->user->parent_id] = $this->userBooking($booking->user->parent_id);
                 }
             }
             else {

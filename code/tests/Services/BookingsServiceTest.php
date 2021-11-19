@@ -230,4 +230,8 @@ class BookingsServiceTest extends TestCase
             $this->assertEquals($product->delivered, 0);
         }
     }
+
+    /*
+        TODO: unit test per prenotazioni fatte da un amico, senza la prenotazione dell'utente principale, magari con anche dei modificatori
+    */
 }
