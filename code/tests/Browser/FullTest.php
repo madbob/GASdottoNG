@@ -14,6 +14,8 @@ class FullTest extends DuskTestCase
 {
     use DatabaseMigrations;
 
+    private $gas = null;
+
     /*
         Questo è per eseguire lo unit test Dusk solo quando espressamente
         richiesto (ovvero: eseguendo il comando "php artisan dusk")
@@ -31,6 +33,7 @@ class FullTest extends DuskTestCase
 
         parent::setUp();
         $this->artisan('db:seed');
+        $this->gas = Gas::first();
     }
 
     private function testProfile($browser)
@@ -146,6 +149,21 @@ class FullTest extends DuskTestCase
             ->press('button[data-filter-attribute="deleted_at"]')
             ->waitForText('Bandiera')
             ->assertSee('Bandiera');
+
+        $fee_amount = $gas->annual_fee_amount;
+
+        /*
+            Stato Quote e creazione quota
+        */
+        $browser->visitRoute('users.index')
+            ->waitForText('Importa CSV')
+            ->press('Stato Quote')->waitForText('Controllo Quote')->pause(500)
+            ->clickAtXPath('//*/tr[4]/td/button[contains(@class, "btn-success")][1]')->pause(500)
+            ->with('.movement-modal.show', function($panel) {
+                $panel->press('Salva');
+            })->pause(500)
+            ->assertSee(sprintf('%.02f €', $fee_amount))
+            ->assertSee('Contanti');
     }
 
     private function suppliers()

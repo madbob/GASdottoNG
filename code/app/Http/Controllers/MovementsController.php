@@ -13,6 +13,7 @@ use Response;
 use PDF;
 
 use App\User;
+use App\Movement;
 use App\Invoice;
 use App\Receipt;
 
