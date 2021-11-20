@@ -1,3 +1,5 @@
+import utils from "./utils";
+
 class Filters {
     static init(container)
     {
@@ -25,6 +27,55 @@ class Filters {
 
         $('.table-filters input:radio', container).change((e) => {
             this.tableFilters($(e.currentTarget).closest('.table-filters').attr('data-table-target'));
+        });
+
+        $('.table-sorter a', container).click(function(e) {
+    		e.preventDefault();
+    		var target = $($(this).closest('.table-sorter').attr('data-table-target'));
+    		var attribute = $(this).attr('data-sort-by');
+    		var target_body = target.find('tbody');
+
+    		target_body.find('> .table-sorting-header').addClass('d-none').filter('[data-sorting-' + attribute + ']').removeClass('d-none');
+
+    		target_body.find('> tr[data-sorting-' + attribute + ']').filter(':not(.table-sorting-header)').sort(function(a, b) {
+    			var attr_a = $(a).attr('data-sorting-' + attribute);
+    			var attr_b = $(b).attr('data-sorting-' + attribute);
+    			return attr_a.localeCompare(attr_b);
+    		}).each(function() {
+    			$(this).appendTo(target_body);
+    		});
+
+    		target_body.find('> tr.do-not-sort').each(function() {
+    			$(this).appendTo(target_body);
+    		});
+    	});
+
+        $('.form-filler button[type=submit]', container).click(function(event) {
+            event.preventDefault();
+            var form = $(this).closest('.form-filler');
+            var target = $(form.attr('data-fill-target'));
+            var data = form.find('input, select').serialize();
+            target.empty().append(utils.loadingPlaceholder());
+
+            $.ajax({
+                method: 'GET',
+                url: form.attr('data-action'),
+                data: data,
+                dataType: 'html',
+
+                success: function(data) {
+                    data = $(data);
+                    target.empty().append(data);
+                    utils.j().initElements(data);
+                }
+            });
+        });
+
+        $('.form-filler a.form-filler-download', container).click(function(event) {
+            event.preventDefault();
+            var data = $(this).closest('.form-filler').find('input, select').serializeArray();
+            var url = $(this).attr('href') + '&' + $.param(data);
+            window.open(url, '_blank');
         });
     }
 

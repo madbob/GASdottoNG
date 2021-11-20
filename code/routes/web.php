@@ -17,7 +17,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/', function () {
         Session::reflash();
         return Redirect::to('/dashboard');
-    });
+    })->name('root');
 
     Route::get('/home', function () {
         return Redirect::to('/dashboard');

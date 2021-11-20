@@ -2,7 +2,8 @@
 
 namespace App;
 
-trait SuspendableTrait {
+trait SuspendableTrait
+{
     public function setStatus($status, $deleted_at, $suspended_at)
     {
         switch($status) {

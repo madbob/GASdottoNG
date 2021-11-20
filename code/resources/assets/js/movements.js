@@ -13,77 +13,20 @@ class Movements {
             this.initModals(container);
         }
         else {
-            var modals = container.find('.movement-modal');
-            if (modals.length > 0) {
-                this.initModals(modals);
-            }
+            container.find('.movement-modal').each((i, e) => {
+                this.initModals(e);
+            });
         }
 
         $('.movement-type-selector', container).change((e) => {
             var selector = $(e.currentTarget);
             var type = selector.find('option:selected').val();
             var selectors = selector.closest('form').find('.selectors');
-            selectors.empty().append(utils.loadingPlaceholder());
-
-            utils.postAjax({
-                method: 'GET',
-                url: 'movements/create',
-                dataType: 'html',
-                data: {
-                    type: type
-                },
-
-                success: function(data) {
-                    data = $(data);
-                    selectors.empty().append(data);
-                    this.j().initElements(data);
-                }
-            });
+            utils.fetchNode('movements/create?type=' + type, selectors);
         });
 
         if (container.hasClass('movement-type-editor')) {
-            $('select[name=sender_type], select[name=target_type]', container).change(function(e) {
-                var editor = $(this).closest('.movement-type-editor');
-                var sender = editor.find('select[name=sender_type] option:selected').val();
-                var target = editor.find('select[name=target_type] option:selected').val();
-                var table = editor.find('table');
-
-                table.find('tbody tr').each(function() {
-                    var type = $(this).attr('data-target-class');
-                    /*
-                        Le righe relative al GAS non vengono mai nascoste, in quanto
-                        molti tipi di movimento vanno ad incidere sui saldi globali
-                        anche quando il GAS non è direttamente coinvolto
-                    */
-                    $(this).toggleClass('hidden', (type != 'App\\Gas' && type != sender && type != target));
-                });
-
-                table.find('thead input[data-active-for]').each(function() {
-                    var type = $(this).attr('data-active-for');
-                    if(type != '' && type != sender && type != target)
-                        $(this).prop('checked', false).prop('disabled', true).change();
-                    else
-                        $(this).prop('disabled', false);
-                });
-            });
-
-            $('table thead input:checkbox', container).change(function() {
-                var active = $(this).prop('checked');
-                var index = $(this).closest('th').index();
-
-                if (active == false) {
-                    $(this).closest('table').find('tbody tr').each(function() {
-                        var cell = $(this).find('td:nth-child(' + (index + 1) + ')');
-                        cell.find('input[value=ignore]').click();
-                        cell.find('label, input').prop('disabled', true);
-                    });
-                }
-                else {
-                    $(this).closest('table').find('tbody tr').each(function() {
-                        $(this).find('td:nth-child(' + (index + 1) + ')').find('label, input').prop('disabled', false);
-                    });
-                }
-            });
+            this.movementTypeEditor(container);
         }
     }
 
@@ -116,6 +59,52 @@ class Movements {
         });
     }
 
+    static movementTypeEditor(container)
+    {
+        $('select[name=sender_type], select[name=target_type]', container).change(function(e) {
+            var editor = $(this).closest('.movement-type-editor');
+            var sender = editor.find('select[name=sender_type] option:selected').val();
+            var target = editor.find('select[name=target_type] option:selected').val();
+            var table = editor.find('table');
+
+            table.find('tbody tr').each(function() {
+                var type = $(this).attr('data-target-class');
+                /*
+                    Le righe relative al GAS non vengono mai nascoste, in quanto
+                    molti tipi di movimento vanno ad incidere sui saldi globali
+                    anche quando il GAS non è direttamente coinvolto
+                */
+                $(this).toggleClass('hidden', (type != 'App\\Gas' && type != sender && type != target));
+            });
+
+            table.find('thead input[data-active-for]').each(function() {
+                var type = $(this).attr('data-active-for');
+                if(type != '' && type != sender && type != target)
+                    $(this).prop('checked', false).prop('disabled', true).change();
+                else
+                    $(this).prop('disabled', false);
+            });
+        });
+
+        $('table thead input:checkbox', container).change(function() {
+            var active = $(this).prop('checked');
+            var index = $(this).closest('th').index();
+
+            if (active == false) {
+                $(this).closest('table').find('tbody tr').each(function() {
+                    var cell = $(this).find('td:nth-child(' + (index + 1) + ')');
+                    cell.find('input[value=ignore]').click();
+                    cell.find('label, input').prop('disabled', true);
+                });
+            }
+            else {
+                $(this).closest('table').find('tbody tr').each(function() {
+                    $(this).find('td:nth-child(' + (index + 1) + ')').find('label, input').prop('disabled', false);
+                });
+            }
+        });
+    }
+
     /*
         Questa è per forzare i metodi di pagamento disponibili nel modale di
         importazione dei movimenti contabili
@@ -123,8 +112,7 @@ class Movements {
     static enforcePaymentMethod(node)
     {
         var selected = node.find('option:selected').val();
-        var default_payment = null;
-        var payments = null;
+        var default_payment = payments = null;
 
         JSON.parse(node.closest('.modal').find('input[name=matching_methods_for_movement_types]').val()).forEach(function(iter) {
             if (iter.method == selected) {
@@ -139,10 +127,7 @@ class Movements {
                 var v = $(this).val();
                 if (payments.indexOf(v) >= 0) {
                     $(this).prop('disabled', false);
-
-                    if (default_payment == v) {
-                        $(this).prop('selected', true);
-                    }
+                    $(this).prop('selected', default_payment == v);
                 }
                 else {
                     $(this).prop('disabled', true);

@@ -25,7 +25,9 @@ use App\Events\SluggableCreating;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, Authorizable, CanResetPassword, SoftDeletes, ContactableTrait, CreditableTrait, PayableTrait, SuspendableTrait, HierarcableTrait, GASModel, SluggableID, Cachable;
+    use HasFactory, Notifiable, Authorizable, CanResetPassword, SoftDeletes,
+        ContactableTrait, CreditableTrait, PayableTrait, SuspendableTrait, FriendTrait, HierarcableTrait, RoleableTrait, BookerTrait,
+        GASModel, SluggableID, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -51,29 +53,9 @@ class User extends Authenticatable
         return _i('Utente');
     }
 
-    public function roles($target = null)
-    {
-        return $this->belongsToMany('App\Role')->orderBy('name', 'asc')->withPivot('id');
-    }
-
-    public function friends()
-    {
-        return $this->hasMany('App\User', 'parent_id');
-    }
-
-    public function friends_with_trashed()
-    {
-        return $this->hasMany('App\User', 'parent_id')->withTrashed();
-    }
-
     public function parent()
     {
         return $this->belongsTo('App\User', 'parent_id');
-    }
-
-    public function getManagedRolesAttribute()
-    {
-        return Role::sortedByHierarchy(true);
     }
 
     public function notifications()
@@ -99,11 +81,6 @@ class User extends Authenticatable
     public function fee()
     {
         return $this->belongsTo('App\Movement');
-    }
-
-    public function bookings()
-    {
-        return $this->hasMany('App\Booking')->orderBy('created_at', 'desc');
     }
 
     public function shippingplace()
@@ -164,30 +141,6 @@ class User extends Authenticatable
         return $ret;
     }
 
-    public function getLastBookingAttribute()
-    {
-        $last = $this->bookings()->first();
-        if ($last == null)
-            return null;
-        else
-            return $last->created_at;
-    }
-
-    public function canBook()
-    {
-        if ($this->gas->restrict_booking_to_credit) {
-            if ($this->isFriend()) {
-                return $this->parent->canBook();
-            }
-            else {
-                return $this->activeBalance() > 0;
-            }
-        }
-        else {
-            return true;
-        }
-    }
-
     public function printableHeader()
     {
         $ret = $this->printableName();
@@ -218,11 +171,6 @@ class User extends Authenticatable
         return $ret;
     }
 
-    public function isFriend()
-    {
-        return $this->parent_id != null;
-    }
-
     public function testUserAccess($myself = null)
     {
         if (is_null($myself)) {
@@ -238,61 +186,6 @@ class User extends Authenticatable
         }
 
         return false;
-    }
-
-    public function addRole($role, $assigned)
-    {
-        $role_id = normalizeId($role);
-
-        $test = $this->roles()->where('roles.id', $role_id)->first();
-        if (is_null($test)) {
-            $this->roles()->attach($role_id);
-            $test = $this->roles()->where('roles.id', $role_id)->first();
-        }
-
-        if (is_null($test)) {
-            Log::error('Impossibile aggiungere ruolo ' . $role_id . ' a utente ' . $this->id);
-        }
-        else {
-            if ($assigned)
-                $test->attachApplication($assigned);
-        }
-
-        return $test;
-    }
-
-    public function removeRole($role, $assigned)
-    {
-        $role_id = normalizeId($role);
-
-        $test = $this->roles()->where('roles.id', $role_id)->first();
-        if (is_null($test))
-            return;
-
-        if ($assigned) {
-            $test->detachApplication($assigned);
-            if ($test->applications(true)->isEmpty()) {
-                $this->roles()->detach($role_id);
-            }
-        }
-        else {
-            $this->roles()->detach($role_id);
-        }
-    }
-
-    public function targetsByAction($action, $exclude_trashed = true)
-    {
-        $targets = [];
-        $class = classByRule($action);
-
-        foreach ($this->roles as $role) {
-            if ($role->enabledAction($action))
-                foreach($role->applications(true, $exclude_trashed) as $app)
-                    if ($class == null || get_class($app) == $class)
-                        $targets[$app->id] = $app;
-        }
-
-        return $targets;
     }
 
     /*
@@ -349,11 +242,6 @@ class User extends Authenticatable
         $this->notify(new ResetPasswordNotification($token));
     }
 
-    public static function usernamePattern()
-    {
-        return '[A-Za-z0-9_@.\- ]{1,50}';
-    }
-
     public function initialWelcome()
     {
         $this->load('contacts');
@@ -366,38 +254,6 @@ class User extends Authenticatable
         }
     }
 
-    public static function unrollSpecialSelectors($users)
-    {
-        $map = [];
-
-        if(!is_array($users)) {
-            return $map;
-        }
-
-        foreach ($users as $u) {
-            if (strrpos($u, 'special::', -strlen($u)) !== false) {
-                if (strrpos($u, 'special::role::', -strlen($u)) !== false) {
-                    $role_id = substr($u, strlen('special::role::'));
-                    $role = Role::find($role_id);
-                    foreach ($role->users as $u) {
-                        $map[] = $u->id;
-                    }
-                }
-                elseif (strrpos($u, 'special::order::', -strlen($u)) !== false) {
-                    $order_id = substr($u, strlen('special::order::'));
-                    $order = Order::findOrFail($order_id);
-                    foreach ($order->topLevelBookings() as $booking) {
-                        $map[] = $booking->user->id;
-                    }
-                }
-            } else {
-                $map[] = $u;
-            }
-        }
-
-        return array_unique($map);
-    }
-
     /************************************************************ SluggableID */
 
     public function getSlugID()
@@ -405,7 +261,7 @@ class User extends Authenticatable
         return $this->username;
     }
 
-    /******************************************************** CreditableTrait */
+    /***************************** CreditableTrait (ereditato da BookerTrait) */
 
     public function balanceFields()
     {

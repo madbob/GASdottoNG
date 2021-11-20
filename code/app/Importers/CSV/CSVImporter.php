@@ -13,14 +13,13 @@ abstract class CSVImporter
 {
     public static function getImporter($type)
     {
-        if ($type == 'products') {
-            return new Products();
-        }
-        else if ($type == 'users') {
-            return new Users();
-        }
-        else if ($type == 'movements') {
-            return new Movements();
+        switch($type) {
+            case 'products':
+                return new Products();
+            case 'users':
+                return new Users();
+            case 'movements':
+                return new Movements();
         }
 
         Log::error('Unexpected type for CSV import: ' . $type);
@@ -43,7 +42,12 @@ abstract class CSVImporter
             rewind($contents);
         }
 
-        return $separators[array_search(max($lenghts), $lenghts)];
+        $target_separator = $separators[array_search(max($lenghts), $lenghts)] ?? null;
+        if (is_null($target_separator)) {
+            throw new \Exception(_i('Impossibile interpretare il file'), 1);
+        }
+
+        return $target_separator;
     }
 
     protected function storeUploadedFile($request, $parameters)
@@ -60,10 +64,6 @@ abstract class CSVImporter
             $path = $filepath . '/' . $filename;
 
             $target_separator = $this->guessCsvFileSeparator($path);
-            if (is_null($target_separator)) {
-                return $this->errorResponse(_i('Impossibile interpretare il file'));
-            }
-
             $reader = Reader::createFromPath($path, 'r');
             $reader->setDelimiter($target_separator);
 
@@ -91,18 +91,13 @@ abstract class CSVImporter
         $ret = [];
 
         foreach($search as $s) {
-            $found = false;
+            $index = array_search($s, $columns);
 
-            foreach ($columns as $index => $field) {
-                if ($field == $s) {
-                    $ret[] = $index;
-                    $found = true;
-                    break;
-                }
-            }
-
-            if ($found == false) {
+            if ($index === false) {
                 $ret[] = -1;
+            }
+            else {
+                $ret[] = $index;
             }
         }
 
@@ -130,10 +125,6 @@ abstract class CSVImporter
         }
 
         $target_separator = $this->guessCsvFileSeparator($path);
-        if (is_null($target_separator)) {
-            throw new \Exception(_i('Impossibile interpretare il file'), 1);
-        }
-
         $reader = Reader::createFromPath($path, 'r');
         $reader->setDelimiter($target_separator);
 

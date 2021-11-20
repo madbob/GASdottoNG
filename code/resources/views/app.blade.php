@@ -11,7 +11,7 @@
         <link rel="stylesheet" type="text/css" href="{{ mix('/css/gasdotto.css') }}">
 
         <meta name="csrf-token" content="{{ csrf_token() }}"/>
-        <meta name="absolute_url" content="{{ url('/') }}"/>
+        <meta name="absolute_url" content="{{ route('root') }}"/>
         <meta name="current_currency" content="{{ currentAbsoluteGas()->currency }}"/>
     </head>
     <body>

@@ -129,9 +129,7 @@ class BookingPayment extends MovementType
                         }
 
                         $total -= $delivered;
-                        if ($total <= 0) {
-                            break;
-                        }
+                        $total = max(0, $total);
                     }
 
                     return 2;

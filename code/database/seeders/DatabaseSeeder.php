@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Str;
 use DB;
 use Hash;
 
@@ -19,7 +20,7 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    public function run()
+    private function resetAll()
     {
         DB::table('users')->delete();
         DB::table('password_resets')->delete();
@@ -42,13 +43,11 @@ class DatabaseSeeder extends Seeder
         DB::table('movements')->delete();
         DB::table('contacts')->delete();
         DB::table('comments')->delete();
+    }
 
-        $gas = Gas::create([
-            'id' => str_slug('Senza Nome'),
-            'name' => 'Senza Nome',
-        ]);
-
-        $balance = Balance::create([
+    private function balanceInit($gas)
+    {
+        Balance::create([
             'target_id' => $gas->id,
             'target_type' => get_class($gas),
             'bank' => 0,
@@ -57,7 +56,10 @@ class DatabaseSeeder extends Seeder
             'deposits' => 0,
             'date' => date('Y-m-d', time())
         ]);
+    }
 
+    private function roleInit($gas)
+    {
         $admin_role = Role::create([
             'name' => 'Amministratore',
             'actions' => 'gas.access,gas.permissions,gas.config,supplier.view,supplier.add,users.admin,users.movements,movements.admin,movements.types,categories.admin,measures.admin,gas.statistics,notifications.admin'
@@ -106,38 +108,34 @@ class DatabaseSeeder extends Seeder
         $admin->addRole($user_role, $gas);
         $admin->addRole($admin_role, $gas);
 
+        return $admin;
+    }
+
+    private function categoryInit()
+    {
         $categories = ['Non Specificato', 'Frutta', 'Verdura', 'Cosmesi', 'Bevande'];
         foreach ($categories as $cat) {
             Category::create([
-                'id' => str_slug($cat),
+                'id' => Str::slug($cat),
                 'name' => $cat,
             ]);
         }
+    }
 
-        Measure::create([
-            'id' => str_slug('Non Specificato'),
-            'name' => 'Non Specificato',
-            'discrete' => true,
-        ]);
+    private function measureInit()
+    {
+        $measures = ['Non Specificato' => true, 'Chili' => false, 'Litri' => false, 'Pezzi' => true];
+        foreach($measures as $name => $discrete) {
+            Measure::create([
+                'id' => Str::slug($name),
+                'name' => $name,
+                'discrete' => $discrete,
+            ]);
+        }
+    }
 
-        Measure::create([
-            'id' => str_slug('Chili'),
-            'name' => 'Chili',
-            'discrete' => false,
-        ]);
-
-        Measure::create([
-            'id' => str_slug('Litri'),
-            'name' => 'Litri',
-            'discrete' => false,
-        ]);
-
-        Measure::create([
-            'id' => str_slug('Pezzi'),
-            'name' => 'Pezzi',
-            'discrete' => true,
-        ]);
-
+    private function vatInit()
+    {
         VatRate::create([
             'name' => 'Minima',
             'percentage' => 4,
@@ -152,7 +150,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'Ordinaria',
             'percentage' => 22,
         ]);
+    }
 
+    private function initialNotification($admin)
+    {
         $notification = Notification::create([
             'creator_id' => $admin->id,
             'content' => "Benvenuto in GASdotto!\n\nPer assistenza puoi rivolgerti alla mailing list degli utenti su https://groups.google.com/forum/#!forum/gasdotto-dev o all'indirizzo mail info@gasdotto.net",
@@ -162,6 +163,25 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $notification->users()->attach($admin->id, ['done' => false]);
+    }
+
+    public function run()
+    {
+        $this->resetAll();
+
+        $gas = Gas::create([
+            'id' => str_slug('Senza Nome'),
+            'name' => 'Senza Nome',
+        ]);
+
+        $this->balanceInit($gas);
+
+        $admin = $this->roleInit($gas);
+
+        $this->categoryInit();
+        $this->measureInit();
+        $this->vatInit();
+        $this->initialNotification($admin);
 
         $this->call(CurrenciesSeeder::class);
         $this->call(MovementTypesSeeder::class);

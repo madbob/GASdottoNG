@@ -1,4 +1,4 @@
-<x-larastrap::modal :title="$modifier->modifierType->name" classes="modifier-modal" :data-target-type="$modifier->model_type" size="fullscreen">
+<x-larastrap::modal :title="$modifier->modifierType->name" classes="modifier-modal" :data-target-type="$modifier->model_type" size="fullscreen" :data-strings-source="route('modifiers.string')">
     <x-larastrap::iform :obj="$modifier" method="POST" :action="route('modifiers.update', $modifier->id)">
         <input type="hidden" name="test-feedback" value="1">
         <input type="hidden" name="close-modal" value="1">

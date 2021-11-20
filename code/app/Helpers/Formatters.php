@@ -248,3 +248,8 @@ function ue($value)
 {
     return new \Illuminate\Support\HtmlString($value);
 }
+
+function usernamePattern()
+{
+    return '[A-Za-z0-9_@.\- ]{1,50}';
+}

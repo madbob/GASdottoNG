@@ -29,36 +29,6 @@ class Utils {
             }
         });
 
-        $('.date[data-enforce-after]', container).each((index, item) => {
-            var current = $(item);
-            var target = this.dateEnforcePeer(current);
-
-            target.datepicker().on('changeDate', function() {
-                var current_start = current.datepicker('getDate');
-                var current_ref = target.datepicker('getDate');
-                if (current_start < current_ref) {
-                    current.datepicker('setDate', current_ref);
-                }
-            });
-        }).focus((e) => {
-            var target = this.dateEnforcePeer($(e.currentTarget));
-
-            /*
-                Problema: cercando di navigare tra i mesi all'interno del datepicker
-                viene lanciato nuovamente l'evento di focus, che fa rientrare in
-                questa funzione, e se setStartDate() viene incondazionatamente
-                eseguita modifica a sua volta la data annullando l'operazione.
-                Dunque qui la eseguo solo se non l'ho già fatto (se la data di
-                inizio forzato non corrisponde a quel che dovrebbe essere), badando
-                però a fare i confronti sui giusti formati
-            */
-            var current_start = $(e.currentTarget).datepicker('getStartDate');
-            var current_ref = target.datepicker('getUTCDate');
-            if (current_start.toString() != current_ref.toString()) {
-                $(e.currentTarget).datepicker('setStartDate', current_ref);
-            }
-        });
-
         $('.select-fetcher', container).change((e) => {
             var fetcher = $(e.currentTarget);
             var targetid = fetcher.attr('data-fetcher-target');
@@ -76,19 +46,8 @@ class Utils {
         $('.object-details', container).click((e) => {
             var url = $(e.currentTarget).attr('data-show-url');
             var modal = $('#service-modal');
-            modal.find('.modal-body').empty().append(this.loadingPlaceholder());
+            this.j().fetchNode(url, modal.find('.modal-body'));
             modal.modal('show');
-
-            this.postAjax({
-                url: url,
-                method: 'GET',
-                dataType: 'HTML',
-                success: (data) => {
-                    data = $(data);
-                    modal.find('.modal-body').empty().append(data);
-                    this.j().initElements(data);
-                }
-            });
         });
 
         $('input[data-alternative-required]', container).change((e) => {
@@ -111,14 +70,31 @@ class Utils {
         return Utils.jbob;
     }
 
+    static currentLanguage()
+    {
+        if (typeof Utils.current_language == 'undefined') {
+            Utils.current_language = $('html').attr('lang').split('-')[0];
+        }
+
+        return Utils.current_language;
+    }
+
     static absoluteUrl()
     {
         if (typeof Utils.absolute_url == 'undefined') {
             Utils.absolute_url = $('meta[name=absolute_url]').attr('content');
-            console.log(Utils.absolute_url);
         }
 
         return Utils.absolute_url;
+    }
+
+    static normalizeUrl(url)
+    {
+        if (url.startsWith('http') == false) {
+            url = this.absoluteUrl() + '/' + url;
+        }
+
+        return url;
     }
 
     static loadingPlaceholder()
@@ -216,17 +192,6 @@ class Utils {
         return Date.parse(date);
     }
 
-    static dateEnforcePeer(node)
-    {
-        var select = node.attr('data-enforce-after');
-        var target = node.closest('.input-group').find(select);
-		if (target.length == 0) {
-			target = node.closest('form').find(select);
-        }
-
-        return target;
-    }
-
     static parseFloatC(value)
     {
         if (typeof value === 'undefined')
@@ -265,12 +230,16 @@ class Utils {
             params.method = 'POST';
         }
 
-        if (params.url.startsWith('http') == false) {
-            params.url = this.absoluteUrl() + '/' + params.url;
-        }
+        params.url = this.normalizeUrl(params.url);
 
         // params.data._token = $('meta[name="csrf-token"]').attr('content');
         $.ajax(params);
+    }
+
+    static fetchNode(url, node)
+    {
+        url = this.normalizeUrl(url);
+        this.j().fetchNode(url, node);
     }
 
     /*

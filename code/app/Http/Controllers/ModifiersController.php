@@ -51,6 +51,7 @@ class ModifiersController extends BackedController
 
     public function strings()
     {
+        \Log::debug('Richieste stringhe per modificatori');
         return response()->json(\App\View\Texts\Modifier::descriptions());
     }
 

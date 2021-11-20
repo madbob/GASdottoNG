@@ -128,6 +128,17 @@ class ModifierEngine
         $modifier_value->amount = $altered_amount;
 
         if ($obj_mod_target) {
+            /*
+                Ci sono casi in cui il soggetto non è salvato sul database,
+                e.g. se c'è una prenotazione per un amico, ed il suo utente
+                principale non ha effettuato prenotazioni, se viene
+                artificiosamente creata una nuova e vuota
+                (cfr. Order::topLevelBookings())
+            */
+            if ($obj_mod_target->exists == false) {
+                $obj_mod_target->save();
+            }
+
             $modifier_value->target_type = get_class($obj_mod_target);
             $modifier_value->target_id = $obj_mod_target->id;
             $modifier_value->save();
