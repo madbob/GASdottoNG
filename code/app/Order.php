@@ -987,6 +987,11 @@ class Order extends Model
 
             foreach($this->bookings as $booking) {
                 $booking->setRelation('order', $this);
+
+                if ($enforce_status !== false) {
+                    $booking->status = $enforce_status;
+                }
+
                 $modifiers = $modifiers->merge($booking->applyModifiers($aggregate_data));
             }
 
