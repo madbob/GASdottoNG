@@ -73,40 +73,16 @@ class Suppliers extends GDXPImporter
                         Per evitare collisioni sui nomi dei fornitori
                     */
                     $index = 2;
-                    while(Supplier::where('name', $name)->first() != null)
+                    while(Supplier::where('name', $name)->first() != null) {
                         $name = $supplier->business_name . ' ' . $index++;
+                    }
 
                     $supplier->name = $name;
                     break;
 
                 case 'contacts':
                     foreach($c->children() as $a) {
-                        foreach($a->children() as $p) {
-                            foreach($p->children() as $e) {
-                                $contact = new Contact();
-
-                                switch($e->getName()) {
-                                    case 'phoneNumber':
-                                        $contact->type = 'phone';
-                                        break;
-                                    case 'faxNumber':
-                                        $contact->type = 'fax';
-                                        break;
-                                    case 'emailAddress':
-                                        $contact->type = 'email';
-                                        break;
-                                    case 'webSite':
-                                        $contact->type = 'website';
-                                        break;
-                                }
-
-                                $contact->value = html_entity_decode((string) $e);
-
-                                $contact->target_id = $supplier->id;
-                                $contact->target_type = get_class($supplier);
-                                $contact->save();
-                            }
-                        }
+                        Contacts::importXML($a, $supplier);
                     }
                     break;
 
@@ -182,32 +158,7 @@ class Suppliers extends GDXPImporter
         $supplier->save();
 
         foreach($json->contacts as $c) {
-            if (empty($c->value)) {
-                continue;
-            }
-
-            $contact = new Contact();
-
-            switch($c->type) {
-                case 'phoneNumber':
-                    $contact->type = 'phone';
-                    break;
-                case 'faxNumber':
-                    $contact->type = 'fax';
-                    break;
-                case 'emailAddress':
-                    $contact->type = 'email';
-                    break;
-                case 'webSite':
-                    $contact->type = 'website';
-                    break;
-            }
-
-            $contact->value = $c->value;
-
-            $contact->target_id = $supplier->id;
-            $contact->target_type = get_class($supplier);
-            $contact->save();
+            Contacts::importJSON($c, $supplier);
         }
 
         if (!empty($json->address->locality)) {

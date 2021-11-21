@@ -5,10 +5,6 @@
                 initAggregatorList($(this));
             });
 
-            $(this).find('ul li').draggable({
-                revert: 'invalid'
-            });
-
             $(this).on('click', '.explode-aggregate', function() {
                 var container = $(this).closest('.card');
                 container.find('li').each(function() {
@@ -67,7 +63,8 @@
                 node.find('.explode-aggregate').hide();
             }
 
-            node.droppable({
+            node.find('ul').sortable({
+                connectWith: '#orderAggregator div.card ul',
                 accept: 'li',
                 drop: function(event, ui) {
                     var items = $(this).find('li').length;
@@ -80,8 +77,9 @@
 
                     var source = ui.draggable.closest('.card');
                     var ex_items = source.find('li').length;
-                    if (ex_items == 2)
+                    if (ex_items == 2) {
                         source.find('.explode-aggregate').hide();
+                    }
 
                     ui.draggable.css('right', '').css('left', '').css('top', '').css('bottom', '').css('width', '').css('height', '');
                     $(this).find('ul').append(ui.draggable);

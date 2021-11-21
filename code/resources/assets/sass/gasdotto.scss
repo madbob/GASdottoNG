@@ -289,9 +289,17 @@ table {
     }
 }
 
-.explode-aggregate {
-    z-index: 10;
-    cursor: pointer;
+#orderAggregator {
+    .card {
+        ul {
+            min-height: 20px;
+        }
+    }
+
+    .explode-aggregate {
+        z-index: 10;
+        cursor: pointer;
+    }
 }
 
 table {

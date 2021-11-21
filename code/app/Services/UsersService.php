@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Exceptions\AuthException;
-use App\Exceptions\IllegalArgumentException;
 use Illuminate\Support\Str;
 
 use Auth;
@@ -56,6 +55,22 @@ class UsersService extends BaseService
         return $searched;
     }
 
+    private function setCommonAttributes($user, $request)
+    {
+        $this->setIfSet($user, $request, 'username');
+        $this->setIfSet($user, $request, 'firstname');
+        $this->setIfSet($user, $request, 'lastname');
+    }
+
+    private function updatePassword($user, $request)
+    {
+        $user->password = Hash::make($request['password']);
+
+        if (isset($request['enforce_password_change']) && $request['enforce_password_change'] == 'true') {
+            $user->enforce_password_change = true;
+        }
+    }
+
     public function store(array $request)
     {
         DB::beginTransaction();
@@ -66,18 +81,10 @@ class UsersService extends BaseService
         */
         $creator = $this->ensureAuth(['users.admin' => 'gas', 'gas.multi' => 'gas']);
 
-        $username = $request['username'];
-        $test = User::withTrashed()->where('username', $username)->first();
-        if ($test != null) {
-            throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
-        }
-
         $user = new User();
+        $this->setCommonAttributes($user, $request);
         $user->gas_id = $creator->gas->id;
         $user->member_since = date('Y-m-d', time());
-        $user->username = $username;
-        $user->firstname = $request['firstname'];
-        $user->lastname = $request['lastname'];
         $user->password = Hash::make(Str::random(10));
         $user->save();
 
@@ -86,53 +93,36 @@ class UsersService extends BaseService
             $user->initialWelcome();
         }
         else {
-            $user->password = Hash::make($request['password']);
-
-            if (isset($request['enforce_password_change']) && $request['enforce_password_change'] == 'true') {
-                $user->enforce_password_change = true;
-            }
+            $this->updatePassword($user, $request);
         }
 
         $user->save();
 
         DB::commit();
-
         return $user;
     }
 
     public function storeFriend(array $request)
     {
+        DB::beginTransaction();
+
         $creator = $this->ensureAuth(['users.subusers' => 'gas']);
         if (isset($request['creator_id'])) {
-            $creator = User::find($request['creator_id']);
-        }
-
-        $username = $request['username'];
-        $test = User::withTrashed()->withoutGlobalScopes()->where('username', $username)->first();
-        if ($test != null) {
-            throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
+            $creator = User::findOrFail($request['creator_id']);
         }
 
         $user = new User();
+        $this->setCommonAttributes($user, $request);
         $user->parent_id = $creator->id;
         $user->gas_id = $creator->gas->id;
         $user->member_since = date('Y-m-d', time());
-        $user->username = $username;
-        $user->firstname = $request['firstname'];
-        $user->lastname = $request['lastname'];
-        $user->password = Hash::make($request['password']);
-
-        if (isset($request['enforce_password_change']) && $request['enforce_password_change'] == 'true')
-            $user->enforce_password_change = true;
-
-        DB::transaction(function () use ($user) {
-            $user->save();
-        });
-
+        $this->updatePassword($user, $request);
+        $user->save();
+        DB::commit();
         return $user;
     }
 
-    public function update($id, array $request)
+    private function updateAccessType($id, $request)
     {
         $user = Auth::user();
         if (is_null($user)) {
@@ -150,7 +140,7 @@ class UsersService extends BaseService
                 nuova password viene salvata e la funzione ritorna
                 correttamente, altrimenti si testa il suddetto permesso
             */
-            if(isset($request['password']) && !empty($request['password']) && count($request) == 1) {
+            if (isset($request['password']) && !empty($request['password']) && count($request) == 1) {
                 $user = $this->show($id);
 
                 $this->transformAndSetIfSet($user, $request, 'password', function ($password) {
@@ -180,84 +170,74 @@ class UsersService extends BaseService
             throw new AuthException(403);
         }
 
-        $user = DB::transaction(function () use ($id, $request, $type) {
-            $user = $this->show($id);
+        return $type;
+    }
 
-            if (isset($request['username'])) {
-                $username = $request['username'];
-                $test = User::withTrashed()->where('id', '!=', $user->id)->where('username', $username)->first();
-                if ($test != null) {
-                    throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
-                }
+    private function readRID($user, $request)
+    {
+        if ($user->gas->hasFeature('rid')) {
+            $user->rid = [
+                'iban' => $request['rid->iban'] ?? $user->rid['iban'],
+                'id' => $request['rid->id'] ?? $user->rid['id'],
+                'date' => isset($request['rid->date']) ? decodeDate($request['rid->date']) : $user->rid['date'],
+            ];
+        }
+    }
+
+    public function update($id, array $request)
+    {
+        $type = $this->updateAccessType($id, $request);
+        if (is_object($type)) {
+            return $type;
+        }
+
+        DB::beginTransaction();
+
+        $user = $this->show($id);
+
+        $this->setCommonAttributes($user, $request);
+        $this->transformAndSetIfSet($user, $request, 'birthday', "decodeDate");
+        $this->setIfSet($user, $request, 'taxcode');
+        $this->transformAndSetIfSet($user, $request, 'family_members', 'enforceNumber');
+        $this->setIfSet($user, $request, 'preferred_delivery_id');
+        $this->setIfSet($user, $request, 'payment_method_id');
+
+        if ($type == 1) {
+            $user->enforce_password_change = (isset($request['enforce_password_change']) && $request['enforce_password_change'] == 'true');
+
+            if (isset($request['status'])) {
+                $user->setStatus($request['status'], $request['deleted_at'], $request['suspended_at']);
             }
 
-            if (isset($request['card_number'])) {
-                $card_number = $request['card_number'];
-                if (!empty($card_number)) {
-                    $test = User::where('id', '!=', $user->id)->where('gas_id', $user->gas_id)->where('card_number', $card_number)->first();
-                    if ($test != null) {
-                        throw new IllegalArgumentException(_i('Numero tessera già assegnato'), 'card_number');
-                    }
-                }
-            }
+            $this->transformAndSetIfSet($user, $request, 'member_since', "decodeDate");
+            $this->setIfSet($user, $request, 'card_number');
+        }
+        else {
+            $user->enforce_password_change = false;
+        }
 
-            $this->setIfSet($user, $request, 'username');
-            $this->setIfSet($user, $request, 'firstname');
-            $this->setIfSet($user, $request, 'lastname');
-            $this->transformAndSetIfSet($user, $request, 'birthday', "decodeDate");
-            $this->setIfSet($user, $request, 'taxcode');
-            $this->transformAndSetIfSet($user, $request, 'family_members', 'enforceNumber');
-            $this->setIfSet($user, $request, 'preferred_delivery_id');
-            $this->setIfSet($user, $request, 'payment_method_id');
+        if (isset($request['password']) && !empty($request['password'])) {
+            $this->transformAndSetIfSet($user, $request, 'password', function ($password) {
+                return Hash::make($password);
+            });
+        }
 
-            if ($type == 1) {
-                if (isset($request['enforce_password_change']) && $request['enforce_password_change'] == 'true') {
-                    $user->enforce_password_change = true;
-                }
-                else {
-                    $user->enforce_password_change = false;
-                }
+        $this->readRID($user, $request);
+        $user->save();
 
-                if (isset($request['status'])) {
-                    $user->setStatus($request['status'], $request['deleted_at'], $request['suspended_at']);
-                }
+        if (isset($request['picture'])) {
+            saveFile($request['picture'], $user, 'picture');
+        }
 
-                $this->transformAndSetIfSet($user, $request, 'member_since', "decodeDate");
-                $this->setIfSet($user, $request, 'card_number');
-            }
-            else {
-                $user->enforce_password_change = false;
-            }
+        $user->updateContacts($request);
 
-            if(isset($request['password']) && !empty($request['password'])) {
-                $this->transformAndSetIfSet($user, $request, 'password', function ($password) {
-                    return Hash::make($password);
-                });
-            }
-
-            if($user->gas->hasFeature('rid')) {
-                $rid_info['iban'] = $request['rid->iban'] ?? $user->rid['iban'];
-                $rid_info['id'] = $request['rid->id'] ?? $user->rid['id'];
-                $rid_info['date'] = isset($request['rid->date']) ? decodeDate($request['rid->date']) : $user->rid['date'];
-                $user->rid = $rid_info;
-            }
-
-            $user->save();
-
-            if (isset($request['picture'])) {
-                saveFile($request['picture'], $user, 'picture');
-            }
-
-            $user->updateContacts($request);
-            return $user;
-        });
-
+        DB::commit();
         return $user;
     }
 
     public function picture($id)
     {
-        $user = User::findOrFail($id);
+        $user = $this->show($id);
         return downloadFile($user, 'picture');
     }
 
@@ -274,21 +254,22 @@ class UsersService extends BaseService
 
     public function destroy($id)
     {
-        $user = DB::transaction(function () use ($id) {
-            $user = $this->show($id);
+        DB::beginTransaction();
 
-            if ($user->testUserAccess() == false) {
-                $this->ensureAuth(['users.admin' => 'gas']);
-            }
+        $user = $this->show($id);
 
-            if ($user->trashed())
-                $user->forceDelete();
-            else
-                $user->delete();
+        if ($user->testUserAccess() == false) {
+            $this->ensureAuth(['users.admin' => 'gas']);
+        }
 
-            return $user;
-        });
+        if ($user->trashed()) {
+            $user->forceDelete();
+        }
+        else {
+            $user->delete();
+        }
 
+        DB::commit();
         return $user;
     }
 }
