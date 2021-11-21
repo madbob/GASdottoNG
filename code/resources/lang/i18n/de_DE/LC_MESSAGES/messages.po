@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2021-09-06 12:20+0200\n"
-"PO-Revision-Date: 2021-09-12 21:33+0000\n"
-"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"PO-Revision-Date: 2021-11-22 13:50+0000\n"
+"Last-Translator: jendo <jendo.berlin@gmx.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
 "translations/de/>\n"
 "Language: de_DE\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.9-dev\n"
+"X-Generator: Weblate 4.10-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -48,14 +48,11 @@ msgstr ""
 "gelesen und akzeptiere sie."
 
 #: ../resources/views/auth/register.blade.php:28
-#, fuzzy, php-format
-#| msgid ""
-#| "Ho letto e accetto l'<a href=\"%s\" target=\"_blank\">Informativa sulla "
-#| "Privacy</a>."
+#, php-format
 msgid ""
 "Ho letto e accetto le <a href=\"%s\" target=\"_blank\">Condizioni d'Uso</a>."
 msgstr ""
-"Ich habe die <a href=\"%s\" target=\"_blank\">Datenschutzhinweise</a> "
+"Ich habe die <a href=\"%s\" target=\"_blank\">Nutzungsbedingungen</a> "
 "gelesen und akzeptiere sie."
 
 #: ../resources/views/booking/edit.blade.php:10
@@ -171,10 +168,8 @@ msgstr "Produkt"
 
 #: ../resources/views/modifier/edit.blade.php:30
 #: ../resources/views/modifier/edit.blade.php:51
-#, fuzzy
-#| msgid "Annulla Prenotazione"
 msgid "Singola Prenotazione"
-msgstr "Vorbestellung stornieren"
+msgstr "Einzelne Vorbestellung"
 
 #: ../resources/views/modifier/edit.blade.php:31
 #: ../resources/views/modifier/edit.blade.php:52
@@ -305,12 +300,9 @@ msgid "Saldo"
 msgstr "Kontostand"
 
 #: Config.php:23
-#, fuzzy
-#| msgid "Messaggio inviato ai nuovi iscritti sulla piattaforma."
 msgid "Messaggio inviato ai nuovi iscritti registrati sulla piattaforma."
 msgstr ""
-"Benachrichtigung, die an neu registrierte Nutzer des Bestellsystems "
-"verschickt wird."
+"Benachrichtigung an Nutzer, die sich neu im Bestellsystem angemeldet haben."
 
 #: Config.php:25 Config.php:35
 msgid "Username assegnato al nuovo utente"
@@ -337,10 +329,8 @@ msgid "Messaggio per il ripristino della password."
 msgstr "Benachrichtigung zum Neusetzen des Passwortes."
 
 #: Config.php:46
-#, fuzzy
-#| msgid "Username assegnato al nuovo utente"
 msgid "Username dell'utente"
-msgstr "Benutzername des neuen Nutzers"
+msgstr "Benutzername"
 
 #: Config.php:47
 msgid "Link per il reset della password"
@@ -360,10 +350,8 @@ msgid "Il nome del fornitore"
 msgstr "Name des Lieferanten"
 
 #: Config.php:57
-#, fuzzy
-#| msgid "Data di chiusura dell'ordine"
 msgid "Testo di commento dell'ordine"
-msgstr "Ende der Bestellfrist"
+msgstr "Kommentar zur Bestellung"
 
 #: Config.php:58
 msgid "Link per le prenotazioni"
