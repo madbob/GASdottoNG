@@ -34,7 +34,7 @@ class FullTest extends DuskTestCase
 
         parent::setUp();
         $this->artisan('db:seed');
-        $this->gas = Gas::orderBy('id', 'asc')->first();
+        $this->gas = \App\Gas::factory()->create();
     }
 
     private function testProfile($browser)
@@ -117,6 +117,7 @@ class FullTest extends DuskTestCase
                 ->typeSlowly('firstname', $user[1], 50)
                 ->typeSlowly('lastname', $user[2], 50)
                 ->uncheck('sendmail')
+                ->pause(200)
                 ->typeSlowly('password', $user[0], 50)
                 ->press('Salva')
                 ->waitForText('Anagrafica');
@@ -151,7 +152,7 @@ class FullTest extends DuskTestCase
             ->waitForText('Bandiera')
             ->assertSee('Bandiera');
 
-        $fee_amount = $gas->annual_fee_amount;
+        $fee_amount = $this->gas->annual_fee_amount;
 
         /*
             Stato Quote e creazione quota
@@ -610,9 +611,8 @@ class FullTest extends DuskTestCase
 
                     $panel->press('Salva');
             })
-            ->waitForText('Luogo Test');
-
-        $browser->click('.accordion-item[data-element-id="luogo-test"]')->pause(1000)
+            ->waitForText('Luogo Test')
+            ->pause(500)
             ->press('@modifier_spese-trasporto')
             ->pause(500)
             ->with('.modal', function($panel) {

@@ -165,6 +165,132 @@ class ModifiersServiceTest extends TestCase
     }
 
     /*
+        Modificatore applicato su Prodotto con pezzatura, con soglie sul valore
+    */
+    public function testThresholdUnitPricePortions()
+    {
+        $this->localInitOrder();
+        $this->actingAs($this->userReferrer);
+        $product = $this->order->products->random();
+
+        $product->portion_quantity = 0.3;
+        $product->save();
+
+        $modifiers = $product->applicableModificationTypes();
+        $this->assertEquals(count($modifiers), 2);
+        $mod = null;
+
+        $thresholds = [10, 5, 0];
+        $threshold_prices = [0.9, 0.92, 0.94];
+
+        foreach ($modifiers as $mod) {
+            if ($mod->id == 'sconto') {
+                $mod = $product->modifiers()->where('modifier_type_id', $mod->id)->first();
+                $this->services['modifiers']->update($mod->id, [
+                    'value' => 'price',
+                    'arithmetic' => 'apply',
+                    'scale' => 'major',
+                    'applies_type' => 'quantity',
+                    'applies_target' => 'product',
+                    'threshold' => $thresholds,
+                    'amount' => $threshold_prices,
+                ]);
+
+                break;
+            }
+        }
+
+        $this->assertNotNull($mod);
+
+        $order = $this->services['orders']->show($this->order->id);
+        $booking = $order->bookings->random();
+
+        /*
+            In prenotazione la quantità è espressa in numero di pezzi, in
+            consegna è espressa in peso totale.
+            Le soglie dei modificatori devono sempre essere applicate sui pesi
+            totali.
+        */
+
+        $data = [
+            'action' => 'booked',
+            $product->id => 3,
+        ];
+        $this->actingAs($booking->user);
+        $this->services['bookings']->bookingUpdate($data, $order->aggregate, $booking->user, false);
+        $booking = $booking->fresh();
+
+        $mods = $booking->applyModifiers(null, false);
+        $this->assertEquals(\App\ModifiedValue::count(), 0);
+        $this->assertEquals($mods->count(), 1);
+
+        $total_quantity = 3 * 0.3;
+        $without_discount = $product->price * $total_quantity;
+        $total = $threshold_prices[2] * $total_quantity;
+
+        foreach($mods as $m) {
+            $this->assertEquals($m->effective_amount * -1, $without_discount - $total);
+        }
+
+        $data = [
+            'action' => 'booked',
+            $product->id => 20,
+        ];
+        $this->actingAs($booking->user);
+        $this->services['bookings']->bookingUpdate($data, $order->aggregate, $booking->user, false);
+        $booking = $booking->fresh();
+        $mods = $booking->applyModifiers(null, false);
+        $this->assertEquals(\App\ModifiedValue::count(), 0);
+        $this->assertEquals($mods->count(), 1);
+
+        $total_quantity = 20 * 0.3;
+        $without_discount = $product->price * $total_quantity;
+        $total = $threshold_prices[1] * $total_quantity;
+
+        foreach($mods as $m) {
+            $this->assertEquals($m->effective_amount * -1, $without_discount - $total);
+        }
+
+        $this->actingAs($this->userWithShippingPerms);
+
+        $data = [
+            'action' => 'shipped',
+            $product->id => 6,
+        ];
+        $this->services['bookings']->bookingUpdate($data, $order->aggregate, $booking->user, true);
+        $booking = $booking->fresh();
+        $mods = $booking->applyModifiers(null, false);
+        $this->assertEquals(\App\ModifiedValue::count(), 1);
+        $this->assertEquals($mods->count(), 1);
+
+        $total_quantity = 6;
+        $without_discount = $product->price * $total_quantity;
+        $total = $threshold_prices[1] * $total_quantity;
+
+        foreach($mods as $m) {
+            $this->assertEquals($m->effective_amount * -1, $without_discount - $total);
+        }
+
+        $data = [
+            'action' => 'shipped',
+            $product->id => 4,
+        ];
+        $this->services['bookings']->bookingUpdate($data, $order->aggregate, $booking->user, true);
+        $booking = $booking->fresh();
+        $mods = $booking->applyModifiers(null, false);
+        $this->assertEquals(\App\ModifiedValue::count(), 1);
+        $this->assertEquals($mods->count(), 1);
+
+        $total_quantity = 4;
+        $without_discount = $product->price * $total_quantity;
+        $total = $threshold_prices[2] * $total_quantity;
+
+        foreach($mods as $m) {
+            $this->assertEquals($m->effective_amount * -1, $without_discount - $total);
+        }
+    }
+
+    /*
         Modificatore applicato su Prodotto, con soglie sulle quantità
     */
     public function testThresholdQuantity()

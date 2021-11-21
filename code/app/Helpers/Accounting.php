@@ -55,72 +55,13 @@ function movementTypes($identifier = null, $with_trashed = false)
 
 function paymentTypes()
 {
-    $ret = [
-        'cash' => (object) [
-            'name' => _i('Contanti'),
-            'identifier' => false,
-            'icon' => 'cash',
-            'active_for' => null,
-            'valid_config' => function($target) {
-                return true;
-            }
-        ],
-        'bank' => (object) [
-            'name' => _i('Bonifico'),
-            'identifier' => true,
-            'icon' => 'bank',
-            'active_for' => null,
-            'valid_config' => function($target) {
-                return true;
-            }
-        ],
-        'credit' => (object) [
-            'name' => _i('Credito Utente'),
-            'identifier' => false,
-            'icon' => 'person-badge',
-            'active_for' => 'App\User',
-            'valid_config' => function($target) {
-                return true;
-            }
-        ],
-    ];
+    $ret = [];
 
-    $gas = currentAbsoluteGas();
-
-    if($gas->hasFeature('paypal')) {
-        $ret['paypal'] = (object) [
-            'name' => _i('PayPal'),
-            'identifier' => true,
-            'icon' => 'cloud-plus',
-            'active_for' => 'App\User',
-            'valid_config' => function($target) {
-                return true;
-            }
-        ];
-    }
-
-    if($gas->hasFeature('satispay')) {
-        $ret['satispay'] = (object) [
-            'name' => _i('Satispay'),
-            'identifier' => true,
-            'icon' => 'cloud-plus',
-            'active_for' => 'App\User',
-            'valid_config' => function($target) {
-                return true;
-            }
-        ];
-    }
-
-    if($gas->hasFeature('rid')) {
-        $ret['sepa'] = (object) [
-            'name' => _i('SEPA'),
-            'identifier' => true,
-            'icon' => 'cloud-plus',
-            'active_for' => 'App\User',
-            'valid_config' => function($target) {
-                return (get_class($target) == 'App\User' && !empty($target->rid['iban']));
-            }
-        ];
+    $predefined = systemParameters('PaymentType');
+    foreach($predefined as $identifier => $obj) {
+        if ($obj->enabled()) {
+            $ret[$identifier] = $obj->definition();
+        }
     }
 
     return $ret;

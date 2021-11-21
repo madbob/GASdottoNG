@@ -6,7 +6,7 @@ use App\ModifiedValue;
 
 class ModifierEngine
 {
-    private function applyDefinition($modifier, $amount, $definition, $target)
+    private function applyDefinition($booking, $modifier, $amount, $definition, $target)
     {
         if ($modifier->value == 'percentage') {
             $amount = round($amount * ($definition->amount / 100), 4);
@@ -20,7 +20,16 @@ class ModifierEngine
                 ($modifier->value = 'apply') faccio la differenza tra il prezzo
                 normale ed il prezzo modificato
             */
-            $amount = $target->price - ($target->quantity * $definition->amount);
+            if ($booking->status == 'pending') {
+                $quantity_attribute = 'quantity';
+                $price_attribute = 'price';
+            }
+            else {
+                $quantity_attribute = 'delivered';
+                $price_attribute = 'price_delivered';
+            }
+
+            $amount = round($target->$price_attribute - ($target->$quantity_attribute * $definition->amount), 4);
         }
 
         return $amount;
@@ -77,7 +86,7 @@ class ModifierEngine
             OrdersController::postFixModifiers(), previa conferma dell'utente,
             quando l'ordine è davvero in stato "consegnato"
         */
-        if ($booking->status == 'shipped') {
+        if ($booking->status != 'pending') {
             switch($modifier->applies_type) {
                 case 'none':
                 case 'quantity':
@@ -227,7 +236,7 @@ class ModifierEngine
             $target_definition = $this->targetDefinition($modifier, $check_value);
 
             if (is_null($target_definition) == false) {
-                $altered_amount = $this->applyDefinition($modifier, $mod_target->$mod_attribute ?? 0, $target_definition, $check_target);
+                $altered_amount = $this->applyDefinition($booking, $modifier, $mod_target->$mod_attribute ?? 0, $target_definition, $check_target);
 
                 /*
                     Se il modificatore è applicato su un ordine, qui applico alla
