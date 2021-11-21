@@ -14,6 +14,7 @@ class MeasureFactory extends Factory
     {
         return [
             'name' => $this->faker->text(10),
+            'discrete' => true,
         ];
     }
 }

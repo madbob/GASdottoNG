@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Arr;
 
+use App;
 use DB;
 
 use App\Order;
@@ -119,5 +120,36 @@ class OrdersService extends BaseService
         $order = $this->show($id, true);
         $order->delete();
         return $order;
+    }
+
+    public function fixModifiers($id, $action)
+    {
+        switch($action) {
+            case 'none':
+                break;
+
+            case 'adjust':
+                $order = $this->show($id, true);
+                $aggregate = $order->aggregate;
+                $hub = App::make('GlobalScopeHub');
+                $initial_gas = $hub->getGas();
+
+                foreach($aggregate->gas as $gas) {
+                    $hub->setGas($gas->id);
+                    $redux = $aggregate->reduxData();
+
+                    foreach($aggregate->orders as $order) {
+                        foreach($order->bookings as $booking) {
+                            $booking->saveModifiers($redux);
+                            $booking->fixPayment();
+                        }
+                    }
+                }
+
+                $hub->setGas($initial_gas);
+                break;
+        }
+
+        return true;
     }
 }

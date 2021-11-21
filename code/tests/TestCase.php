@@ -13,10 +13,12 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
 
     protected $baseUrl = 'http://localhost';
+    protected $services = null;
 
     public function setUp(): void
     {
         parent::setUp();
+
         Artisan::call('migrate:refresh');
         Artisan::call('db:seed', ['--force' => true, '--class' => 'MovementTypesSeeder']);
         Artisan::call('db:seed', ['--force' => true, '--class' => 'ModifierTypesSeeder']);
@@ -26,6 +28,31 @@ abstract class TestCase extends BaseTestCase
             corretta formattazione da parte di printableDate()
         */
         setlocale(LC_TIME, 'it_IT.UTF-8');
+
+        $this->services = [
+            'users' => new \App\Services\UsersService(),
+            'movement_types' => new \App\Services\MovementTypesService(),
+            'movements' => new \App\Services\MovementsService(),
+            'vat_rates' => new \App\Services\VatRatesService(),
+            'suppliers' => new \App\Services\SuppliersService(),
+            'products' => new \App\Services\ProductsService(),
+            'variants' => new \App\Services\VariantsService(),
+            'orders' => new \App\Services\OrdersService(),
+            'bookings' => new \App\Services\BookingsService(),
+            'dynamic_bookings' => new \App\Services\DynamicBookingsService(),
+            'modifiers' => new \App\Services\ModifiersService(),
+        ];
+
+        $this->gas = \App\Gas::factory()->create();
+
+        /*
+            Nota: alcuni comportamenti sono influenzati dalla presenza di almeno
+            un utente che abbia permessi di amministrazione dei movimenti
+            contabili. Qui lo considero sempre presente, che è il caso in
+            assoluto più comune
+            Cfr. DeliverBooking::handle()
+        */
+        $this->userAdmin = $this->createRoleAndUser($this->gas, 'gas.config,movements.admin');
     }
 
     public function enabledQueryDump()
@@ -71,16 +98,19 @@ abstract class TestCase extends BaseTestCase
         $category = \App\Category::factory()->create();
         $measure = \App\Measure::factory()->create();
 
+        $this->actingAs($this->userAdmin);
         $supplier = \App\Supplier::factory()->create();
 
-        for($i = 0; $i < 10; $i++) {
-            $products[] = \App\Product::factory()->create([
-                'supplier_id' => $supplier->id,
-                'category_id' => $category->id,
-                'measure_id' => $measure->id
-            ]);
-        }
+        $this->userReferrer = $this->createRoleAndUser($this->gas, 'supplier.modify,supplier.orders', $supplier);
+        $this->userWithShippingPerms = $this->createRoleAndUser($this->gas, 'supplier.shippings', $supplier);
 
+        $products = \App\Product::factory()->count(10)->create([
+            'supplier_id' => $supplier->id,
+            'category_id' => $category->id,
+            'measure_id' => $measure->id
+        ]);
+
+        $this->actingAs($this->userReferrer);
         $order = \App\Order::factory()->create([
             'supplier_id' => $supplier->id,
         ]);
@@ -90,7 +120,7 @@ abstract class TestCase extends BaseTestCase
             $order->save();
         }
 
-        return [$supplier, $products, $order];
+        return $order;
     }
 
     protected function randomQuantities($products)
@@ -100,7 +130,7 @@ abstract class TestCase extends BaseTestCase
         $total = 0;
 
         foreach($products as $product) {
-            $q = rand(0, 5);
+            $q = rand(0, 20);
 
             $data[$product->id] = $q;
 

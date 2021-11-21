@@ -15,12 +15,7 @@ class VatRateServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->gas = \App\Gas::factory()->create();
-
-        $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'gas.config');
         $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
-
-        $this->vatsService = new \App\Services\VatRatesService();
     }
 
     /*
@@ -30,7 +25,7 @@ class VatRateServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->vatsService->store(array());
+        $this->services['vat_rates']->store(array());
     }
 
     /*
@@ -38,9 +33,9 @@ class VatRateServiceTest extends TestCase
     */
     public function testStore()
     {
-        $this->actingAs($this->userWithAdminPerm);
+        $this->actingAs($this->userAdmin);
 
-        $newVat = $this->vatsService->store(array(
+        $newVat = $this->services['vat_rates']->store(array(
             'name' => '22%',
             'percentage' => 22,
         ));

@@ -16,8 +16,6 @@ class UsersServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->gas = \App\Gas::factory()->create();
-
         $this->userWithViewPerm = $this->createRoleAndUser($this->gas, 'users.view,users.subusers');
         $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'users.admin');
         $this->userWithMovementPerm = $this->createRoleAndUser($this->gas, 'movements.admin');
@@ -28,8 +26,6 @@ class UsersServiceTest extends TestCase
 
         $otherGas = \App\Gas::factory()->create();
         \App\User::factory()->count(3)->create(['gas_id' => $otherGas->id]);
-
-        $this->usersService = new \App\Services\UsersService();
     }
 
     /*
@@ -39,7 +35,7 @@ class UsersServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->usersService->list();
+        $this->services['users']->list();
     }
 
     /*
@@ -49,8 +45,14 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithViewPerm);
 
-        $users = $this->usersService->list();
-        $this->assertCount(8, $users);
+        $users = $this->services['users']->list();
+
+        /*
+            In inizializzazione sono creati 3 utenti generici, più 5 con
+            permessi particolari, e c'è userAdmin sempre inizializzato per tutti
+            in TestCase
+        */
+        $this->assertCount(9, $users);
         foreach ($users as $user) {
             $this->assertEquals($this->gas->id, $user->gas_id);
         }
@@ -78,7 +80,7 @@ class UsersServiceTest extends TestCase
             'firstname' => 'luigi'
         ]);
 
-        $users = $this->usersService->list('pippo');
+        $users = $this->services['users']->list('pippo');
         $this->assertCount(2, $users);
         foreach ($users as $user) {
             $this->assertEquals($this->gas->id, $user->gas_id);
@@ -101,7 +103,7 @@ class UsersServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithViewPerm);
-        $this->usersService->store(array());
+        $this->services['users']->store(array());
     }
 
     /*
@@ -111,7 +113,7 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $newUser = $this->usersService->store(array(
+        $newUser = $this->services['users']->store(array(
             'username' => 'test user',
             'firstname' => 'mario',
             'lastname' => 'rossi',
@@ -131,7 +133,7 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithViewPerm);
 
-        $newUser = $this->usersService->storeFriend(array(
+        $newUser = $this->services['users']->storeFriend(array(
             'username' => 'test friend user',
             'firstname' => 'mario',
             'lastname' => 'rossi',
@@ -152,7 +154,7 @@ class UsersServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithViewPerm);
-        $this->usersService->update($this->userWithViewPerm->id, array());
+        $this->services['users']->update($this->userWithViewPerm->id, array());
     }
 
     /*
@@ -162,7 +164,7 @@ class UsersServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithAdminPerm);
-        $this->usersService->update('id', array());
+        $this->services['users']->update('id', array());
     }
 
     /*
@@ -176,7 +178,7 @@ class UsersServiceTest extends TestCase
             'gas_id' => $this->gas->id
         ]);
 
-        $updatedUser = $this->usersService->update($user->id, array(
+        $updatedUser = $this->services['users']->update($user->id, array(
             'password' => 'new password',
             'birthday' => 'Giovedi 01 Dicembre 2016',
         ));
@@ -193,7 +195,7 @@ class UsersServiceTest extends TestCase
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
 
-        $user = $this->usersService->update($this->userWithNoPerms->id, array(
+        $user = $this->services['users']->update($this->userWithNoPerms->id, array(
             'password' => 'new password',
             'birthday' => 'Giovedi 01 Dicembre 2016',
         ));
@@ -208,7 +210,7 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithBasePerm);
 
-        $user = $this->usersService->update($this->userWithBasePerm->id, array(
+        $user = $this->services['users']->update($this->userWithBasePerm->id, array(
             'password' => 'new password',
             'birthday' => 'Giovedi 01 Dicembre 2016',
         ));
@@ -227,7 +229,7 @@ class UsersServiceTest extends TestCase
         */
         $this->actingAs($this->userWithNoPerms);
 
-        $user = $this->usersService->update($this->userWithNoPerms->id, array(
+        $user = $this->services['users']->update($this->userWithNoPerms->id, array(
             'password' => 'new password',
         ));
 
@@ -240,7 +242,7 @@ class UsersServiceTest extends TestCase
     public function testFailsToShow()
     {
         $this->expectException(AuthException::class);
-        $this->usersService->show($this->userWithViewPerm->id);
+        $this->services['users']->show($this->userWithViewPerm->id);
     }
 
     /*
@@ -250,7 +252,7 @@ class UsersServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithViewPerm);
-        $this->usersService->show('random');
+        $this->services['users']->show('random');
     }
 
     /*
@@ -260,7 +262,7 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithViewPerm);
 
-        $user = $this->usersService->show($this->userWithViewPerm->id);
+        $user = $this->services['users']->show($this->userWithViewPerm->id);
 
         $this->assertEquals($this->userWithViewPerm->id, $user->id);
         $this->assertEquals($this->userWithViewPerm->firstname, $user->firstname);
@@ -298,7 +300,7 @@ class UsersServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithViewPerm);
-        $this->usersService->destroy($this->userWithNoPerms->id);
+        $this->services['users']->destroy($this->userWithNoPerms->id);
     }
 
     /*
@@ -308,15 +310,15 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $user = $this->usersService->destroy($this->userWithNoPerms->id);
-        $user = $this->usersService->show($this->userWithNoPerms->id);
+        $user = $this->services['users']->destroy($this->userWithNoPerms->id);
+        $user = $this->services['users']->show($this->userWithNoPerms->id);
         $this->assertEquals($this->userWithNoPerms->id, $user->id);
         $this->assertNotNull($user->deleted_at);
 
-        $user = $this->usersService->destroy($this->userWithNoPerms->id);
+        $user = $this->services['users']->destroy($this->userWithNoPerms->id);
 
         try {
-            $this->usersService->show($this->userWithNoPerms->id);
+            $this->services['users']->show($this->userWithNoPerms->id);
             $this->fail('should never run');
         }
         catch (ModelNotFoundException $e) {

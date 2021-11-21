@@ -189,30 +189,8 @@ class OrdersController extends BackedController
     public function postFixModifiers(Request $request, $id)
     {
         $action = $request->input('action');
-
-        switch($action) {
-            case 'none':
-                return $this->successResponse();
-
-            case 'adjust':
-                $order = $this->service->show($id, true);
-                $aggregate = $order->aggregate;
-                $hub = App::make('GlobalScopeHub');
-
-                foreach($aggregate->gas as $gas) {
-                    $hub->setGas($gas->id);
-                    $redux = $aggregate->reduxData();
-
-                    foreach($aggregate->orders as $order) {
-                        foreach($order->bookings as $booking) {
-                            $booking->saveModifiers($redux);
-                            $booking->fixPayment();
-                        }
-                    }
-                }
-
-                return $this->successResponse();
-        }
+        $this->service->fixModifiers($id, $action);
+        return $this->successResponse();
     }
 
     public function search(Request $request)

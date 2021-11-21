@@ -107,7 +107,7 @@ class DynamicBookingsService extends BookingsService
                 }
 
                 $carry[$product->product_id] = (object) [
-                    'total' => printablePrice($product->getValue('effective')),
+                    'total' => printablePrice($product->getValue($delivering ? 'delivered' : 'booked')),
                     'quantity' => $final_quantity,
                     'message' => $message,
                     'variants' => $this->reduceVariants($product, $delivering),

@@ -17,7 +17,6 @@ class DepositPay extends MovementType
         $type->name = 'Deposito cauzione socio del GAS';
         $type->sender_type = 'App\User';
         $type->target_type = 'App\Gas';
-        $type->fixed_value = null;
         $type->visibility = false;
         $type->system = true;
 

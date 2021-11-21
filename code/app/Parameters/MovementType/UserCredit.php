@@ -14,7 +14,6 @@ class UserCredit extends MovementType
         $type->name = 'Deposito di credito da parte di un socio';
         $type->sender_type = null;
         $type->target_type = 'App\User';
-        $type->fixed_value = null;
         $type->system = true;
 
         $type->function = json_encode($this->voidFunctions([

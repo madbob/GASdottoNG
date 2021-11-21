@@ -58,6 +58,9 @@ abstract class MovementType
     {
         $type = new MovementTypeModel();
         $type->id = $this->identifier();
+
+        $type->fixed_value = null;
+
         $type = $this->initNew($type);
         $type->save();
     }

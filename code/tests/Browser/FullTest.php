@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
+use App\Gas;
 use App\VatRate;
 use App\Product;
 
@@ -33,7 +34,7 @@ class FullTest extends DuskTestCase
 
         parent::setUp();
         $this->artisan('db:seed');
-        $this->gas = Gas::first();
+        $this->gas = Gas::orderBy('id', 'asc')->first();
     }
 
     private function testProfile($browser)

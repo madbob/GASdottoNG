@@ -112,7 +112,7 @@ class Booking extends Model
         $values = $this->localModifiedValues($id, false);
 
         $products = $this->products;
-        $product_values = $products->reduce(function($carry, $product) {
+        $values = $products->reduce(function($carry, $product) {
             return $carry->merge($product->modifiedValues);
         }, $values);
 
@@ -169,18 +169,15 @@ class Booking extends Model
                     $products = $obj->products;
                 }
 
+                if ($type == 'effective') {
+                    $type = $this->status == 'pending' ? 'booked' : 'delivered';
+                    $modified_values = $this->applyModifiers(null, false);
+                    $value = ModifiedValue::sumAmounts($modified_values, $value);
+                }
+
                 foreach ($products as $booked) {
                     $booked->setRelation('booking', $obj);
                     $value += $booked->getValue($type);
-                }
-
-                if ($type == 'effective') {
-                    if ($this->status == 'pending') {
-                        $this->calculateModifiers(null, false);
-                    }
-
-                    $modified_values = $this->localModifiedValues(null, $with_friends);
-                    $value = ModifiedValue::sumAmounts($modified_values, $value);
                 }
             }
 

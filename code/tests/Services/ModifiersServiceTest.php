@@ -16,61 +16,24 @@ class ModifiersServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->gas = \App\Gas::factory()->create();
-
         $booking_role = \App\Role::factory()->create(['actions' => 'supplier.book']);
 
-        $this->user1 = \App\User::factory()->create(['gas_id' => $this->gas->id]);
-        $this->user1->addRole($booking_role->id, $this->gas);
+        $this->users = \App\User::factory()->count(5)->create(['gas_id' => $this->gas->id]);
+        foreach($this->users as $user) {
+            $user->addRole($booking_role->id, $this->gas);
+        }
+    }
 
-        $this->user2 = \App\User::factory()->create(['gas_id' => $this->gas->id]);
-        $this->user2->addRole($booking_role->id, $this->gas);
+    private function localInitOrder()
+    {
+        $this->order = $this->initOrder(null);
 
-        $this->userAdmin = $this->createRoleAndUser($this->gas, 'gas.config');
-
-        $this->supplier = \App\Supplier::factory()->create();
-        $this->userReferrer = $this->createRoleAndUser($this->gas, 'supplier.modify', $this->supplier);
-
-        $this->category = \App\Category::factory()->create();
-        $this->measure = \App\Measure::factory()->create();
-
-        $this->product = \App\Product::factory()->create([
-            'supplier_id' => $this->supplier->id,
-            'category_id' => $this->category->id,
-            'measure_id' => $this->measure->id
-        ]);
-
-        $this->aggregate = \App\Aggregate::factory()->create();
-
-        $this->order = \App\Order::factory()->create([
-            'aggregate_id' => $this->aggregate->id,
-            'supplier_id' => $this->supplier->id,
-        ]);
-        $this->order->products()->sync([$this->product->id]);
-
-        $this->booking1 = \App\Booking::factory()->create([
-            'order_id' => $this->order->id,
-            'user_id' => $this->user1->id,
-        ]);
-
-        \App\BookedProduct::factory()->create([
-            'booking_id' => $this->booking1->id,
-            'product_id' => $this->product->id,
-            'quantity' => 3,
-        ]);
-
-        $this->booking2 = \App\Booking::factory()->create([
-            'order_id' => $this->order->id,
-            'user_id' => $this->user2->id,
-        ]);
-
-        \App\BookedProduct::factory()->create([
-            'booking_id' => $this->booking2->id,
-            'product_id' => $this->product->id,
-            'quantity' => 8,
-        ]);
-
-        $this->modifiersService = new \App\Services\ModifiersService();
+        foreach($this->users as $user) {
+            $this->actingAs($user);
+            list($data, $booked_count, $total) = $this->randomQuantities($this->order->products);
+            $data['action'] = 'booked';
+            $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $user, false);
+        }
     }
 
     /*
@@ -79,27 +42,73 @@ class ModifiersServiceTest extends TestCase
     public function testFailsToStore()
     {
         $this->expectException(AuthException::class);
-        $this->actingAs($this->user1);
 
-        $modifiers = $this->product->applicableModificationTypes();
+        $this->localInitOrder();
+        $this->actingAs($this->users->first());
+
+        $product = $this->order->products->random();
+        $modifiers = $product->applicableModificationTypes();
 
         foreach ($modifiers as $mod) {
             if ($mod->id == 'sconto') {
-                $mod = $this->product->modifiers()->where('modifier_type_id', $mod->id)->first();
-                $this->modifiersService->update($mod->id, [
-                    'value' => 'price',
-                    'arithmetic' => 'apply',
-                    'scale' => 'major',
-                    'applies_type' => 'quantity',
-                    'applies_target' => 'order',
-                    'distribution_type' => 'quantity',
-                    'threshold' => [20, 10, 0],
-                    'amount' => [0.9, 0.92, 0.94],
-                ]);
-
+                $mod = $product->modifiers()->where('modifier_type_id', $mod->id)->first();
+                $this->services['modifiers']->update($mod->id, []);
                 break;
             }
         }
+    }
+
+    private function enforceBookingsTotalQuantity($product_id, $total_quantity)
+    {
+        $missing_quantity = $total_quantity;
+        $order = $this->services['orders']->show($this->order->id);
+
+        foreach($order->bookings as $booking) {
+            $data = ['action' => 'booked'];
+
+            foreach($booking->products as $booked_product) {
+                if ($booked_product->product_id != $product_id) {
+                    $data[$booked_product->product_id] = $booked_product->quantity;
+                }
+                else {
+                    if ($missing_quantity > 0) {
+                        $quantity = rand(0, $missing_quantity);
+                        $data[$booked_product->product_id] = $quantity;
+                        $missing_quantity -= $quantity;
+                    }
+                }
+            }
+
+            $this->actingAs($booking->user);
+            $this->services['bookings']->bookingUpdate($data, $order->aggregate, $booking->user, false);
+        }
+
+        if ($missing_quantity > 0) {
+            $data = ['action' => 'booked'];
+
+            $booking = $order->bookings()->first();
+            $found = false;
+
+            foreach($booking->products as $booked_product) {
+                if ($booked_product->product_id != $product_id) {
+                    $data[$booked_product->product_id] = $booked_product->quantity;
+                }
+                else {
+                    $data[$booked_product->product_id] = $missing_quantity + $booked_product->quantity;
+                    $found = true;
+                }
+            }
+
+            if ($found == false) {
+                $data[$product_id] = $missing_quantity;
+            }
+
+            $this->actingAs($booking->user);
+            $this->services['bookings']->bookingUpdate($data, $order->aggregate, $booking->user, false);
+        }
+
+        $booked_quantity = \App\BookedProduct::where('product_id', $product_id)->sum('quantity');
+        $this->assertEquals($booked_quantity, $total_quantity);
     }
 
     /*
@@ -107,24 +116,29 @@ class ModifiersServiceTest extends TestCase
     */
     public function testThresholdUnitPrice()
     {
+        $this->localInitOrder();
         $this->actingAs($this->userReferrer);
+        $product = $this->order->products->random();
 
-        $modifiers = $this->product->applicableModificationTypes();
+        $modifiers = $product->applicableModificationTypes();
         $this->assertEquals(count($modifiers), 2);
         $mod = null;
 
+        $thresholds = [20, 10, 0];
+        $threshold_prices = [0.9, 0.92, 0.94];
+
         foreach ($modifiers as $mod) {
             if ($mod->id == 'sconto') {
-                $mod = $this->product->modifiers()->where('modifier_type_id', $mod->id)->first();
-                $this->modifiersService->update($mod->id, [
+                $mod = $product->modifiers()->where('modifier_type_id', $mod->id)->first();
+                $this->services['modifiers']->update($mod->id, [
                     'value' => 'price',
                     'arithmetic' => 'apply',
                     'scale' => 'major',
                     'applies_type' => 'quantity',
                     'applies_target' => 'order',
                     'distribution_type' => 'quantity',
-                    'threshold' => [20, 10, 0],
-                    'amount' => [0.9, 0.92, 0.94],
+                    'threshold' => $thresholds,
+                    'amount' => $threshold_prices,
                 ]);
 
                 break;
@@ -133,15 +147,20 @@ class ModifiersServiceTest extends TestCase
 
         $this->assertNotNull($mod);
 
-        $modifiers = $this->order->applyModifiers();
-        $aggregated_modifiers = \App\ModifiedValue::aggregateByType($modifiers);
-        $this->assertEquals(count($aggregated_modifiers), 1);
+        foreach([21, 15, 3] as $threshold_index => $total_quantity) {
+            $this->enforceBookingsTotalQuantity($product->id, $total_quantity);
 
-        $without_discount = $this->product->price * (8 + 3);
-        $total = 0.92 * (8 + 3);
+            $order = $this->services['orders']->show($this->order->id);
+            $modifiers = $order->applyModifiers();
+            $aggregated_modifiers = \App\ModifiedValue::aggregateByType($modifiers);
+            $this->assertEquals(count($aggregated_modifiers), 1);
 
-        foreach($aggregated_modifiers as $ag) {
-            $this->assertEquals($ag->amount * -1, $without_discount - $total);
+            $without_discount = $product->price * $total_quantity;
+            $total = $threshold_prices[$threshold_index] * $total_quantity;
+
+            foreach($aggregated_modifiers as $ag) {
+                $this->assertEquals($ag->amount * -1, $without_discount - $total);
+            }
         }
     }
 
@@ -150,20 +169,22 @@ class ModifiersServiceTest extends TestCase
     */
     public function testThresholdQuantity()
     {
+        $this->localInitOrder();
         $this->actingAs($this->userReferrer);
+        $product = $this->order->products->random();
 
-        $modifiers = $this->product->applicableModificationTypes();
+        $modifiers = $product->applicableModificationTypes();
         $this->assertEquals(count($modifiers), 2);
         $mod = null;
 
         foreach ($modifiers as $mod) {
             if ($mod->id == 'sconto') {
-                $mod = $this->product->modifiers()->where('modifier_type_id', $mod->id)->first();
-                $this->modifiersService->update($mod->id, [
+                $mod = $product->modifiers()->where('modifier_type_id', $mod->id)->first();
+                $this->services['modifiers']->update($mod->id, [
                     'arithmetic' => 'sub',
                     'scale' => 'major',
                     'applies_type' => 'quantity',
-                    'applies_target' => 'booking',
+                    'applies_target' => 'product',
                     'value' => 'percentage',
                     'threshold' => [10, 5, 0],
                     'amount' => [10, 5, 0],
@@ -175,134 +196,197 @@ class ModifiersServiceTest extends TestCase
 
         $this->assertNotNull($mod);
 
-        $modifiers = $this->order->applyModifiers();
+        $order = $this->services['orders']->show($this->order->id);
+        $modifiers = $order->applyModifiers();
         $aggregated_modifiers = \App\ModifiedValue::aggregateByType($modifiers);
         $this->assertEquals(count($aggregated_modifiers), 1);
 
-        $without_discount = $this->product->price * (8 + 3);
-        $total = ($this->product->price * 0.05) * 8;
-
-        foreach($aggregated_modifiers as $ag) {
-            $this->assertEquals($ag->amount * -1, $total);
-        }
-
-        $redux = $this->order->reduxData();
+        $redux = $order->aggregate->reduxData();
         $this->assertNotEquals($redux->price, 0);
 
-        foreach($this->order->bookings as $booking) {
-            $booking->applyModifiers(null, true);
-            $product = $booking->products()->first();
-            $discount_value = $booking->getValue('modifier:' . $mod->id, true);
+        foreach($order->bookings as $booking) {
+            $mods = $booking->applyModifiers($redux, true);
+            $booked_product = $booking->products()->where('product_id', $product->id)->first();
 
-            if ($product->quantity < 5) {
-                $this->assertEquals($discount_value, 0);
-            }
-            else if ($product->quantity >= 5 && $product->quantity < 10) {
-                $this->assertEquals($discount_value * -1, ($this->product->price * 0.05) * $product->quantity);
+            if (is_null($booked_product)) {
+                $this->assertEquals($mods->count(), 0);
             }
             else {
-                $this->assertEquals($discount_value * -1, ($this->product->price * 0.10) * $product->quantity);
+                if ($booked_product->quantity <= 5) {
+                    $this->assertEquals($mods->count(), 0);
+                }
+                else {
+                    $this->assertEquals($mods->count(), 1);
+                    $m = $mods->first();
+
+                    if ($booked_product->quantity > 5 && $booked_product->quantity <= 10) {
+                        $this->assertEquals($m->effective_amount * -1, round(($product->price * $booked_product->quantity) * 0.05, 4));
+                    }
+                    else {
+                        $this->assertEquals($m->effective_amount * -1, round(($product->price * $booked_product->quantity) * 0.10, 4));
+                    }
+                }
             }
         }
     }
 
-    private function reviewBookingsIntoOrder($mod, $order, $test_shipping_value)
+    private function reviewBookingsIntoOrder($mod, $test_shipping_value)
     {
-        $order = $order->fresh();
-        $redux = $order->reduxData();
+        $order = $this->services['orders']->show($this->order->id);
+        $redux = $order->aggregate->reduxData();
         $this->assertNotEquals($redux->relative_price, 0.0);
 
         foreach($order->bookings as $booking) {
             if ($booking->status == 'pending') {
-                $booking->applyModifiers(null, true);
                 $booked_value = $booking->getValue('booked', true);
             }
             else {
                 $booked_value = $booking->getValue('delivered', true);
             }
 
-            $shipping_value = $booking->getValue('modifier:' . $mod->id, true);
-            $this->assertEquals(($booked_value * $test_shipping_value) / $redux->relative_price, $shipping_value);
+            $mods = $booking->applyModifiers($redux, true);
+            $this->assertEquals($mods->count(), 1);
+
+            foreach($mods as $m) {
+                $this->assertEquals(round(($booked_value * $test_shipping_value) / $redux->relative_price, 4), $m->effective_amount);
+            }
         }
     }
 
-    /*
-        Modificatore applicato sull'ordine
-    */
-    public function testOnOrder()
+    private function simpleMod($reference, $target, $distribution, $amount)
     {
-        $this->actingAs($this->userReferrer);
-
-        $test_shipping_value = 50;
-
-        $modifiers = $this->order->applicableModificationTypes();
-        $mod = null;
+        $modifiers = $reference->applicableModificationTypes();
 
         foreach ($modifiers as $mod) {
             if ($mod->id == 'spese-trasporto') {
-                $mod = $this->order->modifiers()->where('modifier_type_id', $mod->id)->first();
-                $this->modifiersService->update($mod->id, [
+                $mod = $reference->modifiers()->where('modifier_type_id', $mod->id)->first();
+                $this->services['modifiers']->update($mod->id, [
                     'value' => 'absolute',
                     'arithmetic' => 'sum',
                     'scale' => 'minor',
                     'applies_type' => 'none',
-                    'applies_target' => 'order',
-                    'distribution_type' => 'price',
-                    'simplified_amount' => $test_shipping_value,
+                    'applies_target' => $target,
+                    'distribution_type' => $distribution,
+                    'simplified_amount' => $amount,
                 ]);
 
-                break;
+                return $mod;
             }
         }
 
-        $this->assertNotNull($mod);
-        $this->assertEquals($this->order->bookings->count(), 2);
+        return null;
+    }
 
-        $this->reviewBookingsIntoOrder($mod, $this->order, $test_shipping_value);
+    private function shipOrder($random)
+    {
+        $this->actingAs($this->userWithShippingPerms);
+        $order = $this->services['orders']->show($this->order->id);
 
-        foreach($this->order->bookings as $booking) {
+        foreach($order->bookings as $booking) {
+            $data = [];
+
             foreach($booking->products as $product) {
-                $product->delivered = $product->quantity;
-                $product->save();
+                if ($random) {
+                    $data[$product->product_id] = max($product->quantity + rand(-5, 5), 0);
+                }
+                else {
+                    $data[$product->product_id] = $product->quantity;
+                }
             }
 
-            $booking->status = 'shipped';
-            $booking->save();
-
-            $booking->unsetRelation('products');
-            $booking->saveFinalPrices();
-            $booking->saveModifiers();
+            $data['action'] = 'shipped';
+            $this->services['bookings']->bookingUpdate($data, $order->aggregate, $booking->user, true);
         }
+
+        $this->actingAs($this->userReferrer);
+    }
+
+    /*
+        Modificatore applicato sull'ordine in base al valore
+    */
+    public function testOnOrder()
+    {
+        $this->localInitOrder();
+        $this->actingAs($this->userReferrer);
+
+        $test_shipping_value = 50;
+        $mod = $this->simpleMod($this->order, 'order', 'price', $test_shipping_value);
+        $this->assertNotNull($mod);
+
+        $this->reviewBookingsIntoOrder($mod, $test_shipping_value);
+
+        $this->shipOrder(false);
 
         $this->order->status = 'shipped';
         $this->order->save();
 
-        $this->reviewBookingsIntoOrder($mod, $this->order, $test_shipping_value);
+        $this->reviewBookingsIntoOrder($mod, $test_shipping_value);
 
         /*
             Alterando le quantità consegnate e forzando il ricalcolo dei
             modificatori, questi devono essere coerenti con le nuove quantità
         */
 
-        foreach($this->order->bookings as $booking) {
-            foreach($booking->products as $product) {
-                $product->delivered += rand(-2, 2);
-                $product->save();
-            }
+        $this->shipOrder(true);
+        $this->actingAs($this->userReferrer);
+        $this->services['orders']->fixModifiers($this->order->id, 'adjust');
+        $this->reviewBookingsIntoOrder($mod, $test_shipping_value);
+    }
 
-            $booking->saveFinalPrices();
-            $booking = $booking->fresh();
+    private function completeTestWeight()
+    {
+        $test_shipping_value = 50;
 
-            foreach($booking->products as $product) {
-                $this->assertNotEquals($product->final_price, 0);
+        $mod = $this->simpleMod($this->order, 'order', 'weight', $test_shipping_value);
+        $this->assertNotNull($mod);
+
+        $order = $this->services['orders']->show($this->order->id);
+        $redux = $order->aggregate->reduxData();
+        $this->assertNotEquals($redux->relative_price, 0.0);
+
+        foreach($order->bookings as $booking) {
+            $mods = $booking->applyModifiers($redux, true);
+            $this->assertEquals($mods->count(), 1);
+
+            $booked_value = $booking->getValue('weight', true);
+
+            foreach($mods as $m) {
+                $this->assertEquals(round(($booked_value * $test_shipping_value) / $redux->relative_weight, 4), $m->effective_amount);
             }
         }
+    }
 
-        foreach($this->order->bookings as $booking) {
-            $booking->saveModifiers();
+    /*
+        Modificatore applicato sull'ordine in base al peso
+    */
+    public function testDistributeOnWeight()
+    {
+        $this->localInitOrder();
+        $this->actingAs($this->userReferrer);
+
+        foreach($this->order->products as $product) {
+            $product->weight = rand(0.1, 1.5);
+            $product->save();
         }
 
-        $this->reviewBookingsIntoOrder($mod, $this->order, $test_shipping_value);
+        $this->completeTestWeight();
+    }
+
+    /*
+        Modificatore applicato sull'ordine in base al peso assoluto (unità di misura non discrete)
+    */
+    public function testDistributeOnAbsoluteWeight()
+    {
+        $this->localInitOrder();
+        $this->actingAs($this->userReferrer);
+
+        for($i = 0; $i < $this->order->products->count() / 3; $i++) {
+            $product = $this->order->products->random();
+            $product->measure->discrete = false;
+            $product->measure->save();
+        }
+
+        $this->completeTestWeight();
     }
 
     /*
@@ -310,6 +394,7 @@ class ModifiersServiceTest extends TestCase
     */
     public function testOnShippingPlace()
     {
+        $this->localInitOrder();
         $this->actingAs($this->userAdmin);
 
         $delivery_1 = \App\Delivery::factory()->create([
@@ -320,47 +405,34 @@ class ModifiersServiceTest extends TestCase
             'default' => false,
         ]);
 
-        $this->user1->preferred_delivery_id = $delivery_1->id;
-        $this->user1->save();
-        $this->user2->preferred_delivery_id = $delivery_2->id;
-        $this->user2->save();
+        $delivery = [$delivery_1, $delivery_2];
 
-        $test_shipping_value = 10;
-
-        $modifiers = $delivery_2->applicableModificationTypes();
-        $mod = null;
-
-        foreach ($modifiers as $mod) {
-            if ($mod->id == 'spese-trasporto') {
-                $mod = $delivery_2->modifiers()->where('modifier_type_id', $mod->id)->first();
-                $this->modifiersService->update($mod->id, [
-                    'value' => 'absolute',
-                    'arithmetic' => 'sum',
-                    'scale' => 'minor',
-                    'applies_type' => 'none',
-                    'applies_target' => 'booking',
-                    'simplified_amount' => $test_shipping_value,
-                ]);
-
-                break;
-            }
+        foreach($this->users as $user) {
+            $user->preferred_delivery_id = $delivery[rand(0, 1)]->id;
+            $user->save();
         }
 
+        $test_shipping_value = 10;
+        $mod = $this->simpleMod($delivery_2, 'booking', 'none', $test_shipping_value);
         $this->assertNotNull($mod);
 
-        $redux = $this->order->reduxData();
+        $order = $this->services['orders']->show($this->order->id);
+        $redux = $order->aggregate->reduxData();
         $this->assertNotEquals($redux->price, 0.0);
 
-        foreach($this->order->bookings as $booking) {
-            $mods = $booking->applyModifiers(null, true);
-            $booked_value = $booking->getValue('booked', true);
-            $shipping_value = $booking->getValue('modifier:' . $mod->id, true);
+        foreach($order->bookings as $booking) {
+            $mods = $booking->applyModifiers($redux, true);
 
-            if ($booking->user_id == $this->user1->id) {
-                $this->assertEquals($shipping_value, 0);
+            if ($booking->user->preferred_delivery_id == $delivery_1->id) {
+                $this->assertEquals($mods->count(), 0);
             }
             else {
-                $this->assertEquals($shipping_value, $test_shipping_value);
+                $this->assertEquals($mods->count(), 1);
+
+                foreach($mods as $m) {
+                    $this->assertEquals($m->effective_amount, $test_shipping_value);
+                    $this->assertEquals($m->modifier_id, $mod->id);
+                }
             }
         }
     }

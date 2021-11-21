@@ -400,6 +400,11 @@ i[class^='bi-hidden-'] {
     }
 }
 
+.form-disabled {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
 .main-form-buttons {
     .btn-default {
         background-color: #FFF;

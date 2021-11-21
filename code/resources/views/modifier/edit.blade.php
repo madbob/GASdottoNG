@@ -1,4 +1,4 @@
-<x-larastrap::modal :title="$modifier->modifierType->name" classes="modifier-modal" :data-target-type="$modifier->model_type" size="fullscreen" :data-strings-source="route('modifiers.string')">
+<x-larastrap::modal :title="$modifier->modifierType->name" classes="modifier-modal" :data-target-type="$modifier->model_type" size="fullscreen" :data-strings-source="route('modifiers.string', inlineId($modifier->target))">
     <x-larastrap::iform :obj="$modifier" method="POST" :action="route('modifiers.update', $modifier->id)">
         <input type="hidden" name="test-feedback" value="1">
         <input type="hidden" name="close-modal" value="1">
@@ -29,7 +29,7 @@
                     ];
 
                     $applies_targets = [
-                        'product' => (object) ['label' => _i('Prodotto'), 'hidden' => true],
+                        'product' => _i('Prodotto'),
                         'booking' => _i('Singola Prenotazione'),
                         'order' => _i('Ordine Complessivo'),
                     ];
@@ -60,7 +60,7 @@
                     }
                 }
 
-                $labels = App\View\Texts\Modifier::descriptions();
+                $labels = App\View\Texts\Modifier::descriptions($modifier->target);
                 $actual_strings_combination = $modifier->description_index;
 
                 ?>

@@ -9,7 +9,7 @@ class ModifierEngine
     private function applyDefinition($modifier, $amount, $definition, $target)
     {
         if ($modifier->value == 'percentage') {
-            $amount = round(($amount * $definition->amount) / 100, 4);
+            $amount = round($amount * ($definition->amount / 100), 4);
         }
         else if ($modifier->value == 'absolute') {
             $amount = $definition->amount;
@@ -77,7 +77,7 @@ class ModifierEngine
             OrdersController::postFixModifiers(), previa conferma dell'utente,
             quando l'ordine è davvero in stato "consegnato"
         */
-        if ($booking->order->isActive() == false) {
+        if ($booking->status == 'shipped') {
             switch($modifier->applies_type) {
                 case 'none':
                 case 'quantity':
@@ -251,7 +251,7 @@ class ModifierEngine
                     }
 
                     if ($booking_mod_target && $reference) {
-                        $altered_amount = (($booking_mod_target->$distribution_attribute * $altered_amount) / $reference);
+                        $altered_amount = round(($booking_mod_target->$distribution_attribute * $altered_amount) / $reference, 4);
                     }
                     else {
                         $altered_amount = 0;

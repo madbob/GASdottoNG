@@ -2,6 +2,8 @@
 
 namespace App\View\Texts;
 
+use App\Product;
+
 class Modifier
 {
     private static function valueLabels()
@@ -37,9 +39,16 @@ class Modifier
         ];
     }
 
-    private static function unitLabels()
+    private static function unitLabels($target)
     {
         $currency = currentAbsoluteGas()->currency;
+
+        if (is_a($target, Product::class)) {
+            $quantity_label = $target->measure->name;
+        }
+        else {
+            $quantity_label = _i('Prodotti');
+        }
 
         return [
             /*
@@ -47,7 +56,7 @@ class Modifier
                 modificatore, di fatto non viene mai visualizzata
             */
             'none' => 'X',
-            'quantity' => _i('Prodotti'),
+            'quantity' => $quantity_label,
             'price' => $currency,
             'weight' => _i('Chili'),
         ];
@@ -92,7 +101,7 @@ class Modifier
         ];
     }
 
-    public static function descriptions()
+    public static function descriptions($target)
     {
         /*
             Qui predispongo le stringhe descrittive per tutte le possibili
@@ -103,7 +112,7 @@ class Modifier
         $value_labels = self::valueLabels();
         $targets_labels = self::targetsLabels();
         $scale_labels = self::scaleLabels();
-        $value_units = self::unitLabels();
+        $value_units = self::unitLabels($target);
         $distribution_labels = self::distributionLabels();
         $distribution_types = self::typesLabels();
 
