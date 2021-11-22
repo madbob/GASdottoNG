@@ -154,8 +154,18 @@ class Bookings {
             return false;
         });
 
+        $('input.manual-total', container).keyup((e) => {
+            let i = $(e.currentTarget);
+            if (parseFloat(i.val()) > 0) {
+                i.addClass('is-changed');
+            }
+            else {
+                i.removeClass('is-changed');
+            }
+        });
+
         $('input.manual-total', container).change((e) => {
-            var editor = $(e.currentTarget).closest('.booking-editor');
+            let editor = $(e.currentTarget).closest('.booking-editor');
             this.bookingTotal(editor);
         });
 
@@ -281,6 +291,13 @@ class Bookings {
         }).each(function() {
             $(this).toggleClass('skip-on-submit restore-after-serialize', $(this).val() == '0');
         });
+
+        let manual = form.find('.manual-total');
+        if (manual.length) {
+            if (manual.hasClass('is-changed') == false) {
+                manual.val('');
+            }
+        }
 
     	var data = form.find(':not(.skip-on-submit)').serialize();
         form.find('.restore-after-serialize').removeClass('skip-on-submit restore-after-serialize');
