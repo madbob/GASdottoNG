@@ -48,6 +48,27 @@ class MultiGasController extends Controller
         return view('pages.multigas', ['groups' => $groups]);
     }
 
+    private function attachAdmin($user, $admin)
+    {
+        $roles = [];
+
+        $target_role = $user->gas->roles['multigas'] ?? -1;
+        if ($target_role != -1) {
+            $role = Role::find($target_role);
+            if ($role) {
+                $roles = [$role];
+            }
+        }
+
+        if (empty($roles)) {
+            $roles = Role::havingAction('gas.permissions');
+        }
+
+        foreach($roles as $role) {
+            $admin->addRole($role, $gas);
+        }
+    }
+
     public function store(Request $request)
     {
         $user = $request->user();
@@ -79,8 +100,9 @@ class MultiGasController extends Controller
                 manipolare
             */
             $roles = Role::havingAction('gas.multi');
-            foreach($roles as $role)
+            foreach($roles as $role) {
                 $user->addRole($role, $gas);
+            }
 
             /*
                 Aggancio il nuovo utente amministratore al nuovo GAS (di default
@@ -89,23 +111,7 @@ class MultiGasController extends Controller
             $admin->gas_id = $gas->id;
             $admin->save();
 
-            $roles = [];
-
-            $target_role = $user->gas->roles['multigas'] ?? -1;
-            if ($target_role != -1) {
-                $role = Role::find($target_role);
-                if ($role) {
-                    $roles = [$role];
-                }
-            }
-
-            if (empty($roles)) {
-                $roles = Role::havingAction('gas.permissions');
-            }
-
-            foreach($roles as $role) {
-                $admin->addRole($role, $gas);
-            }
+            $this->attachAdmin($user, $admin);
 
             return $this->successResponse([
                 'id' => $gas->id,

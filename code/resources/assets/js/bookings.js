@@ -294,6 +294,19 @@ class Bookings {
 
         let manual = form.find('.manual-total');
         if (manual.length) {
+            /*
+                Si deve tenere traccia dello stato della input box per le
+                consegne manuali senza quantità: se non ne viene modificato il
+                contenuto funziona come visualizzazione del totale manualmente
+                calcolato, altrimenti come effettivo totale manuale (e bloccato,
+                che sovrascrive quello automatico).
+                Se non è stato manualmente valorizzato (ma c'è comunque un
+                valore, settato da un precedente calcolo automatico, ad esempio
+                se è stata immessa la quantità di un prodotto) qui lo si svuota,
+                altrimenti il valore accompagnerebbe la richiesta verso il
+                server e sarebbe interpretato come un totale manuale (e, dunque,
+                bloccato)
+            */
             if (manual.hasClass('is-changed') == false) {
                 manual.val('');
             }

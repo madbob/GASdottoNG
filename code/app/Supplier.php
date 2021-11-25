@@ -130,66 +130,53 @@ class Supplier extends Model
 
     /*********************************************************** PayableTrait */
 
+    private function innerQuery($query, $direction, $supplier, $with_invoices)
+    {
+        $type = $direction . '_type';
+        $id = $direction . '_id';
+
+        $query->where(function($query) use ($supplier, $type, $id, $with_invoices) {
+            $query->where(function($query) use ($supplier, $type, $id) {
+                $query->where($type, 'App\Supplier')->where($id, $supplier->id);
+            })->orWhere(function($query) use ($supplier, $type, $id) {
+                $query->where($type, 'App\Order')->whereIn($id, $supplier->orders()->pluck('orders.id'));
+            })->orWhere(function($query) use ($supplier, $type, $id) {
+                $query->where($type, 'App\Booking')->whereIn($id, $supplier->bookings()->pluck('bookings.id'));
+            });
+
+            if ($with_invoices) {
+                $query->orWhere(function($query) use ($supplier, $type, $id) {
+                    $query->where($type, 'App\Invoice')->whereIn($id, $supplier->invoices()->pluck('invoices.id'));
+                });
+            }
+        });
+    }
+
     public function queryMovements($query = null, $type = 'all')
     {
-        if (is_null($query))
+        if (is_null($query)) {
             $query = Movement::orderBy('created_at', 'desc');
+        }
 
         $supplier = $this;
-
-        /*
-            TODO Le query per filtrare ordini e prenotazioni devono essere migliorate
-        */
 
         switch($type) {
             case 'all':
                 $query->where(function($query) use ($supplier) {
                     $query->where(function($query) use ($supplier) {
-                        $query->where(function($query) use ($supplier) {
-                            $query->where('sender_type', 'App\Supplier')->where('sender_id', $supplier->id);
-                        })->orWhere(function($query) use ($supplier) {
-                            $query->where('sender_type', 'App\Order')->whereIn('sender_id', $supplier->orders()->pluck('orders.id'));
-                        })->orWhere(function($query) use ($supplier) {
-                            $query->where('sender_type', 'App\Booking')->whereIn('sender_id', $supplier->bookings()->pluck('bookings.id'));
-                        })->orWhere(function($query) use ($supplier) {
-                            $query->where('sender_type', 'App\Invoice')->whereIn('sender_id', $supplier->invoices()->pluck('invoices.id'));
-                        });
+                        $this->innerQuery($query, 'sender', $supplier, true);
                     })->orWhere(function($query) use ($supplier) {
-                        $query->where(function($query) use ($supplier) {
-                            $query->where('target_type', 'App\Supplier')->where('target_id', $supplier->id);
-                        })->orWhere(function($query) use ($supplier) {
-                            $query->where('target_type', 'App\Order')->whereIn('target_id', $supplier->orders()->pluck('orders.id'));
-                        })->orWhere(function($query) use ($supplier) {
-                            $query->where('target_type', 'App\Booking')->whereIn('target_id', $supplier->bookings()->pluck('bookings.id'));
-                        })->orWhere(function($query) use ($supplier) {
-                            $query->where('target_type', 'App\Invoice')->whereIn('target_id', $supplier->invoices()->pluck('invoices.id'));
-                        });
+                        $this->innerQuery($query, 'target', $supplier, true);
                     });
                 });
                 break;
 
             case 'sender':
-                $query->where(function($query) use ($supplier) {
-                    $query->where(function($query) use ($supplier) {
-                        $query->where('sender_type', 'App\Supplier')->where('sender_id', $supplier->id);
-                    })->orWhere(function($query) use ($supplier) {
-                        $query->where('sender_type', 'App\Order')->whereIn('sender_id', $supplier->orders()->pluck('orders.id'));
-                    })->orWhere(function($query) use ($supplier) {
-                        $query->where('sender_type', 'App\Booking')->whereIn('sender_id', $supplier->bookings()->pluck('bookings.id'));
-                    });
-                });
+                $this->innerQuery($query, 'sender', $supplier, false);
                 break;
 
             case 'target':
-                $query->where(function($query) use ($supplier) {
-                    $query->where(function($query) use ($supplier) {
-                        $query->where('target_type', 'App\Supplier')->where('target_id', $supplier->id);
-                    })->orWhere(function($query) use ($supplier) {
-                        $query->where('target_type', 'App\Order')->whereIn('target_id', $supplier->orders()->pluck('orders.id'));
-                    })->orWhere(function($query) use ($supplier) {
-                        $query->where('target_type', 'App\Booking')->whereIn('target_id', $supplier->bookings()->pluck('bookings.id'));
-                    });
-                });
+                $this->innerQuery($query, 'target', $supplier, false);
                 break;
         }
 

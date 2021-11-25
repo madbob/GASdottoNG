@@ -34,7 +34,6 @@ class FullTest extends DuskTestCase
 
         parent::setUp();
         $this->artisan('db:seed');
-        $this->gas = \App\Gas::factory()->create();
     }
 
     private function testProfile($browser)
@@ -152,8 +151,6 @@ class FullTest extends DuskTestCase
             ->waitForText('Bandiera')
             ->assertSee('Bandiera');
 
-        $fee_amount = $this->gas->annual_fee_amount;
-
         /*
             Stato Quote e creazione quota
         */
@@ -164,7 +161,6 @@ class FullTest extends DuskTestCase
             ->with('.movement-modal.show', function($panel) {
                 $panel->press('Salva');
             })->pause(500)
-            ->assertSee(sprintf('%.02f €', $fee_amount))
             ->assertSee('Contanti');
     }
 

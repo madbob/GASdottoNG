@@ -84,27 +84,28 @@ class MovementsController extends BackedController
                         return view('movement.list', $data);
                     }
                 }
-                else if ($format == 'csv') {
-                    $filename = sanitizeFilename(_i('Esportazione movimenti GAS %s.csv', date('d/m/Y')));
-                    $headers = [_i('Data Registrazione'), _i('Data Movimento'), _i('Tipo'), _i('Pagamento'), _i('Pagante'), _i('Pagato'), _i('Valore'), _i('Note')];
-                    return output_csv($filename, $headers, $data['movements'], function($mov) {
-                        $row = [];
-                        $row[] = $mov->registration_date;
-                        $row[] = $mov->date;
-                        $row[] = $mov->printableType();
-                        $row[] = $mov->printablePayment();
-                        $row[] = $mov->sender ? $mov->sender->printableName() : '';
-                        $row[] = $mov->target ? $mov->target->printableName() : '';
-                        $row[] = printablePrice($mov->amount);
-                        $row[] = $mov->notes;
-                        return $row;
-                    });
-                }
-                else if ($format == 'pdf') {
-                    $title = _i('Esportazione movimenti GAS %s', date('d/m/Y'));
-                    $filename = sanitizeFilename($title . '.pdf');
-                    $pdf = PDF::loadView('documents.movements_pdf', ['movements' => $data['movements']]);
-                    return $pdf->download($filename);
+                else {
+                    $filename = sanitizeFilename(_i('Esportazione movimenti GAS %s.%s', [date('d/m/Y'), $format]));
+
+                    if ($format == 'csv') {
+                        $headers = [_i('Data Registrazione'), _i('Data Movimento'), _i('Tipo'), _i('Pagamento'), _i('Pagante'), _i('Pagato'), _i('Valore'), _i('Note')];
+                        return output_csv($filename, $headers, $data['movements'], function($mov) {
+                            $row = [];
+                            $row[] = $mov->registration_date;
+                            $row[] = $mov->date;
+                            $row[] = $mov->printableType();
+                            $row[] = $mov->printablePayment();
+                            $row[] = $mov->sender ? $mov->sender->printableName() : '';
+                            $row[] = $mov->target ? $mov->target->printableName() : '';
+                            $row[] = printablePrice($mov->amount);
+                            $row[] = $mov->notes;
+                            return $row;
+                        });
+                    }
+                    else if ($format == 'pdf') {
+                        $pdf = PDF::loadView('documents.movements_pdf', ['movements' => $data['movements']]);
+                        return $pdf->download($filename);
+                    }
                 }
             }
         }
@@ -360,6 +361,7 @@ class MovementsController extends BackedController
             'suppliers' => $balance->suppliers,
             'deposits' => $balance->deposits
         ];
+
         return response()->json($obj, 200);
     }
 
