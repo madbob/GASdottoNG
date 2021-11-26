@@ -509,9 +509,11 @@ class Booking extends Model
             $engine = app()->make('ModifierEngine');
 
             foreach($modifiers as $modifier) {
+                \Log::debug($this->user_id . ' inizio');
                 $value = $engine->apply($modifier, $this, $aggregate_data);
                 if ($value) {
                     $values = $values->push($value);
+                    \Log::debug($this->user_id . ' - ' . $value->effective_amount);
                 }
             }
 
@@ -567,20 +569,7 @@ class Booking extends Model
         $ret = $this->emptyReduxBehaviour();
 
         $ret->children = function($item, $filters) {
-            /*
-                Di default vengono incluse anche le prenotazioni degli amici.
-                Non modificare questo comportamento se non con cognizione di
-                causa (da questo dipende poi la riduzione sull'ordine, cfr.
-                Order::reduxBehaviour())
-            */
-            $with_friends = $filters['with_friends'] ?? true;
-
-            if ($with_friends) {
-                return $item->products_with_friends;
-            }
-            else {
-                return $item->products;
-            }
+            return $item->products;
         };
 
         $ret->optimize = function($item, $child) {

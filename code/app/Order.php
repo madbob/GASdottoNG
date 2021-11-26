@@ -725,6 +725,12 @@ class Order extends Model
             }
 
             $modifiers = $booking->applyModifiers(null, false);
+
+            foreach($booking->friends_bookings as $friend) {
+                $friend_modifiers = $friend->applyModifiers(null, false);
+                $modifiers = $modifiers->merge($friend_modifiers);
+            }
+
             $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
             foreach($aggregated_modifiers as $am) {
                 $obj->totals[$am->name] = printablePrice($am->amount);
@@ -1045,23 +1051,15 @@ class Order extends Model
 
         $ret->children = function($item, $filters) {
             /*
-                Qui recupero solo le prenotazioni di primo livello (non
-                quelle degli amici), in quanto comunque il comportamento di
-                Booking prevede di default di ridurre anche le informazioni
-                degli amici. Se qui contemplassi tutte le prenotazioni,
-                finirei col sommare due volte le quantità degli utenti
-                amici: una volta nella prenotazione stessa, una volta in
-                quella dell'utente superiore.
-
-                Ricordarsi comunque che qui le prenotazioni vanno sempre
-                lette dal DB, non accedendo al valore eventualmente cachato
-                in $item->bookings. Questo per fare in modo che agendo sullo
-                stesso ordine ma per GAS diversi sia riapplicato lo scope
-                RestrictedGAS, ed ottenere le prenotazioni dell'ordine
-                desiderato; altrimenti, otterrei sempre le prenotazioni del
-                primo GAS che viene elaborato
+                Ricordarsi che qui le prenotazioni vanno sempre lette dal DB,
+                non accedendo al valore eventualmente cachato in
+                $item->bookings.
+                Questo per fare in modo che agendo sullo stesso ordine ma per
+                GAS diversi sia riapplicato lo scope RestrictedGAS, ed ottenere
+                le prenotazioni dell'ordine desiderato; altrimenti, otterrei
+                sempre le prenotazioni del primo GAS che viene elaborato
             */
-            $bookings = $item->topLevelBookings();
+            $bookings = $item->bookings()->get();
 
             $shipping_place = $filters['shipping_place'] ?? null;
             if ($shipping_place) {

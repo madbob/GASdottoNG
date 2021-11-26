@@ -16,11 +16,11 @@ class ModifiersServiceTest extends TestCase
     {
         parent::setUp();
 
-        $booking_role = \App\Role::factory()->create(['actions' => 'supplier.book']);
+        $this->booking_role = \App\Role::factory()->create(['actions' => 'supplier.book']);
 
         $this->users = \App\User::factory()->count(5)->create(['gas_id' => $this->gas->id]);
         foreach($this->users as $user) {
-            $user->addRole($booking_role->id, $this->gas);
+            $user->addRole($this->booking_role->id, $this->gas);
         }
     }
 
@@ -403,6 +403,30 @@ class ModifiersServiceTest extends TestCase
         return null;
     }
 
+    private function simplePercentageMod($reference, $target, $distribution, $amount)
+    {
+        $modifiers = $reference->applicableModificationTypes();
+
+        foreach ($modifiers as $mod) {
+            if ($mod->id == 'spese-trasporto') {
+                $mod = $reference->modifiers()->where('modifier_type_id', $mod->id)->first();
+                $this->services['modifiers']->update($mod->id, [
+                    'value' => 'percentage',
+                    'arithmetic' => 'sum',
+                    'scale' => 'minor',
+                    'applies_type' => 'none',
+                    'applies_target' => $target,
+                    'distribution_type' => $distribution,
+                    'simplified_amount' => $amount,
+                ]);
+
+                return $mod;
+            }
+        }
+
+        return null;
+    }
+
     private function shipOrder($random)
     {
         $this->actingAs($this->userWithShippingPerms);
@@ -561,5 +585,77 @@ class ModifiersServiceTest extends TestCase
                 }
             }
         }
+    }
+
+    /*
+        Prenotazione di un amico, senza prenotazione dell'utente padre
+    */
+    public function testWithFriends()
+    {
+        $this->localInitOrder();
+
+        $this->actingAs($this->userReferrer);
+        $test_shipping_value = 10;
+        $mod = $this->simplePercentageMod($this->order, 'order', 'price', $test_shipping_value);
+
+        $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'users.admin');
+        $this->actingAs($this->userWithAdminPerm);
+        $newUser = $this->services['users']->store(array(
+            'username' => 'test user',
+            'firstname' => 'mario',
+            'lastname' => 'rossi',
+            'password' => 'password'
+        ));
+
+        $newUser->addRole($this->booking_role->id, $this->gas);
+        $friends_role = \App\Role::factory()->create(['actions' => 'users.subusers']);
+        $newUser->addRole($friends_role->id, $this->gas);
+
+        $this->actingAs($newUser);
+        $friend = $this->services['users']->storeFriend(array(
+            'username' => 'test friend user',
+            'firstname' => 'mario',
+            'lastname' => 'rossi',
+            'password' => 'password'
+        ));
+
+        $friend->addRole($this->booking_role->id, $this->gas);
+
+        $this->actingAs($friend);
+        list($data, $booked_count, $total) = $this->randomQuantities($this->order->products);
+        $data['action'] = 'booked';
+        $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $friend, false);
+        $booking = $this->order->bookings()->where('user_id', $friend->id)->first();
+        $this->assertNotNull($booking);
+
+        $booking_found = false;
+        $shipping_cost_found = false;
+        $formatted = $this->order->formatShipping(splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', 'all_by_name');
+
+        foreach($formatted->contents as $d) {
+            if ($d->user_id == $newUser->id) {
+                $booking_found = true;
+                $mods = $booking->applyModifiers(null, true);
+
+                foreach($d->totals as $key => $value) {
+                    if ($key == 'total') {
+                        $this->assertEquals($value, $booking->getValue('effective', true));
+                    }
+                    else {
+                        foreach($mods as $mod) {
+                            if ($mod->modifier->modifierType->name == $key) {
+                                $shipping_cost_found = true;
+                                $this->assertEquals($mod->effective_amount, $value);
+                            }
+                        }
+                    }
+                }
+
+                break;
+            }
+        }
+
+        $this->assertEquals($booking_found, true);
+        $this->assertEquals($shipping_cost_found, true);
     }
 }
