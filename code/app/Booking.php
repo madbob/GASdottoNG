@@ -170,8 +170,18 @@ class Booking extends Model
                 }
 
                 if ($type == 'effective') {
+                    $aggregate_data = $this->order->aggregate->reduxData();
+
                     $type = $this->status == 'pending' ? 'booked' : 'delivered';
-                    $modified_values = $this->applyModifiers(null, false);
+                    $modified_values = $this->applyModifiers($aggregate_data, false);
+
+                    if ($with_friends) {
+                        foreach($this->friends_bookings as $friend_booking) {
+                            $friend_modified_values = $friend_booking->applyModifiers($aggregate_data, false);
+                            $modified_values = $modified_values->merge($friend_modified_values);
+                        }
+                    }
+
                     $value = ModifiedValue::sumAmounts($modified_values, $value);
                 }
 

@@ -219,6 +219,7 @@ class BookingsServiceTest extends TestCase
     }
 
     /*
-        TODO: unit test per prenotazioni fatte da un amico, senza la prenotazione dell'utente principale, magari con anche dei modificatori
+        I test per prenotazioni fatte da un amico sono fatti in
+        ModifiersServiceTest
     */
 }

@@ -322,6 +322,8 @@ class ModifiersServiceTest extends TestCase
 
         $this->assertNotNull($mod);
 
+        $this->nextRound();
+
         $order = $this->services['orders']->show($this->order->id);
         $modifiers = $order->applyModifiers();
         $aggregated_modifiers = \App\ModifiedValue::aggregateByType($modifiers);
@@ -358,6 +360,8 @@ class ModifiersServiceTest extends TestCase
 
     private function reviewBookingsIntoOrder($mod, $test_shipping_value)
     {
+        $this->nextRound();
+
         $order = $this->services['orders']->show($this->order->id);
         $redux = $order->aggregate->reduxData();
         $this->assertNotEquals($redux->relative_price, 0.0);
@@ -429,6 +433,8 @@ class ModifiersServiceTest extends TestCase
 
     private function shipOrder($random)
     {
+        $this->nextRound();
+
         $this->actingAs($this->userWithShippingPerms);
         $order = $this->services['orders']->show($this->order->id);
 
@@ -489,6 +495,8 @@ class ModifiersServiceTest extends TestCase
 
         $mod = $this->simpleMod($this->order, 'order', 'weight', $test_shipping_value);
         $this->assertNotNull($mod);
+
+        $this->nextRound();
 
         $order = $this->services['orders']->show($this->order->id);
         $redux = $order->aggregate->reduxData();
@@ -566,6 +574,8 @@ class ModifiersServiceTest extends TestCase
         $mod = $this->simpleMod($delivery_2, 'booking', 'none', $test_shipping_value);
         $this->assertNotNull($mod);
 
+        $this->nextRound();
+
         $order = $this->services['orders']->show($this->order->id);
         $redux = $order->aggregate->reduxData();
         $this->assertNotEquals($redux->price, 0.0);
@@ -587,31 +597,12 @@ class ModifiersServiceTest extends TestCase
         }
     }
 
-    /*
-        Prenotazione di un amico, senza prenotazione dell'utente padre
-    */
-    public function testWithFriends()
+    private function pushFriend($master)
     {
-        $this->localInitOrder();
-
-        $this->actingAs($this->userReferrer);
-        $test_shipping_value = 10;
-        $mod = $this->simplePercentageMod($this->order, 'order', 'price', $test_shipping_value);
-
-        $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'users.admin');
-        $this->actingAs($this->userWithAdminPerm);
-        $newUser = $this->services['users']->store(array(
-            'username' => 'test user',
-            'firstname' => 'mario',
-            'lastname' => 'rossi',
-            'password' => 'password'
-        ));
-
-        $newUser->addRole($this->booking_role->id, $this->gas);
         $friends_role = \App\Role::factory()->create(['actions' => 'users.subusers']);
-        $newUser->addRole($friends_role->id, $this->gas);
+        $master->addRole($friends_role->id, $this->gas);
 
-        $this->actingAs($newUser);
+        $this->actingAs($master);
         $friend = $this->services['users']->storeFriend(array(
             'username' => 'test friend user',
             'firstname' => 'mario',
@@ -625,12 +616,128 @@ class ModifiersServiceTest extends TestCase
         list($data, $booked_count, $total) = $this->randomQuantities($this->order->products);
         $data['action'] = 'booked';
         $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $friend, false);
-        $booking = $this->order->bookings()->where('user_id', $friend->id)->first();
-        $this->assertNotNull($booking);
 
+        $friend_booking = $this->order->bookings()->where('user_id', $friend->id)->first();
+        $this->assertNotNull($friend_booking);
+
+        return [$friend, $friend_booking];
+    }
+
+    /*
+        Prenotazione di un amico insieme alla prenotazione dell'utente padre
+    */
+    public function testWithFriend()
+    {
+        $this->localInitOrder();
+
+        /*
+            Pesco una prenotazione, e aggiungo un amico all'utente
+        */
+
+        $booking = $this->order->bookings->random();
+        $initial_amount = $booking->getValue('effective', true);
+        list($friend, $friend_booking) = $this->pushFriend($booking->user);
+
+        /*
+            Creo una prenotazione per l'utente
+        */
+
+        $this->nextRound();
+
+        $booking = $this->order->bookings()->where('id', $booking->id)->first();
+        $this->assertNotNull($booking);
+        $this->assertEquals($booking->friends_bookings->count(), 1);
+        $amount_of_friend = $friend_booking->getValue('effective', true);
+        $this->assertNotEquals($amount_of_friend, 0);
+        $amount_with_friend = $booking->getValue('effective', true);
+        $this->assertEquals($amount_with_friend, $initial_amount + $amount_of_friend);
+
+        /*
+            Aggiungo un modificatore
+        */
+
+        $this->actingAs($this->userReferrer);
+        $test_shipping_value = 10;
+        $mod = $this->simplePercentageMod($this->order, 'booking', 'price', $test_shipping_value);
+
+        $this->nextRound();
+
+        $booking = $this->order->bookings()->where('id', $booking->id)->first();
+        $mods = $booking->applyModifiers(null, true);
+        $this->assertEquals($mods->count(), 1);
+        $second_initial_amount = $booking->getValue('booked', true);
+        $this->assertEquals($second_initial_amount, $initial_amount + $amount_of_friend);
+        $second_initial_amount = $booking->getValue('effective', true);
+        $this->assertEquals(round($second_initial_amount, 2), round(($initial_amount + $amount_of_friend) * 1.10, 2));
+
+        /*
+            Formatto l'ordine, e controllo i valori per la prenotazione specifica
+        */
+
+        $this->nextRound();
+
+        $order = $this->services['orders']->show($this->order->id);
         $booking_found = false;
         $shipping_cost_found = false;
-        $formatted = $this->order->formatShipping(splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', 'all_by_name');
+        $formatted = $order->formatShipping(splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', 'all_by_name');
+
+        foreach($formatted->contents as $d) {
+            if ($d->user_id == $booking->user_id) {
+                $booking_found = true;
+                $mods = $booking->applyModifiers(null, true);
+
+                foreach($d->totals as $key => $value) {
+                    if ($key == 'total') {
+                        $this->assertEquals($value, $second_initial_amount);
+                    }
+                    else {
+                        foreach($mods as $mod) {
+                            if ($mod->modifier->modifierType->name == $key) {
+                                $shipping_cost_found = true;
+                                $this->assertEquals($mod->effective_amount, $value);
+                                $this->assertEquals(round(($initial_amount + $amount_of_friend) * 0.10, 2), round($value, 2));
+                            }
+                        }
+                    }
+                }
+
+                break;
+            }
+        }
+
+        $this->assertEquals($booking_found, true);
+        $this->assertEquals($shipping_cost_found, true);
+    }
+
+    /*
+        Prenotazione di un amico, senza prenotazione dell'utente padre
+    */
+    public function testWithOnlyFriend()
+    {
+        $this->localInitOrder();
+
+        $this->actingAs($this->userReferrer);
+        $test_shipping_value = 10;
+        $mod = $this->simplePercentageMod($this->order, 'booking', 'price', $test_shipping_value);
+
+        $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'users.admin');
+        $this->actingAs($this->userWithAdminPerm);
+        $newUser = $this->services['users']->store(array(
+            'username' => 'test user',
+            'firstname' => 'mario',
+            'lastname' => 'rossi',
+            'password' => 'password'
+        ));
+
+        $newUser->addRole($this->booking_role->id, $this->gas);
+        list($friend, $booking) = $this->pushFriend($newUser);
+
+        $this->nextRound();
+
+        $order = $this->services['orders']->show($this->order->id);
+        $booking_found = false;
+        $shipping_cost_found = false;
+        $formatted = $order->formatShipping(splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', 'all_by_name');
 
         foreach($formatted->contents as $d) {
             if ($d->user_id == $newUser->id) {

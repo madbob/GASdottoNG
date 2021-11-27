@@ -142,4 +142,17 @@ abstract class TestCase extends BaseTestCase
 
         return [$data, $booked_count, $total];
     }
+
+    /*
+        Normalmente, la cache dei modelli funziona solo all'interno di ogni
+        singola richiesta. Questa funzione è per forzare un flush tra una
+        macro-operazione e l'altra, appunto per simulare richieste diverse che
+        arrivano in sequenza (che all'interno di un test possono svolgersi anche
+        nella stessa funzione, e dunque attingerebbero sempre agli stessi
+        modelli anziché quelli freschi e modificati pescati dal DB)
+    */
+    protected function nextRound()
+    {
+        Artisan::call('modelCache:clear');
+    }
 }
