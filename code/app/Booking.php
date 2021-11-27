@@ -509,11 +509,9 @@ class Booking extends Model
             $engine = app()->make('ModifierEngine');
 
             foreach($modifiers as $modifier) {
-                \Log::debug($this->user_id . ' inizio');
                 $value = $engine->apply($modifier, $this, $aggregate_data);
                 if ($value) {
                     $values = $values->push($value);
-                    \Log::debug($this->user_id . ' - ' . $value->effective_amount);
                 }
             }
 

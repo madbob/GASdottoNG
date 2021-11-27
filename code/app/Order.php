@@ -671,6 +671,8 @@ class Order extends Model
         $bookings = Booking::sortByShippingPlace($bookings, $shipping_place);
         $listed_products = [];
 
+        $aggregate_data = $this->aggregate->reduxData();
+
         foreach ($bookings as $booking) {
             $obj = (object) [
                 'user_id' => $booking->user->id,
@@ -724,10 +726,10 @@ class Order extends Model
                 $booking->status = 'pending';
             }
 
-            $modifiers = $booking->applyModifiers(null, false);
+            $modifiers = $booking->applyModifiers($aggregate_data, false);
 
             foreach($booking->friends_bookings as $friend) {
-                $friend_modifiers = $friend->applyModifiers(null, false);
+                $friend_modifiers = $friend->applyModifiers($aggregate_data, false);
                 $modifiers = $modifiers->merge($friend_modifiers);
             }
 
