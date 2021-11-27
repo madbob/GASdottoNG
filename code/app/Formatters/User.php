@@ -12,6 +12,71 @@ class User extends Formatter
         return join(', ', $contacts);
     }
 
+    private static function columnsByFeatures($ret)
+    {
+        $current_gas = currentAbsoluteGas();
+
+        if ($current_gas->hasFeature('shipping_places')) {
+            $ret['shipping_place'] = (object) [
+                'name' => _i('Luogo di Consegna'),
+                'checked' => true,
+                'format' => function($obj, $context) {
+                    $sp = $obj->shippingplace;
+                    if (is_null($sp)) {
+                        return _i('Nessuno');
+                    }
+                    else {
+                        return $sp->name;
+                    }
+                },
+            ];
+        }
+
+        if ($current_gas->hasFeature('rid')) {
+            $ret['rid->iban'] = (object) [
+                'name' => _i('IBAN'),
+                'checked' => true,
+            ];
+        }
+
+        /*
+            Se sono nel contesto di una richiesta non vincolata a nessun GAS
+            dell'istanza (cfr. middleware ActIntoGas), permetto di filtrare gli
+            utenti anche in base del GAS di appartenenza
+        */
+        if (App::make('GlobalScopeHub')->enabled() == false) {
+            $ret['gas'] = (object) [
+                'name' => _i('GAS'),
+                'format' => function($obj, $context) {
+                    return $obj->gas->name;
+                },
+            ];
+        }
+
+        return $ret;
+    }
+
+    private static function columnsByType($ret, $type)
+    {
+        if ($type == 'export' || $type == 'all') {
+            $ret['last_login'] = (object) [
+                'name' => _i('Ultimo Accesso'),
+                'format' => function($obj, $context) {
+                    return $obj->last_login;
+                },
+            ];
+
+            $ret['last_booking'] = (object) [
+                'name' => _i('Ultima Prenotazione'),
+                'format' => function($obj, $context) {
+                    return $obj->last_booking;
+                },
+            ];
+        }
+
+        return $ret;
+    }
+
     public static function formattableColumns($type = null)
     {
         $ret = [
@@ -76,44 +141,8 @@ class User extends Formatter
             ],
         ];
 
-        $current_gas = currentAbsoluteGas();
-
-        if ($current_gas->hasFeature('shipping_places')) {
-            $ret['shipping_place'] = (object) [
-                'name' => _i('Luogo di Consegna'),
-                'checked' => true,
-                'format' => function($obj, $context) {
-                    $sp = $obj->shippingplace;
-                    if (is_null($sp)) {
-                        return _i('Nessuno');
-                    }
-                    else {
-                        return $sp->name;
-                    }
-                },
-            ];
-        }
-
-        if ($current_gas->hasFeature('rid')) {
-            $ret['rid->iban'] = (object) [
-                'name' => _i('IBAN'),
-                'checked' => true,
-            ];
-        }
-
-        /*
-            Se sono nel contesto di una richiesta non vincolata a nessun GAS
-            dell'istanza (cfr. middleware ActIntoGas), permetto di filtrare gli
-            utenti anche in base del GAS di appartenenza
-        */
-        if (App::make('GlobalScopeHub')->enabled() == false) {
-            $ret['gas'] = (object) [
-                'name' => _i('GAS'),
-                'format' => function($obj, $context) {
-                    return $obj->gas->name;
-                },
-            ];
-        }
+        $ret = self::columnsByFeatures($ret);
+        $ret = self::columnsByType($ret, $type);
 
         return $ret;
     }

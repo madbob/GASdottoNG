@@ -14,7 +14,7 @@ abstract class Formatter
 {
     public static function getHeaders($fields)
     {
-        $columns = static::formattableColumns();
+        $columns = static::formattableColumns('all');
         $headers = [];
 
         foreach($fields as $field) {
@@ -26,7 +26,7 @@ abstract class Formatter
 
     public static function format($obj, $fields, $context = null)
     {
-        $columns = static::formattableColumns();
+        $columns = static::formattableColumns('all');
         $ret = [];
 
         foreach($fields as $f) {
@@ -61,5 +61,13 @@ abstract class Formatter
         return $ret;
     }
 
+    /*
+        $type può essere una qualsiasi stringa che identifica il contesto, e
+        pertanto le colonne desiderate in quel contesto.
+        Ma se viene specificato $type = 'all' tutte le colonne di tutti i tipi
+        devono essere restituite (in getHeaders() e format() vengono prese tutte
+        le colonne possibili e si formattano solo quelle espressamente richieste
+        in quel momento)
+    */
     public static abstract function formattableColumns($type = null);
 }
