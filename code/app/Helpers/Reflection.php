@@ -16,14 +16,13 @@ function currentAbsoluteGas()
 
     if (is_null($gas)) {
         $user = Auth::user();
-
         if (is_null($user) == false) {
             $gas = $user->gas;
         }
+    }
 
-        if (is_null($gas)) {
-            $gas = App\Gas::orderBy('created_at', 'asc')->first();
-        }
+    if (is_null($gas)) {
+        $gas = App\Gas::orderBy('created_at', 'asc')->first();
     }
 
     return $gas;
@@ -57,13 +56,9 @@ function systemParameters($type)
 function modelsUsingTrait($trait_name)
 {
     $out = [];
-    $results = scandir(app_path());
+    $results = array_diff(scandir(app_path()), ['.', '..']);
 
     foreach ($results as $result) {
-        if ($result === '.' || $result === '..') {
-            continue;
-        }
-
         if (is_dir(app_path() . '/' . $result)) {
             continue;
         }
@@ -89,12 +84,7 @@ function accessAttr($obj, $name, $default = '')
 
     if (strpos($name, '->') !== false) {
         list($array, $index) = explode('->', $name);
-        if (isset($obj->$array[$index])) {
-            return $obj->$array[$index];
-        }
-        else {
-            return '';
-        }
+        return $obj->$array[$index] ?? '';
     }
     else {
         return $obj->$name;

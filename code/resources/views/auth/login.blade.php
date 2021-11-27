@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="col-12 col-md-6 offset-md-3">
+<div class="col-12 col-md-6 offset-md-3 mb-5">
     @if($gas->message != '')
         <div class="alert alert-info">
             {!! nl2br($gas->message) !!}
@@ -38,59 +38,17 @@
         <br>
     @endif
 
-    <form class="form-horizontal" method="POST" action="{{ route('login') }}">
+    <x-larastrap::form method="POST" action="{{ route('login') }}" :buttons="[['color' => 'success', 'label' => _i('Login'), 'type' => 'submit']]">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="language" value="{{ $gas->getConfig('language') }}">
 
-        <div class="row mb-2">
-            <label class="col-2 col-form-label">{{ _i('Username') }}</label>
-            <div class="col-10">
-                <input class="form-control" type="text" name="username" value="{{ old('username') }}">
-            </div>
-        </div>
-
-        <div class="row mb-2">
-            <label class="col-2 col-form-label">{{ _i('Password') }}</label>
-            <div class="col-10">
-                <input class="form-control" type="password" name="password">
-            </div>
-        </div>
-
-        @if($gas->getConfig('language'))
-            <input type="hidden" name="language" value="{{ $gas->getConfig('language') }}">
-        @else
-            <div class="row mb-2">
-                <label class="col-2 col-form-label">{{ _i('Lingua') }}</label>
-                <div class="col-10">
-                    <select name="language">
-                        @foreach(getLanguages() as $identifier => $lang)
-                            <option value="{{ $identifier }}">{{ $lang }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-        @endif
-
-        <div class="row mb-2">
-            <div class="col-10 offset-2">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="remember" class="remember-checkbox" data-attribute="remember_me" data-attribute-default="true" checked> {{ _i('Ricordami') }}
-                    </label>
-                </div>
-            </div>
-        </div>
-
-        <br>
-
-        <div class="row mb-2">
-            <div class="col-10 offset-2">
-                <button class="btn btn-success float-end" type="submit">{{ _i('Login') }}</button>
-            </div>
-        </div>
-    </form>
+        <x-larastrap::text name="username" :label="_i('Username')" />
+        <x-larastrap::password name="password" :label="_i('Password')" />
+        <x-larastrap::check name="remember" :label="_i('Ricordami')" checked="true" :attributes="['data-attribute' => 'remember_me', 'data-attribute-default' => 'true']" classes="remember-checkbox" />
+    </x-larastrap::form>
 </div>
 
-<div class="col-12 col-md-6 offset-md-3">
+<div class="col-12 col-md-6 offset-md-3 mb-5">
     <hr/>
     <p>
         @if($gas->hasFeature('public_registrations'))
@@ -98,12 +56,15 @@
         @endif
         <a class="float-end" href="{{ route('password.request') }}">{{ _i('Recupero Password') }}</a>
     </p>
+    <br>
+    <br>
+    <br>
 </div>
 
-<nav class="fixed-bottom border-top p-3 bg-light">
+<nav class="fixed-bottom border-top px-0 pt-3 bg-light">
     <div class="container">
         <p>
-            Powered by <a href="https://www.gasdotto.net/"><img src="{{ url('images/gasdotto.jpg') }}" style="height: 24px" alt="GASdotto"> GASdotto</a>.
+            Powered by <a href="https://www.gasdotto.net/"><img src="{{ url('images/gasdotto.jpg') }}" style="height: 24px" alt="GASdotto"> GASdotto</a>
         </p>
     </div>
 </nav>

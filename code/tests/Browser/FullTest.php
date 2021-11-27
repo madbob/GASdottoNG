@@ -157,9 +157,9 @@ class FullTest extends DuskTestCase
         $browser->visitRoute('users.index')
             ->waitForText('Importa CSV')
             ->press('Stato Quote')->waitForText('Controllo Quote')->pause(500)
-            ->clickAtXPath('//*/tr[4]/td/button[contains(@class, "btn-success")][1]')->pause(1000)
+            ->clickAtXPath('//*/tr[4]/td/button[contains(@class, "btn-success")][1]')->pause(500)
             ->with('.movement-modal.show', function($panel) {
-                $panel->press('Salva');
+                $panel->pause(500)->press('Salva');
             })->pause(500)
             ->assertSee('Contanti');
     }
@@ -568,7 +568,7 @@ class FullTest extends DuskTestCase
     {
         $browser->visitRoute('notifications.index')
             ->waitForText('Crea Nuovo Notifica')
-            ->press('Crea Nuovo Notifica')->waitForText('Tipo')->pause(100)
+            ->press('Crea Nuovo Notifica')->waitForText('Tipo')->pause(500)
             ->with('.modal.show', function($panel) {
                 $panel->typeSlowly('content', 'Solo una prova', 50)
                     ->typeSlowly('start_date', printableDate(date('Y-m-d')), 50)
