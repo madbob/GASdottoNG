@@ -65,6 +65,12 @@ class Order extends Printer
                 foreach($c->products as $p) {
                     $flat_contents[] = array_merge($c->user, $p);
                 }
+
+                /*
+                    TODO: aggiungere anche i modificatori.
+                    Devono essere formattati in Order::formatShipping(),
+                    coerentemente alla formattazione dei prodotti
+                */
             }
 
             if ($send_mail) {
