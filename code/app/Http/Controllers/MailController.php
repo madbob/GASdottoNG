@@ -16,7 +16,7 @@ use App\InnerLog;
 
 class MailController extends Controller
 {
-    private function saveInstances()
+    private function saveInstances($email, $message)
     {
         $instances = get_instances();
         $now = date('Y-m-d G:i:s');

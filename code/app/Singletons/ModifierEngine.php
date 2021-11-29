@@ -4,6 +4,8 @@ namespace App\Singletons;
 
 use App\ModifiedValue;
 
+use Log;
+
 class ModifierEngine
 {
     private function applyDefinition($booking, $modifier, $amount, $definition, $target)

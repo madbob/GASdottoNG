@@ -408,6 +408,7 @@ class Booking extends Model
         else {
             $message = _i('Hai ordinato %s', printablePriceCurrency($tot));
             if ($friends_tot != 0) {
+                // @phpstan-ignore-next-line
                 $message += sprintf(' + %s', printablePriceCurrency($friends_tot));
             }
         }

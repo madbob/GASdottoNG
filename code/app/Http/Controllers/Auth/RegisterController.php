@@ -78,8 +78,7 @@ class RegisterController extends Controller
     {
         $gas = Gas::find($data['gas_id']);
         if ($gas == null) {
-            Log::error('Nessun GAS specificato in fase di registrazione');
-            return false;
+            throw new \Exception('No GAS selected', 1);
         }
 
         $options = [
@@ -90,17 +89,21 @@ class RegisterController extends Controller
 
         $mandatory = $gas->public_registrations['mandatory_fields'];
 
-        if (in_array('firstname', $mandatory))
+        if (in_array('firstname', $mandatory)) {
             $options['firstname'] = 'required|string|max:255';
+        }
 
-        if (in_array('lastname', $mandatory))
+        if (in_array('lastname', $mandatory)) {
             $options['lastname'] = 'required|string|max:255';
+        }
 
-        if (in_array('email', $mandatory))
+        if (in_array('email', $mandatory)) {
             $options['email'] = ['required', 'string', 'email', 'max:255', new EMail()];
+        }
 
-        if (in_array('phone', $mandatory))
+        if (in_array('phone', $mandatory)) {
             $options['phone'] = 'required|string|max:255';
+        }
 
         return Validator::make($data, $options);
     }

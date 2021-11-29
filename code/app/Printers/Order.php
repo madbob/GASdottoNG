@@ -20,9 +20,9 @@ class Order extends Printer
     {
         $recipient_mails = $request['recipient_mail_value'] ?? [];
 
-        $real_recipient_mails = array_map(array_filter($recipient_mails), function($item) {
+        $real_recipient_mails = array_map(function($item) {
             return (object) ['email' => $item];
-        });
+        }, array_filter($recipient_mails));
 
         if (empty($real_recipient_mails)) {
             return;
@@ -122,6 +122,9 @@ class Order extends Printer
         else if ($status == 'saved') {
             $bookings = $this->orderTopBookingsByShipping($obj, $shipping_place, 'saved');
         }
+        else {
+            throw new \Exception('Stato prenotazioni non riconosciuto', 1);
+        }
 
         $contents = view('documents.order_table_' . $status, ['order' => $obj, 'bookings' => $bookings])->render();
         $filename = sanitizeFilename(_i('Tabella Ordine %s presso %s.csv', [$obj->internal_number, $obj->supplier->name]));
@@ -133,20 +136,16 @@ class Order extends Printer
         switch ($type) {
             case 'shipping':
                 return $this->handleShipping($obj, $request);
-                break;
 
             case 'summary':
                 return $this->handleSummary($obj, $request);
-                break;
 
             case 'table':
                 return $this->handleTable($obj, $request);
-                break;
 
             default:
                 \Log::error('Unrecognized type for Order document: ' . $type);
                 return null;
-                break;
         }
     }
 }

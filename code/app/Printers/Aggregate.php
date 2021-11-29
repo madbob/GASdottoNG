@@ -233,16 +233,13 @@ class Aggregate extends Printer
         switch ($type) {
             case 'shipping':
                 return $this->handleShipping($obj, $request);
-                break;
 
             case 'summary':
                 return $this->handleSummary($obj, $request);
-                break;
 
             default:
                 \Log::error('Unrecognized type for Aggregate document: ' . $type);
                 return null;
-                break;
         }
     }
 }

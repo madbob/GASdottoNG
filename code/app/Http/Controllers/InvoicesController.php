@@ -334,8 +334,9 @@ class InvoicesController extends Controller
             })->orWhereDoesntHave('payment');
         });
 
-        if ($supplier_id != '0')
+        if ($supplier_id != '0') {
             $query->where('supplier_id', $supplier_id);
+        }
 
         $elements = $query->get();
 
@@ -353,8 +354,9 @@ class InvoicesController extends Controller
 
             $receipts = $query->get();
 
-            foreach($receipts as $r)
+            foreach($receipts as $r) {
                 $elements->push($r);
+            }
         }
 
         $elements = Invoice::doSort($elements);

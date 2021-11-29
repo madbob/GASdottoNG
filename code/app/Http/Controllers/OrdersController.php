@@ -13,6 +13,7 @@ use App\Services\OrdersService;
 use App\Printers\Order as Printer;
 use App\Product;
 use App\Order;
+use App\Booking;
 use App\Aggregate;
 
 /*

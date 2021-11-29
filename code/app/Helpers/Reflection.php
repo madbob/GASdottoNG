@@ -127,14 +127,14 @@ function unrollSpecialSelectors($users)
         if (strrpos($u, 'special::', -strlen($u)) !== false) {
             if (strrpos($u, 'special::role::', -strlen($u)) !== false) {
                 $role_id = substr($u, strlen('special::role::'));
-                $role = Role::find($role_id);
+                $role = App\Role::find($role_id);
                 foreach ($role->users as $u) {
                     $map[] = $u->id;
                 }
             }
             elseif (strrpos($u, 'special::order::', -strlen($u)) !== false) {
                 $order_id = substr($u, strlen('special::order::'));
-                $order = Order::findOrFail($order_id);
+                $order = App\Order::findOrFail($order_id);
                 foreach ($order->topLevelBookings() as $booking) {
                     $map[] = $booking->user->id;
                 }

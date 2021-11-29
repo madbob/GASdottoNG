@@ -206,6 +206,8 @@ class BookingsService extends BaseService
                 $quantity = 0;
             }
 
+            $quantities = [];
+
             if ($product->variants->isEmpty() == false) {
                 $quantities = $request['variant_quantity_' . $product->id] ?? '';
                 if (empty($quantities)) {

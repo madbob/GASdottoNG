@@ -111,16 +111,16 @@ class DeliveryUserController extends Controller
         return $booking->getValue('effective', false, true);
     }
 
-    private function sumFastShippings($aggregate, $user_id)
+    private function sumFastShippings($deliverer, $aggregate, $user_id)
     {
         $grand_total = 0;
 
         foreach ($aggregate->orders as $order) {
             $booking = $order->userBooking($user_id);
-            $grand_total += $this->fastShipBooking($user, $booking);
+            $grand_total += $this->fastShipBooking($deliverer, $booking);
 
             foreach($booking->friends_bookings as $bf) {
-                $grand_total += $this->fastShipBooking($user, $bf);
+                $grand_total += $this->fastShipBooking($deliverer, $bf);
             }
         }
 
@@ -129,10 +129,10 @@ class DeliveryUserController extends Controller
 
     public function postFastShipping(Request $request, $aggregate_id)
     {
-        $user = Auth::user();
+        $deliverer = Auth::user();
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
-        if ($user->can('supplier.shippings', $aggregate) == false) {
+        if ($deliverer->can('supplier.shippings', $aggregate) == false) {
             abort(503);
         }
 
@@ -142,7 +142,7 @@ class DeliveryUserController extends Controller
         $default_payment_method = defaultPaymentByType('booking-payment');
 
         foreach($users as $index => $user_id) {
-            $grand_total = $this->sumFastShippings($aggregate, $user_id);
+            $grand_total = $this->sumFastShippings($deliverer, $aggregate, $user_id);
 
             if ($grand_total != 0) {
                 $subject = $aggregate->bookingBy($user_id);
