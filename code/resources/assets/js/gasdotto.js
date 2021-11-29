@@ -380,7 +380,7 @@ function enforceMeasureDiscrete(node) {
 		form.find('input[name=variable]').prop('checked', false).prop('disabled', true);
         node.siblings('.form-text').removeClass('d-none');
 
-		multiple_widget.attr('data-enforce-minimum', 1).attr('data-enforce-integer', 1);
+		multiple_widget.attr('data-enforce-minimum', 1);
 
 		multiple_widget.val(parseInt(multiple_widget.val()));
 		if (multiple_widget.val() < 1) {
@@ -393,7 +393,7 @@ function enforceMeasureDiscrete(node) {
 		form.find('input[name=weight]').val('0.000');
 		form.find('input[name=variable]').prop('disabled', false);
         node.siblings('.form-text').addClass('d-none');
-		multiple_widget.removeAttr('data-enforce-minimum').removeAttr('data-enforce-integer');
+		multiple_widget.removeAttr('data-enforce-minimum');
         widgets.removeAttr('data-enforce-integer');
 	}
 }

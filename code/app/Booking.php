@@ -158,7 +158,7 @@ class Booking extends Model
                     $id = null;
                 }
 
-                $modified_values = $this->allModifiedValues($id, $with_friends);
+                $modified_values = $obj->allModifiedValues($id, $with_friends);
                 $value = ModifiedValue::sumAmounts($modified_values, 0);
             }
             else {
@@ -170,13 +170,13 @@ class Booking extends Model
                 }
 
                 if ($type == 'effective') {
-                    $aggregate_data = $this->order->aggregate->reduxData();
+                    $aggregate_data = $obj->order->aggregate->reduxData();
 
-                    $type = $this->status == 'pending' ? 'booked' : 'delivered';
-                    $modified_values = $this->applyModifiers($aggregate_data, false);
+                    $type = $obj->status == 'pending' ? 'booked' : 'delivered';
+                    $modified_values = $obj->applyModifiers($aggregate_data, false);
 
                     if ($with_friends) {
-                        foreach($this->friends_bookings as $friend_booking) {
+                        foreach($obj->friends_bookings as $friend_booking) {
                             $friend_modified_values = $friend_booking->applyModifiers($aggregate_data, false);
                             $modified_values = $modified_values->merge($friend_modified_values);
                         }
