@@ -109,14 +109,12 @@ class Gas extends Model
     public function getAttribute($key)
     {
         $configs = $this->availableConfigs();
-        \Log::debug($key);
         $c = $configs[$key] ?? null;
 
         if ($c) {
             return $c->asAttribute($this);
         }
         else {
-            \Log::debug('no!');
             return parent::getAttribute($key);
         }
     }

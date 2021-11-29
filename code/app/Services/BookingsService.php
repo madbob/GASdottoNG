@@ -223,7 +223,9 @@ class BookingsService extends BaseService
                 if ($product->variants->isEmpty() == false) {
                     $values = [];
                     foreach ($product->variants as $variant) {
-                        $values[$variant->id] = $request['variant_selection_' . $variant->id];
+                        if (isset($request['variant_selection_' . $variant->id])) {
+                            $values[$variant->id] = $request['variant_selection_' . $variant->id];
+                        }
                     }
 
                     list($booked, $quantity) = $this->readVariants($product, $booked, $values, $quantities, $delivering);
