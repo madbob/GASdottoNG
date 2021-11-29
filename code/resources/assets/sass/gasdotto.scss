@@ -57,7 +57,6 @@ $utilities: map-merge(
 @import '~select2-bootstrap-5-theme/src/include-all';
 @import '~jquery-ui/themes/base/all.css';
 @import '~chartist/dist/chartist.css';
-@import "./jbob";
 
 html, body {
     min-height: 100%;
@@ -160,6 +159,12 @@ table {
 		padding-top: 7px;
 		margin-bottom: 0;
 		font-weight: normal;
+	}
+}
+
+.dynamic-table {
+	tfoot {
+		display: none;
 	}
 }
 
