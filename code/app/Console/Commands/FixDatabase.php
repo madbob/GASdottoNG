@@ -11,8 +11,11 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 
 use Artisan;
+use DB;
 
 use App\MovementType;
+use App\Config;
+use App\Gas;
 
 class FixDatabase extends Command
 {
@@ -34,30 +37,35 @@ class FixDatabase extends Command
         Artisan::call('db:seed', ['--force' => true, '--class' => 'MovementTypesSeeder']);
         Artisan::call('db:seed', ['--force' => true, '--class' => 'ModifierTypesSeeder']);
 
-        $movements = MovementType::where('function', 'like', '%suppliers%')->get();
-        foreach($movements as $movement) {
-            $functions = json_decode($movement->function);
-            $new_functions = [];
-
-            foreach($functions as $function) {
-                foreach(['sender', 'target', 'master'] as $target) {
-                    $new_operations = [];
-                    $operations = $function->$target ?? (object) ['operations' => []];
-
-                    foreach($operations->operations as $operation) {
-                        if ($operation->field != 'suppliers') {
-                            $new_operations[] = $operation;
-                        }
-                    }
-
-                    $function->$target->operations = $new_operations;
+        $gas = Gas::all();
+        foreach(Config::customMailTypes() as $identifier => $metadata) {
+            foreach($gas as $g) {
+                $subject = DB::table('configs')->select('value')->where('name', 'mail_' . $identifier . '_subject')->where('gas_id', $g->id)->first();
+                if ($subject) {
+                    $subject = $subject->value;
+                }
+                else {
+                    continue;
                 }
 
-                $new_functions[] = $function;
-            }
+                $body = DB::table('configs')->select('value')->where('name', 'mail_' . $identifier . '_body')->where('gas_id', $g->id)->first();
+                if ($body) {
+                    $body = $body->value;
+                }
+                else {
+                    continue;
+                }
 
-            $movement->function = json_encode($new_functions);
-            $movement->save();
+                $data = (object) [
+                    'subject' => $subject,
+                    'body' => $body,
+                ];
+
+                $g->setConfig('mail_' . $identifier, $data);
+
+                DB::table('configs')->where('name', 'mail_' . $identifier . '_subject')->where('gas_id', $g->id)->delete();
+                DB::table('configs')->where('name', 'mail_' . $identifier . '_body')->where('gas_id', $g->id)->delete();
+            }
         }
     }
 }

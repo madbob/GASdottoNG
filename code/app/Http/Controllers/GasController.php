@@ -185,10 +185,10 @@ class GasController extends Controller
 
         foreach(Config::customMailTypes() as $identifier => $metadata) {
             if ($request->has("custom_mails_${identifier}_subject")) {
-                $subject = $request->input("custom_mails_${identifier}_subject");
-                $gas->setConfig("mail_${identifier}_subject", $subject);
-                $body = $request->input("custom_mails_${identifier}_body");
-                $gas->setConfig("mail_${identifier}_body", $body);
+                $gas->setConfig("mail_${identifier}", (object) [
+                    'subject' => $request->input('custom_mails_' . $identifier . '_subject', ''),
+                    'body' => $request->input('custom_mails_' . $identifier . '_body', ''),
+                ]);
             }
         }
     }

@@ -11,13 +11,6 @@ class Config extends Model
 
     public static function customMailTypes()
     {
-        /*
-            Nota bene: quando si aggiunge un nuovo parametro qui, è opportuno
-            definire anche i valori
-            - mail_identificativo_subject
-            - mail_identificativo_body
-            tra le configurazioni di default in Gas::handlingConfigs()
-        */
         return [
             'welcome' => (object) [
                 'description' => _i('Messaggio inviato ai nuovi iscritti registrati sulla piattaforma.'),
