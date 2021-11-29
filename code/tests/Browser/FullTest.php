@@ -157,7 +157,7 @@ class FullTest extends DuskTestCase
         $browser->visitRoute('users.index')
             ->waitForText('Importa CSV')
             ->press('Stato Quote')->waitForText('Controllo Quote')->pause(500)
-            ->clickAtXPath('//*/tr[4]/td/button[contains(@class, "btn-success")][1]')->pause(500)
+            ->clickAtXPath('//*/tr[4]/td/button[contains(@class, "btn-success")][1]')->pause(2000)
             ->with('.movement-modal.show', function($panel) {
                 $panel->pause(500)->press('Salva');
             })->pause(500)

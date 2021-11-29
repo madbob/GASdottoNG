@@ -10,10 +10,10 @@ require('jquery-ui/ui/widgets/droppable');
 require('jquery-ui/ui/widgets/autocomplete');
 require('jquery-ui-touch-punch');
 require('blueimp-file-upload');
+require('continous-calendar');
 import Cookies from 'js-cookie';
 
 require('./aggregation');
-require('./cc');
 require('./jquery.dynamictree');
 require('./statistics');
 require('./popovers');
