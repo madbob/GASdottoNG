@@ -11,7 +11,6 @@ abstract class Config
         switch($this->type()) {
             case 'object':
             case 'array':
-                \Log::debug($this->identifier());
                 return (array) json_decode($value);
 
             case 'boolean':
