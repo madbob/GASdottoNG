@@ -363,7 +363,7 @@ class FullTest extends DuskTestCase
                     $product_obj = Product::where('supplier_id', $supplier_id)->where('name', $product->name)->first();
 
                     if ($index == 0) {
-                        $browser->mainScreenshot('prodotto');
+                        $browser->screenshot('prodotto');
                     }
 
                     $browser->with('.accordion-item[data-element-id="' . $product_obj->id . '"]', function($panel) use ($variant_screenshot_made, $browser, $product) {

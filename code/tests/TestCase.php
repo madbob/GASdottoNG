@@ -41,6 +41,7 @@ abstract class TestCase extends BaseTestCase
             'bookings' => new \App\Services\BookingsService(),
             'dynamic_bookings' => new \App\Services\DynamicBookingsService(),
             'modifiers' => new \App\Services\ModifiersService(),
+            'multigas' => new \App\Services\MultiGasService(),
         ];
 
         $this->gas = \App\Gas::factory()->create();
