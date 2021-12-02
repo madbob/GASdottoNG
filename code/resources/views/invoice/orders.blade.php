@@ -10,6 +10,12 @@
             <input type="hidden" name="close-modal" value="1" />
             <input type="hidden" name="reload-loadable" value="#invoice-list" />
 
+            <p>
+                {{ _i("Qui appaiono gli ordini che: appartengono al fornitore intestatario della fattura; sono in stato Consegnato o Archiviato; hanno almeno una prenotazione marcata come Consegnata. I totali vengono calcolati sulle quantità effettivamente consegnate, non sulle prenotazioni.") }}
+            </p>
+
+            <hr>
+
             <table class="table">
                 <thead>
                     <tr>

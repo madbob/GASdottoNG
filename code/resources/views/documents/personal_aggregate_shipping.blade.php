@@ -20,7 +20,7 @@
         <?php $valid_bookings = 0 ?>
 
         @foreach($bookings as $super_booking)
-            @if($super_booking->total_value == 0 && $super_booking->total_delivered == 0)
+            @if($super_booking->getValue('booked', false) == 0 && $super_booking->getValue('delivered', false) == 0)
                 @continue
             @endif
 

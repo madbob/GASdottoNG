@@ -46,7 +46,7 @@ class DeliveryUserController extends Controller
 
         $subject = $aggregate->bookingBy($target_user->id);
         $subject->generateReceipt();
-        $total = $subject->total_delivered;
+        $total = $subject->getValue('delivered', true);
 
         if ($total == 0) {
             return $this->successResponse();

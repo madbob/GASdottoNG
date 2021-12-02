@@ -129,7 +129,7 @@ class BookingsServiceTest extends TestCase
 
         $aggregate = $this->sample_order->aggregate->fresh();
         $complete_booking = $aggregate->bookingBy($this->userWithBasePerms->id);
-        $this->assertEquals($complete_booking->total_value, $total + $total2);
+        $this->assertEquals($complete_booking->getValue('effective', true), $total + $total2);
 
         $this->actingAs($this->userWithShippingPerms);
         $complete_data = array_merge($data, $data2);
@@ -162,7 +162,7 @@ class BookingsServiceTest extends TestCase
         $booking = $this->services['bookings']->readBooking($data, $this->sample_order, $this->userWithBasePerms, false);
 
         $complete_booking = $this->sample_order->aggregate->bookingBy($this->userWithBasePerms->id);
-        $this->assertEquals($complete_booking->total_value, $total);
+        $this->assertEquals($complete_booking->getValue('effective', true), $total);
 
         $this->actingAs($this->userWithShippingPerms);
         $data['action'] = 'shipped';

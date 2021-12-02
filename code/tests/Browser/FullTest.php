@@ -367,7 +367,8 @@ class FullTest extends DuskTestCase
                     }
 
                     $browser->with('.accordion-item[data-element-id="' . $product_obj->id . '"]', function($panel) use ($variant_screenshot_made, $browser, $product) {
-                        $panel->clear('min_quantity')->typeSlowly('min_quantity', $product->min_quantity ?? 0, 50)
+                        $panel->scrollView('.save-button')
+                            ->clear('min_quantity')->typeSlowly('min_quantity', $product->min_quantity ?? 0, 50)
                             ->clear('max_available')->typeSlowly('max_available', $product->max_available ?? 0, 50);
 
                         /*
