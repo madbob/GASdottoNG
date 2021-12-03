@@ -16,7 +16,7 @@
         "fideloper/proxy": "~4.0",
         "genealabs/laravel-model-caching": "^0.11.3",
         "haydenpierce/class-finder": "^0.4.3",
-        "laravel/framework": "^8.73.0",
+        "laravel/framework": "8.73.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
         "laravelium/feed": "^8.0",
@@ -28,6 +28,7 @@
         "satispay/online-api-php-sdk": "^1.6",
         "sinergi/browser-detector": "^6.1",
         "spatie/db-dumper": "^2.21",
+        "symfony/translation": "5.3.0",
         "zerospam/laravel-gettext": "^8.0.0",
         "zetacomponents/archive": "dev-master"
     },
