@@ -10,11 +10,26 @@ class ModifierEngine
 {
     private function applyDefinition($booking, $modifier, $amount, $definition, $target)
     {
+        if ($booking->status == 'pending') {
+            $quantity_attribute = 'quantity';
+            $price_attribute = 'price';
+        }
+        else {
+            $quantity_attribute = 'delivered';
+            $price_attribute = 'price_delivered';
+        }
+
+        $reference_quantity = 1;
+
+        if ($modifier->applies_target == 'product') {
+            $reference_quantity = $target->$quantity_attribute;
+        }
+
         if ($modifier->value == 'percentage') {
             $amount = round($amount * ($definition->amount / 100), 4);
         }
         else if ($modifier->value == 'absolute') {
-            $amount = $definition->amount;
+            $amount = $reference_quantity * $definition->amount;
         }
         else {
             /*
@@ -22,15 +37,6 @@ class ModifierEngine
                 ($modifier->value = 'apply') faccio la differenza tra il prezzo
                 normale ed il prezzo modificato
             */
-            if ($booking->status == 'pending') {
-                $quantity_attribute = 'quantity';
-                $price_attribute = 'price';
-            }
-            else {
-                $quantity_attribute = 'delivered';
-                $price_attribute = 'price_delivered';
-            }
-
             $amount = round($target->$price_attribute - ($target->$quantity_attribute * $definition->amount), 4);
         }
 

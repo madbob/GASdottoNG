@@ -624,6 +624,45 @@ class ModifiersServiceTest extends TestCase
     }
 
     /*
+        Modificatore su un prodotto
+    */
+    public function testOnProduct()
+    {
+        $this->localInitOrder();
+
+        $product = $this->order->products->random();
+
+        $this->actingAs($this->userReferrer);
+        $test_shipping_value = 2;
+        $mod = $this->simpleMod($product, 'product', 'none', $test_shipping_value);
+
+        $this->nextRound();
+
+        $order = $this->services['orders']->show($this->order->id);
+
+        foreach($order->bookings as $booking) {
+            $mods = $booking->applyModifiers(null, true);
+            $found = false;
+
+            foreach($booking->products as $booked_product) {
+                if ($booked_product->product_id == $product->id) {
+                    $this->assertEquals($mods->count(), 1);
+
+                    foreach($mods as $mod) {
+                        $this->assertEquals($mod->effective_amount, $booked_product->quantity * $test_shipping_value);
+                    }
+
+                    $found = true;
+                }
+            }
+
+            if ($found == false) {
+                $this->assertEquals($mods->count(), 0);
+            }
+        }
+    }
+
+    /*
         Prenotazione di un amico insieme alla prenotazione dell'utente padre
     */
     public function testWithFriend()
