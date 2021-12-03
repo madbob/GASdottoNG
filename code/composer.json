@@ -16,7 +16,7 @@
         "fideloper/proxy": "~4.0",
         "genealabs/laravel-model-caching": "^0.11.3",
         "haydenpierce/class-finder": "^0.4.3",
-        "laravel/framework": "^8.0",
+        "laravel/framework": "^8.73.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
         "laravelium/feed": "^8.0",
