@@ -1,4 +1,4 @@
-import jBob from "./jbob";
+import jBob from "jbob";
 import Lists from "./lists";
 
 class Utils {

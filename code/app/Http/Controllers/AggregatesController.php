@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use DB;
+use Log;
 
 use App\Jobs\AggregateSummaries;
 use App\Printers\Aggregate as Printer;

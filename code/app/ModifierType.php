@@ -25,4 +25,17 @@ class ModifierType extends Model
     {
         return $this->hasMany('App\Modifier');
     }
+
+    public static function byClass($class)
+    {
+        $ret = [];
+
+        foreach(ModifierType::orderBy('name', 'asc')->get() as $modtype) {
+            if (in_array($class, accessAttr($modtype, 'classes'))) {
+                $ret[] = $modtype;
+            }
+        }
+
+        return $ret;
+    }
 }

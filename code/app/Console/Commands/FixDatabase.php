@@ -10,8 +10,11 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
+use DB;
 use Artisan;
 
+use App\Gas;
+use App\Config;
 use App\MovementType;
 use App\Currency;
 use App\Balance;
@@ -72,6 +75,37 @@ class FixDatabase extends Command
 
             Balance::whereNull('currency_id')->update(['currency_id' => $c->id]);
             Movement::whereNull('currency_id')->update(['currency_id' => $c->id]);
+        }
+
+        $gas = Gas::all();
+        foreach(Config::customMailTypes() as $identifier => $metadata) {
+            foreach($gas as $g) {
+                $subject = DB::table('configs')->select('value')->where('name', 'mail_' . $identifier . '_subject')->where('gas_id', $g->id)->first();
+                if ($subject) {
+                    $subject = $subject->value;
+                }
+                else {
+                    continue;
+                }
+
+                $body = DB::table('configs')->select('value')->where('name', 'mail_' . $identifier . '_body')->where('gas_id', $g->id)->first();
+                if ($body) {
+                    $body = $body->value;
+                }
+                else {
+                    continue;
+                }
+
+                $data = (object) [
+                    'subject' => $subject,
+                    'body' => $body,
+                ];
+
+                $g->setConfig('mail_' . $identifier, $data);
+
+                DB::table('configs')->where('name', 'mail_' . $identifier . '_subject')->where('gas_id', $g->id)->delete();
+                DB::table('configs')->where('name', 'mail_' . $identifier . '_body')->where('gas_id', $g->id)->delete();
+            }
         }
     }
 }

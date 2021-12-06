@@ -9,16 +9,17 @@ class Modifiers {
     static init(container)
     {
         if (container.hasClass('modifier-modal')) {
-            if (Modifiers.modifiers_strings == null) {
-                utils.postAjax({
-                    method: 'GET',
-                    url: container.attr('data-strings-source'),
-                    dataType: 'JSON',
-                    success: function(data) {
-                        Modifiers.modifiers_strings = data;
-                    }
-                });
-            }
+            container.find('form').addClass('form-disabled');
+
+            utils.postAjax({
+                method: 'GET',
+                url: container.attr('data-strings-source'),
+                dataType: 'JSON',
+                success: function(data) {
+                    Modifiers.modifiers_strings = data;
+                    container.find('form').removeClass('form-disabled');
+                }
+            });
 
             container.on('change', 'input:radio', function() {
                 /*
@@ -147,6 +148,7 @@ class Modifiers {
 
             new_row.find('input[name="modifier-0"]').attr('name', 'modifier-' + modifier_id).parent().find('span').text(utils.priceRound(modifier_meta.amount));
             template.before(new_row);
+            utils.j().initElements(new_row);
         }
     }
 }

@@ -1,138 +1,167 @@
 <?php
 
 $summary = $master_summary->orders[$order->id];
+
 $columns = $currentgas->orders_display_columns;
+$table_identifier = 'summary-' . sanitizeId($order->id);
+$display_columns = App\Order::displayColumns();
+
+$pending_modifiers = $order->applyModifiers($master_summary, 'pending');
+$shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
+
+$products_modifiers = [];
+App\ModifiedValue::organizeForProducts($products_modifiers, $pending_modifiers, 'pending');
+App\ModifiedValue::organizeForProducts($products_modifiers, $shipped_modifiers, 'shipped');
+
+foreach($display_columns as $identifier => $metadata) {
+    if (Illuminate\Support\Str::startsWith($identifier, 'modifier-')) {
+        $mod_id = preg_replace('/modifier-[a-z]*-(.*)/', '\1', $identifier);
+        if (!isset($products_modifiers[$mod_id])) {
+            unset($display_columns[$identifier]);
+        }
+    }
+}
+
+unset($display_columns['selection']);
+unset($display_columns['notes']);
 
 ?>
 
-<div class="btn-group float-end order-columns-selector">
-    <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown">
-        {{ _i('Colonne') }} <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu">
-        @foreach(App\Order::displayColumns() as $identifier => $metadata)
-            @if($identifier != 'selection' && $identifier != 'notes' && $identifier != 'discount')
-                <li>
-                    <div class="checkbox dropdown-item">
-                        <label>
-                            <input type="checkbox" value="{{ $identifier }}" {{ in_array($identifier, $columns) ? 'checked' : '' }}> {{ $metadata->label }}
-                        </label>
-                    </div>
-                </li>
-            @endif
-        @endforeach
-    </ul>
-</div>
+<div class="order-summary-wrapper">
+    <div class="row d-none d-md-flex mb-1">
+        <div class="col flowbox">
+            <div class="form-group mainflow d-none d-xl-block">
+                <input type="text" class="form-control table-text-filter" data-table-target="#{{ $table_identifier }}" placeholder="{{ _i('Filtra') }}">
+            </div>
 
-<div class="table-responsive">
-    <table class="table order-summary">
-        <thead>
-            <tr>
-                @foreach(App\Order::displayColumns() as $identifier => $metadata)
-                    @if($identifier != 'selection' && $identifier != 'discount')
+            <div class="btn-group order-columns-selector">
+                <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="bi-layout-three-columns"></i>&nbsp;{{ _i('Colonne') }} <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    @foreach($display_columns as $identifier => $metadata)
+                        <li>
+                            <div class="checkbox dropdown-item">
+                                <label>
+                                    <input type="checkbox" value="{{ $identifier }}" {{ in_array($identifier, $columns) ? 'checked' : '' }}> {{ $metadata->label }}
+                                </label>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table order-summary" id="{{ $table_identifier }}">
+            <thead>
+                <tr>
+                    @foreach($display_columns as $identifier => $metadata)
                         <th width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">{{ $metadata->label }}</th>
-                    @endif
-                @endforeach
-            </tr>
-        </thead>
+                    @endforeach
+                </tr>
+            </thead>
 
-        <tbody>
-            @foreach($order->supplier->products as $product)
-                @if($order->hasProduct($product))
-                    @php
+            <tbody>
+                @foreach($order->supplier->products as $product)
+                    @if($order->hasProduct($product))
+                        @php
 
-                    if(isset($summary->products[$product->id])) {
-                        $quantity_pieces = $summary->products[$product->id]->quantity_pieces ?? 0;
-                        $quantity = $summary->products[$product->id]->quantity ?? 0;
-                        $price = $summary->products[$product->id]->price ?? 0;
-                        $delivered = $summary->products[$product->id]->delivered ?? 0;
-                        $price_delivered = $summary->products[$product->id]->price_delivered ?? 0;
-                        $notes = $summary->products[$product->id]->notes ?? false;
-                    }
-                    else {
-                        $quantity_pieces = 0;
-                        $quantity = 0;
-                        $price = 0;
-                        $delivered = 0;
-                        $price_delivered = 0;
-                        $notes = false;
-                    }
+                        if(isset($summary->products[$product->id])) {
+                            $quantity_pieces = $summary->products[$product->id]->quantity_pieces ?? 0;
+                            $quantity = $summary->products[$product->id]->quantity ?? 0;
+                            $price = $summary->products[$product->id]->price ?? 0;
+                            $delivered = $summary->products[$product->id]->delivered ?? 0;
+                            $price_delivered = $summary->products[$product->id]->price_delivered ?? 0;
+                            $notes = $summary->products[$product->id]->notes ?? false;
+                        }
+                        else {
+                            $quantity_pieces = 0;
+                            $quantity = 0;
+                            $price = 0;
+                            $delivered = 0;
+                            $price_delivered = 0;
+                            $notes = false;
+                        }
 
-                    @endphp
+                        @endphp
 
-                    <tr data-product-id="{{ $product->id }}">
-                        <td class="order-cell-name {{ in_array('name', $columns) ? '' : 'hidden' }}">
-                            <input type="hidden" name="enabled[]" value="{{ $product->id }}">
-                            @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product])
-                        </td>
+                        <tr data-product-id="{{ $product->id }}">
+                            <td class="order-cell-name {{ in_array('name', $columns) ? '' : 'hidden' }}">
+                                <input type="hidden" name="enabled[]" value="{{ $product->id }}">
 
-                        <td class="order-cell-price {{ in_array('price', $columns) ? '' : 'hidden' }}">
-                            {{ printablePriceCurrency($product->price) }}
-                        </td>
+                                <label class="static-label text-filterable-cell">{{ $product->printableName() }}</label>
 
-                        <td class="order-cell-available {{ in_array('available', $columns) ? '' : 'hidden' }}">
-                            {{ printableQuantity($product->max_available, $product->measure->discrete) }}
-                        </td>
-
-                        <td class="order-cell-unit_measure {{ in_array('unit_measure', $columns) ? '' : 'hidden' }}">
-                            {{ $product->printableMeasure(true) }}
-                        </td>
-
-                        <td class="order-cell-quantity {{ in_array('quantity', $columns) ? '' : 'hidden' }}">
-                            <label>
-                                @if($product->portion_quantity != 0)
-                                    {{ sprintf('%d', $quantity_pieces) }} Pezzi /
-                                @endif
-                                <span class="order-summary-product-quantity">{{ $quantity }}</span> {{ $product->measure->name }}
-                            </label>
-                        </td>
-
-                        <td class="order-cell-total_price {{ in_array('total_price', $columns) ? '' : 'hidden' }}">
-                            <label class="order-summary-product-price">{{ printablePriceCurrency($price) }}</label>
-                        </td>
-
-                        <td class="order-cell-quantity_delivered {{ in_array('quantity_delivered', $columns) ? '' : 'hidden' }}">
-                            <label class="order-summary-product-delivered">{{ $delivered }} {{ $product->measure->name }}</label>
-                        </td>
-
-                        <td class="order-cell-price_delivered {{ in_array('price_delivered', $columns) ? '' : 'hidden' }}">
-                            <label class="order-summary-product-price_delivered">{{ printablePriceCurrency($price_delivered) }}</label>
-                        </td>
-
-                        <td class="order-cell-notes {{ in_array('notes', $columns) ? '' : 'hidden' }}">
-                            @if($order->isActive())
-                                @if($notes)
-                                    <a class="btn btn-danger" disabled>
-                                        <i class="bi-exclamation-circle"></i>
-                                    </a>
-                                @else
-                                    <a class="btn btn-info" disabled>
+                                <div class="float-end">
+                                    <a href="{{ route('products.show', ['product' => $product->id, 'format' => 'modal']) }}" class="btn btn-xs btn-info async-modal d-none d-md-inline-block">
                                         <i class="bi-pencil"></i>
                                     </a>
-                                @endif
-                            @endif
-                        </td>
-                    </tr>
-                @endif
-            @endforeach
-        </tbody>
+                                </div>
+                            </td>
 
-        <thead>
-            <tr>
-                @foreach(App\Order::displayColumns() as $identifier => $metadata)
-                    @if($identifier != 'selection' && $identifier != 'discount')
+                            <td class="order-cell-price {{ in_array('price', $columns) ? '' : 'hidden' }}">
+                                {{ printablePriceCurrency($product->price) }}
+                            </td>
+
+                            <td class="order-cell-available {{ in_array('available', $columns) ? '' : 'hidden' }}">
+                                {{ printableQuantity($product->max_available, $product->measure->discrete) }}
+                            </td>
+
+                            @foreach($products_modifiers as $pmod_id => $pmod)
+                                <td class="order-cell-modifier-pending-{{ $pmod_id }} {{ in_array('modifier-pending-' . $pmod_id, $columns) ? '' : 'hidden' }}">
+                                    <label>{{ printablePriceCurrency($pmod->pending[$product->id] ?? 0) }}</label>
+                                </td>
+                                <td class="order-cell-modifier-shipped-{{ $pmod_id }} {{ in_array('modifier-shipped-' . $pmod_id, $columns) ? '' : 'hidden' }}">
+                                    <label>{{ printablePriceCurrency($pmod->shipped[$product->id] ?? 0) }}</label>
+                                </td>
+                            @endforeach
+
+                            <td class="order-cell-unit_measure {{ in_array('unit_measure', $columns) ? '' : 'hidden' }}">
+                                {{ $product->printableMeasure(true) }}
+                            </td>
+
+                            <td class="order-cell-quantity {{ in_array('quantity', $columns) ? '' : 'hidden' }}">
+                                <label>
+                                    @if($product->portion_quantity != 0)
+                                        {{ sprintf('%d', $quantity_pieces) }} Pezzi /
+                                    @endif
+                                    <span class="order-summary-product-quantity">{{ $quantity }}</span> {{ $product->measure->name }}
+                                </label>
+                            </td>
+
+                            <td class="order-cell-weight {{ in_array('weight', $columns) ? '' : 'hidden' }}">
+                                <label class="order-summary-product-weight">{{ $summary->products[$product->id]->weight ?? 0 }} {{ $product->measure->discrete ? _i('Chili') : $product->measure->name }}</label>
+                            </td>
+
+                            <td class="order-cell-total_price {{ in_array('total_price', $columns) ? '' : 'hidden' }}">
+                                <label class="order-summary-product-price">{{ printablePriceCurrency($price) }}</label>
+                            </td>
+
+                            <td class="order-cell-quantity_delivered {{ in_array('quantity_delivered', $columns) ? '' : 'hidden' }}">
+                                <label class="order-summary-product-delivered">{{ $delivered }} {{ $product->measure->name }}</label>
+                            </td>
+
+                            <td class="order-cell-weight_delivered {{ in_array('weight_delivered', $columns) ? '' : 'hidden' }}">
+                                <label class="order-summary-product-weight_delivered">{{ $summary->products[$product->id]->weight_delivered ?? 0 }} {{ $product->measure->discrete ? _i('Chili') : $product->measure->name }}</label>
+                            </td>
+
+                            <td class="order-cell-price_delivered {{ in_array('price_delivered', $columns) ? '' : 'hidden' }}">
+                                <label class="order-summary-product-price_delivered">{{ printablePriceCurrency($price_delivered) }}</label>
+                            </td>
+                        </tr>
+                    @endif
+                @endforeach
+            </tbody>
+
+            <thead>
+                <tr>
+                    @foreach($display_columns as $identifier => $metadata)
                         <th class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
                             @switch($identifier)
                                 @case('total_price')
                                     <span class="order-summary-order-price">{{ printablePriceCurrency($summary->price ?? 0) }}</span>
-                                    <?php
-
-                                    $modifiers = $order->applyModifiers($master_summary, 'pending');
-                                    $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
-
-                                    ?>
-
-                                    @foreach($aggregated_modifiers as $am)
+                                    @foreach($aggregated_modifiers = App\ModifiedValue::aggregateByType($pending_modifiers) as $am)
                                         <br>+ {{ $am->name }}: {{ printablePrice($am->amount) }}
                                     @endforeach
 
@@ -140,24 +169,25 @@ $columns = $currentgas->orders_display_columns;
 
                                 @case('price_delivered')
                                     <span class="order-summary-order-price_delivered">{{ printablePriceCurrency($summary->price_delivered) }}</span>
-                                    <?php
-
-                                    $modifiers = $order->applyModifiers($master_summary, 'shipped');
-                                    $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
-
-                                    ?>
-
-                                    @foreach($aggregated_modifiers as $am)
+                                    @foreach(App\ModifiedValue::aggregateByType($shipped_modifiers) as $am)
                                         <br>+ {{ $am->name }}: {{ printablePrice($am->amount) }}
                                     @endforeach
 
                                     @break
 
+                                @case('weight')
+                                    {{ $summary->weight ?? 0 }} {{ _i('Chili') }}
+                                    @break
+
+                                @case('weight_delivered')
+                                    {{ $summary->weight_delivered ?? 0 }} {{ _i('Chili') }}
+                                    @break
+
                             @endswitch
                         </th>
-                    @endif
-                @endforeach
-            </tr>
-        </thead>
-    </table>
+                    @endforeach
+                </tr>
+            </thead>
+        </table>
+    </div>
 </div>

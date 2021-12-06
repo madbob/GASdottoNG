@@ -15,7 +15,6 @@ class SupplierRounding extends MovementType
         $type->sender_type = 'App\Supplier';
         $type->target_type = 'App\Gas';
         $type->allow_negative = true;
-        $type->fixed_value = null;
 
         $type->function = json_encode($this->voidFunctions([
             (object) [

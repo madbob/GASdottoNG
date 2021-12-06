@@ -41,8 +41,9 @@
                         $mail_help = join('<br>', $mail_params);
                     }
 
-                    $current_subject = $gas->getConfig('mail_' . $identifier . '_subject');
-                    $current_body = $gas->getConfig('mail_' . $identifier . '_body');
+                    $current_config = json_decode($gas->getConfig('mail_' . $identifier));
+                    $current_subject = $current_config->subject;
+                    $current_body = $current_config->body;
 
                     ?>
 

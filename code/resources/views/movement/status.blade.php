@@ -1,9 +1,11 @@
 @include('movement.summary', ['obj' => $obj])
 
 <div class="float-end">
-    <div class="form-inline iblock inner-form">
-        <x-larastrap::ambutton :label="_i('Storico Saldi')" :data-modal-url="route('movements.history', inlineId($obj))" />
-    </div>
+    @if($currentuser->can('movements.admin', $currentgas) || $currentuser->can('movements.view', $currentgas))
+        <div class="form-inline iblock inner-form">
+            <x-larastrap::ambutton :label="_i('Storico Saldi')" :data-modal-url="route('movements.history', inlineId($obj))" />
+        </div>
+    @endif
 
     @if(get_class($obj) == 'App\Gas')
         <x-larastrap::iform classes="form-inline iblock" id="recalculate-account" method="POST" :action="url('/movements/recalculate')" :buttons="[['attributes' => ['type' => 'submit'], 'color' => 'danger', 'label' => _i('Ricalcola Saldi')]]">

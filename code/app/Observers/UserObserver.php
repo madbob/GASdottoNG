@@ -2,12 +2,22 @@
 
 namespace App\Observers;
 
+use App\Exceptions\IllegalArgumentException;
+
 use App\User;
 use App\Role;
 use App\Delivery;
 
 class UserObserver
 {
+    public function creating(User $user)
+    {
+        $test = User::withTrashed()->where('username', $user->username)->first();
+        if ($test != null) {
+            throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
+        }
+    }
+
     public function created(User $user)
     {
         if ($user->isFriend()) {
@@ -38,5 +48,20 @@ class UserObserver
         }
 
         $user->save();
+    }
+
+    public function updating(User $user)
+    {
+        $test = User::withTrashed()->where('id', '!=', $user->id)->where('username', $user->username)->first();
+        if ($test != null) {
+            throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
+        }
+
+        if (filled($user->card_number)) {
+            $test = User::where('id', '!=', $user->id)->where('gas_id', $user->gas_id)->where('card_number', $user->card_number)->first();
+            if ($test != null) {
+                throw new IllegalArgumentException(_i('Numero tessera già assegnato'), 'card_number');
+            }
+        }
     }
 }

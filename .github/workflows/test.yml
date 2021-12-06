@@ -10,6 +10,11 @@ jobs:
       - name: checkout repo content
         uses: actions/checkout@v2
 
+      - name: setup php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.3
+
       - name: running tests
         run: |
           cd code

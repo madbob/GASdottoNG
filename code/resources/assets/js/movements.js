@@ -112,7 +112,8 @@ class Movements {
     static enforcePaymentMethod(node)
     {
         var selected = node.find('option:selected').val();
-        var default_payment = payments = null;
+        var default_payment = null;
+        var payments = null;
 
         JSON.parse(node.closest('.modal').find('input[name=matching_methods_for_movement_types]').val()).forEach(function(iter) {
             if (iter.method == selected) {

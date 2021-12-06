@@ -16,7 +16,6 @@ class OrderPayment extends MovementType
         $type->name = 'Pagamento ordine a fornitore';
         $type->sender_type = 'App\Gas';
         $type->target_type = 'App\Order';
-        $type->fixed_value = null;
         $type->visibility = false;
         $type->system = true;
 

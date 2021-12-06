@@ -14,7 +14,6 @@ class GenericPut extends MovementType
         $type->name = 'Versamento sul conto';
         $type->sender_type = null;
         $type->target_type = 'App\Gas';
-        $type->fixed_value = null;
 
         $type->function = json_encode($this->voidFunctions([
             (object) [

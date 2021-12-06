@@ -15,7 +15,6 @@ class BookingPaymentAdjust extends MovementType
         $type->sender_type = 'App\User';
         $type->target_type = 'App\Booking';
         $type->allow_negative = true;
-        $type->fixed_value = null;
         $type->visibility = false;
         $type->system = true;
 

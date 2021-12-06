@@ -188,14 +188,7 @@ function formatMainFormButtons($component, $params)
     }
     else {
         $params['main_form_managed'] = 'ongoing';
-
-        $other_buttons = $params['attributes']['other_buttons'] ?? [];
-        if (!empty($other_buttons)) {
-            $buttons = $other_buttons;
-        }
-        else {
-            $buttons = [];
-        }
+        $buttons = $params['attributes']['other_buttons'] ?? [];
 
         $nodelete = filter_var($params['attributes']['nodelete'] ?? false, FILTER_VALIDATE_BOOLEAN);
         if (!$nodelete) {
@@ -221,9 +214,7 @@ function formatMainFormButtons($component, $params)
         $params['buttons'] = $buttons;
     }
 
-    unset($params['attributes']['other_buttons']);
-    unset($params['attributes']['nodelete']);
-    unset($params['attributes']['nosave']);
+    unset($params['attributes']['other_buttons'], $params['attributes']['nodelete'], $params['attributes']['nosave']);
 
     return $params;
 }
@@ -235,10 +226,7 @@ function formatForDuskTesting($component, $params)
         test Dusk
     */
     if (env('DUSK_TESTING', false)) {
-        $options = $params['options'];
-        $new_options = [];
-
-        foreach($options as $value => $option) {
+        $params['options'] = collect($params['options'])->mapWithKeys(function($option, $value) use ($params) {
             if (is_object($option)) {
                 if (!isset($option->button_attributes)) {
                     $option->button_attributes = [];
@@ -252,10 +240,8 @@ function formatForDuskTesting($component, $params)
             }
 
             $option->button_attributes['dusk'] = sprintf('%s-%s', $params['name'], $value);
-            $new_options[$value] = $option;
-        }
-
-        $params['options'] = $new_options;
+            return [$value => $option];
+        })->toArray();
     }
 
     return $params;

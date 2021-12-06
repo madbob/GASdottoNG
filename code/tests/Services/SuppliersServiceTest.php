@@ -16,15 +16,12 @@ class SuppliersServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->gas = \App\Gas::factory()->create();
         $this->supplier = \App\Supplier::factory()->create();
 
         $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'supplier.add');
         $this->userWithReferrerPerms = $this->createRoleAndUser($this->gas, 'supplier.modify', $this->supplier);
         $this->userWithNormalPerms = $this->createRoleAndUser($this->gas, 'supplier.view');
         $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
-
-        $this->suppliersService = new \App\Services\SuppliersService();
     }
 
     /*
@@ -35,7 +32,7 @@ class SuppliersServiceTest extends TestCase
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
 
-        $this->suppliersService->store(array(
+        $this->services['suppliers']->store(array(
             'name' => 'Test Supplier',
             'business_name' => 'Test Supplier SRL'
         ));
@@ -48,7 +45,7 @@ class SuppliersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $supplier = $this->suppliersService->store(array(
+        $supplier = $this->services['suppliers']->store(array(
             'name' => 'Test Supplier',
             'business_name' => 'Test Supplier SRL'
         ));
@@ -65,7 +62,7 @@ class SuppliersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithNoPerms);
 
-        $suppliers = $this->suppliersService->list();
+        $suppliers = $this->services['suppliers']->list();
         $this->assertCount(0, $suppliers);
     }
 
@@ -76,7 +73,7 @@ class SuppliersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithNormalPerms);
 
-        $suppliers = $this->suppliersService->list();
+        $suppliers = $this->services['suppliers']->list();
         $this->assertCount(1, $suppliers);
     }
 
@@ -87,7 +84,7 @@ class SuppliersServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->suppliersService->update($this->supplier->id, array());
+        $this->services['suppliers']->update($this->supplier->id, array());
     }
 
     /*
@@ -97,7 +94,7 @@ class SuppliersServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithAdminPerm);
-        $this->suppliersService->update($this->supplier->id, array());
+        $this->services['suppliers']->update($this->supplier->id, array());
     }
 
     /*
@@ -107,7 +104,7 @@ class SuppliersServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithNormalPerms);
-        $this->suppliersService->update('id', array());
+        $this->services['suppliers']->update('id', array());
     }
 
     /*
@@ -117,7 +114,7 @@ class SuppliersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithReferrerPerms);
 
-        $supplier = $this->suppliersService->update($this->supplier->id, array(
+        $supplier = $this->services['suppliers']->update($this->supplier->id, array(
             'taxcode' => '12345',
             'vat' => '09876',
         ));
@@ -133,7 +130,7 @@ class SuppliersServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithNormalPerms);
-        $this->suppliersService->show('random');
+        $this->services['suppliers']->show('random');
     }
 
     /*
@@ -143,7 +140,7 @@ class SuppliersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithNormalPerms);
 
-        $supplier = $this->suppliersService->show($this->supplier->id);
+        $supplier = $this->services['suppliers']->show($this->supplier->id);
 
         $this->assertEquals($this->supplier->id, $supplier->id);
         $this->assertEquals($this->supplier->name, $supplier->name);
@@ -157,7 +154,7 @@ class SuppliersServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->suppliersService->destroy($this->supplier->id);
+        $this->services['suppliers']->destroy($this->supplier->id);
     }
 
     /*
@@ -166,14 +163,14 @@ class SuppliersServiceTest extends TestCase
     public function testDestroy()
     {
         $this->actingAs($this->userWithReferrerPerms);
-        $supplier = $this->suppliersService->destroy($this->supplier->id);
+        $supplier = $this->services['suppliers']->destroy($this->supplier->id);
         $this->assertNotNull($supplier->deleted_at);
 
         $this->actingAs($this->userWithAdminPerm);
-        $supplier = $this->suppliersService->destroy($this->supplier->id);
+        $supplier = $this->services['suppliers']->destroy($this->supplier->id);
 
         try {
-            $this->suppliersService->show($this->supplier->id);
+            $this->services['suppliers']->show($this->supplier->id);
             $this->fail('should never run');
         }
         catch (ModelNotFoundException $e) {

@@ -6,25 +6,23 @@ class Roles {
     {
         this.setupPermissionsEditor(container);
 
-        if (container.hasClass('multigas-editor')) {
-            $('input:checkbox[data-gas]', container).change((e) => {
-                var check = $(e.currentTarget);
-                check.removeClass('saved-checkbox');
-                var url = check.is(':checked') ? 'multigas/attach' : 'multigas/detach';
+        $('.multigas-editor input:checkbox[data-gas]', container).change((e) => {
+            var check = $(e.currentTarget);
+            check.removeClass('saved-checkbox');
+            var url = check.is(':checked') ? 'multigas/attach' : 'multigas/detach';
 
-                utils.postAjax({
-                    url: url,
-                    data: {
-                        gas: check.attr('data-gas'),
-                        target_id: check.attr('data-target-id'),
-                        target_type: check.attr('data-target-type'),
-                    },
-                    success: function() {
-                        check.addClass('saved-checkbox');
-                    }
-                });
+            utils.postAjax({
+                url: url,
+                data: {
+                    gas: check.attr('data-gas'),
+                    target_id: check.attr('data-target-id'),
+                    target_type: check.attr('data-target-type'),
+                },
+                success: function() {
+                    check.addClass('saved-checkbox');
+                }
             });
-        }
+        });
     }
 
     static setupPermissionsEditor(container) {

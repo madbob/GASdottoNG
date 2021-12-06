@@ -57,7 +57,6 @@ $utilities: map-merge(
 @import '~select2-bootstrap-5-theme/src/include-all';
 @import '~jquery-ui/themes/base/all.css';
 @import '~chartist/dist/chartist.css';
-@import "./jbob";
 
 html, body {
     min-height: 100%;
@@ -160,6 +159,12 @@ table {
 		padding-top: 7px;
 		margin-bottom: 0;
 		font-weight: normal;
+	}
+}
+
+.dynamic-table {
+	tfoot {
+		display: none;
 	}
 }
 
@@ -289,9 +294,17 @@ table {
     }
 }
 
-.explode-aggregate {
-    z-index: 10;
-    cursor: pointer;
+#orderAggregator {
+    .card {
+        ul {
+            min-height: 20px;
+        }
+    }
+
+    .explode-aggregate {
+        z-index: 10;
+        cursor: pointer;
+    }
 }
 
 table {
@@ -332,6 +345,24 @@ table {
 
     .mobile-quantity-switch {
         margin-top: 10px;
+    }
+}
+
+.booking-editor {
+    .manual-total {
+        border-color: var(--bs-info);
+
+        &.is-changed {
+            border-color: var(--bs-red);
+            padding-right: calc(1.5em + 0.75rem);
+            /*
+                Rielaborazione dell'icona Bootstrap "lock"
+            */
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' width='16' height='16' fill='black'%3e%3cpath d='M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(0.375em + 0.1875rem) center;
+            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        }
     }
 }
 
@@ -396,8 +427,12 @@ i[class^='bi-hidden-'] {
 
     .dropdown-menu {
         padding: 5px;
-        width: 210px;
     }
+}
+
+.form-disabled {
+    pointer-events: none;
+    opacity: 0.8;
 }
 
 .main-form-buttons {

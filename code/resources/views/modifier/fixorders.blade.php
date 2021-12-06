@@ -7,16 +7,22 @@
         </p>
         <p>
             @foreach($modifier->target->active_orders as $order)
-                @foreach($order->modifiers()->where('modifier_type_id', $modifier->modifier_type_id)->get() as $m)
-                    @if($m->active == false)
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="activated[]" value="{{ $order->id }}" id="activate-order-{{ sanitizeId($order->id) }}">
-                            <label class="form-check-label" for="activate-order-{{ sanitizeId($order->id) }}">
-                                {{ $order->printableName() }}
-                            </label>
-                        </div>
-                    @endif
-                @endforeach
+                <?php
+
+                $active_modifier = $order->modifiers()->where('modifier_type_id', $modifier->modifier_type_id)->get()->reduce(function($active, $m) {
+                    return $active || $m->active;
+                }, false);
+
+                ?>
+
+                @if($active_modifier == false)
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="activated[]" value="{{ $order->id }}" id="activate-order-{{ sanitizeId($order->id) }}">
+                        <label class="form-check-label" for="activate-order-{{ sanitizeId($order->id) }}">
+                            {{ $order->printableName() }}
+                        </label>
+                    </div>
+                @endif
             @endforeach
         </p>
     </x-larastrap::iform>

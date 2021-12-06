@@ -14,7 +14,6 @@ class DonationFromGas extends MovementType
         $type->name = 'Donazione dal GAS';
         $type->sender_type = 'App\Gas';
         $type->target_type = null;
-        $type->fixed_value = null;
 
         $type->function = json_encode($this->voidFunctions([
             (object) [

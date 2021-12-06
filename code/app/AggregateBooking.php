@@ -66,23 +66,12 @@ class AggregateBooking extends Model
         return 'shipped';
     }
 
-    public function getTotalValueAttribute()
+    public function getValue($type, $with_friends, $force_recalculate = false)
     {
         $grand_total = 0;
 
         foreach ($this->bookings as $booking) {
-            $grand_total += $booking->getValue('effective', true);
-        }
-
-        return $grand_total;
-    }
-
-    public function getTotalDeliveredAttribute()
-    {
-        $grand_total = 0;
-
-        foreach ($this->bookings as $booking) {
-            $grand_total += $booking->getValue('delivered', true);
+            $grand_total += $booking->getValue($type, $with_friends, $force_recalculate);
         }
 
         return $grand_total;

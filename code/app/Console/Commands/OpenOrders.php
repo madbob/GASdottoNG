@@ -32,13 +32,14 @@ class OpenOrders extends Command
 
                 foreach($date->dates as $d) {
                     if ($d < $today) {
+                        // @phpstan-ignore-next-line
                         $all_previous = $all_previous && true;
                     }
                     else if ($d > $today) {
-                        $all_previous = $all_previous && false;
+                        $all_previous = false;
                     }
                     else if ($d == $today) {
-                        $all_previous = $all_previous && false;
+                        $all_previous = false;
 
                         if ($date->suspend) {
                             continue;

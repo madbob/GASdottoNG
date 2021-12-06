@@ -14,7 +14,6 @@ class UserRefund extends MovementType
         $type->name = 'Rimborso spesa socio';
         $type->sender_type = 'App\Gas';
         $type->target_type = 'App\User';
-        $type->fixed_value = null;
 
         $type->function = json_encode($this->voidFunctions([
             (object) [

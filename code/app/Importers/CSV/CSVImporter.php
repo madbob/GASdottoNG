@@ -55,7 +55,7 @@ abstract class CSVImporter
         try {
             $f = $request->file('file', null);
             if (is_null($f) || $f->isValid() == false) {
-                return $this->errorResponse(_i('File non caricato correttamente, possibili problemi con la dimensione'));
+                throw new \Exception(_i('File non caricato correttamente, possibili problemi con la dimensione'), 1);
             }
 
             $filepath = sys_get_temp_dir();

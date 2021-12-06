@@ -671,6 +671,8 @@ class Order extends Model
         $bookings = Booking::sortByShippingPlace($bookings, $shipping_place);
         $listed_products = [];
 
+        $aggregate_data = $this->aggregate->reduxData();
+
         foreach ($bookings as $booking) {
             $obj = (object) [
                 'user_id' => $booking->user->id,
@@ -724,7 +726,13 @@ class Order extends Model
                 $booking->status = 'pending';
             }
 
-            $modifiers = $booking->applyModifiers(null, false);
+            $modifiers = $booking->applyModifiers($aggregate_data, false);
+
+            foreach($booking->friends_bookings as $friend) {
+                $friend_modifiers = $friend->applyModifiers($aggregate_data, false);
+                $modifiers = $modifiers->merge($friend_modifiers);
+            }
+
             $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
             foreach($aggregated_modifiers as $am) {
                 $obj->totals[$am->name] = printablePrice($am->amount);
@@ -860,7 +868,7 @@ class Order extends Model
 
     public static function displayColumns()
     {
-        return [
+        $ret = [
             'selection' => (object) [
                 'label' => _i('Selezione'),
                 'help' => _i("Per abilitare o disabilitare prodotti del listino fornitore all'interno dell'ordine"),
@@ -873,14 +881,40 @@ class Order extends Model
             ],
             'price' => (object) [
                 'label' => _i('Prezzo'),
-                'help' => _i('Prezzo unitario (editabile) del prodotto'),
+                'help' => _i('Prezzo unitario del prodotto'),
                 'width' => 5
             ],
             'available' => (object) [
                 'label' => _i('Disponibile'),
-                'help' => _i('Quantità disponibile (editabile) del prodotto'),
+                'help' => _i('Quantità disponibile del prodotto'),
                 'width' => 5
             ],
+        ];
+
+        /*
+            I modificatori dei prodotti vengono resi accessibili direttamente
+            nella tabella dell'ordine, per poter essere consultati prodotto per
+            prodotto.
+            In summary.blade.php si provvede poi a nascondere del tutto le
+            colonne per i modificatori che non sono stati attivati per nessun
+            prodotto all'interno dell'ordine
+        */
+        $products_modifiers = ModifierType::byClass(Product::class);
+        foreach($products_modifiers as $pmod) {
+            $ret['modifier-pending-' . $pmod->id] = (object) [
+                'label' => sprintf('%s (%s)', $pmod->name, _i('Prenotato')),
+                'help' => _i("Modificatore Prodotto, sul Prenotato. Mostrato solo se il modificatore è attivo per un qualche prodotto nell'ordine"),
+                'width' => 7
+            ];
+
+            $ret['modifier-shipped-' . $pmod->id] = (object) [
+                'label' => sprintf('%s (%s)', $pmod->name, _i('Consegnato')),
+                'help' => _i("Modificatore Prodotto, sul Consegnato. Mostrato solo se il modificatore è attivo per un qualche prodotto nell'ordine"),
+                'width' => 7
+            ];
+        }
+
+        $ret = $ret + [
             'unit_measure' => (object) [
                 'label' => _i('Unità di Misura'),
                 'help' => _i('Unità di misura assegnata al prodotto'),
@@ -922,6 +956,8 @@ class Order extends Model
                 'width' => 3
             ],
         ];
+
+        return $ret;
     }
 
     public static function statuses()
@@ -1031,15 +1067,22 @@ class Order extends Model
                 $aggregate_data = $this->aggregate->reduxData();
             }
 
+            $old_status = $this->status;
             if ($enforce_status !== false) {
                 $this->status = $enforce_status;
             }
 
             foreach($this->bookings as $booking) {
                 $booking->setRelation('order', $this);
+
+                if ($enforce_status !== false) {
+                    $booking->status = $enforce_status;
+                }
+
                 $modifiers = $modifiers->merge($booking->applyModifiers($aggregate_data));
             }
 
+            $this->status = $old_status;
             DB::rollback();
         }
 
@@ -1090,23 +1133,15 @@ class Order extends Model
 
         $ret->children = function($item, $filters) {
             /*
-                Qui recupero solo le prenotazioni di primo livello (non
-                quelle degli amici), in quanto comunque il comportamento di
-                Booking prevede di default di ridurre anche le informazioni
-                degli amici. Se qui contemplassi tutte le prenotazioni,
-                finirei col sommare due volte le quantità degli utenti
-                amici: una volta nella prenotazione stessa, una volta in
-                quella dell'utente superiore.
-
-                Ricordarsi comunque che qui le prenotazioni vanno sempre
-                lette dal DB, non accedendo al valore eventualmente cachato
-                in $item->bookings. Questo per fare in modo che agendo sullo
-                stesso ordine ma per GAS diversi sia riapplicato lo scope
-                RestrictedGAS, ed ottenere le prenotazioni dell'ordine
-                desiderato; altrimenti, otterrei sempre le prenotazioni del
-                primo GAS che viene elaborato
+                Ricordarsi che qui le prenotazioni vanno sempre lette dal DB,
+                non accedendo al valore eventualmente cachato in
+                $item->bookings.
+                Questo per fare in modo che agendo sullo stesso ordine ma per
+                GAS diversi sia riapplicato lo scope RestrictedGAS, ed ottenere
+                le prenotazioni dell'ordine desiderato; altrimenti, otterrei
+                sempre le prenotazioni del primo GAS che viene elaborato
             */
-            $bookings = $item->topLevelBookings();
+            $bookings = $item->bookings()->get();
 
             $shipping_place = $filters['shipping_place'] ?? null;
             if ($shipping_place) {

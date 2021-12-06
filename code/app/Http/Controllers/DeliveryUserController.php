@@ -46,7 +46,7 @@ class DeliveryUserController extends Controller
 
         $subject = $aggregate->bookingBy($target_user->id);
         $subject->generateReceipt();
-        $total = $subject->total_delivered;
+        $total = $subject->getValue('delivered', true);
 
         if ($total == 0) {
             return $this->successResponse();
@@ -111,12 +111,28 @@ class DeliveryUserController extends Controller
         return $booking->getValue('effective', false, true);
     }
 
+    private function sumFastShippings($deliverer, $aggregate, $user_id)
+    {
+        $grand_total = 0;
+
+        foreach ($aggregate->orders as $order) {
+            $booking = $order->userBooking($user_id);
+            $grand_total += $this->fastShipBooking($deliverer, $booking);
+
+            foreach($booking->friends_bookings as $bf) {
+                $grand_total += $this->fastShipBooking($deliverer, $bf);
+            }
+        }
+
+        return $grand_total;
+    }
+
     public function postFastShipping(Request $request, $aggregate_id)
     {
-        $user = Auth::user();
+        $deliverer = Auth::user();
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
-        if ($user->can('supplier.shippings', $aggregate) == false) {
+        if ($deliverer->can('supplier.shippings', $aggregate) == false) {
             abort(503);
         }
 
@@ -126,27 +142,14 @@ class DeliveryUserController extends Controller
         $default_payment_method = defaultPaymentByType('booking-payment');
 
         foreach($users as $index => $user_id) {
-            $grand_total = 0;
-
-            foreach ($aggregate->orders as $order) {
-                $booking = $order->userBooking($user_id);
-                $grand_total += $this->fastShipBooking($user, $booking);
-                foreach($booking->friends_bookings as $bf)
-                    $grand_total += $this->fastShipBooking($user, $bf);
-            }
+            $grand_total = $this->sumFastShippings($deliverer, $aggregate, $user_id);
 
             if ($grand_total != 0) {
                 $subject = $aggregate->bookingBy($user_id);
                 $subject->generateReceipt();
 
-                $movement = new Movement();
-                $movement->type = 'booking-payment';
-                $movement->sender_type = 'App\User';
-                $movement->sender_id = $user_id;
-                $movement->target_type = 'App\Aggregate';
-                $movement->target_id = $aggregate_id;
+                $movement = Movement::generate('booking-payment', $subject->user, $aggregate, $grand_total);
                 $movement->method = $request->input('method-' . $user_id, $default_payment_method);
-                $movement->amount = $grand_total;
                 $movement->save();
             }
         }

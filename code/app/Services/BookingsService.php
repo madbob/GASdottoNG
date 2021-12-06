@@ -207,6 +207,8 @@ class BookingsService extends BaseService
                 $quantity = 0;
             }
 
+            $quantities = [];
+
             if ($product->variants->isEmpty() == false) {
                 $quantities = $request['variant_quantity_' . $product->id] ?? '';
                 if (empty($quantities)) {
@@ -222,7 +224,9 @@ class BookingsService extends BaseService
                 if ($product->variants->isEmpty() == false) {
                     $values = [];
                     foreach ($product->variants as $variant) {
-                        $values[$variant->id] = $request['variant_selection_' . $variant->id];
+                        if (isset($request['variant_selection_' . $variant->id])) {
+                            $values[$variant->id] = $request['variant_selection_' . $variant->id];
+                        }
                     }
 
                     list($booked, $quantity) = $this->readVariants($product, $booked, $values, $quantities, $delivering);

@@ -10,6 +10,22 @@ $categories = $order->supplier->products()->pluck('category_id')->toArray();
 $categories = array_unique($categories);
 $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->get()->pluck('name')->toArray();
 
+$pending_modifiers = $order->applyModifiers($master_summary, 'pending');
+$shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
+
+$products_modifiers = [];
+App\ModifiedValue::organizeForProducts($products_modifiers, $pending_modifiers, 'pending');
+App\ModifiedValue::organizeForProducts($products_modifiers, $shipped_modifiers, 'shipped');
+
+foreach($display_columns as $identifier => $metadata) {
+    if (Illuminate\Support\Str::startsWith($identifier, 'modifier-')) {
+        $mod_id = preg_replace('/modifier-[a-z]*-(.*)/', '\1', $identifier);
+        if (!isset($products_modifiers[$mod_id])) {
+            unset($display_columns[$identifier]);
+        }
+    }
+}
+
 ?>
 
 <div class="order-summary-wrapper" data-reload-url="{{ route('orders.show', ['order' => $order->id, 'format' => 'summary']) }}">
@@ -161,6 +177,16 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                             <label>{{ $product->printableMeasure(true) }}</label>
                         </td>
 
+                        <!-- Modificatori sui Prodotti -->
+                        @foreach($products_modifiers as $pmod_id => $pmod)
+                            <td class="order-cell-modifier-pending-{{ $pmod_id }} {{ in_array('modifier-pending-' . $pmod_id, $columns) ? '' : 'hidden' }}">
+                                <label>{{ printablePriceCurrency($pmod->pending[$product->id] ?? 0) }}</label>
+                            </td>
+                            <td class="order-cell-modifier-shipped-{{ $pmod_id }} {{ in_array('modifier-shipped-' . $pmod_id, $columns) ? '' : 'hidden' }}">
+                                <label>{{ printablePriceCurrency($pmod->shipped[$product->id] ?? 0) }}</label>
+                            </td>
+                        @endforeach
+
                         <!-- Quantità Ordinata -->
                         <td class="order-cell-quantity {{ in_array('quantity', $columns) ? '' : 'hidden' }}">
                             <label>
@@ -222,14 +248,7 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
                             @switch($identifier)
                                 @case('total_price')
                                     <span class="order-summary-order-price">{{ printablePriceCurrency($summary->price ?? 0) }}</span>
-                                    <?php
-
-                                    $modifiers = $order->applyModifiers($master_summary, 'pending');
-                                    $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
-
-                                    ?>
-
-                                    @foreach($aggregated_modifiers as $am)
+                                    @foreach(App\ModifiedValue::aggregateByType($pending_modifiers) as $am)
                                         <br>+ {{ $am->name }}: {{ printablePrice($am->amount) }}
                                     @endforeach
 
@@ -237,14 +256,7 @@ $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->
 
                                 @case('price_delivered')
                                     <span class="order-summary-order-price_delivered">{{ printablePriceCurrency($summary->price_delivered ?? 0) }}</span>
-                                    <?php
-
-                                    $modifiers = $order->applyModifiers($master_summary, 'shipped');
-                                    $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
-
-                                    ?>
-
-                                    @foreach($aggregated_modifiers as $am)
+                                    @foreach(App\ModifiedValue::aggregateByType($shipped_modifiers) as $am)
                                         <br>+ {{ $am->name }}: {{ printablePrice($am->amount) }}
                                     @endforeach
 

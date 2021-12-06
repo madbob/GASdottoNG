@@ -107,7 +107,7 @@ class Booking extends Model
         $values = $this->localModifiedValues($id, false);
 
         $products = $this->products;
-        $product_values = $products->reduce(function($carry, $product) {
+        $values = $products->reduce(function($carry, $product) {
             return $carry->merge($product->modifiedValues);
         }, $values);
 
@@ -153,7 +153,7 @@ class Booking extends Model
                     $id = null;
                 }
 
-                $modified_values = $this->allModifiedValues($id, $with_friends);
+                $modified_values = $obj->allModifiedValues($id, $with_friends);
                 $value = ModifiedValue::sumAmounts($modified_values, 0);
             }
             else {
@@ -164,18 +164,25 @@ class Booking extends Model
                     $products = $obj->products;
                 }
 
+                if ($type == 'effective') {
+                    $aggregate_data = $obj->order->aggregate->reduxData();
+
+                    $type = $obj->status == 'pending' ? 'booked' : 'delivered';
+                    $modified_values = $obj->applyModifiers($aggregate_data, false);
+
+                    if ($with_friends) {
+                        foreach($obj->friends_bookings as $friend_booking) {
+                            $friend_modified_values = $friend_booking->applyModifiers($aggregate_data, false);
+                            $modified_values = $modified_values->merge($friend_modified_values);
+                        }
+                    }
+
+                    $value = ModifiedValue::sumAmounts($modified_values, $value);
+                }
+
                 foreach ($products as $booked) {
                     $booked->setRelation('booking', $obj);
                     $value += $booked->getValue($type);
-                }
-
-                if ($type == 'effective') {
-                    if ($this->status == 'pending') {
-                        $this->calculateModifiers(null, false);
-                    }
-
-                    $modified_values = $this->localModifiedValues(null, $with_friends);
-                    $value = ModifiedValue::sumAmounts($modified_values, $value);
                 }
             }
 
@@ -396,6 +403,7 @@ class Booking extends Model
         else {
             $message = _i('Hai ordinato %s', printablePriceCurrency($tot));
             if ($friends_tot != 0) {
+                // @phpstan-ignore-next-line
                 $message += sprintf(' + %s', printablePriceCurrency($friends_tot));
             }
         }
@@ -565,20 +573,7 @@ class Booking extends Model
         $ret = $this->emptyReduxBehaviour();
 
         $ret->children = function($item, $filters) {
-            /*
-                Di default vengono incluse anche le prenotazioni degli amici.
-                Non modificare questo comportamento se non con cognizione di
-                causa (da questo dipende poi la riduzione sull'ordine, cfr.
-                Order::reduxBehaviour())
-            */
-            $with_friends = $filters['with_friends'] ?? true;
-
-            if ($with_friends) {
-                return $item->products_with_friends;
-            }
-            else {
-                return $item->products;
-            }
+            return $item->products;
         };
 
         $ret->optimize = function($item, $child) {

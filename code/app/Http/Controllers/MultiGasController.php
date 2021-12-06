@@ -4,108 +4,36 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use DB;
 use Auth;
-use Log;
 
 use App\Gas;
-use App\Supplier;
-use App\Aggregate;
-use App\Delivery;
-use App\Role;
 
-use App\Services\UsersService;
+use App\Services\MultiGasService;
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
 
 class MultiGasController extends Controller
 {
-    public function __construct()
+    public function __construct(MultiGasService $service)
     {
-        $this->middleware('auth');
+        $this->service = $service;
+
+        $this->commonInit([
+            'reference_class' => 'App\\Gas',
+            'endpoint' => 'multigas',
+            'service' => $service
+        ]);
     }
 
     public function index()
     {
-        $user = Auth::user();
-        if ($user->can('gas.multi', $user->gas) == false) {
-            abort(503);
-        }
-
-        $groups = [];
-
-        foreach($user->roles as $role) {
-            if ($role->enabledAction('gas.multi')) {
-                foreach ($role->applications() as $obj) {
-                    if (get_class($obj) == 'App\\Gas') {
-                        $groups[] = $obj;
-                    }
-                }
-            }
-        }
-
-        $groups = array_unique($groups, SORT_REGULAR);
-        return view('pages.multigas', ['groups' => $groups]);
+        return view('pages.multigas', ['groups' => $this->service->list()]);
     }
 
     public function store(Request $request)
     {
-        $user = $request->user();
-        if ($user->can('gas.multi', $user->gas) == false) {
-            abort(503);
-        }
-
         try {
-            DB::beginTransaction();
-
-            $user_service = new UsersService();
-            $admin = $user_service->store($request->only('username', 'firstname', 'lastname', 'password', 'enforce_password_change'));
-
-            $gas = new Gas();
-            $gas->name = $request->input('name');
-            $gas->save();
-
-            /*
-                Copio le configurazioni del GAS attuale su quello nuovo
-            */
-            foreach($user->gas->configs as $config) {
-                $new = $config->replicate();
-                $new->gas_id = $gas->id;
-                $new->save();
-            }
-
-            /*
-                Aggancio il nuovo GAS all'utente corrente, affinché lo possa
-                manipolare
-            */
-            $roles = Role::havingAction('gas.multi');
-            foreach($roles as $role)
-                $user->addRole($role, $gas);
-
-            /*
-                Aggancio il nuovo utente amministratore al nuovo GAS (di default
-                verrebbe assegnato al GAS corrente)
-            */
-            $admin->gas_id = $gas->id;
-            $admin->save();
-
-            $roles = [];
-
-            $target_role = $user->gas->roles['multigas'] ?? -1;
-            if ($target_role != -1) {
-                $role = Role::find($target_role);
-                if ($role) {
-                    $roles = [$role];
-                }
-            }
-
-            if (empty($roles)) {
-                $roles = Role::havingAction('gas.permissions');
-            }
-
-            foreach($roles as $role) {
-                $admin->addRole($role, $gas);
-            }
+            $gas = $this->service->store($request->all());
 
             return $this->successResponse([
                 'id' => $gas->id,
@@ -124,121 +52,41 @@ class MultiGasController extends Controller
 
     public function show($id)
     {
-        $user = Auth::user();
-        $gas = Gas::findOrFail($id);
-
-        if ($user->can('gas.multi', $gas) == false) {
-            abort(503);
+        try {
+            $gas = $this->service->show($id);
+            return view('multigas.edit', ['gas' => $gas]);
         }
-
-        return view('multigas.edit', ['gas' => $gas]);
+        catch (AuthException $e) {
+            abort($e->status());
+        }
     }
 
     public function update(Request $request, $id)
     {
-        $user = $request->user();
-        $gas = Gas::findOrFail($id);
-
-        if ($user->can('gas.multi', $gas) == false) {
-            abort(503);
+        try {
+            $gas = $this->service->update($id, $request->all());
+            return $this->commonSuccessResponse($gas);
         }
-
-        $gas->name = $request->input('name');
-        $gas->save();
-        return $this->commonSuccessResponse($gas);
+        catch (AuthException $e) {
+            abort($e->status());
+        }
     }
 
     public function destroy($id)
     {
-        $user = Auth::user();
-        $gas = Gas::findOrFail($id);
-
-        if ($user->can('gas.multi', $gas) == false) {
-            abort(503);
-        }
-
-        /*
-            Il modello User ha uno scope globale per manipolare solo gli utenti
-            del GAS locale, ma qui serve fare esattamente il contrario (ovvero:
-            manipolare solo gli utenti del GAS selezionato)
-        */
-        foreach($gas->users()->withoutGlobalScopes()->withTrashed()->get() as $u) {
-            $u->forceDelete();
-        }
-
-        foreach($gas->configs as $c) {
-            $c->delete();
-        }
-
-        $gas->suppliers()->sync([]);
-        $gas->aggregates()->sync([]);
-        $gas->deliveries()->sync([]);
-
-        $gas->delete();
+        $this->service->destroy($id);
         return $this->successResponse();
     }
 
     public function attach(Request $request)
     {
-        DB::beginTransaction();
-
-        $user = Auth::user();
-        $gas_id = $request->input('gas');
-        $gas = Gas::findOrFail($gas_id);
-
-        if ($user->can('gas.multi', $gas) == false) {
-            abort(503);
-        }
-
-        $target_id = $request->input('target_id');
-        $target_type = $request->input('target_type');
-
-        switch($target_type) {
-            case 'supplier':
-                $gas->suppliers()->attach($target_id);
-                break;
-
-            case 'aggregate':
-                $gas->aggregates()->attach($target_id);
-                break;
-
-            case 'delivery':
-                $gas->deliveries()->attach($target_id);
-                break;
-        }
-
+        $this->service->attach($request->all());
         return $this->successResponse();
     }
 
     public function detach(Request $request)
     {
-        DB::beginTransaction();
-
-        $user = Auth::user();
-        $gas_id = $request->input('gas');
-        $gas = Gas::findOrFail($gas_id);
-
-        if ($user->can('gas.multi', $gas) == false) {
-            abort(503);
-        }
-
-        $target_id = $request->input('target_id');
-        $target_type = $request->input('target_type');
-
-        switch($target_type) {
-            case 'supplier':
-                $gas->suppliers()->detach($target_id);
-                break;
-
-            case 'aggregate':
-                $gas->aggregates()->detach($target_id);
-                break;
-
-            case 'delivery':
-                $gas->deliveries()->detach($target_id);
-                break;
-        }
-
+        $this->service->detach($request->all());
         return $this->successResponse();
     }
 

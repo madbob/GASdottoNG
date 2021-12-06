@@ -97,6 +97,15 @@ return [
                 'reviewCallback' => 'formatDecimalToComponent',
             ]
         ],
+        'integer' => [
+            'extends' => 'text',
+            'params' => [
+                'classes' => ['number'],
+                'attributes' => [
+                    'data-enforce-integer' => '1',
+                ],
+            ]
+        ],
         'selectobj' => [
             'extends' => 'select',
             'params' => [

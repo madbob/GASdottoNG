@@ -15,7 +15,6 @@ class VariantsServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->gas = \App\Gas::factory()->create();
         $this->supplier = \App\Supplier::factory()->create();
         $this->category = \App\Category::factory()->create();
         $this->measure = \App\Measure::factory()->create();
@@ -28,13 +27,11 @@ class VariantsServiceTest extends TestCase
 
         $this->userWithReferrerPerms = $this->createRoleAndUser($this->gas, 'supplier.modify', $this->supplier);
         $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
-
-        $this->service = new \App\Services\VariantsService();
     }
 
     private function createVariant()
     {
-        return $this->service->store([
+        return $this->services['variants']->store([
             'product_id' => $this->product->id,
             'name' => 'Colore',
             'id' => ['', '', ''],
@@ -65,7 +62,7 @@ class VariantsServiceTest extends TestCase
         $this->assertEquals(3, $variant->values()->count());
         $this->assertEquals(3, $this->product->variant_combos->count());
 
-        $this->service->store([
+        $this->services['variants']->store([
             'product_id' => $this->product->id,
             'name' => 'Taglia',
             'id' => ['', '', ''],
@@ -83,7 +80,7 @@ class VariantsServiceTest extends TestCase
         $variant = $this->createVariant();
         $old_value = $variant->values()->where('value', 'Rosso')->first();
 
-        $variant = $this->service->store([
+        $variant = $this->services['variants']->store([
             'variant_id' => $variant->id,
             'name' => 'Colore',
             'id' => [
@@ -105,7 +102,7 @@ class VariantsServiceTest extends TestCase
         $new_value = $variant->values()->where('value', 'Rosso')->first();
         $this->assertEquals($old_value->id, $new_value->id);
 
-        $variant = $this->service->store([
+        $variant = $this->services['variants']->store([
             'variant_id' => $variant->id,
             'name' => 'Colore',
             'id' => [
@@ -128,7 +125,7 @@ class VariantsServiceTest extends TestCase
     {
         $variant = $this->createVariant();
         $this->assertEquals(3, $this->product->variant_combos->count());
-        $this->service->destroy($variant->id);
+        $this->services['variants']->destroy($variant->id);
         $this->assertEquals(0, $this->product->variant_combos->count());
     }
 }

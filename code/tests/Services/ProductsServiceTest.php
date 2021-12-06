@@ -16,7 +16,6 @@ class ProductsServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->gas = \App\Gas::factory()->create();
         $this->supplier = \App\Supplier::factory()->create();
         $this->category = \App\Category::factory()->create();
         $this->measure = \App\Measure::factory()->create();
@@ -30,8 +29,6 @@ class ProductsServiceTest extends TestCase
         $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'supplier.add');
         $this->userWithReferrerPerms = $this->createRoleAndUser($this->gas, 'supplier.modify', $this->supplier);
         $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
-
-        $this->productsService = new \App\Services\ProductsService();
     }
 
     /*
@@ -42,7 +39,7 @@ class ProductsServiceTest extends TestCase
         $this->expectException(AuthException::class);
 
         $this->actingAs($this->userWithNoPerms);
-        $this->productsService->store(array(
+        $this->services['products']->store(array(
             'supplier_id' => $this->supplier->id,
             'name' => 'Test Product'
         ));
@@ -55,7 +52,7 @@ class ProductsServiceTest extends TestCase
     {
         $this->actingAs($this->userWithReferrerPerms);
 
-        $product = $this->productsService->store(array(
+        $product = $this->services['products']->store(array(
             'name' => 'Test Product',
             'price' => rand(),
             'supplier_id' => $this->supplier->id,
@@ -74,7 +71,7 @@ class ProductsServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->productsService->update($this->product->id, array());
+        $this->services['products']->update($this->product->id, array());
     }
 
     /*
@@ -84,7 +81,7 @@ class ProductsServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithAdminPerm);
-        $this->productsService->update($this->product->id, array());
+        $this->services['products']->update($this->product->id, array());
     }
 
     /*
@@ -94,7 +91,7 @@ class ProductsServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithReferrerPerms);
-        $this->productsService->update('broken', array());
+        $this->services['products']->update('broken', array());
     }
 
     /*
@@ -104,12 +101,12 @@ class ProductsServiceTest extends TestCase
     {
         $this->actingAs($this->userWithReferrerPerms);
 
-        $this->productsService->update($this->product->id, array(
+        $this->services['products']->update($this->product->id, array(
             'name' => 'Another Product',
             'price' => 10,
         ));
 
-        $product = $this->productsService->show($this->product->id);
+        $product = $this->services['products']->show($this->product->id);
 
         $this->assertNotEquals($product->name, $this->product->name);
         $this->assertEquals($product->price, 10);
@@ -123,7 +120,7 @@ class ProductsServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->productsService->show('random');
+        $this->services['products']->show('random');
     }
 
     /*
@@ -132,7 +129,7 @@ class ProductsServiceTest extends TestCase
     public function testShow()
     {
         $this->actingAs($this->userWithNoPerms);
-        $product = $this->productsService->show($this->product->id);
+        $product = $this->services['products']->show($this->product->id);
 
         $this->assertEquals($this->product->id, $product->id);
         $this->assertEquals($this->product->name, $product->name);
@@ -145,7 +142,7 @@ class ProductsServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->productsService->destroy($this->product->id);
+        $this->services['products']->destroy($this->product->id);
     }
 
     /*
@@ -155,8 +152,8 @@ class ProductsServiceTest extends TestCase
     {
         $this->actingAs($this->userWithReferrerPerms);
 
-        $this->productsService->destroy($this->product->id);
-        $product = $this->productsService->show($this->product->id);
+        $this->services['products']->destroy($this->product->id);
+        $product = $this->services['products']->show($this->product->id);
         $this->assertNotNull($product->deleted_at);
     }
 }

@@ -17,8 +17,9 @@ class AttachToGas
     public function handle(AttachableToGas $event)
     {
         $user = Auth::user();
-        if (is_null($user))
+        if (is_null($user)) {
             return;
+        }
 
         $group = $event->group;
         if (is_null($group)) {

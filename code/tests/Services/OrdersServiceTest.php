@@ -18,14 +18,8 @@ class OrdersServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->gas = \App\Gas::factory()->create();
-        list($this->sample_supplier, $this->products, $this->sample_order) = $this->initOrder(null);
-
-        $this->userAdmin = $this->createRoleAndUser($this->gas, 'gas.config');
-        $this->userWithReferrerPerms = $this->createRoleAndUser($this->gas, 'supplier.orders', $this->sample_supplier);
+        $this->order = $this->initOrder(null);
         $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
-
-        $this->service = new \App\Services\OrdersService();
     }
 
     /*
@@ -36,8 +30,8 @@ class OrdersServiceTest extends TestCase
         $this->expectException(AuthException::class);
 
         $this->actingAs($this->userWithNoPerms);
-        $this->service->store(array(
-            'supplier_id' => $this->sample_supplier->id,
+        $this->services['orders']->store(array(
+            'supplier_id' => $this->order->supplier_id,
         ));
     }
 
@@ -46,14 +40,14 @@ class OrdersServiceTest extends TestCase
     */
     public function testStore()
     {
-        $this->actingAs($this->userWithReferrerPerms);
+        $this->actingAs($this->userReferrer);
 
         $start = date('Y-m-d');
         $end = date('Y-m-d', strtotime('+20 days'));
         $shipping = date('Y-m-d', strtotime('+30 days'));
 
-        $aggregate = $this->service->store(array(
-            'supplier_id' => $this->sample_supplier->id,
+        $aggregate = $this->services['orders']->store(array(
+            'supplier_id' => $this->order->supplier_id,
             'comment' => 'Commento di prova',
             'start' => printableDate($start),
             'end' => printableDate($end),
@@ -64,12 +58,12 @@ class OrdersServiceTest extends TestCase
         $this->assertEquals(1, $aggregate->orders->count());
 
         foreach($aggregate->orders as $order) {
-            $this->assertEquals($this->sample_supplier->id, $order->supplier_id);
+            $this->assertEquals($this->order->supplier_id, $order->supplier_id);
             $this->assertEquals('Commento di prova', $order->comment);
             $this->assertEquals($start, $order->start);
             $this->assertEquals($end, $order->end);
             $this->assertEquals($shipping, $order->shipping);
-            $this->assertEquals(10, $order->products()->count());
+            $this->assertEquals($this->order->supplier->products()->count(), $order->products()->count());
             $this->assertEquals(0, $order->bookings()->count());
             $this->assertEquals($aggregate->id, $order->aggregate_id);
             $this->assertEquals('open', $order->status);
@@ -83,7 +77,7 @@ class OrdersServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->service->update($this->sample_order->id, array());
+        $this->services['orders']->update($this->order->id, array());
     }
 
     /*
@@ -92,8 +86,8 @@ class OrdersServiceTest extends TestCase
     public function testFailsToUpdateBecauseNoUserWithID()
     {
         $this->expectException(ModelNotFoundException::class);
-        $this->actingAs($this->userWithReferrerPerms);
-        $this->service->update('broken', array());
+        $this->actingAs($this->userReferrer);
+        $this->services['orders']->update('broken', array());
     }
 
     /*
@@ -101,21 +95,21 @@ class OrdersServiceTest extends TestCase
     */
     public function testUpdate()
     {
-        $this->actingAs($this->userWithReferrerPerms);
+        $this->actingAs($this->userReferrer);
 
         $new_shipping = date('Y-m-d', strtotime('+40 days'));
 
-        $this->service->update($this->sample_order->id, array(
+        $this->services['orders']->update($this->order->id, array(
             'comment' => 'Un altro commento',
             'shipping' => $new_shipping,
         ));
 
-        $order = $this->service->show($this->sample_order->id);
+        $order = $this->services['orders']->show($this->order->id);
 
         $this->assertEquals($order->comment, 'Un altro commento');
         $this->assertEquals($order->shipping, $new_shipping);
-        $this->assertEquals($order->start, $this->sample_order->start);
-        $this->assertEquals($order->end, $this->sample_order->end);
+        $this->assertEquals($order->start, $this->order->start);
+        $this->assertEquals($order->end, $this->order->end);
     }
 
     /*
@@ -128,12 +122,12 @@ class OrdersServiceTest extends TestCase
             'default' => true,
         ]);
 
-        $this->actingAs($this->userWithReferrerPerms);
-        $this->service->update($this->sample_order->id, array(
+        $this->actingAs($this->userReferrer);
+        $this->services['orders']->update($this->order->id, array(
             'deliveries' => [$delivery->id],
         ));
 
-        $order = $this->service->show($this->sample_order->id);
+        $order = $this->services['orders']->show($this->order->id);
         $this->assertEquals(1, $order->deliveries()->count());
 
         /*
@@ -152,7 +146,7 @@ class OrdersServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->service->show('random');
+        $this->services['orders']->show('random');
     }
 
     /*
@@ -161,10 +155,10 @@ class OrdersServiceTest extends TestCase
     public function testShow()
     {
         $this->actingAs($this->userWithNoPerms);
-        $order = $this->service->show($this->sample_order->id);
+        $order = $this->services['orders']->show($this->order->id);
 
-        $this->assertEquals($this->sample_order->id, $order->id);
-        $this->assertEquals($this->sample_order->name, $order->name);
+        $this->assertEquals($this->order->id, $order->id);
+        $this->assertEquals($this->order->name, $order->name);
     }
 
     /*
@@ -174,7 +168,7 @@ class OrdersServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->service->destroy($this->sample_order->id);
+        $this->services['orders']->destroy($this->order->id);
     }
 
     /*
@@ -182,10 +176,10 @@ class OrdersServiceTest extends TestCase
     */
     public function testDestroy()
     {
-        $this->actingAs($this->userWithReferrerPerms);
+        $this->actingAs($this->userReferrer);
 
-        $this->service->destroy($this->sample_order->id);
+        $this->services['orders']->destroy($this->order->id);
         $this->expectException(ModelNotFoundException::class);
-        $order = $this->service->show($this->sample_order->id);
+        $order = $this->services['orders']->show($this->order->id);
     }
 }

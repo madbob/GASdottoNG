@@ -154,8 +154,18 @@ class Bookings {
             return false;
         });
 
+        $('input.manual-total', container).keyup((e) => {
+            let i = $(e.currentTarget);
+            if (parseFloat(i.val()) > 0) {
+                i.addClass('is-changed');
+            }
+            else {
+                i.removeClass('is-changed');
+            }
+        });
+
         $('input.manual-total', container).change((e) => {
-            var editor = $(e.currentTarget).closest('.booking-editor');
+            let editor = $(e.currentTarget).closest('.booking-editor');
             this.bookingTotal(editor);
         });
 
@@ -281,6 +291,26 @@ class Bookings {
         }).each(function() {
             $(this).toggleClass('skip-on-submit restore-after-serialize', $(this).val() == '0');
         });
+
+        let manual = form.find('.manual-total');
+        if (manual.length) {
+            /*
+                Si deve tenere traccia dello stato della input box per le
+                consegne manuali senza quantità: se non ne viene modificato il
+                contenuto funziona come visualizzazione del totale manualmente
+                calcolato, altrimenti come effettivo totale manuale (e bloccato,
+                che sovrascrive quello automatico).
+                Se non è stato manualmente valorizzato (ma c'è comunque un
+                valore, settato da un precedente calcolo automatico, ad esempio
+                se è stata immessa la quantità di un prodotto) qui lo si svuota,
+                altrimenti il valore accompagnerebbe la richiesta verso il
+                server e sarebbe interpretato come un totale manuale (e, dunque,
+                bloccato)
+            */
+            if (manual.hasClass('is-changed') == false) {
+                manual.val('');
+            }
+        }
 
     	var data = form.find(':not(.skip-on-submit)').serialize();
         form.find('.restore-after-serialize').removeClass('skip-on-submit restore-after-serialize');

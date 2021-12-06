@@ -44,7 +44,7 @@
                                         @endif
                                     </td>
                                     <td>{{ $booking->user->printableName() }}</td>
-                                    <td>{{ printablePriceCurrency($booking->total_value) }}</td>
+                                    <td>{{ printablePriceCurrency($booking->getValue('effective', true)) }}</td>
                                     <td>
                                         @if($booking->status != 'shipped')
                                             <?php $payment_method = ($booking->user->payment_method_id != 'none' && ($booking->user->payment_method->valid_config)($booking->user)) ? $booking->user->payment_method_id : $default_payment_method ?>

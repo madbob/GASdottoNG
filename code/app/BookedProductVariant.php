@@ -62,11 +62,16 @@ class BookedProductVariant extends Model
 
     public function fixWeight($attribute)
     {
-        $weight = $this->product->product->weight;
+        if ($this->product->product->measure->discrete == false) {
+            $weight = 1;
+        }
+        else {
+            $weight = $this->product->product->weight;
 
-        $combo = $this->variantsCombo();
-        if ($combo) {
-            $weight += $combo->weight_offset;
+            $combo = $this->variantsCombo();
+            if ($combo) {
+                $weight += $combo->weight_offset;
+            }
         }
 
         return $weight * $this->$attribute;
@@ -157,17 +162,12 @@ class BookedProductVariant extends Model
         $ret = $this->describingAttributesMerge($ret, (object) [
             'price' => $this->quantityValue(),
             'weight' => $this->fixWeight('quantity'),
-
-            /*
-                Cfr. comportamento di BookedProduct
-            */
-            'quantity' => $this->quantity,
+            'quantity' => $this->product->product->portion_quantity > 0 ? $this->quantity * $this->product->product->portion_quantity : $this->quantity,
             'quantity_pieces' => $this->quantity,
-
             'price_delivered' => $this->deliveredValue(),
             'weight_delivered' => $this->fixWeight('delivered'),
             'delivered' => $this->delivered,
-            'delivered_pieces' => $this->product->product->portion_quantity > 0 ? $this->delivered * $this->product->product->portion_quantity : $this->delivered,
+            'delivered_pieces' => $this->product->product->portion_quantity > 0 ? $this->delivered / $this->product->product->portion_quantity : $this->delivered,
         ]);
 
         $status = $this->status;

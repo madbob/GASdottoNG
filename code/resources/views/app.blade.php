@@ -29,7 +29,7 @@
             </form>
         @endif
 
-        <div class="container-fluid">
+        <div class="container-fluid g-1 g-md-3">
             <div class="row">
                 <div class="col-md-12" id="main-contents">
                     @include('commons.flashing')

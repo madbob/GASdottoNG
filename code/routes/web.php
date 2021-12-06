@@ -101,7 +101,7 @@ Route::middleware(['auth'])->group(function() {
 
     Route::get('modtype/search', 'ModifierTypesController@search')->name('modtype.search');
 
-    Route::get('modifiers/strings', 'ModifiersController@strings')->name('modifiers.string');
+    Route::get('modifiers/strings/{target}', 'ModifiersController@strings')->name('modifiers.string');
     Route::get('modifiers/{id}/post_feedback', 'ModifiersController@postFeedback')->name('modifiers.feedback');
     Route::get('modifiers/{id}/fix_order_attach', 'ModifiersController@getFixOrderAttach')->name('modifiers.fixorderattach');
     Route::post('modifiers/{id}/fix_order_attach', 'ModifiersController@postFixOrderAttach')->name('modifiers.postfixorderattach');

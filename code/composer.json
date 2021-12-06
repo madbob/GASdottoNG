@@ -32,14 +32,16 @@
         "zetacomponents/archive": "dev-master"
     },
     "require-dev": {
+        "brianium/paratest": "^6.3",
         "fakerphp/faker": "^1.15",
         "filp/whoops": "~2.0",
         "laravel/dusk": "^6.15",
+        "madbob/dusk-utils": "^0.1.0",
         "mockery/mockery": "~1.0",
+        "nunomaduro/collision": "^5.10",
         "nunomaduro/larastan": "^0.7.0",
         "phpunit/phpunit": "^9.3",
-        "staudenmeir/dusk-updater": "^1.2",
-        "madbob/dusk-utils": "^0.1.0"
+        "staudenmeir/dusk-updater": "^1.2"
     },
     "autoload": {
         "psr-4": {

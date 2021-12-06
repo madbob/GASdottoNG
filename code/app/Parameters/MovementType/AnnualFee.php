@@ -16,7 +16,6 @@ class AnnualFee extends MovementType
         $type->name = 'Versamento della quota annuale da parte di un socio';
         $type->sender_type = 'App\User';
         $type->target_type = 'App\Gas';
-        $type->fixed_value = null;
         $type->visibility = false;
         $type->system = true;
 

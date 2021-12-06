@@ -73,8 +73,7 @@
                     $calculated_summaries[$o->id] = $summary;
                     $orders_total_taxable += $summary->total_taxable;
                     $orders_total_tax += $summary->total_tax;
-
-                    $orders_total = $orders_total_taxable + $orders_total_tax;
+                    $orders_total += $summary->total_taxable + $summary->total_tax;
 
                     $modifiers = $o->applyModifiers(null, false);
                     $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);

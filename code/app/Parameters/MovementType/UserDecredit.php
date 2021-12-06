@@ -14,7 +14,6 @@ class UserDecredit extends MovementType
         $type->name = 'Reso credito per un socio';
         $type->sender_type = 'App\User';
         $type->target_type = null;
-        $type->fixed_value = null;
 
         $type->function = json_encode($this->voidFunctions([
             (object) [

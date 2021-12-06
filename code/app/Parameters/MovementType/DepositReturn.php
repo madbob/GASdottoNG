@@ -16,7 +16,6 @@ class DepositReturn extends MovementType
         $type->name = 'Restituzione cauzione socio del GAS';
         $type->sender_type = 'App\Gas';
         $type->target_type = 'App\User';
-        $type->fixed_value = null;
         $type->system = true;
 
         $type->function = json_encode($this->voidFunctions([

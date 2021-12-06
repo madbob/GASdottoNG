@@ -16,7 +16,6 @@ class BookingPayment extends MovementType
         $type->name = 'Pagamento prenotazione da parte di un socio';
         $type->sender_type = 'App\User';
         $type->target_type = 'App\Booking';
-        $type->fixed_value = null;
         $type->visibility = false;
         $type->system = true;
 

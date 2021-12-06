@@ -150,7 +150,7 @@ class UsersController extends BackedController
     private function testInternalFunctionsAccess($requester, $target)
     {
         $admin_editable = $requester->can('users.admin', $target->gas);
-        $access = ($admin_editable || ($requester->id == $target->id && $requester->can('users.self', $requester->gas)) || $target->parent_id == $requester->id);
+        $access = ($admin_editable || $requester->id == $target->id || $target->parent_id == $requester->id);
         if (!$access) {
             throw new AuthException(403);
         }

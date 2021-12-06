@@ -156,4 +156,46 @@ class ModifiedValue extends Model
     {
         return 'Modificatore';
     }
+
+    /*
+        La struttura dati generata da questa funzione è qualcosa tipo:
+
+        [
+            ID del tipo di modificatore => (object) [
+                'label' => etichetta da mostrate nell'intestazione della colonna
+                'pending' => [
+                    ID prodotto 1 => X euro,
+                    ID prodotto 2 => Y euro,
+                ]
+                'shipped' => [
+                    ID prodotto 1 => X euro,
+                    ID prodotto 2 => Y euro,
+                ]
+            ]
+        ]
+    */
+    public static function organizeForProducts(&$products_modifiers, $target_modifiers, $key) {
+        foreach($target_modifiers as $pmod) {
+            if ($pmod->target_type == BookedProduct::class) {
+                $mod_id = $pmod->modifier->modifier_type_id;
+                $product_id = $pmod->target->product_id;
+
+                if (!isset($products_modifiers[$mod_id])) {
+                    $products_modifiers[$mod_id] = (object) [
+                        'label' => sprintf('%s (%s)', $pmod->modifier->modifierType->name, ($key == 'pending' ? _i('Prenotato') : _i('Consegnato'))),
+                    ];
+                }
+
+                if (!isset($products_modifiers[$mod_id]->$key)) {
+                    $products_modifiers[$mod_id]->$key = [];
+                }
+
+                if (!isset($products_modifiers[$mod_id]->$key[$product_id])) {
+                    $products_modifiers[$mod_id]->$key[$product_id] = 0;
+                }
+
+                $products_modifiers[$mod_id]->$key[$product_id] += $pmod->effective_amount;
+            }
+        }
+    }
 }

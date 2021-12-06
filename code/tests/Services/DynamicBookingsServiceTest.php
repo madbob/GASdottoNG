@@ -16,14 +16,8 @@ class DynamicBookingsServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->gas = \App\Gas::factory()->create();
-        list($this->sample_supplier, $this->products, $this->sample_order) = $this->initOrder(null);
-
-        $this->userWithShippingPerms = $this->createRoleAndUser($this->gas, 'supplier.shippings', $this->sample_supplier);
+        $this->order = $this->initOrder(null);
         $this->userWithBasePerms = $this->createRoleAndUser($this->gas, 'supplier.book');
-
-        $this->bookings_service = new \App\Services\BookingsService();
-        $this->dynamic_service = new \App\Services\DynamicBookingsService();
     }
 
     /*
@@ -33,13 +27,13 @@ class DynamicBookingsServiceTest extends TestCase
     {
         $this->actingAs($this->userWithBasePerms);
 
-        list($data, $booked_count, $total) = $this->randomQuantities($this->products);
+        list($data, $booked_count, $total) = $this->randomQuantities($this->order->products);
         $data['action'] = 'booked';
-        $this->bookings_service->bookingUpdate($data, $this->sample_order->aggregate, $this->userWithBasePerms, false);
+        $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $this->userWithBasePerms, false);
 
-        list($data2, $booked_count2, $total2) = $this->randomQuantities($this->products);
+        list($data2, $booked_count2, $total2) = $this->randomQuantities($this->order->products);
         $data2['action'] = 'booked';
-        $ret = $this->dynamic_service->dynamicModifiers($data2, $this->sample_order->aggregate, $this->userWithBasePerms);
+        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data2, $this->order->aggregate, $this->userWithBasePerms);
 
         $this->assertEquals(count($ret->bookings), 1);
 
@@ -50,7 +44,7 @@ class DynamicBookingsServiceTest extends TestCase
 
             foreach($b->products as $pid => $p) {
                 $target_product = null;
-                foreach($this->products as $prod) {
+                foreach($this->order->products as $prod) {
                     if ($prod->id == $pid) {
                         $target_product = $prod;
                         break;
@@ -65,7 +59,7 @@ class DynamicBookingsServiceTest extends TestCase
             }
         }
 
-        $booking = \App\Booking::where('order_id', $this->sample_order->id)->where('user_id', $this->userWithBasePerms->id)->first();
+        $booking = \App\Booking::where('order_id', $this->order->id)->where('user_id', $this->userWithBasePerms->id)->first();
         $this->assertEquals($booking->getValue('effective', true), $total);
         $this->assertEquals($booking->products()->count(), $booked_count);
     }
@@ -77,7 +71,7 @@ class DynamicBookingsServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithBasePerms);
-        $this->dynamic_service->dynamicModifiers(['action' => 'booked'], $this->sample_order->aggregate, $this->userWithShippingPerms);
+        $this->services['dynamic_bookings']->dynamicModifiers(['action' => 'booked'], $this->order->aggregate, $this->userWithShippingPerms);
     }
 
     /*
@@ -86,7 +80,7 @@ class DynamicBookingsServiceTest extends TestCase
     public function testReferrerReads()
     {
         $this->actingAs($this->userWithShippingPerms);
-        $ret = $this->dynamic_service->dynamicModifiers(['action' => 'booked'], $this->sample_order->aggregate, $this->userWithBasePerms);
+        $ret = $this->services['dynamic_bookings']->dynamicModifiers(['action' => 'booked'], $this->order->aggregate, $this->userWithBasePerms);
         $this->assertEquals(count($ret->bookings), 0);
     }
 
@@ -111,15 +105,16 @@ class DynamicBookingsServiceTest extends TestCase
     {
         $this->actingAs($this->userWithBasePerms);
 
-        $this->products[0]->min_quantity = 3;
-        $this->products[0]->save();
+        $product = $this->order->products->random();
+        $product->min_quantity = 3;
+        $product->save();
 
         $data = [
             'action' => 'booked',
-            $this->products[0]->id => 2,
+            $product->id => 2,
         ];
 
-        $ret = $this->dynamic_service->dynamicModifiers($data, $this->sample_order->aggregate, $this->userWithBasePerms);
+        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
         $this->contraintOnProduct($ret, 'Quantità inferiore al minimo consentito');
     }
 
@@ -131,15 +126,16 @@ class DynamicBookingsServiceTest extends TestCase
     {
         $this->actingAs($this->userWithBasePerms);
 
-        $this->products[1]->multiple = 2;
-        $this->products[1]->save();
+        $product = $this->order->products->random();
+        $product->multiple = 2;
+        $product->save();
 
         $data = [
             'action' => 'booked',
-            $this->products[1]->id => 5,
+            $product->id => 5,
         ];
 
-        $ret = $this->dynamic_service->dynamicModifiers($data, $this->sample_order->aggregate, $this->userWithBasePerms);
+        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
         $this->contraintOnProduct($ret, 'Quantità non multipla del valore consentito');
     }
 
@@ -150,15 +146,16 @@ class DynamicBookingsServiceTest extends TestCase
     {
         $this->actingAs($this->userWithBasePerms);
 
-        $this->products[2]->max_available = 10;
-        $this->products[2]->save();
+        $product = $this->order->products->random();
+        $product->max_available = 10;
+        $product->save();
 
         $data = [
             'action' => 'booked',
-            $this->products[2]->id => 11,
+            $product->id => 11,
         ];
 
-        $ret = $this->dynamic_service->dynamicModifiers($data, $this->sample_order->aggregate, $this->userWithBasePerms);
+        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
         $this->contraintOnProduct($ret, 'Quantità superiore alla disponibilità');
     }
 }
