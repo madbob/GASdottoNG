@@ -26,6 +26,35 @@ class InvoicesController extends Controller
         ]);
     }
 
+    public function index(Request $request)
+    {
+        $user = $request->user();
+        if ($user->can('movements.admin', $user->gas) == false) {
+            return $this->errorResponse(_i('Non autorizzato'));
+        }
+
+        $gas = $user->gas;
+
+        $one_month_ago = date('Y-m-d', strtotime('-1 months'));
+
+        $invoices = Invoice::where('status', '!=', 'payed')->orWhereHas('payment', function($query) use ($one_month_ago) {
+            $query->where('date', '>=', $one_month_ago);
+        })->orWhereDoesntHave('payment')->get();
+
+        if ($gas->hasFeature('extra_invoicing')) {
+            $receipts = Receipt::where('date', '>=', $one_month_ago)->get();
+            foreach($receipts as $r) {
+                $invoices->push($r);
+            }
+        }
+
+        $invoices = Invoice::doSort($invoices);
+
+        return view('invoice.index', [
+            'invoices' => $invoices,
+        ]);
+    }
+
     public function store(Request $request)
     {
         DB::beginTransaction();

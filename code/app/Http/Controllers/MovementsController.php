@@ -15,8 +15,6 @@ use PDF;
 use App\User;
 use App\Currency;
 use App\Movement;
-use App\Invoice;
-use App\Receipt;
 
 use App\Services\MovementsService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -46,24 +44,7 @@ class MovementsController extends BackedController
                     Qui si finisce quando si accede alla pagina principale della
                     contabilità
                 */
-                $gas = Auth::user()->gas;
                 $data['types'] = movementTypes();
-
-                $one_month_ago = date('Y-m-d', strtotime('-1 months'));
-
-                $invoices = Invoice::where('status', '!=', 'payed')->orWhereHas('payment', function($query) use ($one_month_ago) {
-                    $query->where('date', '>=', $one_month_ago);
-                })->orWhereDoesntHave('payment')->get();
-
-                if ($gas->hasFeature('extra_invoicing')) {
-                    $receipts = Receipt::where('date', '>=', $one_month_ago)->get();
-                    foreach($receipts as $r)
-                        $invoices->push($r);
-                }
-
-                $invoices = Invoice::doSort($invoices);
-                $data['invoices'] = $invoices;
-
                 return view('pages.movements', $data);
             }
             else {

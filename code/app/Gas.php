@@ -141,26 +141,28 @@ class Gas extends Model
 
     public function hasFeature($name)
     {
-        switch($name) {
-            case 'shipping_places':
-                return ($this->deliveries->isEmpty() == false);
-            case 'rid':
-                return !empty($this->rid['iban']);
-            case 'paypal':
-                return !empty($this->paypal['client_id']);
-            case 'satispay':
-                return !empty($this->satispay['secret']);
-            case 'integralces':
-                return $this->integralces['enabled'];
-            case 'extra_invoicing':
-                return (!empty($this->extra_invoicing['taxcode']) || !empty($this->extra_invoicing['vat']));
-            case 'public_registrations':
-                return $this->public_registrations['enabled'];
-            case 'auto_aggregates':
-                return Aggregate::has('orders', '>=', Aggregate::aggregatesConvenienceLimit())->count() > 3;
-        }
+        return $this->innerCache('feature_' . $name, function($obj) use ($name) {
+            switch($name) {
+                case 'shipping_places':
+                    return ($obj->deliveries->isEmpty() == false);
+                case 'rid':
+                    return !empty($obj->rid['iban']);
+                case 'paypal':
+                    return !empty($obj->paypal['client_id']);
+                case 'satispay':
+                    return !empty($obj->satispay['secret']);
+                case 'integralces':
+                    return $obj->integralces['enabled'];
+                case 'extra_invoicing':
+                    return (!empty($obj->extra_invoicing['taxcode']) || !empty($obj->extra_invoicing['vat']));
+                case 'public_registrations':
+                    return $obj->public_registrations['enabled'];
+                case 'auto_aggregates':
+                    return Aggregate::has('orders', '>=', Aggregate::aggregatesConvenienceLimit())->count() > 3;
+            }
 
-        return false;
+            return false;
+        });
     }
 
     /*************************************************************** GASModel */

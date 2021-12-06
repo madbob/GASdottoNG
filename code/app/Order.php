@@ -163,7 +163,7 @@ class Order extends Model
             $userid = $userobj->id;
         }
 
-        $ret = $this->hasMany('App\Booking')->whereHas('user', function ($query) use ($userid) {
+        $ret = $this->bookings()->whereHas('user', function ($query) use ($userid) {
             $query->where('id', '=', $userid);
         })->first();
 
@@ -176,8 +176,12 @@ class Order extends Model
             $ret->id = $ret->getSlugID();
         }
 
-        if ($userobj) {
-            $ret->setRelation('user', $userobj);
+        if ($ret) {
+            if ($userobj) {
+                $ret->setRelation('user', $userobj);
+            }
+
+            $ret->setRelation('order', $this);
         }
 
         return $ret;

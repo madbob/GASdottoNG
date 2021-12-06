@@ -284,7 +284,7 @@ trait CreditableTrait
         saldo "esteso" (cfr. getExtendedCurrentBalanceAttribute()) valori
         dinamicamente calcolati
     */
-    protected function virtualBalances()
+    protected function virtualBalances($currency)
     {
         return [];
     }

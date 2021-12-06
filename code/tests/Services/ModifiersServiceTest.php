@@ -552,6 +552,7 @@ class ModifiersServiceTest extends TestCase
     */
     public function testOnBooking()
     {
+        $this->localInitOrder();
         $this->actingAs($this->userReferrer);
 
         $test_passive = 10;
@@ -562,7 +563,7 @@ class ModifiersServiceTest extends TestCase
         foreach ($modifiers as $mod) {
             if ($mod->id == 'spese-trasporto') {
                 $mod = $this->order->modifiers()->where('modifier_type_id', $mod->id)->first();
-                $this->modifiersService->update($mod->id, [
+                $this->services['modifiers']->update($mod->id, [
                     'value' => 'percentage',
                     'arithmetic' => 'passive',
                     'scale' => 'minor',

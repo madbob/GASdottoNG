@@ -64,7 +64,7 @@ function paymentTypes()
         }
     }
 
-    if($gas->hasFeature('integralces')) {
+    if (currentAbsoluteGas()->hasFeature('integralces')) {
         $ret['integralces'] = (object) [
             'name' => _i('IntegralCES'),
             'identifier' => true,

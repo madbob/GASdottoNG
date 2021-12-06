@@ -68,6 +68,7 @@ Route::middleware(['auth'])->group(function() {
 
     Route::get('vatrates/{id}/header', 'VatRatesController@objhead')->name('vatrates.objhead');
 
+    Route::get('invoices', 'InvoicesController@index')->name('invoices.index');
     Route::get('invoices/{id}/products', 'InvoicesController@products')->name('invoices.products');
     Route::get('invoices/{id}/orders', 'InvoicesController@orders')->name('invoices.orders');
     Route::get('invoices/{id}/movements', 'InvoicesController@getMovements')->name('invoices.movements');
