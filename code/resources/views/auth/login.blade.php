@@ -44,7 +44,7 @@
 
         <x-larastrap::text name="username" :label="_i('Username')" />
         <x-larastrap::password name="password" :label="_i('Password')" />
-        <x-larastrap::check name="remember" :label="_i('Ricordami')" checked="true" :attributes="['data-attribute' => 'remember_me', 'data-attribute-default' => 'true']" classes="remember-checkbox" />
+        <x-larastrap::check name="remember" :label="_i('Ricordami')" checked="true" :attributes="['data-attribute' => 'remember_me', 'data-attribute-default' => 'true']" classes="remember-checkbox" value="1" />
     </x-larastrap::form>
 </div>
 

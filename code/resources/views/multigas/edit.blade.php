@@ -1,12 +1,12 @@
-<x-larastrap::mform :obj="$gas" classes="multigas-editor" method="PUT" :action="route('multigas.update', $gas->id)">
+<x-larastrap::mform :obj="$gas" method="PUT" :action="route('multigas.update', $gas->id)">
     <div class="row">
         <div class="col-6">
             <x-larastrap::text name="name" :label="_i('Nome')" required />
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-4">
+    <div class="row multigas-editor">
+        <div class="col">
             <h4>{{ _i('Fornitori') }}</h4>
             <ul class="list-group">
                 @foreach(App\Supplier::orderBy('name', 'asc')->get() as $supplier)
@@ -19,7 +19,7 @@
                 @endforeach
             </ul>
         </div>
-        <div class="col-md-4">
+        <div class="col">
             <h4>{{ _i('Ordini') }}</h4>
             <ul class="list-group">
                 @foreach(App\Aggregate::whereHas('orders', function($query) {
@@ -36,7 +36,7 @@
         </div>
 
         @if($currentgas->hasFeature('shipping_places'))
-            <div class="col-md-4">
+            <div class="col">
                 <h4>{{ _i('Luoghi di Consegna') }}</h4>
                 <ul class="list-group">
                     @foreach(App\Delivery::orderBy('name', 'asc')->get() as $delivery)
