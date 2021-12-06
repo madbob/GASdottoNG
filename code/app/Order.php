@@ -868,7 +868,7 @@ class Order extends Model
 
     public static function displayColumns()
     {
-        return [
+        $ret = [
             'selection' => (object) [
                 'label' => _i('Selezione'),
                 'help' => _i("Per abilitare o disabilitare prodotti del listino fornitore all'interno dell'ordine"),
@@ -881,14 +881,40 @@ class Order extends Model
             ],
             'price' => (object) [
                 'label' => _i('Prezzo'),
-                'help' => _i('Prezzo unitario (editabile) del prodotto'),
+                'help' => _i('Prezzo unitario del prodotto'),
                 'width' => 5
             ],
             'available' => (object) [
                 'label' => _i('Disponibile'),
-                'help' => _i('Quantità disponibile (editabile) del prodotto'),
+                'help' => _i('Quantità disponibile del prodotto'),
                 'width' => 5
             ],
+        ];
+
+        /*
+            I modificatori dei prodotti vengono resi accessibili direttamente
+            nella tabella dell'ordine, per poter essere consultati prodotto per
+            prodotto.
+            In summary.blade.php si provvede poi a nascondere del tutto le
+            colonne per i modificatori che non sono stati attivati per nessun
+            prodotto all'interno dell'ordine
+        */
+        $products_modifiers = ModifierType::byClass(Product::class);
+        foreach($products_modifiers as $pmod) {
+            $ret['modifier-pending-' . $pmod->id] = (object) [
+                'label' => sprintf('%s (%s)', $pmod->name, _i('Prenotato')),
+                'help' => _i("Modificatore Prodotto, sul Prenotato. Mostrato solo se il modificatore è attivo per un qualche prodotto nell'ordine"),
+                'width' => 7
+            ];
+
+            $ret['modifier-shipped-' . $pmod->id] = (object) [
+                'label' => sprintf('%s (%s)', $pmod->name, _i('Consegnato')),
+                'help' => _i("Modificatore Prodotto, sul Consegnato. Mostrato solo se il modificatore è attivo per un qualche prodotto nell'ordine"),
+                'width' => 7
+            ];
+        }
+
+        $ret = $ret + [
             'unit_measure' => (object) [
                 'label' => _i('Unità di Misura'),
                 'help' => _i('Unità di misura assegnata al prodotto'),
@@ -930,6 +956,8 @@ class Order extends Model
                 'width' => 3
             ],
         ];
+
+        return $ret;
     }
 
     public static function statuses()
@@ -989,6 +1017,7 @@ class Order extends Model
                 $aggregate_data = $this->aggregate->reduxData();
             }
 
+            $old_status = $this->status;
             if ($enforce_status !== false) {
                 $this->status = $enforce_status;
             }
@@ -1003,6 +1032,7 @@ class Order extends Model
                 $modifiers = $modifiers->merge($booking->applyModifiers($aggregate_data));
             }
 
+            $this->status = $old_status;
             DB::rollback();
         }
 
