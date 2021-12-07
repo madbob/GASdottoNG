@@ -202,6 +202,8 @@ class ModifiersServiceTest extends TestCase
 
         $this->assertNotNull($mod);
 
+        $this->nextRound();
+
         $order = $this->services['orders']->show($this->order->id);
         $booking = $order->bookings->random();
 
@@ -232,6 +234,8 @@ class ModifiersServiceTest extends TestCase
             $this->assertEquals($m->effective_amount * -1, $without_discount - $total);
         }
 
+        $this->nextRound();
+
         $data = [
             'action' => 'booked',
             $product->id => 20,
@@ -250,6 +254,8 @@ class ModifiersServiceTest extends TestCase
         foreach($mods as $m) {
             $this->assertEquals($m->effective_amount * -1, $without_discount - $total);
         }
+
+        $this->nextRound();
 
         $this->actingAs($this->userWithShippingPerms);
 
@@ -270,6 +276,8 @@ class ModifiersServiceTest extends TestCase
         foreach($mods as $m) {
             $this->assertEquals($m->effective_amount * -1, $without_discount - $total);
         }
+
+        $this->nextRound();
 
         $data = [
             'action' => 'shipped',

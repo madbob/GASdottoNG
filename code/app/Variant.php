@@ -4,14 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use App\Events\SluggableCreating;
-use App\GASModel;
-use App\SluggableID;
 
 class Variant extends Model
 {
-    use GASModel, SluggableID;
+    use GASModel, SluggableID, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';

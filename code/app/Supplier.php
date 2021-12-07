@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Auth;
 use URL;
@@ -18,7 +19,9 @@ use App\Events\AttachableToGas;
 
 class Supplier extends Model
 {
-    use HasFactory, Notifiable, SoftDeletes, AttachableTrait, ContactableTrait, CreditableTrait, PayableTrait, ExportableTrait, SuspendableTrait, ModifiableTrait, GASModel, SluggableID;
+    use HasFactory, Notifiable, SoftDeletes,
+        AttachableTrait, ContactableTrait, CreditableTrait, PayableTrait, ExportableTrait, SuspendableTrait, ModifiableTrait,
+        GASModel, SluggableID, Cachable;
 
     public $incrementing = false;
     protected $dates = ['deleted_at'];

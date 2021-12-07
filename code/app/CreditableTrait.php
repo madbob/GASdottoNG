@@ -205,7 +205,7 @@ trait CreditableTrait
     {
         $proxy = $this->getActualObject();
 
-        $balance = $this->balances()->where('current', true)->where('currency_id', $currency->id)->first();
+        $balance = $proxy->balances()->where('current', true)->where('currency_id', $currency->id)->first();
         if (is_null($balance)) {
             $balance = $this->balances()->where('current', false)->where('currency_id', $currency->id)->first();
             if (is_null($balance)) {

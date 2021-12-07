@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class VariantCombo extends Model
 {
+    use Cachable;
+
     public function values()
     {
         return $this->belongsToMany('App\VariantValue', 'variant_combo_values');

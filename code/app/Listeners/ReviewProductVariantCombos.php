@@ -16,6 +16,12 @@ class ReviewProductVariantCombos
     {
         $product = $event->variant->product;
 
+        /*
+            Per sicurezza qui viene forzato una nuova lettura delle varianti
+            coinvolte
+        */
+        $product->unsetRelation('variants');
+
         $combos = [[]];
         $values = [];
         $all_values = [];

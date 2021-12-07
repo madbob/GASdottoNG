@@ -58,9 +58,12 @@ class VariantsServiceTest extends TestCase
 
         $variant = $this->createVariant();
 
+        $product = $this->services['products']->show($this->product->id);
         $this->assertEquals('Colore', $variant->name);
         $this->assertEquals(3, $variant->values()->count());
-        $this->assertEquals(3, $this->product->variant_combos->count());
+        $this->assertEquals(3, $product->variant_combos->count());
+
+        $this->nextRound();
 
         $this->services['variants']->store([
             'product_id' => $this->product->id,
@@ -69,7 +72,8 @@ class VariantsServiceTest extends TestCase
             'value' => ['S', 'M', 'L'],
         ]);
 
-        $this->assertEquals(9, $this->product->variant_combos->count());
+        $product = $this->services['products']->show($this->product->id);
+        $this->assertEquals(9, $product->variant_combos->count());
     }
 
     /*
@@ -92,9 +96,12 @@ class VariantsServiceTest extends TestCase
             'value' => ['Rosso', 'Verde', 'Blu', 'Giallo'],
         ]);
 
+        $this->nextRound();
+        $product = $this->services['products']->show($this->product->id);
+
         $this->assertEquals('Colore', $variant->name);
         $this->assertEquals(4, $variant->values()->count());
-        $this->assertEquals(4, $this->product->variant_combos->count());
+        $this->assertEquals(4, $product->variant_combos->count());
 
         /*
             https://github.com/madbob/GASdottoNG/issues/145
@@ -113,8 +120,10 @@ class VariantsServiceTest extends TestCase
             'value' => ['Rosso', 'Verde', 'Giallo'],
         ]);
 
+        $this->nextRound();
+        $product = $this->services['products']->show($this->product->id);
         $this->assertEquals(3, $variant->values()->count());
-        $this->assertEquals(3, $this->product->variant_combos->count());
+        $this->assertEquals(3, $product->variant_combos->count());
         $this->assertNull(\App\VariantValue::where('value', 'Blu')->first());
     }
 
@@ -125,7 +134,11 @@ class VariantsServiceTest extends TestCase
     {
         $variant = $this->createVariant();
         $this->assertEquals(3, $this->product->variant_combos->count());
+
+        $this->nextRound();
+
         $this->services['variants']->destroy($variant->id);
-        $this->assertEquals(0, $this->product->variant_combos->count());
+        $product = $this->services['products']->show($this->product->id);
+        $this->assertEquals(0, $product->variant_combos->count());
     }
 }
