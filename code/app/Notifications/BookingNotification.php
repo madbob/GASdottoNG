@@ -2,12 +2,12 @@
 
 namespace App\Notifications;
 
-use App\Notifications\ManyMailNotification;
-
 use App\Aggregate;
 
 class BookingNotification extends ManyMailNotification
 {
+    use MailReplyTo;
+
     private $aggregate_id = null;
     private $user_id = null;
     private $message = null;
@@ -31,6 +31,8 @@ class BookingNotification extends ManyMailNotification
             'booking' => $booking,
             'txt_message' => $this->message
         ]);
+
+        $message = $this->guessReplyTo($message, $aggregate);
 
         return $message;
     }

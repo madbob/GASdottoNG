@@ -2,12 +2,9 @@
 
 namespace App\Notifications;
 
-use App\Notifications\ManyMailNotification;
-use App\Notifications\MailFormatter;
-
 class NewOrderNotification extends ManyMailNotification
 {
-    use MailFormatter;
+    use MailFormatter, MailReplyTo;
 
     private $order;
 
@@ -24,14 +21,19 @@ class NewOrderNotification extends ManyMailNotification
         foreach($this->order->enforcedContacts() as $user) {
             $contacts[] = $user->email;
         }
+
         $contacts = join(', ', array_filter($contacts));
 
-        return $this->formatMail($message, 'new_order', [
+        $message = $this->formatMail($message, 'new_order', [
             'supplier_name' => $this->order->supplier->name,
             'order_comment' => $this->order->comment ?? '',
             'gas_booking_link' => $this->order->getBookingURL(),
             'contacts' => $contacts,
             'closing_date' => printableDate($this->order->end),
         ]);
+
+        $message = $this->guessReplyTo($message, $this->order);
+
+        return $message;
     }
 }

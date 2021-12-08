@@ -13,7 +13,7 @@ use App\Role;
 
 class SupplierOrderShipping extends ManyMailNotification
 {
-    use Queueable, SerializesModels, MailFormatter, TemporaryFiles;
+    use Queueable, SerializesModels, MailFormatter, MailReplyTo, TemporaryFiles;
 
     private $order;
     private $pdf_file;
@@ -47,6 +47,9 @@ class SupplierOrderShipping extends ManyMailNotification
             }
         }
 
-        return $message->attach($this->pdf_file)->attach($this->csv_file);
+        $message->attach($this->pdf_file)->attach($this->csv_file);
+        $message = $this->guessReplyTo($message, $this->order);
+
+        return $message;
     }
 }

@@ -6,8 +6,6 @@ use Log;
 
 use App\Notifications\ClosedOrderNotification;
 use App\Notifications\SupplierOrderShipping;
-use App\Jobs\AggregateSummaries;
-use App\Jobs\DeleteFiles;
 
 use App\User;
 use App\Order;
