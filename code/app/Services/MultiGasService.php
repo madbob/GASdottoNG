@@ -18,13 +18,13 @@ class MultiGasService extends BaseService
         $user = $this->ensureAuth(['gas.multi' => 'gas']);
         $groups = [];
 
-        foreach($user->roles as $role) {
-            if ($role->enabledAction('gas.multi')) {
-                foreach ($role->applications() as $obj) {
-                    if (get_class($obj) == 'App\\Gas') {
-                        $groups[] = $obj;
-                    }
-                }
+        $roles = $user->roles->filter(function($role) {
+            return $role->enabledAction('gas.multi');
+        });
+
+        foreach($roles as $role) {
+            foreach ($role->applications(false, false, Gas::class) as $obj) {
+                $groups[] = $obj;
             }
         }
 
@@ -140,7 +140,7 @@ class MultiGasService extends BaseService
         return $gas;
     }
 
-    public function attach($request)
+    private function operate($request, $function)
     {
         DB::beginTransaction();
 
@@ -152,45 +152,28 @@ class MultiGasService extends BaseService
 
         switch($target_type) {
             case 'supplier':
-                $gas->suppliers()->attach($target_id);
+                $gas->suppliers()->$function($target_id);
                 break;
 
             case 'aggregate':
-                $gas->aggregates()->attach($target_id);
+                $gas->aggregates()->$function($target_id);
                 break;
 
             case 'delivery':
-                $gas->deliveries()->attach($target_id);
+                $gas->deliveries()->$function($target_id);
                 break;
         }
 
         DB::commit();
     }
 
+    public function attach($request)
+    {
+        $this->operate($request, 'attach');
+    }
+
     public function detach($request)
     {
-        DB::beginTransaction();
-
-        $gas_id = $request['gas'];
-        $gas = $this->show($gas_id);
-
-        $target_id = $request['target_id'];
-        $target_type = $request['target_type'];
-
-        switch($target_type) {
-            case 'supplier':
-                $gas->suppliers()->detach($target_id);
-                break;
-
-            case 'aggregate':
-                $gas->aggregates()->detach($target_id);
-                break;
-
-            case 'delivery':
-                $gas->deliveries()->detach($target_id);
-                break;
-        }
-
-        DB::commit();
+        $this->operate($request, 'detach');
     }
 }

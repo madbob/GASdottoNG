@@ -8,11 +8,12 @@ parameters:
 
     ignoreErrors:
         - '#Access to an undefined property#'
-        - '#Method .* has no return typehint specified#'
-        - '#Method .* has parameter .* with no typehint specified#'
-        - '#Property .* has no typehint specified#'
-        - '#Function .* has parameter .* with no typehint specified#'
-        - '#Function .* has no return typehint specified#'
+        - '#Method .* has no return type specified#'
+        - '#Method .* has parameter .* with no type specified#'
+        - '#Property .* has no type specified#'
+        - '#Function .* has parameter .* with no type specified#'
+        - '#Function .* has no return type specified#'
+        - '#Relation .* is not found in .* model#'
 
     # The level 8 is the highest level
     level: 6
