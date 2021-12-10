@@ -53,17 +53,19 @@ class Modifier extends Model
 
         $data = $this->definitions;
 
-        if ($this->value == 'percentage') {
-            $postfix = '%';
-        }
-        else {
-            $postfix = currentAbsoluteGas()->currency;
-        }
-
         $ret = [];
 
         foreach ($data as $d) {
-            $ret[] = sprintf('%s%s', $d->amount, $postfix);
+            if ($this->value == 'percentage') {
+                $postfix = '%';
+                $amount = $d->amount;
+            }
+            else {
+                $postfix = currentAbsoluteGas()->currency;
+                $amount = printablePrice($d->amount);
+            }
+
+            $ret[] = sprintf('%s %s', $amount, $postfix);
         }
 
         return join(' / ', $ret);

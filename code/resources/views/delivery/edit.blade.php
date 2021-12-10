@@ -47,7 +47,7 @@ $existing = false;
 
                     if ($o->status == 'pending') {
                         $now_delivered = 0;
-                        $mods = $o->applyModifiers(null, false);
+                        $mods = [];
                     }
                     else if ($o->status == 'saved') {
                         $now_delivered = $o->getValue('effective', true);
