@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2021-09-06 12:20+0200\n"
-"PO-Revision-Date: 2021-11-22 13:50+0000\n"
+"PO-Revision-Date: 2021-12-13 18:50+0000\n"
 "Last-Translator: jendo <jendo.berlin@gmx.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
 "translations/de/>\n"
@@ -140,10 +140,8 @@ msgstr "Stückpreis"
 
 #: ../resources/views/modifier/edit.blade.php:22
 #: ../resources/views/modifier/edit.blade.php:45
-#, fuzzy
-#| msgid "Nessuna Immagine"
 msgid "Nessuna soglia"
-msgstr "Kein Bild"
+msgstr "Kein Schwellenwert"
 
 #: ../resources/views/modifier/edit.blade.php:23 Order.php:777
 msgid "Quantità"
@@ -173,10 +171,8 @@ msgstr "Einzelne Vorbestellung"
 
 #: ../resources/views/modifier/edit.blade.php:31
 #: ../resources/views/modifier/edit.blade.php:52
-#, fuzzy
-#| msgid "Totale Complessivo"
 msgid "Ordine Complessivo"
-msgstr "Gesamtbetrag"
+msgstr "Gesamtbestellung"
 
 #: ../resources/views/movement/modal.blade.php:25 Helpers/Formatters.php:785
 msgid "Elimina"
@@ -216,20 +212,16 @@ msgid "Invia Riepiloghi Consegne"
 msgstr "Verschicke Zusammenfassungen der Lieferungen"
 
 #: ../resources/views/order/edit.blade.php:14
-#, fuzzy
-#| msgid "Dimensione confezione"
 msgid "No, ignora la dimensione delle confezioni"
-msgstr "Packungsdimension"
+msgstr "Nein, Packmaß ignorieren"
 
 #: ../resources/views/order/edit.blade.php:15
-#, fuzzy
-#| msgid "Link per le prenotazioni"
 msgid "Si, permetti eventuali altre prenotazioni"
-msgstr "Link zu den Bestellungen"
+msgstr "Ja, andere Vorbestellungen zulassen"
 
 #: ../resources/views/order/edit.blade.php:19
 msgid "Si, e contempla le quantità prenotate da parte di tutti i GAS"
-msgstr "Ja, und es umfasst die von allen GAS gebuchten Mengen."
+msgstr "Ja, und es umfasst die von allen GAS gebuchten Mengen"
 
 #: ../resources/views/order/filesmail.blade.php:5
 msgid "Documento allegato"
@@ -313,12 +305,10 @@ msgid "Link della pagina di login"
 msgstr "Link zur Anmeldungseite"
 
 #: Config.php:33
-#, fuzzy
-#| msgid "Messaggio inviato ai nuovi iscritti sulla piattaforma."
 msgid "Messaggio inviato ai nuovi utenti creati sulla piattaforma."
 msgstr ""
-"Benachrichtigung, die an neu registrierte Nutzer des Bestellsystems "
-"verschickt wird."
+"Benachrichtigung an neue Nutzer, deren Account über das Backend des "
+"Bestellsystems hinzugefügt wurde."
 
 #: Config.php:36
 msgid "Link per accedere la prima volta"
@@ -384,6 +374,8 @@ msgid ""
 "Nuovo aggiornamento disponibile per il listino %s (%s). Consultalo dal "
 "pannello Fornitori -> Indice Remoto."
 msgstr ""
+"Neues Update für die Produktliste %s (%s) verfügbar. Abrufbar über "
+"Lieferanten > Remote Index."
 
 #: Console/Commands/FixDatabase.php:142
 msgid "Spese Trasporto"
@@ -495,10 +487,8 @@ msgstr ""
 "Die Bestellfrist endet am %[closing_date]"
 
 #: Gas.php:199
-#, fuzzy
-#| msgid "Prenotazioni Coinvolte"
 msgid "Prenotazione ordine %[gas_name]"
-msgstr "Beteiligte Bestellungen"
+msgstr "Bestellung"
 
 #: Gas.php:202
 msgid ""
@@ -603,10 +593,8 @@ msgid "Dettaglio Consegne Ordini"
 msgstr "Lieferungsdetail"
 
 #: Http/Controllers/AggregatesController.php:291
-#, fuzzy
-#| msgid "Prodotti"
 msgid "Prodotti Ordini"
-msgstr "Produkte"
+msgstr "bestellte Produkte"
 
 #: Http/Controllers/AttachmentsController.php:33
 #: Http/Controllers/AttachmentsController.php:55
@@ -672,10 +660,8 @@ msgstr ""
 "erhalten"
 
 #: Http/Controllers/Auth/LoginController.php:59
-#, fuzzy
-#| msgid "Username o indirizzo e-mail"
 msgid "Username non valido"
-msgstr "Benutzername oder E-Mail-Adresse"
+msgstr "ungültiger Benutzername"
 
 #: Http/Controllers/Auth/LoginController.php:80
 #, php-format
@@ -895,10 +881,8 @@ msgid "Fornitore"
 msgstr "Lieferant"
 
 #: Http/Controllers/ImportController.php:668
-#, fuzzy
-#| msgid "Partita IVA"
 msgid "Nome o partita IVA"
-msgstr "USt.-IDNr"
+msgstr "Name oder MwSt.-Nummer"
 
 #: Http/Controllers/ImportController.php:720
 #, php-format
@@ -906,10 +890,9 @@ msgid "Utente non trovato: %s"
 msgstr "Benutzer nicht gefunden: %s"
 
 #: Http/Controllers/ImportController.php:738
-#, fuzzy, php-format
-#| msgid "File non trovato: %s"
+#, php-format
 msgid "Fornitore non trovato: %s"
-msgstr "Datei nicht gefunden: %s"
+msgstr "Lieferant nicht gefunden: %s"
 
 #: Http/Controllers/ImportController.php:834
 msgid "Movimenti importati"
@@ -1040,10 +1023,9 @@ msgid "SEPA del %s.xml"
 msgstr "SEPA am %s.xml"
 
 #: Http/Controllers/MovementsController.php:333
-#, fuzzy, php-format
-#| msgid "Crediti al %s.csv"
+#, php-format
 msgid "Saldi Fornitori al %s.csv"
-msgstr "Krediten am %s.csv"
+msgstr "Saldi Lieferanten am %s.csv"
 
 #: Http/Controllers/MovementsController.php:388
 #: Http/Controllers/MovementsController.php:398
@@ -1233,44 +1215,32 @@ msgid "Saldo Fornitore"
 msgstr "Betrag Lieferant"
 
 #: Modifier.php:50
-#, fuzzy
-#| msgid "Nessuno"
 msgid "Nessun Valore"
-msgstr "Kein"
+msgstr "Kein Wert"
 
 #: Modifier.php:91
-#, fuzzy
-#| msgid "Quantità"
 msgid "la quantità"
-msgstr "Anzahl"
+msgstr "die Anzahl"
 
 #: Modifier.php:92
-#, fuzzy
-#| msgid "Valore"
 msgid "il valore"
-msgstr "Wert"
+msgstr "der Wert"
 
 #: Modifier.php:93
 msgid "il peso"
 msgstr "das Gewicht"
 
 #: Modifier.php:98
-#, fuzzy
-#| msgid "Link per le prenotazioni"
 msgid "di prodotto nella prenotazione"
-msgstr "Link zu den Bestellungen"
+msgstr "des Produkts in der Vorbestellung"
 
 #: Modifier.php:99
-#, fuzzy
-#| msgid "Data di chiusura dell'ordine"
 msgid "di prodotto nell'ordine"
-msgstr "Ende der Bestellfrist"
+msgstr "des Produkts in der Bestellung"
 
 #: Modifier.php:101
-#, fuzzy
-#| msgid "Annulla Prenotazione"
 msgid "della prenotazione"
-msgstr "Vorbestellung stornieren"
+msgstr "der Vorbestellung"
 
 #: Modifier.php:102
 msgid "dell'ordine"
@@ -1282,19 +1252,15 @@ msgstr "der Buchung für den Ort"
 
 #: Modifier.php:105
 msgid "dell'ordine destinato al luogo"
-msgstr ""
+msgstr "der Bestellung für den Ort"
 
 #: Modifier.php:109
-#, fuzzy
-#| msgid "Minore di"
 msgid "è minore di"
-msgstr "Weniger als"
+msgstr "ist kleiner als"
 
 #: Modifier.php:110
-#, fuzzy
-#| msgid "Maggiore di"
 msgid "è maggiore di"
-msgstr "Größer als"
+msgstr "ist größer als"
 
 #: Modifier.php:119
 msgid "Prodotti"
@@ -1351,10 +1317,8 @@ msgid "rispetto al costo dell'ordine, calcola"
 msgstr "Ende der Bestellfrist"
 
 #: Modifier.php:143 Modifier.php:144 Modifier.php:145
-#, fuzzy
-#| msgid "Prezzo Unitario"
 msgid "applica il prezzo unitario"
-msgstr "Stückpreis"
+msgstr "Stück-/Gebindepreis anwenden"
 
 #: Modifier.php:150
 #, fuzzy
@@ -1373,7 +1337,7 @@ msgstr ""
 #: Modifier.php:165
 #, php-format
 msgid "Se %s %s %s"
-msgstr ""
+msgstr "Wenn %s %s %s"
 
 #: MovementType.php:33
 msgid "Contanti"
@@ -1389,7 +1353,7 @@ msgstr "Kontostand Benutzer"
 
 #: MovementType.php:89
 msgid "SEPA"
-msgstr ""
+msgstr "SEPA"
 
 #: MovementType.php:107 User.php:145
 msgid "Non Specificato"
@@ -1410,10 +1374,9 @@ msgid "Ordine chiuso automaticamente"
 msgstr "Automatisch geschlossene Bestellung"
 
 #: Notifications/GenericNotificationWrapper.php:27
-#, fuzzy, php-format
-#| msgid "Nuova notifica dal GAS"
+#, php-format
 msgid "Nuova notifica da %s"
-msgstr "Neue Benachrichtigung von der solidarischen Bestellgemeinschaft (GAS)"
+msgstr "Neue Benachrichtigung von %s"
 
 #: Notifications/NewUserNotification.php:19
 msgid "Nuovo utente registrato"
@@ -1499,10 +1462,8 @@ msgid "Quantità complessivamente prenotata del prodotto"
 msgstr "Vorbestellte Gesamtmenge des Produktes"
 
 #: Order.php:892
-#, fuzzy
-#| msgid "Prenotato"
 msgid "Peso Prenotato"
-msgstr "Bestellt"
+msgstr "Gewicht Vorbestellung"
 
 #: Order.php:893
 #, fuzzy
@@ -1527,10 +1488,8 @@ msgid "Quantità complessivamente consegnata del prodotto"
 msgstr "Gelieferte Gesamtmenge des Produktes"
 
 #: Order.php:907
-#, fuzzy
-#| msgid "Consegnato"
 msgid "Peso Consegnato"
-msgstr "Geliefert"
+msgstr "Geliefertes Gewicht"
 
 #: Order.php:908
 #, fuzzy
@@ -1575,13 +1534,12 @@ msgstr "Empfohlenes Maximum: %.02f"
 #: Product.php:263
 #, php-format
 msgid "Mancano %s %s per completare la confezione per questo ordine"
-msgstr ""
+msgstr "Es fehlen %s %s um das Gebinde für diese Bestellung zu vervollsändigen"
 
 #: Product.php:262
-#, fuzzy, php-format
-#| msgid "Disponibile"
+#, php-format
 msgid "%s Disponibile: %.02f"
-msgstr "Verfügbar"
+msgstr "%s Verfügbar: %.02f"
 
 #: Product.php:268
 #, php-format
@@ -1711,20 +1669,16 @@ msgid "Vedere tutti i fornitori"
 msgstr "Alle Lieferanten anzeigen"
 
 #: Role.php:456
-#, fuzzy
-#| msgid "Vedere tutti gli utenti"
 msgid "Vedere tutti gli ordini"
-msgstr "Alle Benutzer ansehen"
+msgstr "Alle Bestellungen ansehen"
 
 #: Role.php:457
 msgid "Modificare la propria anagrafica"
 msgstr "Die persönlichen Angaben anpassen"
 
 #: Role.php:458
-#, fuzzy
-#| msgid "Amministrare le categorie"
 msgid "Amministrare gli utenti"
-msgstr "Kategorien verwalten"
+msgstr "Benutzer verwalten"
 
 #: Role.php:459
 msgid "Vedere tutti gli utenti"
@@ -1831,10 +1785,8 @@ msgid "Ha ordinato %s"
 msgstr "Hat bestellt %s"
 
 #: User.php:374
-#, fuzzy
-#| msgid "Totale Complessivo"
 msgid "Nome Completo"
-msgstr "Gesamtbetrag"
+msgstr "Vollständiger Name"
 
 #: User.php:377
 msgid "Username"
