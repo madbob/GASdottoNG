@@ -31,9 +31,11 @@ class VariantCombo extends Model
     {
         $ret = [];
 
-        $combos->filter(function($combo) {
+        $combos = $combos->filter(function($combo) {
             return $combo->active;
-        })->each(function($combo, $key) use ($ret) {
+        });
+
+        foreach($combos as $combo) {
             foreach($combo->values()->orderBy('value', 'asc')->get() as $value) {
                 $variant_id = $value->variant_id;
                 if (!isset($ret[$variant_id])) {
@@ -42,7 +44,7 @@ class VariantCombo extends Model
 
                 $ret[$variant_id][$value->id] = $value->value;
             }
-        });
+        }
 
         return $ret;
     }

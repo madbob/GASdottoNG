@@ -28,6 +28,20 @@ class RestrictedGAS implements Scope
         $this->involve_trashed = $involve_trashed;
     }
 
+    private function initInnerQuery($gas_id)
+    {
+        if ($this->involve_trashed) {
+            return function($query) use ($gas_id) {
+                $query->withTrashed()->where('gas_id', $gas_id);
+            };
+        }
+        else {
+            return function($query) use ($gas_id) {
+                $query->where('gas_id', $gas_id);
+            };
+        }
+    }
+
     public function apply(Builder $builder, Model $model)
     {
         $hub = App::make('GlobalScopeHub');
@@ -35,17 +49,7 @@ class RestrictedGAS implements Scope
             $gas_id = $hub->getGas();
 
             if ($gas_id) {
-                if ($this->involve_trashed) {
-                    $inner_query = function($query) use ($gas_id) {
-                        $query->withTrashed()->where('gas_id', $gas_id);
-                    };
-                }
-                else {
-                    $inner_query = function($query) use ($gas_id) {
-                        $query->where('gas_id', $gas_id);
-                    };
-                }
-
+                $inner_query = $this->initInnerQuery($gas_id);
                 $models = explode('.', $this->key);
 
                 if (count($models) == 1) {

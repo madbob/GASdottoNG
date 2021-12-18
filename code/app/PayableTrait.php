@@ -29,17 +29,25 @@ trait PayableTrait
 
     public function deleteMovements()
     {
-        foreach($this->movements as $mov)
+        foreach($this->movements as $mov) {
             $mov->delete();
+        }
+    }
+
+    private function initQueryMovements($query)
+    {
+        if (is_null($query)) {
+            $query = Movement::orderBy('created_at', 'desc');
+        }
+
+        return $query;
     }
 
     public function queryMovements($query = null, $type = 'all')
     {
         $id = $this->id;
         $class = get_class($this);
-
-        if (is_null($query))
-            $query = Movement::orderBy('created_at', 'desc');
+        $query = $this->initQueryMovements($query);
 
         switch($type) {
             case 'all':

@@ -10,9 +10,10 @@
 
 namespace App\Parameters\MovementType;
 
+use App\Parameters\Parameter;
 use App\MovementType as MovementTypeModel;
 
-abstract class MovementType
+abstract class MovementType extends Parameter
 {
     protected function voidFunctions($array)
     {
@@ -65,6 +66,5 @@ abstract class MovementType
         $type->save();
     }
 
-    public abstract function identifier();
     public abstract function initNew($type);
 }

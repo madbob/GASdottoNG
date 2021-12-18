@@ -10,9 +10,10 @@
 
 namespace App\Parameters\ModifierType;
 
+use App\Parameters\Parameter;
 use App\ModifierType as MovementTypeModel;
 
-abstract class ModifierType
+abstract class ModifierType extends Parameter
 {
     public function create()
     {
@@ -22,6 +23,5 @@ abstract class ModifierType
         $type->save();
     }
 
-    public abstract function identifier();
     public abstract function initNew($type);
 }

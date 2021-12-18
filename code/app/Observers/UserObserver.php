@@ -18,21 +18,28 @@ class UserObserver
         }
     }
 
+    private function createdFriend($user)
+    {
+        $default_role = $user->gas->roles['friend'] ?? -1;
+        $role = Role::find($default_role);
+
+        if (is_null($role)) {
+            $default_role = $user->gas->roles['user'];
+            $role = Role::find($default_role);
+        }
+
+        if ($role) {
+            $user->addRole($role, $user->gas);
+        }
+
+        $user->preferred_delivery_id = '';
+        return $user;
+    }
+
     public function created(User $user)
     {
         if ($user->isFriend()) {
-            $default_role = $user->gas->roles['friend'] ?? -1;
-            $role = Role::find($default_role);
-            if (is_null($role)) {
-                $default_role = $user->gas->roles['user'];
-                $role = Role::find($default_role);
-            }
-
-            if ($role) {
-                $user->addRole($role, $user->gas);
-            }
-
-            $user->preferred_delivery_id = '';
+            $user = $this->createdFriend($user);
         }
         else {
             $default_role = $user->gas->roles['user'];

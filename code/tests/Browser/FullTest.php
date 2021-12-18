@@ -265,7 +265,7 @@ class FullTest extends DuskTestCase
     private function handlingVariants($panel, $browser, $variants, $actual_save)
     {
         foreach($variants as $variant_name => $variant_values) {
-            $browser->scrollView('button[type=submit]')->press('Crea Nuova Variante')->waitForText('Valori')
+            $browser->scrollBottom()->press('Crea Nuova Variante')->waitForText('Valori')
                 ->with('.modal.show', function($panel) use ($browser, $variant_name, $variant_values, $actual_save) {
                     $panel->pause(100)->typeSlowly('name', $variant_name, 50);
 
@@ -359,7 +359,7 @@ class FullTest extends DuskTestCase
                                 ->select('vat_rate_id', VatRate::inRandomOrder()->first()->id)
                                 ->press('Salva');
                         })
-                        ->waitForText($product->name)->pause(500);
+                        ->waitForText($product->name)->pause(1000);
 
                     $product_obj = Product::where('supplier_id', $supplier_id)->where('name', $product->name)->first();
 
@@ -463,7 +463,7 @@ class FullTest extends DuskTestCase
                     if ($product->min_quantity ?? 0) {
                         $panel->pause(200)
                             ->typeAtXPath($target_input, $product->min_quantity - 1)
-                            ->pause(500)
+                            ->pause(1000)
                             ->assertSeeAtXPath($target_feedback, 'Quantità inferiore al minimo consentito');
 
                         $quantity = $product->min_quantity + 1;
@@ -471,7 +471,7 @@ class FullTest extends DuskTestCase
                     else if ($product->max_available ?? 0) {
                         $panel->pause(200)
                             ->typeAtXPath($target_input, $product->max_available + 1)
-                            ->pause(500)
+                            ->pause(1000)
                             ->assertSeeAtXPath($target_feedback, 'Quantità superiore alla disponibilità');
 
                         $quantity = $product->max_available - 1;
@@ -538,6 +538,8 @@ class FullTest extends DuskTestCase
             ->pause(3000)
 
             ->waitForText('Modifica Rapida')
+            ->scrollBottom()
+
             ->clickAtXPath('//*/div[@data-element-id="' . $supplier_id . '"]//div[contains(@class, "active")]//div[contains(@class, "accordion-item")][1]/h2/button')->waitForText('Sconto')->pause(1000)
             ->clickAtXPath('//*/div[@data-element-id="' . $supplier_id . '"]//div[contains(@class, "active")]//div[contains(@class, "accordion-item")][1]//label[normalize-space()="Sconto"]/following-sibling::div/button')
             ->waitForText('Misura su cui applicare le soglie')

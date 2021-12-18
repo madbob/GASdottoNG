@@ -2,7 +2,9 @@
 
 namespace App\Parameters\Config;
 
-abstract class Config
+use App\Parameters\Parameter;
+
+abstract class Config extends Parameter
 {
     public function asAttribute($gas)
     {
@@ -21,7 +23,6 @@ abstract class Config
         }
     }
 
-    public abstract function identifier();
     public abstract function type();
     public abstract function default();
 }

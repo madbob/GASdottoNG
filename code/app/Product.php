@@ -102,27 +102,6 @@ class Product extends Model
             return '';
     }
 
-    public function stillAvailable($order)
-    {
-        if ($this->max_available == 0) {
-            return 0;
-        }
-
-        $product = $this;
-
-        $quantity = App::make('GlobalScopeHub')->executedForAll($order->keep_open_packages != 'each', function() use ($product, $order) {
-            return BookedProduct::where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order) {
-                $query->where('order_id', '=', $order->id);
-            })->sum('quantity');
-        });
-
-        if ($this->portion_quantity != 0) {
-            $quantity *= $this->portion_quantity;
-        }
-
-        return $this->max_available - $quantity;
-    }
-
     public function bookingsInOrder($order)
     {
         $id = $this->id;
@@ -185,12 +164,7 @@ class Product extends Model
         }
         else {
             $m = $this->measure;
-            if (is_null($m)) {
-                return '';
-            }
-            else {
-                return $m->name;
-            }
+            return $m->name ?? '';
         }
     }
 
@@ -198,31 +172,12 @@ class Product extends Model
     {
         $details = [];
 
-        if ($this->min_quantity != 0) {
-            $details[] = _i('Minimo: %.02f', $this->min_quantity);
-        }
-        if ($this->max_quantity != 0) {
-            $details[] = _i('Massimo Consigliato: %.02f', $this->max_quantity);
-        }
-        if ($this->max_available != 0) {
-            $still_available = $this->stillAvailable($order);
-
-            // L'attributo is_pending_package non fa parte del model Product,
-            // viene valorizzato staticamente da Order::pendingPackages() ai
-            // prodotti per i quali si devono completare le confezioni
-            // @phpstan-ignore-next-line
-            if ($this->is_pending_package ?? false) {
-                $details[] = _i('%s Disponibile: %.02f', [
-                    sprintf('<span class="badge rounded-pill bg-primary" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="%s" data-bs-original-title="" title="">?</span>', _i('Mancano %s %s per completare la confezione per questo ordine', [$still_available, $this->printableMeasure(true)])),
-                    $still_available
-                ]);
+        $constraints = systemParameters('Constraints');
+        foreach($constraints as $constraint) {
+            $string = $constraint->printable($this, $order);
+            if ($string) {
+                $details[] = $string;
             }
-            else {
-                $details[] = _i('Disponibile: %.02f (%.02f totale)', [$still_available, $this->max_available]);
-            }
-        }
-        if ($this->multiple != 0) {
-            $details[] = _i('Multiplo: %.02f', $this->multiple);
         }
 
         return implode(', ', $details);

@@ -66,10 +66,6 @@ class LoginController extends Controller
             }
         }
 
-        if ($user->gas->restricted == '1' && $user->can('gas.access', $user->gas) == false) {
-            return redirect(url('login'));
-        }
-
         LaravelGettext::setLocale($request->input('language'));
 
         $ret = $this->realLogin($request);
