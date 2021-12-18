@@ -3,6 +3,16 @@
 @section('content')
 
 @can('supplier.orders')
+    @if($has_old)
+        <div class="row mb-4">
+            <div class="col">
+                <div class="alert alert-danger">
+                    {{ _i('Ci sono ordini chiusi da oltre un anno ma non archiviati: cercali usando la funzione di ricerca qui sotto. È raccomandato archiviare i vecchi ordini, in modo che non siano più visualizzati nella dashboard ed il caricamento delle pagine sia più veloce. Gli ordini archiviati possono comunque essere sempre recuperati con la funzione di ricerca.') }}
+                </div>
+            </div>
+        </div>
+     @endif
+
     <div class="row">
         <div class="col">
             @include('commons.addingbutton', [

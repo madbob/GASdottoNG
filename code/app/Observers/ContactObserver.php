@@ -23,9 +23,7 @@ class ContactObserver
                 break;
 
             case 'website':
-                if (Str::startsWith($contact->value, 'http') == false) {
-                    $contact->value = 'http://' . $contact->value;
-                }
+                $contact->value = fixUrl($contact->value);
                 break;
         }
 

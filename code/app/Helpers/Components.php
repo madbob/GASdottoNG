@@ -142,7 +142,8 @@ function formatChecksComponentValues($component, $params)
         }
 
         $options[$val] = $meta->name;
-        if ($meta->checked ?? false) {
+        $checked = $meta->checked ?? false;
+        if ($checked) {
             $values[] = $val;
         }
     }

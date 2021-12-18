@@ -4,16 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use Auth;
-use DB;
 use URL;
 
 use App\Services\BookingsService;
 
 use App\User;
 use App\Aggregate;
-use App\Movement;
-use App\MovementType;
 
 class DeliveryUserController extends Controller
 {
@@ -25,7 +21,7 @@ class DeliveryUserController extends Controller
 
     public function show(Request $request, $aggregate_id, $user_id)
     {
-        $user = Auth::user();
+        $user = $request->user();
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
         if ($user->id != $user_id && $user->can('supplier.shippings', $aggregate) == false) {
@@ -70,89 +66,18 @@ class DeliveryUserController extends Controller
         return view('booking.table', ['aggregate' => $aggregate]);
     }
 
-    private function fastShipBooking($deliverer, $booking)
-    {
-        /*
-            Se la prenotazione in oggetto non esiste, salto tutto il resto.
-            Altrimenti rischio di creare una prenotazione vuota e salvarla sul
-            DB, con tutto quel che ne consegue.
-        */
-        if ($booking->exists == false) {
-            return 0;
-        }
-
-        $booking->deliverer_id = $deliverer->id;
-        $booking->delivery = date('Y-m-d');
-
-        foreach ($booking->products as $booked) {
-            if ($booking->status != 'saved') {
-                if ($booked->variants->isEmpty() == false) {
-                    foreach($booked->variants as $bpv) {
-                        $bpv->delivered = $bpv->true_quantity;
-                        $bpv->save();
-                    }
-                }
-                else {
-                    $booked->delivered = $booked->true_quantity;
-                }
-            }
-
-            $booked->final_price = $booked->getValue('delivered');
-            $booked->save();
-        }
-
-        $booking->status = 'shipped';
-        $booking->save();
-
-        $booking->saveModifiers();
-
-        $booking->load('products');
-        return $booking->getValue('effective', false, true);
-    }
-
-    private function sumFastShippings($deliverer, $aggregate, $user_id)
-    {
-        $grand_total = 0;
-
-        foreach ($aggregate->orders as $order) {
-            $booking = $order->userBooking($user_id);
-            $grand_total += $this->fastShipBooking($deliverer, $booking);
-
-            foreach($booking->friends_bookings as $bf) {
-                $grand_total += $this->fastShipBooking($deliverer, $bf);
-            }
-        }
-
-        return $grand_total;
-    }
-
     public function postFastShipping(Request $request, $aggregate_id)
     {
-        $deliverer = Auth::user();
+        $deliverer = $request->user();
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
-        if ($deliverer->can('supplier.shippings', $aggregate) == false) {
-            abort(503);
+        $users = [];
+        $selected = $request->input('bookings', []);
+        foreach($selected as $user_id) {
+            $users[$user_id] = $request->input('method-' . $user_id);
         }
 
-        DB::beginTransaction();
-
-        $users = $request->input('bookings', []);
-        $default_payment_method = defaultPaymentByType('booking-payment');
-
-        foreach($users as $index => $user_id) {
-            $grand_total = $this->sumFastShippings($deliverer, $aggregate, $user_id);
-
-            if ($grand_total != 0) {
-                $subject = $aggregate->bookingBy($user_id);
-                $subject->generateReceipt();
-
-                $movement = Movement::generate('booking-payment', $subject->user, $aggregate, $grand_total);
-                $movement->method = $request->input('method-' . $user_id, $default_payment_method);
-                $movement->save();
-            }
-        }
-
+        $this->service->fastShipping($deliverer, $aggregate, $users);
         return $this->successResponse();
     }
 

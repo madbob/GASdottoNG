@@ -17,7 +17,7 @@ class EmptyMovements extends Command
         parent::__construct();
     }
 
-    public function handle()
+    private function emptyMovements()
     {
         $movements = Movement::all();
         foreach($movements as $movement) {
@@ -28,7 +28,10 @@ class EmptyMovements extends Command
                 echo "Errore rimozione movimento " . $movement->id . "\n";
             }
         }
+    }
 
+    private function emptyBalances()
+    {
         $balances = Balance::all();
         foreach($balances as $balance) {
             try {
@@ -38,5 +41,11 @@ class EmptyMovements extends Command
                 echo "Errore rimozione bilancio " . $balance->id . "\n";
             }
         }
+    }
+
+    public function handle()
+    {
+        $this->emptyMovements();
+        $this->emptyBalances();
     }
 }

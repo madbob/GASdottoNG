@@ -124,6 +124,23 @@ abstract class TestCase extends BaseTestCase
         return $order;
     }
 
+    protected function populateOrder($order)
+    {
+        $this->booking_role = \App\Role::factory()->create(['actions' => 'supplier.book']);
+
+        $this->users = \App\User::factory()->count(5)->create(['gas_id' => $this->gas->id]);
+        foreach($this->users as $user) {
+            $user->addRole($this->booking_role->id, $this->gas);
+        }
+
+        foreach($this->users as $user) {
+            $this->actingAs($user);
+            list($data, $booked_count, $total) = $this->randomQuantities($order->products);
+            $data['action'] = 'booked';
+            $this->services['bookings']->bookingUpdate($data, $order->aggregate, $user, false);
+        }
+    }
+
     protected function randomQuantities($products)
     {
         $data = [];

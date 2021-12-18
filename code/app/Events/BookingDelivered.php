@@ -1,5 +1,12 @@
 <?php
 
+/*
+    Nota bene: questo evento, che attiva il listener DeliverBooking, va usato
+    per gestire il flusso interattivo di consegna (consegna e poi pagamento,
+    dall'interfaccia web) e non nei casi in cui la consegna viene gestita in
+    modo programmatico (e.g. con le consegne veloci)
+*/
+
 namespace App\Events;
 
 use Illuminate\Queue\SerializesModels;

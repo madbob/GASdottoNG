@@ -29,3 +29,12 @@ function env_file()
         return '.env';
     }
 }
+
+function fixUrl($url)
+{
+    if (Illuminate\Support\Str::startsWith($url, 'http') == false) {
+        $url = 'http://' . $url;
+    }
+
+    return $url;
+}

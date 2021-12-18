@@ -121,10 +121,6 @@ class AggregateBooking extends Model
             }
 
             if (empty($ids)) {
-                return;
-            }
-
-            if (empty($ids)) {
                 Log::error('Tentativo di creare fattura non assegnata a nessuna prenotazione');
                 return;
             }

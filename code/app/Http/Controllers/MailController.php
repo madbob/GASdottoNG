@@ -69,7 +69,7 @@ class MailController extends Controller
         }
 
         if ($message['Type'] === 'SubscriptionConfirmation') {
-            file_get_contents($message['SubscribeURL']);
+            $dummy = file_get_contents($message['SubscribeURL']);
         }
         else if ($message['Type'] === 'Notification') {
             $data = json_decode($message['Message']);

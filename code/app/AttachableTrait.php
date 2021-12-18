@@ -34,7 +34,7 @@ trait AttachableTrait
         return $relation;
     }
 
-    private function retrieveAttachment()
+    private function retrieveAttachment($id)
     {
         if (is_null($id)) {
             $attachment = new Attachment();
