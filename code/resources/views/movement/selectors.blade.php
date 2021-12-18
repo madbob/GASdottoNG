@@ -23,6 +23,6 @@
     @include('commons.pricecurrency')
 @endif
 
-<x-larastrap::radios name="method" :label="_i('Metodo')" :options="$payments" required />
+<x-larastrap::radios name="method" :label="_i('Metodo')" :options="$payments" :value="$default_method" required />
 <x-larastrap::text name="identifier" :label="_i('Identificativo')" />
 <x-larastrap::textarea name="notes" :label="_i('Note')" :value="$default_notes" />
