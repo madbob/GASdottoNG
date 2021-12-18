@@ -152,6 +152,19 @@ class Movement extends Model
         return $this->type_metadata->transactionType($this, $peer);
     }
 
+    private function objectIsPeer($obj_peer, $peer_type)
+    {
+        $t = $this->$peer_type;
+        if ($t != null) {
+            $t = $t->getBalanceProxy();
+            if ($t && $t->id == $obj_peer->id) {
+                return $peer_type;
+            }
+        }
+
+        return null;
+    }
+
     /*
         La funzione ritorna "target" o "sender" a seconda del ruolo dell'oggetto
         passato come parametro all'interno della transazione.
@@ -159,26 +172,22 @@ class Movement extends Model
     */
     public function transationRole($obj_peer)
     {
-        if ($this->sender_id == $obj_peer->id)
-            return 'sender';
-        if ($this->target_id == $obj_peer->id)
-            return 'target';
+        $ret = null;
 
-        $t = $this->sender;
-        if ($t != null) {
-            $t = $t->getBalanceProxy();
-            if ($t && $t->id == $obj_peer->id)
-                return 'sender';
+        if ($this->sender_id == $obj_peer->id) {
+            $ret = 'sender';
+        }
+        else if ($this->target_id == $obj_peer->id) {
+            $ret = 'target';
+        }
+        else {
+            $ret = $this->objectIsPeer($obj_peer, 'sender');
+            if (is_null($ret)) {
+                $ret = $this->objectIsPeer($obj_peer, 'target');
+            }
         }
 
-        $t = $this->target;
-        if ($t != null) {
-            $t = $t->getBalanceProxy();
-            if ($t && $t->id == $obj_peer->id)
-                return 'target';
-        }
-
-        return null;
+        return $ret;
     }
 
     private function wiring($peer, $field, $id)

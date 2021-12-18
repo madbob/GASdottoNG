@@ -51,7 +51,7 @@ class OpenOrders extends Command
                             oggi per il fornitore desiderato, passo oltre
                         */
                         $supplier = $date->target;
-                        if ($supplier->orders()->where('start', $today)->count() != 0) {
+                        if (is_null($supplier) || $supplier->orders()->where('start', $today)->count() != 0) {
                             continue;
                         }
 

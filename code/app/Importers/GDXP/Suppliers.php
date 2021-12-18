@@ -88,8 +88,16 @@ class Suppliers extends GDXPImporter
 
                 case 'products':
                     foreach($c->children() as $a) {
-                        $ex_product = $supplier->products()->where('name', $product_name)->first();
-                        $product = Products::importXML($a, $ex_product->id ?? null);
+                        $ex_product = null;
+
+                        foreach($a->children() as $a_child) {
+                            if ($a_child->getName() == 'name') {
+                                $ex_product = $supplier->products()->where('name', html_entity_decode((string) $a_child))->first();
+                                break;
+                            }
+                        }
+
+                        $product = Products::importXML($a, $ex_product->id ?? null, $supplier->id);
                         $product->supplier_id = $supplier->id;
                         $product->save();
                         $product_ids[] = $product->id;

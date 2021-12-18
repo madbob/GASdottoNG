@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
-"POT-Creation-Date: 2021-09-06 12:20+0200\n"
-"PO-Revision-Date: 2021-09-06 12:22+0200\n"
+"POT-Creation-Date: 2021-12-09 21:49+0100\n"
+"PO-Revision-Date: 2021-12-09 21:49+0100\n"
 "Last-Translator: Roberto Guido <bob@linux.it>\n"
 "Language-Team: Roberto Guido <bob@linux.it>\n"
 "Language: de_DE\n"
@@ -17,13 +17,12 @@ msgstr ""
 "X-Poedit-SearchPath-1: ../resources/views\n"
 "X-Poedit-SearchPath-2: ../storage/framework/messages\n"
 
-#: ../resources/views/aggregate/details.blade.php:4
+#: ../resources/views/aggregate/details.blade.php:6
 msgid "Invariato"
 msgstr ""
 
 #: ../resources/views/aggregate/exportshipping.blade.php:30
 #: ../resources/views/order/exportshipping.blade.php:16
-#: ../resources/views/order/exportsummary.blade.php:16
 #: ../resources/views/order/exporttable.blade.php:16
 msgid "Tutti (ordinati per utente)"
 msgstr "Alle (nach Nutzer*innen)"
@@ -31,7 +30,6 @@ msgstr "Alle (nach Nutzer*innen)"
 #: ../resources/views/aggregate/exportshipping.blade.php:31
 #: ../resources/views/aggregate/exportsummary.blade.php:33
 #: ../resources/views/order/exportshipping.blade.php:17
-#: ../resources/views/order/exportsummary.blade.php:17
 #: ../resources/views/order/exporttable.blade.php:17
 msgid "Tutti (ordinati per luogo)"
 msgstr "Alle (nach Lieferort)"
@@ -61,11 +59,11 @@ msgid "Annulla Prenotazione"
 msgstr "Vorbestellung stornieren"
 
 #: ../resources/views/booking/edit.blade.php:15
-#: ../resources/views/movement/modal.blade.php:28 Helpers/Formatters.php:794
+#: ../resources/views/movement/modal.blade.php:28 Helpers/Components.php:195
 msgid "Salva"
 msgstr "Speichern"
 
-#: ../resources/views/booking/edit.blade.php:53
+#: ../resources/views/booking/edit.blade.php:54
 msgid ""
 "Attenzione: quest'ordine è chiuso, ma è possibile prenotare ancora alcuni "
 "prodotti per completare le confezioni da consegnare."
@@ -124,73 +122,103 @@ msgstr ""
 msgid "Di seguito il riassunto dei prodotti che hai ordinato:"
 msgstr "Zusammenfassung deiner Bestellung:"
 
-#: ../resources/views/modifier/edit.blade.php:16
-#: ../resources/views/modifier/edit.blade.php:40
+#: ../resources/views/gas/orders.blade.php:13
+#: ../resources/views/movementtypes/base-edit.blade.php:4
+#: ../resources/views/movementtypes/edit.blade.php:4 Formatters/User.php:26
+#: Http/Controllers/MovementsController.php:296
+msgid "Nessuno"
+msgstr "Kein"
+
+#: ../resources/views/gas/orders.blade.php:14
+msgid "Selezione manuale"
+msgstr "Manuelle Auswahl"
+
+#: ../resources/views/gas/orders.blade.php:19
+#, php-format
+msgid "Tutti %s"
+msgstr "Alle %s"
+
+#: ../resources/views/gas/users.blade.php:16 Formatters/Product.php:41
+#: Formatters/User.php:88 Http/Controllers/MovementsController.php:279
+#: Http/Controllers/MovementsController.php:334 Importers/CSV/Products.php:19
+#: Importers/CSV/Users.php:20
+msgid "Nome"
+msgstr "Vorname"
+
+#: ../resources/views/gas/users.blade.php:17 Formatters/User.php:84
+#: Importers/CSV/Users.php:23
+msgid "Cognome"
+msgstr "Nachname"
+
+#: ../resources/views/gas/users.blade.php:18 Contact.php:44
+#: Formatters/User.php:101 Http/Controllers/MovementsController.php:279
+#: Importers/CSV/Users.php:30
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#: ../resources/views/gas/users.blade.php:19 Contact.php:45
+#: Formatters/User.php:107 Importers/CSV/Users.php:33
+msgid "Telefono"
+msgstr "Telefon"
+
+#: ../resources/views/modifier/edit.blade.php:19
+#: ../resources/views/modifier/edit.blade.php:43
 msgid "Assoluto"
 msgstr ""
 
-#: ../resources/views/modifier/edit.blade.php:17
-#: ../resources/views/modifier/edit.blade.php:41
+#: ../resources/views/modifier/edit.blade.php:20
+#: ../resources/views/modifier/edit.blade.php:44
 msgid "Percentuale"
 msgstr ""
 
-#: ../resources/views/modifier/edit.blade.php:18
-#: Http/Controllers/ImportController.php:136 Order.php:825 Product.php:295
+#: ../resources/views/modifier/edit.blade.php:21 Formatters/Product.php:56
+#: Importers/CSV/Products.php:26 Order.php:836
 msgid "Prezzo Unitario"
 msgstr "Stückpreis"
 
-#: ../resources/views/modifier/edit.blade.php:22
-#: ../resources/views/modifier/edit.blade.php:45
+#: ../resources/views/modifier/edit.blade.php:25
+#: ../resources/views/modifier/edit.blade.php:48
 #, fuzzy
 #| msgid "Nessuna Immagine"
 msgid "Nessuna soglia"
 msgstr "Kein Bild"
 
-#: ../resources/views/modifier/edit.blade.php:23 Order.php:777
+#: ../resources/views/modifier/edit.blade.php:26 Order.php:788
 msgid "Quantità"
 msgstr "Anzahl"
 
-#: ../resources/views/modifier/edit.blade.php:24
-#: ../resources/views/modifier/edit.blade.php:46
-#: Http/Controllers/ImportController.php:657
-#: Http/Controllers/MovementsController.php:90
+#: ../resources/views/modifier/edit.blade.php:27
+#: ../resources/views/modifier/edit.blade.php:49
+#: Http/Controllers/MovementsController.php:91 Importers/CSV/Movements.php:23
 msgid "Valore"
 msgstr "Wert"
 
-#: ../resources/views/modifier/edit.blade.php:25
-#: ../resources/views/modifier/edit.blade.php:47
-#: Http/Controllers/ImportController.php:162 Product.php:311
+#: ../resources/views/modifier/edit.blade.php:28
+#: ../resources/views/modifier/edit.blade.php:50 Formatters/Product.php:78
 msgid "Peso"
 msgstr ""
 
-#: ../resources/views/modifier/edit.blade.php:29 Order.php:867
+#: ../resources/views/modifier/edit.blade.php:32 Order.php:878
 msgid "Prodotto"
 msgstr "Produkt"
 
-#: ../resources/views/modifier/edit.blade.php:30
-#: ../resources/views/modifier/edit.blade.php:51
+#: ../resources/views/modifier/edit.blade.php:33
+#: ../resources/views/modifier/edit.blade.php:54
 #, fuzzy
 #| msgid "Annulla Prenotazione"
 msgid "Singola Prenotazione"
 msgstr "Vorbestellung stornieren"
 
-#: ../resources/views/modifier/edit.blade.php:31
-#: ../resources/views/modifier/edit.blade.php:52
+#: ../resources/views/modifier/edit.blade.php:34
+#: ../resources/views/modifier/edit.blade.php:55
 #, fuzzy
 #| msgid "Totale Complessivo"
 msgid "Ordine Complessivo"
 msgstr "Gesamtbetrag"
 
-#: ../resources/views/movement/modal.blade.php:25 Helpers/Formatters.php:785
+#: ../resources/views/movement/modal.blade.php:25 Helpers/Components.php:186
 msgid "Elimina"
 msgstr "Löschen"
-
-#: ../resources/views/movementtypes/base-edit.blade.php:4
-#: ../resources/views/movementtypes/edit.blade.php:4
-#: ../resources/views/pages/gas.blade.php:83
-#: Http/Controllers/MovementsController.php:296 User.php:460
-msgid "Nessuno"
-msgstr "Kein"
 
 #: ../resources/views/notification/base-edit.blade.php:46
 msgid ""
@@ -218,91 +246,83 @@ msgstr "Zusammenfassungen der Vorbestellungen verschicken"
 msgid "Invia Riepiloghi Consegne"
 msgstr "Verschicke Zusammenfassungen der Lieferungen"
 
-#: ../resources/views/order/edit.blade.php:14
+#: ../resources/views/order/edit.blade.php:15
 #, fuzzy
 #| msgid "Dimensione confezione"
 msgid "No, ignora la dimensione delle confezioni"
 msgstr "Packungsdimension"
 
-#: ../resources/views/order/edit.blade.php:15
+#: ../resources/views/order/edit.blade.php:16
 #, fuzzy
 #| msgid "Link per le prenotazioni"
 msgid "Si, permetti eventuali altre prenotazioni"
 msgstr "Link zu den Bestellungen"
 
-#: ../resources/views/order/edit.blade.php:19
+#: ../resources/views/order/edit.blade.php:20
 msgid "Si, e contempla le quantità prenotate da parte di tutti i GAS"
 msgstr ""
+
+#: ../resources/views/order/exportsummary.blade.php:16
+#: Helpers/Formatters.php:90
+msgid "Tutti"
+msgstr "Alle"
 
 #: ../resources/views/order/filesmail.blade.php:5
 msgid "Documento allegato"
 msgstr "Datei im Anhang"
-
-#: ../resources/views/pages/gas.blade.php:50
-#: Http/Controllers/ImportController.php:129
-#: Http/Controllers/ImportController.php:455
-#: Http/Controllers/MovementsController.php:279
-#: Http/Controllers/MovementsController.php:334 Product.php:282 User.php:370
-msgid "Nome"
-msgstr "Vorname"
-
-#: ../resources/views/pages/gas.blade.php:51
-#: Http/Controllers/ImportController.php:458 User.php:366
-msgid "Cognome"
-msgstr "Nachname"
-
-#: ../resources/views/pages/gas.blade.php:52 Contact.php:44
-#: Http/Controllers/ImportController.php:465
-#: Http/Controllers/MovementsController.php:279 User.php:380
-msgid "E-Mail"
-msgstr "E-Mail"
-
-#: ../resources/views/pages/gas.blade.php:53 Contact.php:45
-#: Http/Controllers/ImportController.php:468 User.php:383
-msgid "Telefono"
-msgstr "Telefon"
-
-#: ../resources/views/pages/gas.blade.php:84
-msgid "Selezione manuale"
-msgstr "Manuelle Auswahl"
-
-#: ../resources/views/pages/gas.blade.php:89
-#, php-format
-msgid "Tutti %s"
-msgstr "Alle %s"
 
 #: ../resources/views/supplier/invoicedata.blade.php:10
 #, php-format
 msgid "Saldo Attuale: %s"
 msgstr "Aktueller Kontostand: %s"
 
-#: Aggregate.php:318 Booking.php:399
+#: Aggregate.php:318 Booking.php:406
 msgid "Non hai partecipato a quest'ordine"
 msgstr "Du hast an dieser Bestellung nicht teilgenommen"
 
-#: Aggregate.php:323 Booking.php:403
+#: Aggregate.php:323 Booking.php:409
 #, php-format
 msgid "Hai ordinato %s"
 msgstr "Du hast bestellt %s"
 
-#: Aggregate.php:325 Booking.php:405
+#: Aggregate.php:325
 #, php-format
 msgid "Hai ordinato %s + %s"
 msgstr "Du hast bestellt %s + %s"
 
-#: AggregateBooking.php:113
+#: AggregateBooking.php:104
 msgid "e altri"
 msgstr "und andere"
 
-#: AggregateBooking.php:118
+#: AggregateBooking.php:109
 msgid "indefinita"
 msgstr "undefiniert"
 
-#: Booking.php:582 Http/Controllers/MovementsController.php:334
+#: BookedProduct.php:105
+msgid "Quantità inferiore al minimo consentito"
+msgstr ""
+
+#: BookedProduct.php:111
+msgid "Quantità non multipla del valore consentito"
+msgstr ""
+
+#: BookedProduct.php:117
+msgid "Quantità superiore alla disponibilità"
+msgstr ""
+
+#: BookedProduct.php:124
+msgid "Questa combinazione di varianti non è attualmente ordinabile"
+msgstr ""
+
+#: BookedProduct.php:129
+msgid "La quantità massima è 9999.99"
+msgstr ""
+
+#: Booking.php:610 Http/Controllers/MovementsController.php:334
 msgid "Saldo"
 msgstr "Kontostand"
 
-#: Config.php:23
+#: Config.php:16
 #, fuzzy
 #| msgid "Messaggio inviato ai nuovi iscritti sulla piattaforma."
 msgid "Messaggio inviato ai nuovi iscritti registrati sulla piattaforma."
@@ -310,15 +330,15 @@ msgstr ""
 "Benachrichtigung, die an neu registrierte Nutzer des Bestellsystems "
 "verschickt wird."
 
-#: Config.php:25 Config.php:35
+#: Config.php:18 Config.php:28
 msgid "Username assegnato al nuovo utente"
 msgstr "Benutzername des neuen Nutzers"
 
-#: Config.php:26 Config.php:37
+#: Config.php:19 Config.php:30
 msgid "Link della pagina di login"
 msgstr "Link zur Anmeldungseite"
 
-#: Config.php:33
+#: Config.php:26
 #, fuzzy
 #| msgid "Messaggio inviato ai nuovi iscritti sulla piattaforma."
 msgid "Messaggio inviato ai nuovi utenti creati sulla piattaforma."
@@ -326,25 +346,25 @@ msgstr ""
 "Benachrichtigung, die an neu registrierte Nutzer des Bestellsystems "
 "verschickt wird."
 
-#: Config.php:36
+#: Config.php:29
 msgid "Link per accedere la prima volta"
 msgstr ""
 
-#: Config.php:44
+#: Config.php:37
 msgid "Messaggio per il ripristino della password."
 msgstr "Benachrichtigung zum Neusetzen des Passwortes."
 
-#: Config.php:46
+#: Config.php:39
 #, fuzzy
 #| msgid "Username assegnato al nuovo utente"
 msgid "Username dell'utente"
 msgstr "Benutzername des neuen Nutzers"
 
-#: Config.php:47
+#: Config.php:40
 msgid "Link per il reset della password"
 msgstr "Link zur Zurücksetzung des Passwortes"
 
-#: Config.php:54
+#: Config.php:47
 msgid ""
 "Notifica per i nuovi ordini aperti (inviato agli utenti che hanno "
 "esplicitamente abilitato le notifiche per il fornitore)."
@@ -353,56 +373,48 @@ msgstr ""
 "ausdrücklich die Benachrichtigungsfunktion bezüglich des Lieferanten in "
 "ihrem Profil aktiviert haben)."
 
-#: Config.php:56 Config.php:69
+#: Config.php:49 Config.php:62
 msgid "Il nome del fornitore"
 msgstr "Name des Lieferanten"
 
-#: Config.php:57
+#: Config.php:50
 #, fuzzy
 #| msgid "Data di chiusura dell'ordine"
 msgid "Testo di commento dell'ordine"
 msgstr "Ende der Bestellfrist"
 
-#: Config.php:58
+#: Config.php:51
 msgid "Link per le prenotazioni"
 msgstr "Link zu den Bestellungen"
 
-#: Config.php:59
+#: Config.php:52
 msgid "Indirizzi email dei referenti dell'ordine"
 msgstr ""
 
-#: Config.php:60
+#: Config.php:53
 msgid "Data di chiusura dell'ordine"
 msgstr "Ende der Bestellfrist"
 
-#: Config.php:67
+#: Config.php:60
 msgid "Notifica destinata ai fornitori alla chiusura automatica dell'ordine."
 msgstr ""
 
-#: Config.php:70
+#: Config.php:63
 msgid "Numero progressivo automaticamente assegnato ad ogni ordine"
 msgstr "Fortlaufende Nummer, die jeder Bestellung automatisch zugewiesen wird"
 
-#: Config.php:77
+#: Config.php:70
 msgid "Mail di accompagnamento per le ricevute."
 msgstr "Begleit-E-Mail für Quittungen."
 
-#: Console/Commands/CheckRemoteProducts.php:34
+#: Console/Commands/CheckRemoteProducts.php:27
 #, php-format
 msgid ""
 "Nuovo aggiornamento disponibile per il listino %s (%s). Consultalo dal "
 "pannello Fornitori -> Indice Remoto."
 msgstr ""
 
-#: Console/Commands/FixDatabase.php:142
-msgid "Spese Trasporto"
-msgstr "Frachtkosten"
-
-#: Console/Commands/FixDatabase.php:149
-msgid "Sconto"
-msgstr "Skonto"
-
-#: Contact.php:42 User.php:389
+#: Contact.php:42 Formatters/User.php:119
 msgid "Indirizzo"
 msgstr "Adresse"
 
@@ -410,7 +422,7 @@ msgstr "Adresse"
 msgid "Referente"
 msgstr "Ansprechperson"
 
-#: Contact.php:46 Http/Controllers/ImportController.php:471 User.php:386
+#: Contact.php:46 Formatters/User.php:113 Importers/CSV/Users.php:36
 msgid "Cellulare"
 msgstr "Handy"
 
@@ -430,189 +442,298 @@ msgstr "Bestätigt"
 msgid "Provvisorio"
 msgstr "Geplant"
 
-#: Gas.php:171 Gas.php:178
-msgid "Benvenuto!"
-msgstr "Willkommen!"
+#: Exceptions/MissingFieldException.php:9
+msgid "Colonna obbligatoria non specificata"
+msgstr "Unbestimmte Pflichtspalte"
 
-#: Gas.php:174
-msgid ""
-"Benvenuto in %[gas_name]!\n"
-"In futuro potrai accedere usando il link qui sotto, lo username "
-"\"%[username]\" e la password da te scelta.\n"
-"%[gas_login_link]\n"
-"Una mail di notifica è stata inviata agli amministratori."
-msgstr ""
-"Willkommen im Bestellsystem von %[gas_name]!\n"
-"In Zukunft kannst du dich über folgenden Link mit deinem Nutzernamen "
-"„%[username]“ und dem von dir gewählten Passwort anmelden.\n"
-"%[gas_login_link]\n"
-"Eine Benachrichtigungs-E-Mail wurde an die Administrator*innen geschickt."
-
-#: Gas.php:181
-msgid ""
-"Sei stato invitato a %[gas_name]!\n"
-"\n"
-"Per accedere la prima volta clicca il link qui sotto.\n"
-"%[gas_access_link]\n"
-"\n"
-"In futuro potrai accedere usando quest'altro link, lo username "
-"\"%[username]\" e la password che avrai scelto.\n"
-"%[gas_login_link]\n"
+#: Formatters/Product.php:19 Formatters/Product.php:34
+msgid "Si"
 msgstr ""
 
-#: Gas.php:185
-msgid "Recupero Password"
-msgstr "Passwort wiederherstellen"
-
-#: Gas.php:188
-msgid ""
-"È stato chiesto l'aggiornamento della tua password su GASdotto.\n"
-"Clicca il link qui sotto per aggiornare la tua password, o ignora la mail se "
-"non hai chiesto tu questa operazione.\n"
-"%[gas_reset_link]"
-msgstr ""
-"Es wurde eine Anfrage zur Aktualisierung deines GASdotto-Passwortes "
-"gestellt.\n"
-"Klicke unten auf den Link, um das Passwort zu aktualisieren. Falls du das "
-"Neusetzen des Passwortes nicht angefragt hast, ignoriere diese E-Mail.\n"
-"%[gas_reset_link]"
-
-#: Gas.php:192
-msgid "Nuovo Ordine Aperto per %[supplier_name]"
-msgstr "Neue Bestellung eröffnet für %[supplier_name]"
-
-#: Gas.php:195
-msgid ""
-"È stato aperto da %[gas_name] un nuovo ordine per il fornitore "
-"%[supplier_name].\n"
-"Per partecipare, accedi al seguente indirizzo:\n"
-"%[gas_booking_link]\n"
-"Le prenotazioni verranno chiuse %[closing_date]"
-msgstr ""
-"Eine neue Bestellung wurde eröffnet von der %[gas_name] für den Lieferanten "
-"%[supplier_name].\n"
-"Um daran teilzunehmen, melde dich über folgenden Link an: \n"
-"%[gas_booking_link]\n"
-"Die Bestellfrist endet am %[closing_date]"
-
-#: Gas.php:199
+#: Formatters/Product.php:19 Formatters/Product.php:34
 #, fuzzy
-#| msgid "Prenotazioni Coinvolte"
-msgid "Prenotazione ordine %[gas_name]"
-msgstr "Beteiligte Bestellungen"
+#| msgid "Nome"
+msgid "No"
+msgstr "Vorname"
 
-#: Gas.php:202
-msgid ""
-"Buongiorno.\n"
-"In allegato trova - in duplice copia, PDF e CSV - la prenotazione "
-"dell'ordine da parte di %[gas_name].\n"
-"Per segnalazioni, può rivolgersi ai referenti in copia a questa mail.\n"
-"Grazie."
+#: Formatters/Product.php:28
+msgid "Nessuna"
+msgstr "Keine"
+
+#: Formatters/Product.php:45 Importers/CSV/Products.php:42 Order.php:774
+msgid "Codice Fornitore"
+msgstr "Artikelnummer Lieferant"
+
+#: Formatters/Product.php:48 Importers/CSV/Products.php:39 Order.php:812
+#: Order.php:919
+msgid "Unità di Misura"
+msgstr "Maßeinheit"
+
+#: Formatters/Product.php:52 Importers/CSV/Products.php:36 Order.php:829
+#: View/Icons/Product.php:37
+msgid "Categoria"
+msgstr "Kategorie"
+
+#: Formatters/Product.php:60
+msgid "Ordinabile"
+msgstr "Bestellbar"
+
+#: Formatters/Product.php:64 Importers/CSV/Products.php:33
+msgid "Aliquota IVA"
+msgstr "MwSt-Satz"
+
+#: Formatters/Product.php:68
+msgid "Pezzatura"
+msgstr "Gebindegröße"
+
+#: Formatters/Product.php:71
+msgid "Variabile"
 msgstr ""
 
-#: Gas.php:206
-msgid "Nuova fattura da %[gas_name]"
-msgstr "Neue Rechnung von %[gas_name]"
+#: Formatters/Product.php:75 Importers/CSV/Products.php:45
+msgid "Dimensione Confezione"
+msgstr "Packungsmaße"
 
-#: Gas.php:209
-msgid "In allegato l'ultima fattura da %[gas_name]"
-msgstr "Im Anhang die letzte Rechnung von %[gas_name]"
+#: Formatters/Product.php:81
+msgid "Multiplo"
+msgstr "Vielfaches"
 
-#: Gas.php:224
-msgid "Configurazione GAS non prevista"
-msgstr "Ungültige Einstellung der Bestellgruppe"
+#: Formatters/Product.php:84
+msgid "Minimo"
+msgstr "Minimum"
 
-#: Gas.php:405
-msgid "Conto Corrente"
-msgstr "Girokonto"
+#: Formatters/Product.php:87
+msgid "Massimo Consigliato"
+msgstr "Empfohlenes Maximum"
 
-#: Gas.php:406
-msgid "Cassa Contanti"
-msgstr "Kasse"
+#: Formatters/Product.php:90 Order.php:888
+msgid "Disponibile"
+msgstr "Verfügbar"
 
-#: Gas.php:407 User.php:426
+#: Formatters/User.php:21 Http/Controllers/MovementsController.php:283
+msgid "Luogo di Consegna"
+msgstr "Lieferort"
+
+#: Formatters/User.php:37
+msgid "IBAN"
+msgstr "IBAN"
+
+#: Formatters/User.php:49 Gas.php:212
 msgid "GAS"
 msgstr "Solidarische Bestellgemeinschaft"
 
-#: Gas.php:408 Providers/MenuServiceProvider.php:30
+#: Formatters/User.php:63 Importers/CSV/Users.php:59
+msgid "Ultimo Accesso"
+msgstr "Letzter Zugang"
+
+#: Formatters/User.php:70
+msgid "Ultima Prenotazione"
+msgstr "Letzte Bestellung"
+
+#: Formatters/User.php:92
+#, fuzzy
+#| msgid "Totale Complessivo"
+msgid "Nome Completo"
+msgstr "Gesamtbetrag"
+
+#: Formatters/User.php:98
+msgid "Username"
+msgstr "Benutzername"
+
+#: Formatters/User.php:125 Importers/CSV/Users.php:52
+msgid "Codice Fiscale"
+msgstr "Steuernummer"
+
+#: Formatters/User.php:128
+msgid "Numero Tessera"
+msgstr "Mitgliedsnummer"
+
+#: Formatters/User.php:131
+msgid "Stato"
+msgstr "Status"
+
+#: Formatters/User.php:137
+msgid "Modalità Pagamento"
+msgstr "Bezahlmodus"
+
+#: Gas.php:78
+msgid "Configurazione GAS non prevista"
+msgstr "Ungültige Einstellung der Bestellgruppe"
+
+#: Gas.php:196 Providers/MenuServiceProvider.php:27
 msgid "Fornitori"
 msgstr "Lieferanten"
 
-#: Gas.php:409
+#: Gas.php:200 Providers/MenuServiceProvider.php:20
+msgid "Utenti"
+msgstr "Benutzer"
+
+#: Gas.php:210
+msgid "Conto Corrente"
+msgstr "Girokonto"
+
+#: Gas.php:211
+msgid "Cassa Contanti"
+msgstr "Kasse"
+
+#: Gas.php:213
 msgid "Cauzioni"
 msgstr "Kaution"
 
-#: Gas.php:414 MovementType.php:65
+#: Gas.php:219 Parameters/PaymentType/PayPal.php:20
 msgid "PayPal"
 msgstr "PayPal"
 
-#: Gas.php:416 MovementType.php:77
+#: Gas.php:223 Parameters/PaymentType/Satispay.php:20
 msgid "Satispay"
 msgstr "Satispay"
 
-#: Helpers/Formatters.php:20 Helpers/Formatters.php:333
-#: Helpers/Formatters.php:626
+#: Helpers/Accounting.php:75 User.php:122
+msgid "Non Specificato"
+msgstr "Nicht spezifiziert"
+
+#: Helpers/Components.php:39 Helpers/Formatters.php:49
+#: Helpers/Formatters.php:364
 msgid "Mai"
 msgstr "Nie"
 
-#: Helpers/Formatters.php:61
-msgid "Tutti"
-msgstr "Alle"
-
-#: Helpers/Formatters.php:62
-msgid "Ogni due Settimane"
-msgstr "Alle zwei Wochen"
-
-#: Helpers/Formatters.php:63
-msgid "Primo del Mese"
-msgstr "Erster des Monats"
-
-#: Helpers/Formatters.php:64
-msgid "Secondo del Mese"
-msgstr "Zweiter des Monats"
-
-#: Helpers/Formatters.php:65
-msgid "Terzo del Mese"
-msgstr "Dritter des Monats"
-
-#: Helpers/Formatters.php:66
-msgid "Quarto del Mese"
-msgstr "Vierter des Monats"
-
-#: Helpers/Formatters.php:67
-msgid "Ultimo del Mese"
-msgstr "Letzter Tag des Monats"
-
-#: Helpers/Formatters.php:785
+#: Helpers/Components.php:186
 msgid "Elimina Definitivamente"
 msgstr "Endgültig löschen"
 
-#: Http/Controllers/AggregatesController.php:170
+#: Helpers/Formatters.php:91
+msgid "Ogni due Settimane"
+msgstr "Alle zwei Wochen"
+
+#: Helpers/Formatters.php:92
+msgid "Primo del Mese"
+msgstr "Erster des Monats"
+
+#: Helpers/Formatters.php:93
+msgid "Secondo del Mese"
+msgstr "Zweiter des Monats"
+
+#: Helpers/Formatters.php:94
+msgid "Terzo del Mese"
+msgstr "Dritter des Monats"
+
+#: Helpers/Formatters.php:95
+msgid "Quarto del Mese"
+msgstr "Vierter des Monats"
+
+#: Helpers/Formatters.php:96
+msgid "Ultimo del Mese"
+msgstr "Letzter Tag des Monats"
+
+#: Helpers/Permissions.php:7
+msgid "Accesso consentito anche in manutenzione"
+msgstr "Zugänglich auch während der Wartung"
+
+#: Helpers/Permissions.php:8
+msgid "Modificare tutti i permessi"
+msgstr "Alle Erlaubnisse ändern"
+
+#: Helpers/Permissions.php:9
+msgid "Modificare le configurazioni del GAS"
+msgstr "Einstellungen der Bestellgemeinschaft ändern"
+
+#: Helpers/Permissions.php:10
+msgid "Creare nuovi fornitori"
+msgstr "Neue Lieferanten erstellen"
+
+#: Helpers/Permissions.php:11
+msgid "Effettuare ordini"
+msgstr "Bestellen"
+
+#: Helpers/Permissions.php:12
+msgid "Vedere tutti i fornitori"
+msgstr "Alle Lieferanten anzeigen"
+
+#: Helpers/Permissions.php:13
 #, fuzzy
-#| msgid "Totale Complessivo"
-msgid "Complessivo"
-msgstr "Gesamtbetrag"
+#| msgid "Vedere tutti gli utenti"
+msgid "Vedere tutti gli ordini"
+msgstr "Alle Benutzer ansehen"
 
-#: Http/Controllers/AggregatesController.php:254
-msgid "Dettaglio Consegne Ordini"
-msgstr "Lieferungsdetail"
+#: Helpers/Permissions.php:14
+msgid "Modificare la propria anagrafica"
+msgstr "Die persönlichen Angaben anpassen"
 
-#: Http/Controllers/AggregatesController.php:291
+#: Helpers/Permissions.php:15
 #, fuzzy
-#| msgid "Prodotti"
-msgid "Prodotti Ordini"
-msgstr "Produkte"
+#| msgid "Amministrare le categorie"
+msgid "Amministrare gli utenti"
+msgstr "Kategorien verwalten"
 
-#: Http/Controllers/AttachmentsController.php:33
-#: Http/Controllers/AttachmentsController.php:55
-#: Http/Controllers/AttachmentsController.php:118
+#: Helpers/Permissions.php:16
+msgid "Vedere tutti gli utenti"
+msgstr "Alle Benutzer ansehen"
+
+#: Helpers/Permissions.php:17
+msgid "Avere sotto-utenti con funzioni limitate"
+msgstr "Mitbenutzer (Freunde) haben mit eingeschränkten Rechten"
+
+#: Helpers/Permissions.php:18
+msgid "Amministrare i movimenti contabili degli utenti"
+msgstr "Buchungsbewegungen der Nutzer verwalten"
+
+#: Helpers/Permissions.php:19
+msgid "Amministrare tutti i movimenti contabili"
+msgstr "Alle hauptbucheinträge verwalten"
+
+#: Helpers/Permissions.php:20
+msgid "Vedere i movimenti contabili"
+msgstr "Hauptbucheinträge ansehen"
+
+#: Helpers/Permissions.php:21
+msgid "Amministrare i tipi dei movimenti contabili"
+msgstr "Typen der Hauptbucheinträgen verwalten"
+
+#: Helpers/Permissions.php:22
+msgid "Amministrare le categorie"
+msgstr "Kategorien verwalten"
+
+#: Helpers/Permissions.php:23
+msgid "Amministrare le unità di misura"
+msgstr "Maßeinheiten verwalten"
+
+#: Helpers/Permissions.php:24
+msgid "Visualizzare le statistiche"
+msgstr "Statistiken ansehen"
+
+#: Helpers/Permissions.php:25
+msgid "Amministrare le notifiche"
+msgstr "Benachrichtigungen verwalten"
+
+#: Helpers/Permissions.php:26
+msgid "Amministrare i GAS su questa istanza"
+msgstr "Bestellgruppen administrieren auf dieser Instanz"
+
+#: Helpers/Permissions.php:29
+msgid "Modificare i fornitori assegnati"
+msgstr "Beauftragte Lieferanten ändern"
+
+#: Helpers/Permissions.php:30
+msgid "Aprire e modificare ordini"
+msgstr "Bestellungen öffnen und ändern"
+
+#: Helpers/Permissions.php:31
+msgid "Effettuare le consegne"
+msgstr "Lieferungen eintragen"
+
+#: Helpers/Permissions.php:32
+msgid "Amministrare i movimenti contabili"
+msgstr "Buchungen administrieren"
+
+#: Http/Controllers/AttachmentsController.php:32
+#: Http/Controllers/AttachmentsController.php:54
+#: Http/Controllers/AttachmentsController.php:117
 #: Http/Controllers/BookingController.php:29
 #: Http/Controllers/CategoriesController.php:42
 #: Http/Controllers/CategoriesController.php:101
 #: Http/Controllers/DeliveriesController.php:89
-#: Http/Controllers/GasController.php:67
-#: Http/Controllers/ImportController.php:109
-#: Http/Controllers/ImportController.php:640
+#: Http/Controllers/GasController.php:231
+#: Http/Controllers/ImportController.php:33
 #: Http/Controllers/InvoicesController.php:35
 #: Http/Controllers/InvoicesController.php:78
 #: Http/Controllers/InvoicesController.php:111
@@ -623,17 +744,12 @@ msgstr "Produkte"
 #: Http/Controllers/MeasuresController.php:41
 #: Http/Controllers/MeasuresController.php:62
 #: Http/Controllers/MovementsController.php:353
-#: Http/Controllers/MovementsController.php:371
+#: Http/Controllers/MovementsController.php:372
 #: Http/Controllers/NotificationsController.php:121
 #: Http/Controllers/NotificationsController.php:162
 #: Http/Controllers/NotificationsController.php:172
 #: Http/Controllers/NotificationsController.php:193
 #: Http/Controllers/NotificationsController.php:216
-#: Http/Controllers/OrdersController.php:237
-#: Http/Controllers/OrdersController.php:308
-#: Http/Controllers/OrdersController.php:334
-#: Http/Controllers/OrdersController.php:351
-#: Http/Controllers/OrdersController.php:370
 #: Http/Controllers/ReceiptsController.php:49
 #: Http/Controllers/ReceiptsController.php:69
 #: Http/Controllers/RolesController.php:31
@@ -645,8 +761,8 @@ msgstr "Produkte"
 msgid "Non autorizzato"
 msgstr "Nicht Erlaubt"
 
-#: Http/Controllers/AttachmentsController.php:38
-#: Http/Controllers/AttachmentsController.php:61
+#: Http/Controllers/AttachmentsController.php:37
+#: Http/Controllers/AttachmentsController.php:60
 msgid "File non caricato correttamente"
 msgstr "Die Datei wurde nicht korrekt hochgeladen"
 
@@ -691,226 +807,18 @@ msgstr ""
 "Überprüfe den Status deiner Zahlungen und deines Guthabens oder die von den "
 "Administrator/innen gesendeten Benachrichtigungen."
 
-#: Http/Controllers/BookingUserController.php:263
-#, php-format
-msgid "Dettaglio Consegne ordini %s.pdf"
-msgstr "Bestell-und Lieferuebersicht %s.pdf"
-
-#: Http/Controllers/ImportController.php:62
-msgid "File non caricato correttamente, possibili problemi con la dimensione"
-msgstr ""
-"Die Datei wurde nicht korrekt hochgeladen, mögliche Probleme mit der Größe"
-
-#: Http/Controllers/ImportController.php:73
-#: Http/Controllers/ImportController.php:205
-#: Http/Controllers/ImportController.php:528
-#: Http/Controllers/ImportController.php:679
-msgid "Impossibile interpretare il file"
-msgstr "Die Datei kann nicht gelesen werden"
-
-#: Http/Controllers/ImportController.php:90
-msgid "Errore nel salvataggio del file"
-msgstr "Fehler beim Speichern"
-
-#: Http/Controllers/ImportController.php:125
-msgid ""
-"Le categorie e le unità di misura il cui nome non sarà trovato tra quelle "
-"esistenti saranno create."
-msgstr "Nicht aufgelistete Kategorien und Maßeinheiten werden erstellt."
-
-#: Http/Controllers/ImportController.php:133
-msgid "Descrizione"
-msgstr "Beschreibung"
-
-#: Http/Controllers/ImportController.php:139
-msgid "Prezzo Unitario (senza IVA)"
-msgstr "Einzelpreis (ohne Mwst.)"
-
-#: Http/Controllers/ImportController.php:140
-msgid "Da usare in combinazione con Aliquota IVA"
-msgstr "Zu benutzen in Kombination mit dem jeweiligen Mehrwertsteuersatz"
-
-#: Http/Controllers/ImportController.php:143
-msgid "Aliquota IVA"
-msgstr "MwSt-Satz"
-
-#: Http/Controllers/ImportController.php:146 Iconable.php:388 Order.php:818
-#: Product.php:292
-msgid "Categoria"
-msgstr "Kategorie"
-
-#: Http/Controllers/ImportController.php:149 Order.php:801 Order.php:882
-#: Product.php:289
-msgid "Unità di Misura"
-msgstr "Maßeinheit"
-
-#: Http/Controllers/ImportController.php:152 Order.php:763 Product.php:286
-msgid "Codice Fornitore"
-msgstr "Artikelnummer Lieferant"
-
-#: Http/Controllers/ImportController.php:155 Product.php:308
-msgid "Dimensione Confezione"
-msgstr "Packungsmaße"
-
-#: Http/Controllers/ImportController.php:158
-msgid "Prezzo Confezione"
-msgstr "Preis der Verpackungseinheit"
-
-#: Http/Controllers/ImportController.php:159
-msgid ""
-"Se specificato, il prezzo unitario viene calcolato come Prezzo Confezione / "
-"Dimensione Confezione"
-msgstr ""
-"Wenn genauer angegeben, wird der Einheitspreis als Preis für die "
-"Verpackungseinheit / Gebindegröße berechnet"
-
-#: Http/Controllers/ImportController.php:165
-msgid "Ordine Minimo"
-msgstr "Mindestbestellung"
-
-#: Http/Controllers/ImportController.php:168
-msgid "Ordinabile per Multipli"
-msgstr "Bestellbar bei Vielfachen"
-
-#: Http/Controllers/ImportController.php:189
-msgid "Colonna obbligatoria non specificata: nome del prodotto"
-msgstr "Unbestimmte Pflichtspalte: Produktname"
-
-#: Http/Controllers/ImportController.php:194
-#: Http/Controllers/ImportController.php:435
-msgid "Prodotti importati"
-msgstr "Importierte Produkte"
-
-#: Http/Controllers/ImportController.php:450
-msgid ""
-"Se il login è già esistente il relativo utente sarà aggiornato coi dati "
-"letti dal file."
-msgstr ""
-
-#: Http/Controllers/ImportController.php:451
-msgid ""
-"Altrimenti verrà inviata una email di invito con il link da visitare per "
-"accedere la prima volta e definire la propria password."
-msgstr ""
-
-#: Http/Controllers/ImportController.php:461
-msgid "Login"
-msgstr "Anmelden"
-
-#: Http/Controllers/ImportController.php:474
-msgid "Indirizzo (Via)"
-msgstr "Adresse (Straße)"
-
-#: Http/Controllers/ImportController.php:477
-msgid "Indirizzo (CAP)"
-msgstr "Adresse (PLZ)"
-
-#: Http/Controllers/ImportController.php:480
-msgid "Indirizzo (Città)"
-msgstr "Adresse (Stadt)"
-
-#: Http/Controllers/ImportController.php:483
-msgid "Data di Nascita"
-msgstr "Geburtsdatum"
-
-#: Http/Controllers/ImportController.php:484
-#: Http/Controllers/ImportController.php:491
-#: Http/Controllers/ImportController.php:495
-#: Http/Controllers/ImportController.php:654
-#, php-format
-msgid "Preferibilmente in formato YYYY-MM-DD (e.g. %s)"
-msgstr "Bevorzugt im Format JJJJ-MM-TT (z.B. %s)"
-
-#: Http/Controllers/ImportController.php:487 User.php:392
-msgid "Codice Fiscale"
-msgstr "Steuernummer"
-
-#: Http/Controllers/ImportController.php:490
-msgid "Membro da"
-msgstr "Mitglied seit"
-
-#: Http/Controllers/ImportController.php:494
-msgid "Ultimo Accesso"
-msgstr "Letzter Zugang"
-
-#: Http/Controllers/ImportController.php:498 Iconable.php:325
-#: SuspendableTrait.php:45
-msgid "Cessato"
-msgstr "Beendet"
-
-#: Http/Controllers/ImportController.php:499
-msgid "Indicare \"true\" o \"false\""
-msgstr "Anzeigen \"true\" oder \"false\""
-
-#: Http/Controllers/ImportController.php:502
-msgid "Credito Attuale"
-msgstr "Aktueller Kontostand"
-
-#: Http/Controllers/ImportController.php:523
-msgid "Colonna obbligatoria non specificata"
-msgstr "Unbestimmte Pflichtspalte"
-
-#: Http/Controllers/ImportController.php:631
-msgid "Utenti importati"
-msgstr "Importierte Nutzer"
-
-#: Http/Controllers/ImportController.php:649
-msgid ""
-"Gli utenti sono identificati per username o indirizzo mail (che deve essere "
-"univoco!)."
-msgstr ""
-"Die Benutzer werden über den Nutzernamen oder die E-Mail-Adresse "
-"identifiziert (letztere muss eindeutig sein!)."
-
-#: Http/Controllers/ImportController.php:653
-#: Http/Controllers/InvoicesController.php:376
-msgid "Data"
-msgstr "Datum"
-
-#: Http/Controllers/ImportController.php:660
-#: Http/Controllers/MovementsController.php:90 Order.php:917
-msgid "Note"
-msgstr "Bemerkungen"
-
-#: Http/Controllers/ImportController.php:663 User.php:51
-msgid "Utente"
-msgstr "Benutzer"
-
-#: Http/Controllers/ImportController.php:664
-msgid "Username o indirizzo e-mail"
-msgstr "Benutzername oder E-Mail-Adresse"
-
-#: Http/Controllers/ImportController.php:667 Order.php:756 Supplier.php:44
-msgid "Fornitore"
-msgstr "Lieferant"
-
-#: Http/Controllers/ImportController.php:668
+#: Http/Controllers/ImportController.php:49
 #, fuzzy
-#| msgid "Partita IVA"
-msgid "Nome o partita IVA"
-msgstr "USt.-IDNr"
+#| msgid "Importazione"
+msgid "Importazione fallita"
+msgstr "Import"
 
-#: Http/Controllers/ImportController.php:720
-#, php-format
-msgid "Utente non trovato: %s"
-msgstr "Benutzer nicht gefunden: %s"
-
-#: Http/Controllers/ImportController.php:738
-#, fuzzy, php-format
-#| msgid "File non trovato: %s"
-msgid "Fornitore non trovato: %s"
-msgstr "Datei nicht gefunden: %s"
-
-#: Http/Controllers/ImportController.php:834
-msgid "Movimenti importati"
-msgstr "Importierte Bewegungen"
-
-#: Http/Controllers/ImportController.php:841
+#: Http/Controllers/ImportController.php:64
 #, php-format
 msgid "Comando %s/%s non valido"
 msgstr "Ungültiger Befehl %s/%s"
 
-#: Http/Controllers/ImportController.php:963
+#: Http/Controllers/ImportController.php:186
 #, php-format
 msgid "Errore importando file GDXP: %s"
 msgstr "Fehler beim Import GDXP Datei: %s"
@@ -925,74 +833,79 @@ msgstr "Zahlung der Rechnung %s"
 msgid "Tipo movimento non riconosciuto durante il salvataggio della fattura"
 msgstr "Bewegung nicht anerkannt bei der Speicherung der Rechnung"
 
-#: Http/Controllers/InvoicesController.php:375
+#: Http/Controllers/InvoicesController.php:377
 #, php-format
 msgid "Esportazione fatture GAS %s.csv"
 msgstr "Rechnungen Export %s.csv"
 
-#: Http/Controllers/InvoicesController.php:376
-#: Http/Controllers/MovementsController.php:90
+#: Http/Controllers/InvoicesController.php:378
+#: Http/Controllers/MovementsController.php:91
 msgid "Tipo"
 msgstr "Typ"
 
-#: Http/Controllers/InvoicesController.php:376
+#: Http/Controllers/InvoicesController.php:378
 msgid "Da/A"
 msgstr "Von/An"
 
-#: Http/Controllers/InvoicesController.php:376
+#: Http/Controllers/InvoicesController.php:378 Importers/CSV/Movements.php:19
+msgid "Data"
+msgstr "Datum"
+
+#: Http/Controllers/InvoicesController.php:378
 msgid "Numero"
 msgstr "Nummer"
 
-#: Http/Controllers/InvoicesController.php:376
+#: Http/Controllers/InvoicesController.php:378
 msgid "Imponibile"
 msgstr "Bemessungsgrundlage"
 
-#: Http/Controllers/InvoicesController.php:376
+#: Http/Controllers/InvoicesController.php:378
 msgid "IVA"
 msgstr "MWSt"
 
-#: Http/Controllers/InvoicesController.php:381
+#: Http/Controllers/InvoicesController.php:383
 msgid "Ricevuta"
 msgstr "Beleg"
 
-#: Http/Controllers/InvoicesController.php:385
+#: Http/Controllers/InvoicesController.php:387
 msgid "Inviata"
 msgstr "Abgeschickt"
 
-#: Http/Controllers/MailController.php:42
+#: Http/Controllers/MailController.php:43
 #, php-format
 msgid "Impossibile inoltrare mail a %s: %s"
 msgstr "Es war nicht möglich, die E-Mail an %s: %s weiterzuleiten"
 
-#: Http/Controllers/MovementsController.php:89
-#, php-format
-msgid "Esportazione movimenti GAS %s.csv"
+#: Http/Controllers/MovementsController.php:88
+#, fuzzy, php-format
+#| msgid "Esportazione movimenti GAS %s.csv"
+msgid "Esportazione movimenti GAS %s.%s"
 msgstr "Export Bewegungen der Bestellgruppe %s.csv"
 
-#: Http/Controllers/MovementsController.php:90
+#: Http/Controllers/MovementsController.php:91
 msgid "Data Registrazione"
 msgstr "Eintragsdatum"
 
-#: Http/Controllers/MovementsController.php:90
+#: Http/Controllers/MovementsController.php:91
 msgid "Data Movimento"
 msgstr "Bewegungsdatum"
 
-#: Http/Controllers/MovementsController.php:90
+#: Http/Controllers/MovementsController.php:91
 msgid "Pagamento"
 msgstr "Bezahlung"
 
-#: Http/Controllers/MovementsController.php:90
+#: Http/Controllers/MovementsController.php:91
 msgid "Pagante"
 msgstr "Bezahlende"
 
-#: Http/Controllers/MovementsController.php:90
+#: Http/Controllers/MovementsController.php:91
 msgid "Pagato"
 msgstr "Bezahlt"
 
-#: Http/Controllers/MovementsController.php:105
-#, php-format
-msgid "Esportazione movimenti GAS %s"
-msgstr "Export Bewegungen der Bestellgemeinschaft %s"
+#: Http/Controllers/MovementsController.php:91 Importers/CSV/Movements.php:26
+#: Order.php:954
+msgid "Note"
+msgstr "Bemerkungen"
 
 #: Http/Controllers/MovementsController.php:277
 #, php-format
@@ -1011,10 +924,6 @@ msgstr "Restkredit"
 #: Http/Controllers/MovementsController.php:281
 msgid "Quota Pagata"
 msgstr "Bezahlter Betrag"
-
-#: Http/Controllers/MovementsController.php:283 User.php:407
-msgid "Luogo di Consegna"
-msgstr "Lieferort"
 
 #: Http/Controllers/MovementsController.php:293
 msgid "SI"
@@ -1035,28 +944,18 @@ msgstr "SEPA am %s.xml"
 msgid "Saldi Fornitori al %s.csv"
 msgstr "Krediten am %s.csv"
 
-#: Http/Controllers/MovementsController.php:388
-#: Http/Controllers/MovementsController.php:398
-#: Http/Controllers/MovementsController.php:410
-#: Http/Controllers/MovementsController.php:424
-#: Http/Controllers/MovementsController.php:438
+#: Http/Controllers/MovementsController.php:389
+#: Http/Controllers/MovementsController.php:399
+#: Http/Controllers/MovementsController.php:411
+#: Http/Controllers/MovementsController.php:425
+#: Http/Controllers/MovementsController.php:439
 msgid "Errore"
 msgstr "Fehler"
 
-#: Http/Controllers/OrdersController.php:83
-#: Http/Controllers/OrdersController.php:84
+#: Http/Controllers/OrdersController.php:49
+#: Http/Controllers/OrdersController.php:50
 msgid "Ordini Aperti"
 msgstr "Offene Bestellungen"
-
-#: Http/Controllers/OrdersController.php:454
-#, php-format
-msgid "Dettaglio Consegne ordine %s presso %s"
-msgstr "Bestellübersicht %s bei %s"
-
-#: Http/Controllers/OrdersController.php:536
-#, php-format
-msgid "Tabella Ordine %s presso %s.csv"
-msgstr "Gesamttabelle Bestellung %s bei %s.csv"
 
 #: Http/Controllers/PaymentController.php:68
 #, php-format
@@ -1077,320 +976,216 @@ msgstr "Rechnung %s"
 msgid "Parametri mancanti"
 msgstr "Fehlende Parameter"
 
-#: Http/Controllers/UsersController.php:73
+#: Http/Controllers/UsersController.php:69
 msgid "utenti.csv"
 msgstr "benutzer.csv"
 
-#: Iconable.php:59
-msgid "Puoi modificare il fornitore"
-msgstr "Änderungen des Lieferanten sind jetzt möglich"
+#: Importers/CSV/CSVImporter.php:47
+msgid "Impossibile interpretare il file"
+msgstr "Die Datei kann nicht gelesen werden"
 
-#: Iconable.php:65
-msgid "Puoi aprire nuovi ordini per il fornitore"
-msgstr "Sie dürfen neue Bestellungen eröffnen für den Lieferant"
+#: Importers/CSV/CSVImporter.php:58
+msgid "File non caricato correttamente, possibili problemi con la dimensione"
+msgstr ""
+"Die Datei wurde nicht korrekt hochgeladen, mögliche Probleme mit der Größe"
 
-#: Iconable.php:71
-msgid "Gestisci le consegne per il fornitore"
-msgstr "Lieferungen für den Lieferanten verwalten"
+#: Importers/CSV/CSVImporter.php:85
+msgid "Errore nel salvataggio del file"
+msgstr "Fehler beim Speichern"
 
-#: Iconable.php:79
-msgid "Immagine"
-msgstr "Bild"
+#: Importers/CSV/Movements.php:20 Importers/CSV/Users.php:49
+#: Importers/CSV/Users.php:56 Importers/CSV/Users.php:60
+#, php-format
+msgid "Preferibilmente in formato YYYY-MM-DD (e.g. %s)"
+msgstr "Bevorzugt im Format JJJJ-MM-TT (z.B. %s)"
 
-#: Iconable.php:85
-msgid "Accesso limitato"
-msgstr "Begrenzter Zugriff"
+#: Importers/CSV/Movements.php:29 User.php:53
+msgid "Utente"
+msgstr "Benutzer"
 
-#: Iconable.php:93
-msgid "Disabilitato"
-msgstr "Deaktiviert"
+#: Importers/CSV/Movements.php:30
+msgid "Username o indirizzo e-mail"
+msgstr "Benutzername oder E-Mail-Adresse"
 
-#: Iconable.php:99 SuspendableTrait.php:41
-msgid "Attivo"
-msgstr "Aktiviert"
+#: Importers/CSV/Movements.php:33 Order.php:767 Supplier.php:44
+msgid "Fornitore"
+msgstr "Lieferant"
 
-#: Iconable.php:105
-msgid "Scontato"
-msgstr "Ermäßigt"
+#: Importers/CSV/Movements.php:34
+#, fuzzy
+#| msgid "Partita IVA"
+msgid "Nome o partita IVA"
+msgstr "USt.-IDNr"
 
-#: Iconable.php:113
-msgid "Puoi modificare"
-msgstr "Änderungen sind jetzt möglich"
+#: Importers/CSV/Movements.php:51
+msgid ""
+"Gli utenti sono identificati per username o indirizzo mail (che deve essere "
+"univoco!)."
+msgstr ""
+"Die Benutzer werden über den Nutzernamen oder die E-Mail-Adresse "
+"identifiziert (letztere muss eindeutig sein!)."
 
-#: Iconable.php:119
-msgid "Gestisci le consegne"
-msgstr "Lieferungen verwalten"
+#: Importers/CSV/Movements.php:97
+#, php-format
+msgid "Utente non trovato: %s"
+msgstr "Benutzer nicht gefunden: %s"
 
-#: Iconable.php:125 Iconable.php:175 Order.php:927
-msgid "Prenotazioni Aperte"
-msgstr "Aktuell laufende Bestellungen"
+#: Importers/CSV/Movements.php:115
+#, fuzzy, php-format
+#| msgid "File non trovato: %s"
+msgid "Fornitore non trovato: %s"
+msgstr "Datei nicht gefunden: %s"
 
-#: Iconable.php:131 Iconable.php:182 Order.php:931
-msgid "In Sospeso"
-msgstr "In der Schwebe"
+#: Importers/CSV/Movements.php:225
+msgid "Movimenti importati"
+msgstr "Importierte Bewegungen"
 
-#: Iconable.php:137 Iconable.php:189 Order.php:928
-msgid "Prenotazioni Chiuse"
-msgstr "Abgeschlossene Bestellungen"
+#: Importers/CSV/Products.php:23
+msgid "Descrizione"
+msgstr "Beschreibung"
 
-#: Iconable.php:143 Iconable.php:196 Iconable.php:225 Iconable.php:285
-#: Order.php:929
-msgid "Consegnato"
-msgstr "Geliefert"
+#: Importers/CSV/Products.php:29
+msgid "Prezzo Unitario (senza IVA)"
+msgstr "Einzelpreis (ohne Mwst.)"
 
-#: Iconable.php:149 Iconable.php:203 Order.php:930
-msgid "Archiviato"
-msgstr "Archiviert"
+#: Importers/CSV/Products.php:30
+msgid "Da usare in combinazione con Aliquota IVA"
+msgstr "Zu benutzen in Kombination mit dem jeweiligen Mehrwertsteuersatz"
 
-#: Iconable.php:155 Iconable.php:210
-msgid "Confezioni Da Completare"
-msgstr "Zu komplettierende Gebinde"
+#: Importers/CSV/Products.php:48
+msgid "Prezzo Confezione"
+msgstr "Preis der Verpackungseinheit"
 
-#: Iconable.php:163
-msgid "Puoi modificare l'ordine"
-msgstr "Änderungen sind jetzt möglich"
+#: Importers/CSV/Products.php:49
+msgid ""
+"Se specificato, il prezzo unitario viene calcolato come Prezzo Confezione / "
+"Dimensione Confezione"
+msgstr ""
+"Wenn genauer angegeben, wird der Einheitspreis als Preis für die "
+"Verpackungseinheit / Gebindegröße berechnet"
 
-#: Iconable.php:169
-msgid "Gestisci le consegne per l'ordine"
-msgstr "Lieferungen für die Bestellung verwalten"
+#: Importers/CSV/Products.php:52
+#, fuzzy
+#| msgid "Persone in Famiglia"
+msgid "Peso (in KG)"
+msgstr "Familienmitglieder"
 
-#: Iconable.php:219 Iconable.php:279
-msgid "Da consegnare"
-msgstr "Zu liefern"
+#: Importers/CSV/Products.php:55
+msgid "Ordine Minimo"
+msgstr "Mindestbestellung"
 
-#: Iconable.php:231 Iconable.php:291
-msgid "Salvato"
-msgstr "Gespeichert"
+#: Importers/CSV/Products.php:58
+msgid "Ordinabile per Multipli"
+msgstr "Bestellbar bei Vielfachen"
 
-#: Iconable.php:239
-msgid "In Uscita"
-msgstr "Im Ausgang"
+#: Importers/CSV/Products.php:82
+msgid ""
+"Le categorie e le unità di misura il cui nome non sarà trovato tra quelle "
+"esistenti saranno create."
+msgstr "Nicht aufgelistete Kategorien und Maßeinheiten werden erstellt."
 
-#: Iconable.php:245
-msgid "Inoltrata"
-msgstr "Eingereicht"
+#: Importers/CSV/Products.php:242
+msgid "Prodotti importati"
+msgstr "Importierte Produkte"
 
-#: Iconable.php:253 Invoice.php:69
-msgid "In Attesa"
-msgstr "In der Warteschleife"
+#: Importers/CSV/Users.php:26
+msgid "Login"
+msgstr "Anmelden"
 
-#: Iconable.php:259 Invoice.php:70
-msgid "Da Verificare"
-msgstr "Zu verifizieren"
+#: Importers/CSV/Users.php:39
+msgid "Indirizzo (Via)"
+msgstr "Adresse (Straße)"
 
-#: Iconable.php:265 Invoice.php:71
-msgid "Verificata"
-msgstr "Kontrolle"
+#: Importers/CSV/Users.php:42
+msgid "Indirizzo (CAP)"
+msgstr "Adresse (PLZ)"
 
-#: Iconable.php:271 Invoice.php:72
-msgid "Pagata"
-msgstr "Bezahlt"
+#: Importers/CSV/Users.php:45
+msgid "Indirizzo (Città)"
+msgstr "Adresse (Stadt)"
 
-#: Iconable.php:303 Iconable.php:318 SuspendableTrait.php:43
-msgid "Sospeso"
-msgstr "Gesperrt"
+#: Importers/CSV/Users.php:48
+msgid "Data di Nascita"
+msgstr "Geburtsdatum"
 
-#: Iconable.php:309
-msgid "Eliminato"
-msgstr "Gelöscht"
+#: Importers/CSV/Users.php:55
+msgid "Membro da"
+msgstr "Mitglied seit"
 
-#: Iconable.php:334
-msgid "Credito < 0"
-msgstr "Kredit < 0"
+#: Importers/CSV/Users.php:63 SuspendableTrait.php:46 View/Icons/User.php:27
+msgid "Cessato"
+msgstr "Beendet"
 
-#: Iconable.php:347
-msgid "Quota non Pagata"
-msgstr "Beitrag nicht bezahlt"
+#: Importers/CSV/Users.php:64
+msgid "Indicare \"true\" o \"false\""
+msgstr "Anzeigen \"true\" oder \"false\""
 
-#: Iconable.php:363
-msgid "In Entrata"
-msgstr "Im Eingang"
+#: Importers/CSV/Users.php:67
+msgid "Credito Attuale"
+msgstr "Aktueller Kontostand"
 
-#: Iconable.php:372 Providers/MenuServiceProvider.php:56
-msgid "Multi-GAS"
-msgstr "Multi-Bestellgemeinschaft"
+#: Importers/CSV/Users.php:83
+msgid ""
+"Se il login è già esistente il relativo utente sarà aggiornato coi dati "
+"letti dal file."
+msgstr ""
 
-#: Iconable.php:405
-msgid "Ruolo"
-msgstr "Rolle"
+#: Importers/CSV/Users.php:84
+msgid ""
+"Altrimenti verrà inviata una email di invito con il link da visitare per "
+"accedere la prima volta e definire la propria password."
+msgstr ""
+
+#: Importers/CSV/Users.php:201
+msgid "Utenti importati"
+msgstr "Importierte Nutzer"
 
 #: Invoice.php:29
 msgid "Fattura"
 msgstr "Rechnung"
 
-#: Invoice.php:136 Order.php:1061
+#: Invoice.php:69 View/Icons/Invoice.php:14
+msgid "In Attesa"
+msgstr "In der Warteschleife"
+
+#: Invoice.php:70 View/Icons/Invoice.php:20
+msgid "Da Verificare"
+msgstr "Zu verifizieren"
+
+#: Invoice.php:71 View/Icons/Invoice.php:26
+msgid "Verificata"
+msgstr "Kontrolle"
+
+#: Invoice.php:72 View/Icons/Invoice.php:32
+msgid "Pagata"
+msgstr "Bezahlt"
+
+#: Invoice.php:136 Order.php:1149
 msgid "Saldo Fornitore"
 msgstr "Betrag Lieferant"
 
-#: Modifier.php:50
+#: ModifiedValue.php:103 Order.php:905
+msgid "Prenotato"
+msgstr "Bestellt"
+
+#: ModifiedValue.php:103 Order.php:911 Order.php:968
+#: View/Icons/Aggregate.php:46 View/Icons/AggregateBooking.php:20
+#: View/Icons/Booking.php:20 View/Icons/Order.php:47
+msgid "Consegnato"
+msgstr "Geliefert"
+
+#: Modifier.php:51
 #, fuzzy
 #| msgid "Nessuno"
 msgid "Nessun Valore"
 msgstr "Kein"
 
-#: Modifier.php:91
-#, fuzzy
-#| msgid "Quantità"
-msgid "la quantità"
-msgstr "Anzahl"
-
-#: Modifier.php:92
-#, fuzzy
-#| msgid "Valore"
-msgid "il valore"
-msgstr "Wert"
-
-#: Modifier.php:93
-msgid "il peso"
-msgstr ""
-
-#: Modifier.php:98
-#, fuzzy
-#| msgid "Link per le prenotazioni"
-msgid "di prodotto nella prenotazione"
-msgstr "Link zu den Bestellungen"
-
-#: Modifier.php:99
-#, fuzzy
-#| msgid "Data di chiusura dell'ordine"
-msgid "di prodotto nell'ordine"
-msgstr "Ende der Bestellfrist"
-
-#: Modifier.php:101
-#, fuzzy
-#| msgid "Annulla Prenotazione"
-msgid "della prenotazione"
-msgstr "Vorbestellung stornieren"
-
-#: Modifier.php:102
-msgid "dell'ordine"
-msgstr ""
-
-#: Modifier.php:104
-msgid "della prenotazione destinata al luogo"
-msgstr ""
-
-#: Modifier.php:105
-msgid "dell'ordine destinato al luogo"
-msgstr ""
-
-#: Modifier.php:109
-#, fuzzy
-#| msgid "Minore di"
-msgid "è minore di"
-msgstr "Weniger als"
-
-#: Modifier.php:110
-#, fuzzy
-#| msgid "Maggiore di"
-msgid "è maggiore di"
-msgstr "Größer als"
-
-#: Modifier.php:119
-msgid "Prodotti"
-msgstr "Produkte"
-
-#: Modifier.php:121
-msgid "Chili"
-msgstr "KG"
-
-#: Modifier.php:125 Modifier.php:128
-#, fuzzy
-#| msgid "Nome e descrizione del prodotto"
-msgid "somma al costo del prodotto"
-msgstr "Name und Beschreibung des Produktes"
-
-#: Modifier.php:126 Modifier.php:129
-msgid "somma al costo della prenotazione"
-msgstr ""
-
-#: Modifier.php:127 Modifier.php:130
-#, fuzzy
-#| msgid "Data di chiusura dell'ordine"
-msgid "somma al costo dell'ordine"
-msgstr "Ende der Bestellfrist"
-
-#: Modifier.php:131 Modifier.php:134
-#, fuzzy
-#| msgid "Quantità complessivamente consegnata del prodotto"
-msgid "sottrai al costo del prodotto"
-msgstr "Gelieferte Gesamtmenge des Produktes"
-
-#: Modifier.php:132 Modifier.php:135
-msgid "sottrai al costo della prenotazione"
-msgstr ""
-
-#: Modifier.php:133 Modifier.php:136
-#, fuzzy
-#| msgid "Data di chiusura dell'ordine"
-msgid "sottrai al costo dell'ordine"
-msgstr "Ende der Bestellfrist"
-
-#: Modifier.php:137 Modifier.php:140
-msgid "rispetto al costo del prodotto, calcola"
-msgstr ""
-
-#: Modifier.php:138 Modifier.php:141
-msgid "rispetto al costo della prenotazione, calcola"
-msgstr ""
-
-#: Modifier.php:139 Modifier.php:142
-#, fuzzy
-#| msgid "Data di chiusura dell'ordine"
-msgid "rispetto al costo dell'ordine, calcola"
-msgstr "Ende der Bestellfrist"
-
-#: Modifier.php:143 Modifier.php:144 Modifier.php:145
-#, fuzzy
-#| msgid "Prezzo Unitario"
-msgid "applica il prezzo unitario"
-msgstr "Stückpreis"
-
-#: Modifier.php:150
-#, fuzzy
-#| msgid "Totale prezzo della quantità prenotata"
-msgid "e distribuiscilo in base alle quantità prenotate"
-msgstr "Gesamtsumme der Vorbestellung"
-
-#: Modifier.php:151
-msgid "e distribuiscilo in base al valore delle prenotazioni"
-msgstr ""
-
-#: Modifier.php:152
-msgid "e distribuiscilo in base al peso delle prenotazioni"
-msgstr ""
-
-#: Modifier.php:165
-#, php-format
-msgid "Se %s %s %s"
-msgstr ""
-
-#: MovementType.php:33
-msgid "Contanti"
-msgstr "Bargeld"
-
-#: MovementType.php:42
-msgid "Bonifico"
-msgstr "Überweisung"
-
-#: MovementType.php:51
-msgid "Credito Utente"
-msgstr "Kontostand Benutzer"
-
-#: MovementType.php:89
-msgid "SEPA"
-msgstr ""
-
-#: MovementType.php:107 User.php:145
-msgid "Non Specificato"
-msgstr "Nicht spezifiziert"
-
-#: MovementType.php:437
+#: MovementType.php:44
 #, php-format
 msgid "Applicazione movimento su oggetto nullo: %s"
 msgstr "Bewegung auf ungültiges Objekt: %s"
 
-#: Notifications/BookingNotification.php:22
+#: Notifications/BookingNotification.php:30
 #, php-format
 msgid "Riassunto prenotazione del GAS: %s - consegna %s"
 msgstr "GAS-Buchungsübersicht: %s – Lieferung %s"
@@ -1399,60 +1194,97 @@ msgstr "GAS-Buchungsübersicht: %s – Lieferung %s"
 msgid "Ordine chiuso automaticamente"
 msgstr "Automatisch geschlossene Bestellung"
 
-#: Notifications/GenericNotificationWrapper.php:27
+#: Notifications/GenericNotificationWrapper.php:25
 #, fuzzy, php-format
 #| msgid "Nuova notifica dal GAS"
 msgid "Nuova notifica da %s"
 msgstr "Neue Benachrichtigung von der solidarischen Bestellgemeinschaft (GAS)"
 
-#: Notifications/NewUserNotification.php:19
+#: Notifications/NewUserNotification.php:22
 msgid "Nuovo utente registrato"
 msgstr "Neuer Benutzer registriert"
 
-#: Order.php:40
+#: Observers/MovementObserver.php:23
+msgid ""
+"Movimento: tentata modifica di movimento già storicizzato in bilancio passato"
+msgstr ""
+"Bewegung: Eine Bewegung wurde nicht geändert, die schon protokolliert wurde"
+
+#: Observers/MovementObserver.php:33
+#, php-format
+msgid "Movimento %d: sender_type non coerente (%s != %s)"
+msgstr "Bewegung %d: sender_type non coerente (%s != %s)"
+
+#: Observers/MovementObserver.php:44
+#, php-format
+msgid "Movimento %d: target_type non coerente (%s != %s)"
+msgstr "Bewegung %d: target_type non coerente (%s != %s)"
+
+#: Observers/MovementObserver.php:59
+#, php-format
+msgid "Movimento %d: metodo \"%s\" non permesso su tipo \"%s\""
+msgstr "Bewegung %d: metodo %s non permesso su tipo \"%s\""
+
+#: Observers/MovementObserver.php:64
+msgid "Movimento: ammontare negativo non permesso"
+msgstr "Bewegung: negative Nummer nicht erlaubt"
+
+#: Observers/MovementObserver.php:97
+msgid "Movimento: salvataggio negato da pre-callback"
+msgstr "Bewegung: Speichern von pre-callback nicht erlaubt"
+
+#: Observers/UserObserver.php:17 Observers/UserObserver.php:57
+msgid "Username già assegnato"
+msgstr "Benutzername schon gebraucht"
+
+#: Observers/UserObserver.php:63
+msgid "Numero tessera già assegnato"
+msgstr "Mitgliedsnummer schon gebraucht"
+
+#: Order.php:41
 msgid "Ordine"
 msgstr "Bestellung"
 
-#: Order.php:126
+#: Order.php:134
 #, php-format
 msgid "da %s a %s"
 msgstr "von %s bis %s"
 
-#: Order.php:129
+#: Order.php:137
 #, php-format
 msgid ", in consegna %s"
 msgstr ", für die Auslieferung am %s"
 
-#: Order.php:376
+#: Order.php:379
 #, php-format
 msgid "Prodotti ordine %s presso %s"
 msgstr "Produkte der Bestellung %s bei %s"
 
-#: Order.php:641
+#: Order.php:644
 msgid "Totale"
 msgstr "Gesamtbetrag"
 
-#: Order.php:746
+#: Order.php:757
 msgid "Nome Prodotto"
 msgstr "Produktname"
 
-#: Order.php:787
+#: Order.php:798
 msgid "Numero Confezioni"
 msgstr "Verpackungsanzahl"
 
-#: Order.php:835 Order.php:872
+#: Order.php:846 Order.php:883
 msgid "Prezzo"
 msgstr "Preis"
 
-#: Order.php:848
+#: Order.php:859
 msgid "Note Prodotto"
 msgstr "Anmerkungen"
 
-#: Order.php:862
+#: Order.php:873
 msgid "Selezione"
 msgstr "Auswahl"
 
-#: Order.php:863
+#: Order.php:874
 msgid ""
 "Per abilitare o disabilitare prodotti del listino fornitore all'interno "
 "dell'ordine"
@@ -1460,89 +1292,265 @@ msgstr ""
 "Um Produkte aus der Liste des Lieferanten innerhalb der Bestellung zu "
 "aktivieren oder deaktivieren"
 
-#: Order.php:868
+#: Order.php:879
 msgid "Nome e descrizione del prodotto"
 msgstr "Name und Beschreibung des Produktes"
 
-#: Order.php:873
-msgid "Prezzo unitario (editabile) del prodotto"
+#: Order.php:884
+#, fuzzy
+#| msgid "Prezzo unitario (editabile) del prodotto"
+msgid "Prezzo unitario del prodotto"
 msgstr "Einheitspreis ( zu Veröffentlichen) vom Produkt"
 
-#: Order.php:877 Product.php:323
-msgid "Disponibile"
-msgstr "Verfügbar"
-
-#: Order.php:878
-msgid "Quantità disponibile (editabile) del prodotto"
+#: Order.php:889
+#, fuzzy
+#| msgid "Quantità disponibile (editabile) del prodotto"
+msgid "Quantità disponibile del prodotto"
 msgstr "Produktmengen Zur Verfügung (zu veröffentlichen)"
 
-#: Order.php:883
+#: Order.php:906
+msgid ""
+"Modificatore Prodotto, sul Prenotato. Mostrato solo se il modificatore è "
+"attivo per un qualche prodotto nell'ordine"
+msgstr ""
+
+#: Order.php:912
+msgid ""
+"Modificatore Prodotto, sul Consegnato. Mostrato solo se il modificatore è "
+"attivo per un qualche prodotto nell'ordine"
+msgstr ""
+
+#: Order.php:920
 msgid "Unità di misura assegnata al prodotto"
 msgstr "Dem Produkt zugewiesene Maßeinheit"
 
-#: Order.php:887
+#: Order.php:924
 msgid "Quantità Prenotata"
 msgstr "Menge Vorbestellung"
 
-#: Order.php:888
+#: Order.php:925
 msgid "Quantità complessivamente prenotata del prodotto"
 msgstr "Vorbestellte Gesamtmenge des Produktes"
 
-#: Order.php:892
+#: Order.php:929
 #, fuzzy
 #| msgid "Prenotato"
 msgid "Peso Prenotato"
 msgstr "Bestellt"
 
-#: Order.php:893
+#: Order.php:930
 #, fuzzy
 #| msgid "Quantità complessivamente prenotata del prodotto"
 msgid "Peso complessivamente prenotato del prodotto"
 msgstr "Vorbestellte Gesamtmenge des Produktes"
 
-#: Order.php:897
+#: Order.php:934
 msgid "Totale Prezzo"
 msgstr "Gesamtpreis"
 
-#: Order.php:898
+#: Order.php:935
 msgid "Totale prezzo della quantità prenotata"
 msgstr "Gesamtsumme der Vorbestellung"
 
-#: Order.php:902
+#: Order.php:939
 msgid "Quantità Consegnata"
 msgstr "Gelieferte Menge"
 
-#: Order.php:903
+#: Order.php:940
 msgid "Quantità complessivamente consegnata del prodotto"
 msgstr "Gelieferte Gesamtmenge des Produktes"
 
-#: Order.php:907
+#: Order.php:944
 #, fuzzy
 #| msgid "Consegnato"
 msgid "Peso Consegnato"
 msgstr "Geliefert"
 
-#: Order.php:908
+#: Order.php:945
 #, fuzzy
 #| msgid "Quantità complessivamente consegnata del prodotto"
 msgid "Peso complessivamente consegnato del prodotto"
 msgstr "Gelieferte Gesamtmenge des Produktes"
 
-#: Order.php:912
+#: Order.php:949
 msgid "Totale Consegnato"
 msgstr "Gesamtbetrag Lieferung"
 
-#: Order.php:913
+#: Order.php:950
 msgid "Totale prezzo della quantità consegnata"
 msgstr "Gesamtsumme der Lieferung"
 
-#: Order.php:918
+#: Order.php:955
 msgid ""
 "Pannello da cui modificare direttamente le quantità di prodotto in ogni "
 "prenotazione, ed aggiungere note per il fornitore"
 msgstr ""
 "Feld in dem die Bestellmenge jeder Vorbestellung angepasst und Kommentare an "
 "den Lieferanten hinzugefügt werden können"
+
+#: Order.php:966 View/Icons/Aggregate.php:28 View/Icons/Order.php:26
+msgid "Prenotazioni Aperte"
+msgstr "Aktuell laufende Bestellungen"
+
+#: Order.php:967 View/Icons/Aggregate.php:40 View/Icons/Order.php:40
+msgid "Prenotazioni Chiuse"
+msgstr "Abgeschlossene Bestellungen"
+
+#: Order.php:969 View/Icons/Aggregate.php:52 View/Icons/Order.php:54
+msgid "Archiviato"
+msgstr "Archiviert"
+
+#: Order.php:970 View/Icons/Aggregate.php:34 View/Icons/Order.php:33
+msgid "In Sospeso"
+msgstr "In der Schwebe"
+
+#: Parameters/Config/MailManualWelcome.php:20
+#: Parameters/Config/MailWelcome.php:20
+msgid "Benvenuto!"
+msgstr "Willkommen!"
+
+#: Parameters/Config/MailManualWelcome.php:21
+msgid ""
+"Sei stato invitato a %[gas_name]!\n"
+"\n"
+"Per accedere la prima volta clicca il link qui sotto.\n"
+"%[gas_access_link]\n"
+"\n"
+"In futuro potrai accedere usando quest'altro link, lo username "
+"\"%[username]\" e la password che avrai scelto.\n"
+"%[gas_login_link]\n"
+msgstr ""
+
+#: Parameters/Config/MailNewOrder.php:20
+msgid "Nuovo Ordine Aperto per %[supplier_name]"
+msgstr "Neue Bestellung eröffnet für %[supplier_name]"
+
+#: Parameters/Config/MailNewOrder.php:21
+msgid ""
+"È stato aperto da %[gas_name] un nuovo ordine per il fornitore "
+"%[supplier_name].\n"
+"Per partecipare, accedi al seguente indirizzo:\n"
+"%[gas_booking_link]\n"
+"Le prenotazioni verranno chiuse %[closing_date]"
+msgstr ""
+"Eine neue Bestellung wurde eröffnet von der %[gas_name] für den Lieferanten "
+"%[supplier_name].\n"
+"Um daran teilzunehmen, melde dich über folgenden Link an: \n"
+"%[gas_booking_link]\n"
+"Die Bestellfrist endet am %[closing_date]"
+
+#: Parameters/Config/MailPasswordReset.php:20
+msgid "Recupero Password"
+msgstr "Passwort wiederherstellen"
+
+#: Parameters/Config/MailPasswordReset.php:21
+msgid ""
+"È stato chiesto l'aggiornamento della tua password su GASdotto.\n"
+"Clicca il link qui sotto per aggiornare la tua password, o ignora la mail se "
+"non hai chiesto tu questa operazione.\n"
+"%[gas_reset_link]"
+msgstr ""
+"Es wurde eine Anfrage zur Aktualisierung deines GASdotto-Passwortes "
+"gestellt.\n"
+"Klicke unten auf den Link, um das Passwort zu aktualisieren. Falls du das "
+"Neusetzen des Passwortes nicht angefragt hast, ignoriere diese E-Mail.\n"
+"%[gas_reset_link]"
+
+#: Parameters/Config/MailReceipt.php:20
+msgid "Nuova fattura da %[gas_name]"
+msgstr "Neue Rechnung von %[gas_name]"
+
+#: Parameters/Config/MailReceipt.php:21
+msgid "In allegato l'ultima fattura da %[gas_name]"
+msgstr "Im Anhang die letzte Rechnung von %[gas_name]"
+
+#: Parameters/Config/MailSupplierSummary.php:20
+#, fuzzy
+#| msgid "Prenotazioni Coinvolte"
+msgid "Prenotazione ordine %[gas_name]"
+msgstr "Beteiligte Bestellungen"
+
+#: Parameters/Config/MailSupplierSummary.php:21
+msgid ""
+"Buongiorno.\n"
+"In allegato trova - in duplice copia, PDF e CSV - la prenotazione "
+"dell'ordine da parte di %[gas_name].\n"
+"Per segnalazioni, può rivolgersi ai referenti in copia a questa mail.\n"
+"Grazie."
+msgstr ""
+
+#: Parameters/Config/MailWelcome.php:21
+msgid ""
+"Benvenuto in %[gas_name]!\n"
+"In futuro potrai accedere usando il link qui sotto, lo username "
+"\"%[username]\" e la password da te scelta.\n"
+"%[gas_login_link]\n"
+"Una mail di notifica è stata inviata agli amministratori."
+msgstr ""
+"Willkommen im Bestellsystem von %[gas_name]!\n"
+"In Zukunft kannst du dich über folgenden Link mit deinem Nutzernamen "
+"„%[username]“ und dem von dir gewählten Passwort anmelden.\n"
+"%[gas_login_link]\n"
+"Eine Benachrichtigungs-E-Mail wurde an die Administrator*innen geschickt."
+
+#: Parameters/ModifierType/Discount.php:14
+msgid "Sconto"
+msgstr "Skonto"
+
+#: Parameters/ModifierType/ShippingAdjust.php:21
+msgid "Arrotondamento Consegna Manuale"
+msgstr ""
+
+#: Parameters/ModifierType/TransportCost.php:14
+msgid "Spese Trasporto"
+msgstr "Frachtkosten"
+
+#: Parameters/PaymentType/Bank.php:15
+msgid "Bonifico"
+msgstr "Überweisung"
+
+#: Parameters/PaymentType/Cash.php:15
+msgid "Contanti"
+msgstr "Bargeld"
+
+#: Parameters/PaymentType/Credit.php:15
+msgid "Credito Utente"
+msgstr "Kontostand Benutzer"
+
+#: Parameters/PaymentType/Sepa.php:20
+msgid "SEPA"
+msgstr ""
+
+#: Printers/Aggregate.php:21
+#, fuzzy
+#| msgid "Totale Complessivo"
+msgid "Complessivo"
+msgstr "Gesamtbetrag"
+
+#: Printers/Aggregate.php:104
+msgid "Dettaglio Consegne Ordini"
+msgstr "Lieferungsdetail"
+
+#: Printers/Aggregate.php:186
+#, fuzzy
+#| msgid "Prodotti"
+msgid "Prodotti Ordini"
+msgstr "Produkte"
+
+#: Printers/AggregateBooking.php:26
+#, php-format
+msgid "Dettaglio Consegne ordini %s.pdf"
+msgstr "Bestell-und Lieferuebersicht %s.pdf"
+
+#: Printers/Order.php:46
+#, php-format
+msgid "Dettaglio Consegne ordine %s presso %s"
+msgstr "Bestellübersicht %s bei %s"
+
+#: Printers/Order.php:130
+#, php-format
+msgid "Tabella Ordine %s presso %s.csv"
+msgstr "Gesamttabelle Bestellung %s bei %s.csv"
 
 #: Product.php:140
 msgid "(prodotto a prezzo variabile)"
@@ -1552,231 +1560,68 @@ msgstr "(Produkt mit variablem Preis)"
 msgid "(variabile)"
 msgstr "(variabel)"
 
-#: Product.php:249
+#: Product.php:200
 #, php-format
 msgid "Minimo: %.02f"
 msgstr "Mindest: %.02f"
 
-#: Product.php:252
+#: Product.php:203
 #, php-format
 msgid "Massimo Consigliato: %.02f"
 msgstr "Empfohlenes Maximum: %.02f"
 
-#: Product.php:263
+#: Product.php:214
 #, php-format
 msgid "Mancano %s %s per completare la confezione per questo ordine"
 msgstr ""
 
-#: Product.php:262
+#: Product.php:213
 #, fuzzy, php-format
 #| msgid "Disponibile"
 msgid "%s Disponibile: %.02f"
 msgstr "Verfügbar"
 
-#: Product.php:268
+#: Product.php:219
 #, php-format
 msgid "Disponibile: %.02f (%.02f totale)"
 msgstr "Verfügbar: %.02f (%.02f Gesamtbetrag)"
 
-#: Product.php:272
+#: Product.php:223
 #, php-format
 msgid "Multiplo: %.02f"
 msgstr "Multiplikator: %.02f"
 
-#: Product.php:299
-msgid "Ordinabile"
-msgstr "Bestellbar"
-
-#: Product.php:302
-msgid "Pezzatura"
-msgstr "Gebindegröße"
-
-#: Product.php:305
-msgid "Variabile"
-msgstr ""
-
-#: Product.php:314
-msgid "Multiplo"
-msgstr "Vielfaches"
-
-#: Product.php:317
-msgid "Minimo"
-msgstr "Minimum"
-
-#: Product.php:320
-msgid "Massimo Consigliato"
-msgstr "Empfohlenes Maximum"
-
-#: Product.php:345
-msgid "Si"
-msgstr ""
-
-#: Product.php:345
-#, fuzzy
-#| msgid "Nome"
-msgid "No"
-msgstr "Vorname"
-
-#: Providers/MenuServiceProvider.php:21
+#: Providers/MenuServiceProvider.php:13
 msgid "Home"
 msgstr "Home"
 
-#: Providers/MenuServiceProvider.php:26
-msgid "Utenti"
-msgstr "Benutzer"
-
-#: Providers/MenuServiceProvider.php:34 Supplier.php:199
+#: Providers/MenuServiceProvider.php:34 Supplier.php:191
 msgid "Ordini"
 msgstr "Bestellungen"
 
-#: Providers/MenuServiceProvider.php:38
+#: Providers/MenuServiceProvider.php:41
 msgid "Prenotazioni"
 msgstr "Bestellen"
 
-#: Providers/MenuServiceProvider.php:42
+#: Providers/MenuServiceProvider.php:48
 msgid "Contabilità"
 msgstr "Buchhaltung"
 
-#: Providers/MenuServiceProvider.php:46
+#: Providers/MenuServiceProvider.php:55
 msgid "Statistiche"
 msgstr "Statistiken"
 
-#: Providers/MenuServiceProvider.php:49
+#: Providers/MenuServiceProvider.php:61
 msgid "Notifiche"
 msgstr "Benachrichtigungen"
 
-#: Providers/MenuServiceProvider.php:52
+#: Providers/MenuServiceProvider.php:67
 msgid "Configurazioni"
 msgstr "Einstellungen"
 
-#: Providers/MovementsKeeper.php:25
-msgid ""
-"Movimento: tentata modifica di movimento già storicizzato in bilancio passato"
-msgstr ""
-"Bewegung: Eine Bewegung wurde nicht geändert, die schon protokolliert wurde"
-
-#: Providers/MovementsKeeper.php:35
-#, php-format
-msgid "Movimento %d: sender_type non coerente (%s != %s)"
-msgstr "Bewegung %d: sender_type non coerente (%s != %s)"
-
-#: Providers/MovementsKeeper.php:46
-#, php-format
-msgid "Movimento %d: target_type non coerente (%s != %s)"
-msgstr "Bewegung %d: target_type non coerente (%s != %s)"
-
-#: Providers/MovementsKeeper.php:60
-#, php-format
-msgid "Movimento %d: metodo \"%s\" non permesso su tipo \"%s\""
-msgstr "Bewegung %d: metodo %s non permesso su tipo \"%s\""
-
-#: Providers/MovementsKeeper.php:65
-msgid "Movimento: ammontare negativo non permesso"
-msgstr "Bewegung: negative Nummer nicht erlaubt"
-
-#: Providers/MovementsKeeper.php:103
-msgid "Movimento: salvataggio negato da pre-callback"
-msgstr "Bewegung: Speichern von pre-callback nicht erlaubt"
-
-#: Role.php:450
-msgid "Accesso consentito anche in manutenzione"
-msgstr "Zugänglich auch während der Wartung"
-
-#: Role.php:451
-msgid "Modificare tutti i permessi"
-msgstr "Alle Erlaubnisse ändern"
-
-#: Role.php:452
-msgid "Modificare le configurazioni del GAS"
-msgstr "Einstellungen der Bestellgemeinschaft ändern"
-
-#: Role.php:453
-msgid "Creare nuovi fornitori"
-msgstr "Neue Lieferanten erstellen"
-
-#: Role.php:454
-msgid "Effettuare ordini"
-msgstr "Bestellen"
-
-#: Role.php:455
-msgid "Vedere tutti i fornitori"
-msgstr "Alle Lieferanten anzeigen"
-
-#: Role.php:456
-#, fuzzy
-#| msgid "Vedere tutti gli utenti"
-msgid "Vedere tutti gli ordini"
-msgstr "Alle Benutzer ansehen"
-
-#: Role.php:457
-msgid "Modificare la propria anagrafica"
-msgstr "Die persönlichen Angaben anpassen"
-
-#: Role.php:458
-#, fuzzy
-#| msgid "Amministrare le categorie"
-msgid "Amministrare gli utenti"
-msgstr "Kategorien verwalten"
-
-#: Role.php:459
-msgid "Vedere tutti gli utenti"
-msgstr "Alle Benutzer ansehen"
-
-#: Role.php:460
-msgid "Avere sotto-utenti con funzioni limitate"
-msgstr "Mitbenutzer (Freunde) haben mit eingeschränkten Rechten"
-
-#: Role.php:461
-msgid "Amministrare i movimenti contabili degli utenti"
-msgstr "Buchungsbewegungen der Nutzer verwalten"
-
-#: Role.php:462
-msgid "Amministrare tutti i movimenti contabili"
-msgstr "Alle hauptbucheinträge verwalten"
-
-#: Role.php:463
-msgid "Vedere i movimenti contabili"
-msgstr "Hauptbucheinträge ansehen"
-
-#: Role.php:464
-msgid "Amministrare i tipi dei movimenti contabili"
-msgstr "Typen der Hauptbucheinträgen verwalten"
-
-#: Role.php:465
-msgid "Amministrare le categorie"
-msgstr "Kategorien verwalten"
-
-#: Role.php:466
-msgid "Amministrare le unità di misura"
-msgstr "Maßeinheiten verwalten"
-
-#: Role.php:467
-msgid "Visualizzare le statistiche"
-msgstr "Statistiken ansehen"
-
-#: Role.php:468
-msgid "Amministrare le notifiche"
-msgstr "Benachrichtigungen verwalten"
-
-#: Role.php:469
-msgid "Amministrare i GAS su questa istanza"
-msgstr "Bestellgruppen administrieren auf dieser Instanz"
-
-#: Role.php:472
-msgid "Modificare i fornitori assegnati"
-msgstr "Beauftragte Lieferanten ändern"
-
-#: Role.php:473
-msgid "Aprire e modificare ordini"
-msgstr "Bestellungen öffnen und ändern"
-
-#: Role.php:474
-msgid "Effettuare le consegne"
-msgstr "Lieferungen eintragen"
-
-#: Role.php:475
-msgid "Amministrare i movimenti contabili"
-msgstr "Buchungen administrieren"
+#: Providers/MenuServiceProvider.php:74 View/Icons/Aggregate.php:67
+msgid "Multi-GAS"
+msgstr "Multi-Bestellgemeinschaft"
 
 #: Rules/Captcha.php:18
 msgid "Il codice di controllo è sbagliato"
@@ -1786,71 +1631,272 @@ msgstr "Die Prüfziffern sind falsch"
 msgid "L'indirizzo e-mail è già registrato."
 msgstr ""
 
-#: Services/MovementsService.php:169 Services/MovementsService.php:185
+#: Services/MovementsService.php:168 Services/MovementsService.php:184
 msgid "Salvataggio fallito"
 msgstr "Fehlerhafte Speicherung"
 
-#: Services/MovementsService.php:232 Services/MovementsService.php:297
+#: Services/MovementsService.php:231 Services/MovementsService.php:296
 #, php-format
 msgid "Errore nel ricalcolo saldi: %s"
 msgstr "Fehler während der Wiederberechnung der Kontostände: %s"
 
-#: Services/SuppliersService.php:143
+#: Services/SuppliersService.php:149
 #, php-format
 msgid "Listino %s.%s"
 msgstr "Liste %s.%s"
 
-#: Services/UsersService.php:72 Services/UsersService.php:113
-#: Services/UsersService.php:190
-msgid "Username già assegnato"
-msgstr "Benutzername schon gebraucht"
-
-#: Services/UsersService.php:199
-msgid "Numero tessera già assegnato"
-msgstr "Mitgliedsnummer schon gebraucht"
-
-#: Supplier.php:114
+#: Supplier.php:119
 msgid "Listino PDF (autogenerato)"
 msgstr "Preisliste PDF (automatisch erstellt)"
 
-#: Supplier.php:119
+#: Supplier.php:124
 msgid "Listino CSV (autogenerato)"
 msgstr "Preisliste CSV (automatisch erstellt)"
 
-#: User.php:216
+#: SuspendableTrait.php:42 View/Icons/Product.php:22
+msgid "Attivo"
+msgstr "Aktiviert"
+
+#: SuspendableTrait.php:44 View/Icons/Supplier.php:14 View/Icons/User.php:20
+msgid "Sospeso"
+msgstr "Gesperrt"
+
+#: User.php:169
 #, php-format
 msgid "Ha ordinato %s"
 msgstr "Hat bestellt %s"
 
-#: User.php:374
-#, fuzzy
-#| msgid "Totale Complessivo"
-msgid "Nome Completo"
-msgstr "Gesamtbetrag"
-
-#: User.php:377
-msgid "Username"
-msgstr "Benutzername"
-
-#: User.php:395
-msgid "Numero Tessera"
-msgstr "Mitgliedsnummer"
-
-#: User.php:398
-msgid "Stato"
-msgstr "Status"
-
-#: User.php:401
-msgid "Modalità Pagamento"
-msgstr "Bezahlmodus"
-
-#: User.php:414
-msgid "IBAN"
-msgstr "IBAN"
-
-#: User.php:537
+#: User.php:228
 msgid "Credito"
 msgstr "Kontostand"
+
+#: View/Icons/Aggregate.php:16
+msgid "Puoi modificare"
+msgstr "Änderungen sind jetzt möglich"
+
+#: View/Icons/Aggregate.php:22
+msgid "Gestisci le consegne"
+msgstr "Lieferungen verwalten"
+
+#: View/Icons/Aggregate.php:58 View/Icons/Order.php:61
+msgid "Confezioni Da Completare"
+msgstr "Zu komplettierende Gebinde"
+
+#: View/Icons/AggregateBooking.php:14 View/Icons/Booking.php:14
+msgid "Da consegnare"
+msgstr "Zu liefern"
+
+#: View/Icons/AggregateBooking.php:26 View/Icons/Booking.php:26
+msgid "Salvato"
+msgstr "Gespeichert"
+
+#: View/Icons/Attachment.php:14
+msgid "Immagine"
+msgstr "Bild"
+
+#: View/Icons/Attachment.php:20
+msgid "Accesso limitato"
+msgstr "Begrenzter Zugriff"
+
+#: View/Icons/Invoice.php:47
+msgid "In Entrata"
+msgstr "Im Eingang"
+
+#: View/Icons/Order.php:14
+msgid "Puoi modificare l'ordine"
+msgstr "Änderungen sind jetzt möglich"
+
+#: View/Icons/Order.php:20
+msgid "Gestisci le consegne per l'ordine"
+msgstr "Lieferungen für die Bestellung verwalten"
+
+#: View/Icons/Product.php:16
+msgid "Disabilitato"
+msgstr "Deaktiviert"
+
+#: View/Icons/Product.php:28
+msgid "Scontato"
+msgstr "Ermäßigt"
+
+#: View/Icons/Receipt.php:14
+msgid "In Uscita"
+msgstr "Im Ausgang"
+
+#: View/Icons/Receipt.php:20
+msgid "Inoltrata"
+msgstr "Eingereicht"
+
+#: View/Icons/Supplier.php:21
+msgid "Eliminato"
+msgstr "Gelöscht"
+
+#: View/Icons/Supplier.php:35
+msgid "Puoi modificare il fornitore"
+msgstr "Änderungen des Lieferanten sind jetzt möglich"
+
+#: View/Icons/Supplier.php:41
+msgid "Puoi aprire nuovi ordini per il fornitore"
+msgstr "Sie dürfen neue Bestellungen eröffnen für den Lieferant"
+
+#: View/Icons/Supplier.php:47
+msgid "Gestisci le consegne per il fornitore"
+msgstr "Lieferungen für den Lieferanten verwalten"
+
+#: View/Icons/User.php:36
+msgid "Credito < 0"
+msgstr "Kredit < 0"
+
+#: View/Icons/User.php:49
+msgid "Quota non Pagata"
+msgstr "Beitrag nicht bezahlt"
+
+#: View/Icons/User.php:61
+msgid "Ruolo"
+msgstr "Rolle"
+
+#: View/Texts/Modifier.php:13
+#, fuzzy
+#| msgid "Quantità"
+msgid "la quantità"
+msgstr "Anzahl"
+
+#: View/Texts/Modifier.php:14
+#, fuzzy
+#| msgid "Valore"
+msgid "il valore"
+msgstr "Wert"
+
+#: View/Texts/Modifier.php:15
+msgid "il peso"
+msgstr ""
+
+#: View/Texts/Modifier.php:23
+#, fuzzy
+#| msgid "Link per le prenotazioni"
+msgid "di prodotto nella prenotazione"
+msgstr "Link zu den Bestellungen"
+
+#: View/Texts/Modifier.php:24
+#, fuzzy
+#| msgid "Data di chiusura dell'ordine"
+msgid "di prodotto nell'ordine"
+msgstr "Ende der Bestellfrist"
+
+#: View/Texts/Modifier.php:26
+#, fuzzy
+#| msgid "Annulla Prenotazione"
+msgid "della prenotazione"
+msgstr "Vorbestellung stornieren"
+
+#: View/Texts/Modifier.php:27
+msgid "dell'ordine"
+msgstr ""
+
+#: View/Texts/Modifier.php:29
+msgid "della prenotazione destinata al luogo"
+msgstr ""
+
+#: View/Texts/Modifier.php:30
+msgid "dell'ordine destinato al luogo"
+msgstr ""
+
+#: View/Texts/Modifier.php:37
+#, fuzzy
+#| msgid "Minore di"
+msgid "è minore di"
+msgstr "Weniger als"
+
+#: View/Texts/Modifier.php:38
+#, fuzzy
+#| msgid "Maggiore di"
+msgid "è maggiore di"
+msgstr "Größer als"
+
+#: View/Texts/Modifier.php:50
+msgid "Prodotti"
+msgstr "Produkte"
+
+#: View/Texts/Modifier.php:61
+msgid "Chili"
+msgstr "KG"
+
+#: View/Texts/Modifier.php:70 View/Texts/Modifier.php:73
+#, fuzzy
+#| msgid "Nome e descrizione del prodotto"
+msgid "somma al costo del prodotto"
+msgstr "Name und Beschreibung des Produktes"
+
+#: View/Texts/Modifier.php:71 View/Texts/Modifier.php:74
+msgid "somma al costo della prenotazione"
+msgstr ""
+
+#: View/Texts/Modifier.php:72 View/Texts/Modifier.php:75
+#, fuzzy
+#| msgid "Data di chiusura dell'ordine"
+msgid "somma al costo dell'ordine"
+msgstr "Ende der Bestellfrist"
+
+#: View/Texts/Modifier.php:76 View/Texts/Modifier.php:79
+#, fuzzy
+#| msgid "Quantità complessivamente consegnata del prodotto"
+msgid "sottrai al costo del prodotto"
+msgstr "Gelieferte Gesamtmenge des Produktes"
+
+#: View/Texts/Modifier.php:77 View/Texts/Modifier.php:80
+msgid "sottrai al costo della prenotazione"
+msgstr ""
+
+#: View/Texts/Modifier.php:78 View/Texts/Modifier.php:81
+#, fuzzy
+#| msgid "Data di chiusura dell'ordine"
+msgid "sottrai al costo dell'ordine"
+msgstr "Ende der Bestellfrist"
+
+#: View/Texts/Modifier.php:82 View/Texts/Modifier.php:85
+msgid "rispetto al costo del prodotto, calcola"
+msgstr ""
+
+#: View/Texts/Modifier.php:83 View/Texts/Modifier.php:86
+msgid "rispetto al costo della prenotazione, calcola"
+msgstr ""
+
+#: View/Texts/Modifier.php:84 View/Texts/Modifier.php:87
+#, fuzzy
+#| msgid "Data di chiusura dell'ordine"
+msgid "rispetto al costo dell'ordine, calcola"
+msgstr "Ende der Bestellfrist"
+
+#: View/Texts/Modifier.php:88 View/Texts/Modifier.php:89
+#: View/Texts/Modifier.php:90
+#, fuzzy
+#| msgid "Prezzo Unitario"
+msgid "applica il prezzo unitario"
+msgstr "Stückpreis"
+
+#: View/Texts/Modifier.php:98
+#, fuzzy
+#| msgid "Totale prezzo della quantità prenotata"
+msgid "e distribuiscilo in base alle quantità prenotate"
+msgstr "Gesamtsumme der Vorbestellung"
+
+#: View/Texts/Modifier.php:99
+msgid "e distribuiscilo in base al valore delle prenotazioni"
+msgstr ""
+
+#: View/Texts/Modifier.php:100
+msgid "e distribuiscilo in base al peso delle prenotazioni"
+msgstr ""
+
+#: View/Texts/Modifier.php:129
+#, php-format
+msgid "Se %s %s %s"
+msgstr ""
+
+#~ msgid "Colonna obbligatoria non specificata: nome del prodotto"
+#~ msgstr "Unbestimmte Pflichtspalte: Produktname"
+
+#~ msgid "Esportazione movimenti GAS %s"
+#~ msgstr "Export Bewegungen der Bestellgemeinschaft %s"
 
 #~ msgid "Differenza Prezzo"
 #~ msgstr "Preisdifferenz"
@@ -1898,9 +1944,6 @@ msgstr "Kontostand"
 #~ "Variablen des Produktes beeinflussen, siehe den Parameter „diskrete "
 #~ "Einheit“ im Administrationsoberfläche unter „Maßeinheiten "
 #~ "verwalten“ (einsehbar nur für Nutzer mit entsprechenden Rechten)"
-
-#~ msgid "Nessuna"
-#~ msgstr "Keine"
 
 #~ msgid "File"
 #~ msgstr "Datei"
@@ -2153,9 +2196,6 @@ msgstr "Kontostand"
 #~ "Von hier aus kann eine GDXP-Datei importiert werden, die von einer "
 #~ "anderen GASdotto-Instanz oder einer anderen Plattform erzeugt wurde, die "
 #~ "dieses Dateiformat unterstützt"
-
-#~ msgid "Importazione"
-#~ msgstr "Import"
 
 #~ msgid "Importa GDXP"
 #~ msgstr "GDXP importieren"
@@ -2616,9 +2656,6 @@ msgstr "Kontostand"
 
 #~ msgid "Ordini da pagare"
 #~ msgstr "Zu bezahlende Bestellungen"
-
-#~ msgid "Prenotato"
-#~ msgstr "Bestellt"
 
 #~ msgid "Totale Prenotato"
 #~ msgstr "Gesamtbetrag Vorbestellung"
@@ -3154,11 +3191,6 @@ msgstr "Kontostand"
 #~ "diskrete Einheit zugewiesen ist, ist es nicht möglich Eigenschaften wie "
 #~ "„Variabler Preis“ und „Gebindegröße“ freizuschalten"
 
-#, fuzzy
-#~| msgid "Persone in Famiglia"
-#~ msgid "Peso in Chili"
-#~ msgstr "Familienmitglieder"
-
 #~ msgid "Quota Associativa"
 #~ msgstr "Beitrag"
 
@@ -3343,9 +3375,6 @@ msgstr "Kontostand"
 
 #~ msgid "Persone in Famiglia"
 #~ msgstr "Familienmitglieder"
-
-#~ msgid "Ultima Prenotazione"
-#~ msgstr "Letzte Bestellung"
 
 #~ msgid ""
 #~ "Dove l'utente preferisce avere i propri prodotti recapitati. Permette di "

@@ -146,9 +146,15 @@ class Products extends CSVImporter
                         }
                         else {
                             $field = $this->mapSelection(VatRate::class, 'percentage', $value, 'vat_rate', $p);
+                            $vat_rate = $value;
                         }
                     }
                     elseif ($field == 'price_without_vat' || $field == 'package_price') {
+                        /*
+                            Qui setto le variabili $price_without_vat o
+                            $package_price, in funzione del valore stesso di
+                            $field
+                        */
                         $$field = guessDecimal($value);
                         continue;
                     }
@@ -158,10 +164,12 @@ class Products extends CSVImporter
                     }
                 }
 
+                // @phpstan-ignore-next-line
                 if (!empty($package_price) && !empty($p->package_size) && empty($p->price)) {
                     $p->price = $package_price / $p->package_size;
                 }
 
+                // @phpstan-ignore-next-line
                 if (!empty($price_without_vat) && !empty($vat_rate)) {
                     $p->price = $price_without_vat + (($price_without_vat * $vat_rate) / 100);
                 }

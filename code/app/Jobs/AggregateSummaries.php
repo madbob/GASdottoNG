@@ -20,10 +20,23 @@ class AggregateSummaries extends Job
         $this->message = $message;
     }
 
+    private function handleBookings($aggregate, $status)
+    {
+        foreach($aggregate->bookings as $booking) {
+            if (in_array($booking->status, $status)) {
+                try {
+                    $booking->user->notify(new BookingNotification($this->aggregate_id, $booking->user->id, $this->message));
+                }
+                catch(\Exception $e) {
+                    Log::error('Impossibile inviare notifica mail prenotazione di ' . $booking->user->id);
+                }
+            }
+        }
+    }
+
     protected function realHandle()
     {
         $aggregate = Aggregate::find($this->aggregate_id);
-
         $this->hub->enable(false);
 
         $date = date('Y-m-d');
@@ -39,17 +52,7 @@ class AggregateSummaries extends Job
             $status = ['shipped'];
         }
 
-        foreach($aggregate->bookings as $booking) {
-            if (in_array($booking->status, $status)) {
-                try {
-                    $booking->user->notify(new BookingNotification($this->aggregate_id, $booking->user->id, $this->message));
-                }
-                catch(\Exception $e) {
-                    Log::error('Impossibile inviare notifica mail prenotazione di ' . $booking->user->id);
-                }
-            }
-        }
-
+        $this->handleBookings($aggregate, $status);
         $this->hub->enable(true);
     }
 }

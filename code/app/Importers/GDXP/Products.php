@@ -26,8 +26,16 @@ class Products extends GDXPImporter
         return $product;
     }
 
-    public static function importXML($xml, $replace)
+    public static function importXML($xml, $replace, $supplier_id)
     {
+        if (is_null($replace)) {
+            $product = new Product();
+            $product->supplier_id = $supplier_id;
+        }
+        else {
+            $product = Product::findOrFail($replace);
+        }
+
         foreach($xml->children() as $p) {
             switch($p->getName()) {
                 case 'sku':

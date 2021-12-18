@@ -10,18 +10,23 @@ use App\Contact;
 
 class BypassUserProvider extends EloquentUserProvider
 {
+    private function mapEmail($email)
+    {
+        $contact = Contact::where('type', 'email')->where('value', $email)->first();
+        if (is_null($contact)) {
+            Log::error('Email not found while trying to reset password: ' . $email);
+            return null;
+        }
+        else {
+            return $contact->target;
+        }
+    }
+
     public function retrieveByCredentials(array $credentials)
     {
         foreach($credentials as $key => $value) {
             if ($key == 'email') {
-                $contact = Contact::where('type', 'email')->where('value', $value)->first();
-                if (is_null($contact)) {
-                    Log::error('Email not found while trying to reset password: ' . $value);
-                    return null;
-                }
-                else {
-                    return $contact->target;
-                }
+                return $this->mapEmail($value);
             }
         }
 

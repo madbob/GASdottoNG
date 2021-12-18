@@ -34,6 +34,21 @@ trait AttachableTrait
         return $relation;
     }
 
+    private function retrieveAttachment($id)
+    {
+        if (is_null($id)) {
+            $attachment = new Attachment();
+            $attachment->target_type = get_class($this);
+            $attachment->target_id = (string) $this->id;
+        }
+        else {
+            $attachment = Attachment::findOrFail($id);
+            @unlink($attachment->getPathAttribute());
+        }
+
+        return $attachment;
+    }
+
     public function attachByRequest($request, $id = null)
     {
         $file = $request->file('file');
@@ -53,18 +68,9 @@ trait AttachableTrait
             $name = $filename;
         }
 
-        if (is_null($id)) {
-            $attachment = new Attachment();
-            $attachment->target_type = get_class($this);
-            $attachment->target_id = (string) $this->id;
-        }
-        else {
-            $attachment = Attachment::findOrFail($id);
-            @unlink($attachment->getPathAttribute());
-        }
-
         $file->move($filepath, $filename);
 
+        $attachment = $this->retrieveAttachment($id);
         $attachment->name = $name;
         $attachment->filename = $filename;
         $attachment->save();

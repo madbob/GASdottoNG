@@ -36,10 +36,8 @@ class VariantsService extends BaseService
         return $val;
     }
 
-    public function store(array $request)
+    private function retrieveVariant($request)
     {
-        DB::beginTransaction();
-
         $variant_id = $request['variant_id'] ?? '';
         if (!empty($variant_id)) {
             $variant = Variant::findOrFail($variant_id);
@@ -51,6 +49,14 @@ class VariantsService extends BaseService
             $variant->product_id = $product->id;
         }
 
+        return $variant;
+    }
+
+    public function store(array $request)
+    {
+        DB::beginTransaction();
+
+        $variant = $this->retrieveVariant($request);
         $this->ensureAuth(['supplier.modify' => $variant->product->supplier]);
 
         $this->setIfSet($variant, $request, 'name');

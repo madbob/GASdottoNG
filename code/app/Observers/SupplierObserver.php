@@ -14,19 +14,13 @@ class SupplierObserver
         $user = Auth::user();
 
         if ($user) {
-            $roles = Role::havingAction('supplier.modify');
-            foreach($roles as $r) {
-                $user->addRole($r, $supplier);
-            }
+            $actions = ['supplier.modify', 'supplier.orders', 'supplier.shippings'];
 
-            $roles = Role::havingAction('supplier.orders');
-            foreach($roles as $r) {
-                $user->addRole($r, $supplier);
-            }
-
-            $roles = Role::havingAction('supplier.shippings');
-            foreach($roles as $r) {
-                $user->addRole($r, $supplier);
+            foreach($actions as $action) {
+                $roles = Role::havingAction($action);
+                foreach($roles as $r) {
+                    $user->addRole($r, $supplier);
+                }
             }
         }
     }

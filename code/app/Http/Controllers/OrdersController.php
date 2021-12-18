@@ -10,7 +10,9 @@ use Log;
 use App;
 
 use App\Services\OrdersService;
+use App\Services\BookingsService;
 use App\Printers\Order as Printer;
+
 use App\Product;
 use App\Order;
 use App\Booking;
@@ -105,7 +107,11 @@ class OrdersController extends BackedController
     {
         $user = $request->user();
         $orders = Aggregate::defaultOrders(!$user->can('order.view', $user->gas));
-        return view('pages.orders', ['orders' => $orders]);
+
+        return view('pages.orders', [
+            'orders' => $orders,
+            'has_old' => $this->oldOrders($user)->count() != 0,
+        ]);
     }
 
     public function show(Request $request, $id)
@@ -127,6 +133,23 @@ class OrdersController extends BackedController
         else {
             abort(404);
         }
+    }
+
+    private function oldOrders($user)
+    {
+        $supplier_id = [];
+
+        foreach($user->targetsByAction('supplier.modify') as $supplier) {
+            $supplier_id[] = $supplier->id;
+        }
+
+        foreach($user->targetsByAction('supplier.orders') as $supplier) {
+            $supplier_id[] = $supplier->id;
+        }
+
+        $supplier_id = array_unique($supplier_id);
+
+        return Aggregate::easyFilter($supplier_id, '1970-01-01', date('Y-m-d', strtotime('-1 years')), ['open', 'closed']);
     }
 
     /*

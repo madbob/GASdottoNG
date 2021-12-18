@@ -20,6 +20,20 @@ class ManyMailNotification extends Notification
         return ['mail'];
     }
 
+    private function attachReplyTo($message, $replyTo)
+    {
+        if (is_string($replyTo)) {
+            $message->replyTo($replyTo);
+        }
+        else {
+            if (!empty($replyTo->email)) {
+                $message->replyTo($replyTo->email);
+            }
+        }
+
+        return $message;
+    }
+
     protected function initMailMessage($notifiable, $replyTo = null)
     {
         $message = new MailMessage();
@@ -29,13 +43,7 @@ class ManyMailNotification extends Notification
         }
 
         if (!empty($replyTo)) {
-            if (is_string($replyTo)) {
-                $message->replyTo($replyTo);
-            }
-            else {
-                if (!empty($replyTo->email))
-                    $message->replyTo($replyTo->email);
-            }
+            $message = $this->attachReplyTo($message, $replyTo);
         }
 
         return $message;

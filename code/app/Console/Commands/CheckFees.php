@@ -13,7 +13,7 @@ use App\User;
 class CheckFees extends Command
 {
     protected $signature = 'check:fees';
-    protected $description = 'Controlla la scadenza delle quote di iscrizione alla chiusura dell\'anno sociale';
+    protected $description = "Controlla la scadenza delle quote di iscrizione alla chiusura dell'anno sociale";
 
     public function __construct()
     {
@@ -26,8 +26,9 @@ class CheckFees extends Command
 
         foreach(Gas::all() as $gas) {
             $amount = $gas->getConfig('annual_fee_amount');
-            if ($amount == 0)
+            if ($amount == 0) {
                 continue;
+            }
 
             $date_close = $gas->getConfig('year_closing');
             if ($date_close < $today) {

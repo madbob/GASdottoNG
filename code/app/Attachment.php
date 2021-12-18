@@ -62,19 +62,23 @@ class Attachment extends Model
 
     public function getSize()
     {
-        if ($this->isImage()) {
-            $file = $this->path;
-            if (file_exists($file)) {
+        $ret = [0, 0];
+
+        try {
+            if ($this->isImage()) {
+                $file = $this->path;
                 $size = getimagesize($file);
-                if ($size != null)
-                    return array_slice($size, 0, 2);
+                return array_slice($size, 0, 2);
+            }
+            else {
+                Log::error('Richiesta dimensione per allegato non immagine');
             }
         }
-        else {
-            Log::error('Richiesta dimensione per allegato non immagine');
+        catch(\Exception $e) {
+            Log::error('Impossibile recuperare dimensione allegato ' . $this->id);
         }
 
-        return [0, 0];
+        return $ret;
     }
 
     public function getDownloadUrlAttribute()

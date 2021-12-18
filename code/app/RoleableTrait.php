@@ -63,13 +63,13 @@ trait RoleableTrait
         $targets = [];
         $class = classByRule($action);
 
-        foreach ($this->roles as $role) {
-            if ($role->enabledAction($action)) {
-                foreach($role->applications(true, $exclude_trashed) as $app) {
-                    if ($class == null || get_class($app) == $class) {
-                        $targets[$app->id] = $app;
-                    }
-                }
+        $roles = $this->roles->filter(function($role) use ($action) {
+            return $role->enabledAction($action);
+        });
+
+        foreach ($roles as $role) {
+            foreach($role->applications(true, $exclude_trashed, $class) as $app) {
+                $targets[$app->id] = $app;
             }
         }
 

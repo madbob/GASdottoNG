@@ -2,8 +2,6 @@
 
 namespace App\Notifications;
 
-use App\Notifications\ManyMailNotification;
-
 class GenericNotificationWrapper extends ManyMailNotification
 {
     /*
