@@ -22,21 +22,19 @@ class ActIntoGas
 {
     public function handle($request, Closure $next)
     {
-        $user = Auth::user();
-        if ($user) {
-            $managed_gas = $request->input('managed_gas');
-            $hub = App::make('GlobalScopeHub');
+        $managed_gas = $request->input('managed_gas');
+        $hub = App::make('GlobalScopeHub');
 
-            if ($managed_gas == null) {
-                $managed_gas = $user->gas->id;
-                $hub->setGas($managed_gas);
-            }
-            else if ($managed_gas == '0') {
-                $hub->enable(false);
-            }
-            else {
-                $hub->setGas($managed_gas);
-            }
+        if ($managed_gas == null) {
+            $user = Auth::user();
+            $managed_gas = $user->gas->id;
+            $hub->setGas($managed_gas);
+        }
+        else if ($managed_gas == '0') {
+            $hub->enable(false);
+        }
+        else {
+            $hub->setGas($managed_gas);
         }
 
         return $next($request);

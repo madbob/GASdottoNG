@@ -31,33 +31,8 @@ function global_multi_installation()
     return false;
 }
 
-function get_instances()
+function read_instance_config_file($path)
 {
-    $ret = [];
-
-    $path = base_path('.env.*');
-    $files = glob($path);
-
-    foreach($files as $file) {
-        $config = file($file);
-
-        foreach($config as $c) {
-            $c = trim($c);
-
-            if (strncmp($c, 'DB_DATABASE', strlen('DB_DATABASE')) == 0) {
-                list($useless, $dbname) = explode('=', $c);
-                $ret[] = $dbname;
-                break;
-            }
-        }
-    }
-
-    return $ret;
-}
-
-function get_instance_db($name)
-{
-    $path = base_path('.env.' . $name);
     $config = file($path);
     $params = [];
 
@@ -68,6 +43,31 @@ function get_instance_db($name)
             $params[$name] = $value;
         }
     }
+
+    return $params;
+}
+
+function get_instances()
+{
+    $ret = [];
+
+    $path = base_path('.env.*');
+    $files = glob($path);
+
+    foreach($files as $file) {
+        $params = read_instance_config_file($file);
+        if (isset($params['DB_DATABASE'])) {
+            $ret[] = $params['DB_DATABASE'];
+        }
+    }
+
+    return $ret;
+}
+
+function get_instance_db($name)
+{
+    $path = base_path('.env.' . $name);
+    $params = read_instance_config_file($path);
 
     $db_config = [
         'driver' => $params['DB_CONNECTION'],

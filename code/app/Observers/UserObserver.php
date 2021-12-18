@@ -36,22 +36,29 @@ class UserObserver
         return $user;
     }
 
+    private function createdNormal($user)
+    {
+        $default_role = $user->gas->roles['user'];
+        $role = Role::find($default_role);
+        if ($role) {
+            $user->addRole($role, $user->gas);
+        }
+
+        $fallback_delivery = Delivery::where('default', true)->first();
+        if ($fallback_delivery != null) {
+            $user->preferred_delivery_id = $fallback_delivery->id;
+        }
+
+        return $user;
+    }
+
     public function created(User $user)
     {
         if ($user->isFriend()) {
             $user = $this->createdFriend($user);
         }
         else {
-            $default_role = $user->gas->roles['user'];
-            $role = Role::find($default_role);
-            if ($role) {
-                $user->addRole($role, $user->gas);
-            }
-
-            $fallback_delivery = Delivery::where('default', true)->first();
-            if ($fallback_delivery != null) {
-                $user->preferred_delivery_id = $fallback_delivery->id;
-            }
+            $user = $this->createdNormal($user);
         }
 
         $user->save();

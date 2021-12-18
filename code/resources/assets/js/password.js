@@ -41,7 +41,7 @@ $(document).ready(function() {
                     if (password == confirm) {
                         if (ret.find('input[name=enforce_change]').length != 0) {
                             var enforce = ret.find('input[name=enforce_change]').prop('checked') ? 'true' : 'false';
-                            input.closest('.form-group').find('input[name=enforce_password_change]').val(enforce);
+                            input.closest('.input-group').find('input[name=enforce_password_change]').val(enforce);
                         }
 
                         input.val(password);

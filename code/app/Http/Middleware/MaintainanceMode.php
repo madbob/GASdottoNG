@@ -11,11 +11,9 @@ class MaintainanceMode
     {
         $user = $request->user();
 
-        if ($user) {
-            if ($user->gas->restricted == '1' && $user->can('gas.access', $user->gas) == false) {
-                Auth::logout();
-                return redirect()->route('login');
-            }
+        if ($user->gas->restricted == '1' && $user->can('gas.access', $user->gas) == false) {
+            Auth::logout();
+            return redirect()->route('login');
         }
 
         return $next($request);

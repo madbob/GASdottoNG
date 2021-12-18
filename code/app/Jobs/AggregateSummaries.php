@@ -22,14 +22,16 @@ class AggregateSummaries extends Job
 
     private function handleBookings($aggregate, $status)
     {
-        foreach($aggregate->bookings as $booking) {
-            if (in_array($booking->status, $status)) {
-                try {
-                    $booking->user->notify(new BookingNotification($this->aggregate_id, $booking->user->id, $this->message));
-                }
-                catch(\Exception $e) {
-                    Log::error('Impossibile inviare notifica mail prenotazione di ' . $booking->user->id);
-                }
+        $bookings = $aggregate->bookings->filter(function($booking) use ($status) {
+            return in_array($booking->status, $status);
+        });
+
+        foreach($bookings as $booking) {
+            try {
+                $booking->user->notify(new BookingNotification($this->aggregate_id, $booking->user->id, $this->message));
+            }
+            catch(\Exception $e) {
+                Log::error('Impossibile inviare notifica mail prenotazione di ' . $booking->user->id);
             }
         }
     }

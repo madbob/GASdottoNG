@@ -11,7 +11,7 @@
     @endif
 
     @if($gas->restricted == '1')
-        <div class="alert alert-warning">
+        <div class="alert alert-warning text-center mt-3">
             {{ _i('Modalità Manutenzione: Accesso Temporaneamente Ristretto ai soli Amministratori') }}
         </div>
         <hr/>
