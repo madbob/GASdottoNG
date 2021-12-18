@@ -2,6 +2,8 @@
 
 namespace App\Parameters\Constraints;
 
+use App\Exceptions\AnnotatedQuantityConstraint;
+
 class MaxQuantity extends Constraint
 {
     public function identifier()
@@ -20,12 +22,19 @@ class MaxQuantity extends Constraint
         return null;
     }
 
+    public function hardContraint()
+    {
+        return false;
+    }
+
     public function test($booked, $quantity)
     {
-        /*
-            Il massimo consigliato è, appunto, consigliato. Se la quantità
-            prenotata è superiore del previsto, non viene attivato nessun errore
-        */
-        return;
+        $product = $booked->product;
+
+        if ($product->max_quantity != 0) {
+            if ($quantity > $product->max_quantity) {
+                throw new AnnotatedQuantityConstraint(_('Quantità superiore al massimo consigliato'), 1);
+            }
+        }
     }
 }

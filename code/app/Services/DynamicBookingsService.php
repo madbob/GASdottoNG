@@ -4,7 +4,9 @@ namespace App\Services;
 
 use Illuminate\Support\Collection;
 use App\Exceptions\AuthException;
+
 use App\Exceptions\InvalidQuantityConstraint;
+use App\Exceptions\AnnotatedQuantityConstraint;
 
 use DB;
 use Log;
@@ -15,17 +17,46 @@ use App\ModifierType;
 
 class DynamicBookingsService extends BookingsService
 {
+    private function handleQuantity($delivering, $product, $subject, $variant)
+    {
+        /*
+            Mentre computo il valore totale della prenotazione in fase di
+            modifica, controllo anche che le quantità prenotate siano coerenti
+            coi limiti imposti sul prodotto prenotato (massimo, minimo,
+            disponibile...).
+            Lo faccio qui, server-side, per evitare problemi di compatibilità
+            client-side (è stato più volte segnalato che su determinati browser
+            mobile ci siano problemi su questi controlli).
+            Ma solo se non sono in consegna: in quel caso è ammesso immettere
+            qualsiasi quantità
+        */
+
+        if ($delivering) {
+            $final_quantity = $subject->delivered;
+            $message = '';
+        }
+        else {
+            try {
+                $final_quantity = $product->testConstraints($subject->quantity, $variant);
+                $message = '';
+            }
+            catch(InvalidQuantityConstraint $e) {
+                $final_quantity = 0;
+                $message = $e->getMessage();
+            }
+            catch(AnnotatedQuantityConstraint $e) {
+                $final_quantity = $subject->quantity;
+                $message = $e->getMessage();
+            }
+        }
+
+        return [$final_quantity, $message];
+    }
+
     private function reduceVariants($product, $delivering)
     {
         return $product->variants->reduce(function($varcarry, $variant) use ($product, $delivering) {
-            try {
-                $final_variant_quantity = $delivering ? $variant->delivered : $product->testConstraints($variant->quantity, $variant);
-                $variant_message = '';
-            }
-            catch(InvalidQuantityConstraint $e) {
-                $final_variant_quantity = 0;
-                $variant_message = $e->getMessage();
-            }
+            list($final_variant_quantity, $variant_message) = $this->handleQuantity($delivering, $product, $variant, $variant);
 
             $varcarry[] = (object) [
                 'components' => $variant->components->reduce(function($componentcarry, $component) {
@@ -85,26 +116,7 @@ class DynamicBookingsService extends BookingsService
             'total' => printablePrice($calculated_total),
             'modifiers' => [],
             'products' => $booking->products->reduce(function($carry, $product) use ($delivering) {
-                /*
-                    Mentre computo il valore totale della prenotazione in fase
-                    di modifica, controllo anche che le quantità prenotate siano
-                    coerenti coi limiti imposti sul prodotto prenotato (massimo,
-                    minimo, disponibile...).
-                    Lo faccio qui, server-side, per evitare problemi di
-                    compatibilità client-side (è stato più volte segnalato che
-                    su determinati browser mobile ci siano problemi su questi
-                    controlli).
-                    Ma solo se non sono in consegna: in quel caso è ammesso
-                    immettere qualsiasi quantità
-                */
-                try {
-                    $final_quantity = $delivering ? $product->delivered : $product->testConstraints($product->quantity);
-                    $message = '';
-                }
-                catch(InvalidQuantityConstraint $e) {
-                    $final_quantity = 0;
-                    $message = $e->getMessage();
-                }
+                list($final_quantity, $message) = $this->handleQuantity($delivering, $product, $product, null);
 
                 $carry[$product->product_id] = (object) [
                     'total' => printablePrice($product->getValue($delivering ? 'delivered' : 'booked')),

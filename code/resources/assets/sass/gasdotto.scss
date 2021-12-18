@@ -496,6 +496,11 @@ i[class^='bi-hidden-'] {
     }
 }
 
+.is-annotated ~ .invalid-feedback {
+    display: block;
+    color: #0dcaf0;
+}
+
 /*
     Per gestire il feedback che appare accanto alle checkbox che salvano
     immediatamente la selezione sul server

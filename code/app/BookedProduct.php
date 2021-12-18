@@ -97,9 +97,11 @@ class BookedProduct extends Model
 
     public function testConstraints($quantity, $variant = null)
     {
-        $constraints = systemParameters('Constraints');
-        foreach($constraints as $constraint) {
-            $constraint->test($this, $quantity);
+        $sorted_contraints = \App\Parameters\Constraints\Constraint::sortedContraints();
+        foreach($sorted_contraints as $constraints) {
+            foreach($constraints as $constraint) {
+                $constraint->test($this, $quantity);
+            }
         }
 
         if ($variant) {

@@ -317,6 +317,21 @@ class Bookings {
         return data;
     }
 
+    static checkInvalidFeedback(input, condition, message)
+    {
+        if (condition) {
+            input.toggleClass('is-invalid', true);
+            input.toggleClass('is-annotated', false);
+            input.siblings('.invalid-feedback').text(message);
+            input.val('0');
+        }
+        else {
+            input.toggleClass('is-invalid', false);
+            input.toggleClass('is-annotated', message != '');
+            input.siblings('.invalid-feedback').text(message);
+        }
+    }
+
     static updateBookingQuantities(dynamic_data, container, action)
     {
         for (let [product_id, product_meta] of Object.entries(dynamic_data)) {
@@ -343,7 +358,7 @@ class Bookings {
                 for (let i = 0; i < product_meta.variants.length; i++) {
                     var variant = product_meta.variants[i];
                     var varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).filter(':not(.skip-on-submit)').eq(i);
-                    utils.inputInvalidFeedback(varinputbox, variant.quantity == 0 && utils.parseFloatC(varinputbox.val()) != 0, variant.message);
+                    this.checkInvalidFeedback(varinputbox, variant.quantity == 0 && utils.parseFloatC(varinputbox.val()) != 0, variant.message);
 
                     if (action == 'shipped') {
                         varinputbox.closest('tr').find('.booking-product-price span').text(utils.priceRound(variant.total));
@@ -351,7 +366,7 @@ class Bookings {
                 }
             }
             else {
-                utils.inputInvalidFeedback(inputbox, product_meta.quantity == 0 && utils.parseFloatC(inputbox.val()) != 0, product_meta.message);
+                this.checkInvalidFeedback(inputbox, product_meta.quantity == 0 && utils.parseFloatC(inputbox.val()) != 0, product_meta.message);
             }
         }
     }
