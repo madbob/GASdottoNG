@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateUsersTable extends Migration
 {
@@ -12,6 +12,7 @@ class CreateUsersTable extends Migration
             $table->timestamps();
 
             $table->softDeletes();
+            $table->date('suspended_at')->nullable()->default(null);
 
             $table->string('gas_id');
             $table->string('parent_id')->nullable();

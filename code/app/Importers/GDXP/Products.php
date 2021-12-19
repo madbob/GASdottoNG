@@ -146,7 +146,6 @@ class Products extends GDXPImporter
         $product->min_quantity = (float) ($json->orderInfo->minQty ?? 0);
         $product->max_quantity = (float) ($json->orderInfo->maxQty ?? 0);
         $product->multiple = (float) ($json->orderInfo->mulQty ?? 0);
-        $product->transport = (float) ($json->orderInfo->shippingCost ?? 0);
         $product->max_available = (float) ($json->orderInfo->availableQty ?? 0);
 
         /*

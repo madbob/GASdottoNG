@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateProductsTable extends Migration
 {
@@ -24,8 +24,7 @@ class CreateProductsTable extends Migration
             $table->string('picture')->nullable();
 
             $table->decimal('price', 5, 2);
-            $table->decimal('transport', 5, 2)->default(0);
-            $table->string('discount')->default('');
+            $table->decimal('weight', 7, 4)->default(0);
 
             $table->boolean('variable')->default(false);
             $table->decimal('portion_quantity', 7, 3)->default(0);

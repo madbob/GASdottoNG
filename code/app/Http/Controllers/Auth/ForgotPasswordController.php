@@ -43,16 +43,9 @@ class ForgotPasswordController extends Controller
             return redirect(url('password/reset'));
         }
 
-        $email = null;
+        $email = $user->email;
 
-        foreach($user->contacts as $c) {
-            if ($c->type == 'email') {
-                $email = $c->value;
-                break;
-            }
-        }
-
-        if (is_null($email)) {
+        if (empty($email)) {
             Log::info('Utente senza email per reset password: ' . $identifier);
             Session::flash('message_type', 'danger');
             Session::flash('message', _i("L'utente indicato non ha un indirizzo mail valido"));
