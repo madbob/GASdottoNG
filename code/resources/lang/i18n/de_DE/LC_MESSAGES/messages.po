@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2021-09-06 12:20+0200\n"
-"PO-Revision-Date: 2021-12-13 18:50+0000\n"
+"PO-Revision-Date: 2021-12-20 15:52+0000\n"
 "Last-Translator: jendo <jendo.berlin@gmx.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
 "translations/de/>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10-dev\n"
+"X-Generator: Weblate 4.10\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -583,10 +583,8 @@ msgid "Elimina Definitivamente"
 msgstr "Endgültig löschen"
 
 #: Http/Controllers/AggregatesController.php:170
-#, fuzzy
-#| msgid "Totale Complessivo"
 msgid "Complessivo"
-msgstr "Gesamtbetrag"
+msgstr "Gesamt"
 
 #: Http/Controllers/AggregatesController.php:254
 msgid "Dettaglio Consegne Ordini"
@@ -1256,11 +1254,11 @@ msgstr "der Bestellung für den Ort"
 
 #: Modifier.php:109
 msgid "è minore di"
-msgstr "ist kleiner als"
+msgstr "kleiner ist als"
 
 #: Modifier.php:110
 msgid "è maggiore di"
-msgstr "ist größer als"
+msgstr "größer ist als"
 
 #: Modifier.php:119
 msgid "Prodotti"
@@ -1271,68 +1269,56 @@ msgid "Chili"
 msgstr "kg"
 
 #: Modifier.php:125 Modifier.php:128
-#, fuzzy
-#| msgid "Nome e descrizione del prodotto"
 msgid "somma al costo del prodotto"
-msgstr "Name und Beschreibung des Produktes"
+msgstr "addiere zu den Kosten des Produkts hinzu"
 
 #: Modifier.php:126 Modifier.php:129
 msgid "somma al costo della prenotazione"
-msgstr ""
+msgstr "addiere zum Gesamtbetrag der einzelnen Vorbestellung hinzu"
 
 #: Modifier.php:127 Modifier.php:130
-#, fuzzy
-#| msgid "Data di chiusura dell'ordine"
 msgid "somma al costo dell'ordine"
-msgstr "Ende der Bestellfrist"
+msgstr "addiere zu den Kosten der Gesamtbestellung hinzu"
 
 #: Modifier.php:131 Modifier.php:134
-#, fuzzy
-#| msgid "Quantità complessivamente consegnata del prodotto"
 msgid "sottrai al costo del prodotto"
-msgstr "Gelieferte Gesamtmenge des Produktes"
+msgstr "ziehe von den Kosten des Produkts ab"
 
 #: Modifier.php:132 Modifier.php:135
 msgid "sottrai al costo della prenotazione"
-msgstr ""
+msgstr "ziehe vom Gesamtbetrag der einzelnen Vorbestellung ab"
 
 #: Modifier.php:133 Modifier.php:136
-#, fuzzy
-#| msgid "Data di chiusura dell'ordine"
 msgid "sottrai al costo dell'ordine"
-msgstr "Ende der Bestellfrist"
+msgstr "ziehe von den Kosten der Gesamtbestellung ab"
 
 #: Modifier.php:137 Modifier.php:140
 msgid "rispetto al costo del prodotto, calcola"
-msgstr ""
+msgstr "verglichen mit den Kosten des Produkts, berechne"
 
 #: Modifier.php:138 Modifier.php:141
 msgid "rispetto al costo della prenotazione, calcola"
-msgstr ""
+msgstr "verglichen mit dem Gesamtbetrag der Vorbestellung, berechne"
 
 #: Modifier.php:139 Modifier.php:142
-#, fuzzy
-#| msgid "Data di chiusura dell'ordine"
 msgid "rispetto al costo dell'ordine, calcola"
-msgstr "Ende der Bestellfrist"
+msgstr "verglichen mit den Kosten der Gesamtbestellung, berechne"
 
 #: Modifier.php:143 Modifier.php:144 Modifier.php:145
 msgid "applica il prezzo unitario"
-msgstr "Stück-/Gebindepreis anwenden"
+msgstr "wende den Stück-/Gebindepreis an"
 
 #: Modifier.php:150
-#, fuzzy
-#| msgid "Totale prezzo della quantità prenotata"
 msgid "e distribuiscilo in base alle quantità prenotate"
-msgstr "Gesamtsumme der Vorbestellung"
+msgstr "und verteile dies entsprechend den vorbestellten Mengen"
 
 #: Modifier.php:151
 msgid "e distribuiscilo in base al valore delle prenotazioni"
-msgstr ""
+msgstr "und verteile dies entsprechend dem Wert der Vorbestellungen"
 
 #: Modifier.php:152
 msgid "e distribuiscilo in base al peso delle prenotazioni"
-msgstr ""
+msgstr "und verteile dies entsprechend dem Gewicht der Vorbestellungen"
 
 #: Modifier.php:165
 #, php-format
@@ -1362,7 +1348,7 @@ msgstr "Nicht spezifiziert"
 #: MovementType.php:437
 #, php-format
 msgid "Applicazione movimento su oggetto nullo: %s"
-msgstr "Bewegung auf ungültiges Objekt: %s"
+msgstr "Anwendung der Bezahlbewegung auf ungültiges Objekt: %s"
 
 #: Notifications/BookingNotification.php:22
 #, php-format
@@ -1466,10 +1452,8 @@ msgid "Peso Prenotato"
 msgstr "Gewicht Vorbestellung"
 
 #: Order.php:893
-#, fuzzy
-#| msgid "Quantità complessivamente prenotata del prodotto"
 msgid "Peso complessivamente prenotato del prodotto"
-msgstr "Vorbestellte Gesamtmenge des Produktes"
+msgstr "Gesamtgewicht des vorbestellten Produkts"
 
 #: Order.php:897
 msgid "Totale Prezzo"
@@ -1492,10 +1476,8 @@ msgid "Peso Consegnato"
 msgstr "Geliefertes Gewicht"
 
 #: Order.php:908
-#, fuzzy
-#| msgid "Quantità complessivamente consegnata del prodotto"
 msgid "Peso complessivamente consegnato del prodotto"
-msgstr "Gelieferte Gesamtmenge des Produktes"
+msgstr "Gesamtgewicht des gelieferten Produkts"
 
 #: Order.php:912
 msgid "Totale Consegnato"
