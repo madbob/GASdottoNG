@@ -11,7 +11,6 @@ use Auth;
 use DB;
 use Log;
 
-use App\Config;
 use App\Role;
 use App\Gas;
 use App\User;
@@ -76,6 +75,7 @@ class GasController extends Controller
         $gas->setConfig('year_closing', decodeDateMonth($request->input('year_closing')));
         $gas->setConfig('annual_fee_amount', $request->input('annual_fee_amount', 0));
         $gas->setConfig('deposit_amount', $request->input('deposit_amount', 0));
+        $gas->setConfig('auto_fee', $request->has('auto_fee'));
 
         if ($request->has('enable_rid')) {
             $rid_info = (object) [
@@ -215,7 +215,7 @@ class GasController extends Controller
         $gas->setConfig('auto_user_order_summary', $request->has('auto_user_order_summary') ? '1' : '0');
         $gas->setConfig('auto_supplier_order_summary', $request->has('auto_supplier_order_summary') ? '1' : '0');
 
-        foreach(Config::customMailTypes() as $identifier => $metadata) {
+        foreach(systemParameters('MailTypes') as $identifier => $metadata) {
             if ($request->has("custom_mails_${identifier}_subject")) {
                 $gas->setConfig("mail_${identifier}", (object) [
                     'subject' => $request->input('custom_mails_' . $identifier . '_subject', ''),

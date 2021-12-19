@@ -22,24 +22,19 @@
 
                 <hr>
 
-                @foreach(App\Config::customMailTypes() as $identifier => $metadata)
+                @foreach(systemParameters('MailTypes') as $identifier => $metadata)
                     <?php
 
-                    if (($metadata->enabled)($gas) == false) {
-                        continue;
-                    }
-                    if ($identifier == 'receipt' && $gas->hasFeature('extra_invoicing') == false) {
+                    if ($metadata->enabled($gas) == false) {
                         continue;
                     }
 
-                    $mail_help = '';
-                    if (isset($metadata->params)) {
-                        $mail_params = [];
-                        foreach($metadata->params as $placeholder => $placeholder_description) {
-                            $mail_params[] = sprintf('%%[%s]: %s', $placeholder, $placeholder_description);
-                        }
-                        $mail_help = join('<br>', $mail_params);
+                    $mail_params = [];
+                    foreach($metadata->params() as $placeholder => $placeholder_description) {
+                        $mail_params[] = sprintf('%%[%s]: %s', $placeholder, $placeholder_description);
                     }
+
+                    $mail_help = join('<br>', $mail_params);
 
                     $current_config = json_decode($gas->getConfig('mail_' . $identifier));
                     $current_subject = $current_config->subject;
@@ -48,7 +43,7 @@
                     ?>
 
                     <p>
-                        {{ $metadata->description }}
+                        {{ $metadata->description() }}
                     </p>
 
                     <x-larastrap::text :name="'custom_mails_' . $identifier . '_subject'" :label="_i('Soggetto')" :value="$current_subject" />

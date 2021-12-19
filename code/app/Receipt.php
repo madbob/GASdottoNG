@@ -6,14 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Events\SluggableCreating;
 
-use App\GASModel;
-use App\SluggableID;
-
 /*
     Reminder: non dare per scontato che le fatture abbiano delle prenotazioni
     collegate, può capitare che queste vengano rimosse
 */
-class Receipt extends Model
+class Receipt extends Model implements AccountingDocument
 {
     use GASModel, SluggableID;
 
@@ -97,5 +94,12 @@ class Receipt extends Model
     {
         $this->calculateTotal();
         return $this->cache_value['total_tax'];
+    }
+
+    /***************************************************** AccountingDocument */
+
+    public function getSortingDateAttribute()
+    {
+        return $this->date;
     }
 }

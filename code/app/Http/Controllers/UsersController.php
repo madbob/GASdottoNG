@@ -221,6 +221,8 @@ class UsersController extends BackedController
                 $user->setStatus($request->input('status' . $user_id), $request->input('deleted_at' . $user_id), $request->input('suspended_at' . $user_id));
                 $user->save();
             }
+
+            return redirect()->route('users.index');
         }
         else {
             abort(401);

@@ -19,6 +19,25 @@ class NotifyNewOrder extends Job
         $this->order_id = $order_id;
     }
 
+    private function filterUsers($gas, $order)
+    {
+        if ($gas->getConfig('notify_all_new_orders')) {
+            $query_users = User::whereNull('parent_id');
+        }
+        else {
+            $query_users = User::whereHas('suppliers', function($query) use ($order) {
+                $query->where('suppliers.id', $order->supplier->id);
+            });
+        }
+
+        $deliveries = $order->deliveries;
+        if ($deliveries->isEmpty() == false) {
+            $query_users->whereIn('preferred_delivery_id', $deliveries->pluck('id'));
+        }
+
+        return $query_users->get();
+    }
+
     protected function realHandle()
     {
         $order = Order::find($this->order_id);
@@ -29,22 +48,7 @@ class NotifyNewOrder extends Job
 
         foreach($order->aggregate->gas as $gas) {
             $this->hub->setGas($gas->id);
-
-            if ($gas->getConfig('notify_all_new_orders')) {
-                $query_users = User::whereNull('parent_id');
-            }
-            else {
-                $query_users = User::whereHas('suppliers', function($query) use ($order) {
-                    $query->where('suppliers.id', $order->supplier->id);
-                });
-            }
-
-            $deliveries = $order->deliveries;
-            if ($deliveries->isEmpty() == false) {
-                $query_users->whereIn('preferred_delivery_id', $deliveries->pluck('id'));
-            }
-
-            $users = $query_users->get();
+            $users = $this->filterUsers($gas, $order);
 
             foreach($users as $user) {
                 try {

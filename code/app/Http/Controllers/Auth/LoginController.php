@@ -39,6 +39,23 @@ class LoginController extends Controller
         return view('auth.login', ['gas' => $gas]);
     }
 
+    private function postLogin($request, $user)
+    {
+        if (Auth::check()) {
+            $password = $request->input('password');
+            $username = trim($request->input('username'));
+
+            if ($username == $password) {
+                Session::flash('prompt_message', _i('La password è uguale allo username! Cambiala il prima possibile dal tuo <a href="%s">pannello utente</a>!', [route('profile')]));
+            }
+            else {
+                if (is_null($user->suspended_at) == false) {
+                    Session::flash('prompt_message', _i('Il tuo account è stato sospeso, e non puoi effettuare prenotazioni. Verifica lo stato dei tuoi pagamenti e del tuo credito o eventuali notifiche inviate dagli amministratori.'));
+                }
+            }
+        }
+    }
+
     public function login(Request $request)
     {
         $username = trim($request->input('username'));
@@ -69,19 +86,7 @@ class LoginController extends Controller
         LaravelGettext::setLocale($request->input('language'));
 
         $ret = $this->realLogin($request);
-
-        if (Auth::check()) {
-            $password = $request->input('password');
-            if ($username == $password) {
-                Session::flash('prompt_message', _i('La password è uguale allo username! Cambiala il prima possibile dal tuo <a href="%s">pannello utente</a>!', [route('profile')]));
-            }
-            else {
-                if (!is_null($user->suspended_at)) {
-                    Session::flash('prompt_message', _i('Il tuo account è stato sospeso, e non puoi effettuare prenotazioni. Verifica lo stato dei tuoi pagamenti e del tuo credito o eventuali notifiche inviate dagli amministratori.'));
-                }
-            }
-        }
-
+        $this->postLogin($request, $user);
         return $ret;
     }
 

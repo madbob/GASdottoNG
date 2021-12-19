@@ -9,6 +9,7 @@ use Log;
 
 use App\Gas;
 use App\User;
+use App\Movement;
 
 class CheckFees extends Command
 {
@@ -18,6 +19,28 @@ class CheckFees extends Command
     public function __construct()
     {
         parent::__construct();
+    }
+
+    private function iterateUsers($users, $gas, $amount)
+    {
+        $auto_fee = $gas->getConfig('auto_fee');
+
+        foreach($users as $user) {
+            try {
+                $user->fee_id = 0;
+                $user->save();
+
+                if ($auto_fee && $user->plainStatus() == 'active') {
+                    $new = Movement::generate('annual-fee', $user, $gas, $amount);
+                    $new->method = 'credit';
+                    $new->automatic = true;
+                    $new->save();
+                }
+            }
+            catch(\Exception $e) {
+                Log::error('Impossibile aggiornare stato quota: ' . $e->getMessage());
+            }
+        }
     }
 
     public function handle()
@@ -31,19 +54,17 @@ class CheckFees extends Command
             }
 
             $date_close = $gas->getConfig('year_closing');
+
             if ($date_close < $today) {
                 Log::info('Scaduto anno sociale GAS ' . $gas->name);
 
                 DB::beginTransaction();
 
-                $users = User::withTrashed()->whereHas('fee', function($query) use ($date_close) {
+                $users = $gas->users()->withTrashed()->whereHas('fee', function($query) use ($date_close) {
                     $query->where('date', '<', $date_close);
                 })->get();
 
-                foreach($users as $user) {
-                    $user->fee_id = 0;
-                    $user->save();
-                }
+                $this->iterateUsers($users, $gas, $amount);
 
                 $date_close = date('Y-m-d', strtotime($date_close . ' +1 years'));
                 $gas->setConfig('year_closing', $date_close);

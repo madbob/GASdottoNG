@@ -2,7 +2,9 @@
 
 namespace App\Parameters\Constraints;
 
-abstract class Constraint
+use App\Parameters\Parameter;
+
+abstract class Constraint extends Parameter
 {
     public function hardContraint()
     {

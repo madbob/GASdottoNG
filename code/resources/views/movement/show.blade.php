@@ -25,7 +25,7 @@
         </div>
         <div class="col">
             <x-larastrap::datepicker name="registration_date" :label="_i('Registrato Il')" disabled readonly />
-            <x-larastrap::text name="registerer" :label="_i('Registrato Da')" :value="$obj->registerer->printableName()" disabled readonly />
+            <x-larastrap::text name="registerer" :label="_i('Registrato Da')" :value="$obj->automatic ? _i('Automatico') : $obj->registerer->printableName()" disabled readonly />
 
             @if($obj->related->isEmpty() == false)
                 <x-larastrap::field :label="_i('Movimenti Correlati')">

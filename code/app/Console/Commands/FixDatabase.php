@@ -14,7 +14,6 @@ use DB;
 use Artisan;
 
 use App\Gas;
-use App\Config;
 use App\MovementType;
 use App\Currency;
 use App\Balance;
@@ -78,7 +77,8 @@ class FixDatabase extends Command
         }
 
         $gas = Gas::all();
-        foreach(Config::customMailTypes() as $identifier => $metadata) {
+
+        foreach(systemParameters('MailTypes') as $identifier => $metadata) {
             foreach($gas as $g) {
                 $subject = DB::table('configs')->select('value')->where('name', 'mail_' . $identifier . '_subject')->where('gas_id', $g->id)->first();
                 if ($subject) {
