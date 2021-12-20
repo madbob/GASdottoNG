@@ -1,5 +1,17 @@
 <?php
 
+/*
+    Ciascuna delle classi che estendono questa rappresenta un controllo
+    effettuato su un prodotto in fase di prenotazione. Se viene riscontrato un
+    errore, viene sollevata una eccezione che viene poi gestita da
+    DynamicBookingsService.
+    I controlli possono essere di due tipi: se la quantità valutata non è
+    coerente e dunque invalida viene sollevata una eccezione di tipo
+    InvalidQuantityConstraint, altrimenti se si vuole solo notificare l'utente
+    di qualcosa (senza invalidare la quantità) viene sollevata una eccezione di
+    tipo AnnotatedQuantityConstraint
+*/
+
 namespace App\Parameters\Constraints;
 
 use App\Parameters\Parameter;

@@ -12,6 +12,8 @@ use Log;
 use App\BookedProductVariant;
 use App\BookedProductComponent;
 use App\Movement;
+use App\ModifierType;
+use App\ModifiedValue;
 
 use App\Events\BookingDelivered;
 
@@ -264,6 +266,53 @@ class BookingsService extends BaseService
         }
     }
 
+    private function deliveringManualTotal($request, $order)
+    {
+        if (isset($request['manual_total_' . $order->id])) {
+            $manual_total = $request['manual_total_' . $order->id];
+            if (filled($manual_total)) {
+                return $manual_total;
+            }
+        }
+
+        return 0;
+    }
+
+    protected function handlePostProcess($request, $booking)
+    {
+        $manual_total = $this->deliveringManualTotal($request, $booking->order);
+
+        if ($manual_total > 0) {
+            $manual_adjust_modifier = ModifierType::find('arrotondamento-consegna');
+            $modifier = $booking->order->modifiers()->where('modifier_type_id', $manual_adjust_modifier->id)->first();
+            if (is_null($modifier)) {
+                $modifier = $booking->order->attachEmptyModifier($manual_adjust_modifier);
+            }
+
+            $modifier_value = $booking->modifiedValues()->whereHas('modifier', function($query) use ($manual_adjust_modifier) {
+                $query->where('modifier_type_id', $manual_adjust_modifier->id);
+            })->first();
+
+            if (is_null($modifier_value)) {
+                $modifier_value = new ModifiedValue();
+                $modifier_value->modifier_id = $modifier->id;
+                $modifier_value->target_type = get_class($booking);
+                $modifier_value->target_id = $booking->id;
+            }
+            else {
+                $modifier_value->delete();
+                $booking->unsetRelation('modifiedValues');
+            }
+
+            $modifier_value->amount = $manual_total - $booking->getValue('effective', false, true);
+            $modifier_value->save();
+
+            return [$manual_total, $modifier_value];
+        }
+
+        return null;
+    }
+
     public function bookingUpdate(array $request, $aggregate, $target_user, $delivering)
     {
         DB::beginTransaction();
@@ -273,6 +322,7 @@ class BookingsService extends BaseService
             $booking = $this->readBooking($request, $order, $target_user, $delivering);
             if ($booking && $delivering) {
                 BookingDelivered::dispatch($booking, $request['action'], $user);
+                $this->handlePostProcess($request, $booking);
             }
         }
 

@@ -14,6 +14,7 @@ use Log;
 use App\User;
 use App\Aggregate;
 use App\ModifierType;
+use App\ModifiedValue;
 
 class DynamicBookingsService extends BookingsService
 {
@@ -71,18 +72,6 @@ class DynamicBookingsService extends BookingsService
 
             return $varcarry;
         }, []);
-    }
-
-    private function deliveringManualTotal($request, $order)
-    {
-        if (isset($request['manual_total_' . $order->id])) {
-            $manual_total = $request['manual_total_' . $order->id];
-            if (filled($manual_total)) {
-                return $manual_total;
-            }
-        }
-
-        return 0;
     }
 
     private function initDynamicModifier($mod)
@@ -151,15 +140,15 @@ class DynamicBookingsService extends BookingsService
 
     private function handleManualTotalShipping($request, $data, $booking)
     {
-        $manual_total = $this->deliveringManualTotal($request, $booking->order);
-
-        if ($manual_total > 0) {
-            $manual_adjust_modifier = ModifierType::find('arrotondamento-consegna');
+        $manual = $this->handlePostProcess($request, $booking);
+        if ($manual) {
+            $manual_total = $manual[0];
+            $modifier_value = $manual[1];
 
             $data->modifiers['arrotondamento-consegna'] = (object) [
-                'label' => $manual_adjust_modifier->name,
+                'label' => $modifier_value->modifier->modifierType->name,
                 'url' => '',
-                'amount' => $manual_total - $booking->getValue('effective', false),
+                'amount' => $modifier_value->amount,
                 'variable' => false,
                 'passive' => false,
             ];

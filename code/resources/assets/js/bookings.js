@@ -463,7 +463,7 @@ class Bookings {
     				var status = {};
 
     				for (let [booking_id, booking_data] of Object.entries(data.bookings)) {
-    					var container = $('input[value="' + booking_id + '"]').closest('table');
+    					var container = $('input[value="' + booking_id + '"]').closest('table').first();
     					$('.booking-product-price span', container).text(utils.priceRound(0));
 
                         this.updateBookingQuantities(booking_data.products, container, action);

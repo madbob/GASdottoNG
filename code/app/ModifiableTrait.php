@@ -11,7 +11,7 @@ trait ModifiableTrait
         return $this->morphMany('App\Modifier', 'target');
     }
 
-    private function attachEmpty($modtype)
+    public function attachEmptyModifier($modtype)
     {
         if ($this->modifiers()->where('modifier_type_id', $modtype->id)->count() == 0) {
             $mod = new Modifier();
@@ -54,7 +54,7 @@ trait ModifiableTrait
             if (!is_null($same)) {
                 foreach($same->applicableModificationTypes() as $modtype) {
                     $ret[] = $modtype;
-                    $this->attachEmpty($modtype);
+                    $this->attachEmptyModifier($modtype);
                 }
             }
             else {
@@ -62,7 +62,7 @@ trait ModifiableTrait
                 foreach(ModifierType::orderBy('name', 'asc')->get() as $modtype) {
                     if (in_array($current_class, accessAttr($modtype, 'classes'))) {
                         $ret[] = $modtype;
-                        $this->attachEmpty($modtype);
+                        $this->attachEmptyModifier($modtype);
                     }
                 }
             }
