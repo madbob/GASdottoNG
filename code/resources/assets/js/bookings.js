@@ -240,27 +240,44 @@ class Bookings {
             form.submit();
         });
 
-        $('.booking-form .saving-button', container).click((e) => {
+        /*
+            Prima di inoltrare la consegna, devo controllare se le quantità sono
+            tutte a zero (e nel caso avvertire l'utente del possibile errore).
+            Delegando questo controllo alla presenza di una classe CSS evito di
+            aspettare troppo tempo prima di fermare la propagazione dell'evento
+            (potrebbe essere fermato troppo tardi, quando il form è già stato
+            inviato): se la classe c'è lo interrompo subito, altrimenti tiro
+            dritto con la normale callback di submit
+        */
+
+        $('.booking-form .saving-button', container).each(function() {
+            $(this).addClass('unconfirmed');
+        });
+
+        $('.booking-form', container).on('click', '.saving-button.unconfirmed', (e) => {
+            e.stopPropagation();
             var button = $(e.currentTarget);
+
             if (button.closest('.booking-form').find('input:hidden[name=action]').val() == 'shipped') {
-                if (typeof button.data('total-checked') === 'undefined') {
-                    e.stopPropagation();
-                    var test = false;
+                var test = false;
 
-                    button.closest('form').find('.booking-total').each(function() {
-                        var total = utils.parseFloatC($(this).textVal());
-                        test = (test || (total != 0));
-                    });
+                button.closest('form').find('.booking-total').each(function() {
+                    var total = utils.parseFloatC($(this).textVal());
+                    test = (test || (total != 0));
+                });
 
-                    if (test == false) {
-                        test = confirm(_('Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?'));
-                    }
-
-                    if (test == true) {
-                        button.data('total-checked', 1);
-                        button.click();
-                    }
+                if (test == false) {
+                    test = confirm(_('Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?'));
                 }
+
+                if (test == true) {
+                    button.removeClass('unconfirmed');
+                    button.click();
+                }
+            }
+            else {
+                button.removeClass('unconfirmed');
+                button.click();
             }
         });
     }
