@@ -75,6 +75,10 @@ class FixDatabase extends Command
             Balance::whereNull('currency_id')->update(['currency_id' => $c->id]);
             Movement::whereNull('currency_id')->update(['currency_id' => $c->id]);
         }
+        else {
+            $c = defaultCurrency();
+            Movement::whereNull('currency_id')->update(['currency_id' => $c->id]);
+        }
 
         $gas = Gas::all();
 

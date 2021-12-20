@@ -13,7 +13,7 @@ class DepositReturn extends MovementType
 
     public function initNew($type)
     {
-        $type->name = 'Restituzione cauzione socio del GAS';
+        $type->name = _i('Restituzione cauzione socio del GAS');
         $type->sender_type = 'App\Gas';
         $type->target_type = 'App\User';
         $type->system = true;

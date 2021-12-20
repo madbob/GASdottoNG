@@ -11,7 +11,7 @@ class InvoicePayment extends MovementType
 
     public function initNew($type)
     {
-        $type->name = 'Pagamento fattura a fornitore';
+        $type->name = _i('Pagamento fattura a fornitore');
         $type->sender_type = 'App\Gas';
         $type->target_type = 'App\Invoice';
         $type->visibility = false;

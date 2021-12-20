@@ -11,7 +11,7 @@ class GenericPut extends MovementType
 
     public function initNew($type)
     {
-        $type->name = 'Versamento sul conto';
+        $type->name = _i('Versamento sul conto');
         $type->sender_type = null;
         $type->target_type = 'App\Gas';
 

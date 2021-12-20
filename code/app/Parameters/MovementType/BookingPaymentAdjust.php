@@ -11,7 +11,7 @@ class BookingPaymentAdjust extends MovementType
 
     public function initNew($type)
     {
-        $type->name = 'Aggiustamento pagamento prenotazione da parte di un socio';
+        $type->name = _i('Aggiustamento pagamento prenotazione da parte di un socio');
         $type->sender_type = 'App\User';
         $type->target_type = 'App\Booking';
         $type->allow_negative = true;

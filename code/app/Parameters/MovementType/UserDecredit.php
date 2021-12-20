@@ -11,7 +11,7 @@ class UserDecredit extends MovementType
 
     public function initNew($type)
     {
-        $type->name = 'Reso credito per un socio';
+        $type->name = _i('Reso credito per un socio');
         $type->sender_type = 'App\User';
         $type->target_type = null;
 

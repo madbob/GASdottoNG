@@ -11,7 +11,7 @@ class SupplierRounding extends MovementType
 
     public function initNew($type)
     {
-        $type->name = 'Arrotondamento/sconto fornitore';
+        $type->name = _i('Arrotondamento/sconto fornitore');
         $type->sender_type = 'App\Supplier';
         $type->target_type = 'App\Gas';
         $type->allow_negative = true;

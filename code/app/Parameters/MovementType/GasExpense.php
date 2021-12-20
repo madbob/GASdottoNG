@@ -11,7 +11,7 @@ class GasExpense extends MovementType
 
     public function initNew($type)
     {
-        $type->name = 'Acquisto/spesa GAS';
+        $type->name = _i('Acquisto/spesa GAS');
         $type->sender_type = 'App\Gas';
         $type->target_type = null;
 

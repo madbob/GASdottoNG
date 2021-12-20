@@ -11,7 +11,7 @@ class UserCredit extends MovementType
 
     public function initNew($type)
     {
-        $type->name = 'Deposito di credito da parte di un socio';
+        $type->name = _i('Deposito di credito da parte di un socio');
         $type->sender_type = null;
         $type->target_type = 'App\User';
         $type->system = true;

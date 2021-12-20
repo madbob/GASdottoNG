@@ -13,7 +13,7 @@ class BookingPayment extends MovementType
 
     public function initNew($type)
     {
-        $type->name = 'Pagamento prenotazione da parte di un socio';
+        $type->name = _i('Pagamento prenotazione da parte di un socio');
         $type->sender_type = 'App\User';
         $type->target_type = 'App\Booking';
         $type->visibility = false;
@@ -43,11 +43,9 @@ class BookingPayment extends MovementType
         foreach($values as $value) {
             $movement_type = $value->modifier->movementType;
             if (is_null($movement_type)) {
-                \Log::debug('no tipo movimento');
                 $amount = $value->sumAmount($amount);
             }
             else {
-                \Log::debug('genero altro movimento');
                 $value->generateMovement($movement);
             }
         }
