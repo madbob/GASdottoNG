@@ -7,9 +7,11 @@ use App\Exceptions\AuthException;
 
 use App\Exceptions\InvalidQuantityConstraint;
 use App\Exceptions\AnnotatedQuantityConstraint;
+use App\Events\BookingDelivered;
 
 use DB;
 use Log;
+use Auth;
 
 use App\User;
 use App\Aggregate;
@@ -38,7 +40,7 @@ class DynamicBookingsService extends BookingsService
         }
         else {
             try {
-                $final_quantity = $product->testConstraints($subject->quantity, $variant);
+                $final_quantity = $product->testConstraints($subject->delivered, $variant);
                 $message = '';
             }
             catch(InvalidQuantityConstraint $e) {
@@ -46,7 +48,7 @@ class DynamicBookingsService extends BookingsService
                 $message = $e->getMessage();
             }
             catch(AnnotatedQuantityConstraint $e) {
-                $final_quantity = $subject->quantity;
+                $final_quantity = $subject->delivered;
                 $message = $e->getMessage();
             }
         }
@@ -66,7 +68,7 @@ class DynamicBookingsService extends BookingsService
                 }, []),
 
                 'quantity' => $final_variant_quantity,
-                'total' => printablePrice($delivering ? $variant->deliveredValue() : $variant->quantityValue()),
+                'total' => printablePrice($variant->deliveredValue()),
                 'message' => $variant_message,
             ];
 
@@ -98,8 +100,9 @@ class DynamicBookingsService extends BookingsService
             temporaneamente a "shipped" ed andrebbe a leggere quelli salvati
             anche se ancora non ce ne sono
         */
-        $modified = $booking->calculateModifiers(null, true);
-        $calculated_total = $booking->getValue('effective', false);
+        $booking->unsetRelation('modifiedValues');
+        $modified = $booking->modifiedValues;
+        $calculated_total = $booking->getValue('effective', false, true);
 
         $ret = (object) [
             'total' => printablePrice($calculated_total),
@@ -108,7 +111,7 @@ class DynamicBookingsService extends BookingsService
                 list($final_quantity, $message) = $this->handleQuantity($delivering, $product, $product, null);
 
                 $carry[$product->product_id] = (object) [
-                    'total' => printablePrice($product->getValue($delivering ? 'delivered' : 'booked')),
+                    'total' => printablePrice($product->getValue('delivered')),
                     'quantity' => $final_quantity,
                     'message' => $message,
                     'variants' => $this->reduceVariants($product, $delivering),
@@ -138,48 +141,6 @@ class DynamicBookingsService extends BookingsService
         return $ret;
     }
 
-    private function handleManualTotalShipping($request, $data, $booking)
-    {
-        $manual = $this->handlePostProcess($request, $booking);
-        if ($manual) {
-            $manual_total = $manual[0];
-            $modifier_value = $manual[1];
-
-            $data->modifiers['arrotondamento-consegna'] = (object) [
-                'label' => $modifier_value->modifier->modifierType->name,
-                'url' => '',
-                'amount' => $modifier_value->amount,
-                'variable' => false,
-                'passive' => false,
-            ];
-
-            $data->total = printablePrice($manual_total);
-        }
-
-        return $data;
-    }
-
-    private function initBookingFromRequest($request, $order, $target_user, $delivering)
-    {
-        $booking = $this->readBooking($request, $order, $target_user, $delivering);
-
-        if ($booking) {
-            $booking->setRelation('order', $order);
-
-            if ($delivering) {
-                $booking->status = 'shipped';
-                $booking->saveFinalPrices();
-            }
-            else {
-                $booking->status = 'pending';
-            }
-
-            $booking->save();
-        }
-
-        return $booking;
-    }
-
     /*
         Questa funzione viene invocata dai pannelli di prenotazione e consegna,
         ogni volta che viene apportata una modifica sulle quantità, e permette
@@ -203,19 +164,13 @@ class DynamicBookingsService extends BookingsService
             ];
 
             foreach($aggregate->orders as $order) {
-                $this->testAccess($target_user, $order->supplier, $delivering);
+                $user = $this->testAccess($target_user, $order->supplier, $delivering);
 
-                $order->setRelation('aggregate', $aggregate);
-                $booking = $this->initBookingFromRequest($request, $order, $target_user, $delivering);
+                $request['action'] = 'shipped';
+                $booking = $this->handleBookingUpdate($request, $user, $order, $target_user, true);
+
                 if ($booking) {
-                    $bookings[] = $booking;
-                }
-            }
-
-            foreach($bookings as $booking) {
-                $ret->bookings[$booking->id] = $this->translateBooking($booking, $delivering);
-                if ($delivering) {
-                    $ret->bookings[$booking->id] = $this->handleManualTotalShipping($request, $ret->bookings[$booking->id], $booking);
+                    $ret->bookings[$booking->id] = $this->translateBooking($booking, $delivering);
                 }
             }
 

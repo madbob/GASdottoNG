@@ -11,14 +11,6 @@ class DeliverBooking
         //
     }
 
-    private function testSaved($event)
-    {
-        $booking = $event->booking;
-        $new_status = $event->status;
-
-        return ($new_status == 'saved' && $booking->payment != null);
-    }
-
     private function testShipped($event)
     {
         $booking = $event->booking;
@@ -47,11 +39,7 @@ class DeliverBooking
         $booking->deliverer_id = $user->id;
         $booking->delivery = date('Y-m-d');
 
-        if ($this->testSaved($event)) {
-            $booking->payment->delete();
-            $booking->payment_id = null;
-        }
-        else if ($this->testShipped($event)) {
+        if ($this->testShipped($event)) {
             $new_status = 'saved';
         }
 

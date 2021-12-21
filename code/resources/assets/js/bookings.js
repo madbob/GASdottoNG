@@ -141,7 +141,7 @@ class Bookings {
             var editors = $(e.currentTarget).closest('form').find('.booking-editor');
 
             editors.each((index, item) => {
-                this.preloadQuantities($(item));
+                this.preloadQuantities($(item), false);
             });
 
             /*
@@ -282,7 +282,7 @@ class Bookings {
         });
     }
 
-    static preloadQuantities(container)
+    static preloadQuantities(container, reload)
     {
         container.find('.booking-product').each(function() {
             var booked = $(this).find('input:hidden[name=booking-product-real-booked]');
@@ -291,7 +291,9 @@ class Bookings {
             }
         });
 
-        this.bookingTotal(container.closest('.booking-editor'));
+        if (reload) {
+            this.bookingTotal(container.closest('.booking-editor'));
+        }
     }
 
     static serializeBooking(form)
@@ -429,7 +431,7 @@ class Bookings {
         if (data.products.length == 0) {
             var manual = $('input.manual-total', container);
             if (manual.length != 0 && manual.val() != 0) {
-                this.preloadQuantities(container);
+                this.preloadQuantities(container, true);
             }
         }
     }

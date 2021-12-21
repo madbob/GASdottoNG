@@ -58,13 +58,8 @@ class DatabaseSeeder extends Seeder
         ]);
     }
 
-    private function roleInit($gas)
+    private function coreRoles($gas, $admin_role)
     {
-        $admin_role = Role::create([
-            'name' => 'Amministratore',
-            'actions' => 'gas.access,gas.permissions,gas.config,supplier.view,supplier.add,users.admin,users.movements,movements.admin,movements.types,categories.admin,measures.admin,gas.statistics,notifications.admin'
-        ]);
-
         $user_role = Role::create([
             'name' => 'Utente',
             'actions' => 'users.self,users.view,supplier.view,supplier.book',
@@ -75,12 +70,6 @@ class DatabaseSeeder extends Seeder
             'name' => 'Amico',
             'actions' => 'users.self,supplier.view,supplier.book',
             'parent_id' => $user_role->id
-        ]);
-
-        $referrer_role = Role::create([
-            'name' => 'Referente',
-            'actions' => 'supplier.modify,supplier.orders,supplier.shippings,supplier.movements',
-            'parent_id' => $admin_role->id
         ]);
 
         $multigas_role = Role::create([
@@ -94,6 +83,24 @@ class DatabaseSeeder extends Seeder
             'friend' => $friend_role->id,
             'multigas' => $multigas_role->id,
         ]);
+
+        return $user_role;
+    }
+
+    private function roleInit($gas)
+    {
+        $admin_role = Role::create([
+            'name' => 'Amministratore',
+            'actions' => 'gas.access,gas.permissions,gas.config,supplier.view,supplier.add,users.admin,users.movements,movements.admin,movements.types,categories.admin,measures.admin,gas.statistics,notifications.admin'
+        ]);
+
+        $referrer_role = Role::create([
+            'name' => 'Referente',
+            'actions' => 'supplier.modify,supplier.orders,supplier.shippings,supplier.movements',
+            'parent_id' => $admin_role->id
+        ]);
+
+        $user_role = $this->coreRoles($gas, $admin_role);
 
         $admin = User::create([
             'id' => str_slug('Amministratore Globale'),

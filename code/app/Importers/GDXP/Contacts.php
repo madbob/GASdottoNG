@@ -11,29 +11,30 @@ class Contacts extends GDXPImporter
         // dummy
     }
 
+    private static function map($attribute)
+    {
+        $map = [
+            'phoneNumber' => 'phone',
+            'faxNumber' => 'fax',
+            'emailAddress' => 'email',
+            'webSite' => 'website',
+        ];
+
+        return $map[$attribute];
+    }
+
     public static function importXML($xml, $parent)
     {
         foreach($xml->children() as $p) {
             foreach($p->children() as $e) {
-                $contact = new Contact();
-
-                switch($e->getName()) {
-                    case 'phoneNumber':
-                        $contact->type = 'phone';
-                        break;
-                    case 'faxNumber':
-                        $contact->type = 'fax';
-                        break;
-                    case 'emailAddress':
-                        $contact->type = 'email';
-                        break;
-                    case 'webSite':
-                        $contact->type = 'website';
-                        break;
+                $type = self::map($e->getName());
+                if (is_null($type)) {
+                    continue;
                 }
 
+                $contact = new Contact();
+                $contact->type = $type;
                 $contact->value = html_entity_decode((string) $e);
-
                 $contact->target_id = $parent->id;
                 $contact->target_type = get_class($parent);
                 $contact->save();
@@ -52,25 +53,14 @@ class Contacts extends GDXPImporter
             return;
         }
 
-        $contact = new Contact();
-
-        switch($json->type) {
-            case 'phoneNumber':
-                $contact->type = 'phone';
-                break;
-            case 'faxNumber':
-                $contact->type = 'fax';
-                break;
-            case 'emailAddress':
-                $contact->type = 'email';
-                break;
-            case 'webSite':
-                $contact->type = 'website';
-                break;
+        $type = self::map($json->type);
+        if (is_null($type)) {
+            return;
         }
 
+        $contact = new Contact();
+        $contact->type = $type;
         $contact->value = $json->value;
-
         $contact->target_id = $parent->id;
         $contact->target_type = get_class($parent);
         $contact->save();

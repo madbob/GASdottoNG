@@ -102,7 +102,7 @@ class Booking extends Model
         return $values;
     }
 
-    private function allModifiedValues($id, $with_friends)
+    public function allModifiedValues($id, $with_friends)
     {
         $values = $this->localModifiedValues($id, false);
 
@@ -415,6 +415,20 @@ class Booking extends Model
     public function getShowURL()
     {
         return route('booking.user.show', ['booking' => $this->order->aggregate_id, 'user' => $this->user_id]);
+    }
+
+    public function wipeStatus()
+    {
+        if ($this->payment) {
+            $this->payment->delete();
+        }
+
+        $this->payment_id = null;
+        $this->deleteModifiedValues();
+
+        $this->unsetRelation('payment');
+        $this->unsetRelation('modifiedValues');
+        $this->unsetRelation('products');
     }
 
     public function saveFinalPrices()

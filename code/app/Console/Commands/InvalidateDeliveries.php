@@ -16,6 +16,25 @@ class InvalidateDeliveries extends Command
         parent::__construct();
     }
 
+    private function wipeProducts($booking)
+    {
+        foreach($booking->products as $product) {
+            $product->final_price = 0;
+            $product->final_discount = 0;
+            $product->delivered = 0;
+            $product->save();
+
+            foreach($product->variants as $variant) {
+                $variant->delivered = 0;
+                $variant->save();
+            }
+
+            foreach($product->modifiedValues as $mv) {
+                $mv->delete();
+            }
+        }
+    }
+
     public function handle()
     {
         $order_id = $this->argument('order');
@@ -27,26 +46,13 @@ class InvalidateDeliveries extends Command
             $booking->delivery = null;
             $booking->save();
 
-            if ($booking->payment)
+            if ($booking->payment) {
                 $booking->payment->delete();
+            }
 
             $booking->payment_id = null;
 
-            foreach($booking->products as $product) {
-                $product->final_price = 0;
-                $product->final_discount = 0;
-                $product->delivered = 0;
-                $product->save();
-
-                foreach($product->variants as $variant) {
-                    $variant->delivered = 0;
-                    $variant->save();
-                }
-
-                foreach($product->modifiedValues as $mv) {
-                    $mv->delete();
-                }
-            }
+            $this->wipeProducts($booking);
         }
     }
 }

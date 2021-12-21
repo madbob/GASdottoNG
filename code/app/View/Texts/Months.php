@@ -114,19 +114,34 @@ class Months
 
     public static function get($locale)
     {
+        $ret = null;
+
         switch($locale) {
             case 'it_IT':
-                return self::it();
+                $ret = self::it();
+                break;
+
             case 'en_EN':
-                return self::en();
+                $ret = self::en();
+                break;
+
             case 'de_DE':
-                return self::de();
+                $ret = self::de();
+                break;
+
             case 'fr_FR':
-                return self::fr();
+                $ret = self::fr();
+                break;
+
             case 'nb_NO':
-                return self::nb();
+                $ret = self::nb();
+                break;
+
             case 'nl_NL':
-                return self::nl();
+                $ret = self::nl();
+                break;
         }
+
+        return $ret;
     }
 }

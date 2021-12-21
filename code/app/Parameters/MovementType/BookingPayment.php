@@ -37,7 +37,7 @@ class BookingPayment extends MovementType
 
     private function handleModifiers($movement, $booking)
     {
-        $values = $booking->applyModifiers(null, false);
+        $values = $booking->allModifiedValues(null, false);
         $amount = $movement->amount;
 
         foreach($values as $value) {
@@ -57,11 +57,10 @@ class BookingPayment extends MovementType
     {
         $mov->callbacks = [
             /*
-                Il problema di fondo è che, a livello utente, un aggregato riceve un solo pagamento, dunque
-                devo a posteriori dividere tale pagamento tra le prenotazioni al suo interno creando
-                movimenti individuali.
-                Qui assumo che l'ammontare pagato per ciascuna prenotazione corrisponda col totale consegnato
-                della prenotazione stessa
+                Il problema di fondo è che, a livello utente, un aggregato riceve un solo pagamento, dunque devo a
+                posteriori dividere tale pagamento tra le prenotazioni al suo interno creando movimenti individuali.
+                Qui assumo che l'ammontare pagato per ciascuna prenotazione corrisponda col totale consegnato della
+                prenotazione stessa
             */
             'pre' => function (Movement $movement) {
                 if ($movement->target_type == 'App\Aggregate') {
@@ -74,12 +73,10 @@ class BookingPayment extends MovementType
                         $booking = $order->userBooking($user);
                         if ($booking->exists == false) {
                             /*
-                                Quando un utente non ha fatto nessuna prenotazione, ma
-                                i suoi amici si, non ho un soggetto cui agganciare il
-                                pagamento. Dunque lo creo qui al volo.
-                                Tanto comunque sarebbe creato, dopo, da
-                                DeliveryUserController::update() (quando marcato come
-                                consegnato), dunque tanto vale farlo subito
+                                Quando un utente non ha fatto nessuna prenotazione, ma i suoi amici si, non ho un
+                                soggetto cui agganciare il pagamento. Dunque lo creo qui al volo.
+                                Tanto comunque sarebbe creato, dopo, da DeliveryUserController::update() (quando
+                                marcato come consegnato), dunque tanto vale farlo subito
                             */
                             if ($booking->friends_bookings->isEmpty()) {
                                 continue;
@@ -89,11 +86,16 @@ class BookingPayment extends MovementType
                             }
                         }
 
-                        $delivered = $booking->getValue('delivered', true, true);
-                        if ($total < $delivered) {
-                            $delivered = $total;
-                        }
+                        /*
+                            - calcolo il valore del prenotato
+                            - creo il relativo movimento
+                            - itero i modificatori (che a questo punto devono già essere tutti stati calcolati e
+                            assegnati alla prenotazione)
+                            - se il modificatore prevede un tipo movimento specifico creo un altro movimento,
+                            altrimenti sommo il totale a quello già creato
+                        */
 
+                        $delivered = $booking->getValue('delivered', true, true);
                         $existing_movement = $booking->payment;
                         $date = $movement->date;
 
@@ -103,10 +105,9 @@ class BookingPayment extends MovementType
                             $m->target_type = 'App\Booking';
 
                             /*
-                                Qui devo ricaricare la relazione "target",
-                                altrimenti resta in memoria quella precedente
-                                (che faceva riferimento ad un Aggregate, dunque
-                                non è corretta e sul salvataggio spacca tutto)
+                                Qui devo ricaricare la relazione "target", altrimenti resta in memoria quella
+                                precedente (che faceva riferimento ad un Aggregate, dunque non è corretta e sul
+                                salvataggio spacca tutto)
                             */
                             $m->load('target');
                         }
@@ -126,7 +127,6 @@ class BookingPayment extends MovementType
                         }
 
                         $total -= $delivered;
-                        $total = max(0, $total);
                     }
 
                     return 2;

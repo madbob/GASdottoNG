@@ -162,12 +162,9 @@ class BookingsService extends BaseService
         return [$booked, $quantity];
     }
 
-    public function readBooking(array $request, $order, $user, $delivering)
+    private function readBooking(array $request, $order, $booking, $delivering)
     {
-        $this->testAccess($user, $order->supplier, $delivering);
-
         $param = $this->handlingParam($delivering);
-        $booking = $order->userBooking($user->id);
 
         if (isset($request['notes_' . $order->id])) {
             $booking->notes = $request['notes_' . $order->id] ?? '';
@@ -289,28 +286,45 @@ class BookingsService extends BaseService
                 $modifier = $booking->order->attachEmptyModifier($manual_adjust_modifier);
             }
 
-            $modifier_value = $booking->modifiedValues()->whereHas('modifier', function($query) use ($manual_adjust_modifier) {
+            $booking->modifiedValues()->whereHas('modifier', function($query) use ($manual_adjust_modifier) {
                 $query->where('modifier_type_id', $manual_adjust_modifier->id);
-            })->first();
+            })->delete();
 
-            if (is_null($modifier_value)) {
-                $modifier_value = new ModifiedValue();
-                $modifier_value->modifier_id = $modifier->id;
-                $modifier_value->target_type = get_class($booking);
-                $modifier_value->target_id = $booking->id;
-            }
-            else {
-                $modifier_value->delete();
-                $booking->unsetRelation('modifiedValues');
-            }
-
+            $modifier_value = new ModifiedValue();
+            $modifier_value->modifier_id = $modifier->id;
+            $modifier_value->target_type = get_class($booking);
+            $modifier_value->target_id = $booking->id;
             $modifier_value->amount = $manual_total - $booking->getValue('effective', false, true);
             $modifier_value->save();
+
+            $booking->unsetRelation('modifiedValues');
 
             return [$manual_total, $modifier_value];
         }
 
         return null;
+    }
+
+    public function handleBookingUpdate($request, $user, $order, $target_user, $delivering)
+    {
+        /*
+            - recupero la prenotazione
+            - resetto lo stato dei pagamenti e dei modificatori. Questo per evitare di dover gestire gli aggiornamenti: ricalcolo daccapo tutto
+            - aggiorno i contenuti della prenotazione
+            - ricalcolo i modificatori
+            - gestisco i modificatori esterni (gli arrotondamenti sulle consegne manuali)
+        */
+
+        $booking = $order->userBooking($target_user->id);
+        $booking->wipeStatus();
+        $booking = $this->readBooking($request, $order, $booking, $delivering);
+
+        if ($booking && $delivering) {
+            BookingDelivered::dispatch($booking, $request['action'], $user);
+            $this->handlePostProcess($request, $booking);
+        }
+
+        return $booking;
     }
 
     public function bookingUpdate(array $request, $aggregate, $target_user, $delivering)
@@ -319,11 +333,7 @@ class BookingsService extends BaseService
 
         foreach ($aggregate->orders as $order) {
             $user = $this->testAccess($target_user, $order->supplier, $delivering);
-            $booking = $this->readBooking($request, $order, $target_user, $delivering);
-            if ($booking && $delivering) {
-                BookingDelivered::dispatch($booking, $request['action'], $user);
-                $this->handlePostProcess($request, $booking);
-            }
+            $this->handleBookingUpdate($request, $user, $order, $target_user, $delivering);
         }
 
         DB::commit();

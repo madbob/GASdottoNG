@@ -31,6 +31,8 @@ class DynamicBookingsServiceTest extends TestCase
         $data['action'] = 'booked';
         $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $this->userWithBasePerms, false);
 
+        $this->nextRound();
+
         list($data2, $booked_count2, $total2) = $this->randomQuantities($this->order->products);
         $data2['action'] = 'booked';
         $ret = $this->services['dynamic_bookings']->dynamicModifiers($data2, $this->order->aggregate, $this->userWithBasePerms);

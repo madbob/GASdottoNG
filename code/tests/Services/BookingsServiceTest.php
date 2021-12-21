@@ -20,6 +20,12 @@ class BookingsServiceTest extends TestCase
         $this->userWithBasePerms = $this->createRoleAndUser($this->gas, 'supplier.book');
     }
 
+    private function updateAndFetch($data, $order, $user, $deliver)
+    {
+        $this->services['bookings']->bookingUpdate($data, $order->aggregate, $user, $deliver);
+        return \App\Booking::where('user_id', $user->id)->where('order_id', $order->id)->first();
+    }
+
     /*
         Lettura dati prenotazione
     */
@@ -28,7 +34,7 @@ class BookingsServiceTest extends TestCase
         $this->actingAs($this->userWithBasePerms);
         list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
         $data['notes_' . $this->sample_order->id] = 'Nota di test';
-        $booking = $this->services['bookings']->readBooking($data, $this->sample_order, $this->userWithBasePerms, false);
+        $booking = $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
         $this->assertNotNull($booking);
         $this->assertEquals($booking->notes, 'Nota di test');
         $this->assertEquals($booking->status, 'pending');
@@ -38,7 +44,7 @@ class BookingsServiceTest extends TestCase
         $this->actingAs($this->userWithShippingPerms);
         list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
         $data['notes_' . $this->sample_order->id] = '';
-        $booking = $this->services['bookings']->readBooking($data, $this->sample_order, $this->userWithBasePerms, false);
+        $booking = $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
         /*
             https://github.com/madbob/GASdottoNG/issues/151
         */
@@ -48,7 +54,7 @@ class BookingsServiceTest extends TestCase
         $this->assertEquals($booking->getValue('booked', true), $total);
 
         $this->actingAs($this->userWithBasePerms);
-        $booking = $this->services['bookings']->readBooking([], $this->sample_order, $this->userWithBasePerms, false);
+        $booking = $this->updateAndFetch([], $this->sample_order, $this->userWithBasePerms, false);
         $this->assertNull($booking);
     }
 
@@ -61,7 +67,7 @@ class BookingsServiceTest extends TestCase
         list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
 
         $data['action'] = 'booked';
-        $this->services['bookings']->bookingUpdate($data, $this->sample_order->aggregate, $this->userWithBasePerms, false);
+        $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
         $booking = \App\Booking::where('order_id', $this->sample_order->id)->where('user_id', $this->userWithBasePerms->id)->first();
         $this->assertNotNull($booking);
 
@@ -72,7 +78,7 @@ class BookingsServiceTest extends TestCase
         */
         $this->actingAs($this->userWithShippingPerms);
         $data['action'] = 'shipped';
-        $this->services['bookings']->bookingUpdate($data, $this->sample_order->aggregate, $this->userWithBasePerms, true);
+        $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, true);
 
         $booking = $booking->fresh();
         $this->assertEquals($booking->status, 'saved');
@@ -96,7 +102,7 @@ class BookingsServiceTest extends TestCase
 
         $this->actingAs($this->userWithBasePerms);
         list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
-        $this->services['bookings']->readBooking($data, $this->sample_order, $this->userWithShippingPerms, false);
+        $this->updateAndFetch($data, $this->sample_order, $this->userWithShippingPerms, false);
     }
 
     /*
@@ -108,10 +114,10 @@ class BookingsServiceTest extends TestCase
 
         $this->actingAs($this->userWithBasePerms);
         list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
-        $this->services['bookings']->readBooking($data, $this->sample_order, $this->userWithBasePerms, false);
+        $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
 
         $data['action'] = 'shipped';
-        $this->services['bookings']->bookingUpdate($data, $this->sample_order->aggregate, $this->userWithBasePerms, true);
+        $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, true);
     }
 
     /*
@@ -123,28 +129,35 @@ class BookingsServiceTest extends TestCase
 
         $this->actingAs($this->userWithBasePerms);
         list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
-        $booking = $this->services['bookings']->readBooking($data, $this->sample_order, $this->userWithBasePerms, false);
         list($data2, $booked_count2, $total2) = $this->randomQuantities($order2->products);
-        $booking2 = $this->services['bookings']->readBooking($data2, $order2, $this->userWithBasePerms, false);
+        $complete_data = array_merge($data, $data2);
+
+        $complete_data['action'] = 'booked';
+        $this->services['bookings']->bookingUpdate($complete_data, $this->sample_order->aggregate, $this->userWithBasePerms, false);
+
+        $this->nextRound();
 
         $aggregate = $this->sample_order->aggregate->fresh();
         $complete_booking = $aggregate->bookingBy($this->userWithBasePerms->id);
         $this->assertEquals($complete_booking->getValue('effective', true), $total + $total2);
 
         $this->actingAs($this->userWithShippingPerms);
-        $complete_data = array_merge($data, $data2);
         $complete_data['action'] = 'shipped';
         $this->services['bookings']->bookingUpdate($complete_data, $this->sample_order->aggregate, $this->userWithBasePerms, true);
+
+        $this->nextRound();
 
         $movement = \App\Movement::generate('booking-payment', $this->userWithBasePerms, $this->sample_order->aggregate, $total + $total2);
         $movement->save();
 
-        $booking = $booking->fresh();
+        $this->nextRound();
+
+        $booking = \App\Booking::where('user_id', $this->userWithBasePerms->id)->where('order_id', $this->sample_order->id)->first();
         $this->assertEquals($booking->status, 'shipped');
         $this->assertNotNull($booking->payment_id);
         $this->assertEquals($booking->payment->amount, $total);
 
-        $booking2 = $booking2->fresh();
+        $booking2 = \App\Booking::where('user_id', $this->userWithBasePerms->id)->where('order_id', $order2->id)->first();
         $this->assertEquals($booking2->status, 'shipped');
         $this->assertNotNull($booking2->payment_id);
         $this->assertEquals($booking2->payment->amount, $total2);
@@ -159,14 +172,14 @@ class BookingsServiceTest extends TestCase
 
         $this->actingAs($this->userWithBasePerms);
         list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
-        $booking = $this->services['bookings']->readBooking($data, $this->sample_order, $this->userWithBasePerms, false);
+        $booking = $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
 
         $complete_booking = $this->sample_order->aggregate->bookingBy($this->userWithBasePerms->id);
         $this->assertEquals($complete_booking->getValue('effective', true), $total);
 
         $this->actingAs($this->userWithShippingPerms);
         $data['action'] = 'shipped';
-        $this->services['bookings']->bookingUpdate($data, $this->sample_order->aggregate, $this->userWithBasePerms, true);
+        $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, true);
 
         $movement = \App\Movement::generate('booking-payment', $this->userWithBasePerms, $this->sample_order->aggregate, $total);
         $movement->save();
@@ -182,7 +195,7 @@ class BookingsServiceTest extends TestCase
         $this->actingAs($this->userWithBasePerms);
         list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
         $data['action'] = 'booked';
-        $this->services['bookings']->bookingUpdate($data, $this->sample_order->aggregate, $this->userWithBasePerms, false);
+        $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
 
         $booking = \App\Booking::where('order_id', $this->sample_order->id)->where('user_id', $this->userWithBasePerms->id)->first();
 
@@ -200,7 +213,7 @@ class BookingsServiceTest extends TestCase
             $shipped_data[$d] = 0;
         }
         $shipped_data['action'] = 'shipped';
-        $this->services['bookings']->bookingUpdate($shipped_data, $this->sample_order->aggregate, $this->userWithBasePerms, true);
+        $this->updateAndFetch($shipped_data, $this->sample_order, $this->userWithBasePerms, true);
 
         $booking = \App\Booking::where('order_id', $this->sample_order->id)->where('user_id', $this->userWithBasePerms->id)->first();
 
