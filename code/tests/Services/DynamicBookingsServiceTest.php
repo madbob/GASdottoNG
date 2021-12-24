@@ -42,7 +42,10 @@ class DynamicBookingsServiceTest extends TestCase
         foreach($ret->bookings as $b) {
             $this->assertEquals($b->total, $total2);
             $this->assertEquals(count($b->modifiers), 0);
-            $this->assertEquals(count($b->products), $booked_count2);
+
+            $this->assertEquals(count(array_filter($b->products, function($p) {
+                return $p->quantity != 0;
+            })), $booked_count2);
 
             foreach($b->products as $pid => $p) {
                 $target_product = null;
@@ -159,5 +162,41 @@ class DynamicBookingsServiceTest extends TestCase
 
         $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
         $this->contraintOnProduct($ret, 'Quantità superiore alla disponibilità');
+    }
+
+    /*
+        Lettura dinamica di una consegna manuale
+    */
+    public function testManualShipping()
+    {
+        $this->actingAs($this->userWithBasePerms);
+
+        list($data, $booked_count, $total) = $this->randomQuantities($this->order->products);
+        $booking_data['action'] = 'booked';
+        $this->services['bookings']->bookingUpdate($booking_data, $this->order->aggregate, $this->userWithBasePerms, false);
+
+        $this->nextRound();
+
+        $this->actingAs($this->userWithShippingPerms);
+
+        $data = [
+            'action' => 'shipped',
+            'manual_total_' . $this->order->id => 100,
+        ];
+
+        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
+
+        foreach($ret->bookings as $b) {
+            $this->assertEquals($b->total, 100);
+
+            $this->assertEquals(count($b->modifiers), 1);
+            foreach($b->modifiers as $m) {
+                $this->assertEquals($p->amount, 100);
+            }
+
+            foreach($b->products as $pid => $p) {
+                $this->assertEquals($p->quantity, 0);
+            }
+        }
     }
 }

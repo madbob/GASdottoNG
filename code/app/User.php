@@ -135,8 +135,9 @@ class User extends Authenticatable
     {
         $ret = $this->lastname . ' ' . $this->firstname;
 
-        if (empty(trim($ret)))
+        if (empty(trim($ret))) {
             $ret = $this->username;
+        }
 
         return $ret;
     }
@@ -186,47 +187,6 @@ class User extends Authenticatable
         }
 
         return false;
-    }
-
-    /*
-        Questa funzione ritorna la cifra dovuta dall'utente per le prenotazioni
-        fatte dall'utente e non ancora pagate, ma senza considerare anche gli
-        eventuali amici
-    */
-    public function getPendingBalanceAttribute()
-    {
-        $bookings = $this->bookings()->where('status', 'pending')->whereHas('order', function($query) {
-            $query->whereIn('status', ['open', 'closed']);
-        })->get();
-
-        $value = 0;
-
-        foreach($bookings as $b) {
-            $value += $b->getValue('effective', false);
-        }
-
-        return $value;
-    }
-
-    /*
-        Attenzione: questa funzione ritorna solo il saldo in euro
-    */
-    public function activeBalance()
-    {
-        if ($this->isFriend()) {
-            return $this->parent->activeBalance();
-        }
-        else {
-            $current = $this->currentBalanceAmount();
-            $to_pay = $this->pending_balance;
-
-            foreach($this->friends as $friend) {
-                $tpf = $friend->pending_balance;
-                $to_pay += $tpf;
-            }
-
-            return $current - $to_pay;
-        }
     }
 
     public function getPictureUrlAttribute()

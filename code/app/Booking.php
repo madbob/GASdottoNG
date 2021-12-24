@@ -337,6 +337,16 @@ class Booking extends Model
         return $ret;
     }
 
+    public function getShippingPlaceAttribute()
+    {
+        if ($this->user->isFriend()) {
+            return $this->user->parent->shippingplace;
+        }
+        else {
+            return $this->user->shippingplace;
+        }
+    }
+
     public static function sortByShippingPlace($bookings, $shipping_place)
     {
         if ($shipping_place == 'all_by_name') {
@@ -346,8 +356,8 @@ class Booking extends Model
         }
         else if ($shipping_place == 'all_by_place') {
             usort($bookings, function($a, $b) {
-                $a_place = $a->user->shippingplace;
-                $b_place = $b->user->shippingplace;
+                $a_place = $a->shipping_place;
+                $b_place = $b->shipping_place;
 
                 if (is_null($a_place) && is_null($b_place)) {
                     return $a->user->printableName() <=> $b->user->printableName();
@@ -369,9 +379,11 @@ class Booking extends Model
         else {
             $tmp_bookings = [];
 
-            foreach($bookings as $booking)
-                if ($booking->user->preferred_delivery_id == $shipping_place)
+            foreach($bookings as $booking) {
+                if ($booking->shipping_place->id == $shipping_place) {
                     $tmp_bookings[] = $booking;
+                }
+            }
 
             $bookings = $tmp_bookings;
 

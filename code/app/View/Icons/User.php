@@ -8,24 +8,14 @@ use App\Role;
 
 class User extends IconsMap
 {
+    use Status;
+
     public static function commons($user)
     {
         $ret = [];
 
         if ($user->can('users.admin', $user->gas)) {
-            $ret['hand-thumbs-down'] = (object) [
-                'test' => function ($obj) {
-                    return !is_null($obj->suspended_at);
-                },
-                'text' => _i('Sospeso'),
-            ];
-
-            $ret['slash-circle'] = (object) [
-                'test' => function ($obj) {
-                    return !is_null($obj->deleted_at);
-                },
-                'text' => _i('Cessato'),
-            ];
+            $ret = self::statusIcons($ret);
         }
 
         if ($user->can('movements.admin', $user->gas) || $user->can('movements.view', $user->gas)) {

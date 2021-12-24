@@ -4,22 +4,12 @@ namespace App\View\Icons;
 
 class Supplier extends IconsMap
 {
+    use Status;
+
     private static function altIcons($ret, $user)
     {
         if ($user->can('supplier.add', $user->gas)) {
-            $ret['hand-thumbs-down'] = (object) [
-                'test' => function ($obj) {
-                    return !is_null($obj->suspended_at);
-                },
-                'text' => _i('Sospeso'),
-            ];
-
-            $ret['slash-circle'] = (object) [
-                'test' => function ($obj) {
-                    return !is_null($obj->deleted_at);
-                },
-                'text' => _i('Eliminato'),
-            ];
+            $ret = self::statusIcons($ret);
         }
 
         return $ret;

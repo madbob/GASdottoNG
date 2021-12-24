@@ -256,6 +256,52 @@ class BookingsServiceTest extends TestCase
         }
     }
 
+    private function handlingTotalManual($difference)
+    {
+        $this->gas->setConfig('unmanaged_shipping', '1');
+        $this->sample_order->supplier->unmanaged_shipping_enabled = true;
+        $this->sample_order->supplier->save();
+
+        $this->actingAs($this->userWithBasePerms);
+        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
+        $data['action'] = 'booked';
+        $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
+
+        $this->actingAs($this->userWithShippingPerms);
+        $data['action'] = 'shipped';
+        $data['manual_total_' . $this->sample_order->id] = $total + $difference;
+        $booking = $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, true);
+
+        $this->assertEquals($booking->getValue('effective', true), $total + $difference);
+        $this->assertEquals($booking->modifiedValues->count(), 1);
+        $this->assertEquals($booking->modifiedValues->first()->modifier->modifierType->id, 'arrotondamento-consegna');
+        $this->assertEquals($booking->modifiedValues->first()->effective_amount, $difference);
+
+        $movement = \App\Movement::generate('booking-payment', $this->userWithBasePerms, $this->sample_order->aggregate, $total);
+        $movement->save();
+
+        $booking = $booking->fresh();
+        $this->assertEquals($booking->status, 'shipped');
+        $this->assertNotNull($booking->payment_id);
+        $this->assertEquals($booking->payment->amount, $total + $difference);
+    }
+
+    /*
+        Consegna con totale manuale superiore al prenotato
+    */
+    public function testManualShippingPlus()
+    {
+        $this->handlingTotalManual(10);
+    }
+
+    /*
+        Consegna con totale manuale inferiore al prenotato
+    */
+    public function testManualShippingMinus()
+    {
+        $this->handlingTotalManual(-10);
+    }
+
     /*
         I test per prenotazioni fatte da un amico sono fatti in
         ModifiersServiceTest

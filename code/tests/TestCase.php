@@ -150,7 +150,6 @@ abstract class TestCase extends BaseTestCase
 
         foreach($products as $product) {
             $q = rand(0, 20);
-
             $data[$product->id] = $q;
 
             if ($q != 0) {

@@ -58,15 +58,24 @@ class MovementType extends Model
         $obj->alterBalance($amount, $movement->currency, $op->field);
     }
 
-    public function apply($movement)
+    private function opsByMethod($method)
     {
         $ops = json_decode($this->function);
 
         foreach($ops as $o) {
-            if ($o->method != $movement->method) {
-                continue;
+            if ($o->method == $method) {
+                return $o;
             }
+        }
 
+        return null;
+    }
+
+    public function apply($movement)
+    {
+        $o = $this->opsByMethod($movement->method);
+
+        if ($o) {
             foreach($o->sender->operations as $op) {
                 $this->applyFunction($movement->sender, $movement, $op);
             }
@@ -82,35 +91,26 @@ class MovementType extends Model
                     $this->applyFunction($currentgas, $movement, $op);
                 }
             }
-
-            break;
         }
     }
 
     public function altersBalances($movement, $peer)
     {
-        $ops = json_decode($this->function);
+        $o = $this->opsByMethod($movement->method);
 
-        foreach($ops as $o) {
-            if ($o->method != $movement->method) {
-                continue;
-            }
-
+        if ($o) {
             return (!empty($o->$peer->operations));
         }
-
-        return false;
+        else {
+            return false;
+        }
     }
 
     public function transactionType($movement, $peer)
     {
-        $ops = json_decode($this->function);
+        $o = $this->opsByMethod($movement->method);
 
-        foreach($ops as $o) {
-            if ($o->method != $movement->method) {
-                continue;
-            }
-
+        if ($o) {
             foreach($o->$peer->operations as $op) {
                 if ($op->operation == 'increment') {
                     return 'credit';
@@ -119,8 +119,6 @@ class MovementType extends Model
                     return 'debit';
                 }
             }
-
-            break;
         }
 
         if ($peer == 'sender') {

@@ -1149,25 +1149,9 @@ class Order extends Model
 
             $shipping_place = $filters['shipping_place'] ?? null;
             if ($shipping_place) {
-                /*
-                    Ricordarsi che spesso i "top level bookings" includono solo
-                    prenotazioni dagli amici, non dall'utente principale, ma
-                    occorre filtrare i luoghi di consegna in base a
-                    quest'ultimo.
-
-                    TODO: probabilmente c'è una query che si può direttamente
-                    eseguire, anziché filtrare tutte le prenotazioni a
-                    posteriori
-                */
-                $filtered_bookings = [];
-
-                foreach($bookings as $user_id => $booking) {
-                    if ($booking->user->preferred_delivery_id == $shipping_place) {
-                        $filtered_bookings[$booking->user_id] = $booking;
-                    }
-                }
-
-                $bookings = $filtered_bookings;
+                $bookings = $bookings->filter(function($booking) use ($shipping_place) {
+                    return $booking->shipping_place->id == $shipping_place;
+                });
             }
 
             return $bookings;

@@ -59,13 +59,16 @@ trait BookerTrait
         return $value;
     }
 
+    /*
+        Attenzione: questa funzione ritorna solo il saldo in euro
+    */
     public function activeBalance()
     {
         if ($this->isFriend()) {
             return $this->parent->activeBalance();
         }
         else {
-            $current_balance = $this->current_balance_amount;
+            $current_balance = $this->currentBalanceAmount();
             $to_pay = $this->pending_balance;
 
             foreach($this->friends as $friend) {
