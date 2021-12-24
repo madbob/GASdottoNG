@@ -16,37 +16,40 @@ class SlugModel
         if (empty($event->sluggable->id)) {
             $id = $template = trim($event->sluggable->getSlugID());
             $class = get_class($event->sluggable);
-            $index = 1;
 
-            do {
-                $test = $class::tFind($id);
-                if (is_null($test))
-                    break;
+            if ($class) {
+                $index = 1;
 
-                $id = $template . '-' . $index++;
-            } while(true);
+                do {
+                    $test = $class::tFind($id);
+                    if (is_null($test))
+                        break;
 
-            /*
-                Attenzione!!!
-                Quando il nome di una variabile in POST contiene un punto,
-                Laravel lo traduce silenziosamente in un underscore. Questo per
-                far funzionare la "dot notation" per accedere ad informazioni
-                strutturate in array.
-                Poiché gli ID degli oggetti sono spesso usati per costruire i
-                nomi delle variabili in POST, qui li sopprimiamo direttamente
-                sostituendoli
-            */
-            $id = str_replace('.', '_', $id);
+                    $id = $template . '-' . $index++;
+                } while(true);
 
-            /*
-                Dagli ID sopprimiamo anche gli slash, che se concatenati agli
-                URL li rompono malamente
-            */
-            $id = str_replace('/', '_', $id);
+                /*
+                    Attenzione!!!
+                    Quando il nome di una variabile in POST contiene un punto,
+                    Laravel lo traduce silenziosamente in un underscore. Questo per
+                    far funzionare la "dot notation" per accedere ad informazioni
+                    strutturate in array.
+                    Poiché gli ID degli oggetti sono spesso usati per costruire i
+                    nomi delle variabili in POST, qui li sopprimiamo direttamente
+                    sostituendoli
+                */
+                $id = str_replace('.', '_', $id);
 
-            $id = str_replace("'", '_', $id);
+                /*
+                    Dagli ID sopprimiamo anche gli slash, che se concatenati agli
+                    URL li rompono malamente
+                */
+                $id = str_replace('/', '_', $id);
 
-            $event->sluggable->id = $id;
+                $id = str_replace("'", '_', $id);
+
+                $event->sluggable->id = $id;
+            }
         }
     }
 }

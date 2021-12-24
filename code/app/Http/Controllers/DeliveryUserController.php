@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use URL;
 
 use App\Services\BookingsService;
+use App\Services\FastBookingsService;
 
 use App\User;
 use App\Aggregate;
@@ -77,7 +78,8 @@ class DeliveryUserController extends Controller
             $users[$user_id] = $request->input('method-' . $user_id);
         }
 
-        $this->service->fastShipping($deliverer, $aggregate, $users);
+        $fastshipping = new FastBookingsService();
+        $fastshipping->fastShipping($deliverer, $aggregate, $users);
         return $this->successResponse();
     }
 

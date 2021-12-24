@@ -41,6 +41,7 @@ abstract class TestCase extends BaseTestCase
             'orders' => new \App\Services\OrdersService(),
             'bookings' => new \App\Services\BookingsService(),
             'dynamic_bookings' => new \App\Services\DynamicBookingsService(),
+            'fast_bookings' => new \App\Services\FastBookingsService(),
             'invoices' => new \App\Services\InvoicesService(),
             'modifiers' => new \App\Services\ModifiersService(),
             'multigas' => new \App\Services\MultiGasService(),

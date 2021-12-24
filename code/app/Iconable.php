@@ -58,7 +58,7 @@ trait Iconable
     {
         $ret = [];
 
-        $box = static::myIconsBox();
+        $box = self::myIconsBox();
         if ($box) {
             $user = Auth::user();
             $obj = $this;
@@ -85,7 +85,7 @@ trait Iconable
     {
         $ret = [];
 
-        $box = static::myIconsBox($class);
+        $box = self::myIconsBox($class);
         if (is_null($box) == false) {
             $user = Auth::user();
 

@@ -9,11 +9,12 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Log;
 
+use App\Exceptions\InvalidQuantityConstraint;
 use App\Events\SluggableCreating;
 
 class BookedProduct extends Model
 {
-    use HasFactory, GASModel, SluggableID, ModifiedTrait, ReducibleTrait, Cachable;
+    use HasFactory, GASModel, SluggableID, ModifiedTrait, LeafReducibleTrait, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -53,21 +54,20 @@ class BookedProduct extends Model
             calcolandone l'hash MD5 (almeno della parte meno significativa)
         */
         $string = sprintf('%s::%s', $this->booking->id, $this->product->id);
-        if (strlen($string) > 180)
+
+        if (strlen($string) > 180) {
             $string = sprintf('%s::%s', $this->booking->id, md5($this->product->id));
+        }
+
         return $string;
     }
 
     private function fixQuantity($attribute, $rectify)
     {
         if ($this->variants->isEmpty() == false) {
-            $total = 0;
-
-            foreach ($this->variants as $v) {
-                $total += $v->unitPrice($rectify) * $v->$attribute;
-            }
-
-            return $total;
+            return $this->variants->reduce(function($carry, $item) use ($rectify, $attribute) {
+                return $carry + ($item->unitPrice($rectify) * $item->$attribute);
+            }, 0);
         }
         else {
             /*
@@ -80,10 +80,6 @@ class BookedProduct extends Model
             $content = $this->$attribute;
             if (empty(trim($content))) {
                 $content = 0;
-            }
-
-            if (is_numeric($base_price) == false || is_numeric($content) == false) {
-                Log::error('Non numeric values for booked product: ' . $base_price . ' / ' . $content);
             }
 
             return $base_price * $content;
@@ -139,7 +135,7 @@ class BookedProduct extends Model
 
     public function getBookedVariant($variant, $fallback = false)
     {
-        $v = $this->variants()->where('id', '=', $variant->id)->first();
+        $v = $this->variants()->where('id', $variant->id)->first();
 
         if (is_null($v) && $fallback == true) {
             $v = new BookedProductVariant();
@@ -204,40 +200,86 @@ class BookedProduct extends Model
     private function fixWeight($attribute)
     {
         if ($this->variants->isEmpty() == false) {
-            $total = 0;
-
-            foreach ($this->variants as $v) {
-                $total += $v->fixWeight($attribute);
-            }
-
-            return $total;
+            $ret = $this->variants->reduce(function($carry, $item) use ($attribute) {
+                return $carry + $item->fixWeight($attribute);
+            }, 0);
         }
         else {
             if ($this->product->measure->discrete == false) {
-                return $this->$attribute;
+                $ret = $this->$attribute;
             }
             else {
-                return $this->product->weight * $this->$attribute;
+                $ret = $this->product->weight * $this->$attribute;
             }
         }
+
+        return $ret;
+    }
+
+    private function getModifierValue($type)
+    {
+        $id = substr($type, strlen('modifier:'));
+
+        if ($id == 'all') {
+            $values = $this->modifiedValues;
+        }
+        else {
+            $values = $this->modifiedValues->filter(function($i) use ($id) {
+                return $i->id == $id;
+            });
+        }
+
+        return $values->reduce(function($carry, $item) {
+            return $carry + $item->effective_amount;
+        }, 0);
+    }
+
+    private function getPendingValue($type)
+    {
+        switch($type) {
+            case 'delivered':
+                return $this->fixQuantity('delivered', false);
+
+            case 'effective':
+                return $this->fixQuantity('quantity', true) + $this->getValue('modifier:all');
+
+            case 'weight':
+                if ($this->product->measure->discrete) {
+                    return $this->fixWeight('quantity');
+                }
+                else {
+                    return $this->fixWeight('true_quantity');
+                }
+        }
+
+        return 0;
+    }
+
+    private function getShippedValue($type)
+    {
+        switch($type) {
+            case 'delivered':
+                return $this->final_price;
+
+            case 'effective':
+                return $this->final_price + $this->getValue('modifier:all');
+
+            case 'weight':
+                if ($this->product->measure->discrete) {
+                    return $this->fixWeight('delivered');
+                }
+                else {
+                    return $this->fixWeight('true_delivered');
+                }
+        }
+
+        return 0;
     }
 
     public function getValue($type)
     {
         if (Str::startsWith($type, 'modifier:')) {
-            $id = substr($type, strlen('modifier:'));
-            if ($id == 'all') {
-                $values = $this->modifiedValues;
-            }
-            else {
-                $values = $this->modifiedValues->filter(function($i) use ($id) {
-                    return $i->id == $id;
-                });
-            }
-
-            return $values->reduce(function($carry, $item) {
-                return $carry + $item->effective_amount;
-            }, 0);
+            return $this->getModifierValue($type);
         }
         else {
             if ($type == 'booked') {
@@ -246,43 +288,11 @@ class BookedProduct extends Model
             else {
                 switch($this->booking->status) {
                     case 'pending':
-                        switch($type) {
-                            case 'delivered':
-                                return $this->fixQuantity('delivered', false);
-
-                            case 'effective':
-                                return $this->fixQuantity('quantity', true) + $this->getValue('modifier:all');
-
-                            case 'weight':
-                                if ($this->product->measure->discrete) {
-                                    return $this->fixWeight('quantity');
-                                }
-                                else {
-                                    return $this->fixWeight('true_quantity');
-                                }
-                        }
-
-                        break;
+                        return $this->getPendingValue($type);
 
                     case 'shipped':
                     case 'saved':
-                        switch($type) {
-                            case 'delivered':
-                                return $this->final_price;
-
-                            case 'effective':
-                                return $this->final_price + $this->getValue('modifier:all');
-
-                            case 'weight':
-                                if ($this->product->measure->discrete) {
-                                    return $this->fixWeight('delivered');
-                                }
-                                else {
-                                    return $this->fixWeight('true_delivered');
-                                }
-                        }
-
-                        break;
+                        return $this->getShippedValue($type);
                 }
             }
         }
@@ -319,7 +329,7 @@ class BookedProduct extends Model
         return $ret;
     }
 
-    public function reduxData($ret = null, $filters = null)
+    private function initRedux($ret)
     {
         if (is_null($ret)) {
             $ret = (object) [
@@ -328,6 +338,13 @@ class BookedProduct extends Model
                 'variants' => [],
             ];
         }
+
+        return $ret;
+    }
+
+    public function reduxData($ret = null, $filters = null)
+    {
+        $ret = $this->initRedux($ret);
 
         if ($this->variants->isEmpty() == false) {
             $ret = $this->descendReduction($ret, $filters);
@@ -344,20 +361,7 @@ class BookedProduct extends Model
                 'delivered_pieces' => $this->product->portion_quantity > 0 ? $this->delivered / $this->product->portion_quantity : $this->delivered,
             ]);
 
-            $status = $this->status;
-
-            if ($status == 'shipped' || $status == 'saved') {
-                $ret->relative_price = $ret->price_delivered;
-                $ret->relative_weight = $ret->weight_delivered;
-                $ret->relative_quantity = $ret->delivered;
-                $ret->relative_pieces = $ret->delivered_pieces;
-            }
-            else {
-                $ret->relative_price = $ret->price;
-                $ret->relative_weight = $ret->weight;
-                $ret->relative_quantity = $ret->quantity;
-                $ret->relative_pieces = $ret->quantity_pieces;
-            }
+            $ret = $this->relativeRedux($ret);
         }
 
         return $ret;
