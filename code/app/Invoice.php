@@ -39,6 +39,17 @@ class Invoice extends Model implements AccountingDocument
         return $this->belongsTo('App\Movement');
     }
 
+    /*
+        Attenzione: benché Invoice sia un PayableTrait tendenzialmente la
+        relazione movements dovrebbe essere sempre vuota: il movimento
+        principale di pagamento della fattura (di tipo "invoice-payment", e che
+        ha come target sempre la medesima Invoice) viene assegnato direttamente
+        in payment_id.
+        Nella relazione otherMovements si trovano gli altri movimenti creati
+        contestualmente al pagamento, che non necessariamente hanno come target
+        la fattura (e che pertanto non rientrano nella normale relazione
+        movements)
+    */
     public function otherMovements()
     {
         return $this->belongsToMany('App\Movement');
@@ -98,6 +109,20 @@ class Invoice extends Model implements AccountingDocument
         })->reverse();
     }
 
+    public function totals()
+    {
+        $orders_total_taxable = 0;
+        $orders_total_tax = 0;
+
+        foreach($this->orders as $order) {
+            $summary = $order->calculateInvoicingSummary();
+            $orders_total_taxable += $summary->total_taxable;
+            $orders_total_tax += $summary->total_tax;
+        }
+
+        return [$orders_total_taxable, $orders_total_tax];
+    }
+
     /************************************************************ SluggableID */
 
     public function getSlugID()
@@ -128,6 +153,19 @@ class Invoice extends Model implements AccountingDocument
         }
         else {
             return $this->date;
+        }
+    }
+
+    /*********************************************************** PayableTrait */
+
+    public function deleteMovements()
+    {
+        foreach($this->movements as $mov) {
+            $mov->delete();
+        }
+
+        foreach($this->otherMovements as $mov) {
+            $mov->delete();
         }
     }
 }

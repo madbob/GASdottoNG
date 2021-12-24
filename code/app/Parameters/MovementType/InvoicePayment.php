@@ -2,6 +2,8 @@
 
 namespace App\Parameters\MovementType;
 
+use App\Movement;
+
 class InvoicePayment extends MovementType
 {
     public function identifier()
@@ -31,5 +33,29 @@ class InvoicePayment extends MovementType
         ]));
 
         return $type;
+    }
+
+    public function systemInit($mov)
+    {
+        $mov->callbacks = [
+            'post' => function (Movement $movement) {
+                $movement->attachToTarget('payment_id');
+                $invoice = $movement->target;
+
+                foreach($invoice->orders as $order) {
+                    $order->payment_id = $movement->id;
+                    $order->status = 'archived';
+                    $order->save();
+                }
+
+                $invoice->status = 'payed';
+                $invoice->save();
+            },
+            'delete' => function(Movement $movement) {
+                $movement->detachFromTarget('payment_id');
+            }
+        ];
+
+        return $mov;
     }
 }

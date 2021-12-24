@@ -5,88 +5,48 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 
+use App\Services\InvoicesService;
+use App\Exceptions\AuthException;
+use App\Exceptions\IllegalArgumentException;
+
 use DB;
 use Auth;
 use Log;
 
 use App\Invoice;
-use App\Receipt;
 use App\Order;
 use App\Movement;
 use App\MovementType;
 
-class InvoicesController extends Controller
+class InvoicesController extends BackedController
 {
-    public function __construct()
+    public function __construct(InvoicesService $service)
     {
         $this->middleware('auth');
 
         $this->commonInit([
-            'reference_class' => 'App\\Invoice'
+            'reference_class' => 'App\\Invoice',
+            'endpoint' => 'invoices',
+            'service' => $service,
         ]);
     }
 
     public function index(Request $request)
     {
-        $user = $request->user();
-        if ($user->can('movements.admin', $user->gas) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
-
-        $gas = $user->gas;
-
-        $one_month_ago = date('Y-m-d', strtotime('-1 months'));
-
-        $invoices = Invoice::where('status', '!=', 'payed')->orWhereHas('payment', function($query) use ($one_month_ago) {
-            $query->where('date', '>=', $one_month_ago);
-        })->orWhereDoesntHave('payment')->get();
-
-        if ($gas->hasFeature('extra_invoicing')) {
-            $receipts = Receipt::where('date', '>=', $one_month_ago)->get();
-            foreach($receipts as $r) {
-                $invoices->push($r);
-            }
-        }
-
-        $invoices = Invoice::doSort($invoices);
-
+        $past = date('Y-m-d', strtotime('-1 months'));
+        $future = date('Y-m-d', strtotime('+10 years'));
+        $invoices = $this->service->list($past, $future, 0);
         return view('invoice.index', [
             'invoices' => $invoices,
         ]);
     }
 
-    public function store(Request $request)
-    {
-        DB::beginTransaction();
-
-        $user = Auth::user();
-        if ($user->can('movements.admin', $user->gas) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
-
-        $invoice = new Invoice();
-        $invoice->gas_id = $user->gas_id;
-        $invoice->supplier_id = $request->input('supplier_id');
-        $invoice->number = $request->input('number');
-        $invoice->date = decodeDate($request->input('date'));
-        $invoice->notes = $request->input('notes');
-        $invoice->total = $request->input('total');
-        $invoice->total_vat = $request->input('total_vat');
-        $invoice->save();
-
-        return $this->successResponse([
-            'id' => $invoice->id,
-            'name' => $invoice->name,
-            'header' => $invoice->printableHeader(),
-            'url' => url('invoices/' . $invoice->id),
-        ]);
-    }
-
     public function show($id)
     {
-        $invoice = Invoice::findOrFail($id);
+        $invoice = $this->service->show($id);
 
         $user = Auth::user();
+
         if ($user->can('movements.admin', $user->gas)) {
             return view('invoice.edit', ['invoice' => $invoice]);
         }
@@ -98,107 +58,9 @@ class InvoicesController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
-    {
-        DB::beginTransaction();
-
-        $user = Auth::user();
-        if ($user->can('movements.admin', $user->gas) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
-
-        $invoice = Invoice::findOrFail($id);
-        if ($request->has('supplier_id'))
-            $invoice->supplier_id = $request->input('supplier_id');
-        if ($request->has('number'))
-            $invoice->number = $request->input('number');
-        if ($request->has('date'))
-            $invoice->date = decodeDate($request->input('date'));
-        if ($request->has('notes'))
-            $invoice->notes = $request->input('notes');
-        if ($request->has('total'))
-            $invoice->total = $request->input('total');
-        if ($request->has('total_vat'))
-            $invoice->total_vat = $request->input('total_vat');
-
-        $invoice->status = $request->input('status');
-        $invoice->save();
-
-        return $this->successResponse([
-            'id' => $invoice->id,
-            'header' => $invoice->printableHeader(),
-            'url' => url('invoices/' . $invoice->id),
-        ]);
-    }
-
-    public function destroy($id)
-    {
-        DB::beginTransaction();
-
-        $user = Auth::user();
-        if ($user->can('movements.admin', $user->gas) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
-
-        $invoice = Invoice::findOrFail($id);
-
-        if ($invoice->payment != null)
-            $invoice->deleteMovements();
-        $invoice->delete();
-
-        return $this->successResponse();
-    }
-
     public function products($id)
     {
-        DB::beginTransaction();
-
-        $user = Auth::user();
-        if ($user->can('movements.admin', $user->gas) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
-
-        $invoice = Invoice::findOrFail($id);
-        $summaries = [];
-
-        $global_summary = (object)[
-            'products' => [],
-            'total' => 0,
-            'total_taxable' => 0,
-            'total_tax' => 0,
-        ];
-
-        foreach($invoice->orders as $order) {
-            $summary = $order->calculateInvoicingSummary();
-            $summaries[$order->id] = $summary;
-
-            foreach($order->products as $product) {
-                if (isset($global_summary->products[$product->id]) == false) {
-                    $global_summary->products[$product->id] = [
-                        'name' => $product->printableName(),
-                        'vat_rate' => $product->vat_rate ? $product->vat_rate->printableName() : '',
-                        'total' => 0,
-                        'total_vat' => 0,
-                        'delivered' => 0,
-                        'measure' => $product->measure
-                    ];
-                }
-
-                $global_summary->products[$product->id]['total'] += $summary->products[$product->id]['total'];
-                $global_summary->products[$product->id]['total_vat'] += $summary->products[$product->id]['total_vat'];
-                $global_summary->products[$product->id]['delivered'] += $summary->products[$product->id]['delivered'];
-            }
-
-            $global_summary->total += $summary->total;
-            $global_summary->total_taxable += $summary->total_taxable;
-            $global_summary->total_tax += $summary->total_tax;
-        }
-
-        return view('invoice.products', [
-            'invoice' => $invoice,
-            'summaries' => $summaries,
-            'global_summary' => $global_summary
-        ]);
+        return view('invoice.products', $this->products($id));
     }
 
     public function orders($id)
@@ -225,13 +87,7 @@ class InvoicesController extends Controller
         $movements = new Collection();
         $movements->push($main);
 
-        $orders_total_taxable = 0;
-        $orders_total_tax = 0;
-        foreach($invoice->orders as $order) {
-            $summary = $order->calculateInvoicingSummary();
-            $orders_total_taxable += $summary->total_taxable;
-            $orders_total_tax += $summary->total_tax;
-        }
+        list($orders_total_taxable, $orders_total_tax) = $invoice->totals();
 
         $alternative_types = [];
         $available_types = movementTypes();
@@ -248,6 +104,39 @@ class InvoicesController extends Controller
             'movements' => $movements,
             'alternative_types' => $alternative_types
         ]);
+    }
+
+    private function movementAttach($type, $user, $invoice)
+    {
+        $target = null;
+        $sender = null;
+
+        $metadata = movementTypes($type);
+
+        if ($metadata->target_type == 'App\Invoice') {
+            $target = $invoice;
+        }
+        else if ($metadata->target_type == 'App\Supplier') {
+            $target = $invoice->supplier;
+        }
+        else if ($metadata->target_type == 'App\Gas') {
+            $target = $user->gas;
+        }
+        else {
+            Log::error(_('Tipo movimento non riconosciuto durante il salvataggio della fattura'));
+        }
+
+        if ($metadata->sender_type == 'App\Supplier') {
+            $sender = $invoice->supplier;
+        }
+        else if ($metadata->sender_type == 'App\Gas') {
+            $sender = $user->gas;
+        }
+        else {
+            Log::error(_('Tipo movimento non riconosciuto durante il salvataggio della fattura'));
+        }
+
+        return [$sender, $target];
     }
 
     public function postMovements(Request $request, $id)
@@ -273,33 +162,8 @@ class InvoicesController extends Controller
         for($i = 0; $i < count($movement_types); $i++) {
             $type = $movement_types[$i];
 
-            $target = null;
-            $sender = null;
-
-            $metadata = movementTypes($type);
-
-            if ($metadata->target_type == 'App\Invoice') {
-                $target = $invoice;
-            }
-            else if ($metadata->target_type == 'App\Supplier') {
-                $target = $invoice->supplier;
-            }
-            else if ($metadata->target_type == 'App\Gas') {
-                $target = $user->gas;
-            }
-            else {
-                Log::error(_('Tipo movimento non riconosciuto durante il salvataggio della fattura'));
-                continue;
-            }
-
-            if ($metadata->sender_type == 'App\Supplier') {
-                $sender = $invoice->supplier;
-            }
-            else if ($metadata->sender_type == 'App\Gas') {
-                $sender = $user->gas;
-            }
-            else {
-                Log::error(_('Tipo movimento non riconosciuto durante il salvataggio della fattura'));
+            list($sender, $target) = $this->movementAttach($type, $user, $invoice);
+            if (is_null($sender) || is_null($target)) {
                 continue;
             }
 
@@ -309,26 +173,15 @@ class InvoicesController extends Controller
             $mov->method = $movement_methods[$i];
             $mov->save();
 
-            if ($type == 'invoice-payment' && $master_movement == null)
+            if ($type == 'invoice-payment' && $master_movement == null) {
                 $master_movement = $mov;
-            else
-                $other_movements[] = $mov->id;
-        }
-
-        if ($master_movement != null) {
-            foreach($invoice->orders as $order) {
-                $order->payment_id = $master_movement->id;
-                $order->status = 'archived';
-                $order->save();
             }
-
-            $invoice->status = 'payed';
-            $invoice->payment_id = $master_movement->id;
-            $invoice->save();
+            else {
+                $other_movements[] = $mov->id;
+            }
         }
 
         $invoice->otherMovements()->sync($other_movements);
-
         return $this->successResponse();
     }
 
@@ -356,39 +209,8 @@ class InvoicesController extends Controller
         $start = decodeDate($request->input('startdate'));
         $end = decodeDate($request->input('enddate'));
         $supplier_id = $request->input('supplier_id');
-
-        $query = Invoice::where(function($query) use($start, $end) {
-            $query->whereHas('payment', function($query) use($start, $end) {
-                $query->where('date', '>=', $start)->where('date', '<=', $end);
-            })->orWhereDoesntHave('payment');
-        });
-
-        if ($supplier_id != '0') {
-            $query->where('supplier_id', $supplier_id);
-        }
-
-        $elements = $query->get();
-
-        $gas = Auth::user()->gas;
-        if ($gas->hasFeature('extra_invoicing')) {
-            $query = Receipt::where('date', '>=', $start)->where('date', '<=', $end)->orderBy('date', 'desc');
-
-            if ($supplier_id != '0') {
-                $query->whereHas('bookings', function($query) use ($supplier_id) {
-                    $query->whereHas('order', function($query) use ($supplier_id) {
-                        $query->where('supplier_id', $supplier_id);
-                    });
-                });
-            }
-
-            $receipts = $query->get();
-
-            foreach($receipts as $r) {
-                $elements->push($r);
-            }
-        }
-
-        $elements = Invoice::doSort($elements);
+        $elements = $this->service->list($start, $end, $supplier_id);
+        $gas = $request->user()->gas;
 
         $format = $request->input('format', 'none');
 
