@@ -36,7 +36,7 @@ class Order extends Printer
     {
         $send_mail = isset($request['send_mail']);
         $subtype = $request['format'] ?? 'pdf';
-        $status = $request['status'];
+        $status = $request['status'] ?? 'booked';
         $required_fields = $request['fields'] ?? [];
         $fields = splitFields($required_fields);
 
