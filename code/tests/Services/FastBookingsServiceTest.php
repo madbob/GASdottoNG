@@ -42,4 +42,44 @@ class FastBookingsServiceTest extends TestCase
             $this->assertEquals($booking->payment->amount, $booking->getValue('effective', true));
         }
     }
+
+    /*
+        Test consegne veloci parziali
+    */
+    public function testFastShippingFiltered()
+    {
+        $this->populateOrder($this->sample_order);
+
+        $this->nextRound();
+
+        $filter[$this->sample_order->bookings->random()->user_id] = 'credit';
+        $filter[$this->sample_order->bookings->random()->user_id] = 'cash';
+        $users = array_keys($filter);
+
+        $this->nextRound();
+
+        $this->actingAs($this->userWithShippingPerms);
+        $this->services['fast_bookings']->fastShipping($this->userWithShippingPerms, $this->sample_order->aggregate, $filter);
+
+        $this->nextRound();
+        $order = $this->services['orders']->show($this->sample_order->id);
+
+        foreach($order->bookings as $booking) {
+            if (in_array($booking->user_id, $users)) {
+                $this->assertEquals($booking->status, 'shipped');
+                $this->assertNotNull($booking->payment);
+
+                foreach($booking->products as $product) {
+                    $this->assertEquals($product->quantity, $product->delivered);
+                }
+
+                $this->assertEquals($booking->payment->amount, $booking->getValue('effective', true));
+                $this->assertEquals($booking->payment->method, $filter[$booking->user_id]);
+            }
+            else {
+                $this->assertEquals($booking->status, 'pending');
+                $this->assertNull($booking->payment);
+            }
+        }
+    }
 }

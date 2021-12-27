@@ -85,8 +85,8 @@ class FastBookingsService extends BaseService
 
         if ($users) {
             $users_ids = array_keys($users);
-            $bookings = $bookings->filter(function($booking) use ($users_ids) {
-                return in_array($booking->user_id, $users_ids);
+            $bookings = array_filter($bookings, function($booking) use ($users_ids) {
+                return in_array($booking->user->id, $users_ids);
             });
         }
 
