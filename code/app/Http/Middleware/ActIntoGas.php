@@ -16,6 +16,7 @@ namespace App\Http\Middleware;
 
 use App;
 use Auth;
+use Log;
 use Closure;
 
 class ActIntoGas
@@ -36,6 +37,8 @@ class ActIntoGas
         else {
             $hub->setGas($managed_gas);
         }
+
+        Log::withContext(['instance' => $_SERVER['HTTP_HOST'] ?? '???']);
 
         return $next($request);
     }
