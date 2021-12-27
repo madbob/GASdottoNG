@@ -81,13 +81,13 @@ class FastBookingsService extends BaseService
         DB::beginTransaction();
 
         $default_payment_method = defaultPaymentByType('booking-payment');
+        $bookings = $aggregate->bookings;
 
         if ($users) {
             $users_ids = array_keys($users);
-            $bookings = $aggregate->bookings()->whereIn('user_id', $users_ids)->get();
-        }
-        else {
-            $bookings = $aggregate->bookings;
+            $bookings = $bookings->filter(function($booking) use ($users_ids) {
+                return in_array($booking->user_id, $users_ids);
+            });
         }
 
         foreach($bookings as $booking) {
