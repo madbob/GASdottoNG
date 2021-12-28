@@ -378,7 +378,7 @@ class MovementsController extends BackedController
                         $headers[] = _i('Saldo %s', $curr->symbol);
                     }
 
-                    return output_csv($filename, $headers, $suppliers, function($currencies, $supplier) {
+                    return output_csv($filename, $headers, $suppliers, function($supplier) use ($currencies) {
                         $row = [];
                         $row[] = $supplier->id;
                         $row[] = $supplier->printableName();
