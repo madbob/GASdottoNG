@@ -422,20 +422,6 @@ class MovementsController extends BackedController
         return view('movement.history', ['obj' => $obj]);
     }
 
-    public function recalculateCurrentBalance()
-    {
-        try {
-            $this->service->recalculateCurrentBalance();
-            return $this->successResponse();
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
-        catch (\Exception $e) {
-            return $this->errorResponse(_i('Errore'));
-        }
-    }
-
     public function recalculate()
     {
         try {

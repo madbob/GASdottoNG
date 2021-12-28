@@ -192,7 +192,7 @@ class MovementsService extends BaseService
         });
     }
 
-    public function recalculateCurrentBalance()
+    private function recalculateCurrentBalance()
     {
         $this->ensureAuth(['movements.admin' => 'gas']);
 

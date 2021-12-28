@@ -72,6 +72,20 @@ class InvoicesController extends BackedController
         ]);
     }
 
+    private function validMovementTypes()
+    {
+        $alternative_types = [];
+        $available_types = movementTypes();
+
+        foreach($available_types as $at) {
+            if (($at->sender_type == 'App\Gas' && ($at->target_type == 'App\Supplier' || $at->target_type == 'App\Invoice')) || ($at->sender_type == 'App\Supplier' && $at->target_type == 'App\Gas')) {
+                $alternative_types[$at->id] = $at->name;
+            }
+        }
+
+        return $alternative_types;
+    }
+
     public function getMovements($id)
     {
         $user = Auth::user();
@@ -88,14 +102,7 @@ class InvoicesController extends BackedController
         $movements->push($main);
 
         list($orders_total_taxable, $orders_total_tax) = $invoice->totals();
-
-        $alternative_types = [];
-        $available_types = movementTypes();
-        foreach($available_types as $at) {
-            if (($at->sender_type == 'App\Gas' && ($at->target_type == 'App\Supplier' || $at->target_type == 'App\Invoice')) || ($at->sender_type == 'App\Supplier' && $at->target_type == 'App\Gas')) {
-                $alternative_types[$at->id] = $at->name;
-            }
-        }
+        $alternative_types = $this->validMovementTypes();
 
         return view('invoice.movements', [
             'invoice' => $invoice,
@@ -204,6 +211,31 @@ class InvoicesController extends BackedController
         }
     }
 
+    private function outputCSV($elements)
+    {
+        $filename = _i('Esportazione fatture GAS %s.csv', date('d/m/Y'));
+        $headers = [_i('Tipo'), _i('Da/A'), _i('Data'), _i('Numero'), _i('Imponibile'), _i('IVA')];
+
+        return output_csv($filename, $headers, $elements, function($invoice) {
+            $row = [];
+
+            if (get_class($invoice) == 'App\Invoice') {
+                $row[] = _i('Ricevuta');
+                $row[] = $invoice->supplier->printableName();
+            }
+            else {
+                $row[] = _i('Inviata');
+                $row[] = $invoice->user->printableName();
+            }
+
+            $row[] = $invoice->date;
+            $row[] = $invoice->number;
+            $row[] = $invoice->total;
+            $row[] = $invoice->total_vat;
+            return $row;
+        });
+    }
+
     public function search(Request $request)
     {
         $start = decodeDate($request->input('startdate'));
@@ -225,26 +257,7 @@ class InvoicesController extends BackedController
             ]);
         }
         else if ($format == 'csv') {
-            $filename = _i('Esportazione fatture GAS %s.csv', date('d/m/Y'));
-            $headers = [_i('Tipo'), _i('Da/A'), _i('Data'), _i('Numero'), _i('Imponibile'), _i('IVA')];
-            return output_csv($filename, $headers, $elements, function($invoice) {
-                $row = [];
-
-                if (get_class($invoice) == 'App\Invoice') {
-                    $row[] = _i('Ricevuta');
-                    $row[] = $invoice->supplier->printableName();
-                }
-                else {
-                    $row[] = _i('Inviata');
-                    $row[] = $invoice->user->printableName();
-                }
-
-                $row[] = $invoice->date;
-                $row[] = $invoice->number;
-                $row[] = $invoice->total;
-                $row[] = $invoice->total_vat;
-                return $row;
-            });
+            return $this->outputCSV($elements);
         }
     }
 }

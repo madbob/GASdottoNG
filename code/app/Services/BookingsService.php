@@ -315,7 +315,7 @@ class BookingsService extends BaseService
             - gestisco i modificatori esterni (gli arrotondamenti sulle consegne manuali)
         */
 
-        $booking = $order->userBooking($target_user->id);
+        $booking = $order->userBooking($target_user);
         $booking->wipeStatus();
         $booking = $this->readBooking($request, $order, $booking, $delivering);
 

@@ -61,6 +61,10 @@ class OrdersController extends BackedController
         }
 
         foreach($aggregates as $aggregate) {
+            if ($aggregate->gas->isEmpty()) {
+                continue;
+            }
+
             $summary = '';
 
             foreach($aggregate->orders as $order) {
