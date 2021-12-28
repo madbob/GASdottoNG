@@ -18,6 +18,8 @@ use App\MovementType;
 use App\Currency;
 use App\Balance;
 use App\Movement;
+use App\User;
+use App\Supplier;
 
 class FixDatabase extends Command
 {
@@ -78,6 +80,28 @@ class FixDatabase extends Command
         else {
             $c = defaultCurrency();
             Movement::whereNull('currency_id')->update(['currency_id' => $c->id]);
+            Balance::whereNull('currency_id')->update(['currency_id' => $c->id]);
+
+            foreach(Gas::all() as $target) {
+                $balances = $target->balances()->where('currency_id', $c->id)->where('current', true)->orderBy('date', 'desc')->get();
+                if ($balances->count() == 2) {
+                    $balances->first()->delete();
+                }
+            }
+
+            foreach(User::all() as $target) {
+                $balances = $target->balances()->where('currency_id', $c->id)->where('current', true)->orderBy('date', 'desc')->get();
+                if ($balances->count() == 2) {
+                    $balances->first()->delete();
+                }
+            }
+
+            foreach(Supplier::all() as $target) {
+                $balances = $target->balances()->where('currency_id', $c->id)->where('current', true)->orderBy('date', 'desc')->get();
+                if ($balances->count() == 2) {
+                    $balances->first()->delete();
+                }
+            }
         }
 
         $gas = Gas::all();
