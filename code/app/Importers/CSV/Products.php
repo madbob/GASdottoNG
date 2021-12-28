@@ -115,6 +115,7 @@ class Products extends CSVImporter
 
                 $p = new Product();
                 $p->name = $name;
+                $p->weight = 0;
                 $p->category_id = $p->measure_id = 'non-specificato';
                 $p->min_quantity = $p->multiple = $p->package_size = 0;
                 $price_without_vat = $vat_rate = $package_price = null;
