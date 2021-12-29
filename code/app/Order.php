@@ -635,7 +635,7 @@ class Order extends Model
             $ret->headers[] = $formattable[$f]->name;
         }
 
-        foreach ($this->supplier->products as $product) {
+        foreach ($this->products as $product) {
             $row = $this->formatProduct($fields, $formattable, $summary->products[$product->id] ?? null, $product, $internal_offsets);
             if (!empty($row)) {
                 $ret->contents = array_merge($ret->contents, $row);
