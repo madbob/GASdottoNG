@@ -17,26 +17,34 @@ class OrderNumbersDispatcher
 {
     private $cache = [];
 
+    private function initCache($year)
+    {
+        if (array_key_exists($year, $this->cache) == false) {
+            /*
+                Questo di fatto serve solo ad eseguire gli unit test
+            */
+            $connection = config('database.default');
+            $driver = config("database.connections.{$connection}.driver");
+            if ($driver == 'sqlite') {
+                $this->cache[$year] = Order::where(DB::raw("strftime('%Y', start)"), $year)->orderBy('start', 'asc')->orderBy('id', 'asc')->pluck('start', 'id');
+            }
+            else {
+                $this->cache[$year] = Order::where(DB::raw('YEAR(start)'), $year)->orderBy('start', 'asc')->orderBy('id', 'asc')->pluck('start', 'id');
+            }
+        }
+    }
+
     public function getNumber($order)
     {
         $year = date('Y', strtotime($order->start));
-
-        if (array_key_exists($year, $this->cache) == false) {
-            $this->cache[$year] = Order::where(DB::raw('YEAR(start)'), $year)->orderBy('start', 'asc')->orderBy('id', 'asc')->pluck('start', 'id');
-        }
+        $this->initCache($year);
 
         $counter = 0;
 
         foreach($this->cache[$year] as $id => $start) {
-            if ($start < $order->start) {
+            if ($start < $order->start || ($start == $order->start && $id < $order->id)) {
                 $counter++;
                 continue;
-            }
-            else if ($start == $order->start) {
-                if ($id < $order->id) {
-                    $counter++;
-                    continue;
-                }
             }
 
             break;

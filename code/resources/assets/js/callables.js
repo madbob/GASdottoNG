@@ -113,6 +113,25 @@ class Callables {
         });
     }
 
+    static evaluateEmptyBooking(form) {
+        if (form.find('input:hidden[name=action]').val() == 'shipped') {
+            var test = false;
+
+            form.find('.booking-total').each(function() {
+                var total = utils.parseFloatC($(this).textVal());
+                test = (test || (total != 0));
+            });
+
+            if (test == false) {
+                test = confirm(_('Tutte le quantità consegnate sono a zero! Vuoi davvero procedere?'));
+
+                if (test == false) {
+                    throw "Empty!";
+                }
+            }
+        }
+    }
+
     static collectFilteredUsers(form) {
         $('#credits_status_table tbody tr:visible').each(function() {
             var user_id = $(this).find('input[name^=user_id]').val();

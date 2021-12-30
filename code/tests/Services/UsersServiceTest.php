@@ -127,6 +127,27 @@ class UsersServiceTest extends TestCase
     }
 
     /*
+        Salvataggio Utente con token per il primo accesso valido
+    */
+    public function testStoreAndMail()
+    {
+        $this->actingAs($this->userWithAdminPerm);
+
+        $newUser = $this->services['users']->store(array(
+            'username' => 'test user',
+            'firstname' => 'mario',
+            'lastname' => 'rossi',
+            'sendmail' => true,
+            'email' => 'mario@example.com'
+        ));
+
+        $newUser = $this->services['users']->show($newUser->id);
+        $this->assertNotEquals('', $newUser->access_token);
+        $this->assertNotNull($newUser->access_token);
+        $this->assertEquals(10, strlen($newUser->access_token));
+    }
+
+    /*
         Salvataggio Amico
     */
     public function testStoreFriend()

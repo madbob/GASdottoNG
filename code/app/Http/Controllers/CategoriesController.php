@@ -66,8 +66,9 @@ class CategoriesController extends Controller
         foreach ($data as $category) {
             $c = null;
 
-            if (empty($category['name']))
+            if (empty($category['name'])) {
                 continue;
+            }
 
             if (isset($category['id'])) {
                 if (in_array($category['id'], $accumulator)) {
@@ -78,8 +79,9 @@ class CategoriesController extends Controller
                 $c = Category::find($category['id']);
             }
 
-            if (is_null($c))
+            if (is_null($c)) {
                 $c = new Category();
+            }
 
             $c->name = $category['name'];
             $c->parent_id = $parent;

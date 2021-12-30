@@ -18,6 +18,8 @@ $existing = false;
             --}}
             <input type="hidden" name="action" value="shipped">
 
+            <input type="hidden" name="pre-saved-function" value="evaluateEmptyBooking" class="skip-on-submit">
+
             @csrf
             @method('PUT')
 

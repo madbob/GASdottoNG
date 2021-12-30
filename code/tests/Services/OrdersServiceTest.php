@@ -182,4 +182,95 @@ class OrdersServiceTest extends TestCase
         $this->expectException(ModelNotFoundException::class);
         $order = $this->services['orders']->show($this->order->id);
     }
+
+    /*
+        Assegnazione numeri agli ordini
+    */
+    public function testNumbers()
+    {
+        $this->actingAs($this->userReferrer);
+
+        $this_year = date('Y');
+
+        $start = date('Y-m-d');
+        $end = date('Y-m-d', strtotime('+20 days'));
+        $shipping = date('Y-m-d', strtotime('+30 days'));
+
+        $aggregate = $this->services['orders']->store(array(
+            'supplier_id' => $this->order->supplier_id,
+            'start' => printableDate($start),
+            'end' => printableDate($end),
+            'shipping' => printableDate($shipping),
+            'status' => 'open',
+        ));
+
+        $order = $this->services['orders']->show($this->order->id);
+        $this->assertEquals($order->internal_number, '1 / ' . $this_year);
+
+        foreach($aggregate->orders as $order) {
+            $order = $this->services['orders']->show($order->id);
+            $this->assertEquals($order->internal_number, '2 / ' . $this_year);
+        }
+
+        $second_aggregate = $this->services['orders']->store(array(
+            'supplier_id' => $this->order->supplier_id,
+            'start' => printableDate(date('Y-m-d', strtotime($start . ' +1 year'))),
+            'end' => printableDate(date('Y-m-d', strtotime($end . ' +1 year'))),
+            'status' => 'closed',
+        ));
+
+        $order = $this->services['orders']->show($this->order->id);
+        $this->assertEquals($order->internal_number, '1 / ' . $this_year);
+
+        foreach($aggregate->orders as $order) {
+            $order = $this->services['orders']->show($order->id);
+            $this->assertEquals($order->internal_number, '2 / ' . $this_year);
+        }
+
+        foreach($second_aggregate->orders as $order) {
+            $order = $this->services['orders']->show($order->id);
+            $this->assertEquals($order->internal_number, '1 / ' . ($this_year + 1));
+        }
+    }
+
+    /*
+        Modificatori ereditati dal fornitore
+    */
+    public function testInitModifiers()
+    {
+        $this->actingAs($this->userReferrer);
+
+        $this->order->supplier->applicableModificationTypes();
+        $mod = $this->order->supplier->modifiers()->where('modifier_type_id', 'spese-trasporto')->first();
+        $this->assertNotNull($mod);
+        $this->services['modifiers']->update($mod->id, [
+            'value' => 'absolute',
+            'arithmetic' => 'sum',
+            'scale' => 'minor',
+            'applies_type' => 'none',
+            'applies_target' => 'order',
+            'distribution_type' => 'price',
+            'simplified_amount' => 30,
+        ]);
+
+        $start = date('Y-m-d');
+        $end = date('Y-m-d', strtotime('+20 days'));
+        $shipping = date('Y-m-d', strtotime('+30 days'));
+
+        $aggregate = $this->services['orders']->store(array(
+            'supplier_id' => $this->order->supplier_id,
+            'start' => printableDate($start),
+            'end' => printableDate($end),
+            'shipping' => printableDate($shipping),
+            'status' => 'open',
+        ));
+
+        $this->assertEquals(1, $aggregate->orders->count());
+
+        foreach($aggregate->orders as $order) {
+            $order = $this->services['orders']->show($order->id);
+            $this->assertEquals($order->modifiers->count(), 1);
+            $this->assertEquals($order->modifiers->first()->modifierType->id, 'spese-trasporto');
+        }
+    }
 }

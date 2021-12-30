@@ -52,19 +52,18 @@ trait ModifiableTrait
             $same = $this->sameModificationTypes();
 
             if (!is_null($same)) {
-                foreach($same->applicableModificationTypes() as $modtype) {
-                    $ret[] = $modtype;
-                    $this->attachEmptyModifier($modtype);
-                }
+                $modifiers = $same->applicableModificationTypes();
             }
             else {
                 $current_class = get_class($this);
-                foreach(ModifierType::orderBy('name', 'asc')->get() as $modtype) {
-                    if (in_array($current_class, accessAttr($modtype, 'classes'))) {
-                        $ret[] = $modtype;
-                        $this->attachEmptyModifier($modtype);
-                    }
-                }
+                $modifiers = ModifierType::orderBy('name', 'asc')->get()->filter(function($modtype, $key) use ($current_class) {
+                    return in_array($current_class, accessAttr($modtype, 'classes'));
+                });
+            }
+
+            foreach($modifiers as $modtype) {
+                $ret[] = $modtype;
+                $this->attachEmptyModifier($modtype);
             }
         }
 

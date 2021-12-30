@@ -8,7 +8,7 @@ class KeepOrdersOpenedOnPackages extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->boolean('keep_open_packages')->default(false);
+            $table->string('keep_open_packages')->default('no');
         });
     }
 

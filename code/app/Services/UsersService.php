@@ -69,6 +69,8 @@ class UsersService extends BaseService
         if (isset($request['enforce_password_change']) && $request['enforce_password_change'] == 'true') {
             $user->enforce_password_change = true;
         }
+
+        $user->save();
     }
 
     public function store(array $request)
@@ -96,8 +98,6 @@ class UsersService extends BaseService
             $this->updatePassword($user, $request);
         }
 
-        $user->save();
-
         DB::commit();
         return $user;
     }
@@ -117,7 +117,6 @@ class UsersService extends BaseService
         $user->gas_id = $creator->gas->id;
         $user->member_since = date('Y-m-d', time());
         $this->updatePassword($user, $request);
-        $user->save();
         DB::commit();
         return $user;
     }

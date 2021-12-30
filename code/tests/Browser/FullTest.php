@@ -456,7 +456,7 @@ class FullTest extends DuskTestCase
                 foreach($products as $index => $product) {
                     $target_input = '//*/table/tbody/tr[contains(@class, "booking-product")][' . ($index + 1) . ']/td//input[@type="text"]';
                     $target_feedback = '(//*/table/tbody/tr[contains(@class, "booking-product")][' . ($index + 1) . ']/td//div[@class="invalid-feedback"])[1]';
-                    $target_price = '//*/table/tbody/tr[contains(@class, "booking-product")][' . ($index + 1) . ']/td//label[contains(@class, "booking-product-price")]/span';
+                    $target_price = '//*/tr[contains(@class, "booking-product")][' . ($index + 1) . ']//label[contains(@class, "booking-product-price")]/span[1]';
 
                     $quantity = rand(0, 5);
 
@@ -618,7 +618,7 @@ class FullTest extends DuskTestCase
                     $panel->press('Salva');
             })
             ->waitForText('Luogo Test')
-            ->pause(500)
+            ->pause(1000)
             ->press('@modifier_spese-trasporto')
             ->pause(1000)
             ->with('.modal', function($panel) {
@@ -630,8 +630,8 @@ class FullTest extends DuskTestCase
                     ->mainScreenshot('modificatore_luogo')
                     ->press('Salva');
             })
-            ->pause(500)
-            ->assertSee('3€');
+            ->pause(1000)
+            ->assertSee('3.00 €');
     }
 
     private function createMovement($browser)
