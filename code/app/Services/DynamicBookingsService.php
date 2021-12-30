@@ -153,9 +153,7 @@ class DynamicBookingsService extends BookingsService
     */
     public function dynamicModifiers(array $request, $aggregate, $target_user)
     {
-        return app()->make('Locker')->execute('lock_aggregate_' . $aggregate->id, function() use ($request, $aggregate, $target_user) {
-            DB::beginTransaction();
-
+        return DB::transaction(function() use ($request, $aggregate, $target_user) {
             $bookings = [];
             $delivering = $request['action'] != 'booked';
 
@@ -182,6 +180,6 @@ class DynamicBookingsService extends BookingsService
             DB::rollback();
 
             return $ret;
-        });
+        }, 3);
     }
 }

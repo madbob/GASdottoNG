@@ -38,7 +38,7 @@ class AggregateSummaries extends Job
 
     protected function realHandle()
     {
-        $aggregate = Aggregate::find($this->aggregate_id);
+        $aggregate = Aggregate::findOrFail($this->aggregate_id);
         $this->hub->enable(false);
 
         $date = date('Y-m-d');

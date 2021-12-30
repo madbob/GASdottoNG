@@ -67,15 +67,19 @@ class Controller extends BaseController
         try {
             $class = $this->reference_class;
             $subject = $class::tFind($id);
-            return response()->json([
-                'id' => $subject->id,
-                'header' => $subject->printableHeader(),
-                'url' => $subject->getShowURL()
-            ]);
+
+            if ($subject) {
+                return response()->json([
+                    'id' => $subject->id,
+                    'header' => $subject->printableHeader(),
+                    'url' => $subject->getShowURL()
+                ]);
+            }
         }
         catch(\Exception $e) {
             Log::error('Unable to generate object header: ' . $this->reference_class . ' / ' . $id);
-            abort(404);
         }
+
+        abort(404);
     }
 }
