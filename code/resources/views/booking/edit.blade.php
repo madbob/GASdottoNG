@@ -45,7 +45,7 @@ $form_buttons = [
         $o = $order->userBooking($user->id);
         $mods = $o->applyModifiers(null, false);
 
-        if ($order->keep_open_packages && $enforced == false) {
+        if ($order->keep_open_packages != 'no' && $enforced == false) {
             if ($order->status == 'open') {
                 $products = $order->products;
             }

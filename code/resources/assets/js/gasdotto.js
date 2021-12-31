@@ -826,4 +826,6 @@ $(document).ready(function() {
     $('body').on('submit', '.modal.close-on-submit form', function(event) {
         $(this).closest('.modal').modal('hide');
     });
+
+    Bookings.initOnce();
 });

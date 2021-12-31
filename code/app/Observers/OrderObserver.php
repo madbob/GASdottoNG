@@ -20,24 +20,18 @@ class OrderObserver
 
         $recurrings = Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('recurring', '!=', '')->get();
         foreach($recurrings as $d) {
-            $dates = $d->dates;
-            $next_date = null;
+            $d->updateRecurringToDate($last_date);
+        }
+    }
 
-            foreach($dates as $read_date) {
-                if ($read_date > $last_date) {
-                    $next_date = $read_date;
-                    break;
-                }
-            }
-
-            if (is_null($next_date)) {
-                $d->delete();
-            }
-            else {
-                $data = json_decode($d->recurring);
-                $data->from = $next_date;
-                $d->recurring = json_encode($data);
-                $d->save();
+    private function attachModifiers($order)
+    {
+        foreach($order->supplier->modifiers as $mod) {
+            if ($mod->active || $mod->always_on == true) {
+                $new_mod = $mod->replicate();
+                $new_mod->target_id = $order->id;
+                $new_mod->target_type = get_class($order);
+                $new_mod->save();
             }
         }
     }
@@ -51,18 +45,7 @@ class OrderObserver
         */
         $order->products()->sync($supplier->products()->where('active', '=', true)->get());
 
-        /*
-            Aggancio all'ordine i modificatori attivi per il fornitore
-        */
-        foreach($supplier->modifiers as $mod) {
-            if ($mod->active || $mod->always_on == true) {
-                $new_mod = $mod->replicate();
-                $new_mod->target_id = $order->id;
-                $new_mod->target_type = get_class($order);
-                $new_mod->save();
-            }
-        }
-
+        $this->attachModifiers($order);
         $this->resetOlderDates($order);
 
         if ($order->status == 'open') {
@@ -86,21 +69,16 @@ class OrderObserver
     public function updated(Order $order)
     {
         if ($order->wasChanged('status')) {
-            if ($order->status == 'open') {
-                try {
+            try {
+                if ($order->status == 'open') {
                     NotifyNewOrder::dispatch($order->id);
                 }
-                catch(\Exception $e) {
-                    Log::error('Unable to trigger NotifyNewOrder job on updated order: ' . $e->getMessage());
-                }
-            }
-            else if ($order->status == 'closed') {
-                try {
+                else if ($order->status == 'closed') {
                     NotifyClosedOrder::dispatch($order->id);
                 }
-                catch(\Exception $e) {
-                    Log::error('Unable to trigger NotifyClosedOrder job on updated order: ' . $e->getMessage());
-                }
+            }
+            catch(\Exception $e) {
+                Log::error('Unable to trigger job on updated order: ' . $e->getMessage());
             }
         }
 

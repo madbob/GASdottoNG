@@ -22,7 +22,7 @@ class AggregateSummaries extends Job
 
     private function handleBookings($aggregate, $status)
     {
-        $bookings = $aggregate->bookings->filter(function($booking) use ($status) {
+        $bookings = array_filter($aggregate->bookings, function($booking) use ($status) {
             return in_array($booking->status, $status);
         });
 

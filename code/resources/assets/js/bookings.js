@@ -52,32 +52,9 @@ class Bookings {
             });
         });
 
-        utils.sel('.booking-product-quantity input', container).keyup((e) => {
+        container.on('change', '.variants-selector select', (e) => {
             var editor = $(e.currentTarget).closest('.booking-editor');
             this.bookingTotal(editor);
-        })
-        .blur((e) => {
-            var input = $(e.currentTarget);
-            if (input.val() == '' || input.hasClass('is-invalid')) {
-                input.val('0').removeClass('is-invalid').keyup();
-            }
-        })
-        .focus((e) => {
-            $(e.currentTarget).removeClass('.is-invalid');
-        });
-
-        $('.variants-selector select', container).change((e) => {
-            var editor = $(e.currentTarget).closest('.booking-editor');
-            this.bookingTotal(editor);
-        });
-
-        utils.sel('.booking-product .add-variant', container).click((e) => {
-            e.preventDefault();
-            var variant_selector = $(e.currentTarget).closest('.variants-selector');
-            var master = variant_selector.find('.master-variant-selector').clone().removeClass('master-variant-selector');
-            master.find('.skip-on-submit').removeClass('skip-on-submit');
-            variant_selector.append(master);
-            return false;
         });
 
         $('.mobile-quantity-switch button', container).click((e) => {
@@ -241,6 +218,42 @@ class Bookings {
         });
     }
 
+    static initOnce()
+    {
+        /*
+            Questi eventi li aggancio sempre, direttamente al body, altrimenti
+            sarebbe un po' complicato...
+
+            Devo considerare:
+            - le righe che vengono dinamicamente aggiunte quanto aggiungo una
+            variante, che devono essere reattive come le altre
+            - il fatto che in alcune circostanze (e.g. aggiunta di un prodotto
+            ad una prenotazione in fase di consegna) i selettori qui di seguito
+            non sono validi, dunque gli eventi non sono agganciati
+        */
+        $('body').on('keyup', '.booking-product-quantity input', (e) => {
+            var editor = $(e.currentTarget).closest('.booking-editor');
+            this.bookingTotal(editor);
+        })
+        .on('blur', '.booking-product-quantity input', (e) => {
+            var input = $(e.currentTarget);
+            if (input.val() == '' || input.hasClass('is-invalid')) {
+                input.val('0').removeClass('is-invalid').keyup();
+            }
+        })
+        .on('focus', '.booking-product-quantity input', (e) => {
+            $(e.currentTarget).removeClass('.is-invalid');
+        })
+        .on('click', '.booking-product .add-variant', (e) => {
+            e.preventDefault();
+            var variant_selector = $(e.currentTarget).closest('.variants-selector');
+            var master = variant_selector.find('.master-variant-selector').clone().removeClass('master-variant-selector');
+            master.find('.skip-on-submit').removeClass('skip-on-submit');
+            variant_selector.append(master);
+            return false;
+        });
+    }
+
     static preloadQuantities(container, reload)
     {
         container.find('.booking-product').each(function() {
@@ -258,14 +271,22 @@ class Bookings {
     static serializeBooking(form)
     {
         /*
-            Qui aggiungo temporaneamente la classe skip-on-submit a tutti gli input
-            a 0, in modo da ridurre la quantità di dati spediti al server per il
-            controllo dinamico, salvo poi toglierla a operazione conclusa
+            Qui aggiungo temporaneamente la classe skip-on-submit a tutti gli
+            input a 0, in modo da ridurre la quantità di dati spediti al server
+            per il controllo dinamico, salvo poi toglierla a operazione
+            conclusa.
+            Da tale procedura escludo però le righe con le quantità delle
+            varianti, altrimenti perdo l'allineamento rispetto all'array coi
+            valori delle varianti selezionate (e se ad esempio ci sono più
+            varianti attive e la prima viene messa a quantità 0, non mi tornano
+            più le associazioni con le altre quantità e le varianti selezionate)
         */
         form.find('textarea').addClass('skip-on-submit restore-after-serialize');
 
         form.find('.booking-product-quantity input').filter(function() {
             return $(this).closest('.master-variant-selector').length == 0;
+        }).filter(function() {
+            return $(this).attr('name').startsWith('variant_quantity_') == false;
         }).each(function() {
             $(this).toggleClass('skip-on-submit restore-after-serialize', $(this).val() == '0');
         });

@@ -124,4 +124,22 @@ class Date extends Model
     {
         return $this->internalAttribute('suspend') == 'true';
     }
+
+    public function updateRecurringToDate($last_date)
+    {
+        $dates = $this->dates;
+
+        foreach($dates as $read_date) {
+            if ($read_date > $last_date) {
+                $data = json_decode($d->recurring);
+                $data->from = $read_date;
+                $this->recurring = json_encode($data);
+                $this->save();
+                return true;
+            }
+        }
+
+        $this->delete();
+        return false;
+    }
 }
