@@ -37,6 +37,24 @@ class DatesService extends BaseService
         return Date::findOrFail($id);
     }
 
+    private function retrieveById($id)
+    {
+        if (empty($id)) {
+            $date = new Date();
+        }
+        else {
+            $date = Date::find($id);
+            if (is_null($date)) {
+                $date = new Date();
+            }
+        }
+
+        $date->target_type = 'App\Supplier';
+        $date->date = null;
+
+        return $date;
+    }
+
     /*
         Questa funzione gestisce sia l'aggiornamento collettivo delle date
         relative ai fornitori che l'aggiornamento di una singola data "interna"
@@ -60,22 +78,13 @@ class DatesService extends BaseService
             $generic_types = array_keys(Date::types());
 
             foreach($ids as $index => $id) {
-                if (in_array($targets[$index], $suppliers) == false)
+                if (in_array($targets[$index], $suppliers) == false) {
+                    Log::debug('Non autorizzato ad aggiungere date a questo fornitore');
                     continue;
-
-                if (empty($id)) {
-                    $date = new Date();
-                }
-                else {
-                    $date = Date::find($id);
-                    if (is_null($date)) {
-                        $date = new Date();
-                    }
                 }
 
-                $date->target_type = 'App\Supplier';
+                $date = $this->retrieveById($id);
                 $date->target_id = $targets[$index];
-                $date->date = null;
                 $date->recurring = '';
 
                 if (!empty($dates[$index])) {
@@ -87,6 +96,7 @@ class DatesService extends BaseService
                 }
 
                 if (empty($date->date) && empty($date->recurring)) {
+                    Log::debug('Data vuota, viene ignorata');
                     continue;
                 }
 
@@ -134,16 +144,8 @@ class DatesService extends BaseService
                     continue;
                 }
 
-                if (empty($id)) {
-                    $date = new Date();
-                }
-                else {
-                    $date = Date::find($id);
-                }
-
-                $date->target_type = 'App\Supplier';
+                $date = $this->retrieveById($id);
                 $date->target_id = $targets[$index];
-                $date->date = null;
                 $date->recurring = json_encode(decodePeriodic($recurrings[$index]));
 
                 $date->description = json_encode([

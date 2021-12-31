@@ -42,6 +42,7 @@ abstract class TestCase extends BaseTestCase
             'bookings' => new \App\Services\BookingsService(),
             'dynamic_bookings' => new \App\Services\DynamicBookingsService(),
             'fast_bookings' => new \App\Services\FastBookingsService(),
+            'dates' => new \App\Services\DatesService(),
             'invoices' => new \App\Services\InvoicesService(),
             'modifiers' => new \App\Services\ModifiersService(),
             'multigas' => new \App\Services\MultiGasService(),
