@@ -1,5 +1,14 @@
 <?php
 
+/*
+    Questa classe rappresenta ciascuna combinazione di varianti assegnabili ad
+    un prodotto, coi suoi propri attributi.
+    Reminder: è sconsigliato gestire qui il prezzo della combinazione (somma tra
+    il prezzo base del prodotto e l'eventuale differenza prezzo), in quanto
+    vanno tenuti in considerazione anche i modificatori che si applicano su ogni
+    specifico ordine
+*/
+
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +21,22 @@ class VariantCombo extends Model
     public function values()
     {
         return $this->belongsToMany('App\VariantValue', 'variant_combo_values');
+    }
+
+    public function getProductAttribute()
+    {
+        return $this->values()->first()->variant->product;
+    }
+
+    public function printableName()
+    {
+        $ret = [];
+
+        foreach ($this->values as $val) {
+            $ret[] = $val->value;
+        }
+
+        return sprintf('%s - %s', $this->product->printableName(), implode(', ', $ret));
     }
 
     public static function byValues($values)

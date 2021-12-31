@@ -54,11 +54,27 @@ abstract class Formatter
         $ret = [];
 
         foreach($objs as $obj) {
-            $rows = self::format($obj, $fields, $context);
-            $ret = array_merge($ret, [$rows]);
+            $children = static::children($obj);
+            if ($children) {
+                $child_formatter = $children->formatter;
+
+                foreach($children->children as $child) {
+                    $rows = $child_formatter::format($child, $fields, $context);
+                    $ret = array_merge($ret, [$rows]);
+                }
+            }
+            else {
+                $rows = self::format($obj, $fields, $context);
+                $ret = array_merge($ret, [$rows]);
+            }
         }
 
         return $ret;
+    }
+
+    protected static function children($obj)
+    {
+        return false;
     }
 
     /*
