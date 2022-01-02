@@ -13,7 +13,7 @@
 
         @foreach(App\Date::localGas()->get() as $d)
             @if($d->type == 'order')
-                @foreach($d->dates as $dat)
+                @foreach($d->all_dates as $dat)
                     {
                         title: '{{ str_replace("\n", " ", str_replace("\r", '', str_replace("'", "\'", $d->calendar_string))) }}',
                         date: '{{ date('Y-m-d', strtotime($dat . ' +' . $d->shipping . ' days')) }}',
@@ -21,7 +21,7 @@
                     },
                 @endforeach
             @else
-                @foreach($d->dates as $dat)
+                @foreach($d->all_dates as $dat)
                     {
                         title: '{{ str_replace("\n", " ", str_replace("\r", '', str_replace("'", "\'", $d->calendar_string))) }}',
                         date: '{{ $dat }}',

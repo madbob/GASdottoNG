@@ -210,7 +210,13 @@ class User extends Authenticatable
             $this->enforce_password_change = true;
             $this->access_token = Str::random(10);
             $this->save();
-            $this->notify(new ManualWelcomeMessage($this->access_token));
+
+            try {
+                $this->notify(new ManualWelcomeMessage($this->access_token));
+            }
+            catch(\Exception $e) {
+                \Log::error('Impossibile inviare email di benvenuto a utente ' . $this->id . ': ' . $e->getMessage());
+            }
         }
     }
 

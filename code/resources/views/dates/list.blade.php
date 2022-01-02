@@ -7,10 +7,10 @@
 
     foreach($dates as $d) {
         if ($d->type == 'order') {
-            $automatic_dates = array_merge($automatic_dates, $d->dates);
+            $automatic_dates = array_merge($automatic_dates, $d->all_dates);
         }
         else {
-            $effective_dates = array_merge($effective_dates, $d->dates);
+            $effective_dates = array_merge($effective_dates, $d->all_dates);
         }
     }
 

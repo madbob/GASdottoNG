@@ -137,5 +137,9 @@ class DatesServiceTest extends TestCase
             $this->assertEquals($o->end, date('Y-m-d', strtotime('+10 days')));
             $this->assertEquals($o->shipping, date('Y-m-d', strtotime('+11 days')));
         }
+
+        Artisan::call('open:orders');
+        $orders = \App\Order::where('status', 'open')->get();
+        $this->assertEquals($orders->count(), 1);
     }
 }

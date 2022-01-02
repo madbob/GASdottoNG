@@ -16,7 +16,7 @@ class OrderObserver
     private function resetOlderDates($order)
     {
         $last_date = $order->shipping ? $order->shipping : $order->end;
-        Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('date', '<=', $last_date)->delete();
+        Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('recurring', '')->where('date', '<=', $last_date)->delete();
 
         $recurrings = Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('recurring', '!=', '')->get();
         foreach($recurrings as $d) {

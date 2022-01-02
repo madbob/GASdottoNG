@@ -77,12 +77,19 @@ class Date extends Model
         }
     }
 
-    public function getDatesAttribute()
+    /*
+        Per motivi ignoti (collisione con qualche altra definizione?), tavolta
+        l'attributo dates restituisce una variabile vuota. Meglio cambiare nome
+        in all_dates
+    */
+    public function getAllDatesAttribute()
     {
-        if (empty($this->recurring))
+        if (empty($this->recurring)) {
             return [$this->date];
-        else
+        }
+        else {
             return unrollPeriodic(json_decode($this->recurring));
+        }
     }
 
     public function printableName()
@@ -127,11 +134,11 @@ class Date extends Model
 
     public function updateRecurringToDate($last_date)
     {
-        $dates = $this->dates;
+        $dates = $this->all_dates;
 
         foreach($dates as $read_date) {
             if ($read_date > $last_date) {
-                $data = json_decode($d->recurring);
+                $data = json_decode($this->recurring);
                 $data->from = $read_date;
                 $this->recurring = json_encode($data);
                 $this->save();

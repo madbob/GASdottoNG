@@ -141,6 +141,7 @@ class DatesService extends BaseService
 
             foreach($ids as $index => $id) {
                 if (in_array($targets[$index], $suppliers) == false || empty($recurrings[$index])) {
+                    \Log::debug('Salvataggio ordine ricorrente fallito: permessi non validi');
                     continue;
                 }
 
