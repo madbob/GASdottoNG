@@ -64,6 +64,8 @@ class DynamicBookingsServiceTest extends TestCase
             }
         }
 
+        $this->nextRound();
+
         $booking = \App\Booking::where('order_id', $this->order->id)->where('user_id', $this->userWithBasePerms->id)->first();
         $this->assertEquals($booking->getValue('effective', true), $total);
         $this->assertEquals($booking->products()->count(), $booked_count);
@@ -87,6 +89,34 @@ class DynamicBookingsServiceTest extends TestCase
         $this->actingAs($this->userWithShippingPerms);
         $ret = $this->services['dynamic_bookings']->dynamicModifiers(['action' => 'booked'], $this->order->aggregate, $this->userWithBasePerms);
         $this->assertEquals(count($ret->bookings), 0);
+    }
+
+    public function testPortions()
+    {
+        $this->actingAs($this->userWithBasePerms);
+
+        $product = $this->order->products->random();
+        $product->portion_quantity = 0.3;
+        $product->save();
+
+        $data = [
+            'action' => 'booked',
+            $product->id => 2,
+        ];
+
+        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
+
+        $this->assertEquals(count($ret->bookings), 1);
+
+        foreach($ret->bookings as $b) {
+            $this->assertEquals(count($b->products), 1);
+            $this->assertEquals($b->total, $product->price * 0.3 * 2);
+
+            foreach($b->products as $pid => $p) {
+                $this->assertEquals($p->quantity, 2);
+                $this->assertEquals($p->total, $product->price * 0.3 * 2);
+            }
+        }
     }
 
     private function contraintOnProduct($ret, $expected_message)

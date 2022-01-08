@@ -40,7 +40,7 @@ class DynamicBookingsService extends BookingsService
         }
         else {
             try {
-                $final_quantity = $product->testConstraints($subject->delivered, $variant);
+                $final_quantity = $product->testConstraints($subject->quantity, $variant);
                 $message = '';
             }
             catch(InvalidQuantityConstraint $e) {
@@ -48,7 +48,7 @@ class DynamicBookingsService extends BookingsService
                 $message = $e->getMessage();
             }
             catch(AnnotatedQuantityConstraint $e) {
-                $final_quantity = $subject->delivered;
+                $final_quantity = $subject->quantity;
                 $message = $e->getMessage();
             }
         }
@@ -68,7 +68,7 @@ class DynamicBookingsService extends BookingsService
                 }, []),
 
                 'quantity' => $final_variant_quantity,
-                'total' => printablePrice($variant->deliveredValue()),
+                'total' => printablePrice($delivering ? $variant->deliveredValue() : $variant->quantityValue()),
                 'message' => $variant_message,
             ];
 
@@ -111,7 +111,7 @@ class DynamicBookingsService extends BookingsService
                 list($final_quantity, $message) = $this->handleQuantity($delivering, $product, $product, null);
 
                 $carry[$product->product_id] = (object) [
-                    'total' => printablePrice($product->getValue('delivered')),
+                    'total' => printablePrice($delivering ? $product->getValue('delivered') : $product->getValue('booked')),
                     'quantity' => $final_quantity,
                     'message' => $message,
                     'variants' => $this->reduceVariants($product, $delivering),
@@ -153,33 +153,44 @@ class DynamicBookingsService extends BookingsService
     */
     public function dynamicModifiers(array $request, $aggregate, $target_user)
     {
-        return DB::transaction(function() use ($request, $aggregate, $target_user) {
-            $bookings = [];
-            $delivering = $request['action'] != 'booked';
+        for ($i = 0; $i <= 3; $i++) {
+            DB::beginTransaction();
 
-            $ret = (object) [
-                'bookings' => [],
-            ];
+            try {
+                $bookings = [];
+                $delivering = $request['action'] != 'booked';
 
-            foreach($aggregate->orders as $order) {
-                $user = $this->testAccess($target_user, $order->supplier, $delivering);
+                $ret = (object) [
+                    'bookings' => [],
+                ];
 
-                $request['action'] = 'shipped';
-                $booking = $this->handleBookingUpdate($request, $user, $order, $target_user, true);
+                foreach($aggregate->orders as $order) {
+                    $user = $this->testAccess($target_user, $order->supplier, $delivering);
+                    $booking = $this->handleBookingUpdate($request, $user, $order, $target_user, $delivering);
 
-                if ($booking) {
-                    $ret->bookings[$booking->id] = $this->translateBooking($booking, $delivering);
+                    if ($booking) {
+                        $ret->bookings[$booking->id] = $this->translateBooking($booking, $delivering);
+                    }
+                }
+
+                /*
+                    Lo scopo di questa funzione è ottenere una preview dei totali della
+                    prenotazione, dunque al termine invalido tutte le modifiche fatte
+                    sul database
+                */
+                DB::rollback();
+
+                return $ret;
+            }
+            catch(\Exception $e) {
+                DB::rollback();
+
+                if ($i == 3) {
+                    throw $e;
                 }
             }
+        }
 
-            /*
-                Lo scopo di questa funzione è ottenere una preview dei totali della
-                prenotazione, dunque al termine invalido tutte le modifiche fatte
-                sul database
-            */
-            DB::rollback();
-
-            return $ret;
-        }, 3);
+        return null;
     }
 }
