@@ -1,7 +1,8 @@
 import utils from "./utils";
 import Modifiers from "./modifiers";
 
-class Bookings {
+class Bookings
+{
     static init(container)
     {
         $('.bookingSearch', container).each((index, item) => {
@@ -229,20 +230,15 @@ class Bookings {
             variante, che devono essere reattive come le altre
             - il fatto che in alcune circostanze (e.g. aggiunta di un prodotto
             ad una prenotazione in fase di consegna) i selettori qui di seguito
-            non sono validi, dunque gli eventi non sono agganciati
+            non sono validi se riferiti al container, dunque gli eventi non sono
+            agganciati
         */
-        $('body').on('keyup', '.booking-product-quantity input', (e) => {
+        $('body').on('blur', '.booking-product-quantity input', (e) => {
             var editor = $(e.currentTarget).closest('.booking-editor');
             this.bookingTotal(editor);
         })
-        .on('blur', '.booking-product-quantity input', (e) => {
-            var input = $(e.currentTarget);
-            if (input.val() == '' || input.hasClass('is-invalid')) {
-                input.val('0').removeClass('is-invalid').keyup();
-            }
-        })
         .on('focus', '.booking-product-quantity input', (e) => {
-            $(e.currentTarget).removeClass('.is-invalid');
+            $(e.currentTarget).removeClass('is-invalid');
         })
         .on('click', '.booking-product .add-variant', (e) => {
             e.preventDefault();
