@@ -848,4 +848,88 @@ class ModifiersServiceTest extends TestCase
         $this->assertEquals($booking_found, true);
         $this->assertEquals($shipping_cost_found, true);
     }
+
+    /*
+        Consegna prenotazione con modificatore che genera movimento contabile
+    */
+    public function testModifierWithMovement()
+    {
+        $this->order = $this->initOrder(null);
+
+        $this->actingAs($this->userReferrer);
+        $modifiers = $this->order->applicableModificationTypes();
+        $this->assertEquals(count($modifiers), 2);
+        $mod = null;
+
+        foreach ($modifiers as $mod) {
+            if ($mod->id == 'sconto') {
+                $mod = $this->order->modifiers()->where('modifier_type_id', $mod->id)->first();
+                $this->services['modifiers']->update($mod->id, [
+                    'value' => 'percentage',
+                    'arithmetic' => 'sum',
+                    'scale' => 'minor',
+                    'applies_type' => 'none',
+                    'applies_target' => 'booking',
+                    'simplified_amount' => 10,
+                    'movement_type_id' => 'donation-to-gas',
+                ]);
+
+                break;
+            }
+        }
+
+        $this->assertNotNull($mod);
+
+        $this->nextRound();
+
+        $booking_role = \App\Role::factory()->create(['actions' => 'supplier.book']);
+
+        $user = \App\User::factory()->create(['gas_id' => $this->gas->id]);
+        $user->addRole($booking_role, $this->gas);
+
+        $this->actingAs($user);
+        list($data, $booked_count, $total) = $this->randomQuantities($this->order->products);
+        $data['action'] = 'booked';
+        $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $user, false);
+
+        $this->nextRound();
+
+        $this->actingAs($this->userWithShippingPerms);
+        $data['action'] = 'shipped';
+        $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $user, true);
+
+        $this->nextRound();
+
+        $booking = $this->order->bookings()->where('user_id', $user->id)->first();
+        $amount = $booking->getValue('effective', true);
+        $this->assertEquals(round($amount, 2), round($total + ($total * 0.1), 2));
+
+        $this->nextRound();
+
+        $movement = \App\Movement::generate('booking-payment', $user, $this->order->aggregate, $total + ($total * 0.1));
+        $movement->save();
+
+        $this->nextRound();
+
+        $this->actingAs($this->userReferrer);
+        $this->order = $this->services['orders']->show($this->order->id);
+        $currency = defaultCurrency();
+        $this->assertEquals(round($this->order->supplier->currentBalanceAmount($currency), 2), round($total, 2));
+        $this->assertEquals(round($this->gas->currentBalance($currency)->gas, 2), round($total * 0.1, 2));
+
+        $movements = \App\Movement::all();
+        $this->assertEquals($movements->count(), 2);
+
+        foreach($movements as $mov) {
+            if ($mov->type == 'booking-payment') {
+                $this->assertEquals(round($mov->amount, 2), round($total, 2));
+            }
+            else if ($mov->type == 'donation-to-gas') {
+                $this->assertEquals(round($mov->amount, 2), round($total * 0.1, 2));
+            }
+            else {
+                throw new \Exception("Tipo di movimento invalido", 1);
+            }
+        }
+    }
 }

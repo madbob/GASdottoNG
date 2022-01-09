@@ -91,6 +91,9 @@ class DynamicBookingsServiceTest extends TestCase
         $this->assertEquals(count($ret->bookings), 0);
     }
 
+    /*
+        Lettura dinamica delle prenotazioni, prodotti con pezzatura
+    */
     public function testPortions()
     {
         $this->actingAs($this->userWithBasePerms);

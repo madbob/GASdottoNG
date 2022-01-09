@@ -190,6 +190,9 @@ class BookingsServiceTest extends TestCase
         $this->assertEquals($booking->payment->amount, $total);
     }
 
+    /*
+        Mantenimento stato prenotazioni alla consegna
+    */
     public function testKeepBookedQuantities()
     {
         $this->actingAs($this->userWithBasePerms);

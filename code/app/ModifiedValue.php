@@ -8,8 +8,6 @@ use Log;
 
 class ModifiedValue extends Model
 {
-    use CreditableTrait;
-
     public function modifier()
     {
         return $this->belongsTo('App\Modifier');
@@ -98,7 +96,7 @@ class ModifiedValue extends Model
                 return null;
 
             default:
-                return $this;
+                return $this->supplier;
         }
     }
 
@@ -135,26 +133,6 @@ class ModifiedValue extends Model
         $movement->related_id = $master_movement->id;
 
         $movement->save();
-    }
-
-    /******************************************************** CreditableTrait */
-
-    public function getBalanceProxy()
-    {
-        $rel = $this->target->getModifiedRelations();
-        return $rel->supplier;
-    }
-
-    public function balanceFields()
-    {
-        return [
-            'bank' => _i('Saldo'),
-        ];
-    }
-
-    public static function commonClassName()
-    {
-        return 'Modificatore';
     }
 
     /*

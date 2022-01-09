@@ -4,7 +4,7 @@ $target_classes = [
     '' => _i('Nessuno'),
 ];
 
-if($type->system) {
+if ($type->system) {
     $classes = modelsUsingTrait('App\PayableTrait');
 }
 else {
