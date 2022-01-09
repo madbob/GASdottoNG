@@ -20,7 +20,12 @@ class ModifiedValue extends Model
 
     public function getIsVariableAttribute()
     {
-        return ($this->modifier->value == 'absolute' && $this->modifier->applies_target == 'order');
+        if ($this->modifier->modifierType->getAttribute('hidden')) {
+            return false;
+        }
+        else {
+            return ($this->modifier->value == 'absolute' && $this->modifier->applies_target == 'order');
+        }
     }
 
     public function getEffectiveAmountAttribute()
@@ -38,7 +43,12 @@ class ModifiedValue extends Model
 
     public function getDescriptiveNameAttribute()
     {
-        return $this->modifier->modifierType->name . ' ' . $this->modifier->target->printableName() . ': ' . $this->modifier->name;
+        if ($this->modifier->modifierType->getAttribute('hidden')) {
+            return $this->modifier->modifierType->name;
+        }
+        else {
+            return $this->modifier->modifierType->name . ' ' . $this->modifier->target->printableName() . ': ' . $this->modifier->name;
+        }
     }
 
     public function getSummary()

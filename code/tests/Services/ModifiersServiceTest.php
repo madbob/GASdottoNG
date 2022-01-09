@@ -849,10 +849,7 @@ class ModifiersServiceTest extends TestCase
         $this->assertEquals($shipping_cost_found, true);
     }
 
-    /*
-        Consegna prenotazione con modificatore che genera movimento contabile
-    */
-    public function testModifierWithMovement()
+    private function initModifierWithMovement()
     {
         $this->order = $this->initOrder(null);
 
@@ -892,6 +889,16 @@ class ModifiersServiceTest extends TestCase
         $data['action'] = 'booked';
         $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $user, false);
 
+        return [$user, $data, $total];
+    }
+
+    /*
+        Consegna prenotazione con modificatore che genera movimento contabile
+    */
+    public function testModifierWithMovement()
+    {
+        list($user, $data, $total) = $this->initModifierWithMovement();
+
         $this->nextRound();
 
         $this->actingAs($this->userWithShippingPerms);
@@ -926,6 +933,44 @@ class ModifiersServiceTest extends TestCase
             }
             else if ($mov->type == 'donation-to-gas') {
                 $this->assertEquals(round($mov->amount, 2), round($total * 0.1, 2));
+            }
+            else {
+                throw new \Exception("Tipo di movimento invalido", 1);
+            }
+        }
+    }
+
+    /*
+        Consegna prenotazione senza quantità con modificatore che genera
+        movimento contabile
+    */
+    public function testManualShippingModifierWithMovement()
+    {
+        list($user, $data, $total) = $this->initModifierWithMovement();
+
+        $this->nextRound();
+
+        $this->actingAs($this->userWithShippingPerms);
+        $data['action'] = 'shipped';
+        $data['manual_total_' . $this->order->id] = 100;
+        $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $user, true);
+
+        $this->nextRound();
+
+        $movement = \App\Movement::generate('booking-payment', $user, $this->order->aggregate, 100);
+        $movement->save();
+
+        $this->nextRound();
+
+        $movements = \App\Movement::all();
+        $this->assertEquals($movements->count(), 2);
+
+        foreach($movements as $mov) {
+            if ($mov->type == 'booking-payment') {
+                $this->assertEquals(round($mov->amount, 2), 90);
+            }
+            else if ($mov->type == 'donation-to-gas') {
+                $this->assertEquals(round($mov->amount, 2), 10);
             }
             else {
                 throw new \Exception("Tipo di movimento invalido", 1);

@@ -275,6 +275,16 @@ class BookingsService extends BaseService
         return 0;
     }
 
+    protected function handlePreProcess($request, $booking)
+    {
+        $manual_total = $this->deliveringManualTotal($request, $booking->order);
+        if ($manual_total > 0) {
+            $booking->enforceTotal($manual_total);
+        }
+
+        return $booking;
+    }
+
     protected function handlePostProcess($request, $booking)
     {
         $manual_total = $this->deliveringManualTotal($request, $booking->order);
@@ -298,11 +308,7 @@ class BookingsService extends BaseService
             $modifier_value->save();
 
             $booking->unsetRelation('modifiedValues');
-
-            return [$manual_total, $modifier_value];
         }
-
-        return null;
     }
 
     public function handleBookingUpdate($request, $user, $order, $target_user, $delivering)
@@ -317,6 +323,7 @@ class BookingsService extends BaseService
 
         $booking = $order->userBooking($target_user);
         $booking->wipeStatus();
+        $booking = $this->handlePreProcess($request, $booking);
         $booking = $this->readBooking($request, $order, $booking, $delivering);
 
         if ($booking && $delivering) {

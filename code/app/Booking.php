@@ -24,6 +24,7 @@ class Booking extends Model
 
     public $incrementing = false;
     protected $keyType = 'string';
+    public $enforced_total = null;
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,
@@ -491,7 +492,17 @@ class Booking extends Model
             cui la consegna venga modificata e salvata nuovamente
         */
         $this->deleteModifiedValues();
+
         $this->calculateModifiers($aggregate_data, true);
+    }
+
+    /*
+        Questa funzione è da usare in caso di Consegne Manuali senza Quantità,
+        il valore viene usato in calculateModifiers()
+    */
+    public function enforceTotal($total)
+    {
+        $this->enforced_total = $total;
     }
 
     public function fixPayment()
@@ -532,6 +543,16 @@ class Booking extends Model
             if (is_null($aggregate_data)) {
                 $aggregate = $this->order->aggregate;
                 $aggregate_data = $aggregate->reduxData();
+            }
+
+            /*
+                Se il totale della prenotazione viene forzato manualmente, qui
+                definisco esplicitamente il suo valore prima dell'elaborazione
+                dei modificatori. In questo modo, questi ultimi saranno
+                calcolati in base al totale manuale anziché quello teorico
+            */
+            if ($this->enforced_total) {
+                $aggregate_data->orders[$this->order_id]->bookings[$this->id]->price_delivered = $this->enforced_total;
             }
 
             if ($real == false) {
