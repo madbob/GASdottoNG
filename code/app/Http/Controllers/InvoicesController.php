@@ -60,7 +60,7 @@ class InvoicesController extends BackedController
 
     public function products($id)
     {
-        return view('invoice.products', $this->products($id));
+        return view('invoice.products', $this->service->products($id));
     }
 
     public function orders($id)
