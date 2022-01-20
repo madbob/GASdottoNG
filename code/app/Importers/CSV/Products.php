@@ -57,6 +57,9 @@ class Products extends CSVImporter
             'multiple' => (object) [
                 'label' => _i('Ordinabile per Multipli')
             ],
+            'portion_quantity' => (object) [
+                'label' => _i('Pezzatura')
+            ],
         ];
     }
 
@@ -117,7 +120,7 @@ class Products extends CSVImporter
                 $p->name = $name;
                 $p->weight = 0;
                 $p->category_id = $p->measure_id = 'non-specificato';
-                $p->min_quantity = $p->multiple = $p->package_size = 0;
+                $p->min_quantity = $p->multiple = $p->package_size = $p->portion_quantity = 0;
                 $price_without_vat = $vat_rate = $package_price = null;
 
                 $test_query = $s->products()->where('name', $name)->orderBy('id', 'desc');
@@ -194,7 +197,7 @@ class Products extends CSVImporter
     {
         DB::beginTransaction();
 
-        $direct_fields = ['name', 'weight', 'description', 'price', 'supplier_code', 'package_size', 'min_quantity', 'multiple'];
+        $direct_fields = ['name', 'weight', 'description', 'price', 'supplier_code', 'package_size', 'min_quantity', 'multiple', 'portion_quantity'];
         $data = $request->all();
 
         $s = $this->getSupplier($request);

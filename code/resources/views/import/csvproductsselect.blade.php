@@ -54,6 +54,7 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                                     <x-larastrap::hidden name="package_size" squeeze npostfix="[]" />
                                     <x-larastrap::hidden name="min_quantity" squeeze npostfix="[]" />
                                     <x-larastrap::hidden name="multiple" squeeze npostfix="[]" />
+                                    <x-larastrap::hidden name="portion_quantity" squeeze npostfix="[]" />
 
                                     <x-larastrap::text name="name" squeeze npostfix="[]" />
                                 </td>
