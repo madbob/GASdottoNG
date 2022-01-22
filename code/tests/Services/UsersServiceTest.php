@@ -217,7 +217,7 @@ class UsersServiceTest extends TestCase
         $this->actingAs($this->userWithNoPerms);
 
         $user = $this->services['users']->update($this->userWithNoPerms->id, array(
-            'password' => 'new password',
+            'name' => 'Mario',
             'birthday' => 'Giovedi 01 Dicembre 2016',
         ));
 
@@ -249,12 +249,15 @@ class UsersServiceTest extends TestCase
             password
         */
         $this->actingAs($this->userWithNoPerms);
+        $old_birthday = $this->userWithNoPerms->birthday;
 
         $user = $this->services['users']->update($this->userWithNoPerms->id, array(
             'password' => 'new password',
+            'birthday' => 'Giovedi 01 Dicembre 2016',
         ));
 
         $this->assertEquals($this->userWithNoPerms->id, $user->id);
+        $this->assertEquals($old_birthday, $user->birthday);
     }
 
     /*

@@ -132,25 +132,26 @@ class UsersService extends BaseService
             $type = 1;
         }
         else if ($user->id == $id) {
-            /*
-                Anche laddove non sia concesso agli utenti il permesso di
-                cambiare la propria anagrafica, devono comunque poter cambiare
-                la propria password. Se quello è il solo parametro passato, la
-                nuova password viene salvata e la funzione ritorna
-                correttamente, altrimenti si testa il suddetto permesso
-            */
-            if (isset($request['password']) && !empty($request['password']) && count($request) == 1) {
-                $user = $this->show($id);
-
-                $this->transformAndSetIfSet($user, $request, 'password', function ($password) {
-                    return Hash::make($password);
-                });
-
-                $user->save();
-                return $user;
-            }
-
             if ($user->can('users.self', $user->gas) == false) {
+                /*
+                    Anche laddove non sia concesso agli utenti il permesso di
+                    cambiare la propria anagrafica, devono comunque poter cambiare
+                    la propria password. Se quello è il solo parametro passato, la
+                    nuova password viene salvata e la funzione ritorna
+                    correttamente, altrimenti si testa il suddetto permesso
+                */
+                if (isset($request['password']) && !empty($request['password'])) {
+                    $user = $this->show($id);
+
+                    $this->transformAndSetIfSet($user, $request, 'password', function ($password) {
+                        return Hash::make($password);
+                    });
+
+                    $user->enforce_password_change = false;
+                    $user->save();
+                    return $user;
+                }
+
                 throw new AuthException(403);
             }
 
