@@ -13,6 +13,7 @@ use App\Movement;
 use App\CreditableTrait;
 use App\User;
 use App\Balance;
+use App\Currency;
 use App\Supplier;
 
 class MovementsService extends BaseService
@@ -128,6 +129,12 @@ class MovementsService extends BaseService
         $this->setIfSet($movement, $request, 'type');
         $this->setIfSet($movement, $request, 'identifier');
         $this->setIfSet($movement, $request, 'notes');
+
+        if ($movement->method == 'integralces') {
+            $currency = Currency::where('context', 'integralces')->first();
+            $movement->currency_id = $currency->id;
+        }
+
         $movement->parseRequest($request);
 
         return $movement;

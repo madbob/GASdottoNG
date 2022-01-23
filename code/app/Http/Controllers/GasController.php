@@ -128,29 +128,15 @@ class GasController extends Controller
             $integralces_info = (object) [
                 'enabled' => true,
                 'identifier' => $request->input('integralces->identifier'),
+                'symbol' => $request->input('integralces->symbol'),
             ];
-
-            $integralces_currency = Currency::where('context', 'integralces')->first();
-            if (is_null($integralces_currency)) {
-                $integralces_currency = new Currency();
-                $integralces_currency->context = 'integralces';
-                $integralces_currency->symbol = $request->input('integralces->symbol');
-            }
-
-            $integralces_currency->enabled = true;
-            $integralces_currency->save();
         }
         else {
             $integralces_info = (object) [
                 'enabled' => false,
                 'identifier' => '',
+                'symbol' => '',
             ];
-
-            $integralces_currency = Currency::where('context', 'integralces')->first();
-            if ($integralces_currency) {
-                $integralces_currency->enabled = false;
-                $integralces_currency->save();
-            }
         }
 
         $gas->setConfig('integralces', $integralces_info);

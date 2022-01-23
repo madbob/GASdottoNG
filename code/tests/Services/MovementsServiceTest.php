@@ -194,4 +194,41 @@ class MovementsServiceTest extends TestCase
         $expiration = date('Y-m-d', strtotime($expiration . ' +1 years'));
         $this->assertEquals($new_date, $expiration);
     }
+
+    /*
+        Salvataggio e modifica movimento con IntegralCES attivo
+    */
+    public function testWithIntegralces()
+    {
+        $this->actingAs($this->userWithAdminPerm);
+
+        $this->userWithAdminPerm->gas->setConfig('integralces', (object) [
+            'enabled' => true,
+            'identifier' => '12345',
+            'symbol' => 'ø',
+        ]);
+
+        $currency_default = defaultCurrency();
+        $currency_integralces = \App\Currency::where('context', 'integralces')->first();
+
+        $this->services['movements']->store(array(
+            'type' => 'donation-from-gas',
+            'method' => 'bank',
+            'sender_id' => $this->gas->id,
+            'sender_type' => 'App\Gas',
+            'currency_id' => $currency_integralces->id,
+            'amount' => 100
+        ));
+
+        $this->assertEquals($this->sample_movement->amount * -1, $this->gas->currentBalanceAmount($currency_default));
+        $this->assertEquals(-100, $this->gas->currentBalanceAmount($currency_integralces));
+
+        $integralces_movement = \App\Movement::where('currency_id', $currency_integralces->id)->first();
+        $this->services['movements']->update($integralces_movement->id, array(
+            'currency_id' => $currency_default->id,
+        ));
+
+        $this->assertEquals(($this->sample_movement->amount + 100) * -1, $this->gas->currentBalanceAmount($currency_default));
+        $this->assertEquals(0, $this->gas->currentBalanceAmount($currency_integralces));
+    }
 }

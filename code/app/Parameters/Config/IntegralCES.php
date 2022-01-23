@@ -21,6 +21,7 @@ class IntegralCES extends Config
         return (object) [
             'enabled' => false,
             'identifier' => '',
+            'symbol' => '',
         ];
     }
 
