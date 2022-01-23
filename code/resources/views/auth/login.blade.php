@@ -42,7 +42,7 @@
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <input type="hidden" name="language" value="{{ $gas->getConfig('language') }}">
 
-        <x-larastrap::text name="username" :label="_i('Username')" />
+        <x-larastrap::username name="username" :label="_i('Username')" />
         <x-larastrap::password name="password" :label="_i('Password')" />
         <x-larastrap::check name="remember" :label="_i('Ricordami')" checked="true" :attributes="['data-attribute' => 'remember_me', 'data-attribute-default' => 'true']" classes="remember-checkbox" value="1" />
     </x-larastrap::form>

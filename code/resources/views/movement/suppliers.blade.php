@@ -1,7 +1,7 @@
 <div class="modal fade delete-on-close">
     <?php $currencies = App\Currency::enabled() ?>
 
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{{ _i('Stato Fornitori') }}</h5>
@@ -30,32 +30,34 @@
 
                 <div class="row">
                     <div class="col" id="credits_status_table">
-                        <table class="table" id="suppliersTable">
-                            <thead>
-                                <tr>
-                                    <th width="50%">{{ _i('Nome') }}</th>
-
-                                    @foreach($currencies as $curr)
-                                        <th width="{{ round(50 / $currencies->count(), 2) }}%">{{ _i('Saldo Attuale') }}</th>
-                                    @endforeach
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($currentgas->suppliers as $supplier)
+                        <div class="table-responsive">
+                            <table class="table" id="suppliersTable">
+                                <thead>
                                     <tr>
-                                        <td>
-                                            {{ $supplier->printableName() }}
-                                        </td>
+                                        <th width="50%">{{ _i('Nome') }}</th>
 
                                         @foreach($currencies as $curr)
-                                            <td class="text-filterable-cell">
-                                                {{ printablePriceCurrency($supplier->currentBalanceAmount($curr), '.', $curr) }}
-                                            </td>
+                                            <th width="{{ round(50 / $currencies->count(), 2) }}%">{{ _i('Saldo Attuale') }}</th>
                                         @endforeach
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach($currentgas->suppliers as $supplier)
+                                        <tr>
+                                            <td>
+                                                {{ $supplier->printableName() }}
+                                            </td>
+
+                                            @foreach($currencies as $curr)
+                                                <td class="text-filterable-cell">
+                                                    {{ printablePriceCurrency($supplier->currentBalanceAmount($curr), '.', $curr) }}
+                                                </td>
+                                            @endforeach
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

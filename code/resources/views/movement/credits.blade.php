@@ -1,7 +1,7 @@
 <div class="modal fade delete-on-close">
     <?php $currencies = App\Currency::enabled() ?>
 
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-dialog modal-xl modal-fullscreen-md-down modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{{ _i('Stato Crediti') }}</h5>
@@ -50,41 +50,43 @@
 
                 <div class="row">
                     <div class="col" id="credits_status_table">
-                        <table class="table" id="creditsTable">
-                            <thead>
-                                <tr>
-                                    <th width="40%">{{ _i('Nome') }}</th>
-                                    @foreach($currencies as $curr)
-                                        <th width="{{ round(35 / $currencies->count(), 2) }}%">{{ _i('Credito Residuo') }}</th>
-                                    @endforeach
-                                    <th width="25%">{{ _i('Modalità Pagamento') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($currentgas->users()->topLevel()->get() as $user)
-                                    <tr data-filtered-payment_method="{{ $user->payment_method_id }}">
-                                        <td>
-                                            <input type="hidden" name="user_id[]" value="{{ $user->id }}">
-                                            {{ $user->printableName() }}
-                                        </td>
-
+                        <div class="table-responsive">
+                            <table class="table" id="creditsTable">
+                                <thead>
+                                    <tr>
+                                        <th width="40%">{{ _i('Nome') }}</th>
                                         @foreach($currencies as $curr)
-                                            <td class="text-filterable-cell">
-                                                {{ printablePriceCurrency($user->currentBalanceAmount($curr), '.', $curr) }}
-                                            </td>
+                                            <th width="{{ round(35 / $currencies->count(), 2) }}%">{{ _i('Credito Residuo') }}</th>
                                         @endforeach
-
-                                        <td>
-                                            {{ $user->payment_method->name }}
-
-                                            @if(($user->payment_method->valid_config)($user) == false)
-                                                <i class="bi-slash-circle"></i>
-                                            @endif
-                                        </td>
+                                        <th width="25%">{{ _i('Modalità Pagamento') }}</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach($currentgas->users()->topLevel()->get() as $user)
+                                        <tr data-filtered-payment_method="{{ $user->payment_method_id }}">
+                                            <td>
+                                                <input type="hidden" name="user_id[]" value="{{ $user->id }}">
+                                                {{ $user->printableName() }}
+                                            </td>
+
+                                            @foreach($currencies as $curr)
+                                                <td class="text-filterable-cell">
+                                                    {{ printablePriceCurrency($user->currentBalanceAmount($curr), '.', $curr) }}
+                                                </td>
+                                            @endforeach
+
+                                            <td>
+                                                {{ $user->payment_method->name }}
+
+                                                @if(($user->payment_method->valid_config)($user) == false)
+                                                    <i class="bi-slash-circle"></i>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

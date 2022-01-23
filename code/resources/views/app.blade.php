@@ -70,7 +70,7 @@
 
         @if(Session::has('prompt_message'))
             <x-larastrap::modal title="{{ _i('Attenzione') }}" id="prompt-message-modal">
-                <p>
+                <p class="w-100 h-100 d-flex align-items-center justify-content-center">
                     {!! Session::get('prompt_message') !!}
                 </p>
             </x-larastrap::modal>

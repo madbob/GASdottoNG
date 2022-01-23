@@ -81,6 +81,17 @@ return [
                 'textappend' => '<i class="bi-signpost-split"></i>',
             ],
         ],
+        'username' => [
+            'extends' => 'text',
+            'params' => [
+                'attributes' => [
+                    'autocomplete' => 'off',
+                    'autocorrect' => 'off',
+                    'autocapitalize' => 'off',
+                    'spellcheck' => 'false',
+                ]
+            ]
+        ],
         'price' => [
             'extends' => 'text',
             'params' => [

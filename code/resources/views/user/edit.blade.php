@@ -25,7 +25,7 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
                 <div class="col-12 col-md-6">
                     @if($user->isFriend() == false)
                         @if($editable)
-                            <x-larastrap::text name="username" :label="_i('Username')" required />
+                            <x-larastrap::username name="username" :label="_i('Username')" required />
                             <x-larastrap::text name="firstname" :label="_i('Nome')" />
                             <x-larastrap::text name="lastname" :label="_i('Cognome')" />
                             @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => _i('Password')])
@@ -34,7 +34,7 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
                             <x-larastrap::text name="family_members" :label="_i('Persone in Famiglia')" />
                             @include('commons.contactswidget', ['obj' => $user])
                         @else
-                            <x-larastrap::text name="username" :label="_i('Username')" readonly disabled />
+                            <x-larastrap::username name="username" :label="_i('Username')" readonly disabled />
                             <x-larastrap::text name="firstname" :label="_i('Nome')" readonly disabled />
                             <x-larastrap::text name="lastname" :label="_i('Cognome')" readonly disabled />
 
@@ -48,13 +48,13 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
                         @endif
                     @else
                         @if($editable)
-                            <x-larastrap::text name="username" :label="_i('Username')" />
+                            <x-larastrap::username name="username" :label="_i('Username')" />
                             <x-larastrap::text name="firstname" :label="_i('Nome')" />
                             <x-larastrap::text name="lastname" :label="_i('Cognome')" />
                             @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => _i('Password')])
                             @include('commons.contactswidget', ['obj' => $user])
                         @else
-                            <x-larastrap::text name="username" :label="_i('Username')" readonly disabled />
+                            <x-larastrap::username name="username" :label="_i('Username')" readonly disabled />
                             <x-larastrap::text name="firstname" :label="_i('Nome')" readonly disabled />
                             <x-larastrap::text name="lastname" :label="_i('Cognome')" readonly disabled />
 
