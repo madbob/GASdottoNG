@@ -145,6 +145,11 @@ class BookingPayment extends MovementType
                     $target->payment_id = $movement->id;
                     $target->status = 'shipped';
                     $target->save();
+
+                    foreach($target->friends_bookings as $friend_booking) {
+                        $friend_booking->status = 'shipped';
+                        $friend_booking->save();
+                    }
                 }
             },
             'delete' => function(Movement $movement) {
