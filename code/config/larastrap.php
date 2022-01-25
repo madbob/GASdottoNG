@@ -87,7 +87,7 @@ return [
                 'attributes' => [
                     'autocomplete' => 'off',
                     'autocorrect' => 'off',
-                    'autocapitalize' => 'off',
+                    'autocapitalize' => 'none',
                     'spellcheck' => 'false',
                 ]
             ]

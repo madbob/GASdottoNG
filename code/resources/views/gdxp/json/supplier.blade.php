@@ -107,9 +107,16 @@ foreach($obj->products as $product) {
     }
 
     if ($bookings) {
-        $p->bookingInfo = (object) [
-            'totalQty' => (float) $summary->products[$product->id]->quantity ?? 0,
-        ];
+        if (isset($summary->products[$product->id])) {
+            $p->bookingInfo = (object) [
+                'totalQty' => (float) $summary->products[$product->id]->quantity ?? 0,
+            ];
+        }
+        else {
+            $p->bookingInfo = (object) [
+                'totalQty' => 0,
+            ];
+        }
     }
 
     $json_object->blocks[0]->supplier->products[] = $p;
