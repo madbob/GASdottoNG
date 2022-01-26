@@ -147,10 +147,12 @@ class GasController extends Controller
             $invoicing_info['taxcode'] = $request->input('extra_invoicing->taxcode');
             $invoicing_info['vat'] = $request->input('extra_invoicing->vat');
             $invoicing_info['address'] = $request->input('extra_invoicing->address');
+            $invoicing_info['invoices_counter_year'] = date('Y');
 
             $reset_counter = $request->input('extra_invoicing->invoices_counter');
-            if (!empty($reset_counter))
+            if (!empty($reset_counter)) {
                 $invoicing_info['invoices_counter'] = $reset_counter;
+            }
         }
         else {
             $invoicing_info = [
@@ -158,7 +160,8 @@ class GasController extends Controller
                 'taxcode' => '',
                 'vat' => '',
                 'address' => '',
-                'invoices_counter' => 0
+                'invoices_counter' => 0,
+                'invoices_counter_year' => '',
             ];
         }
 

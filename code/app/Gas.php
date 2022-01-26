@@ -123,7 +123,7 @@ class Gas extends Model
     {
         $status = $this->extra_invoicing;
         $now = date('Y');
-        $year = $status['invoices_counter_year'];
+        $year = $status['invoices_counter_year'] ?? $now;
 
         if ($now == $year) {
             $ret = $status['invoices_counter'] + 1;
