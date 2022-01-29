@@ -59,7 +59,7 @@ class BookingsServiceTest extends TestCase
     }
 
     /*
-        Salvataggio prenotazione
+        Consegna prenotazione
     */
     public function testShipping()
     {
@@ -91,6 +91,94 @@ class BookingsServiceTest extends TestCase
         $this->assertEquals($booking->status, 'shipped');
         $this->assertNotNull($booking->payment_id);
         $this->assertEquals($booking->payment->amount, $total);
+    }
+
+    private function pushFriend($master)
+    {
+        $friends_role = \App\Role::factory()->create(['actions' => 'users.subusers']);
+        $master->addRole($friends_role->id, $this->gas);
+
+        $this->actingAs($master);
+        $friend = $this->services['users']->storeFriend(array(
+            'username' => 'test friend user',
+            'firstname' => 'mario',
+            'lastname' => 'rossi',
+            'password' => 'password'
+        ));
+
+        $booking_role = \App\Role::factory()->create(['actions' => 'supplier.book']);
+        $friend->addRole($booking_role->id, $this->gas);
+
+        return $friend;
+    }
+
+    /*
+        Consegna prenotazione con amici
+    */
+    public function testShippingWithFriend()
+    {
+        $friend = $this->pushFriend($this->userWithBasePerms);
+
+        $this->actingAs($friend);
+        list($friend_data, $friend_booked_count, $friend_total) = $this->randomQuantities($this->sample_order->products);
+        $friend_data['action'] = 'booked';
+        $this->services['bookings']->bookingUpdate($friend_data, $this->sample_order->aggregate, $friend, false);
+
+        $this->actingAs($this->userWithBasePerms);
+        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
+        $data['action'] = 'booked';
+        $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
+
+        $merged_data = [];
+        foreach($this->sample_order->products as $prod) {
+            $merged_data[$prod->id] = $data[$prod->id] + $friend_data[$prod->id];
+        }
+
+        $this->actingAs($this->userWithShippingPerms);
+        $merged_data['action'] = 'shipped';
+        $this->updateAndFetch($merged_data, $this->sample_order, $this->userWithBasePerms, true);
+
+        $booking = \App\Booking::where('order_id', $this->sample_order->id)->where('user_id', $this->userWithBasePerms->id)->first();
+        $this->assertNotNull($booking);
+
+        $friend_booking = \App\Booking::where('order_id', $this->sample_order->id)->where('user_id', $friend->id)->first();
+        $this->assertNotNull($friend_booking);
+
+        $booking = $booking->fresh();
+        $this->assertEquals($booking->status, 'saved');
+
+        $movement = \App\Movement::generate('booking-payment', $this->userWithBasePerms, $this->sample_order->aggregate, $total + $friend_total);
+        $movement->save();
+        $booking = $booking->fresh();
+        $this->assertEquals($booking->status, 'shipped');
+        $friend_booking = $friend_booking->fresh();
+        $this->assertEquals($friend_booking->status, 'shipped');
+
+        $aggregate_booking = $this->sample_order->aggregate->bookingBy($this->userWithBasePerms->id);
+        $this->assertEquals($aggregate_booking->status, 'shipped');
+    }
+
+    /*
+        Consegna prenotazione solo con amici
+    */
+    public function testShippingWithOnlyFriend()
+    {
+        $friend = $this->pushFriend($this->userWithBasePerms);
+
+        $this->actingAs($friend);
+        list($friend_data, $friend_booked_count, $friend_total) = $this->randomQuantities($this->sample_order->products);
+        $friend_data['action'] = 'booked';
+        $this->services['bookings']->bookingUpdate($friend_data, $this->sample_order->aggregate, $friend, false);
+
+        $this->actingAs($this->userWithShippingPerms);
+        $friend_data['action'] = 'shipped';
+        $this->updateAndFetch($friend_data, $this->sample_order, $this->userWithBasePerms, true);
+
+        $movement = \App\Movement::generate('booking-payment', $this->userWithBasePerms, $this->sample_order->aggregate, $friend_total);
+        $movement->save();
+
+        $aggregate_booking = $this->sample_order->aggregate->bookingBy($this->userWithBasePerms->id);
+        $this->assertEquals($aggregate_booking->status, 'shipped');
     }
 
     /*
