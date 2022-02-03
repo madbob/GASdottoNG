@@ -100,7 +100,7 @@
 
                                 @foreach($groups as $gas)
                                     <td>
-                                        <input type="checkbox" data-gas="{{ $gas->id }}" data-target-type="aggregate" data-target-id="{{ $aggregate->id }}" {{ $gas->aggregates()->where('aggregates.id', $aggregate->id)->first() != null ? 'checked' : '' }}>
+                                        @include('multigas.aggregate', ['gas' => $gas, 'aggregate' => $aggregate])
                                     </td>
                                 @endforeach
                             </tr>
