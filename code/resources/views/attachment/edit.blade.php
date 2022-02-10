@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-12">
             @if($attachment->internal == false)
-                <x-larastrap::text name="name" :label="_i('Nome')" />
+                <x-larastrap::text name="name" :label="_i('Nome')" required />
                 <x-larastrap::file name="file" :label="_i('Sostituisci File')" />
             @else
                 <x-larastrap::text name="name" :label="_i('Nome')" disabled readonly />
