@@ -30,7 +30,7 @@ class MailController extends Controller
                 }
             }
             catch(\Exception $e) {
-                Log::error('Impossibile accedere a istanza per controllo SNS: ' . $e->getMessage());
+                // dummy
             }
         }
     }
