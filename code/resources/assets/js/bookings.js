@@ -417,7 +417,11 @@ class Bookings
         var data = this.serializeBooking(form);
     	var url = form.attr('data-dynamic-url');
 
-    	$.ajax({
+        if (this.dynamicBookingRequest) {
+            this.dynamicBookingRequest.abort();
+        }
+
+    	this.dynamicBookingRequest = $.ajax({
     		url: url,
     		method: 'GET',
     		data: data,
@@ -459,6 +463,8 @@ class Bookings
                     this.testMaxBookable(form, grand_total);
                     this.updatePayment(form, grand_total, status);
     			}
+
+                this.dynamicBookingRequest = null;
     		}
     	});
     }
