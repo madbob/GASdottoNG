@@ -35,6 +35,10 @@ class NotifyNewOrder extends Job
             $query_users->whereIn('preferred_delivery_id', $deliveries->pluck('id'));
         }
 
+        $query_users->whereHas('contacts', function($query) {
+            $query->where('type', 'email');
+        });
+
         return $query_users->get();
     }
 
