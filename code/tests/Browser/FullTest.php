@@ -319,7 +319,7 @@ class FullTest extends DuskTestCase
                 ->typeSlowly('order_method', $supplier[3], 50)
                 ->typeSlowly('vat', $supplier[4], 50)
                 ->press('Salva')
-                ->pause(1000)->waitForText('Ordini')->pause(1000)
+                ->pause(1000)->waitForText('Referente')->pause(1000)
                 ->with('.accordion-collapse.collapse.show', function($panel) use ($browser, $index, $supplier) {
                     $panel->assertInputValue('name', $supplier[0])
                         ->assertInputValue('payment_method', $supplier[2])
@@ -463,6 +463,7 @@ class FullTest extends DuskTestCase
                     if ($product->min_quantity ?? 0) {
                         $panel->pause(200)
                             ->typeAtXPath($target_input, $product->min_quantity - 1)
+                            ->typeAtXPath($target_input, "\t")
                             ->pause(1000)
                             ->assertSeeAtXPath($target_feedback, 'Quantità inferiore al minimo consentito');
 
@@ -471,6 +472,7 @@ class FullTest extends DuskTestCase
                     else if ($product->max_available ?? 0) {
                         $panel->pause(200)
                             ->typeAtXPath($target_input, $product->max_available + 1)
+                            ->typeAtXPath($target_input, "\t")
                             ->pause(1000)
                             ->assertSeeAtXPath($target_feedback, 'Quantità superiore alla disponibilità');
 
@@ -481,6 +483,7 @@ class FullTest extends DuskTestCase
 
                     $panel->pause(200)
                         ->typeAtXPath($target_input, $quantity)
+                        ->typeAtXPath($target_input, "\t")
                         ->pause(1000)
                         ->assertSeeAtXPath($target_price, $product_total);
 

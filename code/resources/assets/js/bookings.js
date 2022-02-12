@@ -465,10 +465,7 @@ class Bookings
     			}
 
                 this.dynamicBookingRequest = null;
-    		},
-            error: function() {
-                alert(_("Attenzione: si è verificato un errore con l'ultima quantità immessa, si prega di ricontrollare"));
-            }
+    		}
     	});
     }
 }
