@@ -2,14 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2022-02-12 17:09+0100\n"
-"PO-Revision-Date: 2022-02-12 17:11+0100\n"
-"Last-Translator: Roberto Guido <bob@linux.it>\n"
-"Language-Team: Roberto Guido <bob@linux.it>\n"
+"PO-Revision-Date: 2022-02-13 23:53+0000\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/gasdottong/"
+"translations/de/>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.11-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -342,7 +344,7 @@ msgstr "undefiniert"
 
 #: BookedProduct.php:106
 msgid "Questa combinazione di varianti non è attualmente ordinabile"
-msgstr ""
+msgstr "Diese Kombination von Varianten kann derzeit nicht bestellt werden"
 
 #: Booking.php:652 Booking.php:582 Http/Controllers/MovementsController.php:334
 msgid "Saldo"
@@ -796,7 +798,7 @@ msgstr "ungültiger Benutzername"
 
 #: Http/Controllers/ImportController.php:49
 msgid "Importazione fallita"
-msgstr ""
+msgstr "Import fehlgeschlagen"
 
 #: Http/Controllers/ImportController.php:64
 #: Http/Controllers/ImportController.php:841
