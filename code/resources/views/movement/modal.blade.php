@@ -71,7 +71,16 @@ $buttons[] = ['color' => 'success', 'label' => _i('Salva'), 'attributes' => ['ty
             </p>
         @endif
 
-        <x-larastrap::radios name="method" :label="_i('Metodo')" :options="$obj ? $obj->valid_payments : paymentTypes()" />
+        @if($obj && empty($obj->valid_payments))
+            <x-larastrap::field :label="_i('Metodo')">
+                <div class="alert alert-danger">
+                    {{ _i('Attenzione! Nessun metodo di pagamento è attivo per questo tipo di movimento (%s)! Si raccomanda di modificare le impostazioni nel pannello Contabilità -> Tipi Movimenti, o non sarà possibile salvare correttamente questo movimento!', [$obj->printableType()]) }}
+                </div>
+            </x-larastrap::field>
+        @else
+            <x-larastrap::radios name="method" :label="_i('Metodo')" :options="$obj ? $obj->valid_payments : paymentTypes()" />
+        @endif
+
         <x-larastrap::datepicker name="date" :label="_i('Data')" defaults_now="true" />
 
         <div class="when-method-bank {{ $obj->method != 'bank' ? ' hidden' : '' }}">
