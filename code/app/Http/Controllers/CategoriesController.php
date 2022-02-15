@@ -107,7 +107,13 @@ class CategoriesController extends Controller
         $accumulator = ['non-specificato'];
 
         $this->updateRecursive($data, null, $accumulator);
-        Product::whereNotIn('category_id', $accumulator)->update(['category_id' => 'non-specificato']);
+
+        $orphaned_products = Product::withoutGlobalScopes()->whereNotIn('category_id', $accumulator)->get();
+        foreach($orphaned_products as $op) {
+            $op->category_id = 'non-specificato';
+            $op->save();
+        }
+
         Category::whereNotIn('id', $accumulator)->delete();
 
         return $this->successResponse();
