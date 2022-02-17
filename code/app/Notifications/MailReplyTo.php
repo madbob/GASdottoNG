@@ -22,7 +22,17 @@ trait MailReplyTo
             }
         }
 
-        return $contacts->random();
+        /*
+            Posso mettere un solo Reply-To alle mail, dunque pesco un contatto a
+            caso tra quelli validi
+        */
+        foreach($contacts->shuffle() as $c) {
+            if (filled($c->email)) {
+                return $c;
+            }
+        }
+
+        return null;
     }
 
     public function guessReplyTo($message, $from)
@@ -31,8 +41,12 @@ trait MailReplyTo
             $reply = null;
 
             if (is_a($from, Aggregate::class)) {
-                $order = $from->orders->random();
-                $reply = $this->guessByOrder($order);
+                foreach($from->orders->shuffle() as $order) {
+                    $reply = $this->guessByOrder($order);
+                    if ($reply) {
+                        break;
+                    }
+                }
             }
             else if (is_a($from, Order::class)) {
                 $reply = $this->guessByOrder($from);
