@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use App\Http\Controllers\Controller;
 
 use Auth;
@@ -29,7 +30,17 @@ class BookingController extends Controller
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
-        $opened = Aggregate::getByStatus($user, 'open');
+        /*
+            Se l'utente è sospeso, non gli faccio proprio vedere gli ordini
+            aperti (così non può interagire)
+        */
+        if (is_null($user->suspended_at)) {
+            $opened = Aggregate::getByStatus($user, 'open');
+        }
+        else {
+            $opened = new Collection();
+        }
+
         $shipping = Aggregate::getByStatus($user, 'closed');
 
         $orders = $opened->merge($shipping)->sort(function($a, $b) {
