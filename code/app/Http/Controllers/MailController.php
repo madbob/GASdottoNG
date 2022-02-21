@@ -27,6 +27,12 @@ class MailController extends Controller
                 $db_emails = $db->select("SELECT COUNT(*) as count FROM contacts WHERE type = 'email' and value = '$email'");
                 if ($db_emails[0]->count != 0) {
                     $db->insert("INSERT INTO inner_logs (level, type, message, created_at, updated_at) VALUES ('error', 'mail', '$message', '$now', '$now')");
+                    $db_failures = $db->select("SELECT COUNT(*) as count FROM inner_logs WHERE type = 'email' and message like '%$email%'");
+                    if ($db_failures[0]->count >= 3) {
+                        $db->delete("DELETE FROM contacts WHERE type = 'email' and value = '$email'");
+                        $message = _i('Rimosso indirizzo email ' . $email);
+                        $db->insert("INSERT INTO inner_logs (level, type, message, created_at, updated_at) VALUES ('error', 'mailsuppression', '$message', '$now', '$now')");
+                    }
                 }
             }
             catch(\Exception $e) {

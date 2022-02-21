@@ -95,36 +95,34 @@
         </div>
     </x-larastrap::accordionitem>
 
-    @if(env('GASDOTTO_NET', false))
-        <x-larastrap::accordionitem :label="_i('Log E-Mail')">
-            <?php $logs = App\InnerLog::where('type', 'mail')->orderBy('created_at', 'desc')->take(10)->get() ?>
+    <x-larastrap::accordionitem :label="_i('Log')">
+        <?php $logs = App\InnerLog::orderBy('created_at', 'desc')->take(20)->get() ?>
 
-            <div class="row">
-                <div class="col">
-                    @if($logs->isEmpty())
-                        <div class="alert alert-info">
-                            {{ _i('Non ci sono log relativi alle email.') }}
-                        </div>
-                    @else
-                        <table class="table">
-                            <thead>
+        <div class="row">
+            <div class="col">
+                @if($logs->isEmpty())
+                    <div class="alert alert-info">
+                        {{ _i('Non ci sono log.') }}
+                    </div>
+                @else
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th width="30%">{{ _i('Data') }}</th>
+                                <th width="70%">{{ _i('Messaggio') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($logs as $log)
                                 <tr>
-                                    <th width="30%">{{ _i('Data') }}</th>
-                                    <th width="70%">{{ _i('Messaggio') }}</th>
+                                    <td>{{ printableDate($log->created_at) }}</td>
+                                    <td>{{ $log->message }}</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($logs as $log)
-                                    <tr>
-                                        <td>{{ printableDate($log->created_at) }}</td>
-                                        <td>{{ $log->message }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @endif
-                </div>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
             </div>
-        </x-larastrap::accordionitem>
-    @endif
+        </div>
+    </x-larastrap::accordionitem>
 </x-larastrap::accordion>
