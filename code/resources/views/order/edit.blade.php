@@ -49,7 +49,7 @@
 
                     ?>
 
-                    <x-larastrap::selectobj name="users" :label="_i('Contatti')" :options="$contactable_users" multiple :extraitem="_i('Non limitare luogo di consegna')" :pophelp="_i('I contatti degli utenti selezionati saranno mostrati nel pannello delle prenotazioni. Tenere premuto Ctrl per selezionare più utenti')" />
+                    <x-larastrap::selectobj name="users" :label="_i('Contatti')" :options="$contactable_users" multiple :pophelp="_i('I contatti degli utenti selezionati saranno mostrati nel pannello delle prenotazioni. Tenere premuto Ctrl per selezionare più utenti')" />
                 @endif
 
                 @if($order->products()->where('package_size', '!=', 0)->count() != 0)
