@@ -12,6 +12,7 @@ else {
 
 $display_page = $display_page ?? false;
 $has_accounting = ($admin_editable || $currentuser->id == $user->id) && ($user->isFriend() == false && someoneCan('movements.admin', $user->gas));
+$has_stats = $has_accounting;
 $has_bookings = ($currentuser->id == $user->id);
 $has_friends = $editable && $user->can('users.subusers');
 $has_notifications = $user->isFriend() == false && $editable && ($currentgas->getConfig('notify_all_new_orders') == false);
@@ -128,6 +129,11 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
 
     @if($has_bookings)
         <x-larastrap::remotetabpane :label="_i('Prenotazioni')" :button_attributes="['data-tab-url' => route('users.bookings', $user->id)]">
+        </x-larastrap::remotetabpane>
+    @endif
+
+    @if($has_stats)
+        <x-larastrap::remotetabpane :label="_i('Statistiche')" :button_attributes="['data-tab-url' => route('users.stats', $user->id)]">
         </x-larastrap::remotetabpane>
     @endif
 

@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use Auth;
-
+use App\User;
 use App\Booking;
 use App\BookedProduct;
 
@@ -62,16 +61,35 @@ class StatisticsController extends Controller
         return $ret;
     }
 
+    private function createBookingQuery($query, $start, $end, $target, $supplier)
+    {
+        $query->where('delivery', '!=', '0000-00-00')->where('delivery', '>=', $start)->where('delivery', '<=', $end);
+
+        if ($supplier) {
+            $query->whereHas('order', function ($query) use ($supplier) {
+                $query->where('supplier_id', '=', $supplier);
+            });
+        }
+
+        if (is_a($target, User::class)) {
+            $query->where('user_id', $target->id);
+        }
+
+        return $query;
+    }
+
     public function show(Request $request, $id)
     {
         $start = decodeDate($request->input('start'));
         $end = decodeDate($request->input('end'));
+        $target = fromInlineId($request->input('target'));
         $data = [];
         $categories = [];
 
         switch ($id) {
             case 'summary':
-                $bookings = Booking::where('delivery', '!=', '0000-00-00')->where('delivery', '>=', $start)->where('delivery', '<=', $end)->with('order')->get();
+                $bookings = $this->createBookingQuery(Booking::query(), $start, $end, $target, null)->with('order')->get();
+
                 foreach ($bookings as $booking) {
                     $name = $booking->order->supplier_id;
                     if (isset($data[$name]) == false) {
@@ -87,7 +105,10 @@ class StatisticsController extends Controller
                 }
 
                 $products_cache = [];
-                $data_for_categories = BookedProduct::selectRaw('product_id, SUM(final_price) as price')->whereIn('booking_id', $bookings->pluck('id'))->with('product')->groupBy('product_id')->get();
+                $data_for_categories = BookedProduct::selectRaw('product_id, SUM(final_price) as price')->whereHas('booking', function($query) use ($start, $end, $target) {
+                    $this->createBookingQuery($query, $start, $end, $target, null);
+                })->with('product')->groupBy('product_id')->get();
+
                 foreach($data_for_categories as $dfc) {
                     if (!isset($products_cache[$dfc->product_id]))
                         $products_cache[$dfc->product_id] = $dfc->product->category_id;
@@ -109,10 +130,7 @@ class StatisticsController extends Controller
 
             case 'supplier':
                 $supplier = $request->input('supplier');
-
-                $bookings = Booking::where('delivery', '!=', '0000-00-00')->where('delivery', '>=', $start)->where('delivery', '<=', $end)->whereHas('order', function ($query) use ($supplier) {
-                    $query->where('supplier_id', '=', $supplier);
-                })->with('order')->get();
+                $bookings = $this->createBookingQuery(Booking::query(), $start, $end, $target, $supplier)->with('order')->get();
 
                 foreach ($bookings as $booking) {
                     foreach ($booking->products as $product) {

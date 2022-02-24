@@ -1,87 +1,101 @@
 import Chartist from 'chartist';
 import utils from "./utils";
 
-function doEmpty(target) {
-    $(target).empty().css('height', 'auto').append($('#templates .alert').clone());
-}
+class Statistics {
+    static init(container)
+    {
+        setTimeout(() => {
+            if ($('#stats-summary-form', container).length != 0) {
+                this.runSummaryStats();
 
-function commonGraphConfig()
-{
-    return {
-        horizontalBars: true,
-        axisX: {
-            onlyInteger: true
-        },
-        axisY: {
-            offset: 220
-        },
-    };
-}
+                $('#stats-summary-form').submit((event) => {
+                    event.preventDefault();
+                    this.runSummaryStats();
+                });
+            }
 
-function doGraph(selector, data)
-{
-    if (data.labels.length == 0) {
-        doEmpty(selector);
+            if ($('#stats-supplier-form', container).length != 0) {
+                this.runSupplierStats();
+
+                $('#stats-supplier-form').submit((event) => {
+                    event.preventDefault();
+                    this.runSupplierStats();
+                });
+            }
+        }, 500);
     }
-    else {
-        $(selector).empty().css('height', data.labels.length * 40);
-        new Chartist.Bar(selector, data, commonGraphConfig());
+
+    static doEmpty(target)
+    {
+        $(target).empty().css('height', 'auto').append($('#templates .alert').clone());
     }
-}
 
-function doGraphs(group, data)
-{
-    doGraph('#stats-' + group + '-expenses', data.expenses);
-    doGraph('#stats-' + group + '-users', data.users);
-    doGraph('#stats-' + group + '-categories', data.categories);
-}
+    static commonGraphConfig()
+    {
+        return {
+            horizontalBars: true,
+            axisX: {
+                onlyInteger: true
+            },
+            axisY: {
+                offset: 220
+            },
+        };
+    }
 
-function loadingGraphs(group)
-{
-    $('#stats-' + group + '-expenses').empty().append(utils.loadingPlaceholder());
-    $('#stats-' + group + '-users').empty().append(utils.loadingPlaceholder());
-    $('#stats-' + group + '-categories').empty().append(utils.loadingPlaceholder());
-}
+    static doGraph(selector, data)
+    {
+        if (data.labels.length == 0) {
+            this.doEmpty(selector);
+        }
+        else {
+            if ($(selector).length != 0) {
+                $(selector).empty().css('height', data.labels.length * 40);
+                new Chartist.Bar(selector, data, this.commonGraphConfig());
+            }
+        }
+    }
 
-function runSummaryStats() {
-    loadingGraphs('generic');
+    static doGraphs(group, data)
+    {
+        this.doGraph('#stats-' + group + '-expenses', data.expenses);
+        this.doGraph('#stats-' + group + '-users', data.users);
+        this.doGraph('#stats-' + group + '-categories', data.categories);
+    }
 
-    $.getJSON('/stats/summary', {
-        start: $('#stats-summary-form input[name=startdate]').val(),
-        end: $('#stats-summary-form input[name=enddate]').val(),
-    }, function(data) {
-        doGraphs('generic', data);
-    });
-}
+    static loadingGraphs(group)
+    {
+        $('#stats-' + group + '-expenses').empty().append(utils.loadingPlaceholder());
+        $('#stats-' + group + '-users').empty().append(utils.loadingPlaceholder());
+        $('#stats-' + group + '-categories').empty().append(utils.loadingPlaceholder());
+    }
 
-function runSupplierStats() {
-    loadingGraphs('products');
+    static runSummaryStats()
+    {
+        this.loadingGraphs('generic');
 
-    $.getJSON('/stats/supplier', {
-        supplier: $('#stats-supplier-form select[name=supplier] option:selected').val(),
-        start: $('#stats-supplier-form input[name=startdate]').val(),
-        end: $('#stats-supplier-form input[name=enddate]').val(),
-    }, function(data) {
-        doGraphs('products', data);
-    });
-}
-
-$(document).ready(function() {
-    if ($('#stats-summary-form').length != 0) {
-        runSummaryStats();
-
-        $('#stats-summary-form').submit(function(event) {
-            event.preventDefault();
-            runSummaryStats();
+        $.getJSON('/stats/summary', {
+            start: $('#stats-summary-form input[name=startdate]').val(),
+            end: $('#stats-summary-form input[name=enddate]').val(),
+            target: $('input[name=stats_target]').val(),
+        }, (data) => {
+            this.doGraphs('generic', data);
         });
     }
 
-    if ($('#stats-supplier-form').length != 0) {
-        runSupplierStats();
+    static runSupplierStats()
+    {
+        this.loadingGraphs('products');
 
-        $('#stats-supplier-form').submit(function(event) {
-            event.preventDefault();
-            runSupplierStats();
+        $.getJSON('/stats/supplier', {
+            supplier: $('#stats-supplier-form select[name=supplier] option:selected').val(),
+            start: $('#stats-supplier-form input[name=startdate]').val(),
+            end: $('#stats-supplier-form input[name=enddate]').val(),
+            target: $('input[name=stats_target]').val(),
+        }, (data) => {
+            this.doGraphs('products', data);
         });
     }
-});
+};
+
+export default Statistics;

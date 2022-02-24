@@ -169,6 +169,18 @@ class UsersController extends BackedController
         }
     }
 
+    public function statistics(Request $request, $id)
+    {
+        try {
+            $user = $this->service->show($id);
+            $this->testInternalFunctionsAccess($request->user(), $user);
+            return view('commons.statspage', ['target' => $user]);
+        }
+        catch (AuthException $e) {
+            abort($e->status());
+        }
+    }
+
     public function accounting(Request $request, $id)
     {
         try {

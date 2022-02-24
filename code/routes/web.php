@@ -42,6 +42,7 @@ Route::middleware(['auth'])->group(function() {
         Route::post('users/fees', 'UsersController@feesSave')->name('users.savefees');
         Route::get('users/password', 'UsersController@changePassword')->name('users.password');
         Route::get('users/{id}/bookings', 'UsersController@bookings')->name('users.bookings');
+        Route::get('users/{id}/stats', 'UsersController@statistics')->name('users.stats');
         Route::get('users/{id}/accounting', 'UsersController@accounting')->name('users.accounting');
 
         Route::get('friends/{id}/header', 'FriendsController@objhead')->name('friends.objhead');

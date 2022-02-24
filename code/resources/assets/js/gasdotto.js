@@ -15,7 +15,6 @@ import Cookies from 'js-cookie';
 
 require('./aggregation');
 require('./jquery.dynamictree');
-require('./statistics');
 require('./popovers');
 require('./translate');
 require('./password');
@@ -30,6 +29,7 @@ import Modifiers from "./modifiers";
 import Movements from "./movements";
 import Exports from "./exports";
 import Callables from "./callables";
+import Statistics from "./statistics";
 
 var locker = false;
 var current_currency = $('meta[name=current_currency]').attr('content');
@@ -149,6 +149,7 @@ function generalInit(container) {
     Roles.init(container);
     Movements.init(container);
     Exports.init(container);
+	Statistics.init(container);
 }
 
 function voidForm(form) {
