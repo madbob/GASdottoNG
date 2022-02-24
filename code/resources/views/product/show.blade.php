@@ -7,7 +7,7 @@
 
             <x-larastrap::field :label="_i('Descrizione')">
                 <p class="form-control-plaintext">
-                    {{ htmlize($product->description) }}
+                    {!! nl2br($product->description) !!}
                 </p>
             </x-larastrap::field>
 
