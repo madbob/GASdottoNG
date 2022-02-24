@@ -20,7 +20,7 @@ class Lists {
 
             target.find('> .loadable-sorting-header').addClass('hidden').filter('[data-sorting-' + attribute + ']').removeClass('hidden');
 
-            target.find('> .accordion-item:visible').sort(function(a, b) {
+            target.find('> .accordion-item:visible, .loadable-sorting-header:visible').sort(function(a, b) {
                 var attr_a = $(a).attr('data-sorting-' + attribute);
                 var attr_b = $(b).attr('data-sorting-' + attribute);
                 return attr_a.localeCompare(attr_b);
