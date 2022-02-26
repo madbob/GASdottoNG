@@ -71,7 +71,7 @@ class DynamicBookingsService extends BookingsService
 
                 'quantity' => $final_variant_quantity,
                 'unitprice' => $combo->price,
-                'unitprice_human' => $product->product->printablePrice($booking->order, $combo),
+                'unitprice_human' => $product->product->printablePrice($combo),
                 'total' => printablePrice($delivering ? $variant->deliveredValue() : $variant->quantityValue()),
                 'message' => $variant_message,
             ];
@@ -103,7 +103,7 @@ class DynamicBookingsService extends BookingsService
 
                 $carry[$product->product_id] = (object) [
                     'unitprice' => $product->price,
-                    'unitprice_human' => $product->product->printablePrice($booking->order),
+                    'unitprice_human' => $product->product->printablePrice(),
                     'total' => printablePrice($delivering ? $product->getValue('delivered') : $product->getValue('booked')),
                     'quantity' => $final_quantity,
                     'message' => $message,

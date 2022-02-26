@@ -123,7 +123,7 @@ $existing = false;
                                             </td>
                                         </tr>
                                     @else
-                                        <?php $base_price = $product->product->contextualPrice($order, false) ?>
+                                        <?php $base_price = $product->product->contextualPrice(false) ?>
 
                                         @foreach($product->variants as $var)
                                             <?php

@@ -88,7 +88,7 @@ class BookedProduct extends Model
 
     public function basePrice($rectify = true)
     {
-        return $this->product->contextualPrice($this->booking->order, $rectify);
+        return $this->product->contextualPrice($rectify);
     }
 
     public function testConstraints($quantity, $variant = null)

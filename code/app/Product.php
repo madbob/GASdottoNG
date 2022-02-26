@@ -111,9 +111,9 @@ class Product extends Model
         })->get();
     }
 
-    public function printablePrice($order, $variant = null)
+    public function printablePrice($variant = null)
     {
-        $price = $this->contextualPrice($order, false);
+        $price = $this->contextualPrice(false);
 
         if ($this->variants()->count() != 0) {
             if (is_null($variant)) {
@@ -144,12 +144,9 @@ class Product extends Model
 
     /*
         Per i prodotti con pezzatura, ritorna già il prezzo per singola unità
-        e non è dunque necessario normalizzare ulteriormente.
-
-        TODO: con l'introduzione dei modificatori il prezzo non è più dipendente
-        dall'ordine, eliminare il parametro $order
+        e non è dunque necessario normalizzare ulteriormente
     */
-    public function contextualPrice($order, $rectify = true)
+    public function contextualPrice($rectify = true)
     {
         $price = $this->price;
 
