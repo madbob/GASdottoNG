@@ -10,6 +10,7 @@ use App\Exceptions\AnnotatedQuantityConstraint;
 use App\Events\BookingDelivered;
 
 use DB;
+use Artisan;
 use Log;
 use Auth;
 
@@ -56,10 +57,11 @@ class DynamicBookingsService extends BookingsService
         return [$final_quantity, $message];
     }
 
-    private function reduceVariants($product, $delivering)
+    private function reduceVariants($booking, $product, $delivering)
     {
-        return $product->variants->reduce(function($varcarry, $variant) use ($product, $delivering) {
+        return $product->variants->reduce(function($varcarry, $variant) use ($booking, $product, $delivering) {
             list($final_variant_quantity, $variant_message) = $this->handleQuantity($delivering, $product, $variant, $variant);
+            $combo = $variant->variantsCombo();
 
             $varcarry[] = (object) [
                 'components' => $variant->components->reduce(function($componentcarry, $component) {
@@ -68,6 +70,8 @@ class DynamicBookingsService extends BookingsService
                 }, []),
 
                 'quantity' => $final_variant_quantity,
+                'unitprice' => $combo->price,
+                'unitprice_human' => $product->product->printablePrice($booking->order, $combo),
                 'total' => printablePrice($delivering ? $variant->deliveredValue() : $variant->quantityValue()),
                 'message' => $variant_message,
             ];
@@ -89,53 +93,33 @@ class DynamicBookingsService extends BookingsService
 
     private function translateBooking($booking, $delivering)
     {
-        /*
-            Qui forzo sempre il ricalcolo dei modificatori, altrimenti vengono
-            letti quelli effettivamente salvati sul DB.
-            Nota bene: passo il parametro real = true perché qui sono già
-            all'interno di una transazione, ed i valori qui calcolati devono
-            esistere anche successivamente mentre recupero i totali dei singoli
-            prodotti.
-            La prenotazione è ancora in fase di consegna, lo status è impostato
-            temporaneamente a "shipped" ed andrebbe a leggere quelli salvati
-            anche se ancora non ce ne sono
-        */
-        $booking->unsetRelation('modifiedValues');
-        $modified = $booking->modifiedValues;
         $calculated_total = $booking->getValue('effective', false, true);
 
         $ret = (object) [
             'total' => printablePrice($calculated_total),
             'modifiers' => [],
-            'products' => $booking->products->reduce(function($carry, $product) use ($delivering) {
+            'products' => $booking->products->reduce(function($carry, $product) use ($booking, $delivering) {
                 list($final_quantity, $message) = $this->handleQuantity($delivering, $product, $product, null);
 
                 $carry[$product->product_id] = (object) [
+                    'unitprice' => $product->price,
+                    'unitprice_human' => $product->product->printablePrice($booking->order),
                     'total' => printablePrice($delivering ? $product->getValue('delivered') : $product->getValue('booked')),
                     'quantity' => $final_quantity,
                     'message' => $message,
-                    'variants' => $this->reduceVariants($product, $delivering),
-                    'modifiers' => [],
+                    'variants' => $this->reduceVariants($booking, $product, $delivering),
                 ];
                 return $carry;
             }, []),
         ];
 
+        $modified = $booking->applyModifiers(null, false);
         foreach($modified as $mod) {
-            if ($mod->target_type == 'App\Product') {
-                if (!isset($ret->products[$mod->target->product_id]->modifiers[$mod->modifier_id])) {
-                    $ret->products[$mod->target->product_id]->modifiers[$mod->modifier_id] = $this->initDynamicModifier($mod);
-                }
-
-                $ret->products[$mod->target->product_id]->modifiers[$mod->modifier_id]->amount += $mod->effective_amount;
+            if (!isset($ret->modifiers[$mod->modifier_id])) {
+                $ret->modifiers[$mod->modifier_id] = $this->initDynamicModifier($mod);
             }
-            else {
-                if (!isset($ret->modifiers[$mod->modifier_id])) {
-                    $ret->modifiers[$mod->modifier_id] = $this->initDynamicModifier($mod);
-                }
 
-                $ret->modifiers[$mod->modifier_id]->amount += $mod->effective_amount;
-            }
+            $ret->modifiers[$mod->modifier_id]->amount += $mod->effective_amount;
         }
 
         return $ret;
@@ -154,6 +138,17 @@ class DynamicBookingsService extends BookingsService
     public function dynamicModifiers(array $request, $aggregate, $target_user)
     {
         for ($i = 0; $i <= 3; $i++) {
+            /*
+                Se viene sollevata una eccezione, questo intero blocco viene
+                reiterato almeno 3 volte. Questo per eventualmente aggirare
+                problemi di lock sul database, considerando anche che sta tutto
+                in transazioni.
+                Per scrupolo ad ogni iterazione svuoto la cache dei modelli, che
+                resta in RAM, per evitare che i risultati delle iterazioni
+                precedenti vadano ad interferire
+            */
+            Artisan::call('modelCache:clear');
+
             DB::beginTransaction();
 
             try {
@@ -174,9 +169,9 @@ class DynamicBookingsService extends BookingsService
                 }
 
                 /*
-                    Lo scopo di questa funzione è ottenere una preview dei totali della
-                    prenotazione, dunque al termine invalido tutte le modifiche fatte
-                    sul database
+                    Lo scopo di questa funzione è ottenere una preview dei
+                    totali della prenotazione, dunque al termine invalido tutte
+                    le modifiche fatte sul database
                 */
                 DB::rollback();
 

@@ -12,8 +12,12 @@ class UserFactory extends Factory
 
     public function definition()
     {
+        do {
+            $username = $this->faker->userName();
+        } while(User::where('username', $username)->count() != 0);
+
         return [
-            'username' => $this->faker->userName(),
+            'username' => $username,
             'firstname' => $this->faker->firstName(),
             'lastname' => $this->faker->lastName(),
             'password' => bcrypt(str_random(10)),

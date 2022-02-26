@@ -59,7 +59,6 @@ class DynamicBookingsServiceTest extends TestCase
                 $this->assertEquals($p->total, $target_product->price * $data2[$pid] ?? 0);
                 $this->assertEquals($p->quantity, $data2[$pid] ?? 0);
                 $this->assertEquals(count($p->variants), 0);
-                $this->assertEquals(count($p->modifiers), 0);
                 $this->assertEquals($p->message, '');
             }
         }
@@ -229,6 +228,108 @@ class DynamicBookingsServiceTest extends TestCase
 
             foreach($b->products as $pid => $p) {
                 $this->assertEquals($p->quantity, 0);
+            }
+        }
+    }
+
+    private function attachDiscount($product)
+    {
+        $this->actingAs($this->userReferrer);
+
+        $mod = null;
+        $modifiers = $product->applicableModificationTypes();
+        foreach ($modifiers as $mod) {
+            if ($mod->id == 'sconto') {
+                $mod = $product->modifiers()->where('modifier_type_id', $mod->id)->first();
+                $this->services['modifiers']->update($mod->id, [
+                    'value' => 'percentage',
+                    'arithmetic' => 'sub',
+                    'scale' => 'minor',
+                    'applies_type' => 'none',
+                    'applies_target' => 'product',
+                    'simplified_amount' => 10,
+                ]);
+
+                break;
+            }
+        }
+
+        $this->assertNotNull($mod);
+        $this->nextRound();
+    }
+
+    /*
+        Lettura dinamica delle prenotazioni, prodotto con modificatori
+    */
+    public function testModifiers()
+    {
+        $product = $this->order->products->random();
+        $this->attachDiscount($product);
+
+        $this->actingAs($this->userWithBasePerms);
+
+        $data = [
+            'action' => 'booked',
+            $product->id => 2,
+        ];
+
+        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
+
+        $this->assertEquals(count($ret->bookings), 1);
+
+        foreach($ret->bookings as $b) {
+            $this->assertEquals(count($b->products), 1);
+            $this->assertEquals($b->total, $product->price * 2 - ($product->price * 0.10 * 2));
+            $this->assertEquals(count($b->modifiers), 1);
+
+            foreach($b->products as $pid => $p) {
+                $this->assertEquals($p->quantity, 2);
+                $this->assertEquals($p->total, $product->price * 2);
+            }
+        }
+    }
+
+    /*
+        Lettura dinamica delle prenotazioni, prodotto con varianti e modificatori
+    */
+    public function testModifiersAndVariants()
+    {
+        $this->actingAs($this->userReferrer);
+
+        $product = $this->order->products->random();
+
+        $variant = $this->services['variants']->store([
+            'product_id' => $product->id,
+            'name' => 'Colore',
+            'id' => ['', '', ''],
+            'value' => ['Rosso', 'Verde', 'Blu'],
+        ]);
+
+        $this->nextRound();
+
+        $this->attachDiscount($product);
+
+        $this->actingAs($this->userWithBasePerms);
+
+        $data = [
+            'action' => 'booked',
+            $product->id => 0,
+            'variant_quantity_' . $product->id => [2],
+            'variant_selection_' . $variant->id => [$variant->values()->first()->id],
+        ];
+
+        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
+
+        $this->assertEquals(count($ret->bookings), 1);
+
+        foreach($ret->bookings as $b) {
+            $this->assertEquals(count($b->products), 1);
+            $this->assertEquals($b->total, $product->price * 2 - ($product->price * 0.10 * 2));
+            $this->assertEquals(count($b->modifiers), 1);
+
+            foreach($b->products as $pid => $p) {
+                $this->assertEquals($p->quantity, 2);
+                $this->assertEquals($p->total, $product->price * 2);
             }
         }
     }

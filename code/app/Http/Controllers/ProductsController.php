@@ -14,6 +14,7 @@ use App\Exceptions\IllegalArgumentException;
 
 use App\Order;
 use App\Product;
+use App\VariantCombo;
 
 class ProductsController extends BackedController
 {
@@ -117,5 +118,27 @@ class ProductsController extends BackedController
         catch (AuthException $e) {
             abort($e->status());
         }
+    }
+
+    public function price(Request $request)
+    {
+        $product_id = $request->input('id');
+        $variant = $request->input('variant', []);
+        $product = $this->service->show($product_id);
+
+        if (empty($variant)) {
+            $price = $product->price;
+        }
+        else {
+            $combo = VariantCombo::byValues($variant);
+            $price = $combo->price;
+        }
+
+        $currency = currentAbsoluteGas()->currency;
+        $str = sprintf('%.02f %s / %s', $price, $currency, $product->printableMeasure());
+
+        return response()->json([
+            'price' => $str,
+        ]);
     }
 }

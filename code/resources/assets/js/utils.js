@@ -79,6 +79,15 @@ class Utils {
         return Utils.current_language;
     }
 
+    static currentCurrency()
+    {
+        if (typeof Utils.current_currency == 'undefined') {
+            Utils.current_currency = $('meta[name=current_currency]').attr('content');
+        }
+
+        return Utils.current_currency;
+    }
+
     static absoluteUrl()
     {
         if (typeof Utils.absolute_url == 'undefined') {
@@ -126,7 +135,11 @@ class Utils {
 
     static detailsButton(url)
     {
-        return '<button type="button" class="btn btn-xs btn-info object-details d-none d-md-inline-block" data-show-url="' + url + '"><i class="bi-zoom-in"></i></button>';
+        /*
+            Questo deve essere coerente col template
+            code/resources/views/commons/detailsbutton.blade.php
+        */
+        return '<button type="button" class="btn btn-xs btn-icon btn-info object-details d-none d-md-inline-block" data-show-url="' + url + '"><i class="bi-zoom-in"></i></button>';
     }
 
     static complexPopover(input, type, content)

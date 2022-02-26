@@ -436,6 +436,7 @@ class Booking extends Model
             $this->payment->delete();
         }
 
+        $this->status = 'pending';
         $this->payment_id = null;
         $this->deleteModifiedValues();
 

@@ -28,6 +28,11 @@ class VariantCombo extends Model
         return $this->values()->first()->variant->product;
     }
 
+    public function getPriceAttribute()
+    {
+        return $this->price_offset + $this->product->price;
+    }
+
     public function printableName()
     {
         $ret = [];

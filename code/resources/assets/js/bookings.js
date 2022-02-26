@@ -54,8 +54,51 @@ class Bookings
         });
 
         container.on('change', '.variants-selector select', (e) => {
-            var editor = $(e.currentTarget).closest('.booking-editor');
-            this.bookingTotal(editor);
+            /*
+                Cambiando una variante, se la quantità prenotata risulta già non
+                essere a 0 eseguo - come in tutti gli altri casi - il ricalcolo
+                nel pannello con bookingTotal(), altrimenti vado a pescare il
+                prezzo di quella singola variante modificata ed aggiorno la
+                visualizzazione
+            */
+
+            var row = $(e.currentTarget).closest('.inline-variant-selector');
+            var quantity = utils.parseFloatC(row.find('.booking-product-quantity input').val());
+
+            if (quantity == 0) {
+                var variant = [];
+
+                row.find('.form-select').each(function() {
+                    variant.push($(this).find(':selected').val());
+                });
+
+                utils.postAjax({
+                    method: 'GET',
+                    url: 'products/price',
+                    dataType: 'JSON',
+                    data: {
+                        id: row.closest('tr').find('input:hidden').first().attr('name'),
+                        variant: variant,
+                    },
+                    success: function(data) {
+                        var index = row.index();
+                        var block = row.closest('tr').find('.prices_block');
+                        var newrow = block.find('.row').first().clone();
+                        newrow.find('small').text(data.price);
+
+                        if (block.find('.row').length > index) {
+                            block.find('.row').eq(index).replaceWith(newrow);
+                        }
+                        else {
+                            block.append(newrow);
+                        }
+                    }
+                })
+            }
+            else {
+                var editor = $(e.currentTarget).closest('.booking-editor');
+                this.bookingTotal(editor);
+            }
         });
 
         $('.mobile-quantity-switch button', container).click((e) => {
@@ -243,9 +286,17 @@ class Bookings
         .on('click', '.booking-product .add-variant', (e) => {
             e.preventDefault();
             var variant_selector = $(e.currentTarget).closest('.variants-selector');
-            var master = variant_selector.find('.master-variant-selector').clone().removeClass('master-variant-selector');
+            var template = variant_selector.find('.master-variant-selector');
+            var master = template.clone().removeClass('master-variant-selector');
             master.find('.skip-on-submit').removeClass('skip-on-submit');
-            variant_selector.append(master);
+            template.before(master);
+
+            /*
+                Questo è per forzare il caricamento del prezzo della nuova
+                variante introdotta
+            */
+            master.find('select').first().change();
+
             return false;
         });
     }
@@ -327,18 +378,16 @@ class Bookings
         input.siblings('.invalid-feedback').text(message);
     }
 
+    static priceRow(value)
+    {
+        return '<div class="row"><div class="col"><label class="static-label form-control-plaintext"><small>' + value + '</small></label></div></div>';
+    }
+
     static updateBookingQuantities(dynamic_data, container, action)
     {
         for (let [product_id, product_meta] of Object.entries(dynamic_data)) {
             var inputbox = $('input[name="' + product_id + '"]', container);
             inputbox.closest('tr').find('.booking-product-price span').text(utils.priceRound(product_meta.total));
-
-            var modifiers = '';
-            for (let [modifier_id, modifier_meta] of Object.entries(product_meta.modifiers)) {
-                modifiers += '<br>' + modifier_meta.label + ': ' + utils.priceRound(modifier_meta.amount) + current_currency;
-            }
-
-            inputbox.closest('tr').find('.modifiers').html(modifiers);
 
             if (product_meta.variants.length != 0) {
                 /*
@@ -350,15 +399,35 @@ class Bookings
                     gli stessi componenti e dovrei intuire qual è
                     quella da eventualmente invalidare
                 */
+
+                let pricesbox = [];
+                let populated_index = 0;
+
                 for (let i = 0; i < product_meta.variants.length; i++) {
                     var variant = product_meta.variants[i];
-                    var varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).filter(':not(.skip-on-submit)').eq(i);
-                    this.checkInvalidFeedback(varinputbox, variant.quantity == 0 && utils.parseFloatC(varinputbox.val()) != 0, variant.message);
+                    var varinputbox = null;
+                    var varinputboxvalue = 0;
+
+                    do {
+                        varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).filter(':not(.skip-on-submit)').eq(populated_index);
+                        populated_index++;
+                        varinputboxvalue = utils.parseFloatC(varinputbox.val());
+
+                        if (varinputboxvalue == 0) {
+                            pricesbox.push(this.priceRow('&nbsp;'));
+                        }
+                    } while(varinputboxvalue == 0);
+
+                    this.checkInvalidFeedback(varinputbox, variant.quantity == 0 && varinputboxvalue != 0, variant.message);
 
                     if (action == 'shipped') {
                         varinputbox.closest('tr').find('.booking-product-price span').text(utils.priceRound(variant.total));
                     }
+
+                    pricesbox.push(this.priceRow(variant.unitprice_human));
                 }
+
+                inputbox.closest('tr').find('.prices_block').empty().append(pricesbox);
             }
             else {
                 this.checkInvalidFeedback(inputbox, product_meta.quantity == 0 && utils.parseFloatC(inputbox.val()) != 0, product_meta.message);

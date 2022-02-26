@@ -111,15 +111,20 @@ class Product extends Model
         })->get();
     }
 
-    public function printablePrice($order)
+    public function printablePrice($order, $variant = null)
     {
         $price = $this->contextualPrice($order, false);
-        $currency = currentAbsoluteGas()->currency;
-        $str = sprintf('%.02f %s / %s', $price, $currency, $this->measure->name);
 
-        if ($this->variable) {
-            $str .= '<small> <span class="d-none d-sm-block">' . _i('(prodotto a prezzo variabile)') . '</span><span class="d-block d-sm-none">' . _i('(variabile)') . '</span></small>';
+        if ($this->variants()->count() != 0) {
+            if (is_null($variant)) {
+                $variant = $this->variantCombos->where('active', true)->first();
+            }
+
+            $price += $variant->price_offset;
         }
+
+        $currency = currentAbsoluteGas()->currency;
+        $str = sprintf('%.02f %s / %s', $price, $currency, $this->printableMeasure());
 
         return $str;
     }
@@ -139,7 +144,10 @@ class Product extends Model
 
     /*
         Per i prodotti con pezzatura, ritorna già il prezzo per singola unità
-        e non è dunque necessario normalizzare ulteriormente
+        e non è dunque necessario normalizzare ulteriormente.
+
+        TODO: con l'introduzione dei modificatori il prezzo non è più dipendente
+        dall'ordine, eliminare il parametro $order
     */
     public function contextualPrice($order, $rectify = true)
     {

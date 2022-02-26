@@ -32,7 +32,6 @@ import Callables from "./callables";
 import Statistics from "./statistics";
 
 var locker = false;
-var current_currency = $('meta[name=current_currency]').attr('content');
 var measure_discrete = null;
 
 const localCallables = {

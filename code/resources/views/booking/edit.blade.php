@@ -130,7 +130,7 @@ $form_buttons = [
         <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}">
             <input type="hidden" name="booking_id" value="{{ $o->id }}" class="skip-on-submit">
 
-            <thead class="d-none d-md-table-header-group">
+            <thead class="d-none d-md-table-header-group border-0">
                 <tr>
                     <th width="40%"></th>
                     <th width="30%"></th>
@@ -171,17 +171,7 @@ $form_buttons = [
                         </td>
 
                         <td class="text-end">
-                            <label class="static-label">
-                                <small>{!! $product->printablePrice($order) !!}</small>
-                                <div class="modifiers">
-                                    @if($p)
-                                        @foreach($p->modifiedValues as $mod_value)
-                                            <br>
-                                            <small>{{ $mod_value->modifier->modifierType->name }}: {{ printablePriceCurrency($mod_value->amount) }}</small>
-                                        @endforeach
-                                    @endif
-                                </div>
-                            </label>
+                            @include('booking.pricerow', ['product' => $product, 'booked' => $p, 'order' => $order, 'populate' => true])
                         </td>
 
                         <td>
