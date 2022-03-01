@@ -191,6 +191,21 @@ class Widgets {
             let sus = (status != 'suspended');
             field.find('[name=suspended_at]').prop('hidden', sus).closest('.input-group').prop('hidden', sus);
         });
+
+        /*
+            Questo è per popolare le righe dinamicamente aggiunte in
+            code/resources/views/variant/editsingle.blade.php
+        */
+        if ($('input[value="put_random_here"]', container).length != 0) {
+            var random = 'new_' + utils.randomString(5);
+            $('input[value="put_random_here"]', container).each(function() {
+                if ($(this).closest('.dynamic-table').length != 0) {
+                    if ($(this).closest('tbody').length != 0) {
+                        $(this).val(random);
+                    }
+                }
+            });
+        }
     }
 
     static dateEnforcePeer(node)

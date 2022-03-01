@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 
 use DB;
@@ -38,7 +39,13 @@ class VariantsController extends BackedController
     {
         try {
             $variant = $this->service->show($id);
-            return view('variant.edit', ['product' => $variant->product, 'variant' => $variant]);
+
+            if ($variant->product->variants()->count() == 1) {
+                return view('variant.editsingle', ['product' => $variant->product, 'variant' => $variant]);
+            }
+            else {
+                return view('variant.edit', ['product' => $variant->product, 'variant' => $variant]);
+            }
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -70,9 +77,63 @@ class VariantsController extends BackedController
         $product = Product::findOrFail($id);
         $this->ensureAuth(['supplier.modify' => $product->supplier]);
 
-        $combinations = $request->input('combination');
+        /*
+            Se il prodotto ha una sola variante, viene visualizzato il form di
+            modifica "semplificato" in cui editare insieme i valori e gli
+            attributi dei valori.
+        */
+        if ($product->variants()->count() == 1) {
+            $original_combinations = $request->input('combination', []);
+
+            $ids = array_map(function($item) {
+                if (Str::startsWith($item, 'new_')) {
+                    return '';
+                }
+                else {
+                    return $item;
+                }
+            }, $original_combinations);
+
+            $values = $request->input('value', []);
+
+            $variant = $product->variants()->first();
+            $variant = $this->service->store([
+                'variant_id' => $variant->id,
+                'id' => $ids,
+                'value' => $values,
+            ]);
+
+            $combinations = [];
+
+            foreach($values as $value) {
+                $combinations[] = $variant->values()->where('value', $value)->first()->id;
+            }
+
+            /*
+                Ai nuovi valori dinamicamente immessi nella tabella aggiungo un
+                identificativo randomico, sul quale mi baso per risalire ai
+                metadati di tale valore
+            */
+            $actives = [];
+            $original_actives = $request->input('active', []);
+            foreach ($original_actives as $ac) {
+                if (Str::startsWith($ac, 'new_')) {
+                    $combination_index = array_search($ac, $original_combinations);
+                    $combination = $variant->values()->where('value', $values[$combination_index])->first()->id;
+                    $combo = VariantCombo::byValues(explode(',', $combination));
+                    $actives[] = $combo->id;
+                }
+                else {
+                    $actives[] = $ac;
+                }
+            }
+        }
+        else {
+            $combinations = $request->input('combination');
+            $actives = $request->input('active', []);
+        }
+
         $codes = $request->input('code', []);
-        $actives = $request->input('active', []);
         $prices = $request->input('price_offset', []);
         $weights = $request->input('weight_offset', []);
 
