@@ -44,104 +44,14 @@ $bookings_tot = 0;
     <?php $variable = false ?>
 
     <h3>{{ $b->order->supplier->printableName() }}</h3>
-
-    <table style="width:100%">
-        <thead>
-            <th style="width:50%; text-align: left">{{ _i('Prodotto') }}</th>
-            <th style="width:25%; text-align: left">{{ _i('Quantità') }}</th>
-            <th style="width:25%; text-align: left">{{ _i('Prezzo') }}</th>
-        </thead>
-
-        <tbody>
-            @foreach($b->products as $product)
-                @if($product->$attribute != 0)
-                    <?php $variable = $variable || $product->product->variable ?>
-                    <tr>
-                        <td>{{ $product->product->printableName() }}</td>
-                        <td>{{ $product->$attribute }} {{ $product->product->printableMeasure() }}</td>
-                        <td>{{ printablePriceCurrency($product->getValue($get_value)) }}</td>
-                    </tr>
-                @endif
-            @endforeach
-
-            <?php
-
-            $bookings_tot++;
-            $tot = $b->getValue('effective', false);
-            $global_total += $tot;
-
-            $modifiers = $b->applyModifiers();
-            $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
-
-            ?>
-
-            @foreach($aggregated_modifiers as $am)
-                <tr>
-                    <td><strong>{{ $am->name }}</strong></td>
-                    <td>&nbsp;</td>
-                    <td>{{ printablePriceCurrency($am->amount) }}</td>
-                </tr>
-            @endforeach
-
-            <tr>
-                <td><strong>{{ _i('Totale') }}</strong></td>
-                <td>&nbsp;</td>
-                <td>{{ printablePriceCurrency($tot) }}</td>
-            </tr>
-        </tbody>
-    </table>
+    @include('emails.bookingtable', ['booking' => $b, 'redux' => $redux])
 
     @if($b->friends_bookings->isEmpty() == false)
         <h5>{{ _i('Gli ordini dei tuoi amici') }}</h5>
 
         @foreach($b->friends_bookings as $fb)
             <p>{{ $fb->user->printableName() }}</p>
-
-            <table style="width:100%">
-                <thead>
-                    <th style="width:50%; text-align: left">{{ _i('Prodotto') }}</th>
-                    <th style="width:25%; text-align: left">{{ _i('Quantità') }}</th>
-                    <th style="width:25%; text-align: left">{{ _i('Prezzo') }}</th>
-                </thead>
-
-                <tbody>
-                    @foreach($fb->products as $product)
-                        @if($product->$attribute != 0)
-                            <?php $variable = $variable || $product->product->variable ?>
-                            <tr>
-                                <td>{{ $product->product->printableName() }}</td>
-                                <td>{{ $product->$attribute }} {{ $product->product->printableMeasure() }}</td>
-                                <td>{{ printablePriceCurrency($product->getValue($get_value)) }}</td>
-                            </tr>
-                        @endif
-                    @endforeach
-
-                    <?php
-
-                    $bookings_tot++;
-                    $tot = $fb->getValue('effective', false);
-                    $global_total += $tot;
-
-                    $modifiers = $fb->applyModifiers();
-                    $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
-
-                    ?>
-
-                    @foreach($aggregated_modifiers as $am)
-                        <tr>
-                            <td><strong>{{ $am->name }}</strong></td>
-                            <td>&nbsp;</td>
-                            <td>{{ printablePriceCurrency($am->amount) }}</td>
-                        </tr>
-                    @endforeach
-
-                    <tr>
-                        <td><strong>{{ _i('Totale') }}</strong></td>
-                        <td>&nbsp;</td>
-                        <td>{{ printablePriceCurrency($tot) }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            @include('emails.bookingtable', ['booking' => $fb, 'redux' => $redux])
         @endforeach
     @endif
 

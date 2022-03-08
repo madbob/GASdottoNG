@@ -26,9 +26,11 @@ class AggregateSummaries extends Job
             return in_array($booking->status, $status);
         });
 
+        $redux = $aggregate->reduxData();
+
         foreach($bookings as $booking) {
             try {
-                $booking->user->notify(new BookingNotification($this->aggregate_id, $booking->user->id, $this->message));
+                $booking->user->notify(new BookingNotification($this->aggregate_id, $redux, $booking->user->id, $this->message));
             }
             catch(\Exception $e) {
                 Log::error('Impossibile inviare notifica mail prenotazione di ' . $booking->user->id);
