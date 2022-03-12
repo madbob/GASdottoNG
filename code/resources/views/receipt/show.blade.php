@@ -6,6 +6,7 @@
             <x-larastrap::datepicker name="date" :label="_i('Data')" readonly disabled />
             <x-larastrap::price name="total" :label="_i('Totale Imponibile')" readonly disabled />
             <x-larastrap::price name="total_vat" :label="_i('Totale IVA')" readonly disabled />
+            <x-larastrap::price name="total_other" :label="_i('Altro')" readonly disabled />
         </div>
         <div class="col-md-6">
             <x-larastrap::field :label="_i('Prenotazioni Coinvolte')">

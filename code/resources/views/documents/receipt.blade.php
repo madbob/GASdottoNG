@@ -78,10 +78,27 @@
                         @endphp
 
                         <tr>
-                            <td width="55%">{{ $product->product->name }}</td>
-                            <td width="15%">{{ $product->delivered }}</td>
-                            <td width="15%">{{ $product->product->measure->printableName() }}</td>
-                            <td width="15%">{{ printablePriceCurrency($product_total) }}</td>
+                            <td>{{ $product->product->name }}</td>
+                            <td>{{ $product->delivered }}</td>
+                            <td>{{ $product->product->measure->printableName() }}</td>
+                            <td>{{ printablePriceCurrency($product_total) }}</td>
+                        </tr>
+                    @endforeach
+                @endforeach
+
+                @foreach($receipt->bookings as $booking)
+                    @foreach($booking->aggregatedModifiers() as $am)
+                        @php
+
+                        $grand_total += $am->amount;
+
+                        @endphp
+
+                        <tr>
+                            <td>{{ $am->name }}</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>{{ printablePriceCurrency($am->amount) }}</td>
                         </tr>
                     @endforeach
                 @endforeach

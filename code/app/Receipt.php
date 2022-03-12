@@ -57,11 +57,16 @@ class Receipt extends Model implements AccountingDocument
         if (empty($this->cache_value)) {
             $this->cache_value['total'] = 0;
             $this->cache_value['total_tax'] = 0;
+            $this->cache_value['others'] = 0;
 
             foreach($this->bookings as $booking) {
                 $book = $booking->delivered_taxed;
                 $this->cache_value['total'] += $book[0];
                 $this->cache_value['total_tax'] += $book[1];
+
+                foreach($booking->aggregatedModifiers() as $am) {
+                    $this->cache_value['others'] += $am->amount;
+                }
             }
 
             $this->cache_value['total'] = round($this->cache_value['total'], 2);
@@ -94,6 +99,12 @@ class Receipt extends Model implements AccountingDocument
     {
         $this->calculateTotal();
         return $this->cache_value['total_tax'];
+    }
+
+    public function getTotalOtherAttribute()
+    {
+        $this->calculateTotal();
+        return $this->cache_value['others'];
     }
 
     /***************************************************** AccountingDocument */
