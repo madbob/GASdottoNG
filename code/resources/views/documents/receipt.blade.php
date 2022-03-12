@@ -84,9 +84,7 @@
                             <td>{{ printablePriceCurrency($product_total) }}</td>
                         </tr>
                     @endforeach
-                @endforeach
 
-                @foreach($receipt->bookings as $booking)
                     @foreach($booking->aggregatedModifiers() as $am)
                         @php
 
