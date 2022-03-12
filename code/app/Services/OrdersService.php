@@ -51,7 +51,7 @@ class OrdersService extends BaseService
         $deliveries = array_filter($request['deliveries'] ?? []);
         $request['keep_open_packages'] = $request['keep_open_packages'] ?? 'no';
 
-        foreach($suppliers as $supplier_id) {
+        foreach($suppliers as $index => $supplier_id) {
             $supplier = Supplier::findOrFail($supplier_id);
             $this->ensureAuth(['supplier.orders' => $supplier]);
 
@@ -61,6 +61,7 @@ class OrdersService extends BaseService
             $this->setCommonAttributes($o, $request);
             $o->status = $request['status'];
             $o->aggregate_id = $a->id;
+            $o->aggregate_sorting = $index;
             $o->save();
 
             $o->deliveries()->sync($deliveries);
