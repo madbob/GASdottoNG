@@ -65,6 +65,12 @@ class ProductsService extends BaseService
     {
         $this->boolIfSet($product, $request, 'active');
         $this->setIfSet($product, $request, 'supplier_code');
+
+        /*
+            Questo viene definito in ProductsController::massiveUpdate()
+        */
+        $this->setIfSet($product, $request, 'sorting');
+
         $this->transformAndSetIfSet($product, $request, 'weight', 'enforceNumber');
         $this->transformAndSetIfSet($product, $request, 'package_size', 'enforceNumber');
         $this->transformAndSetIfSet($product, $request, 'multiple', 'enforceNumber');

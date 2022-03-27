@@ -110,6 +110,9 @@ $form_buttons = [
                 </button>
                 <ul class="dropdown-menu">
                     <li>
+                        <a href="#" class="dropdown-item" data-sort-by="sorting" data-numeric-sorting="true">{{ _i('Ordinamento Manuale') }}</a>
+                    </li>
+                    <li>
                         <a href="#" class="dropdown-item" data-sort-by="name">{{ _i('Nome') }}</a>
                     </li>
                     <li>
@@ -151,7 +154,7 @@ $form_buttons = [
                 @foreach($products as $product)
                     <?php $p = $o->getBooked($product->id) ?>
 
-                    <tr class="booking-product" data-sorting-name="{{ $product->name }}" data-sorting-category_name="{{ $product->category_name }}">
+                    <tr class="booking-product" data-sorting-name="{{ $product->name }}" data-sorting-sorting="{{ $product->sorting }}" data-sorting-category_name="{{ $product->category_name }}">
                         <td>
                             @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product, 'extra_class' => 'text-filterable-cell'])
 

@@ -20,10 +20,11 @@
 
     <div class="row">
         <div class="col">
-            <table class="table" id="{{ $identifier }}">
+            <table class="table sortable-table" id="{{ $identifier }}">
                 <thead>
                     <tr>
-                        <th width="45%">{{ _i('Nome') }}</th>
+                        <th width="5%"></th>
+                        <th width="40%">{{ _i('Nome') }}</th>
                         <th width="20%">{{ _i('Unità di Misura') }}</th>
                         <th width="20%">{{ _i('Prezzo Unitario') }}</th>
                         <th width="10%">{{ _i('Ordinabile') }}</th>
@@ -37,6 +38,9 @@
                             <tr data-element-id="{{ $product->id }}">
                                 <td>
                                     <x-larastrap::hidden name="id" npostfix="[]" />
+                                    <span class="btn btn-info sorter"><i class="bi bi-arrow-down-up"></i></span>
+                                </td>
+                                <td>
                                     <x-larastrap::text name="name" :label="_i('Nome')" squeeze required :nprefix="$product->id . '-'" />
                                 </td>
                                 <td>

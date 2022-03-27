@@ -6,7 +6,11 @@ foreach(App\Role::orderBy('name', 'asc')->get() as $role) {
     $selections['special::role::' . $role->id] = _i('Tutti gli utenti con ruolo "%s"', [$role->name]);
 }
 
-foreach ($currentgas->aggregates()->with('orders')->whereHas('orders', function($query) { $query->where('status', '!=', 'archived'); })->get() as $aggregate) {
+$aggregates = $currentgas->aggregates()->with('orders')->whereHas('orders', function($query) {
+    $query->where('status', '!=', 'archived');
+})->get();
+
+foreach ($aggregates as $aggregate) {
     foreach($aggregate->orders as $order) {
         if ($order->status != 'archived') {
             $selections['special::order::'.$order->id] = _i("Tutti i Partecipanti all'ordine %s %s", $order->supplier->name, $order->internal_number);

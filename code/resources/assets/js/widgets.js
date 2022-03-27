@@ -206,6 +206,11 @@ class Widgets {
                 }
             });
         }
+
+        $('.sortable-table tbody', container).sortable({
+            items: '> tr',
+            handler: '.sorter',
+        });
     }
 
     static dateEnforcePeer(node)

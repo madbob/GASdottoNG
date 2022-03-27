@@ -41,6 +41,9 @@ foreach($display_columns as $identifier => $metadata) {
                 </button>
                 <ul class="dropdown-menu">
                     <li>
+                        <a href="#" class="dropdown-item" data-sort-by="sorting" data-numeric-sorting="true">{{ _i('Ordinamento Manuale') }}</a>
+                    </li>
+                    <li>
                         <a href="#" class="dropdown-item" data-sort-by="name">{{ _i('Nome') }}</a>
                     </li>
                     <li>
@@ -120,9 +123,9 @@ foreach($display_columns as $identifier => $metadata) {
                     ?>
 
                     @if($enabled == false)
-                        <tr class="product-disabled do-not-filter" data-product-id="{{ $product->id }}" data-sorting-name="{{ $product->name }}" data-sorting-category_name="{{ $product->category_name }}">
+                        <tr class="product-disabled do-not-filter" data-product-id="{{ $product->id }}" data-sorting-name="{{ $product->name }}" data-sorting-sorting="{{ $product->sorting }}" data-sorting-category_name="{{ $product->category_name }}">
                     @else
-                        <tr data-product-id="{{ $product->id }}" data-sorting-name="{{ $product->name }}" data-sorting-category_name="{{ $product->category_name }}">
+                        <tr data-product-id="{{ $product->id }}" data-sorting-name="{{ $product->name }}" data-sorting-sorting="{{ $product->sorting }}" data-sorting-category_name="{{ $product->category_name }}">
                     @endif
 
                         <!-- Visualizza tutti -->

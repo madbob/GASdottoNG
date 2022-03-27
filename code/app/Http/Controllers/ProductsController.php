@@ -98,12 +98,14 @@ class ProductsController extends BackedController
         DB::beginTransaction();
 
         $product_ids = $request->input('id', []);
-        foreach($product_ids as $id) {
+
+        foreach($product_ids as $index => $id) {
             $product = $this->service->show($id);
             $data['name'] = $request->input($id . '-name', $product->name);
             $data['price'] = $request->input($id . '-price', $product->price);
             $data['measure_id'] = $request->input($id . '-measure_id', $product->measure_id);
             $data['active'] = $request->has($id . '-active');
+            $data['sorting'] = $index;
             $this->service->update($id, $data);
         }
 

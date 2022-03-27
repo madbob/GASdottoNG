@@ -33,6 +33,7 @@ class Filters {
     		e.preventDefault();
     		var target = $($(this).closest('.table-sorter').attr('data-table-target'));
     		var attribute = $(this).attr('data-sort-by');
+            var is_numeric = $(this).attr('data-numeric-sorting') ? true : false;
     		var target_body = target.find('tbody');
 
     		target_body.find('> .table-sorting-header').addClass('d-none').filter('[data-sorting-' + attribute + ']').removeClass('d-none');
@@ -40,7 +41,13 @@ class Filters {
     		target_body.find('> tr[data-sorting-' + attribute + ']').filter(':not(.table-sorting-header)').sort(function(a, b) {
     			var attr_a = $(a).attr('data-sorting-' + attribute);
     			var attr_b = $(b).attr('data-sorting-' + attribute);
-    			return attr_a.localeCompare(attr_b);
+
+                if (is_numeric) {
+                    return parseFloat(attr_a) - parseFloat(attr_b);
+                }
+                else {
+		             return attr_a.localeCompare(attr_b);
+                 }
     		}).each(function() {
     			$(this).appendTo(target_body);
     		});

@@ -2,11 +2,12 @@
     <div class="col">
         @include('commons.loadablelist', [
             'identifier' => 'product-list-' . $supplier->id,
-            'items' => $supplier->all_products,
+            'items' => $supplier->products,
             'legend' => (object)[
                 'class' => 'Product'
             ],
             'sorting_rules' => [
+                'sorting' => _i('Ordinamento Manuale'),
                 'name' => _i('Nome'),
                 'category_name' => (object) [
                     'label' => _i('Categoria'),
