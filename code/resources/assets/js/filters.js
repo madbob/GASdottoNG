@@ -38,7 +38,7 @@ class Filters {
 
     		target_body.find('> .table-sorting-header').addClass('d-none').filter('[data-sorting-' + attribute + ']').removeClass('d-none');
 
-    		target_body.find('> tr[data-sorting-' + attribute + ']').filter(':not(.table-sorting-header)').sort(function(a, b) {
+    		target_body.find('> tr[data-sorting-' + attribute + '], .table-sorting-header:visible').sort(function(a, b) {
     			var attr_a = $(a).attr('data-sorting-' + attribute);
     			var attr_b = $(b).attr('data-sorting-' + attribute);
 
