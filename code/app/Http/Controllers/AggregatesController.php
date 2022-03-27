@@ -22,6 +22,11 @@ class AggregatesController extends Controller
         ]);
     }
 
+    public function index()
+    {
+        return redirect()->route('orders.index');
+    }
+
     public function create(Request $request)
     {
         $orders = Aggregate::defaultOrders(false);
