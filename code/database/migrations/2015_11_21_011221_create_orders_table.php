@@ -19,6 +19,7 @@ class CreateOrdersTable extends Migration
             $table->date('end')->useCurrent();
             $table->date('shipping')->nullable();
             $table->enum('status', ['suspended', 'open', 'closed', 'shipped', 'archived']);
+            $table->string('keep_open_packages')->default('no');
             $table->string('discount')->nullable();
             $table->string('transport')->nullable();
             $table->integer('payment_id')->nullable();
@@ -38,10 +39,26 @@ class CreateOrdersTable extends Migration
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->primary(['order_id', 'product_id']);
         });
+
+        /*
+            Questo è per mappare i contatti manualmente selezionati per i
+            singoli ordini
+        */
+        Schema::create('order_user', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
+
+            $table->string('order_id');
+            $table->string('user_id');
+
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
     }
 
     public function down()
     {
+        Schema::drop('order_user');
         Schema::drop('order_product');
         Schema::drop('orders');
     }

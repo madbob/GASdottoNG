@@ -21,6 +21,7 @@ class CreateSuppliersTable extends Migration
 
             $table->text('order_method');
             $table->text('payment_method');
+            $table->date('remote_lastimport')->nullable()->default(null);
 
             $table->string('taxcode')->nullable();
             $table->string('vat')->nullable();

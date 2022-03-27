@@ -26,10 +26,25 @@ class CreateDeliveriesTable extends Migration
             $table->foreign('gas_id')->references('id')->on('gas')->onDelete('cascade');
             $table->foreign('delivery_id')->references('id')->on('deliveries')->onDelete('cascade');
         });
+
+        /*
+            Questo è per mappare i luoghi di consegna abilitati per ogni ordine
+        */
+        Schema::create('delivery_order', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
+
+            $table->string('delivery_id');
+            $table->string('order_id');
+
+            $table->foreign('delivery_id')->references('id')->on('deliveries')->onDelete('cascade');
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+        });
     }
 
     public function down()
     {
+        Schema::drop('delivery_order');
         Schema::drop('delivery_gas');
         Schema::drop('deliveries');
     }
