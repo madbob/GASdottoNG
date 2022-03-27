@@ -13,9 +13,9 @@
 
     <hr/>
 
-    <x-larastrap::check name="send_mail" :label="_i('Inoltra Mail')" classes="collapse_trigger" />
+    <x-larastrap::check name="send_mail" :label="_i('Inoltra Mail')" triggers_collapse="send_mail" />
 
-    <div class="collapse" data-triggerable="send_mail">
+    <x-larastrap::collapse id="send_mail">
         <x-larastrap::field :label="_i('Destinatari')">
             @include('commons.manyrows', [
                 'contents' => $contacts,
@@ -35,5 +35,5 @@
 
         <x-larastrap::text name="subject_mail" :label="_i('Soggetto')" :value="$default_subject" />
         <x-larastrap::textarea name="body_mail" :label="_i('Testo')" :value="$default_text" />
-    </div>
+    </x-larastrap::collapse>
 @endif

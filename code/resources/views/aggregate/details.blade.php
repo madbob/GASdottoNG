@@ -16,14 +16,12 @@
 
             <x-larastrap::textarea name="comment" :label="_i('Commento')" rows="2" />
 
-            <x-larastrap::check name="change_dates" :label="_i('Modifica Date')" classes="collapse_trigger" :pophelp="_i('Da qui è possibile modificare la data di apertura, chiusura a consegna di tutti gli ordini inclusi nell\'aggregato')" checked="false" />
-            <div class="collapse" data-triggerable="change_dates">
-                <div class="col-md-12">
-                    <x-larastrap::datepicker name="start" :label="_i('Data Apertura Prenotazioni')" />
-                    <x-larastrap::datepicker name="end" :label="_i('Data Chiusura Prenotazioni')" />
-                    <x-larastrap::datepicker name="shipping" :label="_i('Data Consegna')" />
-                </div>
-            </div>
+            <x-larastrap::check name="change_dates" :label="_i('Modifica Date')" triggers_collapse="change_dates" :pophelp="_i('Da qui è possibile modificare la data di apertura, chiusura a consegna di tutti gli ordini inclusi nell\'aggregato')" checked="false" />
+            <x-larastrap::collapse id="change_dates">
+                <x-larastrap::datepicker name="start" :label="_i('Data Apertura Prenotazioni')" />
+                <x-larastrap::datepicker name="end" :label="_i('Data Chiusura Prenotazioni')" />
+                <x-larastrap::datepicker name="shipping" :label="_i('Data Consegna')" />
+            </x-larastrap::collapse>
 
             @if($currentgas->hasFeature('shipping_places'))
                 <x-larastrap::selectobj name="deliveries" :label="_i('Luoghi di Consegna')" :options="$currentgas->deliveries" multiple />

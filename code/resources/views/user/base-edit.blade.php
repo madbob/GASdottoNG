@@ -2,27 +2,23 @@
 <x-larastrap::text name="firstname" :label="_i('Nome')" required />
 <x-larastrap::text name="lastname" :label="_i('Cognome')" required />
 
-<x-larastrap::check name="sendmail" :label="_i('Invia E-Mail')" switch classes="collapse_trigger" checked />
+<x-larastrap::check name="sendmail" :label="_i('Invia E-Mail')" checked :attributes="['data-bs-toggle' => 'collapse', 'data-bs-target' => '.alternate_behavior']" />
 
-<div class="collapse show" data-triggerable="sendmail">
-    <div class="col">
-        <x-larastrap::field>
-            <p class="alert alert-info">
-                {{ _i("Verrà inviata una email all'utente, con cui potrà accedere la prima volta e definire la propria password.") }}
-            </p>
-        </x-larastrap::field>
+<x-larastrap::collapse classes="alternate_behavior" open>
+    <x-larastrap::field>
+        <p class="alert alert-info">
+            {{ _i("Verrà inviata una email all'utente, con cui potrà accedere la prima volta e definire la propria password.") }}
+        </p>
+    </x-larastrap::field>
 
-        <x-larastrap::email name="email" :label="_i('E-Mail')" />
-    </div>
-</div>
+    <x-larastrap::email name="email" :label="_i('E-Mail')" />
+</x-larastrap::collapse>
 
-<div class="collapse" data-triggerable-reverse="sendmail">
-    <div class="col">
-        @include('commons.passwordfield', [
-            'obj' => $user,
-            'name' => 'password',
-            'label' => _i('Password'),
-            'classes' => 'required_when_triggered',
-        ])
-    </div>
-</div>
+<x-larastrap::collapse classes="alternate_behavior">
+    @include('commons.passwordfield', [
+        'obj' => $user,
+        'name' => 'password',
+        'label' => _i('Password'),
+        'classes' => 'required_when_triggered',
+    ])
+</x-larastrap::collapse>

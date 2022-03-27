@@ -59,6 +59,18 @@ class Utils {
             var url = $(this).attr('data-link');
             window.open(url, '_blank');
         });
+
+        /*
+            Questo è per evitare che gli eventi di show/hide si propaghino a
+            sproposito all'accordion / alla tab padre
+        */
+        $('.collapse', container).on('show.bs.collapse', function(e) {
+            e.stopPropagation();
+            $(this).find('.required_when_triggered').prop('required', true);
+        }).on('hide.bs.collapse', function(e) {
+            e.stopPropagation();
+            $(this).find('.required_when_triggered').prop('required', false);
+        });
     }
 
     static j()
