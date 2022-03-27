@@ -76,6 +76,11 @@ class VariantCombo extends Model
             }
         }
 
+        foreach($ret as $variant_id => $values) {
+            asort($values);
+            $ret[$variant_id] = $values;
+        }
+
         return $ret;
     }
 }
