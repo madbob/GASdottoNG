@@ -34,7 +34,20 @@ class Booking extends Model
     protected static function boot()
     {
         parent::boot();
-        static::addGlobalScope(new RestrictedGAS('user'));
+
+        /*
+            Questo è per limitare le prenotazioni a quelle effettivamente
+            accessibili nel GAS corrente.
+            Come riferimento viene usato l'ordine (o meglio: l'aggregato in cui
+            si trova l'ordine) e non l'utente in quanto l'utente amministratore
+            può passare da un sotto-GAS all'altro, ma in ogni contesto devono
+            essere accessibili solo le prenotazioni del GAS attualmente attivo
+        */
+        static::addGlobalScope('restricted', function(Builder $builder) {
+            $builder->whereHas('order', function($query) {
+                $query->has('aggregate');
+            });
+        });
     }
 
     public function user()
@@ -44,7 +57,7 @@ class Booking extends Model
 
     public function order()
     {
-        return $this->belongsTo('App\Order')->withoutGlobalScopes();
+        return $this->belongsTo('App\Order');
     }
 
     public function supplier()
