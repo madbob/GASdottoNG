@@ -262,4 +262,9 @@ class Movements extends CSVImporter
             'errors' => $errors
         ];
     }
+
+    public function finalTemplate()
+    {
+        return 'import.csvimportmovementsfinal';
+    }
 }

@@ -54,7 +54,7 @@ class ImportController extends Controller
 
                 case 'run':
                     $parameters = $importer->run($request);
-                    return view('import.csvimportfinal', $parameters);
+                    return view($importer->finalTemplate(), $parameters);
             }
         }
         catch (\Exception $e) {

@@ -151,6 +151,11 @@ abstract class CSVImporter
         return $value;
     }
 
+    public function finalTemplate()
+    {
+        return 'import.csvimportfinal';
+    }
+
     protected abstract function fields();
     public abstract function testAccess($request);
     public abstract function guess($request);

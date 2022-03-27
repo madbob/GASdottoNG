@@ -89,7 +89,7 @@
                             @include('commons.addingbutton', [
                                 'template' => 'movementtypes.base-edit',
                                 'typename' => 'movementtype',
-                                'typename_readable' => _i('Tipo Movimento'),
+                                'typename_readable' => _i('Tipo Movimento Contabile'),
                                 'targeturl' => 'movtypes'
                             ])
                         </div>
