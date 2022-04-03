@@ -1,4 +1,4 @@
-<x-larastrap::form :obj="$attachment" classes="main-form attachment-editor" method="PUT" :action="route('attachments.update', $attachment->id)">
+<x-larastrap::mform :obj="$attachment" method="PUT" :action="route('attachments.update', $attachment->id)">
     <div class="row">
         <div class="col-md-12">
             @if($attachment->internal == false)
@@ -19,4 +19,4 @@
             </x-larastrap::field>
         </div>
     </div>
-</x-larastrap::form>
+</x-larastrap::mform>

@@ -1,4 +1,4 @@
-<x-larastrap::mform classes="attachment-editor" :buttons="[]">
+<x-larastrap::mform :buttons="[]">
     <div class="row">
         <div class="col-md-12">
             <x-larastrap::field :label="_i('Scarica')">

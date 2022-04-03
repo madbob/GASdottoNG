@@ -203,8 +203,6 @@ class MovementsService extends BaseService
     {
         $this->ensureAuth(['movements.admin' => 'gas']);
 
-        \Log::debug('ricalcolo');
-
         DB::transaction(function() {
             $current_date = date('Y-m-d H:i:s');
             $index = 0;
@@ -214,8 +212,6 @@ class MovementsService extends BaseService
                 if ($movements->count() == 0) {
                     break;
                 }
-
-                \Log::debug('ricalcolo movimento');
 
                 foreach($movements as $m) {
                     $m->updated_at = $current_date;
@@ -227,8 +223,6 @@ class MovementsService extends BaseService
 
             } while(true);
         });
-
-        \Log::debug('fine ricalcolo');
     }
 
     public function recalculate()
