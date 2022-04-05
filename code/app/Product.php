@@ -120,7 +120,9 @@ class Product extends Model
                 $variant = $this->variantCombos->where('active', true)->first();
             }
 
-            $price += $variant->price_offset;
+            if ($variant) {
+                $price += $variant->price_offset;
+            }
         }
 
         $currency = currentAbsoluteGas()->currency;

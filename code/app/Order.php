@@ -452,7 +452,7 @@ class Order extends Model
                 $query->where('order_id', '=', $order->id);
             });
 
-            $price_delivered = $query->sum('final_price') - $query->sum('final_discount');
+            $price_delivered = $query->sum('final_price');
             $quantity_delivered = $query->sum('delivered');
 
             if (isset($rates[$product->vat_rate_id]) == false)
