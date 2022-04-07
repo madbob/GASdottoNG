@@ -29,6 +29,9 @@ class Users extends CSVImporter
             'email' => (object) [
                 'label' => _i('E-Mail'),
             ],
+            'password' => (object) [
+                'label' => _i('Password'),
+            ],
             'phone' => (object) [
                 'label' => _i('Telefono'),
             ],
@@ -144,6 +147,7 @@ class Users extends CSVImporter
                 ];
 
                 $credit = null;
+                $password_defined = false;
                 $address = [];
 
                 foreach ($columns as $index => $field) {
@@ -155,6 +159,10 @@ class Users extends CSVImporter
                     else if ($field == 'phone' || $field == 'email' || $field == 'mobile') {
                         $this->fillContact($contacts, $field, $value);
                         continue;
+                    }
+                    else if ($field == 'password') {
+                        $u->password = Hash::make($value);
+                        $password_defined = true;
                     }
                     else if ($field == 'birthday' || $field == 'member_since' || $field == 'last_login') {
                         $u->$field = date('Y-m-d', strtotime($value));
@@ -187,7 +195,7 @@ class Users extends CSVImporter
                     $u->alterBalance($credit, defaultCurrency());
                 }
 
-                if ($new_user) {
+                if ($new_user && $password_defined == false) {
                     $u->initialWelcome();
                 }
             }

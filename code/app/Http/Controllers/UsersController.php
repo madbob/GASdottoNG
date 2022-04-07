@@ -118,8 +118,7 @@ class UsersController extends BackedController
     {
         try {
             $user = $this->service->show($id);
-            $booked_orders = $this->getOrders($id, 0, date('Y-m-d', strtotime('-1 months')), '2100-01-01');
-            return view('user.edit', ['user' => $user, 'booked_orders' => $booked_orders]);
+            return view('user.edit', ['user' => $user]);
         }
         catch (AuthException $e) {
             abort($e->status());

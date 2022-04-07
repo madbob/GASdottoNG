@@ -335,13 +335,11 @@ class BookingsService extends BaseService
 
     public function bookingUpdate(array $request, $aggregate, $target_user, $delivering)
     {
-        DB::beginTransaction();
-
-        foreach ($aggregate->orders as $order) {
-            $user = $this->testAccess($target_user, $order->supplier, $delivering);
-            $this->handleBookingUpdate($request, $user, $order, $target_user, $delivering);
-        }
-
-        DB::commit();
+        DB::transaction(function() use ($request, $aggregate, $target_user, $delivering) {
+            foreach ($aggregate->orders as $order) {
+                $user = $this->testAccess($target_user, $order->supplier, $delivering);
+                $this->handleBookingUpdate($request, $user, $order, $target_user, $delivering);
+            }
+        }, 3);
     }
 }
