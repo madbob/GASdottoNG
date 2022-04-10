@@ -241,6 +241,17 @@ trait CreditableTrait
         return $balance->bank + $balance->cash;
     }
 
+    public static function sumCurrentBalanceAmounts($currency, $type)
+    {
+        if (is_null($currency)) {
+            $currency = defaultCurrency();
+        }
+
+        $bank = Balance::where('target_type', $type)->where('current', true)->where('currency_id', $currency->id)->sum('bank');
+        $cash = Balance::where('target_type', $type)->where('current', true)->where('currency_id', $currency->id)->sum('cash');
+        return $bank + $cash;
+    }
+
     public function alterBalance($amount, $currency, $type = 'bank')
     {
         $type = Arr::wrap($type);

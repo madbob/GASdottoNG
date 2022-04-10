@@ -3,7 +3,11 @@
         <div class="row">
             <div class="col-md-6">
                 <x-larastrap::text name="name" :label="_i('Nome')" required />
-                <x-larastrap::selectobj name="parent_id" :label="_i('Ruolo Superiore')" :options="App\Role::orderBy('name')->get()" :extraitem="_i('Nessuno')" />
+
+                <?php $super_candidates = App\Role::whereNotIn('id', $role->children->pluck('id')->toArray())->where('id', '!=', $role->id)->orderBy('name')->get() ?>
+                @if($super_candidates->count() != 0)
+                    <x-larastrap::selectobj name="parent_id" :label="_i('Ruolo Superiore')" :options="$super_candidates" :extraitem="_i('Nessuno')" />
+                @endif
             </div>
         </div>
 

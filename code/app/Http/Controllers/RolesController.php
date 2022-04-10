@@ -74,7 +74,11 @@ class RolesController extends Controller
 
         $r = Role::findOrFail($id);
         $r->name = $request->input('name');
-        $r->parent_id = $request->input('parent_id');
+
+        if ($request->has('parent_id')) {
+            $r->parent_id = $request->input('parent_id');
+        }
+
         $r->save();
 
         return $this->commonSuccessResponse($r);

@@ -32,6 +32,12 @@ return [
             'buttons' => [['color' => 'primary', 'label' => 'Salva', 'attributes' => ['type' => 'submit']]],
         ],
 
+        'text' => [
+            'attributes' => [
+                'maxlength' => 190,
+            ],
+        ],
+
         'textarea' => [
             'attributes' => ['rows' => 5],
         ],

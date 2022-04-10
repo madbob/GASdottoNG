@@ -23,7 +23,7 @@
             ?>
 
             @if(in_array($order->status, ['suspended', 'open', 'closed']))
-                <x-larastrap::textarea name="comment" :label="_i('Commento')" :pophelp="_i('Eventuale testo informativo da visualizzare nel titolo dell\'ordine. Se più lungo di %d caratteri, il testo viene invece incluso nel pannello delle relative prenotazioni.', [App\Order::longCommentLimit()])" />
+                <x-larastrap::textarea name="comment" :label="_i('Commento')" maxlength="190" rows="2" :pophelp="_i('Eventuale testo informativo da visualizzare nel titolo dell\'ordine. Se più lungo di %d caratteri, il testo viene invece incluso nel pannello delle relative prenotazioni.', [App\Order::longCommentLimit()])" />
                 <x-larastrap::datepicker name="start" :label="_i('Data Apertura')" required />
                 <x-larastrap::datepicker name="end" :label="_i('Data Chiusura')" required :attributes="['data-enforce-after' => '.date[name=start]']" :pophelp="_i('Data di chiusura dell\'ordine. Al termine del giorno qui indicato, l\'ordine sarà automaticamente impostato nello stato Prenotazioni Chiuse')" />
                 <x-larastrap::datepicker name="shipping" :label="_i('Data Consegna')" :attributes="['data-enforce-after' => '.date[name=end]']" />

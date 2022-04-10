@@ -148,7 +148,7 @@ class Invoice extends Model implements AccountingDocument
 
     public function getSortingDateAttribute()
     {
-        if ($this->payment) {
+        if ($this->payment_id != 0 && $this->payment) {
             return $this->payment->date;
         }
         else {
