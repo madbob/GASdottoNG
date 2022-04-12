@@ -74,17 +74,23 @@ class ReceiptsController extends Controller
         return $this->successResponse();
     }
 
+    private function testAccess($user, $receipt)
+    {
+        if ($user->can('movements.admin', $user->gas) || $user->can('movements.view', $user->gas) || $receipt->user_id == $user->id) {
+            return true;
+        }
+        else {
+            abort(503);
+        }
+    }
+
     public function handle(Request $request, $id)
     {
         $receipt = Receipt::findOrFail($id);
         $user = $request->user();
 
-        if ($user->can('movements.admin', $user->gas) || $user->can('movements.view', $user->gas) || $receipt->user_id == $user->id) {
-            return view('receipt.handle', ['receipt' => $receipt]);
-        }
-        else {
-            abort(503);
-        }
+        $this->testAccess($user, $receipt);
+        return view('receipt.handle', ['receipt' => $receipt]);
     }
 
     public function download(Request $request, $id)
@@ -92,26 +98,23 @@ class ReceiptsController extends Controller
         $receipt = Receipt::findOrFail($id);
         $user = $request->user();
 
-        if ($user->can('movements.admin', $user->gas) || $user->can('movements.view', $user->gas) || $receipt->user_id == $user->id) {
-            $pdf = PDF::loadView('documents.receipt', ['receipt' => $receipt]);
-            $title = _i('Fattura %s', [$receipt->number]);
-            $filename = sanitizeFilename($title . '.pdf');
+        $this->testAccess($user, $receipt);
 
-            $send_mail = $request->has('send_mail');
-            if ($send_mail) {
-                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
-                $pdf->save($temp_file_path);
+        $pdf = PDF::loadView('documents.receipt', ['receipt' => $receipt]);
+        $title = _i('Fattura %s', [$receipt->number]);
+        $filename = sanitizeFilename($title . '.pdf');
 
-                $receipt->user->notify(new ReceiptForward($temp_file_path));
-                $receipt->mailed = true;
-                $receipt->save();
-            }
-            else {
-                return $pdf->download($filename);
-            }
+        $send_mail = $request->has('send_mail');
+        if ($send_mail) {
+            $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
+            $pdf->save($temp_file_path);
+
+            $receipt->user->notify(new ReceiptForward($temp_file_path));
+            $receipt->mailed = true;
+            $receipt->save();
         }
         else {
-            abort(503);
+            return $pdf->download($filename);
         }
     }
 }

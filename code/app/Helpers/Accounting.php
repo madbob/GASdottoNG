@@ -146,3 +146,63 @@ function defaultPaymentByType($type)
         return $function[0]->method;
     }
 }
+
+function sumCurrentBalanceAmounts($currency, $type)
+{
+    if (is_null($currency)) {
+        $currency = defaultCurrency();
+    }
+
+    $bank = \App\Balance::where('target_type', $type)->where('current', true)->where('currency_id', $currency->id)->sum('bank');
+    $cash = \App\Balance::where('target_type', $type)->where('current', true)->where('currency_id', $currency->id)->sum('cash');
+    return $bank + $cash;
+}
+
+function resetAllCurrentBalances()
+{
+    $current_status = [];
+    $classes = \DB::table('balances')->select('target_type')->distinct()->get();
+
+    foreach($classes as $c) {
+        $class = $c->target_type;
+        $objects = $class::tAll();
+
+        foreach ($objects as $obj) {
+            $obj->resetCurrentBalances($current_status);
+        }
+    }
+
+    return $current_status;
+}
+
+function duplicateAllCurrentBalances($latest_date)
+{
+    $current_status = [];
+    $currencies = \App\Currency::enabled();
+
+    $classes = \DB::table('balances')->select('target_type')->distinct()->get();
+    foreach ($classes as $c) {
+        $class = $c->target_type;
+        $objects = $class::tAll();
+
+        foreach ($objects as $obj) {
+            $proxy = $obj->getActualObject();
+            $class = get_class($obj);
+
+            foreach ($currencies as $curr) {
+                if (!isset($current_status[$curr->id][$class][$obj->id])) {
+                    $latest = $obj->currentBalance($curr);
+                    $new = $latest->replicate();
+
+                    $latest->date = $latest_date;
+                    $latest->current = false;
+                    $latest->save();
+                    $new->current = true;
+                    $new->save();
+
+                    $current_status[$curr->id][$class][$obj->id] = true;
+                }
+            }
+        }
+    }
+}

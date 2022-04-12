@@ -410,6 +410,10 @@ class Bookings
 
                     do {
                         varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).filter(':not(.skip-on-submit)').eq(populated_index);
+                        if (varinputbox.length == 0) {
+                            break;
+                        }
+
                         populated_index++;
                         varinputboxvalue = utils.parseFloatC(varinputbox.val());
 

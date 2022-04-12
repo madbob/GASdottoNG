@@ -104,55 +104,6 @@ trait CreditableTrait
         return $ret;
     }
 
-    public static function resetAllCurrentBalances()
-    {
-        $current_status = [];
-        $classes = DB::table('balances')->select('target_type')->distinct()->get();
-
-        foreach($classes as $c) {
-            $class = $c->target_type;
-            $objects = $class::tAll();
-
-            foreach ($objects as $obj) {
-                $obj->resetCurrentBalances($current_status);
-            }
-        }
-
-        return $current_status;
-    }
-
-    public static function duplicateAllCurrentBalances($latest_date)
-    {
-        $current_status = [];
-        $currencies = Currency::enabled();
-
-        $classes = DB::table('balances')->select('target_type')->distinct()->get();
-        foreach ($classes as $c) {
-            $class = $c->target_type;
-            $objects = $class::tAll();
-
-            foreach ($objects as $obj) {
-                $proxy = $obj->getActualObject();
-                $class = get_class($obj);
-
-                foreach ($currencies as $curr) {
-                    if (!isset($current_status[$curr->id][$class][$obj->id])) {
-                        $latest = $obj->currentBalance($curr);
-                        $new = $latest->replicate();
-
-                        $latest->date = $latest_date;
-                        $latest->current = false;
-                        $latest->save();
-                        $new->current = true;
-                        $new->save();
-
-                        $current_status[$curr->id][$class][$obj->id] = true;
-                    }
-                }
-            }
-        }
-    }
-
     /*
         Si aspetta come parametro un array formattato come quello restituito da
         resetAllCurrentBalances()
@@ -184,7 +135,6 @@ trait CreditableTrait
                         continue;
                     }
 
-                    $obj = $obj->getActualObject();
                     $cb = $obj->currentBalance($currency);
 
                     foreach ($old as $field => $old_value) {
@@ -239,17 +189,6 @@ trait CreditableTrait
 
         $balance = $this->currentBalance($currency);
         return $balance->bank + $balance->cash;
-    }
-
-    public static function sumCurrentBalanceAmounts($currency, $type)
-    {
-        if (is_null($currency)) {
-            $currency = defaultCurrency();
-        }
-
-        $bank = Balance::where('target_type', $type)->where('current', true)->where('currency_id', $currency->id)->sum('bank');
-        $cash = Balance::where('target_type', $type)->where('current', true)->where('currency_id', $currency->id)->sum('cash');
-        return $bank + $cash;
     }
 
     public function alterBalance($amount, $currency, $type = 'bank')

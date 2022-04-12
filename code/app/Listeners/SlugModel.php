@@ -11,22 +11,31 @@ class SlugModel
         //
     }
 
+    private function testUnique($class, $id)
+    {
+        $index = 1;
+        $template = $id;
+
+        do {
+            $test = $class::tFind($id);
+            if (is_null($test)) {
+                break;
+            }
+
+            $id = $template . '-' . $index++;
+        } while(true);
+
+        return $id;
+    }
+
     public function handle(SluggableCreating $event)
     {
         if (empty($event->sluggable->id)) {
-            $id = $template = trim($event->sluggable->getSlugID());
+            $id = trim($event->sluggable->getSlugID());
             $class = get_class($event->sluggable);
 
             if ($class) {
-                $index = 1;
-
-                do {
-                    $test = $class::tFind($id);
-                    if (is_null($test))
-                        break;
-
-                    $id = $template . '-' . $index++;
-                } while(true);
+                $id = $this->testUnique($class, $id);
 
                 /*
                     Attenzione!!!

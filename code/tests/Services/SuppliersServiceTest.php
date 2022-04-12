@@ -56,6 +56,24 @@ class SuppliersServiceTest extends TestCase
     }
 
     /*
+        Salvataggio Fornitore con lo stesso nome
+    */
+    public function testStoreSameName()
+    {
+        $this->actingAs($this->userWithAdminPerm);
+
+        $supplier = $this->services['suppliers']->store(array(
+            'name' => 'Test',
+        ));
+
+        $other_supplier = $this->services['suppliers']->store(array(
+            'name' => 'Test',
+        ));
+
+        $this->assertNotEquals($supplier->id, $other_supplier->id);
+    }
+
+    /*
         Permessi sbagliati su elenco Fornitori
     */
     public function testNoList()

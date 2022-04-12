@@ -185,8 +185,8 @@ class Gas extends Model
     {
         if ($currency) {
             return $this->innerCache('virtual_balances_' . $currency->id, function($obj) use ($currency) {
-                $suppliers_balance = CreditableTrait::sumCurrentBalanceAmounts($currency, Supplier::class);;
-                $users_balance = CreditableTrait::sumCurrentBalanceAmounts($currency, User::class);
+                $suppliers_balance = sumCurrentBalanceAmounts($currency, Supplier::class);;
+                $users_balance = sumCurrentBalanceAmounts($currency, User::class);
 
                 return [
                     'suppliers' => (object) [

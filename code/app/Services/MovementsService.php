@@ -233,7 +233,7 @@ class MovementsService extends BaseService
         try {
             return DB::transaction(function() use ($hub) {
                 $hub->setRecalculating(true);
-                $current_status = CreditableTrait::resetAllCurrentBalances();
+                $current_status = resetAllCurrentBalances();
                 $this->recalculateCurrentBalance();
                 $hub->setRecalculating(false);
                 $diffs = CreditableTrait::compareBalances($current_status);
@@ -261,7 +261,7 @@ class MovementsService extends BaseService
                 /*
                     Azzero tutti i saldi
                 */
-                CreditableTrait::resetAllCurrentBalances();
+                resetAllCurrentBalances();
 
                 /*
                     Ricalcolo i movimenti fino alla data desiderata
@@ -294,7 +294,7 @@ class MovementsService extends BaseService
                     Duplico i saldi appena calcolati, e alle copie precedenti
                     assegno la data della chiusura del bilancio
                 */
-                CreditableTrait::duplicateAllCurrentBalances($date);
+                duplicateAllCurrentBalances($date);
 
                 /*
                     Ricalcolo i saldi correnti, che a questo punto saranno dalla

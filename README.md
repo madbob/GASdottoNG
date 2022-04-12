@@ -1,15 +1,12 @@
-# GASdottoNG
+# GASdotto
 
-GASdottoNG è l'evoluzione del progetto GASdotto, gestionale web-based per gruppi di acquisto.
-
-Per riferimenti:
-
-* Sito web: http://gasdotto.net/
-* Vecchia implementazione (non più mantenuta): https://github.com/madbob/GASdotto
+GASdotto è il gestionale web-based per gruppi di acquisto.
 
 [![Build Status](https://github.com/madbob/gasdottong/actions/workflows/test.yml/badge.svg)](https://github.com/madbob/GASdottoNG/actions)
 [![Maintainability](https://api.codeclimate.com/v1/badges/1ff2c4db03668abadd46/maintainability)](https://codeclimate.com/github/madbob/GASdottoNG/maintainability)
 [![Translations Status](https://hosted.weblate.org/widgets/gasdottong/-/translations/svg-badge.svg)](https://hosted.weblate.org/engage/gasdottong/?utm_source=widget)
+
+### Per documentazione e hosting gratuito visita il sito www.gasdotto.net
 
 ### Installazione
 
@@ -23,12 +20,12 @@ Requisiti:
 git clone https://github.com/madbob/GASdottoNG.git
 cd GASdottoNG/code
 composer install
-# nel file .env vanno specificati i propri parametri di connessione al database e l'invio delle mail
 cp .env.example .env
+# nel file .env vanno specificati i propri parametri di connessione al database e l'invio delle mail
 nano .env
 ```
 
-Al primo accesso verranno eseguiti il popolamento del database e la configurazione iniziale, che permette anche l'importazione dei contenuti da una vecchia istanza di GASdotto.
+Al primo accesso verranno eseguiti il popolamento del database e la configurazione iniziale.
 
 Per aggiornare una istanza esistente:
 
@@ -40,12 +37,6 @@ php artisan migrate
 composer update
 composer install
 ```
-
-### Configurazioni Avanzate
-
-È possibile allestire una istanza di GASdottoNG che serva diversi GAS isolati tra loro, ciascuno con un proprio database. Per farlo, cambiare manualmente il valore true/false ritornato dalla funzione `global_multi_installation()` nel file `code/app/Helpers/Setup.php`.
-
-Si presuppone che ogni istanza sia raggiungibile da istanza1.example.com, istanza2.example.com, istanza3.example.com... Ogni istanza deve avere un suo proprio file `.env`, nominato a seconda del dominio (`.env.istanza1`, `.env.istanza2`, `.env.istanza3`...).
 
 ### Docker
 
@@ -73,4 +64,4 @@ cd code
 
 GASdotto è distribuito in licenza AGPLv3+.
 
-Copyright (C) 2017/2018 Roberto Guido <bob@linux.it>
+Copyright (C) 2017/2022 Roberto Guido <bob@linux.it>
