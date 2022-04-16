@@ -1116,7 +1116,7 @@ class Order extends Model
         foreach($pending_modifiers as $pending_id => $pending_mod) {
             foreach($shipped_modifiers as $shipped_id => $shipped_mod) {
                 if ($pending_id == $shipped_id) {
-                    if ($pending_mod->amount != $shipped_mod->amount) {
+                    if (round($pending_mod->amount, 2) != round($shipped_mod->amount, 2)) {
                         $ret[] = (object) [
                             'pending' => $pending_mod,
                             'shipped' => $shipped_mod,
