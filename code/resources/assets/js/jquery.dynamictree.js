@@ -1,23 +1,40 @@
-require('./jquery.mjs.nestedSortable');
 import utils from "./utils";
+require('jquery-ui/ui/widgets/sortable');
 
-/*
-    Questo di fatto è una estensione di nestedSortable
-*/
 (function ($) {
     $.fn.dynamictree = function() {
         $(this).each(function() {
-            $(this).find('.dynamic-tree').nestedSortable({
-                listType: 'ul',
+            $(this).find('.dynamic-tree').sortable({
                 items: 'li',
-                toleranceElement: '> div',
-                isTree: true,
-                startCollapsed: true
+                connectWith: '.dynamic-tree ul',
+                start: function() {
+                    $('.dynamic-tree ul').css('min-height', '50px');
+                },
+                stop: function() {
+                    $('.dynamic-tree ul').css('min-height', '0');
+                },
+                receive: function(e, ui) {
+                    initTopLevel(ui.item);
+                },
+            });
+
+            $(this).find('.dynamic-tree ul').sortable({
+                items: 'li',
+                connectWith: '.dynamic-tree, .dynamic-tree ul',
+                receive: function(e, ui) {
+                    var mainlist = e.target.closest('ul');
+
+                    var children = ui.item.find('ul').find('li');
+                    children.each(function() {
+                        mainlist.append(this);
+                    });
+
+                    ui.item.find('ul').remove();
+                },
             });
 
             $(this).on('click', '.dynamic-tree-remove', removeRow);
             $(this).on('click', '.dynamic-tree-add', appendRow);
-            $(this).on('click', '.dynamic-tree-expand', expandRow);
             $(this).on('submit', doSubmit);
         });
 
@@ -43,6 +60,17 @@ import utils from "./utils";
             return data;
         }
 
+        function initTopLevel(node) {
+            if (node.find('ul').length == 0) {
+                node.append('<ul></ul>');
+            }
+
+            node.find('ul').sortable({
+                items: 'li',
+                connectWith: '.dynamic-tree, .dynamic-tree ul',
+            });
+        }
+
         function removeRow(event) {
             $(event.target).closest('li').remove();
         }
@@ -53,24 +81,19 @@ import utils from "./utils";
             var input = box.find('input[name=new_category]');
             var name = input.val();
             var tree = box.find('.dynamic-tree');
-
-            tree.append('<li class="list-group-item mjs-nestedSortable-branch mjs-nestedSortable-collapsed"> \
+            var new_node = $('<li class="list-group-item ui-sortable-handle"> \
                 <div> \
                     <div class="btn btn-danger float-end dynamic-tree-remove"><i class="bi-x-lg"></i></div> \
-                    <div class="btn btn-warning float-end dynamic-tree-expand"><i class="bi-plus-lg expanding-icon"></i></div> \
                     <input name="names[]" class="form-control" value="' + name + '"> \
                 </div> \
-                <ul></ul> \
             </li>');
 
-            tree.nestedSortable('refresh');
+            tree.append(new_node);
+            tree.sortable('refresh');
+            initTopLevel(new_node);
 
             input.val('');
             return false;
-        }
-
-        function expandRow(event) {
-            $(event.target).closest('li').toggleClass('mjs-nestedSortable-collapsed').toggleClass('mjs-nestedSortable-expanded');
         }
 
         function doSubmit(event) {

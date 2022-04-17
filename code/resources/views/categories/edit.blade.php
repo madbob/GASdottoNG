@@ -8,17 +8,19 @@ function categoryDescent($category, $toplevel)
         echo '<div class="btn btn-danger float-end dynamic-tree-remove"><i class="bi-x-lg"></i></div>';
     }
 
+    echo '<input type="text" class="form-control" value="' . $category->name . '" required></div>';
+
     if ($toplevel) {
-        echo '<div class="btn btn-warning float-end dynamic-tree-expand"><i class="bi-plus-lg expanding-icon"></i></div>';
+        echo '<ul>';
+
+        foreach($category->children as $c) {
+            echo categoryDescent($c, false);
+        }
+
+        echo '</ul>';
     }
 
-    echo '<input type="text" class="form-control" value="' . $category->name . '" required></div><ul>';
-
-    foreach($category->children as $c) {
-        echo categoryDescent($c, false);
-    }
-
-    echo '</ul></li>';
+    echo '</li>';
 }
 
 ?>
