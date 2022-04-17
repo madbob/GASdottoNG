@@ -2,7 +2,6 @@
     <div class="col">
         <?php
 
-        $merged = null;
         $more_orders = ($aggregate->orders->count() > 1);
 
         ?>
@@ -39,12 +38,6 @@
                         </div>
                     </div>
                 </x-larastrap::tabpane>
-
-                <?php
-
-                $merged = $aggregate->mergeReduxData($merged, $master_summary);
-
-                ?>
             @endforeach
 
             <x-larastrap::tabpane :label="_i('Totale')">
@@ -57,6 +50,7 @@
 
                     App::make('GlobalScopeHub')->enable(false);
                     $aggregate->load('orders');
+                    $master_summary = $aggregate->reduxData();
 
                     ?>
 
@@ -66,7 +60,7 @@
                                 <h4>{{ $order->supplier->printableName() }}</h4>
                             @endif
 
-                            @include('order.summary_ro', ['order' => $order, 'master_summary' => $merged])
+                            @include('order.summary_ro', ['order' => $order, 'master_summary' => $master_summary])
                         @endforeach
                     </div>
                 </div>
