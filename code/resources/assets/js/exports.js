@@ -1,6 +1,5 @@
 require('jquery-ui/ui/widgets/draggable');
 require('jquery-ui/ui/widgets/droppable');
-require('./jquery.TableCSVExport');
 
 import utils from "./utils";
 
@@ -20,15 +19,6 @@ class Exports {
                 node.find('input:hidden').attr('name', 'column[]');
                 $(this).find('.column_content').empty().append(node.contents());
             }
-        });
-
-        $('.table_to_csv', container).click(function(e) {
-            e.preventDefault();
-            var target = $(this).attr('data-target');
-            var data = $(target).TableCSVExport({
-                delivery: 'download',
-                filename: _('bilanci_ricalcolati.csv')
-            });
         });
 
         $('.export-custom-list', container).click(function(event) {

@@ -178,7 +178,6 @@ class Callables {
         var modal = $('#display-recalculated-balance-modal');
 
         if (data.diffs.length != 0) {
-            modal.find('a.table_to_csv').removeClass('hidden');
             var table = modal.find('.broken.hidden').removeClass('hidden').find('tbody');
             for (var name in data.diffs) {
                 if (data.diffs.hasOwnProperty(name)) {

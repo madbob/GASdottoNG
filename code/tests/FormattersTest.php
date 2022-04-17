@@ -183,8 +183,8 @@ class FormattersTest extends TestCase
     function testGuessDecimal()
     {
         $this->assertEquals(1000.00, (float) guessDecimal('1000'));
-        $this->assertEquals(1000.00, (float) guessDecimal('1.000'));
-        $this->assertEquals(1000.00, (float) guessDecimal('1,000'));
+        $this->assertEquals(1.00, (float) guessDecimal('1.000'));
+        $this->assertEquals(1.00, (float) guessDecimal('1,000'));
         $this->assertEquals(1000.00, (float) guessDecimal('1.000,00'));
         $this->assertEquals(1000.00, (float) guessDecimal('1,000.00'));
     }
