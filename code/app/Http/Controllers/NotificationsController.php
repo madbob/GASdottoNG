@@ -133,6 +133,7 @@ class NotificationsController extends Controller
         else {
             $n = new Notification();
             $n->creator_id = $user->id;
+            $n->gas_id = $user->gas_id;
             $n->content = $request->input('content');
             $n->mailed = $request->has('mailed');
             $n->start_date = decodeDate($request->input('start_date'));

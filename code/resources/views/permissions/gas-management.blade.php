@@ -16,7 +16,7 @@
                 @endif
 
                 @if(someoneCan('gas.multi'))
-                    <x-larastrap::selectobj name="roles->multigas" :label="_i('Ruolo Amministratore Multi-GAS')" :options="$existing_roles" :value="$gas->roles['multigas'] ?? ''" :pophelp="_i('Questo ruolo sarà automaticamente assegnato al primo utente di ogni nuovo GAS creato nel pannello Multi-GAS')" />
+                    <x-larastrap::selectobj name="roles->multigas" :label="_i('Ruolo Amministratore GAS Secondario')" :options="$existing_roles" :value="$gas->roles['multigas'] ?? ''" :pophelp="_i('Questo ruolo sarà automaticamente assegnato al primo utente di ogni nuovo GAS creato nel pannello Multi-GAS')" />
                 @endif
             </x-larastrap::form>
         </div>

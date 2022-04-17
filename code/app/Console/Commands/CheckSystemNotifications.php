@@ -5,7 +5,9 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 
 use Log;
+use App;
 
+use App\Gas;
 use App\Notification;
 
 class CheckSystemNotifications extends Command
@@ -30,20 +32,31 @@ class CheckSystemNotifications extends Command
                 $data = json_decode($data);
 
                 $existing = Notification::where('creator_id', $data->identifier)->first();
-                if ($existing != null)
+                if ($existing != null) {
                     return;
+                }
 
-                $new_notification = new Notification();
-                $new_notification->creator_id = $data->identifier;
-                $new_notification->content = $data->body;
-                $new_notification->mailed = false;
-                $new_notification->start_date = date('Y-m-d H:i:s');
-                $new_notification->end_date = date('Y-m-d H:i:s', strtotime('+3 days'));
-                $new_notification->save();
+                $gas = Gas::all();
+                $hub = App::make('GlobalScopeHub');
+                $hub->enable(true);
 
-                $users = everybodyCan('gas.config');
-                foreach($users as $u)
-                    $new_notification->users()->attach($u->id);
+                foreach($gas as $g) {
+                    $hub->setGas($g->id);
+
+                    $new_notification = new Notification();
+                    $new_notification->creator_id = $data->identifier;
+                    $new_notification->gas_id = $g->id;
+                    $new_notification->content = $data->body;
+                    $new_notification->mailed = false;
+                    $new_notification->start_date = date('Y-m-d H:i:s');
+                    $new_notification->end_date = date('Y-m-d H:i:s', strtotime('+3 days'));
+                    $new_notification->save();
+
+                    $users = everybodyCan('gas.config');
+                    foreach($users as $u) {
+                        $new_notification->users()->attach($u->id);
+                    }
+                }
             }
             catch(\Exception $e) {
                 Log::error('Impossibile leggere aggiornamenti da gasdotto.net: ' . $e->getMessage());

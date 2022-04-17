@@ -19,7 +19,7 @@ class Notification extends Model
     protected static function boot()
     {
         parent::boot();
-        static::addGlobalScope(new RestrictedGAS('users'));
+        static::addGlobalScope(new RestrictedGAS());
     }
 
     public function users()
@@ -30,6 +30,11 @@ class Notification extends Model
     public function creator()
     {
         return $this->belongsTo('App\User', 'creator_id');
+    }
+
+    public function gas()
+    {
+        return $this->belongsTo('App\Gas');
     }
 
     public function hasUser($user)
