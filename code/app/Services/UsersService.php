@@ -36,7 +36,7 @@ class UsersService extends BaseService
                 $query->filterEnabled();
         }
 
-        $users = $query->orderBy('lastname', 'asc')->get();
+        $users = $query->sorted()->get();
         return $users;
     }
 

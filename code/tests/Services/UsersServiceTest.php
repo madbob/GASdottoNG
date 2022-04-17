@@ -59,6 +59,24 @@ class UsersServiceTest extends TestCase
     }
 
     /*
+        Cessazione utente
+    */
+    public function testCease()
+    {
+        $this->actingAs($this->userWithAdminPerm);
+        $user = \App\User::inRandomOrder()->first();
+        $this->services['users']->update($user->id, [
+            'status' => 'deleted',
+            'deleted_at' => printableDate(date('Y-m-d')),
+            'suspended_at' => printableDate(date('Y-m-d')),
+        ]);
+
+        $this->actingAs($this->userWithViewPerm);
+        $users = $this->services['users']->list();
+        $this->assertCount(8, $users);
+    }
+
+    /*
         Elenco Utenti con parametri di ricerca
     */
     public function testListWithSearchParam()

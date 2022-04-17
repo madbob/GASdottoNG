@@ -74,6 +74,26 @@ class MovementsServiceTest extends TestCase
     }
 
     /*
+        Archivio saldi
+    */
+    public function testCloseBalance()
+    {
+        $this->testStore();
+
+        $previous_balances = \App\Balance::all()->count();
+
+        $this->services['movements']->closeBalance([
+            'date' => printableDate(date('Y-m-d')),
+        ]);
+
+        $now_balances = \App\Balance::all()->count();
+        $this->assertEquals($previous_balances * 2, $now_balances);
+
+        $now_balances = \App\Balance::where('current', true)->count();
+        $this->assertEquals($previous_balances, $now_balances);
+    }
+
+    /*
         Modifica Movimento con permessi sbagliati
     */
     public function testFailsToUpdate()

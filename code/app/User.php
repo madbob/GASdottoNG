@@ -88,11 +88,6 @@ class User extends Authenticatable
         return $this->belongsTo('App\Delivery', 'preferred_delivery_id');
     }
 
-    public function scopeEnabled($query)
-    {
-        return $query->whereNull('deleted_at');
-    }
-
     public function scopeFilterEnabled($query)
     {
         $user = Auth::user();

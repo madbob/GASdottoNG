@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use Artisan;
+use Bus;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\AuthException;
@@ -40,6 +41,8 @@ class OrdersServiceTest extends TestCase
     */
     public function testStore()
     {
+        Bus::fake();
+
         $this->actingAs($this->userReferrer);
 
         $start = date('Y-m-d');
@@ -55,9 +58,20 @@ class OrdersServiceTest extends TestCase
             'status' => 'open',
         ));
 
+        Bus::assertDispatched(\App\Jobs\NotifyNewOrder::class);
         $this->assertEquals(1, $aggregate->orders->count());
+        $this->assertTrue($aggregate->isActive());
+        $this->assertTrue($aggregate->isRunning());
+        $this->assertFalse($aggregate->canShip());
+
+        $this->actingAs($this->userWithShippingPerms);
+        $this->assertTrue($aggregate->canShip());
+
+        $this->actingAs($this->userReferrer);
 
         foreach($aggregate->orders as $order) {
+            $order = $this->services['orders']->show($order->id);
+
             $this->assertEquals($this->order->supplier_id, $order->supplier_id);
             $this->assertEquals('Commento di prova', $order->comment);
             $this->assertEquals($start, $order->start);
@@ -67,6 +81,13 @@ class OrdersServiceTest extends TestCase
             $this->assertEquals(0, $order->bookings()->count());
             $this->assertEquals($aggregate->id, $order->aggregate_id);
             $this->assertEquals('open', $order->status);
+            $this->assertNotNull($order->supplier);
+            $this->assertNotNull($order->printableName());
+            $this->assertNotNull($order->statusIcons());
+            $this->assertNotNull($order->printableDates());
+            $this->assertNotNull($order->printableHeader());
+            $this->assertTrue($order->isActive());
+            $this->assertTrue($order->isRunning());
         }
     }
 
@@ -110,6 +131,47 @@ class OrdersServiceTest extends TestCase
         $this->assertEquals($order->shipping, $new_shipping);
         $this->assertEquals($order->start, $this->order->start);
         $this->assertEquals($order->end, $this->order->end);
+    }
+
+    /*
+        Cambio stato
+    */
+    public function testChangeState()
+    {
+        Bus::fake();
+
+        $this->actingAs($this->userReferrer);
+
+        $this->services['orders']->update($this->order->id, array(
+            'status' => 'closed',
+        ));
+
+        Bus::assertDispatched(\App\Jobs\NotifyClosedOrder::class);
+
+        $this->nextRound();
+        $order = $this->services['orders']->show($this->order->id);
+        $this->assertTrue($order->isActive());
+        $this->assertFalse($order->isRunning());
+
+        $this->services['orders']->update($this->order->id, array(
+            'status' => 'open',
+        ));
+
+        Bus::assertDispatched(\App\Jobs\NotifyNewOrder::class);
+
+        $this->nextRound();
+        $order = $this->services['orders']->show($this->order->id);
+        $this->assertTrue($order->isActive());
+        $this->assertTrue($order->isRunning());
+
+        $this->services['orders']->update($this->order->id, array(
+            'status' => 'shipped',
+        ));
+
+        $this->nextRound();
+        $order = $this->services['orders']->show($this->order->id);
+        $this->assertFalse($order->isActive());
+        $this->assertFalse($order->isRunning());
     }
 
     /*
@@ -272,5 +334,15 @@ class OrdersServiceTest extends TestCase
             $this->assertEquals($order->modifiers->count(), 1);
             $this->assertEquals($order->modifiers->first()->modifierType->id, 'spese-trasporto');
         }
+    }
+
+    /*
+        Esportazione GDXP
+    */
+    public function testExportGDXP()
+    {
+        $this->actingAs($this->userReferrer);
+        $this->assertNotNull($this->order->exportXML());
+        $this->assertNotNull($this->order->exportJSON());
     }
 }

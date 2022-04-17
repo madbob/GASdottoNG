@@ -157,14 +157,6 @@ trait GASModel
         return null;
     }
 
-    /*
-        Questa va all'occorrenza sovrascritta
-    */
-    public function scopeEnabled($query)
-    {
-        return $query->whereNotNull('id');
-    }
-
     public function scopeSorted($query)
     {
         if (Schema::hasColumn($this->table, 'name'))
