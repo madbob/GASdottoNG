@@ -59,6 +59,16 @@ class Product extends Model
         return $this->belongsTo('App\VatRate');
     }
 
+    public function scopeSorted($query)
+    {
+        if (currentAbsoluteGas()->manual_products_sorting) {
+            $query->orderBy('products.sorting')->orderBy('products.name');
+        }
+        else {
+            $query->orderBy('products.name');
+        }
+    }
+
     public function getSlugID()
     {
         return sprintf('%s::%s', $this->supplier_id, Str::slug($this->name));

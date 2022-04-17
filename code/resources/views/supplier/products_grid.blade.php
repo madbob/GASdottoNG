@@ -1,4 +1,9 @@
-<?php $identifier = sprintf('products-grid-%s', $supplier->id) ?>
+<?php
+
+$identifier = sprintf('products-grid-%s', $supplier->id);
+$has_manual_sorting = $currentgas->manual_products_sorting;
+
+?>
 
 <div class="row d-none d-md-flex mb-1">
     <div class="col flowbox">
@@ -23,7 +28,9 @@
             <table class="table sortable-table" id="{{ $identifier }}">
                 <thead>
                     <tr>
-                        <th width="5%"></th>
+                        @if($has_manual_sorting)
+                            <th width="5%"></th>
+                        @endif
                         <th width="40%">{{ _i('Nome') }}</th>
                         <th width="20%">{{ _i('Unità di Misura') }}</th>
                         <th width="20%">{{ _i('Prezzo Unitario') }}</th>
@@ -36,11 +43,14 @@
                     @foreach($supplier->products as $product)
                         <x-larastrap::enclose :obj="$product">
                             <tr data-element-id="{{ $product->id }}">
+                                @if($has_manual_sorting)
+                                    <td>
+                                        <span class="btn btn-info sorter"><i class="bi bi-arrow-down-up"></i></span>
+                                    </td>
+                                @endif
+
                                 <td>
                                     <x-larastrap::hidden name="id" npostfix="[]" />
-                                    <span class="btn btn-info sorter"><i class="bi bi-arrow-down-up"></i></span>
-                                </td>
-                                <td>
                                     <x-larastrap::text name="name" :label="_i('Nome')" squeeze required :nprefix="$product->id . '-'" />
                                 </td>
                                 <td>

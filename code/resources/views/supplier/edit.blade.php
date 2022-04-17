@@ -1,4 +1,4 @@
-<x-larastrap::tabs>
+<x-larastrap::tabs :id="sprintf('supplier-' . sanitizeId($supplier->id))">
     <x-larastrap::tabpane active="true" :label="_i('Dettagli')">
         <x-larastrap::mform :obj="$supplier" method="PUT" :action="route('suppliers.update', $supplier->id)" classes="supplier-editor" :nodelete="$supplier->orders()->count() > 0">
             <input type="hidden" name="id" value="{{ $supplier->id }}" />

@@ -49,7 +49,7 @@ class Supplier extends Model
 
     public function products()
     {
-        return $this->hasMany('App\Product')->with('measure')->orderBy('sorting')->orderBy('name');
+        return $this->hasMany('App\Product')->with('measure')->sorted();
     }
 
     public function orders()

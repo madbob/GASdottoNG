@@ -192,6 +192,7 @@ class GasController extends Controller
 
     private function configOrders($gas, $request)
     {
+        $gas->setConfig('manual_products_sorting', $request->has('manual_products_sorting') ? '1' : '0');
         $gas->setConfig('restrict_booking_to_credit', $request->has('restrict_booking_to_credit') ? '1' : '0');
         $gas->setConfig('unmanaged_shipping', $request->has('unmanaged_shipping') ? '1' : '0');
         $gas->setConfig('booking_contacts', $request->input('booking_contacts'));

@@ -58,7 +58,7 @@ class Order extends Model
 
     public function products()
     {
-        return $this->belongsToMany('App\Product')->with(['variants', 'modifiers'])->withPivot('notes')->withTrashed()->orderBy('products.sorting')->orderBy('products.name');
+        return $this->belongsToMany('App\Product')->with(['variants', 'modifiers'])->withPivot('notes')->withTrashed()->sorted();
     }
 
     public function bookings()
