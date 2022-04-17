@@ -17,7 +17,6 @@ class Products extends CSVImporter
         return [
             'name' => (object) [
                 'label' => _i('Nome'),
-                'mandatory' => true
             ],
             'description' => (object) [
                 'label' => _i('Descrizione')
@@ -114,21 +113,32 @@ class Products extends CSVImporter
             }
 
             try {
-                $name = $line[$name_index];
+                $test = null;
 
-                $p = new Product();
-                $p->name = $name;
-                $p->weight = 0;
-                $p->category_id = $p->measure_id = 'non-specificato';
-                $p->min_quantity = $p->multiple = $p->package_size = $p->portion_quantity = 0;
-                $price_without_vat = $vat_rate = $package_price = null;
-
-                $test_query = $s->products()->where('name', $name)->orderBy('id', 'desc');
                 if ($supplier_code_index != -1 && !empty($line[$supplier_code_index])) {
-                    $test_query->orWhere('supplier_code', $line[$supplier_code_index]);
+                    $test = $s->products()->where('supplier_code', $line[$supplier_code_index])->orderBy('id', 'desc')->first();
                 }
-                $test = $test_query->first();
-                $p->want_replace = is_null($test) ? 0 : $test->id;
+
+                if (is_null($test)) {
+                    if ($name_index != -1 && !empty($line[$name_index])) {
+                        $test = $s->products()->where('name', $line[$name_index])->orderBy('id', 'desc')->first();
+                    }
+                }
+
+                $want_replace = is_null($test) ? 0 : $test->id;
+
+                if ($want_replace) {
+                    $p = $test;
+                }
+                else {
+                    $p = new Product();
+                    $p->weight = 0;
+                    $p->category_id = $p->measure_id = 'non-specificato';
+                    $p->min_quantity = $p->multiple = $p->package_size = $p->portion_quantity = 0;
+                    $price_without_vat = $vat_rate = $package_price = null;
+                }
+
+                $p->want_replace = $want_replace;
 
                 foreach ($columns as $index => $field) {
                     $value = trim($line[$index]);

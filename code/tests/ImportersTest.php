@@ -43,6 +43,20 @@ class ImportersTest extends TestCase
         $importer = \App\Importers\CSV\CSVImporter::getImporter('products');
         $supplier = \App\Supplier::factory()->create();
 
+        $file = fopen($path, 'r');
+        $first_row = fgetcsv($file);
+        $reference_name = $first_row[0];
+
+        $category = \App\Category::factory()->create();
+        $measure = \App\Measure::factory()->create();
+
+        $reference = \App\Product::factory()->create([
+            'name' => $reference_name,
+            'supplier_id' => $supplier->id,
+            'category_id' => $category->id,
+            'measure_id' => $measure->id,
+        ]);
+
         $request = new \Illuminate\Http\Request();
         $request->merge([
             'path' => $path,
@@ -61,12 +75,14 @@ class ImportersTest extends TestCase
         $this->assertEquals(0, $data['products'][0]->min_quantity);
         $this->assertEquals('Biscotti e dolci', $data['products'][0]->temp_category_name);
         $this->assertEquals('Barattoli', $data['products'][0]->temp_measure_name);
+        $this->assertEquals($reference->id, $data['products'][0]->want_replace);
 
         $this->assertEquals(4.8, $data['products'][8]->price);
         $this->assertEquals(10, $data['products'][8]->package_size);
         $this->assertEquals(5, $data['products'][8]->multiple);
         $this->assertEquals(0, $data['products'][8]->min_quantity);
         $this->assertEquals('4', $data['products'][8]->temp_vat_rate_name);
+        $this->assertEquals(0, $data['products'][8]->want_replace);
 
         $this->assertEquals('Mandorle Bio sgusciate 600gr', $data['products'][9]->name);
         $this->assertEquals(1, $data['products'][9]->multiple);
