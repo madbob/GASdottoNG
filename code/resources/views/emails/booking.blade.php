@@ -41,17 +41,52 @@ $bookings_tot = 0;
 </p>
 
 @foreach($booking->bookings as $b)
-    <?php $variable = false ?>
+    <?php
+
+    $empty_booking = $b->products->isEmpty();
+    if ($empty_booking) {
+        foreach($b->friends_bookings as $fb) {
+            $empty_booking = $fb->products->isEmpty();
+            if ($empty_booking == false) {
+                break;
+            }
+        }
+    }
+
+    if ($empty_booking) {
+        continue;
+    }
+
+    $variable = false;
+
+    ?>
 
     <h3>{{ $b->order->supplier->printableName() }}</h3>
-    @include('emails.bookingtable', ['booking' => $b, 'redux' => $redux])
+
+    <?php
+
+    $bookings_tot++;
+    $tot = $b->getValue('effective', false);
+    $global_total += $tot;
+
+    ?>
+
+    @include('emails.bookingtable', ['booking' => $b, 'redux' => $redux, 'tot' => $tot])
 
     @if($b->friends_bookings->isEmpty() == false)
         <h5>{{ _i('Gli ordini dei tuoi amici') }}</h5>
 
         @foreach($b->friends_bookings as $fb)
             <p>{{ $fb->user->printableName() }}</p>
-            @include('emails.bookingtable', ['booking' => $fb, 'redux' => $redux])
+
+            <?php
+
+            $tot = $fb->getValue('effective', false);
+            $global_total += $tot;
+
+            ?>
+
+            @include('emails.bookingtable', ['booking' => $fb, 'redux' => $redux, 'tot' => $tot])
         @endforeach
     @endif
 

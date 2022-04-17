@@ -56,10 +56,6 @@
 
 		<?php
 
-		$bookings_tot++;
-		$tot = $booking->getValue('effective', false);
-		$global_total += $tot;
-
 		$modifiers = $booking->applyModifiers($redux);
 		$aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
 
