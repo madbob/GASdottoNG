@@ -183,33 +183,27 @@ class Gas extends Model
 
     protected function virtualBalances($currency)
     {
+        $ret = [
+            'suppliers' => (object) [
+                'label' => _i('Fornitori'),
+            ],
+            'users' => (object) [
+                'label' => _i('Utenti'),
+            ],
+        ];
+
         if ($currency) {
-            return $this->innerCache('virtual_balances_' . $currency->id, function($obj) use ($currency) {
+            list($suppliers_balance, $users_balance) = $this->innerCache('virtual_balances_' . $currency->id, function($obj) use ($currency) {
                 $suppliers_balance = sumCurrentBalanceAmounts($currency, Supplier::class);;
                 $users_balance = sumCurrentBalanceAmounts($currency, User::class);
-
-                return [
-                    'suppliers' => (object) [
-                        'label' => _i('Fornitori'),
-                        'value' => $suppliers_balance,
-                    ],
-                    'users' => (object) [
-                        'label' => _i('Utenti'),
-                        'value' => $users_balance,
-                    ],
-                ];
+                return [$suppliers_balance, $users_balance];
             });
+
+            $ret['suppliers']->value = $suppliers_balance;
+            $ret['users']->value = $users_balance;
         }
-        else {
-            return [
-                'suppliers' => (object) [
-                    'label' => _i('Fornitori'),
-                ],
-                'users' => (object) [
-                    'label' => _i('Utenti'),
-                ],
-            ];
-        }
+
+        return $ret;
     }
 
     public function balanceFields()

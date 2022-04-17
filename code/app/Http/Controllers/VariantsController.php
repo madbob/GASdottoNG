@@ -70,6 +70,56 @@ class VariantsController extends BackedController
         return view('variant.matrix', ['product' => $product]);
     }
 
+    private function transformFromSimplified($request, $product)
+    {
+        $original_combinations = $request->input('combination', []);
+
+        $ids = array_map(function($item) {
+            if (Str::startsWith($item, 'new_')) {
+                return '';
+            }
+            else {
+                return $item;
+            }
+        }, $original_combinations);
+
+        $values = $request->input('value', []);
+
+        $variant = $product->variants()->first();
+        $variant = $this->service->store([
+            'variant_id' => $variant->id,
+            'id' => $ids,
+            'value' => $values,
+        ]);
+
+        $combinations = [];
+
+        foreach($values as $value) {
+            $combinations[] = $variant->values()->where('value', $value)->first()->id;
+        }
+
+        /*
+            Ai nuovi valori dinamicamente immessi nella tabella aggiungo un
+            identificativo randomico, sul quale mi baso per risalire ai
+            metadati di tale valore
+        */
+        $actives = [];
+        $original_actives = $request->input('active', []);
+        foreach ($original_actives as $ac) {
+            if (Str::startsWith($ac, 'new_')) {
+                $combination_index = array_search($ac, $original_combinations);
+                $combination = $variant->values()->where('value', $values[$combination_index])->first()->id;
+                $combo = VariantCombo::byValues(explode(',', $combination));
+                $actives[] = $combo->id;
+            }
+            else {
+                $actives[] = $ac;
+            }
+        }
+
+        return [$combinations, $actives];
+    }
+
     public function updateMatrix(Request $request, $id)
     {
         DB::beginTransaction();
@@ -83,50 +133,7 @@ class VariantsController extends BackedController
             attributi dei valori.
         */
         if ($product->variants()->count() == 1) {
-            $original_combinations = $request->input('combination', []);
-
-            $ids = array_map(function($item) {
-                if (Str::startsWith($item, 'new_')) {
-                    return '';
-                }
-                else {
-                    return $item;
-                }
-            }, $original_combinations);
-
-            $values = $request->input('value', []);
-
-            $variant = $product->variants()->first();
-            $variant = $this->service->store([
-                'variant_id' => $variant->id,
-                'id' => $ids,
-                'value' => $values,
-            ]);
-
-            $combinations = [];
-
-            foreach($values as $value) {
-                $combinations[] = $variant->values()->where('value', $value)->first()->id;
-            }
-
-            /*
-                Ai nuovi valori dinamicamente immessi nella tabella aggiungo un
-                identificativo randomico, sul quale mi baso per risalire ai
-                metadati di tale valore
-            */
-            $actives = [];
-            $original_actives = $request->input('active', []);
-            foreach ($original_actives as $ac) {
-                if (Str::startsWith($ac, 'new_')) {
-                    $combination_index = array_search($ac, $original_combinations);
-                    $combination = $variant->values()->where('value', $values[$combination_index])->first()->id;
-                    $combo = VariantCombo::byValues(explode(',', $combination));
-                    $actives[] = $combo->id;
-                }
-                else {
-                    $actives[] = $ac;
-                }
-            }
+            list($combinations, $actives) = $this->transformFromSimplified($request, $product);
         }
         else {
             $combinations = $request->input('combination');

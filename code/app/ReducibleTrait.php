@@ -209,37 +209,5 @@ trait ReducibleTrait
         return $this->descendReduction($ret, $filters);
     }
 
-    public static function mergeReduxData($first, $second)
-    {
-        if (is_null($first)) {
-            return $second;
-        }
-
-        if (is_null($second)) {
-            return $first;
-        }
-
-        $first = clone $first;
-        $second = clone $second;
-
-        $ref = new self();
-        $behaviours = $ref->reduxBehaviour();
-
-        $ret = $ref->describingAttributesMerge($first, $second);
-
-        $merged = $behaviours->merged ?? '';
-        if (!empty($merged)) {
-            $merged_ids = array_unique(array_merge(array_keys($first->$merged), array_keys($second->$merged)));
-            foreach($merged_ids as $id) {
-                $ret->$merged[$id] = $ref->describingAttributesMerge($first->$merged[$id] ?? null, $second->$merged[$id] ?? null);
-            }
-        }
-
-        unset($first);
-        unset($second);
-
-        return $ret;
-    }
-
     abstract protected function reduxBehaviour();
 }

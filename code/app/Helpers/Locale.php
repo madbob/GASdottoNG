@@ -29,6 +29,20 @@ function htmlLang()
     return str_replace('_', '-', currentLang());
 }
 
+function translateNumberFormat($value)
+{
+    $last_dot = strrpos($value, '.');
+    $last_comma = strrpos($value, ',');
+
+    if ($last_dot > $last_comma) {
+        return str_replace(',', '', $value);
+    }
+    else {
+        $value = str_replace('.', '', $value);
+        return strtr($value, ',', '.');
+    }
+}
+
 function guessDecimal($value)
 {
     $has_dot = (strpos($value, '.') !== false);
@@ -46,16 +60,7 @@ function guessDecimal($value)
         return strtr($value, ',', '.');
     }
 
-    $last_dot = strrpos($value, '.');
-    $last_comma = strrpos($value, ',');
-
-    if ($last_dot > $last_comma) {
-        return str_replace(',', '', $value);
-    }
-    else {
-        $value = str_replace('.', '', $value);
-        return strtr($value, ',', '.');
-    }
+    return translateNumberFormat($value);
 }
 
 /*
