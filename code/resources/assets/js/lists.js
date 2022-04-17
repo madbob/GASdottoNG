@@ -65,7 +65,11 @@ class Lists {
             }
         });
 
-        container.on('hide.bs.collapse', '.loadable-list > .accordion-item > .accordion-collapse', function(event) {
+        /*
+            Nota bene: l'evento hide.bs.collapse viene intercettato e bloccato
+            in utils.js, non utilizzarlo qui
+        */
+        container.on('hidden.bs.collapse', '.loadable-list > .accordion-item > .accordion-collapse', function(event) {
             event.stopPropagation();
             let head = $(this).closest('.accordion-item');
             Lists.reloadLoadableHead(head);

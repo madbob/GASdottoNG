@@ -266,12 +266,12 @@ class Callables {
     */
     static reloadLoadableHeaders(form, data)
     {
-        var n = $('.accordion-item[data-element-id="' + form.find('input[name=sender_id]').val() + '"]');
+        var n = $('.accordion-item[data-element-id="' + form.find('input[name=sender_id]').val() + '"]').filter(':visible');
         if (n.length != 0) {
             lists.reloadLoadableHead(n);
         }
 
-        var n = $('.accordion-item[data-element-id="' + form.find('input[name=target_id]').val() + '"]');
+        var n = $('.accordion-item[data-element-id="' + form.find('input[name=target_id]').val() + '"]').filter(':visible');
         if (n.length != 0) {
             lists.reloadLoadableHead(n);
         }

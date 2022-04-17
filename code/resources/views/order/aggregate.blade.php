@@ -48,7 +48,7 @@ $master_summary = $aggregate->reduxData();
     @endif
 
     <div class="col-12">
-        <x-larastrap::tabs>
+        <x-larastrap::tabs :id="md5($aggregate->orders->pluck('id')->join(''))">
             @foreach($aggregate->orders as $index => $order)
                 <x-larastrap::tabpane :label="$order->printableName() . $order->statusIcons()" :active="$index == 0">
                     @can('supplier.orders', $order->supplier)
