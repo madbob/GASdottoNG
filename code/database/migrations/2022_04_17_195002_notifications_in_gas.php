@@ -12,7 +12,7 @@ class NotificationsInGas extends Migration
     public function up()
     {
         Schema::table('notifications', function (Blueprint $table) {
-            $table->string('gas_id');
+            $table->string('gas_id')->default('');
         });
 
         $first_gas = Gas::orderBy('created_at', 'asc')->first();
