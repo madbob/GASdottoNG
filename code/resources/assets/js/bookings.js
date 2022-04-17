@@ -213,11 +213,12 @@ class Bookings
             });
 
             /*
-                Il trigger keyup() alla fine serve a forzare il ricalcolo del totale
-                della consegna quando il modale viene chiuso
+                Il trigger blur() alla fine serve a forzare il ricalcolo del
+                totale della consegna quando il modale viene chiuso
             */
             var identifier = modal.attr('id');
-            $('[data-bs-target="#' + identifier + '"]').closest('.booking-product-quantity').find('input.number').first().val(quantity).keyup();
+            quantity = (Math.round(quantity * 100) / 100).toFixed(3);
+            $('[data-bs-target="#' + identifier + '"]').closest('.booking-product-quantity').find('input.number').first().val(quantity).blur();
             modal.modal('hide');
         });
 
