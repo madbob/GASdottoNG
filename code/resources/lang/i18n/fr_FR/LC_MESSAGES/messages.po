@@ -2,14 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2022-02-12 17:11+0100\n"
-"PO-Revision-Date: 2022-02-12 17:13+0100\n"
-"Last-Translator: Roberto Guido <bob@linux.it>\n"
-"Language-Team: Roberto Guido <bob@linux.it>\n"
+"PO-Revision-Date: 2022-02-13 23:53+0000\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/gasdottong/"
+"translations/fr/>\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.11-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -340,7 +342,7 @@ msgstr "indéfini(e)"
 
 #: BookedProduct.php:106
 msgid "Questa combinazione di varianti non è attualmente ordinabile"
-msgstr ""
+msgstr "Cette combinaison de variantes ne peut être commandée pour le moment"
 
 #: Booking.php:652 Booking.php:582 Http/Controllers/MovementsController.php:334
 msgid "Saldo"
@@ -794,7 +796,7 @@ msgstr "Nom d'utilisateur invalide"
 
 #: Http/Controllers/ImportController.php:49
 msgid "Importazione fallita"
-msgstr ""
+msgstr "L'importation a échoué"
 
 #: Http/Controllers/ImportController.php:64
 #: Http/Controllers/ImportController.php:841
@@ -1061,6 +1063,8 @@ msgid ""
 "Una delle valute gestite dal sistema. Se non specificato, verrà selezionata "
 "quella di default(%s). Valori ammessi: %s"
 msgstr ""
+"Une des monnaies gérées par le système. Si elle n'est pas spécifiée, la "
+"devise par défaut sera sélectionnée (%s). Valeurs autorisées : %s"
 
 #: Importers/CSV/Movements.php:62 Http/Controllers/ImportController.php:649
 msgid ""
@@ -1083,7 +1087,7 @@ msgstr "Fournisseur introuvable : %s"
 #: Importers/CSV/Movements.php:151
 #, php-format
 msgid "Valuta non trovata: %s"
-msgstr ""
+msgstr "Monnaie introuvable : %s"
 
 #: Importers/CSV/Movements.php:260 Http/Controllers/ImportController.php:834
 msgid "Movimenti importati"
@@ -1115,7 +1119,7 @@ msgstr ""
 
 #: Importers/CSV/Products.php:52
 msgid "Peso (in KG)"
-msgstr ""
+msgstr "Poids (en kg)"
 
 #: Importers/CSV/Products.php:55 Http/Controllers/ImportController.php:165
 msgid "Ordine Minimo"
@@ -1180,6 +1184,9 @@ msgid ""
 "degli utenti, e solo per i nuovi utenti, o i saldi risulteranno sempre "
 "incoerenti!"
 msgstr ""
+"Attention ! N'utilisez cet attribut que lors de l'importation initiale des "
+"utilisateurs, et uniquement pour les nouveaux utilisateurs, sinon les soldes "
+"seront toujours incohérents !"
 
 #: Importers/CSV/Users.php:84 Http/Controllers/ImportController.php:450
 msgid ""
@@ -1227,7 +1234,6 @@ msgid "Saldo Fornitore"
 msgstr "Solde fournisseur"
 
 #: ModifiedValue.php:173 Order.php:909
-#, fuzzy
 msgid "Prenotato"
 msgstr "Réservé"
 
@@ -1375,12 +1381,16 @@ msgid ""
 "Modificatore Prodotto, sul Prenotato. Mostrato solo se il modificatore è "
 "attivo per un qualche prodotto nell'ordine"
 msgstr ""
+"Modificateur de produit, sur le site Booked. S'affiche uniquement si le "
+"modificateur est actif pour un produit de la commande"
 
 #: Order.php:916
 msgid ""
 "Modificatore Prodotto, sul Consegnato. Mostrato solo se il modificatore è "
 "attivo per un qualche prodotto nell'ordine"
 msgstr ""
+"Modificateur de produit, sur le site Booked. S'affiche uniquement si le "
+"modificateur est actif pour un produit de la commande"
 
 #: Order.php:924 Order.php:883
 msgid "Unità di misura assegnata al prodotto"
@@ -1452,7 +1462,7 @@ msgstr "Réservations closes"
 
 #: Order.php:1004
 msgid "Pagamento Utenti"
-msgstr ""
+msgstr "Paiement par l'utilisateur"
 
 #: Order.php:1012 Iconable.php:149 Iconable.php:203 Order.php:930
 msgid "Archiviato"
@@ -1564,7 +1574,7 @@ msgstr ""
 
 #: Parameters/Constraints/AbsoluteQuantity.php:26
 msgid "La quantità massima è 9999.99"
-msgstr ""
+msgstr "La quantité maximale est de 9999,99"
 
 #: Parameters/Constraints/MaxAvailable.php:49 Product.php:263
 #, php-format
@@ -1583,7 +1593,7 @@ msgstr "Disponible : %.02f (total %.02f)"
 
 #: Parameters/Constraints/MaxAvailable.php:68
 msgid "Quantità superiore alla disponibilità"
-msgstr ""
+msgstr "Quantité dépassant la disponibilité"
 
 #: Parameters/Constraints/MaxQuantity.php:19 Product.php:252
 #, php-format
@@ -1592,7 +1602,7 @@ msgstr "Maximum suggéré : %.02f"
 
 #: Parameters/Constraints/MaxQuantity.php:36
 msgid "Quantità superiore al massimo consigliato"
-msgstr ""
+msgstr "Quantité dépassant le maximum recommandé"
 
 #: Parameters/Constraints/MinQuantity.php:19 Product.php:249
 #, php-format
@@ -1601,7 +1611,7 @@ msgstr "Minimum : %.02f"
 
 #: Parameters/Constraints/MinQuantity.php:31
 msgid "Quantità inferiore al minimo consentito"
-msgstr ""
+msgstr "Quantité inférieure au minimum autorisé"
 
 #: Parameters/Constraints/Multiple.php:19 Product.php:272
 #, php-format
@@ -1610,7 +1620,7 @@ msgstr "Multiplicateur : %.02f"
 
 #: Parameters/Constraints/Multiple.php:31
 msgid "Quantità non multipla del valore consentito"
-msgstr ""
+msgstr "Quantité non multiple de la valeur autorisée"
 
 #: Parameters/MailTypes/ManualWelcome.php:13 Config.php:33
 msgid "Messaggio inviato ai nuovi utenti creati sulla piattaforma."
@@ -1694,7 +1704,7 @@ msgstr "Réduction"
 
 #: Parameters/ModifierType/ShippingAdjust.php:21
 msgid "Arrotondamento Consegna Manuale"
-msgstr ""
+msgstr "Arrondi manuel des livraisons"
 
 #: Parameters/ModifierType/TransportCost.php:14
 #: Console/Commands/FixDatabase.php:142
@@ -1703,63 +1713,63 @@ msgstr "Frais de port"
 
 #: Parameters/MovementType/AnnualFee.php:16
 msgid "Versamento della quota annuale da parte di un socio"
-msgstr ""
+msgstr "Paiement de la cotisation annuelle par un membre"
 
 #: Parameters/MovementType/BookingPayment.php:16
 msgid "Pagamento prenotazione da parte di un socio"
-msgstr ""
+msgstr "Paiement de la réservation par un membre"
 
 #: Parameters/MovementType/BookingPaymentAdjust.php:14
 msgid "Aggiustamento pagamento prenotazione da parte di un socio"
-msgstr ""
+msgstr "Ajustement du paiement de la réservation par un membre"
 
 #: Parameters/MovementType/DepositPay.php:17
 msgid "Deposito cauzione socio del GAS"
-msgstr ""
+msgstr "Dépôt du membre GAS"
 
 #: Parameters/MovementType/DepositReturn.php:16
 msgid "Restituzione cauzione socio del GAS"
-msgstr ""
+msgstr "Restitution du dépôt du membre de GAS"
 
 #: Parameters/MovementType/DonationFromGas.php:14
 msgid "Donazione dal GAS"
-msgstr ""
+msgstr "Donation de GAS"
 
 #: Parameters/MovementType/DonationToGas.php:14
 msgid "Donazione al GAS"
-msgstr ""
+msgstr "Donation au GAS"
 
 #: Parameters/MovementType/GasExpense.php:14
 msgid "Acquisto/spesa GAS"
-msgstr ""
+msgstr "Achat/dépense de GAS"
 
 #: Parameters/MovementType/GenericPut.php:14
 msgid "Versamento sul conto"
-msgstr ""
+msgstr "Transfert vers le compte"
 
 #: Parameters/MovementType/InvoicePayment.php:16
 msgid "Pagamento fattura a fornitore"
-msgstr ""
+msgstr "Paiement de la facture au fournisseur"
 
 #: Parameters/MovementType/OrderPayment.php:16
 msgid "Pagamento ordine a fornitore"
-msgstr ""
+msgstr "Paiement de la commande au fournisseur"
 
 #: Parameters/MovementType/SupplierRounding.php:14
 msgid "Arrotondamento/sconto fornitore"
-msgstr ""
+msgstr "Arrondissement du fournisseur/escompte"
 
 #: Parameters/MovementType/UserCredit.php:14
 msgid "Deposito di credito da parte di un socio"
-msgstr ""
+msgstr "Dépôt de crédit par un associé"
 
 #: Parameters/MovementType/UserDecredit.php:14
 msgid "Reso credito per un socio"
-msgstr ""
+msgstr "Retour de crédit pour un membre"
 
 #: Parameters/MovementType/UserRefund.php:14
 msgid "Rimborso spesa socio"
-msgstr ""
+msgstr "Remboursement des dépenses des membres"
 
 #: Parameters/PaymentType/Bank.php:15 MovementType.php:42
 msgid "Bonifico"
@@ -2010,11 +2020,11 @@ msgstr "de la commande"
 
 #: View/Texts/Modifier.php:29
 msgid "della prenotazione aggregata"
-msgstr ""
+msgstr "de la réservation groupée"
 
 #: View/Texts/Modifier.php:30
 msgid "dell'ordine aggregato"
-msgstr ""
+msgstr "de la commande groupée"
 
 #: View/Texts/Modifier.php:32 Modifier.php:104
 msgid "della prenotazione destinata al luogo"
