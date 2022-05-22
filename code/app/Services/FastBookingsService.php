@@ -22,7 +22,7 @@ class FastBookingsService extends BaseService
         }
     }
 
-    private function fastShipBooking($deliverer, $booking)
+    private function fastShipBooking($deliverer, $booking, $date)
     {
         /*
             Se la prenotazione in oggetto non esiste, salto tutto il resto.
@@ -34,7 +34,7 @@ class FastBookingsService extends BaseService
         }
 
         $booking->deliverer_id = $deliverer->id;
-        $booking->delivery = date('Y-m-d');
+        $booking->delivery = $date;
 
         if ($booking->status != 'saved') {
             foreach ($booking->products as $booked) {
@@ -54,15 +54,15 @@ class FastBookingsService extends BaseService
         return $ret;
     }
 
-    private function sumFastShippings($deliverer, $booking)
+    private function sumFastShippings($deliverer, $booking, $date)
     {
         $grand_total = 0;
 
         foreach ($booking->bookings as $book) {
-            $grand_total += $this->fastShipBooking($deliverer, $book);
+            $grand_total += $this->fastShipBooking($deliverer, $book, $date);
 
             foreach($book->friends_bookings as $bf) {
-                $grand_total += $this->fastShipBooking($deliverer, $bf);
+                $grand_total += $this->fastShipBooking($deliverer, $bf, $date);
             }
         }
 
@@ -91,13 +91,18 @@ class FastBookingsService extends BaseService
         }
 
         foreach($bookings as $booking) {
-            $grand_total = $this->sumFastShippings($deliverer, $booking);
+            $meta = $users[$booking->user->id] ?? [
+                'date' => date('Y-m-d'),
+                'method' => $default_payment_method,
+            ];
+
+            $grand_total = $this->sumFastShippings($deliverer, $booking, $meta['date']);
 
             if ($grand_total != 0) {
                 $booking->generateReceipt();
 
                 $movement = Movement::generate('booking-payment', $booking->user, $aggregate, $grand_total);
-                $movement->method = $users[$booking->user->id] ?? $default_payment_method;
+                $movement->method = $meta['method'];
                 $movement->save();
             }
         }

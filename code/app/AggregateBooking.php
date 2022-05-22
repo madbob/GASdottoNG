@@ -77,6 +77,28 @@ class AggregateBooking extends Model
         return $grand_total;
     }
 
+    public function getDeliveryAttribute()
+    {
+        foreach ($this->bookings as $booking) {
+            if ($booking->delivery) {
+                return $booking->delivery;
+            }
+        }
+
+        return null;
+    }
+
+    public function getPaymentAttribute()
+    {
+        foreach ($this->bookings as $booking) {
+            if ($booking->payment) {
+                return $booking->payment;
+            }
+        }
+
+        return null;
+    }
+
     public function getConvenientStringsAttribute()
     {
         $suppliers = [];

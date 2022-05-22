@@ -75,7 +75,10 @@ class DeliveryUserController extends Controller
         $users = [];
         $selected = $request->input('bookings', []);
         foreach($selected as $user_id) {
-            $users[$user_id] = $request->input('method-' . $user_id);
+            $users[$user_id] = [
+                'date' => decodeDate($request->input('date-' . $user_id)),
+                'method' => $request->input('method-' . $user_id)
+            ];
         }
 
         $fastshipping = new FastBookingsService();

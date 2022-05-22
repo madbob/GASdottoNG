@@ -23,12 +23,15 @@
                                     <input type="checkbox" class="triggers-all-checkbox" data-target-class="booking-select" value="1">
                                 </th>
                                 <th width="30%"></th>
-                                <th width="30%"></th>
-                                <th width="30%">
-                                    <div class="btn-group float-end triggers-all-radio" data-toggle="buttons">
+                                <th width="20%"></th>
+                                <th width="20%">
+                                    <x-larastrap::datepicker :value="date('Y-m-d')" squeeze classes="toggleall" />
+                                </th>
+                                <th width="20%">
+                                    <div class="btn-group float-end" data-toggle="buttons">
                                         @foreach($payments as $method_id => $name)
-                                            <label class="btn btn-light" data-target-class="method-select-{{ $method_id }}">
-                                                <input type="radio" value="{{ $method_id }}" autocomplete="off"> {{ $name }}
+                                            <label class="btn btn-light">
+                                                <input type="radio" name="method-for-all" class="toggleall" value="{{ $method_id }}" autocomplete="off"> {{ $name }}
                                             </label>
                                         @endforeach
                                     </div>
@@ -47,6 +50,13 @@
                                     <td>{{ printablePriceCurrency($booking->getValue('effective', true)) }}</td>
                                     <td>
                                         @if($booking->status != 'shipped')
+                                            <x-larastrap::datepicker name="date-{{ $booking->id }}" :value="date('Y-m-d')" squeeze />
+                                        @else
+                                            <x-larastrap::text :value="printableDate($booking->delivery)" readonly disabled squeeze />
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($booking->status != 'shipped')
                                             <?php $payment_method = ($booking->user->payment_method_id != 'none' && ($booking->user->payment_method->valid_config)($booking->user)) ? $booking->user->payment_method_id : $default_payment_method ?>
                                             <div class="btn-group float-end" data-toggle="buttons">
                                                 @foreach($payments as $method_id => $name)
@@ -55,6 +65,8 @@
                                                     </label>
                                                 @endforeach
                                             </div>
+                                        @else
+                                            <x-larastrap::text :value="$booking->payment ? $booking->payment->printablePayment() : '?'" classes="text-end" readonly disabled squeeze />
                                         @endif
                                     </td>
                                 </tr>

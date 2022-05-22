@@ -15,13 +15,26 @@ class Triggers {
             });
 
             $(this).prop('disabled', false);
-        })
+        });
 
-        $('.triggers-all-radio label', container).click(function() {
-            var form = $(this).closest('form');
-            var target = $(this).attr('data-target-class');
-            form.find('.' + target).button('toggle');
-        })
+        $('table thead .toggleall', container).change(function() {
+            var col = $(this).closest('th').index();
+            var value = $(this).val();
+
+            var is_radio = ($(this).attr('type') == 'radio');
+            if (is_radio && $(this).prop('checked') == false) {
+                return;
+            }
+
+            $(this).closest('table').find('tbody tr td:nth-child(' + (col + 1) + ')').each(function() {
+                if (is_radio) {
+                    $(this).find('input[value=' + value + ']').prop('checked', true);
+                }
+                else {
+                    $(this).find('input').val(value);
+                }
+            });
+        });
 
         $('.triggers-all-selects', container).change(function() {
             var form = $(this).closest('form');
