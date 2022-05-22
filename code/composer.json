@@ -35,7 +35,7 @@
     "require-dev": {
         "brianium/paratest": "^6.3",
         "fakerphp/faker": "^1.15",
-        "filp/whoops": "~2.0",
+        "facade/ignition": "^2.5",
         "laravel/dusk": "^6.15",
         "madbob/dusk-utils": "^0.1.0",
         "mockery/mockery": "~1.0",
