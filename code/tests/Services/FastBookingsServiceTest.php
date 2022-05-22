@@ -52,8 +52,8 @@ class FastBookingsServiceTest extends TestCase
 
         $this->nextRound();
 
-        $filter[$this->sample_order->bookings->random()->user_id] = 'credit';
-        $filter[$this->sample_order->bookings->random()->user_id] = 'cash';
+        $filter[$this->sample_order->bookings->random()->user_id] = ['date' => date('Y-m-d'), 'method' => 'credit'];
+        $filter[$this->sample_order->bookings->random()->user_id] = ['date' => date('Y-m-d'), 'method' => 'cash'];
         $users = array_keys($filter);
 
         $this->nextRound();
@@ -74,7 +74,7 @@ class FastBookingsServiceTest extends TestCase
                 }
 
                 $this->assertEquals($booking->payment->amount, $booking->getValue('effective', true));
-                $this->assertEquals($booking->payment->method, $filter[$booking->user_id]);
+                $this->assertEquals($booking->payment->method, $filter[$booking->user_id]['method']);
             }
             else {
                 $this->assertEquals($booking->status, 'pending');
