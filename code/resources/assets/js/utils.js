@@ -60,6 +60,8 @@ class Utils {
             window.open(url, '_blank');
         });
 
+        $('.collapse', container).filter(':not(.show)').find('.required_when_triggered').prop('required', false);
+
         /*
             Questo è per evitare che gli eventi di show/hide si propaghino a
             sproposito all'accordion / alla tab padre

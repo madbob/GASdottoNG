@@ -103,6 +103,7 @@ class FastBookingsService extends BaseService
 
                 $movement = Movement::generate('booking-payment', $booking->user, $aggregate, $grand_total);
                 $movement->method = $meta['method'];
+                $movement->date = $meta['date'];
                 $movement->save();
             }
         }
