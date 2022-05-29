@@ -62,19 +62,14 @@ class BookedProductVariant extends Model
 
     public function fixWeight($attribute)
     {
-        if ($this->product->product->measure->discrete == false) {
-            $weight = 1;
-        }
-        else {
-            $weight = $this->product->product->weight;
+        $base = $this->product->basicWeight($attribute);
 
-            $combo = $this->variantsCombo();
-            if ($combo) {
-                $weight += $combo->weight_offset;
-            }
+        $combo = $this->variantsCombo();
+        if ($combo) {
+            $base += $combo->weight_offset * $this->$attribute;
         }
 
-        return $weight * $this->$attribute;
+        return $base;
     }
 
     private function fixQuantity($attribute, $rectify)

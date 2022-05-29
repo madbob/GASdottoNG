@@ -197,6 +197,35 @@ class BookedProduct extends Model
         return $this->normalizeQuantity('delivered');
     }
 
+    /*
+        Questa funzione è intesa solo per essere invocata da
+        BookedProductVariant per ottenere il peso di base del prodotto, su cui
+        applicare le differenze peso. Evitare di usarla altrove
+    */
+    public function basicWeight($attribute)
+    {
+        if ($this->product->measure->discrete == false) {
+            $measure_weight = $this->product->measure->weight;
+            if ($measure_weight == 0) {
+                $measure_weight = 1;
+            }
+
+            if ($this->product->portion_quantity > 0) {
+                $ret = $this->product->portion_quantity * $this->$attribute;
+            }
+            else {
+                $ret = $this->$attribute;
+            }
+
+            $ret = $ret * $measure_weight;
+        }
+        else {
+            $ret = $this->product->weight * $this->$attribute;
+        }
+
+        return $ret;
+    }
+
     private function fixWeight($attribute)
     {
         if ($this->variants->isEmpty() == false) {
@@ -205,12 +234,7 @@ class BookedProduct extends Model
             }, 0);
         }
         else {
-            if ($this->product->measure->discrete == false) {
-                $ret = $this->$attribute;
-            }
-            else {
-                $ret = $this->product->weight * $this->$attribute;
-            }
+            $ret = $this->basicWeight($attribute);
         }
 
         return $ret;
