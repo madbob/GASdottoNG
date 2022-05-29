@@ -21,7 +21,8 @@ class UserFactory extends Factory
             'firstname' => $this->faker->firstName(),
             'lastname' => $this->faker->lastName(),
             'password' => bcrypt(str_random(10)),
-            'member_since' => date("Y-m-d H:i:s")
+            'member_since' => date("Y-m-d H:i:s"),
+            'card_number' => $this->faker->text(20),
         ];
     }
 }

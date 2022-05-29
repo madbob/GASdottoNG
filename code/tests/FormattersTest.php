@@ -109,28 +109,68 @@ class FormattersTest extends TestCase
         }
     }
 
-    public function testUnrollPeriodicMonthFirst()
+    private function testUnrollPeriodicMonth($type, $valid_dates)
     {
         $test = (object) [
             'from' => '2021-08-01',
             'to' => '2021-10-31',
-            'cycle' => 'month_first',
+            'cycle' => $type,
             'day' => 'wednesday',
         ];
 
+        $this->assertTrue(strlen(printablePeriodic(json_encode($test))) > 0);
+
         $dates = unrollPeriodic($test);
-
-        $valid_dates = [
-            '2021-08-04',
-            '2021-09-01',
-            '2021-10-06',
-        ];
-
         $this->assertEquals(count($dates), count($valid_dates));
 
         foreach($dates as $index => $date) {
             $this->assertEquals($date, $valid_dates[$index]);
         }
+    }
+
+    public function testUnrollPeriodicMonthFirst()
+    {
+        $this->testUnrollPeriodicMonth('month_first', [
+            '2021-08-04',
+            '2021-09-01',
+            '2021-10-06',
+        ]);
+    }
+
+    public function testUnrollPeriodicMonthSecond()
+    {
+        $this->testUnrollPeriodicMonth('month_second', [
+            '2021-08-11',
+            '2021-09-08',
+            '2021-10-13',
+        ]);
+    }
+
+    public function testUnrollPeriodicMonthThird()
+    {
+        $this->testUnrollPeriodicMonth('month_third', [
+            '2021-08-18',
+            '2021-09-15',
+            '2021-10-20',
+        ]);
+    }
+
+    public function testUnrollPeriodicMonthFourth()
+    {
+        $this->testUnrollPeriodicMonth('month_fourth', [
+            '2021-08-25',
+            '2021-09-22',
+            '2021-10-27',
+        ]);
+    }
+
+    public function testUnrollPeriodicMonthLast()
+    {
+        $this->testUnrollPeriodicMonth('month_last', [
+            '2021-08-25',
+            '2021-09-29',
+            '2021-10-27',
+        ]);
     }
 
     public function testUnrollPeriodicBiWeekly()

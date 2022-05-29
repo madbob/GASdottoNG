@@ -3,11 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class VatRate extends Model
 {
-    use GASModel, Cachable;
+    use HasFactory, GASModel, Cachable;
 
     protected $fillable = ['percentage', 'name'];
 

@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Exceptions\IllegalArgumentException;
 use App\Exceptions\AuthException;
 
 class UsersServiceTest extends TestCase
@@ -64,7 +65,10 @@ class UsersServiceTest extends TestCase
     public function testCease()
     {
         $this->actingAs($this->userWithAdminPerm);
-        $user = \App\User::inRandomOrder()->first();
+        $users = $this->services['users']->list();
+        $initial_count = $users->count();
+
+        $user = $users->random();
         $this->services['users']->update($user->id, [
             'status' => 'deleted',
             'deleted_at' => printableDate(date('Y-m-d')),
@@ -73,7 +77,7 @@ class UsersServiceTest extends TestCase
 
         $this->actingAs($this->userWithViewPerm);
         $users = $this->services['users']->list();
-        $this->assertCount(8, $users);
+        $this->assertEquals($initial_count - 1, $users->count());
     }
 
     /*
@@ -227,6 +231,44 @@ class UsersServiceTest extends TestCase
     }
 
     /*
+        Modifica Utente con parametri errati
+    */
+    public function testInvalidUsername()
+    {
+        $this->expectException(IllegalArgumentException::class);
+
+        $this->actingAs($this->userWithAdminPerm);
+        $sample = \App\User::inRandomOrder()->first();
+
+        $user = \App\User::factory()->create([
+            'gas_id' => $this->gas->id
+        ]);
+
+        $this->services['users']->update($user->id, array(
+            'username' => $sample->username,
+        ));
+    }
+
+    /*
+        Modifica Utente con parametri errati
+    */
+    public function testInvalidCardNumber()
+    {
+        $this->expectException(IllegalArgumentException::class);
+
+        $this->actingAs($this->userWithAdminPerm);
+        $sample = \App\User::inRandomOrder()->first();
+
+        $user = \App\User::factory()->create([
+            'gas_id' => $this->gas->id
+        ]);
+
+        $this->services['users']->update($user->id, array(
+            'card_number' => $sample->card_number,
+        ));
+    }
+
+    /*
         Modifica del proprio Utente con permessi sbagliati
     */
     public function testFailsToSelfUpdate()
@@ -252,9 +294,13 @@ class UsersServiceTest extends TestCase
         $user = $this->services['users']->update($this->userWithBasePerm->id, array(
             'password' => 'new password',
             'birthday' => 'Giovedi 01 Dicembre 2016',
+            'contact_id' => ['', '', ''],
+            'contact_type' => ['phone', 'website', 'email'],
+            'contact_value' => ['1234567890', 'http://www.example.com', 'test@mailinator.com'],
         ));
 
         $this->assertEquals($this->userWithBasePerm->id, $user->id);
+        $this->assertEquals(3, $user->contacts()->count());
     }
 
     /*
