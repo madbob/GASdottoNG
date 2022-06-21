@@ -593,11 +593,9 @@ class Booking extends Model
         */
         if ($modifiers->isEmpty() == false) {
             if (is_null($aggregate_data)) {
-                /*
                 $aggregate = $this->order->aggregate;
                 $aggregate_data = $aggregate->reduxData();
-                */
-                $aggregate_data = $this->minimumRedux($modifiers);
+                // $aggregate_data = $this->minimumRedux($modifiers);
             }
 
             /*
