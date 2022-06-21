@@ -69,10 +69,10 @@ class DynamicBookingsService extends BookingsService
                     return $componentcarry;
                 }, []),
 
-                'quantity' => $final_variant_quantity,
-                'unitprice' => $combo->price,
+                'quantity' => (float) $final_variant_quantity,
+                'unitprice' => (float) $combo->price,
                 'unitprice_human' => $product->product->printablePrice($combo),
-                'total' => printablePrice($delivering ? $variant->deliveredValue() : $variant->quantityValue()),
+                'total' => (float) printablePrice($delivering ? $variant->deliveredValue() : $variant->quantityValue()),
                 'message' => $variant_message,
             ];
 
@@ -102,10 +102,10 @@ class DynamicBookingsService extends BookingsService
                 list($final_quantity, $message) = $this->handleQuantity($delivering, $product, $product, null);
 
                 $carry[$product->product_id] = (object) [
-                    'unitprice' => $product->price,
+                    'unitprice' => (float) $product->price,
                     'unitprice_human' => $product->product->printablePrice(),
-                    'total' => printablePrice($delivering ? $product->getValue('delivered') : $product->getValue('booked')),
-                    'quantity' => $final_quantity,
+                    'total' => (float) printablePrice($delivering ? $product->getValue('delivered') : $product->getValue('booked')),
+                    'quantity' => (float) $final_quantity,
                     'message' => $message,
                     'variants' => $this->reduceVariants($booking, $product, $delivering),
                 ];

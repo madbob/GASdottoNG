@@ -535,6 +535,48 @@ class Booking extends Model
         }
     }
 
+    private function minimumRedux($modifiers)
+    {
+        $priority = ['product', 'booking', 'order', 'aggregate'];
+        $target_priority = -1;
+
+        foreach($modifiers as $mod) {
+            $p = array_search($mod->applies_target, $priority);
+            if ($p > $target_priority) {
+                $target_priority = $p;
+            }
+        }
+
+        /*
+            TODO Verificare i risultati dei diversi reduxData()
+        */
+
+        if ($target_priority == 3) {
+            $aggregate = $this->order->aggregate;
+            $aggregate_data = $aggregate->reduxData();
+        }
+        else if ($target_priority == 2) {
+            $aggregate_data = (object) [
+                'orders' => [
+                    $this->order_id => $this->order->reduxData(),
+                ],
+            ];
+        }
+        else if ($target_priority <= 1) {
+            $aggregate_data = (object) [
+                'orders' => [
+                    $this->order_id => (object) [
+                        'bookings' => [
+                            $this->id = $this->reduxData(),
+                        ],
+                    ],
+                ],
+            ];
+        }
+
+        return $aggregate_data;
+    }
+
     public function calculateModifiers($aggregate_data = null, $real = true)
     {
         $values = new Collection();
@@ -551,8 +593,11 @@ class Booking extends Model
         */
         if ($modifiers->isEmpty() == false) {
             if (is_null($aggregate_data)) {
+                /*
                 $aggregate = $this->order->aggregate;
                 $aggregate_data = $aggregate->reduxData();
+                */
+                $aggregate_data = $this->minimumRedux($modifiers);
             }
 
             /*

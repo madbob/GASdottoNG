@@ -112,9 +112,6 @@ class BookingsService extends BaseService
 
         for ($i = 0; $i < count($quantities); ++$i) {
             $q = (float) $quantities[$i];
-            if ($q == 0) {
-                continue;
-            }
 
             $real_values = $this->adjustVariantValues($values, $i);
             if (empty($real_values)) {

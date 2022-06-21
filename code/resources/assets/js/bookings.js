@@ -392,47 +392,62 @@ class Bookings
 
             if (product_meta.variants.length != 0) {
                 /*
-                    Attenzione: qui mi baso sul fatto che le
-                    varianti rappresentate nel feedback server-side
-                    siano ordinate nello stesso modo rispetto al
-                    pannello. Potrei usare i components come
-                    riferimento, ma possono esserci più varianti con
-                    gli stessi componenti e dovrei intuire qual è
-                    quella da eventualmente invalidare
+                    Attenzione: qui mi baso sul fatto che le varianti
+                    rappresentate nel feedback server-side siano ordinate nello
+                    stesso modo rispetto al pannello. Potrei usare i components
+                    come riferimento, ma possono esserci più varianti con gli
+                    stessi componenti e dovrei intuire qual è quella da
+                    eventualmente invalidare
                 */
 
-                let pricesbox = [];
-                let populated_index = 0;
+                /*
+                    Il pannello delle consegne è organizzato in modo un po'
+                    diverso rispetto a quello delle prenotazioni, soprattutto
+                    per quanto riguarda le varianti
+                */
 
-                for (let i = 0; i < product_meta.variants.length; i++) {
-                    var variant = product_meta.variants[i];
-                    var varinputbox = null;
-                    var varinputboxvalue = 0;
+                if (action == 'shipped') {
+                    for (let i = 0; i < product_meta.variants.length; i++) {
+                        let variant = product_meta.variants[i];
+                        let varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).eq(i);
 
-                    do {
-                        varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).filter(':not(.skip-on-submit)').eq(populated_index);
                         if (varinputbox.length == 0) {
                             break;
                         }
 
-                        populated_index++;
-                        varinputboxvalue = utils.parseFloatC(varinputbox.val());
+                        varinputbox.val(variant.quantity);
+                        varinputbox.closest('tr').find('.booking-product-price span').text(variant.total);
+                    }
+                }
+                else {
+                    let pricesbox = [];
+                    let populated_index = 0;
 
-                        if (varinputboxvalue == 0) {
-                            pricesbox.push(this.priceRow('&nbsp;'));
-                        }
-                    } while(varinputboxvalue == 0);
+                    for (let i = 0; i < product_meta.variants.length; i++) {
+                        var variant = product_meta.variants[i];
+                        var varinputbox = null;
+                        var varinputboxvalue = 0;
 
-                    this.checkInvalidFeedback(varinputbox, variant.quantity == 0 && varinputboxvalue != 0, variant.message);
+                        do {
+                            varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).filter(':not(.skip-on-submit)').eq(populated_index);
+                            if (varinputbox.length == 0) {
+                                break;
+                            }
 
-                    if (action == 'shipped') {
-                        varinputbox.closest('tr').find('.booking-product-price span').text(utils.priceRound(variant.total));
+                            populated_index++;
+                            varinputboxvalue = utils.parseFloatC(varinputbox.val());
+
+                            if (varinputboxvalue == 0) {
+                                pricesbox.push(this.priceRow('&nbsp;'));
+                            }
+                        } while(varinputboxvalue == 0);
+
+                        this.checkInvalidFeedback(varinputbox, variant.quantity == 0 && varinputboxvalue != 0, variant.message);
+                        pricesbox.push(this.priceRow(variant.unitprice_human));
                     }
 
-                    pricesbox.push(this.priceRow(variant.unitprice_human));
+                    inputbox.closest('tr').find('.prices_block').empty().append(pricesbox);
                 }
-
-                inputbox.closest('tr').find('.prices_block').empty().append(pricesbox);
             }
             else {
                 this.checkInvalidFeedback(inputbox, product_meta.quantity == 0 && utils.parseFloatC(inputbox.val()) != 0, product_meta.message);
