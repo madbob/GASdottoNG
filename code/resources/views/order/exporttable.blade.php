@@ -9,21 +9,7 @@
 
         <hr/>
 
-        @if($currentgas->hasFeature('shipping_places'))
-            <?php
-
-            $options = [
-                'all_by_name' => _i('Tutti (ordinati per utente)'),
-                'all_by_place' => _i('Tutti (ordinati per luogo)'),
-            ];
-
-            foreach($currentgas->deliveries as $delivery) {
-                $options[$delivery->id] = $delivery->name;
-            }
-
-            ?>
-            <x-larastrap::radios name="shipping_place" :label="_i('Luogo di Consegna')" :options="$options" value="all_by_place" />
-        @endif
+        @include('commons.selectshippingexport', ['aggregate' => $order->aggregate, 'included_metaplace' => ['all_by_name', 'all_by_place']])
 
         <x-larastrap::radios name="status" :label="_i('Stato Prenotazioni')" :options="['booked' => _i('Prenotate'), 'delivered' => _i('Consegnate'), 'saved' => _i('Salvate')]" value="booked" />
     </x-larastrap::form>

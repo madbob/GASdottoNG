@@ -26,20 +26,7 @@ else {
 
         <input type="hidden" name="managed_gas" value="{{ $managed_gas }}">
 
-        @if($currentgas->hasFeature('shipping_places'))
-            <?php
-
-            $options = [
-                'all_by_place' => _i('Tutti (ordinati per luogo)'),
-            ];
-
-            foreach($currentgas->deliveries as $delivery) {
-                $options[$delivery->id] = $delivery->name;
-            }
-
-            ?>
-            <x-larastrap::radios name="shipping_place" :label="_i('Luogo di Consegna')" :options="$options" value="all_by_place" />
-        @endif
+        @include('commons.selectshippingexport', ['aggregate' => $aggregate, 'included_metaplace' => ['all_by_place']])
 
         <?php list($options, $values) = flaxComplexOptions(App\Order::formattableColumns('summary')) ?>
         <x-larastrap::checks name="fields" :label="_i('Colonne')" :options="$options" :value="$values" />

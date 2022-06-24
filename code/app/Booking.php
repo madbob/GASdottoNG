@@ -395,7 +395,7 @@ class Booking extends Model
             $tmp_bookings = [];
 
             foreach($bookings as $booking) {
-                if ($booking->shipping_place->id == $shipping_place) {
+                if ($booking->shipping_place && $booking->shipping_place->id == $shipping_place) {
                     $tmp_bookings[] = $booking;
                 }
             }
