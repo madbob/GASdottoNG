@@ -2,7 +2,7 @@
     <div class="col">
         @include('commons.loadablelist', [
             'identifier' => 'product-list-' . $supplier->id,
-            'items' => $supplier->products,
+            'items' => $supplier->products()->sorted()->get(),
             'legend' => (object)[
                 'class' => 'Product'
             ],

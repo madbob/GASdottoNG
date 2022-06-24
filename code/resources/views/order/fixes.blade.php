@@ -1,4 +1,8 @@
 <x-larastrap::modal :title="_i('Note e Quantità')">
+    @php
+    $bookings = $order->bookings()->sorted();
+    @endphp
+
     <x-larastrap::iform method="POST" :action="url('orders/fixes/' . $order->id)">
         <input type="hidden" name="close-modal" value="1" class="skip-on-submit" />
         <input type="hidden" name="reload-portion" value=".order-summary-wrapper" class="skip-on-submit" />
@@ -17,11 +21,11 @@
 
         <hr/>
 
-        @if($order->bookings->isEmpty())
+        @if($bookings->isEmpty())
             <div class="alert alert-info">{{ _i("Da qui è possibile modificare la quantità prenotata di questo prodotto per ogni prenotazione, ma nessun utente ha ancora partecipato all'ordine.") }}</div>
         @else
             <table class="table table-striped">
-                @foreach($order->bookings as $po)
+                @foreach($bookings as $po)
                     <tr>
                         <td>
                             <label>

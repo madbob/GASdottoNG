@@ -94,13 +94,13 @@ class Product extends Model
 
     public function getVariantCombosAttribute()
     {
-        $product = $this;
-
-        return VariantCombo::whereHas('values', function($query) use ($product) {
-            $query->whereHas('variant', function($query) use ($product) {
-                $query->where('product_id', $product->id);
-            });
-        })->get();
+        return $this->innerCache('variant_combos', function($obj) {
+            return VariantCombo::whereHas('values', function($query) use ($obj) {
+                $query->whereHas('variant', function($query) use ($obj) {
+                    $query->where('product_id', $obj->id);
+                });
+            })->get();
+        });
     }
 
     public function getCategoryNameAttribute()
@@ -125,7 +125,7 @@ class Product extends Model
     {
         $price = $this->contextualPrice(false);
 
-        if ($this->variants()->count() != 0) {
+        if ($this->variants->count() != 0) {
             if (is_null($variant)) {
                 $variant = $this->variantCombos->where('active', true)->first();
             }

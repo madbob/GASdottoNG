@@ -58,12 +58,12 @@ class Order extends Model
 
     public function products()
     {
-        return $this->belongsToMany('App\Product')->with(['variants', 'modifiers'])->withPivot('notes')->withTrashed()->sorted();
+        return $this->belongsToMany('App\Product')->with(['variants', 'modifiers'])->withPivot('notes')->withTrashed();
     }
 
     public function bookings()
     {
-        return $this->hasMany('App\Booking')->with(['user', 'products'])->sorted();
+        return $this->hasMany('App\Booking')->with(['user', 'products']);
     }
 
     public function payment()
@@ -163,9 +163,7 @@ class Order extends Model
             $userid = $userobj->id;
         }
 
-        $ret = $this->bookings()->whereHas('user', function ($query) use ($userid) {
-            $query->where('id', '=', $userid);
-        })->first();
+        $ret = $this->bookings->where('user_id', $userid)->first();
 
         if (is_null($ret)) {
             $ret = new Booking();
@@ -191,12 +189,16 @@ class Order extends Model
     {
         $ret = [];
 
-        if (is_null($status))
+        if (is_null($status)) {
             $bookings = $this->bookings()->get();
-        else
+        }
+        else {
             $bookings = $this->bookings()->where('status', $status)->get();
+        }
 
         foreach($bookings as $booking) {
+            $booking->setRelation('order', $this);
+
             if ($booking->user->isFriend()) {
                 if (!isset($ret[$booking->user->parent_id])) {
                     $ret[$booking->user->parent_id] = $this->userBooking($booking->user->parent_id);
@@ -1076,7 +1078,9 @@ class Order extends Model
                 $this->status = $enforce_status;
             }
 
-            foreach($this->bookings as $booking) {
+            $bookings = $this->bookings()->angryload()->get();
+
+            foreach($bookings as $booking) {
                 $booking->setRelation('order', $this);
 
                 if ($enforce_status !== false) {
@@ -1136,29 +1140,32 @@ class Order extends Model
         $ret = $this->emptyReduxBehaviour();
 
         $ret->children = function($item, $filters) {
-            /*
-                Ricordarsi che qui le prenotazioni vanno sempre lette dal DB,
-                non accedendo al valore eventualmente cachato in
-                $item->bookings.
-                Questo per fare in modo che agendo sullo stesso ordine ma per
-                GAS diversi sia riapplicato lo scope RestrictedGAS, ed ottenere
-                le prenotazioni dell'ordine desiderato; altrimenti, otterrei
-                sempre le prenotazioni del primo GAS che viene elaborato
-            */
-            $bookings = $item->bookings()->get();
+            $bookings = $filters['bookings'] ?? null;
 
-            $shipping_place = $filters['shipping_place'] ?? null;
-            if ($shipping_place) {
-                $bookings = $bookings->filter(function($booking) use ($shipping_place) {
-                    return $booking->shipping_place->id == $shipping_place;
-                });
+            if (is_null($bookings)) {
+                /*
+                    Ricordarsi che qui le prenotazioni vanno sempre lette dal DB,
+                    non accedendo al valore eventualmente cachato in
+                    $item->bookings.
+                    Questo per fare in modo che agendo sullo stesso ordine ma per
+                    GAS diversi sia riapplicato lo scope RestrictedGAS, ed ottenere
+                    le prenotazioni dell'ordine desiderato; altrimenti, otterrei
+                    sempre le prenotazioni del primo GAS che viene elaborato
+                */
+                $bookings = $item->bookings()->with(['products', 'products.product', 'products.product.measure'])->get();
+
+                $shipping_place = $filters['shipping_place'] ?? null;
+                if ($shipping_place) {
+                    $bookings = $bookings->filter(function($booking) use ($shipping_place) {
+                        return $booking->shipping_place->id == $shipping_place;
+                    });
+                }
             }
 
             return $bookings;
         };
 
         $ret->optimize = function($item, $child) {
-            $child->setRelation('order', $item);
             return $child;
         };
 

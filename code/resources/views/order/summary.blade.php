@@ -6,7 +6,8 @@ $columns = $currentgas->orders_display_columns;
 $table_identifier = 'summary-' . sanitizeId($order->id);
 $display_columns = App\Order::displayColumns();
 
-$categories = $order->supplier->products()->pluck('category_id')->toArray();
+$products = $order->supplier->products()->with(['category'])->sorted()->get();
+$categories = $products->pluck('category_id')->toArray();
 $categories = array_unique($categories);
 $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->get()->pluck('name')->toArray();
 
@@ -74,7 +75,7 @@ foreach($display_columns as $identifier => $metadata) {
                 'target' => '#' . $table_identifier,
                 'table_filter' => true,
                 'limit_to' => ['th'],
-                'contents' => $order->supplier->products
+                'contents' => $products
             ])
         </div>
     </div>
@@ -86,7 +87,7 @@ foreach($display_columns as $identifier => $metadata) {
                     @foreach($display_columns as $identifier => $metadata)
                         @if($identifier == 'selection')
                             <th width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
-                                @if($order->supplier->products->count() != $order->products->count())
+                                @if($products->count() != $order->products->count())
                                     <button class="btn btn-light btn-sm toggle-product-abilitation" data-bs-toggle="button">{!! _i('Vedi Tutti') !!}</button>
                                 @endif
                             </th>
@@ -112,7 +113,7 @@ foreach($display_columns as $identifier => $metadata) {
                     generare il menu delle colonne sopra)
                 -->
 
-                @foreach($order->supplier->products as $product)
+                @foreach($products as $product)
                     <?php
 
                     $enabled = $order->hasProduct($product);

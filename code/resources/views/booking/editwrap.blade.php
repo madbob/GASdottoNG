@@ -1,7 +1,10 @@
 <?php
 
+$orders = $aggregate->orders()->with(['products', 'bookings', 'modifiers'])->get();
+$aggregate->setRelation('orders', $orders);
+
 $rand = Illuminate\Support\Str::random(10);
-$more_orders = ($aggregate->orders->count() > 1);
+$more_orders = ($orders->count() > 1);
 $grand_total = 0;
 $has_shipping = $aggregate->canShip();
 

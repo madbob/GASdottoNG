@@ -64,7 +64,7 @@ unset($display_columns['notes']);
             </thead>
 
             <tbody>
-                @foreach($order->supplier->products as $product)
+                @foreach($order->supplier->products()->sorted()->get() as $product)
                     @if($order->hasProduct($product))
                         @php
 

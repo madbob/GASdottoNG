@@ -149,10 +149,10 @@ class SuppliersService extends BaseService
         $filename = sanitizeFilename(_i('Listino %s.%s', [$supplier->name, $format]));
 
         if (isset($request['printable'])) {
-            $products = $supplier->products()->whereIn('id', $request['printable'])->get();
+            $products = $supplier->products()->whereIn('id', $request['printable'])->sorted()->get();
         }
         else {
-            $products = $supplier->products;
+            $products = $supplier->products()->sorted()->get();
         }
 
         $headers = ProductFormatter::getHeaders($fields);

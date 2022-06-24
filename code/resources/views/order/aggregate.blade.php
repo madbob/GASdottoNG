@@ -1,10 +1,20 @@
 <?php
 
+$orders = $aggregate->orders()->with([
+    'products', 'products.measure', 'products.category',
+    'bookings', 'bookings.user.shippingplace', 'bookings.user.shippingplace.modifiers',
+    'payment', 'modifiers',
+])->get();
+
+$aggregate->setRelation('orders', $orders);
+
 $shippable_status = false;
 $controllable = false;
 $fast_shipping_enabled = false;
 
-foreach ($aggregate->orders as $order) {
+foreach ($orders as $order) {
+    $order->setRelation('aggregate', $aggregate);
+
     if ($currentuser->can('supplier.shippings', $order->supplier)) {
         $controllable = true || $controllable;
     }
@@ -16,8 +26,8 @@ foreach ($aggregate->orders as $order) {
 
 $shippable_status = ($controllable && $aggregate->isActive() && $aggregate->isRunning() == false);
 $shipped_status = ($controllable && $aggregate->isActive() == false && $aggregate->isRunning() == false);
-$more_orders = ($aggregate->orders->count() > 1);
-$multi_gas = ($aggregate->gas()->count() > 1 && $currentuser->can('gas.multi', $currentuser->gas));
+$more_orders = ($orders->count() > 1);
+$multi_gas = ($aggregate->gas->count() > 1 && $currentuser->can('gas.multi', $currentuser->gas));
 $panel_rand_wrap = rand();
 $master_summary = $aggregate->reduxData();
 
@@ -48,8 +58,8 @@ $master_summary = $aggregate->reduxData();
     @endif
 
     <div class="col-12">
-        <x-larastrap::tabs :id="md5($aggregate->orders->pluck('id')->join(''))">
-            @foreach($aggregate->orders as $index => $order)
+        <x-larastrap::tabs :id="md5($orders->pluck('id')->join(''))">
+            @foreach($orders as $index => $order)
                 <x-larastrap::tabpane :label="$order->printableName() . $order->statusIcons()" :active="$index == 0">
                     @can('supplier.orders', $order->supplier)
                         @include('order.edit', ['order' => $order, 'master_summary' => $master_summary])

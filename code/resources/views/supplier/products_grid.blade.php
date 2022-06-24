@@ -2,6 +2,7 @@
 
 $identifier = sprintf('products-grid-%s', $supplier->id);
 $has_manual_sorting = $currentgas->manual_products_sorting;
+$products = $supplier->products()->sorted()->get();
 
 ?>
 
@@ -15,7 +16,7 @@ $has_manual_sorting = $currentgas->manual_products_sorting;
             'class' => 'Product',
             'target' => '#' . $identifier,
             'table_filter' => true,
-            'contents' => $supplier->products
+            'contents' => $products
         ])
     </div>
 </div>
@@ -40,7 +41,7 @@ $has_manual_sorting = $currentgas->manual_products_sorting;
                 </thead>
                 <tbody>
                     <?php $measures = App\Measure::orderBy('name', 'asc')->get() ?>
-                    @foreach($supplier->products as $product)
+                    @foreach($products as $product)
                         <x-larastrap::enclose :obj="$product">
                             <tr data-element-id="{{ $product->id }}">
                                 @if($has_manual_sorting)

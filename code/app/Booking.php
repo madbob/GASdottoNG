@@ -76,6 +76,11 @@ class Booking extends Model
         return $this->belongsTo('App\Movement');
     }
 
+    public function scopeAngryload($query)
+    {
+        $query->with(['modifiedValues', 'products.modifiedValues', 'user.friends_with_trashed', 'user.shippingplace', 'user.shippingplace.modifiers', 'user.shippingplace.modifiers.modifierType']);
+    }
+
     public function scopeSorted($query)
     {
         /*
@@ -326,7 +331,7 @@ class Booking extends Model
     public function getFriendsBookingsAttribute()
     {
         return $this->innerCache('friends_bookings', function($obj) {
-            $bookings = Booking::where('order_id', $obj->order_id)->whereIn('user_id', $obj->user->friends_with_trashed->pluck('id'))->get();
+            $bookings = Booking::where('order_id', $obj->order_id)->whereIn('user_id', $obj->user->friends_with_trashed->pluck('id'))->angryload()->get();
 
             foreach($bookings as $b) {
                 $b->setRelation('order', $obj->order);
@@ -547,31 +552,21 @@ class Booking extends Model
             }
         }
 
-        /*
-            TODO Verificare i risultati dei diversi reduxData()
-        */
+        $aggregate = $this->order->aggregate;
 
         if ($target_priority == 3) {
-            $aggregate = $this->order->aggregate;
             $aggregate_data = $aggregate->reduxData();
         }
         else if ($target_priority == 2) {
-            $aggregate_data = (object) [
-                'orders' => [
-                    $this->order_id => $this->order->reduxData(),
-                ],
-            ];
+            $aggregate_data = $aggregate->reduxData(null, [
+                'orders' => [$this->order]
+            ]);
         }
         else if ($target_priority <= 1) {
-            $aggregate_data = (object) [
-                'orders' => [
-                    $this->order_id => (object) [
-                        'bookings' => [
-                            $this->id = $this->reduxData(),
-                        ],
-                    ],
-                ],
-            ];
+            $aggregate_data = $aggregate->reduxData(null, [
+                'orders' => [$this->order],
+                'bookings' => [$this]
+            ]);
         }
 
         return $aggregate_data;
@@ -586,16 +581,14 @@ class Booking extends Model
         /*
             Se non ci sono modificatori coinvolti, evito di fare la riduzione
             dell'intero aggregato.
-            TODO: questo potrebbe essere ulteriormente perfezionato
-            identificando gli elementi di cui ha bisogno ogni modificatore (la
-            prenotazione, l'intero ordine o l'intero aggregato) e ridurre solo
-            quelli rilevanti
         */
         if ($modifiers->isEmpty() == false) {
             if (is_null($aggregate_data)) {
+                /*
                 $aggregate = $this->order->aggregate;
                 $aggregate_data = $aggregate->reduxData();
-                // $aggregate_data = $this->minimumRedux($modifiers);
+                */
+                $aggregate_data = $this->minimumRedux($modifiers);
             }
 
             /*

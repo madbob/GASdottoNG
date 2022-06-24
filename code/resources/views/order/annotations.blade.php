@@ -1,4 +1,4 @@
-<?php $annotated_bookings = $order->bookings()->where('notes', '!=', '')->get() ?>
+<?php $annotated_bookings = $order->bookings()->where('notes', '!=', '')->sorted()->get() ?>
 
 @if($annotated_bookings->isEmpty() == false)
     <div class="row">

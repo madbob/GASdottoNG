@@ -49,7 +49,7 @@ class Supplier extends Model
 
     public function products()
     {
-        return $this->hasMany('App\Product')->with('measure')->sorted();
+        return $this->hasMany('App\Product')->with('measure');
     }
 
     public function orders()
@@ -98,8 +98,9 @@ class Supplier extends Model
         $contacts = $contacts->merge($this->contacts()->where('type', 'email')->get());
 
         $users = everybodyCan('supplier.modify', $this);
-        foreach($users as $u)
+        foreach($users as $u) {
             $contacts = $contacts->merge($u->contacts()->where('type', 'email')->get());
+        }
 
         return $contacts;
     }

@@ -79,7 +79,7 @@ class BookingController extends Controller
 
     public function objhead(Request $request, $id)
     {
-        $aggregate = Aggregate::findOrFail($id);
+        $aggregate = Aggregate::with(['orders', 'orders.products', 'orders.bookings', 'orders.modifiers'])->findOrFail($id);
 
         return response()->json([
             'id' => $aggregate->id,

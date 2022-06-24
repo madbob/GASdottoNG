@@ -156,10 +156,13 @@ class User extends Authenticatable
     public function printableFriendHeader($aggregate)
     {
         $ret = $this->printableName();
+        $this->load('shippingplace');
 
         $tot = 0;
-        foreach($aggregate->orders as $order)
+        foreach($aggregate->orders as $order) {
+            $order->setRelation('aggregate', $aggregate);
             $tot += $order->userBooking($this)->getValue('effective', false);
+        }
 
         if ($tot != 0)
             $ret .= '<div class="pull-right">' . _i('Ha ordinato %s', printablePriceCurrency($tot)) . '</div>';

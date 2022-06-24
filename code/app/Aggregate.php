@@ -36,7 +36,7 @@ class Aggregate extends Model
 
     public function orders()
     {
-        return $this->hasMany('App\Order')->with(['supplier', 'products'])->orderBy('aggregate_sorting', 'asc');
+        return $this->hasMany('App\Order')->with(['supplier'])->orderBy('aggregate_sorting', 'asc');
     }
 
     public function scopeSupplier($query, $supplier_id)
@@ -154,6 +154,8 @@ class Aggregate extends Model
 
     public static function getByStatus($user, $status)
     {
+        $eager_load = ['orders', 'orders.products', 'orders.bookings', 'orders.bookings.modifiedValues', 'orders.modifiers'];
+
         switch($status) {
             /*
                 Se cerco gli ordini aperti ed è stata abilitata la funzione per
@@ -165,7 +167,7 @@ class Aggregate extends Model
 
                 $aggregates = self::whereHas('orders', function ($query) {
                     $query->whereIn('status', ['open', 'closed'])->accessibleBooking();
-                })->with(['orders'])->get();
+                })->with($eager_load)->get();
 
                 foreach($aggregates as $a) {
                     if ($a->status == 'open' || $a->hasPendingPackages()) {
@@ -180,7 +182,7 @@ class Aggregate extends Model
                     $query->whereIn('status', ['closed', 'user_payment'])->where(function($query) use ($user) {
                         $query->whereHas('bookings', function($query) use ($user) {
                             $query->where('status', '!=', 'shipped')->where(function($query) use ($user) {
-                                $query->where('user_id', $user->id)->orWhereIn('user_id', $user->friends()->pluck('id'));
+                                $query->where('user_id', $user->id)->orWhereIn('user_id', $user->friends->pluck('id'));
                             });
                         })->orWhere(function($query) {
                             $query->accessibleBooking();
@@ -189,7 +191,7 @@ class Aggregate extends Model
                             $query->whereIn('supplier_id', $supplier_shippings);
                         });
                     });
-                })->with(['orders'])->get();
+                })->with($eager_load)->get();
         }
     }
 
@@ -321,6 +323,7 @@ class Aggregate extends Model
         $friends_tot = 0;
 
         foreach($this->orders as $o) {
+            $o->setRelation('aggregate', $this);
             $b = $o->userBooking($user);
             $tot += $b->getValue('effective', false);
             $friends_tot += $b->total_friends_value;
@@ -389,7 +392,6 @@ class Aggregate extends Model
 
         foreach ($this->orders as $order) {
             foreach ($order->topLevelBookings() as $booking) {
-                $booking->setRelation('order', $order);
                 $user_id = $booking->user->id;
 
                 if (!isset($ret[$user_id])) {
@@ -461,8 +463,8 @@ class Aggregate extends Model
     public function getLastNotifyAttribute()
     {
         return $this->innerCache('last_notify', function($obj) {
-            if ($obj->orders()->count() != 0) {
-                return $obj->orders()->first()->last_notify;
+            if ($obj->orders->count() != 0) {
+                return $obj->orders->first()->last_notify;
             }
             else {
                 Log::error('Aggregato senza ordini inclusi: ' . $this->id);
@@ -474,8 +476,8 @@ class Aggregate extends Model
     public function getSupplierNameAttribute()
     {
         return $this->innerCache('supplier_name', function($obj) {
-            if ($obj->orders()->count() != 0) {
-                return $obj->orders()->first()->supplier->name;
+            if ($obj->orders->count() != 0) {
+                return $obj->orders->first()->supplier->name;
             }
             else {
                 Log::error('Aggregato senza ordini inclusi: ' . $this->id);
@@ -534,6 +536,10 @@ class Aggregate extends Model
         $ret = $this->emptyReduxBehaviour();
 
         $ret->children = function($item, $filters) {
+            if (isset($filters['orders'])) {
+                return $filters['orders'];
+            }
+
             return $item->orders;
         };
 

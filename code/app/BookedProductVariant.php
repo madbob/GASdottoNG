@@ -16,7 +16,7 @@ class BookedProductVariant extends Model
 
     public function components()
     {
-        return $this->hasMany('App\BookedProductComponent', 'productvariant_id');
+        return $this->hasMany('App\BookedProductComponent', 'productvariant_id')->with(['value']);
     }
 
     public function getStatusAttribute()

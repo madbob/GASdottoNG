@@ -1,6 +1,7 @@
 <?php
 
-$more_orders = ($aggregate->orders->count() > 1);
+$orders = $aggregate->orders;
+$more_orders = ($orders->count() > 1);
 $grand_total = 0;
 
 ?>
@@ -8,13 +9,14 @@ $grand_total = 0;
 @include('booking.head', ['aggregate' => $aggregate])
 
 <x-larastrap::mform nosave nodelete>
-    @foreach($aggregate->orders as $order)
+    @foreach($orders as $order)
         @if($more_orders)
             <h3>{{ $order->printableName() }}</h3>
         @endif
 
         <?php
 
+        $order->setRelation('aggregate', $aggregate);
         $contacts = $order->showableContacts();
         $o = $order->userBooking($user->id);
         $mods = $o->applyModifiers(null, false);

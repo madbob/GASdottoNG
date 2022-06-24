@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Eloquent\Model;
 
 use App\Observers\MovementObserver;
 use App\Observers\UserObserver;
@@ -28,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+        // Model::preventLazyLoading();
 
         Movement::observe(MovementObserver::class);
         User::observe(UserObserver::class);

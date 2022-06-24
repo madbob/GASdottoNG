@@ -36,7 +36,7 @@ usort($suppliers, function($a, $b) {
 <x-larastrap::field>
     @if(empty($suppliers) == false)
         <div class="supplier-future-dates">
-            @include('dates.list', ['dates' => array_values($suppliers)[0]->calendarDates])
+            @include('dates.list', ['dates' => App\Supplier::find(array_values($suppliers)[0]->id)->calendarDates])
         </div>
     @endif
 </x-larastrap::field>
