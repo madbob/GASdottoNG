@@ -1,10 +1,11 @@
-FROM php:7
+FROM php:7.3-fpm
 
 RUN apt-get update && \
-    apt-get install -y zip unzip && \
+    apt-get install -y libzip-dev zip unzip && \
     apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev
 
-RUN docker-php-ext-install -j$(nproc) iconv && \
+RUN docker-php-ext-install zip && \
+    docker-php-ext-install -j$(nproc) iconv && \
     docker-php-ext-configure gd && \
     docker-php-ext-install -j$(nproc) gd
 
