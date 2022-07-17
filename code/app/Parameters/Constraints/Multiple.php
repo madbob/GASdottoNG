@@ -15,7 +15,7 @@ class Multiple extends Constraint
     {
         $field = $this->identifier();
 
-        if ($product->$field != 0) {
+        if ($product->$field > 1) {
             return _i('Multiplo: %.02f', $product->$field);
         }
 

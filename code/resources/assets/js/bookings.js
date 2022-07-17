@@ -101,23 +101,6 @@ class Bookings
             }
         });
 
-        $('.mobile-quantity-switch button', container).click((e) => {
-            e.preventDefault();
-
-            var button = $(e.currentTarget);
-            var input = button.closest('.mobile-quantity-switch').siblings('.booking-product-quantity').find('input.number');
-
-            var original = parseFloat(input.val());
-            if (button.hasClass('plus')) {
-                input.val(original + 1);
-            }
-            else {
-                input.val(Math.max(0, original - 1));
-            }
-
-            input.keyup();
-        });
-
         $('.add-booking-product', container).click(function(e) {
             e.preventDefault();
             var table = $(this).closest('table');

@@ -15,7 +15,7 @@ class MinQuantity extends Constraint
     {
         $field = $this->identifier();
 
-        if ($product->$field != 0) {
+        if ($product->$field > 1) {
             return _i('Minimo: %.02f', $product->$field);
         }
 

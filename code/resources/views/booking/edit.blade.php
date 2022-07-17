@@ -170,7 +170,10 @@ $form_buttons = [
                         </td>
 
                         <td>
-                            <label class="static-label"><small>{!! $product->printableDetails($order) !!}</small></label>
+                            <?php $details = $product->printableDetails($order) ?>
+                            @if(filled($details))
+                                <label class="static-label"><small>{!! $details !!}</small></label>
+                            @endif
                         </td>
 
                         <td class="text-end">
@@ -221,7 +224,7 @@ $form_buttons = [
 
         <div class="row">
             <div class="col-12 col-lg-4 offset-lg-8">
-                <x-larastrap::textarea name="notes" :label="_i('Note')" :value="$o->notes" squeeze="false" :npostfix="sprintf('_%s', $order->id)" />
+                <x-larastrap::textarea name="notes" :label="_i('Note')" rows="3" :value="$o->notes" squeeze="false" :npostfix="sprintf('_%s', $order->id)" />
             </div>
         </div>
 
