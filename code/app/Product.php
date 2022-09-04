@@ -143,7 +143,15 @@ class Product extends Model
 
         if ($this->variants->count() != 0) {
             if (is_null($variant)) {
-                $variant = $this->variantCombos->where('active', true)->first();
+                /*
+                    È rilevante l'ordinamento alfabetico dei valori, soprattutto
+                    quando nessuna variante è selezionata di default: essendo
+                    preso sempre il primo valore, bisogna accertarsi che il
+                    primo sia sempre lo stesso
+                */
+                $variant = $this->variantCombos->where('active', true)->sortBy(function($combo, $key) {
+                    return $combo->values->pluck('value')->join(' ');
+                }, SORT_NATURAL)->first();
             }
 
             if ($variant) {
