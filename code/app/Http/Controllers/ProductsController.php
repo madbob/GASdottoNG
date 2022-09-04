@@ -104,6 +104,7 @@ class ProductsController extends BackedController
             $data['name'] = $request->input($id . '-name', $product->name);
             $data['price'] = $request->input($id . '-price', $product->price);
             $data['measure_id'] = $request->input($id . '-measure_id', $product->measure_id);
+            $data['max_available'] = $request->input($id . '-max_available', $product->max_available);
             $data['active'] = $request->has($id . '-active');
             $data['sorting'] = $index;
             $this->service->update($id, $data);

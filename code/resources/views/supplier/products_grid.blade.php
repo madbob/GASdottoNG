@@ -33,8 +33,9 @@ $products = $supplier->products()->sorted()->get();
                             <th width="5%"></th>
                         @endif
                         <th width="40%">{{ _i('Nome') }}</th>
-                        <th width="20%">{{ _i('Unità di Misura') }}</th>
-                        <th width="20%">{{ _i('Prezzo Unitario') }}</th>
+                        <th width="15%">{{ _i('Unità di Misura') }}</th>
+                        <th width="15%">{{ _i('Prezzo Unitario') }}</th>
+                        <th width="15%">{{ _i('Disponibile') }}</th>
                         <th width="10%">{{ _i('Ordinabile') }}</th>
                         <th width="5%"></th>
                     </tr>
@@ -59,6 +60,9 @@ $products = $supplier->products()->sorted()->get();
                                 </td>
                                 <td>
                                     <x-larastrap::price name="price" :label="_i('Prezzo Unitario')" squeeze required :nprefix="$product->id . '-'" />
+                                </td>
+                                <td>
+                                    <x-larastrap::decimal name="max_available" :label="_i('Disponibile')" squeeze required :nprefix="$product->id . '-'" />
                                 </td>
                                 <td>
                                     <x-larastrap::check name="active" :label="_i('Ordinabile')" squeeze :nprefix="$product->id . '-'" />
