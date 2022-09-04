@@ -15,7 +15,6 @@ class ProductsController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\Product',
-            'endpoint' => 'products',
             'service' => $service,
             'json_wrapper' => 'product',
         ]);

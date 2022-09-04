@@ -21,7 +21,6 @@ class DatesController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\Date',
-            'endpoint' => 'dates',
             'service' => $service
         ]);
     }

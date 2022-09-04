@@ -23,7 +23,6 @@ class UsersController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\User',
-            'endpoint' => 'users',
             'service' => $service
         ]);
     }

@@ -17,7 +17,6 @@ class ModifierTypesController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\ModifierType',
-            'endpoint' => 'modtypes',
             'service' => $service
         ]);
     }

@@ -16,13 +16,10 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     private $reference_class;
-    private $endpoint;
 
     protected function commonInit($parameters)
     {
         $this->reference_class = $parameters['reference_class'];
-        if (isset($parameters['endpoint']))
-            $this->endpoint = $parameters['endpoint'];
     }
 
     protected function errorResponse($message, $target = '')

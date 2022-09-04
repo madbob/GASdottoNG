@@ -18,7 +18,6 @@ class ModifiersController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\Modifier',
-            'endpoint' => 'modifiers',
             'service' => $service
         ]);
     }

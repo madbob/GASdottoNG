@@ -21,7 +21,6 @@ class FriendsController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\User',
-            'endpoint' => 'friends',
             'service' => $service
         ]);
     }

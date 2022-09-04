@@ -57,9 +57,9 @@ class DynamicBookingsService extends BookingsService
         return [$final_quantity, $message];
     }
 
-    private function reduceVariants($booking, $product, $delivering)
+    private function reduceVariants($product, $delivering)
     {
-        return $product->variants->reduce(function($varcarry, $variant) use ($booking, $product, $delivering) {
+        return $product->variants->reduce(function($varcarry, $variant) use ($product, $delivering) {
             list($final_variant_quantity, $variant_message) = $this->handleQuantity($delivering, $product, $variant, $variant);
             $combo = $variant->variantsCombo();
 
@@ -108,7 +108,7 @@ class DynamicBookingsService extends BookingsService
                     'total' => (float) printablePrice($delivering ? $product->getValue('delivered') : $product->getValue('booked')),
                     'quantity' => (float) $final_quantity,
                     'message' => $message,
-                    'variants' => $this->reduceVariants($booking, $product, $delivering),
+                    'variants' => $this->reduceVariants($product, $delivering),
                 ];
                 return $carry;
             }, []),

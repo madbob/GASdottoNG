@@ -18,7 +18,6 @@ class SuppliersController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\Supplier',
-            'endpoint' => 'suppliers',
             'service' => $service
         ]);
     }

@@ -31,6 +31,14 @@ class MovementType extends Model
         return array_key_exists($type, $valid);
     }
 
+    public function validForInvoices()
+    {
+        return (
+            ($this->sender_type == 'App\Gas' && ($this->target_type == 'App\Supplier' || $this->target_type == 'App\Invoice')) ||
+            ($this->sender_type == 'App\Supplier' && $this->target_type == 'App\Gas')
+        );
+    }
+
     private function applyFunction($obj, $movement, $op)
     {
         /*

@@ -29,7 +29,6 @@ class MovementsController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\Movement',
-            'endpoint' => 'movements',
             'service' => $service
         ]);
     }

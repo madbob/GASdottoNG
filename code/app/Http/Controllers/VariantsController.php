@@ -23,7 +23,6 @@ class VariantsController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\Variant',
-            'endpoint' => 'variants',
             'service' => $service
         ]);
     }

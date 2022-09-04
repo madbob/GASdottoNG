@@ -11,7 +11,6 @@ class MovementTypesController extends BackedController
     {
         $this->commonInit([
             'reference_class' => 'App\\MovementType',
-            'endpoint' => 'movtypes',
             'service' => $service
         ]);
     }

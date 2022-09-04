@@ -38,7 +38,6 @@ class OrdersController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\Order',
-            'endpoint' => 'orders',
             'service' => $service,
         ]);
     }

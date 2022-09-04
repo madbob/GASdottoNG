@@ -20,7 +20,6 @@ class MultiGasController extends Controller
 
         $this->commonInit([
             'reference_class' => 'App\\Gas',
-            'endpoint' => 'multigas',
             'service' => $service
         ]);
     }

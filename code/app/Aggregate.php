@@ -386,6 +386,36 @@ class Aggregate extends Model
         return false;
     }
 
+    private function sortByStatus($ret)
+    {
+        uasort($ret, function($a, $b) {
+            $a_status = $a->status;
+            $b_status = $b->status;
+
+            if ($a_status == $b_status) {
+                return strcmp($a->user->printableName(), $b->user->printableName());
+            }
+            else {
+                if ($a_status == 'pending') {
+                    return -1;
+                }
+                if ($b_status == 'pending') {
+                    return 1;
+                }
+                if ($a_status == 'saved') {
+                    return -1;
+                }
+                if ($b_status == 'saved') {
+                    return 1;
+                }
+
+                return -1;
+            }
+        });
+
+        return $ret;
+    }
+
     public function getBookingsAttribute()
     {
         $ret = [];
@@ -436,27 +466,7 @@ class Aggregate extends Model
             }
         }
 
-        uasort($ret, function($a, $b) {
-            $a_status = $a->status;
-            $b_status = $b->status;
-
-            if ($a_status == $b_status) {
-                return strcmp($a->user->printableName(), $b->user->printableName());
-            }
-            else {
-                if ($a_status == 'pending')
-                    return -1;
-                if ($b_status == 'pending')
-                    return 1;
-                if ($a_status == 'saved')
-                    return -1;
-                if ($b_status == 'saved')
-                    return 1;
-
-                return -1;
-            }
-        });
-
+        $ret = $this->sortByStatus($ret);
         return $ret;
     }
 

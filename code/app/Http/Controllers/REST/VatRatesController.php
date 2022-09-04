@@ -15,7 +15,6 @@ class VatRatesController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\VatRate',
-            'endpoint' => 'vatrates',
             'service' => $service,
             'json_wrapper' => 'vatrate',
         ]);

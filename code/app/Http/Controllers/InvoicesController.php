@@ -26,7 +26,6 @@ class InvoicesController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\Invoice',
-            'endpoint' => 'invoices',
             'service' => $service,
         ]);
     }
@@ -78,7 +77,7 @@ class InvoicesController extends BackedController
         $available_types = movementTypes();
 
         foreach($available_types as $at) {
-            if (($at->sender_type == 'App\Gas' && ($at->target_type == 'App\Supplier' || $at->target_type == 'App\Invoice')) || ($at->sender_type == 'App\Supplier' && $at->target_type == 'App\Gas')) {
+            if ($at->validForInvoices()) {
                 $alternative_types[$at->id] = $at->name;
             }
         }
@@ -113,36 +112,48 @@ class InvoicesController extends BackedController
         ]);
     }
 
-    private function movementAttach($type, $user, $invoice)
+    private function guessTarget($invoice, $mov_type, $user)
     {
         $target = null;
-        $sender = null;
 
-        $metadata = movementTypes($type);
-
-        if ($metadata->target_type == 'App\Invoice') {
+        if ($mov_type->target_type == 'App\Invoice') {
             $target = $invoice;
         }
-        else if ($metadata->target_type == 'App\Supplier') {
+        else if ($mov_type->target_type == 'App\Supplier') {
             $target = $invoice->supplier;
         }
-        else if ($metadata->target_type == 'App\Gas') {
+        else if ($mov_type->target_type == 'App\Gas') {
             $target = $user->gas;
         }
         else {
             Log::error(_('Tipo movimento non riconosciuto durante il salvataggio della fattura'));
         }
 
-        if ($metadata->sender_type == 'App\Supplier') {
+        return $target;
+    }
+
+    private function guessSender($invoice, $mov_type, $user)
+    {
+        $sender = null;
+
+        if ($mov_type->sender_type == 'App\Supplier') {
             $sender = $invoice->supplier;
         }
-        else if ($metadata->sender_type == 'App\Gas') {
+        else if ($mov_type->sender_type == 'App\Gas') {
             $sender = $user->gas;
         }
         else {
             Log::error(_('Tipo movimento non riconosciuto durante il salvataggio della fattura'));
         }
 
+        return $sender;
+    }
+
+    private function movementAttach($type, $user, $invoice)
+    {
+        $metadata = movementTypes($type);
+        $target = $this->guessTarget($invoice, $metadata, $user);
+        $sender = $this->guessSender($invoice, $metadata, $user);
         return [$sender, $target];
     }
 
