@@ -54,7 +54,7 @@ $buttons[] = ['color' => 'success', 'label' => _i('Salva'), 'attributes' => ['ty
         <x-larastrap::hidden name="target_id" />
 
         @if($amount_editable || $editable)
-            @include('commons.pricecurrency')
+            @include('commons.pricecurrency', ['allow_negative' => $obj->type_metadata->allow_negative])
         @else
             <x-larastrap::price name="amount" :label="$amount_label" readonly :currency="$obj->currency_id" />
         @endif

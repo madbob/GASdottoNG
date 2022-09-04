@@ -20,7 +20,7 @@
 @if($fixed)
     <x-larastrap::price name="amount" :label="_i('Valore')" :value="$fixed" readonly />
 @else
-    @include('commons.pricecurrency')
+    @include('commons.pricecurrency', ['allow_negative' => $allow_negative])
 @endif
 
 <x-larastrap::radios name="method" :label="_i('Metodo')" :options="$payments" :value="$default_method" required />
