@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use App;
 use Log;
 
+use App\Events\VariantChanged;
 use App\Events\SluggableCreating;
 
 class Product extends Model
@@ -95,11 +96,26 @@ class Product extends Model
     public function getVariantCombosAttribute()
     {
         return $this->innerCache('variant_combos', function($obj) {
-            return VariantCombo::whereHas('values', function($query) use ($obj) {
+            $ret = VariantCombo::whereHas('values', function($query) use ($obj) {
                 $query->whereHas('variant', function($query) use ($obj) {
                     $query->where('product_id', $obj->id);
                 });
             })->get();
+
+            /*
+                Per scrupolo qui faccio un controllo: se il prodotto ha delle
+                varianti ma nessuna combo, ne forzo qui la rigenerazione
+            */
+            if ($ret->isEmpty() && $this->variants()->count() != 0) {
+                foreach($this->variants as $variant) {
+                    VariantChanged::dispatch($variant);
+                }
+
+                return $this->variantCombos;
+            }
+            else {
+                return $ret;
+            }
         });
     }
 
