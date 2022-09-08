@@ -47,7 +47,7 @@ $form_buttons = [
 
         if ($order->keep_open_packages != 'no' && $enforced == false) {
             if ($order->status == 'open') {
-                $products = $order->products()->with(['category', 'measure'])->get();
+                $products = $order->products()->with(['category', 'measure'])->sorted()->get();
             }
             else {
                 $products = $order->pendingPackages();
@@ -55,7 +55,7 @@ $form_buttons = [
             }
         }
         else {
-            $products = $order->products()->with(['category', 'measure'])->get();
+            $products = $order->products()->with(['category', 'measure'])->sorted()->get();
         }
 
         $categories = $products->pluck('category_id')->toArray();
