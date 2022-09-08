@@ -1,6 +1,6 @@
 <x-larastrap::modal :title="_i('Note e Quantità')">
     @php
-    $bookings = $order->bookings()->sorted();
+    $bookings = $order->bookings()->sorted()->get();
     @endphp
 
     <x-larastrap::iform method="POST" :action="url('orders/fixes/' . $order->id)">

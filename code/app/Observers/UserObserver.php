@@ -72,8 +72,8 @@ class UserObserver
         }
 
         if (filled($user->card_number)) {
-            $test = User::where('id', '!=', $user->id)->where('gas_id', $user->gas_id)->where('card_number', $user->card_number)->first();
-            if ($test != null) {
+            $test = User::where('id', '!=', $user->id)->where('gas_id', $user->gas_id)->where('card_number', $user->card_number)->count();
+            if ($test != 0) {
                 throw new IllegalArgumentException(_i('Numero tessera già assegnato'), 'card_number');
             }
         }

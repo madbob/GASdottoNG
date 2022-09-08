@@ -22,7 +22,7 @@ class UserFactory extends Factory
             'lastname' => $this->faker->lastName(),
             'password' => bcrypt(str_random(10)),
             'member_since' => date("Y-m-d H:i:s"),
-            'card_number' => $this->faker->text(20),
+            'card_number' => str_random(20),
         ];
     }
 }
