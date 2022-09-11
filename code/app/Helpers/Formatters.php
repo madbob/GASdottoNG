@@ -72,6 +72,13 @@ function normalizeUrl($url)
         return false;
 }
 
+function prettyFormatHtmlText($str)
+{
+    $url_pattern = '/(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/';
+    $str = preg_replace($url_pattern, '<a href="$0" target="_blank">$0</a>', $str);
+    return nl2br($str);
+}
+
 function download_headers($mimetype, $filename)
 {
     app('debugbar')->disable();

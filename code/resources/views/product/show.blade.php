@@ -7,11 +7,14 @@
 
             <x-larastrap::field :label="_i('Descrizione')">
                 <p class="form-control-plaintext">
-                    {!! nl2br($product->description) !!}
+                    {!! prettyFormatHtmlText($product->description) !!}
                 </p>
             </x-larastrap::field>
 
-            <x-larastrap::text name="supplier_code" :label="_i('Codice Fornitore')" readonly disabled />
+            @if(filled($product->supplier_code))
+                <x-larastrap::text name="supplier_code" :label="_i('Codice Fornitore')" readonly disabled />
+            @endif
+
             <x-larastrap::check name="active" :label="_i('Ordinabile')" readonly disabled />
         </div>
         <div class="col-md-6">
