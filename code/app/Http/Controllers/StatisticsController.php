@@ -102,7 +102,7 @@ class StatisticsController extends Controller
         $data = [];
         $categories = [];
 
-        $bookings = $this->createBookingQuery(Booking::query(), $start, $end, $target, null)->with('order')->get();
+        $bookings = $this->createBookingQuery(Booking::query(), $start, $end, $target, null)->with('order', 'products')->get();
 
         foreach ($bookings as $booking) {
             $name = $booking->order->supplier_id;
@@ -118,16 +118,12 @@ class StatisticsController extends Controller
             $data[$name]->value += $booking->getValue('delivered', true);
         }
 
-        $products_cache = [];
         $data_for_categories = BookedProduct::selectRaw('product_id, SUM(final_price) as price')->whereHas('booking', function($query) use ($start, $end, $target) {
             $this->createBookingQuery($query, $start, $end, $target, null);
-        })->with('product')->groupBy('product_id')->get();
+        })->with('product', 'product.category')->groupBy('product_id')->get();
 
         foreach($data_for_categories as $dfc) {
-            if (!isset($products_cache[$dfc->product_id]))
-                $products_cache[$dfc->product_id] = $dfc->product->category_id;
-
-            $category_id = $products_cache[$dfc->product_id];
+            $category_id = $dfc->product->category_id;
 
             if (!isset($categories[$category_id])) {
                 $categories[$category_id] = (object) [
