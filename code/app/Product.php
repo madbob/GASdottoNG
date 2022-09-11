@@ -119,6 +119,13 @@ class Product extends Model
         });
     }
 
+    public function getSortedVariantCombosAttribute()
+    {
+        return $this->variantCombos->where('active', true)->sortBy(function($combo, $key) {
+            return $combo->values->pluck('value')->join(' ');
+        }, SORT_NATURAL);
+    }
+
     public function getCategoryNameAttribute()
     {
         $cat = $this->category;
@@ -149,9 +156,7 @@ class Product extends Model
                     preso sempre il primo valore, bisogna accertarsi che il
                     primo sia sempre lo stesso
                 */
-                $variant = $this->variantCombos->where('active', true)->sortBy(function($combo, $key) {
-                    return $combo->values->pluck('value')->join(' ');
-                }, SORT_NATURAL)->first();
+                $variant = $this->sortedVariantCombos->first();
             }
 
             if ($variant) {

@@ -10,7 +10,7 @@
                     @include('variant.matrixhead')
 
                     <tbody>
-                        @foreach($product->variantCombos as $combo)
+                        @foreach($product->sortedVariantCombos as $combo)
                             <x-larastrap::enclose :obj="$combo">
                                 <tr>
                                     @foreach($combo->values as $value)

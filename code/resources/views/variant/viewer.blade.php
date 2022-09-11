@@ -20,7 +20,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($product->variantCombos as $combo)
+                    @foreach($product->sortedVariantCombos as $combo)
                         <tr>
                             @foreach($combo->values as $value)
                                 <td>{{ $value->value }}</td>
