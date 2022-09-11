@@ -75,9 +75,10 @@ class Statistics {
         this.loadingGraphs('generic');
 
         $.getJSON('/stats/summary', {
-            start: $('#stats-summary-form input[name=startdate]').val(),
-            end: $('#stats-summary-form input[name=enddate]').val(),
-            target: $('input[name=stats_target]').val(),
+            startdate: $('#stats-summary-form input[name=startdate]').val(),
+            enddate: $('#stats-summary-form input[name=enddate]').val(),
+            target: $('#stats-summary-form input[name=target]').val(),
+            format: 'json',
         }, (data) => {
             this.doGraphs('generic', data);
         });
@@ -89,9 +90,10 @@ class Statistics {
 
         $.getJSON('/stats/supplier', {
             supplier: $('#stats-supplier-form select[name=supplier] option:selected').val(),
-            start: $('#stats-supplier-form input[name=startdate]').val(),
-            end: $('#stats-supplier-form input[name=enddate]').val(),
-            target: $('input[name=stats_target]').val(),
+            startdate: $('#stats-supplier-form input[name=startdate]').val(),
+            enddate: $('#stats-supplier-form input[name=enddate]').val(),
+            target: $('#stats-supplier-form input[name=target]').val(),
+            format: 'json',
         }, (data) => {
             this.doGraphs('products', data);
         });

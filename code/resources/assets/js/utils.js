@@ -60,6 +60,21 @@ class Utils {
             window.open(url, '_blank');
         });
 
+        $('.form-download', container).click(function(event) {
+            event.preventDefault();
+            let data = $(this).closest('form').find('input, select').serializeArray();
+
+            let url = $(this).attr('href');
+            if (url.indexOf('?') == -1) {
+                url = url + '?' + $.param(data);
+            }
+            else {
+                url = url + '&' + $.param(data);
+            }
+
+            window.open(url, '_blank');
+        });
+
         $('.collapse', container).filter(':not(.show)').find('.required_when_triggered').prop('required', false);
 
         /*

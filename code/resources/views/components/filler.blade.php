@@ -4,7 +4,7 @@
     <x-larastrap::field label="">
         <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
         @foreach($downloadButtons as $button)
-            <a href="{{ $button['link'] }}" class="btn btn-light form-filler-download">{{ $button['label'] }} <i class="bi-download"></i></a>
+            <a href="{{ $button['link'] }}" class="btn btn-light form-download">{{ $button['label'] }} <i class="bi-download"></i></a>
         @endforeach
     </x-larastrap::field>
 </div>

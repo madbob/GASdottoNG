@@ -77,13 +77,6 @@ class Filters {
                 }
             });
         });
-
-        $('.form-filler a.form-filler-download', container).click(function(event) {
-            event.preventDefault();
-            var data = $(this).closest('.form-filler').find('input, select').serializeArray();
-            var url = $(this).attr('href') + '&' + $.param(data);
-            window.open(url, '_blank');
-        });
     }
 
     static tableFilters(table_id)

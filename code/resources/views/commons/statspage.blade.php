@@ -1,5 +1,3 @@
-<input type="hidden" name="stats_target" value="{{ inlineId($target) }}">
-
 <div class="card mb-2">
     <div class="card-header">
         <h3>{{ _i('Statistiche Generali') }}</h3>
@@ -9,10 +7,12 @@
             <div class="col-12 col-lg-6">
                 <form id="stats-summary-form" class="form-horizontal">
                     @include('commons.genericdaterange')
+                    <input type="hidden" name="target" value="{{ inlineId($target) }}">
 
                     <div class="form-group">
                         <div class="col-12 col-sm-8 offset-sm-4">
-                            <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
+                            <button type="submit" class="btn btn-info" name="format" value="json">{{ _i('Ricerca') }}</button>
+                            <a href="{{ route('stats.show', 'summary') }}" class="btn btn-light form-download" name="format" value="csv">{{ _i('Esporta CSV') }} <i class="bi-download"></i></a>
                         </div>
                     </div>
                 </form>
@@ -52,10 +52,12 @@
                 <form id="stats-supplier-form" class="form-horizontal">
                     <x-larastrap::selectobj name="supplier" :label="_i('Fornitore')" :options="$currentgas->suppliers" />
                     @include('commons.genericdaterange')
+                    <input type="hidden" name="target" value="{{ inlineId($target) }}">
 
                     <div class="form-group">
                         <div class="col-12 col-sm-8 offset-sm-4">
                             <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
+                            <a href="{{ route('stats.show', 'supplier') }}" class="btn btn-light form-download" name="format" value="csv">{{ _i('Esporta CSV') }} <i class="bi-download"></i></a>
                         </div>
                     </div>
                 </form>
