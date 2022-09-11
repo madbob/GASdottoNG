@@ -41,7 +41,7 @@ class Roles {
 
                         var label = ui.item.label;
                         utils.postAjax({
-                            url: '/roles/attach',
+                            url: 'roles/attach',
                             dataType: 'HTML',
                             data: {
                                 role: Lists.currentLoadableLoaded(this),
@@ -87,7 +87,7 @@ class Roles {
 
             if(confirm(_('Sei sicuro di voler revocare questo ruolo?'))) {
                 var button = $(this);
-                var userid = data.user;
+                var userid = button.attr('data-user');
 
                 utils.postAjax({
                     url: 'roles/detach',
