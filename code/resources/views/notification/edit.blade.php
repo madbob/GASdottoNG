@@ -9,7 +9,7 @@
                     <li class="list-group-item">
                         {{ $user->printableName() }}
                         @if($user->pivot->done)
-                            <span class="badge">
+                            <span class="badge text-black float-end">
                                 <i class="bi-check"></i>
                             </span>
                         @endif

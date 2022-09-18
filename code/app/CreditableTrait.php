@@ -92,18 +92,6 @@ trait CreditableTrait
         }
     }
 
-    public static function acceptedClasses()
-    {
-        $ret = [];
-
-        $models = modelsUsingTrait('App\CreditableTrait');
-        foreach($models as $m) {
-            $ret[$m] = $m::commonClassName();
-        }
-
-        return $ret;
-    }
-
     /*
         Si aspetta come parametro un array formattato come quello restituito da
         resetAllCurrentBalances()

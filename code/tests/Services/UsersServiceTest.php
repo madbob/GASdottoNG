@@ -257,7 +257,7 @@ class UsersServiceTest extends TestCase
         $this->expectException(IllegalArgumentException::class);
 
         $this->actingAs($this->userWithAdminPerm);
-        $sample = \App\User::where('card_number', '!=', '')->whereNotNull('card_number')->inRandomOrder()->first();
+        $sample = \App\User::where('gas_id', $this->gas->id)->where('card_number', '!=', '')->whereNotNull('card_number')->inRandomOrder()->first();
 
         $user = \App\User::factory()->create([
             'gas_id' => $this->gas->id

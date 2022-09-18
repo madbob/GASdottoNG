@@ -5,81 +5,28 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use Carbon\Carbon;
+
 use DB;
 use Auth;
-use Log;
+
+use App\Services\NotificationsService;
 
 use App\Notification;
-use App\Date;
-use App\User;
-use App\Order;
-use App\Role;
 
-class NotificationsController extends Controller
+class NotificationsController extends BackedController
 {
-    public function __construct()
+    public function __construct(NotificationsService $service)
     {
-        $this->middleware('auth');
-
         $this->commonInit([
-            'reference_class' => 'App\\Notification'
+            'reference_class' => Notification::class,
+            'service' => $service
         ]);
-    }
-
-    private function getNotifications($startdate, $enddate)
-    {
-        $user = Auth::user();
-
-        $notifications_query = Notification::orderBy('start_date', 'desc');
-
-        if (!is_null($startdate)) {
-            $notifications_query->where('end_date', '>=', $startdate);
-        }
-
-        if (!is_null($enddate)) {
-            $notifications_query->where('start_date', '<=', $enddate);
-        }
-
-        if ($user->can('notifications.admin', $user->gas) == false) {
-            $notifications_query->whereHas('users', function($query) use ($user) {
-                $query->where('users.id', $user->id);
-            });
-        }
-
-        $notifications = $notifications_query->get();
-
-        $dates_query = Date::where('type', 'internal')->where('target_type', 'App\GAS')->where('target_id', $user->gas->id);
-
-        if (!is_null($startdate)) {
-            $dates_query->where('date', '>=', $startdate);
-        }
-
-        if (!is_null($enddate)) {
-            $dates_query->where('date', '<=', $enddate);
-        }
-
-        $dates = $dates_query->get();
-
-        $all = $notifications->merge($dates)->sort(function($a, $b) {
-            if (is_a($a, 'App\Notification'))
-                $a_date = $a->start_date;
-            else
-                $a_date = $a->date;
-
-            if (is_a($b, 'App\Notification'))
-                $b_date = $b->start_date;
-            else
-                $b_date = $b->date;
-
-            return $b_date <=> $a_date;
-        });
-
-        return $all;
     }
 
     public function index()
     {
-        $notifications = $this->getNotifications(date('Y-m-d', strtotime('-1 years')), null);
+        $notifications = $this->service->list(Carbon::now()->subYears(1), null);
         return view('pages.notifications', ['notifications' => $notifications]);
     }
 
@@ -88,7 +35,7 @@ class NotificationsController extends Controller
         $startdate = decodeDate($request->input('startdate'));
         $enddate = decodeDate($request->input('enddate'));
 
-        $notifications = $this->getNotifications($startdate, $enddate);
+        $notifications = $this->service->list($startdate, $enddate);
 
         return view('commons.loadablelist', [
             'identifier' => 'notification-list',
@@ -96,110 +43,22 @@ class NotificationsController extends Controller
         ]);
     }
 
-    private function syncUsers($notification, $request)
+    public function show(Request $request, $id)
     {
-        $users = $request->input('users', []);
-        if (empty($users)) {
-            $us = User::whereNull('parent_id')->get();
-            foreach ($us as $u) {
-                $users[] = $u->id;
+        try {
+            $n = $this->service->show($id);
+            $user = $request->user();
+
+            if ($user->can('notifications.admin', $user->gas)) {
+                return view('notification.edit', ['notification' => $n]);
+            }
+            else if ($n->hasUser($user)) {
+                return view('notification.show', ['notification' => $n]);
             }
         }
-        else {
-            $users = unrollSpecialSelectors($users);
+        catch (AuthException $e) {
+            abort($e->status());
         }
-
-        $notification->users()->sync($users, ['done' => false]);
-    }
-
-    public function store(Request $request)
-    {
-        DB::beginTransaction();
-
-        $user = Auth::user();
-        if ($user->can('notifications.admin', $user->gas) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
-
-        if ($request->input('type') == 'date') {
-            $n = new Date();
-            $n->target_type = 'App\Gas';
-            $n->target_id = $user->gas->id;
-            $n->description = $request->input('content');
-            $n->type = 'internal';
-            $n->date = decodeDate($request->input('start_date'));
-            $n->save();
-        }
-        else {
-            $n = new Notification();
-            $n->creator_id = $user->id;
-            $n->gas_id = $user->gas_id;
-            $n->content = $request->input('content');
-            $n->mailed = $request->has('mailed');
-            $n->start_date = decodeDate($request->input('start_date'));
-            $n->end_date = decodeDate($request->input('end_date'));
-            $n->save();
-
-            $n->attachByRequest($request);
-            self::syncUsers($n, $request);
-            $n->sendMail();
-        }
-
-        return $this->commonSuccessResponse($n);
-    }
-
-    public function show($id)
-    {
-        $n = Notification::findOrFail($id);
-        $user = Auth::user();
-
-        if ($user->can('notifications.admin', $user->gas)) {
-            return view('notification.edit', ['notification' => $n]);
-        }
-        else if ($n->hasUser($user)) {
-            return view('notification.show', ['notification' => $n]);
-        }
-        else {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
-    }
-
-    public function update(Request $request, $id)
-    {
-        DB::beginTransaction();
-
-        $user = Auth::user();
-        if ($user->can('notifications.admin', $user->gas) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
-
-        $n = Notification::findOrFail($id);
-        $n->creator_id = $user->id;
-        $n->content = $request->input('content');
-        $n->mailed = $request->has('mailed');
-        $n->start_date = decodeDate($request->input('start_date'));
-        $n->end_date = decodeDate($request->input('end_date'));
-        $n->save();
-
-        self::syncUsers($n, $request);
-        $n->sendMail();
-
-        return $this->commonSuccessResponse($n);
-    }
-
-    public function destroy(Request $request, $id)
-    {
-        $user = Auth::user();
-        if ($user->can('notifications.admin', $user->gas) == false)
-            return $this->errorResponse(_i('Non autorizzato'));
-
-        DB::beginTransaction();
-
-        $n = Notification::findOrFail($id);
-        $n->users()->sync([]);
-        $n->delete();
-
-        return $this->successResponse();
     }
 
     public function markread($id)

@@ -228,4 +228,12 @@ class FormattersTest extends TestCase
         $this->assertEquals(1000.00, (float) guessDecimal('1.000,00'));
         $this->assertEquals(1000.00, (float) guessDecimal('1,000.00'));
     }
+
+    function testInliningModel()
+    {
+        $user = \App\User::inRandomOrder()->first();
+        $inline = inlineId($user);
+        $test = fromInlineId($inline);
+        $this->assertEquals($user->id, $test->id);
+    }
 }

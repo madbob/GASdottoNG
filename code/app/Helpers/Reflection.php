@@ -119,7 +119,7 @@ function unrollSpecialSelectors($users)
 {
     $map = [];
 
-    if(!is_array($users)) {
+    if (!is_array($users)) {
         return $map;
     }
 
@@ -136,7 +136,7 @@ function unrollSpecialSelectors($users)
                 $order_id = substr($u, strlen('special::order::'));
                 $order = App\Order::findOrFail($order_id);
                 foreach ($order->topLevelBookings() as $booking) {
-                    $map[] = $booking->user->id;
+                    $map[] = $booking->user_id;
                 }
             }
         } else {

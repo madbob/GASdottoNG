@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 
 use Auth;
@@ -14,7 +15,7 @@ use App\Scopes\RestrictedGAS;
 
 class Notification extends Model
 {
-    use GASModel, AttachableTrait;
+    use HasFactory, GASModel, AttachableTrait;
 
     protected static function boot()
     {

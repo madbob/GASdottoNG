@@ -47,6 +47,7 @@ abstract class TestCase extends BaseTestCase
             'modifier_types' => new \App\Services\ModifierTypesService(),
             'modifiers' => new \App\Services\ModifiersService(),
             'multigas' => new \App\Services\MultiGasService(),
+            'notifications' => new \App\Services\NotificationsService(),
         ];
 
         $this->gas = \App\Gas::factory()->create();

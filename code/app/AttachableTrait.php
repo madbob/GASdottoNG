@@ -51,7 +51,16 @@ trait AttachableTrait
 
     public function attachByRequest($request, $id = null)
     {
-        $file = $request->file('file');
+        if (is_array($request)) {
+            $file = $request['file'] ?? null;
+            $name = '';
+            $users = $request['users'] ?? [];
+        }
+        else {
+            $file = $request->file('file');
+            $name = $request->input('name', '');
+            $users = $request->input('users', []);
+        }
 
         if (is_null($file) || $file->isValid() == false) {
             return false;
@@ -63,7 +72,6 @@ trait AttachableTrait
         }
 
         $filename = $file->getClientOriginalName();
-        $name = $request->input('name', '');
         if ($name == '') {
             $name = $filename;
         }
@@ -75,7 +83,6 @@ trait AttachableTrait
         $attachment->filename = $filename;
         $attachment->save();
 
-        $users = $request->input('users', []);
         $users = unrollSpecialSelectors($users);
         $attachment->users()->sync($users);
 

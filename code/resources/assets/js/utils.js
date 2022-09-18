@@ -62,7 +62,12 @@ class Utils {
 
         $('.form-download', container).click(function(event) {
             event.preventDefault();
-            let data = $(this).closest('form').find('input, select').serializeArray();
+            let parent = $(this).closest('form');
+            if (parent.length == 0) {
+                parent = $(this).closest('.form-filler');
+            }
+
+            let data = parent.find('input, select').serializeArray();
 
             let url = $(this).attr('href');
             if (url.indexOf('?') == -1) {
