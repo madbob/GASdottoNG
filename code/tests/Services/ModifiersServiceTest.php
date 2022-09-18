@@ -146,7 +146,9 @@ class ModifiersServiceTest extends TestCase
             $total = $threshold_prices[$threshold_index] * $total_quantity;
 
             foreach($aggregated_modifiers as $ag) {
-                $this->assertEquals($ag->amount * -1, $without_discount - $total);
+                $amount_check = round($ag->amount * -1, 3);
+                $total_check = round($without_discount - $total, 3);
+                $this->assertEquals($amount_check, $total_check);
             }
         }
     }
@@ -218,7 +220,9 @@ class ModifiersServiceTest extends TestCase
         $total = $threshold_prices[2] * $total_quantity;
 
         foreach($mods as $m) {
-            $this->assertEquals($m->effective_amount * -1, $without_discount - $total);
+            $effective_check = round($m->effective_amount * -1, 3);
+            $total_check = round($without_discount - $total, 3);
+            $this->assertEquals($effective, $total_check);
         }
 
         $this->nextRound();
