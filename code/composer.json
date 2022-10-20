@@ -29,6 +29,7 @@
         "satispay/online-api-php-sdk": "^1.6",
         "sinergi/browser-detector": "^6.1",
         "spatie/db-dumper": "^2.21",
+        "webup/laravel-sendinblue": "^3.5",
         "zerospam/laravel-gettext": "^8.0.0",
         "zetacomponents/archive": "dev-master"
     },

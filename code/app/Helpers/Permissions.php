@@ -29,7 +29,7 @@ function allPermissions()
             'supplier.modify' => _i('Modificare i fornitori assegnati'),
             'supplier.orders' => _i('Aprire e modificare ordini'),
             'supplier.shippings' => _i('Effettuare le consegne'),
-            'supplier.movements' => _i('Amministrare i movimenti contabili'),
+            'supplier.movements' => _i('Amministrare i movimenti contabili del fornitore'),
         ],
     ];
 }
