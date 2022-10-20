@@ -222,7 +222,7 @@ class ModifiersServiceTest extends TestCase
         foreach($mods as $m) {
             $effective_check = round($m->effective_amount * -1, 3);
             $total_check = round($without_discount - $total, 3);
-            $this->assertEquals($effective, $total_check);
+            $this->assertEquals($effective_check, $total_check);
         }
 
         $this->nextRound();
