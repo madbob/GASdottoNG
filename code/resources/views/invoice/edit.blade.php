@@ -66,6 +66,7 @@
                 $orders_total_tax = 0;
                 $orders_total = 0;
                 $orders_modifiers = [];
+                $orders_other_modifiers = [];
                 $calculated_summaries = [];
 
                 foreach($invoice->orders as $o) {
@@ -76,7 +77,12 @@
                     $orders_total += $summary->total_taxable + $summary->total_tax;
 
                     $modifiers = $o->applyModifiers(null, false);
-                    $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
+
+                    $modifiers_good = $modifiers->filter(function($value, $key) {
+                        return blank($value->modifier->movement_type_id);
+                    });
+
+                    $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers_good);
 
                     foreach($aggregated_modifiers as $am_id => $am) {
                         if (!isset($orders_modifiers[$am_id])) {
@@ -87,6 +93,21 @@
                         }
 
                         $orders_total += $am->amount;
+                    }
+
+                    $modifiers_bad = $modifiers->filter(function($value, $key) {
+                        return filled($value->modifier->movement_type_id);
+                    });
+
+                    $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers_bad);
+
+                    foreach($aggregated_modifiers as $am_id => $am) {
+                        if (!isset($orders_other_modifiers[$am_id])) {
+                            $orders_other_modifiers[$am_id] = $am;
+                        }
+                        else {
+                            $orders_other_modifiers[$am_id]->amount += $am->amount;
+                        }
                     }
                 }
 
@@ -161,6 +182,25 @@
                                     </div>
                                 </td>
                             </tr>
+
+                            @if(empty($orders_other_modifiers) == false)
+                                <tr class="border-top">
+                                    <td colspan="3">{{ _i('Altri modificatori non destinati a questa fattura:') }}</td>
+                                </tr>
+
+                                @foreach($orders_other_modifiers as $om)
+                                    <tr>
+                                        <td>{{ $om->name }}</td>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control number trim-2-ddigits" value="{{ printablePrice($om->amount) }}" disabled autocomplete="off">
+                                                <div class="input-group-text">{{ $currentgas->currency }}</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>

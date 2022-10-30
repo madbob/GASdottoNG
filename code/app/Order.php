@@ -424,7 +424,7 @@ class Order extends Model
         }
     }
 
-    public function calculateInvoicingSummary($products = null)
+    public function calculateInvoicingSummary()
     {
         $summary = (object) [
             'order' => $this->id,
@@ -435,14 +435,7 @@ class Order extends Model
         ];
 
         $order = $this;
-
-        if (is_null($products)) {
-            $products = $order->products;
-            $external_products = false;
-        }
-        else {
-            $external_products = true;
-        }
+        $products = $order->products;
 
         $global_total = 0;
         $global_total_taxable = 0;
