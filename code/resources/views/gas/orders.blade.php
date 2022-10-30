@@ -33,6 +33,14 @@
                         </div>
                     @endforeach
                 </x-larastrap::field>
+
+                <x-larastrap::field :label="_i('Colonne Attive in Dettaglio Consegne')" :pophelp="_i('Attributi selezionati di default durante l\'esportazione del Dettaglio Consegne degli ordini')">
+                    <?php list($options, $values) = flaxComplexOptions(App\Formatters\User::formattableColumns()) ?>
+                    <x-larastrap::checks name="orders_shipping_user_columns" :options="$options" squeeze />
+
+                    <?php list($options, $values) = flaxComplexOptions(App\Order::formattableColumns('shipping')) ?>
+                    <x-larastrap::checks name="orders_shipping_product_columns" :options="$options" squeeze classes="mt-3" />
+                </x-larastrap::field>
             </div>
         </div>
     </x-larastrap::form>

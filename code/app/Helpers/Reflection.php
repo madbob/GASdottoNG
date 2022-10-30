@@ -33,6 +33,13 @@ function classesInNamespace($namespace)
     return HaydenPierce\ClassFinder\ClassFinder::getClassesInNamespace($namespace);
 }
 
+/*
+    Nota bene: quando si aggiunge una classe tra i parametri dinamici è
+    opportuno eseguire il comando
+    composer dumpautoload
+    per caricare la nuova classe nell'autoload generato. Tutte le classi devono
+    essere PSR-4 (il nome della classe deve coincidere col nome del file)
+*/
 function systemParameters($type)
 {
     static $types = [];

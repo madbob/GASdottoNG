@@ -106,6 +106,11 @@ class Gas extends Model
         $conf->save();
     }
 
+    /*
+        Questa funzione permette di accedere direttamente alle configurazioni
+        del GAS, usandone il nome (definito da ciascun parametro definito nelle
+        classi nel namespace App\Parameters\Config)
+    */
     public function getAttribute($key)
     {
         $configs = $this->availableConfigs();

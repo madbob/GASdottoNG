@@ -197,6 +197,8 @@ class GasController extends Controller
         $gas->setConfig('unmanaged_shipping', $request->has('unmanaged_shipping') ? '1' : '0');
         $gas->setConfig('booking_contacts', $request->input('booking_contacts'));
         $gas->setConfig('orders_display_columns', $request->input('orders_display_columns'));
+        $gas->setConfig('orders_shipping_user_columns', $request->input('orders_shipping_user_columns'));
+        $gas->setConfig('orders_shipping_product_columns', $request->input('orders_shipping_product_columns'));
     }
 
     private function configMails($gas, $request)
