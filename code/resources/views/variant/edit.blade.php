@@ -1,5 +1,6 @@
 <x-larastrap::modal :title="_i('Crea/Modifica Variante')">
     <x-larastrap::form :obj="$variant" classes="inner-form" method="POST" :action="route('variants.store')">
+        <input type="hidden" name="pre-saved-function" value="checkVariantsValues">
         <input type="hidden" name="reload-portion" value="#variants_editor_{{ sanitizeId($product->id) }}">
         <input type="hidden" name="close-modal" value="1">
 

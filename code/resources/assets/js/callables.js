@@ -163,6 +163,15 @@ class Callables {
         }
     }
 
+    static checkVariantsValues(form)
+    {
+        let count = form.find('table tbody tr').length;
+        if (count <= 1) {
+            alert('Devi specificare almeno un valore per la variante');
+            throw 'No values!';
+        }
+    }
+
     /* post-saved-function ****************************************************/
 
     static triggerPayment(form)

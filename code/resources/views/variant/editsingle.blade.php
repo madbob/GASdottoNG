@@ -2,6 +2,7 @@
     <?php $combos = $product->variantCombos ?>
 
     <x-larastrap::form classes="inner-form" method="POST" :action="route('variants.updatematrix', $product->id)">
+        <input type="hidden" name="pre-saved-function" value="checkVariantsValues">
 		<input type="hidden" name="reload-portion" value="#variants_editor_{{ sanitizeId($product->id) }}">
         <input type="hidden" name="close-modal" value="1">
 
