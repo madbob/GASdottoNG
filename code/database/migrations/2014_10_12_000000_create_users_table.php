@@ -28,7 +28,7 @@ class CreateUsersTable extends Migration
             $table->date('member_since')->useCurrent();
             $table->string('card_number')->default('');
             $table->datetime('last_login')->nullable();
-            $table->string('preferred_delivery_id')->default('');
+            $table->string('preferred_delivery_id')->default('0');
             $table->string('payment_method_id')->default('none');
             $table->text('rid')->nullable();
 

@@ -39,6 +39,15 @@ class User extends IconsMap
                     'text' => _i('Quota non Pagata'),
                 ];
             }
+
+            if ($user->gas->hasFeature('shipping_places')) {
+                $ret['house-fill'] = (object) [
+                    'test' => function ($obj) {
+                        return $obj->preferred_delivery_id == '0';
+                    },
+                    'text' => _i('Senza Luogo di Consegna'),
+                ];
+            }
         }
 
         return $ret;

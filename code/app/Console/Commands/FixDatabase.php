@@ -12,6 +12,8 @@ use Illuminate\Console\Command;
 
 use Artisan;
 
+use App\User;
+
 class FixDatabase extends Command
 {
     protected $signature = 'fix:database';
@@ -24,6 +26,8 @@ class FixDatabase extends Command
 
     public function handle()
     {
+        User::where('preferred_delivery_id', '')->update(['preferred_delivery_id' => '0']);
+
         /*
             I seeder dei tipi di movimento contabile e dei tipi di modificatore
             vengono sempre eseguiti, tanto comunque controllano se ogni tipo già

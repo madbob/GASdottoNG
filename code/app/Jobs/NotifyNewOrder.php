@@ -33,7 +33,7 @@ class NotifyNewOrder extends Job
         $deliveries = $order->deliveries;
         if ($deliveries->isEmpty() == false) {
             $query_users->where(function($query) use ($deliveries) {
-                $query->whereIn('preferred_delivery_id', $deliveries->pluck('id'))->orWhereNull('preferred_delivery_id');
+                $query->whereIn('preferred_delivery_id', $deliveries->pluck('id'))->orWhere('preferred_delivery_id', '0');
             });
         }
 

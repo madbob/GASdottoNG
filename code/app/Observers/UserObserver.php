@@ -48,7 +48,7 @@ class UserObserver
             $user->addRole($role, $user->gas);
         }
 
-        $user->preferred_delivery_id = '';
+        $user->preferred_delivery_id = '0';
         return $user;
     }
 
