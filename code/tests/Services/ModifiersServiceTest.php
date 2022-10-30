@@ -653,8 +653,8 @@ class ModifiersServiceTest extends TestCase
         $this->actingAs($master);
         $friend = $this->services['users']->storeFriend(array(
             'username' => 'test friend user',
-            'firstname' => 'mario',
-            'lastname' => 'rossi',
+            'firstname' => 'gianni',
+            'lastname' => 'giallo',
             'password' => 'password'
         ));
 
@@ -811,8 +811,8 @@ class ModifiersServiceTest extends TestCase
         $this->actingAs($this->userWithAdminPerm);
         $newUser = $this->services['users']->store(array(
             'username' => 'test user',
-            'firstname' => 'mario',
-            'lastname' => 'rossi',
+            'firstname' => 'luigi',
+            'lastname' => 'verdi',
             'password' => 'password'
         ));
 
