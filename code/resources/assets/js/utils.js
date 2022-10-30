@@ -161,8 +161,14 @@ class Utils {
     static displayServerError(form, data)
     {
         if (data.target != '') {
-            Utils.inlineFeedback(form.find('button[type=submit]'), 'Errore!');
-            var input = form.find('[name=' + data.target + ']');
+            Utils.submitButton(form).each(function() {
+                Utils.inlineFeedback($(this), _('ERRORE!'));
+            });
+
+            form.find('.is-invalid').removeClass('is-invalid');
+            form.find('.help-block.error-message').remove();
+
+            let input = form.find('[name=' + data.target + ']');
             Utils.setInputErrorText(input, data.message);
         }
     }
@@ -202,11 +208,11 @@ class Utils {
     static setInputErrorText(input, message)
     {
         if (message == null) {
-            input.closest('.form-group').removeClass('has-error');
+            input.removeClass('is-invalid');
             input.closest('div').find('.help-block.error-message').remove();
         }
         else {
-            input.closest('.form-group').addClass('has-error');
+            input.addClass('is-invalid');
             input.closest('div').append('<span class="help-block error-message">' + message + '</span>');
         }
     }

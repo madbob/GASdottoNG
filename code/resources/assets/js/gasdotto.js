@@ -218,8 +218,9 @@ function completionRowsInit(node) {
     dopo il submit usando il valore ritornato
 */
 function miscInnerCallbacks(form, data) {
-    if (locker == true)
-        return;
+    if (locker == true) {
+        return false;
+	}
 
     locker = true;
 
@@ -227,7 +228,8 @@ function miscInnerCallbacks(form, data) {
     if (test.length != 0) {
         if (data.status == 'error') {
             utils.displayServerError(form, data);
-            return;
+			locker = false;
+            return false;
         }
     }
 
@@ -348,6 +350,7 @@ function miscInnerCallbacks(form, data) {
     }
 
     locker = false;
+	return true;
 }
 
 function miscInnerModalCallbacks(modal) {
@@ -574,11 +577,16 @@ $(document).ready(function() {
             dataType: 'JSON',
 
             success: function(data) {
-                submit_button.each(function() {
-                    utils.inlineFeedback($(this), _('Salvato!'));
-                });
-
-                miscInnerCallbacks(form, data);
+				if (miscInnerCallbacks(form, data) == true) {
+	                submit_button.each(function() {
+	                    utils.inlineFeedback($(this), _('Salvato!'));
+	                });
+				}
+				else {
+					submit_button.each(function() {
+	                    utils.inlineFeedback($(this), _('ERRORE!'));
+	                });
+				}
             },
 
             error: function(data) {

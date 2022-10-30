@@ -10,12 +10,28 @@ use App\Delivery;
 
 class UserObserver
 {
-    public function creating(User $user)
+    private function checkUsername($user)
     {
-        $test = User::withTrashed()->where('username', $user->username)->first();
+        $test = User::withTrashed()->where('id', '!=', $user->id)->where('username', $user->username)->first();
         if ($test != null) {
             throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
         }
+    }
+
+    private function checkFirstLastName($user)
+    {
+        if (filled($user->firstname) && filled($user->lastname)) {
+            $test = User::where('id', '!=', $user->id)->where('firstname', $user->firstname)->where('lastname', $user->lastname)->first();
+            if ($test != null) {
+                throw new IllegalArgumentException(_i('Nome e cognome già presenti'), 'lastname');
+            }
+        }
+    }
+
+    public function creating(User $user)
+    {
+        $this->checkUsername($user);
+        $this->checkFirstLastName($user);
     }
 
     private function createdFriend($user)
@@ -66,10 +82,8 @@ class UserObserver
 
     public function updating(User $user)
     {
-        $test = User::withTrashed()->where('id', '!=', $user->id)->where('username', $user->username)->first();
-        if ($test != null) {
-            throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
-        }
+        $this->checkUsername($user);
+        $this->checkFirstLastName($user);
 
         if (filled($user->card_number)) {
             $test = User::where('id', '!=', $user->id)->where('gas_id', $user->gas_id)->where('card_number', $user->card_number)->count();
