@@ -114,13 +114,18 @@ class Order extends Model
                 $query->where(function($query) use ($user) {
                     $query->doesnthave('deliveries')->orWhereHas('deliveries', function($query) use ($user) {
                         if ($user->isFriend()) {
-                            $preferred_delivery_id = $user->parent->preferred_delivery_id;
+                            $shippingplace = $user->parent->shippingplace;
                         }
                         else {
-                            $preferred_delivery_id = $user->preferred_delivery_id;
+                            $shippingplace = $user->shippingplace;
                         }
 
-                        $query->where('delivery_id', $preferred_delivery_id);
+                        if (is_null($shippingplace)) {
+                            $query->where('delivery_id', '!=', '0');
+                        }
+                        else {
+                            $query->where('delivery_id', $shippingplace->id);
+                        }
                     });
                 });
             });
