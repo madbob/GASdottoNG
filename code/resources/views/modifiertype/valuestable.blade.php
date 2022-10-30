@@ -18,6 +18,7 @@ $total = 0;
         <tr>
             <th>Fornitore</th>
             <th>Utente</th>
+            <th>Data</th>
             <th>Valore</th>
         </tr>
     </thead>
@@ -35,12 +36,14 @@ $total = 0;
                 <tr>
                     <td>{{ $mod_value_summary->supplier->printableName() }}</td>
                     <td>{{ $mod_value_summary->user->printableName() }}</td>
+                    <td>{{ printableDate($mod_value->created_at) }}</td>
                     <td>{{ printablePriceCurrency($amount) }}</td>
                 </tr>
             @endforeach
         </tbody>
         <thead>
             <tr>
+                <th></th>
                 <th></th>
                 <th></th>
                 <th>{{ printablePriceCurrency($total) }}</th>

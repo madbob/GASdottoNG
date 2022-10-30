@@ -72,7 +72,12 @@
                             'type' => 'check',
                             'help' => _i("Se un ordine automatico viene sospeso, le prossime aperture verranno ignorate. Usa questa opzione per gestire i periodi di inattività del GAS, ad esempio durante le festività."),
                             'extra' => [
-                                'valuefrom' => 'id'
+                                'reviewCallback' => function($component, $params) {
+                                    $params['hidden'] = $params['obj'] ? false : true;
+                                    $params['value'] = $params['obj'] ? $params['obj']->id : 0;
+                                    $params['checked'] = $params['obj'] && $params['obj']->suspend;
+                                    return $params;
+                                }
                             ]
                         ],
                     ]
