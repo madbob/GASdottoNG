@@ -95,17 +95,23 @@ class Callables {
     static submitDeliveryForm(form) {
         /*
             Questo è per condensare eventuali nuovi prodotti aggiunti ma già
-            presenti nella prenotazione.
+            presenti nella prenotazione, tranne per quanto riguarda le varianti
+            (che vanno sempre trattate singolarmente)
         */
         form.find('.fit-add-product').not('.hidden').each(function() {
+            let variants_select = $(this).find('.inline-variant-selector');
+            if (variants_select.length != 0) {
+                return;
+            }
+
             var i = $(this).find('.booking-product-quantity input:text.number');
             if (i.length == 0) {
                 return;
             }
 
-            var product = utils.sanitizeId(i.attr('name'));
-            var added_value = utils.parseFloatC(i.val());
-            var existing = form.find('tr.booking-product').not('.fit-add-product').find('input:text.number[name=' + product + ']');
+            let product = utils.sanitizeId(i.attr('name'));
+            let added_value = utils.parseFloatC(i.val());
+            let existing = form.find('tr.booking-product').not('.fit-add-product').find('input:text.number[name=' + product + ']');
             if (existing.length != 0) {
                 existing.val(utils.parseFloatC(existing.val()) + added_value);
                 i.remove();

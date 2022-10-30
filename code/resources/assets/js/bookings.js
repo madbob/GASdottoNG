@@ -392,14 +392,23 @@ class Bookings
                 if (action == 'shipped') {
                     for (let i = 0; i < product_meta.variants.length; i++) {
                         let variant = product_meta.variants[i];
-                        let varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).eq(i);
 
+                        let varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).eq(i);
                         if (varinputbox.length == 0) {
                             break;
                         }
 
                         varinputbox.val(variant.quantity);
-                        varinputbox.closest('tr').find('.booking-product-price span').text(variant.total);
+                        varinputbox.closest('tr').find('.booking-product-price span').text(variant.total.toFixed(2));
+                    }
+
+                    let total_rows = $('input[name="variant_quantity_' + product_id + '[]"]', container).length;
+                    if (total_rows > product_meta.variants.length) {
+                        for (let i = product_meta.variants.length; i < total_rows; i++) {
+                            let varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).eq(i);
+                            varinputbox.val(0);
+                            varinputbox.closest('tr').find('.booking-product-price span').text('0.00');
+                        }
                     }
                 }
                 else {

@@ -16,13 +16,15 @@ $booked_quantity = (isset($o) ? $o->getBookedQuantity($product) : 0);
 
         @if($booked != null && $booked->variants->count() != 0)
             @foreach($booked->variants as $var)
-                @include('booking.variantselectrow', ['product' => $product, 'order' => $order, 'master' => false, 'saved' => $var])
+                @include('booking.variantselectrow', ['product' => $product, 'order' => $order, 'master' => false, 'while_shipping' => $while_shipping, 'saved' => $var])
             @endforeach
         @else
-            @include('booking.variantselectrow', ['product' => $product, 'order' => $order, 'master' => false, 'saved' => null])
+            @include('booking.variantselectrow', ['product' => $product, 'order' => $order, 'master' => false, 'while_shipping' => $while_shipping, 'saved' => null])
         @endif
 
-        @include('booking.variantselectrow', ['product' => $product, 'order' => $order, 'master' => true, 'saved' => null])
+        @if($while_shipping == false)
+            @include('booking.variantselectrow', ['product' => $product, 'order' => $order, 'master' => true, 'while_shipping' => $while_shipping, 'saved' => null])
+        @endif
     </div>
 @else
     <div class="input-group booking-product-quantity">

@@ -17,7 +17,7 @@
         </div>
     @endforeach
 
-    @if($order->isActive())
+    @if($order->isActive() && $while_shipping == false)
         <div class="col-1">
             <button class="btn btn-light float-end add-variant"><i class="bi-plus"></i></button>
         </div>
