@@ -103,13 +103,14 @@ class NotificationsService extends BaseService
     public function store(array $request)
     {
         $user = $this->ensureAuth(['notifications.admin' => 'gas']);
+        $type = $request['type'] ?? 'notification';
 
 		/*
 			Nota: le date sul calendario vengono create con lo stesso form per
 			creare le notifiche, ma vengono poi visualizzare e modificate
 			tramite DatesService
 		*/
-		if ($request['type'] == 'date') {
+		if ($type == 'date') {
 			$n = new Date();
 			$n->target_type = Gas::class;
 			$n->target_id = $user->gas->id;

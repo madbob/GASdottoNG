@@ -133,6 +133,7 @@
                     <form class="form-horizontal inner-form" method="POST" action="{{ route('notifications.store') }}">
                         <input type="hidden" name="close-modal" value="1">
                         <input type="hidden" name="pre-saved-function" value="collectFilteredUsers">
+                        <input type="hidden" name="type" value="notification">
                         @include('notification.base-edit', ['notification' => null, 'select_users' => false, 'instant' => true])
                         <button type="submit" class="btn btn-success">{{ _i('Notifica') }}</button>
                     </form>
