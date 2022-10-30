@@ -12,12 +12,21 @@
                     <x-larastrap::check name="always_on" :label="_i('Modificatore sempre attivo')" :pophelp="_i('Se attivo, il modificatore viene sempre incluso nei nuovi ordini per questo fornitore anche se non viene qui valorizzato. Questo permette di avere sempre il modificatore disponibile nel contesto degli ordini e di poterlo aggiornare di volta in volta.')" />
                 @endif
 
-                @include('commons.selectmovementtypefield', [
-                    'field_name' => 'movement_type_id',
-                    'current_label' => _i('Tipo Movimento Contabile'),
-                    'current_pophelp' => _i('Selezionando un tipo di movimento contabile, al pagamento della consegna verrà generato un movimento con lo stesso valore del modificatore calcolato. Altrimenti, il valore del modificatore sarà incorporato nel pagamento della prenotazione stessa e andrà ad alterare il saldo complessivo del fornitore. Usa questa funzione se vuoi tenere traccia dettagliata degli importi pagati tramite questo modificatore.'),
-                    'empty_label' => _i('Nessuno'),
-                ])
+                @php
+
+                $types = [
+                    'none' => _i('Nessuno'),
+                ];
+
+                foreach (movementTypesAccepting([null, 'App\Gas', 'App\User'], [null, 'App\Gas', 'App\User']) as $info) {
+                    if ($info->visibility) {
+                        $types[$info->id] = $info->name;
+                    }
+                }
+
+                @endphp
+
+                <x-larastrap::select name="movement_type_id" :label="_i('Tipo Movimento Contabile')" :options="$types" classes="movement-type-selector" :pophelp="_i('Selezionando un tipo di movimento contabile, al pagamento della consegna verrà generato un movimento con lo stesso valore del modificatore calcolato. Altrimenti, il valore del modificatore sarà incorporato nel pagamento della prenotazione stessa e andrà ad alterare il saldo complessivo del fornitore. Usa questa funzione se vuoi tenere traccia dettagliata degli importi pagati tramite questo modificatore.')" />
 
                 <?php
 

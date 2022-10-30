@@ -53,6 +53,32 @@ function movementTypes($identifier = null, $with_trashed = false)
     return $ret;
 }
 
+function movementTypesAccepting($sender, $target)
+{
+    $types = movementTypes();
+
+    return $types->filter(function($value, $key) use ($sender, $target) {
+        $sender_ok = false;
+        $target_ok = false;
+
+        foreach($sender as $s) {
+            if ($value->sender_type == $s) {
+                $sender_ok = true;
+                break;
+            }
+        }
+
+        foreach($target as $s) {
+            if ($value->target_type == $s) {
+                $target_ok = true;
+                break;
+            }
+        }
+
+        return $sender_ok && $target_ok;
+    });
+}
+
 function paymentTypes()
 {
     $ret = [];

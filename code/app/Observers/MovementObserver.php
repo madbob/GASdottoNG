@@ -186,5 +186,9 @@ class MovementObserver
 
         $movement->amount = $movement->amount * -1;
         $movement->apply();
+
+        foreach($movement->related as $rel) {
+            $rel->delete();
+        }
     }
 }
