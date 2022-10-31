@@ -139,7 +139,7 @@ class Order extends Model
         $string = _i('da %s a %s', [printableDate($start), printableDate($end)]);
         if ($this->shipping != null && $this->shipping != '0000-00-00') {
             $shipping = strtotime($this->shipping);
-            $string .= _i(', in consegna %s', printableDate($shipping));
+            $string .= _i(', in consegna %s', [printableDate($shipping)]);
         }
 
         return $string;

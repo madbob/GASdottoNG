@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
-"POT-Creation-Date: 2022-10-30 22:27+0100\n"
-"PO-Revision-Date: 2022-10-30 22:27+0100\n"
+"POT-Creation-Date: 2022-10-31 08:32+0100\n"
+"PO-Revision-Date: 2022-10-31 08:33+0100\n"
 "Last-Translator: Roberto Guido <bob@linux.it>\n"
 "Language-Team: Roberto Guido <bob@linux.it>\n"
 "Language: en_EN\n"
@@ -54,8 +54,8 @@ msgstr ""
 
 #: ../resources/views/commons/addingbutton.blade.php:7
 #, php-format
-msgid "Crea Nuovo %s"
-msgstr "Create new %s"
+msgid "Crea %s"
+msgstr "New %s"
 
 #: ../resources/views/commons/loadablelist.blade.php:10
 msgid "Non ci sono elementi da visualizzare."
@@ -406,7 +406,7 @@ msgstr "Available"
 
 #: Formatters/User.php:21 Http/Controllers/MovementsController.php:310
 msgid "Luogo di Consegna"
-msgstr "Place of delivery"
+msgstr "Delivery Place"
 
 #: Formatters/User.php:37
 msgid "IBAN"
@@ -1432,6 +1432,11 @@ msgstr ""
 msgid "La quantità massima è 9999.99"
 msgstr "Maximum quantity is 9999.99"
 
+#: Parameters/Constraints/GlobalMin.php:43
+#, php-format
+msgid "Minimo Complessivo: %.02f (%.02f totale)"
+msgstr "Global Minimum: %.02f (%.02f total)"
+
 #: Parameters/Constraints/MaxAvailable.php:49
 #, php-format
 msgid "Mancano %s %s per completare la confezione per questo ordine"
@@ -1823,7 +1828,11 @@ msgstr "Credit < 0"
 msgid "Quota non Pagata"
 msgstr "Unpaid Fee"
 
-#: View/Icons/User.php:51
+#: View/Icons/User.php:48
+msgid "Senza Luogo di Consegna"
+msgstr "No Delivery Place"
+
+#: View/Icons/User.php:60
 msgid "Ruolo"
 msgstr "Role"
 
@@ -1944,6 +1953,9 @@ msgstr "and distribute it according to the weight of the bookings"
 #, php-format
 msgid "Se %s %s %s"
 msgstr "If %s %s %s"
+
+#~ msgid "Crea Nuovo %s"
+#~ msgstr "Create new %s"
 
 #~ msgid "Amministrare i movimenti contabili"
 #~ msgstr "Administer accounting movements"
@@ -2809,9 +2821,6 @@ msgstr "If %s %s %s"
 
 #~ msgid "Crea Nuova Categoria"
 #~ msgstr "New category"
-
-#~ msgid "Crea"
-#~ msgstr "New"
 
 #~ msgid "Errore nel caricamento o nella lettura del file."
 #~ msgstr "Error uploading or reading file."

@@ -4,7 +4,7 @@ if (isset($target_update) == false) {
     $target_update = $typename.'-list';
 }
 if (isset($button_label) == false) {
-    $button_label = _i('Crea Nuovo %s', $typename_readable);
+    $button_label = _i('Crea %s', [$typename_readable]);
 }
 
 $identifier = sprintf('create%s-%s', ucfirst($typename), Illuminate\Support\Str::random(10));

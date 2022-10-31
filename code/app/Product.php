@@ -228,4 +228,25 @@ class Product extends Model
 
         return implode(', ', $details);
     }
+
+    public function hasWarningWithinOrder($summary)
+    {
+        if (isset($summary->products[$this->id])) {
+            $quantity = $summary->products[$this->id]->quantity;
+
+            if ($quantity != 0) {
+                $has_warning = $this->package_size != 0 && round(fmod($quantity, $this->fixed_package_size)) != 0;
+                if ($has_warning) {
+                    return true;
+                }
+
+                $has_warning = $this->global_min != 0 && $quantity < $this->global_min;
+                if ($has_warning) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

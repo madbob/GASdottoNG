@@ -11,7 +11,15 @@
 
         @if($product->package_size != 0)
             <p>
-                {{ _i('Dimensione Confezione') }}: {{ $product->package_size }} {{ $product->printableMeasure() }}
+                {{ _i('Dimensione Confezione') }}: {{ $product->package_size }} {{ $product->printableMeasure(true) }}
+            </p>
+
+            <hr/>
+        @endif
+
+        @if($product->global_min != 0)
+            <p>
+                {{ _i('Minimo Complessivo') }}: {{ $product->global_min }} {{ $product->measure->name }}
             </p>
 
             <hr/>

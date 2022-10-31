@@ -33,6 +33,7 @@ if (!isset($duplicate)) {
         <x-larastrap::decimal name="min_quantity" :label="_i('Minimo')" decimals="3" :pophelp="_i('Se diverso da 0, il prodotto è prenotabile solo per una quantità superiore a quella indicata')" />
         <x-larastrap::decimal name="max_quantity" :label="_i('Massimo Consigliato')" decimals="3" :pophelp="_i('Se diverso da 0, se viene prenotata una quantità superiore di quella indicata viene mostrato un warning')" />
         <x-larastrap::decimal name="max_available" :label="_i('Disponibile')" decimals="3" :pophelp="_i('Se diverso da 0, questa è la quantità massima di prodotto che complessivamente può essere prenotata in un ordine. In fase di prenotazione gli utenti vedranno quanto è già stato sinora prenotato in tutto')" />
+        <x-larastrap::decimal name="global_min" :label="_i('Minimo Complessivo')" decimals="3" :pophelp="_i('Se diverso da 0, questa è la quantità minima di prodotto che complessivamente può essere prenotata in un ordine. In fase di prenotazione gli utenti vedranno quanto è già stato sinora prenotato in tutto')" />
 
         @if($duplicate == false)
             <x-larastrap::field :label="_i('Varianti')" :pophelp="_i('Ogni prodotto può avere delle varianti, ad esempio la taglia o il colore per i capi di abbigliamento. In fase di prenotazione, gli utenti potranno indicare quantità diverse per ogni combinazione di varianti.')">

@@ -77,6 +77,7 @@ class ProductsService extends BaseService
         $this->transformAndSetIfSet($product, $request, 'min_quantity', 'enforceNumber');
         $this->transformAndSetIfSet($product, $request, 'max_quantity', 'enforceNumber');
         $this->transformAndSetIfSet($product, $request, 'max_available', 'enforceNumber');
+        $this->transformAndSetIfSet($product, $request, 'global_min', 'enforceNumber');
         $this->enforceMeasure($product, $request);
     }
 

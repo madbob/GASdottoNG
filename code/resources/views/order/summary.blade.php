@@ -230,7 +230,7 @@ foreach($display_columns as $identifier => $metadata) {
                         <!-- Note -->
                         <td class="order-cell-notes {{ in_array('notes', $columns) ? '' : 'hidden' }}">
                             @if($order->isActive())
-                                @if($product->package_size != 0 && isset($summary->products[$product->id]->quantity) && $summary->products[$product->id]->quantity != 0 && round(fmod($summary->products[$product->id]->quantity, $product->fixed_package_size)) != 0)
+                                @if($product->hasWarningWithinOrder($summary))
                                     <a href="{{ url('orders/fixes/' . $order->id . '/' . $product->id) }}" class="btn btn-danger async-modal">
                                         <i class="bi-exclamation-circle"></i>
                                     </a>
