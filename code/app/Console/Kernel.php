@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
     	$schedule->command('check:fees')->daily();
         $schedule->command('close:orders')->daily();
         $schedule->command('open:orders')->daily();
+        $schedule->command('remind:orders')->daily();
     }
 
     protected function commands()

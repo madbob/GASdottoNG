@@ -5,8 +5,6 @@ namespace App\Jobs;
 use Log;
 
 use App\Notifications\NewOrderNotification;
-
-use App\User;
 use App\Order;
 
 class NotifyNewOrder extends Job
@@ -19,31 +17,6 @@ class NotifyNewOrder extends Job
         $this->order_id = $order_id;
     }
 
-    private function filterUsers($gas, $order)
-    {
-        if ($gas->getConfig('notify_all_new_orders')) {
-            $query_users = User::whereNull('parent_id');
-        }
-        else {
-            $query_users = User::whereHas('suppliers', function($query) use ($order) {
-                $query->where('suppliers.id', $order->supplier->id);
-            });
-        }
-
-        $deliveries = $order->deliveries;
-        if ($deliveries->isEmpty() == false) {
-            $query_users->where(function($query) use ($deliveries) {
-                $query->whereIn('preferred_delivery_id', $deliveries->pluck('id'))->orWhere('preferred_delivery_id', '0');
-            });
-        }
-
-        $query_users->whereHas('contacts', function($query) {
-            $query->where('type', 'email');
-        });
-
-        return $query_users->get();
-    }
-
     protected function realHandle()
     {
         $order = Order::find($this->order_id);
@@ -52,9 +25,12 @@ class NotifyNewOrder extends Job
             return;
         }
 
+        $order->first_notify = date('Y-m-d');
+        $order->save();
+
         foreach($order->aggregate->gas as $gas) {
             $this->hub->setGas($gas->id);
-            $users = $this->filterUsers($gas, $order);
+            $users = $order->notifiableUsers($gas);
 
             foreach($users as $user) {
                 try {
@@ -65,8 +41,5 @@ class NotifyNewOrder extends Job
                 }
             }
         }
-
-        $order->first_notify = date('Y-m-d');
-        $order->save();
     }
 }

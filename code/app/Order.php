@@ -290,6 +290,33 @@ class Order extends Model
         });
     }
 
+    public function notifiableUsers($gas)
+    {
+        $order = $this;
+
+        if ($gas->getConfig('notify_all_new_orders')) {
+            $query_users = User::whereNull('parent_id');
+        }
+        else {
+            $query_users = User::whereHas('suppliers', function($query) use ($order) {
+                $query->where('suppliers.id', $order->supplier->id);
+            });
+        }
+
+        $deliveries = $order->deliveries;
+        if ($deliveries->isEmpty() == false) {
+            $query_users->where(function($query) use ($deliveries) {
+                $query->whereIn('preferred_delivery_id', $deliveries->pluck('id'))->orWhere('preferred_delivery_id', '0');
+            });
+        }
+
+        $query_users->whereHas('contacts', function($query) {
+            $query->where('type', 'email');
+        });
+
+        return $query_users->get();
+    }
+
     public static function longCommentLimit()
     {
         return 100;

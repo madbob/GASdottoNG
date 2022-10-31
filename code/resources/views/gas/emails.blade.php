@@ -5,6 +5,12 @@
 
             <div class="col">
                 <x-larastrap::check name="notify_all_new_orders" :label="_i('Invia notifica a tutti gli utenti all\'apertura di un ordine')" />
+
+                <x-larastrap::check name="enable_send_order_reminder" :label="_i('Invia promemoria ordini in chiusura')" triggers_collapse="send_order_reminder" :value="$gas->hasFeature('send_order_reminder')" />
+                <x-larastrap::collapse id="send_order_reminder">
+                    <x-larastrap::number name="send_order_reminder" :label="_i('Quanti giorni prima?')" />
+                </x-larastrap::collapse>
+
                 <x-larastrap::check name="auto_user_order_summary" :label="_i('Invia riepilogo automatico agli utenti che hanno partecipato ad un ordine, quando viene chiuso')" />
                 <x-larastrap::check name="auto_supplier_order_summary" :label="_i('Invia riepilogo automatico al fornitore di un ordine, quando viene chiuso')" />
 
