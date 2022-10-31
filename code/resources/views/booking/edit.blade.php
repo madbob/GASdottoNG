@@ -244,4 +244,15 @@ $form_buttons = [
             </tfoot>
         </table>
     @endif
+
+    <div class="fixed-bottom bg-success p-2 booking-bottom-helper">
+        <div class="row justify-content-end align-items-center">
+            <div class="col-auto text-white">
+                Totale: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currentgas->currency }}
+            </div>
+            <div class="col-auto">
+                <button class="saving-button btn btn-success">Salva</button>
+            </div>
+        </div>
+    </div>
 </x-larastrap::iform>

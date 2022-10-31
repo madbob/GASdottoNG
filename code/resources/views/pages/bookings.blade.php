@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="row">
+<div class="row mb-5">
     <div class="col">
         @include('commons.orderslist', ['orders' => $orders])
     </div>

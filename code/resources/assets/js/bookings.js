@@ -525,6 +525,8 @@ class Bookings
     				*/
     				var status = {};
 
+                    $('.booking-bottom-helper', container).removeClass('bg-success').addClass('bg-danger');
+
     				for (let [booking_id, booking_data] of Object.entries(data.bookings)) {
     					var container = $('input[value="' + booking_id + '"]').closest('table').first();
     					$('.booking-product-price span', container).text(utils.priceRound(0));
