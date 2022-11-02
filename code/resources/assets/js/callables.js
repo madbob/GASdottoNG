@@ -165,8 +165,18 @@ class Callables {
 
     static checkVariantsValues(form)
     {
-        let count = form.find('table tbody tr').length;
-        if (count <= 1) {
+        let count = form.find('table tbody tr').filter(function() {
+            let input = $(this).find('input[name^=value]').first();
+            if (input) {
+                let val = input.val();
+                return val !== undefined && val != '';
+            }
+            else {
+                return false;
+            }
+        }).length;
+
+        if (count <= 0) {
             alert('Devi specificare almeno un valore per la variante');
             throw 'No values!';
         }
