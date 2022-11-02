@@ -412,6 +412,14 @@ $(document).ready(function() {
         }
     });
 
+	/*
+		Poiché l'altezza della navbar è estremamente variabile, a seconda delle
+		funzioni abilitate, calcolo lo spazio da lasciare sopra al body in modo
+		dinamico
+	*/
+	var navbar = $('.navbar').first();
+	$('body').css('padding-top', (navbar.height() * 2) + 'px');
+
     $('#preloader').remove();
 
     $.ajaxSetup({
