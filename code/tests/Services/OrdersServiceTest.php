@@ -146,8 +146,6 @@ class OrdersServiceTest extends TestCase
             'status' => 'closed',
         ));
 
-        Bus::assertDispatched(\App\Jobs\NotifyClosedOrder::class);
-
         $this->nextRound();
         $order = $this->services['orders']->show($this->order->id);
         $this->assertTrue($order->isActive());
