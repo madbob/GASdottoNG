@@ -3,6 +3,10 @@
 @if($annotated_bookings->isEmpty() == false)
     <div class="row">
         <div class="col">
+            <div class="alert alert-info mb-3">
+                {{ _i('Alcuni utenti hanno lasciato una nota alle proprie prenotazioni.') }}
+            </div>
+
             <table class="table">
                 <thead>
                     <tr>
