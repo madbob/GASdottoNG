@@ -79,7 +79,7 @@
                     $modifiers = $o->applyModifiers(null, false);
 
                     $modifiers_good = $modifiers->filter(function($value, $key) {
-                        return blank($value->modifier->movement_type_id);
+                        return is_null($value->modifier->movementType);
                     });
 
                     $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers_good);
@@ -96,7 +96,7 @@
                     }
 
                     $modifiers_bad = $modifiers->filter(function($value, $key) {
-                        return filled($value->modifier->movement_type_id);
+                        return is_null($value->modifier->movementType) == false;
                     });
 
                     $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers_bad);
