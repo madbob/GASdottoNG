@@ -25,6 +25,7 @@ class RemindOrders extends Command
     public function handle()
     {
         $orders = Order::where('status', 'open')->where('end', '>', Carbon::today()->format('Y-m-d'))->get();
+        $notifications = [];
 
 		foreach($orders as $order) {
 			foreach($order->aggregate->gas as $gas) {
@@ -42,11 +43,19 @@ class RemindOrders extends Command
 				$expiration = $today->addDays($days);
 
 				if ($order->end == $expiration->format('Y-m-d')) {
-					Log::info('Invio promemoria per ordine ' . $order->id);
-					NotifyRemindOrder::dispatch($gas->id, $order->id);
+                    if (isset($notifications[$gas->id]) == false) {
+                        $notifications[$gas->id] = [];
+                    }
+
+                    $notifications[$gas->id][] = $order->id;
 				}
 			}
 		}
+
+        foreach($notifications as $gas_id => $orders) {
+            Log::info('Invio promemoria per ordini ' . join(', ', $orders));
+            NotifyRemindOrder::dispatch($gas_id, $orders);
+        }
 
 		$gas = Gas::all();
 		$today = Carbon::today()->format('Y-m-d');

@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 
 use Log;
 
+use App\Jobs\NotifyClosedOrder;
 use App\Order;
 
 class CloseOrders extends Command
@@ -21,15 +22,19 @@ class CloseOrders extends Command
     public function handle()
     {
         $orders = Order::where('status', 'open')->where('end', '<', date('Y-m-d'))->get();
+        $closed = [];
 
         foreach($orders as $order) {
             try {
                 $order->status = 'closed';
                 $order->save();
+                $closed[] = $order->id;
             }
             catch(\Exception $e) {
                 Log::error('Errore in chiusura automatica ordine: ' . $e->getMessage());
             }
         }
+
+        NotifyClosedOrder::dispatch($closed);
     }
 }

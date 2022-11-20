@@ -3,7 +3,6 @@
 namespace App\Observers;
 
 use App\Jobs\NotifyNewOrder;
-use App\Jobs\NotifyClosedOrder;
 
 use Log;
 
@@ -72,9 +71,6 @@ class OrderObserver
             try {
                 if ($order->status == 'open') {
                     NotifyNewOrder::dispatch($order->id);
-                }
-                else if ($order->status == 'closed') {
-                    NotifyClosedOrder::dispatch($order->id);
                 }
             }
             catch(\Exception $e) {

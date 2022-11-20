@@ -17,8 +17,8 @@ class MailOrderReminder extends Config
     public function default()
     {
         return (object) [
-            'subject' => _i("Ordine in chiusura per %[supplier_name]"),
-            'body' => _i("Tra pochi giorni si chiuderà l'ordine aperto da %[gas_name] per il fornitore %[supplier_name].\nPer partecipare, accedi al seguente indirizzo:\n%[gas_booking_link]\nLe prenotazioni verranno chiuse %[closing_date]"),
+            'subject' => _i("Ordini in chiusura per %[gas_name]"),
+            'body' => _i("Tra pochi giorni si chiuderanno gli ordini aperti da %[gas_name] per i seguenti fornitori:\n\n%[orders_list]"),
         ];
     }
 }

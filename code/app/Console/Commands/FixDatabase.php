@@ -12,6 +12,7 @@ use Illuminate\Console\Command;
 
 use Artisan;
 
+use App\Config;
 use App\User;
 
 class FixDatabase extends Command
@@ -26,7 +27,7 @@ class FixDatabase extends Command
 
     public function handle()
     {
-        User::where('preferred_delivery_id', '')->update(['preferred_delivery_id' => '0']);
+        Config::where('name', 'mail_order_reminder')->delete();
 
         /*
             I seeder dei tipi di movimento contabile e dei tipi di modificatore

@@ -4,19 +4,17 @@ namespace App\Notifications;
 
 use Auth;
 
-class ClosedOrderNotification extends ManyMailNotification
+class ClosedOrdersNotification extends ManyMailNotification
 {
     use MailFormatter;
 
     private $order;
-    private $pdf_file;
-    private $csv_file;
+    private $files;
 
-    public function __construct($order, $pdf_file, $csv_file)
+    public function __construct($orders, $files)
     {
-        $this->order = $order;
-        $this->pdf_file = $pdf_file;
-        $this->csv_file = $csv_file;
+        $this->orders = $orders;
+        $this->files = $files;
 
         /*
             Reminder: i files qui allegati non vanno rimossi subito dopo l'invio
@@ -29,7 +27,12 @@ class ClosedOrderNotification extends ManyMailNotification
     public function toMail($notifiable)
     {
         $message = $this->initMailMessage($notifiable);
-        $message->subject(_i('Ordine chiuso automaticamente'))->view('emails.closedorder', ['order' => $this->order])->attach($this->pdf_file)->attach($this->csv_file);
+        $message->subject(_i('Ordini chiusi automaticamente'))->view('emails.closedorder', ['orders' => $this->orders]);
+
+        foreach($this->files as $file) {
+            $message->attach($file);
+        }
+
         return $message;
     }
 }

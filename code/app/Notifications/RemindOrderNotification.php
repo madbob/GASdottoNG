@@ -6,33 +6,44 @@ class RemindOrderNotification extends ManyMailNotification
 {
     use MailFormatter, MailReplyTo;
 
-    private $order;
+    private $orders;
 
-    public function __construct($order)
+    public function __construct($orders)
     {
-        $this->order = $order;
+        $this->orders = $orders;
     }
 
     public function toMail($notifiable)
     {
         $message = $this->initMailMessage($notifiable);
 
-        $contacts = [];
-        foreach($this->order->enforcedContacts() as $user) {
-            $contacts[] = $user->email;
+        $orders_list = '';
+
+        foreach($this->orders as $order) {
+            $row = $order->supplier->name . "\n";
+
+            if (filled($order->comment ?? '')) {
+                $row .= $order->comment . "\n";
+            }
+
+            $contacts = [];
+
+            foreach($order->enforcedContacts() as $user) {
+                $contacts[] = $user->email;
+            }
+
+            if (empty($contacts) == false) {
+                $row .= _i('Per informazioni: %s', [join(', ', array_filter($contacts))]) . "\n";
+            }
+
+            $row .= $order->getBookingURL() . "\n";
+
+            $orders_list .= $row . "\n";
         }
 
-        $contacts = join(', ', array_filter($contacts));
-
         $message = $this->formatMail($message, 'order_reminder', [
-            'supplier_name' => $this->order->supplier->name,
-            'order_comment' => $this->order->comment ?? '',
-            'gas_booking_link' => $this->order->getBookingURL(),
-            'contacts' => $contacts,
-            'closing_date' => printableDate($this->order->end),
+            'orders_list' => $orders_list,
         ]);
-
-        $message = $this->guessReplyTo($message, $this->order);
 
         return $message;
     }
