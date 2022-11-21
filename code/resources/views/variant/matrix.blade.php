@@ -1,5 +1,5 @@
 <x-larastrap::modal :title="_i('Varianti')">
-    <?php $combos = $product->variantCombos ?>
+    <?php $combos = $product->sortedVariantCombos ?>
 
     <x-larastrap::form classes="inner-form" method="POST" :action="route('variants.updatematrix', $product->id)">
         <input type="hidden" name="close-modal" value="1">
@@ -7,10 +7,12 @@
         <div class="row">
             <div class="col">
                 <table class="table">
-                    @include('variant.matrixhead')
+                    @include('variant.matrixhead', [
+                        'combos' => $combos,
+                    ])
 
                     <tbody>
-                        @foreach($product->sortedVariantCombos as $combo)
+                        @foreach($combos as $combo)
                             <x-larastrap::enclose :obj="$combo">
                                 <tr>
                                     @foreach($combo->values as $value)

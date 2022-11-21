@@ -111,7 +111,7 @@ class Product extends Model
                     VariantChanged::dispatch($variant);
                 }
 
-                return $this->variantCombos;
+                return $this->variant_combos;
             }
             else {
                 return $ret;
@@ -121,7 +121,7 @@ class Product extends Model
 
     public function getSortedVariantCombosAttribute()
     {
-        return $this->variantCombos->where('active', true)->sortBy(function($combo, $key) {
+        return $this->variant_combos->where('active', true)->sortBy(function($combo, $key) {
             return $combo->values->pluck('value')->join(' ');
         }, SORT_NATURAL);
     }

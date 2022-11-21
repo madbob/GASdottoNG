@@ -1,4 +1,4 @@
-<?php $combos = $product->variantCombos ?>
+<?php $combos = $product->variant_combos ?>
 
 @if($combos->isEmpty() == false)
     <hr>

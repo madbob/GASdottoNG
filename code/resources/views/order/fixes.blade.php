@@ -60,7 +60,7 @@
                 </table>
             @else
                 <x-larastrap::tabs use_anchors="true">
-                    @foreach($product->variantCombos as $index => $combo)
+                    @foreach($product->variant_combos as $index => $combo)
                         <x-larastrap::tabpane :label="$combo->printableShortName()" :active="$index == 0">
                             <table class="table table-striped">
                                 @foreach($bookings as $po)

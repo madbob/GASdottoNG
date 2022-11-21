@@ -7,7 +7,7 @@
         </div>
     </div>
 
-    @foreach(App\VariantCombo::activeValues($product->variantCombos) as $variant_id => $variant_values)
+    @foreach(App\VariantCombo::activeValues($product->variant_combos) as $variant_id => $variant_values)
         <div class="col-auto px-2">
             <select class="form-select {{ $master ? 'skip-on-submit' : '' }}" name="variant_selection_{{ $variant_id }}[]" {{ $order->isActive() == false ? 'disabled' : '' }}>
                 @foreach($variant_values as $value_id => $value)
