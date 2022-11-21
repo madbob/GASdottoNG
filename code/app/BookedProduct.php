@@ -133,16 +133,17 @@ class BookedProduct extends Model
         return [$total, $total_vat];
     }
 
-    public function getBookedVariant($variant, $fallback = false)
+    public function getBookedCombos($combo)
     {
-        $v = $this->variants()->where('id', $variant->id)->first();
+        $query = $this->variants();
 
-        if (is_null($v) && $fallback == true) {
-            $v = new BookedProductVariant();
-            $v->product_id = $this->id;
+        foreach($combo->values as $val) {
+            $query->whereHas('components', function($query) use ($val) {
+                $query->where('value_id', $val->id);
+            });
         }
 
-        return $v;
+        return $query->get();
     }
 
     /*

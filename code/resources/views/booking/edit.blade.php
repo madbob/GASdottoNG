@@ -25,6 +25,15 @@ $form_buttons = [
 
 <x-larastrap::iform classes="booking-form" method="PUT" :action="url('booking/' . $aggregate->id . '/user/' . $user->id)" data-dynamic-url="{{ route('booking.dynamics', ['aggregate_id' => $aggregate->id, 'user_id' => $user->id]) }}" :buttons="$form_buttons">
     <input type="hidden" name="post-saved-function" value="afterBookingSaved" class="skip-on-submit">
+
+    <!--
+        Questo serve ad interagire col pannello dell'ordine, nel caso in cui
+        apra il modale di modifica della prenotazione da lì (e.g. in fase di
+        revisione dei fix all'ordine)
+    -->
+    <input type="hidden" name="reload-portion" value=".order-summary-wrapper" class="skip-on-submit" />
+    <input type="hidden" name="reload-portion" value=".order-fixes-modal" class="skip-on-submit" />
+
     <input type="hidden" name="close-modal" value="1" class="skip-on-submit">
     <input type="hidden" name="action" value="booked">
 

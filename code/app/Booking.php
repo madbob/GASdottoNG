@@ -444,6 +444,11 @@ class Booking extends Model
         return route('booking.user.show', ['booking' => $this->order->aggregate_id, 'user' => $this->user_id]);
     }
 
+    public function getModalURL()
+    {
+        return route('booking.modal', ['aggregate_id' => $this->order->aggregate_id, 'user_id' => $this->user_id]);
+    }
+
     public function wipeStatus()
     {
         if ($this->payment) {

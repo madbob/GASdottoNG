@@ -33,7 +33,7 @@ class VariantCombo extends Model
         return $this->price_offset + $this->product->price;
     }
 
-    public function printableName()
+    public function printableShortName()
     {
         $ret = [];
 
@@ -41,7 +41,12 @@ class VariantCombo extends Model
             $ret[] = $val->value;
         }
 
-        return sprintf('%s - %s', $this->product->printableName(), implode(', ', $ret));
+        return implode(', ', $ret);
+    }
+
+    public function printableName()
+    {
+        return sprintf('%s - %s', $this->product->printableName(), $this->printableShortName());
     }
 
     public static function byValues($values)

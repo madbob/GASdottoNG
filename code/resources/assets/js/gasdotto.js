@@ -320,7 +320,7 @@ function miscInnerCallbacks(form, data) {
         test.each(function() {
             var identifier = $(this).val();
             $(identifier).each(function() {
-                utils.j().reloadNode($(this));
+            	utils.j().reloadNode($(this));
             });
         });
     }
