@@ -73,18 +73,6 @@ class BookingUserController extends Controller
         }
     }
 
-    public function inModal(Request $request, $aggregate_id, $user_id)
-    {
-        $user = User::findOrFail($user_id);
-        $aggregate = Aggregate::findOrFail($aggregate_id);
-
-        if ($request->user()->can('supplier.shippings', $aggregate) == false) {
-            abort(503);
-        }
-
-        return view('booking.editmodal', ['aggregate' => $aggregate, 'user' => $user]);
-    }
-
     public function update(Request $request, $aggregate_id, $user_id)
     {
         $target_user = User::find($user_id);

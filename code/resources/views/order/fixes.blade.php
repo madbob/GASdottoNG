@@ -65,7 +65,7 @@
                             <table class="table table-striped">
                                 @foreach($bookings as $po)
                                     <tr>
-                                        <td width="50%">
+                                        <td>
                                             <label>
                                                 @if($po->user->isFriend())
                                                     {{ $po->user->parent->printableName() }}<br>
@@ -75,7 +75,7 @@
                                                 @endif
                                             </label>
                                         </td>
-                                        <td width="20%">
+                                        <td>
                                             @php
 
                                             $quantities = [];
@@ -97,9 +97,6 @@
                                             {!! join('<br>', array_map(function($q) use ($measure) {
                                                 return sprintf('%s %s', $q, $measure);
                                             }, $quantities)) !!}
-                                        </td>
-                                        <td width="20%" class="text-end">
-                                            <a href="#" data-modal-url="{{ $po->getModalURL() }}" class="btn btn-sm btn-warning async-modal">{{ _i('Modifica Prenotazione') }}</a>
                                         </td>
                                     </tr>
                                 @endforeach
