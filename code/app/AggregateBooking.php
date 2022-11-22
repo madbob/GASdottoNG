@@ -37,6 +37,32 @@ class AggregateBooking extends Model
         $this->bookings[] = $booking;
     }
 
+    public function getCreatedAtAttribute()
+    {
+        $date = '9999';
+
+        foreach ($this->bookings as $booking) {
+            if ($booking->created_at < $date) {
+                $date = $booking->created_at;
+            }
+        }
+
+        return $date;
+    }
+
+    public function getUpdatedAtAttribute()
+    {
+        $date = '0000';
+
+        foreach ($this->bookings as $booking) {
+            if ($booking->updated_at > $date) {
+                $date = $booking->updated_at;
+            }
+        }
+
+        return $date;
+    }
+
     public function getStatusAttribute()
     {
         foreach ($this->bookings as $booking) {

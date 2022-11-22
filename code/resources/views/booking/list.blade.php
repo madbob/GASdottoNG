@@ -36,7 +36,34 @@
         </div>
     </div>
 @else
-    <div class="alert alert-danger">
-        {{ _i('Questo pannello sarà attivo quando le prenotazioni saranno chiuse') }}
+    <div class="alert alert-danger mb-3">
+        {{ _i('Questo pannello sarà attivo quando tutte le prenotazioni saranno chiuse') }}
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{{ _i('Utente') }}</th>
+                            <th>{{ _i('Data Creazione') }}</th>
+                            <th>{{ _i('Ultima Modifica') }}</th>
+                            <th>{{ _i('Totale Prenotato') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($aggregate->bookings as $booking)
+                            <tr>
+                                <td>{{ $booking->user->printableName() }}</td>
+                                <td>{{ printableDate($booking->created_at) }}</td>
+                                <td>{{ printableDate($booking->updated_at) }}</td>
+                                <td>{{ printablePriceCurrency($booking->getValue('booked', true)) }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 @endif
