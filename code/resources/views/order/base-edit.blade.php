@@ -25,7 +25,7 @@ usort($suppliers, function($a, $b) {
         ])
     </x-larastrap::field>
 @else
-    <x-larastrap::selectobj name="supplier_id" :label="_i('Fornitore')" :options="$suppliers" />
+    <x-larastrap::selectobj name="supplier_id" :label="_i('Fornitore')" :options="$suppliers" required />
 @endif
 
 <x-larastrap::textarea name="comment" :label="_i('Commento')" maxlength="190" rows="2" :pophelp="_i('Eventuale testo informativo da visualizzare nel titolo dell\'ordine. Se più lungo di %d caratteri, il testo viene invece incluso nel pannello delle relative prenotazioni.', [App\Order::longCommentLimit()])" />

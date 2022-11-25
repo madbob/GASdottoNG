@@ -117,7 +117,12 @@ function inlineId($obj)
 
 function fromInlineId($id)
 {
-    list($class, $id) = explode('---', $id);
+    $parts = explode('---', $id);
+    if (count($parts) != 2) {
+        throw new \Exception("Identificativo non valido per recupero riferimento: " . $id, 1);
+    }
+
+    list($class, $id) = $parts;
     $class = sprintf('App\\%s', $class);
     return $class::find($id);
 }
