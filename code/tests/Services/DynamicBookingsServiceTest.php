@@ -223,7 +223,7 @@ class DynamicBookingsServiceTest extends TestCase
 
             $this->assertEquals(count($b->modifiers), 1);
             foreach($b->modifiers as $m) {
-                $this->assertEquals($p->amount, 100);
+                $this->assertEquals($m->amount, 100);
             }
 
             foreach($b->products as $pid => $p) {
