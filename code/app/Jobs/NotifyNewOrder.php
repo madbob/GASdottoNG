@@ -21,7 +21,7 @@ class NotifyNewOrder extends Job
     {
         $order = Order::find($this->order_id);
 
-        if (is_null($order->first_notify) == false) {
+        if (is_null($order) || is_null($order->first_notify) == false) {
             return;
         }
 
