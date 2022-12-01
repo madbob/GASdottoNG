@@ -19,6 +19,22 @@ function saveFile($file, $obj, $field)
     $obj->save();
 }
 
+function handleFileUpload($request, $obj, $field)
+{
+    if (isset($request[$field])) {
+        saveFile($request[$field], $obj, $field);
+    }
+    else {
+        $deleting = sprintf('delete_image_%s', $field);
+        if (isset($request[$deleting])) {
+            $path = gas_storage_path($obj->$field);
+            @unlink($path);
+            $obj->$field = '';
+            $obj->save();
+        }
+    }
+}
+
 function downloadFile($obj, $field)
 {
     if (!empty($obj->$field)) {

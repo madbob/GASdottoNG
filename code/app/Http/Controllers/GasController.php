@@ -58,9 +58,7 @@ class GasController extends Controller
 
     private function configGeneral($gas, $request)
     {
-        if ($request->hasFile('logo')) {
-            saveFile($request->file('logo'), $gas, 'logo');
-        }
+        handleFileUpload($request->all(), $gas, 'logo');
 
         $gas->name = $request->input('name');
         $gas->email = $request->input('email');

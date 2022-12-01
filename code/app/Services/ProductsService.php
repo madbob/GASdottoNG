@@ -140,10 +140,7 @@ class ProductsService extends BaseService
             $this->setCommonAttributes($product, $request);
             $this->setUncommonAttributes($product, $request);
             $product->save();
-
-            if (isset($request['picture'])) {
-                saveFile($request['picture'], $product, 'picture');
-            }
+            handleFileUpload($request, $product, 'picture');
         });
 
         return $product;

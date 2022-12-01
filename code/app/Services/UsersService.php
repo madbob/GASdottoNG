@@ -225,10 +225,7 @@ class UsersService extends BaseService
         $this->readRID($user, $request);
         $user->save();
 
-        if (isset($request['picture'])) {
-            saveFile($request['picture'], $user, 'picture');
-        }
-
+        handleFileUpload($request, $user, 'picture');
         $user->updateContacts($request);
 
         DB::commit();

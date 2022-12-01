@@ -14,6 +14,7 @@ $url = $obj && $valuefrom ? $obj->$valuefrom : '';
 
         @if(!empty($url))
             <img src="{{ $url }}" class="img-fluid">
+            <x-larastrap::check :name="sprintf('delete_image_%s', $name)" :label="_i('Elimina immagine')" />
         @endif
     </div>
 </x-larastrap::field>
