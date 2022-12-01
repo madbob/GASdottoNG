@@ -14,6 +14,11 @@ class Product extends Formatter
         return $obj->category_name;
     }
 
+    public static function formatPrice($obj, $context)
+    {
+        return printablePrice($obj->price);
+    }
+
     public static function formatActive($obj, $context)
     {
         return $obj->active ? _i('Si') : _i('No');
@@ -54,6 +59,7 @@ class Product extends Formatter
             ],
             'price' => (object) [
                 'name' => _i('Prezzo Unitario'),
+                'format' => 'static::formatPrice',
                 'checked' => true,
             ],
             'active' => (object) [
