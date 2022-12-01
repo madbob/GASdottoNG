@@ -5,16 +5,24 @@
     conservati nella cartella (contenuta in storage/) con quel nome.
     Utile per isolare i files in configurazioni multi-GAS
 */
-function gas_storage_path($path = null)
+function gas_storage_path($path = null, $folder = false)
 {
     $ret = storage_path();
 
     $local = env('STORAGE_FOLDER', null);
-    if ($local != null)
+    if ($local != null) {
         $ret .= sprintf('/%s', $local);
+    }
 
-    if ($path != null)
+    if ($path != null) {
         $ret .= sprintf('/%s', $path);
+    }
+
+    if ($folder) {
+        if (file_exists($ret) == false) {
+            mkdir($ret, 0777);
+        }
+    }
 
     return $ret;
 }

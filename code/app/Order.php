@@ -416,7 +416,7 @@ class Order extends Model
                 $data = $this->formatSummary($required_fields, $status, $shipping_place);
                 $title = _i('Prodotti ordine %s presso %s', [$this->internal_number, $this->supplier->name]);
                 $filename = sanitizeFilename($title . '.' . $format);
-                $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
+                $temp_file_path = sprintf('%s/%s', gas_storage_path('temp', true), $filename);
 
                 if ($format == 'pdf') {
                     $pdf = PDF::loadView('documents.order_summary_pdf', ['order' => $this, 'blocks' => [$data]]);
