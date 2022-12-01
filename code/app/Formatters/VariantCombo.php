@@ -31,7 +31,7 @@ class VariantCombo extends Formatter
 
     public static function formatPrice($obj, $context)
     {
-        return $obj->product->price + $obj->price_offset;
+        return printablePrice($obj->product->price + $obj->price_offset);
     }
 
     public static function formatVat($obj, $context)
