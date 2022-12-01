@@ -259,7 +259,14 @@ foreach($display_columns as $identifier => $metadata) {
                                     @break
 
                                 @case('price_delivered')
-                                    <span class="order-summary-order-price_delivered">{{ printablePriceCurrency($summary->price_delivered ?? 0) }}</span>
+                                    <span class="order-summary-order-price_delivered">
+                                        {{ printablePriceCurrency($summary->price_delivered ?? 0) }}
+                                        @if($order->bookings()->where('status', 'saved')->count() != 0)
+                                            <span class="ms-2 text-black" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="{{ _i('Le quantità di alcune prenotazioni in questo ordine sono salvate ma non risultano ancora effettivamente consegnate né pagate.') }}">
+                                                <i class="bi-exclamation-circle"></i>
+                                            </span>
+                                        @endif
+                                    </span>
                                     @foreach(App\ModifiedValue::aggregateByType($shipped_modifiers) as $am)
                                         <br>+ {{ $am->name }}: {{ printablePrice($am->amount) }}
                                     @endforeach
