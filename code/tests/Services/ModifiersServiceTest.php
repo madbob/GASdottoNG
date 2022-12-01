@@ -285,7 +285,7 @@ class ModifiersServiceTest extends TestCase
         $total = $threshold_prices[2] * $total_quantity;
 
         foreach($mods as $m) {
-            $this->assertEquals($m->effective_amount * -1, $without_discount - $total);
+            $this->assertEquals(round($m->effective_amount * -1, 2), round($without_discount - $total, 2));
         }
     }
 
