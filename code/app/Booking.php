@@ -235,12 +235,27 @@ class Booking extends Model
 
     private function readProductQuantity($product, $field, $friends_bookings)
     {
-        $p = $this->getBooked($product);
+        $combo = null;
 
-        if (is_null($p))
-            $ret = 0;
-        else
-            $ret = $p->$field;
+        if (is_a($product, VariantCombo::class)) {
+            $combo = $product;
+            $product = $product->product;
+        }
+
+        $p = $this->getBooked($product);
+        $ret = 0;
+
+        if ($p) {
+            if ($combo) {
+                $inner_combos = $p->getBookedCombos($combo);
+                foreach($inner_combos as $ic) {
+                    $ret += $ic->$field;
+                }
+            }
+            else {
+                $ret = $p->$field;
+            }
+        }
 
         if ($friends_bookings) {
             foreach ($this->friends_bookings as $sub)
@@ -364,7 +379,10 @@ class Booking extends Model
 
     public static function sortByShippingPlace($bookings, $shipping_place)
     {
-        if ($shipping_place == 'all_by_name') {
+        if ($shipping_place == 0) {
+            // dummy
+        }
+        else if ($shipping_place == 'all_by_name') {
             usort($bookings, function($a, $b) {
                 return $a->user->printableName() <=> $b->user->printableName();
             });

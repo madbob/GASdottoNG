@@ -76,27 +76,7 @@
                                             </label>
                                         </td>
                                         <td>
-                                            @php
-
-                                            $quantities = [];
-
-                                            $pu = $po->getBooked($product);
-                                            if ($pu) {
-                                                $booked = $pu->getBookedCombos($combo);
-                                                foreach($booked as $b) {
-                                                    $quantities[] = $b->quantity;
-                                                }
-                                            }
-
-                                            if (empty($quantities)) {
-                                                $quantities[] = 0;
-                                            }
-
-                                            @endphp
-
-                                            {!! join('<br>', array_map(function($q) use ($measure) {
-                                                return sprintf('%s %s', $q, $measure);
-                                            }, $quantities)) !!}
+                                            {{ sprintf('%s %s', $po->getBookedQuantity($combo), $measure) }}
                                         </td>
                                     </tr>
                                 @endforeach

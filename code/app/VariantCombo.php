@@ -25,7 +25,7 @@ class VariantCombo extends Model
 
     public function getProductAttribute()
     {
-        return $this->values()->first()->variant->product;
+        return $this->values->first()->variant->product;
     }
 
     public function getPriceAttribute()

@@ -143,7 +143,13 @@ class BookedProduct extends Model
             });
         }
 
-        return $query->get();
+        $ret = $query->get();
+
+        foreach($ret as $r) {
+            $r->setRelation('product', $this);
+        }
+
+        return $ret;
     }
 
     /*

@@ -25,9 +25,16 @@ class CheckSystemNotifications extends Command
         if (env('GASDOTTO_NET', false) == true) {
             try {
                 $url = 'http://gasdotto.net/notice/0';
-                $data = file_get_contents($url);
-                if (empty($data))
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+                $data = curl_exec($ch);
+                curl_close($ch);
+
+                if (empty($data)) {
                     return;
+                }
 
                 $data = json_decode($data);
 

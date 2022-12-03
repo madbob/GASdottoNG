@@ -100,7 +100,7 @@ class Product extends Model
                 $query->whereHas('variant', function($query) use ($obj) {
                     $query->where('product_id', $obj->id);
                 });
-            })->get();
+            })->with(['values'])->get();
 
             /*
                 Per scrupolo qui faccio un controllo: se il prodotto ha delle
@@ -111,7 +111,7 @@ class Product extends Model
                     VariantChanged::dispatch($variant);
                 }
 
-                return $this->variant_combos;
+                return $this->getVariantCombosAttribute();
             }
             else {
                 return $ret;
