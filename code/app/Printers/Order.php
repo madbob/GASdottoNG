@@ -2,21 +2,20 @@
 
 namespace App\Printers;
 
+use Auth;
 use PDF;
 use Mail;
 
-use App\Booking;
+use App\Formatters\User as UserFormatter;
 use App\Notifications\GenericOrderShipping;
+use App\Booking;
 
 class Order extends Printer
 {
     private function orderTopBookingsByShipping($order, $shipping_place, $status = null)
     {
         $bookings = $order->topLevelBookings($status);
-        \Log::debug(count($bookings));
-        $ret = Booking::sortByShippingPlace($bookings, $shipping_place);
-        \Log::debug(count($ret));
-        return $ret;
+        return Booking::sortByShippingPlace($bookings, $shipping_place);
     }
 
     private function sendDocumentMail($request, $temp_file_path)
@@ -114,24 +113,125 @@ class Order extends Printer
         }
     }
 
+    private function formatTableRows($order, $shipping_place, $status, $fields, &$all_products)
+    {
+        $bookings = $this->orderTopBookingsByShipping($order, $shipping_place, $status == 'saved' ? 'saved' : null);
+
+        if ($status == 'saved' || $status == 'delivered') {
+            $get_total = 'delivered';
+            $get_function = 'getDeliveredQuantity';
+            $get_function_real = false;
+        }
+        else {
+            $get_total = 'booked';
+            $get_function = 'getBookedQuantity';
+            $get_function_real = true;
+        }
+
+        $data = [];
+        $total_price = 0;
+
+        foreach($bookings as $booking) {
+            $row = UserFormatter::format($booking->user, $fields->user_columns);
+
+            foreach ($order->products as $product) {
+                if ($product->variants->isEmpty()) {
+                    $quantity = $booking->$get_function($product, $get_function_real, true);
+                    $all_products[$product->id] += $quantity;
+                    $row[] = printableQuantity($quantity, $product->measure->discrete, 3);
+                }
+                else {
+                    foreach($product->variant_combos as $combo) {
+                        $quantity = $booking->$get_function($combo, $get_function_real, true);
+                        $all_products[$product->id . '-' . $combo->id] += $quantity;
+                        $row[] = printableQuantity($quantity, $product->measure->discrete, 3);
+                    }
+                }
+            }
+
+            $price = $booking->getValue($get_total, true);
+            $total_price += $price;
+            $row[] = printablePrice($price);
+
+            $data[] = $row;
+        }
+
+        return [$data, $total_price];
+    }
+
     private function handleTable($obj, $request)
     {
         $status = $request['status'] ?? 'booked';
         $shipping_place = $request['shipping_place'] ?? 0;
 
-        if ($status == 'booked' || $status == 'delivered') {
-            $bookings = $this->orderTopBookingsByShipping($obj, $shipping_place, null);
-        }
-        else if ($status == 'saved') {
-            $bookings = $this->orderTopBookingsByShipping($obj, $shipping_place, 'saved');
-        }
-        else {
-            throw new \Exception('Stato prenotazioni non riconosciuto', 1);
+        $required_fields = $request['fields'] ?? [];
+        $fields = splitFields($required_fields);
+
+        $user = Auth::user();
+        $all_products = [];
+
+        /*
+            Formatto riga di intestazione
+        */
+
+        $user_columns = UserFormatter::getHeaders($fields->user_columns);
+        $headers = $user_columns;
+
+        foreach ($obj->products as $product) {
+            if ($product->variants->isEmpty()) {
+                $all_products[$product->id] = 0;
+                $headers[] = sprintf('%s (%s)', $product->printableName(), printablePriceCurrency($product->price));
+            }
+            else {
+                foreach($product->variant_combos as $combo) {
+                    $all_products[$product->id . '-' . $combo->id] = 0;
+                    $headers[] = sprintf('%s (%s)', $combo->printableName(), printablePriceCurrency($combo->price));
+                }
+            }
         }
 
-        $contents = view('documents.order_table_' . $status, ['order' => $obj, 'bookings' => $bookings])->render();
+        $headers[] = _i('Totale Prezzo');
+
+        /*
+            Formatto righe delle singole prenotazioni
+        */
+
+        list($data, $total_price) = $this->formatTableRows($obj, $shipping_place, $status, $fields, $all_products);
+
+        /*
+            Formatto riga dei totali
+        */
+
+        $row = [];
+
+        $row[] = _i('Totale');
+
+        for($i = 1; $i < count($user_columns); $i++) {
+            $row[] = '';
+        }
+
+        foreach ($obj->products as $product) {
+            if ($product->variants->isEmpty()) {
+                $row[] = printableQuantity($all_products[$product->id], $product->measure->discrete, 3);
+            }
+            else {
+                foreach($product->variant_combos as $combo) {
+                    $row[] = printableQuantity($all_products[$product->id . '-' . $combo->id], $product->measure->discrete, 3);
+                }
+            }
+        }
+
+        $row[] = printablePrice($total_price);
+
+        $data[] = $row;
+        $data[] = $headers;
+
+        /*
+            Genero documento
+        */
+
         $filename = sanitizeFilename(_i('Tabella Ordine %s presso %s.csv', [$obj->internal_number, $obj->supplier->name]));
-        return output_csv($filename, null, $contents, null, null);
+        return output_csv($filename, $headers, $data, null);
     }
 
     public function document($obj, $type, $request)

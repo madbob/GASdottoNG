@@ -11,6 +11,9 @@
 
         @include('commons.selectshippingexport', ['aggregate' => $order->aggregate, 'included_metaplace' => ['all_by_name', 'all_by_place']])
 
+        <?php list($options, $values) = flaxComplexOptions(App\Formatters\User::formattableColumns()) ?>
+        <x-larastrap::checks name="fields" :label="_i('Dati Utenti')" :options="$options" :value="$currentgas->orders_shipping_user_columns" />
+
         <x-larastrap::radios name="status" :label="_i('Stato Prenotazioni')" :options="['booked' => _i('Prenotate'), 'delivered' => _i('Consegnate'), 'saved' => _i('Salvate')]" value="booked" />
     </x-larastrap::form>
 </x-larastrap::modal>
