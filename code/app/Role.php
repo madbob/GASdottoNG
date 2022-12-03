@@ -33,10 +33,23 @@ class Role extends Model
         return $this->belongsTo('App\Role', 'parent_id');
     }
 
+    public function isEnabled()
+    {
+        if ($this->system) {
+            foreach(systemParameters('Roles') as $ref) {
+                if ($this->identifier == $ref->identifier()) {
+                    return $ref->enabled();
+                }
+            }
+        }
+
+        return true;
+    }
+
     private static function recursiveSortedByHierarchy($roles, &$collection, &$ids)
     {
         foreach($roles as $role) {
-            if (in_array($role->id, $ids) == false) {
+            if ($role->isEnabled() && in_array($role->id, $ids) == false) {
                 $collection->push($role);
                 $ids[] = $role->id;
                 self::recursiveSortedByHierarchy($role->children, $collection, $ids);

@@ -4,7 +4,7 @@
 <div class="card-body">
     <div class="row">
         <div class="col-12 col-md-6">
-            <?php $existing_roles = App\Role::orderBy('name', 'asc')->get() ?>
+            <?php $existing_roles = allRoles() ?>
 
             <x-larastrap::form classes="auto-submit" method="PUT" :action="route('gas.update', $gas->id)" :buttons="[]">
                 <input type="hidden" name="group" value="roles">

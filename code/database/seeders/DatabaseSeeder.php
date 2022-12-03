@@ -58,49 +58,36 @@ class DatabaseSeeder extends Seeder
         ]);
     }
 
-    private function coreRoles($gas, $admin_role)
-    {
-        $user_role = Role::create([
-            'name' => 'Utente',
-            'actions' => 'users.self,users.view,supplier.view,supplier.book',
-            'parent_id' => $admin_role->id
-        ]);
-
-        $friend_role = Role::create([
-            'name' => 'Amico',
-            'actions' => 'users.self,supplier.view,supplier.book',
-            'parent_id' => $user_role->id
-        ]);
-
-        $multigas_role = Role::create([
-            'name' => 'Amministratore GAS Secondario',
-            'actions' => 'gas.access,gas.config,supplier.view,supplier.book,supplier.add,users.admin,users.movements,movements.admin,notifications.admin',
-            'parent_id' => $admin_role->id
-        ]);
-
-        $gas->setConfig('roles', (object) [
-            'user' => $user_role->id,
-            'friend' => $friend_role->id,
-            'multigas' => $multigas_role->id,
-        ]);
-
-        return $user_role;
-    }
-
     private function roleInit($gas)
     {
-        $admin_role = Role::create([
-            'name' => 'Amministratore',
-            'actions' => 'gas.access,gas.permissions,gas.config,supplier.view,supplier.add,users.admin,users.movements,movements.admin,movements.types,categories.admin,measures.admin,gas.statistics,notifications.admin'
-        ]);
+        $queue = systemParameters('Roles');
 
-        $referrer_role = Role::create([
-            'name' => 'Referente',
-            'actions' => 'supplier.modify,supplier.orders,supplier.shippings,supplier.movements',
-            'parent_id' => $admin_role->id
-        ]);
+        while(true) {
+            $next_queue = [];
 
-        $user_role = $this->coreRoles($gas, $admin_role);
+            foreach ($queue as $identifier => $instance) {
+                if (Role::where('identifier', $identifier)->count() == 0) {
+                    try {
+                        $instance->create();
+                    }
+                    catch(\Exception $e) {
+                        $next_queue[$identifier] = $instance;
+                    }
+                }
+            }
+
+            if (empty($next_queue)) {
+                break;
+            }
+
+            $queue = $next_queue;
+        }
+
+        $gas->setConfig('roles', (object) [
+            'user' => roleByIdentifier('user'),
+            'friend' => roleByIdentifier('friend'),
+            'multigas' => roleByIdentifier('secondary_admin'),
+        ]);
 
         $admin = User::create([
             'id' => str_slug('Amministratore Globale'),
@@ -112,8 +99,8 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('root'),
         ]);
 
-        $admin->addRole($user_role, $gas);
-        $admin->addRole($admin_role, $gas);
+        $admin->addRole(roleByIdentifier('user'), $gas);
+        $admin->addRole(roleByIdentifier('admin'), $gas);
 
         return $admin;
     }

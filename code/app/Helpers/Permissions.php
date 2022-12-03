@@ -34,6 +34,13 @@ function allPermissions()
     ];
 }
 
+function allRoles()
+{
+    return App\Role::orderBy('name', 'asc')->get()->filter(function($r) {
+        return $r->isEnabled();
+    });
+}
+
 function someoneCan($permission, $subject = null)
 {
     $basic_roles = App\Role::havingAction($permission);
@@ -92,7 +99,7 @@ function rolesByClass($asked_class)
     $roles = [];
     $all_permissions = allPermissions();
 
-    foreach (App\Role::all() as $role) {
+    foreach (allRoles() as $role) {
         foreach ($all_permissions as $class => $rules) {
             if ($class == $asked_class) {
                 foreach ($rules as $identifier => $name) {
@@ -106,4 +113,9 @@ function rolesByClass($asked_class)
     }
 
     return $roles;
+}
+
+function roleByIdentifier($identifier)
+{
+    return App\Role::where('identifier', $identifier)->first();
 }

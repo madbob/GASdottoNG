@@ -9,6 +9,10 @@
             $targets = $role->targets;
             $last_class = null;
 
+            if ($targets->isEmpty()) {
+                continue;
+            }
+
             ?>
 
             <div class="row">
