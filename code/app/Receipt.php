@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Concerns\AccountingDocument;
 use App\Events\SluggableCreating;
 
 /*

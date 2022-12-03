@@ -5,7 +5,7 @@
     visualizzazione
 */
 
-namespace App;
+namespace App\Models\Concerns;
 
 use Auth;
 

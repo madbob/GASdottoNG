@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use App;
 use Log;
 
+use App\Models\Concerns\ModifiableTrait;
 use App\Events\VariantChanged;
 use App\Events\SluggableCreating;
 

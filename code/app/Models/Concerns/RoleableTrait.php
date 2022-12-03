@@ -1,14 +1,16 @@
 <?php
 
-namespace App;
+namespace App\Models\Concerns;
 
 use Log;
+
+use App\Role;
 
 trait RoleableTrait
 {
     public function roles($target = null)
     {
-        return $this->belongsToMany('App\Role')->orderBy('name', 'asc')->withPivot('id');
+        return $this->belongsToMany(Role::class)->orderBy('name', 'asc')->withPivot('id');
     }
 
     public function getManagedRolesAttribute()

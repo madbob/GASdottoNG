@@ -5,6 +5,8 @@ namespace App\Notifications;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 
+use App\Models\Concerns\ContactableTrait;
+
 /*
     Di norma le notifiche mail vanno a leggere il campo "email" dell'oggetto da
     notificare, ma nel nostro caso i contatti sono da un'altra parte e possono
@@ -38,7 +40,7 @@ class ManyMailNotification extends Notification
     {
         $message = new MailMessage();
 
-        if (in_array('App\ContactableTrait', class_uses(get_class($notifiable)))) {
+        if (in_array(ContactableTrait::class, class_uses(get_class($notifiable)))) {
             $notifiable->messageAll($message);
         }
 

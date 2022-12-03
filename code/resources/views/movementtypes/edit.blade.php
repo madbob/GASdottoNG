@@ -5,10 +5,10 @@ $target_classes = [
 ];
 
 if ($type->system) {
-    $classes = modelsUsingTrait('App\PayableTrait');
+    $classes = modelsUsingTrait(\App\Models\Concerns\PayableTrait::class);
 }
 else {
-    $classes = modelsUsingTrait('App\CreditableTrait');
+    $classes = modelsUsingTrait(\App\Models\Concerns\CreditableTrait::class);
 }
 
 foreach($classes as $class => $name) {

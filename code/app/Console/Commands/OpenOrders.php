@@ -59,7 +59,7 @@ class OpenOrders extends Command
                         $order->aggregate_id = 0;
                         $order->supplier_id = $supplier->id;
                         $order->comment = $date->comment;
-                        $order->status = 'open';
+                        $order->status = 'suspended';
                         $order->keep_open_packages = 'no';
                         $order->start = $today;
                         $order->end = date('Y-m-d', strtotime($today . ' +' . $date->end . ' days'));
@@ -98,6 +98,7 @@ class OpenOrders extends Command
 
             foreach($aggr as $order) {
                 $order->aggregate_id = $aggregate->id;
+                $order->status = 'open';
                 $order->save();
             }
         }

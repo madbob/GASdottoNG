@@ -18,7 +18,7 @@
     tutte le altre.
 */
 
-namespace App;
+namespace App\Models\Concerns;
 
 use Log;
 

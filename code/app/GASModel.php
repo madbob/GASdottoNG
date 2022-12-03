@@ -9,6 +9,8 @@ use URL;
 use Log;
 use Schema;
 
+use App\Models\Concerns\Iconable;
+
 trait GASModel
 {
     use Iconable;

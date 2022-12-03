@@ -13,7 +13,14 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Auth;
 use URL;
 
-use App\Scopes\RestrictedGAS;
+use App\Models\Concerns\AttachableTrait;
+use App\Models\Concerns\ContactableTrait;
+use App\Models\Concerns\PayableTrait;
+use App\Models\Concerns\CreditableTrait;
+use App\Models\Concerns\ExportableTrait;
+use App\Models\Concerns\SuspendableTrait;
+use App\Models\Concerns\ModifiableTrait;
+use App\Models\Concerns\WithinGas;
 use App\Events\SluggableCreating;
 use App\Events\AttachableToGas;
 
@@ -21,7 +28,7 @@ class Supplier extends Model
 {
     use HasFactory, Notifiable, SoftDeletes,
         AttachableTrait, ContactableTrait, CreditableTrait, PayableTrait, ExportableTrait, SuspendableTrait, ModifiableTrait,
-        GASModel, SluggableID, Cachable;
+        GASModel, SluggableID, WithinGas, Cachable;
 
     public $incrementing = false;
     protected $dates = ['deleted_at'];
@@ -30,17 +37,6 @@ class Supplier extends Model
         'creating' => SluggableCreating::class,
         'created' => AttachableToGas::class,
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-        static::addGlobalScope(new RestrictedGAS());
-    }
-
-    public function gas()
-    {
-        return $this->belongsToMany('App\Gas');
-    }
 
     public static function commonClassName()
     {

@@ -4,7 +4,7 @@ $target_classes = [
     '' => _i('Nessuno'),
 ];
 
-$classes = modelsUsingTrait('App\CreditableTrait');
+$classes = modelsUsingTrait(\App\Models\Concerns\CreditableTrait::class);
 foreach($classes as $class => $name) {
     $target_classes[$class] = $name;
 }

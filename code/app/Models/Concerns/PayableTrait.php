@@ -18,13 +18,15 @@
     funzioni di CreditableTrait pur non usando quel tratto
 */
 
-namespace App;
+namespace App\Models\Concerns;
+
+use App\Movement;
 
 trait PayableTrait
 {
     public function movements()
     {
-        return $this->morphMany('App\Movement', 'target');
+        return $this->morphMany(Movement::class, 'target');
     }
 
     public function deleteMovements()

@@ -1,14 +1,14 @@
 <?php
 
-namespace App;
+namespace App\Models\Concerns;
 
-use Auth;
+use App\ModifiedValue;
 
 trait ModifiedTrait
 {
     public function modifiedValues()
     {
-        return $this->morphMany('App\ModifiedValue', 'target');
+        return $this->morphMany(ModifiedValue::class, 'target');
     }
 
     public abstract function getModifiedRelations();

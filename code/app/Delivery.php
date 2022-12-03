@@ -9,7 +9,8 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Auth;
 
-use App\Scopes\RestrictedGAS;
+use App\Models\Concerns\ModifiableTrait;
+use App\Models\Concerns\WithinGas;
 use App\Events\SluggableCreating;
 use App\Events\AttachableToGas;
 
@@ -19,7 +20,7 @@ use App\Events\AttachableToGas;
 
 class Delivery extends Model
 {
-    use HasFactory, ModifiableTrait, GASModel, SluggableID, Cachable;
+    use HasFactory, ModifiableTrait, GASModel, SluggableID, WithinGas, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -28,17 +29,6 @@ class Delivery extends Model
         'creating' => SluggableCreating::class,
         'created' => AttachableToGas::class
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-        static::addGlobalScope(new RestrictedGAS());
-    }
-
-    public function gas()
-    {
-        return $this->belongsToMany('App\Gas');
-    }
 
     public function users()
     {

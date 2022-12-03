@@ -8,6 +8,9 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Log;
 
+use App\Models\Concerns\AttachableTrait;
+use App\Models\Concerns\PayableTrait;
+use App\Models\Concerns\CreditableTrait;
 use App\Events\SluggableCreating;
 
 class Gas extends Model

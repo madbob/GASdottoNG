@@ -1,8 +1,15 @@
 <?php
 
-namespace App;
+/*
+    Questo viene usato per i modelli che hanno una quantità arbitraria di
+    contatti (Contact) assegnabili
+*/
+
+namespace App\Models\Concerns;
 
 use Illuminate\Http\Request;
+
+use App\Contact;
 
 trait ContactableTrait
 {

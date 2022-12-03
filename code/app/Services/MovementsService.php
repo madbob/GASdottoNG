@@ -9,8 +9,8 @@ use Auth;
 use App;
 use Log;
 
+use App\Models\Concerns\CreditableTrait;
 use App\Movement;
-use App\CreditableTrait;
 use App\User;
 use App\Balance;
 use App\Currency;

@@ -14,6 +14,10 @@ use DB;
 use URL;
 use Log;
 
+use App\Models\Concerns\ModifiedTrait;
+use App\Models\Concerns\PayableTrait;
+use App\Models\Concerns\CreditableTrait;
+use App\Models\Concerns\ReducibleTrait;
 use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 use App\Events\BookingDeleting;

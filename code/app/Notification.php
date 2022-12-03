@@ -10,6 +10,7 @@ use Auth;
 use Mail;
 use Log;
 
+use App\Models\Concerns\AttachableTrait;
 use App\Jobs\DeliverNotification;
 use App\Scopes\RestrictedGAS;
 

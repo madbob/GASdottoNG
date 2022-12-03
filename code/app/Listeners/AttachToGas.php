@@ -18,7 +18,10 @@ class AttachToGas
     {
         $user = Auth::user();
         if (is_null($user)) {
-            return;
+            $gas = $event->attachable->guessGas();
+        }
+        else {
+            $gas = [$user->gas];
         }
 
         $group = $event->group;
@@ -27,6 +30,8 @@ class AttachToGas
             return;
         }
 
-        $user->gas->$group()->attach($event->attachable->id);
+        foreach($gas as $g) {
+            $g->$group()->attach($event->attachable->id);
+        }
     }
 }

@@ -18,6 +18,12 @@ use Log;
 use App;
 use URL;
 
+use App\Models\Concerns\ContactableTrait;
+use App\Models\Concerns\PayableTrait;
+use App\Models\Concerns\SuspendableTrait;
+use App\Models\Concerns\HierarcableTrait;
+use App\Models\Concerns\RoleableTrait;
+use App\Models\Concerns\BookerTrait;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\ManualWelcomeMessage;
 use App\Scopes\RestrictedGAS;
@@ -26,7 +32,7 @@ use App\Events\SluggableCreating;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, Authorizable, CanResetPassword, SoftDeletes,
-        ContactableTrait, CreditableTrait, PayableTrait, SuspendableTrait, FriendTrait, HierarcableTrait, RoleableTrait, BookerTrait,
+        ContactableTrait, PayableTrait, SuspendableTrait, HierarcableTrait, RoleableTrait, BookerTrait,
         GASModel, SluggableID, Cachable;
 
     public $incrementing = false;

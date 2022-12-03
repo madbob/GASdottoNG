@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
+use App\Models\Concerns\HasChildren;
 use App\Events\SluggableCreating;
 
-class Category extends Model implements Hierarchic
+class Category extends Model implements HasChildren
 {
     use HasFactory, GASModel, SluggableID, Cachable;
 

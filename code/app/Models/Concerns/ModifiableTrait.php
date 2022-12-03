@@ -1,8 +1,9 @@
 <?php
 
-namespace App;
+namespace App\Models\Concerns;
 
-use Auth;
+use App\ModifierType;
+use App\Modifier;
 
 trait ModifiableTrait
 {

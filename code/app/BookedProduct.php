@@ -9,6 +9,8 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Log;
 
+use App\Models\Concerns\ModifiedTrait;
+use App\Models\Concerns\LeafReducibleTrait;
 use App\Exceptions\InvalidQuantityConstraint;
 use App\Events\SluggableCreating;
 

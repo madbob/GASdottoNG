@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
+use App\Models\Concerns\LeafReducibleTrait;
+
 class BookedProductVariant extends Model
 {
     use GASModel, LeafReducibleTrait, Cachable;

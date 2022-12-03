@@ -4,6 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Concerns\AccountingDocument;
+use App\Models\Concerns\PayableTrait;
+use App\Models\Concerns\CreditableTrait;
+use App\Models\Concerns\HierarcableTrait;
 use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 

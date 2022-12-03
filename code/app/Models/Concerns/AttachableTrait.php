@@ -1,10 +1,17 @@
 <?php
 
-namespace App;
+/*
+    Trait usato da tutti i modelli cui è possibile allegare files, che sono a
+    loro volta astratti dal model Attachment (che ha una relazione polimorfica
+    nei confronti dell'elemento di riferimento)
+*/
+
+namespace App\Models\Concerns;
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
-use Auth;
+use App\Attachment;
 
 trait AttachableTrait
 {

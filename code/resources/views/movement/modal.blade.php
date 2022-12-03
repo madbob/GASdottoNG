@@ -59,13 +59,13 @@ $buttons[] = ['color' => 'success', 'label' => _i('Salva'), 'attributes' => ['ty
             <x-larastrap::price name="amount" :label="$amount_label" readonly :currency="$obj->currency_id" />
         @endif
 
-        @if($obj->sender && array_search('App\CreditableTrait', class_uses($obj->sender)) !== false && count($obj->sender->balanceFields()) == 1)
+        @if($obj->sender && array_search(\App\Models\Concerns\CreditableTrait::class, class_uses($obj->sender)) !== false && count($obj->sender->balanceFields()) == 1)
             <p class="sender-credit-status mb-3 alert alert-{{ $obj->amount < $obj->sender->currentBalanceAmount() ? 'success' : 'danger' }}">
                 {{ _i('Credito Attuale %s', [$obj->sender->printableName()]) }}: <span class="current-sender-credit">{{ $obj->sender->currentBalanceAmount() }}</span> {{ $currentgas->currency }}
             </p>
         @endif
 
-        @if($obj->target && array_search('App\CreditableTrait', class_uses($obj->target)) !== false && count($obj->target->balanceFields()) == 1)
+        @if($obj->target && array_search(\App\Models\Concerns\CreditableTrait::class, class_uses($obj->target)) !== false && count($obj->target->balanceFields()) == 1)
             <p class="alert alert-success mb-3">
                 {{ $obj->target->printableName() }}: {{ $obj->target->currentBalanceAmount() }} {{ $currentgas->currency }}
             </p>

@@ -1,11 +1,14 @@
 <?php
 
-namespace App;
+namespace App\Models\Concerns;
 
 use Illuminate\Support\Arr;
 
 use DB;
 use Log;
+
+use App\Currency;
+use App\Balance;
 
 trait CreditableTrait
 {
@@ -13,7 +16,7 @@ trait CreditableTrait
     {
         $proxy = $this->getBalanceProxy();
         if (is_null($proxy)) {
-            return $this->morphMany('App\Balance', 'target')->orderBy('current', 'desc')->orderBy('date', 'desc');
+            return $this->morphMany(Balance::class, 'target')->orderBy('current', 'desc')->orderBy('date', 'desc');
         }
         else {
             return $proxy->balances();

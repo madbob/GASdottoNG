@@ -12,27 +12,18 @@ use Auth;
 use URL;
 use Log;
 
-use App\Scopes\RestrictedGAS;
+use App\Models\Concerns\ModifiableTrait;
+use App\Models\Concerns\ReducibleTrait;
+use App\Models\Concerns\WithinGas;
 use App\Events\AttachableToGas;
 
 class Aggregate extends Model
 {
-    use HasFactory, GASModel, ModifiableTrait, ReducibleTrait, Cachable;
+    use HasFactory, GASModel, ModifiableTrait, ReducibleTrait, WithinGas, Cachable;
 
     protected $dispatchesEvents = [
         'created' => AttachableToGas::class
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-        static::addGlobalScope(new RestrictedGAS());
-    }
-
-    public function gas()
-    {
-        return $this->belongsToMany('App\Gas');
-    }
 
     public function orders()
     {
@@ -568,4 +559,31 @@ class Aggregate extends Model
     {
         return $this->orders->first();
     }
+
+    /************************************************************** WithinGas */
+
+    public function guessGas()
+	{
+        $candidates = [];
+        $valid = [];
+        $threshold = $this->orders->count();
+
+		foreach($this->orders as $order) {
+            foreach($order->supplier->gas as $gas) {
+                if (isset($candidates[$gas->id]) == false) {
+                    $candidates[$gas->id] = 0;
+                }
+
+                $candidates[$gas->id]++;
+            }
+        }
+
+        foreach($candidates as $id => $count) {
+            if ($count == $threshold) {
+                $valid[] = $id;
+            }
+        }
+
+        return Gas::whereIn('id', $valid)->get();
+	}
 }

@@ -15,6 +15,12 @@ use Mail;
 use URL;
 use Log;
 
+use App\Models\Concerns\AttachableTrait;
+use App\Models\Concerns\PayableTrait;
+use App\Models\Concerns\CreditableTrait;
+use App\Models\Concerns\ModifiableTrait;
+use App\Models\Concerns\ExportableTrait;
+use App\Models\Concerns\ReducibleTrait;
 use App\Scopes\RestrictedGAS;
 use App\Formatters\User as UserFormatter;
 use App\Events\SluggableCreating;
