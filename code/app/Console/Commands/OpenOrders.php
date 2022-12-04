@@ -13,7 +13,7 @@ use App\Aggregate;
 class OpenOrders extends Command
 {
     protected $signature = 'open:orders';
-    protected $description = 'Controlla lo stato degli ordini automatici';
+    protected $description = 'Controlla lo stato degli ordini da aprire automaticamente';
 
     public function __construct()
     {
@@ -22,6 +22,21 @@ class OpenOrders extends Command
 
     public function handle()
     {
+        /*
+            Qui vengono aperti gli ordini che erano stati impostati con una data
+            futura
+        */
+
+        $pending = Order::where('status', 'suspended')->where('start', Carbon::today()->format('Y-m-d'))->get();
+        foreach($pending as $p) {
+            $p->status = 'open';
+            $p->save();
+        }
+
+        /*
+            Da qui vengono gestiti gli ordini schedulati con le date
+        */
+
         $dates = Date::where('type', 'order')->get();
         $today = date('Y-m-d');
         $aggregable = [];

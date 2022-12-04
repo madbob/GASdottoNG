@@ -1,6 +1,6 @@
 <?php $suppliers = $currentuser->targetsByAction('supplier.orders') ?>
 
-<x-larastrap::modal :title="_i('Gestione Date')">
+<x-larastrap::modal :title="_i('Gestione Date')" size="fullscreen">
     <div class="row">
         <div class="col-md-12">
             {{ _i("Da qui è possibile aggiungere date arbitrarie al calendario delle consegne, anche per ordini non ancora esistenti. Questa funzione è consigliata per facilitare il coordinamento di diversi referenti all'interno del GAS e pianificare le attività a lungo termine.") }}
