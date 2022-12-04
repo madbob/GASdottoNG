@@ -31,13 +31,16 @@ function printablePriceCurrency($price, $separator = '.', $currency = null)
 
 function printableQuantity($quantity, $discrete, $decimals = 2, $separator = '.')
 {
-    if ($discrete)
+    if ($discrete) {
         $ret = sprintf('%d', $quantity);
-    else
+    }
+    else {
         $ret = sprintf('%.0' . $decimals . 'f', $quantity);
+    }
 
-    if ($separator != '.')
+    if ($separator != '.') {
         $ret = str_replace('.', $separator, $ret);
+    }
 
     return $ret;
 }
@@ -98,14 +101,18 @@ function http_csv_headers($filename)
 function output_csv($filename, $head, $contents, $format_callback, $out_file = null)
 {
     $callback = function() use ($head, $contents, $format_callback, $out_file) {
-        if (is_null($out_file))
+        $csv_separator = currentAbsoluteGas()->getConfig('csv_separator');
+
+        if (is_null($out_file)) {
             $FH = fopen('php://output', 'w');
-        else
+        }
+        else {
             $FH = fopen($out_file, 'w');
+        }
 
         if (is_null($format_callback)) {
             if ($head) {
-                fputcsv($FH, $head);
+                fputcsv($FH, $head, $csv_separator);
             }
 
             if (is_string($contents)) {
@@ -113,19 +120,19 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
             }
             else if (is_array($contents)) {
                 foreach ($contents as $c) {
-                    fputcsv($FH, $c);
+                    fputcsv($FH, $c, $csv_separator);
                 }
             }
         }
         else {
             if ($head) {
-                fputcsv($FH, $head);
+                fputcsv($FH, $head, $csv_separator);
             }
 
             foreach ($contents as $c) {
                 $row = $format_callback($c);
                 if ($row) {
-                    fputcsv($FH, $row);
+                    fputcsv($FH, $row, $csv_separator);
                 }
             }
         }

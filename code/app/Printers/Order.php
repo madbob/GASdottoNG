@@ -138,13 +138,13 @@ class Order extends Printer
                 if ($product->variants->isEmpty()) {
                     $quantity = $booking->$get_function($product, $get_function_real, true);
                     $all_products[$product->id] += $quantity;
-                    $row[] = printableQuantity($quantity, $product->measure->discrete, 3);
+                    $row[] = printableQuantity($quantity, $product->measure->discrete, 3, ',');
                 }
                 else {
                     foreach($product->variant_combos as $combo) {
                         $quantity = $booking->$get_function($combo, $get_function_real, true);
                         $all_products[$product->id . '-' . $combo->id] += $quantity;
-                        $row[] = printableQuantity($quantity, $product->measure->discrete, 3);
+                        $row[] = printableQuantity($quantity, $product->measure->discrete, 3, ',');
                     }
                 }
             }
@@ -212,11 +212,11 @@ class Order extends Printer
 
         foreach ($obj->products as $product) {
             if ($product->variants->isEmpty()) {
-                $row[] = printableQuantity($all_products[$product->id], $product->measure->discrete, 3);
+                $row[] = printableQuantity($all_products[$product->id], $product->measure->discrete, 3, ',');
             }
             else {
                 foreach($product->variant_combos as $combo) {
-                    $row[] = printableQuantity($all_products[$product->id . '-' . $combo->id], $product->measure->discrete, 3);
+                    $row[] = printableQuantity($all_products[$product->id . '-' . $combo->id], $product->measure->discrete, 3, ',');
                 }
             }
         }

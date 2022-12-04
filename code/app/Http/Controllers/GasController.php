@@ -216,6 +216,12 @@ class GasController extends Controller
         }
     }
 
+    private function configImports($gas, $request)
+    {
+        $gas->setConfig('es_integration', $request->has('es_integration') ? '1' : '0');
+        $gas->setConfig('csv_separator', $request->input('csv_separator'));
+    }
+
     private function configRoles($gas, $request)
     {
         $conf = (object) [
@@ -278,7 +284,7 @@ class GasController extends Controller
                 break;
 
             case 'import':
-                $gas->setConfig('es_integration', $request->has('es_integration') ? '1' : '0');
+                $this->configImports($gas, $request);
                 break;
 
             case 'roles':

@@ -40,7 +40,7 @@
                         @endforeach
 
                         <li class="nav-item last-tab">
-                            <input class="form-control roleAssign" type="text" placeholder="{{ _i('Aggiungi Nuovo Utente') }}">
+                            <input class="form-control roleAssign" type="text" placeholder="{{ _i('Cerca e Aggiungi Nuovo Utente') }}">
                         </li>
                     </ul>
                 </div>
