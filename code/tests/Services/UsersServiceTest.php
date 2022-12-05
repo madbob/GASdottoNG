@@ -269,26 +269,6 @@ class UsersServiceTest extends TestCase
     }
 
     /*
-        Modifica Utente con parametri errati
-    */
-    public function testInvalidFirstLastName()
-    {
-        $this->expectException(IllegalArgumentException::class);
-
-        $this->actingAs($this->userWithAdminPerm);
-        $sample = \App\User::where('gas_id', $this->gas->id)->where('firstname', '!=', '')->where('lastname', '!=', '')->inRandomOrder()->first();
-
-        $user = \App\User::factory()->create([
-            'gas_id' => $this->gas->id
-        ]);
-
-        $this->services['users']->update($user->id, array(
-            'firstname' => $sample->firstname,
-            'lastname' => $sample->lastname,
-        ));
-    }
-
-    /*
         Modifica del proprio Utente con permessi sbagliati
     */
     public function testFailsToSelfUpdate()
