@@ -24,7 +24,7 @@ class CommonsController extends Controller
     {
         $user = Auth::user();
         $user->last_login = date('Y-m-d G:i:s');
-        $user->saveQuietly();
+        $user->save();
 
         /*
             In mancanza d'altro, eseguo qui lo scheduling delle operazioni

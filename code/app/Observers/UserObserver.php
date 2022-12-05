@@ -82,8 +82,15 @@ class UserObserver
 
     public function updating(User $user)
     {
+        /*
+            Nota: qui deliberatamente non controllo l'univocità di nome e
+            cognome. Questa regola è stata introdotta ad un certo punto, quando
+            già c'erano numerosi utenti omonimi sulle istanze, forzando qui tale
+            controllo genera grattacapi in tutti i casi in cui l'utente non
+            univoco viene salvato in qualsiasi circostanza
+        */
+
         $this->checkUsername($user);
-        $this->checkFirstLastName($user);
 
         if (filled($user->card_number)) {
             $test = User::where('id', '!=', $user->id)->where('gas_id', $user->gas_id)->where('card_number', $user->card_number)->count();
