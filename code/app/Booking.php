@@ -350,13 +350,18 @@ class Booking extends Model
     public function getFriendsBookingsAttribute()
     {
         return $this->innerCache('friends_bookings', function($obj) {
-            $bookings = Booking::where('order_id', $obj->order_id)->whereIn('user_id', $obj->user->friends_with_trashed->pluck('id'))->angryload()->get();
-
-            foreach($bookings as $b) {
-                $b->setRelation('order', $obj->order);
+            if ($obj->user->friends_with_trashed->isEmpty()) {
+                return new Collection();
             }
+            else {
+                $bookings = Booking::where('order_id', $obj->order_id)->whereIn('user_id', $obj->user->friends_with_trashed->pluck('id'))->angryload()->get();
 
-            return $bookings;
+                foreach($bookings as $b) {
+                    $b->setRelation('order', $obj->order);
+                }
+
+                return $bookings;
+            }
         });
     }
 
