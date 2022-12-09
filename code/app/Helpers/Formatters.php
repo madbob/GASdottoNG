@@ -232,7 +232,7 @@ function normalizeAddress($street, $city, $cap)
 function splitFields($fields)
 {
     $formattable_user = App\Formatters\User::formattableColumns();
-    $formattable_product = App\Order::formattableColumns('shipping');
+    $formattable_product = App\Formatters\Order::formattableColumns('shipping');
 
     $ret = (object) [
         'headers' => [],
@@ -256,6 +256,23 @@ function splitFields($fields)
     }
 
     return $ret;
+}
+
+/*
+    Aggregando molti ordini insieme, alcune composizioni grafiche nella
+    visualizzazione degli aggregati diventano sostanzialmente illeggibili.
+    Questa funzione ritorna un numero ragionevole di ordini entro cui si
+    possono comporre stringhe e contenuti, superato il quale è consigliato
+    adottare un'altra strategia
+*/
+function aggregatesConvenienceLimit()
+{
+    return 3;
+}
+
+function longCommentLimit()
+{
+    return 100;
 }
 
 function ue($value)

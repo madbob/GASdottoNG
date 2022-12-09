@@ -2,7 +2,7 @@
 
 namespace App\Parameters\Config;
 
-use App\Order;
+use App\Formatters\Order;
 
 class OrdersShippingProductrColumns extends Config
 {

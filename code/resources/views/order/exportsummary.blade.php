@@ -11,7 +11,7 @@
 
         @include('commons.selectshippingexport', ['aggregate' => $order->aggregate, 'included_metaplace' => ['all_by_place']])
 
-        <?php list($options, $values) = flaxComplexOptions(App\Order::formattableColumns('summary')) ?>
+        <?php list($options, $values) = flaxComplexOptions(App\Formatters\Order::formattableColumns('summary')) ?>
         <x-larastrap::checks name="fields" :label="_i('Colonne')" :options="$options" :value="$values" />
 
         <x-larastrap::radios name="status" :label="_i('Quantità')" :options="['booked' => _i('Prenotate'), 'delivered' => _i('Consegnate')]" value="booked" />

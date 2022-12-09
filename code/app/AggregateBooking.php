@@ -146,7 +146,7 @@ class AggregateBooking extends Model
         $suppliers = array_keys($suppliers);
         sort($suppliers);
 
-        $limit = Aggregate::aggregatesConvenienceLimit();
+        $limit = aggregatesConvenienceLimit();
         if (count($suppliers) > $limit) {
             if (filled($this->aggregate->comment)) {
                 $suppliers = [$this->aggregate->comment];

@@ -10,7 +10,7 @@
 
     <body>
         <h3>{{ _i('Dettaglio Consegne') }}<br/>
-            @if($aggregate->orders()->count() <= App\Aggregate::aggregatesConvenienceLimit())
+            @if($aggregate->orders()->count() <= aggregatesConvenienceLimit())
                 @foreach($aggregate->orders as $order)
                     {{ $order->supplier->name }} {{ $order->internal_number }}<br/>
                 @endforeach

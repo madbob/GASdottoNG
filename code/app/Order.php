@@ -23,6 +23,7 @@ use App\Models\Concerns\ExportableTrait;
 use App\Models\Concerns\ReducibleTrait;
 use App\Scopes\RestrictedGAS;
 use App\Formatters\User as UserFormatter;
+use App\Formatters\Order as OrderFormatter;
 use App\Events\SluggableCreating;
 
 class Order extends Model
@@ -96,7 +97,7 @@ class Order extends Model
     {
         $ret = $this->supplier->name;
 
-        if (!empty($this->comment) && strlen($this->comment) < self::longCommentLimit()) {
+        if (!empty($this->comment) && strlen($this->comment) < longCommentLimit()) {
             $ret .= ' - ' . $this->comment;
         }
 
@@ -230,7 +231,7 @@ class Order extends Model
 
     public function getLongCommentAttribute()
     {
-        if (!empty($this->comment) && strlen($this->comment) >= self::longCommentLimit()) {
+        if (!empty($this->comment) && strlen($this->comment) >= longCommentLimit()) {
             return $this->comment;
         }
         else {
@@ -321,11 +322,6 @@ class Order extends Model
         });
 
         return $query_users->get();
-    }
-
-    public static function longCommentLimit()
-    {
-        return 100;
     }
 
     private function autoGuessFields()
@@ -662,7 +658,7 @@ class Order extends Model
 
         $internal_offsets = $this->offsetsByStatus($status);
         $summary = $this->reduxData(null, ['shipping_place' => $shipping_place]);
-        $formattable = self::formattableColumns('summary');
+        $formattable = OrderFormatter::formattableColumns('summary');
 
         foreach($fields as $f) {
             $ret->headers[] = $formattable[$f]->name;
@@ -701,11 +697,11 @@ class Order extends Model
             'contents' => [],
         ];
 
-        $formattable_product = self::formattableColumns('shipping');
+        $formattable_product = OrderFormatter::formattableColumns('shipping');
         $internal_offsets = $this->offsetsByStatus($status);
 
         $bookings = $this->topLevelBookings(null);
-        $bookings = Booking::sortByShippingPlace($bookings, $shipping_place);
+        $bookings = Delivery::sortBookingsByShippingPlace($bookings, $shipping_place);
         $listed_products = [];
 
         $aggregate_data = $this->aggregate->reduxData();
@@ -782,122 +778,6 @@ class Order extends Model
             }
 
             $ret->contents[] = $obj;
-        }
-
-        return $ret;
-    }
-
-    public static function formattableColumns($type)
-    {
-        $ret = [
-            'name' => (object) [
-                'name' => _i('Nome Prodotto'),
-                'checked' => true,
-                'format_product' => function($product, $summary) {
-                    return $product->printableName();
-                },
-                'format_variant' => function($product, $summary) {
-                    return $product->printableName() . ' - ' . $summary->variant->printableName();
-                }
-            ],
-            'supplier' => (object) [
-                'name' => _i('Fornitore'),
-                'checked' => false,
-                'format_product' => function($product, $summary) {
-                    return $product->supplier->printableName();
-                },
-            ],
-            'code' => (object) [
-                'name' => _i('Codice Fornitore'),
-                'format_product' => function($product, $summary) {
-                    return $product->supplier_code;
-                },
-                'format_variant' => function($product, $summary) {
-                    if (!empty($summary->variant->supplier_code)) {
-                        return $summary->variant->supplier_code;
-                    }
-                    else {
-                        return $summary->variant->product->product->supplier_code;
-                    }
-                }
-            ],
-            'quantity' => (object) [
-                'name' => _i('Quantità'),
-                'checked' => true,
-                'format_product' => function($product, $summary, $alternate = false) {
-                    if ($alternate == false)
-                        return printableQuantity($summary->quantity_pieces, $product->measure->discrete, 2, ',');
-                    else
-                        return printableQuantity($summary->delivered_pieces, $product->measure->discrete, 2, ',');
-                },
-            ],
-            'boxes' => (object) [
-                'name' => _i('Numero Confezioni'),
-                'format_product' => function($product, $summary, $alternate = false) {
-                    if ($product->package_size != 0) {
-                        if ($alternate == false)
-                            return $summary->quantity_pieces / $product->package_size;
-                        else
-                            return $summary->delivered_pieces / $product->package_size;
-                    }
-                    else {
-                        return '';
-                    }
-                },
-            ],
-            'measure' => (object) [
-                'name' => _i('Unità di Misura'),
-                'checked' => true,
-                'format_product' => function($product, $summary, $alternate = false) {
-                    if ($alternate == false) {
-                        return $product->printableMeasure(true);
-                    }
-                    else {
-                        if ($product->portion_quantity != 0) {
-                            return $product->measure->name;
-                        }
-                        else {
-                            return $product->printableMeasure(true);
-                        }
-                    }
-                },
-            ],
-            'category' => (object) [
-                'name' => _i('Categoria'),
-                'checked' => false,
-                'format_product' => function($product, $summary) {
-                    return $product->category ? $product->category->name : '';
-                },
-            ],
-            'unit_price' => (object) [
-                'name' => _i('Prezzo Unitario'),
-                'checked' => false,
-                'format_product' => function($product, $summary) {
-                    return printablePrice($product->price, ',');
-                },
-                'format_variant' => function($product, $summary) {
-                    return printablePrice($summary->variant->unitPrice(), ',');
-                }
-            ],
-            'price' => (object) [
-                'name' => _i('Prezzo'),
-                'checked' => true,
-                'format_product' => function($product, $summary, $alternate = false) {
-                    if ($alternate == false)
-                        return printablePrice($summary->price, ',');
-                    else
-                        return printablePrice($summary->price_delivered, ',');
-                },
-            ],
-        ];
-
-        if ($type == 'summary') {
-            $ret['notes'] = (object) [
-                'name' => _i('Note Prodotto'),
-                'format_product' => function($product, $summary) {
-                    return $product->pivot->notes;
-                },
-            ];
         }
 
         return $ret;

@@ -386,57 +386,6 @@ class Booking extends Model
         }
     }
 
-    public static function sortByShippingPlace($bookings, $shipping_place)
-    {
-        if ($shipping_place == 0) {
-            // dummy
-        }
-        else if ($shipping_place == 'all_by_name') {
-            usort($bookings, function($a, $b) {
-                return $a->user->printableName() <=> $b->user->printableName();
-            });
-        }
-        else if ($shipping_place == 'all_by_place') {
-            usort($bookings, function($a, $b) {
-                $a_place = $a->shipping_place;
-                $b_place = $b->shipping_place;
-
-                if (is_null($a_place) && is_null($b_place)) {
-                    return $a->user->printableName() <=> $b->user->printableName();
-                }
-                else if (is_null($a_place)) {
-                    return -1;
-                }
-                else if (is_null($b_place)) {
-                    return 1;
-                }
-                else {
-                    if ($a_place->id != $b_place->id)
-                        return $a_place->name <=> $b_place->name;
-                    else
-                        return $a->user->printableName() <=> $b->user->printableName();
-                }
-            });
-        }
-        else {
-            $tmp_bookings = [];
-
-            foreach($bookings as $booking) {
-                if ($booking->shipping_place && $booking->shipping_place->id == $shipping_place) {
-                    $tmp_bookings[] = $booking;
-                }
-            }
-
-            $bookings = $tmp_bookings;
-
-            usort($bookings, function($a, $b) {
-                return $a->user->printableName() <=> $b->user->printableName();
-            });
-        }
-
-        return $bookings;
-    }
-
     public function printableName()
     {
         return $this->order->printableName();

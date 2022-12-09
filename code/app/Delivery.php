@@ -34,4 +34,61 @@ class Delivery extends Model
     {
         return $this->hasMany('App\User', 'preferred_delivery_id');
     }
+
+    private static function sortByUserName($bookings)
+    {
+        usort($bookings, function($a, $b) {
+            return $a->user->printableName() <=> $b->user->printableName();
+        });
+
+        return $bookings;
+    }
+
+    private static function sortByPlace($bookings)
+    {
+        usort($bookings, function($a, $b) {
+            $a_place = $a->shipping_place;
+            $b_place = $b->shipping_place;
+
+            if (is_null($a_place) && is_null($b_place)) {
+                return $a->user->printableName() <=> $b->user->printableName();
+            }
+            else if (is_null($a_place)) {
+                return -1;
+            }
+            else if (is_null($b_place)) {
+                return 1;
+            }
+            else {
+                if ($a_place->id != $b_place->id)
+                    return $a_place->name <=> $b_place->name;
+                else
+                    return $a->user->printableName() <=> $b->user->printableName();
+            }
+        });
+
+        return $bookings;
+    }
+
+    public static function sortBookingsByShippingPlace($bookings, $shipping_place)
+    {
+        if ($shipping_place == 0) {
+            // dummy
+        }
+        else if ($shipping_place == 'all_by_name') {
+            $bookings = self::sortByUserName($bookings);
+        }
+        else if ($shipping_place == 'all_by_place') {
+            $bookings = self::sortByPlace($bookings);
+        }
+        else {
+            $tmp_bookings = array_filter(function($b) use ($shipping_place) {
+                return $b->shipping_place && $b->shipping_place->id == $shipping_place;
+            }, $bookings);
+
+            $bookings = self::sortByUserName($tmp_bookings);
+        }
+
+        return $bookings;
+    }
 }

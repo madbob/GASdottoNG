@@ -59,7 +59,7 @@ foreach($data->contents as $d) {
         @else
             <h3>
                 {{ _i('Dettaglio Consegne del %s', [$aggregate->shipping ? date('d/m/Y', strtotime($aggregate->shipping)) : date('d/m/Y')]) }}<br/>
-                @if($aggregate->orders()->count() <= App\Aggregate::aggregatesConvenienceLimit())
+                @if($aggregate->orders()->count() <= aggregatesConvenienceLimit())
                     @foreach($aggregate->orders as $order)
                         {{ $order->supplier->name }} {{ $order->internal_number }}<br/>
                     @endforeach

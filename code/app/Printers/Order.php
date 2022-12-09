@@ -15,7 +15,7 @@ class Order extends Printer
     private function orderTopBookingsByShipping($order, $shipping_place, $status = null)
     {
         $bookings = $order->topLevelBookings($status);
-        return Booking::sortByShippingPlace($bookings, $shipping_place);
+        return Delivery::sortBookingsByShippingPlace($bookings, $shipping_place);
     }
 
     private function sendDocumentMail($request, $temp_file_path)
