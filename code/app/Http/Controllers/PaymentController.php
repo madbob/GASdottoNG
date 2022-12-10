@@ -14,7 +14,7 @@ use PayPal\Api\Payment;
 use PayPal\Api\PaymentExecution;
 use PayPal\Api\RedirectUrls;
 use PayPal\Api\Transaction;
-use PayPal\Exception\PPConnectionException;
+use PayPal\Exception\PayPalConnectionException;
 
 use Session;
 use Cache;
@@ -65,7 +65,7 @@ class PaymentController extends Controller
             $payer->setPaymentMethod('paypal');
 
             $item_1 = new Item();
-            $item_1->setName(_i('Credito Utente %s', $gas->name))->setCurrency('EUR')->setQuantity(1)->setPrice($request->input('amount'));
+            $item_1->setName(_i('Credito Utente %s', $gas->name))->setCurrency('EUR')->setQuantity('1')->setPrice($request->input('amount'));
 
             $item_list = new ItemList();
             $item_list->setItems(array($item_1));
@@ -85,7 +85,7 @@ class PaymentController extends Controller
             try {
                 $payment->create($this->api_context);
             }
-            catch (PPConnectionException $e) {
+            catch (PayPalConnectionException $e) {
                 Log::error('Errore in connessione per transazione PayPal: ' . $e->getMessage());
             }
 

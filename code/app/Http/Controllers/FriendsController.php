@@ -10,8 +10,6 @@ use App\User;
 use App\Role;
 
 use App\Services\UsersService;
-use App\Exceptions\AuthException;
-use App\Exceptions\IllegalArgumentException;
 
 class FriendsController extends BackedController
 {
@@ -27,15 +25,9 @@ class FriendsController extends BackedController
 
     public function store(Request $request)
     {
-        try {
+        return $this->easyExecute(function() use ($request) {
             $subject = $this->service->storeFriend($request->all());
             return $this->commonSuccessResponse($subject);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
-        catch (IllegalArgumentException $e) {
-            return $this->errorResponse($e->getMessage(), $e->getArgument());
-        }
+        });
     }
 }

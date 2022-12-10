@@ -42,7 +42,9 @@ abstract class CSVImporter
             rewind($contents);
         }
 
+        // @phpstan-ignore-next-line
         $target_separator = $separators[array_search(max($lenghts), $lenghts)] ?? null;
+        // @phpstan-ignore-next-line
         if (is_null($target_separator)) {
             throw new \Exception(_i('Impossibile interpretare il file'), 1);
         }

@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 use DB;
 
 use App\Services\VariantsService;
-use App\Exceptions\AuthException;
 
 use App\Product;
 use App\Variant;
@@ -34,9 +33,9 @@ class VariantsController extends BackedController
         return view('variant.edit', ['product' => $product, 'variant' => null]);
     }
 
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
-        try {
+        return $this->easyExecute(function() use ($id) {
             $variant = $this->service->show($id);
 
             if ($variant->product->variants()->count() == 1) {
@@ -45,10 +44,7 @@ class VariantsController extends BackedController
             else {
                 return view('variant.edit', ['product' => $variant->product, 'variant' => $variant]);
             }
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     /*

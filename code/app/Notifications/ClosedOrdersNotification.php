@@ -8,7 +8,7 @@ class ClosedOrdersNotification extends ManyMailNotification
 {
     use MailFormatter;
 
-    private $order;
+    private $orders;
     private $files;
 
     public function __construct($orders, $files)

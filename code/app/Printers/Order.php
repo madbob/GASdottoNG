@@ -116,6 +116,7 @@ class Order extends Printer
 
     private function formatTableHead($user_columns, $obj)
     {
+        $all_products = [];
         $headers = $user_columns;
         $prices_rows = array_fill(0, count($user_columns), '');
 
@@ -196,7 +197,6 @@ class Order extends Printer
         $fields = splitFields($required_fields);
 
         $user = Auth::user();
-        $all_products = [];
 
         /*
             Formatto riga di intestazione

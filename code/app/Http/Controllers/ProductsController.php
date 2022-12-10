@@ -9,8 +9,6 @@ use DB;
 use Auth;
 
 use App\Services\ProductsService;
-use App\Exceptions\AuthException;
-use App\Exceptions\IllegalArgumentException;
 
 use App\Order;
 use App\Product;
@@ -80,16 +78,10 @@ class ProductsController extends BackedController
 
     public function store(Request $request)
     {
-        try {
+        return $this->easyExecute(function() use ($request) {
             $product = $this->service->store($request->all());
             return $this->commonSuccessResponse($product);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
-        catch (IllegalArgumentException $e) {
-            return $this->errorResponse($e->getMessage(), $e->getArgument());
-        }
+        });
     }
 
     public function massiveUpdate(Request $request)
@@ -114,12 +106,9 @@ class ProductsController extends BackedController
 
     public function picture($id)
     {
-        try {
+        return $this->easyExecute(function() use ($id) {
             return $this->service->picture($id);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     public function price(Request $request)

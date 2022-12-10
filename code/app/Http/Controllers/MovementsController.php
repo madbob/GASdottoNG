@@ -181,15 +181,12 @@ class MovementsController extends BackedController
         }
     }
 
-    public function show_ro(Request $request, $id)
+    public function show_ro($id)
     {
-        try {
+        return $this->easyExecute(function() use ($id) {
             $movement = $this->service->show($id);
             return view('movement.show', ['obj' => $movement]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     public function creditsTable()
@@ -423,7 +420,7 @@ class MovementsController extends BackedController
 
     public function recalculate()
     {
-        try {
+        return $this->easyExecute(function() {
             $diffs = $this->service->recalculate();
 
             if (is_null($diffs)) {
@@ -434,40 +431,22 @@ class MovementsController extends BackedController
                     'diffs' => $diffs
                 ]);
             }
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
-        catch (\Exception $e) {
-            return $this->errorResponse(_i('Errore'));
-        }
+        });
     }
 
     public function closeBalance(Request $request)
     {
-        try {
+        return $this->easyExecute(function() use ($request) {
             $this->service->closeBalance($request->all());
             return $this->successResponse();
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
-        catch (\Exception $e) {
-            return $this->errorResponse(_i('Errore'));
-        }
+        });
     }
 
-    public function deleteBalance(Request $request, $id)
+    public function deleteBalance($id)
     {
-        try {
+        return $this->easyExecute(function() use ($id) {
             $this->service->deleteBalance($id);
             return $this->successResponse();
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
-        catch (\Exception $e) {
-            return $this->errorResponse(_i('Errore'));
-        }
+        });
     }
 }

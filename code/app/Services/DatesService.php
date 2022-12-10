@@ -102,6 +102,8 @@ class DatesService extends BaseService
 
                 $date->description = $descriptions[$index];
                 $date->type = $types[$index];
+
+                // @phpstan-ignore-next-line
                 $date->save();
 
                 $saved_ids[] = $date->id;

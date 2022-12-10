@@ -178,6 +178,7 @@ class StatisticsController extends Controller
         $start = decodeDate($request->input('startdate'));
         $end = decodeDate($request->input('enddate'));
         $target = fromInlineId($request->input('target'));
+        $csv_headers = [];
 
         switch ($id) {
             case 'summary':

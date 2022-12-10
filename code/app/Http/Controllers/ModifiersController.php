@@ -8,7 +8,6 @@ use App\Modifier;
 use App\Order;
 
 use App\Services\ModifiersService;
-use App\Exceptions\AuthException;
 
 class ModifiersController extends BackedController
 {
@@ -22,30 +21,24 @@ class ModifiersController extends BackedController
         ]);
     }
 
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        try {
+        return $this->easyExecute(function() use ($id) {
             $modifier = $this->service->show($id);
             if (is_null($modifier)) {
                 abort(404);
             }
 
             return view('modifier.show', ['modifier' => $modifier]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
-        try {
+        return $this->easyExecute(function() use ($id) {
             $modifier = $this->service->show($id);
             return view('modifier.edit', ['modifier' => $modifier]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     public function strings($target)
@@ -55,9 +48,9 @@ class ModifiersController extends BackedController
         return response()->json(\App\View\Texts\Modifier::descriptions($target));
     }
 
-    public function postFeedback(Request $request, $id)
+    public function postFeedback($id)
     {
-        try {
+        return $this->easyExecute(function() use ($id) {
             $ret = [];
             $modifier = $this->service->show($id);
 
@@ -88,26 +81,20 @@ class ModifiersController extends BackedController
             }
 
             return response()->json($ret);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
-    public function getFixOrderAttach(Request $request, $id)
+    public function getFixOrderAttach($id)
     {
-        try {
+        return $this->easyExecute(function() use ($id) {
             $modifier = $this->service->show($id);
             return view('modifier.fixorders', ['modifier' => $modifier]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     public function postFixOrderAttach(Request $request, $id)
     {
-        try {
+        return $this->easyExecute(function() use ($request, $id) {
             $modifier = $this->service->show($id);
             $activated = array_unique($request->input('activated', []));
 
@@ -127,9 +114,6 @@ class ModifiersController extends BackedController
             }
 
             return $this->successResponse();
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 }

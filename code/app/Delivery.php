@@ -84,9 +84,9 @@ class Delivery extends Model
             $bookings = self::sortByPlace($bookings);
         }
         else {
-            $tmp_bookings = array_filter(function($b) use ($shipping_place) {
+            $tmp_bookings = array_filter($bookings, function($b) use ($shipping_place) {
                 return $b->shipping_place && $b->shipping_place->id == $shipping_place;
-            }, $bookings);
+            });
 
             $bookings = self::sortByUserName($tmp_bookings);
         }

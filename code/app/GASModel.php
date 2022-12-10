@@ -26,6 +26,7 @@ trait GASModel
         $class = get_called_class();
 
         if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class))) {
+            // @phpstan-ignore-next-line
             $ret = $class::where('id', $id)->withoutGlobalScopes()->withTrashed()->first();
         }
         else {
@@ -171,6 +172,9 @@ trait GASModel
 
     public static function easyCreate($params)
     {
+        // Non usare questa funzione per allocare un AggregateBooking (che non è
+        // un vero model, non essendo salvato sul DB)
+        // @phpstan-ignore-next-line
         $obj = new self();
 
         foreach($params as $name => $value) {

@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Services\ModifierTypesService;
-use App\Exceptions\AuthException;
-
 use App\ModifierType;
 
 class ModifierTypesController extends BackedController
@@ -21,15 +19,12 @@ class ModifierTypesController extends BackedController
         ]);
     }
 
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        try {
+        return $this->easyExecute(function() use ($id) {
             $mt = $this->service->show($id);
             return view('modifiertype.edit', ['modtype' => $mt]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     public function search(Request $request)

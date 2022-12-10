@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Services\VatRatesService;
-use App\Exceptions\AuthException;
 
 class VatRatesController extends BackedController
 {
@@ -19,14 +18,11 @@ class VatRatesController extends BackedController
         ]);
     }
 
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        try {
+        return $this->easyExecute(function() use ($id) {
             $vr = $this->service->show($id);
             return view('vatrates.edit', ['vatrate' => $vr]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 }

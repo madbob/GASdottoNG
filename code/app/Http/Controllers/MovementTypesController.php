@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\AuthException;
 use App\Services\MovementTypesService;
 
 class MovementTypesController extends BackedController
@@ -17,12 +16,9 @@ class MovementTypesController extends BackedController
 
     public function show($id)
     {
-        try {
+        return $this->easyExecute(function() use ($id) {
             $type = $this->service->show($id);
             return view('movementtypes.edit', ['type' => $type]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 }

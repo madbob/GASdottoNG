@@ -13,7 +13,6 @@ use App\Aggregate;
 use App\Services\UsersService;
 use App\Formatters\User as UserFormatter;
 use App\Exceptions\AuthException;
-use App\Exceptions\IllegalArgumentException;
 
 class UsersController extends BackedController
 {
@@ -29,28 +28,21 @@ class UsersController extends BackedController
 
     public function index()
     {
-        try {
+        return $this->easyExecute(function() {
             $user = Auth::user();
             $users = $this->service->list('', $user->can('users.admin', $user->gas));
             return view('pages.users', ['users' => $users]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     public function search(Request $request)
     {
-        $term = $request->input('term');
-
-        try {
+        return $this->easyExecute(function() use ($request) {
+            $term = $request->input('term');
             $users = $this->service->list($term);
             $users = $this->toJQueryAutocompletionFormat($users);
             return json_encode($users);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     public function export(Request $request)
@@ -93,15 +85,12 @@ class UsersController extends BackedController
 
     public function profile(Request $request)
     {
-        try {
+        return $this->easyExecute(function() use ($request) {
             $id = Auth::user()->id;
             $active_tab = $request->input('tab');
             $user = $this->service->show($id);
             return view('pages.profile', ['user' => $user, 'active_tab' => $active_tab]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     public function searchOrders(Request $request, $id)
@@ -113,36 +102,27 @@ class UsersController extends BackedController
         return view('commons.orderslist', ['orders' => $orders]);
     }
 
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        try {
+        return $this->easyExecute(function() use ($id) {
             $user = $this->service->show($id);
             return view('user.edit', ['user' => $user]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
-    public function show_ro(Request $request, $id)
+    public function show_ro($id)
     {
-        try {
+        return $this->easyExecute(function() use ($id) {
             $user = $this->service->show($id);
             return view('user.edit', ['user' => $user, 'read_only' => true]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     public function picture($id)
     {
-        try {
+        return $this->easyExecute(function() use ($id) {
             return $this->service->picture($id);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     private function testInternalFunctionsAccess($requester, $target)
@@ -156,39 +136,30 @@ class UsersController extends BackedController
 
     public function bookings(Request $request, $id)
     {
-        try {
+        return $this->easyExecute(function() use ($request, $id) {
             $user = $this->service->show($id);
             $this->testInternalFunctionsAccess($request->user(), $user);
             $booked_orders = $this->getOrders($id, 0, date('Y-m-d', strtotime('-1 months')), '2100-01-01');
             return view('user.bookings', ['user' => $user, 'booked_orders' => $booked_orders]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     public function statistics(Request $request, $id)
     {
-        try {
+        return $this->easyExecute(function() use ($request, $id) {
             $user = $this->service->show($id);
             $this->testInternalFunctionsAccess($request->user(), $user);
             return view('commons.statspage', ['target' => $user]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     public function accounting(Request $request, $id)
     {
-        try {
+        return $this->easyExecute(function() use ($request, $id) {
             $user = $this->service->show($id);
             $this->testInternalFunctionsAccess($request->user(), $user);
             return view('user.accounting', ['user' => $user]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     private function toJQueryAutocompletionFormat($users)
@@ -241,19 +212,18 @@ class UsersController extends BackedController
 
     public function notifications(Request $request, $id)
     {
-        try {
+        return $this->easyExecute(function() use ($request, $id) {
             $this->service->notifications($id, $request->input('suppliers'));
             return $this->successResponse();
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     public function changePassword(Request $request)
     {
-        if ($request->user()->enforce_password_change == false)
+        if ($request->user()->enforce_password_change == false) {
             return redirect()->route('dashboard');
+        }
+
         return view('user.change_password');
     }
 }

@@ -45,7 +45,7 @@ class NotificationsController extends BackedController
 
     public function show(Request $request, $id)
     {
-        try {
+        return $this->easyExecute(function() use ($request, $id) {
             $n = $this->service->show($id);
             $user = $request->user();
 
@@ -55,10 +55,7 @@ class NotificationsController extends BackedController
             else if ($n->hasUser($user)) {
                 return view('notification.show', ['notification' => $n]);
             }
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     public function markread($id)

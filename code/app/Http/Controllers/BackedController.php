@@ -25,11 +25,10 @@ class BackedController extends Controller
         return $this->service->ensureAuth($permissions, $or);
     }
 
-    public function store(Request $request)
+    protected function easyExecute($func)
     {
         try {
-            $subject = $this->service->store($request->all());
-            return $this->commonSuccessResponse($subject);
+            return $func();
         }
         catch (AuthException $e) {
             abort($e->status());
@@ -37,30 +36,32 @@ class BackedController extends Controller
         catch (IllegalArgumentException $e) {
             return $this->errorResponse($e->getMessage(), $e->getArgument());
         }
+        catch (\Exception $e) {
+            return $this->errorResponse(_i('Errore'));
+        }
+    }
+
+    public function store(Request $request)
+    {
+        return $this->easyExecute(function() use ($request) {
+            $subject = $this->service->store($request->all());
+            return $this->commonSuccessResponse($subject);
+        });
     }
 
     public function update(Request $request, $id)
     {
-        try {
+        return $this->easyExecute(function() use ($request, $id) {
             $subject = $this->service->update($id, $request->except('_method', '_token'));
             return $this->commonSuccessResponse($subject);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
-        catch (IllegalArgumentException $e) {
-            return $this->errorResponse($e->getMessage(), $e->getArgument());
-        }
+        });
     }
 
     public function destroy($id)
     {
-        try {
+        return $this->easyExecute(function() use ($id) {
             $this->service->destroy($id);
             return $this->successResponse();
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 }

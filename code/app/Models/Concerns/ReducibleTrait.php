@@ -192,7 +192,9 @@ trait ReducibleTrait
     */
     public function minimumRedux($modifiers)
     {
-        \Debugbar::startMeasure('reducing', 'Min reducing booking ' . $this->id);
+        $aggregate = null;
+        $order = null;
+        $booking = null;
 
         switch(get_class($this)) {
             case Aggregate::class:
@@ -261,7 +263,6 @@ trait ReducibleTrait
             }
         }
 
-        \Debugbar::stopMeasure('reducing');
         return $aggregate_data;
     }
 

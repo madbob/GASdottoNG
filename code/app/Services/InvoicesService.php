@@ -47,6 +47,7 @@ class InvoicesService extends BaseService
             $receipts = $query->get();
 
             foreach($receipts as $r) {
+                // @phpstan-ignore-next-line
                 $elements->push($r);
             }
         }

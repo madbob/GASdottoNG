@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use Auth;
 
 use App\Services\SuppliersService;
-use App\Exceptions\AuthException;
-use App\Exceptions\IllegalArgumentException;
 
 class SuppliersController extends BackedController
 {
@@ -24,18 +22,15 @@ class SuppliersController extends BackedController
 
     public function index()
     {
-        try {
+        return $this->easyExecute(function() {
             $suppliers = $this->service->list('', true);
             return view('pages.suppliers', ['suppliers' => $suppliers]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     public function show(Request $request, $id)
     {
-        try {
+        return $this->easyExecute(function() use ($request, $id) {
             $supplier = $this->service->show($id);
             $user = $request->user();
 
@@ -43,65 +38,51 @@ class SuppliersController extends BackedController
                 return view('supplier.edit', ['supplier' => $supplier]);
             else
                 return view('supplier.show', ['supplier' => $supplier]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
-    public function show_ro(Request $request, $id)
+    public function show_ro($id)
     {
-        try {
+        return $this->easyExecute(function() use ($id) {
             $supplier = $this->service->show($id);
             return view('supplier.base_show', ['supplier' => $supplier, 'editable' => false]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
+        });
     }
 
     public function productsDetails(Request $request, $id)
     {
         $supplier = $this->service->show($id);
-        if ($request->user()->can('supplier.modify', $supplier))
+        if ($request->user()->can('supplier.modify', $supplier)) {
             return view('supplier.products_details', ['supplier' => $supplier]);
-        else
+        }
+        else {
             abort(401);
+        }
     }
 
     public function productsGrid(Request $request, $id)
     {
         $supplier = $this->service->show($id);
-        if ($request->user()->can('supplier.modify', $supplier))
+        if ($request->user()->can('supplier.modify', $supplier)) {
             return view('supplier.products_grid', ['supplier' => $supplier]);
-        else
+        }
+        else {
             abort(401);
+        }
     }
 
     public function catalogue(Request $request, $id, $format = null)
     {
-        try {
+        return $this->easyExecute(function() use ($request, $id, $format) {
             return $this->service->catalogue($id, $format, $request->all());
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
-        catch (IllegalArgumentException $e) {
-            return $this->errorResponse($e->getMessage(), $e->getArgument());
-        }
+        });
     }
 
-    public function invoiceData(Request $request, $id)
+    public function invoiceData($id)
     {
-        try {
+        return $this->easyExecute(function() use ($id) {
             $supplier = $this->service->show($id);
             return view('supplier.invoicedata', ['supplier' => $supplier]);
-        }
-        catch (AuthException $e) {
-            abort($e->status());
-        }
-        catch (IllegalArgumentException $e) {
-            return $this->errorResponse($e->getMessage(), $e->getArgument());
-        }
+        });
     }
 }

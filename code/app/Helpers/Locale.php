@@ -56,6 +56,7 @@ function guessDecimal($value)
         return $value;
     }
 
+    // @phpstan-ignore-next-line
     if ($has_dot == false && $has_comma) {
         return strtr($value, ',', '.');
     }
