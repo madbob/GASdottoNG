@@ -80,9 +80,21 @@ class Booking extends Model
         return $this->belongsTo('App\Movement');
     }
 
+    /*
+        Con questo scope si caricano le relazioni utilizzate per il calcolo dei
+        modificatori.
+        Contro-intuitivamente non ci sono proprio tutte: queste sono state
+        identificate in modo empirico come quelle più critiche, variare questo
+        elenco magari anche in buona fede può risultare in un impatto negativo
+        sulle prestazioni
+    */
     public function scopeAngryload($query)
     {
-        $query->with(['modifiedValues', 'products.modifiedValues', 'user.friends_with_trashed', 'user.shippingplace', 'user.shippingplace.modifiers', 'user.shippingplace.modifiers.modifierType']);
+        $query->with(['payment', 'modifiedValues',
+            'products', 'products.modifiedValues',
+            'user', 'user.friends_with_trashed',
+            'user.shippingplace', 'user.shippingplace.modifiers', 'user.shippingplace.modifiers.modifierType'
+        ]);
     }
 
     public function scopeSorted($query)
@@ -184,7 +196,8 @@ class Booking extends Model
                 }
 
                 if ($type == 'effective') {
-                    $aggregate_data = $obj->order->aggregate->reduxData();
+                    $modifiers = $this->involvedModifiers();
+                    $aggregate_data = $obj->minimumRedux($modifiers);
 
                     $type = $obj->status == 'pending' ? 'booked' : 'delivered';
                     $modified_values = $obj->applyModifiers($aggregate_data, false);
@@ -341,6 +354,10 @@ class Booking extends Model
 
             $products = $products->sort(function($a, $b) {
                 return $a->product->name <=> $b->product->name;
+            });
+
+            $products = $products->map(function($a) use ($obj) {
+                return $a->setRelation('booking', $obj);
             });
 
             return $products;
@@ -519,38 +536,6 @@ class Booking extends Model
                 }
             }
         }
-    }
-
-    private function minimumRedux($modifiers)
-    {
-        $priority = ['product', 'booking', 'order', 'aggregate'];
-        $target_priority = -1;
-
-        foreach($modifiers as $mod) {
-            $p = array_search($mod->applies_target, $priority);
-            if ($p > $target_priority) {
-                $target_priority = $p;
-            }
-        }
-
-        $aggregate = $this->order->aggregate;
-
-        if ($target_priority == 3) {
-            $aggregate_data = $aggregate->reduxData();
-        }
-        else if ($target_priority == 2) {
-            $aggregate_data = $aggregate->reduxData(null, [
-                'orders' => [$this->order]
-            ]);
-        }
-        else if ($target_priority <= 1) {
-            $aggregate_data = $aggregate->reduxData(null, [
-                'orders' => [$this->order],
-                'bookings' => [$this]
-            ]);
-        }
-
-        return $aggregate_data;
     }
 
     public function calculateModifiers($aggregate_data = null, $real = true)

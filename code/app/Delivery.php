@@ -32,7 +32,7 @@ class Delivery extends Model
 
     public function users()
     {
-        return $this->hasMany('App\User', 'preferred_delivery_id');
+        return $this->hasMany(User::class, 'preferred_delivery_id');
     }
 
     private static function sortByUserName($bookings)
@@ -60,10 +60,12 @@ class Delivery extends Model
                 return 1;
             }
             else {
-                if ($a_place->id != $b_place->id)
+                if ($a_place->id != $b_place->id) {
                     return $a_place->name <=> $b_place->name;
-                else
+                }
+                else {
                     return $a->user->printableName() <=> $b->user->printableName();
+                }
             }
         });
 

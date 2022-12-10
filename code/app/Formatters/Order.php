@@ -1,5 +1,11 @@
 <?php
 
+/*
+	Attenzione: questo formatter è un po' anomalo, va usato diversamente
+	rispetto a tutti gli altri.
+	TODO: uniformare l'API
+*/
+
 namespace App\Formatters;
 
 class Order extends Formatter

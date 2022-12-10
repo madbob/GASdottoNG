@@ -22,6 +22,11 @@ namespace App\Models\Concerns;
 
 use Log;
 
+use App\Aggregate;
+use App\Order;
+use App\Booking;
+use App\BookedProduct;
+
 trait ReducibleTrait
 {
     /*
@@ -178,6 +183,86 @@ trait ReducibleTrait
                 return $child;
             }
         ];
+    }
+
+    /*
+        Questa funzione permette di ricostruire la riduzione in funzione di una
+        collezione di modificatori, che abbisognano solo di determinati dati (e
+        non dell'intero albero dell'aggregato)
+    */
+    public function minimumRedux($modifiers)
+    {
+        \Debugbar::startMeasure('reducing', 'Min reducing booking ' . $this->id);
+
+        switch(get_class($this)) {
+            case Aggregate::class:
+                $aggregate = $this;
+                $order = null;
+                $booking = null;
+                break;
+
+            case Order::class:
+                $aggregate = $this->aggregate;
+                $order = $this;
+                $booking = null;
+                break;
+
+            case Booking::class:
+                $aggregate = $this->order->aggregate;
+                $order = $this->order;
+                $booking = $this;
+                break;
+
+            case BookedProduct::class:
+                $aggregate = $this->booking->order->aggregate;
+                $order = $this->booking->order;
+                $booking = $this->booking;
+                break;
+
+            default:
+                \Log::error('Unrecognized class calling minimum reduction: ' . get_class($this));
+                break;
+        }
+
+        $priority = ['product', 'booking', 'order', 'aggregate'];
+        $target_priority = -1;
+
+        foreach($modifiers as $mod) {
+            $p = array_search($mod->applies_target, $priority);
+            if ($p > $target_priority) {
+                $target_priority = $p;
+            }
+        }
+
+        $aggregate_data = null;
+
+        if ($target_priority <= 1 && ($booking && $order)) {
+            $aggregate_data = $aggregate->reduxData(null, [
+                'orders' => [$order],
+                'bookings' => [$booking]
+            ]);
+        }
+        else {
+            $target_priority = 2;
+        }
+
+        if (is_null($aggregate_data)) {
+            if ($target_priority == 2 && $order) {
+                $aggregate_data = $aggregate->reduxData(null, [
+                'orders' => [$order]
+                ]);
+            }
+            else {
+                $target_priority = 3;
+            }
+
+            if ($target_priority == 3) {
+                $aggregate_data = $aggregate->reduxData();
+            }
+        }
+
+        \Debugbar::stopMeasure('reducing');
+        return $aggregate_data;
     }
 
     /*

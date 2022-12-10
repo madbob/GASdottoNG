@@ -704,7 +704,8 @@ class Order extends Model
         $bookings = Delivery::sortBookingsByShippingPlace($bookings, $shipping_place);
         $listed_products = [];
 
-        $aggregate_data = $this->aggregate->reduxData();
+        $modifiers = $this->involvedModifiers(true);
+        $aggregate_data = $this->minimumRedux($modifiers);
 
         foreach ($bookings as $booking) {
             $obj = (object) [
@@ -981,7 +982,7 @@ class Order extends Model
             $modifiers = new Collection();
 
             if (is_null($aggregate_data)) {
-                $aggregate_data = $this->aggregate->reduxData();
+                $aggregate_data = $this->minimumRedux($modifiers);
             }
 
             $old_status = $this->status;

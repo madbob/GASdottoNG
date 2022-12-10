@@ -49,15 +49,14 @@ class ModifierEngine
             $modifier_value = $obj_mod_target->modifiedValues->firstWhere('modifier_id', $modifier->id);
             if (is_null($modifier_value)) {
                 $modifier_value = new ModifiedValue();
-                $modifier_value->setRelation('modifier', $modifier);
                 $obj_mod_target->modifiedValues->push($modifier_value);
             }
         }
         else {
             $modifier_value = new ModifiedValue();
-            $modifier_value->setRelation('modifier', $modifier);
         }
 
+        $modifier_value->setRelation('modifier', $modifier);
         return $modifier_value;
     }
 

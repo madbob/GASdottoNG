@@ -8,7 +8,7 @@ trait ModifiedTrait
 {
     public function modifiedValues()
     {
-        return $this->morphMany(ModifiedValue::class, 'target');
+        return $this->morphMany(ModifiedValue::class, 'target')->with('modifier');
     }
 
     public abstract function getModifiedRelations();
