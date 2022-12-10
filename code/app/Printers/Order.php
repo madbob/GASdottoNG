@@ -188,6 +188,7 @@ class Order extends Printer
 
     private function handleTable($obj, $request)
     {
+        $send_mail = isset($request['send_mail']);
         $status = $request['status'] ?? 'booked';
         $shipping_place = $request['shipping_place'] ?? 0;
 
@@ -241,7 +242,15 @@ class Order extends Printer
         */
 
         $filename = sanitizeFilename(_i('Tabella Ordine %s presso %s.csv', [$obj->internal_number, $obj->supplier->name]));
-        return output_csv($filename, $headers, $data, null);
+
+        if ($send_mail) {
+            $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
+            output_csv($filename, $headers, $data, null, $temp_file_path);
+            $this->sendDocumentMail($request, $temp_file_path);
+        }
+        else {
+            return output_csv($filename, $headers, $data, null);
+        }
     }
 
     public function document($obj, $type, $request)
