@@ -9,6 +9,7 @@ use Mail;
 use App\Formatters\User as UserFormatter;
 use App\Notifications\GenericOrderShipping;
 use App\Booking;
+use App\Delivery;
 
 class Order extends Printer
 {
@@ -113,6 +114,32 @@ class Order extends Printer
         }
     }
 
+    private function formatTableHead($user_columns, $obj)
+    {
+        $headers = $user_columns;
+        $prices_rows = array_fill(0, count($user_columns), '');
+
+        foreach ($obj->products as $product) {
+            if ($product->variants->isEmpty()) {
+                $all_products[$product->id] = 0;
+                $headers[] = $product->printableName();
+                $prices_rows[] = printablePriceCurrency($product->price);
+            }
+            else {
+                foreach($product->variant_combos as $combo) {
+                    $all_products[$product->id . '-' . $combo->id] = 0;
+                    $headers[] = $combo->printableName();
+                    $prices_rows[] = printablePriceCurrency($combo->price);
+                }
+            }
+        }
+
+        $headers[] = _i('Totale Prezzo');
+        $prices_rows[] = '';
+
+        return [$all_products, $headers, $prices_rows];
+    }
+
     private function formatTableRows($order, $shipping_place, $status, $fields, &$all_products)
     {
         $bookings = $this->orderTopBookingsByShipping($order, $shipping_place, $status == 'saved' ? 'saved' : null);
@@ -175,28 +202,14 @@ class Order extends Printer
         */
 
         $user_columns = UserFormatter::getHeaders($fields->user_columns);
-        $headers = $user_columns;
-
-        foreach ($obj->products as $product) {
-            if ($product->variants->isEmpty()) {
-                $all_products[$product->id] = 0;
-                $headers[] = sprintf('%s (%s)', $product->printableName(), printablePriceCurrency($product->price));
-            }
-            else {
-                foreach($product->variant_combos as $combo) {
-                    $all_products[$product->id . '-' . $combo->id] = 0;
-                    $headers[] = sprintf('%s (%s)', $combo->printableName(), printablePriceCurrency($combo->price));
-                }
-            }
-        }
-
-        $headers[] = _i('Totale Prezzo');
+        list($all_products, $headers, $prices_rows) = $this->formatTableHead($user_columns, $obj);
 
         /*
             Formatto righe delle singole prenotazioni
         */
 
         list($data, $total_price) = $this->formatTableRows($obj, $shipping_place, $status, $fields, $all_products);
+        array_unshift($data, $prices_rows);
 
         /*
             Formatto riga dei totali
@@ -205,10 +218,7 @@ class Order extends Printer
         $row = [];
 
         $row[] = _i('Totale');
-
-        for($i = 1; $i < count($user_columns); $i++) {
-            $row[] = '';
-        }
+        $row = array_merge($row, array_fill(0, count($user_columns) - 1, ''));
 
         foreach ($obj->products as $product) {
             if ($product->variants->isEmpty()) {
