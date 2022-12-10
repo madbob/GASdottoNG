@@ -15,6 +15,13 @@ else {
     $main_target_class = get_class($main_target);
 }
 
+$total_amounts_on_screen = [];
+foreach(App\Currency::enabled() as $curr) {
+    $total_amounts_on_screen[$curr->id] = (object) [
+        'currency' => $curr,
+        'total' => 0,
+    ];
+}
 
 ?>
 
@@ -52,15 +59,19 @@ else {
                     $filtered_type = 'all';
                     if ($main_target_id != null) {
                         $sender = $mov->sender;
-                        if ($sender && $sender->id == $main_target_id && get_class($sender) == $main_target_class)
+                        if ($sender && $sender->id == $main_target_id && get_class($sender) == $main_target_class) {
                             $filtered_type = 'debt';
+                        }
 
                         if ($filtered_type == 'all') {
                             $target = $mov->target;
-                            if ($target && $target->id == $main_target_id && get_class($target) == $main_target_class)
+                            if ($target && $target->id == $main_target_id && get_class($target) == $main_target_class) {
                                 $filtered_type = 'credit';
+                            }
                         }
                     }
+
+                    $total_amounts_on_screen[$mov->currency->id]->total += $mov->amount;
 
                     ?>
                     <tr data-filtered-movements-filter="{{ $filtered_type }}">
@@ -101,6 +112,30 @@ else {
                     </tr>
                 @endforeach
             </tbody>
+
+            <tfoot>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                    @if($exclude_sender == false)
+                        <th>&nbsp;</th>
+                    @endif
+                    @if($exclude_target == false)
+                        <th>&nbsp;</th>
+                    @endif
+                    <th>
+                        @foreach($total_amounts_on_screen as $data)
+                            {{ printablePriceCurrency($data->total, '.', $data->currency) }}<br>
+                        @endforeach
+                    </th>
+                    <th>&nbsp;</th>
+                    @if(Gate::check('movements.admin', $currentgas))
+                        <th>&nbsp;</th>
+                    @endif
+                </tr>
+            </tfoot>
         </table>
     </div>
 @endif

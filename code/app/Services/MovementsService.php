@@ -97,7 +97,7 @@ class MovementsService extends BaseService
             $query->where('amount', '<=', $request['amountend']);
         }
 
-        return $query->get();
+        return $query->with(['currency'])->get();
     }
 
     public function show($id)
