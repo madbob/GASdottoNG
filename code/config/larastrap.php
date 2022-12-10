@@ -65,6 +65,10 @@ return [
         'tabs' => [
             'view' => 'tabs',
         ],
+
+        'tabpane' => [
+            'reviewCallback' => 'formatTabLabel',
+        ]
     ],
 
     'customs' => [

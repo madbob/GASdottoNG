@@ -1,3 +1,5 @@
+$font-size-base: 1.2rem;
+
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/maps";
@@ -59,16 +61,8 @@ html, body {
     min-height: 100%;
 }
 
-body {
-    font-size: 16px;
-}
-
 .hidden {
     display: none !important;
-}
-
-.form-control {
-    font-size: 16px;
 }
 
 #preloader {
@@ -585,12 +579,15 @@ i[class^='bi-hidden-'] {
         nascosto da un filtro, il primo elemento non ha il bordo superiore.
         Così facendo inverto la logica
     */
-    .accordion-item:not(:first-of-type) {
-        border-top: 1px solid rgba(0, 0, 0, 0.125);
-        border-bottom: 0;
-    }
-    .accordion-item:last-of-type {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    .accordion-item {
+        &:not(:first-of-type) {
+            border-top: 1px solid rgba(0, 0, 0, 0.125);
+            border-bottom: 0;
+        }
+
+        &:last-of-type {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+        }
     }
 
     .accordion-button {
@@ -598,6 +595,16 @@ i[class^='bi-hidden-'] {
             width: 100%;
             text-align: right;
             display: block;
+        }
+
+        &:hover {
+            background-color: $accordion-button-active-bg;
+        }
+    }
+
+    .accordion-header {
+        &:hover {
+            background-color: $accordion-button-active-bg;
         }
     }
 

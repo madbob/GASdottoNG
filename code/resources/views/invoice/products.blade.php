@@ -1,7 +1,7 @@
 <x-larastrap::modal :title="_i('Verifica Contenuti')">
     <x-larastrap::tabs>
         @foreach($invoice->orders as $index => $order)
-            <x-larastrap::tabpane :label="sprintf('%s<br><small>%s</small>', $order->printableName(), _i('Consegna: %s', printableDate($order->shipping)))" :active="$index == 0">
+            <x-larastrap::tabpane :label="sprintf('%s<br><small>%s</small>', $order->printableName(), _i('Consegna: %s', printableDate($order->shipping)))" :active="$index == 0" icon="bi-file-check">
                 <table class="table">
                     <thead>
                         <tr>
@@ -42,7 +42,7 @@
         @endforeach
 
         @if($invoice->orders->count() > 1)
-            <x-larastrap::tabpane :label="_i('Aggregato')">
+            <x-larastrap::tabpane :label="_i('Aggregato')" icon="bi-files">
                 <table class="table">
                     <thead>
                         <tr>

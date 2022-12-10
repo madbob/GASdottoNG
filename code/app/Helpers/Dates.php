@@ -1,6 +1,6 @@
 <?php
 
-function printableDate($value)
+function printableDate($value, $short = false)
 {
     if (is_null($value) || empty($value)) {
         return _i('Mai');
@@ -16,7 +16,12 @@ function printableDate($value)
             }
         }
 
-        return ucwords(strftime('%A %d %B %Y', $t));
+        if ($short) {
+            return ucwords(strftime('%d/%m/%Y', $t));
+        }
+        else {
+            return ucwords(strftime('%A %d %B %Y', $t));
+        }
     }
 }
 

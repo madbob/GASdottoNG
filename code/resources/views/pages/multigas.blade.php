@@ -18,7 +18,7 @@
 @endif
 
 <x-larastrap::tabs>
-    <x-larastrap::tabpane :label="_i('GAS')" active="true">
+    <x-larastrap::tabpane :label="_i('GAS')" active="true" icon="bi-people">
         <div class="row">
             <div class="col">
                 @include('commons.addingbutton', [
@@ -43,7 +43,7 @@
         </div>
     </x-larastrap::tabpane>
 
-    <x-larastrap::tabpane :label="_i('Fornitori')">
+    <x-larastrap::tabpane :label="_i('Fornitori')" icon="bi-tags">
         <div class="row">
             <div class="col">
                 <table class="table multigas-editor">
@@ -76,7 +76,7 @@
         </div>
     </x-larastrap::tabpane>
 
-    <x-larastrap::tabpane :label="_i('Ordini')">
+    <x-larastrap::tabpane :label="_i('Ordini')" icon="bi-list-task">
         <div class="row">
             <div class="col">
                 <table class="table multigas-editor">

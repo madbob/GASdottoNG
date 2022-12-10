@@ -75,8 +75,8 @@ foreach(App\Currency::enabled() as $curr) {
 
                     ?>
                     <tr data-filtered-movements-filter="{{ $filtered_type }}">
-                        <td>{{ $mov->printableDate('registration_date') }}</td>
-                        <td>{{ $mov->printableDate('date') }}</td>
+                        <td>{{ printableDate($mov->registration_date, true) }}</td>
+                        <td>{{ printableDate($mov->date, true) }}</td>
                         <td>{{ $mov->printableType() }}</td>
                         <td>{!! $mov->payment_icon !!}</td>
 

@@ -48,11 +48,11 @@
     <hr>
 
     <x-larastrap::tabs>
-        <x-larastrap::remotetabpane :label="_i('Dettagli')" active="true" :button_attributes="['data-tab-url' => url('suppliers/' . $supplier->id . '/products')]">
+        <x-larastrap::remotetabpane :label="_i('Dettagli')" active="true" :button_attributes="['data-tab-url' => url('suppliers/' . $supplier->id . '/products')]" icon="bi-zoom-in">
             @include('supplier.products_details', ['supplier' => $supplier])
         </x-larastrap::remotetabpane>
 
-        <x-larastrap::remotetabpane :label="_i('Modifica Rapida')" :button_attributes="['data-tab-url' => url('suppliers/' . $supplier->id . '/products_grid')]">
+        <x-larastrap::remotetabpane :label="_i('Modifica Rapida')" :button_attributes="['data-tab-url' => url('suppliers/' . $supplier->id . '/products_grid')]" icon="bi-lightning">
         </x-larastrap::remotetabpane>
     </x-larastrap::tabs>
 @else

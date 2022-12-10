@@ -218,6 +218,20 @@ function formatMainFormButtons($component, $params)
     return $params;
 }
 
+function formatTabLabel($component, $params)
+{
+    if (isset($params['attributes']['icon'])) {
+        if (strstr($params['attributes']['icon'], 'i class') == false) {
+            $params['label'] = sprintf('<span class="d-none d-md-inline-block">%s</span><i class="%s d-block d-md-none"></i>', $params['label'], $params['attributes']['icon']);
+        }
+        else {
+            $params['label'] = sprintf('<span class="d-none d-md-inline-block">%s</span>%s', $params['label'], $params['attributes']['icon']);
+        }
+    }
+
+    return $params;
+}
+
 function formatForDuskTesting($component, $params)
 {
     /*

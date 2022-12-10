@@ -29,7 +29,7 @@ else {
             @endif
 
             <x-larastrap::tabs>
-                <x-larastrap::tabpane :label="_i('La Mia Prenotazione')" active="true">
+                <x-larastrap::tabpane :label="_i('La Mia Prenotazione')" active="true" icon="bi-person">
                     @if($required_mode == 'edit')
                         @include('booking.edit', ['aggregate' => $aggregate, 'user' => $user, 'enforced' => $enforced])
                     @else
@@ -38,7 +38,7 @@ else {
                 </x-larastrap::tabpane>
 
                 @if($user->can('users.subusers'))
-                    <x-larastrap::tabpane :label="_i('Prenotazioni per gli Amici')">
+                    <x-larastrap::tabpane :label="_i('Prenotazioni per gli Amici')" icon="bi-person-add">
                         <div class="row">
                             <div class="col-md-12">
                                 @include('commons.loadablelist', [
@@ -56,7 +56,7 @@ else {
                 @endif
 
                 @if($standalone == false && $has_shipping && $aggregate->isActive())
-                    <x-larastrap::tabpane :label="_i('Prenotazioni per Altri')" classes="fillable-booking-space">
+                    <x-larastrap::tabpane :label="_i('Prenotazioni per Altri')" classes="fillable-booking-space" icon="bi-people">
                         <div class="row">
                             <div class="col-md-12">
                                 <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="{{ _i('Cerca Utente') }}" />
@@ -72,7 +72,7 @@ else {
                 @endif
 
                 @if($standalone == false && $has_shipping && $aggregate->status == 'closed')
-                    <x-larastrap::tabpane :label="_i('Aggiungi/Modifica Prenotazione')" classes="fillable-booking-space">
+                    <x-larastrap::tabpane :label="_i('Aggiungi/Modifica Prenotazione')" classes="fillable-booking-space" icon="bi-person-check">
                         <div class="alert alert-danger">
                             {{ _i('Attenzione: questo ordine è stato chiuso, prima di aggiungere o modificare una prenotazione accertati che i quantitativi totali desiderati non siano già stati comunicati al fornitore o che possano comunque essere modificati.') }}
                         </div>

@@ -20,7 +20,7 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
 ?>
 
 <x-larastrap::tabs>
-    <x-larastrap::tabpane :id="sprintf('profile-%s', sanitizeId($user->id))" label="{{ _i('Anagrafica') }}" active="true" classes="mb-2">
+    <x-larastrap::tabpane :id="sprintf('profile-%s', sanitizeId($user->id))" label="{{ _i('Anagrafica') }}" active="true" classes="mb-2" icon="bi-person">
         <x-larastrap::mform :obj="$user" method="PUT" :action="route('users.update', $user->id)" :classes="$display_page ? 'inner-form' : ''" :nodelete="$display_page || $user->isFriend() == false" :nosave="$readonly">
             <div class="row">
                 <div class="col-12 col-md-6">
@@ -123,22 +123,22 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
     </x-larastrap::tabpane>
 
     @if($has_accounting)
-        <x-larastrap::remotetabpane :label="_i('Contabilità')" :button_attributes="['data-tab-url' => route('users.accounting', $user->id)]">
+        <x-larastrap::remotetabpane :label="_i('Contabilità')" :button_attributes="['data-tab-url' => route('users.accounting', $user->id)]" icon="bi-piggy-bank">
         </x-larastrap::remotetabpane>
     @endif
 
     @if($has_bookings)
-        <x-larastrap::remotetabpane :label="_i('Prenotazioni')" :button_attributes="['data-tab-url' => route('users.bookings', $user->id)]">
+        <x-larastrap::remotetabpane :label="_i('Prenotazioni')" :button_attributes="['data-tab-url' => route('users.bookings', $user->id)]" icon="bi-list-task">
         </x-larastrap::remotetabpane>
     @endif
 
     @if($has_stats)
-        <x-larastrap::remotetabpane :label="_i('Statistiche')" :button_attributes="['data-tab-url' => route('users.stats', $user->id)]">
+        <x-larastrap::remotetabpane :label="_i('Statistiche')" :button_attributes="['data-tab-url' => route('users.stats', $user->id)]" icon="bi-graph-up">
         </x-larastrap::remotetabpane>
     @endif
 
     @if($has_friends)
-        <x-larastrap::tabpane :id="sprintf('friends-%s', sanitizeId($user->id))" :label="_i('Amici')">
+        <x-larastrap::tabpane :id="sprintf('friends-%s', sanitizeId($user->id))" :label="_i('Amici')" icon="bi-person-add">
             <div class="row">
                 <div class="col">
                     @include('commons.addingbutton', [
@@ -170,7 +170,7 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
     @endif
 
     @if($has_notifications)
-        <x-larastrap::tabpane :id="sprintf('notifications-%s', sanitizeId($user->id))" label="{{ _i('Notifiche') }}">
+        <x-larastrap::tabpane :id="sprintf('notifications-%s', sanitizeId($user->id))" label="{{ _i('Notifiche') }}" icon="bi-bell">
             <form class="form-horizontal inner-form" method="POST" action="{{ route('users.notifications', $user->id) }}">
                 <div class="row">
                     <div class="col-md-4">

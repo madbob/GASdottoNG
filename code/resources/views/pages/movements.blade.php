@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col">
         <x-larastrap::tabs>
-            <x-larastrap::tabpane :label="_i('Movimenti')" active="true">
+            <x-larastrap::tabpane :label="_i('Movimenti')" active="true" icon="bi-piggy-bank">
                 @can('movements.admin', $currentgas)
                     <div class="row">
                         <div class="col">
@@ -68,7 +68,7 @@
             </x-larastrap::tabpane>
 
             @can('movements.types', $currentgas)
-                <x-larastrap::tabpane :label="_i('Tipi Movimenti')">
+                <x-larastrap::tabpane :label="_i('Tipi Movimenti')" icon="bi-zoom-in">
                     <div class="row">
                         <div class="col">
                             <div class="alert alert-danger">
@@ -108,7 +108,7 @@
                 </x-larastrap::tabpane>
             @endcan
 
-            <x-larastrap::remotetabpane :label="_i('Fatture')" :button_attributes="['data-tab-url' => route('invoices.index')]">
+            <x-larastrap::remotetabpane :label="_i('Fatture')" :button_attributes="['data-tab-url' => route('invoices.index')]" icon="bi-files">
             </x-larastrap::remotetabpane>
         </x-larastrap::tabs>
     </div>

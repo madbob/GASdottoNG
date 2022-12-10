@@ -60,7 +60,7 @@ $master_summary = $aggregate->reduxData();
     <div class="col-12">
         <x-larastrap::tabs :id="md5($orders->pluck('id')->join(''))">
             @foreach($orders as $index => $order)
-                <x-larastrap::tabpane :label="$order->printableName() . $order->statusIcons()" :active="$index == 0">
+                <x-larastrap::tabpane :label="$order->printableName()" :active="$index == 0" :icon="$order->statusIcons()">
                     @can('supplier.orders', $order->supplier)
                         @include('order.edit', ['order' => $order, 'master_summary' => $master_summary])
                     @else
@@ -70,21 +70,21 @@ $master_summary = $aggregate->reduxData();
             @endforeach
 
             @if($controllable && $more_orders)
-                <x-larastrap::remotetabpane :label="_i('Aggregato')" :button_attributes="['data-tab-url' => route('aggregates.details', $aggregate->id)]">
+                <x-larastrap::remotetabpane :label="_i('Aggregato')" :button_attributes="['data-tab-url' => route('aggregates.details', $aggregate->id)]" icon="bi-plus-circle">
                 </x-larastrap::remotetabpane>
             @endif
 
             @if($multi_gas)
-                <x-larastrap::remotetabpane :label="_i('Multi-GAS')" :button_attributes="['data-tab-url' => route('aggregates.multigas', $aggregate->id)]">
+                <x-larastrap::remotetabpane :label="_i('Multi-GAS')" :button_attributes="['data-tab-url' => route('aggregates.multigas', $aggregate->id)]" icon="bi-people">
                 </x-larastrap::remotetabpane>
             @endif
 
             @can('supplier.shippings', $aggregate)
-                <x-larastrap::remotetabpane :label="_i('Consegne')" :button_attributes="['data-tab-url' => url('/booking/' . $aggregate->id . '/user')]">
+                <x-larastrap::remotetabpane :label="_i('Consegne')" :button_attributes="['data-tab-url' => url('/booking/' . $aggregate->id . '/user')]" icon="bi-truck">
                 </x-larastrap::remotetabpane>
 
                 @if($fast_shipping_enabled)
-                    <x-larastrap::remotetabpane :label="_i('Consegne Veloci')" :button_attributes="['data-tab-url' => url('/deliveries/' . $aggregate->id . '/fast')]">
+                    <x-larastrap::remotetabpane :label="_i('Consegne Veloci')" :button_attributes="['data-tab-url' => url('/deliveries/' . $aggregate->id . '/fast')]" icon="bi-rocket-takeoff">
                     </x-larastrap::remotetabpane>
                 @endif
             @endcan
