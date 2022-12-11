@@ -227,7 +227,7 @@ trait ReducibleTrait
         }
 
         $priority = ['product', 'booking', 'order', 'aggregate'];
-        $target_priority = 3;
+        $target_priority = -1;
         $aggregate_data = null;
         $faster = true;
 
