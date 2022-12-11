@@ -10,6 +10,13 @@ use App\Movement;
 
 class MovementObserver
 {
+    private $movements_hub;
+
+    public function __construct()
+    {
+        $this->movements_hub = App::make('MovementsHub');
+    }
+
     private function verifyConsistency($movement)
     {
         $metadata = $movement->type_metadata;
@@ -70,6 +77,10 @@ class MovementObserver
 
     public function saving(Movement $movement)
     {
+        if ($this->movements_hub->isSuspended()) {
+            return true;
+        }
+
         $movement->date = $movement->date ?: date('Y-m-d G:i:s');
         $movement->registration_date = $movement->registration_date ?: date('Y-m-d G:i:s');
         $movement->registerer_id = $movement->registerer_id ?: Auth::user()->id;
@@ -124,6 +135,10 @@ class MovementObserver
 
     public function saved(Movement $movement)
     {
+        if ($this->movements_hub->isSuspended()) {
+            return;
+        }
+
         if ($movement->archived) {
             return;
         }
@@ -146,6 +161,16 @@ class MovementObserver
     public function updating(Movement $movement)
     {
         /*
+            Se mi trovo in fase di ricalcolo dei saldi, non inverto
+            l'effetto del movimento: in tal caso il saldo attuale è già
+            stato riportato alla situazione di partenza, e rieseguo tutti i
+            movimenti come se fosse la prima volta.
+        */
+        if ($this->movements_hub->isRecalculating() || $this->movements_hub->isSuspended()) {
+            return true;
+        }
+
+        /*
             Reminder: per invalidare il movimento devo sottoporre un
             ammontare negativo (pari al negativo dell'ammontare
             precedentemente salvato), il quale potrebbe non essere accettato
@@ -154,16 +179,6 @@ class MovementObserver
 
         if ($this->verifyConsistency($movement) == false) {
             return false;
-        }
-
-        /*
-            Se mi trovo in fase di ricalcolo dei saldi, non inverto
-            l'effetto del movimento: in tal caso il saldo attuale è già
-            stato riportato alla situazione di partenza, e rieseguo tutti i
-            movimenti come se fosse la prima volta.
-        */
-        if (App::make('MovementsHub')->isRecalculating() == true) {
-            return true;
         }
 
         $original = Movement::find($movement->id);
@@ -177,7 +192,12 @@ class MovementObserver
         Questo è per invertire l'effetto del movimento contabile cancellato
         sui bilanci
     */
-    public function deleting(Movement $movement) {
+    public function deleting(Movement $movement)
+    {
+        if ($this->movements_hub->isSuspended()) {
+            return;
+        }
+
         $metadata = $movement->type_metadata;
 
         if (isset($metadata->callbacks['delete'])) {

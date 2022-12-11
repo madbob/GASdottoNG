@@ -225,7 +225,11 @@ class Booking extends Model
     public function getBooked($product_id, $fallback = false)
     {
         if (is_object($product_id)) {
+            $product = $product_id;
             $product_id = $product_id->id;
+        }
+        else {
+            $product = null;
         }
 
         $p = $this->products->firstWhere('product_id', $product_id);
@@ -245,6 +249,10 @@ class Booking extends Model
 
         if (is_null($p) == false) {
             $p->setRelation('booking', $this);
+
+            if ($product) {
+                $p->setRelation('product', $product);
+            }
         }
 
         return $p;

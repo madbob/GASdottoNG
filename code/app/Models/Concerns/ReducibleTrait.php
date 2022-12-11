@@ -227,18 +227,22 @@ trait ReducibleTrait
         }
 
         $priority = ['product', 'booking', 'order', 'aggregate'];
-        $target_priority = -1;
+        $target_priority = 3;
+        $aggregate_data = null;
+        $faster = true;
 
         foreach($modifiers as $mod) {
             $p = array_search($mod->applies_target, $priority);
             if ($p > $target_priority) {
                 $target_priority = $p;
             }
+
+            if ($mod->value != 'percentage' || $mod->distribution_type != 'price') {
+                $faster = false;
+            }
         }
 
-        $aggregate_data = null;
-
-        if ($target_priority <= 1 && ($booking && $order)) {
+        if (($faster || $target_priority <= 1) && ($booking && $order)) {
             $aggregate_data = $aggregate->reduxData(null, [
                 'orders' => [$order],
                 'bookings' => [$booking]
@@ -251,7 +255,7 @@ trait ReducibleTrait
         if (is_null($aggregate_data)) {
             if ($target_priority == 2 && $order) {
                 $aggregate_data = $aggregate->reduxData(null, [
-                'orders' => [$order]
+                    'orders' => [$order]
                 ]);
             }
             else {

@@ -10,6 +10,7 @@ use App\Exceptions\AnnotatedQuantityConstraint;
 use App\Events\BookingDelivered;
 
 use DB;
+use App;
 use Artisan;
 use Log;
 use Auth;
@@ -138,6 +139,16 @@ class DynamicBookingsService extends BookingsService
     */
     public function dynamicModifiers(array $request, $aggregate, $target_user)
     {
+        /*
+            Innanzitutto, qui sospendo l'esecuzione delle callback sui movimenti
+            contabili. Nella fase di revisione della prenotazione capita che i
+            relativi movimenti di pagamento vengano aggiunti, modificati o
+            rimossi, ma considerando che tutto quel che viene calcolato a
+            partire da questa funzione viene poi distrutto non val la pena stare
+            ad effettuare tutti i calcoli sui saldi
+        */
+        App::make('MovementsHub')->setSuspended(true);
+
         for ($i = 0; $i <= 3; $i++) {
             /*
                 Se viene sollevata una eccezione, questo intero blocco viene
@@ -160,7 +171,7 @@ class DynamicBookingsService extends BookingsService
                     'bookings' => [],
                 ];
 
-                foreach($aggregate->orders()->with(['products', 'bookings', 'modifiers'])->get() as $order) {
+                foreach($aggregate->orders()->with(['products', 'products.measure', 'bookings', 'modifiers'])->get() as $order) {
                     $order->setRelation('aggregate', $aggregate);
                     $user = $this->testAccess($target_user, $order->supplier, $delivering);
                     $booking = $this->handleBookingUpdate($request, $user, $order, $target_user, $delivering);
