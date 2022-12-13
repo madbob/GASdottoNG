@@ -23,6 +23,8 @@ use App\Models\Concerns\PayableTrait;
 use App\Models\Concerns\SuspendableTrait;
 use App\Models\Concerns\HierarcableTrait;
 use App\Models\Concerns\RoleableTrait;
+use App\Models\Concerns\FriendTrait;
+use App\Models\Concerns\CreditableTrait;
 use App\Models\Concerns\BookerTrait;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\ManualWelcomeMessage;
@@ -32,8 +34,8 @@ use App\Events\SluggableCreating;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, Authorizable, CanResetPassword, SoftDeletes,
-        ContactableTrait, PayableTrait, SuspendableTrait, HierarcableTrait, RoleableTrait, BookerTrait,
-        GASModel, SluggableID, Cachable;
+        ContactableTrait, PayableTrait, SuspendableTrait, HierarcableTrait, RoleableTrait, CreditableTrait, BookerTrait,
+        FriendTrait, GASModel, SluggableID, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -231,7 +233,7 @@ class User extends Authenticatable
         return $this->username;
     }
 
-    /***************************** CreditableTrait (ereditato da BookerTrait) */
+    /***************************** CreditableTrait */
 
     public function balanceFields()
     {

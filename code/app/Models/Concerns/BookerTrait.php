@@ -6,6 +6,11 @@ use Log;
 
 trait BookerTrait
 {
+    /*
+        Reminder: non cadere nella tentazione di non utilizzare esplicitamente
+        questi trait in User, altrimenti non funzionano alcuni controlli (e.g.
+        la visualizzazione del credito utente nel modale di pagamento consegna)
+    */
     use CreditableTrait, FriendTrait;
 
     public function bookings()
