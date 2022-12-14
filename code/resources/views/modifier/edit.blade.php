@@ -18,15 +18,20 @@
                     'none' => _i('Nessuno'),
                 ];
 
+                $booking_payment_type = movementTypes('booking-payment');
+
                 foreach (movementTypesAccepting([null, 'App\Gas', 'App\User'], [null, 'App\Gas', 'App\User']) as $info) {
-                    if ($info->visibility) {
+                    if ($info->overlapsPaymentMethods($booking_payment_type) == false) {
+                        $movement_type_alert = _i('Alcuni tipi di movimento contabile non sono inclusi in questa lista in quanto non ne è stato definito il comportamento per tutti i metodi di pagamenti previsti in fase di consegna (%s). Revisiona i tipi di movimento dal pannello Contabilità -> Tipi Movimenti', [join(', ', paymentsByType('booking-payment'))]);
+                    }
+                    else if ($info->visibility) {
                         $types[$info->id] = $info->name;
                     }
                 }
 
                 @endphp
 
-                <x-larastrap::select name="movement_type_id" :label="_i('Tipo Movimento Contabile')" :options="$types" classes="movement-type-selector" :pophelp="_i('Selezionando un tipo di movimento contabile, al pagamento della consegna verrà generato un movimento con lo stesso valore del modificatore calcolato. Altrimenti, il valore del modificatore sarà incorporato nel pagamento della prenotazione stessa e andrà ad alterare il saldo complessivo del fornitore. Usa questa funzione se vuoi tenere traccia dettagliata degli importi pagati tramite questo modificatore.')" />
+                <x-larastrap::select name="movement_type_id" :label="_i('Tipo Movimento Contabile')" :options="$types" classes="movement-type-selector" :help="$movement_type_alert" :pophelp="_i('Selezionando un tipo di movimento contabile, al pagamento della consegna verrà generato un movimento con lo stesso valore del modificatore calcolato. Altrimenti, il valore del modificatore sarà incorporato nel pagamento della prenotazione stessa e andrà ad alterare il saldo complessivo del fornitore. Usa questa funzione se vuoi tenere traccia dettagliata degli importi pagati tramite questo modificatore.')" />
 
                 <?php
 

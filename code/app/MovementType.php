@@ -136,4 +136,18 @@ class MovementType extends Model
             return 'credit';
         }
     }
+
+    public function overlapsPaymentMethods($other_type)
+    {
+        $methods_local = array_keys(paymentsByType($this->id));
+        $methods_other = array_keys(paymentsByType($other_type->id));
+
+        foreach($methods_other as $mo) {
+            if (in_array($mo, $methods_local) == false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
