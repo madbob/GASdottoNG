@@ -74,10 +74,7 @@ class Delivery extends Model
 
     public static function sortBookingsByShippingPlace($bookings, $shipping_place)
     {
-        if ($shipping_place == 0) {
-            // dummy
-        }
-        else if ($shipping_place == 'all_by_name') {
+        if ($shipping_place == 0 || $shipping_place == 'all_by_name') {
             $bookings = self::sortByUserName($bookings);
         }
         else if ($shipping_place == 'all_by_place') {
