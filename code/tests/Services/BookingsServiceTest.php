@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Collection;
 
 use App\Exceptions\AuthException;
+use App\Movement;
 
 class BookingsServiceTest extends TestCase
 {
@@ -85,7 +86,7 @@ class BookingsServiceTest extends TestCase
         $this->assertEquals($booking->products()->count(), $booked_count);
         $this->assertEquals($booking->getValue('effective', true), $total);
 
-        $movement = \App\Movement::generate('booking-payment', $this->userWithBasePerms, $this->sample_order->aggregate, $total);
+        $movement = Movement::generate('booking-payment', $this->userWithBasePerms, $this->sample_order->aggregate, $total);
         $movement->save();
         $booking = $booking->fresh();
         $this->assertEquals($booking->status, 'shipped');
@@ -147,7 +148,7 @@ class BookingsServiceTest extends TestCase
         $booking = $booking->fresh();
         $this->assertEquals($booking->status, 'saved');
 
-        $movement = \App\Movement::generate('booking-payment', $this->userWithBasePerms, $this->sample_order->aggregate, $total + $friend_total);
+        $movement = Movement::generate('booking-payment', $this->userWithBasePerms, $this->sample_order->aggregate, $total + $friend_total);
         $movement->save();
         $booking = $booking->fresh();
         $this->assertEquals($booking->status, 'shipped');
@@ -174,7 +175,7 @@ class BookingsServiceTest extends TestCase
         $friend_data['action'] = 'shipped';
         $this->updateAndFetch($friend_data, $this->sample_order, $this->userWithBasePerms, true);
 
-        $movement = \App\Movement::generate('booking-payment', $this->userWithBasePerms, $this->sample_order->aggregate, $friend_total);
+        $movement = Movement::generate('booking-payment', $this->userWithBasePerms, $this->sample_order->aggregate, $friend_total);
         $movement->save();
 
         $aggregate_booking = $this->sample_order->aggregate->bookingBy($this->userWithBasePerms->id);
@@ -235,7 +236,7 @@ class BookingsServiceTest extends TestCase
 
         $this->nextRound();
 
-        $movement = \App\Movement::generate('booking-payment', $this->userWithBasePerms, $this->sample_order->aggregate, $total + $total2);
+        $movement = Movement::generate('booking-payment', $this->userWithBasePerms, $this->sample_order->aggregate, $total + $total2);
         $movement->save();
 
         $this->nextRound();
@@ -269,13 +270,21 @@ class BookingsServiceTest extends TestCase
         $data['action'] = 'shipped';
         $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, true);
 
-        $movement = \App\Movement::generate('booking-payment', $this->userWithBasePerms, $this->sample_order->aggregate, $total);
+        $movement = Movement::generate('booking-payment', $this->userWithBasePerms, $this->sample_order->aggregate, $total);
         $movement->save();
 
         $booking = $booking->fresh();
         $this->assertEquals($booking->status, 'shipped');
         $this->assertNotNull($booking->payment_id);
         $this->assertEquals($booking->payment->amount, $total);
+
+        /*
+            La prenotazione per il secondo ordine non deve esistere e non deve
+            esserci nessun movimento contabile a 0
+        */
+        $second_booking = $order2->userBooking($this->userWithBasePerms);
+        $this->assertFalse($second_booking->exists);
+        $this->assertEquals(0, Movement::where('amount', 0)->count());
     }
 
     /*
@@ -343,7 +352,7 @@ class BookingsServiceTest extends TestCase
         $this->assertEquals($booking->modifiedValues->first()->modifier->modifierType->id, 'arrotondamento-consegna');
         $this->assertEquals($booking->modifiedValues->first()->effective_amount, $difference);
 
-        $movement = \App\Movement::generate('booking-payment', $this->userWithBasePerms, $this->sample_order->aggregate, $total);
+        $movement = Movement::generate('booking-payment', $this->userWithBasePerms, $this->sample_order->aggregate, $total);
         $movement->save();
 
         $booking = $booking->fresh();

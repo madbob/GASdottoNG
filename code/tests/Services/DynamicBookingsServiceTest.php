@@ -204,30 +204,30 @@ class DynamicBookingsServiceTest extends TestCase
         $this->actingAs($this->userWithBasePerms);
 
         list($data, $booked_count, $total) = $this->randomQuantities($this->order->products);
-        $booking_data['action'] = 'booked';
-        $this->services['bookings']->bookingUpdate($booking_data, $this->order->aggregate, $this->userWithBasePerms, false);
+        $data['action'] = 'booked';
+        $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $this->userWithBasePerms, false);
+
+        $this->nextRound();
+
+        $booking = $this->order->userBooking($this->userWithBasePerms);
+        $actual_total = $booking->getValue('effective', true);
 
         $this->nextRound();
 
         $this->actingAs($this->userWithShippingPerms);
 
-        $data = [
-            'action' => 'shipped',
-            'manual_total_' . $this->order->id => 100,
-        ];
-
+        $data['action'] = 'shipped';
+        $data['manual_total_' . $this->order->id] = 100;
         $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
+
+        $this->assertEquals(1, count($ret->bookings));
 
         foreach($ret->bookings as $b) {
             $this->assertEquals($b->total, 100);
 
             $this->assertEquals(count($b->modifiers), 1);
             foreach($b->modifiers as $m) {
-                $this->assertEquals($m->amount, 100);
-            }
-
-            foreach($b->products as $pid => $p) {
-                $this->assertEquals($p->quantity, 0);
+                $this->assertEquals(100, $actual_total + $m->amount);
             }
         }
     }

@@ -166,6 +166,7 @@ class BookingsService extends BaseService
             $booking->notes = $request['notes_' . $order->id] ?? '';
         }
 
+        $existed_before = $booking->exists;
         $booking->save();
 
         $count_products = 0;
@@ -246,9 +247,12 @@ class BookingsService extends BaseService
 
         /*
             Attenzione: se sto consegnando, e tutte le quantità sono a 0,
-            comunque devo preservare i dati della prenotazione (se esistono)
+            comunque devo preservare i dati della prenotazione (se esistono).
+            Va anche contemplato il caso in cui sto consegnando un ordine
+            aggregato e l'utente non ha partecipato a qualcuno degli ordini; in
+            tal caso, la sua prenotazione vuota non va salvata
         */
-        if ($delivering == false && $booking->products()->count() == 0) {
+        if (($delivering == false || $existed_before == false) && $booking->products()->count() == 0) {
             $booking->delete();
             return null;
         }

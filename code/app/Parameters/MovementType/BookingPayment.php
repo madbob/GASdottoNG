@@ -3,6 +3,9 @@
 namespace App\Parameters\MovementType;
 
 use App\Movement;
+use App\User;
+use App\Booking;
+use App\Aggregate;
 
 class BookingPayment extends MovementType
 {
@@ -14,8 +17,8 @@ class BookingPayment extends MovementType
     public function initNew($type)
     {
         $type->name = _i('Pagamento prenotazione da parte di un socio');
-        $type->sender_type = 'App\User';
-        $type->target_type = 'App\Booking';
+        $type->sender_type = User::class;
+        $type->target_type = Booking::class;
         $type->visibility = false;
         $type->system = true;
 
@@ -63,7 +66,7 @@ class BookingPayment extends MovementType
                 prenotazione stessa
             */
             'pre' => function (Movement $movement) {
-                if ($movement->target_type == 'App\Aggregate') {
+                if ($movement->target_type == Aggregate::class) {
                     $total = $movement->amount;
                     $aggregate = $movement->target;
                     $user = $movement->sender;
@@ -102,7 +105,7 @@ class BookingPayment extends MovementType
                         if (is_null($existing_movement)) {
                             $m = $movement->replicate();
                             $m->target_id = $booking->id;
-                            $m->target_type = 'App\Booking';
+                            $m->target_type = Booking::class;
 
                             /*
                                 Qui devo ricaricare la relazione "target", altrimenti resta in memoria quella
