@@ -44,22 +44,32 @@
         </x-larastrap::modal>
 
         <x-larastrap::modal title="{{ _i('Feedback') }}" id="feedback-modal">
-            <p>
-                {{ _i('GASdotto è sviluppato con modello open source! Puoi contribuire mandando una segnalazione o una richiesta:') }}
-            </p>
-            <p>
-                <a href="https://github.com/madbob/GASdottoNG/" target="_blank">https://github.com/madbob/GASdottoNG/</a><br>
-                <a href="mailto:info@gasdotto.net">info@gasdotto.net</a>
-            </p>
-            <p>
-                {{ _i('o facendo una donazione:') }}
-            </p>
-            <p>
-                <a href="https://paypal.me/m4db0b" target="_blank"><img src="https://www.gasdotto.net/images/paypal.png" border="0"></a>
-            </p>
-            <p>
-                {{ _i('Attenzione: per problemi sui contenuti di questo sito (fornitori, ordini, prenotazioni...) fai riferimento agli amministrazioni del tuo GAS.') }}
-            </p>
+            <div>
+                <p>
+                    {{ _i('GASdotto è sviluppato con modello open source! Puoi contribuire mandando una segnalazione o una richiesta:') }}
+                </p>
+                <ul>
+                    <li>su GitHub: <a href="https://github.com/madbob/GASdottoNG/" target="_blank">github.com/madbob/GASdottoNG</a></li>
+                    <li>via mail: <a href="mailto:info@gasdotto.net">info@gasdotto.net</a></li>
+                    <li>sulla mailing list degli utenti: <a href="https://groups.google.com/g/gasdotto-dev">groups.google.com/g/gasdotto-dev</a></li>
+                </ul>
+                <p>
+                    {{ _i('o facendo una donazione:') }}
+                </p>
+                <p>
+                    <a href="https://paypal.me/m4db0b" target="_blank"><img src="https://www.gasdotto.net/images/paypal.png" border="0"></a>
+                </p>
+            </div>
+            <div class="mt-3">
+                <p>
+                    {!! _i('Puoi anche consultate <a href="https://gasdotto.net/" target="_blank">il sito di GASdotto</a> per dare una occhiata alla documentazione, o seguirci <a href="https://twitter.com/GASdottoNet" target="_blank">su Twitter</a> per aggiornamenti periodici.') !!}
+                </p>
+            </div>
+            <div class="mt-3">
+                <p>
+                    {{ _i('Attenzione: per problemi sui contenuti di questo sito (fornitori, ordini, prenotazioni...) fai riferimento agli amministrazioni del tuo GAS.') }}
+                </p>
+            </div>
 
             @if(currentLang() != 'it_IT')
                 <p>

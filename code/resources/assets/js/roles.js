@@ -55,6 +55,7 @@ class Roles {
 
                                 var tab = $('<li class="nav-item" data-user="' + user_id + '"><button type="button" class="nav-link" data-bs-target="#' + identifier + '" data-bs-toggle="tab">' + label + '</button></li>');
                                 group.find('[role=tablist]').find('.last-tab').before(tab);
+                                tab.find('button').click();
                                 text.val('');
                             }
                         });

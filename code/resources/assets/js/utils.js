@@ -285,7 +285,6 @@ class Utils {
 
         params.url = this.normalizeUrl(params.url);
 
-        // params.data._token = $('meta[name="csrf-token"]').attr('content');
         $.ajax(params);
     }
 

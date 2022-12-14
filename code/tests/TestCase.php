@@ -32,6 +32,7 @@ abstract class TestCase extends BaseTestCase
 
         $this->services = [
             'users' => new \App\Services\UsersService(),
+            'roles' => new \App\Services\RolesService(),
             'movement_types' => new \App\Services\MovementTypesService(),
             'movements' => new \App\Services\MovementsService(),
             'vat_rates' => new \App\Services\VatRatesService(),

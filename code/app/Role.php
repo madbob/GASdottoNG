@@ -318,8 +318,9 @@ class Role extends Model
             $obj_id = '*';
         }
         else {
-            if (is_null($obj) || $this->appliesOnly($obj))
+            if (is_null($obj) || $this->appliesOnly($obj)) {
                 return;
+            }
 
             $obj_class = get_class($obj);
             $obj_id = $obj->id;
@@ -332,6 +333,8 @@ class Role extends Model
             'created_at' => $now,
             'updated_at' => $now
         ]);
+
+        $this->invalidateAppliesCache();
     }
 
     /*

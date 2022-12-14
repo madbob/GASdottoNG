@@ -15,8 +15,8 @@
 
             ?>
 
-            <div class="row">
-                <h3>{{ $role->name }}</h3>
+            <div class="row mb-3">
+                <p class="lead">{{ $role->name }}</p>
 
                 @foreach($targets as $target)
                     @if ($targets->count() > 1 && $last_class != get_class($target))
