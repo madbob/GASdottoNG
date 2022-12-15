@@ -766,7 +766,7 @@ class ModifiersServiceTest extends TestCase
         $order = $this->services['orders']->show($this->order->id);
         $booking_found = false;
         $shipping_cost_found = false;
-        $formatted = $order->formatShipping(splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', 'all_by_name');
+        $formatted = $order->formatShipping(splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', 'all_by_name', 1);
 
         foreach($formatted->contents as $d) {
             if ($d->user_id == $booking->user_id) {
@@ -824,7 +824,7 @@ class ModifiersServiceTest extends TestCase
         $order = $this->services['orders']->show($this->order->id);
         $booking_found = false;
         $shipping_cost_found = false;
-        $formatted = $order->formatShipping(splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', 'all_by_name');
+        $formatted = $order->formatShipping(splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', 'all_by_name', 1);
 
         foreach($formatted->contents as $d) {
             if ($d->user_id == $newUser->id) {
