@@ -6,7 +6,7 @@ use Log;
 
 use App\Notifications\ClosedOrdersNotification;
 use App\Notifications\SupplierOrderShipping;
-
+use App\Printers\Order as OrderPrinter;
 use App\User;
 use App\Order;
 
@@ -22,6 +22,8 @@ class NotifyClosedOrder extends Job
 
     private function dispatchToSupplier($order)
     {
+        $printer = new OrderPrinter();
+
         if ($order->isRunning() == false) {
             foreach($order->aggregate->gas as $gas) {
                 if ($gas->auto_supplier_order_summary) {
@@ -32,8 +34,8 @@ class NotifyClosedOrder extends Job
                             I files vengono già rimossi dopo l'invio della
                             notifica al fornitore
                         */
-                        $pdf_file_path = $order->document('summary', 'pdf', 'save', null, 'booked', null);
-                        $csv_file_path = $order->document('summary', 'csv', 'save', null, 'booked', null);
+                        $pdf_file_path = $printer->document($order, 'summary', ['format' => 'pdf', 'status' => 'booked', 'extra_modifiers' => 0, 'send_mail' => true]);
+                        $csv_file_path = $printer->document($order, 'summary', ['format' => 'csv', 'status' => 'booked', 'extra_modifiers' => 0, 'send_mail' => true]);
                         $order->supplier->notify(new SupplierOrderShipping($order, $pdf_file_path, $csv_file_path));
 
                         $this->hub->enable(true);
@@ -50,6 +52,7 @@ class NotifyClosedOrder extends Job
 
     protected function realHandle()
     {
+        $printer = new OrderPrinter();
         $notifiable_users = [];
         $all_files = [];
         $aggregates = [];
@@ -62,8 +65,12 @@ class NotifyClosedOrder extends Job
             foreach($aggregate->gas as $gas) {
                 $this->hub->setGas($gas->id);
 
-                $pdf_file_path = $order->document('summary', 'pdf', 'save', null, 'booked', null);
-                $csv_file_path = $order->document('summary', 'csv', 'save', null, 'booked', null);
+                /*
+                    Nota: il flag send_mail serve solo a farsi restituire il
+                    path del file generato. Cfr. il TODO in Order::document()
+                */
+                $pdf_file_path = $printer->document($order, 'summary', ['format' => 'pdf', 'status' => 'booked', 'send_mail' => true]);
+                $csv_file_path = $printer->document($order, 'summary', ['format' => 'csv', 'status' => 'booked', 'send_mail' => true]);
 
                 $all_files[] = $pdf_file_path;
                 $all_files[] = $csv_file_path;

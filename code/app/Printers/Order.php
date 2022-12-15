@@ -40,11 +40,12 @@ class Order extends Printer
         $send_mail = isset($request['send_mail']);
         $subtype = $request['format'] ?? 'pdf';
         $status = $request['status'] ?? 'booked';
+        $extra_modifiers = $request['extra_modifiers'] ?? 0;
         $required_fields = $request['fields'] ?? [];
         $fields = splitFields($required_fields);
 
         $shipping_place = $request['shipping_place'] ?? 'all_by_name';
-        $data = $obj->formatShipping($fields, $status, $shipping_place);
+        $data = $obj->formatShipping($fields, $status, $shipping_place, $extra_modifiers);
 
         $title = _i('Dettaglio Consegne ordine %s presso %s', [$obj->internal_number, $obj->supplier->name]);
         $filename = sanitizeFilename($title . '.' . $subtype);
@@ -93,24 +94,103 @@ class Order extends Printer
         }
     }
 
+    private function autoGuessFields($order)
+    {
+        $has_code = false;
+        $has_boxes = false;
+
+        foreach($order->products as $product) {
+            if (!empty($product->code)) {
+                $has_code = true;
+            }
+
+            if ($product->package_size != 0) {
+                $has_boxes = true;
+            }
+
+            if ($has_code && $has_boxes) {
+                break;
+            }
+        }
+
+        $guessed_fields = [];
+
+        if ($has_code) {
+            $guessed_fields[] = 'code';
+        }
+
+        $guessed_fields[] = 'name';
+        $guessed_fields[] = 'quantity';
+
+        if ($has_boxes) {
+            $guessed_fields[] = 'boxes';
+        }
+
+        $guessed_fields[] = 'measure';
+        $guessed_fields[] = 'unit_price';
+        $guessed_fields[] = 'price';
+
+        return $guessed_fields;
+    }
+
     private function handleSummary($obj, $request)
     {
         $send_mail = isset($request['send_mail']);
         $subtype = $request['format'] ?? 'pdf';
         $status = $request['status'];
+
         $required_fields = $request['fields'] ?? [];
+        if (empty($required_fields)) {
+            $required_fields = $this->autoGuessFields($obj);
+        }
 
         $shipping_place = $request['shipping_place'] ?? 'all_by_place';
         if ($shipping_place == 'all_by_place') {
             $shipping_place = null;
         }
 
-        if ($send_mail) {
-            $temp_file_path = $obj->document('summary', $subtype, 'save', $required_fields, $status, $shipping_place);
-            $this->sendDocumentMail($request, $temp_file_path);
+        $data = $obj->formatSummary($required_fields, $status, $shipping_place);
+        $title = _i('Prodotti ordine %s presso %s', [$obj->internal_number, $obj->supplier->name]);
+        $filename = sanitizeFilename($title . '.' . $subtype);
+        $temp_file_path = sprintf('%s/%s', gas_storage_path('temp', true), $filename);
+
+        if ($subtype == 'pdf') {
+            $pdf = PDF::loadView('documents.order_summary_pdf', ['order' => $obj, 'blocks' => [$data]]);
+
+            if ($send_mail) {
+                $pdf->save($temp_file_path);
+            }
+            else {
+                return $pdf->download($filename);
+            }
         }
-        else {
-            return $obj->document('summary', $subtype, 'return', $required_fields, $status, $shipping_place);
+        else if ($subtype == 'csv') {
+            if ($send_mail) {
+                output_csv($filename, $data->headers, $data->contents, function($row) {
+                    return $row;
+                }, $temp_file_path);
+            }
+            else {
+                return output_csv($filename, $data->headers, $data->contents, function($row) {
+                    return $row;
+                });
+            }
+        }
+        else if ($subtype == 'gdxp') {
+            $contents = view('gdxp.json.supplier', ['obj' => $obj->supplier, 'order' => $obj, 'bookings' => true])->render();
+
+            if ($send_mail) {
+                file_put_contents($temp_file_path, $contents);
+            }
+            else {
+                download_headers('application/json', $filename);
+                return $contents;
+            }
+        }
+
+        if ($send_mail) {
+            $this->sendDocumentMail($request, $temp_file_path);
+            return $temp_file_path;
         }
     }
 
@@ -253,15 +333,30 @@ class Order extends Printer
         }
     }
 
+    /*
+        TODO Sarebbe opportuno astrarre il tipo di azione desiderata:
+        - save per il salvataggio del file e la restituzione del path
+        - mail per inviare la mail (al posto del flag send_mail)
+        - output per mandare direttamente in output e far scaricare il file
+    */
     public function document($obj, $type, $request)
     {
         switch ($type) {
+            /*
+                Dettaglio Consegne
+            */
             case 'shipping':
                 return $this->handleShipping($obj, $request);
 
+            /*
+                Riassunto Prodotti
+            */
             case 'summary':
                 return $this->handleSummary($obj, $request);
 
+            /*
+                Tabella Complessiva
+            */
             case 'table':
                 return $this->handleTable($obj, $request);
 

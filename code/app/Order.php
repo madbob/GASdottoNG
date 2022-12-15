@@ -324,45 +324,6 @@ class Order extends Model
         return $query_users->get();
     }
 
-    private function autoGuessFields()
-    {
-        $has_code = false;
-        $has_boxes = false;
-
-        foreach($this->products as $product) {
-            if (!empty($product->code)) {
-                $has_code = true;
-            }
-
-            if ($product->package_size != 0) {
-                $has_boxes = true;
-            }
-
-            if ($has_code && $has_boxes) {
-                break;
-            }
-        }
-
-        $guessed_fields = [];
-
-        if ($has_code) {
-            $guessed_fields[] = 'code';
-        }
-
-        $guessed_fields[] = 'name';
-        $guessed_fields[] = 'quantity';
-
-        if ($has_boxes) {
-            $guessed_fields[] = 'boxes';
-        }
-
-        $guessed_fields[] = 'measure';
-        $guessed_fields[] = 'unit_price';
-        $guessed_fields[] = 'price';
-
-        return $guessed_fields;
-    }
-
     public function isActive()
     {
         return $this->status != 'shipped' && $this->status != 'archived';
@@ -407,57 +368,6 @@ class Order extends Model
         });
     }
 
-    public function document($type, $format, $action, $required_fields, $status, $shipping_place)
-    {
-        if (empty($required_fields)) {
-            $required_fields = $this->autoGuessFields();
-        }
-
-        switch($type) {
-            case 'summary':
-                $data = $this->formatSummary($required_fields, $status, $shipping_place);
-                $title = _i('Prodotti ordine %s presso %s', [$this->internal_number, $this->supplier->name]);
-                $filename = sanitizeFilename($title . '.' . $format);
-                $temp_file_path = sprintf('%s/%s', gas_storage_path('temp', true), $filename);
-
-                if ($format == 'pdf') {
-                    $pdf = PDF::loadView('documents.order_summary_pdf', ['order' => $this, 'blocks' => [$data]]);
-
-                    if ($action == 'save') {
-                        $pdf->save($temp_file_path);
-                    }
-                    else {
-                        return $pdf->download($filename);
-                    }
-                }
-                else if ($format == 'csv') {
-                    if ($action == 'save') {
-                        output_csv($filename, $data->headers, $data->contents, function($row) {
-                            return $row;
-                        }, $temp_file_path);
-                    }
-                    else {
-                        return output_csv($filename, $data->headers, $data->contents, function($row) {
-                            return $row;
-                        });
-                    }
-                }
-                else if ($format == 'gdxp') {
-                    $contents = view('gdxp.json.supplier', ['obj' => $this->supplier, 'order' => $this, 'bookings' => true])->render();
-
-                    if ($action == 'save') {
-                        file_put_contents($temp_file_path, $contents);
-                    }
-                    else {
-                        download_headers('application/json', $filename);
-                        return $contents;
-                    }
-                }
-
-                return $temp_file_path;
-        }
-    }
-
     public function calculateInvoicingSummary()
     {
         $summary = (object) [
@@ -484,8 +394,9 @@ class Order extends Model
             $price_delivered = $query->sum('final_price');
             $quantity_delivered = $query->sum('delivered');
 
-            if (isset($rates[$product->vat_rate_id]) == false)
+            if (isset($rates[$product->vat_rate_id]) == false) {
                 $rates[$product->vat_rate_id] = $product->vat_rate;
+            }
 
             $rate = $rates[$product->vat_rate_id];
             if ($rate != null) {
@@ -690,7 +601,7 @@ class Order extends Model
         return $ret;
     }
 
-    public function formatShipping($fields, $status, $shipping_place)
+    public function formatShipping($fields, $status, $shipping_place, $extra_modifiers)
     {
         $ret = (object) [
             'headers' => $fields->headers,
@@ -767,12 +678,20 @@ class Order extends Model
                 $modifiers = $modifiers->merge($friend_modifiers);
             }
 
+            if ($extra_modifiers == false) {
+                $modifiers = $modifiers->filter(function($mod) {
+                    return is_null($mod->modifier->movementType);
+                });
+            }
+
+            $total_modifiers = 0;
             $aggregated_modifiers = App\ModifiedValue::aggregateByType($modifiers);
             foreach($aggregated_modifiers as $am) {
                 $obj->totals[$am->name] = printablePrice($am->amount);
+                $total_modifiers += $am->amount;
             }
 
-            $obj->totals['total'] = $booking->getValue($internal_offsets->by_booking, true) + $booking->getValue('modifier:all', true);
+            $obj->totals['total'] = $booking->getValue($internal_offsets->by_booking, true) + $total_modifiers;
 
             if ($original_booking_status != null) {
                 $booking->status = $original_booking_status;

@@ -26,6 +26,7 @@ class CloseOrders extends Command
 
         foreach($orders as $order) {
             try {
+                echo "chiudo " . $order->id . "\n";
                 $order->status = 'closed';
                 $order->save();
                 $closed[] = $order->id;
@@ -35,6 +36,7 @@ class CloseOrders extends Command
             }
         }
 
+        print_r($closed);
         NotifyClosedOrder::dispatch($closed);
     }
 }

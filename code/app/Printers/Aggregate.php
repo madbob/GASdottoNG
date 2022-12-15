@@ -43,7 +43,7 @@ class Aggregate extends Printer
 
         $temp_data = [];
         foreach($obj->orders as $order) {
-            $temp_data[] = $order->formatShipping($fields, $status, $shipping_place);
+            $temp_data[] = $order->formatShipping($fields, $status, $shipping_place, true);
         }
 
         if (empty($temp_data)) {
@@ -138,6 +138,7 @@ class Aggregate extends Printer
         chdir($working_dir);
 
         $files = [];
+        $printer = new Order();
 
         foreach($gas as $g) {
             $hub->enable(true);
@@ -151,7 +152,7 @@ class Aggregate extends Printer
                     diverse iterazioni sovrascrivono sempre lo
                     stesso file
                 */
-                $f = $order->document('summary', 'gdxp', 'save', null, null, null);
+                $f = $printer->document($order, 'summary', ['format' => 'gdxp', 'status' => 'booked']);
                 $new_f = Str::random(10);
                 rename($f, $new_f);
                 $files[] = $new_f;
