@@ -36,7 +36,6 @@ class CloseOrders extends Command
             }
         }
 
-        print_r($closed);
         NotifyClosedOrder::dispatch($closed);
     }
 }
