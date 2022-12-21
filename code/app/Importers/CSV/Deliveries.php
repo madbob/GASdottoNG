@@ -116,6 +116,7 @@ class Deliveries extends CSVImporter
 					'action' => 'saved',
 				];
 
+				$target_user = null;
 				$skip_row = false;
 
 				foreach ($columns as $index => $field) {
@@ -157,18 +158,16 @@ class Deliveries extends CSVImporter
 					}
 				}
 
-				if ($skip_row == true) {
-					continue;
+				if ($target_user) {
+					$booking = $service->handleBookingUpdate($datarow, $user, $target_order, $target_user, true);
+
+					$data[] = $datarow;
+					$bookings[] = (object) [
+						'user_id' => $target_user->id,
+						'user_name' => $target_user->printableName(),
+						'total' => $booking->getValue('effective', true),
+					];
 				}
-
-				$booking = $service->handleBookingUpdate($datarow, $user, $target_order, $target_user, true);
-
-				$data[] = $datarow;
-				$bookings[] = (object) [
-					'user_id' => $target_user->id,
-					'user_name' => $target_user->printableName(),
-					'total' => $booking->getValue('effective', true),
-				];
 			}
 			catch (\Exception $e) {
 				$errors[] = implode($target_separator, $line) . '<br/>' . $e->getMessage();
