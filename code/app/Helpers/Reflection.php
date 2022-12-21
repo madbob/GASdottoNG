@@ -158,3 +158,50 @@ function unrollSpecialSelectors($users)
 
     return array_unique($map);
 }
+
+function productByString($string, $products = null)
+{
+	if (is_null($products)) {
+		$products = App\Product::all();
+	}
+
+	$target = null;
+	$target_combo = null;
+
+	$target = $products->filter(function($p) use ($string) {
+		return ($p->name == $string);
+	})->first();
+
+	if (is_null($target)) {
+		$parts = explode(' - ', $string);
+		$parts_count = count($parts);
+
+		for ($i = 0; $i < $parts_count - 1; $i++) {
+			$substring = join(' - ', array_slice($parts, 0, $i + 1));
+
+			$target = $products->filter(function($p) use ($substring) {
+				return ($p->name == $substring);
+			})->first();
+
+			if ($target) {
+				break;
+			}
+		}
+	}
+
+	if ($target) {
+		if ($target->variants->isEmpty() == false) {
+			foreach($target->variant_combos as $combo) {
+				if ($combo->printableName() == $string) {
+					$target_combo = $combo;
+					break;
+				}
+			}
+		}
+
+		return [$target, $target_combo];
+	}
+	else {
+		return null;
+	}
+}

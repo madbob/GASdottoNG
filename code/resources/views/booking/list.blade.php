@@ -3,7 +3,19 @@
 
     @if($aggregate->isActive())
         <div class="flowbox mb-1">
-            <x-larastrap::mbutton :label="_i('Aggiungi Utente')" :triggers_modal="sprintf('addBooking-%s', $aggregate->id)" color="warning" />
+            <div>
+                <x-larastrap::mbutton :label="_i('Aggiungi Utente')" :triggers_modal="sprintf('addBooking-%s', $aggregate->id)" color="warning" />
+
+				@include('commons.importcsv', [
+					'modal_id' => 'importCSVdeliveries',
+					'import_target' => 'deliveries',
+					'explain_extras' => _i('Da qui puoi reimportare un CSV generato dalla funzione "Tabella Complessiva Prodotti" dell\'ordine, dopo averlo manualmente elaborato con le quantità consegnate per ogni utente.'),
+					'modal_extras' => [
+						'aggregate_id' => $aggregate->id,
+					],
+				])
+            </div>
+
             <x-larastrap::modal :title="_i('Aggiungi Utente')" classes="add-booking-while-shipping" :id="sprintf('addBooking-%s', $aggregate->id)">
                 <div class="fillable-booking-space">
                     <div class="row">

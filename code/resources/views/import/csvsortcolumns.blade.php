@@ -16,7 +16,7 @@ if (!isset($extra_description)) {
 
 <x-larastrap::modal :title="_i('Importa CSV')">
     <div class="wizard_page">
-        <x-larastrap::form method="POST" :action="url('import/csv?type=' . $type . '&step=' . $next_step)" :buttons="[['color' => 'success', 'type' => 'submit', 'label' => _i('Avanti')]]">
+        <x-larastrap::form :id="sprintf('form-%s', Illuminate\Support\Str::random(20))" method="POST" :action="url('import/csv?type=' . $type . '&step=' . $next_step)" :buttons="[['color' => 'success', 'type' => 'submit', 'label' => _i('Avanti')]]">
             <input type="hidden" class="wizard_field" name="path" value="{{ $path }}" />
 
             @foreach($extra_fields as $name => $value)

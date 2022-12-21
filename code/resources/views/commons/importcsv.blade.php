@@ -1,7 +1,12 @@
 <?php
 
-if (!isset($modal_extras))
+if (!isset($modal_extras)) {
     $modal_extras = [];
+}
+
+if (!isset($explain_extras)) {
+    $explain_extras = '';
+}
 
 ?>
 
@@ -13,6 +18,14 @@ if (!isset($modal_extras))
             @foreach($modal_extras as $name => $value)
                 <input type="hidden" name="{{ $name }}" value="{{ $value }}" />
             @endforeach
+
+			@if(filled($explain_extras))
+				<p>
+					{!! $explain_extras !!}
+				</p>
+
+				<hr>
+			@endif
 
             <p>
                 {{ _i('Sono ammessi solo files in formato CSV. Si raccomanda di formattare la propria tabella in modo omogeneo, senza usare celle unite, celle vuote, intestazioni: ogni riga deve contenere tutte le informazioni relative al soggetto. Eventuali prezzi e somme vanno espresse senza includere il simbolo dell\'euro.') }}

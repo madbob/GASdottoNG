@@ -20,6 +20,8 @@ abstract class CSVImporter
                 return new Users();
             case 'movements':
                 return new Movements();
+            case 'deliveries':
+                return new Deliveries();
         }
 
         Log::error('Unexpected type for CSV import: ' . $type);

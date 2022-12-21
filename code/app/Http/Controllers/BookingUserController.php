@@ -25,6 +25,9 @@ class BookingUserController extends Controller
         $this->dynamic_service = $dynamic_service;
     }
 
+    /*
+        Questo è il pannello per la gestione delle consegne
+    */
     public function index(Request $request, $aggregate_id)
     {
         $aggregate = Aggregate::findOrFail($aggregate_id);

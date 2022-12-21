@@ -3,15 +3,15 @@
         {{ $title }}:
     </p>
 
-    <ul class="list-group">
+	<ul class="list-group">
         @if(empty($objects))
             <li>{{ _i('Nessuno') }}</li>
         @else
-            @foreach($objects as $m)
-                <li class="list-group-item">{!! $m->printableName() !!}</li>
+            @foreach($objects as $b)
+                <li class="list-group-item">{{ $b->user->printableName() }}</li>
             @endforeach
         @endif
     </ul>
 
-    @include('import.errors', ['errors' => $errors])
+	@include('import.errors', ['errors' => $errors])
 </x-larastrap::modal>

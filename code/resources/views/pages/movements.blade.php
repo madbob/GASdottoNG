@@ -17,7 +17,7 @@
 
                             @include('commons.importcsv', [
                                 'modal_id' => 'importCSVmovements',
-                                'import_target' => 'movements'
+                                'import_target' => 'movements',
                             ])
 
                             <x-larastrap::ambutton :label="_i('Stato Crediti')" :data-modal-url="url('movements/showcredits')" />

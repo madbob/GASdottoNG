@@ -3,6 +3,9 @@
         <p>
             {{ _i("Da qui puoi ottenere un documento CSV coi dettagli di tutti i prodotti prenotati in quest'ordine.") }}
         </p>
+		<p>
+            {{ _i("Se intendi utilizzare questo documento con la funzione 'Consegne -> Importa CSV', per importare le quantità consegnate dopo averle elaborate manualmente, ti raccomandiamo di includere nell'esportazione anche lo Username degli utenti coinvolti.") }}
+        </p>
         <p>
             {!! _i("Per la consultazione e l'elaborazione dei files in formato CSV (<i>Comma-Separated Values</i>) si consiglia l'uso di <a target=\"_blank\" href=\"http://it.libreoffice.org/\">LibreOffice</a>.") !!}
         </p>

@@ -23,8 +23,8 @@ class Users extends CSVImporter
                 'label' => _i('Cognome'),
             ],
             'username' => (object) [
-                'label' => _i('Login'),
-                'mandatory' => true
+                'label' => _i('Username'),
+                'mandatory' => true,
             ],
             'email' => (object) [
                 'label' => _i('E-Mail'),
