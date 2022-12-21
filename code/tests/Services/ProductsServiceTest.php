@@ -156,4 +156,16 @@ class ProductsServiceTest extends TestCase
         $product = $this->services['products']->show($this->product->id);
         $this->assertNotNull($product->deleted_at);
     }
+
+	/*
+		Recupero prodotto a partire dal nome
+	*/
+	public function testStringReading()
+	{
+		$string = $this->product->printableName();
+		$p = productByString($string);
+		$this->assertNotNull($p);
+		$this->assertNull($p[1]);
+		$this->assertEquals($p[0]->id, $this->product->id);
+	}
 }

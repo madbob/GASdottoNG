@@ -141,4 +141,21 @@ class VariantsServiceTest extends TestCase
         $product = $this->services['products']->show($this->product->id);
         $this->assertEquals(0, $product->variant_combos->count());
     }
+
+	/*
+		Recupero variante a partire dal nome
+	*/
+	public function testStringReading()
+	{
+		$variant = $this->createVariant();
+		$combo = $this->product->variant_combos->first();
+
+		$string = $combo->printableName();
+
+		$p = productByString($string);
+		$this->assertNotNull($p);
+		$this->assertNotNull($p[1]);
+		$this->assertEquals($p[0]->id, $this->product->id);
+		$this->assertEquals($p[1]->id, $combo->id);
+	}
 }
