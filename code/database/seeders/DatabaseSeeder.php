@@ -84,9 +84,9 @@ class DatabaseSeeder extends Seeder
         }
 
         $gas->setConfig('roles', (object) [
-            'user' => roleByIdentifier('user'),
-            'friend' => roleByIdentifier('friend'),
-            'multigas' => roleByIdentifier('secondary_admin'),
+            'user' => roleByIdentifier('user')->id,
+            'friend' => roleByIdentifier('friend')->id,
+            'multigas' => roleByIdentifier('secondary_admin')->id,
         ]);
 
         $admin = User::create([
