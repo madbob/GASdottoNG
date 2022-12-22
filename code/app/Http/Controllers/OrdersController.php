@@ -7,12 +7,15 @@ use App\Http\Controllers\Controller;
 
 use DB;
 use Log;
-use App;
+
+use FeedIo\FeedIo;
+use FeedIo\Feed;
+use FeedIo\Feed\Item\Author;
+use FeedIo\Factory\Builder\GuzzleClientBuilder;
 
 use App\Services\OrdersService;
 use App\Services\BookingsService;
 use App\Printers\Order as Printer;
-
 use App\Product;
 use App\Order;
 use App\Booking;
@@ -46,17 +49,13 @@ class OrdersController extends BackedController
     {
         $aggregates = Aggregate::getByStatus(null, 'open');
 
-        $feed = App::make("feed");
-        $feed->title = _i('Ordini Aperti');
-        $feed->description = _i('Ordini Aperti');
-        $feed->link = $request->url();
-        $feed->setDateFormat('datetime');
+        $feed = new Feed();
+        $feed->setTitle(_i('Ordini Aperti'));
+        $feed->setDescription(_i('Ordini Aperti'));
+        $feed->setLink($request->url());
 
         if ($aggregates->isEmpty() == false) {
-            $feed->pubdate = date('Y-m-d G:i:s');
-        }
-        else {
-            $feed->pubdate = '1970-01-01 00:00:00';
+            $feed->setLastModified(new \DateTime());
         }
 
         foreach($aggregates as $aggregate) {
@@ -67,25 +66,29 @@ class OrdersController extends BackedController
             $summary = '';
 
             foreach($aggregate->orders as $order) {
-                $summary .= $order->printableName() . "<br>\n";
+                $summary .= $order->printableName() . "\n";
 
                 foreach($order->products as $product) {
-                    $summary .= $product->printableName() . "<br>\n";
+                    $summary .= $product->printableName() . "\n";
                 }
 
-                $summary .= "<br>\n";
+                $summary .= "\n";
             }
 
-            $feed->addItem([
-                'title' => $aggregate->printableName(),
-                'author' => $aggregate->gas->first()->printableName(),
-                'link' => $aggregate->getBookingURL(),
-                'pubdate' => $aggregate->updated_at,
-                'description' => nl2br($summary),
-            ]);
+			$author = new Author();
+			$author->setName($aggregate->gas->first()->printableName());
+
+			$item = $feed->newItem();
+            $item->setTitle($aggregate->printableName());
+            $item->setAuthor($author);
+            $item->setLink($aggregate->getBookingURL());
+            $item->setLastModified($aggregate->updated_at);
+            $item->setContent($summary);
+			$feed->add($item);
         }
 
-        return $feed->render('rss');
+		$feedIo = new FeedIo((new GuzzleClientBuilder())->getClient(), Log::getLogger());
+        return $feedIo->getPsrResponse($feed, 'rss');
     }
 
     public function ical()

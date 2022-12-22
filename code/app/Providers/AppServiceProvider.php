@@ -4,7 +4,11 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Model;
+
+use Symfony\Component\Mailer\Bridge\Sendinblue\Transport\SendinblueTransportFactory;
+use Symfony\Component\Mailer\Transport\Dsn;
 
 use App\Observers\MovementObserver;
 use App\Observers\UserObserver;
@@ -42,6 +46,14 @@ class AppServiceProvider extends ServiceProvider
         Contact::observe(ContactObserver::class);
         Variant::observe(VariantObserver::class);
         Config::observe(ConfigObserver::class);
+
+		if (env('MAIL_MAILER') == 'sendinblue') {
+			Mail::extend('sendinblue', function () {
+	            return (new SendinblueTransportFactory)->create(
+	                new Dsn('sendinblue+api', 'default', config('services.sendinblue.key'))
+	            );
+	        });
+		}
     }
 
     public function register()

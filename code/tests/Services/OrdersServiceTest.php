@@ -317,6 +317,8 @@ class OrdersServiceTest extends TestCase
         $end = date('Y-m-d', strtotime('+20 days'));
         $shipping = date('Y-m-d', strtotime('+30 days'));
 
+		$this->nextRound();
+
         $aggregate = $this->services['orders']->store(array(
             'supplier_id' => $this->order->supplier_id,
             'start' => printableDate($start),
