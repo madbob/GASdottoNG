@@ -146,8 +146,9 @@ class ModifiersService extends BaseService
 
     public function destroy($id)
     {
-        $modifier = DB::transaction(function() use ($id) {
-            $modifier = Modifier::find($id);
+		$modifier = Modifier::find($id);
+
+        DB::transaction(function() use ($modifier) {
             $this->testAccess($modifier);
             $modifier->definition = '[]';
             $modifier->save();

@@ -29,7 +29,7 @@ class NotificationsService extends BaseService
 			});
 		}
 
-		$notifications = $notifications_query->get();
+		$notifications = collect($notifications_query->get()->all());
 
 		$dates_query = Date::where('type', 'internal')->where('target_type', GAS::class)->where('target_id', $user->gas->id);
 

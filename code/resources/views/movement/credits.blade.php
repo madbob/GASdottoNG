@@ -106,7 +106,7 @@
                     <a type="button" class="btn btn-success" data-bs-toggle="collapse" href="#exportIntegralCES">{{ _i('Esporta IntegralCES') }}<span class="caret"></span></a>
                 @endif
 
-                <a type="button" class="btn btn-success" data-bs-toggle="collapse" href="#sendCreditsMail">{{ _i('Notifica Utente Visualizzati') }}<span class="caret"></span></a>
+                <a type="button" class="btn btn-success" data-bs-toggle="collapse" href="#sendCreditsMail">{{ _i('Notifica Utenti Visualizzati') }}<span class="caret"></span></a>
 
                 @if($currentgas->hasFeature('rid'))
                     <div class="collapse well" id="exportRID">
