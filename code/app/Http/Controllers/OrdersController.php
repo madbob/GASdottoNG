@@ -93,20 +93,31 @@ class OrdersController extends BackedController
 
     public function ical()
     {
-        $calendar = new \Eluceo\iCal\Component\Calendar(currentAbsoluteGas()->printableName());
+        $events = [];
 
         $orders = Aggregate::defaultOrders(false);
         foreach($orders as $o) {
             if ($o->start && $o->end) {
-                $event = new \Eluceo\iCal\Component\Event();
-                $event->setDtStart(new \DateTime($o->start))->setDtEnd(new \DateTime($o->end))->setNoTime(true)->setSummary($o->printableName());
-                $calendar->addComponent($event);
+				$event = (new \Eluceo\iCal\Domain\Entity\Event())
+					->setSummary($o->printableName())
+					->setOccurrence(
+						new \Eluceo\iCal\Domain\ValueObject\MultiDay(
+							new \Eluceo\iCal\Domain\ValueObject\Date(new \DateTime($o->start)),
+							new \Eluceo\iCal\Domain\ValueObject\Date(new \DateTime($o->end)),
+						)
+					);
+
+				$events[] = $event;
             }
         }
 
         header('Content-Type: text/calendar; charset=utf-8');
         header('Content-Disposition: attachment; filename="ordini.ics"');
-        echo $calendar->render();
+
+        $calendar = new \Eluceo\iCal\Domain\Entity\Calendar($events);
+        $componentFactory = new \Eluceo\iCal\Presentation\Factory\CalendarFactory();
+        $calendarComponent = $componentFactory->createCalendar($calendar);
+        return (string) $calendarComponent;
     }
 
     public function index(Request $request)
