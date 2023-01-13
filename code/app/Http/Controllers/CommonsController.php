@@ -34,7 +34,6 @@ class CommonsController extends Controller
         Artisan::call('close:orders');
         Artisan::call('open:orders');
         Artisan::call('remind:orders');
-        Artisan::call('check:system_notices');
 
         if ($user->gas->getConfig('es_integration')) {
             Artisan::call('check:remote_products');
