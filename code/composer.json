@@ -59,6 +59,7 @@
             "app/Helpers/Reflection.php",
             "app/Helpers/Paths.php",
             "app/Helpers/Accounting.php",
+			"app/Helpers/Orders.php",
             "app/Helpers/Files.php",
             "app/Helpers/Locale.php",
             "app/Helpers/Components.php"

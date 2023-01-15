@@ -802,7 +802,7 @@ class Order extends Model
         /*
             L'attributo "default_display" determina gli stati che vengono
             visualizzati di default quando viene chiesto l'elenco degli ordini.
-            Cfr. Aggregate::defaultOrders()
+            Cfr. defaultOrders()
 
             L'attributo "aggregate_priority" serve a determinare lo stato
             dell'aggregato dentro cui si trova l'ordine stesso: lo stato di

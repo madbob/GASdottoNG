@@ -41,13 +41,13 @@ class CommonsController extends Controller
 
         $data['notifications'] = $user->notifications()->where('start_date', '<=', date('Y-m-d'))->where('end_date', '>=', date('Y-m-d'))->get();
 
-        $opened = Aggregate::getByStatus($user, 'open');
+        $opened = getOrdersByStatus($user, 'open');
         $opened = $opened->sort(function($a, $b) {
             return strcmp($a->end, $b->end);
         });
         $data['opened'] = $opened;
 
-        $shipping = Aggregate::getByStatus($user, 'closed');
+        $shipping = getOrdersByStatus($user, 'closed');
         $shipping = $shipping->sort(function($a, $b) {
             return strcmp($a->shipping, $b->shipping);
         });

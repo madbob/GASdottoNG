@@ -1,6 +1,6 @@
 <script>
     var dates_events = [
-        @foreach(App\Aggregate::easyFilter(null, null, null, ['open', 'closed']) as $a)
+        @foreach(easyFilterOrders(null, null, null, ['open', 'closed']) as $a)
             @if($a->shipping)
                 {
                     title: '{!! join(', ', $a->orders->reduce(function($carry, $item) { $carry[] = addslashes($item->supplier->name); return $carry; }, [])) !!}',

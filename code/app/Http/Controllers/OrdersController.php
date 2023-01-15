@@ -47,7 +47,7 @@ class OrdersController extends BackedController
 
     public function rss(Request $request)
     {
-        $aggregates = Aggregate::getByStatus(null, 'open');
+        $aggregates = getOrdersByStatus(null, 'open');
 
         $feed = new Feed();
         $feed->setTitle(_i('Ordini Aperti'));
@@ -95,7 +95,7 @@ class OrdersController extends BackedController
     {
         $events = [];
 
-        $orders = Aggregate::defaultOrders(false);
+        $orders = defaultOrders(false);
         foreach($orders as $o) {
             if ($o->start && $o->end) {
 				$event = (new \Eluceo\iCal\Domain\Entity\Event())
@@ -123,7 +123,7 @@ class OrdersController extends BackedController
     public function index(Request $request)
     {
         $user = $request->user();
-        $orders = Aggregate::defaultOrders(!$user->can('order.view', $user->gas));
+        $orders = defaultOrders(!$user->can('order.view', $user->gas));
 
         return view('pages.orders', [
             'orders' => $orders,
@@ -166,7 +166,7 @@ class OrdersController extends BackedController
 
         $supplier_id = array_unique($supplier_id);
 
-        return Aggregate::easyFilter($supplier_id, '1970-01-01', date('Y-m-d', strtotime('-1 years')), ['open', 'closed']);
+        return easyFilterOrders($supplier_id, '1970-01-01', date('Y-m-d', strtotime('-1 years')), ['open', 'closed']);
     }
 
     /*
@@ -240,7 +240,7 @@ class OrdersController extends BackedController
         $enddate = decodeDate($request->input('enddate'));
         $status = $request->input('status');
         $supplier_id = $request->input('supplier_id');
-        $orders = Aggregate::easyFilter($supplier_id, $startdate, $enddate, $status);
+        $orders = easyFilterOrders($supplier_id, $startdate, $enddate, $status);
 
         return view('commons.loadablelist', [
             'identifier' => !empty($supplier_id) ? 'order-list-' . $supplier_id : 'order-list',

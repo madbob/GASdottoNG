@@ -16,7 +16,7 @@
     <div class="col" id="wrap-order-list-{{ $supplier->id }}">
         @include('commons.loadablelist', [
             'identifier' => 'order-list-' . $supplier->id,
-            'items' => App\Aggregate::easyFilter($supplier, date('Y-m-d', strtotime('-6 months')), date('Y-m-d', strtotime('+6 months'))),
+            'items' => easyFilterOrders($supplier, date('Y-m-d', strtotime('-6 months')), date('Y-m-d', strtotime('+6 months'))),
             'legend' => (object)[
                 'class' => 'Aggregate'
             ],

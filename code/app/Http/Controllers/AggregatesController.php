@@ -29,7 +29,7 @@ class AggregatesController extends Controller
 
     public function create(Request $request)
     {
-        $orders = Aggregate::defaultOrders(false);
+        $orders = defaultOrders(false);
         return view('order.aggregable', ['orders' => $orders]);
     }
 

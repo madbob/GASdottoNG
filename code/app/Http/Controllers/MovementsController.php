@@ -33,10 +33,22 @@ class MovementsController extends BackedController
         ]);
     }
 
+	private function checkAuth()
+	{
+		$user = Auth::user();
+
+        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
+            abort(503);
+        }
+
+		return $user;
+	}
+
     public function index(Request $request)
     {
         try {
             $data['movements'] = $this->service->list($request->all());
+			$ret = null;
 
             if ($request->has('startdate') == false) {
                 /*
@@ -44,7 +56,7 @@ class MovementsController extends BackedController
                     contabilità
                 */
                 $data['types'] = movementTypes();
-                return view('pages.movements', $data);
+                $ret = view('pages.movements', $data);
             }
             else {
                 $format = $request->input('format', 'none');
@@ -54,45 +66,53 @@ class MovementsController extends BackedController
                         $target_id = $request->input('generic_target_id');
                         $target_type = $request->input('generic_target_type');
                         $data['main_target'] = $target_type::tFind($target_id);
-                        return view('movement.bilist', $data);
+                        $ret = view('movement.bilist', $data);
                     }
                     else {
                         /*
                             Qui si finisce quando si aggiorna l'elenco di movimenti
                             nella pagina principale della contabilità
                         */
-                        return view('movement.list', $data);
+                        $ret = view('movement.list', $data);
                     }
                 }
                 else {
-                    $filename = sanitizeFilename(_i('Esportazione movimenti GAS %s.%s', [date('d/m/Y'), $format]));
-
-                    if ($format == 'csv') {
-                        $headers = [_i('Data Registrazione'), _i('Data Movimento'), _i('Tipo'), _i('Pagamento'), _i('Pagante'), _i('Pagato'), _i('Valore'), _i('Note')];
-                        return output_csv($filename, $headers, $data['movements'], function($mov) {
-                            $row = [];
-                            $row[] = $mov->registration_date;
-                            $row[] = $mov->date;
-                            $row[] = $mov->printableType();
-                            $row[] = $mov->printablePayment();
-                            $row[] = $mov->sender ? $mov->sender->printableName() : '';
-                            $row[] = $mov->target ? $mov->target->printableName() : '';
-                            $row[] = printablePrice($mov->amount);
-                            $row[] = $mov->notes;
-                            return $row;
-                        });
-                    }
-                    else if ($format == 'pdf') {
-                        $pdf = PDF::loadView('documents.movements_pdf', ['movements' => $data['movements']]);
-                        return $pdf->download($filename);
-                    }
+					$ret = $this->exportMain($format, $data['movements']);
                 }
             }
+
+			return $ret;
         }
         catch (AuthException $e) {
             abort($e->status());
         }
     }
+
+	private function exportMain($format, $movements)
+	{
+		$filename = sanitizeFilename(_i('Esportazione movimenti GAS %s.%s', [date('d/m/Y'), $format]));
+
+		if ($format == 'csv') {
+			$headers = [_i('Data Registrazione'), _i('Data Movimento'), _i('Tipo'), _i('Pagamento'), _i('Pagante'), _i('Pagato'), _i('Valore'), _i('Note')];
+
+			return output_csv($filename, $headers, $movements, function($mov) {
+				$row = [];
+				$row[] = $mov->registration_date;
+				$row[] = $mov->date;
+				$row[] = $mov->printableType();
+				$row[] = $mov->printablePayment();
+				$row[] = $mov->sender ? $mov->sender->printableName() : '';
+				$row[] = $mov->target ? $mov->target->printableName() : '';
+				$row[] = printablePrice($mov->amount);
+				$row[] = $mov->notes;
+				return $row;
+			});
+		}
+		else if ($format == 'pdf') {
+			$pdf = PDF::loadView('documents.movements_pdf', ['movements' => $movements]);
+			return $pdf->download($filename);
+		}
+	}
 
     public function create(Request $request)
     {
@@ -191,21 +211,13 @@ class MovementsController extends BackedController
 
     public function creditsTable()
     {
-        $user = Auth::user();
-        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
-            abort(503);
-        }
-
+		$this->checkAuth();
         return view('movement.credits');
     }
 
     public function suppliersTable()
     {
-        $user = Auth::user();
-        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
-            abort(503);
-        }
-
+        $this->checkAuth();
         return view('movement.suppliers');
     }
 
@@ -246,10 +258,7 @@ class MovementsController extends BackedController
 
     public function document(Request $request, $type, $subtype = 'none')
     {
-        $user = Auth::user();
-        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
-            abort(503);
-        }
+        $user = $this->checkAuth();
 
         switch ($type) {
             case 'credits':
@@ -398,22 +407,14 @@ class MovementsController extends BackedController
 
     public function getBalance(Request $request, $targetid)
     {
-        $user = $request->user();
-        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
-
+        $this->checkAuth();
         $obj = fromInlineId($targetid);
         return view('movement.summary', ['obj' => $obj]);
     }
 
     public function getHistory(Request $request, $targetid)
     {
-        $user = $request->user();
-        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
-
+        $this->checkAuth();
         $obj = fromInlineId($targetid);
         return view('movement.history', ['obj' => $obj]);
     }

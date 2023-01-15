@@ -35,13 +35,13 @@ class BookingController extends Controller
             aperti (così non può interagire)
         */
         if (is_null($user->suspended_at)) {
-            $opened = Aggregate::getByStatus($user, 'open');
+            $opened = getOrdersByStatus($user, 'open');
         }
         else {
             $opened = new Collection();
         }
 
-        $shipping = Aggregate::getByStatus($user, 'closed');
+        $shipping = getOrdersByStatus($user, 'closed');
 
         $orders = $opened->merge($shipping)->sort(function($a, $b) {
             return strcmp($a->end, $b->end);

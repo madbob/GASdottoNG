@@ -418,6 +418,8 @@ class Booking extends Model
 
     public function printableHeader()
     {
+		\Log::debug('printableHeader di Booking');
+
         $ret = $this->printableName();
 
         $user = Auth::user();
