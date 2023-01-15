@@ -86,12 +86,14 @@ class Utils {
             Questo è per evitare che gli eventi di show/hide si propaghino a
             sproposito all'accordion / alla tab padre
         */
-        $('.collapse', container).on('show.bs.collapse', function(e) {
+        $('.collapse', container).on('show.bs.collapse hide.bs.collapse', function(e) {
             e.stopPropagation();
-            $(this).find('.required_when_triggered').prop('required', true);
-        }).on('hide.bs.collapse', function(e) {
-            e.stopPropagation();
-            $(this).find('.required_when_triggered').prop('required', false);
+		}).on('shown.bs.collapse hidden.bs.collapse', function(e) {
+            $(this).find('.required_when_triggered').each(function() {
+				let target = $(this);
+				let active = $(this).closest('.collapse').hasClass('show');
+				target.prop('required', active);
+			});
         });
     }
 
