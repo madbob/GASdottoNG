@@ -28,6 +28,7 @@
         "satispay/online-api-php-sdk": "^1.6",
         "sinergi/browser-detector": "^6.1",
         "spatie/db-dumper": "^3.0",
+        "symfony/http-client": "^6.2",
         "symfony/psr-http-message-bridge": "^2.1",
         "symfony/sendinblue-mailer": "^6.2",
         "zetacomponents/archive": "dev-master"
