@@ -163,7 +163,7 @@ class Utils {
     static displayServerError(form, data)
     {
         if (data.target != '') {
-            Utils.submitButton(form).each(function() {
+            Utils.j().submitButton(form).each(function() {
                 Utils.inlineFeedback($(this), _('ERRORE!'));
             });
 
@@ -344,19 +344,6 @@ class Utils {
                 }
             }
         });
-    }
-
-    static submitButton(form)
-    {
-        let ret = form.find('button[type=submit]');
-        if (ret.length == 0) {
-            let id = form.attr('id');
-            if (id) {
-                ret = $('button[type=submit][form=' + id + ']')
-            }
-        }
-
-        return ret;
     }
 }
 

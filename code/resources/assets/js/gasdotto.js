@@ -564,7 +564,7 @@ $(document).ready(function() {
             return;
         }
 
-        var submit_button = utils.submitButton(form);
+        var submit_button = utils.j().submitButton(form);
 
         submit_button.each(function() {
             var idle_text = $(this).text();
@@ -704,7 +704,7 @@ $(document).ready(function() {
     .on('change', '.order-document-download-modal input[name=send_mail]', function() {
         var status = $(this).prop('checked');
         var form = $(this).closest('.order-document-download-modal').find('form');
-        var submit = utils.submitButton(form);
+        var submit = utils.j().submitButton(form);
 
         if (status) {
             submit.text(_('Invia Mail'));
