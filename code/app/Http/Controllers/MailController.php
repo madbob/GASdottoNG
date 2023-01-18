@@ -41,47 +41,72 @@ class MailController extends Controller
         }
     }
 
-    private function registerBounce($data)
+    private function registerBounce($email, $message)
     {
-        try {
-            $email = $data->bounce->bouncedRecipients[0]->emailAddress;
-            $message = $data->bounce->bouncedRecipients[0]->diagnosticCode ?? '???';
-            $message = sprintf(_i('Impossibile inoltrare mail a %s: %s', [$email, $message]));
-            $message = addslashes($message);
+        $message = sprintf(_i('Impossibile inoltrare mail a %s: %s', [$email, $message]));
+        $message = addslashes($message);
 
-            if (global_multi_installation()) {
-                $this->saveInstances($email, $message);
-            }
-            else {
-                InnerLog::error('mail', $message);
-            }
+        if (global_multi_installation()) {
+            $this->saveInstances($email, $message);
         }
-        catch(\Exception $e) {
-            Log::error('Notifica SNS illeggibile: ' . $e->getMessage() . ' - ' . print_r($data, true));
+        else {
+            InnerLog::error('mail', $message);
         }
     }
 
-    public function postStatus(Request $request)
+    public function postStatusSES(Request $request)
     {
-        $message = Message::fromRawPostData();
-        $validator = new MessageValidator();
+		if (env('MAIL_MAILER') == 'ses') {
+	        $message = Message::fromRawPostData();
+	        $validator = new MessageValidator();
 
-        try {
-            $validator->validate($message);
-        }
-        catch (InvalidSnsMessageException $e) {
-            Log::error('SNS Message Validation Error: ' . $e->getMessage());
-            abort(404);
-        }
+	        try {
+	            $validator->validate($message);
+	        }
+	        catch (InvalidSnsMessageException $e) {
+	            Log::error('SNS Message Validation Error: ' . $e->getMessage());
+	            abort(404);
+	        }
 
-        if ($message['Type'] === 'SubscriptionConfirmation') {
-            $dummy = file_get_contents($message['SubscribeURL']);
-        }
-        else if ($message['Type'] === 'Notification') {
-            $data = json_decode($message['Message']);
-            if ($data->notificationType == 'Bounce') {
-                $this->registerBounce($data);
-            }
-        }
+	        if ($message['Type'] === 'SubscriptionConfirmation') {
+	            $dummy = file_get_contents($message['SubscribeURL']);
+	        }
+	        else if ($message['Type'] === 'Notification') {
+	            $data = json_decode($message['Message']);
+	            if ($data->notificationType == 'Bounce') {
+					try {
+						$email = $data->bounce->bouncedRecipients[0]->emailAddress;
+			            $message = $data->bounce->bouncedRecipients[0]->diagnosticCode ?? '???';
+		                $this->registerBounce($email, $message);
+					}
+					catch(\Exception $e) {
+						Log::error('Notifica SNS illeggibile: ' . $e->getMessage() . ' - ' . print_r($data, true));
+					}
+	            }
+	        }
+		}
     }
+
+	public function postStatusSendinblue(Request $request)
+	{
+		if (env('MAIL_MAILER') == 'sendinblue') {
+			/*
+				Nota bene: qui arrivano tutte le segnalazioni webhook generate
+				da SendInBlue, incluse quelle non generate da GASdotto.
+				Il tag "gasdotto" viene aggiunto dal listener CustomMailTag
+			*/
+			if (in_array('gasdotto', $request->input('tags'))) {
+				if (in_array($request->input('event', ''), ['hard_bounce', 'complaint', 'blocked', 'error'])) {
+					try {
+						$email = $request->input('email');
+			            $message = $request->input('reason', '???');
+		                $this->registerBounce($email, $message);
+					}
+					catch(\Exception $e) {
+						Log::error('Notifica SendInBlue illeggibile: ' . $e->getMessage() . ' - ' . print_r($request->all(), true));
+					}
+				}
+			}
+		}
+	}
 }

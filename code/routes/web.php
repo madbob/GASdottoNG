@@ -11,7 +11,8 @@ Route::get('gas/{id}/logo', 'GasController@getLogo');
 Route::get('payment/status/paypal', 'PaymentController@statusPaymentPaypal')->name('payment.status_paypal');
 Route::get('payment/status/satispay', 'PaymentController@statusPaymentSatispay')->name('payment.status_satispay');
 
-Route::post('mail/status', 'MailController@postStatus');
+Route::post('mail/status/aws', 'MailController@postStatusSES');
+Route::post('mail/status/sib', 'MailController@postStatusSendinblue');
 
 Route::middleware(['auth'])->group(function() {
     Route::middleware(['commonuser'])->group(function() {
