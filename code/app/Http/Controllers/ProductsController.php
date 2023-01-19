@@ -125,7 +125,7 @@ class ProductsController extends BackedController
             $price = $combo->price;
         }
 
-        $currency = currentAbsoluteGas()->currency;
+        $currency = defaultCurrency()->symbol;
         $str = sprintf('%.02f %s / %s', $price, $currency, $product->printableMeasure());
 
         return response()->json([

@@ -66,7 +66,7 @@ class Modifier extends Model
                 $amount = $d->amount;
             }
             else {
-                $postfix = currentAbsoluteGas()->currency;
+                $postfix = defaultCurrency()->symbol;
                 $amount = printablePrice($d->amount);
             }
 

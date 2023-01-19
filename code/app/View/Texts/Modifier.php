@@ -44,7 +44,7 @@ class Modifier
 
     private static function unitLabels($target)
     {
-        $currency = currentAbsoluteGas()->currency;
+        $currency = defaultCurrency()->symbol;
 
         if (is_a($target, Product::class)) {
             $quantity_label = $target->measure->name;
@@ -67,7 +67,7 @@ class Modifier
 
     private static function distributionLabels()
     {
-        $currency = currentAbsoluteGas()->currency;
+        $currency = defaultCurrency()->symbol;
 
         return [
             'sum,product,absolute' => [_i("somma al costo del prodotto"), $currency],

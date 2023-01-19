@@ -96,7 +96,7 @@ class MailController extends Controller
 				Il tag "gasdotto" viene aggiunto dal listener CustomMailTag
 			*/
 			if (in_array('gasdotto', $request->input('tags'))) {
-				if (in_array($request->input('event', ''), ['hard_bounce', 'complaint', 'blocked', 'error'])) {
+				if (in_array($request->input('event', ''), ['hard_bounce', 'soft_bounce', 'complaint', 'blocked', 'error'])) {
 					try {
 						$email = $request->input('email');
 			            $message = $request->input('reason', '???');

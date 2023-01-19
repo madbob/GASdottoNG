@@ -65,7 +65,10 @@ class GasController extends Controller
         $gas->message = $request->input('message');
         $gas->setConfig('restricted', $request->has('restricted') ? '1' : '0');
         $gas->setConfig('language', $request->input('language'));
-        $gas->setConfig('currency', $request->input('currency'));
+
+        $currency = defaultCurrency();
+		$currency->symbol = $request->input('currency', '€');
+		$currency->save();
     }
 
     private function configBanking($gas, $request)

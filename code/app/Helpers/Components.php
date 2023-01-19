@@ -115,7 +115,7 @@ function formatPriceToComponent($component, $params)
     $value = printablePrice($params['value']);
 
     if (!isset($params['currency'])) {
-        $currency = currentAbsoluteGas()->currency;
+        $currency = defaultCurrency()->symbol;
     }
     else {
         if ($params['currency'] != '0') {

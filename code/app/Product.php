@@ -165,7 +165,7 @@ class Product extends Model
             }
         }
 
-        $currency = currentAbsoluteGas()->currency;
+        $currency = defaultCurrency()->symbol;
         $str = sprintf('%.02f %s / %s', $price, $currency, $this->printableMeasure());
 
         return $str;

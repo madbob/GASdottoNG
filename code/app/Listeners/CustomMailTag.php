@@ -2,9 +2,7 @@
 
 namespace App\Listeners;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Events\MessageSending;
-use Illuminate\Queue\InteractsWithQueue;
 use Symfony\Component\Mailer\Header\TagHeader;
 
 class CustomMailTag
