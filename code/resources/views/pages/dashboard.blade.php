@@ -15,7 +15,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             <input type="hidden" name="notification_id" value="{{ $notify->id }}" />
 
-                            {!! nl2br($notify->content) !!}
+                            {!! $notify->formattedContent($currentuser) !!}
 
                             @if($notify->attachments->isEmpty() == false)
                                 <hr>

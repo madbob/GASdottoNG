@@ -9,17 +9,27 @@ if (!isset($instant)) {
 }
 
 $content_help = '';
-$mailtype_id = 0;
+$mailtype_id = null;
 
-if (isset($mailtype)) {
+if (isset($mailtype) == false) {
+	if ($notification) {
+		$mailtype = $notification->mailtype;
+	}
+	else {
+		$mailtype = null;
+	}
+}
+
+if (filled($mailtype)) {
 	$meta = systemParameters('MailTypes')[$mailtype];
+	$mailtype_id = $mailtype;
 	$content_help = $meta->formatParams();
 }
 
 ?>
 
-@if($mailtype)
-	<x-larastrap::hidden name="mailtype" :value="$mailtype" />
+@if($mailtype_id)
+	<x-larastrap::hidden name="mailtype" :value="$mailtype_id" />
 @endif
 
 @if($select_users)

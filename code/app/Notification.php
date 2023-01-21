@@ -64,6 +64,21 @@ class Notification extends Model
         }
     }
 
+	public function formattedContent($target)
+	{
+		if (filled($this->mailtype)) {
+			$type = systemParameters('MailTypes')[$this->mailtype];
+			$ret = $type->formatText($this->content, $this->gas, [
+				'user' => $target,
+			]);
+		}
+		else {
+			$ret = $this->content;
+		}
+
+		return nl2br($ret);
+	}
+
     public function printableName()
     {
         $users = $this->users;

@@ -31,7 +31,7 @@ class SupplierOrderShipping extends ManyMailNotification
     {
         $message = $this->initMailMessage($notifiable);
 
-        $message = $this->formatMail($message, 'supplier_summary', [
+        $message = $this->formatMail($message, $notifiable, 'supplier_summary', [
             'supplier_name' => $this->order->supplier->name,
             'order_number' => $this->order->number,
         ]);

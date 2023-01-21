@@ -24,7 +24,7 @@ class NewOrderNotification extends ManyMailNotification
 
         $contacts = join(', ', array_filter($contacts));
 
-        $message = $this->formatMail($message, 'new_order', [
+        $message = $this->formatMail($message, $notifiable, 'new_order', [
             'supplier_name' => $this->order->supplier->name,
             'order_comment' => $this->order->comment ?? '',
             'gas_booking_link' => $this->order->getBookingURL(),

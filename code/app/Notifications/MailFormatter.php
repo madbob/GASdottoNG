@@ -4,27 +4,19 @@ namespace App\Notifications;
 
 trait MailFormatter
 {
-    private function formatText($text, $gas, $params)
+    public function formatMail($message, $user, $config_name, $params = [])
     {
-        $params['gas_name'] = $gas->name;
+		$type = systemParameters('MailTypes')[$config_name];
+        $config = json_decode($user->gas->getConfig('mail_' . $config_name));
 
-        foreach($params as $placeholder => $value) {
-            $p = sprintf('%%[%s]', $placeholder);
-            $text = str_replace($p, $value, $text);
-        }
+		if (isset($params['user']) == false) {
+			$params['user'] = $user;
+		}
 
-        return $text;
-    }
+        $subject = $type->formatText($config->subject, $user->gas, $params);
+        $body = $type->formatText($config->body, $user->gas, $params);
 
-    public function formatMail($message, $config_name, $params = [])
-    {
-        $gas = currentAbsoluteGas();
-        $config = json_decode($gas->getConfig('mail_' . $config_name));
-
-        $subject = $this->formatText($config->subject, $gas, $params);
-        $body = $this->formatText($config->body, $gas, $params);
         $message->subject($subject)->view('emails.empty', ['content' => $body]);
-
         return $message;
     }
 }

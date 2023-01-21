@@ -22,7 +22,15 @@ class GenericNotificationWrapper extends ManyMailNotification
     public function toMail($notifiable)
     {
         $message = $this->initMailMessage($notifiable);
-        $message->subject(_i('Nuova notifica da %s', [$notifiable->gas->name]))->view('emails.notification', ['notification' => $this->notification]);
+		$message->subject(_i('Nuova notifica da %s', [$notifiable->gas->name]));
+
+		if (filled($this->notification->mailtype)) {
+			$body = $this->notification->formattedContent($notifiable);
+			$message->view('emails.empty', ['content' => $body]);
+		}
+		else {
+        	$message->view('emails.notification', ['notification' => $this->notification]);
+		}
 
         foreach($this->notification->attachments as $attachment) {
             $message->attach($attachment->path, ['as' => $attachment->name]);

@@ -12,10 +12,6 @@ class WelcomeMessage extends ManyMailNotification implements ShouldQueue
     public function toMail($notifiable)
     {
         $message = $this->initMailMessage($notifiable);
-
-        return $this->formatMail($message, 'welcome', [
-            'username' => $notifiable->username,
-            'gas_login_link' => route('login')
-        ]);
+        return $this->formatMail($message, $notifiable, 'welcome');
     }
 }

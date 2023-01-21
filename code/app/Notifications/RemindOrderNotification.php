@@ -41,7 +41,7 @@ class RemindOrderNotification extends ManyMailNotification
             $orders_list .= $row . "\n";
         }
 
-        $message = $this->formatMail($message, 'order_reminder', [
+        $message = $this->formatMail($message, $notifiable, 'order_reminder', [
             'orders_list' => $orders_list,
         ]);
 

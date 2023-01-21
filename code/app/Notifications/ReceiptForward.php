@@ -20,6 +20,6 @@ class ReceiptForward extends ManyMailNotification implements ShouldQueue
     public function toMail($notifiable)
     {
         $message = $this->initMailMessage($notifiable);
-        return $this->formatMail($message, 'receipt')->attach($this->temp_file);
+        return $this->formatMail($message, $notifiable, 'receipt')->attach($this->temp_file);
     }
 }

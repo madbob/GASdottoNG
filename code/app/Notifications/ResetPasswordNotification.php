@@ -20,8 +20,7 @@ class ResetPasswordNotification extends ManyMailNotification implements ShouldQu
     {
         $message = $this->initMailMessage($notifiable);
 
-        return $this->formatMail($message, 'password_reset', [
-            'username' => $notifiable->username,
+        return $this->formatMail($message, $notifiable, 'password_reset', [
             'gas_reset_link' => route('password.reset', ['token' => $this->reset_token]),
         ]);
     }
