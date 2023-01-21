@@ -110,6 +110,11 @@
 
             <x-larastrap::remotetabpane :label="_i('Fatture')" :button_attributes="['data-tab-url' => route('invoices.index')]" icon="bi-files">
             </x-larastrap::remotetabpane>
+
+			@if($currentgas->hasFeature('extra_invoicing'))
+				<x-larastrap::remotetabpane :label="_i('Ricevute')" :button_attributes="['data-tab-url' => route('receipts.index')]" icon="bi-files">
+	            </x-larastrap::remotetabpane>
+			@endif
         </x-larastrap::tabs>
     </div>
 </div>

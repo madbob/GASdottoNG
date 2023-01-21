@@ -91,24 +91,17 @@ class Invoice extends Model implements AccountingDocument
     public static function doSort($invoices)
     {
         return $invoices->sort(function($a, $b) {
-            if (is_a($a, Invoice::class) && is_a($b, Invoice::class)) {
-                if ($a->status == 'payed' && $a->payment && $b->status == 'payed' && $b->payment) {
-                    return $a->payment->date <=> $b->payment->date;
-                }
-                else if ($a->status == 'payed') {
-                    return -1;
-                }
-                else if ($b->status == 'payed') {
-                    return 1;
-                }
-                else {
-                    return $a->date <=> $b->date;
-                }
+            if ($a->status == 'payed' && $a->payment && $b->status == 'payed' && $b->payment) {
+                return $a->payment->date <=> $b->payment->date;
+            }
+            else if ($a->status == 'payed') {
+                return -1;
+            }
+            else if ($b->status == 'payed') {
+                return 1;
             }
             else {
-                $a_date = $a->sorting_date;
-                $b_date = $b->sorting_date;
-                return $a_date <=> $b_date;
+                return $a->date <=> $b->date;
             }
         })->reverse();
     }

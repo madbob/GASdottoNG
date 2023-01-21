@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 
-use App\Services\InvoicesService;
-use App\Exceptions\AuthException;
-use App\Exceptions\IllegalArgumentException;
-
 use DB;
 use Auth;
 use Log;
+
+use App\Services\InvoicesService;
+use App\Exceptions\AuthException;
+use App\Exceptions\IllegalArgumentException;
 
 use App\Invoice;
 use App\Order;
@@ -225,25 +225,16 @@ class InvoicesController extends BackedController
     private function outputCSV($elements)
     {
         $filename = _i('Esportazione fatture GAS %s.csv', date('d/m/Y'));
-        $headers = [_i('Tipo'), _i('Da/A'), _i('Data'), _i('Numero'), _i('Imponibile'), _i('IVA')];
+        $headers = [_i('Fornitore'), _i('Data'), _i('Numero'), _i('Imponibile'), _i('IVA')];
 
         return output_csv($filename, $headers, $elements, function($invoice) {
-            $row = [];
-
-            if (get_class($invoice) == 'App\Invoice') {
-                $row[] = _i('Ricevuta');
-                $row[] = $invoice->supplier->printableName();
-            }
-            else {
-                $row[] = _i('Inviata');
-                $row[] = $invoice->user->printableName();
-            }
-
-            $row[] = $invoice->date;
-            $row[] = $invoice->number;
-            $row[] = $invoice->total;
-            $row[] = $invoice->total_vat;
-            return $row;
+			return [
+				$invoice->supplier->printableName(),
+				$invoice->date,
+				$invoice->number,
+				$invoice->total,
+				$invoice->total_vat,
+			];
         });
     }
 
@@ -253,7 +244,6 @@ class InvoicesController extends BackedController
         $end = decodeDate($request->input('enddate'));
         $supplier_id = $request->input('supplier_id');
         $elements = $this->service->list($start, $end, $supplier_id);
-        $gas = $request->user()->gas;
 
         $format = $request->input('format', 'none');
 
@@ -263,7 +253,7 @@ class InvoicesController extends BackedController
                 'identifier' => $list_identifier,
                 'items' => $elements,
                 'legend' => (object)[
-                    'class' => $gas->hasFeature('extra_invoicing') ? ['Invoice', 'Receipt'] : 'Invoice'
+                    'class' => 'Invoice',
                 ],
             ]);
         }

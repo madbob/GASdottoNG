@@ -13,6 +13,8 @@
         </div>
     </div>
 
+	<hr/>
+
     <div class="row">
         <div class="col-12 col-md-6">
             <x-filler :data-action="route('invoices.search')" data-fill-target="#invoices-in-range" :downloadButtons="[['link' => route('invoices.search', ['format' => 'csv']), 'label' => _i('Esporta CSV')]]">
@@ -30,7 +32,7 @@
                 'identifier' => 'invoice-list',
                 'items' => $invoices,
                 'legend' => (object)[
-                    'class' => $currentgas->hasFeature('extra_invoicing') ? ['Invoice', 'Receipt'] : 'Invoice'
+                    'class' => 'Invoice',
                 ],
             ])
         </div>

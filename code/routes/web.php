@@ -81,6 +81,8 @@ Route::middleware(['auth'])->group(function() {
         Route::get('invoices/search', 'InvoicesController@search')->name('invoices.search');
         Route::get('invoices/{id}/header', 'InvoicesController@objhead');
 
+		Route::get('receipts', 'ReceiptsController@index')->name('receipts.index');
+		Route::get('receipts/search', 'ReceiptsController@search')->name('receipts.search');
         Route::get('receipts/{id}/header', 'ReceiptsController@objhead')->name('receipts.objhead');
         Route::get('receipts/{id}/handle', 'ReceiptsController@handle')->name('receipts.handle');
         Route::get('receipts/{id}/download', 'ReceiptsController@download')->name('receipts.download');

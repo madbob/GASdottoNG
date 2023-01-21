@@ -32,26 +32,6 @@ class InvoicesService extends BaseService
         }
 
         $elements = $query->get();
-
-        if ($user->gas->hasFeature('extra_invoicing')) {
-            $query = Receipt::where('date', '>=', $start)->where('date', '<=', $end)->orderBy('date', 'desc');
-
-            if ($supplier_id != '0') {
-                $query->whereHas('bookings', function($query) use ($supplier_id) {
-                    $query->whereHas('order', function($query) use ($supplier_id) {
-                        $query->where('supplier_id', $supplier_id);
-                    });
-                });
-            }
-
-            $receipts = $query->get();
-
-            foreach($receipts as $r) {
-                // @phpstan-ignore-next-line
-                $elements->push($r);
-            }
-        }
-
         return Invoice::doSort($elements);
     }
 

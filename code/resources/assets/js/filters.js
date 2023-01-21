@@ -59,18 +59,28 @@ class Filters {
 
         $('.form-filler button[type=submit]', container).click(function(event) {
             event.preventDefault();
-            var form = $(this).closest('.form-filler');
+
+			var button = $(this);
+			button.addClass('disabled');
+            var form = button.closest('.form-filler');
             var target = $(form.attr('data-fill-target'));
             var data = form.find('input, select').serialize();
+
+			var url = button.attr('data-action');
+			if (url == null) {
+				url = form.attr('data-action');
+			}
+
             target.empty().append(utils.loadingPlaceholder());
 
             $.ajax({
                 method: 'GET',
-                url: form.attr('data-action'),
+                url: url,
                 data: data,
                 dataType: 'html',
 
                 success: function(data) {
+					button.removeClass('disabled');
                     data = $(data);
                     target.empty().append(data);
                     utils.j().initElements(data);
