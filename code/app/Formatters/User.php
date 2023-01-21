@@ -4,6 +4,8 @@ namespace App\Formatters;
 
 use App;
 
+use App\Contact;
+
 class User extends Formatter
 {
     private static function formatContact($obj, $type)
@@ -11,6 +13,20 @@ class User extends Formatter
         $contacts = $obj->getContactsByType($type);
         return join(', ', $contacts);
     }
+
+	private static function columnsForContacts($ret)
+	{
+		foreach(Contact::types() as $identifier => $name) {
+			$ret[$identifier] = (object) [
+                'name' => $name,
+                'format' => function($obj, $context) use ($identifier) {
+                    return self::formatContact($obj, $identifier);
+                },
+            ];
+		}
+
+		return $ret;
+	}
 
     private static function columnsByFeatures($ret)
     {
@@ -97,30 +113,6 @@ class User extends Formatter
             'username' => (object) [
                 'name' => _i('Username'),
             ],
-            'email' => (object) [
-                'name' => _i('E-Mail'),
-                'format' => function($obj, $context) {
-                    return self::formatContact($obj, 'email');
-                },
-            ],
-            'phone' => (object) [
-                'name' => _i('Telefono'),
-                'format' => function($obj, $context) {
-                    return self::formatContact($obj, 'phone');
-                },
-            ],
-            'mobile' => (object) [
-                'name' => _i('Cellulare'),
-                'format' => function($obj, $context) {
-                    return self::formatContact($obj, 'mobile');
-                },
-            ],
-            'address' => (object) [
-                'name' => _i('Indirizzo'),
-                'format' => function($obj, $context) {
-                    return self::formatContact($obj, 'address');
-                },
-            ],
             'taxcode' => (object) [
                 'name' => _i('Codice Fiscale'),
             ],
@@ -141,6 +133,7 @@ class User extends Formatter
             ],
         ];
 
+		$ret = self::columnsForContacts($ret);
         $ret = self::columnsByFeatures($ret);
         $ret = self::columnsByType($ret, $type);
 
