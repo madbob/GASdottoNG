@@ -88,6 +88,7 @@ class NotificationsService extends BaseService
     private function setCommonAttributes($notification, $request)
     {
 		$this->setIfSet($notification, $request, 'content');
+		$this->setIfSet($notification, $request, 'mailtype');
 		$this->boolIfSet($notification, $request, 'mailed');
 		$this->transformAndSetIfSet($notification, $request, 'start_date', "decodeDate");
 		$this->transformAndSetIfSet($notification, $request, 'end_date', "decodeDate");

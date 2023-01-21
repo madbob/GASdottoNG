@@ -12,7 +12,6 @@ class CreateRolesTable extends Migration
             $table->timestamps();
 
             $table->string('name');
-            $table->boolean('always')->default(false);
             $table->text('actions');
             $table->integer('parent_id')->unsigned()->default(0);
         });

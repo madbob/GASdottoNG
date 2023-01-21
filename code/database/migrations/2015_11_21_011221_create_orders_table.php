@@ -18,7 +18,7 @@ class CreateOrdersTable extends Migration
             $table->date('start')->useCurrent();
             $table->date('end')->useCurrent();
             $table->date('shipping')->nullable();
-            $table->enum('status', ['suspended', 'open', 'closed', 'shipped', 'archived']);
+            $table->enum('status', ['suspended', 'open', 'closed', 'shipped', 'user_payment', 'archived']);
             $table->string('keep_open_packages')->default('no');
             $table->string('discount')->nullable();
             $table->string('transport')->nullable();

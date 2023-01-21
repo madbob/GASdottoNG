@@ -26,6 +26,9 @@ class CreateMovementsTable extends Migration
             $table->string('identifier');
             $table->text('notes');
 
+			$table->boolean('automatic')->default(false);
+			$table->unsignedBigInteger('related_id')->nullable();
+
             $table->boolean('archived')->default(false);
         });
     }

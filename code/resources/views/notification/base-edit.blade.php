@@ -8,7 +8,19 @@ if (!isset($instant)) {
     $instant = false;
 }
 
+$content_help = '';
+$mailtype_id = 0;
+
+if (isset($mailtype)) {
+	$meta = systemParameters('MailTypes')[$mailtype];
+	$content_help = $meta->formatParams();
+}
+
 ?>
+
+@if($mailtype)
+	<x-larastrap::hidden name="mailtype" :value="$mailtype" />
+@endif
 
 @if($select_users)
     @include('commons.multipleusers', ['obj' => $notification, 'name' => 'users', 'label' => _i('Destinatari')])
@@ -20,7 +32,7 @@ if (!isset($instant)) {
     @endif
 @endif
 
-<x-larastrap::textarea name="content" :label="_i('Contenuto')" required />
+<x-larastrap::textarea name="content" :label="_i('Contenuto')" :help="$content_help" required />
 <x-larastrap::datepicker name="start_date" :label="_i('Inizio')" defaults_now required />
 <x-larastrap::datepicker name="end_date" :label="_i('Scadenza')" defaults_now required />
 

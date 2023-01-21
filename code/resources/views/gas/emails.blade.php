@@ -35,13 +35,7 @@
                         continue;
                     }
 
-                    $mail_params = [];
-                    foreach($metadata->params() as $placeholder => $placeholder_description) {
-                        $mail_params[] = sprintf('%%[%s]: %s', $placeholder, $placeholder_description);
-                    }
-
-                    $mail_help = join('<br>', $mail_params);
-
+                    $mail_help = $metadata->formatParams();
                     $current_config = json_decode($gas->getConfig('mail_' . $identifier));
                     $current_subject = $current_config->subject;
                     $current_body = $current_config->body;
