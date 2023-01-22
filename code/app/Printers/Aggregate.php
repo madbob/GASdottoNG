@@ -9,8 +9,13 @@ use App;
 use PDF;
 use ezcArchive;
 
+use App\Formatters\User as UserFormatter;
+use App\Delivery;
+
 class Aggregate extends Printer
 {
+	use PrintingOrders;
+
     /*
         Prima di invocare questa funzione, si assume che il GAS corrente sia già
         stato settato in GlobalScopeHub
@@ -32,7 +37,7 @@ class Aggregate extends Printer
         return $data;
     }
 
-    private function handleShipping($obj, $request)
+    protected function handleShipping($obj, $request)
     {
         $subtype = $request['format'] ?? 'pdf';
         $required_fields = $request['fields'] ?? [];
@@ -170,7 +175,7 @@ class Aggregate extends Printer
         return response()->download($archivepath)->deleteFileAfterSend(true);
     }
 
-    private function handleSummary($obj, $request)
+    protected function handleSummary($obj, $request)
     {
         $subtype = $request['format'] ?? 'pdf';
 
@@ -229,18 +234,81 @@ class Aggregate extends Printer
         }
     }
 
-    public function document($obj, $type, $request)
-    {
-        switch ($type) {
-            case 'shipping':
-                return $this->handleShipping($obj, $request);
+	private function orderTopBookingsByShipping($aggregate, $shipping_place, $status = null)
+	{
+		$bookings = $aggregate->bookings;
 
-            case 'summary':
-                return $this->handleSummary($obj, $request);
+		if ($status) {
+			$bookings = $bookings->filter(function($b) use ($status) {
+				return $b->status == $status;
+			});
+		}
 
-            default:
-                \Log::error('Unrecognized type for Aggregate document: ' . $type);
-                return null;
-        }
-    }
+		return Delivery::sortBookingsByShippingPlace($bookings, $shipping_place);
+	}
+
+	private function formatTableRows($aggregate, $shipping_place, $status, $fields, &$all_products)
+	{
+		$bookings = $this->orderTopBookingsByShipping($aggregate, $shipping_place, $status == 'saved' ? 'saved' : null);
+		list($get_total, $get_function, $get_function_real) = $this->bookingsRules($status);
+
+		$data = [];
+		$total_price = 0;
+
+		foreach($bookings as $booking) {
+			$row = UserFormatter::format($booking->user, $fields->user_columns);
+
+			foreach($aggregate->orders as $order) {
+				$sub_booking = $booking->getOrderBooking($order);
+				$subrow = $this->formatBookingInTable($order, $sub_booking, $status, $all_products);
+				$row = array_merge($row, $subrow);
+			}
+
+			$price = $booking->getValue($get_total, true);
+			$total_price += $price;
+			$row[] = printablePrice($price);
+
+			$data[] = $row;
+		}
+
+		return [$data, $total_price];
+	}
+
+	protected function handleTable($obj, $request)
+	{
+		$status = $request['status'] ?? 'booked';
+		$shipping_place = $request['shipping_place'] ?? 0;
+
+		$required_fields = $request['fields'] ?? [];
+		$fields = splitFields($required_fields);
+
+		/*
+			Formatto riga di intestazione
+		*/
+
+		$user_columns = UserFormatter::getHeaders($fields->user_columns);
+		list($all_products, $headers, $prices_rows) = $this->formatTableHead($user_columns, $obj->orders);
+
+		/*
+			Formatto righe delle singole prenotazioni
+		*/
+
+		list($data, $total_price) = $this->formatTableRows($obj, $shipping_place, $status, $fields, $all_products);
+		array_unshift($data, $prices_rows);
+
+		/*
+			Formatto riga dei totali
+		*/
+
+		$row = $this->formatTableFooter($obj->orders, $user_columns, $all_products, $total_price);
+		$data[] = $row;
+		$data[] = $headers;
+
+		/*
+			Genero documento
+		*/
+
+		$filename = sanitizeFilename(_i('Tabella.csv'));
+		return output_csv($filename, $headers, $data, null);
+	}
 }

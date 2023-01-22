@@ -320,8 +320,7 @@ class Aggregate extends Model
             }
         }
 
-        $ret = $this->sortByStatus($ret);
-        return $ret;
+        return $this->sortByStatus($ret);
     }
 
     public function getLastNotifyAttribute()

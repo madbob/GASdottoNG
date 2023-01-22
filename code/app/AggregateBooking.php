@@ -92,6 +92,17 @@ class AggregateBooking extends Model
         return 'shipped';
     }
 
+	public function getOrderBooking($order)
+	{
+		foreach($this->bookings as $booking) {
+			if ($booking->order_id == $order->id) {
+				return $booking;
+			}
+		}
+
+		return null;
+	}
+
     public function getValue($type, $with_friends, $force_recalculate = false)
     {
         $grand_total = 0;

@@ -1,5 +1,5 @@
-<x-larastrap::modal :title="_i('Tabella Complessiva Prodotti')" classes="close-on-submit order-document-download-modal">
-    <x-larastrap::form method="GET" :action="url('orders/document/' . $order->id . '/table')">
+<x-larastrap::modal :title="_i('Tabella Complessiva Aggregato')" classes="close-on-submit order-document-download-modal">
+    <x-larastrap::form method="GET" :action="route('aggregates.document', ['id' => $aggregate->id, 'type' => 'table'])">
         <p>
             {{ _i("Da qui puoi ottenere un documento CSV coi dettagli di tutti i prodotti prenotati in quest'ordine.") }}
         </p>
@@ -12,13 +12,11 @@
 
         <hr/>
 
-        @include('commons.selectshippingexport', ['aggregate' => $order->aggregate, 'included_metaplace' => ['all_by_name', 'all_by_place']])
+        @include('commons.selectshippingexport', ['aggregate' => $aggregate, 'included_metaplace' => ['all_by_name', 'all_by_place']])
 
         <?php list($options, $values) = flaxComplexOptions(App\Formatters\User::formattableColumns()) ?>
         <x-larastrap::checks name="fields" :label="_i('Dati Utenti')" :options="$options" :value="$currentgas->orders_shipping_user_columns" />
 
         <x-larastrap::radios name="status" :label="_i('Stato Prenotazioni')" :options="['booked' => _i('Prenotate'), 'delivered' => _i('Consegnate'), 'saved' => _i('Salvate')]" value="booked" />
-
-        @include('order.filesmail', ['contacts' => $order->supplier->involvedEmails()])
     </x-larastrap::form>
 </x-larastrap::modal>
