@@ -68,19 +68,27 @@ function applyPercentage($original, $percentage, $op = '-')
     $o = (float)$original;
 
     if (isPercentage($percentage)) {
-        if ($op == '-')
-            return $o - (($o * $p) / 100);
-        else if ($op == '+')
-            return $o + (($o * $p) / 100);
-        else if ($op == '=')
-            return ($o * $p) / 100;
+        if ($op == '-') {
+            $ret = $o - (($o * $p) / 100);
+		}
+        else if ($op == '+') {
+            $ret = $o + (($o * $p) / 100);
+		}
+        else if ($op == '=') {
+            $ret = ($o * $p) / 100;
+		}
     }
     else {
-        if ($op == '-')
-            return $o - $p;
-        else if ($op == '+')
-            return $o + $p;
-        else if ($op == '=')
-            return $p;
+        if ($op == '-') {
+            $ret = $o - $p;
+		}
+        else if ($op == '+') {
+            $ret = $o + $p;
+		}
+        else if ($op == '=') {
+            $ret = $p;
+		}
     }
+
+	return $ret;
 }

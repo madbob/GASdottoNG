@@ -44,19 +44,18 @@ function allRoles()
 function someoneCan($permission, $subject = null)
 {
     $basic_roles = App\Role::havingAction($permission);
+
     foreach($basic_roles as $br) {
         if (is_null($subject)) {
             $users = $br->users;
-            if ($users->isEmpty() == false)
-                return true;
-            else
-                return false;
         }
         else {
             $users = $br->usersByTarget($subject);
-            if ($users->isEmpty() == false)
-                return true;
         }
+
+		if ($users->isEmpty() == false) {
+			return true;
+		}
     }
 
     return false;
@@ -83,6 +82,7 @@ function everybodyCan($permission, $subject = null)
 function classByRule($rule_id)
 {
     $all_permissions = allPermissions();
+
     foreach ($all_permissions as $class => $rules) {
         foreach ($rules as $identifier => $name) {
             if ($rule_id == $identifier) {
@@ -98,16 +98,13 @@ function rolesByClass($asked_class)
 {
     $roles = [];
     $all_permissions = allPermissions();
+	$rules = $all_permissions[$asked_class] ?? [];
 
     foreach (allRoles() as $role) {
-        foreach ($all_permissions as $class => $rules) {
-            if ($class == $asked_class) {
-                foreach ($rules as $identifier => $name) {
-                    if ($role->enabledAction($identifier)) {
-                        $roles[] = $role;
-                        break;
-                    }
-                }
+        foreach ($rules as $identifier => $name) {
+            if ($role->enabledAction($identifier)) {
+                $roles[] = $role;
+                break;
             }
         }
     }

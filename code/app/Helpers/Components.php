@@ -68,27 +68,9 @@ function formatObjectsToComponentRec($options)
     return $ret;
 }
 
-function formatObjectsToComponent($component, $params)
+function translateValueInComponent($params, $extraitem)
 {
-    $translated = [];
-
-    $extraitem = $params['attributes']['extraitem'] ?? false;
-    if ($extraitem) {
-        if (is_array($extraitem)) {
-            $translated = $extraitem;
-        }
-        else {
-            $translated['0'] = $extraitem;
-        }
-
-        unset($params['attributes']['extraitem']);
-    }
-
-    $translated = $translated + formatObjectsToComponentRec($params['options']);
-
-    $params['options'] = $translated;
-
-    $translated = [];
+	$translated = [];
 
     if (!empty($params['value'])) {
         if (is_iterable($params['value'])) {
@@ -105,7 +87,28 @@ function formatObjectsToComponent($component, $params)
         $translated[] = '0';
     }
 
-    $params['value'] = $translated;
+	return $translated;
+}
+
+function formatObjectsToComponent($component, $params)
+{
+    $translated = [];
+
+    $extraitem = $params['attributes']['extraitem'] ?? false;
+    if ($extraitem) {
+        if (is_array($extraitem)) {
+            $translated = $extraitem;
+        }
+        else {
+            $translated['0'] = $extraitem;
+        }
+
+        unset($params['attributes']['extraitem']);
+    }
+
+    $params['options'] = $translated + formatObjectsToComponentRec($params['options']);
+
+    $params['value'] = translateValueInComponent($params, $extraitem);
 
     return $params;
 }

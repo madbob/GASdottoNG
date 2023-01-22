@@ -159,18 +159,17 @@ function defaultPaymentByType($type)
     $metadata = movementTypes($type);
     $function = json_decode($metadata->function);
 
+	if (empty($function)) {
+        return null;
+    }
+
     foreach($function as $f) {
-        if (isset($f->is_default) && $f->is_default) {
+        if ($f->is_default ?? false) {
             return $f->method;
         }
     }
 
-    if (empty($function)) {
-        return null;
-    }
-    else {
-        return $function[0]->method;
-    }
+    return $function[0]->method;
 }
 
 function sumCurrentBalanceAmounts($currency, $type)
