@@ -66,6 +66,7 @@ function applyPercentage($original, $percentage, $op = '-')
 
     $p = (float)$percentage;
     $o = (float)$original;
+	$ret = 0;
 
     if (isPercentage($percentage)) {
         if ($op == '-') {
