@@ -631,7 +631,7 @@ i[class^='bi-hidden-'] {
 .ct-chart-bar, .ct-chart-pie {
     height: 400px;
 
-    span.ct-label {
+    span.ct-label.ct-vertical {
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
