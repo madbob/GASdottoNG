@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -24,17 +26,17 @@ class Notification extends Model
         static::addGlobalScope(new RestrictedGAS());
     }
 
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany('App\User')->withPivot('done');
     }
 
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo('App\User', 'creator_id');
     }
 
-    public function gas()
+    public function gas(): BelongsTo
     {
         return $this->belongsTo('App\Gas');
     }

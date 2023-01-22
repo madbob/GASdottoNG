@@ -2,6 +2,7 @@
 
 namespace App\Models\Concerns;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Arr;
 
 use DB;
@@ -12,7 +13,7 @@ use App\Balance;
 
 trait CreditableTrait
 {
-    public function balances()
+    public function balances(): MorphMany
     {
         $proxy = $this->getBalanceProxy();
         if (is_null($proxy)) {

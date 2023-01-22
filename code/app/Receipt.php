@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 use App\Models\Concerns\AccountingDocument;
 use App\Events\SluggableCreating;
@@ -23,7 +24,7 @@ class Receipt extends Model implements AccountingDocument
         'creating' => SluggableCreating::class
     ];
 
-    public function bookings()
+    public function bookings(): BelongsToMany
     {
         return $this->belongsToMany('App\Booking');
     }

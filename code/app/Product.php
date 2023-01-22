@@ -5,6 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Illuminate\Support\Str;
@@ -31,32 +34,32 @@ class Product extends Model
         'active' => 'boolean',
     ];
 
-    public function category()
+    public function category(): BelongsTo
     {
         return $this->belongsTo('App\Category');
     }
 
-    public function measure()
+    public function measure(): BelongsTo
     {
         return $this->belongsTo('App\Measure');
     }
 
-    public function supplier()
+    public function supplier(): BelongsTo
     {
         return $this->belongsTo('App\Supplier');
     }
 
-    public function orders()
+    public function orders(): BelongsToMany
     {
         return $this->belongsToMany('App\Order');
     }
 
-    public function variants()
+    public function variants(): HasMany
     {
         return $this->hasMany('App\Variant')->with('values')->orderBy('name', 'asc');
     }
 
-    public function vat_rate()
+    public function vat_rate(): BelongsTo
     {
         return $this->belongsTo('App\VatRate');
     }

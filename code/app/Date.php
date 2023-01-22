@@ -21,6 +21,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 use Auth;
 use Log;
@@ -29,7 +30,7 @@ class Date extends Model
 {
     use GASModel;
 
-    public function target()
+    public function target(): MorphTo
     {
         return $this->morphTo();
     }

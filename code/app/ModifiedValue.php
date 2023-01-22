@@ -3,17 +3,19 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 use Log;
 
 class ModifiedValue extends Model
 {
-    public function modifier()
+    public function modifier(): BelongsTo
     {
         return $this->belongsTo('App\Modifier');
     }
 
-    public function target()
+    public function target(): MorphTo
     {
         return $this->morphTo();
     }
@@ -106,7 +108,7 @@ class ModifiedValue extends Model
                 return null;
 
             default:
-                return $this->supplier;
+                return $rel->supplier;
         }
     }
 

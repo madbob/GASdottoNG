@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
@@ -38,27 +40,27 @@ class Gas extends Model
             return url('gas/' . $this->id . '/logo');
     }
 
-    public function users()
+    public function users(): HasMany
     {
         return $this->hasMany('App\User')->orderBy('lastname', 'asc');
     }
 
-    public function suppliers()
+    public function suppliers(): BelongsToMany
     {
         return $this->belongsToMany('App\Supplier')->orderBy('name', 'asc');
     }
 
-    public function aggregates()
+    public function aggregates(): BelongsToMany
     {
         return $this->belongsToMany('App\Aggregate')->orderBy('id', 'desc');
     }
 
-    public function deliveries()
+    public function deliveries(): BelongsToMany
     {
         return $this->belongsToMany('App\Delivery')->orderBy('name', 'asc');
     }
 
-    public function configs()
+    public function configs(): HasMany
     {
         return $this->hasMany('App\Config');
     }

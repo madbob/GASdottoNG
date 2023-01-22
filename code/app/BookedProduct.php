@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
@@ -25,17 +27,17 @@ class BookedProduct extends Model
         'creating' => SluggableCreating::class,
     ];
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo('App\Product')->withTrashed();
     }
 
-    public function booking()
+    public function booking(): BelongsTo
     {
         return $this->belongsTo('App\Booking');
     }
 
-    public function variants()
+    public function variants(): HasMany
     {
         return $this->hasMany('App\BookedProductVariant', 'product_id')->with('components');
     }
@@ -214,19 +216,12 @@ class BookedProduct extends Model
     public function basicWeight($attribute)
     {
         if ($this->product->measure->discrete == false) {
-            $measure_weight = $this->product->measure->weight;
-            if ($measure_weight == 0) {
-                $measure_weight = 1;
-            }
-
             if ($this->product->portion_quantity > 0) {
                 $ret = $this->product->portion_quantity * $this->$attribute;
             }
             else {
                 $ret = $this->$attribute;
             }
-
-            $ret = $ret * $measure_weight;
         }
         else {
             $ret = $this->product->weight * $this->$attribute;

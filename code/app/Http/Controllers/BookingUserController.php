@@ -18,6 +18,9 @@ use App\Aggregate;
 
 class BookingUserController extends Controller
 {
+	private $booking_service;
+	private $dynamic_service;
+
     public function __construct(BookingsService $booking_service, DynamicBookingsService $dynamic_service)
     {
         $this->middleware('auth');

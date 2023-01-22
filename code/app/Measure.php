@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
@@ -20,7 +21,7 @@ class Measure extends Model
         'creating' => SluggableCreating::class,
     ];
 
-    public function products()
+    public function products(): HasMany
     {
         return $this->hasMany('App\Product')->orderBy('name', 'asc');
     }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Auth;
@@ -25,7 +26,7 @@ class Aggregate extends Model
         'created' => AttachableToGas::class
     ];
 
-    public function orders()
+    public function orders(): HasMany
     {
         return $this->hasMany('App\Order')->with(['supplier'])->orderBy('aggregate_sorting', 'asc');
     }
@@ -67,15 +68,6 @@ class Aggregate extends Model
         }
 
         return new Collection();
-    }
-
-    public function waybackProducts()
-    {
-        if ($this->isRunning() == false) {
-            foreach($this->orders as $order) {
-                $order->waybackProducts();
-            }
-        }
     }
 
     public function hasPendingPackages()

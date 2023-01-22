@@ -7,12 +7,13 @@
 namespace App\Models\Concerns;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 use App\Gas;
 
 trait HierarcableTrait
 {
-    public function gas()
+    public function gas(): BelongsTo
     {
         return $this->belongsTo(Gas::class);
     }

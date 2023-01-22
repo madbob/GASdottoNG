@@ -66,7 +66,7 @@ class NotificationsController extends BackedController
         $n = Notification::findOrFail($id);
 
         if ($n->hasUser($user)) {
-            $n->users()->where('user_id', '=', $user->id)->withPivot('done')->update(['done' => true]);
+            $n->users()->where('notification_user.user_id', '=', $user->id)->withPivot('done')->update(['notification_user.done' => true]);
             return $this->successResponse();
         }
         else {

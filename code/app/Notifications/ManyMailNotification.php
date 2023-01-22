@@ -18,9 +18,15 @@ class ManyMailNotification extends Notification
 {
     public function via($notifiable)
     {
-        $this->connection = config('queue.default');
         return ['mail'];
     }
+
+	public function viaConnections()
+	{
+		return [
+			'mail' => config('queue.default'),
+		];
+	}
 
     private function attachReplyTo($message, $replyTo)
     {

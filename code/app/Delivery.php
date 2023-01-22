@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
@@ -30,7 +31,7 @@ class Delivery extends Model
         'created' => AttachableToGas::class
     ];
 
-    public function users()
+    public function users(): HasMany
     {
         return $this->hasMany(User::class, 'preferred_delivery_id');
     }

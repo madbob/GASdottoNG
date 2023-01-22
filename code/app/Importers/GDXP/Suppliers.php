@@ -13,8 +13,8 @@ class Suppliers extends GDXPImporter
     public static function readXML($xml)
     {
         $supplier = new Supplier();
-        $supplier->products = new Collection();
-        $supplier->orders = new Collection();
+        $products = new Collection();
+        $orders = new Collection();
 
         foreach($xml->children() as $c) {
             switch($c->getName()) {
@@ -25,19 +25,21 @@ class Suppliers extends GDXPImporter
                 case 'products':
                     foreach($c->children() as $a) {
                         $product = Products::readXML($a);
-                        $supplier->products->push($product);
+                        $products->push($product);
                     }
                     break;
 
                 case 'orders':
                     foreach($c->children() as $a) {
                         $order = Orders::readXML($a);
-                        $supplier->orders->push($order);
+                        $orders->push($order);
                     }
                     break;
             }
         }
 
+		$supplier->setRelation('products', $products);
+		$supplier->setRelation('orders', $orders);
         return $supplier;
     }
 
@@ -130,18 +132,20 @@ class Suppliers extends GDXPImporter
         $supplier->name = $json->name;
         $supplier->vat = $json->vatNumber ?? '';
 
-        $supplier->products = new Collection();
+        $products = new Collection();
         foreach($json->products as $a) {
             $product = Products::readJSON($a);
-            $supplier->products->push($product);
+            $products->push($product);
         }
 
-        $supplier->orders = new Collection();
+        $orders = new Collection();
         if (isset($json->order)) {
             $order = Orders::readJSON($json->order);
-            $supplier->orders->push($order);
+            $orders->push($order);
         }
 
+		$supplier->setRelation('products', $products);
+		$supplier->setRelation('orders', $orders);
         return $supplier;
     }
 

@@ -4,6 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Request;
 
@@ -40,7 +43,7 @@ class Movement extends Model
         static::addGlobalScope(new RestrictedGAS('registerer', true));
     }
 
-    public function sender()
+    public function sender(): MorphTo
     {
         if ($this->sender_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->sender_type))) {
             // @phpstan-ignore-next-line
@@ -51,7 +54,7 @@ class Movement extends Model
         }
     }
 
-    public function target()
+    public function target(): MorphTo
     {
         if ($this->target_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->target_type))) {
             // @phpstan-ignore-next-line
@@ -62,17 +65,17 @@ class Movement extends Model
         }
     }
 
-    public function registerer()
+    public function registerer(): BelongsTo
     {
         return $this->belongsTo('App\User');
     }
 
-    public function currency()
+    public function currency(): BelongsTo
     {
         return $this->belongsTo('App\Currency');
     }
 
-    public function related()
+    public function related(): HasMany
     {
         return $this->hasMany('App\Movement', 'related_id');
     }

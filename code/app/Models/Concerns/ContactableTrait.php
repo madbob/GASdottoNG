@@ -8,12 +8,13 @@
 namespace App\Models\Concerns;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 use App\Contact;
 
 trait ContactableTrait
 {
-    public function contacts()
+    public function contacts(): MorphMany
     {
         return $this->morphMany('App\Contact', 'target');
     }

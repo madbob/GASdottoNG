@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use App\Models\Concerns\LeafReducibleTrait;
@@ -11,12 +13,12 @@ class BookedProductVariant extends Model
 {
     use GASModel, LeafReducibleTrait, Cachable;
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo('App\BookedProduct', 'product_id');
     }
 
-    public function components()
+    public function components(): HasMany
     {
         return $this->hasMany('App\BookedProductComponent', 'productvariant_id')->with(['value']);
     }

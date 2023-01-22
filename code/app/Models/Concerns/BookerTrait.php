@@ -2,6 +2,8 @@
 
 namespace App\Models\Concerns;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 use Log;
 
 trait BookerTrait
@@ -13,7 +15,7 @@ trait BookerTrait
     */
     use CreditableTrait, FriendTrait;
 
-    public function bookings()
+    public function bookings(): HasMany
     {
         return $this->hasMany('App\Booking')->orderBy('created_at', 'desc');
     }

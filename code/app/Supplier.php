@@ -6,6 +6,9 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
@@ -43,27 +46,27 @@ class Supplier extends Model
         return _i('Fornitore');
     }
 
-    public function products()
+    public function products(): HasMany
     {
         return $this->hasMany('App\Product')->with('measure');
     }
 
-    public function orders()
+    public function orders(): HasMany
     {
         return $this->hasMany('App\Order')->orderBy('end', 'asc');
     }
 
-    public function bookings()
+    public function bookings(): HasManyThrough
     {
         return $this->hasManyThrough('App\Booking', 'App\Order');
     }
 
-    public function invoices()
+    public function invoices(): HasMany
     {
         return $this->hasMany('App\Invoice');
     }
 
-    public function calendarDates()
+    public function calendarDates(): MorphMany
     {
         return $this->morphMany('App\Date', 'target')->orderBy('date', 'asc');
     }

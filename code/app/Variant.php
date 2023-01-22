@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use App\Events\SluggableCreating;
@@ -19,12 +21,12 @@ class Variant extends Model
         'creating' => SluggableCreating::class,
     ];
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo('App\Product');
     }
 
-    public function values()
+    public function values(): HasMany
     {
         return $this->hasMany('App\VariantValue')->orderBy('value', 'asc');
     }

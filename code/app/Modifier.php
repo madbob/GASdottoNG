@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Log;
@@ -11,17 +13,17 @@ class Modifier extends Model
 {
     use GASModel, Cachable;
 
-    public function modifierType()
+    public function modifierType(): BelongsTo
     {
         return $this->belongsTo('App\ModifierType');
     }
 
-    public function movementType()
+    public function movementType(): BelongsTo
     {
         return $this->belongsTo('App\MovementType');
     }
 
-    public function target()
+    public function target(): MorphTo
     {
         return $this->morphTo();
     }

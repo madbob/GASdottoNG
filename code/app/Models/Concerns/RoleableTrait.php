@@ -2,13 +2,18 @@
 
 namespace App\Models\Concerns;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 use Log;
 
 use App\Role;
 
 trait RoleableTrait
 {
-    public function roles($target = null)
+	/**
+	 * @phpstan-return BelongsToMany<Role>
+	 */
+    public function roles($target = null): BelongsToMany
     {
         return $this->belongsToMany(Role::class)->orderBy('name', 'asc')->withPivot('id');
     }

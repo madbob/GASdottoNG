@@ -4,6 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -48,7 +51,7 @@ class Order extends Model
         return _i('Ordine');
     }
 
-    public function supplier()
+    public function supplier(): BelongsTo
     {
         /*
             La rimozione dello scope globale serve nel caso del Multi-GAS, per
@@ -58,37 +61,37 @@ class Order extends Model
         return $this->belongsTo('App\Supplier')->withoutGlobalScopes()->withTrashed();
     }
 
-    public function aggregate()
+    public function aggregate(): BelongsTo
     {
         return $this->belongsTo('App\Aggregate');
     }
 
-    public function products()
+    public function products(): BelongsToMany
     {
         return $this->belongsToMany('App\Product')->with(['variants', 'modifiers'])->withPivot('notes')->withTrashed();
     }
 
-    public function bookings()
+    public function bookings(): HasMany
     {
         return $this->hasMany('App\Booking')->with(['user', 'products']);
     }
 
-    public function payment()
+    public function payment(): BelongsTo
     {
         return $this->belongsTo('App\Movement');
     }
 
-    public function invoice()
+    public function invoice(): BelongsToMany
     {
         return $this->belongsToMany('App\Invoice');
     }
 
-    public function deliveries()
+    public function deliveries(): BelongsToMany
     {
         return $this->belongsToMany('App\Delivery');
     }
 
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany('App\User');
     }
@@ -186,14 +189,11 @@ class Order extends Model
             $ret->id = $ret->getSlugID();
         }
 
-        if ($ret) {
-            if ($userobj) {
-                $ret->setRelation('user', $userobj);
-            }
-
-            $ret->setRelation('order', $this);
+        if ($userobj) {
+            $ret->setRelation('user', $userobj);
         }
 
+        $ret->setRelation('order', $this);
         return $ret;
     }
 
@@ -474,64 +474,6 @@ class Order extends Model
             }
 
             return [$row];
-        }
-    }
-
-    /*
-        In mancanza di uno storico dei prezzi dei prodotti, qui si va ad
-        alterare il database andando ad "indovinare" i prezzi all'epoca
-        dell'ordine stesso inferendoli dalle prenotazioni.
-        Da sopprimere prima o dopo con uno storico reale.
-    */
-    public function waybackProducts()
-    {
-        if ($this->isRunning()) {
-            return;
-        }
-
-        /*
-            Questa funzione va sempre sempre sempre eseguita all'interno di una
-            transazione del DB, andando ad alterare i prezzi dei prodotti
-        */
-        if (DB::transactionLevel() <= 0) {
-            throw new \Exception("Revert prezzi dell'ordine senza transazione attiva", 1);
-        }
-
-        $products = [];
-
-        foreach ($this->bookings as $booking) {
-            foreach($booking->products as $product) {
-                $id = $product->product->id;
-
-                if (!isset($products[$id])) {
-                    $products[$id] = (object) [
-                        'quantity' => 0,
-                        'price' => 0,
-                    ];
-                }
-
-                $products[$id]->quantity += $product->delivered;
-                $products[$id]->price += $product->final_price;
-            }
-        }
-
-        $altered = false;
-
-        foreach($products as $id => $values) {
-            if ($values->price != 0) {
-                $actual_quantity = max(1, $values->quantity);
-                $p = Product::find($id);
-                $new_price = $values->price / $actual_quantity;
-                if ($new_price != $p->price) {
-                    $p->price = $new_price;
-                    $altered = true;
-                    $p->save();
-                }
-            }
-        }
-
-        if ($altered) {
-            $this->load('products');
         }
     }
 

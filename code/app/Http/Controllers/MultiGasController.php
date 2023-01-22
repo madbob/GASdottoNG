@@ -14,6 +14,8 @@ use App\Exceptions\IllegalArgumentException;
 
 class MultiGasController extends Controller
 {
+	private $service;
+
     public function __construct(MultiGasService $service)
     {
         $this->service = $service;

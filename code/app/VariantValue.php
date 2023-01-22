@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
@@ -19,7 +20,7 @@ class VariantValue extends Model
         'creating' => SluggableCreating::class,
     ];
 
-    public function variant()
+    public function variant(): BelongsTo
     {
         return $this->belongsTo('App\Variant');
     }

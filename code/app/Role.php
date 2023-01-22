@@ -4,6 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
@@ -17,18 +20,20 @@ class Role extends Model
     use HasFactory, GASModel, Cachable;
 
     private $targets = null;
+	private $applies_cache = null;
+	private $applies_only_cache = null;
 
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany('App\User')->orderBy('lastname', 'asc')->with('roles');
     }
 
-    public function children()
+    public function children(): HasMany
     {
         return $this->hasMany('App\Role', 'parent_id');
     }
 
-    public function parent()
+    public function parent(): BelongsTo
     {
         return $this->belongsTo('App\Role', 'parent_id');
     }
@@ -157,7 +162,7 @@ class Role extends Model
 
     private function appliesCache()
     {
-        if (isset($this->applies_cache) == false) {
+        if (is_null($this->applies_cache)) {
             $applies_cache = [];
             $applies_only_cache = [];
 
@@ -187,10 +192,8 @@ class Role extends Model
 
     private function invalidateAppliesCache()
     {
-        if (isset($this->applies_cache)) {
-            unset($this->applies_cache);
-            unset($this->applies_only_cache);
-        }
+        $this->applies_cache = null;
+        $this->applies_only_cache = null;
     }
 
     private function testApplication($obj, $cache_type)

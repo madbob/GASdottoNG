@@ -5,6 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
@@ -50,12 +53,12 @@ class Booking extends Model
         });
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo('App\User')->withTrashed();
     }
 
-    public function order()
+    public function order(): BelongsTo
     {
         return $this->belongsTo('App\Order');
     }
@@ -65,17 +68,17 @@ class Booking extends Model
         return $this->order->supplier;
     }
 
-    public function products()
+    public function products(): HasMany
     {
         return $this->hasMany('App\BookedProduct')->with(['variants', 'product']);
     }
 
-    public function deliverer()
+    public function deliverer(): BelongsTo
     {
         return $this->belongsTo('App\User', 'deliverer_id');
     }
 
-    public function payment()
+    public function payment(): BelongsTo
     {
         return $this->belongsTo('App\Movement');
     }
@@ -90,7 +93,8 @@ class Booking extends Model
     */
     public function scopeAngryload($query)
     {
-        $query->with(['payment', 'modifiedValues',
+        $query->with([
+			'payment', 'modifiedValues',
             'products', 'products.modifiedValues',
             'user', 'user.friends_with_trashed',
             'user.shippingplace', 'user.shippingplace.modifiers', 'user.shippingplace.modifiers.modifierType'
@@ -355,7 +359,8 @@ class Booking extends Model
                             }
                         }
 
-                        $master_p->modifiedValues = $master_p->modifiedValues->merge($sub_p->modifiedValues);
+                        $modifiedValues = $master_p->modifiedValues->merge($sub_p->modifiedValues);
+						$master_p->setRelation('modifiedValues', $modifiedValues);
                     }
                 }
             }

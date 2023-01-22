@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 use App\Models\Concerns\AccountingDocument;
 use App\Models\Concerns\PayableTrait;
@@ -33,12 +35,12 @@ class Invoice extends Model implements AccountingDocument
         return _i('Fattura');
     }
 
-    public function supplier()
+    public function supplier(): BelongsTo
     {
         return $this->belongsTo('App\Supplier')->withTrashed();
     }
 
-    public function payment()
+    public function payment(): BelongsTo
     {
         return $this->belongsTo('App\Movement');
     }
@@ -54,12 +56,12 @@ class Invoice extends Model implements AccountingDocument
         la fattura (e che pertanto non rientrano nella normale relazione
         movements)
     */
-    public function otherMovements()
+    public function otherMovements(): BelongsToMany
     {
         return $this->belongsToMany('App\Movement');
     }
 
-    public function orders()
+    public function orders(): BelongsToMany
     {
         return $this->belongsToMany('App\Order');
     }

@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
@@ -61,37 +63,37 @@ class User extends Authenticatable
         return _i('Utente');
     }
 
-    public function parent()
+    public function parent(): BelongsTo
     {
         return $this->belongsTo('App\User', 'parent_id');
     }
 
-    public function notifications()
+    public function notifications(): BelongsToMany
     {
         return $this->belongsToMany('App\Notification')->withPivot('done')->where('notification_user.done', '=', false)->orderBy('start_date', 'desc');
     }
 
-    public function suppliers()
+    public function suppliers(): BelongsToMany
     {
         return $this->belongsToMany('App\Supplier');
     }
 
-    public function allnotifications()
+    public function allnotifications(): BelongsToMany
     {
         return $this->belongsToMany('App\Notification')->orderBy('start_date', 'desc');
     }
 
-    public function deposit()
+    public function deposit(): BelongsTo
     {
         return $this->belongsTo('App\Movement');
     }
 
-    public function fee()
+    public function fee(): BelongsTo
     {
         return $this->belongsTo('App\Movement');
     }
 
-    public function shippingplace()
+    public function shippingplace(): BelongsTo
     {
         return $this->belongsTo('App\Delivery', 'preferred_delivery_id');
     }

@@ -8,6 +8,8 @@
 
 namespace App\Models\Concerns;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 use App\Scopes\RestrictedGAS;
 use App\Gas;
 
@@ -19,7 +21,7 @@ trait WithinGas
 		static::addGlobalScope(new RestrictedGAS());
 	}
 
-	public function gas()
+	public function gas(): BelongsToMany
     {
         return $this->belongsToMany(Gas::class);
     }

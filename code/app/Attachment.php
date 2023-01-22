@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Log;
@@ -12,7 +14,7 @@ class Attachment extends Model
 {
     use GASModel, Cachable;
 
-    public function attached()
+    public function attached(): MorphTo
     {
         if ($this->target_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->target_type))) {
             // @phpstan-ignore-next-line
@@ -24,7 +26,7 @@ class Attachment extends Model
         }
     }
 
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany('App\User', 'attachments_access');
     }

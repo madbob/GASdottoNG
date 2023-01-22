@@ -20,11 +20,13 @@
 
 namespace App\Models\Concerns;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+
 use App\Movement;
 
 trait PayableTrait
 {
-    public function movements()
+    public function movements(): MorphMany
     {
         return $this->morphMany(Movement::class, 'target');
     }

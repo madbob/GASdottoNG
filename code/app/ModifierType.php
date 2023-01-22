@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
@@ -22,7 +23,7 @@ class ModifierType extends Model
         'classes' => 'array',
     ];
 
-    public function modifiers()
+    public function modifiers(): HasMany
     {
         return $this->hasMany('App\Modifier');
     }

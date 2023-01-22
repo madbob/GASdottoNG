@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Str;
 
 use App\Events\SluggableCreating;
@@ -20,7 +21,7 @@ class Contact extends Model
         'creating' => SluggableCreating::class,
     ];
 
-    public function target()
+    public function target(): MorphTo
     {
         return $this->morphTo();
     }

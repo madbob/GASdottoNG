@@ -2,12 +2,14 @@
 
 namespace App\Models\Concerns;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+
 use App\ModifierType;
 use App\Modifier;
 
 trait ModifiableTrait
 {
-    public function modifiers()
+    public function modifiers(): MorphMany
     {
         return $this->morphMany('App\Modifier', 'target');
     }

@@ -14,6 +14,8 @@ use App\Aggregate;
 
 class DeliveryUserController extends Controller
 {
+	private $service;
+
     public function __construct(BookingsService $service)
     {
         $this->middleware('auth');
