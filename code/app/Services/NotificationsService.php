@@ -134,7 +134,7 @@ class NotificationsService extends BaseService
     public function update($id, array $request)
     {
         $user = $this->ensureAuth(['notifications.admin' => 'gas']);
-        $notification = Notification::findOrFail($id);
+        $notification = $this->show($id);
 		$notification->creator_id = $user->id;
 		$notification->gas_id = $user->gas_id;
         return $this->setCommonAttributes($notification, $request);
@@ -143,7 +143,7 @@ class NotificationsService extends BaseService
 	public function markread($id)
 	{
 		$user = $this->ensureAuth();
-		$notification = Notification::findOrFail($id);
+		$notification = $this->show($id);
 
 		if ($notification->hasUser($user)) {
 			$notification->users()->updateExistingPivot($user->id, [
@@ -154,4 +154,12 @@ class NotificationsService extends BaseService
 			throw new AuthException(401);
 		}
 	}
+
+	public function destroy($id)
+    {
+        $notification = $this->show($id);
+        $this->ensureAuth(['notifications.admin' => 'gas']);
+        $notification->delete();
+        return $notification;
+    }
 }

@@ -1,4 +1,4 @@
-<x-larastrap::form :obj="$notification" classes="main-form user-editor" method="PUT" :action="route('notifications.update', $notification->id)">
+<x-larastrap::mform :obj="$notification" classes="main-form user-editor" method="PUT" :action="route('notifications.update', $notification->id)">
     <div class="row">
         <div class="col-md-6">
             @include('notification.base-edit', ['notification' => $notification])
@@ -18,6 +18,6 @@
             </ul>
         </div>
     </div>
-</x-larastrap::form>
+</x-larastrap::mform>
 
 @stack('postponed')
