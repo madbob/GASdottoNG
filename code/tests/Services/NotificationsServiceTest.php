@@ -16,12 +16,11 @@ class NotificationsServiceTest extends TestCase
         parent::setUp();
 
         $this->userNotificationAdmin = $this->createRoleAndUser($this->gas, 'gas.config,movements.admin,notifications.admin');
+		$this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
 
 		$this->notification = \App\Notification::factory()->create([
             'creator_id' => $this->userNotificationAdmin->id,
         ]);
-
-        $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
     }
 
     /*
@@ -73,6 +72,37 @@ class NotificationsServiceTest extends TestCase
         $this->assertEquals('Test Modifica', $notification->content);
         $this->assertEquals($end, $notification->end_date);
     }
+
+	/*
+		Lettura Notifica
+	*/
+	public function testRead()
+	{
+		$this->actingAs($this->userNotificationAdmin);
+
+		$start = date('Y-m-d');
+        $end = date('Y-m-d', strtotime('+20 days'));
+
+		$notification = $this->services['notifications']->store([
+			'users' => [$this->userWithNoPerms->id],
+            'type' => 'notification',
+            'content' => 'Altro Test',
+            'start_date' => printableDate($start),
+			'end_date' => printableDate($end),
+        ]);
+
+		$initial_count = $this->userWithNoPerms->notifications()->count();
+		$this->assertTrue($initial_count > 0);
+		$this->assertTrue($notification->hasUser($this->userWithNoPerms));
+
+		$this->actingAs($this->userWithNoPerms);
+		$this->services['notifications']->markread($notification->id);
+
+		$this->nextRound();
+
+		$next_count = $this->userWithNoPerms->notifications()->count();
+		$this->assertTrue($initial_count > $next_count);
+	}
 
 	/*
 		Selezione speciale utenti

@@ -60,17 +60,8 @@ class NotificationsController extends BackedController
 
     public function markread($id)
     {
-        DB::beginTransaction();
-
-        $user = Auth::user();
-        $n = Notification::findOrFail($id);
-
-        if ($n->hasUser($user)) {
-            $n->users()->where('notification_user.user_id', '=', $user->id)->withPivot('done')->update(['notification_user.done' => true]);
-            return $this->successResponse();
-        }
-        else {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
+		return $this->easyExecute(function() use ($id) {
+			$this->service->markread($id);
+		});
     }
 }

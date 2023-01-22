@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\AuthException;
 use App\Notification;
 use App\Date;
 use App\User;
@@ -138,4 +139,19 @@ class NotificationsService extends BaseService
 		$notification->gas_id = $user->gas_id;
         return $this->setCommonAttributes($notification, $request);
     }
+
+	public function markread($id)
+	{
+		$user = $this->ensureAuth();
+		$notification = Notification::findOrFail($id);
+
+		if ($notification->hasUser($user)) {
+			$notification->users()->updateExistingPivot($user->id, [
+				'done' => true,
+			]);
+		}
+		else {
+			throw new AuthException(401);
+		}
+	}
 }
