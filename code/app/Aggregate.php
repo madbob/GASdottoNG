@@ -284,19 +284,21 @@ class Aggregate extends Model
 
                 $ret[$user_id]->add($booking);
             }
+		}
 
-            /*
-                Dopo aver raccolto le prenotazioni degli utenti principali,
-                ripesco anche quelle degli utenti "amici" il cui utente
-                principale non ha effettuato prenotazioni.
-                In tal caso creo una prenotazione anche per l'utente
-                principale, lasciandola vuota, in modo che sia comunque
-                possibile accedere successivamente alle sotto-prenotazioni ed
-                assegnare il movimento di pagamento
-            */
-            $collected_users = array_keys($ret);
-            $recovered_master_users = [];
+		/*
+			Dopo aver raccolto le prenotazioni degli utenti principali, ripesco
+			anche quelle degli utenti "amici" il cui utente principale non ha
+			effettuato prenotazioni.
+			In tal caso creo una prenotazione anche per l'utente principale,
+			lasciandola vuota, in modo che sia comunque possibile accedere
+			successivamente alle sotto-prenotazioni ed assegnare il movimento di
+			pagamento
+		*/
+		$collected_users = array_keys($ret);
+		$recovered_master_users = [];
 
+		foreach ($this->orders as $order) {
             $bookings_by_friends = $order->bookings()->whereHas('user', function($query) use ($collected_users) {
                 $query->whereNotNull('parent_id')->whereNotIn('parent_id', $collected_users);
             })->get();

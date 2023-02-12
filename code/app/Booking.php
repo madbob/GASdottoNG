@@ -353,10 +353,8 @@ class Booking extends Model
                         $master_p->delivered += $sub_p->delivered;
                         $master_p->final_price += $sub_p->final_price;
 
-                        if ($master_p->product->variants->isEmpty() == false) {
-                            foreach($sub_p->variants as $sub_variant) {
-                                $master_p->variants->push($sub_variant);
-                            }
+                        foreach($sub_p->variants as $sub_variant) {
+                            $master_p->variants->squashBookedVariant($sub_variant);
                         }
 
                         $modifiedValues = $master_p->modifiedValues->merge($sub_p->modifiedValues);
