@@ -2,7 +2,7 @@
 
 namespace App\Singletons;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 
 use App\Order;
 

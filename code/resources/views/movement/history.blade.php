@@ -17,7 +17,7 @@
         <tbody>
             @foreach($obj->balances as $index => $bal)
                 <tr class="{{ $index == 0 ? 'current-balance' : '' }}">
-                    <td>{{ $index == 0 ? _i('Saldo Corrente') : ucwords(strftime('%d %B %Y', strtotime($bal->date))) }}</td>
+                    <td>{{ $index == 0 ? _i('Saldo Corrente') : ucwords(\Carbon\Carbon::parse($bal->date)->isoFormat('D MMMM YYYY')) }}</td>
 
                     @foreach($obj->balanceFields() as $identifier => $name)
                         <td class="{{ $index == 0 ? $identifier : '' }}">

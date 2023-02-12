@@ -16,11 +16,13 @@ function printableDate($value, $short = false)
             }
         }
 
+		$locale = currentLang();
+
         if ($short) {
-            return ucwords(strftime('%d/%m/%Y', $t));
+            return ucwords(\Carbon\Carbon::createFromTimestamp($t)->isoFormat('DD/MM/YYYY'));
         }
         else {
-            return ucwords(strftime('%A %d %B %Y', $t));
+			return ucwords(\Carbon\Carbon::createFromTimestamp($t)->isoFormat('dddd D MMMM YYYY'));
         }
     }
 }

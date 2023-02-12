@@ -17,6 +17,7 @@ use PDF;
 use Mail;
 use URL;
 use Log;
+use Carbon\Carbon;
 
 use App\Models\Concerns\AttachableTrait;
 use App\Models\Concerns\PayableTrait;
@@ -951,7 +952,8 @@ class Order extends Model
 
     public function getSlugID()
     {
-        return sprintf('%s::%s', $this->supplier->id, Str::slug(strftime('%d %B %Y', strtotime($this->start))));
+		$start = Carbon::parse($this->start)->isoFormat('DD MMMM YYYY');
+		return sprintf('%s::%s', $this->supplier->id, Str::slug($start));
     }
 
     /******************************************************** CreditableTrait */
