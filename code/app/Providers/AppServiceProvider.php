@@ -31,10 +31,11 @@ class AppServiceProvider extends ServiceProvider
 			come ad esempio la relazione variants() di BookedProduct
 		*/
 		Collection::macro('squashBookedVariant', function ($bookedvariant) {
+			$collection = $this;
 			$target_combo = $bookedvariant->variantsCombo();
 			$found = false;
 
-			foreach($this as $variant) {
+			foreach($collection as $variant) {
 				$combo = $variant->variantsCombo();
 
 				if ($combo->id == $target_combo->id) {
@@ -48,10 +49,10 @@ class AppServiceProvider extends ServiceProvider
 			}
 
 			if ($found == false) {
-				$this->push($bookedvariant);
+				$collection->push($bookedvariant);
 			}
 
-			return $this;
+			return $collection;
 		});
     }
 

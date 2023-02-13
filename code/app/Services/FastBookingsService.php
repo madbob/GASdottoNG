@@ -89,8 +89,6 @@ class FastBookingsService extends BaseService
 				$grand_total += $shipped_booking->getValue('effective', true);
 			}
 
-			\Log::debug($grand_total);
-
             if ($grand_total != 0) {
                 $booking->generateReceipt();
 
