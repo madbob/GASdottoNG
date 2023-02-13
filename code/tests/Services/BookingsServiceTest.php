@@ -21,12 +21,6 @@ class BookingsServiceTest extends TestCase
         $this->userWithBasePerms = $this->createRoleAndUser($this->gas, 'supplier.book');
     }
 
-    private function updateAndFetch($data, $order, $user, $deliver)
-    {
-        $this->services['bookings']->bookingUpdate($data, $order->aggregate, $user, $deliver);
-        return \App\Booking::where('user_id', $user->id)->where('order_id', $order->id)->first();
-    }
-
     /*
         Lettura dati prenotazione
     */

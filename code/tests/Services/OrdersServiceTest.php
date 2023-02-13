@@ -21,6 +21,7 @@ class OrdersServiceTest extends TestCase
 
         $this->order = $this->initOrder(null);
         $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
+		$this->userWithBasePerms = $this->createRoleAndUser($this->gas, 'supplier.book');
     }
 
     /*
@@ -345,4 +346,62 @@ class OrdersServiceTest extends TestCase
         $this->assertNotNull($this->order->exportXML());
         $this->assertNotNull($this->order->exportJSON());
     }
+
+	/*
+		Modifica prodotti nell'ordine
+	*/
+	public function testRemoveProduct()
+	{
+		$this->actingAs($this->userWithBasePerms);
+
+		$target_product_1 = $this->order->products()->orderBy('id', 'asc')->first();
+		$target_product_2 = $this->order->products()->orderBy('id', 'asc')->skip(1)->first();
+
+		$data = [
+			'action' => 'booked',
+			$target_product_1->id => 2,
+			$target_product_2->id => 3,
+		];
+
+		$booking = $this->updateAndFetch($data, $this->order, $this->userWithBasePerms, false);
+
+		$this->nextRound();
+		$booking = \App\Booking::find($booking->id);
+		$this->assertEquals($booking->products()->count(), 2);
+		$this->assertEquals($this->order->bookings()->count(), 1);
+
+		$this->actingAs($this->userReferrer);
+
+		$this->services['orders']->update($this->order->id, [
+            'supplier_id' => $this->order->supplier_id,
+            'start' => printableDate($this->order->start),
+            'end' => printableDate($this->order->end),
+            'shipping' => printableDate($this->order->shipping),
+            'status' => 'open',
+			'enabled' => $this->order->products->filter(function($p) use ($target_product_1) {
+				return $p->id != $target_product_1->id;
+			})->pluck('id')->toArray(),
+        ]);
+
+		$this->nextRound();
+		$booking = \App\Booking::find($booking->id);
+		$this->assertEquals($booking->products()->count(), 1);
+		$this->assertEquals($this->order->bookings()->count(), 1);
+
+		$this->services['orders']->update($this->order->id, [
+            'supplier_id' => $this->order->supplier_id,
+            'start' => printableDate($this->order->start),
+            'end' => printableDate($this->order->end),
+            'shipping' => printableDate($this->order->shipping),
+            'status' => 'open',
+			'enabled' => $this->order->products->filter(function($p) use ($target_product_1, $target_product_2) {
+				return $p->id != $target_product_1->id && $p->id != $target_product_2->id;
+			})->pluck('id')->toArray(),
+        ]);
+
+		$this->nextRound();
+		$this->assertEquals($this->order->bookings()->count(), 0);
+		$booking = \App\Booking::find($booking->id);
+		$this->assertNull($booking);
+	}
 }

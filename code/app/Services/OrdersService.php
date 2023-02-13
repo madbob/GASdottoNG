@@ -105,7 +105,12 @@ class OrdersService extends BaseService
         if (!empty($removed_products)) {
             foreach($order->bookings as $booking) {
                 $booking->products()->whereIn('product_id', $removed_products)->delete();
-                if ($booking->products->isEmpty()) {
+
+				/*
+					Se i prodotti rimossi erano gli unici contemplati nella
+					prenotazione, elimino tutta la prenotazione
+				*/
+                if ($booking->products()->count() == 0) {
                     $booking->delete();
                 }
             }

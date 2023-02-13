@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\DB;
 
 use App\Movement;
+use App\Booking;
 
 class FastBookingsService extends BaseService
 {
@@ -67,7 +68,7 @@ class FastBookingsService extends BaseService
             });
         }
 
-        foreach($bookings as $booking) {
+        foreach ($bookings as $booking) {
 			$grand_total = 0;
 
 			foreach ($booking->bookings as $book) {
@@ -76,12 +77,19 @@ class FastBookingsService extends BaseService
 				];
 
 				$this->sumUpProducts($book, $datarow);
-
-				\Log::debug(print_r($datarow, true));
-
 				$shipped_booking = $service->handleBookingUpdate($datarow, $deliverer, $book->order, $booking->user, true);
+
+				/*
+					Qui forzo la rilettura della prenotazione direttamente dal
+					DB, essendo stati i prodotti referenziati nella prenotazione
+					manipolati da handleBookingUpdate() in modi impredicibili
+				*/
+				$shipped_booking = Booking::find($shipped_booking->id);
+
 				$grand_total += $shipped_booking->getValue('effective', true);
 			}
+
+			\Log::debug($grand_total);
 
             if ($grand_total != 0) {
                 $booking->generateReceipt();

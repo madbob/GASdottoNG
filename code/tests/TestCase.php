@@ -167,6 +167,12 @@ abstract class TestCase extends BaseTestCase
         return [$data, $booked_count, $total];
     }
 
+	protected function updateAndFetch($data, $order, $user, $deliver)
+    {
+        $this->services['bookings']->bookingUpdate($data, $order->aggregate, $user, $deliver);
+        return \App\Booking::where('user_id', $user->id)->where('order_id', $order->id)->first();
+    }
+
     /*
         Normalmente, la cache dei modelli funziona solo all'interno di ogni
         singola richiesta. Questa funzione è per forzare un flush tra una
