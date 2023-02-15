@@ -13,7 +13,7 @@ GASdotto è il gestionale web-based per gruppi di acquisto.
 Requisiti:
  * un web server
  * un database (testato con MariaDB, compatibile con MySQL, PostgreSQL)
- * PHP >= 7.3
+ * PHP >= 8.1
  * composer
 
 ```bash
@@ -21,11 +21,15 @@ git clone https://github.com/madbob/GASdottoNG.git
 cd GASdottoNG/code
 composer install
 cp .env.example .env
+php artisan key:generate
+
 # nel file .env vanno specificati i propri parametri di connessione al database e l'invio delle mail
 nano .env
-```
 
-Al primo accesso verranno eseguiti il popolamento del database e la configurazione iniziale.
+php artisan migrate
+php artisan db:seed
+php artisan db:seed --class=FirstInstallSeed
+```
 
 Per aggiornare una istanza esistente:
 
@@ -34,6 +38,7 @@ cd GASdottoNG/
 git pull
 cd code/
 php artisan migrate
+php artisan fix:database
 composer update
 composer install
 ```
