@@ -68,7 +68,16 @@ class User extends IconsMap
                 'options' => function($objs) {
                     $user = Auth::user();
 
-                    return Role::whereNotIn('id', [$user->gas->roles['user'], $user->gas->roles['friend']])->get()->reduce(function($carry, $item) {
+					$skip_roles = [];
+
+					foreach(['user', 'friend'] as $r) {
+						$srole = roleByFunction($r);
+						if ($srole) {
+							$skip_roles[] = $srole->id;
+						}
+					}
+
+                    return Role::whereNotIn('id', $skip_roles)->get()->reduce(function($carry, $item) {
                         $carry['hidden-person-circle-' . $item->id] = $item->name;
                         return $carry;
                     }, []);

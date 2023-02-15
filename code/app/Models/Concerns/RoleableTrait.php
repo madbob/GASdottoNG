@@ -20,7 +20,13 @@ trait RoleableTrait
 
     public function getManagedRolesAttribute()
     {
-        return Role::sortedByHierarchy(true);
+		/*
+			Se l'utente ha il permesso di gestire tutti i permessi, gli si
+			concede di manipolare tutti i ruoli indipendentemente dalla
+			gerarchia
+		*/
+		$all_roles = $this->can('gas.permissions', $this->gas);
+        return Role::sortedByHierarchy($all_roles == false);
     }
 
     public function addRole($role, $assigned)

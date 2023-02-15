@@ -116,3 +116,48 @@ function roleByIdentifier($identifier)
 {
     return App\Role::where('identifier', $identifier)->first();
 }
+
+/*
+	Questa funzione esiste sostanzialmente allo scopo di intercettare e
+	aggiustare problemi con le configurazioni dei ruoli essenziali di sistema,
+	che possono essere compromessi in molti modi (intervento inopportuno
+	dell'utente, bug, inizializzazione incompleta o altro)
+*/
+function roleByFunction($identifier)
+{
+    $gas = currentAbsoluteGas();
+	$role_id = $gas->roles[$identifier] ?? null;
+
+	if (is_null($role_id)) {
+		switch($identifier) {
+			case 'multigas':
+				$ridentifier = 'secondary_admin';
+				break;
+			default:
+				$ridentifier = $identifier;
+				break;
+		}
+
+		$role = roleByIdentifier($ridentifier);
+		if (is_null($role)) {
+			$role_definition = systemParameters('Roles')[$ridentifier];
+			if ($role_definition) {
+				\Log::info('Inizializzo ruolo di sistema non ancora inizializzato: ' . $identifier);
+				$role_definition->create();
+				return roleByFunction($identifier);
+			}
+			else {
+				throw new \Exception("Impossibile ricostruire il ruolo " . $identifier, 1);
+			}
+		}
+
+		\Log::info('Aggiusto configurazione per i ruoli: ' . $identifier);
+		$conf = (object) $gas->roles;
+		$conf->$identifier = $role->id;
+		$gas->setConfig('roles', $conf);
+		return $role;
+	}
+	else {
+		return App\Role::find($role_id);
+	}
+}

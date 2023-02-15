@@ -229,9 +229,21 @@ class GasController extends Controller
     {
         $conf = (object) [
             'user' => $request->input('roles->user'),
-            'friend' => $request->input('roles->friend'),
-            'multigas' => $request->input('roles->multigas'),
         ];
+
+		if ($request->has('roles->friend')) {
+			$conf->friend = $request->input('roles->friend');
+		}
+		else {
+			$conf->friend = $gas->roles['friend'];
+		}
+
+		if ($request->has('roles->multigas')) {
+			$conf->multigas = $request->input('roles->multigas');
+		}
+		else {
+			$conf->multigas = $gas->roles['multigas'];
+		}
 
         $old_friend_role = $gas->roles['friend'];
         $update_users = ($conf->friend != $old_friend_role);
