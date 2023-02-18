@@ -63,7 +63,8 @@
 			"app/Helpers/Orders.php",
             "app/Helpers/Files.php",
             "app/Helpers/Locale.php",
-            "app/Helpers/Components.php"
+            "app/Helpers/Components.php",
+			"app/Helpers/Status.php"
         ]
     },
     "autoload-dev": {

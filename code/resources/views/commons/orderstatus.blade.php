@@ -2,7 +2,7 @@
 
 $statuses = [];
 
-foreach(\App\Order::statuses() as $identifier => $meta) {
+foreach(\App\Helpers\Status::orders() as $identifier => $meta) {
     $statuses[$identifier] = $meta->label;
 }
 

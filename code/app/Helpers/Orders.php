@@ -8,7 +8,7 @@ function easyFilterOrders($supplier, $startdate, $enddate, $statuses = null)
 		$supplier_id = $supplier;
 
 	if ($statuses == null) {
-		$statuses = array_keys(App\Order::statuses());
+		$statuses = array_keys(App\Helpers\Status::orders());
 	}
 
 	/*
@@ -65,7 +65,7 @@ function defaultOrders($mine)
 	}
 
 	$valid_statuses = [];
-	foreach(App\Order::statuses() as $identifier => $meta) {
+	foreach(App\Helpers\Status::orders() as $identifier => $meta) {
 		if ($meta->default_display) {
 			$valid_statuses[] = $identifier;
 		}

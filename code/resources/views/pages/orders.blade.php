@@ -42,14 +42,14 @@
                 <x-larastrap::selectobj name="supplier_id" :label="_i('Fornitore')" :options="$currentgas->suppliers" :extraitem="_i('Tutti')" />
 
                 @php
-                    $statuses = [
-                        'open' => '<i class="bi-play"></i>',
-                        'suspended' => '<i class="bi-pause"></i>',
-                        'closed' => '<i class="bi-stop-fill"></i>',
-                        'shipped' => '<i class="bi-skip-forward"></i>',
-                        'archived' => '<i class="bi-eject"></i>',
-                    ];
+
+				$statuses = [];
+				foreach(\App\Helpers\Status::orders() as $identifier => $meta) {
+					$statuses[$identifier] = sprintf('<i class="bi-%s"></i>', $meta->icon);
+				}
+
                 @endphp
+
                 <x-larastrap::checks name="status" :label="_i('Stato')" :options="$statuses" :value="['open', 'suspended', 'closed', 'shipped']" />
             </x-filler>
         </div>

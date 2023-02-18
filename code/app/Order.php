@@ -427,55 +427,53 @@ class Order extends Model
 
     private function formatProduct($fields, $formattable, $product_redux, $product, $internal_offsets)
     {
-        if (is_null($product_redux)) {
-            return [];
-        }
+		$ret = [];
 
-        if (!empty($product_redux->variants)) {
-            $variants_rows = [];
-            $offset = $internal_offsets->by_variant;
+        if (is_null($product_redux) == false) {
+	        if (!empty($product_redux->variants)) {
+	            $offset = $internal_offsets->by_variant;
 
-            foreach ($product_redux->variants as $variant) {
-                if ($variant->$offset == 0) {
-                    continue;
-                }
+	            foreach ($product_redux->variants as $variant) {
+	                if ($variant->$offset == 0) {
+	                    continue;
+	                }
 
-                $row = [];
-                foreach($fields as $f) {
-                    if (isset($formattable[$f])) {
-                        if (isset($formattable[$f]->format_variant)) {
-                            $row[] = call_user_func($formattable[$f]->format_variant, $product, $variant, $internal_offsets->alternate);
-                        }
-                        else {
-                            $row[] = call_user_func($formattable[$f]->format_product, $product, $variant, $internal_offsets->alternate);
-                        }
-                    }
-                }
+	                $row = [];
+	                foreach($fields as $f) {
+	                    if (isset($formattable[$f])) {
+	                        if (isset($formattable[$f]->format_variant)) {
+	                            $row[] = call_user_func($formattable[$f]->format_variant, $product, $variant, $internal_offsets->alternate);
+	                        }
+	                        else {
+	                            $row[] = call_user_func($formattable[$f]->format_product, $product, $variant, $internal_offsets->alternate);
+	                        }
+	                    }
+	                }
 
-                $variants_rows[] = $row;
-            }
+	                $ret[] = $row;
+	            }
 
-            usort($variants_rows, function($a, $b) {
-                return $a[0] <=> $b[0];
-            });
+	            usort($ret, function($a, $b) {
+	                return $a[0] <=> $b[0];
+	            });
+	        }
+	        else {
+	            $offset = $internal_offsets->by_product;
+	            if ($product_redux->$offset != 0) {
+		            $row = [];
 
-            return $variants_rows;
-        }
-        else {
-            $offset = $internal_offsets->by_product;
-            if ($product_redux->$offset == 0) {
-                return [];
-            }
+		            foreach($fields as $f) {
+		                if (isset($formattable[$f])) {
+		                    $row[] = call_user_func($formattable[$f]->format_product, $product, $product_redux, $internal_offsets->alternate);
+		                }
+		            }
 
-            $row = [];
-            foreach($fields as $f) {
-                if (isset($formattable[$f])) {
-                    $row[] = call_user_func($formattable[$f]->format_product, $product, $product_redux, $internal_offsets->alternate);
-                }
-            }
+		            $ret[] = $row;
+				}
+	        }
+		}
 
-            return [$row];
-        }
+		return $ret;
     }
 
     /*
@@ -738,67 +736,6 @@ class Order extends Model
         ];
 
         return $ret;
-    }
-
-    public static function statuses()
-    {
-        /*
-            L'attributo "default_display" determina gli stati che vengono
-            visualizzati di default quando viene chiesto l'elenco degli ordini.
-            Cfr. defaultOrders()
-
-            L'attributo "aggregate_priority" serve a determinare lo stato
-            dell'aggregato dentro cui si trova l'ordine stesso: lo stato di
-            priorità più bassa vince. Cfr. Aggregate::getStatusAttribute()
-        */
-
-        $statuses = [];
-
-        $statuses['open'] = (object) [
-            'label' => _i('Prenotazioni Aperte'),
-            'icon' => 'play',
-            'default_display' => true,
-            'aggregate_priority' => 1,
-        ];
-
-        $statuses['closed'] = (object) [
-            'label' => _i('Prenotazioni Chiuse'),
-            'icon' => 'stop-fill',
-            'default_display' => true,
-            'aggregate_priority' => 2,
-        ];
-
-        $statuses['shipped'] = (object) [
-            'label' => _i('Consegnato'),
-            'icon' => 'skip-forward',
-            'default_display' => true,
-            'aggregate_priority' => 4,
-        ];
-
-        if (currentAbsoluteGas()->hasFeature('integralces')) {
-            $statuses['user_payment'] = (object) [
-                'label' => _i('Pagamento Utenti'),
-                'icon' => 'cash',
-                'default_display' => true,
-                'aggregate_priority' => 3,
-            ];
-        }
-
-        $statuses['archived'] = (object) [
-            'label' => _i('Archiviato'),
-            'icon' => 'eject',
-            'default_display' => false,
-            'aggregate_priority' => 5,
-        ];
-
-        $statuses['suspended'] = (object) [
-            'label' => _i('In Sospeso'),
-            'icon' => 'pause',
-            'default_display' => true,
-            'aggregate_priority' => 0,
-        ];
-
-        return $statuses;
     }
 
     public function getPermissionsProxies()

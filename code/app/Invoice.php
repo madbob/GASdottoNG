@@ -80,16 +80,6 @@ class Invoice extends Model implements AccountingDocument
         return sprintf('%s - %s - %s', $this->supplier->name, $this->number, printableDate($this->date));
     }
 
-    public static function statuses()
-    {
-        return [
-            'pending' => _i('In Attesa'),
-            'to_verify' => _i('Da Verificare'),
-            'verified' => _i('Verificata'),
-            'payed' => _i('Pagata'),
-        ];
-    }
-
     public static function doSort($invoices)
     {
         return $invoices->sort(function($a, $b) {

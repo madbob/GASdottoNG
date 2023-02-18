@@ -2,6 +2,7 @@
 
 namespace App\View\Icons;
 
+use App\Helpers\Status;
 use App\Gas;
 
 class Aggregate extends IconsMap
@@ -29,7 +30,7 @@ class Aggregate extends IconsMap
             ]
         ];
 
-        foreach(\App\Order::statuses() as $identifier => $meta) {
+        foreach(Status::orders() as $identifier => $meta) {
             $ret[$meta->icon] = (object) [
                 'test' => function ($obj) use ($identifier) {
                     return $obj->status == $identifier;

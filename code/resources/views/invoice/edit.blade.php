@@ -207,7 +207,7 @@
             </div>
             <div class="col-12 col-md-6">
                 <x-larastrap::textarea name="notes" :label="_i('Note')" />
-                <x-larastrap::select name="status" :label="_i('Stato')" :options="App\Invoice::statuses()" />
+                <x-larastrap::select name="status" :label="_i('Stato')" :options="App\Helpers\Status::invoices()" />
 
                 <x-larastrap::field :label="_i('Pagamento')">
                     @if($invoice->payment)

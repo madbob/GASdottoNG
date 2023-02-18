@@ -13,6 +13,7 @@ use Auth;
 use URL;
 use Log;
 
+use App\Helpers\Status;
 use App\Models\Concerns\ModifiableTrait;
 use App\Models\Concerns\ReducibleTrait;
 use App\Models\Concerns\WithinGas;
@@ -41,7 +42,7 @@ class Aggregate extends Model
     public function getStatusAttribute()
     {
         $priority = [];
-        foreach(Order::statuses() as $identifier => $meta) {
+        foreach(Status::orders() as $identifier => $meta) {
             $priority[$meta->aggregate_priority] = $identifier;
         }
 
@@ -287,26 +288,27 @@ class Aggregate extends Model
         uasort($ret, function($a, $b) {
             $a_status = $a->status;
             $b_status = $b->status;
+			$comp = -1;
 
             if ($a_status == $b_status) {
-                return strcmp($a->user->printableName(), $b->user->printableName());
+                $comp = strcmp($a->user->printableName(), $b->user->printableName());
             }
             else {
                 if ($a_status == 'pending') {
-                    return -1;
+                    $comp = -1;
                 }
-                if ($b_status == 'pending') {
-                    return 1;
+                else if ($b_status == 'pending') {
+                    $comp = 1;
                 }
-                if ($a_status == 'saved') {
-                    return -1;
+                else if ($a_status == 'saved') {
+                    $comp = -1;
                 }
-                if ($b_status == 'saved') {
-                    return 1;
+                else if ($b_status == 'saved') {
+                    $comp = 1;
                 }
-
-                return -1;
             }
+
+			return $comp;
         });
 
         return $ret;

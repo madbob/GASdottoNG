@@ -2,6 +2,8 @@
 
 namespace App\View\Icons;
 
+use App\Helpers\Status;
+
 class Order extends IconsMap
 {
     public static function commons($user)
@@ -28,7 +30,7 @@ class Order extends IconsMap
             ]
         ];
 
-        foreach(\App\Order::statuses() as $identifier => $meta) {
+        foreach(Status::orders() as $identifier => $meta) {
             $ret[$meta->icon] = (object) [
                 'test' => function ($obj) use ($identifier) {
                     return $obj->status == $identifier;
