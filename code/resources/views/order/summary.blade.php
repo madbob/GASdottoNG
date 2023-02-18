@@ -149,11 +149,13 @@ foreach($display_columns as $identifier => $metadata) {
 
                             <label class="static-label text-filterable-cell">{{ $product->printableName() }}</label>
 
-                            <div class="float-end">
-                                <a href="{{ route('products.show', ['product' => $product->id, 'format' => 'modal']) }}" class="btn btn-xs btn-info async-modal d-none d-md-inline-block">
-                                    <i class="bi-pencil"></i>
-                                </a>
-                            </div>
+							@can('supplier.modify', $order->supplier)
+	                            <div class="float-end">
+	                                <a href="{{ route('products.show', ['product' => $product->id, 'format' => 'modal']) }}" class="btn btn-xs btn-info async-modal d-none d-md-inline-block">
+	                                    <i class="bi-pencil"></i>
+	                                </a>
+	                            </div>
+							@endcan
                         </td>
 
                         <!-- Prezzo -->
