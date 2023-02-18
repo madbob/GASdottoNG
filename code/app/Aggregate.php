@@ -99,12 +99,14 @@ class Aggregate extends Model
                 $names[] = $order->printableName();
 
                 $this_start = strtotime($order->start);
-                if ($this_start < $start_date)
+                if ($this_start < $start_date) {
                     $start_date = $this_start;
+				}
 
                 $this_end = strtotime($order->end);
-                if ($this_end > $end_date)
+                if ($this_end > $end_date) {
                     $end_date = $this_end;
+				}
 
                 if ($order->shipping != null && $order->shipping != '0000-00-00') {
                     $this_shipping = strtotime($order->shipping);
@@ -119,8 +121,10 @@ class Aggregate extends Model
             }
 
             $date_string = sprintf('da %s a %s', printableDate($start_date), printableDate($end_date));
-            if ($shipping_date != PHP_INT_MAX)
+            if ($shipping_date != PHP_INT_MAX) {
                 $date_string .= sprintf(', in consegna %s', printableDate($shipping_date));
+			}
+
             $dates[] = $date_string;
         }
         else {
@@ -226,6 +230,44 @@ class Aggregate extends Model
 
         return false;
     }
+
+	public function hasChangedProdcts()
+	{
+		$has_changed_products = false;
+
+		if ($this->isActive()) {
+			$shipped = array_filter($this->bookings, function($b) {
+				return $b->status == 'shipped';
+			});
+
+			$dates = [];
+
+			foreach($shipped as $s) {
+				foreach($s->bookings as $b) {
+					if ($b->delivery) {
+						$dates[$b->delivery] = true;
+					}
+				}
+			}
+
+			$dates = array_keys($dates);
+
+			if (empty($dates) == false) {
+				sort($dates);
+				$date = $dates[0];
+
+				foreach($this->orders as $order) {
+					$newer = $order->products()->where('updated_at', '>=', $date)->count();
+					if ($newer > 0) {
+						$has_changed_products = true;
+						break;
+					}
+				}
+			}
+		}
+
+		return $has_changed_products;
+	}
 
     public function canShip()
     {

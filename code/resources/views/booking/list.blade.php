@@ -35,6 +35,16 @@
         </div>
     @endif
 
+	@if($aggregate->hasChangedProdcts())
+		<div class="row">
+	        <div class="col">
+				<div class="alert alert-danger mb-2">
+					{{ _i("Attenzione: alcuni prodotti sono stati modificati dopo essere stati consegnati all'interno di questo ordine. Se sono stati alterati i prezzi, è necessario rieseguire le consegne coinvolte per consolidare i nuovi totali e rielaborare i relativi movimenti contabili.") }}
+				</div>
+			</div>
+		</div>
+	@endif
+
     <div class="row">
         <div class="col">
             @include('commons.loadablelist', [

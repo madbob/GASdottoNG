@@ -31,16 +31,20 @@ foreach($class as $c) {
             @if($limit_to == null || in_array($icon, $limit_to))
                 @if(is_string($label))
                     <button type="button" class="btn btn-info">
-                        <i class="bi-{{ $icon }}"></i>&nbsp;
                         <span>{{ $label }}</span>
+						<i class="bi-{{ $icon }}"></i>
                     </button>
                 @else
                     <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="bi-{{ $icon }}"></i>&nbsp;<span>{{ $label->label }}</span> <span class="caret"></span>
+                        <span>{{ $label->label }}</span>
+						<i class="bi-{{ $icon }}"></i>
+						<span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
                         @foreach($label->items as $subicon => $sublabel)
-                            <li><a href="#" class="dropdown-item"><i class="bi-{{ $subicon }}"></i>&nbsp;{{ $sublabel }}</a></li>
+                            <li>
+								<a href="#" class="dropdown-item">{{ $sublabel }}<i class="bi-{{ $subicon }}"></i></a>
+							</li>
                         @endforeach
                     </ul>
                 @endif
