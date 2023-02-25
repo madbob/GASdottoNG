@@ -46,7 +46,7 @@ class LoginController extends Controller
             $username = trim($request->input('username'));
 
             if ($username == $password) {
-                Session::flash('prompt_message', _i('La password è uguale allo username! Cambiala il prima possibile dal tuo <a href="%s">pannello utente</a>!', [route('profile')]));
+                Session::flash('prompt_message', _i('La password è uguale allo username! Cambiala il prima possibile dal tuo <a class="ms-2" href="%s">pannello utente</a>!', [route('profile')]));
             }
             else {
                 if (is_null($user->suspended_at) == false) {
