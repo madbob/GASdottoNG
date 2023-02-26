@@ -19,3 +19,4 @@ parameters:
     checkModelProperties: true
     checkMissingIterableValueType: false
     reportUnmatchedIgnoredErrors: false
+    treatPhpDocTypesAsCertain: false
