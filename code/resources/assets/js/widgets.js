@@ -36,7 +36,7 @@ class Widgets {
 
         $('.date[data-enforce-after]', container).each((index, item) => {
             var current = $(item);
-            var target = this.dateEnforcePeer(current);
+            var target = this.dateEnforcePeer(current, 'data-enforce-after');
 
             target.datepicker().on('changeDate', function() {
                 var current_start = current.datepicker('getDate');
@@ -46,7 +46,8 @@ class Widgets {
                 }
             });
         }).focus((e) => {
-            var target = this.dateEnforcePeer($(e.currentTarget));
+			var current = $(e.currentTarget);
+            var target = this.dateEnforcePeer(current, 'data-enforce-after');
 
             /*
                 Problema: cercando di navigare tra i mesi all'interno del datepicker
@@ -57,11 +58,28 @@ class Widgets {
                 inizio forzato non corrisponde a quel che dovrebbe essere), badando
                 però a fare i confronti sui giusti formati
             */
-            var current_start = $(e.currentTarget).datepicker('getStartDate');
+            var current_start = current.datepicker('getStartDate');
             var current_ref = target.datepicker('getUTCDate');
             if (current_start.toString() != current_ref.toString()) {
-                $(e.currentTarget).datepicker('setStartDate', current_ref);
+                current.datepicker('setStartDate', current_ref);
             }
+        });
+
+		$('input[data-enforce-more]', container).each((index, item) => {
+            var current = $(item);
+            var target = this.dateEnforcePeer(current, 'data-enforce-more');
+
+            target.on('change', function() {
+                var current_start = current.val();
+                var current_ref = target.val();
+                if (current_start < current_ref) {
+                    current.val(current_ref);
+                }
+            });
+        }).focus((e) => {
+			var current = $(e.currentTarget);
+            var current_ref = this.dateEnforcePeer(current, 'data-enforce-more').val();
+            current.attr('min', current_ref);
         });
 
         $('select[multiple]', container).select2({
@@ -213,12 +231,15 @@ class Widgets {
         });
     }
 
-    static dateEnforcePeer(node)
+    static dateEnforcePeer(node, attribute)
     {
-        var select = node.attr('data-enforce-after');
+        var select = node.attr(attribute);
         var target = node.closest('.input-group').find(select);
         if (target.length == 0) {
-            target = node.closest('form').find(select);
+			target = node.closest('tr').find(select);
+	        if (target.length == 0) {
+            	target = node.closest('form').find(select);
+			}
         }
 
         return target;

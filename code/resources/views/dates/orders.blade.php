@@ -55,7 +55,10 @@
                             'field' => 'shipping',
                             'type' => 'number',
                             'extra' => [
-                                'textappend' => 'giorni'
+                                'textappend' => 'giorni',
+								'attributes' => [
+									'data-enforce-more' => '[name^=end]'
+								]
                             ]
                         ],
                         [
