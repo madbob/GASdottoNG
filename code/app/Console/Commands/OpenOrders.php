@@ -71,30 +71,12 @@ class OpenOrders extends Command
                             continue;
                         }
 
-                        $order = new Order();
-                        $order->aggregate_id = 0;
-                        $order->supplier_id = $supplier->id;
-                        $order->comment = $date->comment;
-                        $order->status = 'suspended';
-                        $order->keep_open_packages = 'no';
-                        $order->start = $today;
-                        $order->end = date('Y-m-d', strtotime($today . ' +' . $date->end . ' days'));
-
-                        if (!empty($date->shipping)) {
-                            $order->shipping = date('Y-m-d', strtotime($today . ' +' . $date->shipping . ' days'));
-                        }
-
-                        Log::debug('Apro ordine automatico per ' . $supplier->name);
-                        $order->save();
-
-                        $order->products()->sync($supplier->products()->where('active', '=', true)->get());
-
                         $aggregable_key = sprintf('%s_%s', $date->end, $date->shipping);
                         if (!isset($aggregable[$aggregable_key])) {
                             $aggregable[$aggregable_key] = [];
                         }
 
-                        $aggregable[$aggregable_key][] = $order;
+                        $aggregable[$aggregable_key][] = $date;
                     }
                 }
 
@@ -112,8 +94,27 @@ class OpenOrders extends Command
             $aggregate = new Aggregate();
             $aggregate->save();
 
-            foreach($aggr as $order) {
-                $order->aggregate_id = $aggregate->id;
+            foreach($aggr as $date) {
+				$supplier = $date->target;
+
+				$order = new Order();
+				$order->aggregate_id = $aggregate->id;
+				$order->supplier_id = $supplier->id;
+				$order->comment = $date->comment;
+				$order->status = 'suspended';
+				$order->keep_open_packages = 'no';
+				$order->start = $today;
+				$order->end = date('Y-m-d', strtotime($today . ' +' . $date->end . ' days'));
+
+				if (!empty($date->shipping)) {
+					$order->shipping = date('Y-m-d', strtotime($today . ' +' . $date->shipping . ' days'));
+				}
+
+				Log::debug('Apro ordine automatico per ' . $supplier->name);
+				$order->save();
+
+				$order->products()->sync($supplier->products()->where('active', '=', true)->get());
+
                 $order->status = 'open';
                 $order->save();
             }

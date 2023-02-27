@@ -41,7 +41,7 @@ class NotifyClosedOrder extends Job
                         $this->hub->enable(true);
                     }
                     catch(\Exception $e) {
-                        Log::error('Errore in notifica chiusura ordine a fornitore: ' . $e->getMessage());
+                        Log::error('Errore in notifica chiusura ordine a fornitore: ' . $e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
                     }
 
                     break;
