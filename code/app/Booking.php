@@ -287,8 +287,10 @@ class Booking extends Model
         }
 
         if ($friends_bookings) {
-            foreach ($this->friends_bookings as $sub)
-                $ret += $sub->readProductQuantity($product, $field, false);
+            foreach ($this->friends_bookings as $sub) {
+                $ret += $sub->readProductQuantity($combo ?: $product, $field, false);
+			}
+
         }
 
         return $ret;
