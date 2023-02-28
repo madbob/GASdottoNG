@@ -20,7 +20,7 @@
 
                 $booking_payment_type = movementTypes('booking-payment');
 
-                foreach (movementTypesAccepting([null, 'App\Gas', 'App\User'], [null, 'App\Gas', 'App\User']) as $info) {
+                foreach (movementTypes() as $info) {
                     if ($info->overlapsPaymentMethods($booking_payment_type) == false) {
                         $movement_type_alert = _i('Alcuni tipi di movimento contabile non sono inclusi in questa lista in quanto non ne è stato definito il comportamento per tutti i metodi di pagamenti previsti in fase di consegna (%s). Revisiona i tipi di movimento dal pannello Contabilità -> Tipi Movimenti', [join(', ', paymentsByType('booking-payment'))]);
                     }
