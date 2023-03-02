@@ -57,7 +57,7 @@ trait PrintingOrders
 		foreach ($order->products as $product) {
 			if ($product->variants->isEmpty()) {
 				if ($booking) {
-					$quantity = $booking->$get_function($product, $get_function_real, true);
+					$quantity = $booking->$get_function($product, $get_function_real, false);
 				}
 				else {
 					$quantity = 0;
@@ -69,7 +69,7 @@ trait PrintingOrders
 			else {
 				foreach($product->variant_combos as $combo) {
 					if ($booking) {
-						$quantity = $booking->$get_function($combo, $get_function_real, true);
+						$quantity = $booking->$get_function($combo, $get_function_real, false);
 					}
 					else {
 						$quantity = 0;
