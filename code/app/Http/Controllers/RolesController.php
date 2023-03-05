@@ -50,7 +50,7 @@ class RolesController extends BackedController
     public function formBySupplier(Request $request, $supplier_id)
     {
         $supplier = Supplier::findOrFail($supplier_id);
-        $this->ensureAuth(['gas.permissions' => 'gas', 'supplier.modify', $supplier]);
+        $this->ensureAuth(['gas.permissions' => 'gas', 'supplier.modify' => $supplier]);
         return view('permissions.supplier-edit', ['supplier' => $supplier]);
     }
 
@@ -64,7 +64,7 @@ class RolesController extends BackedController
     public function tableBySupplier(Request $request, $supplier_id)
     {
         $supplier = Supplier::findOrFail($supplier_id);
-        $this->ensureAuth(['gas.permissions' => 'gas', 'supplier.modify', $supplier]);
+        $this->ensureAuth(['gas.permissions' => 'gas', 'supplier.modify' => $supplier]);
         return view('commons.permissionseditor', ['object' => $supplier, 'editable' => true]);
     }
 
