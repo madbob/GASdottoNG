@@ -167,7 +167,8 @@ class Products extends CSVImporter
                         /*
                             Qui setto le variabili $price_without_vat o
                             $package_price, in funzione del valore stesso di
-                            $field
+                            $field.
+							Dunque $$field NON è un errore
                         */
                         $$field = guessDecimal($value);
                         continue;

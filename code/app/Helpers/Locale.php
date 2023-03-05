@@ -35,11 +35,11 @@ function translateNumberFormat($value)
     $last_comma = strrpos($value, ',');
 
     if ($last_dot > $last_comma) {
-        return str_replace(',', '', $value);
+        return (float) str_replace(',', '', $value);
     }
     else {
         $value = str_replace('.', '', $value);
-        return strtr($value, ',', '.');
+        return (float) strtr($value, ',', '.');
     }
 }
 
@@ -49,16 +49,16 @@ function guessDecimal($value)
     $has_comma = (strpos($value, ',') !== false);
 
     if ($has_dot == false && $has_comma == false) {
-        return $value;
+        return (int) $value;
     }
 
     if ($has_dot && $has_comma == false) {
-        return $value;
+        return (float) $value;
     }
 
     // @phpstan-ignore-next-line
     if ($has_dot == false && $has_comma) {
-        return strtr($value, ',', '.');
+        return (float) strtr($value, ',', '.');
     }
 
     return translateNumberFormat($value);
