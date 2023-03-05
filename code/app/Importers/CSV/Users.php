@@ -10,12 +10,13 @@ use Hash;
 use Illuminate\Support\Str;
 
 use App\User;
+use App\Contact;
 
 class Users extends CSVImporter
 {
     protected function fields()
     {
-        return [
+        $ret = [
             'firstname' => (object) [
                 'label' => _i('Nome'),
             ],
@@ -26,26 +27,8 @@ class Users extends CSVImporter
                 'label' => _i('Username'),
                 'mandatory' => true,
             ],
-            'email' => (object) [
-                'label' => _i('E-Mail'),
-            ],
             'password' => (object) [
                 'label' => _i('Password'),
-            ],
-            'phone' => (object) [
-                'label' => _i('Telefono'),
-            ],
-            'mobile' => (object) [
-                'label' => _i('Cellulare'),
-            ],
-            'address_0' => (object) [
-                'label' => _i('Indirizzo (Via)'),
-            ],
-            'address_1' => (object) [
-                'label' => _i('Indirizzo (CAP)'),
-            ],
-            'address_2' => (object) [
-                'label' => _i('Indirizzo (Città)'),
             ],
             'birthday' => (object) [
                 'label' => _i('Data di Nascita'),
@@ -71,6 +54,29 @@ class Users extends CSVImporter
                 'explain' => _i('Attenzione! Usare questo attributo solo in fase di importazione iniziale degli utenti, e solo per i nuovi utenti, o i saldi risulteranno sempre incoerenti!')
             ]
         ];
+
+		foreach(Contact::types() as $identifier => $label) {
+			if ($identifier == 'address') {
+				$ret['address_0'] = (object) [
+	                'label' => _i('Indirizzo (Via)'),
+	            ];
+
+	            $ret['address_1'] = (object) [
+	                'label' => _i('Indirizzo (CAP)'),
+	            ];
+
+	            $ret['address_2'] = (object) [
+	                'label' => _i('Indirizzo (Città)'),
+	            ];
+			}
+			else {
+				$ret[$identifier] = (object) [
+					'label' => $label,
+				];
+			}
+		}
+
+		return $ret;
     }
 
     public function testAccess($request)
@@ -110,6 +116,22 @@ class Users extends CSVImporter
         }
     }
 
+	private function retrieveUser($login, $gas)
+	{
+		$u = User::where('username', '=', $login)->orderBy('id', 'desc')->first();
+
+		if (is_null($u)) {
+			$u = new User();
+			$u->gas_id = $gas->id;
+			$u->username = $login;
+			$u->password = Hash::make($login);
+			$u->member_since = date('Y-m-d');
+			$new_user = true;
+		}
+
+		return $u;
+	}
+
     public function run($request)
     {
         DB::beginTransaction();
@@ -130,15 +152,7 @@ class Users extends CSVImporter
                 $new_user = false;
                 $login = $line[$login_index];
 
-                $u = User::where('username', '=', $login)->orderBy('id', 'desc')->first();
-                if (is_null($u)) {
-                    $u = new User();
-                    $u->gas_id = $gas->id;
-                    $u->username = $login;
-                    $u->password = Hash::make($login);
-                    $u->member_since = date('Y-m-d');
-                    $new_user = true;
-                }
+                $u = $this->retrieveUser($login, $gas);
 
                 $contacts = [
                     'contact_id' => [],
