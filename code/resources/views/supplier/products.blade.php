@@ -22,7 +22,10 @@
 
             <x-larastrap::mbutton :label="_i('Esporta Listino')" triggers_modal="#export_products" />
             <x-larastrap::modal :title="_i('Esporta Listino')" id="export_products">
-                <x-larastrap::form classes="direct-submit" method="GET" :action="url('suppliers/catalogue/' . $supplier->id)">
+                <x-larastrap::form classes="direct-submit" method="GET" :buttons="[['label' => _i('Download'), 'classes' => 'export-custom-list', 'attributes' => ['data-export-url' => url('suppliers/catalogue/' . $supplier->id)]]]">
+					<p>
+						{{ _i("Verranno esportati i prodotti attualmente filtrati nella lista principale, in funzione del loro stato.") }}
+					</p>
                     <p>
                         {!! _i("Per la consultazione e l'elaborazione dei files in formato CSV (<i>Comma-Separated Values</i>) si consiglia l'uso di <a target=\"_blank\" href=\"http://it.libreoffice.org/\">LibreOffice</a>.") !!}
                     </p>

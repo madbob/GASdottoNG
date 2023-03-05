@@ -14,47 +14,28 @@ use App\Contact;
 
 class Users extends CSVImporter
 {
-    protected function fields()
-    {
-        $ret = [
-            'firstname' => (object) [
-                'label' => _i('Nome'),
-            ],
-            'lastname' => (object) [
-                'label' => _i('Cognome'),
-            ],
-            'username' => (object) [
-                'label' => _i('Username'),
-                'mandatory' => true,
-            ],
-            'password' => (object) [
-                'label' => _i('Password'),
-            ],
-            'birthday' => (object) [
-                'label' => _i('Data di Nascita'),
-                'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')])
-            ],
-            'taxcode' => (object) [
-                'label' => _i('Codice Fiscale'),
-            ],
-            'member_since' => (object) [
-                'label' => _i('Membro da'),
-                'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')])
-            ],
-            'last_login' => (object) [
-                'label' => _i('Ultimo Accesso'),
-                'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')])
-            ],
-            'ceased' => (object) [
-                'label' => _i('Cessato'),
-                'explain' => _i('Indicare "true" o "false"')
-            ],
-            'credit' => (object) [
-                'label' => _i('Credito Attuale'),
-                'explain' => _i('Attenzione! Usare questo attributo solo in fase di importazione iniziale degli utenti, e solo per i nuovi utenti, o i saldi risulteranno sempre incoerenti!')
-            ]
-        ];
+	private function essentialFields(&$ret)
+	{
+		$ret['firstname'] = (object) [
+			'label' => _i('Nome'),
+		];
 
+		$ret['lastname'] = (object) [
+			'label' => _i('Cognome'),
+		];
+
+		$ret['username'] = (object) [
+			'label' => _i('Username'),
+			'mandatory' => true,
+		];
+
+		$ret['password'] = (object) [
+			'label' => _i('Password'),
+		];
+	}
+
+	private function contactFields(&$ret)
+	{
 		foreach(Contact::types() as $identifier => $label) {
 			if ($identifier == 'address') {
 				$ret['address_0'] = (object) [
@@ -75,7 +56,46 @@ class Users extends CSVImporter
 				];
 			}
 		}
+	}
 
+	private function otherFields(&$ret)
+	{
+		$ret['birthday'] = (object) [
+			'label' => _i('Data di Nascita'),
+			'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')])
+		];
+
+		$ret['taxcode'] = (object) [
+			'label' => _i('Codice Fiscale'),
+		];
+
+		$ret['member_since'] = (object) [
+			'label' => _i('Membro da'),
+			'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')])
+		];
+
+		$ret['last_login'] = (object) [
+			'label' => _i('Ultimo Accesso'),
+			'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')])
+		];
+
+		$ret['ceased'] = (object) [
+			'label' => _i('Cessato'),
+			'explain' => _i('Indicare "true" o "false"')
+		];
+
+		$ret['credit'] = (object) [
+			'label' => _i('Credito Attuale'),
+			'explain' => _i('Attenzione! Usare questo attributo solo in fase di importazione iniziale degli utenti, e solo per i nuovi utenti, o i saldi risulteranno sempre incoerenti!')
+		];
+	}
+
+    protected function fields()
+    {
+		$ret = [];
+		$this->essentialFields($ret);
+		$this->contactFields($ret);
+		$this->otherFields($ret);
 		return $ret;
     }
 
