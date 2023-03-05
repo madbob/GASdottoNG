@@ -34,4 +34,79 @@
             @include('aggregate.files', ['aggregate' => $aggregate, 'managed_gas' => $currentgas->id])
         </div>
     </div>
+
+	<hr>
+
+	<div class="row d-none d-md-flex mb-1">
+		<div class="table-responsive">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Ordine</th>
+						<th>Totale Prenotato</th>
+						<th>Totale Consegnato</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach($aggregate->orders as $order)
+						@php
+
+						$summary = $master_summary->orders[$order->id];
+						$pending_modifiers = $order->applyModifiers($master_summary, 'pending');
+						$shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
+						$grand_total_pending = 0;
+						$grand_total_delivered = 0;
+						$modifiers_pending = 0;
+						$modifiers_delivered = 0;
+
+						@endphp
+
+						<tr>
+							<td>
+								{{ $order->printableName() }}
+								{!! $order->statusIcons() !!}
+							</td>
+							<td>
+								<?php $grand_total_pending += $summary->price ?>
+
+								{{ printablePriceCurrency($summary->price ?? 0) }}
+
+								@foreach(App\ModifiedValue::aggregateByType($pending_modifiers) as $am)
+									<?php $modifiers_pending += $am->amount ?>
+									<br>+ {{ $am->name }}: {{ printablePrice($am->amount) }}
+								@endforeach
+							</td>
+							<td>
+								<?php $grand_total_delivered += $summary->price_delivered ?>
+
+								{{ printablePriceCurrency($summary->price_delivered ?? 0) }}
+
+								@foreach(App\ModifiedValue::aggregateByType($shipped_modifiers) as $am)
+									<?php $modifiers_delivered += $am->amount ?>
+									<br>+ {{ $am->name }}: {{ printablePrice($am->amount) }}
+								@endforeach
+							</td>
+						</tr>
+					@endforeach
+				</tbody>
+				<thead>
+					<tr>
+						<th>&nbsp</th>
+						<th>
+							{{ printablePriceCurrency($grand_total_pending ?? 0) }}
+							@if($modifiers_pending != 0)
+								<br>+ {{ printablePrice($modifiers_pending) }}
+							@endif
+						</th>
+						<th>
+							{{ printablePriceCurrency($grand_total_delivered ?? 0) }}
+							@if($modifiers_delivered != 0)
+								<br>+ {{ printablePrice($modifiers_delivered) }}
+							@endif
+						</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
 </x-larastrap::form>

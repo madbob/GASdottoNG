@@ -78,12 +78,6 @@ class AggregatesController extends Controller
         return view('order.aggregate', ['aggregate' => $a]);
     }
 
-    public function details(Request $request, $id)
-    {
-        $a = Aggregate::findOrFail($id);
-        return view('aggregate.details', ['aggregate' => $a]);
-    }
-
     public function update(Request $request, $id)
     {
         DB::beginTransaction();

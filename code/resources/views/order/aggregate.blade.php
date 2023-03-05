@@ -70,8 +70,9 @@ $master_summary = $aggregate->reduxData();
             @endforeach
 
             @if($controllable && $more_orders)
-                <x-larastrap::remotetabpane :label="_i('Aggregato')" :button_attributes="['data-tab-url' => route('aggregates.details', $aggregate->id)]" icon="bi-plus-circle">
-                </x-larastrap::remotetabpane>
+				<x-larastrap::tabpane :label="_i('Aggregato')" icon="bi-plus-circle">
+					@include('aggregate.details', ['aggregate' => $aggregate, 'master_summary' => $master_summary])
+				</x-larastrap::tabpane>
             @endif
 
             @if($multi_gas)
