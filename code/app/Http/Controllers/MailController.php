@@ -95,7 +95,12 @@ class MailController extends Controller
 				da SendInBlue, incluse quelle non generate da GASdotto.
 				Il tag "gasdotto" viene aggiunto dal listener CustomMailTag
 			*/
-			if (in_array('gasdotto', $request->input('tags', []))) {
+			$tags = $request->input('tags');
+			if (is_null($tags) || empty($tags)) {
+				return;
+			}
+
+			if (in_array('gasdotto', $tags)) {
 				if (in_array($request->input('event', ''), ['hard_bounce', 'soft_bounce', 'complaint', 'blocked', 'error'])) {
 					try {
 						$email = $request->input('email');
