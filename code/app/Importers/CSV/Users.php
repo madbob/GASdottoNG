@@ -146,7 +146,6 @@ class Users extends CSVImporter
 			$u->username = $login;
 			$u->password = Hash::make($login);
 			$u->member_since = date('Y-m-d');
-			$new_user = true;
 		}
 
 		return $u;
@@ -173,6 +172,7 @@ class Users extends CSVImporter
                 $login = $line[$login_index];
 
                 $u = $this->retrieveUser($login, $gas);
+				$new_user = $u->exists == false;
 
                 $contacts = [
                     'contact_id' => [],
