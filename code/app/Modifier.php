@@ -72,6 +72,10 @@ class Modifier extends Model
                 $amount = printablePrice($d->amount);
             }
 
+			if ($this->arithmetic == 'mass') {
+				$postfix = $postfix . ' ' . _i('al KG');
+			}
+
             $ret[] = sprintf('%s %s', $amount, $postfix);
         }
 

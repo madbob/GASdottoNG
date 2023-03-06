@@ -40,6 +40,15 @@
 	<div class="row d-none d-md-flex mb-1">
 		<div class="table-responsive">
 			<table class="table">
+				@php
+
+				$grand_total_pending = 0;
+				$grand_total_delivered = 0;
+				$modifiers_pending = 0;
+				$modifiers_delivered = 0;
+
+				@endphp
+
 				<thead>
 					<tr>
 						<th>Ordine</th>
@@ -54,10 +63,6 @@
 						$summary = $master_summary->orders[$order->id];
 						$pending_modifiers = $order->applyModifiers($master_summary, 'pending');
 						$shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
-						$grand_total_pending = 0;
-						$grand_total_delivered = 0;
-						$modifiers_pending = 0;
-						$modifiers_delivered = 0;
 
 						@endphp
 

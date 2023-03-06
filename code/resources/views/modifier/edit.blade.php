@@ -90,7 +90,13 @@
                 <x-larastrap::radios name="value" :label="_i('Valore')" :options="$values" />
 
                 <div class="arithmetic_type_selection {{ $modifier->value == 'price' ? 'd-none' : '' }}">
-                    <x-larastrap::radios name="arithmetic" :label="_i('Operazione')" :options="['sum' => _i('Somma'), 'sub' => _i('Sottrazione'), 'passive' => _i('Passivo'), 'apply' => (object) ['label' => _i('Applica'), 'hidden' => true]]" />
+                    <x-larastrap::radios name="arithmetic" :label="_i('Operazione')" :options="[
+						'sum' => _i('Somma'),
+						'sub' => _i('Sottrazione'),
+						'passive' => _i('Passivo'),
+						'mass' => _i('A Peso'),
+						'apply' => (object) ['label' => _i('Applica'), 'hidden' => true
+					]]" />
                 </div>
 
                 @if($modifier->target_type != 'App\Product')

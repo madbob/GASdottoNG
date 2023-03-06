@@ -8,17 +8,25 @@ use Log;
 
 class ModifierEngine
 {
-    private function applyDefinition($booking, $modifier, $amount, $definition, $target)
-    {
-        if ($booking->status == 'pending') {
+	private function applicationOffsets($booking)
+	{
+		if ($booking->status == 'pending') {
             $quantity_attribute = 'quantity';
             $price_attribute = 'price';
+			$weight_attribute = 'weight';
         }
         else {
             $quantity_attribute = 'delivered';
             $price_attribute = 'price_delivered';
+			$weight_attribute = 'weight_delivered';
         }
 
+		return [$quantity_attribute, $price_attribute, $weight_attribute];
+	}
+
+    private function applyDefinition($booking, $modifier, $amount, $definition, $target)
+    {
+		list($quantity_attribute, $price_attribute, $weight_attribute) = $this->applicationOffsets($booking);
         $reference_quantity = 1;
 
         if ($modifier->applies_target == 'product') {
@@ -26,10 +34,24 @@ class ModifierEngine
         }
 
         if ($modifier->value == 'percentage') {
-            $amount = round($amount * ($definition->amount / 100), 4);
+			/*
+				Nel (molto improbabile) caso di un modificatore percentuale
+				applicato al chilo, il valore di riferimento è il valore del
+				soggetto in esame
+			*/
+			if ($modifier->arithmetic == 'mass') {
+				$amount = $target->$price_attribute * $target->$weight_attribute;
+			}
+			else {
+				$amount = round($amount * ($definition->amount / 100), 4);
+			}
         }
         else if ($modifier->value == 'absolute') {
             $amount = $reference_quantity * $definition->amount;
+
+			if ($modifier->arithmetic == 'mass') {
+				$amount = $amount * $target->$weight_attribute;
+			}
         }
         else {
             /*

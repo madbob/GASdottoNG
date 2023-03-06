@@ -35,6 +35,7 @@ class ModifiedValue extends Model
         switch($this->modifier->arithmetic) {
             case 'sum':
             case 'passive':
+			case 'mass':
                 return $this->amount;
 
             case 'apply':
