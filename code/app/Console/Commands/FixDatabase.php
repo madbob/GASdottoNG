@@ -9,8 +9,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-
-use Artisan;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Artisan;
 
 use App\Config;
 use App\User;
@@ -27,7 +27,7 @@ class FixDatabase extends Command
 
     public function handle()
     {
-        Config::where('name', 'mail_order_reminder')->delete();
+        DB::statement("ALTER TABLE modifiers MODIFY COLUMN arithmetic ENUM('sum','sub','passive','apply','mass') DEFAULT 'sum'");
 
         /*
             I seeder dei tipi di movimento contabile e dei tipi di modificatore
