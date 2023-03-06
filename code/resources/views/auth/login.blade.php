@@ -29,15 +29,6 @@
 
     <br/>
 
-    <?php $browser_name = strtolower((new Sinergi\BrowserDetector\Browser())->getName()) ?>
-    @if ($browser_name != 'firefox' && $browser_name != 'chrome')
-        <div class="alert alert-warning">
-            {{ _i('GASdotto è testato con Firefox e Chrome/Chromium, ti consigliamo di usare uno di questi!') }}<br>
-            <a href="https://www.mozilla.org/it/firefox/new/">{{ _i('Clicca qui per scaricare ed installare Firefox.') }}</a>
-        </div>
-        <br>
-    @endif
-
     <x-larastrap::form method="POST" action="{{ route('login') }}" :buttons="[['color' => 'success', 'label' => _i('Login'), 'type' => 'submit']]">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <input type="hidden" name="language" value="{{ $gas->getConfig('language') }}">
