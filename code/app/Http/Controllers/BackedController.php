@@ -31,9 +31,11 @@ class BackedController extends Controller
             return $func();
         }
         catch (AuthException $e) {
+			\Log::debug('Errore autorizzazione: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
             abort($e->status());
         }
         catch (IllegalArgumentException $e) {
+			\Log::debug('Errore input: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
             return $this->errorResponse($e->getMessage(), $e->getArgument());
         }
         catch (\Exception $e) {
