@@ -11,6 +11,20 @@ class FastBookingsService extends BaseService
 {
 	private function sumUpProducts($booking, &$datarow)
 	{
+		/*
+			TODO: Nel caso di prenotazioni salvate sarebbe molto più efficiente
+			cambiare semplicemente lo stato della prenotazione stessa, giacché
+			tutte le quantità sono già al loro posto. Ma servirebbe comunque una
+			funzione che gestisca questo caso speciale, con tutte le conseguenze
+			(e.g. gestire la registrazione del movimento contabile di pagamento)
+		*/
+		if ($booking->status == 'pending') {
+			$quantity_attribute = 'true_quantity';
+		}
+		else {
+			$quantity_attribute = 'true_delivered';
+		}
+
 		foreach($booking->products_with_friends as $booked) {
 			$product_id = $booked->product_id;
 
@@ -32,7 +46,7 @@ class FastBookingsService extends BaseService
 						$datarow['variant_selection_' . $variant_id][] = $val->id;
 					}
 
-					$datarow['variant_quantity_' . $product_id][] = $bpv->true_quantity;
+					$datarow['variant_quantity_' . $product_id][] = $bpv->$quantity_attribute;
 				}
 			}
 			else {
@@ -40,7 +54,7 @@ class FastBookingsService extends BaseService
 					$datarow[$booked->product_id] = 0;
 				}
 
-				$datarow[$booked->product_id] += $booked->true_quantity;
+				$datarow[$booked->product_id] += $booked->$quantity_attribute;
 			}
 		}
 	}
