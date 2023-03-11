@@ -53,9 +53,8 @@ class UsersController extends BackedController
         }
 
         $fields = $request->input('fields', []);
-        $printable = $request->input('printable', []);
         $headers = UserFormatter::getHeaders($fields);
-        $users = $this->service->list('', true, $printable);
+        $users = $this->service->list('', true);
 
         return output_csv(_i('utenti.csv'), $headers, $users, function($user) use ($fields) {
             return UserFormatter::format($user, $fields);

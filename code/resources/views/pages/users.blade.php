@@ -19,10 +19,7 @@
 
             <x-larastrap::mbutton :label="_i('Esporta CSV')" triggers_modal="exportCSVusers" />
             <x-larastrap::modal id="exportCSVusers" :title="_i('Esporta CSV')" classes="close-on-submit">
-                <x-larastrap::form method="GET" :buttons="[['label' => _i('Download'), 'classes' => 'export-custom-list', 'attributes' => ['data-export-url' => url('users/export'), 'data-target' => '#user-list']]]" label_width="2" input_width="10">
-                    <p>
-                        {{ _i("Verranno esportati gli utenti attualmente filtrati nella lista principale, in funzione del loro stato e del loro ruolo.") }}
-                    </p>
+                <x-larastrap::form method="GET" :action="url('users/export')" :buttons="[['label' => _i('Download'), 'type' => 'submit']]">
                     <p>
                         {!! _i("Per la consultazione e l'elaborazione dei files in formato CSV (<i>Comma-Separated Values</i>) si consiglia l'uso di <a target=\"_blank\" href=\"http://it.libreoffice.org/\">LibreOffice</a>.") !!}
                     </p>

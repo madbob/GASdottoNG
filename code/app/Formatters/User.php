@@ -88,6 +88,13 @@ class User extends Formatter
                     return $obj->last_booking;
                 },
             ];
+
+			$ret['member_since'] = (object) [
+				'name' => _i('Membro da'),
+				'format' => function($obj, $context) {
+					return $obj->member_since;
+				},
+			];
         }
 
         return $ret;
