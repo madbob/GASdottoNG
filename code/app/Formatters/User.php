@@ -51,7 +51,14 @@ class User extends Formatter
         if ($current_gas->hasFeature('rid')) {
             $ret['rid->iban'] = (object) [
                 'name' => _i('IBAN'),
-                'checked' => true,
+            ];
+
+			$ret['rid->id'] = (object) [
+                'name' => _i('Mandato SEPA'),
+            ];
+
+			$ret['rid->date'] = (object) [
+                'name' => _i('Data Mandato SEPA'),
             ];
         }
 
