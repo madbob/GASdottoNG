@@ -34,25 +34,18 @@ class ModifierEngine
         }
 
         if ($modifier->value == 'percentage') {
-			/*
-				Nel (molto improbabile) caso di un modificatore percentuale
-				applicato al chilo, il valore di riferimento è il valore del
-				soggetto in esame
-			*/
-			if ($modifier->arithmetic == 'mass') {
-				$amount = $target->$price_attribute * $target->$weight_attribute;
-			}
-			else {
-				$amount = round($amount * ($definition->amount / 100), 4);
-			}
+			$amount = round($amount * ($definition->amount / 100), 4);
         }
         else if ($modifier->value == 'absolute') {
             $amount = $reference_quantity * $definition->amount;
-
-			if ($modifier->arithmetic == 'mass') {
-				$amount = $amount * $target->$weight_attribute;
-			}
         }
+		else if ($modifier->value == 'mass') {
+			/*
+				Per i calcoli "a peso" si applicano sempre valori assoluti, mai
+				percentuali
+			*/
+			$amount = ($reference_quantity * $definition->amount) * $target->$weight_attribute;
+		}
         else {
             /*
                 Per i modificatori che incidono sul prezzo del prodotti

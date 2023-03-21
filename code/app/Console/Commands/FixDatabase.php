@@ -27,7 +27,7 @@ class FixDatabase extends Command
 
     public function handle()
     {
-        DB::statement("ALTER TABLE modifiers MODIFY COLUMN arithmetic ENUM('sum','sub','passive','apply','mass') DEFAULT 'sum'");
+        DB::statement("ALTER TABLE modifiers MODIFY COLUMN value ENUM('absolute','percentage','price','mass') DEFAULT 'absolute'");
 
         /*
             I seeder dei tipi di movimento contabile e dei tipi di modificatore

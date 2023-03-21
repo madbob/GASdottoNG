@@ -39,6 +39,7 @@
                     $values = [
                         'absolute' => _i('Assoluto'),
                         'percentage' => _i('Percentuale'),
+						'mass' => _i('A Peso'),
                         'price' => (object) ['label' => _i('Prezzo Unitario'), 'disabled' => $modifier->applies_type == 'none'],
                     ];
 
@@ -63,6 +64,7 @@
                     $values = [
                         'absolute' => _i('Assoluto'),
                         'percentage' => _i('Percentuale'),
+						'mass' => _i('A Peso'),
                     ];
 
                     $applies_types = [
@@ -94,7 +96,6 @@
 						'sum' => _i('Somma'),
 						'sub' => _i('Sottrazione'),
 						'passive' => _i('Passivo'),
-						'mass' => _i('A Peso'),
 						'apply' => (object) ['label' => _i('Applica'), 'hidden' => true
 					]]" />
                 </div>
