@@ -38,26 +38,24 @@ trait PrintingOrders
 		if ($status == 'saved' || $status == 'delivered') {
             $get_total = 'delivered';
             $get_function = 'getDeliveredQuantity';
-            $get_function_real = false;
         }
         else {
             $get_total = 'booked';
             $get_function = 'getBookedQuantity';
-            $get_function_real = true;
         }
 
-		return [$get_total, $get_function, $get_function_real];
+		return [$get_total, $get_function];
 	}
 
 	protected function formatBookingInTable($order, $booking, $status, &$all_products)
 	{
 		$row = [];
-		list($get_total, $get_function, $get_function_real) = $this->bookingsRules($status);
+		list($get_total, $get_function) = $this->bookingsRules($status);
 
 		foreach ($order->products as $product) {
 			if ($product->variants->isEmpty()) {
 				if ($booking) {
-					$quantity = $booking->$get_function($product, $get_function_real, false);
+					$quantity = $booking->$get_function($product, false, true);
 				}
 				else {
 					$quantity = 0;
@@ -69,7 +67,7 @@ trait PrintingOrders
 			else {
 				foreach($product->variant_combos as $combo) {
 					if ($booking) {
-						$quantity = $booking->$get_function($combo, $get_function_real, false);
+						$quantity = $booking->$get_function($combo, false, true);
 					}
 					else {
 						$quantity = 0;
