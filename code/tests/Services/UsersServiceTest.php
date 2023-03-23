@@ -23,6 +23,9 @@ class UsersServiceTest extends TestCase
         $this->userWithBasePerm = $this->createRoleAndUser($this->gas, 'users.self');
         $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
 
+		$this->supplier = \App\Supplier::factory()->create();
+		$this->userWithShippingPerms = $this->createRoleAndUser($this->gas, 'supplier.shippings', $this->supplier);
+
         \App\User::factory()->count(3)->create(['gas_id' => $this->gas->id]);
 
         $otherGas = \App\Gas::factory()->create();
@@ -49,11 +52,11 @@ class UsersServiceTest extends TestCase
         $users = $this->services['users']->list();
 
         /*
-            In inizializzazione sono creati 3 utenti generici, più 5 con
+            In inizializzazione sono creati 3 utenti generici, più 6 con
             permessi particolari, e c'è userAdmin sempre inizializzato per tutti
             in TestCase
         */
-        $this->assertCount(9, $users);
+        $this->assertCount(10, $users);
         foreach ($users as $user) {
             $this->assertEquals($this->gas->id, $user->gas_id);
         }
@@ -116,6 +119,21 @@ class UsersServiceTest extends TestCase
 
         $this->assertCount(1, array_filter($users->toArray(), $findByID($user1->id)));
         $this->assertCount(1, array_filter($users->toArray(), $findByID($user2->id)));
+    }
+
+	/*
+        Elenco Utenti con permessi per le consegne
+    */
+    public function testListShipping()
+    {
+        $this->actingAs($this->userWithShippingPerms);
+
+        $users = $this->services['users']->list();
+
+        $this->assertTrue($users->count() != 0);
+        foreach ($users as $user) {
+            $this->assertEquals($this->gas->id, $user->gas_id);
+        }
     }
 
     /*

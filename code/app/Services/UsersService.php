@@ -17,7 +17,14 @@ class UsersService extends BaseService
 {
     public function list($term = '', $all = false)
     {
-        $user = $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
+		/*
+			Esiste il caso di un utente che non può vedere l'elenco degli utenti
+			ma può effettuare le consegne, e pertanto - per definizione - fare
+			prenotazioni anche per conto terzi. Questa autorizzazione serve per
+			permettere la ricerca nel pannello "Prenotazioni per Altri"
+		*/
+        $user = $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas', 'supplier.shippings' => null]);
+
         $gas_id = $user->gas['id'];
         $query = User::with('roles')->where('parent_id', null)->where('gas_id', '=', $gas_id);
 
