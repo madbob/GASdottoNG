@@ -121,6 +121,21 @@ class InvoicesService extends BaseService
         ];
     }
 
+	public function wire($id, $step, $request)
+	{
+		$this->ensureAuth(['movements.admin' => 'gas']);
+		$invoice = $this->show($id);
+
+		switch($step) {
+			case 'review':
+				$order_ids = $request['order_id'] ?? [];
+				$invoice->orders()->sync($order_ids);
+				$invoice->status = 'to_verify';
+				$invoice->save();
+				break;
+		}
+	}
+
     public function destroy($id)
     {
         $user = $this->ensureAuth(['movements.admin' => 'gas']);

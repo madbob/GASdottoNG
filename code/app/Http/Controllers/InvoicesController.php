@@ -205,21 +205,9 @@ class InvoicesController extends BackedController
 
     public function wiring(Request $request, $step, $id)
     {
-        $user = Auth::user();
-        if ($user->can('movements.admin', $user->gas) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
-
-        $invoice = Invoice::findOrFail($id);
-
-        switch($step) {
-            case 'review':
-                $order_ids = $request->input('order_id', []);
-                $invoice->orders()->sync($order_ids);
-                $invoice->status = 'to_verify';
-                $invoice->save();
-                return $this->successResponse();
-        }
+		return $this->easyExecute(function() use ($id, $step, $request) {
+	        $this->service->wire($id, $step, $request->all());
+		});
     }
 
     private function outputCSV($elements)

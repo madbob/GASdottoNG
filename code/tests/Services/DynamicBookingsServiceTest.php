@@ -324,6 +324,7 @@ class DynamicBookingsServiceTest extends TestCase
 
         foreach($ret->bookings as $b) {
             $this->assertEquals(count($b->products), 1);
+			$this->assertTrue($b->total > 0);
             $this->assertEquals($b->total, $product->price * 2 - ($product->price * 0.10 * 2));
             $this->assertEquals(count($b->modifiers), 1);
 

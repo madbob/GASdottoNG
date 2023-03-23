@@ -49,6 +49,21 @@ class InvoicesServiceTest extends TestCase
         return $this->services['invoices']->show($invoice->id);
     }
 
+	private function wireOrders($invoice)
+	{
+		$order1 = \App\Order::factory()->create([
+            'supplier_id' => $this->supplier->id,
+        ]);
+
+		$order2 = \App\Order::factory()->create([
+            'supplier_id' => $this->supplier->id,
+        ]);
+
+		$this->services['invoices']->wire($invoice->id, 'review', [
+			'order_id' => [$order1->id, $order2->id]
+		]);
+	}
+
     /*
         Salvataggio Fattura
     */
@@ -62,6 +77,13 @@ class InvoicesServiceTest extends TestCase
         $this->assertEquals(0, $invoice->orders()->count());
         $this->assertEquals(0, $invoice->otherMovements()->count());
         $this->assertNull($invoice->payment);
+
+		$this->wireOrders($invoice);
+
+		$this->nextRound();
+
+		$invoice = $this->services['invoices']->show($invoice->id);
+		$this->assertEquals(2, $invoice->orders()->count());
 
         return $invoice;
     }
@@ -126,11 +148,22 @@ class InvoicesServiceTest extends TestCase
 
         $this->nextRound();
 
+		$this->wireOrders($invoice);
+
+		$this->nextRound();
+
         $movement = \App\Movement::generate('invoice-payment', $this->userWithAdminPerm->gas, $invoice, 10);
         $movement->save();
 
         $invoices = $this->services['invoices']->list($past, $future, '0');
         $this->assertEquals(0, $invoices->count());
+
+		$this->nextRound();
+
+		$invoice = $this->services['invoices']->show($invoice->id);
+		foreach($invoice->orders as $order) {
+			$this->assertEquals($movement->id, $order->payment_id);
+		}
     }
 
     /*
@@ -199,8 +232,26 @@ class InvoicesServiceTest extends TestCase
     public function testDestroy()
     {
         $invoice = $this->createInvoice();
+		$this->wireOrders($invoice);
         $invoice = $this->services['invoices']->show($invoice->id);
         $this->assertNotNull($invoice);
+
+		$orders = $invoice->orders;
+		$this->assertEquals(2, $orders->count());
+
+		$this->nextRound();
+
+        $movement = \App\Movement::generate('invoice-payment', $this->userWithAdminPerm->gas, $invoice, 10);
+        $movement->save();
+
+		$this->nextRound();
+
+		foreach($orders as $order) {
+			$order = $this->services['orders']->show($order->id);
+			$this->assertEquals($movement->id, $order->payment_id);
+		}
+
+		$this->nextRound();
 
         $invoice = $this->services['invoices']->destroy($invoice->id);
 
@@ -211,5 +262,12 @@ class InvoicesServiceTest extends TestCase
         catch (ModelNotFoundException $e) {
             // good boy
         }
+
+		$this->nextRound();
+
+		foreach($orders as $order) {
+			$order = $this->services['orders']->show($order->id);
+			$this->assertNull($order->payment_id);
+		}
     }
 }

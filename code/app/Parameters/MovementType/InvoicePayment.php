@@ -52,6 +52,14 @@ class InvoicePayment extends MovementType
                 $invoice->save();
             },
             'delete' => function(Movement $movement) {
+				$invoice = $movement->target;
+
+                foreach($invoice->orders as $order) {
+                    $order->payment_id = null;
+                    $order->status = 'shipped';
+                    $order->save();
+                }
+
                 $movement->detachFromTarget('payment_id');
             }
         ];
