@@ -158,6 +158,7 @@ Route::middleware(['auth'])->group(function() {
         Route::get('movements/{targetid}/balance', 'MovementsController@getBalance')->name('movements.balance');
         Route::post('movements/recalculate', 'MovementsController@recalculate');
         Route::post('movements/close', 'MovementsController@closeBalance');
+		Route::get('movements/askdeletebalance/{id}', 'MovementsController@askDeleteBalance')->name('movements.askdeletebalance');
         Route::post('movements/deletebalance/{id}', 'MovementsController@deleteBalance')->name('movements.deletebalance');
         Route::get('movements/document/{type}/{subtype?}', 'MovementsController@document');
 

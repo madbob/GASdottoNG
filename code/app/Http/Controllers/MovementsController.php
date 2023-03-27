@@ -455,6 +455,12 @@ class MovementsController extends BackedController
         });
     }
 
+	public function askDeleteBalance($id)
+	{
+		$this->checkAuth();
+		return view('movement.deletebalance', ['id' => $id]);
+	}
+
     public function deleteBalance($id)
     {
         return $this->easyExecute(function() use ($id) {
