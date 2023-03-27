@@ -242,6 +242,19 @@ class Callables {
         });
     }
 
+	static afterMovementTypeChange(form, data) {
+        utils.postAjax({
+            method: 'GET',
+            url: 'movtypes/' + data.id + '/post_feedback',
+            dataType: 'JSON',
+            success: function(data) {
+                for (let i = 0; i < data.length; i++) {
+                    utils.j().fetchRemoteModal(data[i]);
+                }
+            }
+        });
+    }
+
     static afterModifierChange(form, data) {
         utils.postAjax({
             method: 'GET',

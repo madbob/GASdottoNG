@@ -162,6 +162,9 @@ Route::middleware(['auth'])->group(function() {
         Route::post('movements/deletebalance/{id}', 'MovementsController@deleteBalance')->name('movements.deletebalance');
         Route::get('movements/document/{type}/{subtype?}', 'MovementsController@document');
 
+		Route::get('movtypes/{id}/post_feedback', 'MovementTypesController@postFeedback')->name('movtypes.feedback');
+		Route::get('movtypes/{id}/brokenmodifier', 'MovementTypesController@brokenModifier')->name('movtypes.notifybrokenmodifier');
+
         Route::get('import/esmodal', 'ImportController@esModal')->name('import.esmodal');
         Route::post('import/csv', 'ImportController@postCsv');
         Route::get('import/gdxp', 'ImportController@getGdxp');

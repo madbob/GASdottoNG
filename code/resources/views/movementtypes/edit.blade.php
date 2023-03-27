@@ -18,7 +18,9 @@ foreach($classes as $class => $name) {
 ?>
 
 <x-larastrap::mform :obj="$type" classes="main-form movement-type-editor" method="PUT" :action="route('movtypes.update', $type->id)" :nodelete="$type->system">
-    @if($type->system)
+	<input type="hidden" name="post-saved-function" value="afterMovementTypeChange" class="skip-on-submit">
+
+	@if($type->system)
         <div class="row mb-4">
             <div class="col">
                 <div class="alert alert-danger">
@@ -27,6 +29,14 @@ foreach($classes as $class => $name) {
             </div>
         </div>
     @endif
+
+	@if($type->hasBrokenModifier())
+		<div class="row mb-4">
+			<div class="col">
+				@include('movementtypes.broken_modifier', ['id' => $type->id])
+			</div>
+		</div>
+	@endif
 
     <div class="row">
         <div class="col-12 col-md-6">

@@ -137,6 +137,32 @@ class MovementType extends Model
         }
     }
 
+	public function hasBrokenModifier()
+	{
+		if ($this->id == 'booking-payment') {
+			$types = Modifier::has('movementType')->get()->pluck('movement_type_id')->unique();
+			$types = MovementType::whereIn('id', $types)->get();
+
+			foreach($types as $type) {
+				if ($type->overlapsPaymentMethods($this) == false) {
+					return true;
+				}
+			}
+		}
+		else {
+			$has_modifiers = Modifier::where('movement_type_id', $this->id)->count();
+
+			if ($has_modifiers) {
+				$booking_payment_type = movementTypes('booking-payment');
+				if ($this->overlapsPaymentMethods($booking_payment_type) == false) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
     public function overlapsPaymentMethods($other_type)
     {
         $methods_local = array_keys(paymentsByType($this->id));
