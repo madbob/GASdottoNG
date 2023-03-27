@@ -16,8 +16,10 @@
         </thead>
         <tbody>
             @foreach($obj->balances as $index => $bal)
+				<?php $date = \Carbon\Carbon::parse($bal->date) ?>
+
                 <tr class="{{ $index == 0 ? 'current-balance' : '' }}">
-                    <td>{{ $index == 0 ? _i('Saldo Corrente') : ucwords(\Carbon\Carbon::parse($bal->date)->isoFormat('D MMMM YYYY')) }}</td>
+                    <td>{{ $index == 0 ? _i('Saldo Corrente') : ucwords($date->isoFormat('D MMMM YYYY')) }}</td>
 
                     @foreach($obj->balanceFields() as $identifier => $name)
                         <td class="{{ $index == 0 ? $identifier : '' }}">
@@ -26,9 +28,9 @@
                     @endforeach
 
                     @if($can_edit)
-                        <td>
+                        <td class="text-end">
                             @if($index != 0)
-                                <x-larastrap::iconbutton label="<i class='bi-x-lg'></i>" color="danger" :triggers_modal="sprintf('#modal-delete-balance-%s', $index)" />
+                                <x-larastrap::iconbutton label="<i class='bi-x-lg'></i>" color="danger" :triggers_modal="sprintf('#modal-delete-balance-%s', $index)" size="sm" />
 
                                 <x-larastrap::modal :title="_i('Elimina Saldo Passato')" :id="sprintf('modal-delete-balance-%s', $index)" size="lg">
                                     <x-larastrap::iform classes="form-inline iblock" :action="route('movements.deletebalance', $bal->id)">
@@ -42,6 +44,10 @@
                                         </div>
                                     </x-larastrap::iform>
                                 </x-larastrap::modal>
+
+								@if(is_a($obj, App\Gas::class))
+									<x-larastrap::ambutton :label="_i('Dettagli')" color="info" :data-modal-url="route('movements.history.details', ['date' => $date->format('Y-m-d')])" size="sm" />
+								@endif
                             @endif
                         </td>
                     @endif

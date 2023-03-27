@@ -152,9 +152,9 @@ Route::middleware(['auth'])->group(function() {
         Route::get('movements/ro/{id}', 'MovementsController@show_ro');
         Route::get('movements/{id}/header', 'MovementsController@objhead')->name('movements.objhead');
         Route::get('movtypes/{id}/header', 'MovementTypesController@objhead')->name('movtypes.objhead');
-        Route::get('movements/showcredits', 'MovementsController@creditsTable');
-        Route::get('movements/showsuppliers', 'MovementsController@suppliersTable');
+        Route::get('movements/credits/{type}', 'MovementsController@creditsTable')->name('movements.credits');
         Route::get('movements/{targetid}/history', 'MovementsController@getHistory')->name('movements.history');
+		Route::get('movements/history/details', 'MovementsController@getHistoryDetails')->name('movements.history.details');
         Route::get('movements/{targetid}/balance', 'MovementsController@getBalance')->name('movements.balance');
         Route::post('movements/recalculate', 'MovementsController@recalculate');
         Route::post('movements/close', 'MovementsController@closeBalance');

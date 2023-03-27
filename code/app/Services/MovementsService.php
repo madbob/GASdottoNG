@@ -4,10 +4,10 @@ namespace App\Services;
 
 use App\Exceptions\IllegalArgumentException;
 
-use DB;
-use Auth;
-use App;
-use Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 
 use App\Models\Concerns\CreditableTrait;
 use App\Movement;
@@ -312,6 +312,30 @@ class MovementsService extends BaseService
             return false;
         }
     }
+
+	public function creditHistory($class, $date)
+	{
+		$currencies = Currency::enabled();
+		$balances = Balance::where(DB::raw('DATE(date)'), $date)->where('target_type', $class)->get();
+		$ret = [];
+
+		foreach($balances as $balance) {
+			$target = $balance->target;
+			if ($target) {
+				$name = $target->printableName();
+				$amounts = [];
+
+				foreach($currencies as $currency) {
+					$amounts[] = $target->retrieveBalanceAmount($currency, $date);
+				}
+
+				$ret[$name] = $amounts;
+			}
+		}
+
+		ksort($ret, SORT_STRING | SORT_FLAG_CASE);
+		return $ret;
+	}
 
     public function deleteBalance($id)
     {

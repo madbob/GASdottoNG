@@ -4,15 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 
 use Auth;
-use Log;
 use Artisan;
 use Response;
-
 use PDF;
 
 use App\User;
+use App\Supplier;
+use App\Balance;
 use App\Currency;
 use App\Movement;
 
@@ -209,16 +210,10 @@ class MovementsController extends BackedController
         });
     }
 
-    public function creditsTable()
+    public function creditsTable($type)
     {
 		$this->checkAuth();
-        return view('movement.credits');
-    }
-
-    public function suppliersTable()
-    {
-        $this->checkAuth();
-        return view('movement.suppliers');
+    	return view('movement.' . $type);
     }
 
     private function exportIntegralCES($gas, $objects, $filename, $body)
@@ -269,25 +264,6 @@ class MovementsController extends BackedController
                     $users = $users->filter(function($u) use ($filtered_users) {
                         return in_array($u->id, $filtered_users);
                     });
-                }
-                else {
-                    /*
-                        TODO FIX: capire come gestire i filtri in caso di valute multiple
-                    */
-
-                    $group = $request->input('credit', 'all');
-                    $threeshold = $request->input('amount', 0);
-
-                    if ($group == 'minor') {
-                        $users = $users->filter(function($u) use ($threeshold) {
-                            return $u->currentBalanceAmount(defaultCurrency()) <= $threeshold;
-                        });
-                    }
-                    else if ($group == 'major') {
-                        $users = $users->filter(function($u) use ($threeshold) {
-                            return $u->currentBalanceAmount(defaultCurrency()) >= $threeshold;
-                        });
-                    }
                 }
 
                 if ($subtype == 'csv') {
@@ -418,6 +394,42 @@ class MovementsController extends BackedController
         $obj = fromInlineId($targetid);
         return view('movement.history', ['obj' => $obj]);
     }
+
+	public function getHistoryDetails(Request $request)
+	{
+		$this->checkAuth();
+		$date = $request->input('date');
+
+		$users = $this->service->creditHistory(User::class, $date);
+		$suppliers = $this->service->creditHistory(Supplier::class, $date);
+
+		$format = $request->input('format');
+		if ($format == 'csv') {
+			$target = $request->input('target');
+			if ($target == 'users') {
+				$target = $users;
+			}
+			else {
+				$target = $suppliers;
+			}
+
+			$data = [];
+
+			foreach($target as $name => $row) {
+				$data[] = array_merge([$name], $row);
+			}
+
+			$filename = sanitizeFilename(_i('Storico Saldi al %s.csv', Carbon::parse()->format('d/m/Y')));
+			return output_csv($filename, null, $data, null);
+		}
+		else {
+			return view('movement.historydetails', [
+				'date' => $date,
+				'users' => $users,
+				'suppliers' => $suppliers,
+			]);
+		}
+	}
 
     public function recalculate()
     {

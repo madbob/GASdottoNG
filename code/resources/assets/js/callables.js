@@ -139,6 +139,8 @@ class Callables {
     }
 
     static collectFilteredUsers(form) {
+		form.find('input:hidden[name^="users"').remove();
+
         $('#credits_status_table tbody tr:visible').each(function() {
             var user_id = $(this).find('input[name^=user_id]').val();
             form.append('<input type="hidden" name="users[]" value="' + user_id + '">');

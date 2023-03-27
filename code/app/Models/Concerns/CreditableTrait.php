@@ -4,9 +4,7 @@ namespace App\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Arr;
-
-use DB;
-use Log;
+use Illuminate\Support\Facades\DB;
 
 use App\Currency;
 use App\Balance;
@@ -147,9 +145,9 @@ trait CreditableTrait
     {
         $proxy = $this->getActualObject();
 
-        $balance = $proxy->balances()->where('current', true)->where('currency_id', $currency->id)->first();
+        $balance = $proxy->balances()->where('current', true)->where('currency_id', $currency->id)->orderBy('date', 'desc')->first();
         if (is_null($balance)) {
-            $balance = $this->balances()->where('current', false)->where('currency_id', $currency->id)->first();
+            $balance = $this->balances()->where('current', false)->where('currency_id', $currency->id)->orderBy('date', 'desc')->first();
             if (is_null($balance)) {
                 $balance = $this->fixFirstBalance($currency);
             }
@@ -161,6 +159,12 @@ trait CreditableTrait
 
         return $balance;
     }
+
+	public function retrieveBalance($currency, $date)
+	{
+		$proxy = $this->getActualObject();
+        return $proxy->balances()->where(DB::raw('DATE(date)'), $date)->where('currency_id', $currency->id)->orderBy('date', 'desc')->first();
+	}
 
     public function extendedCurrentBalance($currency)
     {
@@ -182,6 +186,17 @@ trait CreditableTrait
         $balance = $this->currentBalance($currency);
         return $balance->bank + $balance->cash;
     }
+
+	public function retrieveBalanceAmount($currency, $date)
+	{
+		$balance = $this->retrieveBalance($currency, $date);
+		if ($balance) {
+        	return $balance->bank + $balance->cash;
+		}
+		else {
+			return 0;
+		}
+	}
 
     public function alterBalance($amount, $currency, $type = 'bank')
     {

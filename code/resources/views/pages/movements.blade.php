@@ -20,8 +20,8 @@
                                 'import_target' => 'movements',
                             ])
 
-                            <x-larastrap::ambutton :label="_i('Stato Crediti')" :data-modal-url="url('movements/showcredits')" />
-                            <x-larastrap::ambutton :label="_i('Stato Fornitori')" :data-modal-url="url('movements/showsuppliers')" />
+                            <x-larastrap::ambutton :label="_i('Stato Crediti')" :data-modal-url="route('movements.credits', ['type' => 'credits'])" />
+                            <x-larastrap::ambutton :label="_i('Stato Fornitori')" :data-modal-url="route('movements.credits', ['type' => 'suppliers'])" />
                         </div>
                     </div>
 

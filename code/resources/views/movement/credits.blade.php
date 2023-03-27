@@ -1,17 +1,15 @@
 <div class="modal fade delete-on-close">
-    <?php $currencies = App\Currency::enabled() ?>
-
     <div class="modal-dialog modal-xl modal-fullscreen-md-down modal-dialog-scrollable">
-        <div class="modal-content">
+        <div class="modal-content credits-modal">
             <div class="modal-header">
                 <h5 class="modal-title">{{ _i('Stato Crediti') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
-                <div class="row">
+				<div class="row">
                     <div class="col">
-                        <div class="form-group">
+                        <x-larastrap::field :label="_i('Credito Residuo')">
                             <div class="input-group table-number-filters" data-table-target="#creditsTable">
                                 <div class="input-group-text">
                                     <input class="form-check-input mt-0" type="radio" value="min" name="filter_mode">&nbsp;{{ _i('Minore di') }}
@@ -21,73 +19,71 @@
                                 </div>
                                 <input type="number" class="form-control table-number-filter" placeholder="{{ _i('Filtra Credito') }}">
                                 <div class="input-group-text">
-                                    {{ $currentgas->currency }}
+                                    {{ defaultCurrency()->symbol }}
                                 </div>
                             </div>
-                        </div>
+                        </x-larastrap::field>
+
+						@php
+
+						$payment_options = [
+							'all' => _i('Tutti'),
+							'none' => _i('Non Specificato'),
+						];
+
+						foreach(paymentTypes() as $payment_identifier => $payment_meta) {
+							$payment_options[$payment_identifier] = $payment_meta->name;
+						}
+
+						@endphp
+						<x-larastrap::radios name="payment_method" :label="_i('Modalità Pagamento')" :options="$payment_options" value="all" classes="table-filters" :attributes="['data-table-target' => '#creditsTable']" />
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col">
-                        <div class="form-group">
-                            <div class="btn-group table-filters" data-bs-toggle="buttons" data-table-target="#creditsTable">
-                                <label class="btn btn-light active">
-                                    <input type="radio" name="payment_method" class="active" value="all"> {{ _i('Tutti') }}
-                                </label>
-                                <label class="btn btn-light">
-                                    <input type="radio" name="payment_method" value="none"> {{ _i('Non Specificato') }}
-                                </label>
-                                @foreach(paymentTypes() as $payment_identifier => $payment_meta)
-                                    <label class="btn btn-light">
-                                        <input type="radio" name="payment_method" value="{{ $payment_identifier }}"> {{ $payment_meta->name }}
-                                    </label>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                </div>
+				<hr />
 
                 <div class="row">
-                    <div class="col" id="credits_status_table">
-                        <div class="table-responsive">
-                            <table class="table" id="creditsTable">
-                                <thead>
-                                    <tr>
-                                        <th width="40%">{{ _i('Nome') }}</th>
-                                        @foreach($currencies as $curr)
-                                            <th width="{{ round(35 / $currencies->count(), 2) }}%">{{ _i('Credito Residuo') }}</th>
-                                        @endforeach
-                                        <th width="25%">{{ _i('Modalità Pagamento') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($currentgas->users()->topLevel()->get() as $user)
-                                        <tr data-filtered-payment_method="{{ $user->payment_method_id }}">
-                                            <td>
-                                                <input type="hidden" name="user_id[]" value="{{ $user->id }}">
-                                                {{ $user->printableName() }}
-                                            </td>
+					<div class="col" id="credits_status_table">
+						<div class="table-responsive">
+							<table class="table" id="creditsTable">
+								<?php $currencies = App\Currency::enabled() ?>
 
-                                            @foreach($currencies as $curr)
-                                                <td class="text-filterable-cell">
-                                                    {{ printablePriceCurrency($user->currentBalanceAmount($curr), '.', $curr) }}
-                                                </td>
-                                            @endforeach
+								<thead>
+									<tr>
+										<th width="40%">{{ _i('Nome') }}</th>
+										@foreach($currencies as $curr)
+											<th width="{{ round(35 / $currencies->count(), 2) }}%">{{ _i('Credito Residuo') }}</th>
+										@endforeach
+										<th width="25%">{{ _i('Modalità Pagamento') }}</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach($currentgas->users()->topLevel()->get() as $user)
+										<tr data-filtered-payment_method="{{ $user->payment_method_id }}">
+											<td>
+												<input type="hidden" name="user_id[]" value="{{ $user->id }}">
+												{{ $user->printableName() }}
+											</td>
 
-                                            <td>
-                                                {{ $user->payment_method->name }}
+											@foreach($currencies as $curr)
+												<td class="text-filterable-cell">
+													{{ printablePriceCurrency($user->currentBalanceAmount($curr), '.', $curr) }}
+												</td>
+											@endforeach
 
-                                                @if(($user->payment_method->valid_config)($user) == false)
-                                                    <i class="bi-slash-circle"></i>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+											<td>
+												{{ $user->payment_method->name }}
+
+												@if(($user->payment_method->valid_config)($user) == false)
+													<i class="bi-slash-circle"></i>
+												@endif
+											</td>
+										</tr>
+									@endforeach
+								</tbody>
+							</table>
+						</div>
+					</div>
                 </div>
             </div>
 

@@ -1,8 +1,8 @@
 <div class="modal fade delete-on-close">
     <?php $currencies = App\Currency::enabled() ?>
 
-    <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-scrollable">
-        <div class="modal-content">
+    <div class="modal-dialog modal-xl modal-fullscreen-md-down modal-dialog-scrollable">
+        <div class="modal-content credits-modal">
             <div class="modal-header">
                 <h5 class="modal-title">{{ _i('Stato Fornitori') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -11,7 +11,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col">
-                        <div class="form-group">
+                        <x-larastrap::field :label="_i('Saldo Attuale')">
                             <div class="input-group table-number-filters" data-table-target="#suppliersTable">
                                 <div class="input-group-text">
                                     <input class="form-check-input mt-0" type="radio" value="min" name="filter_mode">&nbsp;{{ _i('Minore di') }}
@@ -21,44 +21,48 @@
                                 </div>
                                 <input type="number" class="form-control table-number-filter" placeholder="{{ _i('Filtra Credito') }}">
                                 <div class="input-group-text">
-                                    {{ $currentgas->currency }}
+                                    {{ defaultCurrency()->symbol }}
                                 </div>
                             </div>
-                        </div>
+                        </x-larastrap::field>
                     </div>
                 </div>
 
+				<hr/>
+
                 <div class="row">
-                    <div class="col" id="credits_status_table">
-                        <div class="table-responsive">
-                            <table class="table" id="suppliersTable">
-                                <thead>
-                                    <tr>
-                                        <th width="50%">{{ _i('Nome') }}</th>
+					<div class="col" id="credits_status_table">
+						<div class="table-responsive">
+							<table class="table" id="suppliersTable">
+								<?php $currencies = App\Currency::enabled() ?>
 
-                                        @foreach($currencies as $curr)
-                                            <th width="{{ round(50 / $currencies->count(), 2) }}%">{{ _i('Saldo Attuale') }}</th>
-                                        @endforeach
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($currentgas->suppliers as $supplier)
-                                        <tr>
-                                            <td>
-                                                {{ $supplier->printableName() }}
-                                            </td>
+								<thead>
+									<tr>
+										<th width="50%">{{ _i('Nome') }}</th>
 
-                                            @foreach($currencies as $curr)
-                                                <td class="text-filterable-cell">
-                                                    {{ printablePriceCurrency($supplier->currentBalanceAmount($curr), '.', $curr) }}
-                                                </td>
-                                            @endforeach
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+										@foreach($currencies as $curr)
+											<th width="{{ round(50 / $currencies->count(), 2) }}%">{{ _i('Saldo Attuale') }}</th>
+										@endforeach
+									</tr>
+								</thead>
+								<tbody>
+									@foreach($currentgas->suppliers as $supplier)
+										<tr>
+											<td>
+												{{ $supplier->printableName() }}
+											</td>
+
+											@foreach($currencies as $curr)
+												<td class="text-filterable-cell">
+													{{ printablePriceCurrency($supplier->currentBalanceAmount($curr), '.', $curr) }}
+												</td>
+											@endforeach
+										</tr>
+									@endforeach
+								</tbody>
+							</table>
+						</div>
+					</div>
                 </div>
             </div>
 
