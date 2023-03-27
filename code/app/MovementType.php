@@ -140,7 +140,7 @@ class MovementType extends Model
 	public function hasBrokenModifier()
 	{
 		if ($this->id == 'booking-payment') {
-			$types = Modifier::has('movementType')->get()->pluck('movement_type_id')->unique();
+			$types = Modifier::has('movementType')->pluck('movement_type_id')->unique();
 			$types = MovementType::whereIn('id', $types)->get();
 
 			foreach($types as $type) {
