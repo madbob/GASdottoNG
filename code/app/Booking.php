@@ -347,7 +347,7 @@ class Booking extends Model
             foreach($friends as $sub) {
                 foreach($sub->products as $sub_p) {
                     $master_p = $products->firstWhere('product_id', $sub_p->product_id);
-                    if (is_null($master_p)) {
+                    if (is_null($master_p) || $sub_p->product->canAggregateQuantities() == false) {
                         $products->push($sub_p);
                     }
                     else {

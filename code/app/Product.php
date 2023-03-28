@@ -233,6 +233,20 @@ class Product extends Model
         return implode(', ', $details);
     }
 
+	/*
+		Questa funzione determina se posso aggregare le quantità per lo stesso
+		prodotto all'interno della stessa prenotazione, in presenza di amici o
+		varianti con la stessa combinazione.
+		Ci sono casi in cui voglio un unico prodotto prenotato, con una unica
+		quantità, e casi in cui per ogni immissione voglio una quantità separata
+		(e.g. la carne venduta a pacchi da N etti: può essere sempre la stessa
+		carne, ma ne voglio pacchi diversi ciascuno col suo peso)
+	*/
+	public function canAggregateQuantities()
+	{
+		return $this->measure->discrete == false && $this->portion_quantity != 0;
+	}
+
     public function hasWarningWithinOrder($summary)
     {
         if (isset($summary->products[$this->id])) {
