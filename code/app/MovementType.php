@@ -150,8 +150,7 @@ class MovementType extends Model
 			}
 		}
 		else {
-			$has_modifiers = Modifier::where('movement_type_id', $this->id)->count();
-
+			$has_modifiers = Modifier::where('movement_type_id', $this->id)->exists();
 			if ($has_modifiers) {
 				$booking_payment_type = movementTypes('booking-payment');
 				if ($this->overlapsPaymentMethods($booking_payment_type) == false) {
@@ -163,6 +162,11 @@ class MovementType extends Model
 		return false;
 	}
 
+	/*
+		Questa funzione controlla che tutti i metodi di pagamento previsti dal
+		tipo di movimento passato come parametro siano attivi per il tipo di
+		movimento corrente, ma non controlla il contrario (né deve farlo)
+	*/
     public function overlapsPaymentMethods($other_type)
     {
         $methods_local = array_keys(paymentsByType($this->id));

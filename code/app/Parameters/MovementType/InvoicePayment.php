@@ -60,6 +60,7 @@ class InvoicePayment extends MovementType
                     $order->save();
                 }
 
+				$invoice->status = 'verified';
                 $movement->detachFromTarget('payment_id');
             }
         ];

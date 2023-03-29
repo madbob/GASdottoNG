@@ -199,7 +199,7 @@ class Order extends Printer
     private function formatTableRows($order, $shipping_place, $status, $fields, &$all_products)
     {
         $bookings = $this->orderTopBookingsByShipping($order, $shipping_place, $status == 'saved' ? 'saved' : null);
-		list($get_total, $get_function, $get_function_real) = $this->bookingsRules($status);
+		list($get_total, $get_function) = $this->bookingsRules($status);
 
         $data = [];
         $total_price = 0;
