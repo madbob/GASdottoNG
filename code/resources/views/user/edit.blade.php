@@ -123,17 +123,17 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
     </x-larastrap::tabpane>
 
     @if($has_accounting)
-        <x-larastrap::remotetabpane :label="_i('Contabilità')" :button_attributes="['data-tab-url' => route('users.accounting', $user->id)]" icon="bi-piggy-bank">
+        <x-larastrap::remotetabpane :id="sprintf('accounting-%s', sanitizeId($user->id))" :label="_i('Contabilità')" :button_attributes="['data-tab-url' => route('users.accounting', $user->id)]" icon="bi-piggy-bank">
         </x-larastrap::remotetabpane>
     @endif
 
     @if($has_bookings)
-        <x-larastrap::remotetabpane :label="_i('Prenotazioni')" :button_attributes="['data-tab-url' => route('users.bookings', $user->id)]" icon="bi-list-task">
+        <x-larastrap::remotetabpane :id="sprintf('bookings-%s', sanitizeId($user->id))" :label="_i('Prenotazioni')" :button_attributes="['data-tab-url' => route('users.bookings', $user->id)]" icon="bi-list-task">
         </x-larastrap::remotetabpane>
     @endif
 
     @if($has_stats)
-        <x-larastrap::remotetabpane :label="_i('Statistiche')" :button_attributes="['data-tab-url' => route('users.stats', $user->id)]" icon="bi-graph-up">
+        <x-larastrap::remotetabpane :id="sprintf('stats-%s', sanitizeId($user->id))" :label="_i('Statistiche')" :button_attributes="['data-tab-url' => route('users.stats', $user->id)]" icon="bi-graph-up">
         </x-larastrap::remotetabpane>
     @endif
 
