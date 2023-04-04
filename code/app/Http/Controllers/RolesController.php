@@ -43,7 +43,7 @@ class RolesController extends BackedController
     public function formByUser(Request $request, $user_id)
     {
         $this->ensureAuth(['gas.permissions' => 'gas', 'users.admin' => 'gas']);
-        $user = User::find($user_id);
+        $user = User::withTrashed()->find($user_id);
         return view('permissions.user-edit', ['user' => $user]);
     }
 
@@ -57,7 +57,7 @@ class RolesController extends BackedController
     public function tableByUser(Request $request, $user_id)
     {
         $this->ensureAuth(['gas.permissions' => 'gas', 'users.admin' => 'gas']);
-        $user = User::find($user_id);
+        $user = User::withTrashed()->find($user_id);
         return view('commons.permissionsviewer', ['object' => $user, 'editable' => true]);
     }
 
