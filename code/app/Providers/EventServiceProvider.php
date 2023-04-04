@@ -9,7 +9,6 @@ use App\Observers\MovementObserver;
 use App\Observers\UserObserver;
 use App\Observers\SupplierObserver;
 use App\Observers\OrderObserver;
-use App\Observers\BookingObserver;
 use App\Observers\InvoiceObserver;
 use App\Observers\ModifierObserver;
 use App\Observers\ContactObserver;
@@ -61,7 +60,6 @@ class EventServiceProvider extends ServiceProvider
         User::observe(UserObserver::class);
         Supplier::observe(SupplierObserver::class);
         Order::observe(OrderObserver::class);
-        Booking::observe(BookingObserver::class);
 		Invoice::observe(InvoiceObserver::class);
         Modifier::observe(ModifierObserver::class);
         Contact::observe(ContactObserver::class);

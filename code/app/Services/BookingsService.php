@@ -252,7 +252,7 @@ class BookingsService extends BaseService
             aggregato e l'utente non ha partecipato a qualcuno degli ordini; in
             tal caso, la sua prenotazione vuota non va salvata
         */
-        if (($delivering == false || $existed_before == false) && $booking->products()->count() == 0) {
+        if (($delivering == false || $existed_before == false) && $booked_products->count() == 0) {
             $booking->delete();
             return null;
         }
