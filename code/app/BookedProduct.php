@@ -13,6 +13,7 @@ use Log;
 
 use App\Models\Concerns\ModifiedTrait;
 use App\Models\Concerns\LeafReducibleTrait;
+use App\Parameters\Constraints\Constraint;
 use App\Exceptions\InvalidQuantityConstraint;
 use App\Events\SluggableCreating;
 
@@ -95,9 +96,9 @@ class BookedProduct extends Model
         return $this->product->contextualPrice($rectify);
     }
 
-    public function testConstraints($quantity, $variant = null)
+    public function testConstraints($quantity, $variant = null, $only_mandatory = false)
     {
-        $sorted_contraints = \App\Parameters\Constraints\Constraint::sortedContraints();
+        $sorted_contraints = Constraint::sortedContraints($only_mandatory);
         foreach($sorted_contraints as $constraints) {
             foreach($constraints as $constraint) {
                 $constraint->test($this, $quantity);

@@ -32,27 +32,19 @@ class DynamicBookingsService extends BookingsService
             Lo faccio qui, server-side, per evitare problemi di compatibilità
             client-side (è stato più volte segnalato che su determinati browser
             mobile ci siano problemi su questi controlli).
-            Ma solo se non sono in consegna: in quel caso è ammesso immettere
-            qualsiasi quantità
         */
 
-        if ($delivering) {
-            $final_quantity = $subject->delivered;
+        try {
+            $final_quantity = $product->testConstraints($subject->quantity, $variant, $delivering);
             $message = '';
         }
-        else {
-            try {
-                $final_quantity = $product->testConstraints($subject->quantity, $variant);
-                $message = '';
-            }
-            catch(InvalidQuantityConstraint $e) {
-                $final_quantity = 0;
-                $message = $e->getMessage();
-            }
-            catch(AnnotatedQuantityConstraint $e) {
-                $final_quantity = $subject->quantity;
-                $message = $e->getMessage();
-            }
+        catch(InvalidQuantityConstraint $e) {
+            $final_quantity = 0;
+            $message = $e->getMessage();
+        }
+        catch(AnnotatedQuantityConstraint $e) {
+            $final_quantity = $subject->quantity;
+            $message = $e->getMessage();
         }
 
         return [$final_quantity, $message];

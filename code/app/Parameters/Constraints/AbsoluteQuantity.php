@@ -11,6 +11,11 @@ class AbsoluteQuantity extends Constraint
         return 'absolute';
     }
 
+    public function mandatoryContraint()
+    {
+        return true;
+    }
+
     public function printable($product, $order)
     {
         /*

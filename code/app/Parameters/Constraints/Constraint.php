@@ -18,6 +18,11 @@ use App\Parameters\Parameter;
 
 abstract class Constraint extends Parameter
 {
+    public function mandatoryContraint()
+    {
+        return false;
+    }
+
     public function hardContraint()
     {
         return true;
@@ -31,7 +36,7 @@ abstract class Constraint extends Parameter
         Pertanto qui li ordino affinché possano essere valutati prima quelli
         hard e poi, se non sono state sollevate eccezioni bloccanti, quelli soft
     */
-    public static function sortedContraints()
+    public static function sortedContraints($only_mandatory = false)
     {
         $constraints = systemParameters('Constraints');
 
@@ -41,6 +46,10 @@ abstract class Constraint extends Parameter
         ];
 
         foreach($constraints as $constraint) {
+            if ($only_mandatory == true && $contraint->mandatoryContraint() == false) {
+                continue;
+            }
+
             if ($constraint->hardContraint()) {
                 $sorted_contraints[0][] = $constraint;
             }
