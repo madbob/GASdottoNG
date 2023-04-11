@@ -33,6 +33,22 @@ class MovementsServiceTest extends TestCase
     }
 
     /*
+        Accesso Movimenti
+    */
+    public function testList()
+    {
+        $this->actingAs($this->userWithAdminPerm);
+        $this->services['movements']->list([]);
+
+        $this->actingAs($this->userWithReferrerPerms);
+        $this->services['movements']->list([]);
+
+        $this->expectException(AuthException::class);
+        $this->actingAs($this->userWithNoPerms);
+        $this->services['movements']->list([]);
+    }
+
+    /*
         Creazione Movimento
     */
     public function testStore()

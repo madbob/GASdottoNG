@@ -124,11 +124,16 @@ class UsersController extends BackedController
         });
     }
 
-    private function testInternalFunctionsAccess($requester, $target)
+    private function testInternalFunctionsAccess($requester, $target, $type)
     {
         $admin_editable = $requester->can('users.admin', $target->gas);
         $access = ($admin_editable || $requester->id == $target->id || $target->parent_id == $requester->id);
-        if (!$access) {
+
+        if ($access == false && $type == 'accounting') {
+            $access = $requester->can('movements.admin', $target->gas) || $requester->can('movements.view', $target->gas);
+        }
+
+        if ($access == false) {
             throw new AuthException(403);
         }
     }
@@ -137,7 +142,7 @@ class UsersController extends BackedController
     {
         return $this->easyExecute(function() use ($request, $id) {
             $user = $this->service->show($id);
-            $this->testInternalFunctionsAccess($request->user(), $user);
+            $this->testInternalFunctionsAccess($request->user(), $user, 'bookings');
             $booked_orders = $this->getOrders($id, 0, date('Y-m-d', strtotime('-1 months')), '2100-01-01');
             return view('user.bookings', ['user' => $user, 'booked_orders' => $booked_orders]);
         });
@@ -147,7 +152,7 @@ class UsersController extends BackedController
     {
         return $this->easyExecute(function() use ($request, $id) {
             $user = $this->service->show($id);
-            $this->testInternalFunctionsAccess($request->user(), $user);
+            $this->testInternalFunctionsAccess($request->user(), $user, 'accounting');
             return view('commons.statspage', ['target' => $user]);
         });
     }
@@ -156,7 +161,7 @@ class UsersController extends BackedController
     {
         return $this->easyExecute(function() use ($request, $id) {
             $user = $this->service->show($id);
-            $this->testInternalFunctionsAccess($request->user(), $user);
+            $this->testInternalFunctionsAccess($request->user(), $user, 'accounting');
             return view('user.accounting', ['user' => $user]);
         });
     }

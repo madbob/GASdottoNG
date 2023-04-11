@@ -20,6 +20,8 @@ class MovementsService extends BaseService
 {
     public function list($request)
     {
+        $this->ensureAuth(['movements.admin' => 'gas', 'movements.view' => 'gas']);
+
         /*
             TODO sarebbe assai più efficiente usare with('sender') e
             with('target'), ma poi la relazione in Movement si spacca (cambiando

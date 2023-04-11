@@ -11,7 +11,7 @@ else {
 }
 
 $display_page = $display_page ?? false;
-$has_accounting = ($admin_editable || $currentuser->id == $user->id) && ($user->isFriend() == false && someoneCan('movements.admin', $user->gas));
+$has_accounting = ($admin_editable || $currentuser->id == $user->id || $currentuser->can('movements.admin', $currentgas) || $currentuser->can('movements.view', $currentgas)) && ($user->isFriend() == false && someoneCan('movements.admin', $user->gas));
 $has_stats = $has_accounting;
 $has_bookings = ($currentuser->id == $user->id);
 $has_friends = $editable && $user->can('users.subusers');
