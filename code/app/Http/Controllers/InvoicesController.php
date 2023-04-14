@@ -207,6 +207,7 @@ class InvoicesController extends BackedController
     {
 		return $this->easyExecute(function() use ($id, $step, $request) {
 	        $this->service->wire($id, $step, $request->all());
+            return $this->successResponse();
 		});
     }
 
