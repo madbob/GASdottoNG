@@ -8,22 +8,6 @@ GASdotto è il gestionale web-based per gruppi di acquisto.
 
 ### Per documentazione e hosting gratuito visita il sito www.gasdotto.net
 
-### Docker
-
-Per chi lo trovasse più comodo, è previsto uno script per costruirsi un container Docker in cui procedere con lo sviluppo.
-
-```bash
-cd code
-./build.sh
-```
-
-```bash
-cd code
-./run.sh # quindi collegarsi a http://localhost:8000
-./test.sh # per eseguire i test automatici
-./test.sh PATTERN_NOME_TEST # per eseguire i test il cui nome matcha il pattern
-```
-
 ### Troubleshooting
 
  * potrebbe essere necessario installare la localizzazione italiana del sistema (in particolare per formattare le date). Per installarla, qualora mancante, eseguire `dpkg-reconfigure locales` sul proprio server
