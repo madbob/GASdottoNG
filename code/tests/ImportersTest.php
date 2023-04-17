@@ -2,7 +2,12 @@
 
 namespace Tests;
 
+use Illuminate\Support\Facades\Notification;
+
 use App\Importers\GDXP\Suppliers;
+use App\Notifications\ManualWelcomeMessage;
+use App\User;
+use App\Supplier;
 
 class ImportersTest extends TestCase
 {
@@ -90,5 +95,76 @@ class ImportersTest extends TestCase
         $this->assertEquals('Frutta secca', $data['products'][9]->temp_category_name);
         $this->assertEquals('Sacchetti', $data['products'][9]->temp_measure_name);
         $this->assertEquals(0, $data['products'][9]->vat_rate_id);
+    }
+
+    public function testUsersCsv()
+    {
+        $this->actingAs($this->userAdmin);
+
+        Notification::fake();
+
+        $data = [];
+        $path = base_path('tests/data/users.csv');
+
+        $importer = \App\Importers\CSV\CSVImporter::getImporter('users');
+
+        $request = new \Illuminate\Http\Request();
+        $request->merge([
+            'path' => $path,
+            'column' => ['firstname', 'lastname', 'username', 'password', 'email', 'phone'],
+        ]);
+
+        $response = $importer->run($request);
+        $this->assertEquals(3, count($response['objects']));
+
+        $user1 = User::where('username', 'mario')->first();
+        $this->assertNotNull($user1);
+        $this->assertEquals('mario@example.com', $user1->email);
+
+        $user2 = User::where('username', 'giovanni')->first();
+        $this->assertNotNull($user2);
+
+        Notification::assertSentTo([$user1, $user2], ManualWelcomeMessage::class);
+        Notification::assertCount(2);
+    }
+
+    public function testMovementsCsv()
+    {
+        $this->actingAs($this->userAdmin);
+
+        $data = [];
+        $path = base_path('tests/data/movements.csv');
+
+        User::factory()->create([
+            'gas_id' => $this->gas->id,
+            'username' => 'mario',
+        ]);
+
+        User::factory()->create([
+            'gas_id' => $this->gas->id,
+            'username' => 'luigi',
+        ]);
+
+        Supplier::factory()->create([
+            'name' => 'Fornitore',
+        ]);
+
+        Supplier::factory()->create([
+            'name' => 'Fornitore 2',
+            'vat' => '01234567',
+        ]);
+
+        $importer = \App\Importers\CSV\CSVImporter::getImporter('movements');
+
+        $request = new \Illuminate\Http\Request();
+        $request->merge([
+            'path' => $path,
+            'column' => ['date', 'amount', 'user', 'supplier'],
+        ]);
+
+        $data = $importer->select($request);
+
+        $this->assertEquals(4, count($data['movements']));
+        $this->assertEquals(0, count($data['errors']));
     }
 }

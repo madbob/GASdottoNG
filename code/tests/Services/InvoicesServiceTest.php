@@ -127,6 +127,33 @@ class InvoicesServiceTest extends TestCase
     }
 
     /*
+        Contenuto della Invoice
+    */
+    public function testContents()
+	{
+		$invoice = $this->createInvoice();
+
+        $order1 = $this->initOrder(null);
+        $this->populateOrder($order1);
+
+        $order2 = $this->initOrder(null);
+        $this->populateOrder($order2);
+
+        $this->nextRound();
+
+        $this->actingAs($this->userWithAdminPerm);
+
+		$this->services['invoices']->wire($invoice->id, 'review', [
+			'order_id' => [$order1->id, $order2->id]
+		]);
+
+        $this->nextRound();
+
+        $products = $this->services['invoices']->products($invoice->id);
+        $this->assertEquals($order1->products->count() + $order2->products->count(), count($products['global_summary']->products));
+	}
+
+    /*
         Elenco Fatture pagate
     */
     public function testPayAndList()

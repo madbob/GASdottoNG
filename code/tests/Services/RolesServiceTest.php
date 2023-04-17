@@ -59,6 +59,36 @@ class RolesServiceTest extends TestCase
 		$this->assertTrue($role->enabledAction('supplier.view'));
 		$this->assertTrue($role->enabledAction('users.view'));
 		$this->assertFalse($role->enabledAction('supplier.modify'));
+
+        $this->nextRound();
+
+        $this->services['roles']->attachAction($role->id, 'supplier.modify');
+
+        $this->nextRound();
+
+        $role = Role::find($role->id);
+        $this->assertTrue($role->enabledAction('supplier.modify'));
+
+        $this->nextRound();
+
+        $this->services['roles']->detachAction($role->id, 'supplier.modify');
+
+        $this->nextRound();
+
+        $role = Role::find($role->id);
+        $this->assertFalse($role->enabledAction('supplier.modify'));
+
+        $this->nextRound();
+
+        $this->services['roles']->attachUser($this->userWithNoPerms->id, $role->id, null);
+        $target = $this->userWithNoPerms->targetsByAction('supplier.view');
+        $this->assertTrue(count($target) > 0);
+
+        $this->nextRound();
+
+        $this->services['roles']->detachUser($this->userWithNoPerms->id, $role->id, null);
+        $target = $this->userWithNoPerms->targetsByAction('supplier.view');
+        $this->assertTrue(count($target) == 0);
     }
 
     /*
@@ -107,5 +137,19 @@ class RolesServiceTest extends TestCase
         $this->actingAs($this->userWithNoPerms);
 		$role = Role::inRandomOrder()->first();
         $this->services['roles']->destroy($role->id);
+    }
+
+    /*
+        Cancellazione Ruolo
+    */
+    public function testDestroy()
+    {
+        $this->actingAs($this->userWithAdminPerm);
+		$role = Role::inRandomOrder()->first();
+        $this->services['roles']->destroy($role->id);
+
+        $this->nextRound();
+        $role = Role::find($role->id);
+        $this->assertNull($role);
     }
 }

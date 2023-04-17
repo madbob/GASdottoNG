@@ -195,8 +195,10 @@ class Users extends CSVImporter
                         continue;
                     }
                     else if ($field == 'password') {
-                        $u->password = Hash::make($value);
-                        $password_defined = true;
+						if (filled($value)) {
+	                        $u->password = Hash::make($value);
+	                        $password_defined = true;
+						}
                     }
                     else if ($field == 'birthday' || $field == 'member_since' || $field == 'last_login') {
                         $u->$field = date('Y-m-d', strtotime($value));

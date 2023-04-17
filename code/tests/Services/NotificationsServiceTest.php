@@ -3,9 +3,11 @@
 namespace Tests\Services;
 
 use Tests\TestCase;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Exceptions\AuthException;
+use App\Notifications\GenericNotificationWrapper;
 
 class NotificationsServiceTest extends TestCase
 {
@@ -51,6 +53,7 @@ class NotificationsServiceTest extends TestCase
         ));
 
         $this->assertEquals('Test', $notification->content);
+        $this->assertEquals($this->userNotificationAdmin->id, $notification->creator->id);
         $this->assertEquals($start, $notification->start_date);
 		$this->assertEquals($end, $notification->end_date);
     }
@@ -94,6 +97,8 @@ class NotificationsServiceTest extends TestCase
 		$initial_count = $this->userWithNoPerms->notifications()->count();
 		$this->assertTrue($initial_count > 0);
 		$this->assertTrue($notification->hasUser($this->userWithNoPerms));
+        $this->assertFalse($notification->hasUser($this->userNotificationAdmin));
+        $this->assertEquals($this->userWithNoPerms->printableName(), $notification->printableName());
 
 		$this->actingAs($this->userWithNoPerms);
 		$this->services['notifications']->markread($notification->id);
@@ -102,6 +107,33 @@ class NotificationsServiceTest extends TestCase
 
 		$next_count = $this->userWithNoPerms->notifications()->count();
 		$this->assertTrue($initial_count > $next_count);
+	}
+
+    /*
+        Invio mail
+    */
+    public function testMail()
+	{
+        Notification::fake();
+
+		$this->actingAs($this->userNotificationAdmin);
+
+		$start = date('Y-m-d');
+        $end = date('Y-m-d', strtotime('+20 days'));
+
+		$notification = $this->services['notifications']->store([
+			'users' => [$this->userWithNoPerms->id, $this->userNotificationAdmin->id],
+            'type' => 'notification',
+            'mailed' => true,
+            'content' => 'Altro Test',
+            'start_date' => printableDate($start),
+			'end_date' => printableDate($end),
+        ]);
+
+        Notification::assertSentTo([$this->userWithNoPerms, $this->userNotificationAdmin], GenericNotificationWrapper::class);
+        Notification::assertCount(2);
+
+        $this->assertEquals('2 utenti', $notification->printableName());
 	}
 
 	/*
@@ -125,4 +157,20 @@ class NotificationsServiceTest extends TestCase
 			$this->assertTrue(in_array($this->userAdmin->id, $selected));
 		}
 	}
+
+    /*
+        Cancellazione Fornitore
+    */
+    public function testDestroy()
+    {
+        $this->actingAs($this->userNotificationAdmin);
+
+        $list = $this->services['notifications']->list(null, null);
+        $this->services['notifications']->destroy($this->notification->id);
+
+        $this->nextRound();
+
+        $list_next = $this->services['notifications']->list(null, null);
+        $this->assertEquals($list_next->count(), $list->count() - 1);
+    }
 }

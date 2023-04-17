@@ -101,39 +101,49 @@ class Movements extends CSVImporter
                         $field = 'sender_id';
 
                         $name = trim($line[$index]);
-                        $user = User::where('username', $name)->first();
-
-                        if (is_null($user)) {
-                            $user = User::whereHas('contacts', function($query) use ($name) {
-                                $query->where('value', $name);
-                            })->first();
+                        if (filled($name)) {
+                            $user = User::where('username', $name)->first();
 
                             if (is_null($user)) {
-                                $save_me = false;
-                                $errors[] = implode($target_separator, $line) . '<br/>' . _i('Utente non trovato: %s', $name);
-                                continue;
-                            }
-                        }
+                                $user = User::whereHas('contacts', function($query) use ($name) {
+                                    $query->where('value', $name);
+                                })->first();
 
-                        $value = $user->id;
+                                if (is_null($user)) {
+                                    $save_me = false;
+                                    $errors[] = implode($target_separator, $line) . '<br/>' . _i('Utente non trovato: %s', $name);
+                                    continue;
+                                }
+                            }
+
+                            $value = $user->id;
+                        }
+                        else {
+                            continue;
+                        }
                     }
                     elseif ($field == 'supplier') {
                         $field = 'target_id';
 
                         $name = trim($line[$index]);
-                        $supplier = Supplier::where('name', $name)->first();
-
-                        if (is_null($supplier)) {
-                            $supplier = Supplier::where('vat', $name)->first();
+                        if (filled($name)) {
+                            $supplier = Supplier::where('name', $name)->first();
 
                             if (is_null($supplier)) {
-                                $save_me = false;
-                                $errors[] = implode($target_separator, $line) . '<br/>' . _i('Fornitore non trovato: %s', $name);
-                                continue;
-                            }
-                        }
+                                $supplier = Supplier::where('vat', $name)->first();
 
-                        $value = $supplier->id;
+                                if (is_null($supplier)) {
+                                    $save_me = false;
+                                    $errors[] = implode($target_separator, $line) . '<br/>' . _i('Fornitore non trovato: %s', $name);
+                                    continue;
+                                }
+                            }
+
+                            $value = $supplier->id;
+                        }
+                        else {
+                            continue;
+                        }
                     }
                     elseif ($field == 'currency') {
                         $field = 'currency_id';
