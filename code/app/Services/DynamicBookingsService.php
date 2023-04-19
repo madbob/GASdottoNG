@@ -34,8 +34,10 @@ class DynamicBookingsService extends BookingsService
             mobile ci siano problemi su questi controlli).
         */
 
+        $quantity = $delivering ? $subject->delivered : $subject->quantity;
+
         try {
-            $final_quantity = $product->testConstraints($subject->quantity, $variant, $delivering);
+            $final_quantity = $product->testConstraints($quantity, $variant, $delivering);
             $message = '';
         }
         catch(InvalidQuantityConstraint $e) {
@@ -43,7 +45,7 @@ class DynamicBookingsService extends BookingsService
             $message = $e->getMessage();
         }
         catch(AnnotatedQuantityConstraint $e) {
-            $final_quantity = $subject->quantity;
+            $final_quantity = $quantity;
             $message = $e->getMessage();
         }
 
