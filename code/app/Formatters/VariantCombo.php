@@ -26,7 +26,7 @@ class VariantCombo extends Formatter
 
     public static function formatActive($obj, $context)
     {
-        return $obj->active ? _i('Si') : _i('No');
+        return ($obj->product->active && $obj->active) ? _i('Si') : _i('No');
     }
 
     public static function formatPrice($obj, $context)
