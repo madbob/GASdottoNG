@@ -37,3 +37,11 @@ Per sincronizzare le traduzioni da Weblate:
 git remote update weblate
 git merge weblate/master
 ```
+
+# Testing
+
+Per eseguire i test e farsi generare il report di coverage:
+
+```
+XDEBUG_MODE=coverage ./vendor/bin/phpunit --stop-on-error --stop-on-failure --coverage-html=/tmp/gasdotto
+```

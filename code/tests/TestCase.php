@@ -98,6 +98,22 @@ abstract class TestCase extends BaseTestCase
     }
 
     /*
+        Per creare un utente "amico" per un dato utente
+    */
+    protected function createFriend($parent)
+    {
+        $user = \App\User::factory()->create(['gas_id' => $parent->gas->id]);
+        $user->parent_id = $parent->id;
+        $user->save();
+
+        foreach ($parent->roles as $role) {
+            $user->addRole($role->id, $parent->gas);
+        }
+
+        return $user;
+    }
+
+    /*
         Per predisporre il minimo essenziale per fare delle prenotazioni.
         Ovvero: un ordine
     */
@@ -165,6 +181,35 @@ abstract class TestCase extends BaseTestCase
         }
 
         return [$data, $booked_count, $total];
+    }
+
+    /*
+        Per unire due array generati con randomQuantities() - tendenzialmente
+        usato per testare le prenotazioni in presenza di amici
+    */
+    protected function mergeBookingQuantity($master, $friend)
+    {
+        $data = [];
+
+        foreach($master as $product => $quantity) {
+            if (is_numeric($quantity) == false) {
+                continue;
+            }
+
+            if (isset($friend[$product])) {
+                $quantity += $friend[$product];
+            }
+
+            $data[$product] = $quantity;
+        }
+
+        foreach($friend as $product => $quantity) {
+            if (isset($data[$product]) == false) {
+                $data[$product] = $quantity;
+            }
+        }
+
+        return $data;
     }
 
 	protected function updateAndFetch($data, $order, $user, $deliver)

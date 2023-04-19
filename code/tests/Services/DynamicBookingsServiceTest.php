@@ -71,6 +71,63 @@ class DynamicBookingsServiceTest extends TestCase
     }
 
     /*
+        Prenotazioni e consegne in presenza di amici
+    */
+    public function testFriend()
+    {
+        $friend = $this->createFriend($this->userWithBasePerms);
+        $this->actingAs($friend);
+
+        list($data_friend, $booked_count_friend, $total_friend) = $this->randomQuantities($this->order->products);
+        $data_friend['action'] = 'booked';
+        $this->services['bookings']->bookingUpdate($data_friend, $this->order->aggregate, $friend, false);
+
+        $this->nextRound();
+
+        $booking = $this->order->userBooking($this->userWithBasePerms->id);
+        $this->assertEquals($booking->getValue('effective', true), $total_friend);
+
+        $this->nextRound();
+
+        $this->actingAs($this->userWithBasePerms);
+        list($data_master, $booked_count_master, $total_master) = $this->randomQuantities($this->order->products);
+        $data_master['action'] = 'booked';
+        $this->services['bookings']->bookingUpdate($data_master, $this->order->aggregate, $this->userWithBasePerms, false);
+
+        $this->nextRound();
+
+        $booking = \App\Booking::where('order_id', $this->order->id)->where('user_id', $this->userWithBasePerms->id)->first();
+        $this->assertEquals($booking->getValue('effective', true), $total_master + $total_friend);
+
+        $this->nextRound();
+
+        $this->actingAs($this->userWithShippingPerms);
+        $data = $this->mergeBookingQuantity($data_master, $data_friend);
+        $data['action'] = 'shipped';
+        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
+
+        $this->assertEquals(count($ret->bookings), 1);
+
+        foreach($ret->bookings as $b) {
+            $this->assertEquals($b->total, $total_master + $total_friend);
+            $this->assertEquals(count($b->modifiers), 0);
+
+            foreach($b->products as $pid => $p) {
+                $target_product = null;
+                foreach($this->order->products as $prod) {
+                    if ($prod->id == $pid) {
+                        $target_product = $prod;
+                        break;
+                    }
+                }
+
+                $this->assertEquals($p->quantity, $data[$pid] ?? 0);
+                $this->assertEquals($p->message, '');
+            }
+        }
+    }
+
+    /*
         Lettura dinamica della prenotazione con permessi sbagliati
     */
     public function testFailsToRead()
