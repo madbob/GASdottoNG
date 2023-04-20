@@ -43,7 +43,7 @@ class BookingController extends Controller
 
         $shipping = getOrdersByStatus($user, 'closed');
 
-        $orders = $opened->merge($shipping)->sort(function($a, $b) {
+        $orders = $opened->merge($shipping)->unique()->sort(function($a, $b) {
             return strcmp($a->end, $b->end);
         });
 
