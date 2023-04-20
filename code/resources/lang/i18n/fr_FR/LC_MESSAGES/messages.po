@@ -2,14 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2022-10-31 08:33+0100\n"
-"PO-Revision-Date: 2022-10-31 08:34+0100\n"
-"Last-Translator: Roberto Guido <bob@linux.it>\n"
-"Language-Team: Roberto Guido <bob@linux.it>\n"
+"PO-Revision-Date: 2022-11-04 05:11+0000\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/gasdottong/"
+"translations/fr/>\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -100,6 +102,7 @@ msgstr "Tous (triés par lieu)"
 #, php-format
 msgid "Attenzione: %d utenti non hanno un luogo di consegna assegnato"
 msgstr ""
+"Attention : les utilisateurs de %d n'ont pas de lieu de livraison assigné"
 
 #: ../resources/views/commons/statusfield.blade.php:20
 msgid ""
@@ -618,7 +621,7 @@ msgstr "Livrer"
 
 #: Helpers/Permissions.php:32
 msgid "Amministrare i movimenti contabili del fornitore"
-msgstr ""
+msgstr "Gestion des mouvements comptables des fournisseurs"
 
 #: Http/Controllers/AttachmentsController.php:32
 #: Http/Controllers/AttachmentsController.php:54
@@ -751,7 +754,7 @@ msgstr "Envoyé"
 
 #: Http/Controllers/MailController.php:33
 msgid "Rimosso indirizzo email "
-msgstr ""
+msgstr "Adresse électronique retirée "
 
 #: Http/Controllers/MailController.php:49
 #, php-format
@@ -821,8 +824,9 @@ msgid "SEPA del %s.xml"
 msgstr "SEPA de %s.xml"
 
 #: Http/Controllers/MovementsController.php:362
+#, fuzzy
 msgid "IntegralCES Utenti.csv"
-msgstr ""
+msgstr "IntegralCES Utenti.csv"
 
 #: Http/Controllers/MovementsController.php:372
 #, php-format
@@ -835,8 +839,9 @@ msgid "Saldo %s"
 msgstr "Solde %s"
 
 #: Http/Controllers/MovementsController.php:394
+#, fuzzy
 msgid "IntegralCES Fornitori.csv"
-msgstr ""
+msgstr "IntegralCES Fornitori.csv"
 
 #: Http/Controllers/MovementsController.php:430
 #: Http/Controllers/MovementsController.php:442
@@ -1177,7 +1182,7 @@ msgstr "Nom d'utilisateur déjà pris"
 
 #: Observers/UserObserver.php:26
 msgid "Nome e cognome già presenti"
-msgstr ""
+msgstr "Prénom et nom déjà présents"
 
 #: Observers/UserObserver.php:91
 msgid "Numero tessera già assegnato"
@@ -1449,7 +1454,7 @@ msgstr "La quantité maximale est de 9999,99"
 #: Parameters/Constraints/GlobalMin.php:43
 #, php-format
 msgid "Minimo Complessivo: %.02f (%.02f totale)"
-msgstr ""
+msgstr "Total minimal : %.02f (%.02f total)"
 
 #: Parameters/Constraints/MaxAvailable.php:49
 #, php-format
@@ -1845,7 +1850,7 @@ msgstr "Montant non payé"
 
 #: View/Icons/User.php:48
 msgid "Senza Luogo di Consegna"
-msgstr ""
+msgstr "Sans lieu de livraison"
 
 #: View/Icons/User.php:60
 msgid "Ruolo"
