@@ -46,7 +46,7 @@
 
                 ?>
                 <tr>
-                    <td>{{ $mov->printableDate('registration_date') }}</td>
+                    <td>{{ printableDate($mov->date, true) }}</td>
                     <td>{{ $mov->printableType() }}</td>
                     <td>{!! $mov->payment_icon !!}</td>
                     <td>{{ $reference ? $reference->printableName() : '' }}</td>
