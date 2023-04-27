@@ -18,6 +18,7 @@
                         'phone' => _i('Telefono'),
                     ];
 
+                    $selected_mandatory = [];
                     foreach($selectable_mandatory as $identifier => $label) {
                         if (in_array($identifier, $gas->public_registrations['mandatory_fields'])) {
                             $selected_mandatory[] = $identifier;
