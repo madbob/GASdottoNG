@@ -244,7 +244,7 @@ class Product extends Model
 	*/
 	public function canAggregateQuantities()
 	{
-		return $this->measure->discrete == false && $this->portion_quantity != 0;
+		return ($this->measure->discrete == false && $this->portion_quantity == 0) == false;
 	}
 
     public function hasWarningWithinOrder($summary)

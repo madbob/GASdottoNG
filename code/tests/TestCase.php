@@ -100,17 +100,23 @@ abstract class TestCase extends BaseTestCase
     /*
         Per creare un utente "amico" per un dato utente
     */
-    protected function createFriend($parent)
+    protected function createFriend($master)
     {
-        $user = \App\User::factory()->create(['gas_id' => $parent->gas->id]);
-        $user->parent_id = $parent->id;
-        $user->save();
+        $friends_role = \App\Role::factory()->create(['actions' => 'users.subusers']);
+        $master->addRole($friends_role->id, $this->gas);
 
-        foreach ($parent->roles as $role) {
-            $user->addRole($role->id, $parent->gas);
-        }
+        $this->actingAs($master);
+        $friend = $this->services['users']->storeFriend(array(
+            'username' => 'test friend user',
+            'firstname' => 'mario',
+            'lastname' => 'rossi',
+            'password' => 'password'
+        ));
 
-        return $user;
+        $booking_role = \App\Role::factory()->create(['actions' => 'supplier.book']);
+        $friend->addRole($booking_role->id, $this->gas);
+
+        return $friend;
     }
 
     /*

@@ -347,20 +347,26 @@ class Booking extends Model
             foreach($friends as $sub) {
                 foreach($sub->products as $sub_p) {
                     $master_p = $products->firstWhere('product_id', $sub_p->product_id);
-                    if (is_null($master_p) || $sub_p->product->canAggregateQuantities() == false) {
+
+                    if (is_null($master_p)) {
                         $products->push($sub_p);
                     }
                     else {
-                        $master_p->quantity += $sub_p->quantity;
-                        $master_p->delivered += $sub_p->delivered;
-                        $master_p->final_price += $sub_p->final_price;
-
-                        foreach($sub_p->variants as $sub_variant) {
-                            $master_p->variants->squashBookedVariant($sub_variant);
+                        if ($sub_p->product->canAggregateQuantities() == false && $sub_p->variants->count() == 0) {
+                            $products->push($sub_p);
                         }
+                        else {
+                            $master_p->quantity += $sub_p->quantity;
+                            $master_p->delivered += $sub_p->delivered;
+                            $master_p->final_price += $sub_p->final_price;
 
-                        $modifiedValues = $master_p->modifiedValues->merge($sub_p->modifiedValues);
-						$master_p->setRelation('modifiedValues', $modifiedValues);
+                            foreach($sub_p->variants as $sub_variant) {
+                                $master_p->variants->squashBookedVariant($sub_variant);
+                            }
+
+                            $modifiedValues = $master_p->modifiedValues->merge($sub_p->modifiedValues);
+    						$master_p->setRelation('modifiedValues', $modifiedValues);
+                        }
                     }
                 }
             }

@@ -36,18 +36,20 @@ class AppServiceProvider extends ServiceProvider
 			$target_combo = $bookedvariant->variantsCombo();
 			$found = false;
 
-			foreach($collection as $variant) {
-				$combo = $variant->variantsCombo();
+            if ($bookedvariant->product->product->canAggregateQuantities()) {
+    			foreach($collection as $variant) {
+    				$combo = $variant->variantsCombo();
 
-				if ($combo->id == $target_combo->id) {
-					$variant->quantity += $bookedvariant->quantity;
-					$variant->delivered += $bookedvariant->delivered;
-					$variant->final_price += $bookedvariant->final_price;
+    				if ($combo->id == $target_combo->id) {
+    					$variant->quantity += $bookedvariant->quantity;
+    					$variant->delivered += $bookedvariant->delivered;
+    					$variant->final_price += $bookedvariant->final_price;
 
-					$found = true;
-					break;
-				}
-			}
+    					$found = true;
+    					break;
+    				}
+    			}
+            }
 
 			if ($found == false) {
 				$collection->push($bookedvariant);

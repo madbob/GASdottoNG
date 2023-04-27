@@ -65,6 +65,49 @@ class ProductsServiceTest extends TestCase
     }
 
     /*
+        Duplicazione Prodotto
+    */
+    public function testDuplicate()
+    {
+        $this->actingAs($this->userWithReferrerPerms);
+
+        $product = $this->services['products']->store(array(
+            'name' => 'Test Product',
+            'price' => rand(),
+            'supplier_id' => $this->supplier->id,
+            'category_id' => $this->category->id,
+            'measure_id' => $this->measure->id
+        ));
+
+        $this->services['variants']->store([
+            'product_id' => $product->id,
+            'name' => 'Colore',
+            'id' => ['', '', ''],
+            'value' => ['Rosso', 'Verde', 'Blu'],
+        ]);
+
+        $this->services['variants']->store([
+            'product_id' => $product->id,
+            'name' => 'Taglia',
+            'id' => ['', '', ''],
+            'value' => ['S', 'M', 'L'],
+        ]);
+
+        $this->nextRound();
+
+        $duplicate = $this->services['products']->store(array(
+            'duplicating_from' => $product->id,
+            'name' => 'Test Product',
+            'price' => rand(),
+            'supplier_id' => $this->supplier->id,
+            'category_id' => $this->category->id,
+            'measure_id' => $this->measure->id
+        ));
+
+        $this->assertEquals(2, $duplicate->variants()->count());
+    }
+
+    /*
         Modifica Prodotto con permessi sbagliati
     */
     public function testFailsToUpdate()

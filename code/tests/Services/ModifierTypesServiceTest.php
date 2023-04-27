@@ -38,7 +38,18 @@ class ModifierTypesServiceTest extends TestCase
             'classes' => ['App\Booking'],
         ));
 
-        $this->assertEquals($type->exists, true);
+        $this->assertTrue($type->exists);
+
+        $found = false;
+        $types = \App\ModifierType::byClass(\App\Booking::class);
+        foreach($types as $t) {
+            if ($t->id == $type->id) {
+                $found = true;
+                break;
+            }
+        }
+
+        $this->assertTrue($found);
     }
 
     /*

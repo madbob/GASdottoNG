@@ -43,7 +43,6 @@ class ModifiersController extends BackedController
 
     public function strings($target)
     {
-        \Log::debug('Richieste stringhe per modificatori');
         $target = fromInlineId($target);
         return response()->json(\App\View\Texts\Modifier::descriptions($target));
     }

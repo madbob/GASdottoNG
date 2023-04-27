@@ -88,23 +88,58 @@ class BookingsServiceTest extends TestCase
         $this->assertEquals($booking->payment->amount, $total);
     }
 
-    private function pushFriend($master)
+    /*
+        Prenotazioni in presenza di amici e prodotto non aggregabili
+    */
+    public function testUnaggregatedFriend()
     {
-        $friends_role = \App\Role::factory()->create(['actions' => 'users.subusers']);
-        $master->addRole($friends_role->id, $this->gas);
+        $category = \App\Category::factory()->create();
+        $measure = \App\Measure::factory()->create();
+        $measure->discrete = false;
+        $measure->save();
 
-        $this->actingAs($master);
-        $friend = $this->services['users']->storeFriend(array(
-            'username' => 'test friend user',
-            'firstname' => 'mario',
-            'lastname' => 'rossi',
-            'password' => 'password'
+        $this->nextRound();
+
+        $product = $this->services['products']->store(array(
+            'name' => 'Test Product',
+            'price' => rand(),
+            'supplier_id' => $this->sample_order->supplier->id,
+            'category_id' => $category->id,
+            'measure_id' => $measure->id,
         ));
 
-        $booking_role = \App\Role::factory()->create(['actions' => 'supplier.book']);
-        $friend->addRole($booking_role->id, $this->gas);
+        $this->sample_order->products()->attach($product->id);
 
-        return $friend;
+        $this->nextRound();
+
+        $friend = $this->createFriend($this->userWithBasePerms);
+        $this->actingAs($friend);
+
+        $data_friend = [
+            $product->id => 2,
+            'action' => 'booked',
+        ];
+        $this->services['bookings']->bookingUpdate($data_friend, $this->sample_order->aggregate, $friend, false);
+
+        $this->nextRound();
+
+        $this->actingAs($this->userWithBasePerms);
+
+        $data_master = [
+            $product->id => 1,
+            'action' => 'booked',
+        ];
+        $this->services['bookings']->bookingUpdate($data_master, $this->sample_order->aggregate, $this->userWithBasePerms, false);
+
+        $this->nextRound();
+
+        $booking = \App\Booking::where('order_id', $this->sample_order->id)->where('user_id', $this->userWithBasePerms->id)->first();
+        $products = $booking->products_with_friends;
+        $this->assertEquals(2, $products->count());
+
+        foreach($products as $prod) {
+            $this->assertEquals($product->id, $prod->product_id);
+        }
     }
 
     /*
@@ -112,7 +147,7 @@ class BookingsServiceTest extends TestCase
     */
     public function testShippingWithFriend()
     {
-        $friend = $this->pushFriend($this->userWithBasePerms);
+        $friend = $this->createFriend($this->userWithBasePerms);
 
         $this->actingAs($friend);
         list($friend_data, $friend_booked_count, $friend_total) = $this->randomQuantities($this->sample_order->products);
@@ -158,7 +193,7 @@ class BookingsServiceTest extends TestCase
     */
     public function testShippingWithOnlyFriend()
     {
-        $friend = $this->pushFriend($this->userWithBasePerms);
+        $friend = $this->createFriend($this->userWithBasePerms);
 
         $this->actingAs($friend);
         list($friend_data, $friend_booked_count, $friend_total) = $this->randomQuantities($this->sample_order->products);
