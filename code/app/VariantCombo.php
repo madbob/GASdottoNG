@@ -15,9 +15,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
+use App\Models\Concerns\Priceable;
+
 class VariantCombo extends Model
 {
-    use Cachable;
+    use Cachable, Priceable;
 
     public function values(): BelongsToMany
     {
@@ -31,7 +33,7 @@ class VariantCombo extends Model
 
     public function getPriceAttribute()
     {
-        return $this->price_offset + $this->product->price;
+        return $this->getPrice();
     }
 
     public function printableShortName()
@@ -88,5 +90,12 @@ class VariantCombo extends Model
         }
 
         return $ret;
+    }
+
+    /************************************************************** Priceable */
+
+    public function realPrice($rectify)
+    {
+        return $this->price_offset + $this->product->getPrice($rectify);
     }
 }

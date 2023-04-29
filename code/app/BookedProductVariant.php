@@ -54,14 +54,14 @@ class BookedProductVariant extends Model
 
     public function unitPrice($rectify = true)
     {
-        $base_price = $this->product->basePrice($rectify);
-
         $combo = $this->variantsCombo();
-        if ($combo) {
-            $base_price += $combo->price_offset;
-        }
 
-        return $base_price;
+        if ($combo) {
+            return $combo->getPrice($rectify);
+        }
+        else {
+            return $this->product->product->getPrice($rectify);
+        }
     }
 
     public function fixWeight($attribute)
@@ -93,14 +93,7 @@ class BookedProductVariant extends Model
 
     public function printableName()
     {
-        $ret = [];
-        $components = $this->components;
-
-        foreach ($components as $c) {
-            $ret[] = $c->value->value;
-        }
-
-        return implode(', ', $ret);
+        return $this->variantsCombo()->printableShortName();
     }
 
     private function normalizeQuantity($attribute)

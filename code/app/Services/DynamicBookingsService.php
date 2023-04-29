@@ -93,12 +93,12 @@ class DynamicBookingsService extends BookingsService
         $ret = (object) [
             'total' => printablePrice($calculated_total),
             'modifiers' => [],
-            'products' => $booking->products()->with(['product.measure', 'product.variants'])->get()->reduce(function($carry, $product) use ($booking, $delivering) {
+            'products' => $booking->products->reduce(function($carry, $product) use ($booking, $delivering) {
                 $product->setRelation('booking', $booking);
                 list($final_quantity, $message) = $this->handleQuantity($delivering, $product, $product, null);
 
                 $carry[$product->product_id] = (object) [
-                    'unitprice' => (float) $product->price,
+                    'unitprice' => (float) $product->product->getPrice(false),
                     'unitprice_human' => $product->product->printablePrice(),
                     'total' => (float) printablePrice($delivering ? $product->getValue('delivered') : $product->getValue('booked')),
                     'quantity' => (float) $final_quantity,

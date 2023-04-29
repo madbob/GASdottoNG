@@ -255,6 +255,17 @@ class Booking extends Model
             $p->setRelation('booking', $this);
 
             if ($product) {
+                /*
+                    In BookingsService recupero eventuali prezzi forzati per i
+                    prodotti, e li gestisco con Priceable::setPrice(). Qui devo
+                    accertarmi che il medesimo prezzo sia veicolato anche alla
+                    nuova relazione (che comunque aggiorno, anche se già
+                    caricata, per ogni evenienza)
+                */
+                if ($p->relationLoaded('product')) {
+                    $product->copyPrice($p->product);
+                }
+
                 $p->setRelation('product', $product);
             }
         }

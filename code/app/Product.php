@@ -16,12 +16,13 @@ use App;
 use Log;
 
 use App\Models\Concerns\ModifiableTrait;
+use App\Models\Concerns\Priceable;
 use App\Events\VariantChanged;
 use App\Events\SluggableCreating;
 
 class Product extends Model
 {
-    use HasFactory, SoftDeletes, ModifiableTrait, GASModel, SluggableID, Cachable;
+    use HasFactory, SoftDeletes, Priceable, ModifiableTrait, GASModel, SluggableID, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -150,7 +151,7 @@ class Product extends Model
 
     public function printablePrice($variant = null)
     {
-        $price = $this->contextualPrice(false);
+        $price = $this->getPrice(false);
 
         if ($this->variants->count() != 0) {
             if (is_null($variant)) {
@@ -172,19 +173,6 @@ class Product extends Model
         $str = sprintf('%.02f %s / %s', $price, $currency, $this->printableMeasure());
 
         return $str;
-    }
-
-    /*
-        Attenzione: questo non tiene conto dell'eventuale sconto
-        applicato sull'ordine in cui il prodotto si trova
-    */
-    public function getDiscountPriceAttribute()
-    {
-        if (empty($this->discount)) {
-            return $this->price;
-        } else {
-            return applyPercentage($this->price, $this->discount);
-        }
     }
 
     /*
@@ -266,5 +254,12 @@ class Product extends Model
         }
 
         return false;
+    }
+
+    /************************************************************** Priceable */
+
+    public function realPrice($rectify)
+    {
+        return $this->contextualPrice($rectify);
     }
 }

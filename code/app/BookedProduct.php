@@ -75,25 +75,13 @@ class BookedProduct extends Model
             }, 0);
         }
         else {
-            /*
-                Per i prodotti con pezzatura, basePrice() già fornisce il prezzo per
-                singola unità. Non è dunque qui necessario effettuare altri
-                controlli o aggiustamenti
-            */
-            $base_price = $this->basePrice($rectify);
-
             $content = $this->$attribute;
             if (empty(trim($content))) {
                 $content = 0;
             }
 
-            return $base_price * $content;
+            return $this->product->getPrice($rectify) * $content;
         }
-    }
-
-    public function basePrice($rectify = true)
-    {
-        return $this->product->contextualPrice($rectify);
     }
 
     public function testConstraints($quantity, $variant = null, $only_mandatory = false)
