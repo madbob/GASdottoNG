@@ -35,13 +35,13 @@
     "require-dev": {
         "brianium/paratest": "^6.3",
         "fakerphp/faker": "^1.15",
-        "spatie/laravel-ignition": "^1.0",
         "laravel/dusk": "^6.15",
         "madbob/dusk-utils": "^0.1.0",
         "mockery/mockery": "~1.0",
         "nunomaduro/collision": "^6.1",
         "nunomaduro/larastan": "^2.3.0",
         "phpunit/phpunit": "^9.3",
+        "spatie/laravel-ignition": "^1.0",
         "staudenmeir/dusk-updater": "^1.2"
     },
     "autoload": {
@@ -58,6 +58,7 @@
             "app/Helpers/Permissions.php",
             "app/Helpers/Reflection.php",
             "app/Helpers/Paths.php",
+            "app/Helpers/Prices.php",
             "app/Helpers/Accounting.php",
 			"app/Helpers/Orders.php",
             "app/Helpers/Files.php",

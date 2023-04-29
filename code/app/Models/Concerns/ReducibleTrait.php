@@ -31,7 +31,8 @@ trait ReducibleTrait
 {
     /*
         Questi sono gli attributi essenziali che ci si aspetta di trovare nella
-        riduzione di un oggetto
+        riduzione di un oggetto, e che vengono tra loro sommati per ottenere i
+        valori totali per l'oggetto padre
     */
     protected function describingAttributes()
     {
@@ -83,7 +84,7 @@ trait ReducibleTrait
         provvede a sommare tra di loro i valori enumerati in
         describingAttributes() per ottenere la riduzione complessiva
     */
-    protected function describingAttributesMerge($first, $second, $sum = true)
+    protected function describingAttributesMerge($first, $second)
     {
         if (is_null($first)) {
             return clone $second;
@@ -102,12 +103,7 @@ trait ReducibleTrait
                 continue;
             }
 
-            if ($sum) {
-                $first->$attr += $second->$attr;
-            }
-            else {
-                $first->$attr -= $second->$attr;
-            }
+            $first->$attr += $second->$attr;
         }
 
         return $first;
@@ -119,9 +115,9 @@ trait ReducibleTrait
         Funzione introdotta per condensare le varianti dei prodotti presenti in
         diverse prenotazioni (che vengono ridotte indipendentemente tra loro)
     */
-    protected function deepMergingAttributes($child, $first, $second, $sum = true)
+    protected function deepMergingAttributes($child, $first, $second)
     {
-        $ret = $this->describingAttributesMerge($first, $second, $sum);
+        $ret = $this->describingAttributesMerge($first, $second);
 
         foreach ($this->subArrayMerge() as $subarray) {
             if (!isset($first->$subarray) && !isset($second->$subarray)) {
