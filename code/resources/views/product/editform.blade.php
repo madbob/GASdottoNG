@@ -6,6 +6,8 @@ if (!isset($duplicate)) {
 
 ?>
 
+<input type="hidden" name="post-saved-function" value="afterProductChange" class="skip-on-submit">
+
 <div class="row">
     <div class="col-md-6">
         @include('product.base-edit', ['product' => $product])

@@ -69,6 +69,7 @@ unset($display_columns['notes']);
                         @php
 
                         if(isset($summary->products[$product->id])) {
+                            $unit_price = $summary->products[$product->id]->current_price ?? $product->price;
                             $quantity_pieces = $summary->products[$product->id]->quantity_pieces ?? 0;
                             $quantity = $summary->products[$product->id]->quantity ?? 0;
                             $price = $summary->products[$product->id]->price ?? 0;
@@ -77,6 +78,7 @@ unset($display_columns['notes']);
                             $notes = $summary->products[$product->id]->notes ?? false;
                         }
                         else {
+                            $unit_price = $product->price;
                             $quantity_pieces = 0;
                             $quantity = 0;
                             $price = 0;
@@ -103,7 +105,7 @@ unset($display_columns['notes']);
                             </td>
 
                             <td class="order-cell-price {{ in_array('price', $columns) ? '' : 'hidden' }}">
-                                {{ printablePriceCurrency($product->price) }}
+                                {{ printablePriceCurrency($unit_price) }}
                             </td>
 
                             <td class="order-cell-available {{ in_array('available', $columns) ? '' : 'hidden' }}">

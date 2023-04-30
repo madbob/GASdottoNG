@@ -69,7 +69,7 @@ class Order extends Model
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany('App\Product')->with(['variants', 'modifiers'])->withPivot('notes')->withTrashed();
+        return $this->belongsToMany('App\Product')->with(['variants', 'modifiers'])->withPivot(['notes', 'prices'])->withTrashed();
     }
 
     public function bookings(): HasMany
@@ -261,6 +261,63 @@ class Order extends Model
         }
 
         return false;
+    }
+
+    private function extractProductPrices($product)
+    {
+        throw new \Exception("Error Processing Request", 1);
+
+        $row = [
+            'unit_price' => $product->price,
+        ];
+
+        $variants = $product->variant_combos;
+        if ($variants->isEmpty() == false) {
+            $row['variants'] = [];
+
+            foreach($variants as $variant) {
+                $id = $variant->innerIdentifier();
+                $row['variants'][$id] = $variant->price_offset;
+            }
+        }
+
+        return json_encode($row);
+    }
+
+    public function syncProducts($products)
+    {
+        $data = [];
+
+        foreach($products as $product) {
+            $exists = $this->products->firstWhere('id', $product->id);
+            if ($exists) {
+                $data[$product->id] = [];
+            }
+            else {
+                $data[$product->id] = [
+                    'prices' => $this->extractProductPrices($product),
+                ];
+            }
+        }
+
+        $this->products()->sync($data);
+    }
+
+    public function attachProduct($product)
+    {
+        $prices = $this->extractProductPrices($product);
+
+        $exists = $this->products->firstWhere('id', $product->id);
+        if ($exists) {
+            $this->products()->updateExistingPivot($product->id, [
+                'prices' => $prices,
+            ]);
+        }
+        else {
+            $this->products()->attach($data, [
+                'prices' => $prices,
+            ]);
+        }
     }
 
     public function showableContacts()
@@ -509,7 +566,7 @@ class Order extends Model
         ];
 
         $internal_offsets = $this->offsetsByStatus($status);
-        $summary = $this->reduxData(null, ['shipping_place' => $shipping_place]);
+        $summary = $this->reduxData(['shipping_place' => $shipping_place]);
         $formattable = OrderFormatter::formattableColumns('summary');
 
         foreach($fields as $f) {
@@ -863,7 +920,7 @@ class Order extends Model
                     le prenotazioni dell'ordine desiderato; altrimenti, otterrei
                     sempre le prenotazioni del primo GAS che viene elaborato
                 */
-                $bookings = $item->bookings()->with(['products', 'products.product', 'products.product.measure'])->get();
+                $bookings = $item->bookings()->with(['products'])->get();
 
                 $shipping_place = $filters['shipping_place'] ?? null;
                 if ($shipping_place) {
@@ -874,10 +931,6 @@ class Order extends Model
             }
 
             return $bookings;
-        };
-
-        $ret->optimize = function($item, $child) {
-            return $child;
         };
 
         $ret->collected = 'bookings';

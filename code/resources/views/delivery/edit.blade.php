@@ -6,6 +6,8 @@ $tot_amount = 0;
 $tot_delivered = [];
 $rand = rand();
 $existing = false;
+$master_summary = $aggregate->reduxData();
+$currency_symbol = defaultCurrency()->symbol;
 
 ?>
 
@@ -53,11 +55,11 @@ $existing = false;
                     }
                     else if ($o->status == 'saved') {
                         $now_delivered = $o->getValue('effective', true);
-                        $mods = $o->applyModifiers(null, false);
+                        $mods = $o->applyModifiers($master_summary, false);
                     }
                     else {
                         $now_delivered = $o->getValue('effective', true);
-                        $mods = $o->applyModifiers(null, true);
+                        $mods = $o->applyModifiers($master_summary, true);
                     }
 
                     $tot_delivered[$o->id] = $now_delivered;
@@ -77,6 +79,32 @@ $existing = false;
                     </div>
                 @endif
 
+                @if($order->status == 'closed' && $o->status != 'pending')
+                    <?php
+
+                    $has_price_differences = false;
+
+                    foreach($order->products as $prod) {
+                        $base_prod = App\Product::withTrashed()->find($prod->id);
+                        $has_price_differences = $base_prod->comparePrices($prod);
+                        if ($has_price_differences) {
+                            break;
+                        }
+                    }
+
+                    ?>
+
+                    @if($has_price_differences)
+                        <div class="row">
+                            <div class="col">
+                                <div class="alert alert-info">
+                                    {!! _i('I prezzi di alcuni prodotti sono cambiati rispetto alla consegna di questa prenotazione. Sotto, puoi scegliere quale prezzo adottare in caso di rettifica della consegna: quella applicato originariamente o quello nel listino attuale.') !!}
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                @endif
+
                 <div class="row">
                     <div class="col">
                         <table class="table table-striped booking-editor" data-booking-id="{{ $o->id }}" data-order-id="{{ $order->id }}">
@@ -85,9 +113,10 @@ $existing = false;
                             <thead>
                                 <tr>
                                     <th width="25%"></th>
+                                    <th width="15%"></th>
+                                    <th width="20%"></th>
                                     <th width="25%"></th>
-                                    <th width="25%"></th>
-                                    <th width="25%"></th>
+                                    <th width="15%"></th>
                                 </tr>
                             </thead>
 
@@ -103,6 +132,14 @@ $existing = false;
                                             </td>
 
                                             <td>
+                                                @include('delivery.selectprice', [
+                                                    'booking' => $o,
+                                                    'product' => $product,
+                                                    'combo' => null,
+                                                ])
+                                            </td>
+
+                                            <td>
                                                 <label class="static-label booking-product-booked">{{ printableQuantity($product->quantity, $discrete_quantity) }} {{ $product->product->printableMeasure(true) }}</label>
                                             </td>
 
@@ -110,7 +147,7 @@ $existing = false;
                                                 <div class="input-group booking-product-quantity">
                                                     <input type="text" class="form-control number" name="{{ $product->product->id }}" value="{{ printableQuantity($product->delivered, $discrete_quantity, 3) }}" {{ $order->isActive() == false ? 'disabled' : '' }} />
                                                     <div class="input-group-text">{{ $product->product->measure->name }}</div>
-                                                    @if($product->product->portion_quantity != 0)
+                                                    @if($order->isActive() && $product->product->portion_quantity != 0)
                                                         @include('delivery.calculator', ['pieces' => $product->quantity, 'measure' => $product->product->measure->name])
                                                     @endif
                                                 </div>
@@ -118,34 +155,31 @@ $existing = false;
 
                                             <td>
                                                 <label class="static-label booking-product-price float-end">
-                                                    <span>{{ printablePrice($product->getValue('delivered')) }}</span> {{ $currentgas->currency }}
+                                                    <span>{{ printablePrice($product->getValue('delivered')) }}</span> {{ $currency_symbol }}
                                                 </label>
                                             </td>
                                         </tr>
                                     @else
-                                        <?php $base_price = $product->product->contextualPrice(false) ?>
-
                                         @foreach($product->variants as $var)
-                                            <?php
-
-                                                $price = $base_price;
-                                                foreach ($var->components as $comp) {
-                                                    $price += $comp->value->price_offset;
-                                                }
-
-                                            ?>
+                                            <?php $combo = $var->variantsCombo() ?>
 
                                             <tr class="booking-product">
                                                 <td>
                                                     <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($var->true_quantity, $discrete_quantity) }}" class="skip-on-submit" />
-                                                    <input type="hidden" name="product-price" value="{{ $price }}" class="skip-on-submit" />
-
-                                                    <label class="static-label">{{ $product->product->name }}: {{ $var->printableName() }}</label>
+                                                    <label class="static-label">{{ $combo->printableName() }}</label>
 
                                                     <input type="hidden" name="{{ $product->product->id }}" value="1" />
                                                     @foreach($var->components as $comp)
                                                         <input type="hidden" name="variant_selection_{{ $comp->variant->id }}[]" value="{{ $comp->value->id }}" />
                                                     @endforeach
+                                                </td>
+
+                                                <td>
+                                                    @include('delivery.selectprice', [
+                                                        'booking' => $o,
+                                                        'product' => $product,
+                                                        'combo' => $combo,
+                                                    ])
                                                 </td>
 
                                                 <td>
@@ -164,7 +198,7 @@ $existing = false;
 
                                                 <td>
                                                     <label class="static-label booking-product-price float-end">
-                                                        <span>{{ printablePrice($var->deliveredValue()) }}</span> {{ $currentgas->currency }}
+                                                        <span>{{ printablePrice($var->deliveredValue()) }}</span> {{ $currency_symbol }}
                                                     </label>
                                                 </td>
                                             </tr>
@@ -202,7 +236,7 @@ $existing = false;
 
                                         <td>
                                             <label class="static-label booking-product-price float-end">
-                                                <span>0.00</span> {{ $currentgas->currency }}
+                                                <span>0.00</span> {{ $currency_symbol }}
                                             </label>
                                         </td>
                                     </tr>
@@ -218,11 +252,12 @@ $existing = false;
                                     </th>
                                     <th></th>
                                     <th></th>
+                                    <th></th>
 
                                     @if($currentgas->unmanaged_shipping == '1' && $order->supplier->unmanaged_shipping_enabled)
                                         <th class="text-end"><x-larastrap::price :label="_i('Totale Manuale')" :name="sprintf('manual_total_%s', $order->id)" classes="booking-total manual-total" :value="$now_delivered" data-manual-change="0" /></th>
                                     @else
-                                        <th class="text-end">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> {{ $currentgas->currency }}</th>
+                                        <th class="text-end">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> {{ $currency_symbol }}</th>
                                     @endif
                                 </tr>
                             </tfoot>
@@ -237,7 +272,7 @@ $existing = false;
                         <tr>
                             <th>
                                 <div class="float-end">
-                                    <strong>{{ _i('Totale Complessivo') }}: <span class="all-bookings-total">{{ printablePrice($tot_amount) }}</span> {{ $currentgas->currency }}</strong>
+                                    <strong>{{ _i('Totale Complessivo') }}: <span class="all-bookings-total">{{ printablePrice($tot_amount) }}</span> {{ $currency_symbol }}</strong>
                                 </div>
                             </th>
                         </tr>

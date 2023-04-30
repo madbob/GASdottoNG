@@ -49,7 +49,12 @@ class BookedProductVariant extends Model
             $values[] = $c->value_id;
         }
 
-        return VariantCombo::byValues($values);
+        sort($values);
+        $myid = join(' ', $values);
+
+        return $this->product->product->variantCombos->first(function($v) use ($myid) {
+            return $v->innerIdentifier() == $myid;
+        });
     }
 
     public function unitPrice($rectify = true)
@@ -137,19 +142,17 @@ class BookedProductVariant extends Model
         throw new \Exception("Invocata funzione reduxBehaviour() su BookedProductVariant", 1);
     }
 
-    public function reduxData($ret = null, $filters = null)
+    public function reduxData($filters = null)
     {
-        if (is_null($ret)) {
-            $ret = (object) [
-                'id' => $this->printableName(),
-                'variant' => $this,
+        $ret = (object) [
+            'id' => $this->printableName(),
+            'variant' => $this,
 
-                'relative_price' => 0,
-                'relative_weight' => 0,
-                'relative_quantity' => 0,
-                'relative_pieces' => 0,
-            ];
-        }
+            'relative_price' => 0,
+            'relative_weight' => 0,
+            'relative_quantity' => 0,
+            'relative_pieces' => 0,
+        ];
 
         $ret = $this->describingAttributesMerge($ret, (object) [
             'price' => $this->quantityValue(),

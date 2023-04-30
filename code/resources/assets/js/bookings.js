@@ -110,6 +110,14 @@ class Bookings
             return false;
         });
 
+        $('.alt_price_selector input', container).change((e) => {
+            var radio = $(e.currentTarget);
+            if (radio.prop('checked')) {
+                var editor = radio.closest('.booking-editor');
+                this.bookingTotal(editor);
+            }
+        });
+
         $('.fit-add-product-select', container).change((e) => {
             var select = $(e.currentTarget);
             var id = select.find('option:selected').val();

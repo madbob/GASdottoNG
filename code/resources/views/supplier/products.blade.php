@@ -44,7 +44,7 @@
     @if($supplier->active_orders->count() != 0)
         <br>
         <div class="alert alert-danger">
-            {{ _i("Attenzione: ci sono ordini non ancora consegnati ed archiviati per questo fornitore, eventuali modifiche ai prodotti saranno applicate anche a tali ordini. Eventuali nuovi prodotti aggiunti dovranno invece essere abilitati esplicitamente nell'ordine, se desiderato, agendo sulla tabella dei prodotti.") }}
+            {{ _i("Attenzione: ci sono ordini non ancora consegnati ed archiviati per questo fornitore. Eventuali nuovi prodotti qui aggiunti o disabilitati dovranno essere abilitati o rimossi esplicitamente nell'ordine, se desiderato, agendo sulla tabella dei prodotti.") }}
         </div>
     @endif
 

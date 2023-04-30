@@ -237,9 +237,7 @@ class ModifierEngine
             case 'product':
                 $product_target_id = $modifier->target->id;
                 $mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$product_target_id] ?? null;
-                $obj_mod_target = $booking->products()->whereHas('product', function($query) use ($product_target_id) {
-                    $query->where('product_id', $product_target_id);
-                })->first();
+                $obj_mod_target = $booking->products()->where('product_id', $product_target_id)->first();
                 break;
 
             default:

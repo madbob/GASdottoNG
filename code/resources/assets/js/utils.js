@@ -173,6 +173,9 @@ class Utils {
             let input = form.find('[name=' + data.target + ']');
             Utils.setInputErrorText(input, data.message);
         }
+        else {
+            alert(data.message);
+        }
     }
 
     static detailsButton(url)

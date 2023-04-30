@@ -22,7 +22,7 @@ trait Priceable
         $this->hard_price = $price;
     }
 
-    public function getPrice($rectify)
+    public function getPrice($rectify = false)
     {
         if (is_null($this->hard_price)) {
             return $this->realPrice($rectify);

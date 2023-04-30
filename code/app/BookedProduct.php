@@ -28,10 +28,12 @@ class BookedProduct extends Model
         'creating' => SluggableCreating::class,
     ];
 
+    /*
     public function product(): BelongsTo
     {
         return $this->belongsTo('App\Product')->withTrashed();
     }
+    */
 
     public function booking(): BelongsTo
     {
@@ -46,6 +48,11 @@ class BookedProduct extends Model
     public function getStatusAttribute()
     {
         return $this->booking->status;
+    }
+
+    public function getProductAttribute()
+    {
+        return $this->booking->order->products->firstWhere('id', $this->product_id);
     }
 
     public function getSlugID()
@@ -346,22 +353,18 @@ class BookedProduct extends Model
         return $ret;
     }
 
-    private function initRedux($ret)
+    private function initRedux()
     {
-        if (is_null($ret)) {
-            $ret = (object) [
-                'id' => $this->product_id,
-                'product' => $this->product,
-                'variants' => [],
-            ];
-        }
-
-        return $ret;
+        return (object) [
+            'id' => $this->product_id,
+            'product' => $this->product,
+            'variants' => [],
+        ];
     }
 
-    public function reduxData($ret = null, $filters = null)
+    public function reduxData($filters = null)
     {
-        $ret = $this->initRedux($ret);
+        $ret = $this->initRedux();
 
         if ($this->variants->isEmpty() == false) {
             $ret = $this->descendReduction($ret, $filters);

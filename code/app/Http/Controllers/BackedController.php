@@ -40,7 +40,7 @@ class BackedController extends Controller
         }
         catch (\Exception $e) {
             \Log::debug('Errore non identificato: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
-            return $this->errorResponse(_i('Errore'));
+            return $this->errorResponse(_i('Errore') . ': ' . $e->getMessage());
         }
     }
 

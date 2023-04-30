@@ -116,7 +116,8 @@ class OrdersService extends BaseService
             }
         }
 
-        $order->products()->sync($enabled);
+        $products = $order->supplier->products()->whereIn('id', $enabled)->get();
+        $order->syncProducts($products);
         return $order->aggregate;
     }
 

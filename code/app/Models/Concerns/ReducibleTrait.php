@@ -154,7 +154,7 @@ trait ReducibleTrait
 
         foreach($children as $child) {
             $child = ($behaviours->optimize)($this, $child);
-            $reduxed_child = $child->reduxData(null, $filters);
+            $reduxed_child = $child->reduxData($filters);
             $ret->$collected[$reduxed_child->id] = $this->describingAttributesMerge($ret->$collected[$reduxed_child->id] ?? null, $reduxed_child);
             $ret = $this->describingAttributesMerge($ret, $reduxed_child);
 
@@ -177,7 +177,7 @@ trait ReducibleTrait
 
             'optimize' => function($master, $child) {
                 return $child;
-            }
+            },
         ];
     }
 
@@ -239,7 +239,7 @@ trait ReducibleTrait
         }
 
         if (($faster || $target_priority <= 1) && ($booking && $order)) {
-            $aggregate_data = $aggregate->reduxData(null, [
+            $aggregate_data = $aggregate->reduxData([
                 'orders' => [$order],
                 'bookings' => [$booking]
             ]);
@@ -250,7 +250,7 @@ trait ReducibleTrait
 
         if (is_null($aggregate_data)) {
             if ($target_priority == 2 && $order) {
-                $aggregate_data = $aggregate->reduxData(null, [
+                $aggregate_data = $aggregate->reduxData([
                     'orders' => [$order]
                 ]);
             }
@@ -271,25 +271,23 @@ trait ReducibleTrait
         riduzione, esistendo diverse variabili (incluso il GAS attualmente
         attivo nel GlobalScopeHub)
     */
-    public function reduxData($ret = null, $filters = null)
+    public function reduxData($filters = null)
     {
-        if (is_null($ret)) {
-            $behaviours = $this->reduxBehaviour();
-            $master_key = $behaviours->master_key;
+        $behaviours = $this->reduxBehaviour();
+        $master_key = $behaviours->master_key;
 
-            $ret = (object) [
-                'id' => $this->$master_key,
-            ];
+        $ret = (object) [
+            'id' => $this->$master_key,
+        ];
 
-            if (isset($behaviours->collected)) {
-                $collected = $behaviours->collected;
-                $ret->$collected = [];
-            }
+        if (isset($behaviours->collected)) {
+            $collected = $behaviours->collected;
+            $ret->$collected = [];
+        }
 
-            $merged = $behaviours->merged ?? '';
-            if (!empty($merged)) {
-                $ret->$merged = [];
-            }
+        $merged = $behaviours->merged ?? '';
+        if (!empty($merged)) {
+            $ret->$merged = [];
         }
 
         return $this->descendReduction($ret, $filters);

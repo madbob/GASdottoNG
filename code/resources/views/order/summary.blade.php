@@ -6,7 +6,8 @@ $columns = $currentgas->orders_display_columns;
 $table_identifier = 'summary-' . sanitizeId($order->id);
 $display_columns = App\Order::displayColumns();
 
-$products = $order->supplier->products()->with(['category'])->sorted()->get();
+$products = $order->supplier->products;
+$order_products = $order->products()->with(['category'])->sorted()->get();
 $categories = $products->pluck('category_id')->toArray();
 $categories = array_unique($categories);
 $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->get()->pluck('name')->toArray();
@@ -87,7 +88,7 @@ foreach($display_columns as $identifier => $metadata) {
                     @foreach($display_columns as $identifier => $metadata)
                         @if($identifier == 'selection')
                             <th width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
-                                @if($products->count() != $order->products->count())
+                                @if($products->count() != $order_products->count())
                                     <button class="btn btn-light btn-sm toggle-product-abilitation" data-bs-toggle="button">{!! _i('Vedi Tutti') !!}</button>
                                 @endif
                             </th>
@@ -117,8 +118,13 @@ foreach($display_columns as $identifier => $metadata) {
                     <?php
 
                     $enabled = $order->hasProduct($product);
-                    if ($order->isActive() == false & $enabled == false) {
-                        continue;
+                    if ($enabled == false) {
+                        if ($order->isActive() == false) {
+                            continue;
+                        }
+                    }
+                    else {
+                        $product = $order_products->firstWhere('id', $product->id);
                     }
 
                     ?>
@@ -160,7 +166,7 @@ foreach($display_columns as $identifier => $metadata) {
 
                         <!-- Prezzo -->
                         <td class="order-cell-price {{ in_array('price', $columns) ? '' : 'hidden' }}">
-                            <label>{{ printablePriceCurrency($product->price) }}</label>
+                            <label>{{ printablePriceCurrency($product->getPrice(false)) }}</label>
                         </td>
 
                         <!-- Disponibile -->

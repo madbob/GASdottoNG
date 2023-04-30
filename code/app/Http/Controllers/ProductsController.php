@@ -133,4 +133,59 @@ class ProductsController extends BackedController
             'price' => $str,
         ]);
     }
+
+    private function unalignedPrices($product)
+    {
+        $to_change = [];
+        $orders = $product->supplier->active_orders;
+
+        foreach($orders as $order) {
+            $existing_product = $order->products()->where('product_id', $product->id)->first();
+
+            if ($existing_product) {
+                if ($product->comparePrices($existing_product) == false) {
+                    $to_change[] = $order;
+                }
+            }
+        }
+
+        return $to_change;
+    }
+
+    public function postFeedback(Request $request, $id)
+    {
+        $ret = [];
+        $product = Product::findOrFail($id);
+
+        $to_change = $this->unalignedPrices($product);
+        if (empty($to_change) == false) {
+            $ret[] = route('products.askupdateprices', $product->id);
+        }
+
+        return response()->json($ret);
+    }
+
+    public function askUpdatePrices(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+        $to_change = $this->unalignedPrices($product);
+
+        return view('product.updateorders', [
+            'product' => $product,
+            'orders' => $to_change,
+        ]);
+    }
+
+    public function updatePrices(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+        $orders = $request->input('orders', []);
+
+        foreach($orders as $order) {
+            $order = Order::find($order);
+            $order->attachProduct($product);
+        }
+
+        return $this->successResponse();
+    }
 }

@@ -229,6 +229,19 @@ class Callables {
         }
     }
 
+    static afterProductChange(form, data) {
+        utils.postAjax({
+            method: 'GET',
+            url: 'products/' + data.id + '/post_feedback',
+            dataType: 'JSON',
+            success: function(data) {
+                for (let i = 0; i < data.length; i++) {
+                    utils.j().fetchRemoteModal(data[i]);
+                }
+            }
+        });
+    }
+
     static afterAggregateChange(form, data) {
         utils.postAjax({
             method: 'GET',

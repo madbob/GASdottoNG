@@ -65,6 +65,11 @@ class VariantCombo extends Model
         return $query->first();
     }
 
+    public function innerIdentifier()
+    {
+        return $this->values->sortBy('id')->pluck('id')->join(' ');
+    }
+
     public static function activeValues($combos)
     {
         $ret = [];
@@ -96,6 +101,18 @@ class VariantCombo extends Model
 
     public function realPrice($rectify)
     {
-        return $this->price_offset + $this->product->getPrice($rectify);
+        $offset = $this->price_offset;
+
+        if (isset($this->product->pivot->prices)) {
+            $prices = json_decode($this->product->pivot->prices);
+            if ($prices) {
+                $key = $this->innerIdentifier();
+                if (isset($prices->variants->$key)) {
+                    $offset = $prices->variants->$key;
+                }
+            }
+        }
+
+        return $offset + $this->product->getPrice($rectify);
     }
 }

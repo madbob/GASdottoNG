@@ -281,10 +281,18 @@ class BookingsService extends BaseService
             $booking->enforceTotal($manual_total);
         }
 
-        foreach($booking->products as $prod) {
-            $key = sprintf('apply_price_%s', $prod->product->id);
+        foreach($booking->order->products as $prod) {
+            $key = sprintf('apply_price_%s', $prod->id);
             if (isset($request[$key])) {
-                $prod->product->setPrice($request[$key]);
+                $prod->setPrice($request[$key]);
+            }
+
+            $combos = $prod->variantCombos;
+            foreach($combos as $combo) {
+                $key = sprintf('apply_price_%s_%s', $prod->id, $combo->id);
+                if (isset($request[$key])) {
+                    $combo->setPrice($request[$key]);
+                }
             }
         }
 

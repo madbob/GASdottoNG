@@ -105,7 +105,7 @@ class Product extends Model
                 $query->whereHas('variant', function($query) use ($obj) {
                     $query->where('product_id', $obj->id);
                 });
-            })->with(['values'])->get();
+            })->with(['values', 'values.variant'])->get();
 
             /*
                 Per scrupolo qui faccio un controllo: se il prodotto ha delle
@@ -119,6 +119,20 @@ class Product extends Model
                 return $this->getVariantCombosAttribute();
             }
             else {
+                /*
+                    Una volta ottenuto l'elenco delle combo, setto in modo
+                    esplicito la relazione con il prodotto corrente.
+                    Questo perché VariantCombo dipende da questa relazione per
+                    determinare quale sia il suo stesso prodotto, il quale viene
+                    usato sia per formattarne il nome che per determinarne il
+                    prezzo (se il prodotto corrente è nel contesto di un ordine)
+                */
+                foreach($ret as $vc) {
+                    foreach($vc->values as $val) {
+                        $val->variant->setRelation('product', $obj);
+                    }
+                }
+
                 return $ret;
             }
         });
@@ -165,7 +179,7 @@ class Product extends Model
             }
 
             if ($variant) {
-                $price += $variant->price_offset;
+                $price = $variant->getPrice();
             }
         }
 
@@ -173,21 +187,6 @@ class Product extends Model
         $str = sprintf('%.02f %s / %s', $price, $currency, $this->printableMeasure());
 
         return $str;
-    }
-
-    /*
-        Per i prodotti con pezzatura, ritorna già il prezzo per singola unità
-        e non è dunque necessario normalizzare ulteriormente
-    */
-    public function contextualPrice($rectify = true)
-    {
-        $price = $this->price;
-
-        if ($rectify && $this->portion_quantity != 0) {
-            $price = $price * $this->portion_quantity;
-        }
-
-        return (float) $price;
     }
 
     public function printableMeasure($verbose = false)
@@ -256,10 +255,46 @@ class Product extends Model
         return false;
     }
 
+    public function comparePrices($other)
+    {
+        if ($this->getPrice(false) != $other->getPrice(false)) {
+            return false;
+        }
+
+        foreach($other->variant_combos as $vc) {
+            $ovc = $this->variant_combos->firstWhere('id', $vc);
+            if ($ovc) {
+                if ($ovc->getPrice(false) != $vc->getPrice(false)) {
+                    return false;
+                }
+            }
+            else {
+                if ($vc->price_offset != 0) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     /************************************************************** Priceable */
 
     public function realPrice($rectify)
     {
-        return $this->contextualPrice($rectify);
+        $price = $this->price;
+
+        if (isset($this->pivot->prices)) {
+            $prices = json_decode($this->pivot->prices);
+            if ($prices) {
+                $price = $prices->unit_price;
+            }
+        }
+
+        if ($rectify && $this->portion_quantity != 0) {
+            $price = $price * $this->portion_quantity;
+        }
+
+        return (float) $price;
     }
 }

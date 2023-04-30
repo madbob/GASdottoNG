@@ -32,7 +32,6 @@ class CreateOrdersTable extends Migration
         Schema::create('order_product', function (Blueprint $table) {
             $table->string('order_id');
             $table->string('product_id');
-            $table->boolean('discount_enabled')->default(true);
             $table->string('notes', 500)->default('');
 
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');

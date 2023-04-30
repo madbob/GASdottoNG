@@ -70,7 +70,7 @@ class Booking extends Model
 
     public function products(): HasMany
     {
-        return $this->hasMany('App\BookedProduct')->with(['variants', 'product']);
+        return $this->hasMany('App\BookedProduct')->with(['variants']);
     }
 
     public function deliverer(): BelongsTo
@@ -665,6 +665,7 @@ class Booking extends Model
 
         $ret->optimize = function($item, $child) {
             $child->setRelation('booking', $item);
+            $child->setRelation('product', $item->order->products->firstWhere('id', $child->product_id));
             return $child;
         };
 

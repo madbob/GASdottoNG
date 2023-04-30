@@ -65,7 +65,7 @@ class DynamicBookingsService extends BookingsService
                 }, []),
 
                 'quantity' => (float) $final_variant_quantity,
-                'unitprice' => (float) $combo->price,
+                'unitprice' => (float) $combo->getPrice(),
                 'unitprice_human' => $product->product->printablePrice($combo),
                 'total' => (float) printablePrice($delivering ? $variant->deliveredValue() : $variant->quantityValue()),
                 'message' => $variant_message,
