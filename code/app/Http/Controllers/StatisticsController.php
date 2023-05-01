@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\User;
+use App\Category;
 use App\Booking;
 use App\BookedProduct;
 
@@ -118,17 +119,18 @@ class StatisticsController extends Controller
             $data[$name]->value += $booking->getValue('delivered', true);
         }
 
-        $data_for_categories = BookedProduct::selectRaw('product_id, SUM(final_price) as price')->whereHas('booking', function($query) use ($start, $end, $target) {
+        $data_for_categories = BookedProduct::selectRaw('product_id, SUM(final_price) as price, category_id')->whereHas('booking', function($query) use ($start, $end, $target) {
             $this->createBookingQuery($query, $start, $end, $target, null);
-        })->with('product', 'product.category')->groupBy('product_id')->get();
+        })->join('products', 'booked_products.product_id', '=', 'products.id')->groupBy('product_id', 'category_id')->get();
 
         foreach($data_for_categories as $dfc) {
-            $category_id = $dfc->product->category_id;
+            $category_id = $dfc->category_id;
 
             if (!isset($categories[$category_id])) {
+                $category = Category::find($category_id);
                 $categories[$category_id] = (object) [
                     'value' => 0,
-                    'name' => $dfc->product->category->printableName(),
+                    'name' => $category->printableName(),
                 ];
             }
 

@@ -312,7 +312,7 @@ class Order extends Model
             ]);
         }
         else {
-            $this->products()->attach($data, [
+            $this->products()->attach($product->id, [
                 'prices' => $prices,
             ]);
         }
