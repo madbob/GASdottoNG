@@ -265,8 +265,6 @@ class Order extends Model
 
     private function extractProductPrices($product)
     {
-        throw new \Exception("Error Processing Request", 1);
-
         $row = [
             'unit_price' => $product->price,
         ];
