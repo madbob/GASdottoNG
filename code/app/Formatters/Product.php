@@ -16,7 +16,7 @@ class Product extends Formatter
 
     public static function formatPrice($obj, $context)
     {
-        return printablePrice($obj->price);
+        return printablePrice($obj->getPrice());
     }
 
     public static function formatActive($obj, $context)

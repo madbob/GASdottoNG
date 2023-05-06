@@ -263,6 +263,11 @@ class Order extends Model
         return false;
     }
 
+    /*
+        Questa funzione è per estrapolare i prezzi dei prodotti e fissarli
+        all'interno dell'ordine. Pertanto occorre qui accedere direttamente ai
+        prezzi di tali prodotti e varianti, non dalla funzione getPrice()
+    */
     private function extractProductPrices($product)
     {
         $row = [

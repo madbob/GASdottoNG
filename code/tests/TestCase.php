@@ -120,6 +120,19 @@ abstract class TestCase extends BaseTestCase
     }
 
     /*
+        Per creare una variante
+    */
+    protected function createVariant($product)
+    {
+        return $this->services['variants']->store([
+            'product_id' => $product->id,
+            'name' => 'Colore',
+            'id' => ['', '', ''],
+            'value' => ['Rosso', 'Verde', 'Blu'],
+        ]);
+    }
+
+    /*
         Per predisporre il minimo essenziale per fare delle prenotazioni.
         Ovvero: un ordine
     */

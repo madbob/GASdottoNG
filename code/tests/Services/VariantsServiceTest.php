@@ -6,6 +6,13 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Exceptions\AuthException;
+use App\User;
+use App\Supplier;
+use App\Product;
+use App\Category;
+use App\Measure;
+use App\VariantValue;
+use App\VariantCombo;
 
 class VariantsServiceTest extends TestCase
 {
@@ -15,28 +22,18 @@ class VariantsServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->supplier = \App\Supplier::factory()->create();
-        $this->category = \App\Category::factory()->create();
-        $this->measure = \App\Measure::factory()->create();
+        $this->supplier = Supplier::factory()->create();
+        $this->category = Category::factory()->create();
+        $this->measure = Measure::factory()->create();
 
-        $this->product = \App\Product::factory()->create([
+        $this->product = Product::factory()->create([
             'supplier_id' => $this->supplier->id,
             'category_id' => $this->category->id,
             'measure_id' => $this->measure->id
         ]);
 
         $this->userWithReferrerPerms = $this->createRoleAndUser($this->gas, 'supplier.modify', $this->supplier);
-        $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
-    }
-
-    private function createVariant()
-    {
-        return $this->services['variants']->store([
-            'product_id' => $this->product->id,
-            'name' => 'Colore',
-            'id' => ['', '', ''],
-            'value' => ['Rosso', 'Verde', 'Blu'],
-        ]);
+        $this->userWithNoPerms = User::factory()->create(['gas_id' => $this->gas->id]);
     }
 
     /*
@@ -46,7 +43,7 @@ class VariantsServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $variant = $this->createVariant();
+        $variant = $this->createVariant($this->product);
     }
 
     /*
@@ -56,7 +53,7 @@ class VariantsServiceTest extends TestCase
     {
         $this->actingAs($this->userWithReferrerPerms);
 
-        $variant = $this->createVariant();
+        $variant = $this->createVariant($this->product);
 
         $product = $this->services['products']->show($this->product->id);
         $this->assertEquals('Colore', $variant->name);
@@ -81,7 +78,7 @@ class VariantsServiceTest extends TestCase
     */
     public function testModify()
     {
-        $variant = $this->createVariant();
+        $variant = $this->createVariant($this->product);
         $old_value = $variant->values()->where('value', 'Rosso')->first();
 
         $variant = $this->services['variants']->store([
@@ -124,7 +121,7 @@ class VariantsServiceTest extends TestCase
         $product = $this->services['products']->show($this->product->id);
         $this->assertEquals(3, $variant->values()->count());
         $this->assertEquals(3, $product->variant_combos->count());
-        $this->assertNull(\App\VariantValue::where('value', 'Blu')->first());
+        $this->assertNull(VariantValue::where('value', 'Blu')->first());
     }
 
     /*
@@ -132,7 +129,7 @@ class VariantsServiceTest extends TestCase
     */
     public function testDestroy()
     {
-        $variant = $this->createVariant();
+        $variant = $this->createVariant($this->product);
         $this->assertEquals(3, $this->product->variant_combos->count());
 
         $this->nextRound();
@@ -147,7 +144,7 @@ class VariantsServiceTest extends TestCase
 	*/
 	public function testStringReading()
 	{
-		$variant = $this->createVariant();
+		$variant = $this->createVariant($this->product);
 		$combo = $this->product->variant_combos->first();
 
 		$string = $combo->printableName();
@@ -158,4 +155,60 @@ class VariantsServiceTest extends TestCase
 		$this->assertEquals($p[0]->id, $this->product->id);
 		$this->assertEquals($p[1]->id, $combo->id);
 	}
+
+    /*
+        Modifica matrice
+    */
+    public function testMatrixUpdate()
+    {
+        $variant = $this->createVariant($this->product);
+
+        $this->nextRound();
+
+        $ids = [];
+        $actives = [];
+
+        foreach($variant->values as $index => $val) {
+            $ids[] = $val->id;
+
+            if ($index != 0) {
+                $combo = VariantCombo::byValues([$val->id]);
+                $actives[] = $combo->id;
+            }
+        }
+
+        $this->services['variants']->matrix($this->product, $ids, $actives, ['', 'ABC', ''], [0, 0, 1], [0.1, 0, 0]);
+
+        $this->nextRound();
+
+        foreach($variant->values as $index => $val) {
+            $combo = VariantCombo::byValues([$val->id]);
+
+            switch($index) {
+                case 0:
+                    $this->assertEquals(0, $combo->active);
+                    $this->assertEquals('', $combo->code);
+                    $this->assertEquals(0, $combo->price_offset);
+                    $this->assertEquals(0.1, $combo->weight_offset);
+                    break;
+
+                case 1:
+                    $this->assertEquals(1, $combo->active);
+                    $this->assertEquals('ABC', $combo->code);
+                    $this->assertEquals(0, $combo->price_offset);
+                    $this->assertEquals(0, $combo->weight_offset);
+                    break;
+
+                case 2:
+                    $this->assertEquals(1, $combo->active);
+                    $this->assertEquals('', $combo->code);
+                    $this->assertEquals(1, $combo->price_offset);
+                    $this->assertEquals(0, $combo->weight_offset);
+                    break;
+
+                default:
+                    throw new \Exception("Invalid combo index", 1);
+            }
+        }
+    }
 }

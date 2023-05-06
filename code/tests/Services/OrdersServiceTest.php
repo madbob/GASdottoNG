@@ -11,6 +11,11 @@ use Bus;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\AuthException;
 
+use App\User;
+use App\Delivery;
+use App\Booking;
+use App\VariantCombo;
+
 class OrdersServiceTest extends TestCase
 {
     use DatabaseTransactions;
@@ -20,7 +25,7 @@ class OrdersServiceTest extends TestCase
         parent::setUp();
 
         $this->order = $this->initOrder(null);
-        $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
+        $this->userWithNoPerms = User::factory()->create(['gas_id' => $this->gas->id]);
 		$this->userWithBasePerms = $this->createRoleAndUser($this->gas, 'supplier.book');
     }
 
@@ -179,7 +184,7 @@ class OrdersServiceTest extends TestCase
     public function testOnShippingPlace()
     {
         $this->actingAs($this->userAdmin);
-        $delivery = \App\Delivery::factory()->create([
+        $delivery = Delivery::factory()->create([
             'default' => true,
         ]);
 
@@ -366,7 +371,7 @@ class OrdersServiceTest extends TestCase
 		$booking = $this->updateAndFetch($data, $this->order, $this->userWithBasePerms, false);
 
 		$this->nextRound();
-		$booking = \App\Booking::find($booking->id);
+		$booking = Booking::find($booking->id);
 		$this->assertEquals($booking->products()->count(), 2);
 		$this->assertEquals($this->order->bookings()->count(), 1);
 
@@ -384,7 +389,7 @@ class OrdersServiceTest extends TestCase
         ]);
 
 		$this->nextRound();
-		$booking = \App\Booking::find($booking->id);
+		$booking = Booking::find($booking->id);
 		$this->assertEquals($booking->products()->count(), 1);
 		$this->assertEquals($this->order->bookings()->count(), 1);
 
@@ -401,7 +406,103 @@ class OrdersServiceTest extends TestCase
 
 		$this->nextRound();
 		$this->assertEquals($this->order->bookings()->count(), 0);
-		$booking = \App\Booking::find($booking->id);
+		$booking = Booking::find($booking->id);
 		$this->assertNull($booking);
 	}
+
+    /*
+        Cambio prezzo di un prodotto
+    */
+    public function testChangeProductPrice()
+    {
+        $this->actingAs($this->userReferrer);
+
+        $product = $this->order->products()->inRandomOrder()->first();
+        $old_price = $product->getPrice();
+        $new_price = $old_price + 2;
+        $this->services['products']->update($product->id, array(
+            'name' => $product->name,
+            'price' => $new_price,
+        ));
+
+        $this->nextRound();
+
+        $product_order = $this->order->products()->where('product_id', $product->id)->first();
+        $this->assertEquals($old_price, $product_order->getPrice());
+
+        $product_raw = $this->services['products']->show($product->id);
+        $this->assertEquals($new_price, $product_raw->getPrice());
+
+        $this->assertFalse($product_raw->comparePrices($product_order));
+    }
+
+    /*
+        Cambio prezzo di una variante
+    */
+    public function testChangeProductVariantPrice()
+    {
+        $this->actingAs($this->userReferrer);
+
+        $product = $this->order->supplier->products()->inRandomOrder()->first();
+        $product_price = $product->getPrice();
+
+        $ids = [];
+        $active = [];
+        $variant = $this->createVariant($product);
+        foreach($variant->values as $index => $val) {
+            $ids[] = $val->id;
+
+            $combo = VariantCombo::byValues([$val->id]);
+            $actives[] = $combo->id;
+        }
+
+        $this->services['variants']->matrix($product, $ids, $actives, ['', '', ''], [0, 0, 0], [0, 0, 0]);
+
+        $this->nextRound();
+
+        $start = date('Y-m-d');
+        $end = date('Y-m-d', strtotime('+20 days'));
+        $shipping = date('Y-m-d', strtotime('+30 days'));
+
+        $aggregate = $this->services['orders']->store(array(
+            'supplier_id' => $this->order->supplier_id,
+            'comment' => 'Commento di prova',
+            'start' => printableDate($start),
+            'end' => printableDate($end),
+            'shipping' => printableDate($shipping),
+            'status' => 'open',
+        ));
+
+        $combos = $aggregate->orders->first()->products()->where('product_id', $product->id)->first()->variantCombos;
+        $this->assertFalse($combos->isEmpty());
+        foreach($combos as $combo) {
+            $this->assertEquals($product_price, $combo->getPrice());
+        }
+
+        $this->nextRound();
+
+        $product = $this->services['products']->show($product->id);
+        $this->services['variants']->matrix($product, $ids, $actives, ['', '', ''], [0, 0, 1], [0, 0, 0]);
+
+        $this->nextRound();
+
+        $product = $this->services['products']->show($product->id);
+        $new_product = $aggregate->orders->first()->products()->where('product_id', $product->id)->first();
+
+        $combos = $new_product->variantCombos;
+        $this->assertFalse($combos->isEmpty());
+        $this->assertEquals(3, $combos->count());
+
+        foreach($combos as $index => $combo) {
+            $listing_combo = VariantCombo::find($combo->id);
+            if ($index == 2) {
+                $this->assertEquals($listing_combo->getPrice(), $combo->getPrice() + 1);
+            }
+            else {
+                $this->assertEquals($listing_combo->getPrice(), $combo->getPrice());
+            }
+        }
+
+        $this->assertFalse($product->comparePrices($new_product));
+    }
 }

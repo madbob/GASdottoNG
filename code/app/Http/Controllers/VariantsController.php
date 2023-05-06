@@ -139,23 +139,7 @@ class VariantsController extends BackedController
         $prices = $request->input('price_offset', []);
         $weights = $request->input('weight_offset', []);
 
-        foreach($combinations as $index => $combination) {
-            $combo = VariantCombo::byValues(explode(',', $combination));
-            $combo->code = $codes[$index];
-            $combo->active = in_array($combo->id, $actives);
-
-            $combo->price_offset = $prices[$index] ?? 0;
-            if (filled($combo->price_offset) == false) {
-                $combo->price_offset = 0;
-            }
-
-            $combo->weight_offset = $weights[$index] ?? 0;
-            if (filled($combo->weight_offset) == false) {
-                $combo->weight_offset = 0;
-            }
-
-            $combo->save();
-        }
+        $this->service->matrix($product, $combinations, $actives, $codes, $prices, $weights);
 
         DB::commit();
 

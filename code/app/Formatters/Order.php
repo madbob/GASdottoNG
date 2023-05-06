@@ -96,7 +96,7 @@ class Order extends Formatter
 				'name' => _i('Prezzo Unitario'),
 				'checked' => false,
 				'format_product' => function($product, $summary) {
-					return printablePrice($product->price, ',');
+					return printablePrice($product->getPrice(), ',');
 				},
 				'format_variant' => function($product, $summary) {
 					return printablePrice($summary->variant->unitPrice(), ',');

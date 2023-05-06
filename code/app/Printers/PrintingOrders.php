@@ -15,13 +15,13 @@ trait PrintingOrders
 				if ($product->variants->isEmpty()) {
 					$all_products[$product->id] = 0;
 					$headers[] = $product->printableName();
-					$prices_rows[] = printablePrice($product->price, ',');
+					$prices_rows[] = printablePrice($product->getPrice(), ',');
 				}
 				else {
 					foreach($product->variant_combos as $combo) {
 						$all_products[$product->id . '-' . $combo->id] = 0;
 						$headers[] = $combo->printableName();
-						$prices_rows[] = printablePrice($combo->price, ',');
+						$prices_rows[] = printablePrice($combo->getPrice(), ',');
 					}
 				}
 			}

@@ -10,6 +10,7 @@ use App\Events\VariantChanged;
 use App\Product;
 use App\Variant;
 use App\VariantValue;
+use App\VariantCombo;
 use App\BookedProductVariant;
 
 class VariantsService extends BaseService
@@ -87,6 +88,27 @@ class VariantsService extends BaseService
         DB::commit();
 
         return $variant;
+    }
+
+    public function matrix($product, $combinations, $actives, $codes, $prices, $weights)
+    {
+        foreach($combinations as $index => $combination) {
+            $combo = VariantCombo::byValues(explode(',', $combination));
+            $combo->code = $codes[$index];
+            $combo->active = in_array($combo->id, $actives);
+
+            $combo->price_offset = $prices[$index] ?? 0;
+            if (filled($combo->price_offset) == false) {
+                $combo->price_offset = 0;
+            }
+
+            $combo->weight_offset = $weights[$index] ?? 0;
+            if (filled($combo->weight_offset) == false) {
+                $combo->weight_offset = 0;
+            }
+
+            $combo->save();
+        }
     }
 
     public function destroy($id)
