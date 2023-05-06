@@ -12,11 +12,12 @@ use Auth;
 use Mail;
 use Log;
 
+use App\Models\Concerns\Datable;
 use App\Models\Concerns\AttachableTrait;
 use App\Jobs\DeliverNotification;
 use App\Scopes\RestrictedGAS;
 
-class Notification extends Model
+class Notification extends Model implements Datable
 {
     use HasFactory, GASModel, AttachableTrait;
 
@@ -96,5 +97,12 @@ class Notification extends Model
     public function printableHeader()
     {
         return $this->printableDate('start_date') . ' - ' . $this->printableName() . ' - ' . mb_substr(strip_tags($this->content), 0, 100) . '...';
+    }
+
+    /**************************************************************** Datable */
+
+    public function getSortingDateAttribute()
+    {
+        return $this->start_date;
     }
 }

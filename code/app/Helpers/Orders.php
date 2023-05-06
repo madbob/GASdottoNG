@@ -46,16 +46,13 @@ function defaultOrders($mine)
 {
 	if ($mine) {
 		$user = Auth::user();
+
 		$supplier_id = [];
 
-		foreach($user->targetsByAction('supplier.modify') as $supplier) {
-			$supplier_id[] = $supplier->id;
-		}
-		foreach($user->targetsByAction('supplier.orders') as $supplier) {
-			$supplier_id[] = $supplier->id;
-		}
-		foreach($user->targetsByAction('supplier.shippings') as $supplier) {
-			$supplier_id[] = $supplier->id;
+		foreach(['supplier.modify', 'supplier.orders', 'supplier.shippings'] as $action) {
+			foreach($user->targetsByAction($action) as $supplier) {
+				$supplier_id[] = $supplier->id;
+			}
 		}
 
 		$supplier_id = array_unique($supplier_id);

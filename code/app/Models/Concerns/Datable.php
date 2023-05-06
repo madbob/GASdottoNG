@@ -2,7 +2,7 @@
 
 namespace App\Models\Concerns;
 
-interface AccountingDocument
+interface Datable
 {
     public function getSortingDateAttribute();
 }

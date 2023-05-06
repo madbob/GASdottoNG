@@ -15,15 +15,20 @@ use App\MovementType as MovementTypeModel;
 
 abstract class MovementType extends Parameter
 {
+    /*
+        L'unico scopo di questa funzione è semplificare la definizione dei tipi
+        di movimento contabile definiti di default, inizializzando sempre tutti
+        gli array che descrivono le operazioni da compiere sui bilanci per
+        ciascun soggetto toccato. In questo modo si può assumere che siano
+        sempre presenti, benché vuoti
+    */
     protected function voidFunctions($array)
     {
         foreach($array as $i => $a) {
             foreach(['sender', 'target', 'master'] as $t) {
-                if (!isset($a->$t)) {
-                    $array[$i]->$t = (object) [
-                        'operations' => []
-                    ];
-                }
+                $array[$i]->$t ??= (object) [
+                    'operations' => []
+                ];
             }
         }
 
