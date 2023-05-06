@@ -26,7 +26,9 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Auth;
 use Log;
 
-class Date extends Model
+use App\Models\Concerns\Datable;
+
+class Date extends Model implements Datable
 {
     use GASModel;
 
@@ -149,5 +151,12 @@ class Date extends Model
 
         $this->delete();
         return false;
+    }
+
+    /**************************************************************** Datable */
+
+    public function getSortingDateAttribute()
+    {
+        return $this->date;
     }
 }

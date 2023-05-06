@@ -45,21 +45,7 @@ class NotificationsService extends BaseService
 		$dates = $dates_query->get();
 
 		$all = $notifications->merge($dates)->sort(function($a, $b) {
-			if (is_a($a, Notification::class)) {
-				$a_date = $a->start_date;
-			}
-			else {
-				$a_date = $a->date;
-			}
-
-			if (is_a($b, Notification::class)) {
-				$b_date = $b->start_date;
-			}
-			else {
-				$b_date = $b->date;
-			}
-
-			return $b_date <=> $a_date;
+			return $b->sorting_date <=> $a->sorting_date;
 		});
 
 		return $all;

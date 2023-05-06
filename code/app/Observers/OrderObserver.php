@@ -35,18 +35,8 @@ class OrderObserver
         }
     }
 
-    public function created(Order $order)
+    private function dispatchNotifications($order)
     {
-        $supplier = $order->supplier;
-
-        /*
-            Aggancio i prodotti attualmente prenotabili del fornitore
-        */
-        $order->products()->sync($supplier->products()->where('active', '=', true)->get());
-
-        $this->attachModifiers($order);
-        $this->resetOlderDates($order);
-
         if ($order->status == 'open') {
             /*
                 Nota bene: questo funziona solo in virtù del fatto che i job
@@ -60,22 +50,29 @@ class OrderObserver
                 NotifyNewOrder::dispatch($order->id);
             }
             catch(\Exception $e) {
-                Log::error('Unable to trigger NotifyNewOrder job on newly created order: ' . $e->getMessage());
+                Log::error('Unable to trigger NotifyNewOrder job: ' . $e->getMessage());
             }
         }
+    }
+
+    public function created(Order $order)
+    {
+        $supplier = $order->supplier;
+
+        /*
+            Aggancio i prodotti attualmente prenotabili del fornitore
+        */
+        $order->products()->sync($supplier->products()->where('active', '=', true)->get());
+
+        $this->attachModifiers($order);
+        $this->resetOlderDates($order);
+        $this->dispatchNotifications($order);
     }
 
     public function updated(Order $order)
     {
         if ($order->wasChanged('status')) {
-            try {
-                if ($order->status == 'open') {
-                    NotifyNewOrder::dispatch($order->id);
-                }
-            }
-            catch(\Exception $e) {
-                Log::error('Unable to trigger job on updated order: ' . $e->getMessage());
-            }
+            $this->dispatchNotifications($order);
         }
 
         if ($order->shipping) {

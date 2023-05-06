@@ -5,20 +5,19 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-use App\Models\Concerns\AccountingDocument;
+use App\Models\Concerns\Datable;
 use App\Events\SluggableCreating;
 
 /*
     Reminder: non dare per scontato che le fatture abbiano delle prenotazioni
     collegate, può capitare che queste vengano rimosse
 */
-class Receipt extends Model implements AccountingDocument
+class Receipt extends Model implements Datable
 {
     use GASModel, SluggableID;
 
     public $incrementing = false;
     protected $keyType = 'string';
-    private $cache_value = null;
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class
@@ -56,24 +55,28 @@ class Receipt extends Model implements AccountingDocument
 
     private function calculateTotal()
     {
-        if (empty($this->cache_value)) {
-            $this->cache_value['total'] = 0;
-            $this->cache_value['total_tax'] = 0;
-            $this->cache_value['others'] = 0;
+        return $this->innerCache('totals', function($obj) {
+            $data = [
+                'total' => 0,
+                'total_tax' => 0,
+                'others' => 0,
+            ];
 
-            foreach($this->bookings as $booking) {
+            foreach($obj->bookings as $booking) {
                 $book = $booking->delivered_taxed;
-                $this->cache_value['total'] += $book[0];
-                $this->cache_value['total_tax'] += $book[1];
+                $data['total'] += $book[0];
+                $data['total_tax'] += $book[1];
 
                 foreach($booking->aggregatedModifiers() as $am) {
-                    $this->cache_value['others'] += $am->amount;
+                    $data['others'] += $am->amount;
                 }
             }
 
-            $this->cache_value['total'] = round($this->cache_value['total'], 2);
-            $this->cache_value['total_tax'] = round($this->cache_value['total_tax'], 2);
-        }
+            $data['total'] = round($data['total'], 2);
+            $data['total_tax'] = round($data['total_tax'], 2);
+
+            return $data;
+        });
     }
 
     public static function retrieveByAggregateUser($aggregate, $user)
@@ -93,23 +96,23 @@ class Receipt extends Model implements AccountingDocument
 
     public function getTotalAttribute()
     {
-        $this->calculateTotal();
-        return $this->cache_value['total'];
+        $data = $this->calculateTotal();
+        return $data['total'];
     }
 
     public function getTotalTaxAttribute()
     {
-        $this->calculateTotal();
-        return $this->cache_value['total_tax'];
+        $data = $this->calculateTotal();
+        return $data['total_tax'];
     }
 
     public function getTotalOtherAttribute()
     {
-        $this->calculateTotal();
-        return $this->cache_value['others'];
+        $data = $this->calculateTotal();
+        return $data['others'];
     }
 
-    /***************************************************** AccountingDocument */
+    /**************************************************************** Datable */
 
     public function getSortingDateAttribute()
     {

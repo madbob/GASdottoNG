@@ -114,6 +114,7 @@ Route::middleware(['auth'])->group(function() {
         Route::post('modifiers/{id}/fix_order_attach', 'ModifiersController@postFixOrderAttach')->name('modifiers.postfixorderattach');
 
         Route::get('dates/query', 'DatesController@query');
+        Route::get('dates/{id}/header', 'DatesController@objhead')->name('dates.objhead');
         Route::get('dates/orders', 'DatesController@orders')->name('dates.orders');
         Route::post('dates/orders', 'DatesController@updateOrders')->name('dates.updateorders');
 

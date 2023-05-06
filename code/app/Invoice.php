@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-use App\Models\Concerns\AccountingDocument;
+use App\Models\Concerns\Datable;
 use App\Models\Concerns\PayableTrait;
 use App\Models\Concerns\CreditableTrait;
 use App\Models\Concerns\HierarcableTrait;
 use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 
-class Invoice extends Model implements AccountingDocument
+class Invoice extends Model implements Datable
 {
     use GASModel, PayableTrait, CreditableTrait, HierarcableTrait, SluggableID;
 
@@ -133,7 +133,7 @@ class Invoice extends Model implements AccountingDocument
         ];
     }
 
-    /***************************************************** AccountingDocument */
+    /**************************************************************** Datable */
 
     public function getSortingDateAttribute()
     {

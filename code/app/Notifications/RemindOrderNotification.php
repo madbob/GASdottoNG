@@ -13,6 +13,29 @@ class RemindOrderNotification extends ManyMailNotification
         $this->orders = $orders;
     }
 
+    private function formatOrder($order)
+    {
+        $row = $order->supplier->name . "\n";
+
+        if (filled($order->comment)) {
+            $row .= $order->comment . "\n";
+        }
+
+        $contacts = [];
+
+        foreach($order->enforcedContacts() as $user) {
+            $contacts[] = $user->email;
+        }
+
+        if (empty($contacts) == false) {
+            $row .= _i('Per informazioni: %s', [join(', ', array_filter($contacts))]) . "\n";
+        }
+
+        $row .= $order->getBookingURL() . "\n";
+
+        return $row;
+    }
+
     public function toMail($notifiable)
     {
         $message = $this->initMailMessage($notifiable);
@@ -20,24 +43,7 @@ class RemindOrderNotification extends ManyMailNotification
         $orders_list = '';
 
         foreach($this->orders as $order) {
-            $row = $order->supplier->name . "\n";
-
-            if (filled($order->comment ?? '')) {
-                $row .= $order->comment . "\n";
-            }
-
-            $contacts = [];
-
-            foreach($order->enforcedContacts() as $user) {
-                $contacts[] = $user->email;
-            }
-
-            if (empty($contacts) == false) {
-                $row .= _i('Per informazioni: %s', [join(', ', array_filter($contacts))]) . "\n";
-            }
-
-            $row .= $order->getBookingURL() . "\n";
-
+            $row = $this->formatOrder($order);
             $orders_list .= $row . "\n";
         }
 
