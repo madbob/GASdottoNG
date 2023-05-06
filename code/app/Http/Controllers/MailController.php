@@ -12,6 +12,7 @@ use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
 use Aws\Sns\Exception\InvalidSnsMessageException;
 
+use App\Contact;
 use App\InnerLog;
 
 class MailController extends Controller
@@ -101,11 +102,24 @@ class MailController extends Controller
 			}
 
 			if (in_array('gasdotto', $tags)) {
-				if (in_array($request->input('event', ''), ['hard_bounce', 'soft_bounce', 'complaint', 'blocked', 'error'])) {
+                $event = $request->input('event', '');
+
+				if (in_array($event, ['hard_bounce', 'soft_bounce', 'complaint', 'blocked', 'error'])) {
 					try {
 						$email = $request->input('email');
 			            $message = $request->input('reason', '???');
 		                $this->registerBounce($email, $message);
+
+                        /*
+                            Se l'indirizzo mail è stato bloccato, è inutile
+                            inoltrare altri messaggi: qui ne cambio il tipo per
+                            evitare di generare altre mail a vuoto
+                        */
+                        if ($event == 'blocked') {
+                            Contact::where('type', 'email')->where('value', $email)->update([
+                                'type' => 'skip_email',
+                            ]);
+                        }
 					}
 					catch(\Exception $e) {
 						Log::error('Notifica SendInBlue illeggibile: ' . $e->getMessage() . ' - ' . print_r($request->all(), true));

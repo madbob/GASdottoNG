@@ -92,9 +92,7 @@ class Supplier extends Model
 
     public function involvedEmails()
     {
-        $contacts = new Collection();
-
-        $contacts = $contacts->merge($this->contacts()->where('type', 'email')->get());
+        $contacts = $this->contacts()->where('type', 'email')->get();
 
         $users = everybodyCan('supplier.modify', $this);
         foreach($users as $u) {

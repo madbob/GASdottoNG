@@ -12,7 +12,7 @@ class BypassUserProvider extends EloquentUserProvider
 {
     private function mapEmail($email)
     {
-        $contact = Contact::where('type', 'email')->where('value', $email)->first();
+        $contact = Contact::whereIn('type', ['email', 'skip_email'])->where('value', $email)->first();
         if (is_null($contact)) {
             Log::error('Email not found while trying to reset password: ' . $email);
             return null;
