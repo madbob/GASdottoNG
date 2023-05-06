@@ -106,80 +106,85 @@ class Deliveries extends CSVImporter
 		$bookings = [];
 		$data = [];
 
-		DB::beginTransaction();
+		if (is_null($target_order)) {
+			$errors[] = _i('Ordine non identificato');
+		}
+		else {
+			DB::beginTransaction();
 
-		for ($i = 2; $i < count($csvdata); $i++) {
-			$line = $csvdata[$i];
+			for ($i = 2; $i < count($csvdata); $i++) {
+				$line = $csvdata[$i];
 
-			try {
-				$datarow = [
-					'action' => 'saved',
-				];
+				try {
+					$datarow = [
+						'action' => 'saved',
+					];
 
-				$target_user = null;
-				$skip_row = false;
+					$target_user = null;
+					$skip_row = false;
 
-				foreach ($columns as $index => $field) {
-					if ($field == 'username') {
-						$username = trim($line[$index]);
-						$target_user = User::where('username', $username)->first();
-						if (is_null($target_user)) {
-							$skip_row = true;
-						}
-					}
-					elseif ($index >= $first_product_index) {
-						if (isset($mapped_products[$index])) {
-							$quantity = guessDecimal($line[$index]);
-							$product_id = $mapped_products[$index]->product->id;
-							$datarow[$product_id] = $quantity;
-
-							if ($mapped_products[$index]->combo) {
-								if (isset($datarow['variant_quantity_' . $product_id]) == false) {
-									$datarow['variant_quantity_' . $product_id] = [];
-								}
-
-								foreach ($mapped_products[$index]->combo->values as $val) {
-									$variant_id = $val->variant->id;
-
-									if (isset($datarow['variant_selection_' . $variant_id]) == false) {
-										$datarow['variant_selection_' . $variant_id] = [];
-									}
-
-									$datarow['variant_selection_' . $variant_id][] = $val->id;
-								}
-
-								$datarow['variant_quantity_' . $product_id][] = $quantity;
+					foreach ($columns as $index => $field) {
+						if ($field == 'username') {
+							$username = trim($line[$index]);
+							$target_user = User::where('username', $username)->first();
+							if (is_null($target_user)) {
+								$skip_row = true;
 							}
 						}
+						elseif ($index >= $first_product_index) {
+							if (isset($mapped_products[$index])) {
+								$quantity = guessDecimal($line[$index]);
+								$product_id = $mapped_products[$index]->product->id;
+								$datarow[$product_id] = $quantity;
+
+								if ($mapped_products[$index]->combo) {
+									if (isset($datarow['variant_quantity_' . $product_id]) == false) {
+										$datarow['variant_quantity_' . $product_id] = [];
+									}
+
+									foreach ($mapped_products[$index]->combo->values as $val) {
+										$variant_id = $val->variant->id;
+
+										if (isset($datarow['variant_selection_' . $variant_id]) == false) {
+											$datarow['variant_selection_' . $variant_id] = [];
+										}
+
+										$datarow['variant_selection_' . $variant_id][] = $val->id;
+									}
+
+									$datarow['variant_quantity_' . $product_id][] = $quantity;
+								}
+							}
+						}
+
+						if ($skip_row == true) {
+							break;
+						}
 					}
 
-					if ($skip_row == true) {
-						break;
+					if ($target_user) {
+						$booking = $service->handleBookingUpdate($datarow, $user, $target_order, $target_user, true);
+
+						$data[] = $datarow;
+						$bookings[] = (object) [
+							'user_id' => $target_user->id,
+							'user_name' => $target_user->printableName(),
+							'total' => $booking->getValue('effective', true),
+						];
 					}
 				}
-
-				if ($target_user) {
-					$booking = $service->handleBookingUpdate($datarow, $user, $target_order, $target_user, true);
-
-					$data[] = $datarow;
-					$bookings[] = (object) [
-						'user_id' => $target_user->id,
-						'user_name' => $target_user->printableName(),
-						'total' => $booking->getValue('effective', true),
-					];
+				catch (\Exception $e) {
+					$errors[] = implode($target_separator, $line) . '<br/>' . $e->getMessage();
 				}
 			}
-			catch (\Exception $e) {
-				$errors[] = implode($target_separator, $line) . '<br/>' . $e->getMessage();
-			}
+
+			DB::rollback();
 		}
-
-		DB::rollback();
 
 		return [
 			'bookings' => $bookings,
 			'aggregate_id' => $aggregate_id,
-			'order_id' => $target_order->id,
+			'order_id' => $target_order ? $target_order->id : 0,
 			'data' => $data,
 			'errors' => $errors,
 		];
