@@ -95,7 +95,7 @@ class BookingUserController extends Controller
             return $this->successResponse([
                 'id' => $aggregate->id,
                 'header' => $target_user->printableFriendHeader($aggregate),
-                'url' => URL::action('BookingUserController@show', ['booking' => $aggregate->id, 'user' => $target_user->id])
+                'url' => route('booking.user.show', ['booking' => $aggregate->id, 'user' => $target_user->id]),
             ]);
         }
         else {
@@ -106,7 +106,7 @@ class BookingUserController extends Controller
             return $this->successResponse([
                 'id' => $aggregate->id,
                 'header' => $aggregate->printableUserHeader(),
-                'url' => URL::action('BookingController@show', $aggregate->id)
+                'url' => route('booking.show', $aggregate->id),
             ]);
         }
     }
@@ -167,7 +167,7 @@ class BookingUserController extends Controller
             return response()->json([
                 'id' => $user->id,
                 'header' => $user->printableFriendHeader($aggregate),
-                'url' => URL::action('BookingUserController@show', ['booking' => $aggregate_id, 'user' => $user_id])
+                'url' => route('booking.user.show', ['booking' => $aggregate_id, 'user' => $user_id])
             ]);
         }
         else {
@@ -176,7 +176,7 @@ class BookingUserController extends Controller
             return response()->json([
                 'id' => $subject->id,
                 'header' => $subject->printableHeader(),
-                'url' => URL::action('BookingUserController@show', ['booking' => $aggregate_id, 'user' => $user_id])
+                'url' => route('booking.user.show', ['booking' => $aggregate_id, 'user' => $user_id]),
             ]);
         }
     }

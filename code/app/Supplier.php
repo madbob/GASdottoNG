@@ -85,11 +85,6 @@ class Supplier extends Model
         return $this->orders()->whereNotIn('status', ['shipped', 'archived'])->get();
     }
 
-    public function getDisplayURL()
-    {
-        return URL::action('SuppliersController@show');
-    }
-
     public function involvedEmails()
     {
         $contacts = new Collection();

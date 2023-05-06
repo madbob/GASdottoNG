@@ -84,7 +84,7 @@ class BookingController extends Controller
         return response()->json([
             'id' => $aggregate->id,
             'header' => $aggregate->printableUserHeader(),
-            'url' => URL::action('BookingController@show', $aggregate->id)
+            'url' => route('booking.show', $aggregate->id),
         ]);
     }
 }

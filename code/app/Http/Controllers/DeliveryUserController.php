@@ -54,7 +54,7 @@ class DeliveryUserController extends Controller
             return $this->successResponse([
                 'id' => $subject->id,
                 'header' => $subject->printableHeader(),
-                'url' => URL::action('DeliveryUserController@show', ['delivery' => $aggregate->id, 'user' => $target_user->id])
+                'url' => route('delivery.user.show', ['delivery' => $aggregate->id, 'user' => $target_user->id]),
             ]);
         }
     }
@@ -96,7 +96,7 @@ class DeliveryUserController extends Controller
         return response()->json([
             'id' => $subject->id,
             'header' => $subject->printableHeader(),
-            'url' => URL::action('DeliveryUserController@show', ['delivery' => $aggregate_id, 'user' => $user_id])
+            'url' => route('delivery.user.show', ['delivery' => $aggregate_id, 'user' => $user_id]),
         ]);
     }
 }

@@ -163,7 +163,7 @@ class Order extends Model
 
     public function getBookingURL()
     {
-        return URL::action('BookingController@index').'#' . $this->aggregate->id;
+        return route('booking.index') . '#' . $this->aggregate->id;
     }
 
     public function userBooking($userid = null)

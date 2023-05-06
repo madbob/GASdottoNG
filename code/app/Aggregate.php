@@ -207,7 +207,7 @@ class Aggregate extends Model
 
     public function getBookingURL()
     {
-        return URL::action('BookingController@index').'#' . $this->id;
+        return route('booking.index') . '#' . $this->id;
     }
 
     public function isActive()

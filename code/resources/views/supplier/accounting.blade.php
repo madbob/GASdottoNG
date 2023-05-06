@@ -3,7 +3,7 @@
         <div class="col">
             <h4>{{ _i('Ordini da pagare') }}</h4>
 
-            <?php $orders = $supplier->orders()->where('status', '!=', 'archived')->get() ?>
+            <?php $orders = $supplier->orders()->whereDoesntHave('payment')->get() ?>
 
             @if($orders->isEmpty())
                 <div class="alert alert-info" role="alert">
@@ -12,7 +12,7 @@
             @else
                 <ul class="list-group">
                     @foreach($orders as $order)
-                        <a href="{{ $order->aggregate->getDisplayURL() }}" class="list-group-item">
+                        <a href="{{ route('orders.index') . '#' . $order->aggregate_id }}" class="list-group-item">
                             {!! $order->printableHeader() !!}
                         </a>
                     @endforeach

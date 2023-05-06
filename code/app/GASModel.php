@@ -106,14 +106,6 @@ trait GASModel
         return Str::plural($class).'Controller';
     }
 
-    public function getDisplayURL()
-    {
-        $controller = $this->relatedController();
-        $action = sprintf('%s@index', $controller);
-
-        return URL::action($action).'#'.$this->id;
-    }
-
     public function getShowURL()
     {
         $controller = $this->relatedController();

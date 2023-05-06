@@ -160,7 +160,7 @@ class User extends Authenticatable
 
     public function getShowURL()
     {
-        return URL::action('UsersController@show', $this->id);
+        return route('users.show', $this->id);
     }
 
     public function printableFriendHeader($aggregate)
