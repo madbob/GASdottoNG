@@ -87,8 +87,10 @@ $no_filters = (empty($sorting_rules) && empty($filters) && is_null($legend));
             <div class="loadable-sorting-header list-group-item hidden bg-light" data-sorting-{{ $item->related_sorting }}="{{ $item->label }}">{{ $item->label }}</div>
         @endforeach
 
-        @foreach($items as $item)
+        @foreach($items as $index => $item)
             <?php
+
+            $row_identifier = $identifier . '-' . $index;
 
             if(isset($url)) {
                 $u = url($url . '/' . $item->id);
@@ -118,7 +120,7 @@ $no_filters = (empty($sorting_rules) && empty($filters) && is_null($legend));
 
             ?>
 
-            <x-larastrap::remoteaccordion :label_html="$header" :classes="$extra_class" :attributes="$extra_attributes" active="false">
+            <x-larastrap::remoteaccordion :id="$row_identifier" :label_html="$header" :classes="$extra_class" :attributes="$extra_attributes" active="false">
             </x-larastrap::remoteaccordion>
         @endforeach
     </x-larastrap::accordion>

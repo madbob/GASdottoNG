@@ -95,6 +95,6 @@ class Notification extends Model
 
     public function printableHeader()
     {
-        return $this->printableDate('start_date') . ' - ' . $this->printableName() . ' - ' . substr(strip_tags($this->content), 0, 100) . '...';
+        return $this->printableDate('start_date') . ' - ' . $this->printableName() . ' - ' . mb_substr(strip_tags($this->content), 0, 100) . '...';
     }
 }
