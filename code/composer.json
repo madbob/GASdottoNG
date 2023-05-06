@@ -16,7 +16,6 @@
         "eluceo/ical": "^2.0",
         "fideloper/proxy": "~4.0",
         "genealabs/laravel-model-caching": "^0.12",
-        "haydenpierce/class-finder": "^0.4.3",
         "laravel/framework": "^9.0",
         "laravel/ui": "^4.0",
         "lavary/laravel-menu": "^1.8",
