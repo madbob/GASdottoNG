@@ -43,6 +43,7 @@ class Contact extends Model
             'address' => _i('Indirizzo'),
             'referent' => _i('Referente'),
             'email' => _i('E-Mail'),
+            'skip_email' => _i('E-Mail (no notifiche)'),
             'phone' => _i('Telefono'),
             'mobile' => _i('Cellulare'),
             'fax' => _i('Fax'),
