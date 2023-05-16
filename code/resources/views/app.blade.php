@@ -5,6 +5,9 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
+        <link rel="canonical" href="https://www.gasdotto.net/" />
+        <meta name="description" content="Questa è una istanza di GASdotto, il gestionale per l'Economia Solidale" />
+
         <title>{{ currentAbsoluteGas()->name }} | GASdotto</title>
         <link rel="alternate" type="application/rss+xml" title="{{ _i('Ordini Aperti') }}" href="{{ route('rss') }}"/>
 
