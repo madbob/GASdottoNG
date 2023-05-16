@@ -229,6 +229,7 @@ class Order extends Printer
         $fields = splitFields($required_fields);
 
         $user = Auth::user();
+		$obj->setRelation('products', $obj->products()->sorted()->get());
 
         /*
             Formatto riga di intestazione
