@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
-
-use Auth;
-use DB;
-use URL;
-use Log;
 
 use App\Models\Concerns\ModifiedTrait;
 use App\Models\Concerns\PayableTrait;
@@ -381,6 +381,15 @@ class Booking extends Model
 
             return $products;
         });
+    }
+
+    public function getProductsWithFriendsAlwaysAggregatedAttribute()
+    {
+        $hub = App::make('AggregationSwitch');
+        $hub->setEnforced(true);
+        $ret = $this->products_with_friends;
+        $hub->setEnforced(false);
+        return $ret;
     }
 
     public function getFriendsBookingsAttribute()

@@ -135,7 +135,8 @@
 
                     <tbody>
                         @foreach($super_booking->bookings as $booking)
-                            @if($booking->products_with_friends->isEmpty() == false)
+                            <?php $products = $booking->products_with_friends_always_aggregated ?>
+                            @if($products->isEmpty() == false)
                                 <?php
 
                                 $booked_cell_value += $booking->getValue('booked', true);
@@ -155,7 +156,7 @@
                                     <td width="15%">&nbsp;</td>
                                 </tr>
 
-                                @foreach($booking->products_with_friends as $product)
+                                @foreach($products as $product)
                                     @if($product->variants->isEmpty() == false)
                                         @foreach($product->variants as $variant)
                                             @if(!empty($variant->quantity) || !empty($variant->delivered))

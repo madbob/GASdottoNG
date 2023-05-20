@@ -10,10 +10,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
-
-use App;
-use Log;
 
 use App\Models\Concerns\ModifiableTrait;
 use App\Events\VariantChanged;
@@ -244,7 +243,14 @@ class Product extends Model
 	*/
 	public function canAggregateQuantities()
 	{
-		return ($this->measure->discrete == false && $this->portion_quantity == 0) == false;
+        $hub = App::make('AggregationSwitch');
+
+        if ($hub->isEnforced()) {
+            return true;
+        }
+        else {
+            return ($this->measure->discrete == false && $this->portion_quantity == 0) == false;
+        }
 	}
 
     public function hasWarningWithinOrder($summary)
