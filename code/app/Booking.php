@@ -436,6 +436,9 @@ class Booking extends Model
         return $this->order->printableName();
     }
 
+    /*
+        TODO: questa funzione potrebbe essere da sopprimere. Da verificare
+    */
     public function printableHeader()
     {
 		\Log::debug('printableHeader di Booking');
@@ -557,13 +560,23 @@ class Booking extends Model
 
             if ($payment->amount != $actual_total) {
                 if ($payment->type_metadata->altersBalances($payment, 'sender')) {
-                    $payment->amount = $actual_total;
-                    $payment->save();
+                    /*
+                        Questo funziona nella misura in cui la pre-callback per
+                        i movimenti di tipo "booking-payment" ignora il valore
+                        del movimento passato e ricalcola tutti i valori
+                        daccapo, con l'intento di fare tutte le trasformazioni
+                        del caso.
+                        Pertanto posso anche passargli un valore a 0,
+                        l'importante è triggerare una nuova elaborazione per il
+                        pagamento di questo aggregato
+                    */
+                    $mov = Movement::generate('booking-payment', $this->user, $this->order->aggregate, 0);
                 }
                 else {
                     $mov = Movement::generate('booking-payment-adjust', $this->user, $this, $actual_total - $payment->amount);
-                    $mov->save();
                 }
+
+                $mov->save();
             }
         }
     }
