@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
-
-use Auth;
-use DB;
-use URL;
-use Log;
 
 use App\Models\Concerns\ModifiedTrait;
 use App\Models\Concerns\PayableTrait;
@@ -394,6 +394,15 @@ class Booking extends Model
         });
     }
 
+    public function getProductsWithFriendsAlwaysAggregatedAttribute()
+    {
+        $hub = App::make('AggregationSwitch');
+        $hub->setEnforced(true);
+        $ret = $this->products_with_friends;
+        $hub->setEnforced(false);
+        return $ret;
+    }
+
     public function getFriendsBookingsAttribute()
     {
         return $this->innerCache('friends_bookings', function($obj) {
@@ -438,6 +447,9 @@ class Booking extends Model
         return $this->order->printableName();
     }
 
+    /*
+        TODO: questa funzione potrebbe essere da sopprimere. Da verificare
+    */
     public function printableHeader()
     {
 		\Log::debug('printableHeader di Booking');
@@ -559,13 +571,23 @@ class Booking extends Model
 
             if ($payment->amount != $actual_total) {
                 if ($payment->type_metadata->altersBalances($payment, 'sender')) {
-                    $payment->amount = $actual_total;
-                    $payment->save();
+                    /*
+                        Questo funziona nella misura in cui la pre-callback per
+                        i movimenti di tipo "booking-payment" ignora il valore
+                        del movimento passato e ricalcola tutti i valori
+                        daccapo, con l'intento di fare tutte le trasformazioni
+                        del caso.
+                        Pertanto posso anche passargli un valore a 0,
+                        l'importante è triggerare una nuova elaborazione per il
+                        pagamento di questo aggregato
+                    */
+                    $mov = Movement::generate('booking-payment', $this->user, $this->order->aggregate, 0);
                 }
                 else {
                     $mov = Movement::generate('booking-payment-adjust', $this->user, $this, $actual_total - $payment->amount);
-                    $mov->save();
                 }
+
+                $mov->save();
             }
         }
     }

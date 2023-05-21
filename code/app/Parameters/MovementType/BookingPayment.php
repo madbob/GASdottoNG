@@ -40,6 +40,18 @@ class BookingPayment extends MovementType
 
     private function handleModifiers($movement, $booking)
     {
+        /*
+            Qui evito anche solo di tentare di correggere eventuali movimenti
+            correlati esistenti: non faccio assunzioni sullo stato dei
+            modificatori al momento della creazione del primo movimento,
+            rigenero tutto daccapo e fine.
+            Questo va considerato qualora i movimenti correlati fossero
+            utilizzati anche per altri scopi, oltre i modificatori.
+        */
+        foreach($movement->related as $rel) {
+            $rel->delete();
+        }
+
         $values = $booking->allModifiedValues(null, false);
         $amount = $movement->amount;
 
@@ -59,15 +71,16 @@ class BookingPayment extends MovementType
     public function systemInit($mov)
     {
         $mov->callbacks = [
-            /*
-                Il problema di fondo è che, a livello utente, un aggregato riceve un solo pagamento, dunque devo a
-                posteriori dividere tale pagamento tra le prenotazioni al suo interno creando movimenti individuali.
-                Qui assumo che l'ammontare pagato per ciascuna prenotazione corrisponda col totale consegnato della
-                prenotazione stessa
-            */
             'pre' => function (Movement $movement) {
+                /*
+                    Il problema di fondo è che, a livello utente, un aggregato
+                    riceve un solo pagamento, dunque devo a posteriori dividere
+                    tale pagamento tra le prenotazioni al suo interno creando
+                    movimenti individuali.
+                    Qui assumo che l'ammontare pagato per ciascuna prenotazione
+                    corrisponda col totale consegnato della prenotazione stessa
+                */
                 if ($movement->target_type == Aggregate::class) {
-                    $total = $movement->amount;
                     $aggregate = $movement->target;
                     $user = $movement->sender;
                     $m = null;
@@ -76,10 +89,13 @@ class BookingPayment extends MovementType
                         $booking = $order->userBooking($user);
                         if ($booking->exists == false) {
                             /*
-                                Quando un utente non ha fatto nessuna prenotazione, ma i suoi amici si, non ho un
-                                soggetto cui agganciare il pagamento. Dunque lo creo qui al volo.
-                                Tanto comunque sarebbe creato, dopo, da DeliveryUserController::update() (quando
-                                marcato come consegnato), dunque tanto vale farlo subito
+                                Quando un utente non ha fatto nessuna
+                                prenotazione, ma i suoi amici si, non ho un
+                                soggetto cui agganciare il pagamento. Dunque lo
+                                creo qui al volo.
+                                Tanto comunque sarebbe creato, dopo, da
+                                DeliveryUserController::update() (quando marcato
+                                come consegnato), dunque tanto vale farlo subito
                             */
                             if ($booking->friends_bookings->isEmpty()) {
                                 continue;
@@ -92,10 +108,12 @@ class BookingPayment extends MovementType
                         /*
                             - calcolo il valore del prenotato
                             - creo il relativo movimento
-                            - itero i modificatori (che a questo punto devono già essere tutti stati calcolati e
-                            assegnati alla prenotazione)
-                            - se il modificatore prevede un tipo movimento specifico creo un altro movimento,
-                            altrimenti sommo il totale a quello già creato
+                            - itero i modificatori (che a questo punto devono
+                              già essere tutti stati calcolati e assegnati alla
+                              prenotazione)
+                            - se il modificatore prevede un tipo movimento
+                              specifico creo un altro movimento, altrimenti
+                              sommo il totale a quello già creato
                         */
 
                         $delivered = $booking->getValue('delivered', true, true);
@@ -108,9 +126,10 @@ class BookingPayment extends MovementType
                             $m->target_type = Booking::class;
 
                             /*
-                                Qui devo ricaricare la relazione "target", altrimenti resta in memoria quella
-                                precedente (che faceva riferimento ad un Aggregate, dunque non è corretta e sul
-                                salvataggio spacca tutto)
+                                Qui devo ricaricare la relazione "target",
+                                altrimenti resta in memoria quella precedente
+                                (che faceva riferimento ad un Aggregate, dunque
+                                non è corretta e sul salvataggio spacca tutto)
                             */
                             $m->load('target');
                         }
@@ -128,12 +147,21 @@ class BookingPayment extends MovementType
                             $m->save();
                             $delivered = $after_delivered;
                         }
-
-                        $total -= $delivered;
                     }
 
                     return 2;
                 }
+
+                /*
+                    Nota bene: questa funzione fa qualcosa solo quando arriva il
+                    pagamento di una prenotazione riferito ad un intero
+                    aggregato.
+                    In caso di aggiornamento del pagamento di un Booking, è
+                    comunque consigliato triggerare sempre il salvataggio del
+                    pagamento su tutto l'aggregato affinché vengano contemplati
+                    tutti i casi possibili (modificatori, movimenti contabili
+                    separati e altro)
+                */
 
                 return 1;
             },

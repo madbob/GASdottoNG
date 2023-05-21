@@ -90,7 +90,7 @@ $no_filters = (empty($sorting_rules) && empty($filters) && is_null($legend));
         @foreach($items as $index => $item)
             <?php
 
-            $row_identifier = $identifier . '-' . $index;
+            $row_identifier = $identifier . '-' . sanitizeId($index);
 
             if(isset($url)) {
                 $u = url($url . '/' . $item->id);

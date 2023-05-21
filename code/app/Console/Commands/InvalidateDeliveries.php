@@ -51,6 +51,10 @@ class InvalidateDeliveries extends Command
 
             $booking->payment_id = null;
 
+            foreach($booking->modifiedValues as $mv) {
+                $mv->delete();
+            }
+
             $this->wipeProducts($booking);
         }
     }
