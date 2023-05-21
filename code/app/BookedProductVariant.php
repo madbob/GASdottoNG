@@ -162,7 +162,11 @@ class BookedProductVariant extends Model
             'price_delivered' => $this->deliveredValue(),
             'weight_delivered' => $this->fixWeight('delivered'),
             'delivered' => $this->delivered,
-            'delivered_pieces' => $this->product->product->portion_quantity > 0 ? $this->delivered / $this->product->product->portion_quantity : $this->delivered,
+
+            /*
+                Cfr. nota in BookedProduct
+            */
+            'delivered_pieces' => $this->delivered,
         ]);
 
         return $this->relativeRedux($ret);

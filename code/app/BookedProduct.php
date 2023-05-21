@@ -378,7 +378,18 @@ class BookedProduct extends Model
                 'price_delivered' => $this->getValue('delivered'),
                 'weight_delivered' => $this->fixWeight('delivered'),
                 'delivered' => $this->delivered,
-                'delivered_pieces' => $this->product->portion_quantity > 0 ? $this->delivered / $this->product->portion_quantity : $this->delivered,
+
+                /*
+                    Nota bene: in caso di prodotti con pezzatura, è abbastanza
+                    complesso risalire al numero di pezzi effettivi: dividere
+                    semplicemente la quantità consegnata (espressa in chili) per
+                    la pezzatura produce quasi sempre numeri non interi, che
+                    potrebbero essere arrotondati ma non necessariamente
+                    corrisponderebbero al numero reale.
+                    Pertanto qui desisto dal fare tale calcolo; eventualmente da
+                    approfondire qualora ce ne fosse necessità
+                */
+                'delivered_pieces' => $this->delivered,
             ]);
 
             $ret = $this->relativeRedux($ret);
