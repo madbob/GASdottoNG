@@ -38,7 +38,12 @@ $master_summary = $aggregate->reduxData();
         <div class="col-12">
             <div class="row gray-row order-extras mb-3">
                 <div class="col-6">
-                    <?php $send_mail_label = $shippable_status ? _i('Invia Riepiloghi Prenotazioni') : _i('Invia Riepiloghi Consegne') ?>
+                    <?php
+
+                    $send_mail_label = $shippable_status ? _i('Invia Riepiloghi Prenotazioni') : _i('Invia Riepiloghi Consegne');
+                    $send_mail_hint = $shippable_status ? _i("Questa mail verrà inviata a coloro che hanno partecipato all'ordine ma la cui prenotazione non è ancora stata consegnata.") : _i("Questa mail verrà inviata a coloro che hanno partecipato all'ordine e la cui prenotazione è stata effettivamente consegnata.");
+
+                    ?>
 
                     <x-larastrap::field :label="$send_mail_label" :pophelp="_i('Invia a tutti gli utenti che hanno partecipato all\'ordine una mail riassuntiva della propria prenotazione. È possibile aggiungere un messaggio da allegare a tutti, per eventuali segnalazioni addizionali. Il messaggio di riepilogo viene automaticamente inviato alla chiusura dell\'ordine, automatica o manuale che sia, se configurato dal pannello Configurazioni.')">
                         <x-larastrap::mbutton :label="_i('Invia Mail')" :triggers_modal="sprintf('notify-aggregate-%s', $aggregate->id)" />
@@ -47,6 +52,9 @@ $master_summary = $aggregate->reduxData();
 
                     <x-larastrap::modal :title="_i('Notifiche Mail')" :id="sprintf('notify-aggregate-%s', $aggregate->id)">
                         <x-larastrap::iform method="POST" :action="url('aggregates/notify/' . $aggregate->id)">
+                            <div class="alert alert-info mb-3">
+                                {{ $send_mail_hint }}
+                            </div>
                             <input type="hidden" name="update-field" value="last-notification-date-{{ $aggregate->id }}">
                             <input type="hidden" name="close-modal" value="1">
                             <x-larastrap::textarea name="message" :label="_i('Messaggio (Opzionale)')" rows="5" />
