@@ -58,6 +58,7 @@ $bookings_tot = 0;
     }
 
     $variable = false;
+    $contacts = $b->order->enforcedContacts()->filter(fn($c) => filled($c->email));
 
     ?>
 
@@ -98,14 +99,16 @@ $bookings_tot = 0;
         </p>
     @endif
 
-    <p>
-        {{ _i("Per comunicazioni su quest'ordine, si raccomanda di contattare:") }}
-    </p>
-    <ul>
-        @foreach($b->order->enforcedContacts() as $contact)
-            <li>{{ $contact->printableName() }} - {{ $contact->email }}</li>
-        @endforeach
-    </ul>
+    @if($contacts->isEmpty() == false)
+        <p>
+            {{ _i("Per comunicazioni su quest'ordine, si raccomanda di contattare:") }}
+        </p>
+        <ul>
+            @foreach($contacts as $contact)
+                <li>{{ $contact->printableName() }} - {{ $contact->email }}</li>
+            @endforeach
+        </ul>
+    @endif
 @endforeach
 
 @if($bookings_tot > 1)
