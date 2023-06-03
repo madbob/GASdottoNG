@@ -24,6 +24,7 @@ class DepositPay extends MovementType
             (object) [
                 'method' => 'cash',
                 'target' => $this->format(['cash' => 'increment', 'deposits' => 'increment']),
+                'is_default' => true,
             ],
             (object) [
                 'method' => 'bank',

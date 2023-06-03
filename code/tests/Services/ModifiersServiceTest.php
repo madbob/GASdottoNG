@@ -488,6 +488,83 @@ class ModifiersServiceTest extends TestCase
         $this->reviewBookingsIntoOrder($mod, $test_shipping_value);
     }
 
+    /*
+        Modificatore con movimento contabile applicato sull'ordine in base al valore
+    */
+    public function testOnOrderWithMovement()
+    {
+        $movements = \App\Movement::all();
+        $this->assertEquals(0, $movements->count());
+
+        list($user, $data, $total) = $this->initModifierWithMovement();
+        $this->assertEquals($this->order->supplier->currentBalanceAmount(), 0);
+        $this->assertEquals($this->gas->currentBalanceAmount(), 0);
+
+        $this->nextRound();
+
+        $this->actingAs($this->userWithShippingPerms);
+        $data['action'] = 'shipped';
+        $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $user, true);
+
+        $this->nextRound();
+
+        $this->shipOrder(true);
+
+        $movement = \App\Movement::generate('booking-payment', $user, $this->order->aggregate, 0);
+        $movement->save();
+
+        $movements = \App\Movement::all();
+        $this->assertEquals(2, $movements->count());
+
+        $this->nextRound();
+
+        $this->travel(1)->hours();
+
+        $this->actingAs($this->userReferrer);
+        $order = $this->services['orders']->show($this->order->id);
+        $this->services['orders']->fixModifiers($this->order->id, 'adjust');
+
+        $this->nextRound();
+
+        $movements = \App\Movement::all();
+        $this->assertEquals(2, $movements->count());
+        $booking_payment_found = $donation_found = false;
+
+        $order = $this->services['orders']->show($this->order->id);
+        $this->assertEquals(1, $this->order->bookings->count());
+
+        foreach($order->bookings as $booking) {
+            $total = $booking->getValue('delivered', true);
+            $total = round($total, 2);
+            $total_donation = round($total * 0.1, 2);
+
+            foreach($movements as $mov) {
+                if ($mov->type == 'booking-payment') {
+                    $this->assertEquals(round($mov->amount, 2), $total);
+                    $booking_payment_found = true;
+                }
+                else if ($mov->type == 'donation-to-gas') {
+                    $this->assertEquals(round($mov->amount, 2), $total_donation);
+                    $donation_found = true;
+                }
+                else {
+                    throw new \Exception("Tipo di movimento invalido", 1);
+                }
+            }
+        }
+
+        $this->assertTrue($booking_payment_found && $donation_found);
+
+        $this->nextRound();
+
+        $order = $this->services['orders']->show($this->order->id);
+        $this->assertEquals($order->supplier->currentBalanceAmount(), $total);
+        $this->gas = $this->gas->fresh();
+        $this->assertEquals($this->gas->currentBalance(defaultCurrency())->gas, $total_donation);
+
+        $this->travelBack();
+    }
+
     private function completeTestWeight()
     {
         $test_shipping_value = 50;
@@ -930,18 +1007,23 @@ class ModifiersServiceTest extends TestCase
 
         $movements = \App\Movement::all();
         $this->assertEquals($movements->count(), 2);
+        $booking_payment_found = $donation_found = false;
 
         foreach($movements as $mov) {
             if ($mov->type == 'booking-payment') {
                 $this->assertEquals(round($mov->amount, 2), round($total, 2));
+                $booking_payment_found = true;
             }
             else if ($mov->type == 'donation-to-gas') {
                 $this->assertEquals(round($mov->amount, 2), round($total * 0.1, 2));
+                $donation_found = true;
             }
             else {
                 throw new \Exception("Tipo di movimento invalido", 1);
             }
         }
+
+        $this->assertTrue($booking_payment_found && $donation_found);
     }
 
     /*

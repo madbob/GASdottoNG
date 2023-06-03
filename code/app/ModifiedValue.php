@@ -5,8 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-
-use Log;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class ModifiedValue extends Model
 {
@@ -140,7 +140,7 @@ class ModifiedValue extends Model
 
         $movement->amount = $this->effective_amount;
         $movement->currency_id = $master_movement->currency_id;
-        $movement->date = date('Y-m-d');
+        $movement->date = Carbon::today();
         $movement->method = $master_movement->method;
         $movement->related_id = $master_movement->id;
 

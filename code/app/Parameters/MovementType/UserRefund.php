@@ -24,6 +24,7 @@ class UserRefund extends MovementType
                 'method' => 'credit',
                 'sender' => $this->format(['gas' => 'decrement']),
                 'target' => $this->format(['bank' => 'increment']),
+                'is_default' => true,
             ],
         ]));
 

@@ -23,6 +23,7 @@ class DonationToGas extends MovementType
             (object) [
                 'method' => 'bank',
                 'target' => $this->format(['bank' => 'increment', 'gas' => 'increment']),
+                'is_default' => true,
             ],
             (object) [
                 'method' => 'credit',

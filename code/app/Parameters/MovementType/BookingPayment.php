@@ -32,6 +32,7 @@ class BookingPayment extends MovementType
                 'method' => 'credit',
                 'sender' => $this->format(['bank' => 'decrement']),
                 'target' => $this->format(['bank' => 'increment']),
+                'is_default' => true,
             ],
         ]));
 
