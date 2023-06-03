@@ -23,6 +23,7 @@ class AnnualFee extends MovementType
             (object) [
                 'method' => 'cash',
                 'target' => $this->format(['cash' => 'increment', 'gas' => 'increment']),
+                'is_default' => true,
             ],
             (object) [
                 'method' => 'bank',

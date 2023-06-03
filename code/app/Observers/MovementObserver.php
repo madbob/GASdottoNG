@@ -2,9 +2,10 @@
 
 namespace App\Observers;
 
-use Log;
-use App;
-use Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 use App\Movement;
 
@@ -127,7 +128,7 @@ class MovementObserver
             (magari a vuoto, ma meglio in più che in meno)
         */
         if ($movement->exists) {
-            $movement->updated_at = date('Y-m-d H:i:s');
+            $movement->updated_at = Carbon::now();
         }
 
         return $this->verifyConsistency($movement);

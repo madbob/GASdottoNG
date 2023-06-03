@@ -29,6 +29,7 @@ class InvoicePayment extends MovementType
                 'method' => 'bank',
                 'target' => $this->format(['bank' => 'decrement']),
                 'sender' => $this->format(['bank' => 'decrement']),
+                'is_default' => true,
             ]
         ]));
 

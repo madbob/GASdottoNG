@@ -23,6 +23,7 @@ class DonationFromGas extends MovementType
             (object) [
                 'method' => 'bank',
                 'sender' => $this->format(['bank' => 'decrement', 'gas' => 'decrement']),
+                'is_default' => true,
             ],
         ]));
 

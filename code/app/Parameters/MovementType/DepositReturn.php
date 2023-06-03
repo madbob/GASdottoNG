@@ -22,6 +22,7 @@ class DepositReturn extends MovementType
             (object) [
                 'method' => 'cash',
                 'sender' => $this->format(['cash' => 'decrement', 'deposits' => 'decrement']),
+                'is_default' => true,
             ],
             (object) [
                 'method' => 'bank',
