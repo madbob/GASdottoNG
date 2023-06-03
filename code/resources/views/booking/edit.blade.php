@@ -47,11 +47,16 @@ $form_buttons = [
             <h3>{{ $order->printableName() }}</h3>
         @endif
 
+        <?php $o = $order->userBooking($user->id) ?>
+
+        @if($order->isRunning() == false && $enforced == false)
+            @include('booking.partials.showtable')
+            @continue
+        @endif
+
         <?php
 
         $notice = null;
-
-        $o = $order->userBooking($user->id);
         $mods = $o->applyModifiers(null, false);
 
         if ($order->keep_open_packages != 'no' && $enforced == false) {
