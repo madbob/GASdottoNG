@@ -200,8 +200,7 @@ class Bookings
                 totale della consegna quando il modale viene chiuso
             */
             var identifier = modal.attr('id');
-            quantity = (Math.round(quantity * 100) / 100).toFixed(3);
-            $('[data-bs-target="#' + identifier + '"]').closest('.booking-product-quantity').find('input.number').first().val(quantity).blur();
+            $('[data-bs-target="#' + identifier + '"]').closest('.booking-product-quantity').find('input.number').first().val(quantity.toFixed(3)).blur();
             modal.modal('hide');
         });
 
