@@ -98,7 +98,7 @@ $currency_symbol = defaultCurrency()->symbol;
                         <div class="row">
                             <div class="col">
                                 <div class="alert alert-info">
-                                    {!! _i('I prezzi di alcuni prodotti sono cambiati rispetto alla consegna di questa prenotazione. Sotto, puoi scegliere quale prezzo adottare in caso di rettifica della consegna: quella applicato originariamente o quello nel listino attuale.') !!}
+                                    {!! _i('I prezzi di alcuni prodotti sono cambiati rispetto alla consegna di questa prenotazione. Sotto, puoi scegliere quale prezzo adottare in caso di rettifica della consegna: quello applicato originariamente o quello nel listino attuale.') !!}
                                 </div>
                             </div>
                         </div>

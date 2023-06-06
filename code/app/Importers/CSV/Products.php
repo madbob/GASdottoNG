@@ -226,7 +226,10 @@ class Products extends CSVImporter
                 }
 
                 foreach($direct_fields as $field) {
-                    $p->$field = $data[$field][$index];
+                    $v = trim($data[$field][$index]);
+                    if (filled($v)) {
+                        $p->$field = $v;
+                    }
                 }
 
                 $p->category_id = $this->mapNewElements($data['category_id'][$index], $new_categories, function($name) {
