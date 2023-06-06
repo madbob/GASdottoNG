@@ -71,7 +71,7 @@ else {
                     </x-larastrap::tabpane>
                 @endif
 
-                @if($standalone == false && $has_shipping && $aggregate->status == 'closed')
+                @if($standalone == false && $has_shipping && $aggregate->orders()->where('status', 'closed')->count() > 0)
                     <x-larastrap::tabpane :label="_i('Aggiungi/Modifica Prenotazione')" classes="fillable-booking-space" icon="bi-person-check" :id="sprintf('bookings-more-%s', sanitizeId($aggregate->id))">
                         <div class="alert alert-danger">
                             {{ _i('Attenzione: questo ordine è stato chiuso, prima di aggiungere o modificare una prenotazione accertati che i quantitativi totali desiderati non siano già stati comunicati al fornitore o che possano comunque essere modificati.') }}
