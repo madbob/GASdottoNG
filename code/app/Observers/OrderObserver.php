@@ -62,7 +62,8 @@ class OrderObserver
         /*
             Aggancio i prodotti attualmente prenotabili del fornitore
         */
-        $order->products()->sync($supplier->products()->where('active', '=', true)->get());
+        $products = $supplier->products()->where('active', true)->get();
+        $order->syncProducts($products);
 
         $this->attachModifiers($order);
         $this->resetOlderDates($order);
