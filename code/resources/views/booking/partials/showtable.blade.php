@@ -8,6 +8,8 @@
         {{ _i("Non hai partecipato a quest'ordine.") }}
     </div>
 @else
+    <x-larastrap::hidden name="skip_order[]" :value="$order->id" />
+
     <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}">
         <thead class="d-none d-md-table-header-group">
             <tr>

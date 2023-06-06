@@ -336,6 +336,23 @@ class BookingsService extends BaseService
         */
 
         $booking = $order->userBooking($target_user);
+
+        /*
+            Nel caso di un ordine aggregato in cui alcuni ordini sono aperti
+            e altri chiusi, nel pannello di prenotazione quelli chiusi non
+            sono editabili e pertanto non viene qui spedita nessuna
+            quantità. Dunque in fase di lettura si finirebbe col salvare
+            tutte le quantità a 0, con conseguente cancellazione di una
+            prenotazione comunque valida.
+            L'array skip_order viene sempre incluso nel template di sola
+            lettura della prenotazione, e serve ad identificare quelli da
+            saltare
+        */
+        $skip = $request['skip_order'] ?? [];
+        if (in_array($order->id, $skip)) {
+            return $booking;
+        }
+
         $booking->wipeStatus();
         $booking = $this->handlePreProcess($request, $booking);
         $booking = $this->readBooking($request, $order, $booking, $delivering);
