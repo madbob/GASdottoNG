@@ -49,6 +49,7 @@ trait GASModel
         $class = get_called_class();
 
         if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class))) {
+            // @phpstan-ignore-next-line
             return $class::withTrashed()->get();
         }
         else {
