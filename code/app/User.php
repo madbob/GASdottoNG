@@ -237,6 +237,11 @@ class User extends Authenticatable
 
     /***************************** CreditableTrait */
 
+    public function scopeCreditable($query)
+    {
+        $query->whereNull('parent_id');
+    }
+
     public function balanceFields()
     {
         return [

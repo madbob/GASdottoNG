@@ -165,7 +165,8 @@ class MovementsService extends BaseService
     {
         /*
             TODO Questo non prende in considerazione l'effettivo fornitore su
-            cui si sta agendo, e se si hanno i permessi o meno
+            cui si sta agendo, e se si hanno i permessi o meno.
+            Sarebbe meglio spostare queste regole nella classi in Params
         */
         switch($type) {
             case 'deposit-pay':
