@@ -11,6 +11,15 @@ use App\Balance;
 
 trait CreditableTrait
 {
+    public function scopeCreditable($query)
+    {
+        /*
+            Sovrescrivere questa funzione per definire un filtro sui soggetti
+            cui effettivamente sono assegnabili dei movimenti contabili.
+            E.g. in User questo filtra via gli amici
+        */
+    }
+
     public function balances(): MorphMany
     {
         $proxy = $this->getBalanceProxy();

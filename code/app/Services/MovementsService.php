@@ -20,8 +20,6 @@ class MovementsService extends BaseService
 {
     public function list($request)
     {
-        $this->ensureAuth(['movements.admin' => 'gas', 'movements.view' => 'gas']);
-
         /*
             TODO sarebbe assai più efficiente usare with('sender') e
             with('target'), ma poi la relazione in Movement si spacca (cambiando
@@ -30,6 +28,8 @@ class MovementsService extends BaseService
             soft-deletable
         */
         $query = Movement::orderBy('date', 'desc');
+        $own_movements = false;
+        $currentuser = Auth::user();
 
         if (isset($request['startdate'])) {
             $start = decodeDate($request['startdate']);
@@ -63,6 +63,10 @@ class MovementsService extends BaseService
 
         if (isset($request['user_id']) && !empty($request['user_id']) && $request['user_id'] != '0') {
             $user_id = $request['user_id'];
+            if ($user_id == $currentuser->id) {
+                $own_movements = true;
+            }
+
             $generic_target = User::find($user_id);
             if ($generic_target) {
                 $query = $generic_target->queryMovements($query);
@@ -84,11 +88,26 @@ class MovementsService extends BaseService
         if (isset($request['generic_target_id']) && $request['generic_target_id'] != '0') {
             $target_id = $request['generic_target_id'];
             $target_type = $request['generic_target_type'];
+
+            if ($target_type == User::class && $target_id == $currentuser->id) {
+                $own_movements = true;
+            }
+
             $generic_target = $target_type::tFind($target_id);
 
             if ($generic_target) {
                 $query = $generic_target->queryMovements($query);
             }
+        }
+
+        /*
+            Gli utenti devono poter accedere ai propri movimenti, ma non a tutti
+            gli altri. Se viene fatta una richiesta esplicita per l'utente
+            corrente la prendo sempre per buona, altrimenti ne controllo i
+            permessi prima di procedere oltre
+        */
+        if ($own_movements == false) {
+            $this->ensureAuth(['movements.admin' => 'gas', 'movements.view' => 'gas']);
         }
 
         if (isset($request['amountstart']) && !empty($request['amountstart']) && $request['amountstart'] != '0') {
@@ -146,7 +165,8 @@ class MovementsService extends BaseService
     {
         /*
             TODO Questo non prende in considerazione l'effettivo fornitore su
-            cui si sta agendo, e se si hanno i permessi o meno
+            cui si sta agendo, e se si hanno i permessi o meno.
+            Sarebbe meglio spostare queste regole nella classi in Params
         */
         switch($type) {
             case 'deposit-pay':

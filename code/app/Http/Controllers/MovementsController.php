@@ -138,7 +138,7 @@ class MovementsController extends BackedController
         $data['sender_type'] = $metadata->sender_type;
         if ($metadata->sender_type != null) {
             $st = $metadata->sender_type;
-            $data['senders'] = $st::sorted()->get();
+            $data['senders'] = $st::sorted()->creditable()->get();
         }
         else {
             $data['senders'] = [];
@@ -147,7 +147,7 @@ class MovementsController extends BackedController
         $data['target_type'] = $metadata->target_type;
         if ($metadata->target_type != null) {
             $tt = $metadata->target_type;
-            $data['targets'] = $tt::sorted()->get();
+            $data['targets'] = $tt::sorted()->creditable()->get();
         }
         else {
             $data['targets'] = [];
