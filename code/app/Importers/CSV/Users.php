@@ -162,6 +162,8 @@ class Users extends CSVImporter
         $users = [];
         $errors = [];
 
+		$contact_types = array_keys(Contact::types());
+
         /*
             TODO: aggiornare questo per adattarlo a UsersService
         */
@@ -190,7 +192,7 @@ class Users extends CSVImporter
                     if ($field == 'none') {
                         continue;
                     }
-                    else if ($field == 'phone' || $field == 'email' || $field == 'mobile') {
+                    else if (in_array($field, $contact_types)) {
                         $this->fillContact($contacts, $field, $value);
                         continue;
                     }
