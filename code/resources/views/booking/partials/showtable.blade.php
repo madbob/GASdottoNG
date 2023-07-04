@@ -93,7 +93,7 @@
                 <th></th>
                 <th></th>
                 <th></th>
-                <th class="text-end">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($o->getValue('effective', false)) }}</span> {{ $currentgas->currency }}</th>
+                <th class="text-end">{{ _i('Totale') }}:<br><span class="booking-total">{{ printablePrice($o->getValue('effective', false)) }}</span> {{ defaultCurrency()->symbol }}</th>
             </tr>
         </tfoot>
     </table>

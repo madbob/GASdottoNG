@@ -1,5 +1,6 @@
 <?php
 
+$currency_symbol = defaultCurrency()->symbol;
 $more_orders = ($aggregate->orders->count() > 1);
 $grand_total = 0;
 $has_shipping = $aggregate->canShip();
@@ -42,35 +43,30 @@ $form_buttons = [
     @endif
 
     @foreach($aggregate->orders as $order)
-        @if($more_orders)
-            <hr/>
-            <h3>{{ $order->printableName() }}</h3>
-        @endif
-
-        <?php $o = $order->userBooking($user->id) ?>
-
-        @if($order->isRunning() == false && $enforced == false)
-            @include('booking.partials.showtable')
-            @continue
-        @endif
-
         <?php
 
         $o = $order->userBooking($user->id);
         $booking_total = $o->getValue('effective', false);
+        $mods = $o->applyModifiers(null, false);
 
         ?>
+
+        <div class="row mb-2">
+            <div class="col-12 col-lg-4">
+                @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => _i('Fornitore')])
+            </div>
+        </div>
 
         @if($order->isRunning() == false && $enforced == false)
             @include('booking.partials.showtable', [
                 'o' => $o,
                 'order' => $order,
+                'mods' => $mods,
             ])
         @else
             <?php
 
             $notice = null;
-            $mods = $o->applyModifiers(null, false);
 
             if ($order->keep_open_packages != 'no' && $enforced == false) {
                 if ($order->status == 'open') {
@@ -92,12 +88,6 @@ $form_buttons = [
             $contacts = $order->showableContacts();
 
             ?>
-
-            <div class="row mb-2">
-                <div class="col-12 col-lg-4">
-                    @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => _i('Fornitore')])
-                </div>
-            </div>
 
             @if(!is_null($notice))
                 <div class="alert alert-info">
@@ -209,7 +199,7 @@ $form_buttons = [
 
                             <td>
                                 <label class="static-label booking-product-price float-end">
-                                    <span>{{ printablePrice($p ? $p->getValue('effective') : 0) }}</span> {{ $currentgas->currency }}
+                                    <span>{{ printablePrice($p ? $p->getValue('effective') : 0) }}</span> {{ $currency_symbol }}
                                 </label>
                             </td>
                         </tr>
@@ -243,7 +233,7 @@ $form_buttons = [
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th class="text-end">Totale: <span class="booking-total">{{ printablePrice($booking_total) }}</span> {{ $currentgas->currency }}</th>
+                        <th class="text-end">Totale:<br><span class="booking-total">{{ printablePrice($booking_total) }}</span> {{ $currency_symbol }}</th>
                     </tr>
                 </tfoot>
             </table>
@@ -263,8 +253,8 @@ $form_buttons = [
             <tfoot>
                 <tr>
                     <th>
-                        <div class="float-end">
-                            <strong>Totale Complessivo: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currentgas->currency }}</strong>
+                        <div class="float-end text-end">
+                            <strong>Totale Complessivo:<br><span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currency_symbol }}</strong>
                         </div>
                     </th>
                 </tr>
@@ -275,7 +265,7 @@ $form_buttons = [
     <div class="fixed-bottom bg-success p-2 booking-bottom-helper">
         <div class="row justify-content-end align-items-center">
             <div class="col-auto text-white">
-                Totale: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currentgas->currency }}
+                Totale: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currency_symbol }}
             </div>
             <div class="col-auto">
                 <button class="saving-button btn btn-success">Salva</button>
