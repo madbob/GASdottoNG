@@ -79,26 +79,26 @@ $currency_symbol = defaultCurrency()->symbol;
                     </div>
                 @endif
 
-                @if($order->status == 'closed' && $o->status != 'pending')
+                @if($order->status == 'closed')
                     <?php
 
-                    $has_price_differences = false;
+                    $no_price_differences = true;
 
                     foreach($order->products as $prod) {
                         $base_prod = App\Product::withTrashed()->find($prod->id);
-                        $has_price_differences = $base_prod->comparePrices($prod);
-                        if ($has_price_differences) {
+                        $no_price_differences = $base_prod->comparePrices($prod);
+                        if ($no_price_differences == false) {
                             break;
                         }
                     }
 
                     ?>
 
-                    @if($has_price_differences)
+                    @if($no_price_differences == false)
                         <div class="row">
                             <div class="col">
                                 <div class="alert alert-info">
-                                    {!! _i('I prezzi di alcuni prodotti sono cambiati rispetto alla consegna di questa prenotazione. Sotto, puoi scegliere quale prezzo adottare in caso di rettifica della consegna: quello applicato originariamente o quello nel listino attuale.') !!}
+                                    {!! _i('I prezzi di alcuni prodotti sono cambiati rispetto alla prenotazione. Sotto, puoi scegliere quale prezzo adottare in caso di rettifica della consegna: quello applicato originariamente o quello nel listino attuale.') !!}
                                 </div>
                             </div>
                         </div>
