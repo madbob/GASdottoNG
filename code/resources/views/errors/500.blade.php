@@ -22,7 +22,7 @@
                         Gli errori vengono solitamente intercettati e notificati agli sviluppatori.
                     </p>
                     <p>
-                        Se questo dovesse continuare a ripetersi, segnalalo all'indirizzo info@gasdotto.net avendo cura di specificare:
+                        Se questo dovesse continuare a ripetersi, segnalalo all'indirizzo info@madbob.org avendo cura di specificare:
                     </p>
                     <ul>
                         <li>l'istanza su cui stavi lavorando</li>
