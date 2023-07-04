@@ -34,27 +34,29 @@ class Filters {
     		var target = $($(this).closest('.table-sorter').attr('data-table-target'));
     		var attribute = $(this).attr('data-sort-by');
             var is_numeric = $(this).attr('data-numeric-sorting') ? true : false;
-    		var target_body = target.find('tbody');
 
-    		target_body.find('> .table-sorting-header').addClass('d-none').filter('[data-sorting-' + attribute + ']').removeClass('d-none');
+            target.each(function() {
+                var target_body = $(this).find('tbody');
+                target_body.find('> .table-sorting-header').addClass('d-none').filter('[data-sorting-' + attribute + ']').removeClass('d-none');
 
-    		target_body.find('> tr[data-sorting-' + attribute + '], .table-sorting-header:visible').sort(function(a, b) {
-    			var attr_a = $(a).attr('data-sorting-' + attribute);
-    			var attr_b = $(b).attr('data-sorting-' + attribute);
+                target_body.find('> tr[data-sorting-' + attribute + '], .table-sorting-header:visible').sort(function(a, b) {
+                    var attr_a = $(a).attr('data-sorting-' + attribute);
+                    var attr_b = $(b).attr('data-sorting-' + attribute);
 
-                if (is_numeric) {
-                    return parseFloat(attr_a) - parseFloat(attr_b);
-                }
-                else {
-		             return attr_a.localeCompare(attr_b);
-                 }
-    		}).each(function() {
-    			$(this).appendTo(target_body);
-    		});
+                    if (is_numeric) {
+                        return parseFloat(attr_a) - parseFloat(attr_b);
+                    }
+                    else {
+                         return attr_a.localeCompare(attr_b);
+                     }
+                }).each(function() {
+                    $(this).appendTo(target_body);
+                });
 
-    		target_body.find('> tr.do-not-sort').each(function() {
-    			$(this).appendTo(target_body);
-    		});
+                target_body.find('> tr.do-not-sort').each(function() {
+                    $(this).appendTo(target_body);
+                });
+            });
     	});
 
         $('.form-filler button[type=submit]', container).click(function(event) {

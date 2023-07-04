@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\Mailer\Bridge\Sendinblue\Transport\SendinblueTransportFactory;
 use Symfony\Component\Mailer\Transport\Dsn;
 
+use App\Category;
+
 class AppServiceProvider extends ServiceProvider
 {
     public function boot()
@@ -57,6 +59,17 @@ class AppServiceProvider extends ServiceProvider
 
 			return $collection;
 		});
+
+        /*
+            Questa va usata su Collection di Product, per estrapolare in un
+            colpo solo tutte le categorie rilevanti
+        */
+        Collection::macro('getProductsCategories', function () {
+            /** @var Collection $this */
+            $categories = $this->pluck('category_id')->toArray();
+            $categories = array_unique($categories);
+            return Category::whereIn('id', $categories)->orderBy('name', 'asc')->get();
+        });
     }
 
     public function register()

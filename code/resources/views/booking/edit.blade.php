@@ -42,6 +42,37 @@ $form_buttons = [
         <input type="hidden" name="max-bookable" value="{{ $user->activeBalance() }}" class="skip-on-submit">
     @endif
 
+    <div class="d-none d-md-flex flowbox mb-3">
+        <div class="mainflow">
+            <input type="text" class="form-control table-text-filter" data-table-target=".booking-editor">
+        </div>
+
+        <div class="btn-group table-sorter" data-table-target=".booking-editor">
+            <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
+                {{ _i('Ordina Per') }} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="#" class="dropdown-item" data-sort-by="sorting" data-numeric-sorting="true">{{ _i('Ordinamento Manuale') }}</a>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-item" data-sort-by="name">{{ _i('Nome') }}</a>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-item" data-sort-by="category_name">{{ _i('Categoria') }}</a>
+                </li>
+            </ul>
+        </div>&nbsp;
+
+        @include('commons.iconslegend', [
+            'class' => 'Product',
+            'target' => '.booking-editor',
+            'table_filter' => true,
+            'limit_to' => ['th'],
+            'contents' => $aggregate->orders->reduce(fn($carry, $o) => $carry->merge($o->products), new \Illuminate\Support\Collection()),
+        ])
+    </div>
+
     @foreach($aggregate->orders as $order)
         <?php
 
@@ -81,10 +112,7 @@ $form_buttons = [
                 $products = $order->products()->with(['category', 'measure'])->sorted()->get();
             }
 
-            $categories = $products->pluck('category_id')->toArray();
-            $categories = array_unique($categories);
-            $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->get()->pluck('name')->toArray();
-
+            $categories = $products->getProductsCategories();
             $contacts = $order->showableContacts();
 
             ?>
@@ -116,37 +144,6 @@ $form_buttons = [
                 <br>
             @endif
 
-            <div class="d-none d-md-flex flowbox mb-1">
-                <div class="mainflow">
-                    <input type="text" class="form-control table-text-filter" data-table-target="#booking_{{ sanitizeId($order->id) }}">
-                </div>
-
-                <div class="btn-group table-sorter" data-table-target="#booking_{{ sanitizeId($order->id) }}">
-                    <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
-                        {{ _i('Ordina Per') }} <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="#" class="dropdown-item" data-sort-by="sorting" data-numeric-sorting="true">{{ _i('Ordinamento Manuale') }}</a>
-                        </li>
-                        <li>
-                            <a href="#" class="dropdown-item" data-sort-by="name">{{ _i('Nome') }}</a>
-                        </li>
-                        <li>
-                            <a href="#" class="dropdown-item" data-sort-by="category_name">{{ _i('Categoria') }}</a>
-                        </li>
-                    </ul>
-                </div>&nbsp;
-
-                @include('commons.iconslegend', [
-                    'class' => 'Product',
-                    'target' => '#booking_' . sanitizeId($order->id),
-                    'table_filter' => true,
-                    'limit_to' => ['th'],
-                    'contents' => $products
-                ])
-            </div>
-
             <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}">
                 <input type="hidden" name="booking_id" value="{{ $o->id }}" class="skip-on-submit">
 
@@ -161,9 +158,9 @@ $form_buttons = [
                 </thead>
                 <tbody>
                     @foreach($categories as $cat)
-                        <tr class="table-sorting-header d-none" data-sorting-category_name="{{ $cat }}">
+                        <tr class="table-sorting-header d-none" data-sorting-category_name="{{ $cat->name }}">
                             <td colspan="5">
-                                {{ $cat }}
+                                {{ $cat->name }}
                             </td>
                         </tr>
                     @endforeach

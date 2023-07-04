@@ -8,23 +8,35 @@
         {{ _i("Non hai partecipato a quest'ordine.") }}
     </div>
 @else
+    @php
+    $categories = $o->products->reduce(fn($carry, $p) => $carry->push($p->product->category), new \Illuminate\Support\Collection())->unique();
+    @endphp
+
     <x-larastrap::hidden name="skip_order[]" :value="$order->id" />
 
     <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}">
         <thead class="d-none d-md-table-header-group">
             <tr>
-                <th width="50%">{{ _i('Prodotto') }}</th>
-                <th width="20%">{{ _i('Ordinato') }}</th>
-                <th width="20%">{{ _i('Consegnato') }}</th>
-                <th width="10%" class="text-end">{{ _i('Totale Prezzo') }}</th>
+                <th width="40%"></th>
+                <th width="27%"></th>
+                <th width="27%"></th>
+                <th width="5%"></th>
             </tr>
         </thead>
         <tbody>
+            @foreach($categories as $cat)
+                <tr class="table-sorting-header d-none" data-sorting-category_name="{{ $cat->name }}">
+                    <td colspan="4">
+                        {{ $cat->name }}
+                    </td>
+                </tr>
+            @endforeach
+
             @foreach($o->products as $product)
                 @if($product->variants->isEmpty() == true)
-                    <tr>
+                    <tr data-sorting-name="{{ $product->product->name }}" data-sorting-sorting="{{ $product->product->sorting }}" data-sorting-category_name="{{ $product->product->category_name }}">
                         <td>
-                            @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product->product])
+                            @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product->product, 'extra_class' => 'text-filterable-cell'])
 
                             <div class="d-none">
                                 @foreach($product->product->icons() as $icon)
@@ -49,7 +61,7 @@
                     </tr>
                 @else
                     @foreach($product->variants as $var)
-                        <tr>
+                        <tr data-sorting-name="{{ $product->product->name }}" data-sorting-sorting="{{ $product->product->sorting }}" data-sorting-category_name="{{ $product->product->category_name }}">
                             <td>
                                 <x-larastrap::field squeeze="true">
                                     <label class="static-label">
