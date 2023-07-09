@@ -10,12 +10,13 @@ use App\Models\Concerns\Datable;
 use App\Models\Concerns\PayableTrait;
 use App\Models\Concerns\CreditableTrait;
 use App\Models\Concerns\HierarcableTrait;
+use App\Models\Concerns\AttachableTrait;
 use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 
 class Invoice extends Model implements Datable
 {
-    use GASModel, PayableTrait, CreditableTrait, HierarcableTrait, SluggableID;
+    use GASModel, PayableTrait, CreditableTrait, HierarcableTrait, AttachableTrait, SluggableID;
 
     public $incrementing = false;
     protected $keyType = 'string';

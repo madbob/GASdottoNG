@@ -91,9 +91,11 @@ class AttachmentsController extends Controller
     public function download($id)
     {
         $a = Attachment::findOrFail($id);
+
         if (!empty($a->url)) {
             return redirect($a->url);
-        } else {
+        }
+        else {
             if (file_exists($a->path)) {
                 return response()->download($a->path);
             }

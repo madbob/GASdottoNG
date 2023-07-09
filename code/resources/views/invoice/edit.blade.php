@@ -28,6 +28,25 @@
                     <x-larastrap::datepicker name="date" :label="_i('Data')" required defaults_now />
                 @endif
 
+                <x-larastrap::field :label="_i('Allegato')">
+                    <x-larastrap::file name="file" :attributes="['data-max-size' => serverMaxUpload()]" squeeze="true" />
+
+                    <div class="mt-2">
+                        @foreach($invoice->attachments as $attachment)
+                            <div class="row">
+                                <div class="col">
+                                    <a class="btn btn-info" href="{{ $attachment->download_url }}">
+                                        {{ $attachment->name }} <i class="bi-download"></i>
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <x-larastrap::check name="delete_attachment[]" :label="_i('Elimina')" :value="$attachment->id" />
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </x-larastrap::field>
+
                 <hr>
 
                 @if($invoice->orders->count() > 0 || $invoice->status != 'payed')

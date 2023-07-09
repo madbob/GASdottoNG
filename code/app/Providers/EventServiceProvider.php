@@ -13,6 +13,7 @@ use App\Observers\InvoiceObserver;
 use App\Observers\ModifierObserver;
 use App\Observers\ContactObserver;
 use App\Observers\VariantObserver;
+use App\Observers\AttachmentObserver;
 use App\Observers\ConfigObserver;
 
 use App\Movement;
@@ -24,6 +25,7 @@ use App\Invoice;
 use App\Modifier;
 use App\Contact;
 use App\Variant;
+use App\Attachment;
 use App\Config;
 
 class EventServiceProvider extends ServiceProvider
@@ -64,6 +66,7 @@ class EventServiceProvider extends ServiceProvider
         Modifier::observe(ModifierObserver::class);
         Contact::observe(ContactObserver::class);
         Variant::observe(VariantObserver::class);
+        Attachment::observe(AttachmentObserver::class);
         Config::observe(ConfigObserver::class);
     }
 }

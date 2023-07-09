@@ -62,11 +62,17 @@ trait AttachableTrait
             $file = $request['file'] ?? null;
             $name = '';
             $users = $request['users'] ?? [];
+            $to_delete = $request['delete_attachment'] ?? [];
         }
         else {
             $file = $request->file('file');
             $name = $request->input('name', '');
             $users = $request->input('users', []);
+            $to_delete = $request->input('to_delete', []);
+        }
+
+        foreach ($this->attachments()->whereIn('id', $to_delete)->get() as $att) {
+            $att->delete();
         }
 
         if (is_null($file) || $file->isValid() == false) {

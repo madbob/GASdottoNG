@@ -54,6 +54,8 @@ class InvoicesService extends BaseService
         }
 
         $invoice->save();
+
+        $invoice->attachByRequest($request);
         return $invoice;
     }
 
@@ -75,12 +77,8 @@ class InvoicesService extends BaseService
         return $this->setCommonAttributes($invoice, $request);
     }
 
-    public function products($id)
+    private function initGlobalSummeries($invoice)
     {
-        $user = $this->ensureAuth(['movements.admin' => 'gas']);
-        $invoice = $this->show($id);
-        $summaries = [];
-
         $global_summary = (object)[
             'products' => [],
             'total' => 0,
@@ -89,9 +87,6 @@ class InvoicesService extends BaseService
         ];
 
         foreach($invoice->orders as $order) {
-            $summary = $order->calculateInvoicingSummary();
-            $summaries[$order->id] = $summary;
-
             foreach($order->products as $product) {
                 if (isset($global_summary->products[$product->id]) == false) {
                     $global_summary->products[$product->id] = [
@@ -103,7 +98,25 @@ class InvoicesService extends BaseService
                         'measure' => $product->measure
                     ];
                 }
+            }
+        }
 
+        return $global_summary;
+    }
+
+    public function products($id)
+    {
+        $user = $this->ensureAuth(['movements.admin' => 'gas']);
+        $invoice = $this->show($id);
+
+        $summaries = [];
+        $global_summary = $this->initGlobalSummeries($invoice);
+
+        foreach($invoice->orders as $order) {
+            $summary = $order->calculateInvoicingSummary();
+            $summaries[$order->id] = $summary;
+
+            foreach($order->products as $product) {
                 $global_summary->products[$product->id]['total'] += $summary->products[$product->id]['total'];
                 $global_summary->products[$product->id]['total_vat'] += $summary->products[$product->id]['total_vat'];
                 $global_summary->products[$product->id]['delivered'] += $summary->products[$product->id]['delivered'];
