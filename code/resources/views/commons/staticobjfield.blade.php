@@ -24,7 +24,11 @@ if (isset($extra_class)) {
 
 <x-larastrap::field :label="$label" :squeeze="$squeeze">
     @if($target_obj != null)
-        <label class="{{ $class }}">
+        <label class="{{ $class }} d-none d-xl-inline-block">
+            {{ $target_obj->printableName() }}
+        </label>
+
+        <label class="{{ $class }} object-details d-inline-block d-xl-none text-primary" data-show-url="{{ $target_obj->getROShowURL() }}">
             {{ $target_obj->printableName() }}
         </label>
 

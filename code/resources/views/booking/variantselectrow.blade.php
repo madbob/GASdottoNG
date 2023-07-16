@@ -2,7 +2,7 @@
     <div class="col pe-2">
         <div class="input-group booking-product-quantity booking-variant-quantity">
             <input type="text" class="form-control number {{ $master ? 'skip-on-submit' : '' }}" name="variant_quantity_{{ $product->id }}[]" value="{{ ($saved != null) ? $saved->quantity : '0' }}" />
-            <div class="input-group-text">{{ $product->printableMeasure() }}</div>
+            <div class="input-group-text d-none d-xl-inline-block">{{ $product->printableMeasure() }}</div>
             <div class="invalid-feedback"></div>
         </div>
     </div>
