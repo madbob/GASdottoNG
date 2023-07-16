@@ -189,6 +189,10 @@ class Order extends Model
             $ret->status = 'pending';
             $ret->id = $ret->getSlugID();
         }
+        else {
+            $ret->loadMissing(['products', 'products.product', 'products.product.measure', 'products.modifiedValues']);
+            $ret->products->each(fn($p) => $p->setRelation('booking', $ret));
+        }
 
         if ($userobj) {
             $ret->setRelation('user', $userobj);
