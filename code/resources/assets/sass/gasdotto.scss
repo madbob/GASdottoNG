@@ -661,7 +661,7 @@ i[class^='bi-hidden-'] {
     }
 }
 
-@include media-breakpoint-down(sm) {
+@include media-breakpoint-down(lg) {
     .btn {
         padding: 0.375rem 0.35rem;
     }
@@ -684,12 +684,16 @@ i[class^='bi-hidden-'] {
             flex-direction: column;
 
             tr {
+                background-color: #FFF !important;
                 display: flex;
                 flex-direction: column;
+                margin-bottom: 30px;
 
                 td, th {
+                    box-shadow: none !important;
+                    background-color: #FFF !important;
                     border-bottom-width: 0;
-                    padding: 0.1rem 0.5rem;
+                    padding: 0;
                 }
             }
         }
