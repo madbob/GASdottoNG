@@ -11,7 +11,7 @@
             @endif
         @endforeach
 
-        @foreach(App\Date::localGas()->get() as $d)
+        @foreach(App\Date::localGas()->with(['target'])->get() as $d)
             @if($d->type == 'order')
                 @foreach($d->all_dates as $dat)
                     {
