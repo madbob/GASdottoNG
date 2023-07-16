@@ -34,11 +34,11 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                         <th width="3%">{{ _i('Importa') }}</th>
                         <th width="15%">{{ _i('Nome') }}</th>
                         <th width="15%">{{ _i('Descrizione') }}</th>
-                        <th width="10%">{{ _i('Prezzo Unitario') }}</th>
-                        <th width="10%">{{ _i('Categoria') }}</th>
-                        <th width="10%">{{ _i('Unità di Misura') }}</th>
-                        <th width="10%">{{ _i('Aliquota IVA') }}</th>
-                        <th width="10%">{{ _i('Codice Fornitore') }}</th>
+                        <th width="8%">{{ _i('Prezzo Unitario') }}</th>
+                        <th width="11%">{{ _i('Categoria') }}</th>
+                        <th width="11%">{{ _i('Unità di Misura') }}</th>
+                        <th width="11%">{{ _i('Aliquota IVA') }}</th>
+                        <th width="9%">{{ _i('Codice Fornitore') }}</th>
                         <th width="15%">{{ _i('Aggiorna') }}</th>
                     </tr>
                 </thead>
@@ -66,14 +66,14 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                                 </td>
                                 <td>
                                     @if(isset($product->temp_category_name))
-                                        <x-larastrap::selectobj name="category_id" squeeze npostfix="[]" :options="$categories" :extraitem="['new:' . $product->temp_category_name => $product->temp_category_name]" />
+                                        <x-larastrap::selectobj name="category_id" squeeze npostfix="[]" :options="$categories" :extraitem="['new:' . $product->temp_category_name => $product->temp_category_name]" :value="sprintf('new:%s', $product->temp_category_name)" />
                                     @else
                                         <x-larastrap::selectobj name="category_id" squeeze npostfix="[]" :options="$categories" />
                                     @endif
                                 </td>
                                 <td>
                                     @if(isset($product->temp_measure_name))
-                                        <x-larastrap::selectobj name="measure_id" squeeze npostfix="[]" :options="$measures" :extraitem="['new:' . $product->temp_measure_name => $product->temp_measure_name]" />
+                                        <x-larastrap::selectobj name="measure_id" squeeze npostfix="[]" :options="$measures" :extraitem="['new:' . $product->temp_measure_name => $product->temp_measure_name]" :value="sprintf('new:%s', $product->temp_measure_name)" />
                                     @else
                                         <x-larastrap::selectobj name="measure_id" squeeze npostfix="[]" :options="$measures" />
                                     @endif
@@ -90,7 +90,7 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                                 </td>
                                 <td>
                                     @if($original_products->isEmpty() == false)
-                                        <x-larastrap::selectobj name="want_replace" squeeze npostfix="[]" :options="$original_products" :extraitem="_i('Nessuno')" />
+                                        <x-larastrap::selectobj name="want_replace" squeeze npostfix="[]" :options="$original_products" :extraitem="_i('Nessuno')" :value="$product->want_replace" />
                                     @else
                                         {{ _i('Nessun Prodotto Aggiornabile') }}
                                         <input type="hidden" name="want_replace[]" value="0">

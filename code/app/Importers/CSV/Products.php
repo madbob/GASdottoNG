@@ -115,13 +115,13 @@ class Products extends CSVImporter
             try {
                 $test = null;
 
-                if ($supplier_code_index != -1 && !empty($line[$supplier_code_index])) {
-                    $test = $s->products()->where('supplier_code', $line[$supplier_code_index])->orderBy('id', 'desc')->first();
+                if ($supplier_code_index != -1 && filled($line[$supplier_code_index])) {
+                    $test = $s->products()->withTrashed()->where('supplier_code', $line[$supplier_code_index])->orderBy('id', 'desc')->first();
                 }
 
                 if (is_null($test)) {
-                    if ($name_index != -1 && !empty($line[$name_index])) {
-                        $test = $s->products()->where('name', $line[$name_index])->orderBy('id', 'desc')->first();
+                    if ($name_index != -1 && filled($line[$name_index])) {
+                        $test = $s->products()->withTrashed()->where('name', $line[$name_index])->orderBy('id', 'desc')->first();
                     }
                 }
 
@@ -132,10 +132,16 @@ class Products extends CSVImporter
                 }
                 else {
                     $p = new Product();
+                    $p->category_id = 'non-specificato';
+                    $p->measure_id = 'non-specificato';
                     $p->weight = 0;
-                    $p->category_id = $p->measure_id = 'non-specificato';
-                    $p->min_quantity = $p->multiple = $p->package_size = $p->portion_quantity = 0;
-                    $price_without_vat = $vat_rate = $package_price = null;
+                    $p->min_quantity = 0;
+                    $p->multiple = 0;
+                    $p->package_size = 0;
+                    $p->portion_quantity = 0;
+                    $price_without_vat = null;
+                    $vat_rate = null;
+                    $package_price = null;
                 }
 
                 $p->want_replace = $want_replace;
