@@ -190,7 +190,7 @@ class Order extends Model
             $ret->id = $ret->getSlugID();
         }
         else {
-            $ret->loadMissing(['products', 'products.product', 'products.product.measure', 'products.modifiedValues']);
+            $ret->loadMissing(['products', 'products.modifiedValues']);
             $ret->products->each(fn($p) => $p->setRelation('booking', $ret));
         }
 
