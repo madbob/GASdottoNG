@@ -196,10 +196,11 @@ class AggregateBooking extends Model
             if ($receipt == null) {
                 $receipt = new Receipt();
                 $receipt->number = $this->user->gas->nextInvoiceNumber();
-                $receipt->date = date('Y-m-d');
-                $receipt->save();
-                $receipt->bookings()->sync($ids);
             }
+
+            $receipt->date = date('Y-m-d');
+            $receipt->save();
+            $receipt->bookings()->sync($ids);
         }
     }
 
