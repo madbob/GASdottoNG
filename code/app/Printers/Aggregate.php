@@ -112,7 +112,13 @@ class Aggregate extends Printer
         $filename = sanitizeFilename($title . '.' . $subtype);
 
         if ($subtype == 'pdf') {
-            $pdf = PDF::loadView('documents.order_shipping_pdf', ['fields' => $fields, 'aggregate' => $obj, 'data' => $data]);
+            $pdf = PDF::loadView('documents.order_shipping_pdf', [
+				'fields' => $fields,
+				'aggregate' => $obj,
+				'shipping_place' => $shipping_place,
+				'data' => $data
+			]);
+
             enablePdfPagesNumbers($pdf);
             return $pdf->download($filename);
         }
@@ -213,7 +219,12 @@ class Aggregate extends Printer
                     $blocks[] = $this->formatGasSummary($hub->getGasObj(), $obj, $required_fields, $status, $shipping_place);
                 }
 
-                $pdf = PDF::loadView('documents.order_summary_pdf', ['aggregate' => $obj, 'blocks' => $blocks]);
+                $pdf = PDF::loadView('documents.order_summary_pdf', [
+					'aggregate' => $obj,
+					'shipping_place' => $shipping_place,
+					'blocks' => $blocks
+				]);
+
                 return $pdf->download($filename);
             }
             else if ($subtype == 'csv') {

@@ -67,6 +67,19 @@ foreach($data->contents as $d) {
             </h3>
         @endif
 
+        @php
+
+        $place = null;
+        if (isset($shipping_place) && $shipping_place && $shipping_place != 'all_by_name' && $shipping_place != 'all_by_place') {
+            $place = App\Delivery::find($shipping_place);
+        }
+
+        @endphp
+
+        @if($place)
+            <h4>{{ sprintf('%s - %s', _i('Luogo di Consegna'), $place->name) }}</h4>
+        @endif
+
         <br/><hr><br/>
 
         <div class="extended">

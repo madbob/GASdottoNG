@@ -54,7 +54,13 @@ class Order extends Printer
         $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
 
         if ($subtype == 'pdf') {
-            $pdf = PDF::loadView('documents.order_shipping_pdf', ['fields' => $fields, 'order' => $obj, 'data' => $data]);
+            $pdf = PDF::loadView('documents.order_shipping_pdf', [
+				'fields' => $fields,
+				'order' => $obj,
+				'shipping_place' => $shipping_place,
+				'data' => $data
+			]);
+
             enablePdfPagesNumbers($pdf);
 
             if ($send_mail) {
@@ -157,7 +163,11 @@ class Order extends Printer
         $temp_file_path = sprintf('%s/%s', gas_storage_path('temp', true), $filename);
 
         if ($subtype == 'pdf') {
-            $pdf = PDF::loadView('documents.order_summary_pdf', ['order' => $obj, 'blocks' => [$data]]);
+            $pdf = PDF::loadView('documents.order_summary_pdf', [
+				'order' => $obj,
+				'shipping_place' => $shipping_place,
+				'blocks' => [$data]
+			]);
 
             if ($send_mail) {
                 $pdf->save($temp_file_path);
