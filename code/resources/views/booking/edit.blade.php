@@ -82,165 +82,167 @@ $form_buttons = [
 
         ?>
 
-        <div class="row mb-2">
-            <div class="col-12 col-lg-4">
-                @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => _i('Fornitore')])
+        <div class="filter-master-block">
+            <div class="row mb-2">
+                <div class="col-12 col-lg-4">
+                    @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => _i('Fornitore')])
+                </div>
             </div>
-        </div>
 
-        @if($order->isRunning() == false && $enforced == false)
-            @include('booking.partials.showtable', [
-                'o' => $o,
-                'order' => $order,
-                'mods' => $mods,
-            ])
-        @else
-            <?php
+            @if($order->isRunning() == false && $enforced == false)
+                @include('booking.partials.showtable', [
+                    'o' => $o,
+                    'order' => $order,
+                    'mods' => $mods,
+                ])
+            @else
+                <?php
 
-            $notice = null;
+                $notice = null;
 
-            if ($order->keep_open_packages != 'no' && $enforced == false) {
-                if ($order->status == 'open') {
-                    $products = $order->products()->with(['category', 'measure'])->sorted()->get();
+                if ($order->keep_open_packages != 'no' && $enforced == false) {
+                    if ($order->status == 'open') {
+                        $products = $order->products()->with(['category', 'measure'])->sorted()->get();
+                    }
+                    else {
+                        $products = $order->pendingPackages();
+                        $notice = _i("Attenzione: quest'ordine è chiuso, ma è possibile prenotare ancora alcuni prodotti per completare le confezioni da consegnare.");
+                    }
                 }
                 else {
-                    $products = $order->pendingPackages();
-                    $notice = _i("Attenzione: quest'ordine è chiuso, ma è possibile prenotare ancora alcuni prodotti per completare le confezioni da consegnare.");
+                    $products = $order->products()->with(['category', 'measure'])->sorted()->get();
                 }
-            }
-            else {
-                $products = $order->products()->with(['category', 'measure'])->sorted()->get();
-            }
 
-            $categories = $products->getProductsCategories();
-            $contacts = $order->showableContacts();
+                $categories = $products->getProductsCategories();
+                $contacts = $order->showableContacts();
 
-            ?>
+                ?>
 
-            @if(!is_null($notice))
-                <div class="alert alert-info">
-                    <input type="hidden" name="limited" value="1">
-                    {{ $notice }}
-                </div>
-                <br>
-            @endif
+                @if(!is_null($notice))
+                    <div class="alert alert-info">
+                        <input type="hidden" name="limited" value="1">
+                        {{ $notice }}
+                    </div>
+                    <br>
+                @endif
 
-            @if(!empty($order->long_comment))
-                <div class="alert alert-info">
-                    {!! nl2br($order->long_comment) !!}
-                </div>
-                <br>
-            @endif
+                @if(!empty($order->long_comment))
+                    <div class="alert alert-info">
+                        {!! nl2br($order->long_comment) !!}
+                    </div>
+                    <br>
+                @endif
 
-            @if($contacts->isEmpty() == false)
-                <div class="alert alert-info">
-                    {{ _i('Per segnalazioni relative a questo ordine si può contattare:') }}
-                    <ul>
-                        @foreach($contacts as $contact)
-                            <li>{{ $contact->printableName() }} - {{ join(', ', App\Formatters\User::format($contact, ['email', 'phone', 'mobile'])) }}</li>
+                @if($contacts->isEmpty() == false)
+                    <div class="alert alert-info">
+                        {{ _i('Per segnalazioni relative a questo ordine si può contattare:') }}
+                        <ul>
+                            @foreach($contacts as $contact)
+                                <li>{{ $contact->printableName() }} - {{ join(', ', App\Formatters\User::format($contact, ['email', 'phone', 'mobile'])) }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    <br>
+                @endif
+
+                <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}">
+                    <input type="hidden" name="booking_id" value="{{ $o->id }}" class="skip-on-submit">
+
+                    <thead class="d-none d-md-table-header-group border-0">
+                        <tr>
+                            <th width="40%"></th>
+                            <th width="30%"></th>
+                            <th width="15%"></th>
+                            <th width="10%"></th>
+                            <th width="5%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($categories as $cat)
+                            <tr class="table-sorting-header d-none" data-sorting-category_name="{{ $cat->name }}">
+                                <td colspan="5">
+                                    {{ $cat->name }}
+                                </td>
+                            </tr>
                         @endforeach
-                    </ul>
-                </div>
-                <br>
-            @endif
 
-            <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}">
-                <input type="hidden" name="booking_id" value="{{ $o->id }}" class="skip-on-submit">
+                        @foreach($products as $product)
+                            <?php $p = $o->getBooked($product->id) ?>
 
-                <thead class="d-none d-md-table-header-group border-0">
-                    <tr>
-                        <th width="40%"></th>
-                        <th width="30%"></th>
-                        <th width="15%"></th>
-                        <th width="10%"></th>
-                        <th width="5%"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($categories as $cat)
-                        <tr class="table-sorting-header d-none" data-sorting-category_name="{{ $cat->name }}">
-                            <td colspan="5">
-                                {{ $cat->name }}
-                            </td>
-                        </tr>
-                    @endforeach
+                            <tr class="booking-product" data-sorting-name="{{ $product->name }}" data-sorting-sorting="{{ $product->sorting }}" data-sorting-category_name="{{ $product->category_name }}">
+                                <td>
+                                    @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product, 'extra_class' => 'text-filterable-cell'])
 
-                    @foreach($products as $product)
-                        <?php $p = $o->getBooked($product->id) ?>
+                                    <div class="hidden">
+                                        @foreach($product->icons() as $icon)
+                                            <i class="bi-{{ $icon }}"></i>
+                                        @endforeach
+                                    </div>
+                                </td>
 
-                        <tr class="booking-product" data-sorting-name="{{ $product->name }}" data-sorting-sorting="{{ $product->sorting }}" data-sorting-category_name="{{ $product->category_name }}">
-                            <td>
-                                @include('commons.staticobjfield', ['squeeze' => true, 'target_obj' => $product, 'extra_class' => 'text-filterable-cell'])
+                                <td>
+                                    @include('booking.quantityselectrow', ['product' => $product, 'order' => $order, 'populate' => true])
+                                </td>
 
-                                <div class="hidden">
-                                    @foreach($product->icons() as $icon)
-                                        <i class="bi-{{ $icon }}"></i>
-                                    @endforeach
-                                </div>
-                            </td>
+                                <td>
+                                    <?php $details = $product->printableDetails($order) ?>
+                                    @if(filled($details))
+                                        <label class="static-label"><small>{!! $details !!}</small></label>
+                                    @endif
+                                </td>
 
-                            <td>
-                                @include('booking.quantityselectrow', ['product' => $product, 'order' => $order, 'populate' => true])
-                            </td>
+                                <td class="text-end">
+                                    @include('booking.pricerow', ['product' => $product, 'booked' => $p, 'order' => $order, 'populate' => true])
+                                </td>
 
-                            <td>
-                                <?php $details = $product->printableDetails($order) ?>
-                                @if(filled($details))
-                                    <label class="static-label"><small>{!! $details !!}</small></label>
-                                @endif
-                            </td>
+                                <td>
+                                    <label class="static-label booking-product-price float-end">
+                                        <span>{{ printablePrice($p ? $p->getValue('effective') : 0) }}</span> {{ $currency_symbol }}
+                                    </label>
+                                </td>
+                            </tr>
+                        @endforeach
 
-                            <td class="text-end">
-                                @include('booking.pricerow', ['product' => $product, 'booked' => $p, 'order' => $order, 'populate' => true])
-                            </td>
+                        @foreach($mods as $mod_value)
+                            @include('delivery.modifierrow', [
+                                'mod_value' => $mod_value,
+                                'skip_cells' => 3
+                            ])
+                        @endforeach
 
-                            <td>
-                                <label class="static-label booking-product-price float-end">
-                                    <span>{{ printablePrice($p ? $p->getValue('effective') : 0) }}</span> {{ $currency_symbol }}
-                                </label>
-                            </td>
-                        </tr>
-                    @endforeach
-
-                    @foreach($mods as $mod_value)
                         @include('delivery.modifierrow', [
-                            'mod_value' => $mod_value,
+                            'mod_value' => null,
                             'skip_cells' => 3
                         ])
-                    @endforeach
 
-                    @include('delivery.modifierrow', [
-                        'mod_value' => null,
-                        'skip_cells' => 3
-                    ])
-
-                    @if($user->gas->restrict_booking_to_credit)
-                        <tr class="do-not-sort">
-                            <td><label class="static-label">{{ _i('Credito Disponibile') }}</label></td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td><label class="static-label float-end">{{ printablePriceCurrency($user->activeBalance()) }}</label></td>
+                        @if($user->gas->restrict_booking_to_credit)
+                            <tr class="do-not-sort">
+                                <td><label class="static-label">{{ _i('Credito Disponibile') }}</label></td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td><label class="static-label float-end">{{ printablePriceCurrency($user->activeBalance()) }}</label></td>
+                            </tr>
+                        @endif
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th class="text-end">Totale:<br><span class="booking-total">{{ printablePrice($booking_total) }}</span> {{ $currency_symbol }}</th>
                         </tr>
-                    @endif
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th class="text-end">Totale:<br><span class="booking-total">{{ printablePrice($booking_total) }}</span> {{ $currency_symbol }}</th>
-                    </tr>
-                </tfoot>
-            </table>
+                    </tfoot>
+                </table>
 
-            <div class="row">
-                <div class="col-12 col-lg-4 offset-lg-8">
-                    <x-larastrap::textarea name="notes" :label="_i('Note')" rows="3" :value="$o->notes" squeeze="false" :npostfix="sprintf('_%s', $order->id)" />
+                <div class="row">
+                    <div class="col-12 col-lg-4 offset-lg-8">
+                        <x-larastrap::textarea name="notes" :label="_i('Note')" rows="3" :value="$o->notes" squeeze="false" :npostfix="sprintf('_%s', $order->id)" />
+                    </div>
                 </div>
-            </div>
-        @endif
+            @endif
+        </div>
 
         <?php $grand_total += $booking_total ?>
     @endforeach
