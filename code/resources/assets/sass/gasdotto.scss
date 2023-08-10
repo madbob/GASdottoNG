@@ -701,6 +701,18 @@ i[class^='bi-hidden-'] {
 }
 
 @include media-breakpoint-down(md) {
+    .flowbox {
+        flex-direction: column;
+
+        .mainflow {
+            padding-right: 0;
+        }
+
+        > div {
+            margin-bottom: 10px;
+        }
+    }
+
     .nav-link {
         padding: 0.375rem 0.75rem;
     }

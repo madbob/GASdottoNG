@@ -42,7 +42,7 @@ $form_buttons = [
         <input type="hidden" name="max-bookable" value="{{ $user->activeBalance() }}" class="skip-on-submit">
     @endif
 
-    <div class="d-none d-md-flex flowbox mb-3">
+    <div class="d-flex flowbox mb-3">
         <div class="mainflow">
             <input type="text" class="form-control table-text-filter" data-table-target=".booking-editor">
         </div>
@@ -62,7 +62,7 @@ $form_buttons = [
                     <a href="#" class="dropdown-item" data-sort-by="category_name">{{ _i('Categoria') }}</a>
                 </li>
             </ul>
-        </div>&nbsp;
+        </div>
 
         @include('commons.iconslegend', [
             'class' => 'Product',
