@@ -45,7 +45,13 @@ class RestrictedGAS implements Scope
     public function apply(Builder $builder, Model $model)
     {
         $hub = App::make('GlobalScopeHub');
-        if ($hub->enabled()) {
+
+        /*
+            Lo scope relativo all'assegnazione del GAS lo attivo solo se
+            effettivamente c'è più di un GAS sull'istanza, altrimenti è
+            essenzialmente inutile (e genera JOIN a sproposito)
+        */
+        if ($hub->hubRequired() && $hub->enabled()) {
             $gas_id = $hub->getGas();
 
             if ($gas_id) {

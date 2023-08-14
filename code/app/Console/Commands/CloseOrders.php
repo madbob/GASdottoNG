@@ -35,6 +35,8 @@ class CloseOrders extends Command
             }
         }
 
-        NotifyClosedOrder::dispatch($closed);
+        if (empty($closed) == false) {
+            NotifyClosedOrder::dispatch($closed);
+        }
     }
 }

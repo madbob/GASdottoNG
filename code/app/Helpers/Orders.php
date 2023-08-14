@@ -2,10 +2,12 @@
 
 function easyFilterOrders($supplier, $startdate, $enddate, $statuses = null)
 {
-	if (is_object($supplier))
+	if (is_object($supplier)) {
 		$supplier_id = $supplier->id;
-	else
+	}
+	else {
 		$supplier_id = $supplier;
+	}
 
 	if ($statuses == null) {
 		$statuses = array_keys(App\Helpers\Status::orders());
@@ -19,18 +21,22 @@ function easyFilterOrders($supplier, $startdate, $enddate, $statuses = null)
 	*/
 
 	$orders = App\Aggregate::with('orders')->whereHas('orders', function ($query) use ($supplier_id, $startdate, $enddate, $statuses) {
-		if (!empty($supplier_id)) {
-			if (is_array($supplier_id))
+		if (empty($supplier_id) == false) {
+			if (is_array($supplier_id)) {
 				$query->whereIn('supplier_id', $supplier_id);
-			else
+			}
+			else {
 				$query->where('supplier_id', $supplier_id);
+			}
 		}
 
-		if (!empty($startdate))
+		if (empty($startdate) == false) {
 			$query->where('start', '>=', $startdate);
+		}
 
-		if (!empty($enddate))
+		if (empty($enddate) == false) {
 			$query->where('end', '<=', $enddate);
+		}
 
 		$query->whereIn('status', $statuses);
 	})->get();
