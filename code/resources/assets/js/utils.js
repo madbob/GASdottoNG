@@ -187,29 +187,6 @@ class Utils {
         return '<button type="button" class="btn btn-xs btn-icon btn-info object-details d-none d-md-inline-block" data-show-url="' + url + '"><i class="bi-zoom-in"></i></button>';
     }
 
-    static complexPopover(input, type, content)
-    {
-        /*
-            Questo è indispensabile per gestire il popover quando si trova
-            all'interno di un modale (e.g. l'indirizzo di un Luogo di Consegna
-            in fase di creazione). Altrimenti il popover viene appeso al body,
-            ed il focus sugli input field viene prevenuto dagli eventi interni
-            di Bootstrap sui modali
-        */
-        var container = input.closest('.modal');
-        if (container.length == 0) {
-            container = false;
-        }
-
-        input.popover({
-            container: container,
-            template: '<div class="popover ' + type + '-popover" role="tooltip"><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
-            placement: 'left',
-            html: true,
-            content: content(input),
-        });
-    }
-
     static setInputErrorText(input, message)
     {
         if (message == null) {

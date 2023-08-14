@@ -145,31 +145,19 @@
                             <tr>
                                 <td>{{ _i('Totale Imponibile') }}</td>
                                 <td>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control number trim-2-ddigits simple-sum" name="total" value="{{ printablePrice($invoice->total) }}" required autocomplete="off">
-                                        <div class="input-group-text">{{ $currentgas->currency }}</div>
-                                    </div>
+                                    <x-larastrap::price name="total" classes="simple-sum" required squeeze autocomplete="off" />
                                 </td>
                                 <td>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control number trim-2-ddigits" value="{{ printablePrice($orders_total_taxable) }}" disabled autocomplete="off">
-                                        <div class="input-group-text">{{ $currentgas->currency }}</div>
-                                    </div>
+                                    <x-larastrap::price disabled squeeze autocomplete="off" :value="$orders_total_taxable" />
                                 </td>
                             </tr>
                             <tr>
                                 <td>{{ _i('Totale IVA') }}</td>
                                 <td>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control number trim-2-ddigits simple-sum" name="total_vat" value="{{ printablePrice($invoice->total_vat) }}" required autocomplete="off">
-                                        <div class="input-group-text">{{ $currentgas->currency }}</div>
-                                    </div>
+                                    <x-larastrap::price name="total_vat" classes="simple-sum" required squeeze autocomplete="off" />
                                 </td>
                                 <td>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control number trim-2-ddigits" value="{{ printablePrice($orders_total_tax) }}" disabled autocomplete="off">
-                                        <div class="input-group-text">{{ $currentgas->currency }}</div>
-                                    </div>
+                                    <x-larastrap::price disabled squeeze autocomplete="off" :value="$orders_total_tax" />
                                 </td>
                             </tr>
 
@@ -178,10 +166,7 @@
                                     <td>{{ $om->name }}</td>
                                     <td>&nbsp;</td>
                                     <td>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control number trim-2-ddigits" value="{{ printablePrice($om->amount) }}" disabled autocomplete="off">
-                                            <div class="input-group-text">{{ $currentgas->currency }}</div>
-                                        </div>
+                                        <x-larastrap::price disabled squeeze autocomplete="off" :value="$om->amount" />
                                     </td>
                                 </tr>
                             @endforeach
@@ -189,16 +174,10 @@
                             <tr>
                                 <td>{{ _i('Totale') }}</td>
                                 <td>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control number trim-2-ddigits simple-sum-result" value="{{ printablePrice($invoice->total + $invoice->total_vat) }}" disabled autocomplete="off">
-                                        <div class="input-group-text">{{ $currentgas->currency }}</div>
-                                    </div>
+                                    <x-larastrap::price classes="simple-sum-result" disabled squeeze autocomplete="off" :value="$invoice->total + $invoice->total_vat" />
                                 </td>
                                 <td>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control number trim-2-ddigits" value="{{ printablePrice($orders_total) }}" disabled autocomplete="off">
-                                        <div class="input-group-text">{{ $currentgas->currency }}</div>
-                                    </div>
+                                    <x-larastrap::price disabled squeeze autocomplete="off" :value="$orders_total" />
                                 </td>
                             </tr>
 
@@ -212,10 +191,7 @@
                                         <td>{{ $om->name }}</td>
                                         <td>&nbsp;</td>
                                         <td>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control number trim-2-ddigits" value="{{ printablePrice($om->amount) }}" disabled autocomplete="off">
-                                                <div class="input-group-text">{{ $currentgas->currency }}</div>
-                                            </div>
+                                            <x-larastrap::price disabled squeeze autocomplete="off" :value="$om->amount" />
                                         </td>
                                     </tr>
                                 @endforeach

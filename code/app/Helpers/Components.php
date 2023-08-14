@@ -117,7 +117,7 @@ function formatPriceToComponent($component, $params)
 {
     $value = printablePrice($params['value']);
 
-    if (!isset($params['currency'])) {
+    if (isset($params['currency']) == false) {
         $currency = defaultCurrency()->symbol;
     }
     else {
@@ -141,7 +141,7 @@ function formatPriceToComponent($component, $params)
 function formatDecimalToComponent($component, $params)
 {
     $decimals = $params['decimals'];
-    $params['classes'][] = 'trim-' . $decimals . '-ddigits';
+    $params['attributes']['data-trim-digits'] = $decimals;
     $params['value'] = sprintf('%.0' . $decimals . 'f', $params['value']);
     return $params;
 }

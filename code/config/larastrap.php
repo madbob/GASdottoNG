@@ -105,8 +105,11 @@ return [
         'price' => [
             'extends' => 'text',
             'params' => [
-                'classes' => ['number', 'trim-2-ddigits'],
+                'classes' => ['number', 'trim-ddigits'],
                 'asplaintext' => false,
+                'attributes' => [
+                    'data-trim-digits' => 2,
+                ],
                 'reviewCallback' => 'formatPriceToComponent',
             ]
         ],
@@ -114,7 +117,7 @@ return [
             'extends' => 'text',
             'params' => [
                 'decimals' => 2,
-                'classes' => ['number'],
+                'classes' => ['number', 'trim-ddigits'],
                 'reviewCallback' => 'formatDecimalToComponent',
             ]
         ],

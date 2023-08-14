@@ -1,8 +1,31 @@
 import utils from "./utils";
 
 $(document).ready(function() {
+    complexPopover(input, type, content)
+    {
+        /*
+            Questo è indispensabile per gestire il popover quando si trova
+            all'interno di un modale (e.g. l'indirizzo di un Luogo di Consegna
+            in fase di creazione). Altrimenti il popover viene appeso al body,
+            ed il focus sugli input field viene prevenuto dagli eventi interni
+            di Bootstrap sui modali
+        */
+        var container = input.closest('.modal');
+        if (container.length == 0) {
+            container = false;
+        }
+
+        input.popover({
+            container: container,
+            template: '<div class="popover ' + type + '-popover" role="tooltip"><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
+            placement: 'left',
+            html: true,
+            content: content(input),
+        });
+    }
+
     $('body').on('focus', 'input.address', function() {
-        utils.complexPopover($(this), 'address', function(input) {
+        complexPopover($(this), 'address', function(input) {
             var ret = $('<div>\
                 <div class="row mb-2">\
                     <label for="street" class="col-4 col-form-label">' + _('Indirizzo') + '</label>\
@@ -61,7 +84,7 @@ $(document).ready(function() {
     });
 
     $('body').on('focus', 'input.periodic', function() {
-        utils.complexPopover($(this), 'periodic', function(input) {
+        complexPopover($(this), 'periodic', function(input) {
             var ret = $('<div>\
                 <div class="row mb-2">\
                     <label for="day" class="col-4 col-form-label">' + _('Giorno') + '</label>\

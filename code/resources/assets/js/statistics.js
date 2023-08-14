@@ -1,4 +1,4 @@
-import Chartist from 'chartist';
+import { BarChart } from 'chartist';
 import utils from "./utils";
 
 class Statistics {
@@ -51,7 +51,7 @@ class Statistics {
         else {
             if ($(selector).length != 0) {
                 $(selector).empty().css('height', data.labels.length * 40);
-                new Chartist.Bar(selector, data, this.commonGraphConfig());
+                new BarChart(selector, data, this.commonGraphConfig());
             }
         }
     }

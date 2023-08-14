@@ -160,15 +160,10 @@ class Widgets {
             });
         });
 
-        $('.trim-2-ddigits', container).blur(function() {
+        $('.trim-ddigits', container).on('blur change', function() {
+            let limit = $(this).attr('data-trim-digits');
             $(this).val(function(index, value) {
-                return utils.parseFloatC(value).toFixed(2);
-            });
-        })
-
-        $('.trim-3-ddigits', container).blur(function() {
-            $(this).val(function(index, value) {
-                return utils.parseFloatC(value).toFixed(3);
+                return utils.parseFloatC(value).toFixed(limit);
             });
         });
 

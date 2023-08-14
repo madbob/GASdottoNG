@@ -2,10 +2,10 @@ $font-size-base: 1.2rem;
 
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/variables-dark";
 @import "~bootstrap/scss/maps";
 @import "~bootstrap/scss/mixins";
 @import "~bootstrap/scss/utilities";
-@import "~bootstrap/scss/helpers";
 @import "~bootstrap/scss/root";
 @import "~bootstrap/scss/reboot";
 @import "~bootstrap/scss/type";
@@ -32,6 +32,7 @@ $font-size-base: 1.2rem;
 @import "~bootstrap/scss/tooltip";
 @import "~bootstrap/scss/popover";
 @import "~bootstrap/scss/spinners";
+@import "~bootstrap/scss/helpers";
 
 $utilities: map-merge(
     $utilities,
@@ -53,9 +54,16 @@ $utilities: map-merge(
 @import '~bootstrap-icons/font/bootstrap-icons';
 @import '~bootstrap-datepicker/dist/css/bootstrap-datepicker3.css';
 @import '~select2/src/scss/core';
+
+/*
+    Fix temporaneo in attesa dell'adeguamento del tema Bootstrap5 per Select2
+    https://github.com/apalfrey/select2-bootstrap-5-theme/issues/75
+*/
+$s2bs5-border-color: $border-color;
 @import '~select2-bootstrap-5-theme/src/include-all';
+
 @import '~jquery-ui/themes/base/all.css';
-@import '~chartist/dist/chartist.css';
+@import '~chartist/dist/index.css';
 
 html, body {
     min-height: 100%;
