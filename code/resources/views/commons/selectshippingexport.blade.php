@@ -5,6 +5,9 @@
 
 	foreach($included_metaplace as $imp) {
 		switch($imp) {
+			case 'no':
+				$options['no'] = _i('Tutti');
+				break;
 			case 'all_by_name':
 				$options['all_by_name'] = _i('Tutti (ordinati per utente)');
 				break;
@@ -19,12 +22,19 @@
 	}
 
 	$shipping_warning = '';
+	$test_no_shipping = [];
 
-	$test_no_shipping = $aggregate->orders()->whereHas('bookings', function($query) {
-		$query->whereHas('user', function($query) {
+	foreach($aggregate->orders as $order) {
+		$no_shipping = $order->bookings()->whereHas('user', function($query) {
 			$query->doesntHave('shippingplace');
-		});
-	})->count();
+		})->get()->pluck('user_id')->toArray();
+
+		$test_no_shipping = array_merge($test_no_shipping, $no_shipping);
+		sort($test_no_shipping);
+		$test_no_shipping = array_unique($test_no_shipping);
+	}
+
+	$test_no_shipping = count($test_no_shipping);
 
 	if ($test_no_shipping > 0) {
 		$shipping_warning = _i('Attenzione: %d utenti non hanno un luogo di consegna assegnato', [$test_no_shipping]);

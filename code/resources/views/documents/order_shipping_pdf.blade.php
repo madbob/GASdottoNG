@@ -45,9 +45,8 @@ foreach($data->contents as $d) {
             .extended {
                 font-weight: bold;
                 text-align: center;
-                border: 1px solid #000;
                 display: block;
-                padding: 4px;
+                padding: 4px 0;
                 width: 100%;
             }
         </style>
@@ -100,10 +99,16 @@ foreach($data->contents as $d) {
 
         $total = 0;
         $full_modifiers = [];
+        $previous_shipping = null;
 
         ?>
 
         @foreach($data->contents as $d)
+            @if($shipping_place == 'all_by_place' && $previous_shipping != $d->shipping_sorting)
+                <h4>{{ sprintf('%s - %s', _i('Luogo di Consegna'), $d->shipping_sorting) }}</h4>
+                <?php $previous_shipping = $d->shipping_sorting ?>
+            @endif
+
             @if($preferred_style == 'breakup')
                 <table style="width: 100%">
                     <tr>

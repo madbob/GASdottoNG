@@ -36,8 +36,6 @@
             <h4>{{ sprintf('%s - %s', _i('Luogo di Consegna'), $place->name) }}</h4>
         @endif
 
-        <br/><hr><br/>
-
         @foreach($blocks as $data)
             <hr/>
 

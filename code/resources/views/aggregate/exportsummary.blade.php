@@ -26,7 +26,7 @@ else {
 
         <input type="hidden" name="managed_gas" value="{{ $managed_gas }}">
 
-        @include('commons.selectshippingexport', ['aggregate' => $aggregate, 'included_metaplace' => ['all_by_place']])
+        @include('commons.selectshippingexport', ['aggregate' => $aggregate, 'included_metaplace' => ['no', 'all_by_place']])
 
         <?php list($options, $values) = flaxComplexOptions(App\Formatters\Order::formattableColumns('summary')) ?>
         <x-larastrap::checks name="fields" :label="_i('Colonne')" :options="$options" :value="$values" />

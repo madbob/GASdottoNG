@@ -192,8 +192,8 @@ class Aggregate extends Printer
             $required_fields = $request['fields'] ?? [];
             $status = $request['status'];
 
-            $shipping_place = $request['shipping_place'] ?? 'all_by_place';
-            if ($shipping_place == 'all_by_place') {
+            $shipping_place = $request['shipping_place'] ?? 'no';
+            if ($shipping_place == 'no') {
                 $shipping_place = null;
             }
 

@@ -44,9 +44,21 @@ class Order extends Printer
         $status = $request['status'] ?? 'booked';
         $extra_modifiers = $request['extra_modifiers'] ?? 0;
         $required_fields = $request['fields'] ?? [];
+
+		/*
+			Se viene richiesto un CSV ordinato per luogo di consegna, forzo
+			l'inclusione di questo attributo tra i dati estratti per ottenere la
+			griglia desiderata
+		*/
+        $shipping_place = $request['shipping_place'] ?? 'all_by_name';
+		if ($shipping_place == 'all_by_place' && $subtype == 'csv') {
+			if (in_array('shipping_place', $required_fields) == false) {
+				$required_fields[] = 'shipping_place';
+			}
+		}
+
         $fields = splitFields($required_fields);
 
-        $shipping_place = $request['shipping_place'] ?? 'all_by_name';
         $data = $obj->formatShipping($fields, $status, $shipping_place, $extra_modifiers);
 
         $title = _i('Dettaglio Consegne ordine %s presso %s', [$obj->internal_number, $obj->supplier->name]);
@@ -152,8 +164,8 @@ class Order extends Printer
             $required_fields = $this->autoGuessFields($obj);
         }
 
-        $shipping_place = $request['shipping_place'] ?? 'all_by_place';
-        if ($shipping_place == 'all_by_place') {
+        $shipping_place = $request['shipping_place'] ?? 'no';
+        if ($shipping_place == 'no') {
             $shipping_place = null;
         }
 

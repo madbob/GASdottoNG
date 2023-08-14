@@ -213,19 +213,28 @@ function splitFields($fields)
         'product_columns_names' => [],
     ];
 
+    $user_headers = [];
+    $product_headers = [];
+
     foreach($fields as $f) {
         if (isset($formattable_user[$f])) {
             $ret->user_columns[] = $f;
             $ret->user_columns_names[] = $formattable_user[$f]->name;
-            $ret->headers[] = $formattable_user[$f]->name;
+            $user_headers[] = $formattable_user[$f]->name;
         }
         else {
             $ret->product_columns[] = $f;
             $ret->product_columns_names[] = $formattable_product[$f]->name;
-            $ret->headers[] = $formattable_product[$f]->name;
+            $product_headers[] = $formattable_product[$f]->name;
         }
     }
 
+    /*
+        Non necessariamente $fields è ordinato per attributi dell'utente e del
+        prodotto: nel ciclo sopra li raccolgo separatamente, e poi riunisco le
+        intestazioni nell'ordine giusto
+    */
+    $ret->headers = array_merge($user_headers, $product_headers);
     return $ret;
 }
 

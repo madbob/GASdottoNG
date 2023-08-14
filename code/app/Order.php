@@ -565,6 +565,27 @@ class Order extends Model
         }
     }
 
+    private function formatSummaryShipping($ret, $fields, $formattable, $internal_offsets, $shipping_place, $prepend)
+    {
+        $summary = $this->reduxData(['shipping_place' => $shipping_place]);
+
+        foreach ($this->products()->sorted()->get() as $product) {
+            $row = $this->formatProduct($fields, $formattable, $summary->products[$product->id] ?? null, $product, $internal_offsets);
+            if (!empty($row)) {
+                $final_row = [];
+
+                foreach($row as $r) {
+                    $r = array_merge($prepend, $r);
+                    $final_row[] = $r;
+                }
+
+                $ret->contents = array_merge($ret->contents, $final_row);
+            }
+        }
+
+        return $summary;
+    }
+
     public function formatSummary($fields, $status, $shipping_place)
     {
         $ret = (object) [
@@ -573,31 +594,47 @@ class Order extends Model
         ];
 
         $internal_offsets = $this->offsetsByStatus($status);
-        $summary = $this->reduxData(['shipping_place' => $shipping_place]);
         $formattable = OrderFormatter::formattableColumns('summary');
+
+        if ($shipping_place && $shipping_place == 'all_by_place') {
+            $ret->headers[] = _i('Luogo di Consegna');
+            $places = Delivery::orderBy('name', 'asc')->get();
+
+            $total_price_delivered = 0;
+            $total_price = 0;
+
+            foreach($places as $place) {
+                $prepend = [$place->name];
+                $summary = $this->formatSummaryShipping($ret, $fields, $formattable, $internal_offsets, $place->id, $prepend);
+                $total_price_delivered += $summary->price_delivered;
+                $total_price += $summary->price;
+            }
+        }
+        else {
+            $summary = $this->formatSummaryShipping($ret, $fields, $formattable, $internal_offsets, $shipping_place, []);
+            $total_price_delivered = $summary->price_delivered;
+            $total_price = $summary->price;
+        }
 
         foreach($fields as $f) {
             $ret->headers[] = $formattable[$f]->name;
         }
 
-        foreach ($this->products()->sorted()->get() as $product) {
-            $row = $this->formatProduct($fields, $formattable, $summary->products[$product->id] ?? null, $product, $internal_offsets);
-            if (!empty($row)) {
-                $ret->contents = array_merge($ret->contents, $row);
-            }
-        }
-
         if (in_array('price', $fields)) {
+            if ($shipping_place && $shipping_place == 'all_by_place') {
+                array_unshift($fields, 'shipping_place');
+            }
+
             $row = array_fill(0, count($fields), '');
 
             $row[0] = _i('Totale');
             $price_offset = array_search('price', $fields);
 
             if ($status == 'delivered') {
-                $row[$price_offset] = printablePrice($summary->price_delivered);
+                $row[$price_offset] = printablePrice($total_price_delivered);
             }
             else {
-                $row[$price_offset] = printablePrice($summary->price);
+                $row[$price_offset] = printablePrice($total_price);
             }
 
             $ret->contents[] = $row;
@@ -932,7 +969,8 @@ class Order extends Model
                 $shipping_place = $filters['shipping_place'] ?? null;
                 if ($shipping_place) {
                     $bookings = $bookings->filter(function($booking) use ($shipping_place) {
-                        return $booking->shipping_place->id == $shipping_place;
+                        $sp = $booking->shipping_place;
+                        return $sp && $sp->id == $shipping_place;
                     });
                 }
             }
