@@ -21,7 +21,7 @@
                             <li class="list-group-item">
                                 {{ $description }}
                                 <span class="float-end">
-                                    <input type="checkbox" data-role="{{ $role->id }}" data-action="{{ $identifier }}" {{ $role->enabledAction($identifier) ? 'checked' : '' }}>
+                                    <input type="checkbox" data-role="{{ $role->id }}" data-action="{{ $identifier }}" {{ $role->enabledAction($identifier) ? 'checked' : '' }} {{ $role->mandatoryAction($identifier) ? 'disabled' : '' }}>
                                 </span>
                             </li>
                         @endforeach

@@ -379,6 +379,18 @@ class Role extends Model
         return (in_array($action, $actions));
     }
 
+    public function mandatoryAction($action)
+    {
+        if (in_array($action, ['gas.access', 'gas.permissions'])) {
+            $roles = Role::havingAction($action);
+            if ($roles->count() == 1 && $roles->first()->id == $this->id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function enableAction($action)
     {
         if ($this->enabledAction($action) == false) {
