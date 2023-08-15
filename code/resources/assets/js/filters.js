@@ -73,7 +73,7 @@ class Filters {
 				url = form.attr('data-action');
 			}
 
-            target.empty().append(utils.loadingPlaceholder());
+            target.empty().append(utils.j().makeSpinner());
 
             $.ajax({
                 method: 'GET',

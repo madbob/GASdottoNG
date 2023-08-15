@@ -25,12 +25,7 @@ class OrderNumbersDispatcher
             */
             $connection = config('database.default');
             $driver = config("database.connections.{$connection}.driver");
-            if ($driver == 'sqlite') {
-                $this->cache[$year] = Order::where(DB::raw("strftime('%Y', start)"), $year)->orderBy('start', 'asc')->orderBy('id', 'asc')->pluck('start', 'id');
-            }
-            else {
-                $this->cache[$year] = Order::where(DB::raw('YEAR(start)'), $year)->orderBy('start', 'asc')->orderBy('id', 'asc')->pluck('start', 'id');
-            }
+            $this->cache[$year] = Order::whereYear('start', $year)->orderBy('start', 'asc')->orderBy('id', 'asc')->pluck('start', 'id');
         }
     }
 

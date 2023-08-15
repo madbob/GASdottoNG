@@ -33,7 +33,7 @@ class Utils {
             var fetcher = $(e.currentTarget);
             var targetid = fetcher.attr('data-fetcher-target');
             var target = fetcher.parent().find(targetid);
-            target.empty().append(this.loadingPlaceholder());
+            target.empty().append(this.j().makeSpinner());
 
             var id = fetcher.find('option:selected').val();
             var url = fetcher.attr('data-fetcher-url').replace('XXX', id);
@@ -115,15 +115,6 @@ class Utils {
         return Utils.current_language;
     }
 
-    static currentCurrency()
-    {
-        if (typeof Utils.current_currency == 'undefined') {
-            Utils.current_currency = $('meta[name=current_currency]').attr('content');
-        }
-
-        return Utils.current_currency;
-    }
-
     static absoluteUrl()
     {
         if (typeof Utils.absolute_url == 'undefined') {
@@ -140,11 +131,6 @@ class Utils {
         }
 
         return url;
-    }
-
-    static loadingPlaceholder()
-    {
-        return $('<div class="progress"><div class="progress-bar progress-bar-striped active" style="width: 100%"></div></div>');
     }
 
     static inlineFeedback(button, feedback_text)

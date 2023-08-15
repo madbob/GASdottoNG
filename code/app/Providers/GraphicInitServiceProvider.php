@@ -47,10 +47,6 @@ class GraphicInitServiceProvider extends ServiceProvider
         });
 
         Paginator::useBootstrap();
-
-        if (env('DUSK_TESTING', false)) {
-            \MadBob\DuskUtils\Utils::init();
-        }
     }
 
     public function register()

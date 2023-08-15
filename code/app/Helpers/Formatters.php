@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\DB;
+
 function printableQuantity($quantity, $discrete, $decimals = 2, $separator = '.')
 {
     if ($discrete) {
@@ -257,7 +260,7 @@ function longCommentLimit()
 
 function ue($value)
 {
-    return new \Illuminate\Support\HtmlString($value);
+    return new HtmlString($value);
 }
 
 function usernamePattern()

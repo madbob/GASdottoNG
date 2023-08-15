@@ -54,12 +54,10 @@ return [
 
         'radios' => [
             'color' => 'outline-info',
-            'reviewCallback' => 'formatForDuskTesting',
         ],
 
         'checks' => [
             'color' => 'outline-info',
-            'reviewCallback' => 'formatForDuskTesting',
         ],
 
         'tabs' => [

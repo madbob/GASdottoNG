@@ -65,9 +65,9 @@ class Statistics {
 
     static loadingGraphs(group)
     {
-        $('#stats-' + group + '-expenses').empty().append(utils.loadingPlaceholder());
-        $('#stats-' + group + '-users').empty().append(utils.loadingPlaceholder());
-        $('#stats-' + group + '-categories').empty().append(utils.loadingPlaceholder());
+        $('#stats-' + group + '-expenses').empty().append(utils.j().makeSpinner());
+        $('#stats-' + group + '-users').empty().append(utils.j().makeSpinner());
+        $('#stats-' + group + '-categories').empty().append(utils.j().makeSpinner());
     }
 
     static runSummaryStats()

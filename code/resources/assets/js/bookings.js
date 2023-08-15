@@ -20,7 +20,7 @@ class Bookings
                     var aggregate_id = input.attr('data-aggregate');
                     var while_shipping = (input.closest('.modal.add-booking-while-shipping').length != 0);
                     var fill_target = input.closest('.fillable-booking-space').find('.other-booking');
-                    fill_target.empty().append(utils.loadingPlaceholder());
+                    fill_target.empty().append(utils.j().makeSpinner());
 
                     var data = {};
                     var mode = input.attr('data-enforce-booking-mode');

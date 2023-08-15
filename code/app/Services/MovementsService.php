@@ -338,7 +338,7 @@ class MovementsService extends BaseService
 	public function creditHistory($class, $date)
 	{
 		$currencies = Currency::enabled();
-		$balances = Balance::where(DB::raw('DATE(date)'), $date)->where('target_type', $class)->get();
+		$balances = Balance::whereDate('date', $date)->where('target_type', $class)->get();
 		$ret = [];
 
 		foreach($balances as $balance) {

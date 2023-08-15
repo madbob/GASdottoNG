@@ -37,7 +37,7 @@ else {
                     Qui evito di usare x-larastrap::button dovendo formattare un
                     contenuto particolarmente complesso all'interno del button
                 --}}
-                <button class="async-modal btn btn-light" data-modal-url="{{ route($route, $m->id) }}" dusk="modifier_{{ \Illuminate\Support\Str::slug($mod->name) }}">
+                <button class="async-modal btn btn-light" data-modal-url="{{ route($route, $m->id) }}">
                     <span data-updatable-name="modifier-button-{{ $m->modifierType->id }}-{{ $m->target_id }}" data-updatable-field="name">{{ $m->name }}</span>
                 </button>
             @endforeach

@@ -171,7 +171,7 @@ trait CreditableTrait
 	public function retrieveBalance($currency, $date)
 	{
 		$proxy = $this->getActualObject();
-        return $proxy->balances()->where(DB::raw('DATE(date)'), $date)->where('currency_id', $currency->id)->orderBy('date', 'desc')->first();
+        return $proxy->balances()->whereDate('date', $date)->where('currency_id', $currency->id)->orderBy('date', 'desc')->first();
 	}
 
     public function extendedCurrentBalance($currency)
