@@ -19,7 +19,7 @@ if (!isset($limit_to)) {
 $icons = [];
 
 foreach($class as $c) {
-    $ico = App\GASModel::iconsLegend($c, $contents);
+    $ico = $c::iconsLegend($contents);
     $icons = array_merge($icons, $ico);
 }
 

@@ -72,7 +72,11 @@ $no_filters = (empty($sorting_rules) && empty($filters) && is_null($legend));
         @endif
 
         @if(!is_null($legend))
-            @include('commons.iconslegend', ['class' => $legend->class, 'target' => '#' . $identifier, 'contents' => $items])
+            @include('commons.iconslegend', [
+                'class' => $legend->class,
+                'target' => '#' . $identifier,
+                'contents' => $items
+            ])
         @endif
     </div>
 </div>

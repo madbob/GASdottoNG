@@ -28,7 +28,7 @@
                 'identifier' => 'receipts-list',
                 'items' => $receipts,
                 'legend' => (object)[
-                    'class' => 'Receipt',
+                    'class' => App\Receipt::class
                 ],
             ])
         </div>

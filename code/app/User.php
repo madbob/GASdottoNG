@@ -52,6 +52,12 @@ class User extends Authenticatable
         'rid' => 'array',
     ];
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->enableGlobalCache();
+    }
+
     protected static function boot()
     {
         parent::boot();

@@ -55,7 +55,7 @@ trait BookerTrait
     {
         $bookings = $this->bookings()->where('status', 'pending')->whereHas('order', function($query) {
             $query->whereIn('status', ['open', 'closed']);
-        })->get();
+        })->angryload()->get();
 
         $value = 0;
 

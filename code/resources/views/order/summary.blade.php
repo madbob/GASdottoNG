@@ -72,7 +72,7 @@ foreach($display_columns as $identifier => $metadata) {
             </div>&nbsp;
 
             @include('commons.iconslegend', [
-                'class' => 'Product',
+                'class' => App\Product::class,
                 'target' => '#' . $table_identifier,
                 'table_filter' => true,
                 'limit_to' => ['th'],

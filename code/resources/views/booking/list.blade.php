@@ -31,7 +31,10 @@
                 </div>
             </x-larastrap::modal>
 
-            @include('commons.iconslegend', ['class' => 'AggregateBooking', 'target' => '#' . $identifier])
+            @include('commons.iconslegend', [
+                'class' => App\AggregateBooking::class,
+                'target' => '#' . $identifier
+            ])
         </div>
     @endif
 

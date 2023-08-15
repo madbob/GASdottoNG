@@ -18,7 +18,7 @@
             'identifier' => 'order-list-' . $supplier->id,
             'items' => easyFilterOrders($supplier, date('Y-m-d', strtotime('-6 months')), date('Y-m-d', strtotime('+6 months'))),
             'legend' => (object)[
-                'class' => 'Aggregate'
+                'class' => App\Aggregate::class
             ],
         ])
     </div>

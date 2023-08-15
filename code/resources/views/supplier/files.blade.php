@@ -23,7 +23,7 @@
                 'identifier' => 'attachment-list-' . $supplier->id,
                 'items' => $supplier->attachments,
                 'legend' => (object)[
-                    'class' => 'Attachment'
+                    'class' => App\Attachment::class
                 ],
             ])
         </div>

@@ -32,7 +32,7 @@
                 'identifier' => 'invoice-list',
                 'items' => $invoices,
                 'legend' => (object)[
-                    'class' => 'Invoice',
+                    'class' => App\Invoice::class,
                 ],
             ])
         </div>

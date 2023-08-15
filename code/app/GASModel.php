@@ -10,12 +10,11 @@ use Log;
 use Schema;
 
 use App\Models\Concerns\Iconable;
+use App\Models\Concerns\ManagesInnerCache;
 
 trait GASModel
 {
-    use Iconable;
-
-    private $inner_runtime_cache;
+    use Iconable, ManagesInnerCache;
 
     /*
         Funzione di comodo, funge come find() ma se la classe è soft-deletable
@@ -75,28 +74,6 @@ trait GASModel
     public function printableDate($name)
     {
         return printableDate($this->$name);
-    }
-
-    protected function innerCache($name, $function)
-    {
-        if (!isset($this->inner_runtime_cache[$name])) {
-            $this->inner_runtime_cache[$name] = $function($this);
-        }
-
-        return $this->inner_runtime_cache[$name];
-    }
-
-    protected function setInnerCache($name, $value)
-    {
-        $this->inner_runtime_cache[$name] = $value;
-    }
-
-    protected function emptyInnerCache($name = null)
-    {
-        if (is_null($name))
-            $this->inner_runtime_cache = [];
-        else
-            unset($this->inner_runtime_cache[$name]);
     }
 
     private function relatedController()

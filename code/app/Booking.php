@@ -38,6 +38,12 @@ class Booking extends Model
         'deleting' => BookingDeleting::class,
     ];
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->enableGlobalCache();
+    }
+
     protected static function boot()
     {
         parent::boot();

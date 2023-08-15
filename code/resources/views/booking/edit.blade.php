@@ -65,7 +65,7 @@ $form_buttons = [
         </div>
 
         @include('commons.iconslegend', [
-            'class' => 'Product',
+            'class' => App\Product::class,
             'target' => '.booking-editor',
             'table_filter' => true,
             'limit_to' => ['th'],

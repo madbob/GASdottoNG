@@ -28,7 +28,8 @@ class CommonsController extends Controller
 
         /*
             In mancanza d'altro, eseguo qui lo scheduling delle operazioni
-            periodiche
+            periodiche.
+            TODO: spostare queste operazioni in cron
         */
         Artisan::call('check:fees');
         Artisan::call('close:orders');

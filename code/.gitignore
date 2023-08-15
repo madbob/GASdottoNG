@@ -3,6 +3,7 @@
 .env
 /public/hot
 /public/storage
+/public/vendor
 /public/storage/appsupplier*
 /storage/*.key
 /storage/debugbar

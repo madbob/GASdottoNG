@@ -4,7 +4,7 @@
             'identifier' => 'product-list-' . $supplier->id,
             'items' => $supplier->products()->with(['category'])->sorted()->get(),
             'legend' => (object)[
-                'class' => 'Product'
+                'class' => App\Product::class
             ],
             'sorting_rules' => [
                 'sorting' => _i('Ordinamento Manuale'),

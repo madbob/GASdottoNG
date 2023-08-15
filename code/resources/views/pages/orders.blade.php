@@ -68,7 +68,7 @@
             'identifier' => 'order-list',
             'items' => $orders,
             'legend' => (object)[
-                'class' => 'Aggregate'
+                'class' => App\Aggregate::class
             ],
             'sorting_rules' => [
                 'supplier_name' => _i('Fornitore'),

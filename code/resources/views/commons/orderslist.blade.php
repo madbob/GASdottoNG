@@ -9,7 +9,7 @@ $params = [
 
 if (isset($no_legend) == false) {
     $params['legend'] = (object)[
-        'class' => 'Aggregate'
+        'class' => App\Aggregate::class
     ];
 }
 

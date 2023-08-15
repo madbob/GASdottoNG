@@ -199,13 +199,15 @@ return [
             ],
             'hints'             => false,    // Show hints for common mistakes
             'show_copy'         => false,    // Show copy button next to the query
+            'slow_threshold'    => false,   // Only track queries that last longer than this time in ms
         ],
         'mail' => [
             'full_log' => false,
         ],
         'views' => [
-            'timeline' => false,  // Add the views to the timeline (Experimental)
+            'timeline' => true,  // Add the views to the timeline (Experimental)
             'data' => false,    //Note: Can slow down the application, because the data can be quite large..
+            'exclude_paths' => [], // Add the paths which you don't want to appear in the views
         ],
         'route' => [
             'label' => true,  // show complete route on bar

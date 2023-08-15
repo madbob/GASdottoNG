@@ -37,13 +37,10 @@ trait Iconable
         return $this->formatIcons($icons);
     }
 
-    private static function myIconsBox($class = null)
+    private static function myIconsBox()
     {
-        if ($class == null) {
-            $class = static::class;
-            list($namespace, $class) = explode('\\', $class);
-        }
-
+        $class = static::class;
+        list($namespace, $class) = explode('\\', $class);
         $final_class = sprintf('App\View\Icons\%s', $class);
 
         if (class_exists($final_class)) {
@@ -81,11 +78,11 @@ trait Iconable
         return $ret;
     }
 
-    public static function iconsLegend($class, $contents = null)
+    public static function iconsLegend($contents = null)
     {
         $ret = [];
 
-        $box = self::myIconsBox($class);
+        $box = self::myIconsBox();
         if (is_null($box) == false) {
             $user = Auth::user();
 

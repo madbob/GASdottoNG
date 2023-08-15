@@ -38,7 +38,7 @@
                 'identifier' => 'supplier-list',
                 'items' => $suppliers,
                 'legend' => (object)[
-                    'class' => 'Supplier'
+                    'class' => App\Supplier::class
                 ],
                 'filters' => [
                     'deleted_at' => (object)[
@@ -53,7 +53,7 @@
                 'identifier' => 'supplier-list',
                 'items' => $suppliers,
                 'legend' => (object)[
-                    'class' => 'Supplier'
+                    'class' => App\Supplier::class
                 ],
             ])
         @endif

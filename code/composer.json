@@ -34,6 +34,7 @@
     "require-dev": {
         "brianium/paratest": "^6.3",
         "fakerphp/faker": "^1.15",
+        "laracraft-tech/laravel-xhprof": "^1.0",
         "laravel/dusk": "^6.15",
         "laravel/sail": "^1.22",
         "madbob/dusk-utils": "^0.1.0",

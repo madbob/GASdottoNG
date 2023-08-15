@@ -49,7 +49,7 @@
                 'identifier' => 'user-list',
                 'items' => $users,
                 'legend' => (object)[
-                    'class' => 'User'
+                    'class' => App\User::class
                 ],
                 'filters' => [
                     'deleted_at' => (object) [
@@ -64,7 +64,7 @@
                 'identifier' => 'user-list',
                 'items' => $users,
                 'legend' => (object)[
-                    'class' => 'User'
+                    'class' => App\User::class
                 ]
             ])
         @endif

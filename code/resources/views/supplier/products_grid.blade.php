@@ -13,7 +13,7 @@ $products = $supplier->products()->sorted()->get();
         </div>
 
         @include('commons.iconslegend', [
-            'class' => 'Product',
+            'class' => App\Product::class,
             'target' => '#' . $identifier,
             'table_filter' => true,
             'contents' => $products
