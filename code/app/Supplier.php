@@ -34,7 +34,6 @@ class Supplier extends Model
         GASModel, SluggableID, WithinGas, Cachable;
 
     public $incrementing = false;
-    protected $dates = ['deleted_at'];
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,

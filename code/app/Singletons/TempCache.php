@@ -4,7 +4,7 @@
     Questo opera essenzialmente come Cache::store('array') ma senza l'overhead
     della gestione delle scadenze (questa è una cache volatile, vale solo per
     l'esecuzione corrente).
-    Reminder: non utilizzare "array" come driver per le cache native Laravel, 
+    Reminder: non utilizzare "array" come driver per le cache native Laravel,
     qua e là vengono davvero usate per conservare valori temporanei tra una
     sessione e l'altra
 */
@@ -27,11 +27,18 @@ class TempCache
 
     public function has($key)
     {
-        return isset($this->store[$key]);
+        return array_key_exists($key, $this->store);
     }
 
     public function forget($key)
     {
-        unset($this->store[$key]);
+        if ($this->has($key)) {
+            unset($this->store[$key]);
+        }
+    }
+
+    public function wipeAll()
+    {
+        $this->store = [];
     }
 }

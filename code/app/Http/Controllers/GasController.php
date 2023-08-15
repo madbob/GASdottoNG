@@ -95,23 +95,6 @@ class GasController extends Controller
 
         $gas->setConfig('rid', $rid_info);
 
-        if ($request->has('enable_paypal')) {
-            $paypal_info = (object) [
-                'client_id' => $request->input('paypal->client_id'),
-                'secret' => $request->input('paypal->secret'),
-                'mode' => $request->input('paypal->mode'),
-            ];
-        }
-        else {
-            $paypal_info = (object) [
-                'client_id' => '',
-                'secret' => '',
-                'mode' => 'sandbox',
-            ];
-        }
-
-        $gas->setConfig('paypal', $paypal_info);
-
         if ($request->has('enable_satispay')) {
             $satispay_info = (object) [
                 'secret' => $request->input('satispay->secret')

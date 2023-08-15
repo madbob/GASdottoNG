@@ -38,9 +38,9 @@ class Booking extends Model
         'deleting' => BookingDeleting::class,
     ];
 
-    public function __construct()
+    public function __construct($attributes = [])
     {
-        parent::__construct();
+        parent::__construct($attributes);
         $this->enableGlobalCache();
     }
 
@@ -120,7 +120,9 @@ class Booking extends Model
         }
         else {
             $sorted_users = "'" . join("', '", User::withTrashed()->sorted()->pluck('id')->toArray()) . "'";
-            return $query->orderByRaw(DB::raw("FIELD(user_id, $sorted_users)"));
+            $expression = DB::raw("FIELD(user_id, $sorted_users)");
+            $string = $expression->getValue(DB::connection()->getQueryGrammar());
+            return $query->orderByRaw($string);
         }
     }
 
@@ -178,6 +180,7 @@ class Booking extends Model
 
         if ($force_recalculate) {
             $this->emptyInnerCache($key);
+            $this->emptyInnerCache('friends_products');
             $this->unsetRelation('products');
         }
 

@@ -234,6 +234,7 @@ abstract class TestCase extends BaseTestCase
 	protected function updateAndFetch($data, $order, $user, $deliver)
     {
         $this->services['bookings']->bookingUpdate($data, $order->aggregate, $user, $deliver);
+        $this->nextRound();
         return \App\Booking::where('user_id', $user->id)->where('order_id', $order->id)->first();
     }
 
@@ -248,5 +249,6 @@ abstract class TestCase extends BaseTestCase
     protected function nextRound()
     {
         Artisan::call('modelCache:clear');
+        app()->make('TempCache')->wipeAll();
     }
 }

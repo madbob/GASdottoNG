@@ -19,7 +19,7 @@ use App\Models\Concerns\Priceable;
 
 class VariantCombo extends Model
 {
-    use Cachable, Priceable;
+    use Priceable, Cachable;
 
     public function values(): BelongsToMany
     {

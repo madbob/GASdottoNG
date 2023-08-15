@@ -27,6 +27,12 @@ class Gas extends Model
         'creating' => SluggableCreating::class,
     ];
 
+    public function __construct($attributes = [])
+    {
+        parent::__construct($attributes);
+        $this->enableGlobalCache();
+    }
+
     public static function commonClassName()
     {
         return 'GAS';
@@ -157,8 +163,6 @@ class Gas extends Model
                     return ($obj->deliveries->isEmpty() == false);
                 case 'rid':
                     return !empty($obj->rid['iban']);
-                case 'paypal':
-                    return !empty($obj->paypal['client_id']);
                 case 'satispay':
                     return !empty($obj->satispay['secret']);
                 case 'integralces':
@@ -228,10 +232,6 @@ class Gas extends Model
         ];
 
         $gas = currentAbsoluteGas();
-
-        if ($gas->hasFeature('paypal')) {
-            $ret['paypal'] = _i('PayPal');
-        }
 
         if ($gas->hasFeature('satispay')) {
             $ret['satispay'] = _i('Satispay');

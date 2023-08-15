@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Arr;
+
 function easyFilterOrders($supplier, $startdate, $enddate, $statuses = null)
 {
 	if (is_object($supplier)) {
@@ -22,12 +24,7 @@ function easyFilterOrders($supplier, $startdate, $enddate, $statuses = null)
 
 	$orders = App\Aggregate::with('orders')->whereHas('orders', function ($query) use ($supplier_id, $startdate, $enddate, $statuses) {
 		if (empty($supplier_id) == false) {
-			if (is_array($supplier_id)) {
-				$query->whereIn('supplier_id', $supplier_id);
-			}
-			else {
-				$query->where('supplier_id', $supplier_id);
-			}
+			$query->whereIn('supplier_id', Arr::wrap($supplier_id));
 		}
 
 		if (empty($startdate) == false) {

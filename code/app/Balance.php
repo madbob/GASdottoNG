@@ -8,7 +8,7 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class Balance extends Model
 {
-    use Cachable;
+	use Cachable;
 
 	public function target(): MorphTo
     {

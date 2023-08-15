@@ -33,8 +33,13 @@ class GlobalScopeHub
 
     public function setGas($gas_id)
     {
-        $this->gas_id = $gas_id;
-        $this->gas = Gas::find($this->gas_id);
+        if (is_object($gas_id)) {
+            $this->gas = $gas_id;
+        }
+        else {
+            $this->gas_id = $gas_id;
+            $this->gas = Gas::find($this->gas_id);
+        }
     }
 
     public function getGas()

@@ -3,10 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class Currency extends Model
 {
-    use GASModel;
+    use GASModel, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';

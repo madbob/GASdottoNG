@@ -42,7 +42,6 @@ class User extends Authenticatable
     public $incrementing = false;
     protected $keyType = 'string';
     protected $hidden = ['password', 'remember_token'];
-    protected $dates = ['deleted_at'];
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,
@@ -52,9 +51,9 @@ class User extends Authenticatable
         'rid' => 'array',
     ];
 
-    public function __construct()
+    public function __construct($attributes = [])
     {
-        parent::__construct();
+        parent::__construct($attributes);
         $this->enableGlobalCache();
     }
 

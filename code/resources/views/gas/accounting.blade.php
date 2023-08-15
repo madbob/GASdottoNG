@@ -16,13 +16,6 @@
                     <x-larastrap::text name="rid->org" :label="_i('Codice Univoco Azienda')" :value="$gas->rid['org'] ?? ''" />
                 </x-larastrap::collapse>
 
-                <x-larastrap::check name="enable_paypal" :label="_i('Abilita PayPal')" triggers_collapse="enable_paypal" :value="$gas->hasFeature('paypal')" :pophelp="_i('Abilitando questa opzione e popolando i relativi campi verranno attivati i pagamenti con PayPal, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto. Per ottenere le credenziali visita https://developer.paypal.com/')" />
-                <x-larastrap::collapse id="enable_paypal">
-                    <x-larastrap::text name="paypal->client_id" :label="_i('Client ID')" :value="$gas->paypal['client_id']" />
-                    <x-larastrap::text name="paypal->secret" :label="_i('Secret')" :value="$gas->paypal['secret']" />
-                    <x-larastrap::radios name="paypal->mode" :label="_i('Modalità')" :options="['sandbox' => _i('Sandbox (per testing)'), 'live' => _i('Live')]" :value="$gas->paypal['mode']" />
-                </x-larastrap::collapse>
-
                 <x-larastrap::check name="enable_satispay" :label="_i('Abilita Satispay')" triggers_collapse="enable_satispay" :value="$gas->hasFeature('satispay')" :pophelp="_i('Abilitando questa opzione e popolando i relativi campi verranno attivati i pagamenti con Satispay, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto. Per ottenere le credenziali visita https://business.satispay.com/')" />
                 <x-larastrap::collapse id="enable_satispay">
                     <x-larastrap::text name="satispay->secret" :label="_i('Security Bearer')" :value="$gas->satispay['secret']" />

@@ -90,7 +90,7 @@ class Role extends Model
         $step = $this;
         $iterated = [$step->id];
 
-        while(true) {
+        while (true) {
             $parent = $step->parent;
 
             if ($parent) {

@@ -1,7 +1,7 @@
 import utils from "./utils";
 
 $(document).ready(function() {
-    complexPopover(input, type, content)
+    function complexPopover(input, type, content)
     {
         /*
             Questo è indispensabile per gestire il popover quando si trova

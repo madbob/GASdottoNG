@@ -28,11 +28,6 @@ class UserCredit extends MovementType
                 'master' => $this->format(['bank' => 'increment']),
                 'is_default' => true,
             ],
-            (object) [
-                'method' => 'paypal',
-                'target' => $this->format(['bank' => 'increment']),
-                'master' => $this->format(['paypal' => 'increment']),
-            ]
         ]));
 
         return $type;

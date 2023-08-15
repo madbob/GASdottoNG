@@ -8,7 +8,6 @@ Route::get('ordini.ics', 'OrdersController@ical')->name('ical');
 
 Route::get('gas/{id}/logo', 'GasController@getLogo');
 
-Route::get('payment/status/paypal', 'PaymentController@statusPaymentPaypal')->name('payment.status_paypal');
 Route::get('payment/status/satispay', 'PaymentController@statusPaymentSatispay')->name('payment.status_satispay');
 
 Route::post('mail/status/aws', 'MailController@postStatusSES');

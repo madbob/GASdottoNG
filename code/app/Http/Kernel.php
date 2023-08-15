@@ -40,7 +40,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\MaintainanceMode::class,
             \App\Http\Middleware\SetLanguage::class,
             \App\Http\Middleware\EnforcePassword::class,
-            \App\Http\Middleware\ActIntoGas::class,            
+            \App\Http\Middleware\ActIntoGas::class,
         ],
 
         'api' => [
@@ -55,7 +55,7 @@ class Kernel extends HttpKernel
      *
      * These middleware may be assigned to groups or used individually.
      */
-    protected $routeMiddleware = [
+    protected $middlewareAliases = [
         'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,

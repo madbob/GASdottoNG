@@ -42,7 +42,6 @@ trait CreditableTrait
         $balance->gas = 0;
         $balance->suppliers = 0;
         $balance->deposits = 0;
-        $balance->paypal = 0;
         $balance->satispay = 0;
         $balance->current = true;
         $balance->currency_id = $currency->id;

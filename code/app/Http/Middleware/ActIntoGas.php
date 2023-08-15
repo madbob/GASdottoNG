@@ -28,8 +28,7 @@ class ActIntoGas
 
         if ($managed_gas == null) {
             $user = Auth::user();
-            $managed_gas = $user->gas->id;
-            $hub->setGas($managed_gas);
+            $hub->setGas($user->gas);
         }
         else if ($managed_gas == '0') {
             $hub->enable(false);

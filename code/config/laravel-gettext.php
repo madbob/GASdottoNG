@@ -131,7 +131,7 @@ return [
     /**
      * The adapter used to sync the laravel built-in locale
      */
-    'adapter' => \deepskylog\LaravelGettext\Adapters\LaravelAdapter::class,
+    'adapter' => \Xinax\LaravelGettext\Adapters\LaravelAdapter::class,
 
     /**
      * Where to store the current locale/domain
@@ -141,7 +141,7 @@ return [
      *
      * @see \Xinax\LaravelGettext\Storages\Storage
      */
-    'storage' => \deepskylog\LaravelGettext\Storages\SessionStorage::class,
+    'storage' => \Xinax\LaravelGettext\Storages\SessionStorage::class,
 
     /**
      * Use custom locale that is not supported by the system

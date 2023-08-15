@@ -18,8 +18,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerPolicies();
-
         $all_permissions = allPermissions();
         foreach ($all_permissions as $class => $rules) {
             foreach ($rules as $identifier => $name) {

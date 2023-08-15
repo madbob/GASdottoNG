@@ -9,6 +9,8 @@ class Aggregate extends IconsMap
 {
     public static function commons($user)
     {
+        static $gas_count = null;
+
         $ret = [
             'card-list' => (object) [
                 'test' => function ($obj) use ($user) {
@@ -40,7 +42,11 @@ class Aggregate extends IconsMap
             ];
         }
 
-        if (Gas::count() > 1) {
+        if (is_null($gas_count)) {
+            $gas_count = Gas::count();
+        }
+
+        if ($gas_count > 1) {
             $ret['share'] = (object) [
                 'test' => function ($obj) {
                     return $obj->gas()->count() > 1;

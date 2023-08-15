@@ -22,13 +22,16 @@ trait BookerTrait
 
     public function getLastBookingAttribute()
     {
-        $last = $this->bookings()->first();
-        if ($last == null) {
-            return null;
-        }
-        else {
-            return $last->created_at;
-        }
+        return $this->innerCache('last_booking_date', function($obj) {
+            $last = $obj->bookings()->first();
+
+            if ($last == null) {
+                return null;
+            }
+            else {
+                return $last->created_at;
+            }
+        });
     }
 
     public function canBook()

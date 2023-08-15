@@ -100,7 +100,7 @@ class FastBookingsService extends BaseService
 				*/
 				$shipped_booking = Booking::find($shipped_booking->id);
 
-				$grand_total += $shipped_booking->getValue('effective', true);
+				$grand_total += $shipped_booking->getValue('effective', true, true);
 			}
 
             if ($grand_total != 0) {

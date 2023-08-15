@@ -69,7 +69,7 @@ class Order extends Model
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany('App\Product')->with(['variants', 'modifiers'])->withPivot(['notes', 'prices'])->withTrashed();
+        return $this->belongsToMany('App\Product')->with(['measure', 'variants', 'modifiers'])->withPivot(['notes', 'prices'])->withTrashed();
     }
 
     public function bookings(): HasMany

@@ -189,7 +189,7 @@ return [
         ],
         'db' => [
             'with_params'       => true,   // Render SQL with the parameters substituted
-            'backtrace'         => false,   // Use a backtrace to find the origin of the query in your files.
+            'backtrace'         => true,   // Use a backtrace to find the origin of the query in your files.
             'backtrace_exclude_paths' => [],   // Paths to exclude from backtrace. (in addition to defaults)
             'timeline'          => false,  // Add the queries to the timeline
             'duration_background'  => true,   // Show shaded background on each query relative to how long it took to execute.
@@ -205,7 +205,7 @@ return [
             'full_log' => false,
         ],
         'views' => [
-            'timeline' => true,  // Add the views to the timeline (Experimental)
+            'timeline' => false,  // Add the views to the timeline (Experimental)
             'data' => false,    //Note: Can slow down the application, because the data can be quite large..
             'exclude_paths' => [], // Add the paths which you don't want to appear in the views
         ],

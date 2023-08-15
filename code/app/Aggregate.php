@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Auth;
 use URL;
@@ -21,7 +20,7 @@ use App\Events\AttachableToGas;
 
 class Aggregate extends Model
 {
-    use HasFactory, GASModel, ModifiableTrait, ReducibleTrait, WithinGas, Cachable;
+    use HasFactory, GASModel, ModifiableTrait, ReducibleTrait, WithinGas;
 
     protected $dispatchesEvents = [
         'created' => AttachableToGas::class
@@ -395,25 +394,46 @@ class Aggregate extends Model
         });
     }
 
+    private function getDateReference($name, $operator)
+    {
+        return $this->innerCache($name, function($obj) use ($name, $operator) {
+            if ($operator == 'min') {
+                $test = '3000-12-31';
+            }
+            else {
+                $test = '1000-01-01';
+            }
+
+            foreach($obj->orders as $order) {
+                if ($operator == 'min') {
+                    if ($order->$name < $test) {
+                        $test = $order->$name;
+                    }
+                }
+                else {
+                    if ($order->$name > $test) {
+                        $test = $order->$name;
+                    }
+                }
+            }
+
+            return $test;
+        });
+    }
+
     public function getStartAttribute()
     {
-        return $this->innerCache('start', function($obj) {
-            return $obj->orders()->min('start');
-        });
+        return $this->getDateReference('start', 'min');
     }
 
     public function getEndAttribute()
     {
-        return $this->innerCache('end', function($obj) {
-            return $obj->orders()->max('end');
-        });
+        return $this->getDateReference('end', 'max');
     }
 
     public function getShippingAttribute()
     {
-        return $this->innerCache('shipping', function($obj) {
-            return $obj->orders()->min('shipping');
-        });
+        return $this->getDateReference('shipping', 'min');
     }
 
     public function bookingBy($user_id)
