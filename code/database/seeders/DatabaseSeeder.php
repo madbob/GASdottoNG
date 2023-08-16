@@ -150,7 +150,7 @@ class DatabaseSeeder extends Seeder
     {
         $notification = Notification::create([
             'creator_id' => $admin->id,
-            'content' => "Benvenuto in GASdotto!\n\nPer assistenza puoi rivolgerti alla mailing list degli utenti su https://groups.google.com/forum/#!forum/gasdotto-dev o all'indirizzo mail info@gasdotto.net",
+            'content' => "Benvenuto in GASdotto!\n\nPer assistenza puoi rivolgerti alla mailing list degli utenti su https://groups.google.com/forum/#!forum/gasdotto-dev o all'indirizzo mail info@madbob.org",
             'mailed' => false,
             'start_date' => date('Y-m-d'),
             'end_date' => date('Y-m-d', strtotime('+7 days')),

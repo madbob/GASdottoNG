@@ -13,6 +13,12 @@ class CreateXHProfTable extends Migration
      */
     public function up()
     {
+        /*
+            Questa migrazione serve solo per il profiler, va adoperata per lo
+            sviluppo locale e non serve eseguirla sulle istanze di produzione
+        */
+        return;
+
         Schema::create('details', function (Blueprint $table) {
             $table->id('idcount');
             $table->char('id', 64);
@@ -39,7 +45,7 @@ class CreateXHProfTable extends Migration
             $table->index('timestamp');
             $table->index(['server name', 'timestamp']);
         });
-        
+
         if(DB::connection()->getDriverName() === 'mysql') {
             DB::statement('ALTER TABLE details MODIFY COLUMN `perfdata` LONGBLOB');
             DB::statement('ALTER TABLE details MODIFY COLUMN `cookie` LONGBLOB');

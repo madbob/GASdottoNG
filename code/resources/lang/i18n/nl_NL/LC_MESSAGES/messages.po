@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2023-07-05 00:09+0200\n"
-"PO-Revision-Date: 2023-07-05 00:09+0200\n"
+"PO-Revision-Date: 2023-08-16 11:11+0200\n"
 "Last-Translator: Roberto Guido <bob@linux.it>\n"
 "Language-Team: Roberto Guido <bob@linux.it>\n"
 "Language: nl_NL\n"
@@ -2365,16 +2365,12 @@ msgid "Errore nel caricamento o nella lettura del file."
 msgstr "Fout in het laden of het lezen van het bestand."
 
 #: ../storage/framework/messages/7934ed2474bfc2a28d0c7716808618e7847d6b77.php.php:8
-#, fuzzy
-#| msgid ""
-#| "Si prega di riprovare, o di sottoporre il problema agli sviluppatori di "
-#| "GASdotto: info@gasdotto.net"
 msgid ""
 "Si prega di riprovare, o di sottoporre il problema agli sviluppatori di "
 "GASdotto: info@madbob.org"
 msgstr ""
 "Probeer het opnieuw of leg het probleem voor aan de ontwikkelaars van "
-"GASdotto: info@gasdotto.net"
+"GASdotto: info@madbob.org"
 
 #: ../storage/framework/messages/795f703412435eb35f4f5fa20ffc942fb39c8a5d.php.php:58
 #: ../storage/framework/messages/f3284d5923acb3bf231e37c488ce70ef2b9e542c.php.php:58
