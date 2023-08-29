@@ -127,8 +127,9 @@ function roleByFunction($identifier)
 {
     $gas = currentAbsoluteGas();
 	$role_id = $gas->roles[$identifier] ?? null;
+    $ret = App\Role::find($role_id);
 
-	if (is_null($role_id)) {
+	if (is_null($ret)) {
 		switch($identifier) {
 			case 'multigas':
 				$ridentifier = 'secondary_admin';
@@ -138,9 +139,9 @@ function roleByFunction($identifier)
 				break;
 		}
 
-		$role = roleByIdentifier($ridentifier);
-		if (is_null($role)) {
-			$role_definition = systemParameters('Roles')[$ridentifier];
+		$ret = roleByIdentifier($ridentifier);
+		if (is_null($ret)) {
+			$role_definition = systemParameters('Roles')[$ridentifier] ?? null;
 			if ($role_definition) {
 				\Log::info('Inizializzo ruolo di sistema non ancora inizializzato: ' . $identifier);
 				$role_definition->create();
@@ -153,11 +154,9 @@ function roleByFunction($identifier)
 
 		\Log::info('Aggiusto configurazione per i ruoli: ' . $identifier);
 		$conf = (object) $gas->roles;
-		$conf->$identifier = $role->id;
+		$conf->$identifier = $ret->id;
 		$gas->setConfig('roles', $conf);
-		return $role;
 	}
-	else {
-		return App\Role::find($role_id);
-	}
+
+    return $ret;
 }
