@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 
 use App\User;
 use App\Contact;
+use App\Delivery;
 
 class Users extends CSVImporter
 {
@@ -83,6 +84,14 @@ class Users extends CSVImporter
 			'label' => _i('Cessato'),
 			'explain' => _i('Indicare "true" o "false"')
 		];
+
+		$gas = currentAbsoluteGas();
+		if ($gas->hasFeature('shipping_places')) {
+			$ret['preferred_delivery_id'] = (object) [
+				'label' => _i('Luogo di Consegna'),
+				'explain' => _i('Se specificato, deve contenere il nome di uno dei Luoghi di Consegna impostati nel pannello "Configurazioni"')
+			];
+		}
 
 		$ret['credit'] = (object) [
 			'label' => _i('Credito Attuale'),
@@ -218,6 +227,13 @@ class Users extends CSVImporter
                     else if (Str::startsWith($field, 'address_')) {
                         $address[(int) Str::after($value, 'address_')] = $value;
                     }
+					else if ($field == 'preferred_delivery_id') {
+						$value = trim($value);
+						$shipping = Delivery::where('name', $value)->first();
+						if ($shipping) {
+							$u->$field = $shipping->id;
+						}
+					}
                     else {
                         $u->$field = $value;
                     }
