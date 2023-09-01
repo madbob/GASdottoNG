@@ -47,8 +47,10 @@ $(document).ready(function() {
             var value = input.val();
             if (value != '') {
                 var values = value.split(',');
-                for(var i = values.length; i < 3; i++)
+                for(var i = values.length; i < 3; i++) {
                     values[i] = '';
+                }
+
                 ret.find('input[name=street]').val(values[0].trim());
                 ret.find('input[name=city]').val(values[1].trim());
                 ret.find('input[name=cap]').val(values[2].trim());
@@ -61,10 +63,12 @@ $(document).ready(function() {
                 var city = ret.find('input[name=city]').val().trim().replace(',', '');
                 var cap = ret.find('input[name=cap]').val().trim().replace(',', '');
 
-                if (street == '' && city == '' && cap == '')
+                if (street == '' && city == '' && cap == '') {
                     input.val('');
-                else
+                }
+                else {
                     input.val(street + ', ' + city + ', ' + cap);
+                }
 
                 input.popover('dispose');
             });
@@ -137,8 +141,9 @@ $(document).ready(function() {
             var value = input.val();
             if (value != '') {
                 var values = value.split(' - ');
-                for(var i = values.length; i < 4; i++)
+                for(var i = values.length; i < 4; i++) {
                     values[i] = '';
+                }
 
                 ret.find('select[name=day] option').filter(function() {
                     return $(this).html() == values[0];

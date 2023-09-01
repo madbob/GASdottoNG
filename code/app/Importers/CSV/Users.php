@@ -38,17 +38,22 @@ class Users extends CSVImporter
 	private function contactFields(&$ret)
 	{
 		foreach(Contact::types() as $identifier => $label) {
+			/*
+				L'ordine di questi elementi deve essere coerente con l'ordine
+				utilizzato in popovers.js per spezzare e visualizzare gli
+				indirizzi
+			*/
 			if ($identifier == 'address') {
 				$ret['address_0'] = (object) [
 	                'label' => _i('Indirizzo (Via)'),
 	            ];
 
 	            $ret['address_1'] = (object) [
-	                'label' => _i('Indirizzo (CAP)'),
+	                'label' => _i('Indirizzo (Città)'),
 	            ];
 
-	            $ret['address_2'] = (object) [
-	                'label' => _i('Indirizzo (Città)'),
+				$ret['address_2'] = (object) [
+	                'label' => _i('Indirizzo (CAP)'),
 	            ];
 			}
 			else {
@@ -225,7 +230,8 @@ class Users extends CSVImporter
                         }
                     }
                     else if (Str::startsWith($field, 'address_')) {
-                        $address[(int) Str::after($value, 'address_')] = $value;
+						$index = (int) Str::after($field, 'address_');
+                        $address[$index] = $value;
                     }
 					else if ($field == 'preferred_delivery_id') {
 						$value = trim($value);
@@ -242,6 +248,7 @@ class Users extends CSVImporter
                 $u->save();
                 $users[] = $u;
 
+				ksort($address);
                 $this->fillContact($contacts, 'address', join(',', $address));
                 $u->updateContacts($contacts);
 
