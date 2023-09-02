@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 use App\User;
+use App\Supplier;
 use App\Category;
 use App\Booking;
 use App\BookedProduct;
@@ -54,7 +56,7 @@ class StatisticsController extends Controller
             $ret->expenses->labels[] = sprintf("%s\n%s", $info->name, printablePriceCurrency($info->value));
             $ret->expenses->series[0][] = $info->value;
             $ret->users->labels[] = $info->name;
-            $ret->users->series[0][] = count($info->users);
+            $ret->users->series[0][] = $info->users;
         }
 
         foreach ($categories as $info) {
@@ -74,7 +76,7 @@ class StatisticsController extends Controller
             $ret[] = [
                 $info->name,
                 $info->value,
-                count($info->users),
+                $info->users,
             ];
         }
 
@@ -101,24 +103,35 @@ class StatisticsController extends Controller
     private function getSummary($start, $end, $target)
     {
         $data = [];
-        $categories = [];
+        $data_for_suppliers = BookedProduct::selectRaw('supplier_id, SUM(final_price) as price')->whereHas('booking', function($query) use ($start, $end, $target) {
+            $this->createBookingQuery($query, $start, $end, $target, null);
+        })->join('bookings', 'booked_products.booking_id', '=', 'bookings.id')->join('orders', 'bookings.order_id', '=', 'orders.id')->groupBy('supplier_id')->get();
 
-        $bookings = $this->createBookingQuery(Booking::query(), $start, $end, $target, null)->with('order', 'products')->get();
-
-        foreach ($bookings as $booking) {
-            $name = $booking->order->supplier_id;
+        foreach($data_for_suppliers as $dfs) {
+            $name = $dfs->supplier_id;
             if (isset($data[$name]) == false) {
                 $data[$name] = (object) [
-                    'users' => [],
+                    'users' => 0,
                     'value' => 0,
-                    'name' => $booking->order->supplier->printableName()
+                    'name' => Supplier::tFind($name)->printableName(),
                 ];
             }
 
-            $data[$name]->users[$booking->user_id] = true;
-            $data[$name]->value += $booking->getValue('delivered', true);
+            $data[$name]->value += $dfs->price;
         }
 
+        $data_for_user = $this->createBookingQuery(Booking::query(), $start, $end, $target, null)->whereHas('user', function($query) {
+            $query->whereNull('parent_id');
+        })->selectRaw('supplier_id, COUNT(bookings.id) as total')->join('orders', 'bookings.order_id', '=', 'orders.id')->groupBy('supplier_id')->get();
+
+        foreach ($data_for_user as $dfu) {
+            $name = $dfu->supplier_id;
+            if (isset($data[$name])) {
+                $data[$name]->users += $dfu->total;
+            }
+        }
+
+        $categories = [];
         $data_for_categories = BookedProduct::selectRaw('product_id, SUM(final_price) as price, category_id')->whereHas('booking', function($query) use ($start, $end, $target) {
             $this->createBookingQuery($query, $start, $end, $target, null);
         })->join('products', 'booked_products.product_id', '=', 'products.id')->groupBy('product_id', 'category_id')->get();
