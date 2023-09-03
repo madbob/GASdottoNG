@@ -104,12 +104,6 @@
                     <tr>
                         <th colspan="5"><strong>{{ _i('Totale Consegnato') }}: {{ printablePriceCurrency($delivered_cell_value, ',') }}</strong></th>
                     </tr>
-
-                    @if(($discount = $booking->getValue('discount', false)) != 0)
-                        <tr>
-                            <th colspan="5"><strong>{{ _i('Sconto') }}: {{ printablePriceCurrency($discount, ',') }}</th>
-                        </tr>
-                    @endif
                 </tbody>
             </table>
 
@@ -196,12 +190,6 @@
                         <tr>
                             <th colspan="5"><strong>{{ _i('Totale Consegnato') }}: {{ printablePriceCurrency($delivered_cell_value, ',') }}</strong></th>
                         </tr>
-
-                        @if(($discount = $booking->getValue('discount', true)) != 0)
-                            <tr>
-                                <th colspan="5"><strong>{{ _i('Sconto') }}: {{ printablePriceCurrency($discount, ',') }}</th>
-                            </tr>
-                        @endif
                     </tbody>
                 </table>
             @endforeach

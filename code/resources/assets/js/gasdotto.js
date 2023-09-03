@@ -693,14 +693,6 @@ $(document).ready(function() {
 
         row.toggleClass('product-disabled');
     })
-    .on('change', '.order-summary tr .discount-toggle', function() {
-        var p = $(this).closest('tr').find('.product-price');
-        p.find('.full-price, .product-discount-price').toggleClass('hidden');
-
-        /*
-        	TODO: aggiornare i prezzi totali nella tabella dell'ordine
-        */
-    })
     .on('change', '.order-document-download-modal input[name=send_mail]', function() {
         var status = $(this).prop('checked');
         var form = $(this).closest('.order-document-download-modal').find('form');

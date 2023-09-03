@@ -12,18 +12,6 @@ class Aggregate extends IconsMap
         static $gas_count = null;
 
         $ret = [
-            'card-list' => (object) [
-                'test' => function ($obj) use ($user) {
-                    return $user->can('supplier.orders', $obj);
-                },
-                'text' => _i('Puoi modificare'),
-            ],
-            'arrow-down' => (object) [
-                'test' => function ($obj) use ($user) {
-                    return $user->can('supplier.shippings', $obj);
-                },
-                'text' => _i('Gestisci le consegne'),
-            ],
             'plus-circle' => (object) [
                 'test' => function ($obj) {
                     return ($obj->status == 'closed' && $obj->hasPendingPackages());

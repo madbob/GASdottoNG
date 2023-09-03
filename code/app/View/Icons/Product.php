@@ -21,12 +21,6 @@ class Product extends IconsMap
                 },
                 'text' => _i('Attivo'),
             ],
-            'star' => (object) [
-                'test' => function ($obj) {
-                    return !empty($obj->discount) && $obj->discount != 0;
-                },
-                'text' => _i('Scontato'),
-            ]
         ];
     }
 
