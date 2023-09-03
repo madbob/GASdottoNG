@@ -88,7 +88,7 @@ $no_filters = (empty($sorting_rules) && empty($filters) && is_null($legend));
 
     <x-larastrap::accordion :id="$identifier" classes="loadable-list" :attributes="$extra_data">
         @foreach($injected_items as $item)
-            <div class="loadable-sorting-header list-group-item hidden bg-light" data-sorting-{{ $item->related_sorting }}="{{ $item->label }}">{{ $item->label }}</div>
+            <div class="loadable-sorting-header list-group-item hidden bg-light p-3" data-sorting-{{ $item->related_sorting }}="{{ $item->label }}">{{ $item->label }}</div>
         @endforeach
 
         @foreach($items as $index => $item)
