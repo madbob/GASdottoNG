@@ -148,17 +148,10 @@ class SuppliersService extends BaseService
             Cfr. Supplier::defaultAttachments()
         */
         $fields = $request['fields'] ?? ['name', 'measure', 'price', 'active'];
-
+        $headers = ProductFormatter::getHeaders($fields);
         $filename = sanitizeFilename(_i('Listino %s.%s', [$supplier->name, $format]));
 
-        if (isset($request['printable'])) {
-            $products = $supplier->products()->whereIn('id', $request['printable'])->sorted()->get();
-        }
-        else {
-            $products = $supplier->products()->sorted()->get();
-        }
-
-        $headers = ProductFormatter::getHeaders($fields);
+        $products = $supplier->products()->sorted()->get();
         $data = ProductFormatter::formatArray($products, $fields);
 
         if ($format == 'pdf') {

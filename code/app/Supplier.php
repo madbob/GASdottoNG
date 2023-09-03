@@ -107,12 +107,12 @@ class Supplier extends Model
     {
         $cataloguepdf = new Attachment();
         $cataloguepdf->name = _i('Listino PDF (autogenerato)');
-        $cataloguepdf->url = url('suppliers/catalogue/' . $this->id . '?format=pdf');
+        $cataloguepdf->url = route('suppliers.catalogue', ['id' => $this->id, 'format' => 'pdf']);
         $cataloguepdf->internal = true;
 
         $cataloguecsv = new Attachment();
         $cataloguecsv->name = _i('Listino CSV (autogenerato)');
-        $cataloguecsv->url = url('suppliers/catalogue/' . $this->id . '?format=csv');
+        $cataloguepdf->url = route('suppliers.catalogue', ['id' => $this->id, 'format' => 'csv']);
         $cataloguecsv->internal = true;
 
         return [$cataloguepdf, $cataloguecsv];

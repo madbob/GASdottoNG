@@ -19,7 +19,7 @@ class Product extends IconsMap
                 'test' => function ($obj) {
                     return $obj->active == true;
                 },
-                'text' => _i('Attivo'),
+                'text' => _i('Ordinabile'),
             ],
         ];
     }

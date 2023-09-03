@@ -21,20 +21,15 @@
             ])
 
             <x-larastrap::mbutton :label="_i('Esporta Listino')" triggers_modal="#export_products" />
-            <x-larastrap::modal :title="_i('Esporta Listino')" id="export_products">
-                <x-larastrap::form classes="direct-submit" method="GET" :buttons="[['label' => _i('Download'), 'classes' => 'export-custom-list', 'attributes' => ['data-export-url' => url('suppliers/catalogue/' . $supplier->id)]]]">
-					<p>
-						{{ _i("Verranno esportati i prodotti attualmente filtrati nella lista principale, in funzione del loro stato.") }}
-					</p>
+            <x-larastrap::modal :title="_i('Esporta Listino')" id="export_products" classes="close-on-submit">
+                <x-larastrap::form method="GET" :action="route('suppliers.catalogue', ['id' => $supplier->id])" :buttons="[['label' => _i('Download'), 'type' => 'submit']]">
                     <p>
                         {!! _i("Per la consultazione e l'elaborazione dei files in formato CSV (<i>Comma-Separated Values</i>) si consiglia l'uso di <a target=\"_blank\" href=\"http://it.libreoffice.org/\">LibreOffice</a>.") !!}
                     </p>
 
                     <hr/>
 
-                    <?php list($options, $values) = flaxComplexOptions(App\Formatters\Product::formattableColumns()) ?>
-                    <x-larastrap::checks name="fields" :label="_i('Colonne')" :options="$options" :value="$values" />
-
+                    <x-larastrap::structchecks name="fields" :label="_i('Colonne')" :options="App\Formatters\Product::formattableColumns()" />
                     <x-larastrap::radios name="format" :label="_i('Formato')" :options="['pdf' => _i('PDF'), 'csv' => _i('CSV'), 'gdxp' => _i('GDXP')]" value="pdf" />
                 </x-larastrap::form>
             </x-larastrap::modal>
