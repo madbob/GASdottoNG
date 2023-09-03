@@ -178,11 +178,17 @@ class UsersService extends BaseService
     private function readRID($user, $request)
     {
         if ($user->gas->hasFeature('rid')) {
-            $user->rid = [
-                'iban' => $request['rid->iban'] ?? $user->rid['iban'],
-                'id' => $request['rid->id'] ?? $user->rid['id'],
-                'date' => isset($request['rid->date']) ? decodeDate($request['rid->date']) : $user->rid['date'],
-            ];
+            if (isset($request['rid->iban'])) {
+                $user->rid['iban'] = $request['rid->iban'];
+            }
+
+            if (isset($request['rid->id'])) {
+                $user->rid['id'] = $request['rid->id'];
+            }
+
+            if (isset($request['rid->date'])) {
+                $user->rid['date'] = decodeDate($request['rid->date']);
+            }
         }
     }
 

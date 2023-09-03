@@ -6,7 +6,7 @@ $columns = $currentgas->orders_display_columns;
 $table_identifier = 'summary-' . sanitizeId($order->id);
 $display_columns = App\Order::displayColumns();
 
-$products = $order->supplier->products;
+$products = $order->supplier->products()->sorted()->get();
 $order_products = $order->products()->with(['category'])->sorted()->get();
 $categories = $products->pluck('category_id')->toArray();
 $categories = array_unique($categories);
