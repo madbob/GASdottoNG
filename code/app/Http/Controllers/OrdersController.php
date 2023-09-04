@@ -246,7 +246,7 @@ class OrdersController extends BackedController
             'identifier' => !empty($supplier_id) ? 'order-list-' . $supplier_id : 'order-list',
             'items' => $orders,
             'legend' => (object)[
-                'class' => 'Aggregate'
+                'class' => Aggregate::class
             ],
             'sorting_rules' => [
                 'supplier_name' => _i('Fornitore'),
