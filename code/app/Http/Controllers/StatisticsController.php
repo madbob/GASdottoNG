@@ -122,7 +122,7 @@ class StatisticsController extends Controller
 
         $data_for_user = $this->createBookingQuery(Booking::query(), $start, $end, $target, null)->whereHas('user', function($query) {
             $query->whereNull('parent_id');
-        })->selectRaw('supplier_id, COUNT(bookings.id) as total')->join('orders', 'bookings.order_id', '=', 'orders.id')->groupBy('supplier_id')->get();
+        })->selectRaw('supplier_id, COUNT(DISTINCT(bookings.user_id)) as total')->join('orders', 'bookings.order_id', '=', 'orders.id')->groupBy('supplier_id')->get();
 
         foreach ($data_for_user as $dfu) {
             $name = $dfu->supplier_id;
@@ -158,6 +158,11 @@ class StatisticsController extends Controller
         $data = [];
         $categories = [];
 
+        /*
+            TODO: ottimizzare usando gli stessi criteri di getSummary() anziché
+            iterare tutte le prenotazioni ed i prodotti
+        */
+
         $bookings = $this->createBookingQuery(Booking::query(), $start, $end, $target, $supplier)->with('order', 'products')->get();
 
         foreach ($bookings as $booking) {
@@ -183,6 +188,10 @@ class StatisticsController extends Controller
                 $data[$name]->value += $product->final_price;
                 $categories[$product->product->category_id]->value += $product->final_price;
             }
+        }
+
+        foreach($data as $product => $meta) {
+            $data[$product]->users = count($data[$product]->users);
         }
 
         return [$data, $categories];
