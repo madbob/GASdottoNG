@@ -179,6 +179,7 @@ class UsersService extends BaseService
     {
         if ($user->gas->hasFeature('rid')) {
             $rid = $user->rid;
+            $changed = false;
 
             if (isset($request['rid->iban'])) {
                 $rid['iban'] = $request['rid->iban'];
