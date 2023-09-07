@@ -1,4 +1,4 @@
-@if($currentuser->id == $user->id && $user->gas->hasFeature('satispay')))
+@if($currentuser->id == $user->id && $user->gas->hasFeature('satispay'))
     <div class="row">
         <div class="col">
             @if($user->gas->hasFeature('satispay'))

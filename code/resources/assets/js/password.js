@@ -16,10 +16,9 @@ $(document).ready(function() {
             return;
         }
 
-        $(this).popover({
+        var input = $(this);
+        input.popover({
             content: function() {
-                var input = $(this);
-
                 var ret = '<div>\
                     <div class="row mb-2"><label for="password" class="col-4 col-form-label">' + _('Nuova Password') + '</label><div class="col-8"><input type="password" class="form-control" name="password" value="" autocomplete="off" minlength="8"></div></div>\
                     <div class="row mb-2"><label for="password_confirm" class="col-4 col-form-label">' + _('Conferma Password') + '</label><div class="col-8"><input type="password" class="form-control" name="password_confirm" value="" autocomplete="off" minlength="8"></div></div>';
