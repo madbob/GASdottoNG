@@ -92,16 +92,7 @@ unset($display_columns['notes']);
                         <tr data-product-id="{{ $product->id }}">
                             <td class="order-cell-name {{ in_array('name', $columns) ? '' : 'hidden' }}">
                                 <input type="hidden" name="enabled[]" value="{{ $product->id }}">
-
                                 <label class="static-label text-filterable-cell">{{ $product->printableName() }}</label>
-
-								@can('supplier.modify', $order->supplier)
-	                                <div class="float-end">
-	                                    <a href="{{ route('products.show', ['product' => $product->id, 'format' => 'modal']) }}" class="btn btn-xs btn-info async-modal d-none d-md-inline-block">
-	                                        <i class="bi-pencil"></i>
-	                                    </a>
-	                                </div>
-								@endcan
                             </td>
 
                             <td class="order-cell-price {{ in_array('price', $columns) ? '' : 'hidden' }}">

@@ -153,14 +153,22 @@ foreach($display_columns as $identifier => $metadata) {
                         <td class="order-cell-name {{ in_array('name', $columns) ? '' : 'hidden' }}">
                             <input type="hidden" name="productid[]" value="{{ $product->id }}" />
 
-                            <label class="static-label text-filterable-cell">{{ $product->printableName() }}</label>
-
 							@can('supplier.modify', $order->supplier)
+                                <label class="static-label text-filterable-cell d-none d-xl-inline-block">{{ $product->printableName() }}</label>
+
+                                @php
+                                $edit_url = route('products.show', ['product' => $product->id, 'format' => 'modal']);
+                                @endphp
+
+                                <label class="static-label d-inline-block d-xl-none text-primary async-modal" data-modal-url="{{ $edit_url }}">{{ $product->printableName() }}</label>
+
 	                            <div class="float-end">
-	                                <a href="{{ route('products.show', ['product' => $product->id, 'format' => 'modal']) }}" class="btn btn-xs btn-info async-modal d-none d-md-inline-block">
+	                                <a href="{{ $edit_url }}" class="btn btn-xs btn-info async-modal d-none d-md-inline-block">
 	                                    <i class="bi-pencil"></i>
 	                                </a>
 	                            </div>
+                            @else
+                                <label class="static-label text-filterable-cell">{{ $product->printableName() }}</label>
 							@endcan
                         </td>
 
