@@ -164,7 +164,7 @@ class DatabaseSeeder extends Seeder
         $this->resetAll();
 
         $gas = Gas::create([
-            'id' => str_slug('Senza Nome'),
+            'id' => env('DB_DATABASE'),
             'name' => 'Senza Nome',
         ]);
 

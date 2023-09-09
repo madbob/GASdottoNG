@@ -157,7 +157,7 @@ class ReceiptsController extends BackedController
 					'identifier' => $list_identifier,
 					'items' => $elements,
 					'legend' => (object)[
-						'class' => 'Receipt',
+						'class' => Receipt::class,
 					],
 				]);
 
