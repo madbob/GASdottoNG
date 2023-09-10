@@ -9,33 +9,15 @@ use App;
 use PDF;
 use ezcArchive;
 
+use App\Printers\Concerns\Orders;
+use App\Printers\Components\Document;
+use App\Printers\Components\Header;
 use App\Formatters\User as UserFormatter;
 use App\Delivery;
 
 class Aggregate extends Printer
 {
-	use PrintingOrders;
-
-    /*
-        Prima di invocare questa funzione, si assume che il GAS corrente sia già
-        stato settato in GlobalScopeHub
-    */
-    private function formatGasSummary($gas, $aggregate, $required_fields, $status, $shipping_place)
-    {
-        $data = (object) [
-            'title' => $gas ? $gas->name : _i('Complessivo'),
-            'headers' => [],
-            'contents' => [],
-        ];
-
-        foreach($aggregate->orders as $order) {
-            $temp_data = $order->formatSummary($required_fields, $status, $shipping_place);
-            $data->headers = $temp_data->headers;
-            $data->contents = array_merge($data->contents, $temp_data->contents);
-        }
-
-        return $data;
-    }
+	use Orders;
 
     protected function handleShipping($obj, $request)
     {
@@ -48,7 +30,7 @@ class Aggregate extends Printer
 
         $temp_data = [];
         foreach($obj->orders as $order) {
-            $temp_data[] = $order->formatShipping($fields, $status, $shipping_place, true);
+            $temp_data[] = $this->formatShipping($order, $fields, $status, $shipping_place, true);
         }
 
         if (empty($temp_data)) {
@@ -188,7 +170,10 @@ class Aggregate extends Printer
     {
         $subtype = $request['format'] ?? 'pdf';
 
-        if ($subtype == 'pdf' || $subtype == 'csv') {
+		if ($subtype == 'gdxp') {
+            return $this->handleGDXP($obj);
+        }
+		else {
             $required_fields = $request['fields'] ?? [];
             $status = $request['status'];
 
@@ -197,54 +182,29 @@ class Aggregate extends Printer
                 $shipping_place = null;
             }
 
-            $data = null;
-            $title = _i('Prodotti Ordini');
+			$document = new Document($subtype);
+
+            $hub = App::make('GlobalScopeHub');
+            if ($hub->enabled() == false) {
+                $gas = $obj->gas;
+            }
+            else {
+                $gas = Arr::wrap($hub->getGasObj());
+            }
+
+            foreach($gas as $g) {
+                $hub->enable(true);
+                $hub->setGas($g);
+
+				foreach($obj->orders as $order) {
+					$document->append(new Header($order->printableName()));
+		            $document = $this->formatSummary($order, $document, $required_fields, $status, $shipping_place);
+		        }
+            }
+
+			$title = _i('Prodotti Ordini');
             $filename = sanitizeFilename($title . '.' . $subtype);
-
-            if ($subtype == 'pdf') {
-                $blocks = [];
-
-                $hub = App::make('GlobalScopeHub');
-                if ($hub->enabled() == false) {
-                    $gas = $obj->gas->pluck('id');
-                    $blocks[] = $this->formatGasSummary(null, $obj, $required_fields, $status, $shipping_place);
-                }
-                else {
-                    $gas = Arr::wrap($hub->getGas());
-                }
-
-                foreach($gas as $g) {
-                    $hub->enable(true);
-                    $hub->setGas($g);
-                    $blocks[] = $this->formatGasSummary($hub->getGasObj(), $obj, $required_fields, $status, $shipping_place);
-                }
-
-                $pdf = PDF::loadView('documents.order_summary_pdf', [
-					'aggregate' => $obj,
-					'shipping_place' => $shipping_place,
-					'blocks' => $blocks
-				]);
-
-                return $pdf->download($filename);
-            }
-            else if ($subtype == 'csv') {
-                foreach($obj->orders as $order) {
-                    $temp_data = $order->formatSummary($required_fields, $status, $shipping_place);
-                    if (is_null($data)) {
-                        $data = $temp_data;
-                    }
-                    else {
-                        $data->contents = array_merge($data->contents, $temp_data->contents);
-                    }
-                }
-
-                return output_csv($filename, $data->headers, $data->contents, function($row) {
-                    return $row;
-                });
-            }
-        }
-        else if ($subtype == 'gdxp') {
-            return $this->handleGDXP($obj);
+			return $document->download($filename);
         }
     }
 

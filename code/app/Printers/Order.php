@@ -6,14 +6,19 @@ use Auth;
 use PDF;
 use Mail;
 
+use App\Printers\Concerns\Orders;
 use App\Formatters\User as UserFormatter;
 use App\Notifications\GenericOrderShipping;
+use App\Printers\Components\Document;
+use App\Printers\Components\Table;
+use App\Printers\Components\Title;
+use App\Printers\Components\Header;
 use App\Booking;
 use App\Delivery;
 
 class Order extends Printer
 {
-	use PrintingOrders;
+	use Orders;
 
     private function orderTopBookingsByShipping($order, $shipping_place, $status = null)
     {
@@ -59,7 +64,7 @@ class Order extends Printer
 
         $fields = splitFields($required_fields);
 
-        $data = $obj->formatShipping($fields, $status, $shipping_place, $extra_modifiers);
+        $data = $this->formatShipping($obj, $fields, $status, $shipping_place, $extra_modifiers);
 
         $title = _i('Dettaglio Consegne ordine %s presso %s', [$obj->internal_number, $obj->supplier->name]);
         $filename = sanitizeFilename($title . '.' . $subtype);
@@ -92,7 +97,7 @@ class Order extends Printer
 
                 /*
                     TODO: aggiungere anche i modificatori.
-                    Devono essere formattati in Order::formatShipping(),
+                    Devono essere formattati in Shipping::formatShipping(),
                     coerentemente alla formattazione dei prodotti
                 */
             }
@@ -157,50 +162,12 @@ class Order extends Printer
     {
         $send_mail = isset($request['send_mail']);
         $subtype = $request['format'] ?? 'pdf';
-        $status = $request['status'];
 
-        $required_fields = $request['fields'] ?? [];
-        if (empty($required_fields)) {
-            $required_fields = $this->autoGuessFields($obj);
-        }
-
-        $shipping_place = $request['shipping_place'] ?? 'no';
-        if ($shipping_place == 'no') {
-            $shipping_place = null;
-        }
-
-        $data = $obj->formatSummary($required_fields, $status, $shipping_place);
         $title = _i('Prodotti ordine %s presso %s', [$obj->internal_number, $obj->supplier->name]);
         $filename = sanitizeFilename($title . '.' . $subtype);
         $temp_file_path = sprintf('%s/%s', gas_storage_path('temp', true), $filename);
 
-        if ($subtype == 'pdf') {
-            $pdf = PDF::loadView('documents.order_summary_pdf', [
-				'order' => $obj,
-				'shipping_place' => $shipping_place,
-				'blocks' => [$data]
-			]);
-
-            if ($send_mail) {
-                $pdf->save($temp_file_path);
-            }
-            else {
-                return $pdf->download($filename);
-            }
-        }
-        else if ($subtype == 'csv') {
-            if ($send_mail) {
-                output_csv($filename, $data->headers, $data->contents, function($row) {
-                    return $row;
-                }, $temp_file_path);
-            }
-            else {
-                return output_csv($filename, $data->headers, $data->contents, function($row) {
-                    return $row;
-                });
-            }
-        }
-        else if ($subtype == 'gdxp') {
+		if ($subtype == 'gdxp') {
             $contents = view('gdxp.json.supplier', ['obj' => $obj->supplier, 'order' => $obj, 'bookings' => true])->render();
 
             if ($send_mail) {
@@ -211,11 +178,32 @@ class Order extends Printer
                 return $contents;
             }
         }
+		else {
+			$document = new Document($subtype);
 
-        if ($send_mail) {
-            $this->sendDocumentMail($request, $temp_file_path);
-            return $temp_file_path;
-        }
+			$status = $request['status'];
+
+	        $required_fields = $request['fields'] ?? [];
+	        if (empty($required_fields)) {
+	            $required_fields = $this->autoGuessFields($obj);
+	        }
+
+	        $shipping_place = $request['shipping_place'] ?? 'no';
+	        if ($shipping_place == 'no') {
+	            $shipping_place = null;
+	        }
+
+	        $document = $this->formatSummary($obj, $document, $required_fields, $status, $shipping_place);
+
+			if ($send_mail) {
+				$document->save($temp_file_path);
+	            $this->sendDocumentMail($request, $temp_file_path);
+	            return $temp_file_path;
+	        }
+			else {
+				return $document->download($filename);
+			}
+		}
     }
 
     private function formatTableRows($order, $shipping_place, $status, $fields, &$all_products)
