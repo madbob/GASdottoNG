@@ -12,6 +12,7 @@ use ezcArchive;
 use App\Printers\Concerns\Orders;
 use App\Printers\Components\Document;
 use App\Printers\Components\Header;
+use App\Printers\Components\Title;
 use App\Formatters\User as UserFormatter;
 use App\Delivery;
 
@@ -183,6 +184,15 @@ class Aggregate extends Printer
             }
 
 			$document = new Document($subtype);
+
+			$document_title = _i('Prodotti') . '<br>';
+			if ($obj->orders->count() <= aggregatesConvenienceLimit()) {
+				foreach ($obj->orders as $order) {
+					$document_title .= sprintf('%s %s<br>', $order->supplier->name, $order->internal_number);
+				}
+			}
+
+			$document->append(new Title($document_title));
 
             $hub = App::make('GlobalScopeHub');
             if ($hub->enabled() == false) {

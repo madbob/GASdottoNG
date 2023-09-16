@@ -179,8 +179,6 @@ class Order extends Printer
             }
         }
 		else {
-			$document = new Document($subtype);
-
 			$status = $request['status'];
 
 	        $required_fields = $request['fields'] ?? [];
@@ -192,6 +190,16 @@ class Order extends Printer
 	        if ($shipping_place == 'no') {
 	            $shipping_place = null;
 	        }
+
+			$document = new Document($subtype);
+
+			$document_title = _i('Prodotti ordine %s presso %s del %s', [
+				$obj->internal_number,
+				$obj->supplier->printableName(),
+				$obj->shipping ? date('d/m/Y', strtotime($obj->shipping)) : date('d/m/Y')
+			]);
+
+			$document->append(new Title($document_title));
 
 	        $document = $this->formatSummary($obj, $document, $required_fields, $status, $shipping_place);
 
