@@ -87,7 +87,7 @@ class Document implements Component
             case 'csv':
                 $rows = $this->prepareCsv();
 
-                output_csv($filename, null, $rows, function($row) {
+                output_csv(null, null, $rows, function($row) {
                     return $row;
                 }, $path);
 
