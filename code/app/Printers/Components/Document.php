@@ -1,5 +1,10 @@
 <?php
 
+/*
+    Questa classe permette di astrarre la composizione di un documento che può
+    poi essere esportato in PDF o CSV
+*/
+
 namespace App\Printers\Components;
 
 use PDF;

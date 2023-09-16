@@ -1,5 +1,12 @@
 <?php
 
+/*
+    Nel contesto di un Document, questo rappresenta l'intestazione principale.
+    Nota bene: questo contenuto non viene esportato nei CSV, per ridurre la
+    quantità di formattazione in file che devono essere formattati il meno
+    possibile
+*/
+
 namespace App\Printers\Components;
 
 class Title implements Component

@@ -157,12 +157,7 @@ class Aggregate extends Printer
         }
 
         $archivepath = sprintf('%s/prenotazioni.zip', $working_dir);
-        $archive = ezcArchive::open($archivepath, ezcArchive::ZIP);
-
-        foreach($files as $f) {
-            $archive->append([$f], '');
-            unlink($f);
-        }
+		zipAll($archivepath, $files);
 
         return response()->download($archivepath)->deleteFileAfterSend(true);
     }

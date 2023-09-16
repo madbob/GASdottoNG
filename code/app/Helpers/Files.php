@@ -52,6 +52,16 @@ function downloadFile($obj, $field)
     return '';
 }
 
+function zipAll($path, $files)
+{
+    $archive = \ezcArchive::open($path, \ezcArchive::ZIP);
+
+    foreach($files as $f) {
+        $archive->append([$f], '');
+        unlink($f);
+    }
+}
+
 function humanSizeToBytes($size)
 {
     $suffix = strtoupper(substr($size, -1));

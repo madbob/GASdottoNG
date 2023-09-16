@@ -34,6 +34,7 @@ class GlobalScopeHub
     public function setGas($gas_id)
     {
         if (is_object($gas_id)) {
+            $this->gas_id = $gas_id->id;
             $this->gas = $gas_id;
         }
         else {

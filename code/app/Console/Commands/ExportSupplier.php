@@ -33,9 +33,7 @@ class ExportSupplier extends Command
             file_put_contents($filename, $xml);
 
             $archivepath = sprintf('%s/%s.gdxp', $working_dir, str_replace('/', '_', $obj->printableName()));
-            $archive = ezcArchive::open('compress.zlib://' . $archivepath, ezcArchive::TAR_USTAR);
-            $archive->append([$filename], '');
-            unlink($filename);
+            zipAll($archivepath, [$filename]);
         }
         else {
             $json = $obj->exportJSON();

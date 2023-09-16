@@ -121,34 +121,23 @@ class Order extends Printer
 
     private function autoGuessFields($order)
     {
-        $has_code = false;
-        $has_boxes = false;
+		$guessed_fields = [];
 
         foreach($order->products as $product) {
-            if (!empty($product->code)) {
-                $has_code = true;
+            if (empty($product->code) == false) {
+                $guessed_fields[] = 'code';
+				break;
             }
+		}
 
-            if ($product->package_size != 0) {
-                $has_boxes = true;
-            }
-
-            if ($has_code && $has_boxes) {
-                break;
-            }
-        }
-
-        $guessed_fields = [];
-
-        if ($has_code) {
-            $guessed_fields[] = 'code';
-        }
-
-        $guessed_fields[] = 'name';
+		$guessed_fields[] = 'name';
         $guessed_fields[] = 'quantity';
 
-        if ($has_boxes) {
-            $guessed_fields[] = 'boxes';
+		foreach($order->products as $product) {
+            if ($product->package_size != 0) {
+                $guessed_fields[] = 'boxes';
+				break;
+            }
         }
 
         $guessed_fields[] = 'measure';

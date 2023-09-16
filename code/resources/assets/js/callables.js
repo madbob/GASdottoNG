@@ -62,26 +62,16 @@ class Callables {
             a = $(a);
             b = $(b);
 
-            var a_status = Callables.getBookingRowStatus(a);
-            var b_status = Callables.getBookingRowStatus(b);
-            var ret = 0;
+            let a_status = Callables.getBookingRowStatus(a);
+            let b_status = Callables.getBookingRowStatus(b);
+            let ret = 0;
 
             if (a_status == b_status) {
                 ret = a.find('.accordion-button').text().trim().localeCompare(b.find('.accordion-button').text().trim());
             }
             else {
-                if (a_status == 'pending') {
-                    return -1;
-                }
-                else if (b_status == 'pending') {
-                    return 1;
-                }
-                else if (a_status == 'saved') {
-                    return -1;
-                }
-                else if (b_status == 'saved') {
-                    return 1;
-                }
+                let sorted_status = ['pending', 'saved', 'shipped'];
+                ret = sorted_status.indexOf(a_status) - sorted_status.indexOf(b_status);
             }
 
             return ret;
