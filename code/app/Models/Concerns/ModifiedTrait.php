@@ -10,7 +10,7 @@ trait ModifiedTrait
 {
     public function modifiedValues(): MorphMany
     {
-        return $this->morphMany(ModifiedValue::class, 'target')->with('modifier');
+        return $this->morphMany(ModifiedValue::class, 'target')->with(['modifier', 'modifier.modifierType']);
     }
 
     public abstract function getModifiedRelations();

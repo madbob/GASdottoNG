@@ -1,6 +1,6 @@
 <x-larastrap::modal :title="_i('Note e Quantità')" classes="order-fixes-modal" data-reload-url="{{ url('orders/fixes/' . $order->id . '/' . $product->id) }}">
     @php
-    $bookings = $order->bookings()->sorted()->get();
+    $bookings = $order->bookings->sortByUserName();
     $measure = $product->printableMeasure();
     @endphp
 

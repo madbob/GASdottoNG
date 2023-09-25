@@ -61,12 +61,12 @@ class Booking extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo('App\User')->withTrashed();
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
     public function order(): BelongsTo
     {
-        return $this->belongsTo('App\Order');
+        return $this->belongsTo(Order::class);
     }
 
     public function supplier()
@@ -76,17 +76,17 @@ class Booking extends Model
 
     public function products(): HasMany
     {
-        return $this->hasMany('App\BookedProduct')->with(['variants']);
+        return $this->hasMany(BookedProduct::class)->with(['variants']);
     }
 
     public function deliverer(): BelongsTo
     {
-        return $this->belongsTo('App\User', 'deliverer_id');
+        return $this->belongsTo(User::class, 'deliverer_id');
     }
 
     public function payment(): BelongsTo
     {
-        return $this->belongsTo('App\Movement');
+        return $this->belongsTo(Movement::class);
     }
 
     /*
@@ -100,30 +100,11 @@ class Booking extends Model
     public function scopeAngryload($query)
     {
         $query->with([
-			'payment', 'modifiedValues',
-            'products', 'products.modifiedValues',
+			'payment', 'modifiedValues', 'modifiedValues.modifier', 'modifiedValues.modifier.modifierType',
+            'products', 'products.modifiedValues', 'products.modifiedValues.modifier', 'products.modifiedValues.modifier.modifierType',
             'user', 'user.friends_with_trashed',
             'user.shippingplace', 'user.shippingplace.modifiers', 'user.shippingplace.modifiers.modifierType'
         ]);
-    }
-
-    public function scopeSorted($query)
-    {
-        /*
-            Premesso che questo metodo per ordinare le prenotazioni in base al
-            cognome dell'utente è abbastanza deleterio, non funziona neppure nei
-            test (la funzione FIELD non esiste in SQLite).
-            Dunque la ignoro quando eseguo i test.
-        */
-        if (env('APP_ENV') == 'testing') {
-            return $query;
-        }
-        else {
-            $sorted_users = "'" . join("', '", User::withTrashed()->sorted()->pluck('id')->toArray()) . "'";
-            $expression = DB::raw("FIELD(user_id, $sorted_users)");
-            $string = $expression->getValue(DB::connection()->getQueryGrammar());
-            return $query->orderByRaw($string);
-        }
     }
 
     private function localModifiedValues($id, $with_friends)
@@ -643,7 +624,7 @@ class Booking extends Model
                 DB::rollback();
             }
             else {
-                $this->unsetRelation('modifiedValues');
+                $this->setRelation('modifiedValues', $values);
             }
         }
 

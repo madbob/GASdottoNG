@@ -27,6 +27,14 @@ trait ManagesInnerCache
 
     private function globalKey($name)
     {
+        if ($this->uses_global_cache == false) {
+            $hub = app()->make('GlobalScopeHub');
+            if ($hub->hubRequired() && $hub->enabled()) {
+                $gas_id = $hub->getGas();
+                return sprintf('%s_%s_%s', $gas_id, $this->id, $name);
+            }
+        }
+
         return sprintf('%s_%s', $this->id, $name);
     }
 

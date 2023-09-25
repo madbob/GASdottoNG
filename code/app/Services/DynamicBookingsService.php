@@ -165,9 +165,11 @@ class DynamicBookingsService extends BookingsService
                     'bookings' => [],
                 ];
 
-                foreach($aggregate->orders()->with(['products', 'products.measure', 'bookings', 'modifiers'])->get() as $order) {
+                $orders = $aggregate->orders()->with(['products', 'products.measure', 'bookings', 'modifiers'])->get();
+                $user = $this->testAccess($target_user, $orders, $delivering);
+
+                foreach($orders as $order) {
                     $order->setRelation('aggregate', $aggregate);
-                    $user = $this->testAccess($target_user, $order->supplier, $delivering);
                     $booking = $this->handleBookingUpdate($request, $user, $order, $target_user, $delivering);
 
                     if ($booking) {

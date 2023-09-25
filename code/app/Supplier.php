@@ -34,6 +34,7 @@ class Supplier extends Model
         GASModel, SluggableID, WithinGas, Cachable;
 
     public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,

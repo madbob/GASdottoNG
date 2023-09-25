@@ -19,7 +19,7 @@ class Role extends Model
 {
     use HasFactory, GASModel, Cachable;
 
-    private $targets = null;
+    private $real_targets = null;
 	private $applies_cache = null;
 	private $applies_only_cache = null;
 
@@ -148,16 +148,16 @@ class Role extends Model
 
     public function getTargetsAttribute()
     {
-        if (is_null($this->targets)) {
-            $this->targets = new Collection();
+        if (is_null($this->real_targets)) {
+            $this->real_targets = new Collection();
 
             $classes = $this->getAllClasses();
             foreach($classes as $class) {
-                $this->targets = $this->targets->merge($class::tAll());
+                $this->real_targets = $this->real_targets->merge($class::tAll());
             }
         }
 
-        return $this->targets;
+        return $this->real_targets;
     }
 
     private function appliesCache()

@@ -14,6 +14,7 @@ class ModifierType extends Model
     use HasFactory, GASModel, SluggableID, Cachable;
 
     public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,

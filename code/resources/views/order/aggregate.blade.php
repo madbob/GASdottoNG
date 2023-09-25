@@ -2,8 +2,7 @@
 
 $orders = $aggregate->orders()->with([
     'products', 'products.measure', 'products.category',
-    'bookings', 'bookings.user.shippingplace', 'bookings.user.shippingplace.modifiers',
-    'payment', 'modifiers',
+    'payment', 'modifiers', 'deliveries',
 ])->get();
 
 $aggregate->setRelation('orders', $orders);
@@ -14,6 +13,7 @@ $fast_shipping_enabled = false;
 
 foreach ($orders as $order) {
     $order->setRelation('aggregate', $aggregate);
+    $order->angryBookings();
 
     if ($currentuser->can('supplier.shippings', $order->supplier)) {
         $controllable = true || $controllable;

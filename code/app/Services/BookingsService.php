@@ -18,19 +18,33 @@ use App\Events\BookingDelivered;
 
 class BookingsService extends BaseService
 {
-    protected function testAccess($target, $supplier, $delivering)
+    protected function testAccess($target, $orders, $delivering)
     {
         $user = Auth::user();
+        $valid = false;
 
-        if ($delivering) {
-            if ($user->can('supplier.shippings', $supplier) == false) {
-                throw new AuthException(403);
+        /*
+            È sufficiente che l'utente abbia accesso in consegna anche ad un
+            solo fornitore per ottenere accesso all'intero aggregato; questo
+            serve a non avere grattacapi in caso di ordini aggregati i cui
+            permessi non sono accurati
+        */
+        foreach($orders as $order) {
+            if ($user->can('supplier.shippings', $order->supplier)) {
+                $valid = true;
+                break;
+            }
+
+            if ($delivering == false) {
+                if ($target->testUserAccess($user)) {
+                    $valid = true;
+                    break;
+                }
             }
         }
-        else {
-            if ($target->testUserAccess($user) == false && $user->can('supplier.shippings', $supplier) == false) {
-                throw new AuthException(403);
-            }
+
+        if ($valid == false) {
+            throw new AuthException(403);
         }
 
         return $user;
@@ -368,8 +382,10 @@ class BookingsService extends BaseService
     public function bookingUpdate(array $request, $aggregate, $target_user, $delivering)
     {
         DB::transaction(function() use ($request, $aggregate, $target_user, $delivering) {
-            foreach($aggregate->orders()->with(['products', 'bookings', 'modifiers'])->get() as $order) {
-                $user = $this->testAccess($target_user, $order->supplier, $delivering);
+            $orders = $aggregate->orders()->with(['products', 'bookings', 'modifiers'])->get();
+            $user = $this->testAccess($target_user, $orders, $delivering);
+
+            foreach($orders as $order) {
                 $this->handleBookingUpdate($request, $user, $order, $target_user, $delivering);
             }
         }, 3);

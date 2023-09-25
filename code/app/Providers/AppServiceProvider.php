@@ -70,6 +70,15 @@ class AppServiceProvider extends ServiceProvider
             $categories = array_unique($categories);
             return Category::whereIn('id', $categories)->orderBy('name', 'asc')->get();
         });
+
+        /*
+            Questa va usata su Collection di Booking, per ordinarle in base al
+            nome dell'utente
+        */
+        Collection::macro('sortByUserName', function () {
+            /** @var Collection $this */
+            return $this->sortBy(fn($b) => $b->user->printableName());
+        });
     }
 
     public function register()

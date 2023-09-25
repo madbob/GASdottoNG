@@ -386,6 +386,22 @@ class Order extends Model
         return $query_users->get();
     }
 
+    public function angryBookings()
+    {
+        $bookings = $this->innerCache('angry_bookings', function($obj) {
+            $bookings = $obj->bookings()->angryload()->get();
+
+            foreach($bookings as $booking) {
+                $booking->setRelation('order', $obj);
+            }
+
+            return $bookings;
+        });
+
+        $this->setRelation('bookings', $bookings);
+        return $bookings;
+    }
+
     public function isActive()
     {
         return $this->status != 'shipped' && $this->status != 'archived';
@@ -631,7 +647,7 @@ class Order extends Model
                 $this->status = $enforce_status;
             }
 
-            $bookings = $this->bookings()->angryload()->get();
+            $bookings = $this->angryBookings();
 
             foreach($bookings as $booking) {
                 $booking->setRelation('order', $this);
@@ -696,16 +712,7 @@ class Order extends Model
             $bookings = $filters['bookings'] ?? null;
 
             if (is_null($bookings)) {
-                /*
-                    Ricordarsi che qui le prenotazioni vanno sempre lette dal DB,
-                    non accedendo al valore eventualmente cachato in
-                    $item->bookings.
-                    Questo per fare in modo che agendo sullo stesso ordine ma per
-                    GAS diversi sia riapplicato lo scope RestrictedGAS, ed ottenere
-                    le prenotazioni dell'ordine desiderato; altrimenti, otterrei
-                    sempre le prenotazioni del primo GAS che viene elaborato
-                */
-                $bookings = $item->bookings()->with(['products'])->get();
+                $bookings = $item->angryBookings();
 
                 $shipping_place = $filters['shipping_place'] ?? null;
                 if ($shipping_place) {
