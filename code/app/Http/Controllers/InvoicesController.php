@@ -242,7 +242,7 @@ class InvoicesController extends BackedController
                 'identifier' => $list_identifier,
                 'items' => $elements,
                 'legend' => (object)[
-                    'class' => 'Invoice',
+                    'class' => Invoice::class,
                 ],
             ]);
         }
