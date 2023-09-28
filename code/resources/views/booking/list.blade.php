@@ -33,7 +33,8 @@
 
             @include('commons.iconslegend', [
                 'class' => App\AggregateBooking::class,
-                'target' => '#' . $identifier
+                'target' => '#' . $identifier,
+                'contents' => $aggregate->bookings,
             ])
         </div>
     @endif
