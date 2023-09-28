@@ -32,6 +32,13 @@ class GenericNotificationWrapper extends ManyMailNotification
         	$message->view('emails.notification', ['notification' => $this->notification]);
 		}
 
+        if ($this->notification->creator) {
+            $replyto = $this->notification->creator->email;
+            if (filled($replyto)) {
+                $message->replyTo($replyto);
+            }
+        }
+
         foreach($this->notification->attachments as $attachment) {
             $message->attach($attachment->path, ['as' => $attachment->name]);
         }
