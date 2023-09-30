@@ -78,6 +78,7 @@ class Statistics {
             startdate: $('#stats-summary-form input[name=startdate]').val(),
             enddate: $('#stats-summary-form input[name=enddate]').val(),
             target: $('#stats-summary-form input[name=target]').val(),
+            type: $('#stats-summary-form select[name=type]').val(),
             format: 'json',
         }, (data) => {
             this.doGraphs('generic', data);
@@ -93,6 +94,7 @@ class Statistics {
             startdate: $('#stats-supplier-form input[name=startdate]').val(),
             enddate: $('#stats-supplier-form input[name=enddate]').val(),
             target: $('#stats-supplier-form input[name=target]').val(),
+            type: $('#stats-summary-form select[name=type]').val(),
             format: 'json',
         }, (data) => {
             this.doGraphs('products', data);

@@ -1,3 +1,15 @@
+@php
+
+$shipped_count = App\Booking::where('status', 'shipped')->count();
+if ($shipped_count == 0) {
+    $default_type = 'all';
+}
+else {
+    $default_type = 'shipped';
+}
+
+@endphp
+
 <div class="card mb-2">
     <div class="card-header">
         <h3>{{ _i('Statistiche Generali') }}</h3>
@@ -7,6 +19,7 @@
             <div class="col-12 col-lg-6">
                 <form id="stats-summary-form" class="form-horizontal">
                     @include('commons.genericdaterange')
+                    <x-larastrap::select name="type" :label="_i('Tipo')" :options="['all' => _i('Tutto'), 'shipped' => _i('Consegnato')]" :value="$default_type" />
                     <input type="hidden" name="target" value="{{ inlineId($target) }}">
 
                     <div class="form-group">
@@ -52,6 +65,7 @@
                 <form id="stats-supplier-form" class="form-horizontal">
                     <x-larastrap::selectobj name="supplier" :label="_i('Fornitore')" :options="$currentgas->suppliers" />
                     @include('commons.genericdaterange')
+                    <x-larastrap::select name="type" :label="_i('Tipo')" :options="['all' => _i('Tutto'), 'shipped' => _i('Consegnato')]" :value="$default_type" />
                     <input type="hidden" name="target" value="{{ inlineId($target) }}">
 
                     <div class="form-group">

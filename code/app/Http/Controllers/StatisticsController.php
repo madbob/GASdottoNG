@@ -83,9 +83,14 @@ class StatisticsController extends Controller
         return $ret;
     }
 
-    private function createBookingQuery($query, $start, $end, $target, $supplier)
+    private function createBookingQuery($query, $type, $start, $end, $target, $supplier)
     {
-        $query->where('delivery', '!=', '0000-00-00')->where('delivery', '>=', $start)->where('delivery', '<=', $end);
+        if ($type == 'all') {
+            $query->where('bookings.updated_at', '>=', $start)->where('bookings.updated_at', '<=', $end);
+        }
+        else {
+            $query->where('bookings.delivery', '!=', '0000-00-00')->where('bookings.delivery', '>=', $start)->where('bookings.delivery', '<=', $end);
+        }
 
         if ($supplier) {
             $query->whereHas('order', function ($query) use ($supplier) {
@@ -100,12 +105,22 @@ class StatisticsController extends Controller
         return $query;
     }
 
-    private function getSummary($start, $end, $target)
+    private function getSummary($start, $end, $type, $target)
     {
         $data = [];
-        $data_for_suppliers = BookedProduct::selectRaw('supplier_id, SUM(final_price) as price')->whereHas('booking', function($query) use ($start, $end, $target) {
-            $this->createBookingQuery($query, $start, $end, $target, null);
-        })->join('bookings', 'booked_products.booking_id', '=', 'bookings.id')->join('orders', 'bookings.order_id', '=', 'orders.id')->groupBy('supplier_id')->get();
+
+        $data_for_suppliers_query = BookedProduct::whereHas('booking', function($query) use ($type, $start, $end, $target) {
+            $this->createBookingQuery($query, $type, $start, $end, $target, null);
+        })->join('bookings', 'booked_products.booking_id', '=', 'bookings.id')->join('orders', 'bookings.order_id', '=', 'orders.id')->groupBy('orders.supplier_id');
+
+        if ($type == 'all') {
+            $data_for_suppliers_query->selectRaw('orders.supplier_id, SUM(price) as price')->join('products', 'booked_products.product_id', '=', 'products.id');
+        }
+        else {
+            $data_for_suppliers_query->selectRaw('orders.supplier_id, SUM(final_price) as price');
+        }
+
+        $data_for_suppliers = $data_for_suppliers_query->get();
 
         foreach($data_for_suppliers as $dfs) {
             $name = $dfs->supplier_id;
@@ -120,7 +135,7 @@ class StatisticsController extends Controller
             $data[$name]->value += $dfs->price;
         }
 
-        $data_for_user = $this->createBookingQuery(Booking::query(), $start, $end, $target, null)->whereHas('user', function($query) {
+        $data_for_user = $this->createBookingQuery(Booking::query(), $type, $start, $end, $target, null)->whereHas('user', function($query) {
             $query->whereNull('parent_id');
         })->selectRaw('supplier_id, COUNT(DISTINCT(bookings.user_id)) as total')->join('orders', 'bookings.order_id', '=', 'orders.id')->groupBy('supplier_id')->get();
 
@@ -132,8 +147,16 @@ class StatisticsController extends Controller
         }
 
         $categories = [];
-        $data_for_categories = BookedProduct::selectRaw('product_id, SUM(final_price) as price, category_id')->whereHas('booking', function($query) use ($start, $end, $target) {
-            $this->createBookingQuery($query, $start, $end, $target, null);
+
+        if ($type == 'all') {
+            $price_column = 'price';
+        }
+        else {
+            $price_column = 'final_price';
+        }
+
+        $data_for_categories = BookedProduct::selectRaw('product_id, SUM(' . $price_column . ') as price, category_id')->whereHas('booking', function($query) use ($type, $start, $end, $target) {
+            $this->createBookingQuery($query, $type, $start, $end, $target, null);
         })->join('products', 'booked_products.product_id', '=', 'products.id')->groupBy('product_id', 'category_id')->get();
 
         foreach($data_for_categories as $dfc) {
@@ -153,17 +176,12 @@ class StatisticsController extends Controller
         return [$data, $categories];
     }
 
-    private function getSupplier($start, $end, $target, $supplier)
+    private function getSupplier($start, $end, $type, $target, $supplier)
     {
         $data = [];
         $categories = [];
 
-        /*
-            TODO: ottimizzare usando gli stessi criteri di getSummary() anziché
-            iterare tutte le prenotazioni ed i prodotti
-        */
-
-        $bookings = $this->createBookingQuery(Booking::query(), $start, $end, $target, $supplier)->with('order', 'products')->get();
+        $bookings = $this->createBookingQuery(Booking::query(), $type, $start, $end, $target, $supplier)->with(['order', 'products'])->get();
 
         foreach ($bookings as $booking) {
             foreach ($booking->products as $product) {
@@ -185,8 +203,16 @@ class StatisticsController extends Controller
                 }
 
                 $data[$name]->users[$booking->user_id] = true;
-                $data[$name]->value += $product->final_price;
-                $categories[$product->product->category_id]->value += $product->final_price;
+
+                if ($type == 'all') {
+                    $price = $product->product->price;
+                }
+                else {
+                    $price = $product->final_price;
+                }
+
+                $data[$name]->value += $price;
+                $categories[$product->product->category_id]->value += $price;
             }
         }
 
@@ -202,17 +228,18 @@ class StatisticsController extends Controller
         $start = decodeDate($request->input('startdate'));
         $end = decodeDate($request->input('enddate'));
         $target = fromInlineId($request->input('target'));
+        $type = $request->input('type') ?: 'shipped';
         $csv_headers = [];
 
         switch ($id) {
             case 'summary':
-                list($data, $categories) = $this->getSummary($start, $end, $target);
+                list($data, $categories) = $this->getSummary($start, $end, $type, $target);
                 $csv_headers = [_i('Fornitore'), _i('Valore Ordini'), _i('Utenti Coinvolti')];
                 break;
 
             case 'supplier':
                 $supplier = $request->input('supplier');
-                list($data, $categories) = $this->getSupplier($start, $end, $target, $supplier);
+                list($data, $categories) = $this->getSupplier($start, $end, $type, $target, $supplier);
                 $csv_headers = [_i('Prodotto'), _i('Valore Ordini'), _i('Utenti Coinvolti')];
                 break;
         }
