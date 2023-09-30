@@ -55,7 +55,7 @@
                             @foreach($invoice->orders as $o)
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <label class="static-label text-muted">
+                                        <label class="static-label">
                                             {{ $o->printableName() }}
                                         </label>
                                     </div>

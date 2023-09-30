@@ -1,5 +1,5 @@
 <x-larastrap::field :label="$label">
-    <label class="static-label text-muted">
+    <label class="static-label text-body-secondary">
         @if($obj)
             <?php $final = [] ?>
             @foreach($obj->$name as $n)

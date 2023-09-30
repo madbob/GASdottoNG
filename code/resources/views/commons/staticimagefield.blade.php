@@ -12,6 +12,6 @@ if (isset($valuefrom) == false) {
             <img src="{{ $obj->$valuefrom }}">
         </div>
     @else
-        <label class="static-label text-muted">{{ _i('Nessuna Immagine') }}</label>
+        <label class="static-label text-body-secondary">{{ _i('Nessuna Immagine') }}</label>
     @endif
 </x-larastrap::field>

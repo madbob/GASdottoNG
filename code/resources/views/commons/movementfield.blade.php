@@ -24,7 +24,7 @@ $to_modal['dom_id'] = $rand;
 ?>
 
 <x-larastrap::field :pophelp="$help_popover" :label="$label" :squeeze="$squeeze">
-    <label class="static-label text-muted" data-updatable-name="movement-date-{{ $rand }}" data-updatable-field="name">
+    <label class="static-label text-body-secondary" data-updatable-name="movement-date-{{ $rand }}" data-updatable-field="name">
         @if (!$obj || $obj->exists == false)
             {{ _i('Mai') }}
         @else

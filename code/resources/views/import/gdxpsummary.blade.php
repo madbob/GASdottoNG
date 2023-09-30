@@ -28,7 +28,7 @@
                 </x-larastrap::field>
 
                 <x-larastrap::field :label="_i('Prodotti')">
-                    <label class="static-label text-muted">
+                    <label class="static-label text-body-secondary">
                         {{ _i('Nel file ci sono %s prodotti.', $supplier->products->count()) }}
                     </label>
                 </x-larastrap::field>
