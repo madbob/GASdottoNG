@@ -1,7 +1,7 @@
 <x-larastrap::mform :buttons="[]">
     <div class="row">
         <div class="col-md-12">
-            <x-larastrap::field :label="_i('Scarica')">
+            <x-larastrap::field :label="_i('Visualizza o Scarica')">
                 @if($attachment->isImage())
                     <img src="{{ $attachment->download_url }}" class="img-fluid mb-2">
                 @endif

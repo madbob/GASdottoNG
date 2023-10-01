@@ -10,7 +10,7 @@
 
             @include('commons.multipleusers', ['obj' => $attachment, 'name' => 'users', 'label' => _i('Destinatari')])
 
-            <x-larastrap::field :label="_i('Scarica')">
+            <x-larastrap::field :label="_i('Visualizza o Scarica')">
                 @if($attachment->isImage())
                     <img src="{{ $attachment->download_url }}" class="img-fluid mb-2">
                 @endif
