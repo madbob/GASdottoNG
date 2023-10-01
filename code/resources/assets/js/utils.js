@@ -1,3 +1,5 @@
+require('continous-calendar');
+
 import jBob from "jbob";
 import Lists from "./lists";
 
@@ -78,6 +80,17 @@ class Utils {
             }
 
             window.open(url, '_blank');
+        });
+
+        $('.actual-calendar', container).each(function() {
+            setTimeout(() => {
+                $(this).ContinuousCalendar({
+        			days: JSON.parse(atob($(this).attr('data-days'))),
+        			months: JSON.parse(atob($(this).attr('data-months'))),
+        			rows: 4,
+                    events: JSON.parse(atob($(this).attr('data-events'))),
+                });
+            }, 300);
         });
 
         $('.collapse', container).filter(':not(.show)').find('.required_when_triggered').prop('required', false);

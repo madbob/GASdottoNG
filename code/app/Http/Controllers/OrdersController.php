@@ -131,6 +131,18 @@ class OrdersController extends BackedController
         ]);
     }
 
+    public function create(Request $request)
+    {
+        $user = $request->user();
+        $test = $user->can('supplier.orders');
+        if ($test) {
+            return view('order.create');
+        }
+        else {
+            abort(403);
+        }
+    }
+
     public function show(Request $request, $id)
     {
         $user = $request->user();

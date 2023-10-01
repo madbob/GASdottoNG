@@ -1,4 +1,4 @@
-<x-larastrap::modal :title="_i('Crea Nuovo Movimento')">
+<x-larastrap::modal :title="_i('Crea Movimento')">
     <x-larastrap::iform classes="movement-modal" method="POST" :action="route('movements.store')">
         <input type="hidden" name="void-form" value="1">
         <input type="hidden" name="test-feedback" value="1">

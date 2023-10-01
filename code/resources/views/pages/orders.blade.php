@@ -16,10 +16,9 @@
     <div class="row">
         <div class="col">
             @include('commons.addingbutton', [
-                'template' => 'order.create',
+                'dynamic_url' => route('orders.create'),
                 'typename' => 'order',
                 'typename_readable' => _i('Ordine'),
-                'targeturl' => 'orders',
             ])
 
             <x-larastrap::ambutton :label="_i('Aggrega Ordini')" :attributes="['data-modal-url' => route('aggregates.create')]" />

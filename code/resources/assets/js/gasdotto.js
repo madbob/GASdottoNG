@@ -10,7 +10,6 @@ require('jquery-ui/ui/widgets/droppable');
 require('jquery-ui/ui/widgets/autocomplete');
 require('jquery-ui-touch-punch');
 require('blueimp-file-upload');
-require('continous-calendar');
 import Cookies from 'js-cookie';
 
 require('./aggregation');
@@ -444,15 +443,6 @@ $(document).ready(function() {
                 id = id.substr(1);
             $('.accordion-item[data-element-id=' + id + ']').find('.accordion-button').first().click();
         }, 100);
-    }
-
-    if ($('#actual-calendar').length != 0) {
-        $('#actual-calendar').ContinuousCalendar({
-			days: translated_days,
-			months: translated_months,
-			rows: 4,
-            events: dates_events
-        });
     }
 
     $('#prompt-message-modal').modal('show');
