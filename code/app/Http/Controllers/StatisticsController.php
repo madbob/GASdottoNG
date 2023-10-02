@@ -114,7 +114,7 @@ class StatisticsController extends Controller
         })->join('bookings', 'booked_products.booking_id', '=', 'bookings.id')->join('orders', 'bookings.order_id', '=', 'orders.id')->groupBy('orders.supplier_id');
 
         if ($type == 'all') {
-            $data_for_suppliers_query->selectRaw('orders.supplier_id, SUM(price) as price')->join('products', 'booked_products.product_id', '=', 'products.id');
+            $data_for_suppliers_query->selectRaw('orders.supplier_id, SUM(price * booked_products.quantity) as price')->join('products', 'booked_products.product_id', '=', 'products.id');
         }
         else {
             $data_for_suppliers_query->selectRaw('orders.supplier_id, SUM(final_price) as price');
@@ -159,11 +159,13 @@ class StatisticsController extends Controller
             $this->createBookingQuery($query, $type, $start, $end, $target, null);
         })->join('products', 'booked_products.product_id', '=', 'products.id')->groupBy('product_id', 'category_id')->get();
 
+        $all_categories = Category::all();
+
         foreach($data_for_categories as $dfc) {
             $category_id = $dfc->category_id;
 
             if (!isset($categories[$category_id])) {
-                $category = Category::find($category_id);
+                $category = $all_categories->find($category_id);
                 $categories[$category_id] = (object) [
                     'value' => 0,
                     'name' => $category->printableName(),
