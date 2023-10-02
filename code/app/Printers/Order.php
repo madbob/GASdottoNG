@@ -190,8 +190,7 @@ class Order extends Printer
 
 			$document->append(new Title($document_title));
 
-	        $table = $this->formatSummary($obj, $document, $required_fields, $status, $shipping_place);
-			$document->append($table);
+	        $document = $this->formatSummary($obj, $document, $required_fields, $status, $shipping_place);
 
 			if ($send_mail) {
 				$document->save($temp_file_path);

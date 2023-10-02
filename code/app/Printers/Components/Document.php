@@ -62,7 +62,7 @@ class Document implements Component
 
     public function renderCsv()
     {
-
+        return null;
     }
 
     public function download($filename)
