@@ -79,7 +79,7 @@ class VariantCombo extends Model
         });
 
         foreach($combos as $combo) {
-            foreach($combo->values->orderBy('value', 'asc')->get() as $value) {
+            foreach($combo->values->sortBy('value') as $value) {
                 $variant_id = $value->variant_id;
                 if (!isset($ret[$variant_id])) {
                     $ret[$variant_id] = [];

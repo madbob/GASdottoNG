@@ -36,7 +36,7 @@ if (!isset($final_value)) {
     <td>
         <input type="hidden" name="modifier-{{ $mod_value ? $mod_value->modifier->id : '0' }}" class="skip-on-submit">
         <label class="float-end">
-            <span class="booking-modifier">{{ $mod_value ? printablePrice($mod_value->effective_amount) : '' }}</span> {{ $currentgas->currency }}
+            <span class="booking-modifier">{{ $mod_value ? printablePrice($mod_value->effective_amount) : '' }}</span> {{ defaultCurrency()->symbol }}
         </label>
     </td>
 </tr>

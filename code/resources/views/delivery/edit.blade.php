@@ -112,8 +112,8 @@ $currency_symbol = defaultCurrency()->symbol;
 
                             <thead>
                                 <tr>
-                                    <th width="25%"></th>
-                                    <th width="15%"></th>
+                                    <th width="30%"></th>
+                                    <th width="10%"></th>
                                     <th width="20%"></th>
                                     <th width="25%"></th>
                                     <th width="15%"></th>
@@ -166,7 +166,14 @@ $currency_symbol = defaultCurrency()->symbol;
                                             <tr class="booking-product">
                                                 <td>
                                                     <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($var->true_quantity, $discrete_quantity) }}" class="skip-on-submit" />
-                                                    <label class="static-label">{{ $combo->printableName() }}</label>
+                                                    @if($combo)
+                                                        <label class="static-label">{{ $combo->printableName() }}</label>
+                                                    @else
+                                                        <label class="static-label">
+                                                            {{ $product->product->printableName() }}<br>
+                                                            <small>{{ _i('Nota bene: la variante selezionata in prenotazione non è più nel listino') }}</small>
+                                                        </label>
+                                                    @endif
 
                                                     <input type="hidden" name="{{ $product->product->id }}" value="1" />
                                                     @foreach($var->components as $comp)
@@ -209,14 +216,14 @@ $currency_symbol = defaultCurrency()->symbol;
                                 @foreach($mods as $mod_value)
                                     @include('delivery.modifierrow', [
                                         'mod_value' => $mod_value,
-                                        'skip_cells' => 2,
+                                        'skip_cells' => 3,
                                         'final_value' => true,
                                     ])
                                 @endforeach
 
                                 @include('delivery.modifierrow', [
                                     'mod_value' => null,
-                                    'skip_cells' => 2
+                                    'skip_cells' => 3
                                 ])
 
                                 @if($order->isActive())
