@@ -114,7 +114,7 @@ class StatisticsController extends Controller
         })->join('bookings', 'booked_products.booking_id', '=', 'bookings.id')->join('orders', 'bookings.order_id', '=', 'orders.id')->groupBy('orders.supplier_id');
 
         if ($type == 'all') {
-            $data_for_suppliers_query->selectRaw('orders.supplier_id, SUM(price * booked_products.quantity) as price')->join('products', 'booked_products.product_id', '=', 'products.id');
+            $data_for_suppliers_query->selectRaw('orders.supplier_id, SUM(products.price * booked_products.quantity) as price')->join('products', 'booked_products.product_id', '=', 'products.id');
         }
         else {
             $data_for_suppliers_query->selectRaw('orders.supplier_id, SUM(final_price) as price');

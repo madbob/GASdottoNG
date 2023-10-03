@@ -43,7 +43,7 @@ trait Summary
         if ($shipping_place && $shipping_place == 'all_by_place') {
             $places = Delivery::orderBy('name', 'asc')->get();
             foreach($places as $place) {
-                $table = $this->formatSummaryShipping($order, $document, $fields, $internal_offsets, $place->id);
+                $table = $this->formatSummaryShipping($order, $fields, $internal_offsets, $place->id);
                 if ($table) {
                     $document->append(new Header($place->printableName()));
                     $document->append($table);
