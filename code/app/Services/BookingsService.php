@@ -70,13 +70,17 @@ class BookingsService extends BaseService
 
         $bpv->save();
 
+        $components = [];
+
         foreach ($values as $variant_id => $value_id) {
             $bpc = new BookedProductComponent();
             $bpc->productvariant_id = $bpv->id;
             $bpc->variant_id = $variant_id;
             $bpc->value_id = $value_id;
-            $bpc->save();
+            $components[] = $bpc;
         }
+
+        $bpv->components()->saveMany($components);
 
         return $bpv;
     }
@@ -167,7 +171,7 @@ class BookingsService extends BaseService
             Per ogni evenienza qui ricarico le varianti appena salvate, affinché
             il computo del prezzo totale finale per il prodotto risulti corretto
         */
-        $booked->load('variants');
+        $booked->unsetRelation('variants');
 
         return [$booked, $quantity];
     }

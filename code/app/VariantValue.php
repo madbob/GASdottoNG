@@ -22,7 +22,7 @@ class VariantValue extends Model
 
     public function variant(): BelongsTo
     {
-        return $this->belongsTo('App\Variant');
+        return $this->belongsTo(Variant::class);
     }
 
     public function getSlugID()

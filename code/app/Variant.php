@@ -23,12 +23,12 @@ class Variant extends Model
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo('App\Product');
+        return $this->belongsTo(Product::class);
     }
 
     public function values(): HasMany
     {
-        return $this->hasMany('App\VariantValue')->orderBy('value', 'asc');
+        return $this->hasMany(VariantValue::class)->orderBy('value', 'asc');
     }
 
     public function printableValues()

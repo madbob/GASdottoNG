@@ -8,7 +8,10 @@
     cui prezzi dei prodotti sono nel frattempo cambiati).
     È importante che il ciclo di trattamento delle riduzioni e dei modificatori
     utilizzi la funzione getPrice() di questa classe per ottenere il prezzo
-    dell'oggetto desiderato e adottare effettivamente questa astrazione
+    dell'oggetto desiderato e adottare effettivamente questa astrazione.
+    Per le funzioni relative all'accesso dei prezzi storicizzati nel contesto di
+    un Order, si consulti l'implementazione della funzione realPrice() dei
+    modelli che usano questo trait
 */
 
 namespace App\Models\Concerns;

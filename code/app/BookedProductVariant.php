@@ -15,12 +15,12 @@ class BookedProductVariant extends Model
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo('App\BookedProduct', 'product_id');
+        return $this->belongsTo(BookedProduct::class, 'product_id');
     }
 
     public function components(): HasMany
     {
-        return $this->hasMany('App\BookedProductComponent', 'productvariant_id')->with(['value']);
+        return $this->hasMany(BookedProductComponent::class, 'productvariant_id')->with(['value']);
     }
 
     public function getStatusAttribute()
@@ -98,7 +98,13 @@ class BookedProductVariant extends Model
 
     public function printableName()
     {
-        return $this->variantsCombo()->printableShortName();
+        $combo = $this->variantsCombo();
+        if ($combo) {
+            return $combo->printableShortName();
+        }
+        else {
+            return '';
+        }
     }
 
     private function normalizeQuantity($attribute)

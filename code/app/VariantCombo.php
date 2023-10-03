@@ -23,7 +23,7 @@ class VariantCombo extends Model
 
     public function values(): BelongsToMany
     {
-        return $this->belongsToMany('App\VariantValue', 'variant_combo_values');
+        return $this->belongsToMany(VariantValue::class, 'variant_combo_values');
     }
 
     public function getProductAttribute()
@@ -79,7 +79,7 @@ class VariantCombo extends Model
         });
 
         foreach($combos as $combo) {
-            foreach($combo->values()->orderBy('value', 'asc')->get() as $value) {
+            foreach($combo->values->orderBy('value', 'asc')->get() as $value) {
                 $variant_id = $value->variant_id;
                 if (!isset($ret[$variant_id])) {
                     $ret[$variant_id] = [];

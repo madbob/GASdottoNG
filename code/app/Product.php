@@ -36,32 +36,32 @@ class Product extends Model
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo('App\Category');
+        return $this->belongsTo(Category::class);
     }
 
     public function measure(): BelongsTo
     {
-        return $this->belongsTo('App\Measure');
+        return $this->belongsTo(Measure::class);
     }
 
     public function supplier(): BelongsTo
     {
-        return $this->belongsTo('App\Supplier');
+        return $this->belongsTo(Supplier::class);
     }
 
     public function orders(): BelongsToMany
     {
-        return $this->belongsToMany('App\Order');
+        return $this->belongsToMany(Order::class);
     }
 
     public function variants(): HasMany
     {
-        return $this->hasMany('App\Variant')->with('values')->orderBy('name', 'asc');
+        return $this->hasMany(Variant::class)->with('values')->orderBy('name', 'asc');
     }
 
     public function vat_rate(): BelongsTo
     {
-        return $this->belongsTo('App\VatRate');
+        return $this->belongsTo(VatRate::class);
     }
 
     public function scopeSorted($query)
@@ -110,7 +110,7 @@ class Product extends Model
                 Per scrupolo qui faccio un controllo: se il prodotto ha delle
                 varianti ma nessuna combo, ne forzo qui la rigenerazione
             */
-            if ($ret->isEmpty() && $this->variants()->count() != 0) {
+            if ($ret->isEmpty() && $this->variants->count() != 0) {
                 foreach($this->variants as $variant) {
                     VariantChanged::dispatch($variant);
                 }
@@ -290,6 +290,10 @@ class Product extends Model
     {
         $price = $this->price;
 
+        /*
+            Qui si legge l'eventuale attributo "prices" che viene recuperato
+            accedendo nella relazione products() di un Order
+        */
         if (isset($this->pivot->prices)) {
             $prices = json_decode($this->pivot->prices);
             if ($prices) {
