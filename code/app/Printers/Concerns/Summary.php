@@ -9,7 +9,7 @@ use App\Delivery;
 
 trait Summary
 {
-    private function formatSummaryShipping($order, $document, $fields, $internal_offsets, $shipping_place)
+    private function formatSummaryShipping($order, $fields, $internal_offsets, $shipping_place)
     {
         $rows = [];
         $formattable = OrderFormatter::formattableColumns('summary');
@@ -51,7 +51,10 @@ trait Summary
             }
         }
         else {
-            $document = $this->formatSummaryShipping($order, $document, $fields, $internal_offsets, $shipping_place);
+            $table = $this->formatSummaryShipping($order, $fields, $internal_offsets, $shipping_place);
+            if ($table) {
+                $document->append($table);
+            }
         }
 
         return $document;
