@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 use App\User;
+use App\Order;
 use App\Supplier;
 use App\Category;
 use App\Booking;
@@ -105,22 +106,54 @@ class StatisticsController extends Controller
         return $query;
     }
 
-    private function getSummary($start, $end, $type, $target)
+    /*
+        Laddove le statistiche sul valore consegnato possono essere rapidamente
+        estrapolate usando i valori consolidati sul DB (nell'attributo
+        final_price di BookedProduct), per il prenotato è necessario rifare
+        tutti i calcoli daccapo. Per ottenere i prezzi storicizzati al momento
+        della creazione dell'ordine, o per contemplare le differenze di prezzo
+        delle varianti
+    */
+    private function basicSummaryForAll($start, $end, $target)
+    {
+        $data = [];
+        $bookings = $this->createBookingQuery(Booking::query(), 'all', $start, $end, $target, null)->angryload()->get();
+
+        $orders = [];
+        foreach($bookings as $booking) {
+            if (isset($orders[$booking->order_id]) == false) {
+                $orders[$booking->order_id] = [];
+            }
+
+            $orders[$booking->order_id][] = $booking;
+        }
+
+        foreach($orders as $id => $bookings) {
+            $order = Order::find($id);
+            $summary = $order->reduxData(['bookings' => $bookings]);
+
+            $name = $order->supplier_id;
+            if (isset($data[$name]) == false) {
+                $data[$name] = (object) [
+                    'users' => 0,
+                    'value' => 0,
+                    'name' => $order->supplier->printableName(),
+                ];
+            }
+
+            $data[$name]->value += $summary->price;
+        }
+
+        return $data;
+    }
+
+    private function basicSummaryForShipped($start, $end, $type, $target)
     {
         $data = [];
 
-        $data_for_suppliers_query = BookedProduct::whereHas('booking', function($query) use ($type, $start, $end, $target) {
+        $data_for_suppliers = BookedProduct::selectRaw('orders.supplier_id, SUM(final_price) as price')->whereHas('booking', function($query) use ($type, $start, $end, $target) {
             $this->createBookingQuery($query, $type, $start, $end, $target, null);
-        })->join('bookings', 'booked_products.booking_id', '=', 'bookings.id')->join('orders', 'bookings.order_id', '=', 'orders.id')->groupBy('orders.supplier_id');
-
-        if ($type == 'all') {
-            $data_for_suppliers_query->selectRaw('orders.supplier_id, SUM(products.price * booked_products.quantity) as price')->join('products', 'booked_products.product_id', '=', 'products.id');
-        }
-        else {
-            $data_for_suppliers_query->selectRaw('orders.supplier_id, SUM(final_price) as price');
-        }
-
-        $data_for_suppliers = $data_for_suppliers_query->get();
+        })->join('bookings', 'booked_products.booking_id', '=', 'bookings.id')->join('orders', 'bookings.order_id', '=', 'orders.id')->groupBy('orders.supplier_id')->get();
 
         foreach($data_for_suppliers as $dfs) {
             $name = $dfs->supplier_id;
@@ -133,6 +166,18 @@ class StatisticsController extends Controller
             }
 
             $data[$name]->value += $dfs->price;
+        }
+
+        return $data;
+    }
+
+    private function getSummary($start, $end, $type, $target)
+    {
+        if ($type == 'all') {
+            $data = $this->basicSummaryForAll($start, $end, $target);
+        }
+        else {
+            $data = $this->basicSummaryForShipped($start, $end, $type, $target);
         }
 
         $data_for_user = $this->createBookingQuery(Booking::query(), $type, $start, $end, $target, null)->whereHas('user', function($query) {
