@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Auth;
+
 use App\Exceptions\AuthException;
 
 use App\Role;
@@ -44,16 +46,26 @@ class RolesService extends BaseService
 		return $role;
 	}
 
+	/*
+		Nota bene: le funzioni per assegnare o revocare un ruolo devono
+		funzionare a prescindere dal permesso gas.permissions, almeno sui ruoli
+		che gerarchicamente sono "inferiori" a quelli dell'utente corrente
+	*/
 	private function checkAccessToRole($role_id)
 	{
-		$user = $this->ensureAuth(['gas.permissions' => 'gas', 'users.admin', 'gas']);
+		$user = Auth::user();
 
 		$managed_roles = $user->managed_roles->search(function($item, $key) use ($role_id) {
 			return $item->id == $role_id;
 		});
 
 		if ($managed_roles === false) {
-			throw new AuthException(401);
+			/*
+				Se il ruolo desiderato non è tra quelli gestibili
+				gerarchicamente, occorre avere il permesso globale per alterare
+				tutti i permessi
+			*/
+			$this->ensureAuth(['gas.permissions' => 'gas']);
 		}
 	}
 
@@ -95,7 +107,8 @@ class RolesService extends BaseService
 
 	public function attachAction($role_id, $action)
 	{
-		$this->checkAccessToRole($role_id);
+		$this->ensureAuth(['gas.permissions' => 'gas']);
+
 		$r = Role::findOrFail($role_id);
 		if ($action) {
 			$r->enableAction($action);
@@ -104,7 +117,8 @@ class RolesService extends BaseService
 
 	public function detachAction($role_id, $action)
 	{
-		$this->checkAccessToRole($role_id);
+		$this->ensureAuth(['gas.permissions' => 'gas']);
+
 		$r = Role::findOrFail($role_id);
 		if ($action) {
 			$r->disableAction($action);
