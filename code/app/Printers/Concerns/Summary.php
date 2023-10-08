@@ -12,12 +12,22 @@ trait Summary
     private function formatSummaryShipping($order, $fields, $internal_offsets, $shipping_place)
     {
         $rows = [];
+        $total = 0;
         $formattable = OrderFormatter::formattableColumns('summary');
         $summary = $order->reduxData(['shipping_place' => $shipping_place]);
+
+        $price_offset = null;
+        if (in_array('price', $fields)) {
+            $price_offset = array_search('price', $fields);
+        }
 
         foreach ($order->products()->sorted()->get() as $product) {
             $row = $this->formatProduct($fields, $formattable, $summary->products[$product->id] ?? null, $product, $internal_offsets);
             if (!empty($row)) {
+                if (is_null($price_offset) == false) {
+                    $total += guessDecimal($row[0][$price_offset]);
+                }
+
                 $rows = array_merge($rows, $row);
             }
         }
@@ -27,6 +37,13 @@ trait Summary
 
             foreach($fields as $f) {
                 $headers[] = $formattable[$f]->name;
+            }
+
+            if (is_null($price_offset) == false) {
+                $last_row = array_fill(0, count($fields), '');
+                $last_row[0] = _i('Totale');
+                $last_row[$price_offset] = printablePrice($total, ',');
+                $rows[] = $last_row;
             }
 
             return new Table($headers, $rows);
