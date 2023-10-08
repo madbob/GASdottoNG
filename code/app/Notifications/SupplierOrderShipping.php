@@ -31,6 +31,15 @@ class SupplierOrderShipping extends ManyMailNotification
     {
         $message = $this->initMailMessage($notifiable);
 
+        /*
+            Nella modalità Multi-GAS un ordine può potenzialmente essere
+            assegnato a molteplici GAS, che possono avere configurazioni diverse
+            per la formattazione delle mail. Qui arbitrariamente decido di
+            prendere il primo disponibile
+        */
+        $gas = $this->order->gas;
+        $notifiable->setRelation('gas', collect($gas->first()));
+
         $message = $this->formatMail($message, $notifiable, 'supplier_summary', [
             'supplier_name' => $this->order->supplier->name,
             'order_number' => $this->order->number,
