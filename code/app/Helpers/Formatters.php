@@ -133,6 +133,15 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
 
 function enablePdfPagesNumbers($pdf)
 {
+    /*
+        La funzione page_text() nel canvas di DomPDF viene eseguita su ogni
+        pagina, ma prima devono esistere le pagine... Qui forzo un render()
+        preventivo del PDF, in modo da fargli calcolare le tabelle
+        (eventualmente suddivise in più pagine), dopodiché applico la funzione
+        per la numerazione delle pagine
+    */
+    $pdf->render();
+
     $dompdf = $pdf->getDomPDF();
     $font = $dompdf->getFontMetrics()->get_font("helvetica", "bold");
     $dompdf->get_canvas()->page_text(34, 18, "{PAGE_NUM} / {PAGE_COUNT}", $font, 10, array(0, 0, 0));
