@@ -15,12 +15,14 @@ class SupplierOrderShipping extends ManyMailNotification
 {
     use Queueable, SerializesModels, MailFormatter, MailReplyTo, TemporaryFiles;
 
+    private $gas;
     private $order;
     private $pdf_file;
     private $csv_file;
 
-    public function __construct($order, $pdf_file, $csv_file)
+    public function __construct($gas, $order, $pdf_file, $csv_file)
     {
+        $this->gas = $gas;
         $this->order = $order;
         $this->pdf_file = $pdf_file;
         $this->csv_file = $csv_file;
@@ -34,11 +36,9 @@ class SupplierOrderShipping extends ManyMailNotification
         /*
             Nella modalità Multi-GAS un ordine può potenzialmente essere
             assegnato a molteplici GAS, che possono avere configurazioni diverse
-            per la formattazione delle mail. Qui arbitrariamente decido di
-            prendere il primo disponibile
+            per la formattazione delle mail
         */
-        $gas = $this->order->gas;
-        $notifiable->setRelation('gas', collect($gas->first()));
+        $notifiable->setRelation('gas', collect($this->gas));
 
         $message = $this->formatMail($message, $notifiable, 'supplier_summary', [
             'supplier_name' => $this->order->supplier->name,

@@ -36,7 +36,7 @@ class NotifyClosedOrder extends Job
                         */
                         $pdf_file_path = $printer->document($order, 'summary', ['format' => 'pdf', 'status' => 'booked', 'extra_modifiers' => 0, 'send_mail' => true]);
                         $csv_file_path = $printer->document($order, 'summary', ['format' => 'csv', 'status' => 'booked', 'extra_modifiers' => 0, 'send_mail' => true]);
-                        $order->supplier->notify(new SupplierOrderShipping($order, $pdf_file_path, $csv_file_path));
+                        $order->supplier->notify(new SupplierOrderShipping($gas, $order, $pdf_file_path, $csv_file_path));
 
                         $this->hub->enable(true);
                     }
