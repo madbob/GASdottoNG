@@ -49,6 +49,9 @@ class Deliveries extends CSVImporter
 			'sorting_fields' => $this->fields(),
 			'extra_fields' => [
 				'aggregate_id' => $request->input('aggregate_id'),
+			],
+			'extra_description' => [
+				_i("Nota bene: come nelle normali consegne, si assume che la quantità consegnata dei prodotti con pezzatura sia qui espressa a peso e non in numero di pezzi."),
 			]
 		]);
 	}

@@ -199,25 +199,26 @@ class BookedProduct extends Model
         return $this->normalizeQuantity('quantity');
     }
 
+    /*
+        Questa funzione esiste solo come omologo per true_quantity, ma si assume
+        che la quantità consegnata sia sempre espressa nel modo corretto
+        (ovvero: a peso, in caso di pezzatura)
+    */
     public function getTrueDeliveredAttribute()
     {
-        return $this->normalizeQuantity('delivered');
+        return $this->delivered;
     }
 
-    /*
-        Questa funzione è intesa solo per essere invocata da
-        BookedProductVariant per ottenere il peso di base del prodotto, su cui
-        applicare le differenze peso. Evitare di usarla altrove
-    */
     public function basicWeight($attribute)
     {
+        $attribute = 'true_' . $attribute;
+
+        /*
+            Se il prodotto ha una unità di misura non discreta (e.g. Chili), la
+            quantità corrisponde al peso
+        */
         if ($this->product->measure->discrete == false) {
-            if ($this->product->portion_quantity > 0) {
-                $ret = $this->product->portion_quantity * $this->$attribute;
-            }
-            else {
-                $ret = $this->$attribute;
-            }
+            $ret = $this->$attribute;
         }
         else {
             $ret = $this->product->weight * $this->$attribute;
@@ -268,12 +269,7 @@ class BookedProduct extends Model
                 return $this->fixQuantity('quantity', true) + $this->getValue('modifier:all');
 
             case 'weight':
-                if ($this->product->measure->discrete) {
-                    return $this->fixWeight('quantity');
-                }
-                else {
-                    return $this->fixWeight('true_quantity');
-                }
+                return $this->fixWeight('quantity');
         }
 
         return 0;
@@ -289,12 +285,7 @@ class BookedProduct extends Model
                 return $this->final_price + $this->getValue('modifier:all');
 
             case 'weight':
-                if ($this->product->measure->discrete) {
-                    return $this->fixWeight('delivered');
-                }
-                else {
-                    return $this->fixWeight('true_delivered');
-                }
+                return $this->fixWeight('delivered');
         }
 
         return 0;
