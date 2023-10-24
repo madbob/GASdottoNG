@@ -68,7 +68,7 @@ class BookingUserController extends Controller
             utente dall'apposito pannello, e devo rendere visibili sia la
             prenotazione dell'utente stesso che quelle degli amici
         */
-        if ($extended == 'true' && $user->can('users.subusers')) {
+        if ($extended == 'true') {
             return view('booking.editwrap', ['aggregate' => $aggregate, 'user' => $user, 'standalone' => true, 'required_mode' => $required_mode]);
         }
         else {
