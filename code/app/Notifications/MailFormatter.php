@@ -2,6 +2,8 @@
 
 namespace App\Notifications;
 
+use Illuminate\Support\Collection;
+
 use App\Gas;
 
 trait MailFormatter
@@ -17,7 +19,7 @@ trait MailFormatter
             usare le configurazioni del primo GAS assegnato
         */
         $gas = $user->gas;
-        if (is_a($gas, Gas::class) == false) {
+        if (is_a($gas, Collection::class)) {
             $gas = $gas->first();
         }
 
