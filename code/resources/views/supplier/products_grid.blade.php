@@ -32,12 +32,11 @@ $products = $supplier->products()->sorted()->get();
                         @if($has_manual_sorting)
                             <th width="5%"></th>
                         @endif
-                        <th width="40%">{{ _i('Nome') }}</th>
+                        <th width="50%">{{ _i('Nome') }}</th>
                         <th width="15%">{{ _i('Unità di Misura') }}</th>
                         <th width="15%">{{ _i('Prezzo Unitario') }}</th>
                         <th width="15%">{{ _i('Disponibile') }}</th>
-                        <th width="10%">{{ _i('Ordinabile') }}</th>
-                        <th width="5%"></th>
+                        <th width="5%">{{ _i('Ordinabile') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,6 +51,12 @@ $products = $supplier->products()->sorted()->get();
                                 @endif
 
                                 <td>
+                                    <div class="hidden">
+                                        @foreach($product->icons() as $icon)
+                                            <i class="bi-{{ $icon }}"></i>
+                                        @endforeach
+                                    </div>
+
                                     <x-larastrap::hidden name="id" npostfix="[]" />
                                     <x-larastrap::text name="name" :label="_i('Nome')" squeeze required :nprefix="$product->id . '-'" />
                                 </td>
@@ -66,14 +71,6 @@ $products = $supplier->products()->sorted()->get();
                                 </td>
                                 <td>
                                     <x-larastrap::check name="active" :label="_i('Ordinabile')" squeeze :nprefix="$product->id . '-'" />
-                                </td>
-                                <td>
-                                    <p class="hidden">
-                                        <span class="text-filterable-cell">{{ $product->name }}</span>
-                                    </p>
-                                    @foreach($product->icons() as $icon)
-                                        <i class="bi-{{ $icon }}"></i>
-                                    @endforeach
                                 </td>
                             </tr>
                         </x-larastrap::enclose>

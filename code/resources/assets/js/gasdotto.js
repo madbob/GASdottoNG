@@ -698,7 +698,7 @@ $(document).ready(function() {
         form.toggleClass('inner-form', status);
     });
 
-    $('body').on('change', '[id^="createOrder"] select[name^=supplier_id]', function() {
+    $('body').on('change', '#createOrder select[name^=supplier_id]', function() {
         utils.postAjax({
             url: 'dates/query',
             method: 'GET',
@@ -708,7 +708,7 @@ $(document).ready(function() {
             dataType: 'HTML',
             success: function(data) {
                 data = $(data);
-                $('[id^="createOrder"] .supplier-future-dates').empty().append(data);
+                $('#createOrder .supplier-future-dates').empty().append(data);
                 utils.j().initElements(data);
             }
         });
