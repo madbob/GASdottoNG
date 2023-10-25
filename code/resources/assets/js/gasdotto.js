@@ -22,6 +22,7 @@ import Lists from "./lists";
 import Widgets from "./widgets";
 import Triggers from "./triggers";
 import Filters from "./filters";
+import Products from "./products";
 import Bookings from "./bookings";
 import Roles from "./roles";
 import Modifiers from "./modifiers";
@@ -139,6 +140,7 @@ function generalInit(container) {
 
     utils.init(container);
     Modifiers.init(container);
+	Products.init(container);
     Lists.init(container);
     Widgets.init(container);
     Bookings.init(container);

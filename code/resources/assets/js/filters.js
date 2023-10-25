@@ -8,6 +8,10 @@ class Filters {
             this.iconsLegendTrigger($(e.currentTarget), '.icons-legend');
         });
 
+        /*
+            Questo serve ad intercettare tutti i pulsanti dei filtri nelle
+            tabelle, sia le icone che i dropdown con scelte multiple
+        */
         $('.table-icons-legend button, .table-icons-legend a', container).click((e) => {
             e.preventDefault();
             this.iconsLegendTrigger($(e.currentTarget), '.table-icons-legend');
@@ -120,8 +124,10 @@ class Filters {
     static tableFilters(table_id)
     {
         var filters = $('[data-table-target="' + table_id + '"]');
+        var table = $('table' + table_id);
+        var elements = table.find('tbody tr');
 
-        $('table' + table_id + ' tbody tr').each(function() {
+        elements.each(function() {
             var display = true;
             var row = $(this);
 
@@ -190,6 +196,11 @@ class Filters {
                     }
                 }
 
+                /*
+                    Se almeno una condizione del filtro determina che l'elemento
+                    non deve essere visualizzato, evito di valutare le altre ed
+                    esco subito dal ciclo each()
+                */
                 if (display == false) {
                     return false;
                 }
@@ -203,6 +214,10 @@ class Filters {
 
     static iconsLegendTrigger(node, legend_class)
     {
+        /*
+            Se clicco l'intestazione di un dropdown, passo oltre. Qui interviene
+            il JS di Bootstrap per aprire e chiudere il dropdown stesso
+        */
         if (node.hasClass('dropdown-toggle')) {
             return;
         }
@@ -232,6 +247,7 @@ class Filters {
 
             $(iter_selector).toggleClass('hidden', false);
             this.compactFilter(master_selector, child_selector, true);
+            $(master_selector).trigger('inactive-filter');
         }
         else {
             /*
@@ -248,6 +264,7 @@ class Filters {
             }
 
             var c = node.find('i').attr('class');
+            var count_hidden = 0;
 
             $(iter_selector).each(function() {
                 var show = false;
@@ -261,9 +278,20 @@ class Filters {
                 });
 
                 $(this).toggleClass('hidden', show == false);
+
+                if (show == false) {
+                    count_hidden++;
+                }
             });
 
             this.compactFilter(master_selector, child_selector, false);
+
+            if (count_hidden == 0) {
+                $(master_selector).trigger('inactive-filter');
+            }
+            else {
+                $(master_selector).trigger('active-filter');
+            }
         }
     }
 }
