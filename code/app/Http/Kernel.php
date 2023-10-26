@@ -39,6 +39,7 @@ class Kernel extends HttpKernel
         'commonuser' => [
             \App\Http\Middleware\MaintainanceMode::class,
             \App\Http\Middleware\SetLanguage::class,
+            \App\Http\Middleware\InactiveUser::class,
             \App\Http\Middleware\EnforcePassword::class,
             \App\Http\Middleware\ActIntoGas::class,
         ],

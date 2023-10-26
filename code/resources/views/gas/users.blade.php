@@ -6,6 +6,7 @@
             <div class="col">
                 <x-larastrap::check name="enable_public_registrations" :label="_i('Abilita Registrazione Pubblica')" triggers_collapse="enable_public_registrations" :value="$gas->hasFeature('public_registrations')" :pophelp="_i('Quando questa opzione è abilitata, chiunque potrà registrarsi all\'istanza per mezzo dell\'apposito pannello (accessibile da quello di login). Gli amministratori addetti agli utenti riceveranno una mail di notifica per ogni nuovo utente registrato')" />
                 <x-larastrap::collapse id="enable_public_registrations">
+                    <x-larastrap::check name="public_registrations->manual" :label="_i('Approvazione manuale nuovi utenti')" :value="$gas->public_registrations['manual']" />
                     <x-larastrap::url name="public_registrations->privacy_link" :label="_i('Link Privacy Policy')" :value="$gas->public_registrations['privacy_link']" />
                     <x-larastrap::url name="public_registrations->terms_link" :label="_i('Link Condizioni d\'Uso')" :value="$gas->public_registrations['terms_link']" />
 

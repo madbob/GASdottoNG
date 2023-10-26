@@ -21,6 +21,26 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
 
 <x-larastrap::tabs>
     <x-larastrap::tabpane :id="sprintf('profile-%s', sanitizeId($user->id))" label="{{ _i('Anagrafica') }}" active="true" classes="mb-2" icon="bi-person">
+        @if($admin_editable)
+            @if($user->pending)
+                <div class="alert alert-warning float-start w-100 mb-3">
+                    <div class="float-start d-inline-block">
+                        {{ _i('Questo utente è in attesa di approvazione!') }}
+                    </div>
+
+                    <x-larastrap::iform :action="route('users.revisioned', $user->id)" :buttons="[['label' => _i('Approva'), 'color' => 'success']]" classes="float-end ms-2">
+                        <x-larastrap::hidden name="post-saved-function" value="handleUserApproval" />
+                        <x-larastrap::hidden name="action" value="approve" />
+                    </x-larastrap::iform>
+
+                    <x-larastrap::iform :action="route('users.revisioned', $user->id)" :buttons="[['label' => _i('Non Approvare ed Elimina'), 'color' => 'danger']]" classes="float-end">
+                        <x-larastrap::hidden name="post-saved-function" value="handleUserApproval" />
+                        <x-larastrap::hidden name="action" value="noapprove" />
+                    </x-larastrap::iform>
+                </div>
+            @endif
+        @endif
+
         <x-larastrap::mform :obj="$user" method="PUT" :action="route('users.update', $user->id)" :classes="$display_page ? 'inner-form' : ''" :nodelete="$display_page || $user->isFriend() == false" :nosave="$readonly">
             <div class="row">
                 <div class="col-12 col-md-6">

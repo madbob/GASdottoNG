@@ -123,6 +123,12 @@ class RegisterController extends Controller
         $user->firstname = $data['firstname'];
         $user->lastname = $data['lastname'];
         $user->password = Hash::make($data['password']);
+
+        $manual = $gas->public_registrations['manual'];
+        if ($manual) {
+            $user->pending = true;
+        }
+
         $user->save();
 
         if (!empty($data['email'])) {

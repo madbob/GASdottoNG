@@ -20,7 +20,8 @@ class PublicRegistrations extends Config
             'enabled' => false,
             'privacy_link' => 'http://gasdotto.net/privacy',
             'terms_link' => '',
-            'mandatory_fields' => ['firstname', 'lastname', 'email', 'phone']
+            'mandatory_fields' => ['firstname', 'lastname', 'email', 'phone'],
+            'manual' => false,
         ];
     }
 }

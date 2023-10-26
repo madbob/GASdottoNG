@@ -300,6 +300,18 @@ class Callables {
         }
     }
 
+    static handleUserApproval(form, data)
+    {
+        lists.closeParent(form);
+
+        if (data.action != 'approve') {
+            var upper = lists.closeParent(form);
+            var list = upper.closest('.loadable-list');
+            upper.remove();
+            lists.testListsEmptiness(list);
+        }
+    }
+
     /*
         Usato al salvataggio di un movimento contabile, per ricaricare gli elementi
         ad esso correlati (pagante e pagato) nelle eventuali liste attualmente in

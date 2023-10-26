@@ -16,6 +16,15 @@ class User extends IconsMap
 
         if ($user->can('users.admin', $user->gas)) {
             $ret = self::statusIcons($ret);
+
+            if ($user->gas->hasFeature('shipping_places')) {
+                $ret['house-fill'] = (object) [
+                    'test' => function ($obj) {
+                        return $obj->preferred_delivery_id == '0';
+                    },
+                    'text' => _i('Senza Luogo di Consegna'),
+                ];
+            }
         }
 
         if ($user->can('movements.admin', $user->gas) || $user->can('movements.view', $user->gas)) {
@@ -39,15 +48,15 @@ class User extends IconsMap
                     'text' => _i('Quota non Pagata'),
                 ];
             }
+        }
 
-            if ($user->gas->hasFeature('shipping_places')) {
-                $ret['house-fill'] = (object) [
-                    'test' => function ($obj) {
-                        return $obj->preferred_delivery_id == '0';
-                    },
-                    'text' => _i('Senza Luogo di Consegna'),
-                ];
-            }
+        if ($user->gas->hasFeature('public_registrations') && $user->gas->public_registrations['manual']) {
+            $ret['hourglass'] = (object) [
+                'test' => function ($obj) {
+                    return $obj->pending;
+                },
+                'text' => _i('In Attesa'),
+            ];
         }
 
         return $ret;

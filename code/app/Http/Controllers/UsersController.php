@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
-use Auth;
-
 use App\User;
 use App\Aggregate;
 
@@ -26,12 +24,36 @@ class UsersController extends BackedController
         ]);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->easyExecute(function() {
-            $user = Auth::user();
+        return $this->easyExecute(function() use ($request) {
+            $user = $request->user();
             $users = $this->service->list('', $user->can('users.admin', $user->gas));
             return view('pages.users', ['users' => $users]);
+        });
+    }
+
+    /*
+        Il middleware InactiveUser forza un redirect su questa rotta quando
+        l'utente non è ancora stato approvato
+    */
+    public function blocked(Request $request)
+    {
+        if ($request->user()->pending == false) {
+            return redirect()->route('dashboard');
+        }
+        else {
+            return view('user.blocked');
+        }
+    }
+
+    public function revisioned(Request $request, $id)
+    {
+        return $this->easyExecute(function() use ($id, $request) {
+            $user = $request->user();
+            $status = $request->input('action');
+            $this->service->revisioned($id, $status == 'approve');
+            return $this->successResponse(['action' => $status]);
         });
     }
 
@@ -47,7 +69,7 @@ class UsersController extends BackedController
 
     public function export(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
         if ($user->can('users.admin', $user->gas) == false) {
             abort(503);
         }
@@ -85,7 +107,7 @@ class UsersController extends BackedController
     public function profile(Request $request)
     {
         return $this->easyExecute(function() use ($request) {
-            $id = Auth::user()->id;
+            $id = $request->user()->id;
             $active_tab = $request->input('tab');
             $user = $this->service->show($id);
             return view('pages.profile', ['user' => $user, 'active_tab' => $active_tab]);

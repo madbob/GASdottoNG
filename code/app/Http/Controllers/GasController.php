@@ -160,6 +160,7 @@ class GasController extends Controller
                 'privacy_link' => $request->input('public_registrations->privacy_link', ''),
                 'terms_link' => $request->input('public_registrations->terms_link', ''),
                 'mandatory_fields' => Arr::wrap($request->input('public_registrations->mandatory_fields', [])),
+                'manual' => $request->has('public_registrations->manual'),
             ];
         }
         else {
@@ -168,6 +169,7 @@ class GasController extends Controller
                 'privacy_link' => '',
                 'terms_link' => '',
                 'mandatory_fields' => ['firstname', 'lastname', 'email', 'phone'],
+                'manual' => false,
             ];
         }
 

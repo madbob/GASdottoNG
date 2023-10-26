@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Artisan;
 
 use App\Config;
 use App\User;
+use App\Gas;
 
 class FixDatabase extends Command
 {
@@ -27,8 +28,6 @@ class FixDatabase extends Command
 
     public function handle()
     {
-        DB::statement("ALTER TABLE modifiers MODIFY COLUMN value ENUM('absolute','percentage','price','mass') DEFAULT 'absolute'");
-
         /*
             I seeder dei tipi di movimento contabile e dei tipi di modificatore
             vengono sempre eseguiti, tanto comunque controllano se ogni tipo già
@@ -36,5 +35,11 @@ class FixDatabase extends Command
         */
         Artisan::call('db:seed', ['--force' => true, '--class' => 'MovementTypesSeeder']);
         Artisan::call('db:seed', ['--force' => true, '--class' => 'ModifierTypesSeeder']);
+
+        foreach(Gas::all() as $gas) {
+            $registrations_info = $gas->public_registrations;
+            $registrations_info['manual'] = false;
+            $gas->setConfig('public_registrations', $registrations_info);
+        }
     }
 }

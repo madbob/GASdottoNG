@@ -10,6 +10,8 @@ use Log;
 use DB;
 use Hash;
 
+use App\Notifications\ApprovedMessage;
+use App\Notifications\DeclinedMessage;
 use App\User;
 use App\Role;
 
@@ -248,6 +250,37 @@ class UsersService extends BaseService
 
         DB::commit();
         return $user;
+    }
+
+    public function revisioned($id, $approved)
+    {
+        DB::beginTransaction();
+
+        $user = $this->show($id);
+
+        if ($approved) {
+            $user->pending = false;
+            $user->save();
+
+            try {
+                $user->notify(new ApprovedMessage());
+            }
+            catch(\Exception $e) {
+                \Log::error('Impossibile notificare approvazione utente');
+            }
+        }
+        else {
+            try {
+                $user->notify(new DeclinedMessage());
+            }
+            catch(\Exception $e) {
+                \Log::error('Impossibile notificare non approvazione utente');
+            }
+
+            $user->forceDelete();
+        }
+
+        DB::commit();
     }
 
     public function picture($id)

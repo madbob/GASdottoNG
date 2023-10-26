@@ -14,6 +14,8 @@ Route::post('mail/status/aws', 'MailController@postStatusSES');
 Route::post('mail/status/sib', 'MailController@postStatusSendinblue');
 
 Route::middleware(['auth'])->group(function() {
+    Route::get('users/blocked', 'UsersController@blocked')->name('users.blocked');
+
     Route::middleware(['commonuser'])->group(function() {
         Route::get('/', function () {
             Session::reflash();
@@ -41,6 +43,7 @@ Route::middleware(['auth'])->group(function() {
         Route::get('users/fees', 'UsersController@fees')->name('users.fees');
         Route::post('users/fees', 'UsersController@feesSave')->name('users.savefees');
         Route::get('users/password', 'UsersController@changePassword')->name('users.password');
+        Route::post('users/revisioned/{id}', 'UsersController@revisioned')->name('users.revisioned');
         Route::get('users/{id}/bookings', 'UsersController@bookings')->name('users.bookings');
         Route::get('users/{id}/stats', 'UsersController@statistics')->name('users.stats');
         Route::get('users/{id}/accounting', 'UsersController@accounting')->name('users.accounting');

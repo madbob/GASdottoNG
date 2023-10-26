@@ -10,7 +10,15 @@ class Welcome extends MailType
     }
 
     public function description() {
-        return _i('Messaggio inviato ai nuovi iscritti registrati sulla piattaforma.');
+        $gas = currentAbsoluteGas();
+        $manual = $gas->hasFeature('public_registrations') && $gas->public_registrations['manual'] == true;
+
+        if ($manual) {
+            return _i('Messaggio inviato ai nuovi iscritti registrati sulla piattaforma, in attesa di approvazione.');
+        }
+        else {
+            return _i('Messaggio inviato ai nuovi iscritti registrati sulla piattaforma.');
+        }
     }
 
     public function params() {
