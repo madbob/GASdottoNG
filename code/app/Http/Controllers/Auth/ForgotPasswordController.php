@@ -33,7 +33,7 @@ class ForgotPasswordController extends Controller
         $identifier = $request->input('username');
 
         $user = User::where('username', $identifier)->orWhereHas('contacts', function($query) use ($identifier) {
-            $query->where('type', 'email')->where('value', $identifier);
+            $query->whereIn('type', ['email', 'skip_email'])->where('value', $identifier);
         })->first();
 
         if (is_null($user)) {

@@ -52,6 +52,11 @@ class EventServiceProvider extends ServiceProvider
 		'Illuminate\Mail\Events\MessageSending' => [
 			'App\Listeners\CustomMailTag',
 		],
+
+        \SocialiteProviders\Manager\SocialiteWasCalled::class => [
+            \SocialiteProviders\Google\GoogleExtendSocialite::class.'@handle',
+            \SocialiteProviders\Facebook\FacebookExtendSocialite::class.'@handle',
+        ],
     ];
 
     public function boot()

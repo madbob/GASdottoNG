@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="col-12 col-md-6 offset-md-3 mb-5">
+<div class="col-12 col-md-6 offset-md-3 mt-3 mb-5">
     @if($gas->message != '')
         <div class="alert alert-info">
             {!! nl2br($gas->message) !!}
@@ -37,6 +37,8 @@
         <x-larastrap::password name="password" :label="_i('Password')" />
         <x-larastrap::check name="remember" :label="_i('Ricordami')" checked="true" :attributes="['data-attribute' => 'remember_me', 'data-attribute-default' => 'true']" classes="remember-checkbox" value="1" />
     </x-larastrap::form>
+
+    @include('auth.socialbuttons')
 </div>
 
 <div class="col-12 col-md-6 offset-md-3 mb-5">

@@ -173,7 +173,18 @@ class GasController extends Controller
             ];
         }
 
+        $socials = [];
+
+        if ($request->has('enable_login_google')) {
+            $socials[] = 'google';
+        }
+
+        if ($request->has('enable_login_facebook')) {
+            $socials[] = 'facebook';
+        }
+
         $gas->setConfig('public_registrations', $registrations_info);
+        $gas->setConfig('social_login', $socials);
     }
 
     private function configOrders($gas, $request)

@@ -4,6 +4,11 @@
             <input type="hidden" name="group" value="users">
 
             <div class="col">
+                <x-larastrap::check name="enable_login_google" :label="_i('Abilita Login Google')" :checked="in_array('google', $gas->social_login)" />
+                <x-larastrap::check name="enable_login_facebook" :label="_i('Abilita Login Facebook')" :checked="in_array('facebook', $gas->social_login)" />
+
+                <hr/>
+
                 <x-larastrap::check name="enable_public_registrations" :label="_i('Abilita Registrazione Pubblica')" triggers_collapse="enable_public_registrations" :value="$gas->hasFeature('public_registrations')" :pophelp="_i('Quando questa opzione è abilitata, chiunque potrà registrarsi all\'istanza per mezzo dell\'apposito pannello (accessibile da quello di login). Gli amministratori addetti agli utenti riceveranno una mail di notifica per ogni nuovo utente registrato')" />
                 <x-larastrap::collapse id="enable_public_registrations">
                     <x-larastrap::check name="public_registrations->manual" :label="_i('Approvazione manuale nuovi utenti')" :value="$gas->public_registrations['manual']" />

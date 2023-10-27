@@ -23,6 +23,8 @@
         "madbob/laravel-log2rss": "0.5.0",
         "madbob/laravel-queue-loopback": "0.5.0",
         "satispay/online-api-php-sdk": "^1.6",
+        "socialiteproviders/facebook": "^4.1",
+        "socialiteproviders/google": "^4.1",
         "spatie/db-dumper": "^3.0",
         "symfony/http-client": "^6.2",
         "symfony/psr-http-message-bridge": "^2.1",

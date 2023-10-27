@@ -10,6 +10,7 @@ use Session;
 use Auth;
 use Log;
 
+use Laravel\Socialite\Facades\Socialite;
 use LaravelGettext;
 
 use App\User;
@@ -56,6 +57,13 @@ class LoginController extends Controller
         }
     }
 
+    private function failedLogin($message)
+    {
+        Session::flash('message', $message);
+        Session::flash('message_type', 'danger');
+        return redirect()->route('login');
+    }
+
     public function login(Request $request)
     {
         $username = trim($request->input('username'));
@@ -73,10 +81,8 @@ class LoginController extends Controller
             })->first();
 
             if (is_null($user)) {
-                Session::flash('message', _i('Username non valido'));
-                Session::flash('message_type', 'danger');
                 Log::debug('Username non trovato: ' . $username);
-                return redirect(url('login'));
+                return $this->failedLogin(_i('Username non valido'));
             }
             else {
                 $request->offsetSet('username', $user->username);
@@ -103,5 +109,75 @@ class LoginController extends Controller
 
         Auth::loginUsingId($user->id);
         return redirect()->route('dashboard');
+    }
+
+    public function social($driver)
+    {
+        $client_id = config('service.' . $driver . '.client_id');
+        $client_secret = config('service.' . $driver . '.client_secret');
+
+        if (env('GASDOTTO_NET')) {
+            /*
+                Per le istanze gasdotto.net c'è un unico URL valido per i
+                redirect OAuth, da cui poi si viene smistati sulla rotta
+                login.social.back dell'istanza giusta
+            */
+            $redirect_url = sprintf('https://gasdotto.net/social/%s?instance=%s', $driver, current_instance());
+        }
+        else {
+            $redirect_url = route('login.social.back', $driver);
+        }
+
+        $config = new \SocialiteProviders\Manager\Config($client_id, $client_secret, $redirect_url);
+        return Socialite::driver($driver)->setConfig($config)->redirect();
+    }
+
+    private function retrieveSocialUser($user, $driver)
+    {
+        $identifier = $user->id;
+        $driver_contact_type = sprintf('%s_id', $driver);
+
+        $u = User::whereHas('contacts', function($query) use ($identifier, $driver_contact_type) {
+            $query->where('type', $driver_contact_type)->where('value', $identifier);
+        })->first();
+
+        if (is_null($u)) {
+            $email = $user->email;
+            if (filled($email)) {
+                $u = User::whereHas('contacts', function($query) use ($email) {
+                    $query->whereIn('type', ['email', 'skip_email'])->where('value', $email);
+                })->first();
+            }
+        }
+
+        return $u;
+    }
+
+    public function socialCallback(Request $request, $driver)
+    {
+        $user = Socialite::driver($driver)->user();
+
+        if ($user) {
+            $u = $this->retrieveSocialUser($user, $driver);
+            if ($u) {
+                Auth::loginUsingId($u->id);
+                return redirect()->route('dashboard');
+            }
+
+            $gas = currentAbsoluteGas();
+
+            if ($gas->hasFeature('public_registrations')) {
+                $social_identifier = sprintf('%s_id::%s', $driver, $user->id);
+                Session::put('from_social', $social_identifier);
+                Session::put('from_social_email', $user->email);
+                return redirect()->route('register');
+            }
+            else {
+                return $this->failedLogin(_i('Utente non riconosciuto. Per accedere è necessario farsi prima creare un account da un amministratore.'));
+            }
+        }
+        else {
+            return $this->failedLogin(_i('Errore nella fase di autenticazione'));
+        }
     }
 }

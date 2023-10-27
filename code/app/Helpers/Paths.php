@@ -27,10 +27,20 @@ function gas_storage_path($path = null, $folder = false)
     return $ret;
 }
 
+function current_instance()
+{
+    if (global_multi_installation() && isset($_SERVER['HTTP_HOST'])) {
+        return substr($_SERVER['HTTP_HOST'], 0, strpos($_SERVER['HTTP_HOST'], '.'));
+    }
+    else {
+        return null;
+    }
+}
+
 function env_file()
 {
     if (global_multi_installation() && isset($_SERVER['HTTP_HOST'])) {
-        $instance = substr($_SERVER['HTTP_HOST'], 0, strpos($_SERVER['HTTP_HOST'], '.'));
+        $instance = current_instance();
         return ('.env.' . $instance);
     }
     else {

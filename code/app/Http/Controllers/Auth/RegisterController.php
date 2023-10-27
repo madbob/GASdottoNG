@@ -4,18 +4,17 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Hash;
 
 use App\Rules\Captcha;
 use App\Rules\EMail;
 use App\Notifications\WelcomeMessage;
 use App\Notifications\NewUserNotification;
-
-use Mail;
-use Session;
-use Hash;
-use Log;
 
 use App\Gas;
 use App\User;
@@ -56,15 +55,27 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         $gas = currentAbsoluteGas();
+
         if($gas->hasFeature('public_registrations') == false) {
             return redirect()->route('login');
         }
         else {
-            $first = rand(1, 20);
-            $second = rand(1, 20);
-            $captcha = sprintf('%s + %s =', $first, $second);
-            Session::put('captcha_solution', $first + $second);
-            return view('auth.register', ['captcha' => $captcha]);
+            $social = Session::get('from_social');
+            $email = Session::get('from_social_email');
+
+            if ($social) {
+                return view('auth.register', [
+                    'social' => $social,
+                    'email' => $email,
+                ]);
+            }
+            else {
+                $first = rand(1, 20);
+                $second = rand(1, 20);
+                $captcha = sprintf('%s + %s =', $first, $second);
+                Session::put('captcha_solution', $first + $second);
+                return view('auth.register', ['captcha' => $captcha]);
+            }
         }
     }
 
@@ -81,11 +92,15 @@ class RegisterController extends Controller
             throw new \Exception('No GAS selected', 1);
         }
 
-        $options = [
-            'username' => 'required|string|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-            'verify' => [new Captcha()]
-        ];
+        $social = $data['social'] ?? null;
+
+        if (is_null($social)) {
+            $options = [
+                'username' => 'required|string|max:255|unique:users',
+                'password' => 'required|string|min:6|confirmed',
+                'verify' => [new Captcha()]
+            ];
+        }
 
         $mandatory = $gas->public_registrations['mandatory_fields'];
 
@@ -116,13 +131,19 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $gas = Gas::find($data['gas_id']);
+
         $user = new User();
         $user->gas_id = $data['gas_id'];
         $user->member_since = date('Y-m-d', time());
-        $user->username = $data['username'];
         $user->firstname = $data['firstname'];
         $user->lastname = $data['lastname'];
-        $user->password = Hash::make($data['password']);
+
+        $username = $data['username'] ?? ($data['email'] ?? Str::random(30));
+        $user->username = $username;
+
+        $password = $data['password'] ?? Str::random(30);
+        $user->password = Hash::make($password);
 
         $manual = $gas->public_registrations['manual'];
         if ($manual) {
@@ -131,22 +152,17 @@ class RegisterController extends Controller
 
         $user->save();
 
-        if (!empty($data['email'])) {
-            $contact = new Contact();
-            $contact->target_id = $user->id;
-            $contact->target_type = get_class($user);
-            $contact->type = 'email';
-            $contact->value = $data['email'];
-            $contact->save();
+        if (isset($data['email']) && empty($data['email']) == false) {
+            $user->addContact('email', $data['email']);
         }
 
-        if (!empty($data['phone'])) {
-            $contact = new Contact();
-            $contact->target_id = $user->id;
-            $contact->target_type = get_class($user);
-            $contact->type = 'phone';
-            $contact->value = $data['phone'];
-            $contact->save();
+        if (isset($data['phone']) && empty($data['phone']) == false) {
+            $user->addContact('phone', $data['phone']);
+        }
+
+        if (isset($data['social']) && empty($data['social']) == false) {
+            list($identifier, $value) = explode('::', $data['social']);
+            $user->addContact($identifier, $value);
         }
 
         return $user;
@@ -155,12 +171,14 @@ class RegisterController extends Controller
     protected function registered(Request $request, $user)
     {
         Session::forget('captcha_solution');
+        Session::forget('from_social');
+        Session::forget('from_social_email');
 
         try {
             $user->notify(new WelcomeMessage());
         }
         catch(\Exception $e) {
-            Log::error('Impossibile inviare mail di verifica a nuovo utente: ' . $e->getMessage());
+            \Log::error('Impossibile inviare mail di verifica a nuovo utente: ' . $e->getMessage());
         }
 
         $admins = everybodyCan('users.admin', $user->gas);
@@ -169,7 +187,7 @@ class RegisterController extends Controller
                 $ad->notify(new NewUserNotification($user));
             }
             catch(\Exception $e) {
-                Log::error('Impossibile inviare notifica registrazione nuovo utente: ' . $e->getMessage());
+                \Log::error('Impossibile inviare notifica registrazione nuovo utente: ' . $e->getMessage());
             }
         }
 

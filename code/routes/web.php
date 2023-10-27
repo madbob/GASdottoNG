@@ -1,6 +1,8 @@
 <?php
 
 Auth::routes();
+Route::get('login/social/{driver}', 'Auth\LoginController@social')->name('login.social');
+Route::get('login/social/{driver}/callback', 'Auth\LoginController@socialCallback')->name('login.social.back');
 Route::get('autologin/{token}', 'Auth\LoginController@autologin')->name('autologin');
 
 Route::get('ordini.xml', 'OrdersController@rss')->name('rss');
