@@ -101,6 +101,9 @@ class RegisterController extends Controller
                 'verify' => [new Captcha()]
             ];
         }
+        else {
+            $options = [];
+        }
 
         $mandatory = $gas->public_registrations['mandatory_fields'];
 

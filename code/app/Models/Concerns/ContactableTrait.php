@@ -66,7 +66,9 @@ trait ContactableTrait
             $contacts[] = $contact->id;
         }
 
-        $this->contacts()->whereNotIn('id', $contacts)->delete();
+        $valid_types = Contact::types();
+        $valid_types = array_keys($valid_types);
+        $this->contacts()->whereIn('type', $valid_types)->whereNotIn('id', $contacts)->delete();
     }
 
     public function addContact($type, $value)
@@ -119,6 +121,12 @@ trait ContactableTrait
             return '';
     }
 
+    /*
+        Tra i contatti vengono salvate anche informazioni che non sono
+        propriamente contatti (e.g. gli identificativi per i login social).
+        Questa funzione è per accedere comodamente solo a quelli il cui type è
+        mappato come tipo di contatto valido
+    */
     public function getValidContactsAttribute()
     {
         $types = Contact::types();

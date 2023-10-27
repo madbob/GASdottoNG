@@ -130,6 +130,7 @@ class LoginController extends Controller
         }
 
         $config = new \SocialiteProviders\Manager\Config($client_id, $client_secret, $redirect_url);
+        // @phpstan-ignore-next-line
         return Socialite::driver($driver)->setConfig($config);
     }
 
