@@ -3,7 +3,7 @@
 $enabled = [];
 
 foreach(App\Gas::all() as $gas) {
-    $enabled = array_merge($enabled, $gas->social_login);
+    $enabled = array_merge($enabled, $gas->social_login['providers']);
 }
 
 $enabled = array_unique($enabled);

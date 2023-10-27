@@ -4,8 +4,8 @@
             <input type="hidden" name="group" value="users">
 
             <div class="col">
-                <x-larastrap::check name="enable_login_google" :label="_i('Abilita Login Google')" :checked="in_array('google', $gas->social_login)" />
-                <x-larastrap::check name="enable_login_facebook" :label="_i('Abilita Login Facebook')" :checked="in_array('facebook', $gas->social_login)" />
+                <x-larastrap::check name="enable_login_google" :label="_i('Abilita Login Google')" :checked="in_array('google', $gas->social_login['providers'])" />
+                <x-larastrap::check name="enable_login_facebook" :label="_i('Abilita Login Facebook')" :checked="in_array('facebook', $gas->social_login['providers'])" />
 
                 <hr/>
 

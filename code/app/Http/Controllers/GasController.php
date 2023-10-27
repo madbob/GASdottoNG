@@ -173,14 +173,16 @@ class GasController extends Controller
             ];
         }
 
-        $socials = [];
+        $socials = (object) [
+            'providers' => []
+        ];
 
         if ($request->has('enable_login_google')) {
-            $socials[] = 'google';
+            $socials->providers[] = 'google';
         }
 
         if ($request->has('enable_login_facebook')) {
-            $socials[] = 'facebook';
+            $socials->providers[] = 'facebook';
         }
 
         $gas->setConfig('public_registrations', $registrations_info);
