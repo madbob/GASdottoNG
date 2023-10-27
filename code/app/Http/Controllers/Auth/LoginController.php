@@ -111,10 +111,10 @@ class LoginController extends Controller
         return redirect()->route('dashboard');
     }
 
-    public function social($driver)
+    private function initSocialiteDriver($driver)
     {
-        $client_id = config('service.' . $driver . '.client_id');
-        $client_secret = config('service.' . $driver . '.client_secret');
+        $client_id = config('services.' . $driver . '.client_id');
+        $client_secret = config('services.' . $driver . '.client_secret');
 
         if (env('GASDOTTO_NET')) {
             /*
@@ -122,14 +122,21 @@ class LoginController extends Controller
                 redirect OAuth, da cui poi si viene smistati sulla rotta
                 login.social.back dell'istanza giusta
             */
-            $redirect_url = sprintf('https://gasdotto.net/social/%s?instance=%s', $driver, current_instance());
+            $redirect_url = sprintf('https://gasdotto.net/social/%s', $driver);
+            setcookie('oauth_instance', current_instance(), 0, '/', 'gasdotto.net');
         }
         else {
             $redirect_url = route('login.social.back', $driver);
         }
 
         $config = new \SocialiteProviders\Manager\Config($client_id, $client_secret, $redirect_url);
-        return Socialite::driver($driver)->setConfig($config)->redirect();
+        return Socialite::driver($driver)->setConfig($config);
+    }
+
+    public function social($driver)
+    {
+        $socialite = $this->initSocialiteDriver($driver);
+        return $socialite->redirect();
     }
 
     private function retrieveSocialUser($user, $driver)
@@ -155,7 +162,8 @@ class LoginController extends Controller
 
     public function socialCallback(Request $request, $driver)
     {
-        $user = Socialite::driver($driver)->user();
+        $socialite = $this->initSocialiteDriver($driver);
+        $user = $socialite->user();
 
         if ($user) {
             $u = $this->retrieveSocialUser($user, $driver);

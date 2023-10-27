@@ -119,6 +119,13 @@ trait ContactableTrait
             return '';
     }
 
+    public function getValidContactsAttribute()
+    {
+        $types = Contact::types();
+        $types = array_keys($types);
+        return $this->contacts()->whereIn('type', $types)->get();
+    }
+
     public function getAddress()
     {
         $address = $this->contacts()->where('type', 'address')->first();
