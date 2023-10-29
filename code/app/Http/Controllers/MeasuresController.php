@@ -91,12 +91,6 @@ class MeasuresController extends Controller
         return $this->successResponse();
     }
 
-    public function listProducts(Request $request, $id)
-    {
-        $measure = Measure::findOrFail($id);
-        return view('measures.products-list', ['products' => $measure->products]);
-    }
-
     public function discretes()
     {
         $measures = Measure::all();

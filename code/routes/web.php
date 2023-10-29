@@ -95,7 +95,6 @@ Route::middleware(['auth'])->group(function() {
         Route::get('categories/{id}/header', 'CategoriesController@objhead')->name('categories.objhead');
 
         Route::get('measures/{id}/header', 'MeasuresController@objhead')->name('measures.objhead');
-        Route::get('measures/list/{id}', 'MeasuresController@listProducts');
         Route::get('measures/discretes', 'MeasuresController@discretes');
 
         Route::get('variants/{id}/matrix', 'VariantsController@matrix')->name('variants.matrix');

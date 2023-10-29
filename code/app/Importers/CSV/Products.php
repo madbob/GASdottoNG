@@ -86,9 +86,9 @@ class Products extends CSVImporter
         ]);
     }
 
-    private function mapSelection($class, $param, $value, $field, &$product)
+    private function mapSelection($objects, $param, $value, $field, &$product)
     {
-        $test = $class::where($param, $value)->first();
+        $test = $objects->firstWhere($param, $value);
         if (is_null($test)) {
             return 'temp_' . $field . '_name';
         }
@@ -106,6 +106,10 @@ class Products extends CSVImporter
         $s = $this->getSupplier($request);
 
         $products = $errors = [];
+        $all_products = $s->products;
+        $all_categories = Category::all();
+        $all_measures = Measure::all();
+        $all_vatrates = VatRate::all();
 
         foreach($reader->getRecords() as $line) {
             if (empty($line) || (count($line) == 1 && empty($line[0]))) {
@@ -116,12 +120,12 @@ class Products extends CSVImporter
                 $test = null;
 
                 if ($supplier_code_index != -1 && filled($line[$supplier_code_index])) {
-                    $test = $s->products()->withTrashed()->where('supplier_code', $line[$supplier_code_index])->orderBy('id', 'desc')->first();
+                    $test = $all_products->firstWhere('supplier_code', $line[$supplier_code_index]);
                 }
 
                 if (is_null($test)) {
                     if ($name_index != -1 && filled($line[$name_index])) {
-                        $test = $s->products()->withTrashed()->where('name', $line[$name_index])->orderBy('id', 'desc')->first();
+                        $test = $all_products->firstWhere('name', $line[$name_index]);
                     }
                 }
 
@@ -150,10 +154,10 @@ class Products extends CSVImporter
                     $value = trim($line[$index]);
 
                     if ($field == 'category') {
-                        $field = $this->mapSelection(Category::class, 'name', $value, 'category', $p);
+                        $field = $this->mapSelection($all_categories, 'name', $value, 'category', $p);
                     }
                     elseif ($field == 'measure') {
-                        $field = $this->mapSelection(Measure::class, 'name', $value, 'measure', $p);
+                        $field = $this->mapSelection($all_measures, 'name', $value, 'measure', $p);
                     }
                     elseif ($field == 'price') {
                         $value = guessDecimal($value);
@@ -165,7 +169,7 @@ class Products extends CSVImporter
                             continue;
                         }
                         else {
-                            $field = $this->mapSelection(VatRate::class, 'percentage', $value, 'vat_rate', $p);
+                            $field = $this->mapSelection($all_vatrates, 'percentage', $value, 'vat_rate', $p);
                             $vat_rate = $value;
                         }
                     }
@@ -222,7 +226,7 @@ class Products extends CSVImporter
 
         foreach($data['import'] as $index) {
             try {
-                if ($data['want_replace'][$index] != '0') {
+                if (isset($data['want_replace'][$index]) && $data['want_replace'][$index] != '0') {
                     $p = Product::find($data['want_replace'][$index]);
                 }
                 else {
