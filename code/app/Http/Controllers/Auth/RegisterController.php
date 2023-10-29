@@ -116,6 +116,8 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $gas = Gas::find($data['gas_id']);
+
         $user = new User();
         $user->gas_id = $data['gas_id'];
         $user->member_since = date('Y-m-d', time());
