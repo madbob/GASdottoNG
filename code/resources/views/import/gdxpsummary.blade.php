@@ -1,6 +1,6 @@
 <x-larastrap::modal :title="_i('Importa GDXP')">
     <div class="wizard_page">
-        <x-larastrap::form method="POST" :action="url('import/gdxp?step=run')" :buttons="[['color' => 'success', 'type' => 'submit', 'label' => _i('Avanti')]]">
+        <x-larastrap::wizardform :action="url('import/gdxp?step=run')">
             <input type="hidden" name="path" value="{{ $path }}">
 
             @foreach($data as $supplier)
@@ -33,6 +33,6 @@
                     </label>
                 </x-larastrap::field>
             @endforeach
-        </x-larastrap::form>
+        </x-larastrap::wizardform>
     </div>
 </x-larastrap::modal>

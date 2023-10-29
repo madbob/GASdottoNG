@@ -120,19 +120,18 @@ class Products extends CSVImporter
                 $test = null;
 
                 if ($supplier_code_index != -1 && filled($line[$supplier_code_index])) {
-                    $test = $all_products->firstWhere('supplier_code', $line[$supplier_code_index]);
+                    $test = $all_products->firstWhereAbout('supplier_code', $line[$supplier_code_index]);
                 }
 
                 if (is_null($test)) {
                     if ($name_index != -1 && filled($line[$name_index])) {
-                        $test = $all_products->firstWhere('name', $line[$name_index]);
+                        $test = $all_products->firstWhereAbout('name', $line[$name_index]);
                     }
                 }
 
-                $want_replace = is_null($test) ? 0 : $test->id;
-
-                if ($want_replace) {
+                if (is_null($test) == false) {
                     $p = $test;
+                    $p->want_replace = $test;
                 }
                 else {
                     $p = new Product();
@@ -143,12 +142,11 @@ class Products extends CSVImporter
                     $p->multiple = 0;
                     $p->package_size = 0;
                     $p->portion_quantity = 0;
+                    $p->want_replace = null;
                     $price_without_vat = null;
                     $vat_rate = null;
                     $package_price = null;
                 }
-
-                $p->want_replace = $want_replace;
 
                 foreach ($columns as $index => $field) {
                     $value = trim($line[$index]);
@@ -268,8 +266,15 @@ class Products extends CSVImporter
             }
         }
 
-        if ($request->has('reset_list')) {
-            $s->products()->whereNotIn('id', $products_ids)->update(['active' => false]);
+        $reset_mode = $request->input('reset_list');
+        switch($reset_mode) {
+            case 'disable':
+                $s->products()->whereNotIn('id', $products_ids)->update(['active' => false]);
+                break;
+
+            case 'remove':
+                $s->products()->whereNotIn('id', $products_ids)->delete();
+                break;
         }
 
         DB::commit();

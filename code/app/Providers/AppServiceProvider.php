@@ -79,6 +79,20 @@ class AppServiceProvider extends ServiceProvider
             /** @var Collection $this */
             return $this->sortBy(fn($b) => $b->user->printableName());
         });
+
+        /*
+            Estrapola da una Collection il primo elemento il cui attributo $attr
+            ha un valore "simile" a $value
+        */
+        Collection::macro('firstWhereAbout', function ($attr, $value) {
+            $value = preg_replace('/[^a-zA-Z0-9]*/', '', mb_strtolower(trim($value)));
+
+            /** @var Collection $this */
+            return $this->first(function($o, $k) use ($attr, $value) {
+                $test = preg_replace('/[^a-zA-Z0-9]*/', '', mb_strtolower(trim($o->$attr)));
+                return $test == $value;
+            });
+        });
     }
 
     public function register()

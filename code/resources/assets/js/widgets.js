@@ -87,6 +87,20 @@ class Widgets {
             dropdownParent: container,
         });
 
+        $('.remote-select', container).each((index, node) => {
+            node = $(node);
+            let url = node.attr('data-remote-url');
+
+            node.select2({
+                theme: "bootstrap-5",
+                dropdownParent: container,
+                ajax: {
+                    url: url,
+                    dataType: 'JSON',
+                },
+            });
+        });
+
         /*
             https://stackoverflow.com/questions/15989591/how-can-i-keep-bootstrap-popover-alive-while-the-popover-is-being-hovered
         */

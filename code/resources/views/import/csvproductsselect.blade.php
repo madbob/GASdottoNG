@@ -1,7 +1,6 @@
 <?php
 
-$original_products = $supplier->products;
-$categories = App\Category::orderBy('name', 'asc')->where('parent_id', '=', null)->get();
+$categories = App\Category::orderBy('name', 'asc')->whereNull('parent_id')->with('children')->get();
 $measures = App\Measure::orderBy('name', 'asc')->get();
 $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
 
@@ -19,26 +18,28 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
             </div>
         @endif
 
-        <x-larastrap::form method="POST" :action="url('import/csv?type=products&step=run')" :buttons="[['color' => 'success', 'type' => 'submit', 'label' => _i('Avanti')]]">
+        <x-larastrap::wizardform :action="url('import/csv?type=products&step=run')">
             <input type="hidden" name="supplier_id" value="{{ $supplier->id }}">
 
             <div class="row">
                 <div class="col-md-6">
-                    <x-larastrap::check name="reset_list" :label="_i('Disattiva prodotti di questo fornitore non inclusi nell\'elenco')" />
+                    <x-larastrap::radios name="reset_list" :label="_i('Prodotti Esistenti')" :options="['no' => _i('Ignora'), 'disable' => _i('Disabilita'), 'remove' => _i('Elimina')]" value="no" />
                 </div>
             </div>
 
-            <table class="table">
+            <hr>
+
+            <table class="table fixed-table">
                 <thead>
                     <tr>
-                        <th width="3%">{{ _i('Importa') }}</th>
+                        <th width="5%">{{ _i('Importa') }}</th>
                         <th width="15%">{{ _i('Nome') }}</th>
                         <th width="15%">{{ _i('Descrizione') }}</th>
-                        <th width="8%">{{ _i('Prezzo Unitario') }}</th>
-                        <th width="11%">{{ _i('Categoria') }}</th>
-                        <th width="11%">{{ _i('Unità di Misura') }}</th>
-                        <th width="11%">{{ _i('Aliquota IVA') }}</th>
-                        <th width="9%">{{ _i('Codice Fornitore') }}</th>
+                        <th width="10%">{{ _i('Prezzo Unitario') }}</th>
+                        <th width="10%">{{ _i('Categoria') }}</th>
+                        <th width="10%">{{ _i('Unità di Misura') }}</th>
+                        <th width="10%">{{ _i('Aliquota IVA') }}</th>
+                        <th width="10%">{{ _i('Codice Fornitore') }}</th>
                         <th width="15%">{{ _i('Aggiorna') }}</th>
                     </tr>
                 </thead>
@@ -88,9 +89,17 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                                 <td>
                                     <x-larastrap::text name="supplier_code" squeeze npostfix="[]" />
                                 </td>
-                                <td>
-                                    @if($original_products->isEmpty() == false)
-                                        <x-larastrap::selectobj name="want_replace" squeeze npostfix="[]" :options="$original_products" :extraitem="_i('Nessuno')" :value="$product->want_replace" />
+                                <td width="15%">
+                                    @if($supplier->products->isEmpty() == false)
+                                        @php
+
+                                        $original_products = [0 => _i('Nessuno')];
+                                        if ($product->want_replace) {
+                                            $original_products[$product->want_replace->id] = $product->want_replace->printableName();
+                                        }
+
+                                        @endphp
+                                        <x-larastrap::select name="want_replace" squeeze npostfix="[]" :options="$original_products" :value="$product->want_replace->id ?? 0" classes="remote-select" :data-remote-url="route('products.search', ['supplier' => $supplier->id])" />
                                     @else
                                         {{ _i('Nessun Prodotto Aggiornabile') }}
                                         <input type="hidden" name="want_replace[]" value="0">
@@ -101,6 +110,6 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                     @endforeach
                 </tbody>
             </table>
-        </x-larastrap::form>
+        </x-larastrap::wizardform>
     </div>
 </x-larastrap::modal>

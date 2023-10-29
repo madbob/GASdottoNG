@@ -27,7 +27,7 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
     <input type="hidden" name="matching_methods_for_movement_types" value='{!! json_encode($methods) !!}'>
 
     <div class="wizard_page">
-        <x-larastrap::form method="POST" :action="url('import/csv?type=movements&step=run')" :buttons="[['color' => 'success', 'type' => 'submit', 'label' => _i('Avanti')]]">
+        <x-larastrap::wizardform :action="url('import/csv?type=movements&step=run')">
             @if(!empty($errors))
                 <p>
                     {{ _i('Errori') }}:
@@ -100,6 +100,6 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
                     @endforeach
                 </tbody>
             </table>
-        </x-larastrap::form>
+        </x-larastrap::wizardform>
     </div>
 </x-larastrap::modal>

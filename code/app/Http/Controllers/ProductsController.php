@@ -188,4 +188,14 @@ class ProductsController extends BackedController
 
         return $this->successResponse();
     }
+
+    public function search(Request $request)
+    {
+        return $this->easyExecute(function() use ($request) {
+            $supplier = $request->input('supplier');
+            $term = $request->input('term');
+            $products = $this->service->search($supplier, $term);
+            return response()->json($products);
+        });
+    }
 }

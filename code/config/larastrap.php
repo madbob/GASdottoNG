@@ -177,6 +177,19 @@ return [
                 'classes' => ['inner-form'],
             ],
         ],
+        'wizardform' => [
+            'extends' => 'form',
+            'params' => [
+                'method' => 'POST',
+                'buttons' => [
+                    [
+                        'color' => 'success',
+                        'label' => 'Avanti',
+                        'attributes' => ['type' => 'submit'],
+                    ]
+                ]
+            ],
+        ],
         'scheck' => [
             'extends' => 'check',
             'params' => [

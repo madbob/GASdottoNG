@@ -13,9 +13,29 @@ use App\Role;
 
 class ProductsService extends BaseService
 {
-    public function list($term = '', $all = false)
+    public function search($supplier_id, $term)
     {
-        /* TODO */
+        $ret = (object) [
+            'results' => [
+                (object) [
+                    'id' => 0,
+                    'text' => _i('Nessuno'),
+                ]
+            ]
+        ];
+
+        $supplier = Supplier::findOrFail($supplier_id);
+        $term = sprintf('%%%s%%', $term);
+        $products = $supplier->products()->where('name', 'like', $term)->orderBy('name', 'asc')->get();
+
+        foreach($products as $prod) {
+            $ret->results[] = (object) [
+                'id' => $prod->id,
+                'text' => $prod->printableName(),
+            ];
+        }
+
+        return $ret;
     }
 
     public function show($id)
