@@ -329,7 +329,7 @@ class MovementsService extends BaseService
             });
         }
         catch(\Exception $e) {
-            Log::error(_i('Errore nel ricalcolo saldi: %s', $e->getMessage()));
+            Log::error('Errore nel ricalcolo saldi: ' . $e->getMessage());
             $hub->setRecalculating(false);
             return false;
         }

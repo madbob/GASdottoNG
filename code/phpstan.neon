@@ -15,8 +15,9 @@ parameters:
         - '#Function .* has no return type specified#'
 
     # The level 8 is the highest level
-    level: 5
+    level: 6
     checkModelProperties: true
     checkMissingIterableValueType: false
     reportUnmatchedIgnoredErrors: false
     treatPhpDocTypesAsCertain: false
+    checkGenericClassInNonGenericObjectType: false
