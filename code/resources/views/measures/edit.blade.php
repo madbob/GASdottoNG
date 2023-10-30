@@ -40,8 +40,18 @@
                         [
                             'label' => _i('Prodotti'),
                             'field' => 'id',
-                            'type' => 'custom',
-                            'contents' => '<button type="button" class="btn btn-light async-popover" data-contents-url="' . url('measures/list/%s') . '" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="placeholder" data-bs-html="true" data-bs-trigger="hover"><i class="bi-list"></i></button>'
+                            'type' => 't',
+                            'extra_callback' => function($content, $attributes) {
+                                $count = $content->products()->count();
+                                if ($count) {
+                                    $attributes['value'] = $count;
+                                }
+                                else {
+                                    $attributes['value'] = '-';
+                                }
+
+                                return $attributes;
+                            }
                         ]
                     ]
                 ])

@@ -21,23 +21,8 @@ class OpenOrders extends Command
         parent::__construct();
     }
 
-    public function handle()
+    private function getDates()
     {
-        /*
-            Qui vengono aperti gli ordini che erano stati impostati con una data
-            futura
-        */
-
-        $pending = Order::where('status', 'suspended')->where('start', Carbon::today()->format('Y-m-d'))->get();
-        foreach($pending as $p) {
-            $p->status = 'open';
-            $p->save();
-        }
-
-        /*
-            Da qui vengono gestiti gli ordini schedulati con le date
-        */
-
         $dates = Date::where('type', 'order')->get();
         $today = date('Y-m-d');
         $aggregable = [];
@@ -90,34 +75,62 @@ class OpenOrders extends Command
             }
         }
 
+        return $aggregable;
+    }
+
+    private function openByDates($aggregable)
+    {
+        $today = date('Y-m-d');
+
         foreach($aggregable as $aggr) {
             $aggregate = new Aggregate();
             $aggregate->save();
 
             foreach($aggr as $date) {
-				$supplier = $date->target;
+                $supplier = $date->target;
 
-				$order = new Order();
-				$order->aggregate_id = $aggregate->id;
-				$order->supplier_id = $supplier->id;
-				$order->comment = $date->comment;
-				$order->status = 'suspended';
-				$order->keep_open_packages = 'no';
-				$order->start = $today;
-				$order->end = date('Y-m-d', strtotime($today . ' +' . $date->end . ' days'));
+                $order = new Order();
+                $order->aggregate_id = $aggregate->id;
+                $order->supplier_id = $supplier->id;
+                $order->comment = $date->comment;
+                $order->status = 'suspended';
+                $order->keep_open_packages = 'no';
+                $order->start = $today;
+                $order->end = date('Y-m-d', strtotime($today . ' +' . $date->end . ' days'));
 
-				if (!empty($date->shipping)) {
-					$order->shipping = date('Y-m-d', strtotime($today . ' +' . $date->shipping . ' days'));
-				}
+                if (!empty($date->shipping)) {
+                    $order->shipping = date('Y-m-d', strtotime($today . ' +' . $date->shipping . ' days'));
+                }
 
-				Log::debug('Apro ordine automatico per ' . $supplier->name);
-				$order->save();
+                Log::debug('Apro ordine automatico per ' . $supplier->name);
+                $order->save();
 
-				$order->products()->sync($supplier->products()->where('active', '=', true)->get());
+                $order->products()->sync($supplier->products()->where('active', '=', true)->get());
 
                 $order->status = 'open';
                 $order->save();
             }
         }
+    }
+
+    public function handle()
+    {
+        /*
+            Qui vengono aperti gli ordini che erano stati impostati con una data
+            futura
+        */
+
+        $pending = Order::where('status', 'suspended')->where('start', Carbon::today()->format('Y-m-d'))->get();
+        foreach($pending as $p) {
+            $p->status = 'open';
+            $p->save();
+        }
+
+        /*
+            Da qui vengono gestiti gli ordini schedulati con le date
+        */
+
+        $aggregable = $this->getDates();
+        $this->openByDates($aggregable);
     }
 }

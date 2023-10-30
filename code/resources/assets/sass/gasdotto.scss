@@ -152,6 +152,10 @@ table {
 		margin-bottom: 0;
 		font-weight: normal;
 	}
+
+    &.fixed-table {
+        table-layout: fixed;
+    }
 }
 
 .dynamic-table {

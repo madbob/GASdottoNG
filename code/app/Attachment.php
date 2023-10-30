@@ -16,7 +16,9 @@ class Attachment extends Model
 
     public function attached(): MorphTo
     {
-        if ($this->target_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->target_type))) {
+        $uses = class_uses($this->target_type);
+
+        if ($this->target_type && $uses && in_array('Illuminate\Database\Eloquent\SoftDeletes', $uses)) {
             // @phpstan-ignore-next-line
             return $this->morphTo('target')->withoutGlobalScopes()->withTrashed();
         }
@@ -55,8 +57,9 @@ class Attachment extends Model
 
         if (file_exists($file)) {
             $mime = mime_content_type($file);
-            if (strncmp($mime, 'image/', 6) == 0)
+            if ($mime && strncmp($mime, 'image/', 6) == 0) {
                 return true;
+            }
         }
 
         return false;
@@ -70,11 +73,12 @@ class Attachment extends Model
             if ($this->isImage()) {
                 $file = $this->path;
                 $size = getimagesize($file);
-                return array_slice($size, 0, 2);
+                if ($size) {
+                    return array_slice($size, 0, 2);
+                }
             }
-            else {
-                Log::error('Richiesta dimensione per allegato non immagine');
-            }
+
+            Log::error('Richiesta dimensione per allegato non immagine');
         }
         catch(\Exception $e) {
             Log::error('Impossibile recuperare dimensione allegato ' . $this->id);

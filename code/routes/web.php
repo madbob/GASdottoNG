@@ -75,6 +75,7 @@ Route::middleware(['auth'])->group(function() {
         Route::get('products/{id}/post_feedback', 'ProductsController@postFeedback')->name('products.feedback');
         Route::get('products/{id}/ask_update_price', 'ProductsController@askUpdatePrices')->name('products.askupdateprices');
         Route::post('products/{id}/update_price', 'ProductsController@updatePrices')->name('products.updateprices');
+        Route::get('products/search', 'ProductsController@search')->name('products.search');
         Route::get('products/price', 'ProductsController@price')->name('products.price');
 
         Route::get('vatrates/{id}/header', 'VatRatesController@objhead')->name('vatrates.objhead');
@@ -97,7 +98,6 @@ Route::middleware(['auth'])->group(function() {
         Route::get('categories/{id}/header', 'CategoriesController@objhead')->name('categories.objhead');
 
         Route::get('measures/{id}/header', 'MeasuresController@objhead')->name('measures.objhead');
-        Route::get('measures/list/{id}', 'MeasuresController@listProducts');
         Route::get('measures/discretes', 'MeasuresController@discretes');
 
         Route::get('variants/{id}/matrix', 'VariantsController@matrix')->name('variants.matrix');

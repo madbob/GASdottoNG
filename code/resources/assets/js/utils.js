@@ -146,6 +146,27 @@ class Utils {
         return url;
     }
 
+    static spinSubmitButton(form)
+    {
+        let submit_button = this.j().submitButton(form);
+
+        submit_button.each(function() {
+            var idle_text = $(this).text();
+            $(this).attr('data-idle-text', idle_text).empty().append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop('disabled', true);
+        });
+    }
+
+    static formErrorFeedback(form)
+    {
+        let submit_button = this.j().submitButton(form);
+
+        submit_button.each((index, button) => {
+            let btn = $(button);
+            this.inlineFeedback(btn, _('ERRORE!'));
+            btn.prop('disabled', true);
+        });
+    }
+
     static inlineFeedback(button, feedback_text)
     {
         var idle_text = button.attr('data-idle-text');

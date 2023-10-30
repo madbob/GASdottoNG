@@ -1,6 +1,6 @@
 <x-larastrap::modal :title="_i('Importa consegne')" size="fullscreen">
     <div class="wizard_page">
-        <x-larastrap::form method="POST" :action="url('import/csv?type=deliveries&step=run')" :buttons="[['color' => 'success', 'type' => 'submit', 'label' => _i('Avanti')]]">
+        <x-larastrap::wizardform :action="url('import/csv?type=deliveries&step=run')">
 			<input type="hidden" name="aggregate_id" value="{{ $aggregate_id }}">
 			<input type="hidden" name="order_id" value="{{ $order_id }}">
 			<input type="hidden" name="data" value="{{ json_encode($data) }}">
@@ -32,6 +32,6 @@
                     @endforeach
                 </tbody>
             </table>
-        </x-larastrap::form>
+        </x-larastrap::wizardform>
     </div>
 </x-larastrap::modal>

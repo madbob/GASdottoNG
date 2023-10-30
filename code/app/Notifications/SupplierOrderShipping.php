@@ -5,6 +5,7 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 
 use Log;
 use Auth;
@@ -38,7 +39,7 @@ class SupplierOrderShipping extends ManyMailNotification
             assegnato a molteplici GAS, che possono avere configurazioni diverse
             per la formattazione delle mail
         */
-        $notifiable->setRelation('gas', collect($this->gas));
+        $notifiable->setRelation('gas', new Collection([$this->gas]));
 
         $message = $this->formatMail($message, $notifiable, 'supplier_summary', [
             'supplier_name' => $this->order->supplier->name,

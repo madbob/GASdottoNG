@@ -556,12 +556,7 @@ $(document).ready(function() {
             return;
         }
 
-        var submit_button = utils.j().submitButton(form);
-
-        submit_button.each(function() {
-            var idle_text = $(this).text();
-            $(this).attr('data-idle-text', idle_text).empty().append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop('disabled', true);
-        });
+		utils.spinSubmitButton(form);
 
         var params = {
             method: form.attr('method'),
@@ -570,21 +565,17 @@ $(document).ready(function() {
 
             success: function(data) {
 				if (miscInnerCallbacks(form, data) == true) {
-	                submit_button.each(function() {
+	                utils.j().submitButton(form).each(function() {
 	                    utils.inlineFeedback($(this), _('Salvato!'));
 	                });
 				}
 				else {
-					submit_button.each(function() {
-	                    utils.inlineFeedback($(this), _('ERRORE!'));
-	                });
+					utils.formErrorFeedback(form);
 				}
             },
 
             error: function(data) {
-                submit_button.each(function() {
-                    utils.inlineFeedback($(this), _('ERRORE!'));
-                });
+                utils.formErrorFeedback(form);
             }
         };
 
@@ -799,7 +790,8 @@ $(document).ready(function() {
 
         var form = $(this);
         var data = form.serializeArray();
-        form.find('button[type=submit]').prop('disabled', true);
+
+		utils.spinSubmitButton(form);
 
         $.ajax({
             method: form.attr('method'),
@@ -809,6 +801,10 @@ $(document).ready(function() {
 
             success: function(data) {
                 wizardLoadPage(form, data);
+            },
+
+			error: function(data) {
+                utils.formErrorFeedback(form);
             }
         });
 

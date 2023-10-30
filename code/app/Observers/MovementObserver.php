@@ -18,6 +18,25 @@ class MovementObserver
         $this->movements_hub = App::make('MovementsHub');
     }
 
+    private function testPeer(&$movement, $metadata, $peer)
+    {
+        $type = sprintf('%s_type', $peer);
+        $id = sprintf('%s_id', $peer);
+
+        if (is_null($metadata->$type)) {
+            $movement->$type = null;
+            $movement->$id = null;
+        }
+        else {
+            if ($metadata->$type != $movement->$type) {
+                Log::error('Movimento ' . $movement->id . ': ' . $type . ' non coerente');
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private function verifyConsistency($movement)
     {
         $metadata = $movement->type_metadata;
@@ -32,24 +51,8 @@ class MovementObserver
             return false;
         }
 
-        if (is_null($metadata->sender_type)) {
-            $movement->sender_type = null;
-            $movement->sender_id = null;
-        }
-        else {
-            if ($metadata->sender_type != $movement->sender_type) {
-                Log::error(_i('Movimento %d: sender_type non coerente (%s != %s)', [$movement->id, $metadata->sender_type, $movement->sender_type]));
-                return false;
-            }
-        }
-
-        if (is_null($metadata->target_type)) {
-            $movement->target_type = null;
-            $movement->target_id = null;
-        }
-        else {
-            if ($metadata->target_type != $movement->target_type) {
-                Log::error(_i('Movimento %d: target_type non coerente (%s != %s)', [$movement->id, $metadata->target_type, $movement->target_type]));
+        foreach(['sender', 'target'] as $peer) {
+            if ($this->testPeer($movement, $metadata, $peer) == false) {
                 return false;
             }
         }

@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Collection;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Log;
@@ -31,7 +32,7 @@ class Modifier extends Model
     public function getDefinitionsAttribute()
     {
         $ret = json_decode($this->definition);
-        return collect($ret ?: []);
+        return new Collection($ret ?: []);
     }
 
     public function getModelTypeAttribute()
