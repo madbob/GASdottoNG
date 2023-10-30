@@ -86,23 +86,42 @@ class ProductsController extends BackedController
 
     public function massiveUpdate(Request $request)
     {
-        DB::beginTransaction();
+        return $this->easyExecute(function() use ($request) {
+            DB::beginTransaction();
 
-        $product_ids = $request->input('id', []);
+            $product_ids = $request->input('id', []);
+            $product_ids_remove = $request->input('remove', []);
 
-        foreach($product_ids as $index => $id) {
-            $product = $this->service->show($id);
-            $data['name'] = $request->input($id . '-name', $product->name);
-            $data['price'] = $request->input($id . '-price', $product->price);
-            $data['measure_id'] = $request->input($id . '-measure_id', $product->measure_id);
-            $data['max_available'] = $request->input($id . '-max_available', $product->max_available);
-            $data['active'] = $request->has($id . '-active');
-			$data['variable'] = $product->variable;
-            $data['sorting'] = $index;
-            $this->service->update($id, $data);
-        }
+            foreach($product_ids as $index => $id) {
+                if (in_array($id, $product_ids_remove)) {
+                    continue;
+                }
 
-        return $this->successResponse();
+                $product = $this->service->show($id);
+                $data['name'] = $request->input($id . '-name', $product->name);
+                $data['price'] = $request->input($id . '-price', $product->price);
+                $data['category_id'] = $request->input($id . '-category_id', $product->category_id);
+                $data['measure_id'] = $request->input($id . '-measure_id', $product->measure_id);
+                $data['max_available'] = $request->input($id . '-max_available', $product->max_available);
+                $data['active'] = $request->has($id . '-active');
+
+                /*
+                    Questo sta qui al solo scopo di popolare l'attributo.
+                    Altrimenti, nella funzione update(), "variable" risulterebbe
+                    sempre falso
+                */
+                $data['variable'] = $product->variable;
+
+                $data['sorting'] = $index;
+                $this->service->update($id, $data);
+            }
+
+            foreach($product_ids_remove as $remove) {
+                $this->service->destroy($remove);
+            }
+
+            return $this->successResponse();
+        });
     }
 
     public function picture($id)
