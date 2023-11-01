@@ -825,6 +825,21 @@ $(document).ready(function() {
 			url: 'users/tour/start',
 			dataType: 'JSON',
 			success: (data) => {
+				/*
+					Quando si registra una nuova istanza, viene spesso mostrata
+					la raccomandazione di modificare la propria password (di
+					default, username e password combaciano). Ma il modale si
+					sovrappone al menu, oggetto primario del tour. Dunque qui,
+					per ogni evenienza, chiudo tale modale: eventualmente
+					l'avviso sarà nuovamente mostrato quando l'utente si
+					autenticherà di nuovo
+				*/
+				$('#prompt-message-modal').modal('hide');
+
+				/*
+					Su mobile, devo esplicitamente aprire il menu affinché le
+					diverse voci siano evidenziate passo passo dal tour
+				*/
 				$('.navbar-toggler').click();
 
 				const tg = new TourGuideClient(data);
