@@ -11,6 +11,7 @@ require('jquery-ui/ui/widgets/autocomplete');
 require('jquery-ui-touch-punch');
 require('blueimp-file-upload');
 import Cookies from 'js-cookie';
+import { TourGuideClient } from "@sjmc11/tourguidejs";
 
 require('./aggregation');
 require('./jquery.dynamictree');
@@ -816,4 +817,25 @@ $(document).ready(function() {
     });
 
     Bookings.initOnce();
+
+	let needs_tour = $('meta[name=needs_tour]').attr('content');
+	if (needs_tour == '1') {
+		utils.postAjax({
+			method: 'GET',
+			url: 'users/tour/start',
+			dataType: 'JSON',
+			success: (data) => {
+				const tg = new TourGuideClient(data);
+
+				tg.onFinish(() => {
+					utils.postAjax({
+			            method: 'GET',
+			            url: 'users/tour/finish',
+			        });
+				});
+
+				tg.start();
+			}
+		});
+	}
 });

@@ -1,5 +1,12 @@
 <?php
 
+/*
+    Da qui viene generato il menu primario, in funzione dei permessi abilitati
+    per l'utente.
+    Ad alcune voci viene assegnato un ID, che viene usato per generare il tour
+    di onboarding in UsersController::startTour()
+*/
+
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -10,42 +17,63 @@ class MenuServiceProvider extends ServiceProvider
 {
     private function commonItems($user, &$menu)
     {
-        $menu['<i class="bi-house"></i> ' . _i('Home')] = route('dashboard');
-        $menu['<i class="bi-gear"></i> ' . $user->printableName()] = route('profile');
+        $menu['<i class="bi-house"></i> ' . _i('Home')] = [
+            'url' => route('dashboard'),
+        ];
+
+        $menu['<i class="bi-gear"></i> ' . $user->printableName()] = [
+            'url' => route('profile'),
+            'attributes' => ['id' => 'menu_profile'],
+        ];
     }
 
     private function accessUsers($user, $gas, &$menu)
     {
         if ($user->can('users.admin', $gas) || $user->can('users.view', $gas)) {
-            $menu['<i class="bi-people"></i> ' . _i('Utenti')] = route('users.index');
+            $menu['<i class="bi-people"></i> ' . _i('Utenti')] = [
+                'url' => route('users.index'),
+                'attributes' => ['id' => 'menu_users'],
+            ];
         }
     }
 
     private function accessSuppliers($user, $gas, &$menu)
     {
         if ($user->can('supplier.view', $gas) || $user->can('supplier.add', $gas) || $user->can('supplier.modify', null)) {
-            $menu['<i class="bi-tags"></i> ' . _i('Fornitori')] = route('suppliers.index');
+            $menu['<i class="bi-tags"></i> ' . _i('Fornitori')] = [
+                'url' => route('suppliers.index'),
+                'attributes' => ['id' => 'menu_suppliers'],
+            ];
         }
     }
 
     private function accessOrders($user, $gas, &$menu)
     {
         if ($user->can('supplier.orders', null) || $user->can('supplier.shippings', null) || $user->can('order.view', $gas)) {
-            $menu['<i class="bi-list-task"></i> ' . _i('Ordini')] = route('orders.index');
+            $menu['<i class="bi-list-task"></i> ' . _i('Ordini')] = [
+                'url' => route('orders.index'),
+                'attributes' => ['id' => 'menu_orders'],
+            ];
         }
     }
 
     private function accessBookings($user, $gas, &$menu)
     {
         if ($user->can('supplier.book', null)) {
-            $menu['<i class="bi-bookmark"></i> ' . _i('Prenotazioni')] = route('bookings.index');
+            $menu['<i class="bi-bookmark"></i> ' . _i('Prenotazioni')] = [
+                'url' => route('bookings.index'),
+                'attributes' => ['id' => 'menu_bookings'],
+            ];
         }
     }
 
     private function accessAccounting($user, $gas, &$menu)
     {
         if ($user->can('movements.view', $gas) || $user->can('movements.admin', $gas)) {
-            $menu['<i class="bi-piggy-bank"></i> ' . _i('Contabilità')] = route('movements.index');
+            $menu['<i class="bi-piggy-bank"></i> ' . _i('Contabilità')] = [
+                'url' => route('movements.index'),
+                'attributes' => ['id' => 'menu_accouting'],
+            ];
         }
     }
 
@@ -64,7 +92,10 @@ class MenuServiceProvider extends ServiceProvider
     private function accessConfigs($user, $gas, &$menu)
     {
         if ($user->can('gas.config', $gas)) {
-            $menu['<bi class="bi-tools"></i> ' . _i('Configurazioni')] = route('gas.edit', $gas->id);
+            $menu['<bi class="bi-tools"></i> ' . _i('Configurazioni')] = [
+                'url' => route('gas.edit', $gas->id),
+                'attributes' => ['id' => 'menu_config'],
+            ];
         }
     }
 
@@ -102,6 +133,7 @@ class MenuServiceProvider extends ServiceProvider
     {
         $view->with('end_menu', [
             '<i class="bi-megaphone-fill"></i>' => ['attributes' => [
+                'id' => 'menu_help',
                 'data-bs-toggle' => "modal",
                 'data-bs-target' => "#feedback-modal",
             ]],
@@ -124,9 +156,5 @@ class MenuServiceProvider extends ServiceProvider
                 $view->with('end_menu', []);
             }
         });
-    }
-
-    public function register()
-    {
     }
 }
