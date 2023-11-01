@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@dashboardcode/bsmultiselect": "^1.1.18",
+    "@sjmc11/tourguidejs": "^0.0.10",
     "acorn": "^8.10.0",
     "blueimp-file-upload": "^10.32.0",
     "bootstrap": "^5.3.2",

@@ -16,6 +16,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}"/>
         <meta name="absolute_url" content="{{ route('root') }}"/>
         <meta name="current_currency" content="{{ currentAbsoluteGas()->currency }}"/>
+        <meta name="needs_tour" content="{{ $currentuser->tour ? '0' : '1' }}"/>
     </head>
     <body>
         <div id="preloader">

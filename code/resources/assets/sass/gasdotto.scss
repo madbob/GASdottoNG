@@ -64,6 +64,7 @@ $s2bs5-border-color: $border-color;
 
 @import '~jquery-ui/themes/base/all.css';
 @import '~chartist/dist/index.css';
+@import "~@sjmc11/tourguidejs/src/scss/tour.scss";
 
 html, body {
     min-height: 100%;
@@ -677,6 +678,10 @@ i[class^='bi-hidden-'] {
     &.fixed-top {
         position: fixed !important;
     }
+}
+
+.tg-backdrop {
+    z-index: 1999;
 }
 
 @include media-breakpoint-down(lg) {
