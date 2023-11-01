@@ -305,6 +305,11 @@ class Utils {
         return identifier.replace(/:/g, '\\:').replace(/\[/g, '\\[').replace(/\]/g, '\\]');
     }
 
+    static isMobile()
+    {
+        return window.screen.width <= 992;
+    }
+
     static formByButton(button)
     {
         var parent_form = button.closest('form');
