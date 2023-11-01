@@ -825,6 +825,8 @@ $(document).ready(function() {
 			url: 'users/tour/start',
 			dataType: 'JSON',
 			success: (data) => {
+				$('.navbar-toggler').click();
+
 				const tg = new TourGuideClient(data);
 
 				tg.onFinish(() => {
@@ -832,6 +834,8 @@ $(document).ready(function() {
 			            method: 'GET',
 			            url: 'users/tour/finish',
 			        });
+
+					$('.navbar-toggler').click();
 				});
 
 				tg.start();

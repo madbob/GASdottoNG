@@ -160,7 +160,7 @@ class UsersController extends BackedController
 
         $steps[] = (object) [
 			'title' => _i('Benvenuto in GASdotto!'),
-			'content' => _i("Qui ti diamo qualche suggerimento per utilizzare questo nuovo sito"),
+			'content' => _i("Qui ti diamo qualche suggerimento per iniziare ad utilizzare questa nuova piattaforma..."),
 		];
 
         $steps[] = (object) [
@@ -219,7 +219,7 @@ class UsersController extends BackedController
 
         $steps[] = (object) [
             'title' => _i('Help in linea'),
-            'content' => _i("Aprendo i diversi pannelli di GASdotto, accanto a molti parametri trovi una icona blu: passandoci sopra il cursore del mouse ti viene mostrato un breve testo descrittivo che te ne illustra i dettagli.") . '<br><img class="img-fluid p-2 mt-2 bg-dark" src="' . asset('images/inline_help.gif') . '">',
+            'content' => _i("Aprendo i diversi pannelli di GASdotto, accanto a molti parametri trovi una icona blu: passandoci sopra il cursore del mouse, o pigiandoci sopra con il dito usando lo smartphone, ti viene mostrato un breve testo descrittivo che te ne illustra i dettagli.") . '<br><img class="img-fluid p-2 mt-2 bg-dark" src="' . asset('images/inline_help.gif') . '">',
         ];
 
         if ($user->can('users.admin', $gas)) {
@@ -232,8 +232,8 @@ class UsersController extends BackedController
 
         return response()->json([
             'dialogZ' => 2000,
-            'nextLabel' => _i('>>'),
-            'prevLabel' => _i('<<'),
+            'nextLabel' => '>>',
+            'prevLabel' => '<<',
             'finishLabel' => _i('Finito'),
             'steps' => $steps,
         ]);
