@@ -422,7 +422,20 @@ $(document).ready(function() {
 	var navbar = $('.navbar').first();
 	$('body').css('padding-top', (navbar.height() * 2) + 'px');
 
-    $('#preloader').remove();
+    $('#preloader').hide();
+
+	/*
+		Quando viene cliccata una voce del menu primario, mostro nuovamente la
+		schermata di preloading per dare un feedback esplicito sul fatto che
+		l'applicazione sta facendo qualcosa
+	*/
+	$('#main-navbar .navbar-nav:nth(0) .nav-link').click(() => {
+		if (utils.isMobile()) {
+			$('.navbar-toggler').click();
+		}
+
+		$('#preloader').show();
+	});
 
     $.ajaxSetup({
         cache: false,
@@ -818,6 +831,10 @@ $(document).ready(function() {
 
     Bookings.initOnce();
 
+	/*
+		Onboarding
+	*/
+
 	let needs_tour = $('meta[name=needs_tour]').attr('content');
 	if (needs_tour == '1') {
 		utils.postAjax({
@@ -840,7 +857,9 @@ $(document).ready(function() {
 					Su mobile, devo esplicitamente aprire il menu affinché le
 					diverse voci siano evidenziate passo passo dal tour
 				*/
-				$('.navbar-toggler').click();
+				if (utils.isMobile()) {
+					$('.navbar-toggler').click();
+				}
 
 				const tg = new TourGuideClient(data);
 
@@ -850,7 +869,9 @@ $(document).ready(function() {
 			            url: 'users/tour/finish',
 			        });
 
-					$('.navbar-toggler').click();
+					if (utils.isMobile()) {
+						$('.navbar-toggler').click();
+					}
 				});
 
 				tg.start();
