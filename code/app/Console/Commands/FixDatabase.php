@@ -36,7 +36,7 @@ class FixDatabase extends Command
         Artisan::call('db:seed', ['--force' => true, '--class' => 'MovementTypesSeeder']);
         Artisan::call('db:seed', ['--force' => true, '--class' => 'ModifierTypesSeeder']);
 
-        User::update(['tour' => false]);
+        User::query()->update(['tour' => false]);
 
         foreach(Gas::all() as $gas) {
             $registrations_info = $gas->public_registrations;
