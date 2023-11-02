@@ -268,7 +268,7 @@ class Product extends Model
         }
 
         foreach($other->variant_combos as $vc) {
-            $ovc = $this->variant_combos->firstWhere('id', $vc);
+            $ovc = $this->variant_combos->firstWhere('id', $vc->id);
             if ($ovc) {
                 if ($ovc->getPrice(false) != $vc->getPrice(false)) {
                     return false;
