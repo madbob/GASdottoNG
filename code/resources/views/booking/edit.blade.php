@@ -145,7 +145,7 @@ $form_buttons = [
                     <br>
                 @endif
 
-                <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}">
+                <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}" data-order-id="{{ $order->id }}">
                     <input type="hidden" name="booking_id" value="{{ $o->id }}" class="skip-on-submit">
 
                     <thead class="d-none d-md-table-header-group border-0">

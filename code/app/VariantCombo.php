@@ -102,9 +102,10 @@ class VariantCombo extends Model
     public function realPrice($rectify)
     {
         $offset = $this->price_offset;
+        $product = $this->product;
 
-        if (isset($this->product->pivot->prices)) {
-            $prices = json_decode($this->product->pivot->prices);
+        if (isset($product->pivot->prices)) {
+            $prices = json_decode($product->pivot->prices);
             if ($prices) {
                 $key = $this->innerIdentifier();
                 if (isset($prices->variants->$key)) {
@@ -113,6 +114,6 @@ class VariantCombo extends Model
             }
         }
 
-        return $offset + $this->product->getPrice($rectify);
+        return $offset + $product->getPrice($rectify);
     }
 }

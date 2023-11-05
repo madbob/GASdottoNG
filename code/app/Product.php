@@ -100,40 +100,43 @@ class Product extends Model
     public function getVariantCombosAttribute()
     {
         return $this->innerCache('variant_combos', function($obj) {
-            $ret = VariantCombo::whereHas('values', function($query) use ($obj) {
-                $query->whereHas('variant', function($query) use ($obj) {
-                    $query->where('product_id', $obj->id);
-                });
-            })->with(['values', 'values.variant'])->get();
+            return app("model-cache")->runDisabled(function() use ($obj) {
+                $ret = VariantCombo::whereHas('values', function($query) use ($obj) {
+                    $query->whereHas('variant', function($query) use ($obj) {
+                        $query->where('product_id', $obj->id);
+                    });
+                })->with(['values', 'values.variant'])->get();
 
-            /*
-                Per scrupolo qui faccio un controllo: se il prodotto ha delle
-                varianti ma nessuna combo, ne forzo qui la rigenerazione
-            */
-            if ($ret->isEmpty() && $this->variants->count() != 0) {
-                foreach($this->variants as $variant) {
-                    VariantChanged::dispatch($variant);
-                }
-
-                return $this->getVariantCombosAttribute();
-            }
-            else {
                 /*
-                    Una volta ottenuto l'elenco delle combo, setto in modo
-                    esplicito la relazione con il prodotto corrente.
-                    Questo perché VariantCombo dipende da questa relazione per
-                    determinare quale sia il suo stesso prodotto, il quale viene
-                    usato sia per formattarne il nome che per determinarne il
-                    prezzo (se il prodotto corrente è nel contesto di un ordine)
+                    Per scrupolo qui faccio un controllo: se il prodotto ha delle
+                    varianti ma nessuna combo, ne forzo qui la rigenerazione
                 */
-                foreach($ret as $vc) {
-                    foreach($vc->values as $val) {
-                        $val->variant->setRelation('product', $obj);
+                if ($ret->isEmpty() && $this->variants->count() != 0) {
+                    foreach($this->variants as $variant) {
+                        VariantChanged::dispatch($variant);
                     }
-                }
 
-                return $ret;
-            }
+                    return $this->getVariantCombosAttribute();
+                }
+                else {
+                    /*
+                        Una volta ottenuto l'elenco delle combo, setto in modo
+                        esplicito la relazione con il prodotto corrente.
+                        Questo perché VariantCombo dipende da questa relazione per
+                        determinare quale sia il suo stesso prodotto, il quale viene
+                        usato sia per formattarne il nome che per determinarne il
+                        prezzo (se il prodotto corrente è nel contesto di un ordine)
+                    */
+
+                    foreach($ret as $vc) {
+                        foreach($vc->values as $val) {
+                            $val->variant->setRelation('product', $obj);
+                        }
+                    }
+
+                    return $ret;
+                }
+            });
         });
     }
 

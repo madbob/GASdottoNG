@@ -134,15 +134,24 @@ class ProductsController extends BackedController
     public function price(Request $request)
     {
         $product_id = $request->input('id');
+        $order_id = $request->input('order_id') ?: 0;
         $variant = $request->input('variant', []);
-        $product = $this->service->show($product_id);
+
+        $order = Order::find($order_id);
+        if ($order) {
+            $product = $order->products()->where('product_id', $product_id)->first();
+        }
+        else {
+            $product = $this->service->show($product_id);
+        }
 
         if (empty($variant)) {
-            $price = $product->price;
+            $price = $product->getPrice(false);
         }
         else {
             $combo = VariantCombo::byValues($variant);
-            $price = $combo->price;
+            $combo = $product->variant_combos->firstWhere('id', $combo->id);
+            $price = $combo->getPrice(false);
         }
 
         $currency = defaultCurrency()->symbol;

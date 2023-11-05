@@ -185,18 +185,15 @@ class BookedProduct extends Model
         return $summary;
     }
 
-    private function normalizeQuantity($attribute)
-    {
-        $product = $this->product;
-        if ($product->portion_quantity != 0)
-            return $this->$attribute * $product->portion_quantity;
-        else
-            return $this->$attribute;
-    }
-
     public function getTrueQuantityAttribute()
     {
-        return $this->normalizeQuantity('quantity');
+        $product = $this->product;
+        if ($product->portion_quantity != 0) {
+            return $this->quantity * $product->portion_quantity;
+        }
+        else {
+            return $this->quantity;
+        }
     }
 
     /*
@@ -293,26 +290,30 @@ class BookedProduct extends Model
 
     public function getValue($type)
     {
+        $ret = 0;
+
         if (Str::startsWith($type, 'modifier:')) {
-            return $this->getModifierValue($type);
+            $ret = $this->getModifierValue($type);
         }
         else {
             if ($type == 'booked') {
-                return $this->fixQuantity('quantity', true);
+                $ret = $this->fixQuantity('quantity', true);
             }
             else {
                 switch($this->booking->status) {
                     case 'pending':
-                        return $this->getPendingValue($type);
+                        $ret = $this->getPendingValue($type);
+                        break;
 
                     case 'shipped':
                     case 'saved':
-                        return $this->getShippedValue($type);
+                        $ret = $this->getShippedValue($type);
+                        break;
                 }
             }
         }
 
-        return 0;
+        return $ret;
     }
 
     /********************************************************** ModifiedTrait */

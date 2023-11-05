@@ -128,26 +128,27 @@ function paymentMethodByType($type)
 
 function paymentsByType($type)
 {
-    $function = null;
+    $ret = [];
 
     if ($type != null) {
         $metadata = movementTypes($type);
+
         if ($metadata) {
             $function = json_decode($metadata->function);
-        }
-    }
 
-    $movement_methods = paymentTypes();
-    $ret = [];
+            if ($function) {
+                $movement_methods = paymentTypes();
 
-    foreach ($movement_methods as $method_id => $info) {
-        if ($function) {
-            foreach($function as $f) {
-                if ($f->method == $method_id) {
-                    $ret[$method_id] = $info->name;
-                    break;
+                foreach ($movement_methods as $method_id => $info) {
+                    foreach($function as $f) {
+                        if ($f->method == $method_id) {
+                            $ret[$method_id] = $info->name;
+                            break;
+                        }
+                    }
                 }
             }
+
         }
     }
 
@@ -215,7 +216,7 @@ function duplicateAllCurrentBalances($latest_date)
             $class = get_class($obj);
 
             foreach ($currencies as $curr) {
-                if (!isset($current_status[$curr->id][$class][$obj->id])) {
+                if (isset($current_status[$curr->id][$class][$obj->id]) == false) {
                     $latest = $obj->currentBalance($curr);
                     $new = $latest->replicate();
 

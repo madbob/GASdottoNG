@@ -63,6 +63,7 @@ class Bookings
             */
 
             var row = $(e.currentTarget).closest('.inline-variant-selector');
+            var editor = row.closest('.booking-editor');
             var quantity = utils.parseFloatC(row.find('.booking-product-quantity input').val());
 
             if (quantity == 0) {
@@ -78,6 +79,7 @@ class Bookings
                     dataType: 'JSON',
                     data: {
                         id: row.closest('tr').find('input:hidden').first().attr('name'),
+                        order_id: editor.attr('data-order-id'),
                         variant: variant,
                     },
                     success: function(data) {
@@ -96,7 +98,6 @@ class Bookings
                 })
             }
             else {
-                var editor = $(e.currentTarget).closest('.booking-editor');
                 this.bookingTotal(editor);
             }
         });

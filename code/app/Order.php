@@ -66,6 +66,12 @@ class Order extends Model
 
     public function products(): BelongsToMany
     {
+        /*
+            Nota bene: è importante che i prodotti dall'ordine siano caricati
+            con il relativo valore di "prices" dalla tabella pivot, le funzioni
+            di accesso al prezzo (cfr. Priceable) dipendono dall'esistenza di
+            questo attributo nell'oggetto
+        */
         return $this->belongsToMany('App\Product')->with(['measure', 'variants', 'modifiers'])->withPivot(['notes', 'prices'])->withTrashed();
     }
 
@@ -293,15 +299,9 @@ class Order extends Model
         $data = [];
 
         foreach($products as $product) {
-            $exists = $this->products->firstWhere('id', $product->id);
-            if ($exists) {
-                $data[$product->id] = [];
-            }
-            else {
-                $data[$product->id] = [
-                    'prices' => $this->extractProductPrices($product),
-                ];
-            }
+            $data[$product->id] = [
+                'prices' => $this->extractProductPrices($product),
+            ];
         }
 
         $this->products()->sync($data);
