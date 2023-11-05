@@ -139,7 +139,7 @@ class ProductsController extends BackedController
 
         $order = Order::find($order_id);
         if ($order) {
-            $product = $order->products()->where('product_id', $product_id)->first();
+            $product = $order->products->firstWhere('id', $product_id);
         }
         else {
             $product = $this->service->show($product_id);
