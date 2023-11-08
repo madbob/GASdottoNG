@@ -27,6 +27,15 @@ class VariantValue extends Model
 
     public function getSlugID()
     {
-        return sprintf('%s::%s', $this->variant_id, Str::slug($this->value));
+        /*
+            Gli ID dei valori delle varianti finiscono spesso con l'essere
+            lunghissimi, essendo la concatenzazione dell'ID fornitore, dell'ID
+            prodotto, dell'ID variante e del valore stesso.
+            Qui mitigo questa lunghezza tagliando i primi 50 caratteri del nome,
+            e faccio altrettanto col nome delle varianti, confidando nel fatto
+            che SlugModel provvederà poi a rendere univoci eventuali valori
+            coincidenti
+        */
+        return sprintf('%s::%s', $this->variant_id, Str::slug(substr($this->value, 0, 50)));
     }
 }

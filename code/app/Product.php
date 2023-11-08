@@ -186,7 +186,13 @@ class Product extends Model
         }
 
         $currency = defaultCurrency()->symbol;
-        $str = sprintf('%.02f %s / %s', $price, $currency, $this->printableMeasure());
+
+        /*
+            Qui uso sempre il nome assoluto dell'unità di misura, in quanto
+            anche per i prodotti con pezzatura il prezzo è sempre riferito al
+            chilo
+        */
+        $str = sprintf('%.02f %s / %s', $price, $currency, $this->measure->name);
 
         return $str;
     }

@@ -65,7 +65,7 @@ class SuppliersServiceTest extends TestCase
         $has_csv = false;
 
         foreach($attachments as $attach) {
-            $this->assertTrue($attach->internal);
+            $this->assertEquals(1, $attach->internal);
 
             if (str_ends_with($attach->url, 'pdf')) {
                 $has_pdf = true;
