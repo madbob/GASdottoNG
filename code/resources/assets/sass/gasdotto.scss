@@ -743,6 +743,18 @@ i[class^='bi-hidden-'] {
     .modal {
         .modal-footer {
             padding: 0.15rem;
+
+            /*
+                Questo è per far scrollare eventuali form visualizzati nel
+                footer del modale (e.g. la notifica degli utenti nello Stato
+                Crediti)
+            */
+            max-height: 85%;
+            overflow-y: auto;
+
+            .btn {
+                float: none;
+            }
         }
     }
 }

@@ -228,6 +228,10 @@ class VariantsServiceTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals(3, $variant->values()->count());
+        $this->assertEquals(3, $variant->values->count());
+
+        foreach($variant->values as $val) {
+            $this->assertTrue(strlen($val->id) < 191);
+        }
     }
 }
