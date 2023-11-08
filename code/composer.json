@@ -15,6 +15,7 @@
         "dotworkers/laravel-gettext": "^7.6.2",
         "eluceo/ical": "^2.0",
         "genealabs/laravel-model-caching": "^0.13.4",
+        "haydenpierce/class-finder": "^0.5.3",
         "laravel/framework": "^10.0",
         "laravel/ui": "^4.0",
         "lavary/laravel-menu": "^1.8",
