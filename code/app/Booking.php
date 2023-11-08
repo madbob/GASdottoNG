@@ -190,20 +190,24 @@ class Booking extends Model
                 }
 
                 if ($type == 'effective') {
+                    $value = 0;
+
                     $modifiers = $this->involvedModifiers();
-                    $aggregate_data = $obj->minimumRedux($modifiers);
+                    if ($modifiers->isEmpty() == false) {
+                        $aggregate_data = $obj->minimumRedux($modifiers);
 
-                    $type = $obj->status == 'pending' ? 'booked' : 'delivered';
-                    $modified_values = $obj->applyModifiers($aggregate_data, false);
+                        $type = $obj->status == 'pending' ? 'booked' : 'delivered';
+                        $modified_values = $obj->applyModifiers($aggregate_data, false);
 
-                    if ($with_friends) {
-                        foreach($obj->friends_bookings as $friend_booking) {
-                            $friend_modified_values = $friend_booking->applyModifiers($aggregate_data, false);
-                            $modified_values = $modified_values->merge($friend_modified_values);
+                        if ($with_friends) {
+                            foreach($obj->friends_bookings as $friend_booking) {
+                                $friend_modified_values = $friend_booking->applyModifiers($aggregate_data, false);
+                                $modified_values = $modified_values->merge($friend_modified_values);
+                            }
                         }
-                    }
 
-                    $value = ModifiedValue::sumAmounts($modified_values, $value);
+                        $value = ModifiedValue::sumAmounts($modified_values, $value);
+                    }
                 }
 
                 foreach ($products as $booked) {
@@ -518,7 +522,9 @@ class Booking extends Model
             $modifiers = $modifiers->merge($this->user->shippingplace->modifiers);
         }
 
-        return $modifiers->sortBy('priority');
+        return $modifiers->filter(function($mod) {
+            return $mod->active;
+        })->sortBy('priority');
     }
 
     public function involvedModifiedValues()

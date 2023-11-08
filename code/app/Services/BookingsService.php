@@ -299,18 +299,29 @@ class BookingsService extends BaseService
             $booking->enforceTotal($manual_total);
         }
 
-        foreach($booking->order->products as $prod) {
-            $key = sprintf('apply_price_%s', $prod->id);
-            if (isset($request[$key])) {
-                $prod->setPrice($request[$key]);
-            }
+        foreach($request as $key => $value) {
+            /*
+                Qui faccio il controllo sui prezzi applicati solo se
+                effettivamente se ne trovano nella richiesta, altrimenti finisco
+                col tirare su tutte le varianti combo presenti nell'ordine
+            */
+            if (str_starts_with($key, 'apply_price_')) {
+                foreach($booking->order->products as $prod) {
+                    $key = sprintf('apply_price_%s', $prod->id);
+                    if (isset($request[$key])) {
+                        $prod->setPrice($request[$key]);
+                    }
 
-            $combos = $prod->variantCombos;
-            foreach($combos as $combo) {
-                $key = sprintf('apply_price_%s_%s', $prod->id, $combo->id);
-                if (isset($request[$key])) {
-                    $combo->setPrice($request[$key]);
+                    $combos = $prod->variant_combos;
+                    foreach($combos as $combo) {
+                        $key = sprintf('apply_price_%s_%s', $prod->id, $combo->id);
+                        if (isset($request[$key])) {
+                            $combo->setPrice($request[$key]);
+                        }
+                    }
                 }
+
+                break;
             }
         }
 

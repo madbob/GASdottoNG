@@ -188,6 +188,10 @@ trait ReducibleTrait
     */
     public function minimumRedux($modifiers)
     {
+        if ($modifiers->isEmpty()) {
+            return [];
+        }
+
         $aggregate = null;
         $order = null;
         $booking = null;
