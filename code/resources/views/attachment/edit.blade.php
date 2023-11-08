@@ -1,4 +1,4 @@
-<x-larastrap::mform :obj="$attachment" method="PUT" :action="route('attachments.update', $attachment->id)">
+<x-larastrap::mform :obj="$attachment" method="PUT" :action="route('attachments.update', $attachment->id)" :nodelete="$attachment->internal" :nosave="$attachment->internal">
     <div class="row">
         <div class="col-md-12">
             @if($attachment->internal == false)

@@ -45,14 +45,38 @@ class SuppliersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $supplier = $this->services['suppliers']->store(array(
+        $supplier = $this->services['suppliers']->store([
             'name' => 'Test Supplier',
             'business_name' => 'Test Supplier SRL'
-        ));
+        ]);
 
         $this->assertEquals('Test Supplier', $supplier->name);
         $this->assertEquals('Test Supplier SRL', $supplier->business_name);
         $this->assertEquals(0, $supplier->currentBalanceAmount());
+
+        /*
+            Verifica generazione degli allegati autogenerati (listini)
+        */
+
+        $attachments = $supplier->attachments;
+        $this->assertEquals(2, $attachments->count());
+
+        $has_pdf = false;
+        $has_csv = false;
+
+        foreach($attachments as $attach) {
+            $this->assertTrue($attach->internal);
+
+            if (str_ends_with($attach->url, 'pdf')) {
+                $has_pdf = true;
+            }
+            else if (str_ends_with($attach->url, 'csv')) {
+                $has_csv = true;
+            }
+        }
+
+        $this->assertTrue($has_pdf);
+        $this->assertTrue($has_csv);
     }
 
     /*

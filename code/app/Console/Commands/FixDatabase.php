@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Artisan;
 
 use App\Config;
 use App\User;
+use App\Supplier;
 use App\Gas;
 
 class FixDatabase extends Command
@@ -35,6 +36,22 @@ class FixDatabase extends Command
         */
         Artisan::call('db:seed', ['--force' => true, '--class' => 'MovementTypesSeeder']);
         Artisan::call('db:seed', ['--force' => true, '--class' => 'ModifierTypesSeeder']);
+
+        foreach(Supplier::all() as $supplier) {
+            $attachments = $supplier->attachments;
+
+            $pdf = $attachments->firstWhere('name', 'Listino PDF (autogenerato)');
+            if ($pdf) {
+                $pdf->url = route('suppliers.catalogue', ['id' => $supplier->id, 'format' => 'pdf']);
+                $pdf->save();
+            }
+
+            $csv = $attachments->firstWhere('name', 'Listino CSV (autogenerato)');
+            if ($csv) {
+                $csv->url = route('suppliers.catalogue', ['id' => $supplier->id, 'format' => 'csv']);
+                $csv->save();
+            }
+        }
 
         User::query()->update(['tour' => true]);
 
