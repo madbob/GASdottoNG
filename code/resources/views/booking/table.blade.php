@@ -19,10 +19,10 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th width="10%">
-                                    <input type="checkbox" class="triggers-all-checkbox" data-target-class="booking-select" value="1">
+                                <th width="5%">
+                                    <x-larastrap::check classes="triggers-all-checkbox skip-on-submit" data-target-class="booking-select" squeeze switch="false" checked="true" />
                                 </th>
-                                <th width="30%"></th>
+                                <th width="35%"></th>
                                 <th width="20%"></th>
                                 <th width="20%">
                                     <x-larastrap::datepicker :value="date('Y-m-d')" squeeze classes="toggleall" />
@@ -43,7 +43,7 @@
                                 <tr>
                                     <td>
                                         @if($booking->status != 'shipped')
-                                            <input type="checkbox" class="booking-select" name="bookings[]" value="{{ $booking->id }}">
+                                            <x-larastrap::check name="bookings[]" classes="booking-select" squeeze :value="$booking->id" switch="false" checked="true" />
                                         @endif
                                     </td>
                                     <td>{{ $booking->user->printableName() }}</td>
