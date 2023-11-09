@@ -22,7 +22,7 @@ if (!isset($amount_label)) {
 
 $buttons = [];
 if ($editable && $obj && $obj->exists) {
-    $buttons[] = ['color' => 'danger', 'label' => _i('Elimina'), 'classes' => ['float-start', 'spare-modal-delete-button'], 'attributes' => ['data-delete-url' => route('movements.destroy', $obj->id)]];
+    $buttons[] = ['color' => 'danger', 'label' => _i('Elimina'), 'classes' => ['float-start', 'async-modal'], 'attributes' => ['data-modal-url' => route('movements.askdelete', $obj->id)]];
 }
 
 $buttons[] = ['color' => 'success', 'label' => _i('Salva'), 'attributes' => ['type' => 'submit']];

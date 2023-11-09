@@ -25,7 +25,7 @@ class UsersService extends BaseService
 			prenotazioni anche per conto terzi. Questa autorizzazione serve per
 			permettere la ricerca nel pannello "Prenotazioni per Altri Utenti"
 		*/
-        $user = $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas', 'supplier.shippings' => null]);
+        $user = $this->ensureAuth(['users.admin' => 'gas', 'users.movements' => 'gas', 'users.view' => 'gas', 'supplier.shippings' => null]);
 
         $gas_id = $user->gas['id'];
         $query = User::with('roles')->where('parent_id', null)->where('gas_id', '=', $gas_id);

@@ -41,6 +41,7 @@ Route::middleware(['auth'])->group(function() {
         Route::get('users/export', 'UsersController@export');
         Route::post('users/notifications/{id}', 'UsersController@notifications')->name('users.notifications');
         Route::get('users/fees', 'UsersController@fees')->name('users.fees');
+        Route::get('users/fee/{id}', 'UsersController@feeRow')->name('users.fee');
         Route::post('users/fees', 'UsersController@feesSave')->name('users.savefees');
         Route::get('users/password', 'UsersController@changePassword')->name('users.password');
         Route::post('users/revisioned/{id}', 'UsersController@revisioned')->name('users.revisioned');
@@ -166,6 +167,7 @@ Route::middleware(['auth'])->group(function() {
         Route::get('movements/{targetid}/balance', 'MovementsController@getBalance')->name('movements.balance');
         Route::post('movements/recalculate', 'MovementsController@recalculate');
         Route::post('movements/close', 'MovementsController@closeBalance');
+        Route::get('movements/askdelete/{id}', 'MovementsController@askDelete')->name('movements.askdelete');
 		Route::get('movements/askdeletebalance/{id}', 'MovementsController@askDeleteBalance')->name('movements.askdeletebalance');
         Route::post('movements/deletebalance/{id}', 'MovementsController@deleteBalance')->name('movements.deletebalance');
         Route::get('movements/document/{type}/{subtype?}', 'MovementsController@document');

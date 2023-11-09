@@ -21,21 +21,10 @@
 
         $startdate = date('Y-m-d', strtotime('-1 months'));
         $enddate = date('Y-m-d');
-        $movements = $target->queryMovements(null)->where('registration_date', '>=', $startdate)->where('registration_date', '<=', $enddate)->get()
+        $movements = $target->queryMovements(null)->where('registration_date', '>=', $startdate)->where('registration_date', '<=', $enddate)->get();
 
         ?>
 
         @include('movement.bilist', ['movements' => $movements, 'main_target' => $target])
     </div>
-
-    @if(Gate::check('movements.admin', $currentgas))
-        @include('commons.deleteconfirm', [
-            'url' => 'movements',
-            'password_protected' => true,
-            'extra' => [
-                'close-all-modal' => '1',
-                'post-saved-function' => ['refreshFilter']
-            ]
-        ])
-    @endif
 </div>

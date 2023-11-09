@@ -304,17 +304,32 @@ class UsersController extends BackedController
         return $ret;
     }
 
+    /*
+        Per ottenere il modale dello "Stato Quote"
+    */
     public function fees(Request $request)
     {
-        $user = $request->user();
-
-        if ($user->can('users.admin') || $user->can('users.movements')) {
-            $users = $this->service->list('', $user->can('users.admin', $user->gas));
+        return $this->easyExecute(function() {
+            $this->ensureAuth(['users.admin' => 'gas', 'users.movements' => 'gas']);
+            $users = $this->service->list('', true);
+            $users->loadMissing('fee');
             return view('user.fees', ['users' => $users]);
-        }
-        else {
-            abort(401);
-        }
+        });
+    }
+
+    /*
+        Per ricaricare una singola riga nel modale "Stato Quote", solitamente se
+        un movimento di pagamento quota viene eliminato.
+        Ogni riga della tabella riporta questo URL come indirizzo per il
+        ricaricamento dell'area (funzione reload-portion)
+    */
+    public function feeRow(Request $request, $id)
+    {
+        return $this->easyExecute(function() use ($id) {
+            $this->ensureAuth(['users.admin' => 'gas', 'users.movements' => 'gas']);
+            $user = User::findOrFail($id);
+            return view('user.partials.fee_row', ['user' => $user]);
+        });
     }
 
     public function feesSave(Request $request)
