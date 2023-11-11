@@ -191,21 +191,47 @@ class Booking extends Model
 
                 if ($type == 'effective') {
                     $value = 0;
+                    $modified_values = null;
 
-                    $modifiers = $this->involvedModifiers();
-                    if ($modifiers->isEmpty() == false) {
-                        $aggregate_data = $obj->minimumRedux($modifiers);
+                    /*
+                        Se la prenotazione è stata consegnata, devo andare a
+                        recuperare i modificatori che sono stati effettivamente
+                        salvati sul DB a prescindere da quali sono quelli
+                        "teorici" che potrei trovare (quelli restituiti da
+                        involvedModifiers()).
+                        Questo per recuperare anche gli eventuali modificatori
+                        speciali delle consegne manuali
+                    */
 
-                        $type = $obj->status == 'pending' ? 'booked' : 'delivered';
-                        $modified_values = $obj->applyModifiers($aggregate_data, false);
+                    if ($obj->status != 'pending') {
+                        $type = 'delivered';
+                        $modified_values = $obj->allModifiedValues(null, true);
 
                         if ($with_friends) {
                             foreach($obj->friends_bookings as $friend_booking) {
-                                $friend_modified_values = $friend_booking->applyModifiers($aggregate_data, false);
+                                $friend_modified_values = $friend_booking->allModifiedValues(null, true);
                                 $modified_values = $modified_values->merge($friend_modified_values);
                             }
                         }
+                    }
+                    else {
+                        $type = 'booked';
+                        $modifiers = $obj->involvedModifiers();
 
+                        if ($modifiers->isEmpty() == false) {
+                            $aggregate_data = $obj->minimumRedux($modifiers);
+                            $modified_values = $obj->calculateModifiers($aggregate_data, false);
+
+                            if ($with_friends) {
+                                foreach($obj->friends_bookings as $friend_booking) {
+                                    $friend_modified_values = $friend_booking->calculateModifiers($aggregate_data, false);
+                                    $modified_values = $modified_values->merge($friend_modified_values);
+                                }
+                            }
+                        }
+                    }
+
+                    if ($modified_values) {
                         $value = ModifiedValue::sumAmounts($modified_values, $value);
                     }
                 }

@@ -60,7 +60,7 @@ class ModifiersServiceTest extends TestCase
                 }
                 else {
                     if ($missing_quantity > 0) {
-                        $quantity = rand(0, $missing_quantity);
+                        $quantity = rand(1, $missing_quantity);
                         $data[$booked_product->product_id] = $quantity;
                         $missing_quantity -= $quantity;
                     }
@@ -136,7 +136,9 @@ class ModifiersServiceTest extends TestCase
         $this->assertNotNull($mod);
 
         foreach([21, 15, 3] as $threshold_index => $total_quantity) {
+            $this->nextRound();
             $this->enforceBookingsTotalQuantity($product->id, $total_quantity);
+            $this->nextRound();
 
             $order = $this->services['orders']->show($this->order->id);
             $modifiers = $order->applyModifiers();

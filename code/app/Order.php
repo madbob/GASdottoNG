@@ -340,10 +340,8 @@ class Order extends Model
                 if ($role) {
                     return $role->usersByTarget($this->supplier);
                 }
-                else {
-                    Log::error('Role not found while displaying contacts for order: ' . $gas->booking_contacts);
-                    return new Collection();
-                }
+
+                return new Collection();
         }
     }
 
@@ -633,14 +631,16 @@ class Order extends Model
     public function applyModifiers($aggregate_data = null, $enforce_status = false)
     {
         $modifiers = $this->involvedModifiers(true);
-        if ($modifiers->isEmpty() == false) {
-            DB::beginTransaction();
+        $has_shipped_bookings = $this->bookings->where('status', '!=', 'pending')->count() != 0;
 
-            $modifiers = new Collection();
+        if ($modifiers->isEmpty() == false || $has_shipped_bookings) {
+            DB::beginTransaction();
 
             if (is_null($aggregate_data)) {
                 $aggregate_data = $this->minimumRedux($modifiers);
             }
+
+            $modifiers = new Collection();
 
             $old_status = $this->status;
             if ($enforce_status !== false) {

@@ -241,6 +241,7 @@ class ModifierEngine
                 break;
 
             default:
+				Log::error('applies_target non riconosciuto per modificatore: ' . $modifier->applies_target);
                 return null;
         }
 
