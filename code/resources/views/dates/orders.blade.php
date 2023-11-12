@@ -33,6 +33,7 @@
                             'label' => _i('Fornitore'),
                             'field' => 'target_id',
                             'type' => 'selectobj',
+                            'width' => 15,
                             'extra' => [
                                 'options' => $currentuser->targetsByAction('supplier.orders')
                             ]
@@ -41,11 +42,13 @@
                             'label' => _i('Ricorrenza'),
                             'field' => 'recurring',
                             'type' => 'periodic',
+                            'width' => 30,
                         ],
                         [
                             'label' => _i('Chiusura dopo...'),
                             'field' => 'end',
                             'type' => 'number',
+                            'width' => 10,
                             'extra' => [
                                 'textappend' => 'giorni'
                             ]
@@ -54,6 +57,7 @@
                             'label' => _i('Consegna dopo...'),
                             'field' => 'shipping',
                             'type' => 'number',
+                            'width' => 10,
                             'extra' => [
                                 'textappend' => 'giorni',
 								'attributes' => [
@@ -65,6 +69,7 @@
                             'label' => _i('Commento'),
                             'field' => 'comment',
                             'type' => 'text',
+                            'width' => 20,
                             'extra' => [
                                 'max_length' => 40
                             ]
@@ -73,6 +78,7 @@
                             'label' => _i('Sospendi'),
                             'field' => 'suspend',
                             'type' => 'check',
+                            'width' => 10,
                             'help' => _i("Se un ordine automatico viene sospeso, le prossime aperture verranno ignorate. Usa questa opzione per gestire i periodi di inattività del GAS, ad esempio durante le festività."),
                             'extra' => [
                                 'reviewCallback' => function($component, $params) {
