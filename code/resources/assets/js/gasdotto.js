@@ -153,13 +153,6 @@ function generalInit(container) {
 	Statistics.init(container);
 }
 
-function voidForm(form) {
-    form.find('input[type!=hidden]').val('');
-    form.find('textarea').val('');
-    form.find('select option:first').prop('selected', true);
-    form.find('.error-message').remove();
-}
-
 function wizardLoadPage(node, contents) {
     try {
         let previous = node.closest('.modal');
@@ -330,7 +323,10 @@ function miscInnerCallbacks(form, data) {
     var test = form.find('input[name=void-form]');
     if (test.length != 0) {
         test.each(function() {
-            voidForm(form);
+			form.find('input[type!=hidden]').val('');
+		    form.find('textarea').val('');
+		    form.find('select option:first').prop('selected', true);
+		    form.find('.error-message').remove();
         });
     }
 

@@ -175,19 +175,9 @@ class Bookings
             else {
                 i.removeClass('is-changed');
             }
-        });
-
-        $('input.manual-total', container).change((e) => {
+        }).change((e) => {
             let editor = $(e.currentTarget).closest('.booking-editor');
             this.bookingTotal(editor);
-        });
-
-        $('.load-other-booking', container).click((e) => {
-            e.preventDefault();
-            var button = $(e.currentTarget);
-            var url = button.attr('data-booking-url');
-            var fill_target = button.closest('.other-booking');
-            utils.j().fetchNode(url, fill_target);
         });
 
         $('.inline-calculator button[type=submit]', container).click((e) => {
@@ -410,10 +400,10 @@ class Bookings
                         varinputbox.closest('tr').find('.booking-product-price span').text(variant.total.toFixed(2));
                     }
 
-                    let total_rows = $('input[name="variant_quantity_' + product_id + '[]"]', container).length;
-                    if (total_rows > product_meta.variants.length) {
-                        for (let i = product_meta.variants.length; i < total_rows; i++) {
-                            let varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).eq(i);
+                    let total_rows = $('input[name="variant_quantity_' + product_id + '[]"]', container);
+                    if (total_rows.length > product_meta.variants.length) {
+                        for (let i = product_meta.variants.length; i < total_rows.length; i++) {
+                            let varinputbox = total_rows.eq(i);
                             varinputbox.val(0);
                             varinputbox.closest('tr').find('.booking-product-price span').text('0.00');
                         }
