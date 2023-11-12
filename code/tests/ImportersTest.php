@@ -8,6 +8,8 @@ use App\Importers\GDXP\Suppliers;
 use App\Notifications\ManualWelcomeMessage;
 use App\User;
 use App\Supplier;
+use App\Category;
+use App\Measure;
 
 class ImportersTest extends TestCase
 {
@@ -95,6 +97,57 @@ class ImportersTest extends TestCase
         $this->assertEquals('Frutta secca', $data['products'][9]->temp_category_name);
         $this->assertEquals('Sacchetti', $data['products'][9]->temp_measure_name);
         $this->assertEquals(0, $data['products'][9]->vat_rate_id);
+
+        $final_block = [
+            'supplier_id' => $supplier->id,
+            'reset_list' => 'disable',
+            'import' => [],
+            'weight' => [],
+            'package_size' => [],
+            'min_quantity' => [],
+            'multiple' => [],
+            'portion_quantity' => [],
+            'name' => [],
+            'description' => [],
+            'price' => [],
+            'category_id' => [],
+            'measure_id' => [],
+            'vat_rate_id' => [],
+            'supplier_code' => [],
+            'want_replace' => [],
+        ];
+
+        foreach($data['products'] as $index => $prod) {
+            $final_block['import'][] = $index;
+            $final_block['weight'][] = $prod->weight;
+            $final_block['package_size'][] = $prod->package_size;
+            $final_block['min_quantity'][] = $prod->min_quantity;
+            $final_block['multiple'][] = $prod->multiple;
+            $final_block['portion_quantity'][] = $prod->portion_quantity;
+            $final_block['name'][] = $prod->name;
+            $final_block['description'][] = $prod->description;
+            $final_block['price'][] = $prod->price;
+            $final_block['category_id'][] = $prod->temp_category_name ? sprintf('new:%s', $prod->temp_category_name) : $prod->category_id;
+            $final_block['measure_id'][] = $prod->temp_measure_name ? sprintf('new:%s', $prod->temp_measure_name) : $prod->measure_id;
+            $final_block['vat_rate_id'][] = $prod->vat_rate_id;
+            $final_block['supplier_code'][] = $prod->supplier_code;
+            $final_block['want_replace'][] = $prod->want_replace ? $prod->want_replace->id : 0;
+        }
+
+        $request = new \Illuminate\Http\Request();
+        $request->merge($final_block);
+
+        $data = $importer->run($request);
+
+        $this->nextRound();
+
+        $supplier = $supplier->fresh();
+        $this->assertEquals(10, $supplier->products()->count());
+
+        $this->assertNotNull(Category::where('name', 'Biscotti e dolci')->first());
+        $this->assertNotNull(Category::where('name', 'Frutta secca')->first());
+        $this->assertNotNull(Measure::where('name', 'Barattoli')->first());
+        $this->assertNotNull(Measure::where('name', 'Sacchetti')->first());
     }
 
     public function testUsersCsv()

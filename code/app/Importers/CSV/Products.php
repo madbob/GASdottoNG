@@ -266,14 +266,10 @@ class Products extends CSVImporter
             }
         }
 
-        $reset_mode = $request->input('reset_list');
+        $reset_mode = $request->input('reset_list', 'no');
         switch($reset_mode) {
             case 'disable':
                 $s->products()->whereNotIn('id', $products_ids)->update(['active' => false]);
-                break;
-
-            case 'remove':
-                $s->products()->whereNotIn('id', $products_ids)->delete();
                 break;
         }
 

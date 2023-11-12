@@ -631,6 +631,19 @@ class Order extends Model
     public function applyModifiers($aggregate_data = null, $enforce_status = false)
     {
         $modifiers = $this->involvedModifiers(true);
+
+        /*
+            TODO: se ci sono prenotazioni consegnate, non posso fidarmi
+            dell'elenco teorico dei modificatori in quanto potrebbero essercene
+            altri assegnati (e.g. quelli usati per le consegne manuali) dunque
+            devo andarli a leggere direttamente dalle prenotazioni stesse.
+            D'altro canto, per le prenotazioni consegnate non serve ottenere una
+            Redux dell'ordine in quanto appunto vado a leggermi i dati dai
+            modificatori già calcolati e salvati sul DB, dunque compio questa
+            (lenta) operazione inutilmente.
+            Questa funzione potrebbe essere un po' più complessa, e generare una
+            Redux complessiva solo in presenza di prenotazioni non consegnate
+        */
         $has_shipped_bookings = $this->bookings->where('status', '!=', 'pending')->count() != 0;
 
         if ($modifiers->isEmpty() == false || $has_shipped_bookings) {
