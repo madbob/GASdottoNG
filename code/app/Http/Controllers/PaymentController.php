@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use Session;
-use Cache;
-use Auth;
-use Log;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 use App\Movement;
 
@@ -16,12 +15,16 @@ class PaymentController extends Controller
     private function initSatispayContext()
     {
         $user = Auth::user();
-        if ($user == null)
+        if ($user == null) {
             $gas = currentAbsoluteGas();
-        else
+        }
+        else {
             $gas = $user->gas;
+        }
 
-        \SatispayOnline\Api::setSecurityBearer($gas->satispay['secret']);
+        \SatispayGBusiness\Api::setPublicKey($gas->satispay['public']);
+        \SatispayGBusiness\Api::setPrivateKey($gas->satispay['secret']);
+        \SatispayGBusiness\Api::setKeyId($gas->satispay['key']);
 
         return $user;
     }
@@ -31,7 +34,7 @@ class PaymentController extends Controller
         $type = $request->input('type');
 
         if ($type == 'satispay') {
-            $user = self::initSatispayContext();
+            $user = $this->initSatispayContext();
 
             $charge = null;
 
@@ -41,19 +44,21 @@ class PaymentController extends Controller
             $phone = $request->input('mobile');
             $phone = str_replace('+', '00', $phone);
             $phone = preg_replace('/^[^0-9]$/', '', $phone);
-            if (substr($phone, 0, 4) != '0039')
+
+            if (substr($phone, 0, 4) != '0039') {
                 $phone = '0039' . $phone;
+            }
+
             $phone = preg_replace('/^0039/', '+39', $phone);
 
             try {
-                $satispay_user = \SatispayOnline\User::create([
-                    'phone_number' => $phone
-                ]);
+                $satispay_user = \SatispayGBusiness\Consumer::get($phone);
 
-                $charge = \SatispayOnline\Charge::create([
-                    'user_id' => $satispay_user->id,
+                $charge = \SatispayGBusiness\Payment::create([
+                    'flow' => 'MATCH_USER',
+                    'consumer_uid' => $satispay_user->id,
                     'currency' => 'EUR',
-                    'amount' => $amount * 100,
+                    'amount_unit' => $amount * 100,
                     'description' => $notes,
                     'callback_url' => urldecode(route('payment.status_satispay', ['charge_id' => '{uuid}']))
                 ]);
@@ -71,7 +76,7 @@ class PaymentController extends Controller
             */
             if ($charge != null) {
                 $movement = new Movement();
-                $movement->identifier = $charge->uuid;
+                $movement->identifier = $charge->id;
                 $movement->type = 'user-credit';
                 $movement->target_type = get_class($user);
                 $movement->target_id = $user->id;
@@ -81,7 +86,7 @@ class PaymentController extends Controller
                 $movement->notes = $notes;
                 $movement->method = 'satispay';
 
-                Cache::put('satispay_movement_' . $charge->uuid, $movement, 16 * 60);
+                Cache::put('satispay_movement_' . $charge->id, $movement, 16 * 60);
             }
         }
 
@@ -90,12 +95,12 @@ class PaymentController extends Controller
 
     public function statusPaymentSatispay(Request $request)
     {
-        self::initSatispayContext();
+        $this->initSatispayContext();
 
-        $charge_id = $request->input('charge_id');
-        $charge = \SatispayOnline\Charge::get($charge_id);
+        $charge_id = $request->input('payment_id');
+        $charge = \SatispayGBusiness\Payment::get($charge_id);
 
-        if ($charge->status == 'SUCCESS') {
+        if ($charge->status == 'ACCEPTED') {
             $movement = Cache::pull('satispay_movement_' . $charge_id);
             if ($movement != null) {
                 $movement->save();

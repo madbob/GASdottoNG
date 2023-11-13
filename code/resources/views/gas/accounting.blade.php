@@ -16,9 +16,13 @@
                     <x-larastrap::text name="rid->org" :label="_i('Codice Univoco Azienda')" :value="$gas->rid['org'] ?? ''" />
                 </x-larastrap::collapse>
 
-                <x-larastrap::check name="enable_satispay" :label="_i('Abilita Satispay')" triggers_collapse="enable_satispay" :value="$gas->hasFeature('satispay')" :pophelp="_i('Abilitando questa opzione e popolando i relativi campi verranno attivati i pagamenti con Satispay, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto. Per ottenere le credenziali visita https://business.satispay.com/')" />
+                <x-larastrap::check name="enable_satispay" :label="_i('Abilita Satispay')" triggers_collapse="enable_satispay" :value="$gas->hasFeature('satispay')" :pophelp="_i('Abilitando questa opzione verranno attivati i pagamenti con Satispay, con cui gli utenti potranno autonomamente ricaricare il proprio credito direttamente da GASdotto. Per ottenere il codice di attivazione è necessario un account business: visita il sito https://business.satispay.com/')" />
                 <x-larastrap::collapse id="enable_satispay">
-                    <x-larastrap::text name="satispay->secret" :label="_i('Security Bearer')" :value="$gas->satispay['secret']" />
+                    @if($gas->hasFeature('satispay'))
+                        {{ _i("L'integrazione Satispay risulta attualmente configurata. Disabilita Satispay e salva queste impostazioni per ricominciare la procedura di configurazione.") }}
+                    @else
+                        <x-larastrap::text name="satispay_auth_code" :label="_i('Codice di Attivazione')" :pophelp="_i('Puoi ottenere un codice di attivazione dalla tua dashboard Satispay')" value="" />
+                    @endif
                 </x-larastrap::collapse>
 
                 <x-larastrap::check name="enable_integralces" :label="_i('Abilita IntegralCES')" triggers_collapse="enable_integralces" :value="$gas->hasFeature('integralces')" :pophelp="_i('Abilitando questa opzione sarà possibile gestire la contabilità (saldi, pagamenti, movimenti...) con una moneta complementare, ed accedere ad alcune funzioni di integrazione con IntegralCES')" />

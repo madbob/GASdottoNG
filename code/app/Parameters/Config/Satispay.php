@@ -17,7 +17,9 @@ class Satispay extends Config
     public function default()
     {
         return (object) [
-            'secret' => ''
+            'public' => '',
+            'secret' => '',
+            'key' => '',
         ];
     }
 }

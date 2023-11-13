@@ -95,18 +95,35 @@ class GasController extends Controller
 
         $gas->setConfig('rid', $rid_info);
 
+        $satispay_info = null;
+
         if ($request->has('enable_satispay')) {
-            $satispay_info = (object) [
-                'secret' => $request->input('satispay->secret')
-            ];
+            $auth_code = $request->input('satispay_auth_code');
+            if ($auth_code) {
+                try {
+                    $authentication = \SatispayGBusiness\Api::authenticateWithToken($auth_code);
+                    $satispay_info = (object) [
+                        'public' => $authentication->publicKey,
+                        'secret' => $authentication->privateKey,
+                        'key' => $authentication->keyId,
+                    ];
+                }
+                catch(\Exception $e) {
+                    \Log::error('Impossibile completare procedura di verifica su Satispay: ' . $e->getMessage());
+                }
+            }
         }
         else {
             $satispay_info = (object) [
-                'secret' => ''
+                'public' => '',
+                'secret' => '',
+                'key' => '',
             ];
         }
 
-        $gas->setConfig('satispay', $satispay_info);
+        if ($satispay_info) {
+            $gas->setConfig('satispay', $satispay_info);
+        }
 
         if ($request->has('enable_integralces')) {
             $integralces_info = (object) [
