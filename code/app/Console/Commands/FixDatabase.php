@@ -61,6 +61,14 @@ class FixDatabase extends Command
                 $registrations_info['manual'] = false;
                 $gas->setConfig('public_registrations', $registrations_info);
             }
+
+            $satispay_info = (object) [
+                'public' => '',
+                'secret' => '',
+                'key' => '',
+            ];
+
+            $gas->setConfig('satispay', $satispay_info);
         }
     }
 }
