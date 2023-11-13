@@ -100,13 +100,15 @@ class PaymentController extends Controller
         $charge_id = $request->input('payment_id');
         $charge = \SatispayGBusiness\Payment::get($charge_id);
 
-        if ($charge->status == 'ACCEPTED') {
-            $movement = Cache::pull('satispay_movement_' . $charge_id);
-            if ($movement != null) {
-                $movement->save();
-            }
-            else {
-                Log::error('Richiesta Satispay non trovata in cache: ' . $charge_id);
+        foreach($charge->data as $d) {
+            if ($d->status == 'ACCEPTED') {
+                $movement = Cache::pull('satispay_movement_' . $d->id);
+                if ($movement != null) {
+                    $movement->save();
+                }
+                else {
+                    Log::error('Richiesta Satispay non trovata in cache: ' . $charge_id);
+                }
             }
         }
     }

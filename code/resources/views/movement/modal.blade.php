@@ -83,7 +83,7 @@ $buttons[] = ['color' => 'success', 'label' => _i('Salva'), 'attributes' => ['ty
 
         <x-larastrap::datepicker name="date" :label="_i('Data')" defaults_now="true" />
 
-        <div class="when-method-bank {{ $obj->method != 'bank' ? ' hidden' : '' }}">
+        <div class="when-method-bank when-method-satispay {{ in_array($obj->method, ['bank', 'satispay']) ? ' hidden' : '' }}">
             <x-larastrap::text name="identifier" :label="_i('Identificativo')" />
         </div>
 
