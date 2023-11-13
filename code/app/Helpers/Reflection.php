@@ -115,16 +115,22 @@ function inlineId($obj)
     return sprintf('%s---%s', $class, $obj->id);
 }
 
-function fromInlineId($id)
+function fromInlineId($identifier)
 {
-    $parts = explode('---', $id);
+    $parts = explode('---', $identifier);
     if (count($parts) != 2) {
-        throw new \Exception("Identificativo non valido per recupero riferimento: " . $id, 1);
+        throw new \Exception("Identificativo non valido per recupero riferimento: " . $identifier, 1);
     }
 
     list($class, $id) = $parts;
     $class = sprintf('App\\%s', $class);
-    return $class::find($id);
+
+    $ret = $class::find($id);
+    if (is_null($ret)) {
+        \Log::error("Identificativo non valido per recupero riferimento: " . $identifier);
+    }
+
+    return $ret;
 }
 
 function unrollSpecialSelectors($users)

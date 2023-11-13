@@ -75,7 +75,7 @@ html, body {
 }
 
 #preloader {
-    position: absolute;
+    position: fixed;
     background: white;
     top:0;
     left:0;
@@ -743,6 +743,18 @@ i[class^='bi-hidden-'] {
     .modal {
         .modal-footer {
             padding: 0.15rem;
+
+            /*
+                Questo è per far scrollare eventuali form visualizzati nel
+                footer del modale (e.g. la notifica degli utenti nello Stato
+                Crediti)
+            */
+            max-height: 85%;
+            overflow-y: auto;
+
+            .btn {
+                float: none;
+            }
         }
     }
 }

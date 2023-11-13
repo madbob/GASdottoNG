@@ -56,7 +56,7 @@ else {
                 @endif
 
                 @if($standalone == false && $has_shipping && $aggregate->isActive())
-                    <x-larastrap::tabpane :label="_i('Prenotazioni per Altri')" classes="fillable-booking-space" icon="bi-people" :id="sprintf('bookings-other-%s', sanitizeId($aggregate->id))">
+                    <x-larastrap::tabpane :label="_i('Prenotazioni per Altri Utenti')" classes="fillable-booking-space" icon="bi-people" :id="sprintf('bookings-other-%s', sanitizeId($aggregate->id))">
                         <div class="row">
                             <div class="col-md-12">
                                 <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="{{ _i('Cerca Utente') }}" />

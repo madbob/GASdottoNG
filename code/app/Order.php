@@ -66,6 +66,12 @@ class Order extends Model
 
     public function products(): BelongsToMany
     {
+        /*
+            Nota bene: è importante che i prodotti dall'ordine siano caricati
+            con il relativo valore di "prices" dalla tabella pivot, le funzioni
+            di accesso al prezzo (cfr. Priceable) dipendono dall'esistenza di
+            questo attributo nell'oggetto
+        */
         return $this->belongsToMany('App\Product')->with(['measure', 'variants', 'modifiers'])->withPivot(['notes', 'prices'])->withTrashed();
     }
 
@@ -293,15 +299,9 @@ class Order extends Model
         $data = [];
 
         foreach($products as $product) {
-            $exists = $this->products->firstWhere('id', $product->id);
-            if ($exists) {
-                $data[$product->id] = [];
-            }
-            else {
-                $data[$product->id] = [
-                    'prices' => $this->extractProductPrices($product),
-                ];
-            }
+            $data[$product->id] = [
+                'prices' => $this->extractProductPrices($product),
+            ];
         }
 
         $this->products()->sync($data);
@@ -340,10 +340,8 @@ class Order extends Model
                 if ($role) {
                     return $role->usersByTarget($this->supplier);
                 }
-                else {
-                    Log::error('Role not found while displaying contacts for order: ' . $gas->booking_contacts);
-                    return new Collection();
-                }
+
+                return new Collection();
         }
     }
 
@@ -633,14 +631,29 @@ class Order extends Model
     public function applyModifiers($aggregate_data = null, $enforce_status = false)
     {
         $modifiers = $this->involvedModifiers(true);
-        if ($modifiers->isEmpty() == false) {
-            DB::beginTransaction();
 
-            $modifiers = new Collection();
+        /*
+            TODO: se ci sono prenotazioni consegnate, non posso fidarmi
+            dell'elenco teorico dei modificatori in quanto potrebbero essercene
+            altri assegnati (e.g. quelli usati per le consegne manuali) dunque
+            devo andarli a leggere direttamente dalle prenotazioni stesse.
+            D'altro canto, per le prenotazioni consegnate non serve ottenere una
+            Redux dell'ordine in quanto appunto vado a leggermi i dati dai
+            modificatori già calcolati e salvati sul DB, dunque compio questa
+            (lenta) operazione inutilmente.
+            Questa funzione potrebbe essere un po' più complessa, e generare una
+            Redux complessiva solo in presenza di prenotazioni non consegnate
+        */
+        $has_shipped_bookings = $this->bookings->where('status', '!=', 'pending')->count() != 0;
+
+        if ($modifiers->isEmpty() == false || $has_shipped_bookings) {
+            DB::beginTransaction();
 
             if (is_null($aggregate_data)) {
                 $aggregate_data = $this->minimumRedux($modifiers);
             }
+
+            $modifiers = new Collection();
 
             $old_status = $this->status;
             if ($enforce_status !== false) {

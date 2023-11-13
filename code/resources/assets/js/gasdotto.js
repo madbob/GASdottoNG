@@ -153,13 +153,6 @@ function generalInit(container) {
 	Statistics.init(container);
 }
 
-function voidForm(form) {
-    form.find('input[type!=hidden]').val('');
-    form.find('textarea').val('');
-    form.find('select option:first').prop('selected', true);
-    form.find('.error-message').remove();
-}
-
 function wizardLoadPage(node, contents) {
     try {
         let previous = node.closest('.modal');
@@ -317,7 +310,7 @@ function miscInnerCallbacks(form, data) {
         });
     }
 
-    var test = form.find('input[name=reload-portion]');
+    var test = form.find('input[name^=reload-portion]');
     if (test.length != 0) {
         test.each(function() {
             var identifier = $(this).val();
@@ -330,15 +323,27 @@ function miscInnerCallbacks(form, data) {
     var test = form.find('input[name=void-form]');
     if (test.length != 0) {
         test.each(function() {
-            voidForm(form);
+			form.find('input[type!=hidden]').val('');
+		    form.find('textarea').val('');
+		    form.find('select option:first').prop('selected', true);
+		    form.find('.error-message').remove();
         });
     }
 
     var test = form.find('input[name=close-modal]');
     if (test.length != 0) {
-        var modal = form.parents('.modal');
-        if (modal.length != 0)
-            modal.modal('hide');
+		test.each(function() {
+			var id = $(this).val();
+
+			var modal = $(id);
+			if (modal.length == 0) {
+	        	modal = form.parents('.modal');
+			}
+
+	        if (modal.length != 0) {
+	            modal.modal('hide');
+			}
+		});
     }
 
     var test = form.find('input[name=close-all-modal]');
@@ -631,13 +636,6 @@ $(document).ready(function() {
                 miscInnerCallbacks(form, data);
             }
         });
-    });
-
-    $('body').on('click', '.spare-modal-delete-button', function(event) {
-        event.preventDefault();
-        var modal = $('#delete-confirm-modal');
-        modal.find('form').attr('action', $(this).attr('data-delete-url'));
-        modal.modal('show');
     });
 
     /*

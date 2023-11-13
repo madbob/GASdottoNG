@@ -76,6 +76,11 @@ class BookedProduct extends Model
 
     private function fixQuantity($attribute, $rectify)
     {
+        /*
+            Nota: qui si può evitare di ottimizzare controllando che la quantità
+            sia diversa da 0, in quanto si può assumere che i prodotti prenotati
+            non abbiano mai una quantità a 0
+        */
         if ($this->variants->isEmpty() == false) {
             return $this->variants->reduce(function($carry, $item) use ($rectify, $attribute) {
                 return $carry + ($item->unitPrice($rectify) * $item->$attribute);
@@ -100,10 +105,18 @@ class BookedProduct extends Model
             }
         }
 
-        if ($variant) {
-            $combo = $variant->variantsCombo();
-            if ($combo->active == false) {
-                throw new InvalidQuantityConstraint(_('Questa combinazione di varianti non è attualmente ordinabile'), 4);
+        /*
+            Può capitare che in una prenotazione ci siano delle varianti che
+            solo dopo la chiusura dell'ordine sono state rese non prenotabili.
+            In questo caso devo comunque poter consegnare quanto è stato
+            prenotato, dunque ignoro lo stato di ordinabilità
+        */
+        if ($only_mandatory == false) {
+            if ($variant) {
+                $combo = $variant->variantsCombo();
+                if ($combo->active == false) {
+                    throw new InvalidQuantityConstraint(_('Questa combinazione di varianti non è attualmente ordinabile'), 4);
+                }
             }
         }
 
@@ -185,18 +198,15 @@ class BookedProduct extends Model
         return $summary;
     }
 
-    private function normalizeQuantity($attribute)
-    {
-        $product = $this->product;
-        if ($product->portion_quantity != 0)
-            return $this->$attribute * $product->portion_quantity;
-        else
-            return $this->$attribute;
-    }
-
     public function getTrueQuantityAttribute()
     {
-        return $this->normalizeQuantity('quantity');
+        $product = $this->product;
+        if ($product->portion_quantity != 0) {
+            return $this->quantity * $product->portion_quantity;
+        }
+        else {
+            return $this->quantity;
+        }
     }
 
     /*
@@ -293,26 +303,30 @@ class BookedProduct extends Model
 
     public function getValue($type)
     {
+        $ret = 0;
+
         if (Str::startsWith($type, 'modifier:')) {
-            return $this->getModifierValue($type);
+            $ret = $this->getModifierValue($type);
         }
         else {
             if ($type == 'booked') {
-                return $this->fixQuantity('quantity', true);
+                $ret = $this->fixQuantity('quantity', true);
             }
             else {
                 switch($this->booking->status) {
                     case 'pending':
-                        return $this->getPendingValue($type);
+                        $ret = $this->getPendingValue($type);
+                        break;
 
                     case 'shipped':
                     case 'saved':
-                        return $this->getShippedValue($type);
+                        $ret = $this->getShippedValue($type);
+                        break;
                 }
             }
         }
 
-        return 0;
+        return $ret;
     }
 
     /********************************************************** ModifiedTrait */

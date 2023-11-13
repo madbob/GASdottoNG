@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use URL;
 
 use App\Services\BookingsService;
-use App\Services\FastBookingsService;
 
 use App\User;
 use App\Aggregate;
@@ -83,8 +82,7 @@ class DeliveryUserController extends Controller
             ];
         }
 
-        $fastshipping = new FastBookingsService();
-        $fastshipping->fastShipping($deliverer, $aggregate, $users);
+        app()->make('FastBookingsService')->fastShipping($deliverer, $aggregate, $users);
         return $this->successResponse();
     }
 

@@ -219,10 +219,10 @@ class Callables {
         }
     }
 
-    static afterProductChange(form, data) {
+    static genericAfterChange(form, data, endpoint) {
         utils.postAjax({
             method: 'GET',
-            url: 'products/' + data.id + '/post_feedback',
+            url: endpoint + '/' + data.id + '/post_feedback',
             dataType: 'JSON',
             success: function(data) {
                 for (let i = 0; i < data.length; i++) {
@@ -230,45 +230,22 @@ class Callables {
                 }
             }
         });
+    }
+
+    static afterProductChange(form, data) {
+        this.genericAfterChange(form, data, 'products');
     }
 
     static afterAggregateChange(form, data) {
-        utils.postAjax({
-            method: 'GET',
-            url: 'aggregates/' + data.id + '/post_feedback',
-            dataType: 'JSON',
-            success: function(data) {
-                for (let i = 0; i < data.length; i++) {
-                    utils.j().fetchRemoteModal(data[i]);
-                }
-            }
-        });
+        this.genericAfterChange(form, data, 'aggregates');
     }
 
 	static afterMovementTypeChange(form, data) {
-        utils.postAjax({
-            method: 'GET',
-            url: 'movtypes/' + data.id + '/post_feedback',
-            dataType: 'JSON',
-            success: function(data) {
-                for (let i = 0; i < data.length; i++) {
-                    utils.j().fetchRemoteModal(data[i]);
-                }
-            }
-        });
+        this.genericAfterChange(form, data, 'movtypes');
     }
 
     static afterModifierChange(form, data) {
-        utils.postAjax({
-            method: 'GET',
-            url: 'modifiers/' + data.id + '/post_feedback',
-            dataType: 'JSON',
-            success: function(data) {
-                for (let i = 0; i < data.length; i++) {
-                    utils.j().fetchRemoteModal(data[i]);
-                }
-            }
-        });
+        this.genericAfterChange(form, data, 'modifiers');
     }
 
     static afterBookingSaved(form, data) {

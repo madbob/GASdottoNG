@@ -23,7 +23,7 @@ function allPermissions()
             'measures.admin' => _i('Amministrare le unità di misura'),
             'gas.statistics' => _i('Visualizzare le statistiche'),
             'notifications.admin' => _i('Amministrare le notifiche'),
-            'gas.multi' => _i('Amministrare i GAS su questa istanza'),
+            'gas.multi' => _i('Amministrare la modalità Multi-GAS su questa istanza'),
         ],
         'App\Supplier' => [
             'supplier.modify' => _i('Modificare i fornitori assegnati'),

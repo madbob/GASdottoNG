@@ -23,7 +23,7 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
 
             <div class="row">
                 <div class="col-md-6">
-                    <x-larastrap::radios name="reset_list" :label="_i('Prodotti Esistenti')" :options="['no' => _i('Ignora'), 'disable' => _i('Disabilita'), 'remove' => _i('Elimina')]" value="no" />
+                    <x-larastrap::radios name="reset_list" :label="_i('Prodotti Esistenti')" :options="['no' => _i('Ignora'), 'disable' => _i('Disabilita')]" value="no" />
                 </div>
             </div>
 

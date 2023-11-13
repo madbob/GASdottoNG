@@ -22,7 +22,7 @@ class Products {
                 let value = sel.val();
                 let offset = sel.closest('th').index();
 
-                container.find('.product-select').filter(':checked').each((index, item) => {
+                container.find('.product-select').filter(':checked').filter(':visible').each((index, item) => {
                     $(item).closest('tr').find('td').eq(offset).find('select').val(value);
                 });
             });
@@ -32,7 +32,7 @@ class Products {
                 let value = check.prop('checked');
                 let offset = check.closest('th').index();
 
-                container.find('.product-select').filter(':checked').each((index, item) => {
+                container.find('.product-select').filter(':checked').filter(':visible').each((index, item) => {
                     $(item).closest('tr').find('td').eq(offset).find('input[type=checkbox]').prop('checked', value);
                 });
             });
@@ -40,7 +40,7 @@ class Products {
             container.on('click', '.massive-actions .remove_all', (e) => {
                 e.preventDefault();
 
-                container.find('.product-select').filter(':checked').each((index, item) => {
+                container.find('.product-select').filter(':checked').filter(':visible').each((index, item) => {
                     let row = $(item).closest('tr');
                     let id = row.find('input[type=hidden][name="id[]"]').val();
                     let remove = $('<input>').attr('type', 'hidden').attr('name', 'remove[]').attr('value', id);

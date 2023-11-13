@@ -21,7 +21,7 @@
                     [
                         'label' => _i('Valore'),
                         'field' => 'value',
-                        'type' => 'text'
+                        'type' => 'text',
                     ],
                 ],
             ])

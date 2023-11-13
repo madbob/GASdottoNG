@@ -38,6 +38,6 @@ class Variant extends Model
 
     public function getSlugID()
     {
-        return sprintf('%s::%s', $this->product_id, Str::slug($this->name));
+        return sprintf('%s::%s', $this->product_id, Str::slug(substr($this->name, 0, 50)));
     }
 }

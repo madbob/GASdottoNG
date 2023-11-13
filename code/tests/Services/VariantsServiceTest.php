@@ -211,4 +211,27 @@ class VariantsServiceTest extends TestCase
             }
         }
     }
+
+    /*
+        Verifica generazione ID univoci per valori
+    */
+    public function testCollision()
+    {
+        $variant = $this->services['variants']->store([
+            'product_id' => $this->product->id,
+            'name' => 'Nome della variante molto lungo, perché deve generare un ID molto lungo, che viene concatenato ai valori per generare gli ID dei valori stessi',
+            'id' => ['', '', ''],
+            'value' => [
+                'Valore molto lungo da aggiungere alla variante, per verificare come vengono tagliati i nomi. Questo è il valore numero 1',
+                'Valore molto lungo da aggiungere alla variante, per verificare come vengono tagliati i nomi. Questo è il valore numero 2',
+                'Valore molto lungo da aggiungere alla variante, per verificare come vengono tagliati i nomi. Questo è il valore numero 3'
+            ],
+        ]);
+
+        $this->assertEquals(3, $variant->values->count());
+
+        foreach($variant->values as $val) {
+            $this->assertTrue(strlen($val->id) < 191);
+        }
+    }
 }

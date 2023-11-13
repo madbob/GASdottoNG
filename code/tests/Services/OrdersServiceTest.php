@@ -464,16 +464,18 @@ class OrdersServiceTest extends TestCase
         $end = date('Y-m-d', strtotime('+20 days'));
         $shipping = date('Y-m-d', strtotime('+30 days'));
 
-        $aggregate = $this->services['orders']->store(array(
+        $aggregate = $this->services['orders']->store([
             'supplier_id' => $this->order->supplier_id,
-            'comment' => 'Commento di prova',
             'start' => printableDate($start),
             'end' => printableDate($end),
             'shipping' => printableDate($shipping),
             'status' => 'open',
-        ));
+        ]);
 
-        $combos = $aggregate->orders->first()->products()->where('product_id', $product->id)->first()->variantCombos;
+        $product_in_order = $aggregate->orders->first()->products()->where('product_id', $product->id)->first();
+        $this->assertTrue(isset($product_in_order->pivot->prices));
+        $this->assertTrue(isset(json_decode($product_in_order->pivot->prices)->variants));
+        $combos = $product_in_order->variant_combos;
         $this->assertFalse($combos->isEmpty());
         foreach($combos as $combo) {
             $this->assertEquals($product_price, $combo->getPrice());
@@ -486,23 +488,15 @@ class OrdersServiceTest extends TestCase
 
         $this->nextRound();
 
+        $product_in_order = $aggregate->orders->first()->products()->where('product_id', $product->id)->first();
+        $this->assertTrue(isset($product_in_order->pivot->prices));
+        $this->assertTrue(isset(json_decode($product_in_order->pivot->prices)->variants));
+
+        $this->nextRound();
+
         $product = $this->services['products']->show($product->id);
-        $new_product = $aggregate->orders->first()->products()->where('product_id', $product->id)->first();
-
-        $combos = $new_product->variantCombos;
-        $this->assertFalse($combos->isEmpty());
-        $this->assertEquals(3, $combos->count());
-
-        foreach($combos as $index => $combo) {
-            $listing_combo = VariantCombo::find($combo->id);
-            if ($index == 2) {
-                $this->assertEquals($listing_combo->getPrice(), $combo->getPrice() + 1);
-            }
-            else {
-                $this->assertEquals($listing_combo->getPrice(), $combo->getPrice());
-            }
-        }
-
+        $order = $this->services['orders']->show($aggregate->orders->first()->id);
+        $new_product = $order->products->firstWhere('id', $product->id);
         $this->assertFalse($product->comparePrices($new_product));
     }
 }

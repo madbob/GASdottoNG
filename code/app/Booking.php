@@ -190,20 +190,50 @@ class Booking extends Model
                 }
 
                 if ($type == 'effective') {
-                    $modifiers = $this->involvedModifiers();
-                    $aggregate_data = $obj->minimumRedux($modifiers);
+                    $value = 0;
+                    $modified_values = null;
 
-                    $type = $obj->status == 'pending' ? 'booked' : 'delivered';
-                    $modified_values = $obj->applyModifiers($aggregate_data, false);
+                    /*
+                        Se la prenotazione è stata consegnata, devo andare a
+                        recuperare i modificatori che sono stati effettivamente
+                        salvati sul DB a prescindere da quali sono quelli
+                        "teorici" che potrei trovare (quelli restituiti da
+                        involvedModifiers()).
+                        Questo per recuperare anche gli eventuali modificatori
+                        speciali delle consegne manuali
+                    */
 
-                    if ($with_friends) {
-                        foreach($obj->friends_bookings as $friend_booking) {
-                            $friend_modified_values = $friend_booking->applyModifiers($aggregate_data, false);
-                            $modified_values = $modified_values->merge($friend_modified_values);
+                    if ($obj->status != 'pending') {
+                        $type = 'delivered';
+                        $modified_values = $obj->allModifiedValues(null, true);
+
+                        if ($with_friends) {
+                            foreach($obj->friends_bookings as $friend_booking) {
+                                $friend_modified_values = $friend_booking->allModifiedValues(null, true);
+                                $modified_values = $modified_values->merge($friend_modified_values);
+                            }
+                        }
+                    }
+                    else {
+                        $type = 'booked';
+                        $modifiers = $obj->involvedModifiers();
+
+                        if ($modifiers->isEmpty() == false) {
+                            $aggregate_data = $obj->minimumRedux($modifiers);
+                            $modified_values = $obj->calculateModifiers($aggregate_data, false);
+
+                            if ($with_friends) {
+                                foreach($obj->friends_bookings as $friend_booking) {
+                                    $friend_modified_values = $friend_booking->calculateModifiers($aggregate_data, false);
+                                    $modified_values = $modified_values->merge($friend_modified_values);
+                                }
+                            }
                         }
                     }
 
-                    $value = ModifiedValue::sumAmounts($modified_values, $value);
+                    if ($modified_values) {
+                        $value = ModifiedValue::sumAmounts($modified_values, $value);
+                    }
                 }
 
                 foreach ($products as $booked) {
@@ -437,43 +467,9 @@ class Booking extends Model
         return $this->order->printableName();
     }
 
-    /*
-        TODO: questa funzione potrebbe essere da sopprimere. Da verificare
-    */
-    public function printableHeader()
-    {
-		\Log::debug('printableHeader di Booking');
-
-        $ret = $this->printableName();
-
-        $user = Auth::user();
-
-        $tot = $this->getValue('effective', false);
-        $friends_tot = $this->total_friends_value;
-
-        if($tot == 0 && $friends_tot == 0) {
-            $message = _i("Non hai partecipato a quest'ordine");
-        }
-        else {
-            $message = _i('Hai ordinato %s', [printablePriceCurrency($tot)]);
-            if ($friends_tot != 0) {
-                // @phpstan-ignore-next-line
-                $message += sprintf(' + %s', printablePriceCurrency($friends_tot));
-            }
-        }
-
-        $ret .= '<span class="pull-right">' . $message . '</span>';
-        return $ret;
-    }
-
     public function getShowURL()
     {
         return route('booking.user.show', ['booking' => $this->order->aggregate_id, 'user' => $this->user_id]);
-    }
-
-    public function getModalURL()
-    {
-        return route('booking.modal', ['aggregate_id' => $this->order->aggregate_id, 'user_id' => $this->user_id]);
     }
 
     public function wipeStatus()
@@ -518,7 +514,9 @@ class Booking extends Model
             $modifiers = $modifiers->merge($this->user->shippingplace->modifiers);
         }
 
-        return $modifiers->sortBy('priority');
+        return $modifiers->filter(function($mod) {
+            return $mod->active;
+        })->sortBy('priority');
     }
 
     public function involvedModifiedValues()

@@ -110,18 +110,35 @@ class RolesService extends BaseService
 		$this->ensureAuth(['gas.permissions' => 'gas']);
 
 		$r = Role::findOrFail($role_id);
-		if ($action) {
-			$r->enableAction($action);
+		if ($r->enabledAction($action)) {
+			return;
 		}
+
+        $r->actions .= ',' . $action;
+        $r->save();
+
+        /*
+            Se attivo un permesso che ha un solo target (di solito: il GAS),
+            attacco quest'ultimo direttamente a tutti gli utenti coinvolti
+        */
+        $class = classByRule($action);
+        if ($class::count() == 1) {
+            $only_target = $class::first();
+
+            foreach($r->users as $user) {
+                $urole = $user->roles()->where('roles.id', $r->id)->first();
+                $urole->attachApplication($only_target);
+            }
+        }
 	}
 
 	public function detachAction($role_id, $action)
 	{
 		$this->ensureAuth(['gas.permissions' => 'gas']);
-
 		$r = Role::findOrFail($role_id);
-		if ($action) {
-			$r->disableAction($action);
-		}
+        $actions = explode(',', $r->actions);
+		$new_actions = array_filter($actions, fn($a) => $a != $action);
+        $r->actions = join(',', $new_actions);
+        $r->save();
 	}
 }

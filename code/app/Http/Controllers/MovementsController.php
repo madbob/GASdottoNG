@@ -251,6 +251,30 @@ class MovementsController extends BackedController
         });
     }
 
+    public function askDelete(Request $request, $id)
+    {
+        $this->ensureAuth(['movements.admin' => 'gas']);
+        $mov = Movement::findOrFail($id);
+
+        return view('commons.deleteconfirm', [
+            'url' => route('movements.destroy', $id),
+            'password_protected' => true,
+            'text' => _i('Vuoi davvero eliminare il movimento %s?', [$mov->printableName()]),
+            'extra' => [
+                'close-modal' => '.movement-modal',
+
+                /*
+                    Se sono nel contesto di un utente/fornitore/GAS ricarica il
+                    pannello coi bilanci, se sono nel pannello di gestione delle
+                    quote utente ricarica la riga del relativo utente
+                */
+                'reload-portion' => ['.balance-summary', '.holding-movement-' . $id],
+
+                'post-saved-function' => ['refreshFilter']
+            ]
+        ]);
+    }
+
     public function document(Request $request, $type, $subtype = 'none')
     {
         $user = $this->checkAuth();

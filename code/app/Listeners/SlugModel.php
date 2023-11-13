@@ -40,22 +40,22 @@ class SlugModel
                 /*
                     Attenzione!!!
                     Quando il nome di una variabile in POST contiene un punto,
-                    Laravel lo traduce silenziosamente in un underscore. Questo per
-                    far funzionare la "dot notation" per accedere ad informazioni
-                    strutturate in array.
-                    Poiché gli ID degli oggetti sono spesso usati per costruire i
-                    nomi delle variabili in POST, qui li sopprimiamo direttamente
-                    sostituendoli
+                    Laravel lo traduce silenziosamente in un underscore. Questo
+                    per far funzionare la "dot notation" per accedere ad
+                    informazioni strutturate in array.
+                    Poiché gli ID degli oggetti sono spesso usati per costruire
+                    i nomi delle variabili in POST, qui li sopprimiamo
+                    direttamente
                 */
-                $id = str_replace('.', '_', $id);
+                $id = str_replace('.', '', $id);
 
                 /*
-                    Dagli ID sopprimiamo anche gli slash, che se concatenati agli
-                    URL li rompono malamente
+                    Dagli ID sopprimiamo anche gli slash, che se concatenati
+                    agli URL li rompono malamente
                 */
-                $id = str_replace('/', '_', $id);
+                $id = str_replace('/', '', $id);
 
-                $id = str_replace("'", '_', $id);
+                $id = str_replace("'", '', $id);
 
                 $event->sluggable->id = $id;
             }

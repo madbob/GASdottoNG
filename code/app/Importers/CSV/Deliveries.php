@@ -4,12 +4,10 @@ namespace App\Importers\CSV;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use App;
-use Auth;
-use DB;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
-use App\Services\BookingsService;
-use App\Services\FastBookingsService;
 use App\User;
 use App\Aggregate;
 use App\Order;
@@ -59,7 +57,7 @@ class Deliveries extends CSVImporter
 	public function select($request)
 	{
 		$user = Auth::user();
-		$service = new BookingsService();
+		$service = app()->make('BookingsService');
 		$errors = [];
 
 		list($reader, $columns) = $this->initRead($request);
@@ -201,7 +199,7 @@ class Deliveries extends CSVImporter
 	public function run($request)
 	{
 		$user = Auth::user();
-		$service = new BookingsService();
+		$service = app()->make('BookingsService');
 
 		$data = json_decode($request->input('data', '[]'), true);
 		$users = $request->input('user', []);
@@ -229,8 +227,7 @@ class Deliveries extends CSVImporter
 		DB::commit();
 
 		if ($action == 'close') {
-			$fast = new FastBookingsService();
-			$fast->fastShipping($user, $target_order->aggregate, null);
+			app()->make('FastBookingsService')->fastShipping($user, $target_order->aggregate, null);
 		}
 
 		return [

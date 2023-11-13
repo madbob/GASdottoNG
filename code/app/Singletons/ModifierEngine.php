@@ -184,6 +184,11 @@ class ModifierEngine
             return null;
         }
 
+		if (is_null($modifier->target)) {
+			\Log::debug('Modificatore senza oggetto di riferimento: ' . $modifier->id);
+            return null;
+        }
+
         if (!isset($aggregate_data->orders[$booking->order_id])) {
             return null;
         }
@@ -191,7 +196,7 @@ class ModifierEngine
         $product_target_id = 0;
 
         if ($modifier->target_type == 'App\Product') {
-            $product_target_id = $modifier->target->id;
+            $product_target_id = $modifier->target_id;
 
             switch($modifier->applies_target) {
                 case 'order':
@@ -241,6 +246,7 @@ class ModifierEngine
                 break;
 
             default:
+				Log::error('applies_target non riconosciuto per modificatore: ' . $modifier->applies_target);
                 return null;
         }
 

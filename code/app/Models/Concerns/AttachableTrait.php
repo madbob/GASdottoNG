@@ -31,11 +31,14 @@ trait AttachableTrait
         }
 
         if ($this->attachmentPermissionGranted() == false) {
-            $relation->where(function($query) {
-                $query->whereDoesntHave('users')->orWhereHas('users', function($query) {
-                    $query->where('users.id', Auth::user()->id);
+            $user = Auth::user();
+            if ($user) {
+                $relation->where(function($query) use ($user) {
+                    $query->whereDoesntHave('users')->orWhereHas('users', function($query) use ($user) {
+                        $query->where('users.id', $user->id);
+                    });
                 });
-            });
+            }
         }
 
         return $relation;
@@ -140,7 +143,9 @@ trait AttachableTrait
         $required = $this->requiredAttachmentPermission();
         if ($required != null) {
             $user = Auth::user();
-            return $user->can($required, $this);
+            if ($user) {
+                return $user->can($required, $this);
+            }
         }
         else {
             return true;

@@ -10,8 +10,8 @@ class Triggers {
             var target = $(this).attr('data-target-class');
             var new_status = $(this).prop('checked');
 
-            form.find('.' + target).each(function() {
-                $(this).prop('checked', new_status);
+            form.find('.' + target).filter(':visible').each(function() {
+                $(this).prop('checked', new_status).change();
             });
 
             $(this).prop('disabled', false);

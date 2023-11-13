@@ -107,7 +107,7 @@ class DatabaseSeeder extends Seeder
 
     private function categoryInit()
     {
-        $categories = ['Non Specificato', 'Frutta', 'Verdura', 'Cosmesi', 'Bevande'];
+        $categories = ['Non Specificato', 'Frutta', 'Verdura', 'Cosmesi', 'Bevande', 'Pezzi'];
         foreach ($categories as $cat) {
             Category::create([
                 'id' => Str::slug($cat),

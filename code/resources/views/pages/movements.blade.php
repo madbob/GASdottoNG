@@ -119,14 +119,4 @@
     </div>
 </div>
 
-@include('commons.deleteconfirm', [
-    'url' => 'movements',
-    'password_protected' => true,
-    'extra' => [
-        'close-all-modal' => '1',
-        'reload-portion' => '.balance-summary',
-        'post-saved-function' => ['refreshFilter']
-    ]
-])
-
 @endsection

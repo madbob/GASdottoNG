@@ -37,7 +37,7 @@ $measures = App\Measure::orderBy('name', 'asc')->get();
                                 <th width="5%"></th>
                             @endif
 
-                            <th width="5%"></th>
+                            <th width="5%"><x-larastrap::check classes="triggers-all-checkbox skip-on-submit" data-target-class="product-select" squeeze switch="false" /></th>
                             <th width="40%">{{ _i('Nome') }}</th>
                             <th width="15%">{{ _i('Categoria') }}</th>
                             <th width="15%">{{ _i('Unità di Misura') }}</th>
