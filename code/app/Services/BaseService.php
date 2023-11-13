@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Exceptions\AuthException;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
-use Auth;
-use Log;
+use App\Exceptions\AuthException;
 
 class BaseService
 {

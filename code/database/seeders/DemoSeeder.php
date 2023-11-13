@@ -71,7 +71,7 @@ class DemoSeeder extends Seeder
         }
 
         $role = roleByIdentifier('user');
-        $role->enableAction('users.subusers');
+        app()->make('RolesService')->attachAction($role->id, 'users.subusers');
 
         $referrer_role = Role::where('name', 'Referente')->first();
         $administrator = User::where('username', 'root')->first();
@@ -234,7 +234,7 @@ class DemoSeeder extends Seeder
         $d->description = '{"end":"10","shipping":"12","comment":"","suspend":"true"}';
         $d->target_type = Supplier::class;
         $d->target_id = 'la-zucchina-dorata';
-        $d->recurring = '{"day":"thursday","cycle":"biweekly","from":"' Carbon::today()->subMonths(1)->endOfMonth()->format('Y-m-d') '","to":"' . Carbon::today()->addMonths(2)->endOfMonth()->format('Y-m-d') . '"}';
+        $d->recurring = '{"day":"thursday","cycle":"biweekly","from":"' . Carbon::today()->subMonths(1)->endOfMonth()->format('Y-m-d') . '","to":"' . Carbon::today()->addMonths(2)->endOfMonth()->format('Y-m-d') . '"}';
         $d->save();
 
         $d = new Date();
@@ -242,7 +242,7 @@ class DemoSeeder extends Seeder
         $d->description = '{"end":"10","shipping":"15","comment":"","suspend":"true"}';
         $d->target_type = Supplier::class;
         $d->target_id = 'luigi-il-macellaio';
-        $d->recurring = '{"day":"wednesday","cycle":"month_third","from":"' Carbon::today()->subMonths(1)->endOfMonth()->format('Y-m-d') '","to":"' . Carbon::today()->addMonths(2)->endOfMonth()->format('Y-m-d') . '"}';
+        $d->recurring = '{"day":"wednesday","cycle":"month_third","from":"' . Carbon::today()->subMonths(1)->endOfMonth()->format('Y-m-d') . '","to":"' . Carbon::today()->addMonths(2)->endOfMonth()->format('Y-m-d') . '"}';
         $d->save();
     }
 }

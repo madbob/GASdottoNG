@@ -154,6 +154,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        App\Providers\ServicesProvider::class,
         App\Providers\SingletonsProvider::class,
         App\Providers\GraphicInitServiceProvider::class,
         App\Providers\MenuServiceProvider::class,

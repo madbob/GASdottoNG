@@ -19,9 +19,13 @@
                     <ul class="list-group mb-2">
                         @foreach($permissions as $identifier => $description)
                             <li class="list-group-item">
+                                <?php $is_mandatory = $role->mandatoryAction($identifier) ?>
                                 {{ $description }}
+                                @if($is_mandatory)
+                                    <br><small>{{ _i("Questo è l'unico ruolo abilitato a questo permesso speciale: se lo revochi rischi di perdere il controllo dell'istanza.") }}</small>
+                                @endif
                                 <span class="float-end">
-                                    <input type="checkbox" data-role="{{ $role->id }}" data-action="{{ $identifier }}" {{ $role->enabledAction($identifier) ? 'checked' : '' }} {{ $role->mandatoryAction($identifier) ? 'disabled' : '' }}>
+                                    <input type="checkbox" data-role="{{ $role->id }}" data-action="{{ $identifier }}" {{ $role->enabledAction($identifier) ? 'checked' : '' }} {{ $is_mandatory ? 'disabled' : '' }}>
                                 </span>
                             </li>
                         @endforeach

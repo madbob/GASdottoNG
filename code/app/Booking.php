@@ -467,43 +467,9 @@ class Booking extends Model
         return $this->order->printableName();
     }
 
-    /*
-        TODO: questa funzione potrebbe essere da sopprimere. Da verificare
-    */
-    public function printableHeader()
-    {
-		\Log::debug('printableHeader di Booking');
-
-        $ret = $this->printableName();
-
-        $user = Auth::user();
-
-        $tot = $this->getValue('effective', false);
-        $friends_tot = $this->total_friends_value;
-
-        if($tot == 0 && $friends_tot == 0) {
-            $message = _i("Non hai partecipato a quest'ordine");
-        }
-        else {
-            $message = _i('Hai ordinato %s', [printablePriceCurrency($tot)]);
-            if ($friends_tot != 0) {
-                // @phpstan-ignore-next-line
-                $message += sprintf(' + %s', printablePriceCurrency($friends_tot));
-            }
-        }
-
-        $ret .= '<span class="pull-right">' . $message . '</span>';
-        return $ret;
-    }
-
     public function getShowURL()
     {
         return route('booking.user.show', ['booking' => $this->order->aggregate_id, 'user' => $this->user_id]);
-    }
-
-    public function getModalURL()
-    {
-        return route('booking.modal', ['aggregate_id' => $this->order->aggregate_id, 'user_id' => $this->user_id]);
     }
 
     public function wipeStatus()

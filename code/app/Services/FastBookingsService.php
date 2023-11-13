@@ -70,7 +70,7 @@ class FastBookingsService extends BaseService
     {
         DB::beginTransaction();
 
-		$service = new BookingsService();
+		$service = app()->make('BookingsService');
 
         $default_payment_method = defaultPaymentByType('booking-payment');
         $bookings = $aggregate->bookings;

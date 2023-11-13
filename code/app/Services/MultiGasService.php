@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use Auth;
-use Log;
-use DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 use App\Gas;
 use App\User;
@@ -66,9 +66,8 @@ class MultiGasService extends BaseService
 
         DB::beginTransaction();
 
-        $user_service = new UsersService();
         $user_params = array_intersect_key($request, array_flip(['username', 'firstname', 'lastname', 'password', 'enforce_password_change']));
-        $admin = $user_service->store($user_params);
+        $admin = app()->make('UsersService')->store($user_params);
 
         $gas = new Gas();
         $this->setIfSet($gas, $request, 'name');
