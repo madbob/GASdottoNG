@@ -16,7 +16,7 @@ $form_buttons = [
         'label' => _i('Salva'),
         'type' => 'submit',
         'color' => 'success',
-        'classes' => ['saving-button'],
+        'attributes' => ['type' => 'submit'],
     ]
 ];
 
@@ -267,7 +267,7 @@ $form_buttons = [
                 Totale: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currency_symbol }}
             </div>
             <div class="col-auto">
-                <button class="saving-button btn btn-success">Salva</button>
+                <button class="btn btn-success" type="submit">Salva</button>
             </div>
         </div>
     </div>

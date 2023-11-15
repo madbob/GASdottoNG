@@ -455,7 +455,9 @@ class Bookings
         var max_bookable = form.find('input:hidden[name="max-bookable"]');
         if (max_bookable.length != 0) {
             max_bookable = parseFloat(max_bookable.val());
-            form.find('button[type=submit]').prop('disabled', grand_total > max_bookable);
+            utils.j().submitButton(form).each(function() {
+                $(this).prop('disabled', grand_total > max_bookable);
+            });
         }
     }
 
