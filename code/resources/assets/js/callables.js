@@ -233,19 +233,19 @@ class Callables {
     }
 
     static afterProductChange(form, data) {
-        this.genericAfterChange(form, data, 'products');
+        Callables.genericAfterChange(form, data, 'products');
     }
 
     static afterAggregateChange(form, data) {
-        this.genericAfterChange(form, data, 'aggregates');
+        Callables.genericAfterChange(form, data, 'aggregates');
     }
 
 	static afterMovementTypeChange(form, data) {
-        this.genericAfterChange(form, data, 'movtypes');
+        Callables.genericAfterChange(form, data, 'movtypes');
     }
 
     static afterModifierChange(form, data) {
-        this.genericAfterChange(form, data, 'modifiers');
+        Callables.genericAfterChange(form, data, 'modifiers');
     }
 
     static afterBookingSaved(form, data) {
