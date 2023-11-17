@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Collection;
 
 use App\Exceptions\AuthException;
+use App\Exceptions\IllegalArgumentException;
 use App\Movement;
 
 class BookingsServiceTest extends TestCase
@@ -404,6 +405,55 @@ class BookingsServiceTest extends TestCase
     public function testManualShippingMinus()
     {
         $this->handlingTotalManual(-10);
+    }
+
+    private function enforceBalance($user, $amount)
+    {
+        $currency = defaultCurrency();
+        $balance = $user->currentBalance($currency);
+        $balance->bank = $amount;
+        $balance->save();
+
+        $user = $user->fresh();
+
+        $current = $user->currentBalanceAmount();
+        $this->assertEquals($amount, $current);
+
+        return $user;
+    }
+
+    public function testInsufficientCredit()
+    {
+        $this->gas->setConfig('restrict_booking_to_credit', true);
+
+        $this->actingAs($this->userWithBasePerms);
+
+        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
+        $this->userWithBasePerms = $this->enforceBalance($this->userWithBasePerms, $total + 10);
+
+        $this->nextRound();
+
+        $data['action'] = 'booked';
+        $booking = $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
+        $this->assertNotNull($booking);
+        $this->assertEquals($booking->status, 'pending');
+        $this->assertEquals($booking->products()->count(), $booked_count);
+        $this->assertEquals($booking->getValue('booked', true), $total);
+
+        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
+        $this->userWithBasePerms = $this->enforceBalance($this->userWithBasePerms, $total - 10);
+
+        $this->nextRound();
+
+        $data['action'] = 'booked';
+
+        try {
+            $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
+            $this->fail('should never run');
+        }
+        catch(IllegalArgumentException $e) {
+            // good boy
+        }
     }
 
     /*

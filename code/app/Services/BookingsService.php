@@ -13,7 +13,7 @@ use App\BookedProductVariant;
 use App\BookedProductComponent;
 use App\ModifierType;
 use App\ModifiedValue;
-
+use App\Exceptions\IllegalArgumentException;
 use App\Events\BookingDelivered;
 
 class BookingsService extends BaseService
@@ -394,15 +394,44 @@ class BookingsService extends BaseService
         return $booking;
     }
 
+    /*
+        Il controllo sul credito a disposizione viene fatto soprattutto
+        client-side, in fase di prenotazione; qui rifaccio il controllo per
+        prevenire eventuali problemi
+    */
+    private function checkAvailableCredit($user)
+    {
+        if ($user->gas->restrict_booking_to_credit) {
+            /*
+                Questa funzione viene invocata dopo aver salvato la
+                prenotazione, nel contesto di una transazione, dunque il
+                bilancio attivo dell'utente già prevede la prenotazione stessa e
+                pertanto, per essere valido, deve essere superiore a 0
+            */
+            $current_active_balance = $user->activeBalance();
+
+            if ($current_active_balance < 0) {
+                DB::rollback();
+                throw new IllegalArgumentException(_i('Credito non sufficiente'), 1);
+            }
+        }
+    }
+
     public function bookingUpdate(array $request, $aggregate, $target_user, $delivering)
     {
-        DB::transaction(function() use ($request, $aggregate, $target_user, $delivering) {
-            $orders = $aggregate->orders()->with(['products', 'bookings', 'modifiers'])->get();
-            $user = $this->testAccess($target_user, $orders, $delivering);
+        DB::beginTransaction();
 
-            foreach($orders as $order) {
-                $this->handleBookingUpdate($request, $user, $order, $target_user, $delivering);
-            }
-        }, 3);
+        $orders = $aggregate->orders()->with(['products', 'bookings', 'modifiers'])->get();
+        $user = $this->testAccess($target_user, $orders, $delivering);
+
+        foreach($orders as $order) {
+            $this->handleBookingUpdate($request, $user, $order, $target_user, $delivering);
+        }
+
+        if ($delivering == false) {
+            $this->checkAvailableCredit($target_user);
+        }
+
+        DB::commit();
     }
 }
