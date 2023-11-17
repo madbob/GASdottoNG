@@ -102,7 +102,7 @@ class OrdersService extends BaseService
         */
         $enabled = $request['enabled'] ?? [];
         $removed_products = $order->products()->whereNotIn('id', $enabled)->pluck('id')->toArray();
-        if (!empty($removed_products)) {
+        if (empty($removed_products) == false) {
             foreach($order->bookings as $booking) {
                 $booking->products()->whereIn('product_id', $removed_products)->delete();
 
@@ -117,7 +117,7 @@ class OrdersService extends BaseService
         }
 
         $products = $order->supplier->products()->whereIn('id', $enabled)->get();
-        $order->syncProducts($products);
+        $order->syncProducts($products, false);
         return $order->aggregate;
     }
 

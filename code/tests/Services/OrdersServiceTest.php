@@ -437,6 +437,39 @@ class OrdersServiceTest extends TestCase
     }
 
     /*
+        Cambio prezzo di un prodotto e aggiornamento ordine
+    */
+    public function testDoNotUpdatePrice()
+    {
+        $this->actingAs($this->userReferrer);
+
+        $product = $this->order->products()->inRandomOrder()->first();
+        $old_price = $product->getPrice();
+        $new_price = $old_price + 2;
+        $this->services['products']->update($product->id, array(
+            'name' => $product->name,
+            'price' => $new_price,
+        ));
+
+        $this->nextRound();
+
+        $aggregate = $this->services['orders']->update($this->order->id, [
+            'supplier_id' => $this->order->supplier_id,
+            'start' => printableDate($this->order->start),
+            'end' => printableDate($this->order->end),
+            'shipping' => printableDate($this->order->shipping),
+            'status' => 'open',
+			'enabled' => $this->order->products->pluck('id')->toArray(),
+        ]);
+
+        $this->nextRound();
+
+        $order = $this->services['orders']->show($aggregate->orders->first()->id);
+        $product_order = $order->products()->where('product_id', $product->id)->first();
+        $this->assertEquals($old_price, $product_order->getPrice());
+    }
+
+    /*
         Cambio prezzo di una variante
     */
     public function testChangeProductVariantPrice()

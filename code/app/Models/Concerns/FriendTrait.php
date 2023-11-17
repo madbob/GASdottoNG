@@ -29,7 +29,7 @@ trait FriendTrait
         return $query->where('parent_id', null);
     }
 
-    public function isFriend(): boolean
+    public function isFriend(): bool
     {
         return $this->parent_id != null;
     }

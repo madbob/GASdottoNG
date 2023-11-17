@@ -294,17 +294,22 @@ class Order extends Model
         return json_encode($row);
     }
 
-    public function syncProducts($products)
+    public function syncProducts($products, $update_prices)
     {
-        $data = [];
+        if ($update_prices) {
+            $data = [];
 
-        foreach($products as $product) {
-            $data[$product->id] = [
-                'prices' => $this->extractProductPrices($product),
-            ];
+            foreach($products as $product) {
+                $data[$product->id] = [
+                    'prices' => $this->extractProductPrices($product),
+                ];
+            }
+
+            $this->products()->sync($data);
         }
-
-        $this->products()->sync($data);
+        else {
+            $this->products()->sync($products->pluck('id')->toArray());
+        }
     }
 
     public function attachProduct($product)

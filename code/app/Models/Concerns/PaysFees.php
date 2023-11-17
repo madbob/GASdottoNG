@@ -20,7 +20,7 @@ trait PaysFees
         return $this->belongsTo(Movement::class);
     }
 
-    public function expiredFee(): boolean
+    public function expiredFee(): bool
     {
         if ($this->fee) {
             $expiration = $this->gas->getConfig('year_closing');
