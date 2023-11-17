@@ -17,11 +17,17 @@
     $user_status = $user->plainStatus();
 
     $classes = [];
+
     if ($user_status != 'active') {
         $classes[] = 'hidden';
     }
+
     if ($user->fee) {
         $classes[] = 'holding-movement-' . $user->fee->id;
+    }
+
+    if ($user->expiredFee()) {
+        $classes[] = 'table-danger';
     }
 
     ?>

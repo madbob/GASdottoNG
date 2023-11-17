@@ -10,7 +10,7 @@
 
         <div class="row">
             <div class="col">
-                <table class="table" id="usersStatusTable">
+                <table class="table align-middle" id="usersStatusTable">
                     <thead>
                         <tr>
                             <th width="20%">{{ _i('Nome') }}</th>

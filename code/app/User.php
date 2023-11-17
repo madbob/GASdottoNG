@@ -28,6 +28,7 @@ use App\Models\Concerns\RoleableTrait;
 use App\Models\Concerns\FriendTrait;
 use App\Models\Concerns\CreditableTrait;
 use App\Models\Concerns\BookerTrait;
+use App\Models\Concerns\PaysFees;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\ManualWelcomeMessage;
 use App\Scopes\RestrictedGAS;
@@ -36,7 +37,7 @@ use App\Events\SluggableCreating;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, Authorizable, CanResetPassword, SoftDeletes,
-        ContactableTrait, PayableTrait, SuspendableTrait, HierarcableTrait, RoleableTrait, CreditableTrait, BookerTrait,
+        ContactableTrait, PayableTrait, SuspendableTrait, HierarcableTrait, RoleableTrait, CreditableTrait, BookerTrait, PaysFees,
         FriendTrait, GASModel, SluggableID, Cachable;
 
     public $incrementing = false;
@@ -68,11 +69,6 @@ class User extends Authenticatable
         return _i('Utente');
     }
 
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo('App\User', 'parent_id');
-    }
-
     public function notifications(): BelongsToMany
     {
         return $this->belongsToMany('App\Notification')->withPivot('done')->where('notification_user.done', '=', false)->orderBy('start_date', 'desc');
@@ -86,16 +82,6 @@ class User extends Authenticatable
     public function allnotifications(): BelongsToMany
     {
         return $this->belongsToMany('App\Notification')->orderBy('start_date', 'desc');
-    }
-
-    public function deposit(): BelongsTo
-    {
-        return $this->belongsTo('App\Movement');
-    }
-
-    public function fee(): BelongsTo
-    {
-        return $this->belongsTo('App\Movement');
     }
 
     public function shippingplace(): BelongsTo
@@ -115,11 +101,6 @@ class User extends Authenticatable
     public function scopeSorted($query)
     {
         return $query->orderBy('lastname', 'asc')->orderBy('firstname', 'asc');
-    }
-
-    public function scopeTopLevel($query)
-    {
-        return $query->where('parent_id', null);
     }
 
     public function getPaymentMethodAttribute()

@@ -312,7 +312,7 @@ class UsersController extends BackedController
         return $this->easyExecute(function() {
             $this->ensureAuth(['users.admin' => 'gas', 'users.movements' => 'gas']);
             $users = $this->service->list('', true);
-            $users->loadMissing('fee');
+            $users->loadMissing(['fee', 'gas']);
             return view('user.fees', ['users' => $users]);
         });
     }
