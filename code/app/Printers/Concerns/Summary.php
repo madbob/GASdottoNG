@@ -23,9 +23,9 @@ trait Summary
 
         foreach ($order->products()->sorted()->get() as $product) {
             $row = $this->formatProduct($fields, $formattable, $summary->products[$product->id] ?? null, $product, $internal_offsets);
-            if (!empty($row)) {
+            if (empty($row) == false) {
                 if (is_null($price_offset) == false) {
-                    $total += guessDecimal($row[0][$price_offset]);
+                    $total = array_reduce($row, fn($carry, $r) => $carry + guessDecimal($r[$price_offset]), $total);
                 }
 
                 $rows = array_merge($rows, $row);
@@ -33,11 +33,7 @@ trait Summary
         }
 
         if (empty($rows) == false) {
-            $headers = [];
-
-            foreach($fields as $f) {
-                $headers[] = $formattable[$f]->name;
-            }
+            $headers = array_map(fn($f) => $formattable[$f]->name, $fields);
 
             if (is_null($price_offset) == false) {
                 $last_row = array_fill(0, count($fields), '');
