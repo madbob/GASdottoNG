@@ -76,6 +76,7 @@ $measures = App\Measure::orderBy('name', 'asc')->get();
                                     </td>
                                     <td>
                                         <div class="hidden">
+                                            <span class="text-filterable-cell">{{ $product->name }}</span>
                                             @foreach($product->icons() as $icon)
                                                 <i class="bi-{{ $icon }}"></i>
                                             @endforeach
