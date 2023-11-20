@@ -229,41 +229,22 @@ class GasController extends Controller
 
     private function configRoles($gas, $request)
     {
-        $conf = (object) [
-            'user' => $request->input('roles->user'),
-        ];
+        $role_service = app()->make('RolesService');
+
+        if ($request->has('roles->user')) {
+            $role = $request->input('roles->user');
+            $role_service->setMasterRole($gas, 'user', $role);
+		}
 
 		if ($request->has('roles->friend')) {
-			$conf->friend = $request->input('roles->friend');
-		}
-		else {
-			$conf->friend = $gas->roles['friend'];
+            $role = $request->input('roles->friend');
+            $role_service->setMasterRole($gas, 'friend', $role);
 		}
 
 		if ($request->has('roles->multigas')) {
-			$conf->multigas = $request->input('roles->multigas');
+			$role = $request->input('roles->multigas');
+            $role_service->setMasterRole($gas, 'multigas', $role);
 		}
-		else {
-			$conf->multigas = $gas->roles['multigas'];
-		}
-
-        $old_friend_role = $gas->roles['friend'];
-        $update_users = ($conf->friend != $old_friend_role);
-
-        $gas->setConfig('roles', $conf);
-
-        /*
-            Se il ruolo "amico" viene cambiato, cambio effettivamente
-            gli utenti coinvolti
-        */
-        if ($update_users) {
-            $friends = User::whereNotNull('parent_id')->get();
-
-            foreach($friends as $friend) {
-                $friend->removeRole($old_friend_role, $gas);
-                $friend->addRole($conf->friend, $gas);
-            }
-        }
     }
 
     public function update(Request $request, $id)

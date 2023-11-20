@@ -116,7 +116,7 @@ class MovementsServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithReferrerPerms);
-        $this->services['movements']->update($this->sample_movement->id, array());
+        $this->services['movements']->update($this->sample_movement->id, []);
     }
 
     /*
@@ -136,10 +136,13 @@ class MovementsServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $this->services['movements']->update($this->sample_movement->id, array(
+        $this->services['movements']->update($this->sample_movement->id, [
             'amount' => 50
-        ));
+        ]);
 
+        $this->nextRound();
+
+        $this->gas = $this->gas->fresh();
         $this->assertEquals(-50, $this->gas->currentBalanceAmount());
     }
 

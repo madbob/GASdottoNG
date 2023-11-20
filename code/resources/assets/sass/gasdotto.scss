@@ -601,11 +601,6 @@ i[class^='bi-hidden-'] {
     .accordion-item {
         &:not(:first-of-type) {
             border-top: 1px solid rgba(0, 0, 0, 0.125);
-            border-bottom: 0;
-        }
-
-        &:last-of-type {
-            border-bottom: 1px solid rgba(0, 0, 0, 0.125);
         }
     }
 
@@ -622,6 +617,8 @@ i[class^='bi-hidden-'] {
     }
 
     .accordion-header {
+        font-size: 2rem;
+
         &:hover {
             background-color: $accordion-button-active-bg;
         }

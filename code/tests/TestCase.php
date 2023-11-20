@@ -60,7 +60,7 @@ abstract class TestCase extends BaseTestCase
             assoluto più comune
             Cfr. DeliverBooking::handle()
         */
-        $this->userAdmin = $this->createRoleAndUser($this->gas, 'gas.config,movements.admin');
+        $this->userAdmin = $this->createRoleAndUser($this->gas, 'gas.config,movements.admin,gas.permissions');
     }
 
     public function enabledQueryDump()
@@ -102,8 +102,10 @@ abstract class TestCase extends BaseTestCase
     */
     protected function createFriend($master)
     {
-        $friends_role = \App\Role::factory()->create(['actions' => 'users.subusers']);
-        $master->addRole($friends_role->id, $this->gas);
+        if ($master->can('users.subusers') == false) {
+            $friends_role = \App\Role::factory()->create(['actions' => 'users.subusers']);
+            $master->addRole($friends_role->id, $this->gas);
+        }
 
         $this->actingAs($master);
         $friend = $this->services['users']->storeFriend(array(
@@ -113,7 +115,14 @@ abstract class TestCase extends BaseTestCase
             'password' => 'password'
         ));
 
-        $booking_role = \App\Role::factory()->create(['actions' => 'supplier.book']);
+        $booking_role = roleByIdentifier('friend');
+        if (is_null($booking_role)) {
+            $this->actingAs($this->userAdmin);
+            $booking_role = \App\Role::factory()->create(['actions' => 'supplier.book']);
+            $this->services['roles']->setMasterRole($this->gas, 'friend', $booking_role->id);
+            $this->actingAs($master);
+        }
+
         $friend->addRole($booking_role->id, $this->gas);
 
         return $friend;

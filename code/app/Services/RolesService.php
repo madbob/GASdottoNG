@@ -46,6 +46,36 @@ class RolesService extends BaseService
 		return $role;
 	}
 
+	public function setMasterRole($gas, $identifier, $role_id)
+	{
+		$this->ensureAuth(['gas.permissions' => 'gas']);
+
+		$conf = $gas->roles;
+
+		if ($identifier == 'friend') {
+			$old_friend_role = $conf['friend'];
+		}
+		else {
+			$old_friend_role = null;
+		}
+
+		$conf[$identifier] = $role_id;
+		$gas->setConfig('roles', $conf);
+
+		/*
+            Se il ruolo "amico" viene cambiato, cambio effettivamente gli utenti
+			coinvolti
+        */
+		if ($old_friend_role) {
+            $friends = User::whereNotNull('parent_id')->get();
+
+            foreach($friends as $friend) {
+                $friend->removeRole($old_friend_role, $gas);
+                $friend->addRole($conf['friend'], $gas);
+            }
+        }
+	}
+
 	/*
 		Nota bene: le funzioni per assegnare o revocare un ruolo devono
 		funzionare a prescindere dal permesso gas.permissions, almeno sui ruoli
@@ -61,11 +91,17 @@ class RolesService extends BaseService
 
 		if ($managed_roles === false) {
 			/*
-				Se il ruolo desiderato non è tra quelli gestibili
-				gerarchicamente, occorre avere il permesso globale per alterare
-				tutti i permessi
+				Se il ruolo desiderato è uno di quelli base "utente" e "amico"
+				basta il permesso di gestione degli utenti, in quanto
+				l'amministratore degli utenti deve poter intervenire (in
+				particolare sugli amici)
 			*/
-			$this->ensureAuth(['gas.permissions' => 'gas']);
+			if ((isset($user->gas->roles['friend']) && $role_id == $user->gas->roles['friend']) || (isset($user->gas->roles['user']) && $role_id == $user->gas->roles['user'])) {
+				$this->ensureAuth(['users.admin' => 'gas']);
+			}
+			else {
+				$this->ensureAuth(['gas.permissions' => 'gas']);
+			}
 		}
 	}
 

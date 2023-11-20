@@ -17,6 +17,17 @@ $has_bookings = ($currentuser->id == $user->id);
 $has_friends = $editable && $user->can('users.subusers');
 $has_notifications = $user->isFriend() == false && $editable && ($currentgas->getConfig('notify_all_new_orders') == false);
 
+$friend_admin_buttons = [];
+if ($user->isFriend() && $admin_editable) {
+    $friend_admin_buttons = [
+        [
+            'label' => _i('Modifica Amico'),
+            'classes' => ['float-start'],
+            'attributes' => ['data-bs-toggle' => 'modal', 'data-bs-target' => '#change_friend_' . $user->id]
+        ]
+    ];
+}
+
 ?>
 
 <x-larastrap::tabs>
@@ -41,7 +52,7 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
             @endif
         @endif
 
-        <x-larastrap::mform :obj="$user" method="PUT" :action="route('users.update', $user->id)" :classes="$display_page ? 'inner-form' : ''" :nodelete="$display_page || $user->isFriend() == false" :nosave="$readonly">
+        <x-larastrap::mform :obj="$user" method="PUT" :action="route('users.update', $user->id)" :classes="$display_page ? 'inner-form' : ''" :nodelete="$display_page || $user->isFriend() == false" :nosave="$readonly" :other_buttons="$friend_admin_buttons">
             <div class="row">
                 <div class="col-12 col-md-6">
                     @if($user->isFriend() == false)
@@ -140,6 +151,38 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
 
             <hr/>
         </x-larastrap::mform>
+
+        @if($user->isFriend() && $admin_editable)
+            @push('postponed')
+                <x-larastrap::modal :id="sprintf('change_friend_%s', $user->id)">
+                    <x-larastrap::accordion>
+                        <x-larastrap::accordionitem :label="_i('Promuovi a utente regolare')" active="false">
+                            <x-larastrap::mform :action="route('users.promote', $user->id)" keep_buttons="true" nodelete="true">
+                                <x-larastrap::hidden name="close-modal" value="1" />
+                                <x-larastrap::hidden name="reload-portion" :value="sprintf('#friends-tab-%s', $user->parent_id)" />
+                                <x-larastrap::hidden name="append-list" value="user-list" />
+
+                                <p>
+                                    {{ _i('Cliccando "Salva", questo utente diventerà un utente regolare. Gli sarà assegnato il ruolo %s, avrà una propria contabilità, e non potrà più essere amministrato da %s. Sarà preservato lo storico delle sue prenotazioni, ma tutti i suoi pagamenti pregressi resteranno addebitati a %s.', roleByIdentifier('user')->name, $user->parent->printableName(), $user->parent->printableName()) }}
+                                </p>
+                            </x-larastrap::mform>
+                        </x-larastrap::accordionitem>
+                        <x-larastrap::accordionitem :label="_i('Cambia assegnazione')" active="false">
+                            <x-larastrap::mform :action="route('users.reassign', $user->id)" keep_buttons="true" nodelete="true">
+                                <x-larastrap::hidden name="close-modal" value="1" />
+                                <x-larastrap::hidden name="reload-portion" :value="sprintf('#friends-tab-%s', $user->parent_id)" />
+
+                                <p>
+                                    {{ _i('Da qui è possibile riassegnare un amico ad un altro utente. Tutti i pagamenti pregressi resteranno addebitati a %s.', $user->parent->printableName()) }}
+                                </p>
+
+                                <x-larastrap::selectobj :label="_i('Nuovo assegnatario')" name="parent_id" :options="App\User::where('id', '!=', $user->parent_id)->topLevel()->sorted()->get()->filter(fn($u) => $u->can('users.subusers'))" />
+                            </x-larastrap::mform>
+                        </x-larastrap::accordionitem>
+                    </x-larastrap::accordion>
+                </x-larastrap::modal>
+            @endpush
+        @endif
     </x-larastrap::tabpane>
 
     @if($has_accounting)
@@ -158,35 +201,8 @@ $has_notifications = $user->isFriend() == false && $editable && ($currentgas->ge
     @endif
 
     @if($has_friends)
-        <x-larastrap::tabpane :id="sprintf('friends-%s', sanitizeId($user->id))" :label="_i('Amici')" icon="bi-person-add">
-            <div class="row">
-                <div class="col">
-                    @include('commons.addingbutton', [
-                        'user' => null,
-                        'template' => 'friend.base-edit',
-                        'typename' => 'friend',
-                        'typename_readable' => _i('Amico'),
-                        'targeturl' => 'friends',
-                        'extra' => [
-                            'creator_id' => $user->id,
-                        ]
-                    ])
-                </div>
-            </div>
-
-            <hr>
-
-            <div class="row">
-                <div class="col">
-                    @include('commons.loadablelist', [
-                        'identifier' => 'friend-list',
-                        'items' => $user->friends,
-                        'empty_message' => _i('Aggiungi le informazioni relative agli amici per i quali vuoi creare delle sotto-prenotazioni. Ogni singola prenotazione sarà autonoma, ma trattata come una sola in fase di consegna. Ogni amico può anche avere delle proprie credenziali di accesso, per entrare in GASdotto e popolare da sé le proprie prenotazioni.'),
-                        'url' => 'users'
-                    ])
-                </div>
-            </div>
-        </x-larastrap::tabpane>
+        <x-larastrap::remotetabpane :id="sprintf('friends-%s', sanitizeId($user->id))" :label="_i('Amici')" :button_attributes="['id' => sprintf('friends-tab-%s', sanitizeId($user->id)), 'data-tab-url' => route('users.friends', $user->id)]" icon="bi-person-add">
+        </x-larastrap::remotetabpane>
     @endif
 
     @if($has_notifications)

@@ -17,7 +17,7 @@ class DynamicBookingsServiceTest extends TestCase
         parent::setUp();
 
         $this->order = $this->initOrder(null);
-        $this->userWithBasePerms = $this->createRoleAndUser($this->gas, 'supplier.book');
+        $this->userWithBasePerms = $this->createRoleAndUser($this->gas, 'supplier.book,users.subusers');
     }
 
     /*

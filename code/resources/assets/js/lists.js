@@ -136,7 +136,7 @@ class Lists {
     {
         var node = Lists.listRow(list, data.id, data.url, data.header);
         list.append(node);
-        utils.j().handleAsyncAccordion(node);
+        utils.j().initElements(list);
         Lists.afterListChanges(list);
 
         if (open) {

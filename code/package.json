@@ -27,7 +27,7 @@
     "bootstrap-validator": "^0.11.9",
     "chartist": "^1.3",
     "continous-calendar": "^0.1.1",
-    "jbob": "^0.2.6",
+    "jbob": "^0.3.0",
     "jquery": "^3.7.1",
     "jquery-ui": "^1.13.2",
     "jquery-ui-touch-punch": "^0.2.3",

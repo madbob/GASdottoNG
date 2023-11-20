@@ -20,7 +20,13 @@ class UsersServiceTest extends TestCase
         $this->userWithViewPerm = $this->createRoleAndUser($this->gas, 'users.view,users.subusers');
         $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'users.admin');
         $this->userWithMovementPerm = $this->createRoleAndUser($this->gas, 'movements.admin');
-        $this->userWithBasePerm = $this->createRoleAndUser($this->gas, 'users.self');
+
+        $this->actingAs($this->userAdmin);
+        $role = \App\Role::factory()->create(['actions' => 'users.self,users.subusers']);
+        $this->services['roles']->setMasterRole($this->gas, 'user', $role->id);
+        $this->userWithBasePerm = \App\User::factory()->create(['gas_id' => $this->gas->id]);
+        $this->userWithBasePerm->addRole($role->id, $this->gas);
+
         $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
 
 		$this->supplier = \App\Supplier::factory()->create();
@@ -143,7 +149,7 @@ class UsersServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithViewPerm);
-        $this->services['users']->store(array());
+        $this->services['users']->store([]);
     }
 
     /*
@@ -153,12 +159,12 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $newUser = $this->services['users']->store(array(
+        $newUser = $this->services['users']->store([
             'username' => 'test user',
             'firstname' => 'mario',
             'lastname' => 'rossi',
             'password' => 'password'
-        ));
+        ]);
 
         $this->assertEquals('test user', $newUser->username);
         $this->assertTrue(\Hash::check('password', $newUser->password));
@@ -173,13 +179,13 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $newUser = $this->services['users']->store(array(
+        $newUser = $this->services['users']->store([
             'username' => 'test user',
             'firstname' => 'mario',
             'lastname' => 'rossi',
             'sendmail' => true,
             'email' => 'mario@example.com'
-        ));
+        ]);
 
         $newUser = $this->services['users']->show($newUser->id);
         $this->assertNotEquals('', $newUser->access_token);
@@ -194,18 +200,75 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithViewPerm);
 
-        $newUser = $this->services['users']->storeFriend(array(
+        $newUser = $this->services['users']->storeFriend([
             'username' => 'test friend user',
             'firstname' => 'mario',
             'lastname' => 'rossi',
             'password' => 'password'
-        ));
+        ]);
+
+        $this->nextRound();
+
+        $parent = $this->services['users']->show($this->userWithViewPerm->id);
 
         $this->assertEquals('test friend user', $newUser->username);
-        $this->assertEquals($this->userWithViewPerm->id, $newUser->parent_id);
+        $this->assertEquals(1, $parent->friends->count());
+        $this->assertEquals($parent->id, $newUser->parent_id);
         $this->assertTrue(\Hash::check('password', $newUser->password));
         $this->assertEquals('rossi mario', $newUser->printableName());
         $this->assertEquals(0, $newUser->pending_balance);
+    }
+
+    /*
+        Promozione amico a utente regolare
+    */
+    public function testPromoteFriend()
+    {
+        $this->assertEquals(0, $this->userWithViewPerm->friends()->count());
+        $friend = $this->createFriend($this->userWithViewPerm);
+
+        $this->nextRound();
+
+        $parent = $this->services['users']->show($this->userWithViewPerm->id);
+        $this->assertEquals(1, $parent->friends()->count());
+
+        $this->nextRound();
+
+        $admin = $this->services['users']->show($this->userWithAdminPerm->id);
+        $this->actingAs($admin);
+        $this->services['users']->promoteFriend($friend->id);
+
+        $this->nextRound();
+
+        $friend = $this->services['users']->show($friend->id);
+        $parent = $this->services['users']->show($this->userWithViewPerm->id);
+        $this->assertEquals(0, $parent->friends()->count());
+        $this->assertNull($friend->parent_id);
+    }
+
+    /*
+        Riassegnazione amico
+    */
+    public function testAssignFriend()
+    {
+        $this->assertEquals(0, $this->userWithViewPerm->friends()->count());
+        $this->assertEquals(0, $this->userWithBasePerm->friends()->count());
+        $friend = $this->createFriend($this->userWithViewPerm);
+
+        $this->nextRound();
+
+        $admin = $this->services['users']->show($this->userWithAdminPerm->id);
+        $this->actingAs($admin);
+        $this->services['users']->reassignFriend($friend->id, $this->userWithBasePerm->id);
+
+        $this->nextRound();
+
+        $friend = $this->services['users']->show($friend->id);
+        $old_parent = $this->services['users']->show($this->userWithViewPerm->id);
+        $new_parent = $this->services['users']->show($this->userWithBasePerm->id);
+        $this->assertEquals(0, $old_parent->friends()->count());
+        $this->assertEquals(1, $new_parent->friends()->count());
+        $this->assertEquals($this->userWithBasePerm->id, $friend->parent_id);
     }
 
     /*
@@ -215,7 +278,7 @@ class UsersServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithViewPerm);
-        $this->services['users']->update($this->userWithViewPerm->id, array());
+        $this->services['users']->update($this->userWithViewPerm->id, []);
     }
 
     /*
@@ -225,7 +288,7 @@ class UsersServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithAdminPerm);
-        $this->services['users']->update('id', array());
+        $this->services['users']->update('id', []);
     }
 
     /*
@@ -239,10 +302,10 @@ class UsersServiceTest extends TestCase
             'gas_id' => $this->gas->id
         ]);
 
-        $updatedUser = $this->services['users']->update($user->id, array(
+        $updatedUser = $this->services['users']->update($user->id, [
             'password' => 'new password',
             'birthday' => 'Giovedi 01 Dicembre 2016',
-        ));
+        ]);
 
         $this->assertNotEquals($user->birthday, $updatedUser->birthday);
         $this->assertEquals(0, $updatedUser->pending_balance);
@@ -262,9 +325,9 @@ class UsersServiceTest extends TestCase
             'gas_id' => $this->gas->id
         ]);
 
-        $this->services['users']->update($user->id, array(
+        $this->services['users']->update($user->id, [
             'username' => $sample->username,
-        ));
+        ]);
     }
 
     /*
@@ -281,9 +344,9 @@ class UsersServiceTest extends TestCase
             'gas_id' => $this->gas->id
         ]);
 
-        $this->services['users']->update($user->id, array(
+        $this->services['users']->update($user->id, [
             'card_number' => $sample->card_number,
-        ));
+        ]);
     }
 
     /*
@@ -294,10 +357,10 @@ class UsersServiceTest extends TestCase
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
 
-        $user = $this->services['users']->update($this->userWithNoPerms->id, array(
+        $user = $this->services['users']->update($this->userWithNoPerms->id, [
             'name' => 'Mario',
             'birthday' => 'Giovedi 01 Dicembre 2016',
-        ));
+        ]);
 
         $this->assertEquals($this->userWithNoPerms->id, $user->id);
     }
@@ -309,13 +372,13 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithBasePerm);
 
-        $user = $this->services['users']->update($this->userWithBasePerm->id, array(
+        $user = $this->services['users']->update($this->userWithBasePerm->id, [
             'password' => 'new password',
             'birthday' => 'Giovedi 01 Dicembre 2016',
             'contact_id' => ['', '', ''],
             'contact_type' => ['phone', 'website', 'email'],
             'contact_value' => ['1234567890', 'http://www.example.com', 'test@mailinator.com'],
-        ));
+        ]);
 
         $this->assertEquals($this->userWithBasePerm->id, $user->id);
         $this->assertEquals(3, $user->contacts()->count());
@@ -333,10 +396,10 @@ class UsersServiceTest extends TestCase
         $this->actingAs($this->userWithNoPerms);
         $old_birthday = $this->userWithNoPerms->birthday;
 
-        $user = $this->services['users']->update($this->userWithNoPerms->id, array(
+        $user = $this->services['users']->update($this->userWithNoPerms->id, [
             'password' => 'new password',
             'birthday' => 'Giovedi 01 Dicembre 2016',
-        ));
+        ]);
 
         $this->assertEquals($this->userWithNoPerms->id, $user->id);
         $this->assertEquals($old_birthday, $user->birthday);

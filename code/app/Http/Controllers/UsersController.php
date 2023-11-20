@@ -50,10 +50,26 @@ class UsersController extends BackedController
     public function revisioned(Request $request, $id)
     {
         return $this->easyExecute(function() use ($id, $request) {
-            $user = $request->user();
             $status = $request->input('action');
             $this->service->revisioned($id, $status == 'approve');
             return $this->successResponse(['action' => $status]);
+        });
+    }
+
+    public function promote(Request $request, $id)
+    {
+        return $this->easyExecute(function() use ($id, $request) {
+            $subject = $this->service->promoteFriend($id);
+            return $this->commonSuccessResponse($subject);
+        });
+    }
+
+    public function reassign(Request $request, $id)
+    {
+        return $this->easyExecute(function() use ($id, $request) {
+            $new_parent = $request->input('parent_id');
+            $this->service->reassignFriend($id, $new_parent);
+            return $this->successResponse();
         });
     }
 
@@ -252,8 +268,16 @@ class UsersController extends BackedController
         $admin_editable = $requester->can('users.admin', $target->gas);
         $access = ($admin_editable || $requester->id == $target->id || $target->parent_id == $requester->id);
 
-        if ($access == false && $type == 'accounting') {
-            $access = $requester->can('movements.admin', $target->gas) || $requester->can('movements.view', $target->gas);
+        if ($access == false) {
+            switch($type) {
+                case 'accounting':
+                    $access = $requester->can('movements.admin', $target->gas) || $requester->can('movements.view', $target->gas);
+                    break;
+
+                case 'friends':
+                    $access = $target->can('users.subusers', $target->gas);
+                    break;
+            }
         }
 
         if ($access == false) {
@@ -286,6 +310,15 @@ class UsersController extends BackedController
             $user = $this->service->show($id);
             $this->testInternalFunctionsAccess($request->user(), $user, 'accounting');
             return view('user.accounting', ['user' => $user]);
+        });
+    }
+
+    public function friends(Request $request, $id)
+    {
+        return $this->easyExecute(function() use ($request, $id) {
+            $user = $this->service->show($id);
+            $this->testInternalFunctionsAccess($request->user(), $user, 'friends');
+            return view('user.friends', ['user' => $user]);
         });
     }
 

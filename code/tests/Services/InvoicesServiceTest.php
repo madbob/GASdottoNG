@@ -28,11 +28,13 @@ class InvoicesServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
+        $today = date('Y-m-d');
 
-        $this->services['invoices']->store(array(
+        $this->services['invoices']->store([
             'number' => 'ABC123',
             'supplier_id' => $this->supplier->id,
-        ));
+            'date' => printableDate($today),
+        ]);
     }
 
     private function createInvoice()

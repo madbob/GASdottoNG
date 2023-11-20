@@ -45,9 +45,12 @@ Route::middleware(['auth'])->group(function() {
         Route::post('users/fees', 'UsersController@feesSave')->name('users.savefees');
         Route::get('users/password', 'UsersController@changePassword')->name('users.password');
         Route::post('users/revisioned/{id}', 'UsersController@revisioned')->name('users.revisioned');
+        Route::post('users/promote/{id}', 'UsersController@promote')->name('users.promote');
+        Route::post('users/reassign/{id}', 'UsersController@reassign')->name('users.reassign');
         Route::get('users/{id}/bookings', 'UsersController@bookings')->name('users.bookings');
         Route::get('users/{id}/stats', 'UsersController@statistics')->name('users.stats');
         Route::get('users/{id}/accounting', 'UsersController@accounting')->name('users.accounting');
+        Route::get('users/{id}/friends', 'UsersController@friends')->name('users.friends');
         Route::get('users/tour/start', 'UsersController@startTour')->name('users.tour.start');
         Route::get('users/tour/finish', 'UsersController@finishTour')->name('users.tour.finish');
 

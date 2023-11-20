@@ -583,7 +583,7 @@ class ModifiersServiceTest extends TestCase
 
         foreach($order->bookings as $booking) {
             $mods = $booking->applyModifiers($redux, true);
-            $this->assertEquals($mods->count(), 1);
+            $this->assertEquals(1, $mods->count());
 
             $booked_value = $booking->getValue('weight', true);
 

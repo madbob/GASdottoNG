@@ -10,6 +10,7 @@ use Log;
 use DB;
 use Hash;
 
+use App\Exceptions\IllegalArgumentException;
 use App\Notifications\ApprovedMessage;
 use App\Notifications\DeclinedMessage;
 use App\User;
@@ -281,6 +282,48 @@ class UsersService extends BaseService
         }
 
         DB::commit();
+    }
+
+    public function promoteFriend($id)
+    {
+        $admin = $this->ensureAuth(['users.admin' => 'gas']);
+
+        $roles = app()->make('RolesService');
+        $friend_role = $admin->gas->roles['friend'];
+        $user_role = $admin->gas->roles['user'];
+
+        $roles->detachUser($id, $friend_role, null);
+        $roles->attachUser($id, $user_role, null);
+
+        $user = $this->show($id);
+        $user->parent_id = null;
+        $user->save();
+
+        return $user;
+    }
+
+    public function reassignFriend($user_id, $parent_id)
+    {
+        $this->ensureAuth(['users.admin' => 'gas']);
+
+        if ($parent_id == $user_id) {
+            throw new IllegalArgumentException(_i('Un utente non può essere amico di sé stesso'), 1);
+        }
+
+        $parent = $this->show($parent_id);
+        if ($parent->can('users.subusers') == false) {
+            throw new IllegalArgumentException(_i("Il nuovo utente assegnatario non può gestire amici"), 1);
+        }
+
+        $user = $this->show($user_id);
+        if ($user->isFriend() == false) {
+            throw new IllegalArgumentException(_i('Un utente regolare non può essere retrocesso ad amico'), 1);
+        }
+
+        $user->parent_id = $parent->id;
+        $user->save();
+
+        return $user;
     }
 
     public function picture($id)

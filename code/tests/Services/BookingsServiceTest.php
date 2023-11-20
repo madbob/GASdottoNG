@@ -19,7 +19,7 @@ class BookingsServiceTest extends TestCase
         parent::setUp();
 
         $this->sample_order = $this->initOrder(null);
-        $this->userWithBasePerms = $this->createRoleAndUser($this->gas, 'supplier.book');
+        $this->userWithBasePerms = $this->createRoleAndUser($this->gas, 'supplier.book,users.subusers');
     }
 
     /*
