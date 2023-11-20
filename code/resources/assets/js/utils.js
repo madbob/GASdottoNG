@@ -56,6 +56,10 @@ class Utils {
             this.reviewRequired($(e.currentTarget).closest('form'));
         });
 
+        $('.prevent-default', container).click(function(e) {
+            e.preventDefault();
+        });
+
         $('.link-button', container).click(function(e) {
             e.preventDefault();
             var url = $(this).attr('data-link');

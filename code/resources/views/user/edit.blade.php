@@ -22,7 +22,7 @@ if ($user->isFriend() && $admin_editable) {
     $friend_admin_buttons = [
         [
             'label' => _i('Modifica Amico'),
-            'classes' => ['float-start'],
+            'classes' => ['float-start', 'prevent-default'],
             'attributes' => ['data-bs-toggle' => 'modal', 'data-bs-target' => '#change_friend_' . $user->id]
         ]
     ];
