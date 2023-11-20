@@ -203,7 +203,7 @@ class Aggregate extends Printer
 
 				foreach($obj->orders as $order) {
 					$document->append(new Header($order->printableName()));
-		            $document = $this->formatSummary($order, $document, $required_fields, $status, $shipping_place);
+		            $document = $this->formatSummary($order, $document, $required_fields, $status, $shipping_place, false);
 		        }
             }
 
