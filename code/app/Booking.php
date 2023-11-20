@@ -107,15 +107,9 @@ class Booking extends Model
         ]);
     }
 
-    private function localModifiedValues($id, $with_friends)
+    private function localModifiedValues($id)
     {
         $values = $this->modifiedValues;
-
-        if ($with_friends) {
-            foreach($this->friends_bookings as $friend) {
-                $values = $values->merge($friend->localModifiedValues($id, true));
-            }
-        }
 
         if ($id) {
             $values = $values->filter(function($i) use ($id) {
@@ -128,7 +122,7 @@ class Booking extends Model
 
     public function allModifiedValues($id, $with_friends)
     {
-        $values = $this->localModifiedValues($id, false);
+        $values = $this->localModifiedValues($id);
 
         $products = $this->products;
         $values = $products->reduce(function($carry, $product) {
@@ -472,6 +466,19 @@ class Booking extends Model
         return route('booking.user.show', ['booking' => $this->order->aggregate_id, 'user' => $this->user_id]);
     }
 
+    public function unsetModifiedValues()
+    {
+        $this->unsetRelation('modifiedValues');
+
+        foreach($this->products as $prod) {
+            $prod->unsetRelation('modifiedValues');
+        }
+
+        foreach($this->friends_bookings as $friend) {
+            $friend->unsetModifiedValues();
+        }
+    }
+
     public function wipeStatus()
     {
         if ($this->payment) {
@@ -483,7 +490,7 @@ class Booking extends Model
         $this->deleteModifiedValues();
 
         $this->unsetRelation('payment');
-        $this->unsetRelation('modifiedValues');
+        $this->unsetModifiedValues();
         $this->unsetRelation('products');
     }
 

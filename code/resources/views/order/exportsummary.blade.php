@@ -14,7 +14,8 @@
         <?php list($options, $values) = flaxComplexOptions(App\Formatters\Order::formattableColumns('summary')) ?>
         <x-larastrap::checks name="fields" :label="_i('Colonne')" :options="$options" :value="$values" />
 
-        <x-larastrap::radios name="status" :label="_i('Quantità')" :options="['booked' => _i('Prenotate'), 'delivered' => _i('Consegnate')]" value="booked" />
+        <x-larastrap::radios name="status" :label="_i('Quantità')" :options="['pending' => _i('Prenotate'), 'shipped' => _i('Consegnate')]" value="pending" />
+        @include('order.partials.export.modifiers', ['order' => $order])
         <x-larastrap::radios name="format" :label="_i('Formato')" :options="['pdf' => _i('PDF'), 'csv' => _i('CSV'), 'gdxp' => _i('GDXP')]" value="pdf" />
 
         @include('order.filesmail', ['contacts' => $order->supplier->involvedEmails()])

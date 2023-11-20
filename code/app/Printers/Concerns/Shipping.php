@@ -9,6 +9,64 @@ use App\ModifiedValue;
 
 trait Shipping
 {
+    use OrderPrintType;
+
+    private function collectModifiersTotal($booking, $aggregate_data, $extra_modifiers)
+    {
+        $total_modifiers = 0;
+        $labels = [];
+
+        $modifiers = $booking->applyModifiers($aggregate_data, false);
+        foreach($booking->friends_bookings as $friend) {
+            $friend_modifiers = $friend->applyModifiers($aggregate_data, false);
+            $modifiers = $modifiers->merge($friend_modifiers);
+        }
+
+        $modifiers = $this->filterExtraModifiers($modifiers, $extra_modifiers);
+
+        $aggregated_modifiers = ModifiedValue::aggregateByType($modifiers);
+        foreach($aggregated_modifiers as $am) {
+            $labels[$am->name] = printablePrice($am->amount);
+            $total_modifiers += $am->amount;
+        }
+
+        return [$labels, $total_modifiers];
+    }
+
+    /*
+        All'occorrenza, qui "falsifico" temporaneamente lo stato della
+        prenotazione per far tornare i conti in fase di valutazione dei
+        modificatori
+    */
+    private function fakeBookingStatus($status, $booking)
+    {
+        $original_booking_status = null;
+
+        if ($status == 'pending') {
+            if ($booking->status == 'shipped' || $booking->status == 'saved') {
+                $original_booking_status = $booking->status;
+                $booking->status = $status;
+
+                foreach($booking->friends_bookings as $friend) {
+                    $friend->status = $status;
+                }
+            }
+        }
+
+        return $original_booking_status;
+    }
+
+    private function restoreBookingStatus($original_booking_status, $booking)
+    {
+        if ($original_booking_status != null) {
+            $booking->status = $original_booking_status;
+
+            foreach($booking->friends_bookings as $friend) {
+                $friend->status = $original_booking_status;
+            }
+        }
+    }
+
     public function formatShipping($order, $fields, $status, $shipping_place, $extra_modifiers)
     {
         $ret = (object) [
@@ -67,42 +125,13 @@ trait Shipping
                 continue;
             }
 
-            /*
-                All'occorrenza, qui "falsifico" temporaneamente lo stato della
-                prenotazione per far tornare i conti in fase di valutazione dei
-                modificatori
-            */
-            $original_booking_status = null;
-            if (($booking->status == 'shipped' || $booking->status == 'saved') && $status == 'booked') {
-                $original_booking_status = $booking->status;
-                $booking->status = 'pending';
-            }
+            $original_booking_status = $this->fakeBookingStatus($status, $booking);
 
-            $modifiers = $booking->applyModifiers($aggregate_data, false);
-
-            foreach($booking->friends_bookings as $friend) {
-                $friend_modifiers = $friend->applyModifiers($aggregate_data, false);
-                $modifiers = $modifiers->merge($friend_modifiers);
-            }
-
-            if ($extra_modifiers == false) {
-                $modifiers = $modifiers->filter(function($mod) {
-                    return is_null($mod->modifier->movementType);
-                });
-            }
-
-            $total_modifiers = 0;
-            $aggregated_modifiers = ModifiedValue::aggregateByType($modifiers);
-            foreach($aggregated_modifiers as $am) {
-                $obj->totals[$am->name] = printablePrice($am->amount);
-                $total_modifiers += $am->amount;
-            }
-
+            list($labels_modifiers, $total_modifiers) = $this->collectModifiersTotal($booking, $aggregate_data, $extra_modifiers);
+            $obj->totals = array_merge($obj->totals, $labels_modifiers);
             $obj->totals['total'] = $booking->getValue($internal_offsets->by_booking, true) + $total_modifiers;
 
-            if ($original_booking_status != null) {
-                $booking->status = $original_booking_status;
-            }
+            $this->restoreBookingStatus($original_booking_status, $booking);
 
             $ret->contents[] = $obj;
         }

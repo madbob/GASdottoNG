@@ -178,20 +178,46 @@ class ModifierEngine
         return $modifier_value;
     }
 
+	/*
+		Questo è per normalizzare l'array di riduzione in ingresso: quasi sempre
+		ne arriva uno applicato ad un aggregato, talvolta ne arriva uno
+		applicato ad un singolo ordine
+	*/
+	private function normalizeAggregateData($aggregate_data, $booking)
+	{
+		if (isset($aggregate_data->orders[$booking->order_id]) == false) {
+			if (isset($aggregate_data->bookings[$booking->id]) == false) {
+	            return null;
+			}
+			else {
+				$aggregate_data = (object) [
+					'orders' => [
+						$booking->order_id => $aggregate_data,
+					]
+				];
+			}
+        }
+
+		return $aggregate_data;
+	}
+
     public function apply($modifier, $booking, $aggregate_data)
     {
         if ($modifier->active == false) {
+			Log::debug('Modificatore non attivo, ignoro applicazione');
             return null;
         }
 
 		if (is_null($modifier->target)) {
-			\Log::debug('Modificatore senza oggetto di riferimento: ' . $modifier->id);
+			Log::debug('Modificatore senza oggetto di riferimento: ' . $modifier->id);
             return null;
         }
 
-        if (!isset($aggregate_data->orders[$booking->order_id])) {
-            return null;
-        }
+		$aggregate_data = $this->normalizeAggregateData($aggregate_data, $booking);
+		if (is_null($aggregate_data)) {
+			Log::debug('Applicazione modificatore: mancano dati ordine ' . $booking->order_id);
+			return null;
+		}
 
         $product_target_id = 0;
 
@@ -299,6 +325,7 @@ class ModifierEngine
                     $modifier_value->delete();
                 }
 
+				Log::debug('Modificatore non applicabile');
                 return null;
             }
         }

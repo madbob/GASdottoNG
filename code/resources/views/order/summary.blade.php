@@ -269,7 +269,7 @@ foreach($display_columns as $identifier => $metadata) {
                                 @case('total_price')
                                     <span class="order-summary-order-price">{{ printablePriceCurrency($summary->price ?? 0) }}</span>
                                     @foreach(App\ModifiedValue::aggregateByType($pending_modifiers) as $am)
-                                        <br>+ {{ $am->name }}: {{ printablePrice($am->amount) }}
+                                        <br><small>+ {{ $am->name }}: {{ printablePrice($am->amount) }}</small>
                                     @endforeach
 
                                     @break
@@ -284,7 +284,7 @@ foreach($display_columns as $identifier => $metadata) {
                                         @endif
                                     </span>
                                     @foreach(App\ModifiedValue::aggregateByType($shipped_modifiers) as $am)
-                                        <br>+ {{ $am->name }}: {{ printablePrice($am->amount) }}
+                                        <br><small>+ {{ $am->name }}: {{ printablePrice($am->amount) }}</small>
                                     @endforeach
 
                                     @break

@@ -52,16 +52,23 @@ class ProductsServiceTest extends TestCase
     {
         $this->actingAs($this->userWithReferrerPerms);
 
-        $product = $this->services['products']->store(array(
+        $previous_quantity = $this->measure->products->count();
+
+        $product = $this->services['products']->store([
             'name' => 'Test Product',
             'price' => rand(),
             'supplier_id' => $this->supplier->id,
             'category_id' => $this->category->id,
             'measure_id' => $this->measure->id
-        ));
+        ]);
+
+        $product = $this->services['products']->show($product->id);
 
         $this->assertEquals('Test Product', $product->name);
         $this->assertEquals($this->supplier->id, $product->supplier_id);
+
+        $measure = $this->measure->fresh();
+        $this->assertEquals($previous_quantity + 1, $measure->products->count());
     }
 
     /*

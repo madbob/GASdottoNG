@@ -34,8 +34,8 @@ class NotifyClosedOrder extends Job
                             I files vengono già rimossi dopo l'invio della
                             notifica al fornitore
                         */
-                        $pdf_file_path = $printer->document($order, 'summary', ['format' => 'pdf', 'status' => 'booked', 'extra_modifiers' => 0, 'send_mail' => true]);
-                        $csv_file_path = $printer->document($order, 'summary', ['format' => 'csv', 'status' => 'booked', 'extra_modifiers' => 0, 'send_mail' => true]);
+                        $pdf_file_path = $printer->document($order, 'summary', ['format' => 'pdf', 'status' => 'pending', 'extra_modifiers' => 0, 'send_mail' => true]);
+                        $csv_file_path = $printer->document($order, 'summary', ['format' => 'csv', 'status' => 'pending', 'extra_modifiers' => 0, 'send_mail' => true]);
                         $order->supplier->notify(new SupplierOrderShipping($gas, $order, $pdf_file_path, $csv_file_path));
 
                         $this->hub->enable(true);
@@ -69,8 +69,8 @@ class NotifyClosedOrder extends Job
                     Nota: il flag send_mail serve solo a farsi restituire il
                     path del file generato. Cfr. il TODO in Order::document()
                 */
-                $pdf_file_path = $printer->document($order, 'summary', ['format' => 'pdf', 'status' => 'booked', 'send_mail' => true]);
-                $csv_file_path = $printer->document($order, 'summary', ['format' => 'csv', 'status' => 'booked', 'send_mail' => true]);
+                $pdf_file_path = $printer->document($order, 'summary', ['format' => 'pdf', 'status' => 'pending', 'send_mail' => true]);
+                $csv_file_path = $printer->document($order, 'summary', ['format' => 'csv', 'status' => 'pending', 'send_mail' => true]);
 
                 $all_files[] = $pdf_file_path;
                 $all_files[] = $csv_file_path;

@@ -62,10 +62,6 @@ function generalInit(container) {
         container = $('body');
     }
 
-	$('[data-bs-toggle]', container).click(function(e) {
-        e.preventDefault();
-    });
-
     $('.nav-tabs a', container).click(function(e) {
         e.preventDefault();
         $(this).tab('show');

@@ -8,7 +8,7 @@ trait Orders
 
 	protected function bookingsRules($status)
 	{
-		if ($status == 'saved' || $status == 'delivered') {
+		if ($status == 'saved' || $status == 'shipped') {
             $get_total = 'delivered';
             $get_function = 'getDeliveredQuantity';
         }
@@ -27,7 +27,7 @@ trait Orders
 	*/
 	protected static function offsetsByStatus($status)
 	{
-		if ($status == 'delivered') {
+		if ($status == 'shipped') {
 			return (object)[
 				'alternate' => true,
 				'by_variant' => 'delivered',

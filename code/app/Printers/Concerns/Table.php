@@ -4,6 +4,8 @@ namespace App\Printers\Concerns;
 
 trait Table
 {
+    use OrderPrintType;
+
     protected function formatTableHead($user_columns, $orders)
     {
         $all_products = [];

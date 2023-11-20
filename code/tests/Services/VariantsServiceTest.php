@@ -62,7 +62,7 @@ class VariantsServiceTest extends TestCase
 
         $this->nextRound();
 
-        $this->services['variants']->store([
+        $other_variant = $this->services['variants']->store([
             'product_id' => $this->product->id,
             'name' => 'Taglia',
             'id' => ['', '', ''],
@@ -71,6 +71,7 @@ class VariantsServiceTest extends TestCase
 
         $product = $this->services['products']->show($this->product->id);
         $this->assertEquals(9, $product->variant_combos->count());
+        $this->assertEquals('L, M, S', $other_variant->printableValues());
     }
 
     /*

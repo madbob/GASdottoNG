@@ -391,6 +391,8 @@ class Order extends Model
 
     public function angryBookings()
     {
+        $had_cache = $this->hasInnerCache('angry_bookings');
+
         $bookings = $this->innerCache('angry_bookings', function($obj) {
             $bookings = $obj->bookings()->angryload()->get();
 
@@ -400,6 +402,24 @@ class Order extends Model
 
             return $bookings;
         });
+
+        /*
+            Questa funzione viene usata in particolare in applyModifiers(),
+            talvolta in due invocazioni consecutive per ottenere i modificatori
+            del prenotato e del consegnato. Ma la prima invocazione popola i
+            modificatori all'interno dell'albero delle prenotazioni dell'ordine,
+            e la seconda - trovandoli già a posto - li riusa impropriamente. Il
+            risultato è che i modificatori del consegnato risultano gli stessi
+            del prenotato.
+            Anziché rinunciare completamente alla cache aggressiva sulle
+            prenotazioni, preferisco invalidare e ricalcolare solo i
+            modificatori quando necessario
+        */
+        if ($had_cache) {
+            foreach($bookings as $booking) {
+                $booking->unsetModifiedValues();
+            }
+        }
 
         $this->setRelation('bookings', $bookings);
         return $bookings;
@@ -635,7 +655,8 @@ class Order extends Model
 
     public function applyModifiers($aggregate_data = null, $enforce_status = false)
     {
-        $modifiers = $this->involvedModifiers(true);
+        $modifiers = new Collection();
+        $order_modifiers = $this->involvedModifiers(true);
 
         /*
             TODO: se ci sono prenotazioni consegnate, non posso fidarmi
@@ -651,14 +672,12 @@ class Order extends Model
         */
         $has_shipped_bookings = $this->bookings->where('status', '!=', 'pending')->count() != 0;
 
-        if ($modifiers->isEmpty() == false || $has_shipped_bookings) {
+        if ($order_modifiers->isEmpty() == false || $has_shipped_bookings) {
             DB::beginTransaction();
 
             if (is_null($aggregate_data)) {
-                $aggregate_data = $this->minimumRedux($modifiers);
+                $aggregate_data = $this->minimumRedux($order_modifiers);
             }
-
-            $modifiers = new Collection();
 
             $old_status = $this->status;
             if ($enforce_status !== false) {

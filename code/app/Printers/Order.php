@@ -46,7 +46,7 @@ class Order extends Printer
     {
         $send_mail = isset($request['send_mail']);
         $subtype = $request['format'] ?? 'pdf';
-        $status = $request['status'] ?? 'booked';
+        $status = $request['status'] ?? 'pending';
         $extra_modifiers = $request['extra_modifiers'] ?? 0;
         $required_fields = $request['fields'] ?? [];
 
@@ -94,12 +94,6 @@ class Order extends Printer
                 foreach($c->products as $p) {
                     $flat_contents[] = array_merge($c->user, $p);
                 }
-
-                /*
-                    TODO: aggiungere anche i modificatori.
-                    Devono essere formattati in Shipping::formatShipping(),
-                    coerentemente alla formattazione dei prodotti
-                */
             }
 
             if ($send_mail) {
@@ -151,6 +145,7 @@ class Order extends Printer
     {
         $send_mail = isset($request['send_mail']);
         $subtype = $request['format'] ?? 'pdf';
+		$extra_modifiers = $request['extra_modifiers'] ?? 0;
 
         $title = _i('Prodotti ordine %s presso %s', [$obj->internal_number, $obj->supplier->name]);
         $filename = sanitizeFilename($title . '.' . $subtype);
@@ -190,7 +185,7 @@ class Order extends Printer
 
 			$document->append(new Title($document_title));
 
-	        $document = $this->formatSummary($obj, $document, $required_fields, $status, $shipping_place);
+	        $document = $this->formatSummary($obj, $document, $required_fields, $status, $shipping_place, $extra_modifiers);
 
 			if ($send_mail) {
 				$document->save($temp_file_path);
@@ -229,7 +224,7 @@ class Order extends Printer
     protected function handleTable($obj, $request)
     {
         $send_mail = isset($request['send_mail']);
-        $status = $request['status'] ?? 'booked';
+        $status = $request['status'] ?? 'pending';
         $shipping_place = $request['shipping_place'] ?? 0;
 
         $required_fields = $request['fields'] ?? [];

@@ -26,7 +26,7 @@ class Aggregate extends Printer
         $required_fields = $request['fields'] ?? [];
 
         $fields = splitFields($required_fields);
-        $status = $request['status'] ?? 'booked';
+        $status = $request['status'] ?? 'pending';
         $shipping_place = $request['shipping_place'] ?? 'all_by_name';
 
         $temp_data = [];
@@ -149,7 +149,7 @@ class Aggregate extends Printer
                     diverse iterazioni sovrascrivono sempre lo
                     stesso file
                 */
-                $f = $printer->document($order, 'summary', ['format' => 'gdxp', 'status' => 'booked']);
+                $f = $printer->document($order, 'summary', ['format' => 'gdxp', 'status' => 'pending']);
                 $new_f = Str::random(10);
                 rename($f, $new_f);
                 $files[] = $new_f;
@@ -255,7 +255,7 @@ class Aggregate extends Printer
 
 	protected function handleTable($obj, $request)
 	{
-		$status = $request['status'] ?? 'booked';
+		$status = $request['status'] ?? 'pending';
 		$shipping_place = $request['shipping_place'] ?? 0;
 
 		$required_fields = $request['fields'] ?? [];

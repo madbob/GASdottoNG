@@ -2,10 +2,11 @@
 
 namespace Tests\Services;
 
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
+
+use Tests\TestCase;
 use App\Exceptions\IllegalArgumentException;
 use App\Exceptions\AuthException;
 
@@ -375,13 +376,56 @@ class UsersServiceTest extends TestCase
         $user = $this->services['users']->update($this->userWithBasePerm->id, [
             'password' => 'new password',
             'birthday' => 'Giovedi 01 Dicembre 2016',
-            'contact_id' => ['', '', ''],
-            'contact_type' => ['phone', 'website', 'email'],
-            'contact_value' => ['1234567890', 'http://www.example.com', 'test@mailinator.com'],
         ]);
 
         $this->assertEquals($this->userWithBasePerm->id, $user->id);
-        $this->assertEquals(3, $user->contacts()->count());
+
+        $this->nextRound();
+
+        $this->assertTrue(Auth::attempt(['username' => $this->userWithBasePerm->username, 'password' => 'new password']));
+    }
+
+    /*
+        Salvataggio contatti
+    */
+    public function testContacts()
+    {
+        $this->actingAs($this->userWithBasePerm);
+
+        $user = $this->services['users']->update($this->userWithBasePerm->id, [
+            'contact_id' => ['', '', '', ''],
+            'contact_type' => ['phone', 'website', 'email', 'address'],
+            'contact_value' => ['1234567890', 'http://www.example.com', 'test@mailinator.com', 'Via Pippo, Torino'],
+        ]);
+
+        $this->assertEquals($this->userWithBasePerm->id, $user->id);
+
+        $this->nextRound();
+
+        $user = $this->services['users']->show($this->userWithBasePerm->id);
+        $this->assertEquals(4, $user->contacts->count());
+
+        $tested_types = [];
+
+        foreach($user->contacts as $contact) {
+            $this->assertEquals($user->id, $contact->target_id);
+            $this->assertEquals(get_class($user), $contact->target_type);
+            $this->assertNotEquals('???', $contact->type_name);
+            $tested_types[] = $contact->type;
+
+            if ($contact->type == 'address') {
+                $add = $contact->asAddress();
+                $this->assertEquals(3, count($add));
+                $this->assertEquals('Via Pippo', $add[0]);
+                $this->assertEquals('Torino', $add[1]);
+                $this->assertEquals('', $add[2]);
+            }
+        }
+
+        $this->assertTrue(in_array('phone', $tested_types));
+        $this->assertTrue(in_array('website', $tested_types));
+        $this->assertTrue(in_array('email', $tested_types));
+        $this->assertTrue(in_array('address', $tested_types));
     }
 
     /*

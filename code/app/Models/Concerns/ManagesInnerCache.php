@@ -38,6 +38,17 @@ trait ManagesInnerCache
         return sprintf('%s_%s', $this->id, $name);
     }
 
+    protected function hasInnerCache($name)
+    {
+        if ($this->uses_global_cache) {
+            $name = $this->globalKey($name);
+            return $this->global_store->has($name);
+        }
+        else {
+            return isset($this->inner_runtime_cache[$name]);
+        }
+    }
+
     protected function innerCache($name, $function)
     {
         if ($this->uses_global_cache) {

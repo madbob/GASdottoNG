@@ -157,7 +157,7 @@ unset($display_columns['notes']);
                                 @case('total_price')
                                     <span class="order-summary-order-price">{{ printablePriceCurrency($summary->price ?? 0) }}</span>
                                     @foreach($aggregated_modifiers = App\ModifiedValue::aggregateByType($pending_modifiers) as $am)
-                                        <br>+ {{ $am->name }}: {{ printablePrice($am->amount) }}
+                                        <br><small>+ {{ $am->name }}: {{ printablePrice($am->amount) }}</small>
                                     @endforeach
 
                                     @break
@@ -165,7 +165,7 @@ unset($display_columns['notes']);
                                 @case('price_delivered')
                                     <span class="order-summary-order-price_delivered">{{ printablePriceCurrency($summary->price_delivered) }}</span>
                                     @foreach(App\ModifiedValue::aggregateByType($shipped_modifiers) as $am)
-                                        <br>+ {{ $am->name }}: {{ printablePrice($am->amount) }}
+                                        <br><small>+ {{ $am->name }}: {{ printablePrice($am->amount) }}</small>
                                     @endforeach
 
                                     @break
