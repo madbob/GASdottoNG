@@ -29,6 +29,7 @@ use App\Models\Concerns\FriendTrait;
 use App\Models\Concerns\CreditableTrait;
 use App\Models\Concerns\BookerTrait;
 use App\Models\Concerns\PaysFees;
+use App\Models\Concerns\TracksUpdater;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\ManualWelcomeMessage;
 use App\Scopes\RestrictedGAS;
@@ -36,7 +37,7 @@ use App\Events\SluggableCreating;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, Authorizable, CanResetPassword, SoftDeletes,
+    use HasFactory, Notifiable, Authorizable, CanResetPassword, SoftDeletes, TracksUpdater,
         ContactableTrait, PayableTrait, SuspendableTrait, HierarcableTrait, RoleableTrait, CreditableTrait, BookerTrait, PaysFees,
         FriendTrait, GASModel, SluggableID, Cachable;
 
@@ -61,6 +62,7 @@ class User extends Authenticatable
     protected static function boot()
     {
         parent::boot();
+        static::initTrackingEvents();
         static::addGlobalScope(new RestrictedGAS());
     }
 

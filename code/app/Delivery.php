@@ -1,5 +1,9 @@
 <?php
 
+/*
+    Questa classe rappresenta un luogo di consegna
+*/
+
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
@@ -8,20 +12,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
-use Auth;
-
 use App\Models\Concerns\ModifiableTrait;
 use App\Models\Concerns\WithinGas;
+use App\Models\Concerns\TracksUpdater;
 use App\Events\SluggableCreating;
 use App\Events\AttachableToGas;
 
-/*
-    Questa classe rappresenta un luogo di consegna
-*/
-
 class Delivery extends Model
 {
-    use HasFactory, ModifiableTrait, GASModel, SluggableID, WithinGas, Cachable;
+    use HasFactory, TracksUpdater, ModifiableTrait, GASModel, SluggableID, WithinGas, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -30,6 +29,12 @@ class Delivery extends Model
         'creating' => SluggableCreating::class,
         'created' => AttachableToGas::class
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::initTrackingEvents();
+    }
 
     public function users(): HasMany
     {

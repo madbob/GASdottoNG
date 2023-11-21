@@ -16,12 +16,13 @@ use Illuminate\Support\Str;
 
 use App\Models\Concerns\ModifiableTrait;
 use App\Models\Concerns\Priceable;
+use App\Models\Concerns\TracksUpdater;
 use App\Events\VariantChanged;
 use App\Events\SluggableCreating;
 
 class Product extends Model
 {
-    use HasFactory, SoftDeletes, Priceable, ModifiableTrait, GASModel, SluggableID, Cachable;
+    use HasFactory, SoftDeletes, TracksUpdater, Priceable, ModifiableTrait, GASModel, SluggableID, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -33,6 +34,12 @@ class Product extends Model
     protected $casts = [
         'active' => 'boolean',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::initTrackingEvents();
+    }
 
     public function category(): BelongsTo
     {

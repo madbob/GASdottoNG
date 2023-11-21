@@ -9,13 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
-use App;
-use Auth;
-use DB;
-use Mail;
-use URL;
-use Log;
 use Carbon\Carbon;
 
 use App\Models\Concerns\AttachableTrait;
@@ -24,12 +20,13 @@ use App\Models\Concerns\CreditableTrait;
 use App\Models\Concerns\ModifiableTrait;
 use App\Models\Concerns\ExportableTrait;
 use App\Models\Concerns\ReducibleTrait;
+use App\Models\Concerns\TracksUpdater;
 use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 
 class Order extends Model
 {
-    use HasFactory, AttachableTrait, ExportableTrait, ModifiableTrait, PayableTrait, CreditableTrait, GASModel, SluggableID, ReducibleTrait;
+    use HasFactory, TracksUpdater, AttachableTrait, ExportableTrait, ModifiableTrait, PayableTrait, CreditableTrait, GASModel, SluggableID, ReducibleTrait;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -41,6 +38,7 @@ class Order extends Model
     protected static function boot()
     {
         parent::boot();
+        static::initTrackingEvents();
         static::addGlobalScope(new RestrictedGAS('aggregate.gas'));
     }
 
@@ -234,7 +232,7 @@ class Order extends Model
 
     public function getInternalNumberAttribute()
     {
-        return App::make('OrderNumbersDispatcher')->getNumber($this);
+        return app()->make('OrderNumbersDispatcher')->getNumber($this);
     }
 
     public function getLongCommentAttribute()
@@ -443,7 +441,7 @@ class Order extends Model
 
             if ($products->isEmpty() == false) {
                 $order = $this;
-                $order_data = App::make('GlobalScopeHub')->executedForAll($this->keep_open_packages != 'each', function() use ($order) {
+                $order_data = app()->make('GlobalScopeHub')->executedForAll($this->keep_open_packages != 'each', function() use ($order) {
                     return $order->reduxData();
                 });
 
@@ -799,7 +797,7 @@ class Order extends Model
 
     public function exportJSON()
     {
-        $hub = App::make('GlobalScopeHub');
+        $hub = app()->make('GlobalScopeHub');
         $gas = Gas::find($hub->getGas());
         return view('gdxp.json.supplier', ['obj' => $this->supplier, 'order' => $this, 'currentgas' => $gas])->render();
     }

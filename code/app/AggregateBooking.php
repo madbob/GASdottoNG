@@ -4,8 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-use Log;
-
+use App\Models\Concerns\TracksUpdater;
 use App\GASModel;
 use App\Aggregate;
 use App\User;
@@ -18,7 +17,7 @@ use App\User;
 
 class AggregateBooking extends Model
 {
-    use GASModel;
+    use GASModel, TracksUpdater;
 
     public $id;
     public $user;
@@ -185,7 +184,7 @@ class AggregateBooking extends Model
             }
 
             if (empty($ids)) {
-                Log::error('Tentativo di creare fattura non assegnata a nessuna prenotazione');
+                \Log::error('Tentativo di creare fattura non assegnata a nessuna prenotazione');
                 return;
             }
 
@@ -207,5 +206,29 @@ class AggregateBooking extends Model
     public function printableHeader()
     {
         return $this->user->printableName() . $this->headerIcons();
+    }
+
+    /********************************************************** TracksUpdater */
+
+    public function getPrintableUpdaterAttribute()
+    {
+        $last_update = null;
+        $last_updater = null;
+
+        foreach($this->bookings as $booking) {
+            if ($booking->updater) {
+                if (is_null($last_update) || $booking->updated_at->greaterThan($last_update)) {
+                    $last_update = $booking->updated_at;
+                    $last_updater = $booking->updater;
+                }
+            }
+        }
+
+        if ($last_updater) {
+            return _i('Ultima Modifica: <br class="d-block d-md-none">%s - %s', $last_update->format('d/m/Y'), $last_updater->printableName());
+        }
+        else {
+            return '';
+        }
     }
 }

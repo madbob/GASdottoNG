@@ -6,22 +6,29 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
+
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
-use Log;
+use App\Models\Concerns\TracksUpdater;
 
 class Modifier extends Model
 {
-    use GASModel, Cachable;
+    use GASModel, TracksUpdater, Cachable;
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::initTrackingEvents();
+    }
 
     public function modifierType(): BelongsTo
     {
-        return $this->belongsTo('App\ModifierType');
+        return $this->belongsTo(ModifierType::class);
     }
 
     public function movementType(): BelongsTo
     {
-        return $this->belongsTo('App\MovementType');
+        return $this->belongsTo(MovementType::class);
     }
 
     public function target(): MorphTo

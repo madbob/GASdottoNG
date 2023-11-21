@@ -5,6 +5,7 @@
             @include('commons.modifications', ['obj' => $delivery])
         </div>
     </div>
-</x-larastrap::form>
+    <hr>
+</x-larastrap::mform>
 
 @stack('postponed')

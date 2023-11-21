@@ -23,13 +23,14 @@ use App\Models\Concerns\CreditableTrait;
 use App\Models\Concerns\ExportableTrait;
 use App\Models\Concerns\SuspendableTrait;
 use App\Models\Concerns\ModifiableTrait;
+use App\Models\Concerns\TracksUpdater;
 use App\Models\Concerns\WithinGas;
 use App\Events\SluggableCreating;
 use App\Events\AttachableToGas;
 
 class Supplier extends Model
 {
-    use HasFactory, Notifiable, SoftDeletes,
+    use HasFactory, Notifiable, SoftDeletes, TracksUpdater,
         AttachableTrait, ContactableTrait, CreditableTrait, PayableTrait, ExportableTrait, SuspendableTrait, ModifiableTrait,
         GASModel, SluggableID, WithinGas, Cachable;
 
@@ -40,6 +41,12 @@ class Supplier extends Model
         'creating' => SluggableCreating::class,
         'created' => AttachableToGas::class,
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::initTrackingEvents();
+    }
 
     public static function commonClassName()
     {

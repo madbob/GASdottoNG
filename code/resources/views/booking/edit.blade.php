@@ -6,6 +6,8 @@ $grand_total = 0;
 $has_shipping = $aggregate->canShip();
 $enforced = $enforced ?? false;
 
+$booking = $aggregate->bookingBy($user->id);
+
 $form_buttons = [
     [
         'label' => _i('Annulla Prenotazione'),
@@ -24,7 +26,7 @@ $form_buttons = [
 
 @include('booking.head', ['aggregate' => $aggregate])
 
-<x-larastrap::iform classes="booking-form" method="PUT" :action="url('booking/' . $aggregate->id . '/user/' . $user->id)" data-dynamic-url="{{ route('booking.dynamics', ['aggregate_id' => $aggregate->id, 'user_id' => $user->id]) }}" :buttons="$form_buttons">
+<x-larastrap::iform :obj="$booking" classes="booking-form" method="PUT" :action="url('booking/' . $aggregate->id . '/user/' . $user->id)" data-dynamic-url="{{ route('booking.dynamics', ['aggregate_id' => $aggregate->id, 'user_id' => $user->id]) }}" :buttons="$form_buttons">
     <input type="hidden" name="post-saved-function" value="afterBookingSaved" class="skip-on-submit">
 
     <!--
@@ -76,7 +78,7 @@ $form_buttons = [
     @foreach($aggregate->orders as $order)
         <?php
 
-        $o = $order->userBooking($user->id);
+        $o = $booking->getOrderBooking($order);
         $booking_total = $o->getValue('effective', false);
         $mods = $o->applyModifiers(null, false);
 
@@ -271,4 +273,6 @@ $form_buttons = [
             </div>
         </div>
     </div>
+
+    <hr>
 </x-larastrap::iform>

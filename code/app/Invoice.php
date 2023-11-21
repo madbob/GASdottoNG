@@ -11,12 +11,13 @@ use App\Models\Concerns\PayableTrait;
 use App\Models\Concerns\CreditableTrait;
 use App\Models\Concerns\HierarcableTrait;
 use App\Models\Concerns\AttachableTrait;
+use App\Models\Concerns\TracksUpdater;
 use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 
 class Invoice extends Model implements Datable
 {
-    use GASModel, PayableTrait, CreditableTrait, HierarcableTrait, AttachableTrait, SluggableID;
+    use GASModel, SluggableID, TracksUpdater, PayableTrait, CreditableTrait, HierarcableTrait, AttachableTrait;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -28,6 +29,7 @@ class Invoice extends Model implements Datable
     protected static function boot()
     {
         parent::boot();
+        static::initTrackingEvents();
         static::addGlobalScope(new RestrictedGAS());
     }
 

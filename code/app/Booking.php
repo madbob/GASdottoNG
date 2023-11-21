@@ -21,13 +21,14 @@ use App\Models\Concerns\ModifiedTrait;
 use App\Models\Concerns\PayableTrait;
 use App\Models\Concerns\CreditableTrait;
 use App\Models\Concerns\ReducibleTrait;
+use App\Models\Concerns\TracksUpdater;
 use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 use App\Events\BookingDeleting;
 
 class Booking extends Model
 {
-    use HasFactory, GASModel, SluggableID, ModifiedTrait, PayableTrait, CreditableTrait, ReducibleTrait, Cachable;
+    use HasFactory, GASModel, SluggableID, TracksUpdater, ModifiedTrait, PayableTrait, CreditableTrait, ReducibleTrait, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -47,6 +48,8 @@ class Booking extends Model
     protected static function boot()
     {
         parent::boot();
+
+        static::initTrackingEvents();
 
         /*
             Questo è per limitare le prenotazioni a quelle effettivamente

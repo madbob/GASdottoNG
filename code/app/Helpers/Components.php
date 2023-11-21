@@ -175,6 +175,25 @@ function formatPeriodicToComponent($component, $params)
     return $params;
 }
 
+function formatUpdater($buttons, $params)
+{
+    $obj = $params['obj'];
+
+    if ($obj && hasTrait($obj, \App\Models\Concerns\TracksUpdater::class)) {
+        $buttons[] = [
+            'element' => 'larastrap::updater',
+        ];
+    }
+
+    return $buttons;
+}
+
+function formatInnerLastUpdater($component, $params)
+{
+    $params['buttons'] = formatUpdater($params['buttons'], $params);
+    return $params;
+}
+
 function formatMainFormButtons($component, $params)
 {
     /*
@@ -192,10 +211,11 @@ function formatMainFormButtons($component, $params)
         $params['main_form_managed'] = 'ongoing';
         $buttons = $params['attributes']['other_buttons'] ?? [];
 
+        $buttons = formatUpdater($buttons, $params);
+        $obj = $params['obj'];
+
         $nodelete = filter_var($params['attributes']['nodelete'] ?? false, FILTER_VALIDATE_BOOLEAN);
         if (!$nodelete) {
-            $obj = $params['obj'];
-
             $buttons[] = [
                 'color' => 'danger',
                 'classes' => ['delete-button'],

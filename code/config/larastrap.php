@@ -175,6 +175,7 @@ return [
             'extends' => 'form',
             'params' => [
                 'classes' => ['inner-form'],
+                'reviewCallback' => 'formatInnerLastUpdater',
             ],
         ],
         'wizardform' => [
@@ -189,6 +190,14 @@ return [
                     ]
                 ]
             ],
+        ],
+        'updater' => [
+            'extends' => 't',
+            'params' => [
+                'node' => 'small',
+                'name' => 'printable_updater',
+                'classes' => ['me-3', 'text-body-secondary', 'float-start', 'text-start', 'pt-2'],
+            ]
         ],
         'scheck' => [
             'extends' => 'check',

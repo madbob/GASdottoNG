@@ -33,7 +33,9 @@
                     @include('commons.permissionseditor', ['object' => $supplier, 'master_permission' => 'supplier.modify', 'editable' => true])
                 </div>
             </div>
-        </x-larastrap::form>
+
+            <hr/>
+        </x-larastrap::mform>
     </x-larastrap::tabpane>
 
     <x-larastrap::tabpane :label="_i('Ordini')" icon="bi-list-task">

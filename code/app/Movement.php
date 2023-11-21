@@ -10,14 +10,12 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Request;
 
-use Auth;
-use Log;
-
+use App\Models\Concerns\TracksUpdater;
 use App\Scopes\RestrictedGAS;
 
 class Movement extends Model
 {
-    use HasFactory, GASModel;
+    use HasFactory, TracksUpdater, GASModel;
 
     /*
         Per verificare il corretto salvataggio di un movimento, non consultare
@@ -40,6 +38,7 @@ class Movement extends Model
     protected static function boot()
     {
         parent::boot();
+        static::initTrackingEvents();
         static::addGlobalScope(new RestrictedGAS('registerer', true));
     }
 
