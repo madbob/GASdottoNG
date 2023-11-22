@@ -17,7 +17,7 @@ trait TracksUpdater
     public function getPrintableUpdaterAttribute(): string
     {
         if ($this->updater) {
-            return _i('Ultima Modifica: <br class="d-block d-md-none">%s - %s', $this->updated_at->format('d/m/Y'), $this->updater->printableName());
+            return _i('Ultima Modifica: <br class="d-block d-md-none">%s - %s', [$this->updated_at->format('d/m/Y'), $this->updater->printableName()]);
         }
         else {
             return '';
@@ -36,7 +36,7 @@ trait TracksUpdater
 
     protected static function initTrackingEvents(): void
     {
-        static::creating(fn($model) => static::updateUser($model));
-        static::updating(fn($model) => static::updateUser($model));
+        static::creating(fn($model) => self::updateUser($model));
+        static::updating(fn($model) => self::updateUser($model));
     }
 }

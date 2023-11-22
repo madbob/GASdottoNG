@@ -225,7 +225,7 @@ class AggregateBooking extends Model
         }
 
         if ($last_updater) {
-            return _i('Ultima Modifica: <br class="d-block d-md-none">%s - %s', $last_update->format('d/m/Y'), $last_updater->printableName());
+            return _i('Ultima Modifica: <br class="d-block d-md-none">%s - %s', [$last_update->format('d/m/Y'), $last_updater->printableName()]);
         }
         else {
             return '';

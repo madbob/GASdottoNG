@@ -115,9 +115,9 @@ class ModifiersServiceTest extends TestCase
         $thresholds = [20, 10, 0];
         $threshold_prices = [0.9, 0.92, 0.94];
 
-        foreach ($modifiers as $mod) {
-            if ($mod->id == 'sconto') {
-                $mod = $product->modifiers()->where('modifier_type_id', $mod->id)->first();
+        foreach ($modifiers as $modifier_type) {
+            if ($modifier_type->id == 'sconto') {
+                $mod = $product->modifiers()->where('modifier_type_id', $modifier_type->id)->first();
                 $this->services['modifiers']->update($mod->id, [
                     'value' => 'price',
                     'arithmetic' => 'apply',
@@ -128,6 +128,8 @@ class ModifiersServiceTest extends TestCase
                     'threshold' => $thresholds,
                     'amount' => $threshold_prices,
                 ]);
+
+                $this->assertNotNull($modifier_type->modifiers->firstWhere('id', $mod->id));
 
                 break;
             }
