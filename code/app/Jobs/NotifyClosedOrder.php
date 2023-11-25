@@ -103,11 +103,13 @@ class NotifyClosedOrder extends Job
         }
 
         foreach($notifiable_users as $notifiable) {
-            try {
-                $notifiable->user->notify(new ClosedOrdersNotification($notifiable->orders, $notifiable->files));
-            }
-            catch(\Exception $e) {
-                Log::error('Errore in notifica chiusura ordine: ' . $e->getMessage());
+            if ($notifiable->gas->auto_referent_order_summary) {
+                try {
+                    $notifiable->user->notify(new ClosedOrdersNotification($notifiable->orders, $notifiable->files));
+                }
+                catch(\Exception $e) {
+                    Log::error('Errore in notifica chiusura ordine: ' . $e->getMessage());
+                }
             }
         }
 

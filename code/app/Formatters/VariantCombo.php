@@ -2,7 +2,7 @@
 
 namespace App\Formatters;
 
-class VariantCombo extends Formatter
+class VariantCombo extends GenericProductFormat
 {
     public static function formatName($obj, $context)
     {
@@ -86,71 +86,22 @@ class VariantCombo extends Formatter
 
     public static function formattableColumns($type = null)
     {
-        $ret = [
-            'name' => (object) [
-                'name' => _i('Nome'),
-                'checked' => true,
-                'format' => 'static::formatName',
-            ],
-            'supplier_code' => (object) [
-                'name' => _i('Codice Fornitore'),
-                'format' => 'static::formatCode',
-            ],
-            'measure' => (object) [
-                'name' => _i('Unità di Misura'),
-                'format' => 'static::formatMeasure',
-            ],
-            'category' => (object) [
-                'name' => _i('Categoria'),
-                'format' => 'static::formatCategory',
-            ],
-            'price' => (object) [
-                'name' => _i('Prezzo Unitario'),
-                'checked' => true,
-                'format' => 'static::formatPrice',
-            ],
-            'active' => (object) [
-                'name' => _i('Ordinabile'),
-                'format' => 'static::formatActive',
-            ],
-            'vat_rate' => (object) [
-                'name' => _i('Aliquota IVA'),
-                'format' => 'static::formatVat',
-            ],
-            'portion_quantity' => (object) [
-                'name' => _i('Pezzatura'),
-                'format' => 'static::formatPortion',
-            ],
-            'variable' => (object) [
-                'name' => _i('Variabile'),
-                'format' => 'static::formatVariable',
-            ],
-            'package_size' => (object) [
-                'name' => _i('Dimensione Confezione'),
-                'format' => 'static::formatPackage',
-            ],
-            'weight' => (object) [
-                'name' => _i('Peso'),
-                'format' => 'static::formatWeight',
-            ],
-            'multiple' => (object) [
-                'name' => _i('Multiplo'),
-                'format' => 'static::formatMultipe',
-            ],
-            'min_quantity' => (object) [
-                'name' => _i('Minimo'),
-                'format' => 'static::formatMinimum',
-            ],
-            'max_quantity' => (object) [
-                'name' => _i('Massimo Consigliato'),
-                'format' => 'static::formatMaximum',
-            ],
-            'max_available' => (object) [
-                'name' => _i('Disponibile'),
-                'format' => 'static::formatAvailable',
-            ],
-        ];
-
+        $ret = $this->genericColumns();
+        $ret['name']->format = 'static::formatName';
+        $ret['supplier_code']->format = 'static::formatCode';
+        $ret['measure']->format = 'static::formatMeasure';
+        $ret['category']->format = 'static::formatCategory';
+        $ret['price']->format = 'static::formatPrice';
+        $ret['active']->format = 'static::formatActive';
+        $ret['vat_rate']->format = 'static::formatVat';
+        $ret['portion_quantity']->format = 'static::formatPortion';
+        $ret['variable']->format = 'static::formatVariable';
+        $ret['package_size']->format = 'static::formatPackage';
+        $ret['weight']->format = 'static::formatWeight';
+        $ret['multiple']->format = 'static::formatMultipe';
+        $ret['min_quantity']->format = 'static::formatMinimum';
+        $ret['max_quantity']->format = 'static::formatMaximum';
+        $ret['max_available']->format = 'static::formatAvailable';
         return $ret;
     }
 }

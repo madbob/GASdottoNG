@@ -2,7 +2,7 @@
 
 namespace App\Formatters;
 
-class Product extends Formatter
+class Product extends GenericProductFormat
 {
     public static function formatMeasure($obj, $context)
     {
@@ -41,62 +41,13 @@ class Product extends Formatter
 
     public static function formattableColumns($type = null)
     {
-        $ret = [
-            'name' => (object) [
-                'name' => _i('Nome'),
-                'checked' => true,
-            ],
-            'supplier_code' => (object) [
-                'name' => _i('Codice Fornitore'),
-            ],
-            'measure' => (object) [
-                'name' => _i('Unità di Misura'),
-                'format' => 'static::formatMeasure',
-            ],
-            'category' => (object) [
-                'name' => _i('Categoria'),
-                'format' => 'static::formatCategory',
-            ],
-            'price' => (object) [
-                'name' => _i('Prezzo Unitario'),
-                'format' => 'static::formatPrice',
-                'checked' => true,
-            ],
-            'active' => (object) [
-                'name' => _i('Ordinabile'),
-                'format' => 'static::formatActive',
-            ],
-            'vat_rate' => (object) [
-                'name' => _i('Aliquota IVA'),
-                'format' => 'static::formatVat',
-            ],
-            'portion_quantity' => (object) [
-                'name' => _i('Pezzatura'),
-            ],
-            'variable' => (object) [
-                'name' => _i('Variabile'),
-                'format' => 'static::formatVariable',
-            ],
-            'package_size' => (object) [
-                'name' => _i('Dimensione Confezione'),
-            ],
-            'weight' => (object) [
-                'name' => _i('Peso'),
-            ],
-            'multiple' => (object) [
-                'name' => _i('Multiplo'),
-            ],
-            'min_quantity' => (object) [
-                'name' => _i('Minimo'),
-            ],
-            'max_quantity' => (object) [
-                'name' => _i('Massimo Consigliato'),
-            ],
-            'max_available' => (object) [
-                'name' => _i('Disponibile'),
-            ],
-        ];
-
+        $ret = $this->genericColumns();
+        $ret['measure']->format = 'static::formatMeasure';
+        $ret['category']->format = 'static::formatCategory';
+        $ret['price']->format = 'static::formatPrice';
+        $ret['active']->format = 'static::formatActive';
+        $ret['vat_rate']->format = 'static::formatVat';
+        $ret['variable']->format = 'static::formatVariable';
         return $ret;
     }
 

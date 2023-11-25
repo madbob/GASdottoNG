@@ -209,6 +209,7 @@ class GasController extends Controller
         $gas->setConfig('notify_all_new_orders', $request->has('notify_all_new_orders') ? '1' : '0');
         $gas->setConfig('send_order_reminder', $request->has('enable_send_order_reminder') ? $request->input('send_order_reminder') : '0');
         $gas->setConfig('auto_user_order_summary', $request->has('auto_user_order_summary') ? '1' : '0');
+        $gas->setConfig('auto_referent_order_summary', $request->has('auto_referent_order_summary') ? '1' : '0');
         $gas->setConfig('auto_supplier_order_summary', $request->has('auto_supplier_order_summary') ? '1' : '0');
 
         foreach(systemParameters('MailTypes') as $identifier => $metadata) {

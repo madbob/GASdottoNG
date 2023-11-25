@@ -4,29 +4,74 @@
             <input type="hidden" name="group" value="mails">
 
             <div class="col">
-                <x-larastrap::check name="notify_all_new_orders" :label="_i('Invia notifica a tutti gli utenti all\'apertura di un ordine')" />
+                <div class="alert alert-info mb-3">
+                    <p>
+                        {{ _i('Da questa tabella puoi attivare specifiche tipologie di notifiche mail legate agli ordini, da inviare a diversi destinatari in base allo stato di ciascun ordine.') }}
+                    </p>
+                </div>
 
-                <x-larastrap::check name="enable_send_order_reminder" :label="_i('Invia promemoria ordini in chiusura')" triggers_collapse="send_order_reminder" :value="$gas->hasFeature('send_order_reminder')" />
-                <x-larastrap::collapse id="send_order_reminder">
-                    <x-larastrap::number name="send_order_reminder" :label="_i('Quanti giorni prima?')" />
-                </x-larastrap::collapse>
-
-                <x-larastrap::check name="auto_user_order_summary" :label="_i('Invia riepilogo automatico agli utenti che hanno partecipato ad un ordine, quando viene chiuso')" />
-                <x-larastrap::check name="auto_supplier_order_summary" :label="_i('Invia riepilogo automatico al fornitore di un ordine, quando viene chiuso')" />
+                <div class="table-responsive">
+                    <table class="table inline-cells">
+                        <thead>
+                            <tr>
+                                <th width="20%">&nbsp;</th>
+                                <th width="20%">{{ _i('Aperto') }}</th>
+                                <th width="40%">{{ _i('In Chiusura') }}</th>
+                                <th width="20%">{{ _i('Chiuso') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>{{ _i('Utenti') }}</th>
+                                <td>
+                                    <x-larastrap::check name="notify_all_new_orders" squeeze />
+                                    <x-larastrap::pophelp :text="_i('Se questa opzione non viene abilitata, gli utenti ricevono solo le notifiche email per gli ordini dei fornitori che hanno individualmente abilitato dal proprio pannello di configurazione personale. Se viene abilitata, tutti gli utenti ricevono una notifica email ogni volta che un ordine viene aperto')" />
+                                </td>
+                                <td>
+                                    <x-larastrap::check name="enable_send_order_reminder" squeeze triggers_collapse="send_order_reminder" :value="$gas->hasFeature('send_order_reminder')" />
+                                    <x-larastrap::collapse id="send_order_reminder" label_width="8" input_width="4">
+                                        <x-larastrap::number name="send_order_reminder" :label="_i('Quanti giorni prima?')" />
+                                    </x-larastrap::collapse>
+                                </td>
+                                <td>
+                                    <x-larastrap::check name="auto_user_order_summary" squeeze />
+                                    <x-larastrap::pophelp :text="_i('La notifica viene inviata solo agli utenti che hanno partecipato all\'ordine')" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>{{ _i('Referenti') }}</th>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>
+                                    <x-larastrap::check name="auto_referent_order_summary" squeeze />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>{{ _i('Fornitori') }}</th>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>
+                                    <x-larastrap::check name="auto_supplier_order_summary" squeeze />
+                                    <x-larastrap::pophelp :text="_i('Ai fornitori viene inviato solo il Riassunto Prodotti, senza dettagli sulle persone che hanno prenotato')" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <hr>
 
-                <p>
-                    {{ _i('Da qui puoi modificare i testi delle mail in uscita da GASdotto. Per ogni tipologia sono previsti dei placeholders, che saranno sostituiti con gli opportuni valori al momento della generazione: per aggiungerli nei testi, usare la sintassi %[nome_placeholder]') }}
-                </p>
-                <p>
-                    {{ _i('Placeholder globali, che possono essere usati in tutti i messaggi:') }}
-                </p>
-                <ul>
-                    <li>gas_name: {{ _i('Nome del GAS') }}</li>
-                </ul>
-
-                <hr>
+                <div class="alert alert-info mb-3">
+                    <p>
+                        {{ _i('Da qui puoi modificare i testi delle mail in uscita da GASdotto. Per ogni tipologia sono previsti dei placeholders, che saranno sostituiti con gli opportuni valori al momento della generazione: per aggiungerli nei testi, usare la sintassi %[nome_placeholder]') }}
+                    </p>
+                    <p>
+                        {{ _i('Placeholder globali, che possono essere usati in tutti i messaggi:') }}
+                    </p>
+                    <ul>
+                        <li>gas_name: {{ _i('Nome del GAS') }}</li>
+                    </ul>
+                </div>
 
                 @foreach(systemParameters('MailTypes') as $identifier => $metadata)
                     <?php

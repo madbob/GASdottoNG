@@ -97,6 +97,14 @@ html, body {
 
 .alert {
 	margin-bottom: 0;
+
+    p:last-of-type {
+        margin-bottom: 0;
+    }
+
+    ul:last-of-type {
+        margin-bottom: 0;
+    }
 }
 
 .iblock {
@@ -156,6 +164,13 @@ table {
 
     &.fixed-table {
         table-layout: fixed;
+    }
+
+    &.inline-cells {
+        td > * {
+            display: inline-block;
+            vertical-align: middle;
+        }
     }
 }
 
