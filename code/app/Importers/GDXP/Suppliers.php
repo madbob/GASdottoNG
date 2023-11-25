@@ -183,7 +183,18 @@ class Suppliers extends GDXPImporter
         }
 
         foreach($json->products as $json_product) {
-            $ex_product = $supplier->products()->where('name', $json_product->name)->first();
+            $pname = $json_product->name;
+            $psku = $json_product->sku ?? '';
+            $ex_product = null;
+
+            if (empty($psku) == false) {
+                $ex_product = $supplier->products()->where('supplier_code', $psku)->first();
+            }
+
+            if (is_null($ex_product)) {
+                $ex_product = $supplier->products()->where('name', $pname)->first();
+            }
+
             $product = Products::importJSON($master, $json_product, $ex_product->id ?? null);
             $product->supplier_id = $supplier->id;
             $product->save();

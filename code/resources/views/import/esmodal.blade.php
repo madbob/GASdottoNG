@@ -17,11 +17,10 @@
                 <table class="table" id="remoteSuppliers">
                     <thead>
                         <tr>
-                            <th width="20%">{{ _i('Nome') }}</th>
-                            <th width="15%">{{ _i('Città') }}</th>
+                            <th width="25%">{{ _i('Nome') }}</th>
                             <th width="20%">{{ _i('Partita IVA') }}</th>
-                            <th width="20%">{{ _i('Aggiornato') }}</th>
-                            <th width="20%">{{ _i('Ultima Lettura') }}</th>
+                            <th width="25%">{{ _i('Aggiornato') }}</th>
+                            <th width="25%">{{ _i('Ultima Lettura') }}</th>
                             <th width="5%">{{ _i('Importa') }}</th>
                         </tr>
                     </thead>
@@ -29,8 +28,7 @@
                         @foreach($entries as $entry)
                             <?php $mine = App\Supplier::where('vat', $entry->vat)->first() ?>
                             <tr>
-                                <td><span class="text-filterable-cell">{{ $entry->name }}</span></td>
-                                <td><span class="text-filterable-cell">{{ $entry->locality }}</span></td>
+                                <td><span class="text-filterable-cell">{{ $entry->name }} ({{ $entry->locality }})</span></td>
                                 <td><span class="text-filterable-cell">{{ $entry->vat }}</span></td>
                                 <td>{{ printableDate($entry->lastchange) }}</td>
                                 <td>{{ $mine ? printableDate($mine->remote_lastimport) : _i('Mai') }}</td>

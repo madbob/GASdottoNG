@@ -135,8 +135,8 @@ class Products extends CSVImporter
                 }
                 else {
                     $p = new Product();
-                    $p->category_id = 'non-specificato';
-                    $p->measure_id = 'non-specificato';
+                    $p->category_id = Category::defaultValue();
+                    $p->measure_id = Measure::defaultValue();
                     $p->weight = 0;
                     $p->min_quantity = 0;
                     $p->multiple = 0;

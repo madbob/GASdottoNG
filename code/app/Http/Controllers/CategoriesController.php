@@ -28,7 +28,7 @@ class CategoriesController extends Controller
             abort(503);
         }
 
-        $categories = Category::where('id', '!=', 'non-specificato')->where('parent_id', '=', null)->get();
+        $categories = Category::where('id', '!=', Category::defaultValue())->where('parent_id', '=', null)->get();
 
         return view('categories.edit', ['categories' => $categories]);
     }
@@ -104,13 +104,15 @@ class CategoriesController extends Controller
         }
 
         $data = $request->input('serialized');
-        $accumulator = ['non-specificato'];
+        $accumulator = [
+            Category::defaultValue()
+        ];
 
         $this->updateRecursive($data, null, $accumulator);
 
         $orphaned_products = Product::withoutGlobalScopes()->whereNotIn('category_id', $accumulator)->get();
         foreach($orphaned_products as $op) {
-            $op->category_id = 'non-specificato';
+            $op->category_id = Category::defaultValue();
             $op->save();
         }
 

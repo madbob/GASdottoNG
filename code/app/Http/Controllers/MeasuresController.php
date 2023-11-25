@@ -27,7 +27,7 @@ class MeasuresController extends Controller
             abort(503);
         }
 
-        $measures = Measure::where('id', '!=', 'non-specificato')->orderBy('name', 'asc')->get();
+        $measures = Measure::where('id', '!=', Measure::defaultValue())->orderBy('name', 'asc')->get();
 
         return view('measures.edit', ['measures' => $measures]);
     }
@@ -65,7 +65,10 @@ class MeasuresController extends Controller
         $ids = $request->input('id', []);
         $new_names = $request->input('name', []);
         $new_discretes = $request->input('discrete', []);
-        $saved_ids = ['non-specificato'];
+
+        $saved_ids = [
+            Measure::defaultValue()
+        ];
 
         for ($i = 0; $i < count($ids); ++$i) {
             $name = trim($new_names[$i]);
@@ -85,7 +88,7 @@ class MeasuresController extends Controller
             $saved_ids[] = $measure->id;
         }
 
-        Product::whereNotIn('measure_id', $saved_ids)->withTrashed()->update(['measure_id' => 'non-specificato']);
+        Product::whereNotIn('measure_id', $saved_ids)->withTrashed()->update(['measure_id' => Measure::defaultValue()]);
         Measure::whereNotIn('id', $saved_ids)->delete();
 
         return $this->successResponse();

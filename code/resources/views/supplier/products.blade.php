@@ -1,4 +1,10 @@
 @can('supplier.modify', $supplier)
+    @if($supplier->remote_lastimport)
+        <div class="alert alert-info mb-2">
+            {{ _i("Il listino di questo fornitore è stato importato dall'archivio centralizzato: si raccomanda si modificarlo il meno possibile in modo che sia più semplice poi gestirne gli aggiornamenti futuri.") }}
+        </div>
+    @endif
+
     <div class="row">
         <div class="col">
             @include('commons.addingbutton', [

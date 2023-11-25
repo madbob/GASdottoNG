@@ -25,4 +25,9 @@ class Measure extends Model
     {
         return $this->hasMany('App\Product')->orderBy('name', 'asc');
     }
+
+    public static function defaultValue()
+    {
+        return 'non-specificato';
+    }
 }

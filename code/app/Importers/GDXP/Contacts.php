@@ -15,12 +15,13 @@ class Contacts extends GDXPImporter
     {
         $map = [
             'phoneNumber' => 'phone',
+            'mobileNumber' => 'mobile',
             'faxNumber' => 'fax',
             'emailAddress' => 'email',
             'webSite' => 'website',
         ];
 
-        return $map[$attribute];
+        return $map[$attribute] ?? null;
     }
 
     public static function importXML($xml, $parent)

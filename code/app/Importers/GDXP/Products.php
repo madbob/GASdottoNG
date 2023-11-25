@@ -159,11 +159,17 @@ class Products extends GDXPImporter
             $category = Category::firstOrCreate(['name' => $name]);
             $product->category_id = $category->id;
         }
+        else {
+            $product->category_id = Category::defaultValue();
+        }
 
         $name = $json->um ?? '';
         if (!empty($name)) {
             $measure = Measure::firstOrCreate(['name' => $name]);
             $product->measure_id = $measure->id;
+        }
+        else {
+            $product->measure_id = Measure::defaultValue();
         }
 
         $name = $json->orderInfo->vatRate ?? null;

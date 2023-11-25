@@ -9,6 +9,8 @@ use DB;
 use App\User;
 use App\Supplier;
 use App\Product;
+use App\Category;
+use App\Measure;
 use App\Role;
 
 class ProductsService extends BaseService
@@ -63,12 +65,12 @@ class ProductsService extends BaseService
 
         $this->setIfSet($product, $request, 'category_id');
         if (empty($product->category_id)) {
-            $product->category_id = 'non-specificato';
+            $product->category_id = Category::defaultValue();
         }
 
         $this->setIfSet($product, $request, 'measure_id');
         if (empty($product->measure_id)) {
-            $product->measure_id = 'non-specificato';
+            $product->measure_id = Measure::defaultValue();
         }
 
         $this->transformAndSetIfSet($product, $request, 'vat_rate_id', function($value) {

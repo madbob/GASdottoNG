@@ -26,4 +26,9 @@ class Category extends Model implements HasChildren
     {
         return $this->hasMany('App\Category', 'parent_id');
     }
+
+    public static function defaultValue()
+    {
+        return 'non-specificato';
+    }
 }
