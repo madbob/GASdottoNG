@@ -58,8 +58,8 @@ class UsersController extends BackedController
 
     public function promote(Request $request, $id)
     {
-        return $this->easyExecute(function() use ($id) {
-            $subject = $this->service->promoteFriend($id);
+        return $this->easyExecute(function() use ($id, $request) {
+            $subject = $this->service->promoteFriend($request->all(), $id);
             return $this->commonSuccessResponse($subject);
         });
     }

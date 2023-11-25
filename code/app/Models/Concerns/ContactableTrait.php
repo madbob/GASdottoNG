@@ -16,7 +16,7 @@ trait ContactableTrait
 {
     public function contacts(): MorphMany
     {
-        return $this->morphMany('App\Contact', 'target');
+        return $this->morphMany(Contact::class, 'target');
     }
 
     public function updateContacts($request)

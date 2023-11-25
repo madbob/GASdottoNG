@@ -22,7 +22,7 @@ if ($user->isFriend() && $admin_editable) {
     $friend_admin_buttons = [
         [
             'label' => _i('Modifica Amico'),
-            'classes' => ['float-start', 'prevent-default'],
+            'classes' => ['float-start', 'prevent-default', 'me-2'],
             'attributes' => ['data-bs-toggle' => 'modal', 'data-bs-target' => '#change_friend_' . $user->id]
         ]
     ];
@@ -165,6 +165,11 @@ if ($user->isFriend() && $admin_editable) {
                                 <p>
                                     {{ _i('Cliccando "Salva", questo utente diventerà un utente regolare. Gli sarà assegnato il ruolo %s, avrà una propria contabilità, e non potrà più essere amministrato da %s. Sarà preservato lo storico delle sue prenotazioni, ma tutti i suoi pagamenti pregressi resteranno addebitati a %s.', roleByIdentifier('user')->name, $user->parent->printableName(), $user->parent->printableName()) }}
                                 </p>
+
+                                @if(blank($user->email))
+                                    <hr>
+                                    <x-larastrap::email :label="_i('E-Mail')" name="email" :help="_i('È necessario specificare almeno un indirizzo email di contatto del nuovo utente')" required />
+                                @endif
                             </x-larastrap::mform>
                         </x-larastrap::accordionitem>
                         <x-larastrap::accordionitem :label="_i('Cambia assegnazione')" active="false">

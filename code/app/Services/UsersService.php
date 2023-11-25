@@ -284,7 +284,7 @@ class UsersService extends BaseService
         DB::commit();
     }
 
-    public function promoteFriend($id)
+    public function promoteFriend($request, $id)
     {
         $admin = $this->ensureAuth(['users.admin' => 'gas']);
 
@@ -298,6 +298,11 @@ class UsersService extends BaseService
         $user = $this->show($id);
         $user->parent_id = null;
         $user->save();
+
+        $email = $request['email'] ?? null;
+        if ($email) {
+            $user->addContact('email', $email);
+        }
 
         return $user;
     }
