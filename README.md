@@ -27,7 +27,7 @@ Se preferisci installarlo in un container Docker, segui i seguenti passaggi.
 
 - composer
 
-- Docker and Docker Compose
+- Docker e Docker Compose
 
 ### Installazione 
 
@@ -41,6 +41,8 @@ Se preferisci installarlo in un container Docker, segui i seguenti passaggi.
 `cp .env.example .env`
 
 `php artisan key:generate`
+
+*Se stai utilizzando Docker, assicurati di aver configurato correttamente le impostazioni nel file .env, seguendo le istruzioni fornite nella sezione 'For Docker' all'interno del medesimo file.*
 
 #### 4. Avvia i contenitori Docker ed entra nella Terminale all'interno del container del progetto.
 `sail up -d`
