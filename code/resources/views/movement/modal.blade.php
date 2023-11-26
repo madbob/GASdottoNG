@@ -36,7 +36,6 @@ $buttons[] = ['color' => 'success', 'label' => _i('Salva'), 'attributes' => ['ty
         <input type="hidden" name="close-modal" value="1">
         <input type="hidden" name="update-field" value="movement-id-{{ $dom_id }}">
         <input type="hidden" name="update-field" value="movement-date-{{ $dom_id }}">
-        <input type="hidden" name="close-modal" value="">
         <input type="hidden" name="post-saved-function" value="refreshFilter">
         <input type="hidden" name="post-saved-function" value="reloadLoadableHeaders">
         <input type="hidden" name="data-refresh-target" value="#movements-filter">

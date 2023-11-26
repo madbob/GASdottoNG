@@ -197,6 +197,7 @@ class MovementsController extends BackedController
             return view('movement.modal', [
                 'dom_id' => $dom_id,
                 'obj' => null,
+                'extra' => $request->input('extra', []),
                 'default' => Movement::generate($type, $sender, $target, $amount),
             ]);
         }

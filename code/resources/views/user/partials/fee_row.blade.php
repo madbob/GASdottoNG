@@ -2,6 +2,7 @@
     <?php
 
     $dom_id = rand();
+    $row_random_id = sprintf('fee-row-%s', $user->id);
 
     $new_fee_url = route('movements.show', [
         'movement' => 0,
@@ -11,7 +12,8 @@
         'sender_type' => get_class($user),
         'target_id' => $user->gas,
         'target_type' => get_class($user->gas),
-        'amount' => $user->gas->getConfig('annual_fee_amount')
+        'amount' => $user->gas->getConfig('annual_fee_amount'),
+        'extra' => ['reload-portion' => '#' . $row_random_id],
     ]);
 
     $user_status = $user->plainStatus();
@@ -22,17 +24,23 @@
         $classes[] = 'hidden';
     }
 
-    if ($user->fee) {
-        $classes[] = 'holding-movement-' . $user->fee->id;
-    }
-
     if ($user->expiredFee()) {
         $classes[] = 'table-danger';
     }
 
+    if ($user->fee) {
+        $modify_fee_url = route('movements.show', [
+            'movement' => $user->fee->id,
+            'dom_id' => $dom_id,
+            'extra' => ['reload-portion' => '#' . $row_random_id],
+        ]);
+
+        $classes[] = 'holding-movement-' . $user->fee->id;
+    }
+
     ?>
 
-    <tr data-filtered-actual_status="{{ $user_status }}" class="{{ join(' ', $classes) }}" data-reload-url="{{ route('users.fee', $user->id) }}">
+    <tr id="{{ $row_random_id }}" data-filtered-actual_status="{{ $user_status }}" class="{{ join(' ', $classes) }}" data-reload-url="{{ route('users.fee', $user->id) }}">
         <td>
             <input type="hidden" name="user_id[]" value="{{ $user->id }}">
             {!! $user->printableName() !!}
@@ -65,7 +73,7 @@
             <x-larastrap::ambutton color="success" :label="_i('Nuova Quota')" :data-modal-url="$new_fee_url" />
 
             @if($user->fee)
-                <x-larastrap::ambutton color="warning" :label="_i('Modifica Quota')" :data-modal-url="route('movements.show', ['movement' => $user->fee->id, 'dom_id' => $dom_id])" />
+                <x-larastrap::ambutton color="warning" :label="_i('Modifica Quota')" :data-modal-url="$modify_fee_url" />
             @endif
         </td>
     </tr>
