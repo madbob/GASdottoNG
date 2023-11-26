@@ -143,7 +143,7 @@ class ImportController extends Controller
 
     public function postGdxp(Request $request)
     {
-        try {
+        // try {
             $archivepath = '';
             $working_dir = sys_get_temp_dir();
             $step = $request->input('step', 'read');
@@ -181,10 +181,12 @@ class ImportController extends Controller
 
                 return view('import.gdxpfinal', ['data' => $data]);
             }
+        /*
         }
         catch(\Exception $e) {
             Log::error(_i('Errore importando file GDXP: %s', $e->getMessage()));
             return view('import.gdxperror');
         }
+        */
     }
 }

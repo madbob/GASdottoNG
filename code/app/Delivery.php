@@ -56,23 +56,27 @@ class Delivery extends Model
             $a_place = $a->shipping_place;
             $b_place = $b->shipping_place;
 
+            $ret = 0;
+
             if (is_null($a_place) && is_null($b_place)) {
-                return $a->user->printableName() <=> $b->user->printableName();
+                $ret = $a->user->printableName() <=> $b->user->printableName();
             }
             else if (is_null($a_place)) {
-                return -1;
+                $ret = -1;
             }
             else if (is_null($b_place)) {
-                return 1;
+                $ret = 1;
             }
             else {
                 if ($a_place->id != $b_place->id) {
-                    return $a_place->name <=> $b_place->name;
+                    $ret = $a_place->name <=> $b_place->name;
                 }
                 else {
-                    return $a->user->printableName() <=> $b->user->printableName();
+                    $ret = $a->user->printableName() <=> $b->user->printableName();
                 }
             }
+
+            return $ret;
         });
 
         return $bookings;

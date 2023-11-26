@@ -13,6 +13,9 @@ use App\Measure;
 
 class ImportersTest extends TestCase
 {
+    /*
+        Importazione GDXP 1.0
+    */
     public function testGdxp()
     {
         $data = [];
@@ -37,6 +40,57 @@ class ImportersTest extends TestCase
             $this->assertEquals($p->category->name, $real_product->category);
             $this->assertEquals($p->description, $real_product->description);
         }
+    }
+
+    /*
+        Importazione GDXP 2.0
+    */
+    public function testGdxp2()
+    {
+        $data = [];
+        $path = base_path('tests/data/gdxp2.json');
+        $info = json_decode(file_get_contents($path));
+
+        foreach($info->blocks as $c) {
+            $data[] = Suppliers::importJSON($info, $c->supplier, null);
+        }
+
+        $this->assertEquals(1, count($data));
+        $this->assertEquals(Supplier::class, get_class($data[0]));
+
+        $supplier = $data[0];
+        $this->assertEquals('Officina Naturae', $supplier->name);
+        $this->assertEquals(3, $supplier->products->count());
+        $this->assertEquals(3, $supplier->contacts->count());
+
+        $this->assertEquals(2, $supplier->modifiers->count());
+        $has_shipping = $has_discount = false;
+
+        foreach($supplier->modifiers as $mod) {
+            $definitions = $mod->definitions;
+
+            if ($mod->modifierType->identifier == 'shipping') {
+                $has_shipping = true;
+                $this->assertEquals('absolute', $mod->value);
+                $this->assertEquals(2, count($definitions));
+                $this->assertEquals(450, $definitions[0]->threshold);
+                $this->assertEquals(0, $definitions[0]->amount);
+                $this->assertEquals(0, $definitions[1]->threshold);
+                $this->assertEquals(10, $definitions[1]->amount);
+                $this->assertEquals('price', $mod->applies_type);
+            }
+            else if ($mod->modifierType->identifier == 'discount') {
+                $has_discount = true;
+                $this->assertEquals('percentage', $mod->value);
+                $this->assertEquals(1, count($definitions));
+                $this->assertEquals(1000, $definitions[0]->threshold);
+                $this->assertEquals(3, $definitions[0]->amount);
+                $this->assertEquals('price', $mod->applies_type);
+            }
+        }
+
+        $this->assertTrue($has_discount);
+        $this->assertTrue($has_shipping);
     }
 
     /*

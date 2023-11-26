@@ -195,10 +195,11 @@ class Suppliers extends GDXPImporter
                 $ex_product = $supplier->products()->where('name', $pname)->first();
             }
 
-            $product = Products::importJSON($master, $json_product, $ex_product->id ?? null);
-            $product->supplier_id = $supplier->id;
-            $product->save();
+            Products::importJSON($supplier, $json_product, $ex_product->id ?? null);
         }
+
+        self::handleTransformations($supplier, $json);
+        self::handleAttachments($supplier, $json);
 
         return $supplier;
     }

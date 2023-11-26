@@ -12,10 +12,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
 
-use App\Config;
-use App\User;
-use App\Supplier;
-use App\Gas;
+use App\ModifierType;
 
 class FixDatabase extends Command
 {
@@ -37,38 +34,16 @@ class FixDatabase extends Command
         Artisan::call('db:seed', ['--force' => true, '--class' => 'MovementTypesSeeder']);
         Artisan::call('db:seed', ['--force' => true, '--class' => 'ModifierTypesSeeder']);
 
-        foreach(Supplier::all() as $supplier) {
-            $attachments = $supplier->attachments;
-
-            $pdf = $attachments->firstWhere('name', 'Listino PDF (autogenerato)');
-            if ($pdf) {
-                $pdf->url = route('suppliers.catalogue', ['id' => $supplier->id, 'format' => 'pdf']);
-                $pdf->save();
-            }
-
-            $csv = $attachments->firstWhere('name', 'Listino CSV (autogenerato)');
-            if ($csv) {
-                $csv->url = route('suppliers.catalogue', ['id' => $supplier->id, 'format' => 'csv']);
-                $csv->save();
-            }
+        $mod = ModifierType::where('name', 'Sconto')->where('system', true)->where('identifier', '')->first();
+        if ($mod) {
+            $mod->identifier = 'discount';
+            $mod->save();
         }
 
-        User::query()->update(['tour' => true]);
-
-        foreach(Gas::all() as $gas) {
-            $registrations_info = $gas->public_registrations;
-            if (isset($registrations_info['manual']) == false) {
-                $registrations_info['manual'] = false;
-                $gas->setConfig('public_registrations', $registrations_info);
-            }
-
-            $satispay_info = (object) [
-                'public' => '',
-                'secret' => '',
-                'key' => '',
-            ];
-
-            $gas->setConfig('satispay', $satispay_info);
+        $mod = ModifierType::where('name', 'Spese Trasporto')->where('system', true)->where('identifier', '')->first();
+        if ($mod) {
+            $mod->identifier = 'shipping';
+            $mod->save();
         }
     }
 }

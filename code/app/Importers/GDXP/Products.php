@@ -123,7 +123,7 @@ class Products extends GDXPImporter
         return $product;
     }
 
-    public static function importJSON($master, $json, $replace)
+    public static function importJSON($supplier, $json, $replace)
     {
         if (is_null($replace)) {
             $product = new Product();
@@ -132,6 +132,7 @@ class Products extends GDXPImporter
             $product = Product::findOrFail($replace);
         }
 
+        $product->supplier_id = $supplier->id;
         $product->name = $json->name;
         $product->supplier_code = $json->sku ?? '';
         $product->description = $json->description ?? '';
@@ -147,12 +148,6 @@ class Products extends GDXPImporter
         $product->max_quantity = (float) ($json->orderInfo->maxQty ?? 0);
         $product->multiple = (float) ($json->orderInfo->mulQty ?? 0);
         $product->max_available = (float) ($json->orderInfo->availableQty ?? 0);
-
-        /*
-            TODO: agganciare un modificatore che rappresenti il costo di
-            trasporto statico, col valore di
-            $json->orderInfo->shippingCost
-        */
 
         $name = $json->category ?? '';
         if (!empty($name)) {
@@ -178,6 +173,11 @@ class Products extends GDXPImporter
             $vat_rate = VatRate::firstOrCreate(['percentage' => $name], ['name' => sprintf('%s%%', $name)]);
             $product->vat_rate_id = $vat_rate->id;
         }
+
+        $product->save();
+
+        self::handleTransformations($product, $json);
+        self::handleAttachments($supplier, $json);
 
         return $product;
     }

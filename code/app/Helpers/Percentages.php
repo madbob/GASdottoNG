@@ -2,10 +2,12 @@
 
 function normalizePercentage($value)
 {
-    if (is_null($value))
+    if (is_null($value)) {
         return '';
-    else
+    }
+    else {
         return str_replace(' ', '', $value);
+    }
 }
 
 function isPercentage($value)
@@ -13,26 +15,42 @@ function isPercentage($value)
     return (strpos($value, '%') !== false);
 }
 
+function formatPercentage($value, $percentage)
+{
+    if ($percentage) {
+        return sprintf('%s%%', $value);
+    }
+    else {
+        return (string) $value;
+    }
+}
+
 function printablePercentage($value)
 {
-    if (empty($value))
+    if (empty($value)) {
         return printablePriceCurrency(0);
+    }
 
-    if (isPercentage($value))
+    if (isPercentage($value)) {
         return $value;
-    else
+    }
+    else {
         return printablePriceCurrency($value);
+    }
 }
 
 function readPercentage($value)
 {
-    if (empty($value))
+    if (empty($value)) {
         return [printablePrice(0), false];
+    }
 
-    if (isPercentage($value))
+    if (isPercentage($value)) {
         return [(float) $value, true];
-    else
+    }
+    else {
         return [printablePrice($value), false];
+    }
 }
 
 function savingPercentage($request, $name)
@@ -52,10 +70,12 @@ function savingPercentage($request, $name)
         $is_percentage = $request->input($name . '_percentage_type', 'euro');
     }
 
-    if ($is_percentage == 'percentage')
+    if ($is_percentage == 'percentage') {
         return $value . '%';
-    else
+    }
+    else {
         return $value;
+    }
 }
 
 function applyPercentage($original, $percentage, $op = '-')

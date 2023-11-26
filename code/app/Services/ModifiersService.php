@@ -8,12 +8,10 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 use App\Exceptions\AuthException;
-
-use Auth;
-use Log;
-use DB;
-
 use App\Modifier;
 
 class ModifiersService extends BaseService
@@ -120,21 +118,6 @@ class ModifiersService extends BaseService
                     'threshold' => $threshold,
                     'amount' => $amount,
                 ];
-            }
-
-            /*
-                Mantengo le soglie ordinate secondo il canone più comodo per la
-                successiva valutazione in Modifier::apply()
-            */
-            if ($modifier->scale == 'minor') {
-                usort($definition, function($a, $b) {
-                    return $a->threshold <=> $b->threshold;
-                });
-            }
-            else {
-                usort($definition, function($a, $b) {
-                    return ($a->threshold <=> $b->threshold) * -1;
-                });
             }
         }
 

@@ -1,0 +1,108 @@
+{
+    "protocolVersion": 1,
+    "creationDate": "2023-11-26",
+    "applicationSignature": "GASdotto",
+    "subject": {
+        "name": "",
+        "taxCode": "",
+        "vatNumber": "",
+        "address": {
+            "street": "",
+            "locality": "",
+            "zipCode": ""
+        },
+        "contacts": []
+    },
+    "blocks": [{
+        "supplier": {
+            "name": "Officina Naturae",
+            "taxCode": "",
+            "vatNumber": "03525690404",
+            "address": {
+                "street": "Via del Capriolo 3",
+                "locality": "Rimini",
+                "zipCode": "47923"
+            },
+            "contacts": [{
+                "type": "emailAddress",
+                "value": "gas@officinanaturae.com"
+            }, {
+                "type": "phoneNumber",
+                "value": "0541.790715"
+            }],
+            "products": [{
+                "name": "Acido citrico anidro puro",
+                "um": "Non Specificato",
+                "sku": "ONDT10.005",
+                "category": "Non Specificato",
+                "description": "",
+                "orderInfo": {
+                    "packageQty": 1,
+                    "maxQty": 0,
+                    "minQty": 1,
+                    "mulQty": 0,
+                    "availableQty": 0,
+                    "umPrice": 7.23,
+                    "vatRate": 22
+                },
+                "active": true
+            }, {
+                "name": "Acqua Solare Spray in flacone bioplastica",
+                "um": "Non Specificato",
+                "sku": "SUNACQUA",
+                "category": "Non Specificato",
+                "description": "",
+                "orderInfo": {
+                    "packageQty": 1,
+                    "maxQty": 0,
+                    "minQty": 1,
+                    "mulQty": 0,
+                    "availableQty": 0,
+                    "umPrice": 9.03,
+                    "vatRate": 22
+                },
+                "active": true
+            }, {
+                "name": "Amido di riso Biologico",
+                "um": "Non Specificato",
+                "sku": "BIRAMI",
+                "category": "Non Specificato",
+                "description": "",
+                "orderInfo": {
+                    "packageQty": 1,
+                    "maxQty": 0,
+                    "minQty": 1,
+                    "mulQty": 0,
+                    "availableQty": 0,
+                    "umPrice": 5.87,
+                    "vatRate": 22
+                },
+                "active": true
+            }],
+            "transformations": [{
+                "type": "discount",
+                "operation": "sub",
+                "variable": {
+                    "theshold_type": "price",
+                    "thesholds": [{
+                        "theshold": "1000",
+                        "amount": "3%"
+                    }]
+                }
+            }, {
+                "type": "shipping",
+                "operation": "sum",
+                "variable": {
+                    "theshold_type": "price",
+                    "thesholds": [{
+                        "theshold": 0,
+                        "amount": "10"
+                    }, {
+                        "theshold": "450",
+                        "amount": "0"
+                    }]
+                }
+            }]
+        }
+    }]
+}

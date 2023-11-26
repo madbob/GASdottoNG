@@ -38,7 +38,23 @@ class Modifier extends Model
 
     public function getDefinitionsAttribute()
     {
-        $ret = json_decode($this->definition);
+        $ret = json_decode($this->definition ?? []);
+
+        /*
+            Mantengo le soglie ordinate secondo il canone più comodo per la
+            valutazione in Modifier::apply()
+        */
+        if ($this->scale == 'minor') {
+            usort($ret, function($a, $b) {
+                return $a->threshold <=> $b->threshold;
+            });
+        }
+        else {
+            usort($ret, function($a, $b) {
+                return ($a->threshold <=> $b->threshold) * -1;
+            });
+        }
+
         return new Collection($ret ?: []);
     }
 

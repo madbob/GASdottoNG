@@ -105,6 +105,24 @@ trait AttachableTrait
         return $attachment;
     }
 
+    public function attachByContents($filename, $contents, $id = null)
+    {
+        $filepath = $this->filesPath();
+        if (is_null($filepath)) {
+            return false;
+        }
+
+        $fullpath = sprintf('%s/%s', $filepath, $filename);
+        file_put_contents($fullpath, $contents);
+
+        $attachment = $this->retrieveAttachment($id);
+        $attachment->name = $filename;
+        $attachment->filename = $filename;
+        $attachment->save();
+
+        return $attachment;
+    }
+
     /*
         Questa funzione può essere sovrascritta dalla classe che usa
         questo trait per esplicitare i permessi utente necessari per

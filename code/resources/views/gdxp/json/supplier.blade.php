@@ -14,6 +14,69 @@ if (!isset($bookings)) {
     $bookings = false;
 }
 
+function serializeTransformations($target, $json_target)
+{
+    $transformations = [];
+    $modifiers = $target->modifiers->filter(fn($m) => $m->active && in_array($m->modifierType->identifier, ['shipping', 'discount']));
+
+    foreach($modifiers as $mod) {
+        if (in_array($mod->arithmetic, ['sum', 'sub'])) {
+            $trans = (object) [
+                'type' => $mod->modifierType->identifier,
+                'operation' => $mod->arithmetic,
+            ];
+
+            $definitions = $mod->definitions;
+
+            if ($mod->scale == 'minor') {
+                $shifted_definitions = [];
+                $prev_theshold = 0;
+
+                foreach($definitions as $def) {
+                    $shifted_definitions[] = (object) [
+                        'threshold' => $prev_theshold,
+                        'amount' => $def->amount,
+                    ];
+
+                    $prev_theshold = $def->threshold;
+                }
+
+                $shifted_definitions[] = (object) [
+                    'threshold' => $prev_theshold,
+                    'amount' => 0,
+                ];
+
+                $definitions = $shifted_definitions;
+            }
+
+            if (count($definitions) == 1) {
+                $trans->fixed = formatPercentage($definitions[0]->amount, $mod->value == 'percentage');
+            }
+            else {
+                $trans->variable = (object) [
+                    'theshold_type' => $mod->applies_type,
+                    'thesholds' => [],
+                ];
+
+                foreach($definitions as $definition) {
+                    $trans->variable->thesholds[] = (object) [
+                        'theshold' => $definition->threshold,
+                        'amount' => formatPercentage($definition->amount, $mod->value == 'percentage'),
+                    ];
+                }
+            }
+
+            $json_target->transformations[] = $trans;
+        }
+    }
+
+    if (empty($transformations) == false) {
+        $json_target->transformations = $transformations;
+    }
+
+    return $json_target;
+}
+
 $json_object = (object) [
     'protocolVersion' => 1.0,
     'creationDate' => date('Y-m-d'),
@@ -97,10 +160,18 @@ foreach($obj->products as $product) {
             'mulQty' => (float) $product->multiple,
             'availableQty' => (float) $product->max_available,
             'umPrice' => (float) $product->price,
-            'shippingCost' => (float) $product->transport,
         ],
         'active' => $product->active,
     ];
+
+    if (empty($product->picture) == false) {
+        $p['attachments'] = [
+            (object) [
+                'name' => 'Immagine',
+                'contents' => base64_encode(file_get_contents(gas_storage_path($product->picture))),
+            ],
+        ];
+    }
 
     if ($product->vat_rate) {
         $p->orderInfo->vatRate = $product->vat_rate->percentage;
@@ -119,7 +190,23 @@ foreach($obj->products as $product) {
         }
     }
 
+    $p = serializeTransformations($product, $p);
+
     $json_object->blocks[0]->supplier->products[] = $p;
+}
+
+$json_object->blocks[0]->supplier = serializeTransformations($obj, $json_object->blocks[0]->supplier);
+
+$attachments = $obj->attachments->filter(fn($a) => $a->internal == false);
+if ($attachments->isEmpty() == false) {
+    $json_object->blocks[0]->supplier->attachments = [];
+
+    foreach($attachments as $attachment) {
+        $json_object->blocks[0]->supplier->attachments[] = (object) [
+            'name' => $attachment->name,
+            'contents' => base64_encode(file_get_contents($attachment->path)),
+        ];
+    }
 }
 
 if ($order) {

@@ -72,7 +72,6 @@ class CategoriesController extends Controller
 
             if (isset($category['id'])) {
                 if (in_array($category['id'], $accumulator)) {
-                    Log::error('Itero ricorsivamente categoria già gestita, salto');
                     continue;
                 }
 

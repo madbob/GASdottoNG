@@ -190,7 +190,14 @@ function formatUpdater($buttons, $params)
 
 function formatInnerLastUpdater($component, $params)
 {
-    $params['buttons'] = formatUpdater($params['buttons'], $params);
+    if (isset($params['inner_form_managed'])) {
+        unset($params['inner_form_managed']);
+    }
+    else {
+        $params['inner_form_managed'] = 'ongoing';
+        $params['buttons'] = formatUpdater($params['buttons'], $params);
+    }
+
     return $params;
 }
 
