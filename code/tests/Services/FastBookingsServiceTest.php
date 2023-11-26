@@ -19,7 +19,7 @@ class FastBookingsServiceTest extends TestCase
     }
 
     /*
-        Test consegne veloci
+        Consegne veloci
     */
     public function testFastShipping()
     {
@@ -44,7 +44,7 @@ class FastBookingsServiceTest extends TestCase
     }
 
     /*
-        Test consegne veloci parziali
+        Consegne veloci parziali
     */
     public function testFastShippingFiltered()
     {
@@ -84,7 +84,7 @@ class FastBookingsServiceTest extends TestCase
     }
 
 	/*
-        Test consegne veloci su prenotazioni salvate
+        Consegne veloci su prenotazioni salvate
     */
     public function testFastShippingPreSaved()
     {
@@ -131,6 +131,37 @@ class FastBookingsServiceTest extends TestCase
             }
 
             $this->assertEquals($booking->payment->amount, $booking->getValue('effective', true));
+        }
+    }
+
+    /*
+        Consegne veloci e generazione ricevute
+    */
+    public function testFastShippingReceipts()
+    {
+        $this->gas->setConfig('extra_invoicing', [
+            'business_name' => 'Test',
+            'taxcode' => '0123456789',
+            'vat' => '0123456789',
+            'address' => '',
+            'invoices_counter' => 0,
+            'invoices_counter_year' => '',
+        ]);
+
+        $this->nextRound();
+
+        $this->populateOrder($this->sample_order);
+
+        $this->actingAs($this->userWithShippingPerms);
+        $order = $this->services['orders']->show($this->sample_order->id);
+        $this->services['fast_bookings']->fastShipping($this->userWithShippingPerms, $order->aggregate, null);
+
+        $this->nextRound();
+        $receipts = \App\Receipt::all();
+        $this->assertEquals($order->bookings->count(), $receipts->count());
+
+        foreach($receipts as $receipt) {
+            $this->assertEquals(1, $receipt->bookings->count());
         }
     }
 }

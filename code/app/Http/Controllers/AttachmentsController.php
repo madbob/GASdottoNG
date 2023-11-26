@@ -32,7 +32,7 @@ class AttachmentsController extends Controller
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
-        $a = $target->attachByRequest($request);
+        $a = $target->attachByRequest($request->all());
         if ($a === false) {
             return $this->errorResponse(_i('File non caricato correttamente'));
         }
@@ -55,7 +55,7 @@ class AttachmentsController extends Controller
         }
 
         if ($request->hasFile('file')) {
-            $a = $a->attached->attachByRequest($request, $a->id);
+            $a = $a->attached->attachByRequest($request->all(), $a->id);
             if ($a === false) {
                 return $this->errorResponse(_i('File non caricato correttamente'));
             }

@@ -19,12 +19,7 @@ class Table implements Component
 
         if (empty($this->headers) == false) {
             $cellsize = round(100 / count($this->headers), 3);
-        }
-        else {
-            $cellsize = round(100 / count(($this->contents[0] ?? [])), 3);
-        }
 
-        if (empty($this->headers) == false) {
             $ret .= '<thead><tr>';
 
             foreach ($this->headers as $header) {
@@ -32,6 +27,9 @@ class Table implements Component
             }
 
             $ret .= '</tr></thead>';
+        }
+        else {
+            $cellsize = round(100 / count(($this->contents[0] ?? [])), 3);
         }
 
         $ret .= '<tbody>';

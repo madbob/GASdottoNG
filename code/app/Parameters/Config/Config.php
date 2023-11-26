@@ -23,6 +23,43 @@ abstract class Config extends Parameter
         }
     }
 
+    /*
+        Questa funzione gestisce il salvataggio della configurazione, così come
+        rappresentata nei relativi pannelli.
+        Le configurazioni di tipo "object", che richiedono vari e variegati
+        sotto-attributi, dovrebbero sempre sovrascrivere questa funzione per
+        organizzarli nel modo opportuno
+    */
+    public function handleSave($gas, $request)
+    {
+        $id = $this->identifier();
+
+        switch ($this->type()) {
+            case 'boolean':
+                $value = $request->has($id) ? '1' : '0';
+                break;
+
+            case 'float':
+            case 'number':
+                $value = $request->input($id, 0);
+                break;
+
+            case 'array':
+                $value = $request->input($id, []);
+                break;
+
+            case 'object':
+                throw new \Exception("Le configurazioni di tipo 'object' devono avere una propria funzione di salvataggio", 1);
+
+            default:
+                $value = $request->input($id);
+                break;
+        }
+
+        $gas->setConfig($id, $value);
+    }
+
+    public abstract function identifier();
     public abstract function type();
     public abstract function default();
 }

@@ -28,4 +28,17 @@ class Roles extends Config
             'multigas' => $secondary_admin_role ? $secondary_admin_role->id : -1
         ];
     }
+
+    public function handleSave($gas, $request)
+    {
+        $role_service = app()->make('RolesService');
+
+        foreach(['user', 'friend', 'multigas'] as $role_type) {
+            $input_key = sprintf('roles->%s', $role_type);
+            if ($request->has($input_key)) {
+                $role = $request->input($input_key);
+                $role_service->setMasterRole($gas, $role_type, $role);
+    		}
+        }
+    }
 }

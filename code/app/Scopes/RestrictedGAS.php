@@ -53,19 +53,16 @@ class RestrictedGAS implements Scope
         */
         if ($hub->hubRequired() && $hub->enabled()) {
             $gas_id = $hub->getGas();
+            $inner_query = $this->initInnerQuery($gas_id);
+            $models = explode('.', $this->key);
 
-            if ($gas_id) {
-                $inner_query = $this->initInnerQuery($gas_id);
-                $models = explode('.', $this->key);
-
-                if (count($models) == 1) {
-                    $builder->whereHas($models[0], $inner_query);
-                }
-                else {
-                    $builder->whereHas($models[0], function($query) use ($models, $inner_query) {
-                        $query->whereHas($models[1], $inner_query);
-                    });
-                }
+            if (count($models) == 1) {
+                $builder->whereHas($models[0], $inner_query);
+            }
+            else {
+                $builder->whereHas($models[0], function($query) use ($models, $inner_query) {
+                    $query->whereHas($models[1], $inner_query);
+                });
             }
         }
     }

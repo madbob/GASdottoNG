@@ -31,4 +31,24 @@ class IntegralCES extends Config
         $ret['symbol'] = Currency::where('context', 'integralces')->first()->symbol ?? '';
         return $ret;
     }
+
+    public function handleSave($gas, $request)
+    {
+        if ($request->has('enable_integralces')) {
+            $integralces_info = (object) [
+                'enabled' => true,
+                'identifier' => $request->input('integralces->identifier'),
+                'symbol' => $request->input('integralces->symbol'),
+            ];
+        }
+        else {
+            $integralces_info = (object) [
+                'enabled' => false,
+                'identifier' => '',
+                'symbol' => '',
+            ];
+        }
+
+        $gas->setConfig('integralces', $integralces_info);
+    }
 }

@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 use App\Models\Concerns\TracksUpdater;
 use App\GASModel;
@@ -22,18 +23,19 @@ class AggregateBooking extends Model
     public $id;
     public $user;
     public $aggregate;
-    public $bookings = [];
+    public $bookings;
 
     public function __construct($user_id, $aggregate)
     {
         $this->id = $user_id;
         $this->user = User::withTrashed()->find($user_id);
         $this->aggregate = $aggregate;
+        $this->bookings = new Collection();
     }
 
     public function add($booking)
     {
-        $this->bookings[] = $booking;
+        $this->bookings->push($booking);
     }
 
     public function getCreatedAtAttribute()
@@ -176,12 +178,7 @@ class AggregateBooking extends Model
     public function generateReceipt()
     {
         if ($this->user->gas->hasFeature('extra_invoicing')) {
-            $ids = [];
-            foreach ($this->bookings as $booking) {
-                if ($booking->exists) {
-                    $ids[] = $booking->id;
-                }
-            }
+            $ids = $this->bookings->filter(fn($b) => $b->exists)->pluck('id')->all();
 
             if (empty($ids)) {
                 \Log::error('Tentativo di creare fattura non assegnata a nessuna prenotazione');
@@ -215,12 +212,10 @@ class AggregateBooking extends Model
         $last_update = null;
         $last_updater = null;
 
-        foreach($this->bookings as $booking) {
-            if ($booking->updater) {
-                if (is_null($last_update) || $booking->updated_at->greaterThan($last_update)) {
-                    $last_update = $booking->updated_at;
-                    $last_updater = $booking->updater;
-                }
+        foreach($this->bookings->filter(fn($b) => $b->updater) as $booking) {
+            if (is_null($last_update) || $booking->updated_at->greaterThan($last_update)) {
+                $last_update = $booking->updated_at;
+                $last_updater = $booking->updater;
             }
         }
 

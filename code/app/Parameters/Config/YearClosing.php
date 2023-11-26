@@ -18,4 +18,9 @@ class YearClosing extends Config
     {
         return date('Y') . '-09-01';
     }
+
+    public function handleSave($gas, $request)
+    {
+        $gas->setConfig('year_closing', decodeDateMonth($request->input('year_closing')));
+    }
 }

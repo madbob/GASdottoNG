@@ -95,13 +95,13 @@ class DeliveriesController extends Controller
 
         if ($d->default) {
             $fallback = Delivery::where('id', '!=', $d->id)->orderBy(DB::raw('RAND()'))->first();
-            if ($fallback != null)
-                $fallback_id = $fallback->id;
         }
         else {
             $fallback = Delivery::where('default', true)->first();
-            if ($fallback != null)
-                $fallback_id = $fallback->id;
+        }
+
+        if (is_null($fallback) == false) {
+            $fallback_id = $fallback->id;
         }
 
         foreach($d->users as $u) {

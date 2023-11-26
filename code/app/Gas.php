@@ -11,13 +11,14 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Log;
 
 use App\Models\Concerns\AttachableTrait;
+use App\Models\Concerns\Configurable;
 use App\Models\Concerns\PayableTrait;
 use App\Models\Concerns\CreditableTrait;
 use App\Events\SluggableCreating;
 
 class Gas extends Model
 {
-    use HasFactory, AttachableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID, Cachable;
+    use HasFactory, Configurable, AttachableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -64,75 +65,6 @@ class Gas extends Model
     public function deliveries(): BelongsToMany
     {
         return $this->belongsToMany('App\Delivery')->orderBy('name', 'asc');
-    }
-
-    public function configs(): HasMany
-    {
-        return $this->hasMany('App\Config');
-    }
-
-    private function availableConfigs()
-    {
-        return systemParameters('Config');
-    }
-
-    public function getConfig($name)
-    {
-        foreach ($this->configs as $conf) {
-            if ($conf->name == $name) {
-                return $conf->value;
-            }
-        }
-
-        $defined = $this->availableConfigs();
-        if (!isset($defined[$name])) {
-            Log::error(_i('Configurazione GAS non prevista'));
-            return '';
-        }
-        else {
-            $this->setConfig($name, $defined[$name]->default());
-            $this->load('configs');
-            return $this->getConfig($name);
-        }
-    }
-
-    public function setConfig($name, $value)
-    {
-        if (is_object($value) || is_array($value)) {
-            $value = json_encode($value);
-        }
-
-        foreach ($this->configs as $conf) {
-            if ($conf->name == $name) {
-                $conf->value = $value;
-                $conf->save();
-                return;
-            }
-        }
-
-        $conf = new Config();
-        $conf->name = $name;
-        $conf->value = $value;
-        $conf->gas_id = $this->id;
-        $conf->save();
-    }
-
-    /*
-        Questa funzione permette di accedere direttamente alle configurazioni
-        del GAS, usandone il nome (definito da ciascun parametro definito nelle
-        classi nel namespace App\Parameters\Config)
-    */
-    public function getAttribute($key)
-    {
-        $configs = $this->availableConfigs();
-        $c = $configs[$key] ?? null;
-
-        if ($c) {
-            return $c->asAttribute($this);
-        }
-        else {
-            return parent::getAttribute($key);
-        }
     }
 
     public function nextInvoiceNumber()

@@ -18,4 +18,9 @@ class SendOrderReminder extends Config
     {
         return 0;
     }
+
+    public function handleSave($gas, $request)
+    {
+        $gas->setConfig('send_order_reminder', $request->has('enable_send_order_reminder') ? $request->input('send_order_reminder') : '0');
+    }
 }

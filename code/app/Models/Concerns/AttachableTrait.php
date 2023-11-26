@@ -61,18 +61,10 @@ trait AttachableTrait
 
     public function attachByRequest($request, $id = null)
     {
-        if (is_array($request)) {
-            $file = $request['file'] ?? null;
-            $name = '';
-            $users = $request['users'] ?? [];
-            $to_delete = $request['delete_attachment'] ?? [];
-        }
-        else {
-            $file = $request->file('file');
-            $name = $request->input('name', '');
-            $users = $request->input('users', []);
-            $to_delete = $request->input('to_delete', []);
-        }
+        $file = $request['file'] ?? null;
+        $name = $request['name'] ?? '';
+        $users = $request['users'] ?? [];
+        $to_delete = $request['delete_attachment'] ?? [];
 
         foreach ($this->attachments()->whereIn('id', $to_delete)->get() as $att) {
             $att->delete();
