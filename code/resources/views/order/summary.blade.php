@@ -57,6 +57,7 @@ foreach($display_columns as $identifier => $metadata) {
             @include('commons.columns', [
                 'columns' => $columns,
                 'display_columns' => $display_columns,
+                'target' => $table_identifier,
             ])
 
             &nbsp;

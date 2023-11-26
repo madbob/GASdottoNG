@@ -659,17 +659,6 @@ $(document).ready(function() {
     	Gestione ordini
     */
 
-    $('body').on('click', '.order-columns-selector .dropdown-menu', function(e) {
-        e.stopPropagation();
-    })
-    .on('change', '.order-columns-selector input:checkbox', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var name = $(this).val();
-        var show = $(this).prop('checked');
-        $(this).closest('.btn-group').closest('form').find('.order-summary').first().find('.order-cell-' + name).toggleClass('hidden', !show);
-    });
-
     $('body').on('click', '.order-summary .toggle-product-abilitation', function() {
         $('.order-summary tr.product-disabled').toggle();
     })

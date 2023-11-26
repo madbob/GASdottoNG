@@ -1,4 +1,4 @@
-<div class="btn-group order-columns-selector">
+<div class="btn-group columns-selector" data-target="{{ $target }}">
     <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown">
         <i class="bi-layout-three-columns"></i>&nbsp;{{ _i('Colonne') }} <span class="caret"></span>
     </button>

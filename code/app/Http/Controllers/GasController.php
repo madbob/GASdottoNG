@@ -193,15 +193,20 @@ class GasController extends Controller
         $gas->setConfig('public_registrations', $registrations_info);
     }
 
-    private function configOrders($gas, $request)
+    private function configProducts($gas, $request)
     {
         $gas->setConfig('manual_products_sorting', $request->has('manual_products_sorting') ? '1' : '0');
+        $gas->setConfig('products_grid_display_columns', $request->input('products_grid_display_columns', []));
+    }
+
+    private function configOrders($gas, $request)
+    {
         $gas->setConfig('restrict_booking_to_credit', $request->has('restrict_booking_to_credit') ? '1' : '0');
         $gas->setConfig('unmanaged_shipping', $request->has('unmanaged_shipping') ? '1' : '0');
         $gas->setConfig('booking_contacts', $request->input('booking_contacts'));
-        $gas->setConfig('orders_display_columns', $request->input('orders_display_columns'));
-        $gas->setConfig('orders_shipping_user_columns', $request->input('orders_shipping_user_columns'));
-        $gas->setConfig('orders_shipping_product_columns', $request->input('orders_shipping_product_columns'));
+        $gas->setConfig('orders_display_columns', $request->input('orders_display_columns', []));
+        $gas->setConfig('orders_shipping_user_columns', $request->input('orders_shipping_user_columns', []));
+        $gas->setConfig('orders_shipping_product_columns', $request->input('orders_shipping_product_columns', []));
     }
 
     private function configMails($gas, $request)
@@ -222,7 +227,7 @@ class GasController extends Controller
         }
     }
 
-    private function configImports($gas, $request)
+    private function configImport($gas, $request)
     {
         $gas->setConfig('es_integration', $request->has('es_integration') ? '1' : '0');
         $gas->setConfig('csv_separator', $request->input('csv_separator'));
@@ -232,20 +237,13 @@ class GasController extends Controller
     {
         $role_service = app()->make('RolesService');
 
-        if ($request->has('roles->user')) {
-            $role = $request->input('roles->user');
-            $role_service->setMasterRole($gas, 'user', $role);
-		}
-
-		if ($request->has('roles->friend')) {
-            $role = $request->input('roles->friend');
-            $role_service->setMasterRole($gas, 'friend', $role);
-		}
-
-		if ($request->has('roles->multigas')) {
-			$role = $request->input('roles->multigas');
-            $role_service->setMasterRole($gas, 'multigas', $role);
-		}
+        foreach(['user', 'friend', 'multigas'] as $role_type) {
+            $input_key = sprintf('roles->%s', $role_type);
+            if ($request->has($input_key)) {
+                $role = $request->input($input_key);
+                $role_service->setMasterRole($gas, $role_type, $role);
+    		}
+        }
     }
 
     public function update(Request $request, $id)
@@ -260,35 +258,10 @@ class GasController extends Controller
         }
 
         $group = $request->input('group');
+        $method = sprintf('config%s', ucwords($group));
 
-        switch($group) {
-            case 'general':
-                $this->configGeneral($gas, $request);
-                break;
-
-            case 'banking':
-                $this->configBanking($gas, $request);
-                break;
-
-            case 'users':
-                $this->configUsers($gas, $request);
-                break;
-
-            case 'orders':
-                $this->configOrders($gas, $request);
-                break;
-
-            case 'mails':
-                $this->configMails($gas, $request);
-                break;
-
-            case 'import':
-                $this->configImports($gas, $request);
-                break;
-
-            case 'roles':
-                $this->configRoles($gas, $request);
-                break;
+        if (method_exists($this, $method)) {
+            $this->$method($gas, $request);
         }
 
         $gas->save();

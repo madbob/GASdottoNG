@@ -12,6 +12,7 @@
                 <x-larastrap::accordion always_open="true">
                     @include('gas.general')
                     @include('gas.users')
+                    @include('gas.products')
                     @include('gas.orders')
                     @include('gas.accounting')
                     @include('gas.emails')

@@ -300,6 +300,62 @@ class Product extends Model
         return true;
     }
 
+    public static function displayColumns()
+    {
+        $ret = [];
+
+        $gas = currentAbsoluteGas();
+        if ($gas->manual_products_sorting) {
+            $ret = [
+                'sorting' => (object) [
+                    'label' => _i('Ordinamento'),
+                    'help' => _i("Ordinamento del prodotto"),
+                    'width' => 5
+                ],
+            ];
+        }
+
+        $ret = $ret + [
+            'selection' => (object) [
+                'label' => _i('Selezione'),
+                'help' => _i("Per selezionare il prodotto e compiere operazioni di gruppo"),
+                'width' => 5
+            ],
+            'name' => (object) [
+                'label' => _i('Nome'),
+                'help' => _i('Nome del prodotto'),
+                'width' => 20
+            ],
+            'category' => (object) [
+                'label' => _i('Categoria'),
+                'help' => _i('Categoria del prodotto'),
+                'width' => 15
+            ],
+            'measure' => (object) [
+                'label' => _i('Unità di Misura'),
+                'help' => _i('Unità di misura del prodotto'),
+                'width' => 15
+            ],
+            'price' => (object) [
+                'label' => _i('Prezzo Unitario'),
+                'help' => _i('Prezzo Unitario del prodotto'),
+                'width' => 10
+            ],
+            'max_available' => (object) [
+                'label' => _i('Disponibile'),
+                'help' => _i('Quantità massima di prodotto che complessivamente può essere prenotata in un ordine'),
+                'width' => 10
+            ],
+            'active' => (object) [
+                'label' => _i('Ordinabile'),
+                'help' => _i("Indica se il prodotto potrà essere ordinato o meno all'interno dei nuovi ordini per il fornitore"),
+                'width' => 5
+            ],
+        ];
+
+        return $ret;
+    }
+
     /************************************************************** Priceable */
 
     public function realPrice($rectify)

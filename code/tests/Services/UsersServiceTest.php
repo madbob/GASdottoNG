@@ -237,13 +237,14 @@ class UsersServiceTest extends TestCase
 
         $admin = $this->services['users']->show($this->userWithAdminPerm->id);
         $this->actingAs($admin);
-        $this->services['users']->promoteFriend($friend->id);
+        $this->services['users']->promoteFriend(['email' => 'foobar@example.com'], $friend->id);
 
         $this->nextRound();
 
         $friend = $this->services['users']->show($friend->id);
         $parent = $this->services['users']->show($this->userWithViewPerm->id);
         $this->assertEquals(0, $parent->friends()->count());
+        $this->assertEquals('foobar@example.com', $friend->email);
         $this->assertNull($friend->parent_id);
     }
 

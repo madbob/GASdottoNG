@@ -2,8 +2,10 @@
 
 namespace App\Formatters;
 
-class VariantCombo extends GenericProductFormat
+class VariantCombo extends Formatter
 {
+    use GenericProductFormat;
+
     public static function formatName($obj, $context)
     {
         return $obj->printableName();
@@ -86,7 +88,7 @@ class VariantCombo extends GenericProductFormat
 
     public static function formattableColumns($type = null)
     {
-        $ret = $this->genericColumns();
+        $ret = self::genericColumns();
         $ret['name']->format = 'static::formatName';
         $ret['supplier_code']->format = 'static::formatCode';
         $ret['measure']->format = 'static::formatMeasure';

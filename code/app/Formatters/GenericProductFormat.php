@@ -2,9 +2,9 @@
 
 namespace App\Formatters;
 
-class GenericProductFormat extends Formatter
+trait GenericProductFormat
 {
-        protected function genericColumns()
+        protected static function genericColumns()
         {
             return [
                 'name' => (object) [

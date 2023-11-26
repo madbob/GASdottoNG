@@ -37,6 +37,7 @@ unset($display_columns['notes']);
             @include('commons.columns', [
                 'columns' => $columns,
                 'display_columns' => $display_columns,
+                'target' => $table_identifier,
             ])
         </div>
     </div>

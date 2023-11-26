@@ -93,6 +93,18 @@ class Filters {
                 }
             });
         });
+
+        $('.columns-selector', container).on('click', '.dropdown-menu', (e) => {
+            e.stopPropagation();
+        }).on('change', 'input:checkbox', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            let check = $(e.currentTarget);
+            let table_id = $(check).closest('.columns-selector').attr('data-target');
+            let name = $(check).val();
+            let show = $(check).prop('checked');
+            $('#' + table_id).find('.order-cell-' + name).toggleClass('hidden', !show);
+        });
     }
 
     static compactFilter(master_selector, child_selector, explode_all)

@@ -2,8 +2,10 @@
 
 namespace App\Formatters;
 
-class Product extends GenericProductFormat
+class Product extends Formatter
 {
+    use GenericProductFormat;
+
     public static function formatMeasure($obj, $context)
     {
         return $obj->measure->name;
@@ -41,7 +43,7 @@ class Product extends GenericProductFormat
 
     public static function formattableColumns($type = null)
     {
-        $ret = $this->genericColumns();
+        $ret = self::genericColumns();
         $ret['measure']->format = 'static::formatMeasure';
         $ret['category']->format = 'static::formatCategory';
         $ret['price']->format = 'static::formatPrice';
