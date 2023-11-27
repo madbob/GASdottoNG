@@ -101,7 +101,7 @@ class BookingsServiceTest extends TestCase
 
         $this->nextRound();
 
-        $product = $this->services['products']->store(array(
+        $product = app()->make('ProductsService')->store(array(
             'name' => 'Test Product',
             'price' => rand(),
             'supplier_id' => $this->sample_order->supplier->id,
@@ -120,7 +120,7 @@ class BookingsServiceTest extends TestCase
             $product->id => 2,
             'action' => 'booked',
         ];
-        $this->services['bookings']->bookingUpdate($data_friend, $this->sample_order->aggregate, $friend, false);
+        app()->make('BookingsService')->bookingUpdate($data_friend, $this->sample_order->aggregate, $friend, false);
 
         $this->nextRound();
 
@@ -130,7 +130,7 @@ class BookingsServiceTest extends TestCase
             $product->id => 1,
             'action' => 'booked',
         ];
-        $this->services['bookings']->bookingUpdate($data_master, $this->sample_order->aggregate, $this->userWithBasePerms, false);
+        app()->make('BookingsService')->bookingUpdate($data_master, $this->sample_order->aggregate, $this->userWithBasePerms, false);
 
         $this->nextRound();
 
@@ -153,7 +153,7 @@ class BookingsServiceTest extends TestCase
         $this->actingAs($friend);
         list($friend_data, $friend_booked_count, $friend_total) = $this->randomQuantities($this->sample_order->products);
         $friend_data['action'] = 'booked';
-        $this->services['bookings']->bookingUpdate($friend_data, $this->sample_order->aggregate, $friend, false);
+        app()->make('BookingsService')->bookingUpdate($friend_data, $this->sample_order->aggregate, $friend, false);
 
         $this->actingAs($this->userWithBasePerms);
         list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
@@ -199,7 +199,7 @@ class BookingsServiceTest extends TestCase
         $this->actingAs($friend);
         list($friend_data, $friend_booked_count, $friend_total) = $this->randomQuantities($this->sample_order->products);
         $friend_data['action'] = 'booked';
-        $this->services['bookings']->bookingUpdate($friend_data, $this->sample_order->aggregate, $friend, false);
+        app()->make('BookingsService')->bookingUpdate($friend_data, $this->sample_order->aggregate, $friend, false);
 
         $this->actingAs($this->userWithShippingPerms);
         $friend_data['action'] = 'shipped';
@@ -252,7 +252,7 @@ class BookingsServiceTest extends TestCase
         $complete_data = array_merge($data, $data2);
 
         $complete_data['action'] = 'booked';
-        $this->services['bookings']->bookingUpdate($complete_data, $this->sample_order->aggregate, $this->userWithBasePerms, false);
+        app()->make('BookingsService')->bookingUpdate($complete_data, $this->sample_order->aggregate, $this->userWithBasePerms, false);
 
         $this->nextRound();
 
@@ -262,7 +262,7 @@ class BookingsServiceTest extends TestCase
 
         $this->actingAs($this->userWithShippingPerms);
         $complete_data['action'] = 'shipped';
-        $this->services['bookings']->bookingUpdate($complete_data, $this->sample_order->aggregate, $this->userWithBasePerms, true);
+        app()->make('BookingsService')->bookingUpdate($complete_data, $this->sample_order->aggregate, $this->userWithBasePerms, true);
 
         $this->nextRound();
 

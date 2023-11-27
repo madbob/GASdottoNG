@@ -28,7 +28,7 @@ class VatRateServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['vat_rates']->store(array());
+        app()->make('VatRatesService')->store(array());
     }
 
     /*
@@ -38,7 +38,7 @@ class VatRateServiceTest extends TestCase
     {
         $this->actingAs($this->userAdmin);
 
-        $newVat = $this->services['vat_rates']->store(array(
+        $newVat = app()->make('VatRatesService')->store(array(
             'name' => '22%',
             'percentage' => 22,
         ));
@@ -54,7 +54,7 @@ class VatRateServiceTest extends TestCase
     {
         $this->actingAs($this->userAdmin);
 
-        $vat = $this->services['vat_rates']->update($this->vat_rate->id, array(
+        $vat = app()->make('VatRatesService')->update($this->vat_rate->id, array(
             'name' => 'pippo',
             'percentage' => 22,
         ));
@@ -70,7 +70,7 @@ class VatRateServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['vat_rates']->destroy($this->vat_rate->id);
+        app()->make('VatRatesService')->destroy($this->vat_rate->id);
     }
 
     /*
@@ -79,10 +79,10 @@ class VatRateServiceTest extends TestCase
     public function testDestroy()
     {
         $this->actingAs($this->userAdmin);
-        $this->services['vat_rates']->destroy($this->vat_rate->id);
+        app()->make('VatRatesService')->destroy($this->vat_rate->id);
 
         $this->expectException(ModelNotFoundException::class);
-        $this->services['vat_rates']->show($this->vat_rate->id);
+        app()->make('VatRatesService')->show($this->vat_rate->id);
     }
 
     /*

@@ -11,11 +11,6 @@ class InvalidateDeliveries extends Command
     protected $signature = 'reset:deliveries {order}';
     protected $description = 'Annulla tutte le consegne per un ordine';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     private function wipeProducts($booking)
     {
         foreach($booking->products as $product) {

@@ -3,9 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
-
-use Log;
 
 use App\Date;
 use App\Order;
@@ -15,11 +14,6 @@ class OpenOrders extends Command
 {
     protected $signature = 'open:orders';
     protected $description = 'Controlla lo stato degli ordini da aprire automaticamente';
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     private function getDates()
     {

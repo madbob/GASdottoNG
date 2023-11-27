@@ -40,7 +40,7 @@ class ModifiersServiceTest extends TestCase
         foreach ($modifiers as $mod) {
             if ($mod->id == 'sconto') {
                 $mod = $product->modifiers()->where('modifier_type_id', $mod->id)->first();
-                $this->services['modifiers']->update($mod->id, []);
+                app()->make('ModifiersService')->update($mod->id, []);
                 break;
             }
         }
@@ -49,7 +49,7 @@ class ModifiersServiceTest extends TestCase
     private function enforceBookingsTotalQuantity($product_id, $total_quantity)
     {
         $missing_quantity = $total_quantity;
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
 
         foreach($order->bookings as $booking) {
             $data = ['action' => 'booked'];
@@ -68,7 +68,7 @@ class ModifiersServiceTest extends TestCase
             }
 
             $this->actingAs($booking->user);
-            $this->services['bookings']->bookingUpdate($data, $order->aggregate, $booking->user, false);
+            app()->make('BookingsService')->bookingUpdate($data, $order->aggregate, $booking->user, false);
         }
 
         if ($missing_quantity > 0) {
@@ -92,7 +92,7 @@ class ModifiersServiceTest extends TestCase
             }
 
             $this->actingAs($booking->user);
-            $this->services['bookings']->bookingUpdate($data, $order->aggregate, $booking->user, false);
+            app()->make('BookingsService')->bookingUpdate($data, $order->aggregate, $booking->user, false);
         }
 
         $booked_quantity = \App\BookedProduct::where('product_id', $product_id)->sum('quantity');
@@ -118,7 +118,7 @@ class ModifiersServiceTest extends TestCase
         foreach ($modifiers as $modifier_type) {
             if ($modifier_type->id == 'sconto') {
                 $mod = $product->modifiers()->where('modifier_type_id', $modifier_type->id)->first();
-                $this->services['modifiers']->update($mod->id, [
+                app()->make('ModifiersService')->update($mod->id, [
                     'value' => 'price',
                     'arithmetic' => 'apply',
                     'scale' => 'major',
@@ -142,7 +142,7 @@ class ModifiersServiceTest extends TestCase
             $this->enforceBookingsTotalQuantity($product->id, $total_quantity);
             $this->nextRound();
 
-            $order = $this->services['orders']->show($this->order->id);
+            $order = app()->make('OrdersService')->show($this->order->id);
             $modifiers = $order->applyModifiers();
             $aggregated_modifiers = \App\ModifiedValue::aggregateByType($modifiers);
             $this->assertEquals(count($aggregated_modifiers), 1);
@@ -180,7 +180,7 @@ class ModifiersServiceTest extends TestCase
         foreach ($modifiers as $mod) {
             if ($mod->id == 'sconto') {
                 $mod = $product->modifiers()->where('modifier_type_id', $mod->id)->first();
-                $this->services['modifiers']->update($mod->id, [
+                app()->make('ModifiersService')->update($mod->id, [
                     'value' => 'price',
                     'arithmetic' => 'apply',
                     'scale' => 'major',
@@ -198,7 +198,7 @@ class ModifiersServiceTest extends TestCase
 
         $this->nextRound();
 
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
         $booking = $order->bookings->random();
 
         /*
@@ -213,7 +213,7 @@ class ModifiersServiceTest extends TestCase
             $product->id => 3,
         ];
         $this->actingAs($booking->user);
-        $this->services['bookings']->bookingUpdate($data, $order->aggregate, $booking->user, false);
+        app()->make('BookingsService')->bookingUpdate($data, $order->aggregate, $booking->user, false);
         $booking = $booking->fresh();
 
         $mods = $booking->applyModifiers(null, false);
@@ -237,7 +237,7 @@ class ModifiersServiceTest extends TestCase
             $product->id => 20,
         ];
         $this->actingAs($booking->user);
-        $this->services['bookings']->bookingUpdate($data, $order->aggregate, $booking->user, false);
+        app()->make('BookingsService')->bookingUpdate($data, $order->aggregate, $booking->user, false);
         $booking = $booking->fresh();
         $mods = $booking->applyModifiers(null, false);
         $this->assertEquals(\App\ModifiedValue::count(), 0);
@@ -259,7 +259,7 @@ class ModifiersServiceTest extends TestCase
             'action' => 'shipped',
             $product->id => 6,
         ];
-        $this->services['bookings']->bookingUpdate($data, $order->aggregate, $booking->user, true);
+        app()->make('BookingsService')->bookingUpdate($data, $order->aggregate, $booking->user, true);
         $booking = $booking->fresh();
         $mods = $booking->applyModifiers(null, false);
         $this->assertEquals(\App\ModifiedValue::count(), 1);
@@ -279,7 +279,7 @@ class ModifiersServiceTest extends TestCase
             'action' => 'shipped',
             $product->id => 4,
         ];
-        $this->services['bookings']->bookingUpdate($data, $order->aggregate, $booking->user, true);
+        app()->make('BookingsService')->bookingUpdate($data, $order->aggregate, $booking->user, true);
         $booking = $booking->fresh();
         $mods = $booking->applyModifiers(null, false);
         $this->assertEquals(\App\ModifiedValue::count(), 1);
@@ -310,7 +310,7 @@ class ModifiersServiceTest extends TestCase
         foreach ($modifiers as $mod) {
             if ($mod->id == 'sconto') {
                 $mod = $product->modifiers()->where('modifier_type_id', $mod->id)->first();
-                $this->services['modifiers']->update($mod->id, [
+                app()->make('ModifiersService')->update($mod->id, [
                     'arithmetic' => 'sub',
                     'scale' => 'major',
                     'applies_type' => 'quantity',
@@ -328,7 +328,7 @@ class ModifiersServiceTest extends TestCase
 
         $this->nextRound();
 
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
         $modifiers = $order->applyModifiers();
         $aggregated_modifiers = \App\ModifiedValue::aggregateByType($modifiers);
         $this->assertEquals(count($aggregated_modifiers), 1);
@@ -366,7 +366,7 @@ class ModifiersServiceTest extends TestCase
     {
         $this->nextRound();
 
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
         $redux = $order->aggregate->reduxData();
         $this->assertNotEquals($redux->relative_price, 0.0);
 
@@ -394,7 +394,7 @@ class ModifiersServiceTest extends TestCase
         foreach ($modifiers as $mod) {
             if ($mod->id == 'spese-trasporto') {
                 $mod = $reference->modifiers()->where('modifier_type_id', $mod->id)->first();
-                $this->services['modifiers']->update($mod->id, [
+                app()->make('ModifiersService')->update($mod->id, [
                     'value' => 'absolute',
                     'arithmetic' => 'sum',
                     'scale' => 'minor',
@@ -418,7 +418,7 @@ class ModifiersServiceTest extends TestCase
         foreach ($modifiers as $mod) {
             if ($mod->id == 'spese-trasporto') {
                 $mod = $reference->modifiers()->where('modifier_type_id', $mod->id)->first();
-                $this->services['modifiers']->update($mod->id, [
+                app()->make('ModifiersService')->update($mod->id, [
                     'value' => 'percentage',
                     'arithmetic' => 'sum',
                     'scale' => 'minor',
@@ -440,7 +440,7 @@ class ModifiersServiceTest extends TestCase
         $this->nextRound();
 
         $this->actingAs($this->userWithShippingPerms);
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
 
         foreach($order->bookings as $booking) {
             $data = [];
@@ -455,7 +455,7 @@ class ModifiersServiceTest extends TestCase
             }
 
             $data['action'] = 'shipped';
-            $this->services['bookings']->bookingUpdate($data, $order->aggregate, $booking->user, true);
+            app()->make('BookingsService')->bookingUpdate($data, $order->aggregate, $booking->user, true);
         }
 
         $this->actingAs($this->userReferrer);
@@ -489,7 +489,7 @@ class ModifiersServiceTest extends TestCase
 
         $this->shipOrder(true);
         $this->actingAs($this->userReferrer);
-        $this->services['orders']->fixModifiers($this->order->id, 'adjust');
+        app()->make('OrdersService')->fixModifiers($this->order->id, 'adjust');
         $this->reviewBookingsIntoOrder($mod, $test_shipping_value);
     }
 
@@ -509,7 +509,7 @@ class ModifiersServiceTest extends TestCase
 
         $this->actingAs($this->userWithShippingPerms);
         $data['action'] = 'shipped';
-        $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $user, true);
+        app()->make('BookingsService')->bookingUpdate($data, $this->order->aggregate, $user, true);
 
         $this->nextRound();
 
@@ -526,8 +526,8 @@ class ModifiersServiceTest extends TestCase
         $this->travel(1)->hours();
 
         $this->actingAs($this->userReferrer);
-        $order = $this->services['orders']->show($this->order->id);
-        $this->services['orders']->fixModifiers($this->order->id, 'adjust');
+        $order = app()->make('OrdersService')->show($this->order->id);
+        app()->make('OrdersService')->fixModifiers($this->order->id, 'adjust');
 
         $this->nextRound();
 
@@ -535,7 +535,7 @@ class ModifiersServiceTest extends TestCase
         $this->assertEquals(2, $movements->count());
         $booking_payment_found = $donation_found = false;
 
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
         $this->assertEquals(1, $this->order->bookings->count());
 
         foreach($order->bookings as $booking) {
@@ -562,7 +562,7 @@ class ModifiersServiceTest extends TestCase
 
         $this->nextRound();
 
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
         $this->assertEquals($order->supplier->currentBalanceAmount(), $total);
         $this->gas = $this->gas->fresh();
         $this->assertEquals($this->gas->currentBalance(defaultCurrency())->gas, $total_donation);
@@ -579,7 +579,7 @@ class ModifiersServiceTest extends TestCase
 
         $this->nextRound();
 
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
         $redux = $order->aggregate->reduxData();
         $this->assertNotEquals($redux->relative_price, 0.0);
 
@@ -627,7 +627,7 @@ class ModifiersServiceTest extends TestCase
         foreach ($modifiers as $mod) {
             if ($mod->id == 'spese-trasporto') {
                 $mod = $this->order->modifiers()->where('modifier_type_id', $mod->id)->first();
-                $this->services['modifiers']->update($mod->id, [
+                app()->make('ModifiersService')->update($mod->id, [
                     'value' => 'percentage',
                     'arithmetic' => 'passive',
                     'scale' => 'minor',
@@ -689,7 +689,7 @@ class ModifiersServiceTest extends TestCase
 
         $this->nextRound();
 
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
         $redux = $order->aggregate->reduxData();
         $this->assertNotEquals($redux->price, 0.0);
 
@@ -716,7 +716,7 @@ class ModifiersServiceTest extends TestCase
         $master->addRole($friends_role->id, $this->gas);
 
         $this->actingAs($master);
-        $friend = $this->services['users']->storeFriend(array(
+        $friend = app()->make('UsersService')->storeFriend(array(
             'username' => 'test friend user',
             'firstname' => 'gianni',
             'lastname' => 'giallo',
@@ -728,7 +728,7 @@ class ModifiersServiceTest extends TestCase
         $this->actingAs($friend);
         list($data, $booked_count, $total) = $this->randomQuantities($this->order->products);
         $data['action'] = 'booked';
-        $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $friend, false);
+        app()->make('BookingsService')->bookingUpdate($data, $this->order->aggregate, $friend, false);
 
         $friend_booking = $this->order->bookings()->where('user_id', $friend->id)->first();
         $this->assertNotNull($friend_booking);
@@ -751,7 +751,7 @@ class ModifiersServiceTest extends TestCase
 
         $this->nextRound();
 
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
 
         foreach($order->bookings as $booking) {
             $mods = $booking->applyModifiers(null, true);
@@ -828,7 +828,7 @@ class ModifiersServiceTest extends TestCase
 
         $this->nextRound();
 
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
         $booking_found = false;
         $shipping_cost_found = false;
 
@@ -876,7 +876,7 @@ class ModifiersServiceTest extends TestCase
 
         $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'users.admin');
         $this->actingAs($this->userWithAdminPerm);
-        $newUser = $this->services['users']->store(array(
+        $newUser = app()->make('UsersService')->store(array(
             'username' => 'test user',
             'firstname' => 'luigi',
             'lastname' => 'verdi',
@@ -888,7 +888,7 @@ class ModifiersServiceTest extends TestCase
 
         $this->nextRound();
 
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
         $booking_found = false;
         $shipping_cost_found = false;
 
@@ -934,7 +934,7 @@ class ModifiersServiceTest extends TestCase
         foreach ($modifiers as $mod) {
             if ($mod->id == 'sconto') {
                 $mod = $this->order->modifiers()->where('modifier_type_id', $mod->id)->first();
-                $this->services['modifiers']->update($mod->id, [
+                app()->make('ModifiersService')->update($mod->id, [
                     'value' => 'percentage',
                     'arithmetic' => 'sum',
                     'scale' => 'minor',
@@ -960,7 +960,7 @@ class ModifiersServiceTest extends TestCase
         $this->actingAs($user);
         list($data, $booked_count, $total) = $this->randomQuantities($this->order->products);
         $data['action'] = 'booked';
-        $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $user, false);
+        app()->make('BookingsService')->bookingUpdate($data, $this->order->aggregate, $user, false);
 
         return [$user, $data, $total];
     }
@@ -976,7 +976,7 @@ class ModifiersServiceTest extends TestCase
 
         $this->actingAs($this->userWithShippingPerms);
         $data['action'] = 'shipped';
-        $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $user, true);
+        app()->make('BookingsService')->bookingUpdate($data, $this->order->aggregate, $user, true);
 
         $this->nextRound();
 
@@ -992,7 +992,7 @@ class ModifiersServiceTest extends TestCase
         $this->nextRound();
 
         $this->actingAs($this->userReferrer);
-        $this->order = $this->services['orders']->show($this->order->id);
+        $this->order = app()->make('OrdersService')->show($this->order->id);
         $currency = defaultCurrency();
         $this->assertEquals(round($this->order->supplier->currentBalanceAmount($currency), 2), round($total, 2));
         $this->assertEquals(round($this->gas->currentBalance($currency)->gas, 2), round($total * 0.1, 2));
@@ -1031,7 +1031,7 @@ class ModifiersServiceTest extends TestCase
         $this->actingAs($this->userWithShippingPerms);
         $data['action'] = 'shipped';
         $data['manual_total_' . $this->order->id] = 100;
-        $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $user, true);
+        app()->make('BookingsService')->bookingUpdate($data, $this->order->aggregate, $user, true);
 
         $this->nextRound();
 

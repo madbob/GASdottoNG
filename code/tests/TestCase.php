@@ -30,27 +30,6 @@ abstract class TestCase extends BaseTestCase
         */
         setlocale(LC_TIME, 'it_IT.UTF-8');
 
-        $this->services = [
-            'users' => new \App\Services\UsersService(),
-            'roles' => new \App\Services\RolesService(),
-            'movement_types' => new \App\Services\MovementTypesService(),
-            'movements' => new \App\Services\MovementsService(),
-            'vat_rates' => new \App\Services\VatRatesService(),
-            'suppliers' => new \App\Services\SuppliersService(),
-            'products' => new \App\Services\ProductsService(),
-            'variants' => new \App\Services\VariantsService(),
-            'orders' => new \App\Services\OrdersService(),
-            'bookings' => new \App\Services\BookingsService(),
-            'dynamic_bookings' => new \App\Services\DynamicBookingsService(),
-            'fast_bookings' => new \App\Services\FastBookingsService(),
-            'dates' => new \App\Services\DatesService(),
-            'invoices' => new \App\Services\InvoicesService(),
-            'modifier_types' => new \App\Services\ModifierTypesService(),
-            'modifiers' => new \App\Services\ModifiersService(),
-            'multigas' => new \App\Services\MultiGasService(),
-            'notifications' => new \App\Services\NotificationsService(),
-        ];
-
         $this->gas = \App\Gas::factory()->create();
 
         /*
@@ -108,7 +87,7 @@ abstract class TestCase extends BaseTestCase
         }
 
         $this->actingAs($master);
-        $friend = $this->services['users']->storeFriend(array(
+        $friend = app()->make('UsersService')->storeFriend(array(
             'username' => 'test friend user',
             'firstname' => 'mario',
             'lastname' => 'rossi',
@@ -119,7 +98,7 @@ abstract class TestCase extends BaseTestCase
         if (is_null($booking_role)) {
             $this->actingAs($this->userAdmin);
             $booking_role = \App\Role::factory()->create(['actions' => 'supplier.book']);
-            $this->services['roles']->setMasterRole($this->gas, 'friend', $booking_role->id);
+            app()->make('RolesService')->setMasterRole($this->gas, 'friend', $booking_role->id);
             $this->actingAs($master);
         }
 
@@ -133,7 +112,7 @@ abstract class TestCase extends BaseTestCase
     */
     protected function createVariant($product)
     {
-        return $this->services['variants']->store([
+        return app()->make('VariantsService')->store([
             'product_id' => $product->id,
             'name' => 'Colore',
             'id' => ['', '', ''],
@@ -145,13 +124,16 @@ abstract class TestCase extends BaseTestCase
         Per predisporre il minimo essenziale per fare delle prenotazioni.
         Ovvero: un ordine
     */
-    protected function initOrder($other_order)
+    protected function initOrder($other_order, $supplier = null)
     {
         $category = \App\Category::factory()->create();
         $measure = \App\Measure::factory()->create();
 
         $this->actingAs($this->userAdmin);
-        $supplier = \App\Supplier::factory()->create();
+
+        if (is_null($supplier)) {
+            $supplier = \App\Supplier::factory()->create();
+        }
 
         $this->userReferrer = $this->createRoleAndUser($this->gas, 'supplier.modify,supplier.orders', $supplier);
         $this->userWithShippingPerms = $this->createRoleAndUser($this->gas, 'supplier.shippings', $supplier);
@@ -188,7 +170,7 @@ abstract class TestCase extends BaseTestCase
             $this->actingAs($user);
             list($data, $booked_count, $total) = $this->randomQuantities($order->products);
             $data['action'] = 'booked';
-            $this->services['bookings']->bookingUpdate($data, $order->aggregate, $user, false);
+            app()->make('BookingsService')->bookingUpdate($data, $order->aggregate, $user, false);
         }
     }
 
@@ -242,7 +224,7 @@ abstract class TestCase extends BaseTestCase
 
 	protected function updateAndFetch($data, $order, $user, $deliver)
     {
-        $this->services['bookings']->bookingUpdate($data, $order->aggregate, $user, $deliver);
+        app()->make('BookingsService')->bookingUpdate($data, $order->aggregate, $user, $deliver);
         $this->nextRound();
         return \App\Booking::where('user_id', $user->id)->where('order_id', $order->id)->first();
     }

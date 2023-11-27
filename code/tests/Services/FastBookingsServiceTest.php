@@ -26,10 +26,10 @@ class FastBookingsServiceTest extends TestCase
         $this->populateOrder($this->sample_order);
 
         $this->actingAs($this->userWithShippingPerms);
-        $this->services['fast_bookings']->fastShipping($this->userWithShippingPerms, $this->sample_order->aggregate, null);
+        app()->make('FastBookingsService')->fastShipping($this->userWithShippingPerms, $this->sample_order->aggregate, null);
 
         $this->nextRound();
-        $order = $this->services['orders']->show($this->sample_order->id);
+        $order = app()->make('OrdersService')->show($this->sample_order->id);
 
         foreach($order->bookings as $booking) {
             $this->assertEquals($booking->status, 'shipped');
@@ -59,10 +59,10 @@ class FastBookingsServiceTest extends TestCase
         $this->nextRound();
 
         $this->actingAs($this->userWithShippingPerms);
-        $this->services['fast_bookings']->fastShipping($this->userWithShippingPerms, $this->sample_order->aggregate, $filter);
+        app()->make('FastBookingsService')->fastShipping($this->userWithShippingPerms, $this->sample_order->aggregate, $filter);
 
         $this->nextRound();
-        $order = $this->services['orders']->show($this->sample_order->id);
+        $order = app()->make('OrdersService')->show($this->sample_order->id);
 
         foreach($order->bookings as $booking) {
             if (in_array($booking->user_id, $users)) {
@@ -92,29 +92,29 @@ class FastBookingsServiceTest extends TestCase
 
 		$this->nextRound();
 		$this->actingAs($this->userWithShippingPerms);
-		$order = $this->services['orders']->show($this->sample_order->id);
+		$order = app()->make('OrdersService')->show($this->sample_order->id);
 
 		$new_data = [];
 
 		foreach($order->bookings as $booking) {
             list($data, $booked_count, $total) = $this->randomQuantities($order->products);
             $data['action'] = 'saved';
-            $this->services['bookings']->bookingUpdate($data, $order->aggregate, $booking->user, true);
+            app()->make('BookingsService')->bookingUpdate($data, $order->aggregate, $booking->user, true);
 			$new_data[$booking->user->id] = $data;
         }
 
 		$this->nextRound();
-		$order = $this->services['orders']->show($this->sample_order->id);
+		$order = app()->make('OrdersService')->show($this->sample_order->id);
 		foreach($order->bookings as $booking) {
             $this->assertEquals($booking->status, 'saved');
 		}
 
 		$this->nextRound();
         $this->actingAs($this->userWithShippingPerms);
-        $this->services['fast_bookings']->fastShipping($this->userWithShippingPerms, $this->sample_order->aggregate, null);
+        app()->make('FastBookingsService')->fastShipping($this->userWithShippingPerms, $this->sample_order->aggregate, null);
 
         $this->nextRound();
-        $order = $this->services['orders']->show($this->sample_order->id);
+        $order = app()->make('OrdersService')->show($this->sample_order->id);
 
         foreach($order->bookings as $booking) {
             $this->assertEquals($booking->status, 'shipped');
@@ -153,8 +153,8 @@ class FastBookingsServiceTest extends TestCase
         $this->populateOrder($this->sample_order);
 
         $this->actingAs($this->userWithShippingPerms);
-        $order = $this->services['orders']->show($this->sample_order->id);
-        $this->services['fast_bookings']->fastShipping($this->userWithShippingPerms, $order->aggregate, null);
+        $order = app()->make('OrdersService')->show($this->sample_order->id);
+        app()->make('FastBookingsService')->fastShipping($this->userWithShippingPerms, $order->aggregate, null);
 
         $this->nextRound();
         $receipts = \App\Receipt::all();

@@ -33,7 +33,7 @@ class ModifierTypesServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $type = $this->services['modifier_types']->store(array(
+        $type = app()->make('ModifierTypesService')->store(array(
             'name' => 'Donazione',
             'classes' => ['App\Booking'],
         ));
@@ -59,7 +59,7 @@ class ModifierTypesServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['modifier_types']->update($this->sample_type->id, array());
+        app()->make('ModifierTypesService')->update($this->sample_type->id, array());
     }
 
     /*
@@ -69,11 +69,11 @@ class ModifierTypesServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $this->services['modifier_types']->update($this->sample_type->id, array(
+        app()->make('ModifierTypesService')->update($this->sample_type->id, array(
             'name' => 'Donazioni',
         ));
 
-        $type = $this->services['modifier_types']->show($this->sample_type->id);
+        $type = app()->make('ModifierTypesService')->show($this->sample_type->id);
         $this->assertEquals('Donazioni', $type->name);
     }
 
@@ -84,7 +84,7 @@ class ModifierTypesServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithAdminPerm);
-        $this->services['modifier_types']->show('random');
+        app()->make('ModifierTypesService')->show('random');
     }
 
     /*
@@ -94,7 +94,7 @@ class ModifierTypesServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $type = $this->services['modifier_types']->show($this->sample_type->id);
+        $type = app()->make('ModifierTypesService')->show($this->sample_type->id);
 
         $this->assertEquals($this->sample_type->id, $type->id);
         $this->assertEquals($this->sample_type->name, $type->name);
@@ -107,7 +107,7 @@ class ModifierTypesServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['modifier_types']->destroy($this->sample_type->id);
+        app()->make('ModifierTypesService')->destroy($this->sample_type->id);
     }
 
     /*
@@ -116,11 +116,11 @@ class ModifierTypesServiceTest extends TestCase
     public function testDestroy()
     {
         $this->actingAs($this->userWithAdminPerm);
-        $this->services['modifier_types']->destroy($this->sample_type->id);
+        app()->make('ModifierTypesService')->destroy($this->sample_type->id);
         $this->assertNull(\App\ModifierType::find($this->sample_type->id));
 
         try {
-            $this->services['modifier_types']->show($this->sample_type->id);
+            app()->make('ModifierTypesService')->show($this->sample_type->id);
             $this->fail('should never run');
         } catch (ModelNotFoundException $e) {
             //good boy

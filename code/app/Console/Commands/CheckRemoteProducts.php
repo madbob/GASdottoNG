@@ -3,10 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-
 use Illuminate\Support\Str;
-
-use App;
+use Illuminate\Support\Facades\App;
 
 use App\Supplier;
 use App\Role;
@@ -17,11 +15,6 @@ class CheckRemoteProducts extends Command
 {
     protected $signature = 'check:remote_products';
     protected $description = 'Controlla il repository remoto dei listini per aggiornamenti.';
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     private function notify($supplier, $e)
     {

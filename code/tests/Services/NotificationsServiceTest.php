@@ -32,7 +32,7 @@ class NotificationsServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['notifications']->store(array());
+        app()->make('NotificationsService')->store(array());
     }
 
     /*
@@ -45,7 +45,7 @@ class NotificationsServiceTest extends TestCase
 		$start = date('Y-m-d');
         $end = date('Y-m-d', strtotime('+20 days'));
 
-        $notification = $this->services['notifications']->store(array(
+        $notification = app()->make('NotificationsService')->store(array(
             'type' => 'notification',
             'content' => 'Test',
             'start_date' => printableDate($start),
@@ -67,7 +67,7 @@ class NotificationsServiceTest extends TestCase
 
 		$end = date('Y-m-d', strtotime('+20 days'));
 
-        $notification = $this->services['notifications']->update($this->notification->id, array(
+        $notification = app()->make('NotificationsService')->update($this->notification->id, array(
             'content' => 'Test Modifica',
             'end_date' => printableDate($end),
         ));
@@ -86,7 +86,7 @@ class NotificationsServiceTest extends TestCase
 		$start = date('Y-m-d');
         $end = date('Y-m-d', strtotime('+20 days'));
 
-		$notification = $this->services['notifications']->store([
+		$notification = app()->make('NotificationsService')->store([
 			'users' => [$this->userWithNoPerms->id],
             'type' => 'notification',
             'content' => 'Altro Test',
@@ -101,7 +101,7 @@ class NotificationsServiceTest extends TestCase
         $this->assertEquals($this->userWithNoPerms->printableName(), $notification->printableName());
 
 		$this->actingAs($this->userWithNoPerms);
-		$this->services['notifications']->markread($notification->id);
+		app()->make('NotificationsService')->markread($notification->id);
 
 		$this->nextRound();
 
@@ -121,7 +121,7 @@ class NotificationsServiceTest extends TestCase
 		$start = date('Y-m-d');
         $end = date('Y-m-d', strtotime('+20 days'));
 
-		$notification = $this->services['notifications']->store([
+		$notification = app()->make('NotificationsService')->store([
 			'users' => [$this->userWithNoPerms->id, $this->userNotificationAdmin->id],
             'type' => 'notification',
             'mailed' => true,
@@ -165,12 +165,12 @@ class NotificationsServiceTest extends TestCase
     {
         $this->actingAs($this->userNotificationAdmin);
 
-        $list = $this->services['notifications']->list(null, null);
-        $this->services['notifications']->destroy($this->notification->id);
+        $list = app()->make('NotificationsService')->list(null, null);
+        app()->make('NotificationsService')->destroy($this->notification->id);
 
         $this->nextRound();
 
-        $list_next = $this->services['notifications']->list(null, null);
+        $list_next = app()->make('NotificationsService')->list(null, null);
         $this->assertEquals($list_next->count(), $list->count() - 1);
     }
 }

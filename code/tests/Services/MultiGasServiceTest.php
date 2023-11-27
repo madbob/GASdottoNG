@@ -31,7 +31,7 @@ class MultiGasServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['multigas']->store(array());
+        app()->make('MultiGasService')->store(array());
     }
 
     private function initSubgasAdminRole()
@@ -53,7 +53,7 @@ class MultiGasServiceTest extends TestCase
     {
         $this->actingAs($this->userSuperAdmin);
 
-        return $this->services['multigas']->store([
+        return app()->make('MultiGasService')->store([
             'name' => 'Test GAS',
             'username' => 'testuser',
             'firstname' => 'Test',
@@ -93,7 +93,7 @@ class MultiGasServiceTest extends TestCase
         $admin = $this->createRoleAndUser($this->gas, 'supplier.add');
         $this->actingAs($admin);
 
-        $supplier = $this->services['suppliers']->store(array(
+        $supplier = app()->make('SuppliersService')->store(array(
             'name' => 'Test Supplier',
             'business_name' => 'Test Supplier SRL'
         ));
@@ -103,13 +103,13 @@ class MultiGasServiceTest extends TestCase
         $this->nextRound();
 
         $this->actingAs($this->userSuperAdmin);
-        $this->userSuperAdmin = $this->services['users']->show($this->userSuperAdmin->id);
+        $this->userSuperAdmin = app()->make('UsersService')->show($this->userSuperAdmin->id);
 
         $this->nextRound();
 
         $this->actingAs($this->userSuperAdmin);
 
-        $this->services['multigas']->attach([
+        app()->make('MultiGasService')->attach([
             'gas' => $gas->id,
             'target_id' => $supplier->id,
             'target_type' => get_class($supplier),

@@ -36,7 +36,7 @@ class MovementTypesServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $type = $this->services['movement_types']->store(array(
+        $type = app()->make('MovementTypesService')->store(array(
             'name' => 'Donazione al GAS',
             'sender_type' => 'App\Gas',
             'target_type' => 'App\User',
@@ -52,7 +52,7 @@ class MovementTypesServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['movement_types']->update($this->sample_type->id, array());
+        app()->make('MovementTypesService')->update($this->sample_type->id, array());
     }
 
     /*
@@ -62,7 +62,7 @@ class MovementTypesServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $this->services['movement_types']->update($this->sample_type->id, array(
+        app()->make('MovementTypesService')->update($this->sample_type->id, array(
             'default_notes' => 'Test nota',
             'sender_type' => 'App\Gas',
             'target_type' => 'App\Supplier',
@@ -71,7 +71,7 @@ class MovementTypesServiceTest extends TestCase
             'App\Supplier-bank-cash' => 'increment',
         ));
 
-        $type = $this->services['movement_types']->show($this->sample_type->id);
+        $type = app()->make('MovementTypesService')->show($this->sample_type->id);
         $this->assertEquals($type->hasPayment('bank'), false);
         $this->assertEquals($type->hasPayment('cash'), true);
     }
@@ -83,7 +83,7 @@ class MovementTypesServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithAdminPerm);
-        $this->services['movement_types']->show('random');
+        app()->make('MovementTypesService')->show('random');
     }
 
     /*
@@ -93,7 +93,7 @@ class MovementTypesServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $type = $this->services['movement_types']->show($this->sample_type->id);
+        $type = app()->make('MovementTypesService')->show($this->sample_type->id);
 
         $this->assertEquals($this->sample_type->id, $type->id);
         $this->assertEquals($this->sample_type->sender_type, $type->sender_type);
@@ -107,7 +107,7 @@ class MovementTypesServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['movement_types']->destroy($this->sample_type->id);
+        app()->make('MovementTypesService')->destroy($this->sample_type->id);
     }
 
     /*
@@ -116,11 +116,11 @@ class MovementTypesServiceTest extends TestCase
     public function testDestroy()
     {
         $this->actingAs($this->userWithAdminPerm);
-        $this->services['movement_types']->destroy($this->sample_type->id);
+        app()->make('MovementTypesService')->destroy($this->sample_type->id);
         $this->assertNull(\App\MovementType::find($this->sample_type->id));
 
         try {
-            $this->services['movement_types']->show($this->sample_type->id);
+            app()->make('MovementTypesService')->show($this->sample_type->id);
             $this->fail('should never run');
         } catch (ModelNotFoundException $e) {
             //good boy

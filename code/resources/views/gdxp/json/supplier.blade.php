@@ -14,67 +14,69 @@ if (!isset($bookings)) {
     $bookings = false;
 }
 
-function serializeTransformations($target, $json_target)
-{
-    $transformations = [];
-    $modifiers = $target->modifiers->filter(fn($m) => $m->active && in_array($m->modifierType->identifier, ['shipping', 'discount']));
+if (function_exists('serializeTransformations') == false) {
+    function serializeTransformations($target, $json_target)
+    {
+        $transformations = [];
+        $modifiers = $target->modifiers->filter(fn($m) => $m->active && in_array($m->modifierType->identifier, ['shipping', 'discount']));
 
-    foreach($modifiers as $mod) {
-        if (in_array($mod->arithmetic, ['sum', 'sub'])) {
-            $trans = (object) [
-                'type' => $mod->modifierType->identifier,
-                'operation' => $mod->arithmetic,
-            ];
+        foreach($modifiers as $mod) {
+            if (in_array($mod->arithmetic, ['sum', 'sub'])) {
+                $trans = (object) [
+                    'type' => $mod->modifierType->identifier,
+                    'operation' => $mod->arithmetic,
+                ];
 
-            $definitions = $mod->definitions;
+                $definitions = $mod->definitions;
 
-            if ($mod->scale == 'minor') {
-                $shifted_definitions = [];
-                $prev_theshold = 0;
+                if ($mod->scale == 'minor') {
+                    $shifted_definitions = [];
+                    $prev_theshold = 0;
 
-                foreach($definitions as $def) {
+                    foreach($definitions as $def) {
+                        $shifted_definitions[] = (object) [
+                            'threshold' => $prev_theshold,
+                            'amount' => $def->amount,
+                        ];
+
+                        $prev_theshold = $def->threshold;
+                    }
+
                     $shifted_definitions[] = (object) [
                         'threshold' => $prev_theshold,
-                        'amount' => $def->amount,
+                        'amount' => 0,
                     ];
 
-                    $prev_theshold = $def->threshold;
+                    $definitions = $shifted_definitions;
                 }
 
-                $shifted_definitions[] = (object) [
-                    'threshold' => $prev_theshold,
-                    'amount' => 0,
-                ];
-
-                $definitions = $shifted_definitions;
-            }
-
-            if (count($definitions) == 1) {
-                $trans->fixed = formatPercentage($definitions[0]->amount, $mod->value == 'percentage');
-            }
-            else {
-                $trans->variable = (object) [
-                    'theshold_type' => $mod->applies_type,
-                    'thesholds' => [],
-                ];
-
-                foreach($definitions as $definition) {
-                    $trans->variable->thesholds[] = (object) [
-                        'theshold' => $definition->threshold,
-                        'amount' => formatPercentage($definition->amount, $mod->value == 'percentage'),
+                if (count($definitions) == 1) {
+                    $trans->fixed = formatPercentage($definitions[0]->amount, $mod->value == 'percentage');
+                }
+                else {
+                    $trans->variable = (object) [
+                        'theshold_type' => $mod->applies_type,
+                        'thesholds' => [],
                     ];
-                }
-            }
 
-            $json_target->transformations[] = $trans;
+                    foreach($definitions as $definition) {
+                        $trans->variable->thesholds[] = (object) [
+                            'theshold' => $definition->threshold,
+                            'amount' => formatPercentage($definition->amount, $mod->value == 'percentage'),
+                        ];
+                    }
+                }
+
+                $json_target->transformations[] = $trans;
+            }
         }
-    }
 
-    if (empty($transformations) == false) {
-        $json_target->transformations = $transformations;
-    }
+        if (empty($transformations) == false) {
+            $json_target->transformations = $transformations;
+        }
 
-    return $json_target;
+        return $json_target;
+    }
 }
 
 $json_object = (object) [

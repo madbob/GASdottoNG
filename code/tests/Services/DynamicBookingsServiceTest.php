@@ -29,13 +29,13 @@ class DynamicBookingsServiceTest extends TestCase
 
         list($data, $booked_count, $total) = $this->randomQuantities($this->order->products);
         $data['action'] = 'booked';
-        $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $this->userWithBasePerms, false);
+        app()->make('BookingsService')->bookingUpdate($data, $this->order->aggregate, $this->userWithBasePerms, false);
 
         $this->nextRound();
 
         list($data2, $booked_count2, $total2) = $this->randomQuantities($this->order->products);
         $data2['action'] = 'booked';
-        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data2, $this->order->aggregate, $this->userWithBasePerms);
+        $ret = app()->make('DynamicBookingsService')->dynamicModifiers($data2, $this->order->aggregate, $this->userWithBasePerms);
 
         $this->assertEquals(count($ret->bookings), 1);
 
@@ -80,7 +80,7 @@ class DynamicBookingsServiceTest extends TestCase
 
         list($data_friend, $booked_count_friend, $total_friend) = $this->randomQuantities($this->order->products);
         $data_friend['action'] = 'booked';
-        $this->services['bookings']->bookingUpdate($data_friend, $this->order->aggregate, $friend, false);
+        app()->make('BookingsService')->bookingUpdate($data_friend, $this->order->aggregate, $friend, false);
 
         $this->nextRound();
 
@@ -92,7 +92,7 @@ class DynamicBookingsServiceTest extends TestCase
         $this->actingAs($this->userWithBasePerms);
         list($data_master, $booked_count_master, $total_master) = $this->randomQuantities($this->order->products);
         $data_master['action'] = 'booked';
-        $this->services['bookings']->bookingUpdate($data_master, $this->order->aggregate, $this->userWithBasePerms, false);
+        app()->make('BookingsService')->bookingUpdate($data_master, $this->order->aggregate, $this->userWithBasePerms, false);
 
         $this->nextRound();
 
@@ -104,7 +104,7 @@ class DynamicBookingsServiceTest extends TestCase
         $this->actingAs($this->userWithShippingPerms);
         $data = $this->mergeBookingQuantity($data_master, $data_friend);
         $data['action'] = 'shipped';
-        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
+        $ret = app()->make('DynamicBookingsService')->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
 
         $this->assertEquals(count($ret->bookings), 1);
 
@@ -134,7 +134,7 @@ class DynamicBookingsServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithBasePerms);
-        $this->services['dynamic_bookings']->dynamicModifiers(['action' => 'booked'], $this->order->aggregate, $this->userWithShippingPerms);
+        app()->make('DynamicBookingsService')->dynamicModifiers(['action' => 'booked'], $this->order->aggregate, $this->userWithShippingPerms);
     }
 
     /*
@@ -143,7 +143,7 @@ class DynamicBookingsServiceTest extends TestCase
     public function testReferrerReads()
     {
         $this->actingAs($this->userWithShippingPerms);
-        $ret = $this->services['dynamic_bookings']->dynamicModifiers(['action' => 'booked'], $this->order->aggregate, $this->userWithBasePerms);
+        $ret = app()->make('DynamicBookingsService')->dynamicModifiers(['action' => 'booked'], $this->order->aggregate, $this->userWithBasePerms);
         $this->assertEquals(count($ret->bookings), 0);
     }
 
@@ -163,7 +163,7 @@ class DynamicBookingsServiceTest extends TestCase
             $product->id => 2,
         ];
 
-        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
+        $ret = app()->make('DynamicBookingsService')->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
 
         $this->assertEquals(count($ret->bookings), 1);
 
@@ -208,7 +208,7 @@ class DynamicBookingsServiceTest extends TestCase
             $product->id => 2,
         ];
 
-        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
+        $ret = app()->make('DynamicBookingsService')->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
         $this->contraintOnProduct($ret, 'Quantità inferiore al minimo consentito');
     }
 
@@ -229,7 +229,7 @@ class DynamicBookingsServiceTest extends TestCase
             $product->id => 5,
         ];
 
-        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
+        $ret = app()->make('DynamicBookingsService')->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
         $this->contraintOnProduct($ret, 'Quantità non multipla del valore consentito');
     }
 
@@ -249,7 +249,7 @@ class DynamicBookingsServiceTest extends TestCase
             $product->id => 11,
         ];
 
-        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
+        $ret = app()->make('DynamicBookingsService')->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
         $this->contraintOnProduct($ret, 'Quantità superiore alla disponibilità');
     }
 
@@ -262,7 +262,7 @@ class DynamicBookingsServiceTest extends TestCase
 
         list($data, $booked_count, $total) = $this->randomQuantities($this->order->products);
         $data['action'] = 'booked';
-        $this->services['bookings']->bookingUpdate($data, $this->order->aggregate, $this->userWithBasePerms, false);
+        app()->make('BookingsService')->bookingUpdate($data, $this->order->aggregate, $this->userWithBasePerms, false);
 
         $this->nextRound();
 
@@ -275,7 +275,7 @@ class DynamicBookingsServiceTest extends TestCase
 
         $data['action'] = 'shipped';
         $data['manual_total_' . $this->order->id] = 100;
-        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
+        $ret = app()->make('DynamicBookingsService')->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
 
         $this->assertEquals(1, count($ret->bookings));
 
@@ -298,7 +298,7 @@ class DynamicBookingsServiceTest extends TestCase
         foreach ($modifiers as $mod) {
             if ($mod->id == 'sconto') {
                 $mod = $product->modifiers()->where('modifier_type_id', $mod->id)->first();
-                $this->services['modifiers']->update($mod->id, [
+                app()->make('ModifiersService')->update($mod->id, [
                     'value' => 'percentage',
                     'arithmetic' => 'sub',
                     'scale' => 'minor',
@@ -330,7 +330,7 @@ class DynamicBookingsServiceTest extends TestCase
             $product->id => 2,
         ];
 
-        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
+        $ret = app()->make('DynamicBookingsService')->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
 
         $this->assertEquals(count($ret->bookings), 1);
 
@@ -355,7 +355,7 @@ class DynamicBookingsServiceTest extends TestCase
 
         $product = $this->order->products->random();
 
-        $variant = $this->services['variants']->store([
+        $variant = app()->make('VariantsService')->store([
             'product_id' => $product->id,
             'name' => 'Colore',
             'id' => ['', '', ''],
@@ -375,7 +375,7 @@ class DynamicBookingsServiceTest extends TestCase
             'variant_selection_' . $variant->id => [$variant->values()->first()->id],
         ];
 
-        $ret = $this->services['dynamic_bookings']->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
+        $ret = app()->make('DynamicBookingsService')->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
 
         $this->assertEquals(count($ret->bookings), 1);
 

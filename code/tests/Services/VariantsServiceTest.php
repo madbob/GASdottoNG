@@ -55,21 +55,21 @@ class VariantsServiceTest extends TestCase
 
         $variant = $this->createVariant($this->product);
 
-        $product = $this->services['products']->show($this->product->id);
+        $product = app()->make('ProductsService')->show($this->product->id);
         $this->assertEquals('Colore', $variant->name);
         $this->assertEquals(3, $variant->values()->count());
         $this->assertEquals(3, $product->variant_combos->count());
 
         $this->nextRound();
 
-        $other_variant = $this->services['variants']->store([
+        $other_variant = app()->make('VariantsService')->store([
             'product_id' => $this->product->id,
             'name' => 'Taglia',
             'id' => ['', '', ''],
             'value' => ['S', 'M', 'L'],
         ]);
 
-        $product = $this->services['products']->show($this->product->id);
+        $product = app()->make('ProductsService')->show($this->product->id);
         $this->assertEquals(9, $product->variant_combos->count());
         $this->assertEquals('L, M, S', $other_variant->printableValues());
     }
@@ -82,7 +82,7 @@ class VariantsServiceTest extends TestCase
         $variant = $this->createVariant($this->product);
         $old_value = $variant->values()->where('value', 'Rosso')->first();
 
-        $variant = $this->services['variants']->store([
+        $variant = app()->make('VariantsService')->store([
             'variant_id' => $variant->id,
             'name' => 'Colore',
             'id' => [
@@ -95,7 +95,7 @@ class VariantsServiceTest extends TestCase
         ]);
 
         $this->nextRound();
-        $product = $this->services['products']->show($this->product->id);
+        $product = app()->make('ProductsService')->show($this->product->id);
 
         $this->assertEquals('Colore', $variant->name);
         $this->assertEquals(4, $variant->values()->count());
@@ -107,7 +107,7 @@ class VariantsServiceTest extends TestCase
         $new_value = $variant->values()->where('value', 'Rosso')->first();
         $this->assertEquals($old_value->id, $new_value->id);
 
-        $variant = $this->services['variants']->store([
+        $variant = app()->make('VariantsService')->store([
             'variant_id' => $variant->id,
             'name' => 'Colore',
             'id' => [
@@ -119,7 +119,7 @@ class VariantsServiceTest extends TestCase
         ]);
 
         $this->nextRound();
-        $product = $this->services['products']->show($this->product->id);
+        $product = app()->make('ProductsService')->show($this->product->id);
         $this->assertEquals(3, $variant->values()->count());
         $this->assertEquals(3, $product->variant_combos->count());
         $this->assertNull(VariantValue::where('value', 'Blu')->first());
@@ -135,8 +135,8 @@ class VariantsServiceTest extends TestCase
 
         $this->nextRound();
 
-        $this->services['variants']->destroy($variant->id);
-        $product = $this->services['products']->show($this->product->id);
+        app()->make('VariantsService')->destroy($variant->id);
+        $product = app()->make('ProductsService')->show($this->product->id);
         $this->assertEquals(0, $product->variant_combos->count());
     }
 
@@ -178,7 +178,7 @@ class VariantsServiceTest extends TestCase
             }
         }
 
-        $this->services['variants']->matrix($this->product, $ids, $actives, ['', 'ABC', ''], [0, 0, 1], [0.1, 0, 0]);
+        app()->make('VariantsService')->matrix($this->product, $ids, $actives, ['', 'ABC', ''], [0, 0, 1], [0.1, 0, 0]);
 
         $this->nextRound();
 
@@ -218,7 +218,7 @@ class VariantsServiceTest extends TestCase
     */
     public function testCollision()
     {
-        $variant = $this->services['variants']->store([
+        $variant = app()->make('VariantsService')->store([
             'product_id' => $this->product->id,
             'name' => 'Nome della variante molto lungo, perché deve generare un ID molto lungo, che viene concatenato ai valori per generare gli ID dei valori stessi',
             'id' => ['', '', ''],

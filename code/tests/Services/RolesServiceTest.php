@@ -36,7 +36,7 @@ class RolesServiceTest extends TestCase
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
 
-        $this->services['roles']->store(array(
+        app()->make('RolesService')->store(array(
             'name' => 'Pippo',
             'parent_id' => 0,
         ));
@@ -49,7 +49,7 @@ class RolesServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $role = $this->services['roles']->store(array(
+        $role = app()->make('RolesService')->store(array(
             'name' => 'Pippo',
 			'actions' => ['supplier.view', 'users.view'],
         ));
@@ -62,7 +62,7 @@ class RolesServiceTest extends TestCase
 
         $this->nextRound();
 
-        $this->services['roles']->attachAction($role->id, 'supplier.modify');
+        app()->make('RolesService')->attachAction($role->id, 'supplier.modify');
 
         $this->nextRound();
 
@@ -71,7 +71,7 @@ class RolesServiceTest extends TestCase
 
         $this->nextRound();
 
-        $this->services['roles']->detachAction($role->id, 'supplier.modify');
+        app()->make('RolesService')->detachAction($role->id, 'supplier.modify');
 
         $this->nextRound();
 
@@ -80,13 +80,13 @@ class RolesServiceTest extends TestCase
 
         $this->nextRound();
 
-        $this->services['roles']->attachUser($this->userWithNoPerms->id, $role->id, null);
+        app()->make('RolesService')->attachUser($this->userWithNoPerms->id, $role->id, null);
         $target = $this->userWithNoPerms->targetsByAction('supplier.view');
         $this->assertTrue(count($target) > 0);
 
         $this->nextRound();
 
-        $this->services['roles']->detachUser($this->userWithNoPerms->id, $role->id, null);
+        app()->make('RolesService')->detachUser($this->userWithNoPerms->id, $role->id, null);
         $target = $this->userWithNoPerms->targetsByAction('supplier.view');
         $this->assertTrue(count($target) == 0);
     }
@@ -98,7 +98,7 @@ class RolesServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['roles']->update(0, array());
+        app()->make('RolesService')->update(0, array());
     }
 
     /*
@@ -108,7 +108,7 @@ class RolesServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithAdminPerm);
-        $this->services['roles']->update('id', array());
+        app()->make('RolesService')->update('id', array());
     }
 
     /*
@@ -121,7 +121,7 @@ class RolesServiceTest extends TestCase
 		$role = Role::inRandomOrder()->first();
 		$this->assertNotEquals('Mario', $role->name);
 
-        $role = $this->services['roles']->update($role->id, array(
+        $role = app()->make('RolesService')->update($role->id, array(
             'name' => 'Mario',
         ));
 
@@ -136,7 +136,7 @@ class RolesServiceTest extends TestCase
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
 		$role = Role::inRandomOrder()->first();
-        $this->services['roles']->destroy($role->id);
+        app()->make('RolesService')->destroy($role->id);
     }
 
     /*
@@ -146,7 +146,7 @@ class RolesServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 		$role = Role::inRandomOrder()->first();
-        $this->services['roles']->destroy($role->id);
+        app()->make('RolesService')->destroy($role->id);
 
         $this->nextRound();
         $role = Role::find($role->id);

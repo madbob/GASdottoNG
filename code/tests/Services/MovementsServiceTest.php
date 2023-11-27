@@ -38,14 +38,14 @@ class MovementsServiceTest extends TestCase
     public function testList()
     {
         $this->actingAs($this->userWithAdminPerm);
-        $this->services['movements']->list([]);
+        app()->make('MovementsService')->list([]);
 
         $this->actingAs($this->userWithReferrerPerms);
-        $this->services['movements']->list([]);
+        app()->make('MovementsService')->list([]);
 
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['movements']->list([]);
+        app()->make('MovementsService')->list([]);
     }
 
     /*
@@ -56,7 +56,7 @@ class MovementsServiceTest extends TestCase
         $this->actingAs($this->userWithAdminPerm);
         $currency = defaultCurrency();
 
-        $this->services['movements']->store(array(
+        app()->make('MovementsService')->store(array(
             'type' => 'donation-from-gas',
             'method' => 'bank',
             'sender_id' => $this->gas->id,
@@ -83,7 +83,7 @@ class MovementsServiceTest extends TestCase
         $amount = 100 - 50 + $this->sample_movement->amount;
         $this->assertEquals($amount * -1, $this->gas->currentBalanceAmount($currency));
 
-        $this->services['movements']->recalculate();
+        app()->make('MovementsService')->recalculate();
 
         $amount = 100 + $this->sample_movement->amount;
         $this->assertEquals($amount * -1, $this->gas->currentBalanceAmount($currency));
@@ -98,7 +98,7 @@ class MovementsServiceTest extends TestCase
 
         $previous_balances = \App\Balance::all()->count();
 
-        $this->services['movements']->closeBalance([
+        app()->make('MovementsService')->closeBalance([
             'date' => printableDate(date('Y-m-d')),
         ]);
 
@@ -116,7 +116,7 @@ class MovementsServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithReferrerPerms);
-        $this->services['movements']->update($this->sample_movement->id, []);
+        app()->make('MovementsService')->update($this->sample_movement->id, []);
     }
 
     /*
@@ -126,7 +126,7 @@ class MovementsServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithAdminPerm);
-        $this->services['movements']->update('id', array());
+        app()->make('MovementsService')->update('id', array());
     }
 
     /*
@@ -136,7 +136,7 @@ class MovementsServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $this->services['movements']->update($this->sample_movement->id, [
+        app()->make('MovementsService')->update($this->sample_movement->id, [
             'amount' => 50
         ]);
 
@@ -154,7 +154,7 @@ class MovementsServiceTest extends TestCase
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithReferrerPerms);
 
-        $this->services['movements']->show('random');
+        app()->make('MovementsService')->show('random');
     }
 
     /*
@@ -164,7 +164,7 @@ class MovementsServiceTest extends TestCase
     {
         $this->actingAs($this->userWithReferrerPerms);
 
-        $movement = $this->services['movements']->show($this->sample_movement->id);
+        $movement = app()->make('MovementsService')->show($this->sample_movement->id);
 
         $this->assertEquals($this->sample_movement->id, $movement->id);
         $this->assertEquals($this->sample_movement->amount, $movement->amount);
@@ -178,7 +178,7 @@ class MovementsServiceTest extends TestCase
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
 
-        $this->services['movements']->destroy($this->sample_movement->id);
+        app()->make('MovementsService')->destroy($this->sample_movement->id);
     }
 
     /*
@@ -187,11 +187,11 @@ class MovementsServiceTest extends TestCase
     public function testDestroy()
     {
         $this->actingAs($this->userWithAdminPerm);
-        $this->services['movements']->destroy($this->sample_movement->id);
+        app()->make('MovementsService')->destroy($this->sample_movement->id);
         $this->assertEquals(0, $this->gas->currentBalanceAmount());
 
         try {
-            $this->services['movements']->show($this->sample_movement->id);
+            app()->make('MovementsService')->show($this->sample_movement->id);
             $this->fail('should never run');
         } catch (ModelNotFoundException $e) {
             //good boy
@@ -207,7 +207,7 @@ class MovementsServiceTest extends TestCase
 
         $this->userWithNoPerms->gas->setConfig('annual_fee_amount', 5);
 
-        $this->services['movements']->store(array(
+        app()->make('MovementsService')->store(array(
             'type' => 'annual-fee',
             'method' => 'bank',
             'target_id' => $this->userWithNoPerms->gas->id,
@@ -250,7 +250,7 @@ class MovementsServiceTest extends TestCase
         $currency_default = defaultCurrency();
         $currency_integralces = \App\Currency::where('context', 'integralces')->first();
 
-        $this->services['movements']->store(array(
+        app()->make('MovementsService')->store(array(
             'type' => 'donation-from-gas',
             'method' => 'bank',
             'sender_id' => $this->gas->id,
@@ -263,7 +263,7 @@ class MovementsServiceTest extends TestCase
         $this->assertEquals(-100, $this->gas->currentBalanceAmount($currency_integralces));
 
         $integralces_movement = \App\Movement::where('currency_id', $currency_integralces->id)->first();
-        $this->services['movements']->update($integralces_movement->id, array(
+        app()->make('MovementsService')->update($integralces_movement->id, array(
             'currency_id' => $currency_default->id,
         ));
 

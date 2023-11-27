@@ -12,11 +12,6 @@ class EmptyMovements extends Command
     protected $signature = 'empty:movements';
     protected $description = 'Invalida tutti i movimenti contabili';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     private function emptyMovements()
     {
         $movements = Movement::all();

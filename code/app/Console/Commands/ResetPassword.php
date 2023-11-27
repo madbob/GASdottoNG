@@ -3,8 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-
-use Hash;
+use Illuminate\Support\Facades\Hash;
 
 use App\User;
 
@@ -12,11 +11,6 @@ class ResetPassword extends Command
 {
     protected $signature = 'reset:password {user} {new_password}';
     protected $description = 'Resetta la password di un utente';
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     public function handle()
     {

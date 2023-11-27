@@ -30,7 +30,7 @@ class InvoicesServiceTest extends TestCase
         $this->actingAs($this->userWithNoPerms);
         $today = date('Y-m-d');
 
-        $this->services['invoices']->store([
+        app()->make('InvoicesService')->store([
             'number' => 'ABC123',
             'supplier_id' => $this->supplier->id,
             'date' => printableDate($today),
@@ -42,13 +42,13 @@ class InvoicesServiceTest extends TestCase
         $this->actingAs($this->userWithAdminPerm);
         $today = date('Y-m-d');
 
-        $invoice = $this->services['invoices']->store(array(
+        $invoice = app()->make('InvoicesService')->store(array(
             'number' => 'ABC123',
             'supplier_id' => $this->supplier->id,
             'date' => printableDate($today),
         ));
 
-        return $this->services['invoices']->show($invoice->id);
+        return app()->make('InvoicesService')->show($invoice->id);
     }
 
 	private function wireOrders($invoice)
@@ -61,7 +61,7 @@ class InvoicesServiceTest extends TestCase
             'supplier_id' => $this->supplier->id,
         ]);
 
-		$this->services['invoices']->wire($invoice->id, 'review', [
+		app()->make('InvoicesService')->wire($invoice->id, 'review', [
 			'order_id' => [$order1->id, $order2->id]
 		]);
 	}
@@ -84,7 +84,7 @@ class InvoicesServiceTest extends TestCase
 
 		$this->nextRound();
 
-		$invoice = $this->services['invoices']->show($invoice->id);
+		$invoice = app()->make('InvoicesService')->show($invoice->id);
 		$this->assertEquals(2, $invoice->orders()->count());
 
         return $invoice;
@@ -100,7 +100,7 @@ class InvoicesServiceTest extends TestCase
 
         $past = date('Y-m-d', strtotime('-1 months'));
         $future = date('Y-m-d', strtotime('+10 years'));
-        $this->services['invoices']->list($past, $future, 0);
+        app()->make('InvoicesService')->list($past, $future, 0);
     }
 
     /*
@@ -114,17 +114,17 @@ class InvoicesServiceTest extends TestCase
 
         $past = date('Y-m-d', strtotime('-1 months'));
         $future = date('Y-m-d', strtotime('+10 years'));
-        $invoices = $this->services['invoices']->list($past, $future, '0');
+        $invoices = app()->make('InvoicesService')->list($past, $future, '0');
         $this->assertEquals(1, $invoices->count());
 
         $this->nextRound();
 
-        $invoices = $this->services['invoices']->list($past, $future, '42');
+        $invoices = app()->make('InvoicesService')->list($past, $future, '42');
         $this->assertEquals(0, $invoices->count());
 
         $this->nextRound();
 
-        $invoices = $this->services['invoices']->list($past, $future, $this->supplier->id);
+        $invoices = app()->make('InvoicesService')->list($past, $future, $this->supplier->id);
         $this->assertEquals(1, $invoices->count());
     }
 
@@ -145,13 +145,13 @@ class InvoicesServiceTest extends TestCase
 
         $this->actingAs($this->userWithAdminPerm);
 
-		$this->services['invoices']->wire($invoice->id, 'review', [
+		app()->make('InvoicesService')->wire($invoice->id, 'review', [
 			'order_id' => [$order1->id, $order2->id]
 		]);
 
         $this->nextRound();
 
-        $products = $this->services['invoices']->products($invoice->id);
+        $products = app()->make('InvoicesService')->products($invoice->id);
         $this->assertEquals($order1->products->count() + $order2->products->count(), count($products['global_summary']->products));
 	}
 
@@ -166,13 +166,13 @@ class InvoicesServiceTest extends TestCase
 
         $past = date('Y-m-d', strtotime('-1 months'));
         $future = date('Y-m-d', strtotime('+10 years'));
-        $invoices = $this->services['invoices']->list($past, $future, '0');
+        $invoices = app()->make('InvoicesService')->list($past, $future, '0');
         $this->assertEquals(1, $invoices->count());
 
         $this->nextRound();
 
         $future = date('Y-m-d', strtotime('-3 days'));
-        $invoices = $this->services['invoices']->list($past, $future, '0');
+        $invoices = app()->make('InvoicesService')->list($past, $future, '0');
         $this->assertEquals(1, $invoices->count());
 
         $this->nextRound();
@@ -184,12 +184,12 @@ class InvoicesServiceTest extends TestCase
         $movement = \App\Movement::generate('invoice-payment', $this->userWithAdminPerm->gas, $invoice, 10);
         $movement->save();
 
-        $invoices = $this->services['invoices']->list($past, $future, '0');
+        $invoices = app()->make('InvoicesService')->list($past, $future, '0');
         $this->assertEquals(0, $invoices->count());
 
 		$this->nextRound();
 
-		$invoice = $this->services['invoices']->show($invoice->id);
+		$invoice = app()->make('InvoicesService')->show($invoice->id);
 		foreach($invoice->orders as $order) {
 			$this->assertEquals($movement->id, $order->payment_id);
 		}
@@ -204,7 +204,7 @@ class InvoicesServiceTest extends TestCase
 
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['invoices']->update($invoice->id, array());
+        app()->make('InvoicesService')->update($invoice->id, array());
     }
 
     /*
@@ -214,7 +214,7 @@ class InvoicesServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithAdminPerm);
-        $this->services['invoices']->update('id', array());
+        app()->make('InvoicesService')->update('id', array());
     }
 
     /*
@@ -225,12 +225,12 @@ class InvoicesServiceTest extends TestCase
         $invoice = $this->createInvoice();
         $old_date = date('Y-m-d', strtotime('-10 days'));
 
-        $this->services['invoices']->update($invoice->id, array(
+        app()->make('InvoicesService')->update($invoice->id, array(
             'number' => '123ABC',
             'date' => $old_date,
         ));
 
-        $invoice = $this->services['invoices']->show($invoice->id);
+        $invoice = app()->make('InvoicesService')->show($invoice->id);
         $this->assertEquals($old_date, $invoice->date);
         $this->assertEquals('123ABC', $invoice->number);
     }
@@ -242,7 +242,7 @@ class InvoicesServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithAdminPerm);
-        $this->services['invoices']->show('random');
+        app()->make('InvoicesService')->show('random');
     }
 
     /*
@@ -252,7 +252,7 @@ class InvoicesServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['invoices']->destroy('random');
+        app()->make('InvoicesService')->destroy('random');
     }
 
     /*
@@ -262,7 +262,7 @@ class InvoicesServiceTest extends TestCase
     {
         $invoice = $this->createInvoice();
 		$this->wireOrders($invoice);
-        $invoice = $this->services['invoices']->show($invoice->id);
+        $invoice = app()->make('InvoicesService')->show($invoice->id);
         $this->assertNotNull($invoice);
 
 		$orders = $invoice->orders;
@@ -276,16 +276,16 @@ class InvoicesServiceTest extends TestCase
 		$this->nextRound();
 
 		foreach($orders as $order) {
-			$order = $this->services['orders']->show($order->id);
+			$order = app()->make('OrdersService')->show($order->id);
 			$this->assertEquals($movement->id, $order->payment_id);
 		}
 
 		$this->nextRound();
 
-        $invoice = $this->services['invoices']->destroy($invoice->id);
+        $invoice = app()->make('InvoicesService')->destroy($invoice->id);
 
         try {
-            $this->services['invoices']->show($invoice->id);
+            app()->make('InvoicesService')->show($invoice->id);
             $this->fail('should never run');
         }
         catch (ModelNotFoundException $e) {
@@ -295,7 +295,7 @@ class InvoicesServiceTest extends TestCase
 		$this->nextRound();
 
 		foreach($orders as $order) {
-			$order = $this->services['orders']->show($order->id);
+			$order = app()->make('OrdersService')->show($order->id);
 			$this->assertNull($order->payment_id);
 		}
     }

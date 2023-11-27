@@ -37,7 +37,7 @@ class OrdersServiceTest extends TestCase
         $this->expectException(AuthException::class);
 
         $this->actingAs($this->userWithNoPerms);
-        $this->services['orders']->store(array(
+        app()->make('OrdersService')->store(array(
             'supplier_id' => $this->order->supplier_id,
         ));
     }
@@ -55,7 +55,7 @@ class OrdersServiceTest extends TestCase
         $end = date('Y-m-d', strtotime('+20 days'));
         $shipping = date('Y-m-d', strtotime('+30 days'));
 
-        $aggregate = $this->services['orders']->store(array(
+        $aggregate = app()->make('OrdersService')->store(array(
             'supplier_id' => $this->order->supplier_id,
             'comment' => 'Commento di prova',
             'start' => printableDate($start),
@@ -76,7 +76,7 @@ class OrdersServiceTest extends TestCase
         $this->actingAs($this->userReferrer);
 
         foreach($aggregate->orders as $order) {
-            $order = $this->services['orders']->show($order->id);
+            $order = app()->make('OrdersService')->show($order->id);
 
             $this->assertEquals($this->order->supplier_id, $order->supplier_id);
             $this->assertEquals('Commento di prova', $order->comment);
@@ -104,7 +104,7 @@ class OrdersServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['orders']->update($this->order->id, array());
+        app()->make('OrdersService')->update($this->order->id, array());
     }
 
     /*
@@ -114,7 +114,7 @@ class OrdersServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userReferrer);
-        $this->services['orders']->update('broken', array());
+        app()->make('OrdersService')->update('broken', array());
     }
 
     /*
@@ -126,12 +126,12 @@ class OrdersServiceTest extends TestCase
 
         $new_shipping = date('Y-m-d', strtotime('+40 days'));
 
-        $this->services['orders']->update($this->order->id, array(
+        app()->make('OrdersService')->update($this->order->id, array(
             'comment' => 'Un altro commento',
             'shipping' => $new_shipping,
         ));
 
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
 
         $this->assertEquals($order->comment, 'Un altro commento');
         $this->assertEquals($order->shipping, $new_shipping);
@@ -148,32 +148,32 @@ class OrdersServiceTest extends TestCase
 
         $this->actingAs($this->userReferrer);
 
-        $this->services['orders']->update($this->order->id, array(
+        app()->make('OrdersService')->update($this->order->id, array(
             'status' => 'closed',
         ));
 
         $this->nextRound();
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
         $this->assertTrue($order->isActive());
         $this->assertFalse($order->isRunning());
 
-        $this->services['orders']->update($this->order->id, array(
+        app()->make('OrdersService')->update($this->order->id, array(
             'status' => 'open',
         ));
 
         Bus::assertDispatched(\App\Jobs\NotifyNewOrder::class);
 
         $this->nextRound();
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
         $this->assertTrue($order->isActive());
         $this->assertTrue($order->isRunning());
 
-        $this->services['orders']->update($this->order->id, array(
+        app()->make('OrdersService')->update($this->order->id, array(
             'status' => 'shipped',
         ));
 
         $this->nextRound();
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
         $this->assertFalse($order->isActive());
         $this->assertFalse($order->isRunning());
     }
@@ -189,11 +189,11 @@ class OrdersServiceTest extends TestCase
         ]);
 
         $this->actingAs($this->userReferrer);
-        $this->services['orders']->update($this->order->id, array(
+        app()->make('OrdersService')->update($this->order->id, array(
             'deliveries' => [$delivery->id],
         ));
 
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
         $this->assertEquals(1, $order->deliveries()->count());
 
         /*
@@ -212,7 +212,7 @@ class OrdersServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['orders']->show('random');
+        app()->make('OrdersService')->show('random');
     }
 
     /*
@@ -221,7 +221,7 @@ class OrdersServiceTest extends TestCase
     public function testShow()
     {
         $this->actingAs($this->userWithNoPerms);
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
 
         $this->assertEquals($this->order->id, $order->id);
         $this->assertEquals($this->order->name, $order->name);
@@ -234,7 +234,7 @@ class OrdersServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['orders']->destroy($this->order->id);
+        app()->make('OrdersService')->destroy($this->order->id);
     }
 
     /*
@@ -244,9 +244,9 @@ class OrdersServiceTest extends TestCase
     {
         $this->actingAs($this->userReferrer);
 
-        $this->services['orders']->destroy($this->order->id);
+        app()->make('OrdersService')->destroy($this->order->id);
         $this->expectException(ModelNotFoundException::class);
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
     }
 
     /*
@@ -262,7 +262,7 @@ class OrdersServiceTest extends TestCase
         $end = date('Y-m-d', strtotime('+20 days'));
         $shipping = date('Y-m-d', strtotime('+30 days'));
 
-        $aggregate = $this->services['orders']->store(array(
+        $aggregate = app()->make('OrdersService')->store(array(
             'supplier_id' => $this->order->supplier_id,
             'start' => printableDate($start),
             'end' => printableDate($end),
@@ -270,31 +270,31 @@ class OrdersServiceTest extends TestCase
             'status' => 'open',
         ));
 
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
         $this->assertEquals($order->internal_number, '1 / ' . $this_year);
 
         foreach($aggregate->orders as $order) {
-            $order = $this->services['orders']->show($order->id);
+            $order = app()->make('OrdersService')->show($order->id);
             $this->assertEquals($order->internal_number, '2 / ' . $this_year);
         }
 
-        $second_aggregate = $this->services['orders']->store(array(
+        $second_aggregate = app()->make('OrdersService')->store(array(
             'supplier_id' => $this->order->supplier_id,
             'start' => printableDate(date('Y-m-d', strtotime($start . ' +1 year'))),
             'end' => printableDate(date('Y-m-d', strtotime($end . ' +1 year'))),
             'status' => 'closed',
         ));
 
-        $order = $this->services['orders']->show($this->order->id);
+        $order = app()->make('OrdersService')->show($this->order->id);
         $this->assertEquals($order->internal_number, '1 / ' . $this_year);
 
         foreach($aggregate->orders as $order) {
-            $order = $this->services['orders']->show($order->id);
+            $order = app()->make('OrdersService')->show($order->id);
             $this->assertEquals($order->internal_number, '2 / ' . $this_year);
         }
 
         foreach($second_aggregate->orders as $order) {
-            $order = $this->services['orders']->show($order->id);
+            $order = app()->make('OrdersService')->show($order->id);
             $this->assertEquals($order->internal_number, '1 / ' . ($this_year + 1));
         }
     }
@@ -309,7 +309,7 @@ class OrdersServiceTest extends TestCase
         $this->order->supplier->applicableModificationTypes();
         $mod = $this->order->supplier->modifiers()->where('modifier_type_id', 'spese-trasporto')->first();
         $this->assertNotNull($mod);
-        $this->services['modifiers']->update($mod->id, [
+        app()->make('ModifiersService')->update($mod->id, [
             'value' => 'absolute',
             'arithmetic' => 'sum',
             'scale' => 'minor',
@@ -325,7 +325,7 @@ class OrdersServiceTest extends TestCase
 
 		$this->nextRound();
 
-        $aggregate = $this->services['orders']->store(array(
+        $aggregate = app()->make('OrdersService')->store(array(
             'supplier_id' => $this->order->supplier_id,
             'start' => printableDate($start),
             'end' => printableDate($end),
@@ -336,7 +336,7 @@ class OrdersServiceTest extends TestCase
         $this->assertEquals(1, $aggregate->orders->count());
 
         foreach($aggregate->orders as $order) {
-            $order = $this->services['orders']->show($order->id);
+            $order = app()->make('OrdersService')->show($order->id);
             $this->assertEquals($order->modifiers->count(), 1);
             $this->assertEquals($order->modifiers->first()->modifierType->id, 'spese-trasporto');
         }
@@ -377,7 +377,7 @@ class OrdersServiceTest extends TestCase
 
 		$this->actingAs($this->userReferrer);
 
-		$this->services['orders']->update($this->order->id, [
+		app()->make('OrdersService')->update($this->order->id, [
             'supplier_id' => $this->order->supplier_id,
             'start' => printableDate($this->order->start),
             'end' => printableDate($this->order->end),
@@ -393,7 +393,7 @@ class OrdersServiceTest extends TestCase
 		$this->assertEquals($booking->products()->count(), 1);
 		$this->assertEquals($this->order->bookings()->count(), 1);
 
-		$this->services['orders']->update($this->order->id, [
+		app()->make('OrdersService')->update($this->order->id, [
             'supplier_id' => $this->order->supplier_id,
             'start' => printableDate($this->order->start),
             'end' => printableDate($this->order->end),
@@ -420,7 +420,7 @@ class OrdersServiceTest extends TestCase
         $product = $this->order->products()->inRandomOrder()->first();
         $old_price = $product->getPrice();
         $new_price = $old_price + 2;
-        $this->services['products']->update($product->id, array(
+        app()->make('ProductsService')->update($product->id, array(
             'name' => $product->name,
             'price' => $new_price,
         ));
@@ -430,7 +430,7 @@ class OrdersServiceTest extends TestCase
         $product_order = $this->order->products()->where('product_id', $product->id)->first();
         $this->assertEquals($old_price, $product_order->getPrice());
 
-        $product_raw = $this->services['products']->show($product->id);
+        $product_raw = app()->make('ProductsService')->show($product->id);
         $this->assertEquals($new_price, $product_raw->getPrice());
 
         $this->assertFalse($product_raw->comparePrices($product_order));
@@ -446,14 +446,14 @@ class OrdersServiceTest extends TestCase
         $product = $this->order->products()->inRandomOrder()->first();
         $old_price = $product->getPrice();
         $new_price = $old_price + 2;
-        $this->services['products']->update($product->id, array(
+        app()->make('ProductsService')->update($product->id, array(
             'name' => $product->name,
             'price' => $new_price,
         ));
 
         $this->nextRound();
 
-        $aggregate = $this->services['orders']->update($this->order->id, [
+        $aggregate = app()->make('OrdersService')->update($this->order->id, [
             'supplier_id' => $this->order->supplier_id,
             'start' => printableDate($this->order->start),
             'end' => printableDate($this->order->end),
@@ -464,7 +464,7 @@ class OrdersServiceTest extends TestCase
 
         $this->nextRound();
 
-        $order = $this->services['orders']->show($aggregate->orders->first()->id);
+        $order = app()->make('OrdersService')->show($aggregate->orders->first()->id);
         $product_order = $order->products()->where('product_id', $product->id)->first();
         $this->assertEquals($old_price, $product_order->getPrice());
     }
@@ -489,7 +489,7 @@ class OrdersServiceTest extends TestCase
             $actives[] = $combo->id;
         }
 
-        $this->services['variants']->matrix($product, $ids, $actives, ['', '', ''], [0, 0, 0], [0, 0, 0]);
+        app()->make('VariantsService')->matrix($product, $ids, $actives, ['', '', ''], [0, 0, 0], [0, 0, 0]);
 
         $this->nextRound();
 
@@ -497,7 +497,7 @@ class OrdersServiceTest extends TestCase
         $end = date('Y-m-d', strtotime('+20 days'));
         $shipping = date('Y-m-d', strtotime('+30 days'));
 
-        $aggregate = $this->services['orders']->store([
+        $aggregate = app()->make('OrdersService')->store([
             'supplier_id' => $this->order->supplier_id,
             'start' => printableDate($start),
             'end' => printableDate($end),
@@ -516,8 +516,8 @@ class OrdersServiceTest extends TestCase
 
         $this->nextRound();
 
-        $product = $this->services['products']->show($product->id);
-        $this->services['variants']->matrix($product, $ids, $actives, ['', '', ''], [0, 0, 1], [0, 0, 0]);
+        $product = app()->make('ProductsService')->show($product->id);
+        app()->make('VariantsService')->matrix($product, $ids, $actives, ['', '', ''], [0, 0, 1], [0, 0, 0]);
 
         $this->nextRound();
 
@@ -527,8 +527,8 @@ class OrdersServiceTest extends TestCase
 
         $this->nextRound();
 
-        $product = $this->services['products']->show($product->id);
-        $order = $this->services['orders']->show($aggregate->orders->first()->id);
+        $product = app()->make('ProductsService')->show($product->id);
+        $order = app()->make('OrdersService')->show($aggregate->orders->first()->id);
         $new_product = $order->products->firstWhere('id', $product->id);
         $this->assertFalse($product->comparePrices($new_product));
     }

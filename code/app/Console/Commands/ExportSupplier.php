@@ -13,11 +13,6 @@ class ExportSupplier extends Command
     protected $signature = 'gdxp:write:supplier {supplier_id} {format}';
     protected $description = 'Genera il file GDXP per un dato fornitore';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function handle()
     {
         $id = $this->argument('supplier_id');

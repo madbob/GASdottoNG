@@ -3,10 +3,9 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 use Carbon\Carbon;
-
-use Log;
 
 use App\Jobs\NotifyRemindOrder;
 use App\Gas;
@@ -16,11 +15,6 @@ class RemindOrders extends Command
 {
     protected $signature = 'remind:orders';
     protected $description = 'Invia le notifiche di promemoria per gli ordini';
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     public function handle()
     {

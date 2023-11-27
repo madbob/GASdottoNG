@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -15,11 +14,6 @@ class CheckFees extends Command
 {
     protected $signature = 'check:fees';
     protected $description = "Controlla la scadenza delle quote di iscrizione alla chiusura dell'anno sociale";
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     private function iterateUsers($users, $gas, $amount)
     {

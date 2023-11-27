@@ -41,7 +41,7 @@ class DatesServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['dates']->update(0, array());
+        app()->make('DatesService')->update(0, array());
     }
 
     /*
@@ -51,7 +51,7 @@ class DatesServiceTest extends TestCase
     {
         $this->actingAs($this->userAdmin);
 
-        $this->services['dates']->update(0, [
+        app()->make('DatesService')->update(0, [
             'id' => ['', ''],
             'target_id' => [$this->supplier1->id, $this->supplier2->id],
             'date' => [date('Y-m-d', strtotime('+5 days')), ''],
@@ -67,7 +67,7 @@ class DatesServiceTest extends TestCase
 
         $this->actingAs($this->userReferrer);
 
-        $this->services['dates']->update(0, [
+        app()->make('DatesService')->update(0, [
             'id' => [''],
             'target_id' => [$this->supplier3->id],
             'date' => [date('Y-m-d', strtotime('+5 days'))],
@@ -83,7 +83,7 @@ class DatesServiceTest extends TestCase
 
         $this->actingAs($this->userAdmin);
 
-        $this->services['dates']->update(0, [
+        app()->make('DatesService')->update(0, [
             'id' => [],
             'target_id' => [],
             'date' => [],
@@ -116,7 +116,7 @@ class DatesServiceTest extends TestCase
         $orders = \App\Order::all();
         $this->assertEquals($orders->count(), 0);
 
-        $this->services['dates']->updateOrders([
+        app()->make('DatesService')->updateOrders([
             'id' => [''],
             'target_id' => [$this->supplier1->id],
             'recurring' => [$weekday . ' - Ogni due Settimane - ' . printableDate(date('Y-m-d')) . ' - ' . printableDate(date('Y-m-d', strtotime('+6 months')))],

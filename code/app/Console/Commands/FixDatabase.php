@@ -19,11 +19,6 @@ class FixDatabase extends Command
     protected $signature = 'fix:database';
     protected $description = 'Sistema le informazioni sul DB per completare il deploy';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function handle()
     {
         /*

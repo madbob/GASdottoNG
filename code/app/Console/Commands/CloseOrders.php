@@ -3,8 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-
-use Log;
+use Illuminate\Support\Facades\Log;
 
 use App\Jobs\NotifyClosedOrder;
 use App\Order;
@@ -13,11 +12,6 @@ class CloseOrders extends Command
 {
     protected $signature = 'close:orders';
     protected $description = 'Controlla lo stato degli ordini, ed eventualmente li chiude';
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     public function handle()
     {

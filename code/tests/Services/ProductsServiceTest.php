@@ -39,7 +39,7 @@ class ProductsServiceTest extends TestCase
         $this->expectException(AuthException::class);
 
         $this->actingAs($this->userWithNoPerms);
-        $this->services['products']->store(array(
+        app()->make('ProductsService')->store(array(
             'supplier_id' => $this->supplier->id,
             'name' => 'Test Product'
         ));
@@ -54,7 +54,7 @@ class ProductsServiceTest extends TestCase
 
         $previous_quantity = $this->measure->products->count();
 
-        $product = $this->services['products']->store([
+        $product = app()->make('ProductsService')->store([
             'name' => 'Test Product',
             'price' => rand(),
             'supplier_id' => $this->supplier->id,
@@ -62,7 +62,7 @@ class ProductsServiceTest extends TestCase
             'measure_id' => $this->measure->id
         ]);
 
-        $product = $this->services['products']->show($product->id);
+        $product = app()->make('ProductsService')->show($product->id);
 
         $this->assertEquals('Test Product', $product->name);
         $this->assertEquals($this->supplier->id, $product->supplier_id);
@@ -81,7 +81,7 @@ class ProductsServiceTest extends TestCase
         $this->measure->discrete = false;
         $this->measure->save();
 
-        $product = $this->services['products']->store([
+        $product = app()->make('ProductsService')->store([
             'name' => 'Test Product',
             'price' => rand(),
             'supplier_id' => $this->supplier->id,
@@ -89,7 +89,7 @@ class ProductsServiceTest extends TestCase
             'measure_id' => $this->measure->id
         ]);
 
-        $product = $this->services['products']->show($product->id);
+        $product = app()->make('ProductsService')->show($product->id);
         $this->assertEquals(1, $product->weight);
     }
 
@@ -100,7 +100,7 @@ class ProductsServiceTest extends TestCase
     {
         $this->actingAs($this->userWithReferrerPerms);
 
-        $product = $this->services['products']->store(array(
+        $product = app()->make('ProductsService')->store(array(
             'name' => 'Test Product',
             'price' => rand(),
             'supplier_id' => $this->supplier->id,
@@ -108,14 +108,14 @@ class ProductsServiceTest extends TestCase
             'measure_id' => $this->measure->id
         ));
 
-        $this->services['variants']->store([
+        app()->make('VariantsService')->store([
             'product_id' => $product->id,
             'name' => 'Colore',
             'id' => ['', '', ''],
             'value' => ['Rosso', 'Verde', 'Blu'],
         ]);
 
-        $this->services['variants']->store([
+        app()->make('VariantsService')->store([
             'product_id' => $product->id,
             'name' => 'Taglia',
             'id' => ['', '', ''],
@@ -124,7 +124,7 @@ class ProductsServiceTest extends TestCase
 
         $this->nextRound();
 
-        $duplicate = $this->services['products']->store(array(
+        $duplicate = app()->make('ProductsService')->store(array(
             'duplicating_from' => $product->id,
             'name' => 'Test Product',
             'price' => rand(),
@@ -143,7 +143,7 @@ class ProductsServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['products']->update($this->product->id, array());
+        app()->make('ProductsService')->update($this->product->id, array());
     }
 
     /*
@@ -153,7 +153,7 @@ class ProductsServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithAdminPerm);
-        $this->services['products']->update($this->product->id, array());
+        app()->make('ProductsService')->update($this->product->id, array());
     }
 
     /*
@@ -163,7 +163,7 @@ class ProductsServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithReferrerPerms);
-        $this->services['products']->update('broken', array());
+        app()->make('ProductsService')->update('broken', array());
     }
 
     /*
@@ -173,12 +173,12 @@ class ProductsServiceTest extends TestCase
     {
         $this->actingAs($this->userWithReferrerPerms);
 
-        $this->services['products']->update($this->product->id, array(
+        app()->make('ProductsService')->update($this->product->id, array(
             'name' => 'Another Product',
             'price' => 10,
         ));
 
-        $product = $this->services['products']->show($this->product->id);
+        $product = app()->make('ProductsService')->show($this->product->id);
 
         $this->assertNotEquals($product->name, $this->product->name);
         $this->assertEquals($product->price, 10);
@@ -192,7 +192,7 @@ class ProductsServiceTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['products']->show('random');
+        app()->make('ProductsService')->show('random');
     }
 
     /*
@@ -201,7 +201,7 @@ class ProductsServiceTest extends TestCase
     public function testShow()
     {
         $this->actingAs($this->userWithNoPerms);
-        $product = $this->services['products']->show($this->product->id);
+        $product = app()->make('ProductsService')->show($this->product->id);
 
         $this->assertEquals($this->product->id, $product->id);
         $this->assertEquals($this->product->name, $product->name);
@@ -214,7 +214,7 @@ class ProductsServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        $this->services['products']->destroy($this->product->id);
+        app()->make('ProductsService')->destroy($this->product->id);
     }
 
     /*
@@ -224,8 +224,8 @@ class ProductsServiceTest extends TestCase
     {
         $this->actingAs($this->userWithReferrerPerms);
 
-        $this->services['products']->destroy($this->product->id);
-        $product = $this->services['products']->show($this->product->id);
+        app()->make('ProductsService')->destroy($this->product->id);
+        $product = app()->make('ProductsService')->show($this->product->id);
         $this->assertNotNull($product->deleted_at);
     }
 
