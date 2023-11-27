@@ -222,19 +222,7 @@ class BookedProduct extends Model
     public function basicWeight($attribute)
     {
         $attribute = 'true_' . $attribute;
-
-        /*
-            Se il prodotto ha una unità di misura non discreta (e.g. Chili), la
-            quantità corrisponde al peso
-        */
-        if ($this->product->measure->discrete == false) {
-            $ret = $this->$attribute;
-        }
-        else {
-            $ret = $this->product->weight * $this->$attribute;
-        }
-
-        return $ret;
+        return $this->product->weight * $this->$attribute;
     }
 
     private function fixWeight($attribute)

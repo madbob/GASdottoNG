@@ -54,6 +54,15 @@ class ProductsService extends BaseService
         else {
             $this->transformAndSetIfSet($product, $request, 'portion_quantity', 'enforceNumber');
             $this->boolIfSet($product, $request, 'variable');
+
+            /*
+                Per le unità di misura non discrete assumo che il peso sia 1, se
+                non diversamente specificato, perché nella stragrande
+                maggioranza dei casi si tratta di Chili
+            */
+            if (blank($product->weight) || $product->weight == 0) {
+                $product->weight = 1;
+            }
         }
     }
 
@@ -74,17 +83,9 @@ class ProductsService extends BaseService
         }
 
         $this->transformAndSetIfSet($product, $request, 'vat_rate_id', function($value) {
-            if ($value != 0) {
-                return $value;
-            }
-            else {
-                return null;
-            }
+            return $value != 0 ? $value : null;
         });
-    }
 
-    private function setUncommonAttributes(&$product, $request)
-    {
         $this->boolIfSet($product, $request, 'active');
         $this->setIfSet($product, $request, 'supplier_code');
 
@@ -103,6 +104,63 @@ class ProductsService extends BaseService
         $this->enforceMeasure($product, $request);
     }
 
+    private function duplicateVariants($from, $to)
+    {
+        foreach($from->variants as $old_variant) {
+            $new_variant = $old_variant->replicate();
+            $new_variant->id = '';
+            $new_variant->product_id = $to->id;
+            $new_variant->save();
+
+            foreach($old_variant->values as $old_value) {
+                $new_value = $old_value->replicate();
+                $new_value->id = '';
+                $new_value->variant_id = $new_variant->id;
+                $new_value->save();
+            }
+        }
+    }
+
+    private function duplicateModifiers($from, $to)
+    {
+        foreach($from->modifiers as $old_modifier) {
+            $new_modifier = $old_modifier->replicate();
+            unset($new_modifier->id);
+            $new_modifier->target_id = $to->id;
+            $new_modifier->target_type = get_class($to);
+            $new_modifier->save();
+        }
+    }
+
+    private function checkDuplication($product, $request)
+    {
+        if (isset($request['duplicating_from'])) {
+            $original_product_id = $request['duplicating_from'];
+            $original_product = Product::find($original_product_id);
+
+            $this->duplicateVariants($original_product, $product);
+            $this->duplicateModifiers($original_product, $product);
+        }
+        else {
+            $product->active = true;
+        }
+
+        $product->save();
+        return $product;
+    }
+
+    private function commonsSaving($product, $request)
+    {
+        DB::beginTransaction();
+
+        $this->setCommonAttributes($product, $request);
+        $product->save();
+        handleFileUpload($request, $product, 'picture');
+
+        DB::commit();
+        return $product;
+    }
+
     public function store(array $request)
     {
         $supplier = Supplier::findOrFail($request['supplier_id']);
@@ -111,44 +169,8 @@ class ProductsService extends BaseService
         $product = new Product();
         $product->supplier_id = $supplier->id;
 
-        if (!isset($request['duplicating_from'])) {
-            $product->active = true;
-        }
-
-        DB::transaction(function () use ($product, $request) {
-            $this->setCommonAttributes($product, $request);
-            $product->save();
-        });
-
-        if (isset($request['duplicating_from'])) {
-            $this->setUncommonAttributes($product, $request);
-            $product->save();
-
-            $original_product_id = $request['duplicating_from'];
-            $original_product = Product::find($original_product_id);
-
-            foreach($original_product->variants as $old_variant) {
-                $new_variant = $old_variant->replicate();
-                $new_variant->id = '';
-                $new_variant->product_id = $product->id;
-                $new_variant->save();
-
-                foreach($old_variant->values as $old_value) {
-                    $new_value = $old_value->replicate();
-                    $new_value->id = '';
-                    $new_value->variant_id = $new_variant->id;
-                    $new_value->save();
-                }
-            }
-
-            foreach($original_product->modifiers as $old_modifier) {
-                $new_modifier = $old_modifier->replicate();
-                unset($new_modifier->id);
-                $new_modifier->target_id = $product->id;
-                $new_modifier->target_type = get_class($product);
-                $new_modifier->save();
-            }
-        }
+        $product = $this->commonsSaving($product, $request);
+        $product = $this->checkDuplication($product, $request);
 
         return $product;
     }
@@ -157,14 +179,7 @@ class ProductsService extends BaseService
     {
         $product = $this->show($id);
         $this->ensureAuth(['supplier.modify' => $product->supplier]);
-
-        DB::transaction(function () use ($product, $request) {
-            $this->setCommonAttributes($product, $request);
-            $this->setUncommonAttributes($product, $request);
-            $product->save();
-            handleFileUpload($request, $product, 'picture');
-        });
-
+        $product = $this->commonsSaving($product, $request);
         return $product;
     }
 

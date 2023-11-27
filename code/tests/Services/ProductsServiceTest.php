@@ -72,6 +72,28 @@ class ProductsServiceTest extends TestCase
     }
 
     /*
+        Creazione Prodotto con unità di misura non discreta
+    */
+    public function testStoreEnforceWeight()
+    {
+        $this->actingAs($this->userWithReferrerPerms);
+
+        $this->measure->discrete = false;
+        $this->measure->save();
+
+        $product = $this->services['products']->store([
+            'name' => 'Test Product',
+            'price' => rand(),
+            'supplier_id' => $this->supplier->id,
+            'category_id' => $this->category->id,
+            'measure_id' => $this->measure->id
+        ]);
+
+        $product = $this->services['products']->show($product->id);
+        $this->assertEquals(1, $product->weight);
+    }
+
+    /*
         Duplicazione Prodotto
     */
     public function testDuplicate()

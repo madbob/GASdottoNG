@@ -12,12 +12,10 @@ class FormattersTest extends TestCase
         $this->assertEquals('10.12', printablePrice(10.123));
     }
 
-    public function testApplyPercentage()
+    public function testFormatPercentage()
     {
-        $this->assertEquals(32, applyPercentage(42, '10'));
-        $this->assertEquals(37.8, applyPercentage(42, '10%'));
-        $this->assertEquals(52, applyPercentage(42, '10', '+'));
-        $this->assertEquals(46.2, applyPercentage(42, '10%', '+'));
+        $this->assertEquals("10", formatPercentage(10, false));
+        $this->assertEquals("12.3%", formatPercentage(12.3, true));
     }
 
     public function testEnforceNumber()

@@ -612,23 +612,6 @@ class ModifiersServiceTest extends TestCase
     }
 
     /*
-        Modificatore applicato sull'ordine in base al peso assoluto (unità di misura non discrete)
-    */
-    public function testDistributeOnAbsoluteWeight()
-    {
-        $this->localInitOrder();
-        $this->actingAs($this->userReferrer);
-
-        for($i = 0; $i < $this->order->products->count() / 3; $i++) {
-            $product = $this->order->products->random();
-            $product->measure->discrete = false;
-            $product->measure->save();
-        }
-
-        $this->completeTestWeight();
-    }
-
-    /*
         Modificatore passivo applicato sulla prenotazione
     */
     public function testOnBooking()

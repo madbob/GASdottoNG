@@ -221,34 +221,40 @@ class Products extends CSVImporter
 
         $s = $this->getSupplier($request);
         $errors = $products = $products_ids = $new_categories = $new_measures = $new_vats = [];
+        $service = app()->make('ProductsService');
 
         foreach($data['import'] as $index) {
             try {
+                $fields = [];
+
                 if (isset($data['want_replace'][$index]) && $data['want_replace'][$index] != '0') {
-                    $p = Product::find($data['want_replace'][$index]);
+                    $product_id = $data['want_replace'][$index];
+                    $ex_novo = false;
                 }
                 else {
-                    $p = new Product();
-                    $p->supplier_id = $s->id;
-                    $p->active = true;
+                    $product_id = null;
+                    $ex_novo = true;
                 }
+
+                $fields['supplier_id'] = $s->id;
+                $fields['active'] = true;
 
                 foreach($direct_fields as $field) {
                     $v = trim($data[$field][$index]);
                     if (filled($v)) {
-                        $p->$field = $v;
+                        $fields[$field] = $v;
                     }
                 }
 
-                $p->category_id = $this->mapNewElements($data['category_id'][$index], $new_categories, function($name) {
+                $fields['category_id'] = $this->mapNewElements($data['category_id'][$index], $new_categories, function($name) {
                     return Category::easyCreate(['name' => $name]);
                 });
 
-                $p->measure_id = $this->mapNewElements($data['measure_id'][$index], $new_measures, function($name) {
+                $fields['measure_id'] = $this->mapNewElements($data['measure_id'][$index], $new_measures, function($name) {
                     return Measure::easyCreate(['name' => $name]);
                 });
 
-                $p->vat_rate_id = $this->mapNewElements($data['vat_rate_id'][$index], $new_vats, function($name) {
+                $fields['vat_rate_id'] = $this->mapNewElements($data['vat_rate_id'][$index], $new_vats, function($name) {
                     $name = (float) $name;
                     $vat = new VatRate();
                     $vat->percentage = $name;
@@ -257,7 +263,13 @@ class Products extends CSVImporter
                     return $vat;
                 });
 
-                $p->save();
+                if ($ex_novo) {
+                    $p = $service->store($fields);
+                }
+                else {
+                    $p = $service->update($product_id, $fields);
+                }
+
                 $products[] = $p;
                 $products_ids[] = $p->id;
             }
