@@ -14,6 +14,7 @@ return new class extends Migration
             'products',
             'orders',
             'bookings',
+            'booked_products',
             'modifiers',
             'deliveries',
             'movements',

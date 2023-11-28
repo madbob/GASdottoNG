@@ -510,7 +510,7 @@ class Booking extends Model
         foreach($this->products as $p) {
             $p->setRelation('booking', $this);
             $p->final_price = $p->getValue('delivered');
-            $p->save();
+            $p->saveQuietly();
         }
 
         $this->status = $keep_status;

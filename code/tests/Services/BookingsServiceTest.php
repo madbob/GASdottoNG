@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
+use App\Booking;
 use App\Movement;
 
 class BookingsServiceTest extends TestCase
@@ -37,6 +38,16 @@ class BookingsServiceTest extends TestCase
         $this->assertEquals($booking->products()->count(), $booked_count);
         $this->assertEquals($booking->getValue('booked', true), $total);
 
+        $this->nextRound();
+
+        $booking = Booking::find($booking->id);
+        $this->assertEquals($booking->updater->id, $this->userWithBasePerms->id);
+        foreach($booking->products as $prod) {
+            $this->assertEquals($prod->updater->id, $this->userWithBasePerms->id);
+        }
+
+        $this->nextRound();
+
         $this->actingAs($this->userWithShippingPerms);
         list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
         $data['notes_' . $this->sample_order->id] = '';
@@ -64,7 +75,7 @@ class BookingsServiceTest extends TestCase
 
         $data['action'] = 'booked';
         $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
-        $booking = \App\Booking::where('order_id', $this->sample_order->id)->where('user_id', $this->userWithBasePerms->id)->first();
+        $booking = Booking::where('order_id', $this->sample_order->id)->where('user_id', $this->userWithBasePerms->id)->first();
         $this->assertNotNull($booking);
 
         /*
@@ -134,7 +145,7 @@ class BookingsServiceTest extends TestCase
 
         $this->nextRound();
 
-        $booking = \App\Booking::where('order_id', $this->sample_order->id)->where('user_id', $this->userWithBasePerms->id)->first();
+        $booking = Booking::where('order_id', $this->sample_order->id)->where('user_id', $this->userWithBasePerms->id)->first();
         $products = $booking->products_with_friends;
         $this->assertEquals(2, $products->count());
 
@@ -169,10 +180,10 @@ class BookingsServiceTest extends TestCase
         $merged_data['action'] = 'shipped';
         $this->updateAndFetch($merged_data, $this->sample_order, $this->userWithBasePerms, true);
 
-        $booking = \App\Booking::where('order_id', $this->sample_order->id)->where('user_id', $this->userWithBasePerms->id)->first();
+        $booking = Booking::where('order_id', $this->sample_order->id)->where('user_id', $this->userWithBasePerms->id)->first();
         $this->assertNotNull($booking);
 
-        $friend_booking = \App\Booking::where('order_id', $this->sample_order->id)->where('user_id', $friend->id)->first();
+        $friend_booking = Booking::where('order_id', $this->sample_order->id)->where('user_id', $friend->id)->first();
         $this->assertNotNull($friend_booking);
 
         $booking = $booking->fresh();
@@ -271,12 +282,12 @@ class BookingsServiceTest extends TestCase
 
         $this->nextRound();
 
-        $booking = \App\Booking::where('user_id', $this->userWithBasePerms->id)->where('order_id', $this->sample_order->id)->first();
+        $booking = Booking::where('user_id', $this->userWithBasePerms->id)->where('order_id', $this->sample_order->id)->first();
         $this->assertEquals($booking->status, 'shipped');
         $this->assertNotNull($booking->payment_id);
         $this->assertEquals($booking->payment->amount, $total);
 
-        $booking2 = \App\Booking::where('user_id', $this->userWithBasePerms->id)->where('order_id', $order2->id)->first();
+        $booking2 = Booking::where('user_id', $this->userWithBasePerms->id)->where('order_id', $order2->id)->first();
         $this->assertEquals($booking2->status, 'shipped');
         $this->assertNotNull($booking2->payment_id);
         $this->assertEquals($booking2->payment->amount, $total2);
@@ -327,7 +338,7 @@ class BookingsServiceTest extends TestCase
         $data['action'] = 'booked';
         $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
 
-        $booking = \App\Booking::where('order_id', $this->sample_order->id)->where('user_id', $this->userWithBasePerms->id)->first();
+        $booking = Booking::where('order_id', $this->sample_order->id)->where('user_id', $this->userWithBasePerms->id)->first();
 
         $this->assertEquals($booking->status, 'pending');
         $this->assertEquals($booking->products()->count(), $booked_count);
@@ -345,7 +356,7 @@ class BookingsServiceTest extends TestCase
         $shipped_data['action'] = 'shipped';
         $this->updateAndFetch($shipped_data, $this->sample_order, $this->userWithBasePerms, true);
 
-        $booking = \App\Booking::where('order_id', $this->sample_order->id)->where('user_id', $this->userWithBasePerms->id)->first();
+        $booking = Booking::where('order_id', $this->sample_order->id)->where('user_id', $this->userWithBasePerms->id)->first();
 
         $this->assertEquals($booking->status, 'saved');
         $this->assertEquals($booking->products()->count(), $booked_count);

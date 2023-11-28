@@ -9,8 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
-use Log;
-
+use App\Models\Concerns\TracksUpdater;
 use App\Models\Concerns\ModifiedTrait;
 use App\Models\Concerns\LeafReducibleTrait;
 use App\Parameters\Constraints\Constraint;
@@ -19,21 +18,21 @@ use App\Events\SluggableCreating;
 
 class BookedProduct extends Model
 {
-    use HasFactory, GASModel, SluggableID, ModifiedTrait, LeafReducibleTrait, Cachable;
+    use HasFactory, GASModel, SluggableID, TracksUpdater, ModifiedTrait, LeafReducibleTrait, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';
+    protected $touches = ['booking'];
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,
     ];
 
-    /*
-    public function product(): BelongsTo
+    protected static function boot()
     {
-        return $this->belongsTo('App\Product')->withTrashed();
+        parent::boot();
+        static::initTrackingEvents();
     }
-    */
 
     public function booking(): BelongsTo
     {
@@ -50,6 +49,15 @@ class BookedProduct extends Model
         return $this->booking->status;
     }
 
+    /*
+        Non viene espressa una relazione con il prodotto di riferimento, ma
+        questo viene recuperato direttamente dalla gerarchia cui l'elemento
+        appartiene. Questo, sia per motivi di ottimizzazione sia per attingere
+        al modello Product che si trova dentro l'ordine e manipolato per
+        veicolare con sé il suo prezzo nel contesto dell'ordine stesso (che non
+        necessariamente è uguale a quello di un Product recuperato ex-novo dal
+        database)
+    */
     public function getProductAttribute()
     {
         return $this->booking->order->products->firstWhere('id', $this->product_id);

@@ -180,9 +180,13 @@ function formatUpdater($buttons, $params)
     $obj = $params['obj'];
 
     if ($obj && hasTrait($obj, \App\Models\Concerns\TracksUpdater::class)) {
-        $buttons[] = [
-            'element' => 'larastrap::updater',
-        ];
+        $exists = array_filter($buttons, fn($b) => isset($b['element']) && $b['element'] == 'larastrap::updater');
+
+        if (count($exists) == 0) {
+            $buttons[] = [
+                'element' => 'larastrap::updater',
+            ];
+        }
     }
 
     return $buttons;
@@ -190,14 +194,7 @@ function formatUpdater($buttons, $params)
 
 function formatInnerLastUpdater($component, $params)
 {
-    if (isset($params['inner_form_managed'])) {
-        unset($params['inner_form_managed']);
-    }
-    else {
-        $params['inner_form_managed'] = 'ongoing';
-        $params['buttons'] = formatUpdater($params['buttons'], $params);
-    }
-
+    $params['buttons'] = formatUpdater($params['buttons'], $params);
     return $params;
 }
 
