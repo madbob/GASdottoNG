@@ -12,7 +12,7 @@ if ($booking->order->status == 'closed') {
         $key = sprintf('apply_price_%s_%s', $product->product->id, $combo->id);
     }
     else {
-        $base_prod = App\Product::find($product->product->id);
+        $base_prod = App\Product::tFind($product->product->id);
         $now_price = $product->product->getPrice();
         $then_price = $base_prod->getPrice();
         $key = sprintf('apply_price_%s', $product->product->id);
