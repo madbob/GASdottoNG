@@ -175,12 +175,12 @@ class Utils {
     {
         var idle_text = button.attr('data-idle-text');
         if (!idle_text) {
-            idle_text = button.text();
+            idle_text = button.html();
         }
 
-        button.text(feedback_text);
+        button.empty().append(feedback_text);
         setTimeout(function() {
-            button.text(idle_text).prop('disabled', false);
+            button.empty().append(idle_text).prop('disabled', false);
         }, 2000);
     }
 

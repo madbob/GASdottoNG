@@ -44,6 +44,23 @@ class Triggers {
             t.find('option[value=' + value + ']').prop('selected', true);
             t.change();
         });
+
+        $('.async-modal', container).on('jb-before-async-fetch', (e) => {
+            let node = $(e.currentTarget);
+            let spinner = $(utils.j().makeSpinner());
+            spinner.find('.spinner-border').addClass('spinner-border-sm');
+            let contents = node.html();
+            node.attr('data-old-contents', contents);
+            node.css('width', node.outerWidth()).prop('disabled', true).empty().append(spinner);
+        }).on('jb-after-async-fetch', (e, success) => {
+            let node = $(e.currentTarget);
+            let contents = node.attr('data-old-contents');
+            node.css('width', 'auto').prop('disabled', false).empty().append(contents);
+
+            if (success == false) {
+                utils.inlineFeedback(node, _('ERRORE!'));
+            }
+        });
     }
 }
 
